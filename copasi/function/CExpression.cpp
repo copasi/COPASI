@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -86,7 +86,7 @@ bool CExpression::setInfix(const std::string & infix)
   std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
 
   for (; it != end; ++it)
-    if (((*it)->getType() & 0xFF000000) == CEvaluationNode::VARIABLE)
+    if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
       return false;
 
   return true;

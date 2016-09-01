@@ -24,16 +24,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeVector : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    VECTOR = 0x00000000
-  };
-
   // Operations
 public:
   /**

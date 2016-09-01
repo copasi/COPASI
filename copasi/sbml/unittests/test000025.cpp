@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -73,7 +73,7 @@ void test000025::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pNode != NULL);
   const CEvaluationNodeOperator* pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT(((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::DIVIDE);
+  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::S_DIVIDE);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();

@@ -42,49 +42,132 @@ public:
   /**
    * Enumeration of possible node types.
    */
-  enum Type
+  enum MainType
   {
-    INVALID = 0xFF000000,
-    NUMBER = 0x01000000,
-    CONSTANT = 0x02000000,
-    OPERATOR = 0x03000000,
-    OBJECT = 0x04000000,
-    FUNCTION = 0x05000000,
-    CALL = 0x06000000,
-    STRUCTURE = 0x07000000,
-    CHOICE = 0x08000000,
-    VARIABLE = 0x09000000,
-    WHITESPACE = 0x0a000000,
-    LOGICAL = 0x0b000000,
-    MV_FUNCTION = 0x0c000000, // This not yet implemented
-    VECTOR = 0x0d000000,
-    DELAY = 0x0e000000,
-    UNIT = 0x0f000000
+    T_INVALID = 0xFF000000,
+    T_NUMBER = 0x01000000,
+    T_CONSTANT = 0x02000000,
+    T_OPERATOR = 0x03000000,
+    T_OBJECT = 0x04000000,
+    T_FUNCTION = 0x05000000,
+    T_CALL = 0x06000000,
+    T_STRUCTURE = 0x07000000,
+    T_CHOICE = 0x08000000,
+    T_VARIABLE = 0x09000000,
+    T_WHITESPACE = 0x0a000000,
+    T_LOGICAL = 0x0b000000,
+    T_MV_FUNCTION = 0x0c000000, // This not yet implemented
+    T_VECTOR = 0x0d000000,
+    T_DELAY = 0x0e000000,
+    T_UNIT = 0x0f000000
+  };
+
+  enum SubType
+  {
+    S_DEFAULT = 0x00000000,
+    S_DELAY = 0x00000001,
+    S_IF = 0x00000002,
+    S_VECTOR = 0x00000003,
+    S_CN = 0x00000004,
+    S_DOUBLE = 0x00000005,
+    S_FUNCTION = 0x00000006,
+    S_LOG = 0x00000007,
+    S_OPEN = 0x00000008,
+    S_PI = 0x00000009,
+    S_POWER = 0x0000000A,
+    S_EXPRESSION = 0x0000000B,
+    S_POINTER = 0x0000000C,
+    S_EXPONENTIALE = 0x0000000D,
+    S_INTEGER = 0x0000000E,
+    S_LOG10 = 0x0000000F,
+    S_MULTIPLY = 0x00000010,
+    S_OR = 0x00000011,
+    S_VECTOR_OPEN = 0x00000012,
+    S_COMMA = 0x00000013,
+    S_DIVIDE = 0x00000014,
+    S_ENOTATION = 0x00000015,
+    S_EXP = 0x00000016,
+    S_TRUE = 0x00000017,
+    S_XOR = 0x00000018,
+    S_RATIONALE = 0x00000019,
+    S_AND = 0x0000001A,
+    S_CLOSE = 0x0000001B,
+    S_FALSE = 0x0000001C,
+    S_MODULUS = 0x0000001D,
+    S_SIN = 0x0000001E,
+    S_VECTOR_CLOSE = 0x0000001F,
+    S_COS = 0x00000020,
+    S_EQ = 0x00000021,
+    S_INFINITY = 0x00000022,
+    S_PLUS = 0x00000023,
+    S_NAN = 0x00000024,
+    S_MINUS = 0x00000025,
+    S_NE = 0x00000026,
+    S_TAN = 0x00000027,
+    S_REMAINDER = 0x00000028,
+    S_GT = 0x00000029,
+    S_SEC = 0x0000002A,
+    S_CSC = 0x0000002B,
+    S_GE = 0x0000002C,
+    S_COT = 0x0000002D,
+    S_LT = 0x0000002E,
+    S_LE = 0x0000002F,
+    S_SINH = 0x00000030,
+    S_COSH = 0x00000031,
+    S_TANH = 0x00000032,
+    S_SECH = 0x00000033,
+    S_CSCH = 0x00000034,
+    S_COTH = 0x00000035,
+    S_ARCSIN = 0x00000036,
+    S_ARCCOS = 0x00000037,
+    S_ARCTAN = 0x00000038,
+    S_ARCSEC = 0x00000039,
+    S_ARCCSC = 0x0000003A,
+    S_ARCCOT = 0x0000003B,
+    S_ARCSINH = 0x0000003C,
+    S_ARCCOSH = 0x0000003D,
+    S_ARCTANH = 0x0000003E,
+    S_ARCSECH = 0x0000003F,
+    S_ARCCSCH = 0x00000040,
+    S_ARCCOTH = 0x00000041,
+    S_SQRT = 0x00000042,
+    S_ABS = 0x00000043,
+    S_FLOOR = 0x00000044,
+    S_CEIL = 0x00000045,
+    S_FACTORIAL = 0x00000046,
+    S_NOT = 0x00000047,
+    S_RUNIFORM = 0x00000048,
+    S_RNORMAL = 0x00000049,
+    S_MAX = 0x0000004A,
+    S_MIN = 0x0000004B,
+    S_RGAMMA = 0x0000004C,
+    S_RPOISSON = 0x0000004D,
+    S_INVALID = 0x00FFFFFF
   };
 
   // Methods
   /**
    * Creates an evaluation node of type with the given data
-   * @param const Type & type
-   * @param const Data & data
+   * @param const MainType & mainType
+   * @param const SubType & subType
+   * @param const std::string & data
    * @return CEvaluationNode * evaluationNode
    */
-  static CEvaluationNode * create(const Type & type,
-                                  const Data & data);
+  static CEvaluationNode * create(const MainType & mainType,
+                                  const SubType & subType,
+                                  const std::string & data);
 
   /**
    * Retrieve the subtype part of type
-   * @param const Type & type
-   * @return Type subType
+   * @return SubType subType
    */
-  static Type subType(const Type & type);
+  const SubType & subType() const;
 
   /**
    * Retrieve the type part of type
-   * @param const Type & type
    * @return Type type
    */
-  static Type type(const Type & type);
+  const MainType & mainType() const;
 
 private:
   /**
@@ -126,10 +209,12 @@ public:
 protected:
   /**
    * Specific constructor
-   * @param const Type & type
+   * @param const MainType & mainType
+   * @param const SubType & subType
    * @param const Data & data
    */
-  CEvaluationNode(const Type & type,
+  CEvaluationNode(const MainType & type,
+                  const SubType & subType,
                   const Data & data);
 
 public:
@@ -224,15 +309,6 @@ public:
    * @return std::string XPPString
    */
   std::string buildXPPString() const;
-
-  /**
-   * Retrieve the type of the node.
-   * Note the type combines type and subType information. To
-   * Retrieve the type use type(getType()) and to retrieve the
-   * subType use subType(getType()).
-   * @return const Type & type.
-   */
-  const Type & getType() const;
 
   /**
    * Check whether the result is Boolean
@@ -358,7 +434,12 @@ protected:
   /**
    * The type the node
    */
-  Type mType;
+  MainType mMainType;
+
+  /**
+   * The type the node
+   */
+  SubType mSubType;
 
   /**
    * The numerical value of the node

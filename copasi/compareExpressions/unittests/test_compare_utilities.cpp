@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,7 +48,7 @@ void test_compare_utilities::test_copasi_function_expansion()
   // generate a call node
   CFunction* pFunction = dynamic_cast<CFunction*>(pTree);
   CPPUNIT_ASSERT(pFunction != NULL);
-  CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFunction->getObjectName());
+  CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNode::S_FUNCTION, pFunction->getObjectName());
   CPPUNIT_ASSERT(pCallNode != NULL);
   CFunctionParameters* pFunctionParameters = &pFunction->getVariables();
   unsigned int i = 0, iMax = pFunctionParameters->size();
@@ -57,7 +57,7 @@ void test_compare_utilities::test_copasi_function_expansion()
     {
       CFunctionParameter* pParameter = (*pFunctionParameters)[i];
       CPPUNIT_ASSERT(pParameter != NULL);
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, pParameter->getObjectName());
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, pParameter->getObjectName());
       pCallNode->addChild(pVariableNode);
       ++i;
     }
@@ -65,25 +65,25 @@ void test_compare_utilities::test_copasi_function_expansion()
   CEvaluationNode* pExpanded = expand_function_calls(pCallNode, pFunctionDB);
   delete pCallNode;
   CPPUNIT_ASSERT(pExpanded != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pExpanded->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpanded->getType()) == CEvaluationNodeOperator::DIVIDE);
+  CPPUNIT_ASSERT(pExpanded->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pExpanded->subType() == CEvaluationNode::S_DIVIDE);
   CEvaluationNode* pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_PLUS);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("y"));
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("x"));
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 2.0) / 2.0) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
   delete pExpanded;
@@ -94,7 +94,7 @@ void test_compare_utilities::test_copasi_function_expansion()
   // generate a call node
   pFunction = dynamic_cast<CFunction*>(pTree);
   CPPUNIT_ASSERT(pFunction != NULL);
-  pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFunction->getObjectName());
+  pCallNode = new CEvaluationNodeCall(CEvaluationNode::S_FUNCTION, pFunction->getObjectName());
   CPPUNIT_ASSERT(pCallNode != NULL);
   pFunctionParameters = &pFunction->getVariables();
   i = 0, iMax = pFunctionParameters->size();
@@ -103,7 +103,7 @@ void test_compare_utilities::test_copasi_function_expansion()
     {
       CFunctionParameter* pParameter = (*pFunctionParameters)[i];
       CPPUNIT_ASSERT(pParameter != NULL);
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, pParameter->getObjectName());
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, pParameter->getObjectName());
       pCallNode->addChild(pVariableNode);
       ++i;
     }
@@ -111,56 +111,56 @@ void test_compare_utilities::test_copasi_function_expansion()
   pExpanded = expand_function_calls(pCallNode, pFunctionDB);
   delete pCallNode;
   CPPUNIT_ASSERT(pExpanded != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pExpanded->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpanded->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pExpanded->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pExpanded->subType() == CEvaluationNode::S_PLUS);
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MINUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MINUS);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("a"));
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MULTIPLY);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("c"));
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 1.3) / 1.3) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
 
   // (3*b)-5.23
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MINUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MINUS);
   // 3*b
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MULTIPLY);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 3.0) / 3.0) < 1e-6);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("b"));
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
   // 5.23
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild()->getSibling()->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 5.23) / 5.23) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
 
@@ -172,7 +172,7 @@ void test_compare_utilities::test_copasi_function_expansion()
   // generate a call node
   pFunction = dynamic_cast<CFunction*>(pTree);
   CPPUNIT_ASSERT(pFunction != NULL);
-  pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::FUNCTION, pFunction->getObjectName());
+  pCallNode = new CEvaluationNodeCall(CEvaluationNode::S_FUNCTION, pFunction->getObjectName());
   CPPUNIT_ASSERT(pCallNode != NULL);
   pFunctionParameters = &pFunction->getVariables();
   i = 0, iMax = pFunctionParameters->size();
@@ -181,7 +181,7 @@ void test_compare_utilities::test_copasi_function_expansion()
     {
       CFunctionParameter* pParameter = (*pFunctionParameters)[i];
       CPPUNIT_ASSERT(pParameter != NULL);
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, pParameter->getObjectName());
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, pParameter->getObjectName());
       pCallNode->addChild(pVariableNode);
       ++i;
     }
@@ -190,56 +190,56 @@ void test_compare_utilities::test_copasi_function_expansion()
   delete pCallNode;
   CPPUNIT_ASSERT(pExpanded != NULL);
   // (k1-k3*1.3)+((3*k2)-5.23)
-  CPPUNIT_ASSERT(CEvaluationNode::type(pExpanded->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pExpanded->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pExpanded->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pExpanded->subType() == CEvaluationNode::S_PLUS);
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MINUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MINUS);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("k1"));
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MULTIPLY);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("k3"));
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 1.3) / 1.3) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
 
   // (3*b)-5.23
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MINUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MINUS);
   // 3*b
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MULTIPLY);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 3.0) / 3.0) < 1e-6);
   pChild = dynamic_cast<CEvaluationNode*>(pChild->getSibling());
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   CPPUNIT_ASSERT(pChild->getData() == std::string("k2"));
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
   // 5.23
   pChild = dynamic_cast<CEvaluationNode*>(pExpanded->getChild()->getSibling()->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::NUMBER);
-  CPPUNIT_ASSERT((CEvaluationNodeNumber::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeNumber::DOUBLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_DOUBLE);
   CPPUNIT_ASSERT((fabs(pChild->getValue() - 5.23) / 5.23) < 1e-6);
   CPPUNIT_ASSERT(pChild->getSibling() == NULL);
 

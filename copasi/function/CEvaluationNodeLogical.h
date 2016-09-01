@@ -27,25 +27,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeLogical : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    //      NOT = 0x00000001,
-    OR = 0x00000001,
-    XOR = 0x00000002,
-    AND = 0x00000003,
-    EQ = 0x00000004,
-    NE = 0x00000005,
-    GT = 0x00000006,
-    GE = 0x00000007,
-    LT = 0x00000008,
-    LE = 0x00000009
-  };
-
   // Operations
 private:
   /**
@@ -79,44 +60,44 @@ public:
    */
   virtual inline void calculate()
   {
-    switch (mType & 0x00FFFFFF)
+    switch (mSubType)
       {
-        case OR:
+        case S_OR:
           mValue = (mpLeft->getValue() > 0.5 ||
                     mpRight->getValue() > 0.5) ? 1.0 : 0.0;
           break;
 
-        case XOR:
+        case S_XOR:
           mValue = ((mpLeft->getValue() > 0.5 && mpRight->getValue() < 0.5) ||
                     (mpLeft->getValue() < 0.5 && mpRight->getValue() > 0.5)) ? 1.0 : 0.0;
           break;
 
-        case AND:
+        case S_AND:
           mValue = (mpLeft->getValue() > 0.5 &&
                     mpRight->getValue() > 0.5) ? 1.0 : 0.0;
           break;
 
-        case EQ:
+        case S_EQ:
           mValue = (mpLeft->getValue() == mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
-        case NE:
+        case S_NE:
           mValue = (mpLeft->getValue() != mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
-        case GT:
+        case S_GT:
           mValue = (mpLeft->getValue() > mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
-        case GE:
+        case S_GE:
           mValue = (mpLeft->getValue() >= mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
-        case LT:
+        case S_LT:
           mValue = (mpLeft->getValue() < mpRight->getValue()) ? 1.0 : 0.0;
           break;
 
-        case LE:
+        case S_LE:
           mValue = (mpLeft->getValue() <= mpRight->getValue()) ? 1.0 : 0.0;
           break;
       }

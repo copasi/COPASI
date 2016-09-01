@@ -179,13 +179,13 @@ void CUnitValidator::getUnits()
     {
       if (*it != NULL)
         {
-          switch (CEvaluationNode::type(it->getType()))
+          switch (it->mainType())
             {
-              case CEvaluationNode::VARIABLE:
+              case CEvaluationNode::T_VARIABLE:
                 tmpUnit = it->getUnit(mMathContainer, mVariableUnits);
                 break;
 
-              case CEvaluationNode::OBJECT:
+              case CEvaluationNode::T_OBJECT:
               {
                 CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
                 std::vector< CValidatedUnit > ObjectUnit;
@@ -253,9 +253,9 @@ bool CUnitValidator::setUnits()
           // tmpUnit.buildExpression(pretty);
           // std::cout << "setUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
 
-          switch (CEvaluationNode::type(it->getType()))
+          switch (it->mainType())
             {
-              case CEvaluationNode::VARIABLE:
+              case CEvaluationNode::T_VARIABLE:
               {
                 size_t Index = static_cast< CEvaluationNodeVariable * >(*it)->getIndex();
 
@@ -273,7 +273,7 @@ bool CUnitValidator::setUnits()
               }
               break;
 
-              case CEvaluationNode::OBJECT:
+              case CEvaluationNode::T_OBJECT:
               {
                 CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
 

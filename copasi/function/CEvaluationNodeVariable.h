@@ -26,17 +26,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeVariable : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   * The typing of variables must be handled by the tree.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    ANY = 0x00000000
-  };
-
   // Operations
 private:
   /**

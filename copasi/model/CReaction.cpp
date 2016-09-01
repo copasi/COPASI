@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // CReaction
 //
@@ -1037,7 +1037,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                   if (j != jmax)
                     id = "\"" + id + "\"";
 
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1117,7 +1117,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   // usage = "PARAMETER"
                   id = dynamic_cast<Parameter*>(pos->second)->getId();
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1130,7 +1130,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   // usage = "VOLUME"
                   id = dynamic_cast<Compartment*>(pos->second)->getId();
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1143,7 +1143,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   id = object->getObjectName();
                   id = this->escapeId(id);
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1168,7 +1168,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
         {
           id = object->getObjectName();
           id = this->escapeId(id);
-          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
           if (replacementMap.find(id) == replacementMap.end())
             {
@@ -1183,7 +1183,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
           // usage = "TIME"
           id = object->getObjectName();
           id = this->escapeId(id);
-          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
               CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
@@ -1215,31 +1215,31 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
           continue;
         }
 
-      switch (CEvaluationNode::type(itNode->getType()))
+      switch (itNode->mainType())
         {
-          case CEvaluationNode::OBJECT:
+          case CEvaluationNode::T_OBJECT:
             // convert to a variable node
             pResult = object2variable(static_cast<const CEvaluationNodeObject * >(*itNode), replacementMap, copasi2sbmlmap);
             break;
 
-          case CEvaluationNode::STRUCTURE:
+          case CEvaluationNode::T_STRUCTURE:
             // this should not occur here
             fatalError();
             break;
 
-          case CEvaluationNode::VARIABLE:
+          case CEvaluationNode::T_VARIABLE:
             // error variables may not be in an expression
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
             pResult = NULL;
             break;
 
-          case CEvaluationNode::MV_FUNCTION:
+          case CEvaluationNode::T_MV_FUNCTION:
             // create an error message until there is a class for it
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
             pResult = NULL;
             break;
 
-          case CEvaluationNode::INVALID:
+          case CEvaluationNode::T_INVALID:
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
             // create an error message
             pResult = NULL;
@@ -1341,14 +1341,15 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
               // we still need to do the mapping, otherwise global parameters might not be mapped
               it = replacementMap.begin();
+
               while (it != replacementMap.end())
-              {
-                CFunctionParameter* pFunPar = it->second.second;
-                std::string id = it->first;
-                setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
-                delete pFunPar;
-                ++it;
-              }
+                {
+                  CFunctionParameter* pFunPar = it->second.second;
+                  std::string id = it->first;
+                  setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+                  delete pFunPar;
+                  ++it;
+                }
 
               return NULL;
             }
@@ -1361,12 +1362,13 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
       // if we got here we didn't find a used function so we can clear the list
       it = replacementMap.begin();
+
       while (it != replacementMap.end())
-      {
-        CFunctionParameter* pFunPar = it->second.second;
-        delete pFunPar;
-        ++it;
-      }
+        {
+          CFunctionParameter* pFunPar = it->second.second;
+          delete pFunPar;
+          ++it;
+        }
 
       pTmpFunction->setObjectName(functionName + appendix);
     }
@@ -1380,18 +1382,18 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
   CEvaluationNode* pChildNode = NULL;
   CEvaluationNode* pChildNode2 = NULL;
 
-  switch (CEvaluationNode::type(expression->getType()))
+  switch (expression->mainType())
     {
-      case CEvaluationNode::NUMBER:
-        pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_NUMBER:
+        pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::CONSTANT:
-        pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_CONSTANT:
+        pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::OPERATOR:
-        pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_OPERATOR:
+        pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the two children as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1418,12 +1420,12 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::OBJECT:
-        pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_OBJECT:
+        pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::FUNCTION:
-        pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_FUNCTION:
+        pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the only child as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1439,8 +1441,8 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::CALL:
-        pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_CALL:
+        pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert all children
         pChildNode2 = static_cast<CEvaluationNode*>(expression->getChild());
 
@@ -1463,12 +1465,12 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::STRUCTURE:
-        pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_STRUCTURE:
+        pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::CHOICE:
-        pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_CHOICE:
+        pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the two children as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1495,16 +1497,16 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::VARIABLE:
+      case CEvaluationNode::T_VARIABLE:
         pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
         break;
 
-      case CEvaluationNode::WHITESPACE:
-        pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_WHITESPACE:
+        pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::LOGICAL:
-        pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_LOGICAL:
+        pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the two children as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1531,12 +1533,12 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::MV_FUNCTION:
+      case CEvaluationNode::T_MV_FUNCTION:
         // create an error message until there is a class for it
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
         break;
 
-      case CEvaluationNode::INVALID:
+      case CEvaluationNode::T_INVALID:
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
         // create an error message
         break;
@@ -1574,7 +1576,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ">");
   return pObjectNode;
 }
 

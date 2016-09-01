@@ -29,21 +29,13 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeUnit : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    DEFAULT = 0x00000000
-  };
-
+private:
   /**
    * Default constructor
    */
   CEvaluationNodeUnit();
 
+public:
   /**
    * Specific constructor
    * @param const SubType & subType

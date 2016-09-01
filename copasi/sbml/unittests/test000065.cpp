@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -74,38 +74,38 @@ void test000065::test_import_reaction_with_unsuitable_kinetic_1()
   // just to be sure also check the tree
   const CEvaluationNode* pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pRoot->getType()) == CEvaluationNodeOperator::DIVIDE);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pRoot->subType() == CEvaluationNode::S_DIVIDE);
   const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MULTIPLY);
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   const CEvaluationNodeVariable* pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getData() == "Vmax");
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   // can't check the variable name here since  I don't know what name has been
   // created for it
   pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_PLUS);
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getData() == "Km");
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   // can't check the variable name here since  I don't know what name has been
@@ -140,38 +140,38 @@ void test000065::test_import_reaction_with_unsuitable_kinetic_2()
   // just to be sure also check the tree
   const CEvaluationNode* pRoot = pFunction->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pRoot->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pRoot->getType()) == CEvaluationNodeOperator::DIVIDE);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pRoot->subType() == CEvaluationNode::S_DIVIDE);
   const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::MULTIPLY);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_MULTIPLY);
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   const CEvaluationNodeVariable* pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getData() == "Vmax");
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   // can't check the variable name here since  I don't know what name has been
   // created for it
   pChild = dynamic_cast<const CEvaluationNode*>(pRoot->getChild()->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OPERATOR);
-  CPPUNIT_ASSERT((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pChild->getType()) == CEvaluationNodeOperator::PLUS);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_OPERATOR);
+  CPPUNIT_ASSERT(pChild->subType() == CEvaluationNode::S_PLUS);
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getChild());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getData() == "Km");
   pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
   CPPUNIT_ASSERT(pChild != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pChild->getType()) == CEvaluationNode::VARIABLE);
+  CPPUNIT_ASSERT(pChild->mainType() == CEvaluationNode::T_VARIABLE);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pChild);
   CPPUNIT_ASSERT(pVariableNode != NULL);
   // can't check the variable name here since  I don't know what name has been

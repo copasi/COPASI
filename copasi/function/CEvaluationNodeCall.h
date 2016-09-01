@@ -29,17 +29,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeCall : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    FUNCTION = 0x00000000,
-    EXPRESSION = 0x00000001
-  };
-
   // Operations
 private:
   /**

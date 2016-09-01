@@ -35,99 +35,90 @@ CEvaluationNode::CPrecedence::CPrecedence(const CPrecedence & src):
 
 CEvaluationNode::CPrecedence::~CPrecedence() {}
 
-CEvaluationNode * CEvaluationNode::create(const Type & type,
-    const std::string & contents)
+CEvaluationNode * CEvaluationNode::create(const CEvaluationNode::MainType & mainType,
+    const CEvaluationNode::SubType & subType,
+    const std::string & data)
 {
   CEvaluationNode * pNode = NULL;
 
-  switch (CEvaluationNode::type(type))
+  switch (mainType)
     {
-      case CEvaluationNode::CALL:
-        pNode = new CEvaluationNodeCall((CEvaluationNodeCall::SubType) subType(type),
-                                        contents);
+      case T_CALL:
+        pNode = new CEvaluationNodeCall(subType, data);
         break;
 
-      case CEvaluationNode::CHOICE:
-        pNode = new CEvaluationNodeChoice((CEvaluationNodeChoice::SubType) subType(type),
-                                          contents);
+      case T_CHOICE:
+        pNode = new CEvaluationNodeChoice(subType, data);
         break;
 
-      case CEvaluationNode::CONSTANT:
-        pNode = new CEvaluationNodeConstant((CEvaluationNodeConstant::SubType) subType(type),
-                                            contents);
+      case T_CONSTANT:
+        pNode = new CEvaluationNodeConstant(subType, data);
         break;
 
-      case CEvaluationNode::DELAY:
-        pNode = new CEvaluationNodeDelay((CEvaluationNodeDelay::SubType) subType(type),
-                                         contents);
+      case T_DELAY:
+        pNode = new CEvaluationNodeDelay(subType, data);
         break;
 
-      case CEvaluationNode::FUNCTION:
-        pNode = new CEvaluationNodeFunction((CEvaluationNodeFunction::SubType) subType(type),
-                                            contents);
+      case T_FUNCTION:
+        pNode = new CEvaluationNodeFunction(subType, data);
         break;
 
-      case CEvaluationNode::LOGICAL:
-        pNode = new CEvaluationNodeLogical((CEvaluationNodeLogical::SubType) subType(type),
-                                           contents);
+      case T_LOGICAL:
+        pNode = new CEvaluationNodeLogical(subType, data);
         break;
 
-      case CEvaluationNode::NUMBER:
-        pNode = new CEvaluationNodeNumber((CEvaluationNodeNumber::SubType) subType(type),
-                                          contents);
+      case T_NUMBER:
+        pNode = new CEvaluationNodeNumber(subType, data);
         break;
 
-      case CEvaluationNode::OBJECT:
-        pNode = new CEvaluationNodeObject((CEvaluationNodeObject::SubType) subType(type),
-                                          contents);
+      case T_OBJECT:
+        pNode = new CEvaluationNodeObject(subType, data);
         break;
 
-      case CEvaluationNode::OPERATOR:
-        pNode = new CEvaluationNodeOperator((CEvaluationNodeOperator::SubType) subType(type),
-                                            contents);
+      case T_OPERATOR:
+        pNode = new CEvaluationNodeOperator(subType, data);
         break;
 
-      case CEvaluationNode::STRUCTURE:
-        pNode = new CEvaluationNodeStructure((CEvaluationNodeStructure::SubType) subType(type),
-                                             contents);
+      case T_STRUCTURE:
+        pNode = new CEvaluationNodeStructure(subType, data);
         break;
 
-      case CEvaluationNode::VARIABLE:
-        pNode = new CEvaluationNodeVariable((CEvaluationNodeVariable::SubType) subType(type),
-                                            contents);
+      case T_VARIABLE:
+        pNode = new CEvaluationNodeVariable(subType, data);
         break;
 
-      case CEvaluationNode::VECTOR:
-        pNode = new CEvaluationNodeVector((CEvaluationNodeVector::SubType) subType(type),
-                                          contents);
+      case T_VECTOR:
+        pNode = new CEvaluationNodeVector(subType, data);
         break;
 
-      case CEvaluationNode::WHITESPACE:
-        pNode = new CEvaluationNodeWhiteSpace((CEvaluationNodeWhiteSpace::SubType) subType(type),
-                                              contents);
+      case T_WHITESPACE:
+        pNode = new CEvaluationNodeWhiteSpace(subType, data);
         break;
 
-      case CEvaluationNode::UNIT:
-        pNode = new CEvaluationNodeUnit((CEvaluationNodeUnit::SubType) subType(type),
-                                        contents);
+      case T_UNIT:
+        pNode = new CEvaluationNodeUnit(subType, data);
         break;
 
-      case CEvaluationNode::INVALID:
+      case T_INVALID:
         pNode = new CEvaluationNode();
         break;
 
-      case CEvaluationNode::MV_FUNCTION:
+      case T_MV_FUNCTION:
         break;
     }
 
   return pNode;
 }
 
-CEvaluationNode::Type CEvaluationNode::subType(const Type & type)
-{return (Type)(type & 0x00FFFFFF);}
+const CEvaluationNode::SubType & CEvaluationNode::subType() const
+{
+  return mSubType;
+}
 
-CEvaluationNode::Type CEvaluationNode::type(const Type & type)
-{return (Type)(type & 0xFF000000);}
+const CEvaluationNode::MainType & CEvaluationNode::mainType() const
+{
+  return mMainType;
+}
 
 // static
 const char * CEvaluationNode::Keywords[] =
@@ -188,7 +179,8 @@ bool CEvaluationNode::isKeyword(const std::string & str)
 
 CEvaluationNode::CEvaluationNode():
   CCopasiNode<Data>(""),
-  mType(CEvaluationNode::INVALID),
+  mMainType(T_INVALID),
+  mSubType(S_INVALID),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mpValue(NULL),
   mPrecedence(PRECEDENCE_DEFAULT)
@@ -196,10 +188,12 @@ CEvaluationNode::CEvaluationNode():
   mpValue = & mValue;
 }
 
-CEvaluationNode::CEvaluationNode(const Type & type,
+CEvaluationNode::CEvaluationNode(const MainType & mainType,
+                                 const SubType & subType,
                                  const Data & data):
   CCopasiNode<Data>(data),
-  mType(type),
+  mMainType(mainType),
+  mSubType(subType),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mpValue(NULL),
   mPrecedence(PRECEDENCE_DEFAULT)
@@ -209,7 +203,8 @@ CEvaluationNode::CEvaluationNode(const Type & type,
 
 CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
   CCopasiNode<Data>(src),
-  mType(src.mType),
+  mMainType(src.mMainType),
+  mSubType(src.mSubType),
   mValue(src.mValue),
   mpValue(NULL),
   mPrecedence(src.mPrecedence)
@@ -360,9 +355,6 @@ std::string CEvaluationNode::buildXPPString() const
   return BerkeleyMadonnaString;
 }
 
-const CEvaluationNode::Type & CEvaluationNode::getType() const
-{return mType;}
-
 // virtual
 bool CEvaluationNode::isBoolean() const
 {return false;}
@@ -394,7 +386,7 @@ CEvaluationNode* CEvaluationNode::copyNode(CEvaluationNode* child1, CEvaluationN
 
 CEvaluationNode* CEvaluationNode::copyNode(const std::vector<CEvaluationNode*>& children) const
 {
-  CEvaluationNode * pNode = create(mType, getData());
+  CEvaluationNode * pNode = create(mMainType, mSubType, getData());
   std::vector<CEvaluationNode*>::const_iterator it = children.begin();
   std::vector<CEvaluationNode*>::const_iterator endit = children.end();
 
@@ -492,7 +484,7 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 
   for (i = 0; i < indent; ++i) os << " ";
 
-  os << "mType: " << type(mType) << "  subType: " << subType(mType) << std::endl;
+  os << "mType: " << mMainType << "  subType: " << mSubType << std::endl;
 
   for (i = 0; i < indent; ++i) os << " ";
 
@@ -590,7 +582,7 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
         {
           case CNodeIteratorMode::Before:
 
-            if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::MINUS))
+            if (itNode->mainType() == T_OPERATOR && itNode->subType() == CEvaluationNode::S_MINUS)
               {
                 // We found a minus no need to go down the tree.
                 itNode.skipChildren();
@@ -606,7 +598,7 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
 
           case CNodeIteratorMode::After:
 
-            if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::MULTIPLY))
+            if (itNode->mainType() == T_OPERATOR && itNode->subType() == CEvaluationNode::S_MULTIPLY)
               {
                 // Left child
                 if (itNode.context()[0] != NULL)
@@ -643,7 +635,7 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
                     pMinus = NULL;
                   }
               }
-            else if (itNode->getType() == (OPERATOR | CEvaluationNodeOperator::DIVIDE))
+            else if (itNode->mainType() == T_OPERATOR && itNode->subType() == CEvaluationNode::S_DIVIDE)
               {
                 // Left child
                 pMinus = itNode.context()[0];
@@ -692,7 +684,8 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
           return false;
         }
 
-      if (itLeft->getType() != itRight->getType() ||
+      if (itLeft->mainType() != itRight->mainType() ||
+          itLeft->subType() != itRight->subType() ||
           itLeft->getData() != itRight->getData())
         {
           return false;
@@ -704,61 +697,56 @@ bool CEvaluationNode::operator==(const CEvaluationNode& right) const
 
 bool CEvaluationNode::operator<(const CEvaluationNode& right) const
 {
-  bool result = false;
-
-  if (this->getType() < right.getType())
+  if (mainType() != right.mainType())
     {
-      result = true;
-    }
-  else if (this->getType() == right.getType())
-    {
-      switch (CEvaluationNode::type(this->getType()))
-        {
-          case CEvaluationNode::CONSTANT:
-          case CEvaluationNode::NUMBER:
-          case CEvaluationNode::OBJECT:
-          case CEvaluationNode::CALL:
-          case CEvaluationNode::STRUCTURE:
-          case CEvaluationNode::VARIABLE:
-          case CEvaluationNode::WHITESPACE:
-            result = (this->getData() < right.getData());
-            break;
-
-          case CEvaluationNode::OPERATOR:
-          case CEvaluationNode::FUNCTION:
-          case CEvaluationNode::CHOICE:
-          case CEvaluationNode::LOGICAL:
-          case CEvaluationNode::MV_FUNCTION:
-          case CEvaluationNode::VECTOR:
-          case CEvaluationNode::DELAY:
-          case CEvaluationNode::INVALID:
-            break;
-        }
-
-      const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
-
-      const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
-
-      while (result == false)
-        {
-          if (pChild1 == NULL || pChild2 == NULL)
-            {
-              if (pChild1 == NULL && pChild2 != NULL)
-                {
-                  result = true;
-                }
-            }
-          else
-            {
-              result = (*pChild1 < *pChild2);
-            }
-
-          pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
-          pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
-        }
+      return mainType() < right.mainType();
     }
 
-  return result;
+  if (subType() != right.subType())
+    {
+      return subType() < right.subType();
+    }
+
+  switch (mainType())
+    {
+      case T_CONSTANT:
+      case T_NUMBER:
+      case T_OBJECT:
+      case T_CALL:
+      case T_STRUCTURE:
+      case T_VARIABLE:
+      case T_WHITESPACE:
+        return getData() < right.getData();
+        break;
+
+      case T_OPERATOR:
+      case T_FUNCTION:
+      case T_CHOICE:
+      case T_LOGICAL:
+      case T_MV_FUNCTION:
+      case T_VECTOR:
+      case T_DELAY:
+      case T_INVALID:
+        break;
+    }
+
+  const CEvaluationNode* pChild1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
+  const CEvaluationNode* pChild2 = dynamic_cast<const CEvaluationNode*>(right.getChild());
+
+  while (true)
+    {
+      if (pChild1 == NULL || pChild2 == NULL)
+        {
+          return pChild1 < pChild2;
+        }
+
+      if (*pChild1 < *pChild2) return true;
+
+      pChild1 = dynamic_cast<const CEvaluationNode*>(pChild1->getSibling());
+      pChild2 = dynamic_cast<const CEvaluationNode*>(pChild2->getSibling());
+    }
+
+  return false;
 }
 
 //virtual

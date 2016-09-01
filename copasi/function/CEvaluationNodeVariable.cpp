@@ -20,14 +20,14 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeVariable::CEvaluationNodeVariable():
-  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  CEvaluationNode(T_VARIABLE, S_INVALID, ""),
   mpTree(NULL),
   mIndex(C_INVALID_INDEX)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const SubType & subType,
     const Data & data):
-  CEvaluationNode((Type)(CEvaluationNode::VARIABLE | subType), data),
+  CEvaluationNode(T_VARIABLE, subType, data),
   mpTree(NULL),
   mIndex(C_INVALID_INDEX)
 {mPrecedence = PRECEDENCE_NUMBER;}

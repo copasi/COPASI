@@ -26,22 +26,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeOperator : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    POWER = 0x00000000,
-    MULTIPLY = 0x00000001,
-    DIVIDE = 0x00000002,
-    MODULUS = 0x00000003,
-    PLUS = 0x00000004,
-    MINUS = 0x00000005,
-    REMAINDER = 0x00000006
-  };
-
   // Operations
 private:
   /**
@@ -75,21 +59,21 @@ public:
    */
   virtual inline void calculate()
   {
-    switch (mType & 0x00FFFFFF)
+    switch (mSubType)
       {
-        case POWER:
+        case S_POWER:
           mValue = pow(mpLeft->getValue(), mpRight->getValue());
           break;
 
-        case MULTIPLY:
+        case S_MULTIPLY:
           mValue = mpLeft->getValue() * mpRight->getValue();
           break;
 
-        case DIVIDE:
+        case S_DIVIDE:
           mValue = mpLeft->getValue() / mpRight->getValue();
           break;
 
-        case MODULUS:
+        case S_MODULUS:
 
           if ((C_INT32) mpRight->getValue() == 0)
             mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -98,15 +82,15 @@ public:
 
           break;
 
-        case PLUS:
+        case S_PLUS:
           mValue = mpLeft->getValue() + mpRight->getValue();
           break;
 
-        case MINUS:
+        case S_MINUS:
           mValue = mpLeft->getValue() - mpRight->getValue();
           break;
 
-        case REMAINDER:
+        case S_REMAINDER:
           mValue = fmod(mpLeft->getValue(), mpRight->getValue());
           break;
 

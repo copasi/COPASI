@@ -174,7 +174,7 @@ bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAss
 
   for (j = 0; j < jmax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
 
@@ -230,7 +230,7 @@ bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEven
 
   for (j = 0; j < jmax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
 
@@ -286,7 +286,7 @@ bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEv
 
   for (j = 0; j < jmax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
 
@@ -342,7 +342,7 @@ bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity *
 
   for (j = 0; j < jmax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
 
@@ -398,7 +398,7 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
 
   for (j = 0; j < jmax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
 
@@ -1227,7 +1227,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
   for (j = 0; j < jmax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
 

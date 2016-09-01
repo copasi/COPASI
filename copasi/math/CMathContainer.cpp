@@ -1510,10 +1510,10 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
         }
 
       // We need to replace variables, expand called trees, and handle discrete nodes.
-      switch ((int) itNode->getType())
+      switch (itNode->mainType() | itNode->subType())
         {
             // Handle object nodes which are of type CN
-          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::CN):
+          case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_CN):
           {
             // We need to map the object to a math object if possible.
             const CObjectInterface * pObject =
@@ -1525,7 +1525,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle object nodes which are of type POINTER
-          case (CEvaluationNode::OBJECT | CEvaluationNodeObject::POINTER):
+          case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_POINTER):
           {
             const CObjectInterface * pObject =
               getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
@@ -1536,7 +1536,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle variables
-          case (CEvaluationNode::VARIABLE | CEvaluationNodeVariable::ANY):
+          case (CEvaluationNode::T_VARIABLE | CEvaluationNode::S_DEFAULT):
           {
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
@@ -1548,14 +1548,14 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
               }
             else
               {
-                pCopy = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, itNode->getData());
+                pCopy = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, itNode->getData());
               }
           }
           break;
 
           // Handle call nodes
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
+          case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
           {
             const CEvaluationNode * pCalledNode =
               static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree()->getRoot();
@@ -1574,11 +1574,11 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle discrete nodes
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
+          case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
+          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
+          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
+          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
+          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
 
             if (replaceDiscontinuousNodes)
               {
@@ -2099,7 +2099,7 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
   if (pObject == NULL)
     {
       // We have an invalid value, i.e. NaN
-      pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+      pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, "NAN");
     }
   else if (pObject == mAvogadroObject.getDataObject())
     {
@@ -2146,7 +2146,7 @@ CEvaluationNode * CMathContainer::createNodeFromValue(const C_FLOAT64 * pDataVal
   else
     {
       // We have an invalid value, i.e. NaN
-      pNode = new CEvaluationNodeConstant(CEvaluationNodeConstant::_NaN, "NAN");
+      pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, "NAN");
     }
 
   return pNode;
@@ -4158,7 +4158,7 @@ CRandom & CMathContainer::getRandomGenerator() const
 
 void CMathContainer::createDiscontinuityEvents()
 {
-  CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
+  CEvaluationNodeConstant VariableNode(CEvaluationNode::S_NAN, "NAN");
   //size_t i, imax;
 
   // We need to create events for nodes which are capable of introducing
@@ -4177,7 +4177,7 @@ void CMathContainer::createDiscontinuityEvents()
 
 void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
 {
-  CEvaluationNodeConstant VariableNode(CEvaluationNodeConstant::_NaN, "NAN");
+  CEvaluationNodeConstant VariableNode(CEvaluationNode::S_NAN, "NAN");
   CNodeIterator< const CEvaluationNode > itNode(pTree->getRoot());
 
   while (itNode.next() != itNode.end())
@@ -4187,20 +4187,20 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
           continue;
         }
 
-      switch ((int) itNode->getType())
+      switch (itNode->mainType() | itNode->subType())
         {
-          case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-          case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
-          case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
+          case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
+          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
+          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
+          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
+          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
             createDiscontinuityDataEvent(*itNode);
             break;
 
             // Call nodes may include discontinuities but each called tree is handled
             // separately.
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::FUNCTION):
-          case (CEvaluationNode::CALL | CEvaluationNodeCall::EXPRESSION):
+          case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
+          case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
             createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
             break;
 
@@ -4228,23 +4228,23 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
   std::string TriggerInfix;
 
   // We need to define a data event for each discontinuity.
-  switch ((int) pNode->getType())
+  switch (pNode->mainType() | pNode->subType())
     {
-      case (CEvaluationNode::CHOICE | CEvaluationNodeChoice::IF):
+      case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
         TriggerInfix = static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         break;
 
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::FLOOR):
-      case (CEvaluationNode::FUNCTION | CEvaluationNodeFunction::CEIL):
+      case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
+      case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + ")) > 0";
         break;
 
-      case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::MODULUS):
+      case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         TriggerInfix += ")) > 0 || sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;
 
-      case (CEvaluationNode::OPERATOR | CEvaluationNodeOperator::REMAINDER):
+      case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + "/";
         TriggerInfix += static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;

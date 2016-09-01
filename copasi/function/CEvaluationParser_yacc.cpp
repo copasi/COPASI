@@ -107,7 +107,7 @@
 
 void setBooleanRequired(CEvaluationNode * pNode, const bool & booleanRequired)
 {
-  if (CEvaluationNode::type(pNode->getType()) == CEvaluationNode::CALL)
+  if (pNode->mainType() == CEvaluationNode::T_CALL)
     {
       static_cast<CEvaluationNodeCall *>(pNode)->setBooleanRequired(booleanRequired);
     }

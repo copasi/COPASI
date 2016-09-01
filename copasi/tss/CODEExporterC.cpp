@@ -656,7 +656,7 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
 
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+          if (treeIt->mainType() == CEvaluationNode::T_CALL)
             {
               const CFunction* ifunc;
               ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
@@ -957,12 +957,12 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
 
       while (newIt != NULL)
         {
-          if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+          if (newIt->mainType() == CEvaluationNode::T_VARIABLE)
             {
               newIt->setData(parameterNameMap[ tmpfunc->getVariables()[newIt->getData()]->getObjectName()]);
             }
 
-          if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::CALL)
+          if (newIt->mainType() == CEvaluationNode::T_CALL)
             {
               const CFunction* callfunc;
               callfunc = static_cast<CFunction*>(pFunctionDB->findFunction((*newIt).getData()));

@@ -23,16 +23,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeDelay : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    DELAY = 0x00000000
-  };
-
   // Operations
 private:
   /**
