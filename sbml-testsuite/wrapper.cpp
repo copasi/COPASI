@@ -431,7 +431,7 @@ public:
 
     if (pMethod->getParameter("Partitioning Strategy"))
       {
-        pMethod->setValue("Partitioning Strategy", std::string("Deterministic Reaction Integration"));
+        pMethod->setValue("Partitioning Strategy", std::string("All Reactions Deterministic"));
       }
 
     CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

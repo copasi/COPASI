@@ -61,8 +61,8 @@
 std::string CHybridMethodODE45::PartitioningStrategy[] =
 {
   "All Reactions Deterministic",
-  "All Reactions Stochastic",
   "User specified Partition",
+  "All Reactions Stochastic",
   ""
 };
 
@@ -358,16 +358,16 @@ void CHybridMethodODE45::partitionSystem()
   size_t nFast = 0;
   size_t nSlow = 0;
 
-  if (*mpPartitioningStrategy == "Deterministic Reaction Integration")
+  if (*mpPartitioningStrategy == PartitioningStrategy[AllDeterministic])
     {
       nFast = mpContainer->getReactions().size();
     }
-  else if (*mpPartitioningStrategy == "User specified Partition")
+  else if (*mpPartitioningStrategy == PartitioningStrategy[UserSpecified])
     {
       nFast = mpFastReactions->size();
       nSlow = mpContainer->getReactions().size() - nFast;
     }
-  else if ("Stochastic Reaction Integration")
+  else if (*mpPartitioningStrategy == PartitioningStrategy[AllStochastic])
     {
       nSlow = mpContainer->getReactions().size();
     }
@@ -386,7 +386,7 @@ void CHybridMethodODE45::partitionSystem()
   CObjectInterface::ObjectSet Propensities;
   CObjectInterface::ObjectSet Fluxes;
 
-  if (*mpPartitioningStrategy != "Deterministic Reaction Integration")
+  if (*mpPartitioningStrategy != PartitioningStrategy[AllDeterministic])
     {
       std::set< CMathReaction * > SlowReactions;
 
@@ -399,7 +399,7 @@ void CHybridMethodODE45::partitionSystem()
           SlowReactions.insert(pReaction);
         }
 
-      if (*mpPartitioningStrategy == "User specified Partition")
+      if (*mpPartitioningStrategy == PartitioningStrategy[UserSpecified])
         {
           CCopasiParameterGroup::elements::const_iterator it = mpFastReactions->beginIndex();
           CCopasiParameterGroup::elements::const_iterator end = mpFastReactions->endIndex();
