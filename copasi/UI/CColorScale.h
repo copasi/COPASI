@@ -11,6 +11,7 @@
 #ifndef CCOLORSCALE_H
 #define CCOLORSCALE_H
 
+#include <vector>
 #include <QtGui/QColor>
 
 #ifdef SunOS
@@ -212,6 +213,7 @@ protected:
 
 /**
  * This scaler automatically decides to use log scaling or not.
+ * In addition, it will also consider quantiles for scaling, so that outliers are disregarded
  */
 class CColorScaleAuto : public CColorScaleAdvanced
 {
@@ -224,10 +226,13 @@ public:
   //void setColorMin(QColor col);
   //void setColorMax(QColor col);
 
+  virtual void startAutomaticParameterCalculation();
+  virtual void passValue(const C_FLOAT64 & number);
   virtual void finishAutomaticParameterCalculation();
 
   
 protected:
+  std::vector<C_FLOAT64> mData;
   
 };
 

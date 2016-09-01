@@ -310,7 +310,7 @@ void CQOptPopulation::update()
         mXIndex[j] = j*2;
         mYIndex[j] = (j*2+1) % mNumParameters;
         QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1);
-        rect->setBrush(QColor(220, 220, 220));
+        rect->setBrush(QColor(240, 240, 240));
 
         mGraphicItems[j].resize(mPopulation.size());
       
@@ -334,12 +334,15 @@ void CQOptPopulation::update()
   unsigned C_INT32 i;
 
   //Color scaling
+  double tmp_min = 1e300;
+  C_INT32 min_index = 0;
   CColorScaleAuto cs;
   cs.startAutomaticParameterCalculation();
   for (i = 0; i<mPopulation.size(); ++i)
   {
     cs.passValue(mObjectiveValues[i]);
-    //std::cout << mObjectiveValues[i] << "   " ;
+    if (mObjectiveValues[i]<tmp_min)
+      { tmp_min = mObjectiveValues[i]; min_index = i;}
   }
   cs.finishAutomaticParameterCalculation();
   //std::cout << std::endl;
@@ -385,7 +388,10 @@ void CQOptPopulation::update()
         //gie->setY(p1-0.025);
         gie->setBrush(cs.getColor(mObjectiveValues[i]));
         //highlight parameters on the border of the allowed space
-        gie->setPen(isOnBorder ? QColor(200,0,0,230) : QColor(0,0,0,30));
+        if (i==min_index)
+          gie->setPen(QPen(QColor(0,200,0,200), 0.01));
+        else
+          gie->setPen(isOnBorder ? QColor(200,0,0,200) : QColor(0,0,0,40));
       }
     }
   }

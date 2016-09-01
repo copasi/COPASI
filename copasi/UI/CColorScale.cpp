@@ -168,16 +168,40 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 //**************************
 
 CColorScaleAuto::CColorScaleAuto()
-: CColorScaleAdvanced()
+: CColorScaleAdvanced(),
+ mData()
 {
-  mColorMax = QColor(255, 0, 0, 50);
-  mColorMin = QColor(0, 255, 0, 50);
+  mColorMax = QColor(255, 0, 0, 80);
+  mColorMin = QColor(0, 255, 0, 80);
+}
+
+//virtual
+void CColorScaleAuto::startAutomaticParameterCalculation()
+{
+  CColorScaleSimple::startAutomaticParameterCalculation();
+  mData.resize(0);
+}
+
+//virtual
+void CColorScaleAuto::passValue(const C_FLOAT64 & number)
+{
+ CColorScaleSimple::passValue(number);
+ mData.push_back(number);
 }
 
 //virtual
 void CColorScaleAuto::finishAutomaticParameterCalculation()
 {
   CColorScaleSimple::finishAutomaticParameterCalculation();
+  
+  if (mData.size()>=5)
+  {
+    C_INT32 q = mData.size() / 5;
+
+    std::nth_element(mData.begin(), mData.end() - q -1, mData.end());
+    mMax = *(mData.end() - q -1);
+  }
+  
   if (mMin>0 && mMax>0 && mMax/mMin>100)
   {
     mLog=true;
