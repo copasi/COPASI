@@ -57,6 +57,10 @@ public:
     T_DELAY = 0x0e000000
   };
 
+#ifdef S_FALSE
+# undef S_FALSE
+#endif
+
   enum SubType
   {
     S_DEFAULT = 0x00000000,
