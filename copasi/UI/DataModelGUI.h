@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,6 @@
 #include <QtCore/QObject>
 #include <QtGui/QApplication>
 
-#include "copasi/plotUI/COutputHandlerPlot.h"
 #include "copasi/UI/listviews.h"
 
 //class CMathModel;
@@ -30,6 +29,9 @@ class CQThread;
 class CProgressBar;
 class CQBrowserPaneDM;
 class QNetworkReply;
+class COutputDefinitionVector;
+class COutputHandlerPlot;
+class CCopasiDataModel;
 
 class DataModelGUI: public QObject
 {
@@ -38,7 +40,7 @@ private:
   void linkDataModelToGUI();
 
 public:
-  DataModelGUI(QObject * parent);
+  DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel);
   virtual ~DataModelGUI();
 
   bool createModel();
@@ -132,8 +134,8 @@ signals:
   void finished(bool success);
 
 private:
-  QApplication *mpApp;
-  COutputHandlerPlot mOutputHandlerPlot;
+  CCopasiDataModel * mpDataModel;
+  COutputHandlerPlot * mpOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;
 

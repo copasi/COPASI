@@ -19,7 +19,7 @@
 #include "copasi/UI/ui_CQModelWidget.h"
 
 class QUndoStack;
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
+#include "copasi/undoFramework/CCopasiUndoCommand.h"
 
 class CModel;
 

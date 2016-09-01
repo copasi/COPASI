@@ -12,6 +12,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#ifndef COPASI_UI3_WINDOW_H
+#define COPASI_UI3_WINDOW_H
+
 #include <string>
 
 #include <QtGui/QMainWindow>
@@ -242,6 +245,8 @@ private:
   void setApplicationFont();
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
+  CCopasiDataModel* mpDataModel;
+
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
 
@@ -481,3 +486,5 @@ private:
 
 #endif // COPASI_SBW_INTEGRATION
 };
+
+#endif //COPASI_UI3_WINDOW_H

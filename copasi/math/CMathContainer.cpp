@@ -82,16 +82,17 @@ void CMathContainer::relocateUpdateSequence(CObjectInterface::UpdateSequence & s
       return;
     }
 
-  std::vector< CObjectInterface * > Dirty(sequence);
-  it = Dirty.begin();
-  end = Dirty.end();
-  sequence.clear();
+  std::vector< CObjectInterface * > Clean;
+  it = sequence.begin();
+  end = sequence.end();
 
   for (; it != end; ++it)
     if (*it != NULL)
       {
-        sequence.push_back(*it);
+        Clean.push_back(*it);
       }
+
+  sequence = Clean;
 }
 
 void CMathContainer::relocateObjectSet(CObjectInterface::ObjectSet & objectSet,
@@ -2433,7 +2434,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
   CObjectInterface::UpdateSequence TimeChange;
   mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, TimeDependentValues);
-  mIsAutonomous = (TimeChange.size() == 0);
+  mIsAutonomous = TimeChange.empty();
 
   // Build the update sequence used to calculate the priorities in the event process queue.
   CObjectInterface::ObjectSet PriorityRequiredValues;
@@ -2500,10 +2501,10 @@ void CMathContainer::analyzeRoots()
       CObjectInterface::UpdateSequence UpdateSequence;
 
       mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, ContinousStateValues, Requested);
-      *pIsDiscrete = (UpdateSequence.size() == 0);
+      *pIsDiscrete = UpdateSequence.empty();
 
       mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, TimeValue, Requested);
-      *pIsTimeDependent = (UpdateSequence.size() != 0);
+      *pIsTimeDependent = !UpdateSequence.empty();
     }
 
   mEventRoots.initialize(RootCount, mEventRoots.array());

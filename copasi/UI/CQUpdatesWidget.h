@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +26,7 @@ class QTableWidget;
 
 class CModel;
 class CObjectInterface;
+class CMathUpdateSequence;
 
 /**
  * This widget displays tables representing the refresh lists. It will probably only
@@ -49,7 +50,7 @@ protected:
   void loadWidget();
   void clearArrays();
 
-  void loadOneTable(QTableWidget * pTable, const std::vector< CObjectInterface * > & list);
+  void loadOneTable(QTableWidget * pTable, const CMathUpdateSequence & list);
   void loadObjectsTable(CModel* pModel);
 
   QGridLayout* mWidgetLayout;

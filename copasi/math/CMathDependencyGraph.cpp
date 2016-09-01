@@ -121,8 +121,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
   const_iterator found;
   const_iterator notFound = mObjects2Nodes.end();
 
-  updateSequence.clear();
-  updateSequence.setMathContainer(mpContainer);
+  std::vector<CObjectInterface*> UpdateSequence;
 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
   CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
@@ -214,7 +213,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
           // Objects of class CCopasiTimer must always be calculated
           if ((*it)->getDataObject()->getObjectType() == "Timer")
             {
-              updateSequence.push_back(const_cast< CObjectInterface * >(*it));
+              UpdateSequence.push_back(const_cast< CObjectInterface * >(*it));
             }
 
           continue;
@@ -258,7 +257,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
 
       if (found != notFound)
         {
-          success &= found->second->buildUpdateSequence(context, updateSequence);
+          success &= found->second->buildUpdateSequence(context, UpdateSequence);
           continue;
         }
 
@@ -280,7 +279,7 @@ finish:
 
   if (!success)
     {
-      updateSequence.clear();
+      UpdateSequence.clear();
 
       if (it != end)
         {
@@ -291,6 +290,9 @@ finish:
           CCopasiMessage(CCopasiMessage::ERROR, MCMathModel + 3, "cn not found");
         }
     }
+
+  updateSequence.setMathContainer(mpContainer);
+  updateSequence = UpdateSequence;
 
 #ifdef DEBUG_OUTPUT
   CObjectInterface::UpdateSequence::const_iterator itSeq = updateSequence.begin();

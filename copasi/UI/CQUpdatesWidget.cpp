@@ -10,6 +10,7 @@
 
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
+#include <QtGui/QTabWidget>
 
 #include "copasi.h"
 
@@ -21,8 +22,7 @@
 
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
-
-#include <QtGui/QTabWidget>
+#include "math/CMathUpdateSequence.h"
 
 /**
  *  Constructs a CQUpdatesWidget which is a child of 'parent', with the
@@ -111,12 +111,12 @@ void CQUpdatesWidget::loadWidget()
   loadObjectsTable(pModel);
 }
 
-void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const std::vector< CObjectInterface * > & list)
+void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const CMathUpdateSequence & list)
 {
   pTable->setColumnCount(2);
   pTable->setRowCount((int) list.size());
-  std::vector< CObjectInterface * >::const_iterator it = list.begin();
-  std::vector< CObjectInterface * >::const_iterator end = list.end();
+  CMathUpdateSequence::const_iterator it = list.begin();
+  CMathUpdateSequence::const_iterator end = list.end();
 
   for (int i = 0; it != end; ++it, ++i)
     {
