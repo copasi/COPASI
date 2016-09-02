@@ -77,14 +77,11 @@
 #endif // WITH_ANALYTICS
 
 #ifdef WITH_COMBINE_ARCHIVE
-
-#include <combine/combinearchive.h>
-#include <combine/knownformats.h>
-#include <combine/util.h>
-#include <omex/CaContent.h>
-
+# include <combine/combinearchive.h>
+# include <combine/knownformats.h>
+# include <combine/util.h>
+# include <omex/CaContent.h>
 #endif // WITH_COMBINE_ARCHIVE
-
 
 #include <copasi/parameterFitting/CFitProblem.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
@@ -434,6 +431,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
   return true;
 }
 
+#ifdef WITH_COMBINE_ARCHIVE
 void CCopasiDataModel::copyExperimentalDataTo(const std::string& path)
 {
   CFitProblem* problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
@@ -478,10 +476,8 @@ void CCopasiDataModel::copyExperimentalDataTo(const std::string& path)
               {
                 current->setFileName(renameIt->second);
               }
-
           }
       }
-
   }
 
   {
@@ -522,12 +518,11 @@ void CCopasiDataModel::copyExperimentalDataTo(const std::string& path)
               {
                 current->setFileName(renameIt->second);
               }
-
           }
       }
-
   }
 }
+#endif // WITH_COMBINE_ARCHIVE
 
 bool
 CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
@@ -579,12 +574,15 @@ CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProce
       return false;
     }
 
+#ifdef WITH_COMBINE_ARCHIVE
 
   if (mNeedToSaveExperimentalData)
     {
       copyExperimentalDataTo(CDirEntry::dirName(FileName));
       mNeedToSaveExperimentalData = false;
     }
+
+#endif // WITH_COMBINE_ARCHIVE
 
   CCopasiXML XML;
 
@@ -1363,7 +1361,6 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
                   {
                     current->setFileName("." + renameIt->second);
                   }
-
               }
           }
       }
@@ -1390,7 +1387,6 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
                   {
                     current->setFileName("." + renameIt->second);
                   }
-
               }
           }
       }
@@ -1405,7 +1401,6 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
           catch (...)
             {
             }
-
         }
 
       // restore filenames
@@ -1422,7 +1417,6 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
                   {
                     current->setFileName(renameIt->first);
                   }
-
               }
           }
       }
@@ -1439,11 +1433,9 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
                   {
                     current->setFileName(renameIt->first);
                   }
-
               }
           }
       }
-
     }
 
   if (includeCOPASI && !includeData)
@@ -1458,7 +1450,6 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
         {
         }
     }
-
 
   if (includeSBML)
     {
@@ -1477,7 +1468,6 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
       std::stringstream str; str << exportSEDMLToString(pProgressReport, 1, 2, "../sbml/model.xml");
       archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
     }
-
 
   archive.writeToFile(fileName);
 
@@ -1508,9 +1498,6 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
 
   archive.extractTo(destinationDir);
   mTempFolders.push_back(destinationDir);
-
-
-
 
   // read the master file
   const CaContent* content = archive.getMasterFile();
@@ -1566,7 +1553,6 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
             {
               // need to save the files when saving the model
               mNeedToSaveExperimentalData = true;
-
             }
         }
     }

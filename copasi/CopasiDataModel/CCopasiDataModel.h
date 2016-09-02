@@ -191,16 +191,6 @@ public:
 
   std::string saveModelToString(CProcessReport* pProcessReport = NULL);
 
-  /**
-   * Moves the experimental data referenced in the model to the specified
-   * path and update the referenced filenames to match it. Should the folder
-   * already have an experimental data file in there with the name, a new
-   * name will be chosen.
-   *
-   * @param path the target directory for the experimental data.
-   */
-  void copyExperimentalDataTo(const std::string& path);
-
   bool autoSave();
 
   bool newModel(CProcessReport* pProcessReport,
@@ -224,6 +214,15 @@ public:
                        const std::string & filter, bool overwriteFile = false);
 
 #ifdef WITH_COMBINE_ARCHIVE
+  /**
+   * Moves the experimental data referenced in the model to the specified
+   * path and update the referenced filenames to match it. Should the folder
+   * already have an experimental data file in there with the name, a new
+   * name will be chosen.
+   *
+   * @param path the target directory for the experimental data.
+   */
+  void copyExperimentalDataTo(const std::string& path);
 
   bool exportCombineArchive(std::string fileName,
                             bool includeCOPASI = true,
