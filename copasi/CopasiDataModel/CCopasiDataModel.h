@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CCopasiDataModel
 #define COPASI_CCopasiDataModel
@@ -191,6 +191,16 @@ public:
 
   std::string saveModelToString(CProcessReport* pProcessReport = NULL);
 
+  /**
+   * Moves the experimental data referenced in the model to the specified
+   * path and update the referenced filenames to match it. Should the folder
+   * already have an experimental data file in there with the name, a new
+   * name will be chosen.
+   *
+   * @param path the target directory for the experimental data.
+   */
+  void copyExperimentalDataTo(const std::string& path);
+
   bool autoSave();
 
   bool newModel(CProcessReport* pProcessReport,
@@ -284,22 +294,22 @@ public:
                    const bool & deleteOldData = true);
 
   /**
-   * exports the SED-ML with given level and version to a string. NOTE: the 
-   * SBML model will not be exported, instead it is assumed to be available 
+   * exports the SED-ML with given level and version to a string. NOTE: the
+   * SBML model will not be exported, instead it is assumed to be available
    * at the location provided in modelLocation
    *
    * @param pExportHandler export handler
    * @param sedmlLevel the level to export
    * @param sedmlVersion the version to export
-   * @param modelLocation the location where the SBML file has been written, 
+   * @param modelLocation the location where the SBML file has been written,
    *                      defaults to 'model.xml'
-   * 
+   *
    * @return the SED-ML string.
    */
-  std::string exportSEDMLToString(CProcessReport* pExportHandler, 
+  std::string exportSEDMLToString(CProcessReport* pExportHandler,
                                   int sedmlLevel, int sedmlVersion,
                                   const std::string& modelLocation = "model.xml"
-                                  );
+                                 );
 
   bool exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
 
@@ -322,6 +332,8 @@ protected:
   CData mData;
   CData mOldData;
   CDataModelRenameHandler mRenameHandler;
+  std::vector<std::string> mTempFolders;
+  bool mNeedToSaveExperimentalData;
 
 public:
   /**

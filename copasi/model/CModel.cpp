@@ -2235,7 +2235,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2254,7 +2254,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
       const CFitProblem *problem = static_cast<const CFitProblem*>(task->getProblem());
 
-      const CExperimentSet& experiments = problem->getExperiementSet();
+      const CExperimentSet& experiments = problem->getExperimentSet();
 
       // find first time course experiment
       for (size_t i = 0; i < experiments.size(); ++i)
@@ -2285,7 +2285,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {

@@ -208,13 +208,25 @@ public:
    * Retrieve the experiment set.
    * @return const CExperimentSet & experiementSet
    */
-  const CExperimentSet & getExperiementSet() const;
+  const CExperimentSet & getExperimentSet() const;
+
+  /**
+   * Retrieve the experiment set.
+   * @return const CExperimentSet & experiementSet
+   */
+  CExperimentSet & getExperimentSet();
 
   /**
    * Retrieve the cross validation set.
    * @return const CCrossValidationSet & crossValidationSet
    */
   const CCrossValidationSet & getCrossValidationSet() const;
+
+  /**
+   * Retrieve the cross validation set.
+   * @return const CCrossValidationSet & crossValidationSet
+   */
+  CCrossValidationSet & getCrossValidationSet();
 
   /**
    * Set the solution.

@@ -227,7 +227,7 @@ bool CQFittingResult::enterProtected()
   mpParameters->resizeRowsToContents();
 
   // Loop over the experiments
-  const CExperimentSet & Experiments = mpProblem->getExperiementSet();
+  const CExperimentSet & Experiments = mpProblem->getExperimentSet();
 
   imax = Experiments.getExperimentCount();
 

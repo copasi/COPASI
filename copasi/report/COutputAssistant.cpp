@@ -610,7 +610,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
         if (pFitProblem == NULL) return NULL;
 
-        const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+        const CExperimentSet & ExperimentSet = pFitProblem->getExperimentSet();
         size_t i, imax = ExperimentSet.getExperimentCount();
 
         std::vector< std::string > ChannelX;
@@ -730,7 +730,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
         if (pFitProblem == NULL) return NULL;
 
-        const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+        const CExperimentSet & ExperimentSet = pFitProblem->getExperimentSet();
         size_t i, imax = ExperimentSet.getExperimentCount();
 
         for (i = 0; i < imax; i++)
@@ -823,7 +823,7 @@ CCopasiObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * t
 
         if (pFitProblem == NULL) return NULL;
 
-        const CExperimentSet & ExperimentSet = pFitProblem->getExperiementSet();
+        const CExperimentSet & ExperimentSet = pFitProblem->getExperimentSet();
         size_t i, imax = ExperimentSet.getExperimentCount();
 
         std::map< const CCopasiObject *, CPlotSpecification * > PlotSpecMap;
