@@ -135,9 +135,11 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
   mUsable(false),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
-  mpRoot(NULL),
+  mpRootNode(NULL),
+  mpRootValue(NULL),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mCalculationSequence()
+  mCalculationSequence(),
+  mppEnd(NULL)
 {
   initObjects();
   setInfix("");
@@ -151,9 +153,11 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
   mUsable(false),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
-  mpRoot(NULL),
+  mpRootNode(NULL),
+  mpRootValue(NULL),
   mValue(src.mValue),
-  mCalculationSequence()
+  mCalculationSequence(),
+  mppEnd(NULL)
 {
   initObjects();
   setInfix(src.mInfix);
@@ -225,8 +229,11 @@ bool CEvaluationTree::parse()
   if (mInfix == "")
     {
       mpNodeList = new std::vector< CEvaluationNode * >;
-      mpRoot = new CEvaluationNode();
-      mpNodeList->push_back(mpRoot);
+      mpRootNode = new CEvaluationNode();
+      mpRootValue = mpRootNode->getValuePointer();
+      mValue = *mpRootValue;
+      mpNodeList->push_back(mpRootNode);
+
       return true;
     }
 
@@ -237,7 +244,9 @@ bool CEvaluationTree::parse()
   success = (Parser.yyparse() == 0);
 
   mpNodeList = Parser.getNodeList();
-  mpRoot = Parser.getRootNode();
+  mpRootNode = Parser.getRootNode();
+  mpRootValue = mpRootNode->getValuePointer();
+  mValue = *mpRootValue;
 
   // clean up if parsing failed
   if (!success)
@@ -263,15 +272,15 @@ bool CEvaluationTree::isUsable() const
 
 bool CEvaluationTree::isBoolean() const
 {
-  if (mpRoot != NULL)
-    return mpRoot->isBoolean();
+  if (mpRootNode != NULL)
+    return mpRootNode->isBoolean();
 
   return false;
 }
 
 void CEvaluationTree::buildCalculationSequence()
 {
-  CNodeIterator < CEvaluationNode > itNode(mpRoot);
+  CNodeIterator < CEvaluationNode > itNode(mpRootNode);
   std::vector< CEvaluationNode * > CalculationSequence;
 
   while (itNode.next() != itNode.end())
@@ -292,10 +301,11 @@ void CEvaluationTree::buildCalculationSequence()
 
   mCalculationSequence.resize(CalculationSequence.size());
   CEvaluationNode ** ppIt = mCalculationSequence.begin();
-  CEvaluationNode ** ppEnd = mCalculationSequence.end();
+  mppEnd = mCalculationSequence.end();
+
   std::vector< CEvaluationNode * >::const_iterator it = CalculationSequence.begin();
 
-  for (; ppIt != ppEnd; ++ppIt, ++it)
+  for (; ppIt != mppEnd; ++ppIt, ++it)
     {
       *ppIt = *it;
     }
@@ -313,7 +323,7 @@ bool CEvaluationTree::compileNodes()
     return mUsable = false;
 
   // The compile order must be child first.
-  CNodeIterator< CEvaluationNode > itNode(mpRoot);
+  CNodeIterator< CEvaluationNode > itNode(mpRootNode);
   CEvaluationNode *pErrorNode = NULL;
   mUsable = true;
 
@@ -331,6 +341,10 @@ bool CEvaluationTree::compileNodes()
             }
         }
     }
+
+  // Compile may change the value pointer of the root node.
+  mpRootValue = mpRootNode->getValuePointer();
+  mValue = *mpRootValue;
 
   std::vector< CEvaluationNode * >::iterator it;
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
@@ -398,17 +412,16 @@ void CEvaluationTree::calculate()
 {
   try
     {
-      if (mpRoot != NULL)
+      if (mpRootNode != NULL)
         {
           CEvaluationNode ** ppIt = mCalculationSequence.begin();
-          CEvaluationNode ** ppEnd = mCalculationSequence.end();
 
-          for (; ppIt != ppEnd; ++ppIt)
+          for (; ppIt != mppEnd; ++ppIt)
             {
               (*ppIt)->calculate();
             }
 
-          mValue = mpRoot->getValue();
+          mValue = *mpRootValue;
         }
       else
         {
@@ -443,7 +456,10 @@ void CEvaluationTree::clearNodes()
     pdelete(*it);
 
   pdelete(mpNodeList);
-  mpRoot = NULL;
+
+  mpRootNode = NULL;
+  mpRootValue = NULL;
+  mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
 bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
@@ -454,19 +470,22 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
   clearNodes();
 
-  mpRoot = pRootNode;
+  mpRootNode = pRootNode;
 
   return updateTree();
 }
 
 bool CEvaluationTree::updateTree()
 {
-  if (mpRoot == NULL)
+  if (mpRootNode == NULL)
     {
       clearNodes();
 
       return false;
     }
+
+  mpRootValue = mpRootNode->getValuePointer();
+  mValue = *mpRootValue;
 
   if (mpNodeList == NULL)
     {
@@ -476,13 +495,13 @@ bool CEvaluationTree::updateTree()
   // Clear the list but preserve the tree
   mpNodeList->clear();
 
-  CCopasiTree<CEvaluationNode>::iterator it = mpRoot;
+  CCopasiTree<CEvaluationNode>::iterator it = mpRootNode;
   CCopasiTree<CEvaluationNode>::iterator end = NULL;
 
   for (; it != end; ++it)
     mpNodeList->push_back(&*it);
 
-  mInfix = mpRoot->buildInfix();
+  mInfix = mpRootNode->buildInfix();
 
   return true;
 }
@@ -627,12 +646,12 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
 
 const CEvaluationNode* CEvaluationTree::getRoot() const
 {
-  return mpRoot;
+  return mpRootNode;
 }
 
 CEvaluationNode* CEvaluationTree::getRoot()
 {
-  return mpRoot;
+  return mpRootNode;
 }
 
 void CEvaluationTree::initObjects()
@@ -658,7 +677,7 @@ CCopasiObject::DataObjectSet CEvaluationTree::getDeletedObjects() const
 
 ASTNode* CEvaluationTree::toAST(const CCopasiDataModel* pDataModel) const
 {
-  return mpRoot->toAST(pDataModel);
+  return mpRootNode->toAST(pDataModel);
 }
 
 bool CEvaluationTree::hasCircularDependency() const

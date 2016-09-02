@@ -22,13 +22,15 @@
 
 CEvaluationNodeVector::CEvaluationNodeVector():
   CEvaluationNode(T_VECTOR, S_INVALID, ""),
-  mVector()
+  mNodes(),
+  mValues()
 {mPrecedence = PRECEDENCE_FUNCTION;}
 
 CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
     const Data & data):
   CEvaluationNode(T_VECTOR, subType, data),
-  mVector()
+  mNodes(),
+  mValues()
 {
   switch (subType)
     {
@@ -45,7 +47,8 @@ CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
 
 CEvaluationNodeVector::CEvaluationNodeVector(const CEvaluationNodeVector & src):
   CEvaluationNode(src),
-  mVector(src.mVector)
+  mNodes(src.mNodes),
+  mValues(src.mValues)
 {}
 
 CEvaluationNodeVector::~CEvaluationNodeVector() {}
@@ -114,7 +117,7 @@ CValidatedUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* containe
       Unit = CValidatedUnit::merge(Unit, *it);
     }
 
-  if (mVector.size() != units.size())
+  if (mNodes.size() != units.size())
     {
       Unit.setConflict(true);
     }
@@ -130,8 +133,8 @@ CValidatedUnit CEvaluationNodeVector::setUnit(const CMathContainer & container,
   CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeVector * >(this))->second,
                           targetUnits[const_cast< CEvaluationNodeVector * >(this)]);
 
-  std::vector< CEvaluationNode * >::const_iterator it = mVector.begin();
-  std::vector< CEvaluationNode * >::const_iterator end = mVector.end();
+  std::vector< CEvaluationNode * >::const_iterator it = mNodes.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mNodes.end();
 
   for (; it != end; ++it)
     {
@@ -158,10 +161,10 @@ bool CEvaluationNodeVector::addChild(CCopasiNode< Data > * pChild,
                                      CCopasiNode< Data > * pAfter)
 {
   CCopasiNode< Data >::addChild(pChild, pAfter);
-  mVector.push_back(static_cast<CEvaluationNode *>(pChild));
+  mNodes.push_back(static_cast<CEvaluationNode *>(pChild));
 
   return true;
 }
 
-const std::vector< CEvaluationNode * > & CEvaluationNodeVector::getVector() const
-{return mVector;}
+const std::vector< CEvaluationNode * > & CEvaluationNodeVector::getNodes() const
+{return mNodes;}

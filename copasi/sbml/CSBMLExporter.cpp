@@ -6757,7 +6757,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       ((pRight->subType()) == CEvaluationNode::S_DOUBLE ||
                        (pRight->subType()) == CEvaluationNode::S_ENOTATION))
                     {
-                      double value = dynamic_cast<const CEvaluationNodeNumber*>(pRight)->getValue();
+                      double value = *dynamic_cast<const CEvaluationNodeNumber*>(pRight)->getValuePointer();
 
                       if (fabs((factor - value) / factor) <= 1e-3)
                         {

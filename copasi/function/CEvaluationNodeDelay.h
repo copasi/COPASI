@@ -137,8 +137,10 @@ public:
   virtual std::string getInfix(const std::vector< std::string > & children) const;
 
 private:
-  CEvaluationNode * mpDelayValue;
-  CEvaluationNode * mpDelayLag;
+  CEvaluationNode * mpDelayValueNode;
+  CEvaluationNode * mpDelayLagNode;
+  const C_FLOAT64 * mpDelayValueValue;
+  const C_FLOAT64 * mpDelayLagValue;
 };
 
 #endif // COPASI_CEvaluationNodeDelay

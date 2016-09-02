@@ -515,7 +515,7 @@ CEvaluationNodeCall::buildParameters(const std::vector<CEvaluationNode *> & vect
   for (i = 0; it != end; ++it, i++)
     {
       if ((*it)->mainType() == CEvaluationNode::T_VECTOR)
-        (*pCallParameters)[i].vector = buildParameters(static_cast<const CEvaluationNodeVector *>(*it)->getVector());
+        (*pCallParameters)[i].vector = buildParameters(static_cast<const CEvaluationNodeVector *>(*it)->getNodes());
       else
         (*pCallParameters)[i].value = (*it)->getValuePointer();
     }
@@ -538,7 +538,7 @@ CEvaluationNodeCall::clearParameters(CCallParameters< C_FLOAT64 > * pCallParamet
     {
       if ((*it)->mainType() == CEvaluationNode::T_VECTOR)
         clearParameters((*pCallParameters)[i].vector,
-                        static_cast<const CEvaluationNodeVector *>(*it)->getVector());
+                        static_cast<const CEvaluationNodeVector *>(*it)->getNodes());
     }
 
   delete pCallParameters;

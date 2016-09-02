@@ -1122,7 +1122,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
             break;
 
           case CEvaluationNode::T_NUMBER:
-            Result = itNode->getValue();
+            Result = *itNode->getValuePointer();
             break;
 
           case CEvaluationNode::T_VARIABLE:

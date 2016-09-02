@@ -147,7 +147,7 @@ void CKinFunction::createParameters()
                   (*it)->setData(Name);
 
               // The Infix has changed we need to update it.
-              setInfix(mpRoot->buildInfix());
+              setInfix(mpRootNode->buildInfix());
             }
 
           pParameter = new CFunctionParameter(Name);

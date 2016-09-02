@@ -374,13 +374,13 @@ std::string CFunction::writeMathML(const std::vector< std::vector< std::string >
 {
   std::ostringstream out;
 
-  if (expand && mpRoot)
+  if (expand && mpRootNode)
     {
       bool flag = false; //TODO include check if parentheses are necessary
 
       if (flag) out << "<mfenced>" << std::endl;
 
-      out << mpRoot->buildMMLString(fullExpand, variables);
+      out << mpRootNode->buildMMLString(fullExpand, variables);
 
       if (flag) out << "</mfenced>" << std::endl;
     }
@@ -450,8 +450,8 @@ CFunction * CFunction::createCopy() const
   //newFunction->mVariables = this->mVariables; //WRONG! only shallow copy!!
   newFunction->mReversible = this->mReversible;
 
-  if (this->mpRoot)
-    newFunction->setRoot(this->mpRoot->copyBranch());
+  if (this->mpRootNode)
+    newFunction->setRoot(this->mpRootNode->copyBranch());
 
   //newFunction->mInfix = newFunction->mpRoot->getInfix();
 
@@ -464,7 +464,7 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
     const std::string & name1,
     const std::string & name2) const
 {
-  if (!this->mpRoot) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
+  if (!this->mpRootNode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
@@ -481,13 +481,13 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
   std::vector<CFunctionAnalyzer::CValue> callParameters;
   CFunctionAnalyzer::constructCallParameters(this->getVariables(), callParameters, true);
   // find the split point
-  const CEvaluationNode* splitnode = this->mpRoot->findTopMinus(callParameters);
+  const CEvaluationNode* splitnode = this->mpRootNode->findTopMinus(callParameters);
 
   if (!splitnode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   //create the 2 split trees
-  CEvaluationNode* tmpRoots1 = this->mpRoot->splitBranch(splitnode, true); //left side
-  CEvaluationNode* tmpRoots2 = this->mpRoot->splitBranch(splitnode, false); //right side
+  CEvaluationNode* tmpRoots1 = this->mpRootNode->splitBranch(splitnode, true); //left side
+  CEvaluationNode* tmpRoots2 = this->mpRootNode->splitBranch(splitnode, false); //right side
 
   if (tmpRoots1)
     newFunction1->setRoot(tmpRoots1);

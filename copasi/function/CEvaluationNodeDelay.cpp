@@ -18,15 +18,19 @@
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
   CEvaluationNode(T_DELAY, S_INVALID, ""),
-  mpDelayValue(NULL),
-  mpDelayLag(NULL)
+  mpDelayValueNode(NULL),
+  mpDelayLagNode(NULL),
+  mpDelayValueValue(NULL),
+  mpDelayLagValue(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
     const Data & /* data */):
   CEvaluationNode(T_DELAY, subType, "delay"),
-  mpDelayValue(NULL),
-  mpDelayLag(NULL)
+  mpDelayValueNode(NULL),
+  mpDelayLagNode(NULL),
+  mpDelayValueValue(NULL),
+  mpDelayLagValue(NULL)
 {
   switch (subType)
     {
@@ -44,8 +48,10 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
   CEvaluationNode(src),
-  mpDelayValue(NULL),
-  mpDelayLag(NULL)
+  mpDelayValueNode(src.mpDelayValueNode),
+  mpDelayLagNode(src.mpDelayLagNode),
+  mpDelayValueValue(src.mpDelayValueValue),
+  mpDelayLagValue(src.mpDelayLagValue)
 {}
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
@@ -57,15 +63,19 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
   switch (mSubType)
     {
       case S_DELAY:
-        mpDelayValue = static_cast<CEvaluationNode *>(getChild());
+        mpDelayValueNode = static_cast<CEvaluationNode *>(getChild());
 
-        if (mpDelayValue == NULL) return false;
+        if (mpDelayValueNode == NULL) return false;
 
-        mpDelayLag = static_cast<CEvaluationNode *>(mpDelayValue->getSibling());
+        mpDelayValueValue = mpDelayValueNode->getValuePointer();
 
-        if (mpDelayLag == NULL) return false;
+        mpDelayLagNode = static_cast<CEvaluationNode *>(mpDelayValueNode->getSibling());
 
-        return (mpDelayLag->getSibling() == NULL); // We must have exactly 2 children
+        if (mpDelayLagNode == NULL) return false;
+
+        mpDelayLagValue = mpDelayLagNode->getValuePointer();
+
+        return (mpDelayLagNode->getSibling() == NULL); // We must have exactly 2 children
 
         break;
 
@@ -181,8 +191,8 @@ CValidatedUnit CEvaluationNodeDelay::setUnit(const CMathContainer & container,
   CValidatedUnit Delay = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeDelay * >(this))->second,
                          targetUnits[const_cast< CEvaluationNodeDelay * >(this)]);
 
-  targetUnits[mpDelayValue] = Delay;
-  targetUnits[mpDelayLag] = CValidatedUnit(container.getModel().getTimeUnit(), false);
+  targetUnits[mpDelayValueNode] = Delay;
+  targetUnits[mpDelayLagNode] = CValidatedUnit(container.getModel().getTimeUnit(), false);
 
   return Delay;
 }

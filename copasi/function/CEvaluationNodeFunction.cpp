@@ -65,10 +65,14 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
   mpFunction(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
-  mpArg1(NULL),
-  mpArg2(NULL),
-  mpArg3(NULL),
-  mpArg4(NULL)
+  mpArgNode1(NULL),
+  mpArgNode2(NULL),
+  mpArgNode3(NULL),
+  mpArgNode4(NULL),
+  mpArgValue1(NULL),
+  mpArgValue2(NULL),
+  mpArgValue3(NULL),
+  mpArgValue4(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
@@ -77,10 +81,14 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
   mpFunction(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
-  mpArg1(NULL),
-  mpArg2(NULL),
-  mpArg3(NULL),
-  mpArg4(NULL)
+  mpArgNode1(NULL),
+  mpArgNode2(NULL),
+  mpArgNode3(NULL),
+  mpArgNode4(NULL),
+  mpArgValue1(NULL),
+  mpArgValue2(NULL),
+  mpArgValue3(NULL),
+  mpArgValue4(NULL)
 {
   switch (subType)
     {
@@ -278,40 +286,52 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction &
   mpFunction(src.mpFunction),
   mpFunction2(src.mpFunction2),
   mpFunction4(src.mpFunction4),
-  mpArg1(NULL),
-  mpArg2(NULL),
-  mpArg3(NULL),
-  mpArg4(NULL)
+  mpArgNode1(src.mpArgNode1),
+  mpArgNode2(src.mpArgNode2),
+  mpArgNode3(src.mpArgNode3),
+  mpArgNode4(src.mpArgNode4),
+  mpArgValue1(src.mpArgValue1),
+  mpArgValue2(src.mpArgValue2),
+  mpArgValue3(src.mpArgValue3),
+  mpArgValue4(src.mpArgValue4)
 {}
 
 CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
 bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
-  mpArg1 = static_cast<CEvaluationNode *>(getChild());
+  mpArgNode1 = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpArg1 == NULL) return false;
+  if (mpArgNode1 == NULL) return false;
+
+  mpArgValue1 = mpArgNode1->getValuePointer();
 
   if (mpFunction)
-    return (mpArg1->getSibling() == NULL); // We must have only one child
+    return (mpArgNode1->getSibling() == NULL); // We must have only one child
 
-  mpArg2 = static_cast<CEvaluationNode *>(mpArg1->getSibling());
+  mpArgNode2 = static_cast<CEvaluationNode *>(mpArgNode1->getSibling());
 
-  if (mpArg2 == NULL) return false;
+  if (mpArgNode2 == NULL) return false;
+
+  mpArgValue2 = mpArgNode2->getValuePointer();
 
   if (mpFunction2)
-    return (mpArg2->getSibling() == NULL); // We must have exactly 1 children
+    return (mpArgNode2->getSibling() == NULL); // We must have exactly 1 children
 
   // equality
-  mpArg3 = static_cast<CEvaluationNode *>(mpArg2->getSibling());
+  mpArgNode3 = static_cast<CEvaluationNode *>(mpArgNode2->getSibling());
 
-  if (mpArg3 == NULL) return false;
+  if (mpArgNode3 == NULL) return false;
 
-  mpArg4 = static_cast<CEvaluationNode *>(mpArg3->getSibling());
+  mpArgValue3 = mpArgNode3->getValuePointer();
 
-  if (mpArg4 == NULL) return false;
+  mpArgNode4 = static_cast<CEvaluationNode *>(mpArgNode3->getSibling());
 
-  return (mpArg4->getSibling() == NULL); // We must have exactly 4 children
+  if (mpArgNode4 == NULL) return false;
+
+  mpArgValue4 = mpArgNode4->getValuePointer();
+
+  return (mpArgNode4->getSibling() == NULL); // We must have exactly 4 children
 }
 
 // virtual
@@ -1349,7 +1369,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
             case CEvaluationNode::T_NUMBER:
             {
               std::stringstream tmp;
-              tmp << child1->getValue() *(-1.0);
+              tmp << *child1->getValuePointer() *(-1.0);
               CEvaluationNode* newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
               delete child1;
               return newnode;
@@ -1387,7 +1407,7 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
 {
   Data Result;
 
-  MainType T = mpArg1->mainType();
+  MainType T = mpArgNode1->mainType();
 
   if (T == T_OPERATOR)
     {
@@ -1411,7 +1431,7 @@ std::string CEvaluationNodeFunction::handleNot(const std::string & str) const
 {
   Data Result = mData + " ";
 
-  MainType T = mpArg1->mainType();
+  MainType T = mpArgNode1->mainType();
 
   if ((T & 0xFF000000) == T_LOGICAL)
     {
@@ -1424,9 +1444,9 @@ std::string CEvaluationNodeFunction::handleNot(const std::string & str) const
 }
 
 CEvaluationNode * CEvaluationNodeFunction::getLeft()
-{return mpArg1;}
+{return mpArgNode1;}
 const CEvaluationNode * CEvaluationNodeFunction::getLeft() const
-{return mpArg1;}
+{return mpArgNode1;}
 
 #include "utilities/copasimathml.h"
 
@@ -1441,9 +1461,9 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   std::string ldata = "";
   std::string rdata = "";
 
-  bool flag = ((mpArg1->mainType() == CEvaluationNode::T_NUMBER) ||
-               (mpArg1->mainType() == CEvaluationNode::T_VARIABLE) ||
-               (mpArg1->mainType() == CEvaluationNode::T_CONSTANT));
+  bool flag = ((mpArgNode1->mainType() == CEvaluationNode::T_NUMBER) ||
+               (mpArgNode1->mainType() == CEvaluationNode::T_VARIABLE) ||
+               (mpArgNode1->mainType() == CEvaluationNode::T_CONSTANT));
 
   bool flag1 = false;
 
@@ -1599,11 +1619,11 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
     {
       case S_PLUS:
       {
-        size_t type = (mpArg1->mainType() | mpArg1->subType());
+        size_t type = (mpArgNode1->mainType() | mpArgNode1->subType());
 
         flag = ((type == (T_OPERATOR | S_PLUS))
                 || (type == (T_OPERATOR | S_MINUS))
-                || ((mpArg1->mainType() == T_CALL) && expand));
+                || ((mpArgNode1->mainType() == T_CALL) && expand));
       }
 
       if (flag) out << "<mfenced>" << std::endl;
@@ -1911,7 +1931,7 @@ CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container
       case S_ARCCOTH:
       case S_FACTORIAL:
       case S_NOT:
-        targetUnits[mpArg1] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
         break;
 
       case S_MINUS:
@@ -1920,25 +1940,25 @@ CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container
       case S_MIN:
       case S_RUNIFORM:
       case S_RNORMAL:
-        targetUnits[mpArg1] = Result;
-        targetUnits[mpArg2] = Result;
+        targetUnits[mpArgNode1] = Result;
+        targetUnits[mpArgNode2] = Result;
         break;
 
       case S_FLOOR:
       case S_CEIL:
       case S_ABS:
       case S_RPOISSON:
-        targetUnits[mpArg1] = Result;
+        targetUnits[mpArgNode1] = Result;
         break;
 
       case S_RGAMMA:
-        targetUnits[mpArg1] = CValidatedUnit(CBaseUnit::dimensionless, false);
-        targetUnits[mpArg2] = Result.exponentiate(-1);
+        targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        targetUnits[mpArgNode2] = Result.exponentiate(-1);
 
         break;
 
       case S_SQRT:
-        targetUnits[mpArg1] = Result.exponentiate(2.0);
+        targetUnits[mpArgNode1] = Result.exponentiate(2.0);
         break;
 
       default:

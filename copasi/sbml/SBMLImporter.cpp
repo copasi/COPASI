@@ -5561,19 +5561,19 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
                                   if (multiplicityMap.find(pMetab) != multiplicityMap.end())
                                     {
-                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->getValue();
+                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + *pChildNode->getValuePointer();
                                     }
                                   else
                                     {
-                                      multiplicityMap[pMetab] = pChildNode->getValue();
+                                      multiplicityMap[pMetab] = *pChildNode->getValuePointer();
                                     }
                                 }
                               else if (type == CEvaluationNode::T_FUNCTION &&
                                        pChildNode->subType() == CEvaluationNode::S_MINUS &&
-                                       ((CEvaluationNode*)pChildNode->getChild())->mainType() == CEvaluationNode::T_NUMBER)
+                                       static_cast< const CEvaluationNode * >(pChildNode->getChild())->mainType() == CEvaluationNode::T_NUMBER)
                                 {
                                   const CMetab* pMetab = static_cast<const CMetab*>(pObject);
-                                  multiplicityMap[pMetab] = -1 * ((CEvaluationNodeNumber*)(pChildNode->getChild()))->getValue();
+                                  multiplicityMap[pMetab] = -1 * *static_cast< const CEvaluationNodeNumber * >(pChildNode->getChild())->getValuePointer();
                                 }
                               else
                                 {

@@ -26,44 +26,57 @@
 
 CEvaluationNodeOperator::CEvaluationNodeOperator():
   CEvaluationNode(T_OPERATOR, S_INVALID, ""),
-  mpLeft(NULL),
-  mpRight(NULL)
+  mpLeftNode(NULL),
+  mpRightNode(NULL),
+  mpLeftValue(NULL),
+  mpRightValue(NULL),
+  mpOperator(&CEvaluationNodeOperator::s_invalid)
 {}
 
 CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
     const Data & data):
   CEvaluationNode(T_OPERATOR, subType, data),
-  mpLeft(NULL),
-  mpRight(NULL)
+  mpLeftNode(NULL),
+  mpRightNode(NULL),
+  mpLeftValue(NULL),
+  mpRightValue(NULL),
+  mpOperator(&CEvaluationNodeOperator::s_invalid)
 {
   switch (mSubType)
     {
       case S_POWER:
         mPrecedence = PRECEDENCE_OPERATOR_POWER;
+        mpOperator = &CEvaluationNodeOperator::s_power;
         break;
 
       case S_MULTIPLY:
         mPrecedence = PRECEDENCE_OPERATOR_MULTIPLY;
+        mpOperator = &CEvaluationNodeOperator::s_multiply;
         break;
 
       case S_DIVIDE:
         mPrecedence = PRECEDENCE_OPERATOR_DIVIDE;
+        mpOperator = &CEvaluationNodeOperator::s_divide;
         break;
 
       case S_MODULUS:
         mPrecedence = PRECEDENCE_OPERATOR_MODULUS;
+        mpOperator = &CEvaluationNodeOperator::s_modulus;
         break;
 
       case S_PLUS:
         mPrecedence = PRECEDENCE_OPERATOR_PLUS;
+        mpOperator = &CEvaluationNodeOperator::s_plus;
         break;
 
       case S_MINUS:
         mPrecedence = PRECEDENCE_OPERATOR_MINUS;
+        mpOperator = &CEvaluationNodeOperator::s_minus;
         break;
 
       case S_REMAINDER:
         mPrecedence = PRECEDENCE_OPERATOR_REMAINDER;
+        mpOperator = &CEvaluationNodeOperator::s_remainder;
         break;
 
       default:
@@ -73,23 +86,79 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
 
 CEvaluationNodeOperator::CEvaluationNodeOperator(const CEvaluationNodeOperator & src):
   CEvaluationNode(src),
-  mpLeft(NULL),
-  mpRight(NULL)
+  mpLeftNode(src.mpLeftNode),
+  mpRightNode(src.mpRightNode),
+  mpLeftValue(src.mpLeftValue),
+  mpRightValue(src.mpRightValue),
+  mpOperator(src.mpOperator)
 {}
 
 CEvaluationNodeOperator::~CEvaluationNodeOperator() {}
 
 bool CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
 {
-  mpLeft = static_cast<CEvaluationNode *>(getChild());
+  mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpLeft == NULL) return false;
+  if (mpLeftNode == NULL) return false;
 
-  mpRight = static_cast<CEvaluationNode *>(mpLeft->getSibling());
+  mpLeftValue = mpLeftNode->getValuePointer();
 
-  if (mpRight == NULL) return false;
+  mpRightNode = static_cast<CEvaluationNode *>(mpLeftNode->getSibling());
 
-  return (mpRight->getSibling() == NULL); // We must have only two children
+  if (mpRightNode == NULL) return false;
+
+  mpRightValue = mpRightNode->getValuePointer();
+
+  return (mpRightNode->getSibling() == NULL); // We must have only two children
+}
+
+// virtual
+void CEvaluationNodeOperator::calculate()
+{
+  (this->*mpOperator)();
+}
+
+void CEvaluationNodeOperator::s_power()
+{
+  mValue = pow(*mpLeftValue, *mpRightValue);
+}
+
+void CEvaluationNodeOperator::s_multiply()
+{
+  mValue = *mpLeftValue **mpRightValue;
+}
+
+void CEvaluationNodeOperator::s_divide()
+{
+  mValue = *mpLeftValue / *mpRightValue;
+}
+
+void CEvaluationNodeOperator::s_modulus()
+{
+  if ((C_INT32) *mpRightValue == 0)
+    mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  else
+    mValue = (C_FLOAT64)(((C_INT32) * mpLeftValue) % ((C_INT32) * mpRightValue));
+}
+
+void CEvaluationNodeOperator::s_plus()
+{
+  mValue = *mpLeftValue + *mpRightValue;
+}
+
+void CEvaluationNodeOperator::s_minus()
+{
+  mValue = *mpLeftValue - *mpRightValue;
+}
+
+void CEvaluationNodeOperator::s_remainder()
+{
+  mValue = fmod(*mpLeftValue, *mpRightValue);
+}
+
+void CEvaluationNodeOperator::s_invalid()
+{
+  mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
 // virtual
@@ -99,7 +168,7 @@ std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > &
     {
       Data Infix;
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         Infix = "(" + children[0] + ")";
       else
         Infix = children[0];
@@ -116,7 +185,7 @@ std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > &
           Infix += " ";
         }
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         Infix += "(" + children[1] + ")";
       else
         Infix += children[1];
@@ -134,7 +203,7 @@ std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::st
     {
       Data DisplayString;
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0];
@@ -151,7 +220,7 @@ std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::st
           DisplayString += " ";
         }
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += children[1];
@@ -179,7 +248,7 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       if (subType == S_MODULUS)
         DisplayString = "(int)";
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
       else
         DisplayString += children[0];
@@ -200,7 +269,7 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
             break;
         }
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += children[1];
@@ -229,14 +298,14 @@ std::string CEvaluationNodeOperator::getBerkeleyMadonnaString(const std::vector<
 
       Data DisplayString;
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0];
 
       DisplayString += mdata;
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += children[1];
@@ -259,7 +328,7 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
           subType == S_REMAINDER)
         DisplayString = "mod(";
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
       else
         DisplayString += children[0];
@@ -276,7 +345,7 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
             break;
         }
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += children[1];
@@ -520,21 +589,21 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << pow(child1->getValue(), child2->getValue());
+                tmp << pow(*child1->getValuePointer(), *child2->getValuePointer());
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
                 delete child2;
                 return newnode;
               }
 
-            if (fabs(child2->getValue() - 1.0) < 1.0E-100)
+            if (fabs(*child2->getValuePointer() - 1.0) < 1.0E-100)
               {
                 // a^1 -> a
                 delete child2;
                 return child1;
               }
 
-            if (fabs(child2->getValue()) < 1.0E-100)
+            if (fabs(*child2->getValuePointer()) < 1.0E-100)
               {
                 // a^0 -> 1
                 CEvaluationNode* newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, "1.0");
@@ -543,7 +612,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 return newnode;
               }
 
-            if (child2->getValue() < 0.0)
+            if (*child2->getValuePointer() < 0.0)
               {
                 //negative float exponent ->write as fraction
                 CEvaluationNode* newnode = CEvaluationNode::create(T_OPERATOR, S_DIVIDE, "/");
@@ -552,7 +621,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 CEvaluationNode* grandchild1 = child1;
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << fabs(child2->getValue());
+                tmp << fabs(*child2->getValuePointer());
                 CEvaluationNode* grandchild2 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 newnode->addChild(newchild1, NULL);
                 newnode->addChild(newchild2, newchild1);
@@ -563,17 +632,17 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               }
 
             if (((child1->mainType() | child1->subType()) == (T_FUNCTION | S_MINUS))
-                && ((fabs(child2->getValue() - floor(child2->getValue())) < 1.0E-100) || (fabs(child2->getValue() - floor(child2->getValue()) - 1.0) < 1.0E-100)))
+                && ((fabs(*child2->getValuePointer() - floor(*child2->getValuePointer())) < 1.0E-100) || (fabs(*child2->getValuePointer() - floor(*child2->getValuePointer()) - 1.0) < 1.0E-100)))
               {
                 // (-a)^n -> (-1)^n * a^n  for n int
                 // make negativity a property of product,
                 // easier to recognize a negative exponent.
                 int exp;
 
-                if (fabs(child2->getValue() - floor(child2->getValue())) < 1.0E-100)
-                  exp = (int) floor(child2->getValue());
+                if (fabs(*child2->getValuePointer() - floor(*child2->getValuePointer())) < 1.0E-100)
+                  exp = (int) floor(*child2->getValuePointer());
                 else
-                  exp = (int) floor(child2->getValue()) + 1;
+                  exp = (int) floor(*child2->getValuePointer()) + 1;
 
                 CEvaluationNode* newpower = CEvaluationNode::create(T_OPERATOR, S_POWER, "^");
                 CEvaluationNode* newchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
@@ -666,7 +735,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
           }
 
         /*
-        if ((child1->getData() == "+") && (child2->mainType() == T_NUMBER) && (child2->getValue() >= 1.0 + 1.0E-100))
+        if ((child1->getData() == "+") && (child2->mainType() == T_NUMBER) && (*child2->getValuePointer() >= 1.0 + 1.0E-100))
           {// (a+b)^x -> (a+b) * (a+b)^(x-1)  for real x > 1
             // this is expanded step by step
             CEvaluationNode* newnode = CEvaluationNode::create((Type)(T_OPERATOR | S_MULTIPLY), "*");
@@ -675,7 +744,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
             CEvaluationNode * grandchild1 = child1;
             std::stringstream tmp;
             tmp.precision(18);
-            tmp << child2->getValue() - 1.0;
+            tmp << *child2->getValuePointer() - 1.0;
             CEvaluationNode * grandchild2 = CEvaluationNode::create((Type)(T_NUMBER | S_DOUBLE), tmp.str());
             newnode->addChild(newchild1, NULL);
             newnode->addChild(newchild2, newchild1);
@@ -718,14 +787,14 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << child1->getValue() * child2->getValue();
+                tmp << *child1->getValuePointer() **child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
                 delete child2;
                 return newnode;
               }
 
-            if (fabs(child1->getValue()) < 1.0E-100)
+            if (fabs(*child1->getValuePointer()) < 1.0E-100)
               {
                 // 0*a -> 0
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, "0.0");
@@ -734,14 +803,14 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 return newnode;
               }
 
-            if (fabs(child1->getValue() - 1.0) < 1.0E-100)
+            if (fabs(*child1->getValuePointer() - 1.0) < 1.0E-100)
               {
                 // 1*a -> a
                 delete child1;
                 return child2;
               }
 
-            if (child1->getValue() < 0.0)
+            if (*child1->getValuePointer() < 0.0)
               {
                 // x*a -> -(|x|*a)  x < 0
                 //  make negativity a property of product,
@@ -750,7 +819,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 CEvaluationNode *newchild1 = CEvaluationNode::create(T_OPERATOR, S_MULTIPLY, "*");
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << fabs(child1->getValue());
+                tmp << fabs(*child1->getValuePointer());
                 CEvaluationNode *grandchild1 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 CEvaluationNode *grandchild2 = child2;
                 newnode->addChild(newchild1, NULL);
@@ -764,7 +833,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
         if (child2->mainType() == T_NUMBER)
           {
             // because of commutativity the same as before for child1.
-            if (fabs(child2->getValue()) < 1.0E-100)
+            if (fabs(*child2->getValuePointer()) < 1.0E-100)
               {
                 // a*0 -> 0
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, "0.0");
@@ -773,21 +842,21 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 return newnode;
               }
 
-            if (fabs(child2->getValue() - 1.0) < 1.0E-100)
+            if (fabs(*child2->getValuePointer() - 1.0) < 1.0E-100)
               {
                 // a*1 -> a
                 delete child2;
                 return child1;
               }
 
-            if (child2->getValue() < 0.0)
+            if (*child2->getValuePointer() < 0.0)
               {
                 // a*x -> -(a*|x|)  for x < 0
                 CEvaluationNode *newnode = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
                 CEvaluationNode *newchild1 = CEvaluationNode::create(T_OPERATOR, S_MULTIPLY, "*");
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << fabs(child2->getValue());
+                tmp << fabs(*child2->getValuePointer());
                 CEvaluationNode *grandchild1 = child1;
                 CEvaluationNode *grandchild2 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 newnode->addChild(newchild1, NULL);
@@ -1034,14 +1103,14 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << child1->getValue() / child2->getValue();
+                tmp << *child1->getValuePointer() / *child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
                 delete child2;
                 return newnode;
               }
 
-            if (fabs(child1->getValue()) < 1.0E-100)
+            if (fabs(*child1->getValuePointer()) < 1.0E-100)
               {
                 // 0/a -> a
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, "0.0");
@@ -1057,7 +1126,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
             // instead of numerical constants
 
             // a/0 -> false
-            if (fabs(child2->getValue()) < 1.0E-100)
+            if (fabs(*child2->getValuePointer()) < 1.0E-100)
               {
                 // TODO This should probably return (a pointer to) an infinity newnode
                 fatalError();
@@ -1065,7 +1134,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               }
 
             // a/1 -> a
-            if (fabs(child2->getValue() - 1.0) < 1.0E-100)
+            if (fabs(*child2->getValuePointer() - 1.0) < 1.0E-100)
               {
                 delete child2;
                 return child1;
@@ -1246,14 +1315,14 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << child1->getValue() + child2->getValue();
+                tmp << *child1->getValuePointer() + *child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
                 delete child2;
                 return newnode;
               }
 
-            if (fabs(child1->getValue()) < 1.0E-100)
+            if (fabs(*child1->getValuePointer()) < 1.0E-100)
               {
                 // 0 + a -> a
                 delete child1;
@@ -1261,7 +1330,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               }
           }
 
-        if ((child2->mainType() == T_NUMBER) && (fabs(child2->getValue()) < 1.0E-100))
+        if ((child2->mainType() == T_NUMBER) && (fabs(*child2->getValuePointer()) < 1.0E-100))
           {
             // a + 0 -> a
             delete child2;
@@ -1295,14 +1364,14 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
                 tmp.precision(18);
-                tmp << child1->getValue() - child2->getValue();
+                tmp << *child1->getValuePointer() - *child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
                 delete child2;
                 return newnode;
               }
 
-            if (fabs(child1->getValue()) < 1.0E-100)
+            if (fabs(*child1->getValuePointer()) < 1.0E-100)
               {
                 // 0-a -> -(a)
                 CEvaluationNode *newnode = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
@@ -1312,7 +1381,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               }
           }
 
-        if ((child2->mainType() == T_NUMBER) && (fabs(child2->getValue()) < 1.0E-100))
+        if ((child2->mainType() == T_NUMBER) && (fabs(*child2->getValuePointer()) < 1.0E-100))
           {
             // a-0 -> a
             delete child2;
@@ -1431,13 +1500,13 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
 }
 
 CEvaluationNode * CEvaluationNodeOperator::getLeft()
-{return mpLeft;}
+{return mpLeftNode;}
 const CEvaluationNode * CEvaluationNodeOperator::getLeft() const
-{return mpLeft;}
+{return mpLeftNode;}
 CEvaluationNode * CEvaluationNodeOperator::getRight()
-{return mpRight;}
+{return mpRightNode;}
 const CEvaluationNode * CEvaluationNodeOperator::getRight() const
-{return mpRight;}
+{return mpRightNode;}
 
 #include "utilities/copasimathml.h"
 
@@ -1467,11 +1536,11 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
         out << children[0];
         out << "<mo>" << "-" << "</mo>" << std::endl;
 
-        type = (mpRight->mainType() | mpRight->subType());
+        type = (mpRightNode->mainType() | mpRightNode->subType());
 
         flag = ((type == (CEvaluationNode::T_OPERATOR | S_PLUS))
                 || (type == (CEvaluationNode::T_OPERATOR | S_MINUS))
-                || ((mpRight->mainType() == CEvaluationNode::T_CALL) && expand)
+                || ((mpRightNode->mainType() == CEvaluationNode::T_CALL) && expand)
                );
 
         if (flag) out << "<mfenced>" << std::endl;
@@ -1487,11 +1556,11 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
         out << "<mrow>" << std::endl;
 
         //do we need "()" ?
-        type = (mpLeft->mainType() | mpLeft->subType());
+        type = (mpLeftNode->mainType() | mpLeftNode->subType());
 
         flag = ((type == (T_OPERATOR | S_PLUS))
                 || (type == (T_OPERATOR | S_MINUS))
-                || ((mpLeft->mainType() == T_CALL) && expand)
+                || ((mpLeftNode->mainType() == T_CALL) && expand)
                );
 
         if (flag) out << "<mfenced>" << std::endl;
@@ -1502,11 +1571,11 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 
         out << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
 
-        type = (mpRight->mainType() | mpRight->subType());
+        type = (mpRightNode->mainType() | mpRightNode->subType());
 
         flag = ((type == (CEvaluationNode::T_OPERATOR | S_PLUS))
                 || (type == (CEvaluationNode::T_OPERATOR | S_MINUS))
-                || ((mpRight->mainType() == CEvaluationNode::T_CALL) && expand)
+                || ((mpRightNode->mainType() == CEvaluationNode::T_CALL) && expand)
                );
 
         if (flag) out << "<mfenced>" << std::endl;
@@ -1536,7 +1605,7 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
       case S_POWER:
         out << "<msup>" << std::endl;
 
-        type = (mpLeft->mainType() | mpLeft->subType());
+        type = (mpLeftNode->mainType() | mpLeftNode->subType());
 
         //do we need "()" ?
         flag = ((type == (CEvaluationNode::T_OPERATOR | S_PLUS))
@@ -1544,7 +1613,7 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || (type == (CEvaluationNode::T_OPERATOR | S_MULTIPLY))
                 || (type == (CEvaluationNode::T_OPERATOR | S_DIVIDE))
                 || (type == (CEvaluationNode::T_OPERATOR | S_POWER))
-                || ((mpLeft->mainType() == CEvaluationNode::T_CALL) && expand)
+                || ((mpLeftNode->mainType() == CEvaluationNode::T_CALL) && expand)
                );
 
         if (flag) out << "<mfenced>" << std::endl;
@@ -1589,7 +1658,7 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
         out << "<mrow>" << std::endl;
 
         //do we need "()" ?
-        flag = (*mpLeft < * (CEvaluationNode *)this);
+        flag = (*mpLeftNode < * (CEvaluationNode *)this);
 
         if (flag) out << "<mfenced>" << std::endl;
 
@@ -1599,7 +1668,7 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 
         out << "<mo>" << "mod" << "</mo>" << std::endl;
 
-        flag = !(*(CEvaluationNode *)this < *mpRight);
+        flag = !(*(CEvaluationNode *)this < *mpRightNode);
 
         if (flag) out << "<mfenced>" << std::endl;
 
@@ -1622,7 +1691,7 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
     {
       case S_POWER:
       {
-        C_FLOAT64 Exponent = mpRight->getValue();
+        C_FLOAT64 Exponent = *mpRightNode->getValuePointer();
 
         if (isnan(Exponent))
           {
@@ -1633,7 +1702,7 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
 
         // We need to make sure that the value is fixed
         CObjectInterface::ObjectSet Objects;
-        CNodeIterator< CEvaluationNode > itNode(mpRight);
+        CNodeIterator< CEvaluationNode > itNode(mpRightNode);
 
         while (itNode.next() != itNode.end())
           {
@@ -1711,7 +1780,7 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
     {
       case S_POWER:
       {
-        C_FLOAT64 Exponent = mpRight->getValue();
+        C_FLOAT64 Exponent = *mpRightNode->getValuePointer();
 
         if (isnan(Exponent))
           {
@@ -1735,27 +1804,27 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
               }
           }
 
-        targetUnits[mpLeft] = Unit;
-        targetUnits[mpRight] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        targetUnits[mpLeftNode] = Unit;
+        targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
       }
 
       break;
 
       case S_MULTIPLY:
-        targetUnits[mpLeft] = Result * currentUnits.find(mpRight)->second.exponentiate(-1.0);
-        targetUnits[mpRight] = Result * currentUnits.find(mpLeft)->second.exponentiate(-1.0);
+        targetUnits[mpLeftNode] = Result * currentUnits.find(mpRightNode)->second.exponentiate(-1.0);
+        targetUnits[mpRightNode] = Result * currentUnits.find(mpLeftNode)->second.exponentiate(-1.0);
         break;
 
       case S_DIVIDE:
       case S_MODULUS:
-        targetUnits[mpLeft] = Result * currentUnits.find(mpRight)->second;
-        targetUnits[mpRight] = Result.exponentiate(-1.0) * currentUnits.find(mpLeft)->second;
+        targetUnits[mpLeftNode] = Result * currentUnits.find(mpRightNode)->second;
+        targetUnits[mpRightNode] = Result.exponentiate(-1.0) * currentUnits.find(mpLeftNode)->second;
         break;
 
       case S_PLUS:
       case S_MINUS:
-        targetUnits[mpLeft] = Result;
-        targetUnits[mpRight] = Result;
+        targetUnits[mpLeftNode] = Result;
+        targetUnits[mpRightNode] = Result;
         break;
 
       default:

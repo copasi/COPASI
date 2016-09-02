@@ -330,7 +330,8 @@ protected:
   /**
    * The root node of the tree.
    */
-  CEvaluationNode * mpRoot;
+  CEvaluationNode * mpRootNode;
+  const C_FLOAT64 * mpRootValue;
 
   /**
    * The last computed value of the tree;
@@ -341,6 +342,8 @@ protected:
    * A vector of nodes which need to be calculated in sequence
    */
   CVector< CEvaluationNode * > mCalculationSequence;
+
+  CEvaluationNode ** mppEnd;
 };
 
 #endif // COPASI_CEvaluationTree

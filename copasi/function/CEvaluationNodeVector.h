@@ -20,7 +20,7 @@
 class CCopasiDataModel;
 
 /**
- * This is the class for nodes presenting opertors used in an evaluation trees.
+ * This is the class for nodes presenting operators used in an evaluation trees.
  */
 class CEvaluationNodeVector : public CEvaluationNode
 {
@@ -134,13 +134,14 @@ public:
    * Retrieve the vector of evaluation nodes
    * @return const std::vector< CEvaluationNode * > & vector
    */
-  const std::vector< CEvaluationNode * > & getVector() const;
+  const std::vector< CEvaluationNode * > & getNodes() const;
 
 private:
 
   // Attributes
 private:
-  std::vector< CEvaluationNode * > mVector;
+  std::vector< CEvaluationNode * > mNodes;
+  std::vector< const C_FLOAT64 * > mValues;
 };
 
 #endif // COPASI_CEvaluationNodeVector

@@ -224,18 +224,18 @@ ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) 
     {
       case S_DOUBLE:
         node->setType(AST_REAL);
-        node->setValue(this->getValue());
+        node->setValue(*mpValue);
         break;
 
       case S_INTEGER:
         node->setType(AST_INTEGER);
-        node->setValue((long)this->getValue());
+        node->setValue((long)*mpValue);
         break;
 
       case S_ENOTATION:
         node->setType(AST_REAL_E);
-        num2 = floor(log10(this->getValue()));
-        num1 = pow(10.0, log10(this->getValue()) - num2);
+        num2 = floor(log10(*mpValue));
+        num1 = pow(10.0, log10(*mpValue) - num2);
         node->setValue(num1, (long)num2);
         break;
 
@@ -273,6 +273,6 @@ std::string CEvaluationNodeNumber::getMMLString(const std::vector< std::string >
 std::string CEvaluationNodeNumber::getCCodeString(const std::vector< std::string > & /*children*/) const
 {
   std::ostringstream out;
-  out <<  std::setprecision(std::numeric_limits<double>::digits10 + 2) <<  std::fixed  << getValue();
+  out <<  std::setprecision(std::numeric_limits<double>::digits10 + 2) <<  std::fixed  << *mpValue;
   return out.str();
 }

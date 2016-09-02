@@ -1742,7 +1742,7 @@ void CODEExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvalu
   if (0) // *************** TODO: the current Copasi version does not support the case bellow, the following part is not tested
     if (child2->mainType() == CEvaluationNode::T_VECTOR)
       {
-        const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *>(child2) ->getVector();
+        const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *>(child2) ->getNodes();
         std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
         std::vector<CEvaluationNode *>::const_iterator end = vector.end();
 

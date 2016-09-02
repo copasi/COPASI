@@ -237,7 +237,7 @@ public:
    * Retrieve the value of the node
    * @return const C_FLOAT64 & value
    */
-  inline const C_FLOAT64 & getValue() const {return *mpValue;}
+  // inline const C_FLOAT64 & getValue() const {return *mpValue;}
 
   /**
    * Calculate the numerical result of the node. It is assumed that
