@@ -57,47 +57,7 @@ public:
    * Calculate the numerical result of the node. It is assumed that
    * all child nodes are up to date.
    */
-  virtual inline void calculate()
-  {
-    switch (mSubType)
-      {
-        case S_POWER:
-          mValue = pow(mpLeft->getValue(), mpRight->getValue());
-          break;
-
-        case S_MULTIPLY:
-          mValue = mpLeft->getValue() * mpRight->getValue();
-          break;
-
-        case S_DIVIDE:
-          mValue = mpLeft->getValue() / mpRight->getValue();
-          break;
-
-        case S_MODULUS:
-
-          if ((C_INT32) mpRight->getValue() == 0)
-            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-          else
-            mValue = (C_FLOAT64)(((C_INT32) mpLeft->getValue()) % ((C_INT32) mpRight->getValue()));
-
-          break;
-
-        case S_PLUS:
-          mValue = mpLeft->getValue() + mpRight->getValue();
-          break;
-
-        case S_MINUS:
-          mValue = mpLeft->getValue() - mpRight->getValue();
-          break;
-
-        case S_REMAINDER:
-          mValue = fmod(mpLeft->getValue(), mpRight->getValue());
-          break;
-
-        default:
-          break;
-      }
-  }
+  virtual void calculate();
 
   /**
    * Compile a node;
@@ -184,11 +144,25 @@ public:
   CEvaluationNode * getRight();
   const CEvaluationNode * getRight() const;
 
-  // Attributes
 private:
-  CEvaluationNode * mpLeft;
+  void s_power();
+  void s_multiply();
+  void s_divide();
+  void s_modulus();
+  void s_plus();
+  void s_minus();
+  void s_remainder();
+  void s_invalid();
 
-  CEvaluationNode * mpRight;
+// Attributes
+  CEvaluationNode * mpLeftNode;
+  CEvaluationNode * mpRightNode;
+
+  const C_FLOAT64 * mpLeftValue;
+  const C_FLOAT64 * mpRightValue;
+
+  typedef void (CEvaluationNodeOperator::*OPERATOR)();
+  OPERATOR mpOperator;
 };
 
 #endif // COPASI_CEvaluationNodeOperator

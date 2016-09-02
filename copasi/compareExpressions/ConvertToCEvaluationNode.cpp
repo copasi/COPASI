@@ -472,7 +472,7 @@ CNormalItemPower * createItemPower(const CEvaluationNode* node)
       if (dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling())->mainType() == CEvaluationNode::T_NUMBER)
         {
           // we set the exponent to that number
-          pItemPower->setExp((C_FLOAT64)dynamic_cast<const CEvaluationNodeNumber*>(node->getChild()->getSibling())->getValue());
+          pItemPower->setExp((C_FLOAT64)*dynamic_cast<const CEvaluationNodeNumber *>(node->getChild()->getSibling())->getValuePointer());
           // check if we can create a CNormalItem object for the fist child, else we
           // create a general power with exponent 1
           CEvaluationNode::MainType type = dynamic_cast<const CEvaluationNode*>(node->getChild())->mainType();
@@ -604,7 +604,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // instead of creating an item for it
               if ((*it)->mainType() == CEvaluationNode::T_NUMBER)
                 {
-                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
+                  factor *= *dynamic_cast<const CEvaluationNodeNumber *>(*it)->getValuePointer();
                 }
               else
                 {
@@ -633,7 +633,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // instead of adding it to the factor
               if ((*it)->mainType() == CEvaluationNode::T_NUMBER)
                 {
-                  factor *= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
+                  factor *= *dynamic_cast<const CEvaluationNodeNumber *>(*it)->getValuePointer();
                 }
               else
                 {
@@ -670,7 +670,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
               // instead of adding it to the vector
               if ((*it)->mainType() == CEvaluationNode::T_NUMBER)
                 {
-                  factor /= dynamic_cast<const CEvaluationNodeNumber*>(*it)->getValue();
+                  factor /= *dynamic_cast<const CEvaluationNodeNumber *>(*it)->getValuePointer();
                 }
               else
                 {
@@ -710,7 +710,7 @@ CNormalProduct * createProduct(const CEvaluationNode* node)
     }
   else if (node->mainType() == CEvaluationNode::T_NUMBER)
     {
-      double factor = dynamic_cast<const CEvaluationNodeNumber*>(node)->getValue();
+      double factor = *dynamic_cast<const CEvaluationNodeNumber *>(node)->getValuePointer();
       // set the factor
       pProduct->setFactor(factor);
     }

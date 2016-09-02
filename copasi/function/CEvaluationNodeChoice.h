@@ -124,9 +124,13 @@ private:
 
   // Attributes
 private:
-  CEvaluationNode * mpIf;
-  CEvaluationNode * mpTrue;
-  CEvaluationNode * mpFalse;
+  CEvaluationNode * mpIfNode;
+  CEvaluationNode * mpTrueNode;
+  CEvaluationNode * mpFalseNode;
+
+  const C_FLOAT64 * mpIfValue;
+  const C_FLOAT64 * mpTrueValue;
+  const C_FLOAT64 * mpFalseValue;
 };
 
 #endif // COPASI_CEvaluationNodeChoice

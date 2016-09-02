@@ -77,16 +77,15 @@ public:
   {
     if (mpFunction)
       {
-        mValue = (*mpFunction)(mpArg1->getValue());
+        mValue = (*mpFunction)(*mpArgValue1);
       }
     else if (mpFunction2)
       {
-        mValue = (*mpFunction2)(mpArg1->getValue(), mpArg2->getValue());
+        mValue = (*mpFunction2)(*mpArgValue1, *mpArgValue2);
       }
     else if (mpFunction4)
       {
-        mValue = (*mpFunction4)(mpArg1->getValue(), mpArg2->getValue(),
-                                mpArg3->getValue(), mpArg4->getValue());
+        mValue = (*mpFunction4)(*mpArgValue1, *mpArgValue2, *mpArgValue3, *mpArgValue4);
       }
   }
 
@@ -269,10 +268,15 @@ private:
                           const C_FLOAT64 & arg3,
                           const C_FLOAT64 & arg4);
 
-  CEvaluationNode * mpArg1;
-  CEvaluationNode * mpArg2;
-  CEvaluationNode * mpArg3;
-  CEvaluationNode * mpArg4;
+  CEvaluationNode * mpArgNode1;
+  CEvaluationNode * mpArgNode2;
+  CEvaluationNode * mpArgNode3;
+  CEvaluationNode * mpArgNode4;
+
+  const C_FLOAT64 * mpArgValue1;
+  const C_FLOAT64 * mpArgValue2;
+  const C_FLOAT64 * mpArgValue3;
+  const C_FLOAT64 * mpArgValue4;
 
   static CRandom * mpRandom;
 };

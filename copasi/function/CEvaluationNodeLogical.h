@@ -63,42 +63,42 @@ public:
     switch (mSubType)
       {
         case S_OR:
-          mValue = (mpLeft->getValue() > 0.5 ||
-                    mpRight->getValue() > 0.5) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue > 0.5 ||
+                    *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
         case S_XOR:
-          mValue = ((mpLeft->getValue() > 0.5 && mpRight->getValue() < 0.5) ||
-                    (mpLeft->getValue() < 0.5 && mpRight->getValue() > 0.5)) ? 1.0 : 0.0;
+          mValue = ((*mpLeftValue > 0.5 && *mpRightValue < 0.5) ||
+                    (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
           break;
 
         case S_AND:
-          mValue = (mpLeft->getValue() > 0.5 &&
-                    mpRight->getValue() > 0.5) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue > 0.5 &&
+                    *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
         case S_EQ:
-          mValue = (mpLeft->getValue() == mpRight->getValue()) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue == *mpRightValue) ? 1.0 : 0.0;
           break;
 
         case S_NE:
-          mValue = (mpLeft->getValue() != mpRight->getValue()) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue != *mpRightValue) ? 1.0 : 0.0;
           break;
 
         case S_GT:
-          mValue = (mpLeft->getValue() > mpRight->getValue()) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue > *mpRightValue) ? 1.0 : 0.0;
           break;
 
         case S_GE:
-          mValue = (mpLeft->getValue() >= mpRight->getValue()) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue >= *mpRightValue) ? 1.0 : 0.0;
           break;
 
         case S_LT:
-          mValue = (mpLeft->getValue() < mpRight->getValue()) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue < *mpRightValue) ? 1.0 : 0.0;
           break;
 
         case S_LE:
-          mValue = (mpLeft->getValue() <= mpRight->getValue()) ? 1.0 : 0.0;
+          mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
           break;
       }
   }
@@ -175,9 +175,13 @@ public:
 
   // Attributes
 private:
-  CEvaluationNode * mpLeft;
+  // Attributes
+private:
+  CEvaluationNode * mpLeftNode;
+  CEvaluationNode * mpRightNode;
 
-  CEvaluationNode * mpRight;
+  const C_FLOAT64 * mpLeftValue;
+  const C_FLOAT64 * mpRightValue;
 };
 
 #endif // COPASI_CEvaluationNodeLogical

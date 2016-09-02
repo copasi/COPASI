@@ -24,7 +24,7 @@ bool CDerive::isOne(const CEvaluationNode* node)
 {
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
 
-  if (pENN && pENN->getValue() == 1)
+  if (pENN && *pENN->getValuePointer() == 1)
     return true;
 
   return false;
@@ -34,7 +34,7 @@ bool CDerive::isZero(const CEvaluationNode* node)
 {
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
 
-  if (pENN && pENN->getValue() == 0)
+  if (pENN && *pENN->getValuePointer() == 0)
     return true;
 
   return false;
@@ -165,7 +165,7 @@ CEvaluationNode* CDerive::add(CEvaluationNode* n1, CEvaluationNode* n2, bool sim
 
       if (tmp1 && tmp2)
         {
-          return new CEvaluationNodeNumber(tmp1->getValue() + tmp2->getValue());
+          return new CEvaluationNodeNumber(*tmp1->getValuePointer() + *tmp2->getValuePointer());
         }
     }
 
@@ -208,7 +208,7 @@ CEvaluationNode* CDerive::subtract(CEvaluationNode *n1, CEvaluationNode *n2, boo
 
       if (tmp1 && tmp2)
         {
-          CEvaluationNode* tmpNN = new CEvaluationNodeNumber(tmp1->getValue() - tmp2->getValue());
+          CEvaluationNode* tmpNN = new CEvaluationNodeNumber(*tmp1->getValuePointer() - *tmp2->getValuePointer());
           return tmpNN;
         }
     }

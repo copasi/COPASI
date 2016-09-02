@@ -21,17 +21,23 @@
 
 CEvaluationNodeChoice::CEvaluationNodeChoice():
   CEvaluationNode(T_CHOICE, S_INVALID, ""),
-  mpIf(NULL),
-  mpTrue(NULL),
-  mpFalse(NULL)
+  mpIfNode(NULL),
+  mpTrueNode(NULL),
+  mpFalseNode(NULL),
+  mpIfValue(NULL),
+  mpTrueValue(NULL),
+  mpFalseValue(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
     const Data & data):
   CEvaluationNode(T_CHOICE, subType, data),
-  mpIf(NULL),
-  mpTrue(NULL),
-  mpFalse(NULL)
+  mpIfNode(NULL),
+  mpTrueNode(NULL),
+  mpFalseNode(NULL),
+  mpIfValue(NULL),
+  mpTrueValue(NULL),
+  mpFalseValue(NULL)
 {
   switch (subType)
     {
@@ -48,40 +54,42 @@ CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const CEvaluationNodeChoice & src):
   CEvaluationNode(src),
-  mpIf(src.mpIf),
-  mpTrue(src.mpTrue),
-  mpFalse(src.mpFalse)
+  mpIfNode(src.mpIfNode),
+  mpTrueNode(src.mpTrueNode),
+  mpFalseNode(src.mpFalseNode),
+  mpIfValue(src.mpIfValue),
+  mpTrueValue(src.mpTrueValue),
+  mpFalseValue(src.mpFalseValue)
 {}
 
 CEvaluationNodeChoice::~CEvaluationNodeChoice() {}
 
 void CEvaluationNodeChoice::calculate()
 {
-  if (mpIf->getValue() > 0.5)
-    {
-      mValue = mpTrue->getValue();
-    }
-  else
-    {
-      mValue = mpFalse->getValue();
-    }
+  mValue = (*mpIfValue > 0.5) ? *mpTrueValue : *mpFalseValue;
 }
 
 bool CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
 {
-  mpIf = static_cast<CEvaluationNode *>(getChild());
+  mpIfNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpIf == NULL) return false;
+  if (mpIfNode == NULL) return false;
 
-  mpTrue = static_cast<CEvaluationNode *>(mpIf->getSibling());
+  mpIfValue = mpIfNode->getValuePointer();
 
-  if (mpTrue == NULL) return false;
+  mpTrueNode = static_cast<CEvaluationNode *>(mpIfNode->getSibling());
 
-  mpFalse = static_cast<CEvaluationNode *>(mpTrue->getSibling());
+  if (mpTrueNode == NULL) return false;
 
-  if (mpFalse == NULL) return false;
+  mpTrueValue = mpTrueNode->getValuePointer();
 
-  return (mpFalse->getSibling() == NULL); // We must have exactly three children
+  mpFalseNode = static_cast<CEvaluationNode *>(mpTrueNode->getSibling());
+
+  if (mpFalseNode == NULL) return false;
+
+  mpFalseValue = mpFalseNode->getValuePointer();
+
+  return (mpFalseNode->getSibling() == NULL); // We must have exactly three children
 }
 
 // virtual

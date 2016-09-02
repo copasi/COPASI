@@ -20,15 +20,19 @@
 
 CEvaluationNodeLogical::CEvaluationNodeLogical():
   CEvaluationNode(T_LOGICAL, S_INVALID, ""),
-  mpLeft(NULL),
-  mpRight(NULL)
+  mpLeftNode(NULL),
+  mpRightNode(NULL),
+  mpLeftValue(NULL),
+  mpRightValue(NULL)
 {}
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
   CEvaluationNode(T_LOGICAL, subType, data),
-  mpLeft(NULL),
-  mpRight(NULL)
+  mpLeftNode(NULL),
+  mpRightNode(NULL),
+  mpLeftValue(NULL),
+  mpRightValue(NULL)
 {
   switch (mSubType)
     {
@@ -72,23 +76,29 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const CEvaluationNodeLogical & src):
   CEvaluationNode(src),
-  mpLeft(NULL),
-  mpRight(NULL)
+  mpLeftNode(src.mpLeftNode),
+  mpRightNode(src.mpRightNode),
+  mpLeftValue(src.mpLeftValue),
+  mpRightValue(src.mpRightValue)
 {}
 
 CEvaluationNodeLogical::~CEvaluationNodeLogical() {}
 
 bool CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 {
-  mpLeft = static_cast<CEvaluationNode *>(getChild());
+  mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpLeft == NULL) return false;
+  if (mpLeftNode == NULL) return false;
 
-  mpRight = static_cast<CEvaluationNode *>(mpLeft->getSibling());
+  mpLeftValue = mpLeftNode->getValuePointer();
 
-  if (mpRight == NULL) return false;
+  mpRightNode = static_cast<CEvaluationNode *>(mpLeftNode->getSibling());
 
-  return (mpRight->getSibling() == NULL); // We must have exactly two children
+  if (mpRightNode == NULL) return false;
+
+  mpRightValue = mpRightNode->getValuePointer();
+
+  return (mpRightNode->getSibling() == NULL); // We must have exactly two children
 }
 
 // virtual
@@ -98,14 +108,14 @@ std::string CEvaluationNodeLogical::getInfix(const std::vector< std::string > & 
     {
       Data Infix;
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         Infix = "(" + children[0] + ")";
       else
         Infix = children[0];
 
       Infix += " " + mData + " ";
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         Infix += "(" + children[1] + ")";
       else
         Infix += children[1];
@@ -123,14 +133,14 @@ std::string CEvaluationNodeLogical::getDisplayString(const std::vector< std::str
     {
       Data DisplayString;
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
 
       DisplayString += mData;
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += " " + children[1];
@@ -198,7 +208,7 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
       else
         DisplayString = "";
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
       else
         DisplayString += children[0] + " ";
@@ -208,7 +218,7 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
       if (isXor)
         DisplayString += " !";
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += " " + children[1];
@@ -268,14 +278,14 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
             break;
         }
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
 
       DisplayString += data;
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += " " + children[1];
@@ -335,14 +345,14 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
             break;
         }
 
-      if (*mpLeft < * (CEvaluationNode *)this)
+      if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString = "(" + children[0] + ")";
       else
         DisplayString = children[0] + " ";
 
       DisplayString += data;
 
-      if (!(*(CEvaluationNode *)this < *mpRight))
+      if (!(*(CEvaluationNode *)this < *mpRightNode))
         DisplayString += "(" + children[1] + ")";
       else
         DisplayString += " " + children[1];
@@ -625,7 +635,7 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
       out << "<mrow>" << std::endl;
 
-      flag = ((*mpLeft < * (CEvaluationNode *)this));
+      flag = ((*mpLeftNode < * (CEvaluationNode *)this));
 
       if (flag) out << "<mfenced>" << std::endl;
 
@@ -635,7 +645,7 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
       out << "<mo>" << data << "</mo>" << std::endl;
 
-      flag = ((*(CEvaluationNode *)this < *mpRight));
+      flag = ((*(CEvaluationNode *)this < *mpRightNode));
 
       if (!flag) out << "<mfenced>" << std::endl;
 

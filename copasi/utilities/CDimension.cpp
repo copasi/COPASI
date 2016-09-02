@@ -645,7 +645,7 @@ CDimension CFindDimensions::findDimension(const CEvaluationNode * node,
   if (numnode)
     {
       //heuristics!
-      if (mUseHeuristics && (numnode->getValue() == 1.0))
+      if (mUseHeuristics && (*numnode->getValuePointer() == 1.0))
         result.setDimension(0, 0, 0, 0, 0);
     }
 
