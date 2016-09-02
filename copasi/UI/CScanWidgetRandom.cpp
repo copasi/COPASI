@@ -128,8 +128,6 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
 
   *mpData = *pItem;
 
-  unsigned C_INT32 * tmp;
-
   if (mpData->getValue< unsigned C_INT32 >("Type") != CScanProblem::SCAN_RANDOM)
     return;
 

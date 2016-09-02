@@ -3444,7 +3444,7 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
       Unit* pUnit = pModel->createUnit();
 
       pUnit->setExponent(component.getExponent());
-      pUnit->setScale(component.getScale());
+      pUnit->setScale((int)component.getScale());
       pUnit->setMultiplier(component.getMultiplier());
 
       switch (component.getKind())

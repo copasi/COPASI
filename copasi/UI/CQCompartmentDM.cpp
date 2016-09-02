@@ -332,7 +332,7 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
     const QVariant &value,
     UndoCompartmentData* pUndoData)
 {
-  assert(index.row() < mpCompartments->size());
+  assert((size_t)index.row() < mpCompartments->size());
 
   CCompartment &Compartment = mpCompartments->operator [](index.row());
 
