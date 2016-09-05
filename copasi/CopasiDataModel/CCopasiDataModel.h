@@ -45,6 +45,10 @@ LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
 #endif
 
+#ifdef WITH_COMBINE_ARCHIVE
+class CombineArchive;
+#endif // WITH_COMBINE_ARCHIVE
+
 // :TODO: remove
 class CMetabOld;
 
@@ -231,6 +235,19 @@ public:
                             bool includeSEDML = false,
                             bool overwriteFile = false,
                             CProcessReport* pProgressReport = NULL);
+
+  /**
+   * adds the current COPASI model to the archive with the given
+   * target name
+   *
+   * @param archive the COMBINE archive
+   * @param targetName the name and path that the COPASI file should have in the archive
+   * @param pProgressReport optional pointer to the progress report
+   */
+  void addCopasiFileToArchive(CombineArchive *archive,
+                              const std::string& targetName = "./copasi/model.cps",
+                              CProcessReport * pProgressReport = NULL
+                             );
 
   bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
                           const bool & deleteOldData = true);

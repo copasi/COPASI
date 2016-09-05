@@ -1294,6 +1294,25 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
 #ifdef WITH_COMBINE_ARCHIVE
 
+
+void
+CCopasiDataModel::addCopasiFileToArchive(CombineArchive *archive,
+    const std::string& targetName /*= "./copasi/model.cps"*/,
+    CProcessReport * pProgressReport /*= NULL*/
+                                        )
+{
+  if (archive == NULL) return;
+
+  try
+    {
+      std::stringstream str; str << saveModelToString(pProgressReport);
+      archive->addFile(str, targetName, KnownFormats::lookupFormat("copasi"), true);
+    }
+  catch (...)
+    {
+    }
+}
+
 bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
 {
   CCopasiMessage::clearDeque();
@@ -1393,14 +1412,7 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
 
       if (includeCOPASI)
         {
-          try
-            {
-              std::stringstream str; str << saveModelToString(pProgressReport);
-              archive.addFile(str, "./copasi/model.cps", KnownFormats::lookupFormat("copasi"), true);
-            }
-          catch (...)
-            {
-            }
+          addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
         }
 
       // restore filenames
@@ -1440,15 +1452,7 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
 
   if (includeCOPASI && !includeData)
     {
-
-      try
-        {
-          std::stringstream str; str << saveModelToString(pProgressReport);
-          archive.addFile(str, "./copasi/model.cps", KnownFormats::lookupFormat("copasi"), true);
-        }
-      catch (...)
-        {
-        }
+      addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
     }
 
   if (includeSBML)
@@ -1553,6 +1557,43 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
             {
               // need to save the files when saving the model
               mNeedToSaveExperimentalData = true;
+            }
+
+
+          // update report destinations
+
+          std::string currentDir;
+          COptions::getValue("PWD", currentDir);
+
+
+          CCopasiVectorN< CCopasiTask >& tasks = *getTaskList();
+          CCopasiVectorN< CCopasiTask >::iterator taskIt = tasks.begin();
+
+          for (; taskIt != tasks.end(); ++taskIt)
+            {
+              std::string fileName = taskIt->getReport().getTarget();
+
+              if (fileName.empty())
+                continue;
+
+              // if we have a relative filename, or a fileName that
+              // points to a non-existing directory
+              if (CDirEntry::isRelativePath(fileName) ||
+                  !CDirEntry::exist(CDirEntry::dirName(fileName)))
+                {
+                  // we change the fileName to an absolute one
+                  // with the current PWD
+                  fileName = CDirEntry::fileName(fileName);
+
+                  if (CDirEntry::isWritable(currentDir))
+                    CDirEntry::makePathAbsolute(fileName, currentDir);
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING,
+                                                 "COMBINE archive import: The report target for the '%s' task has been changed to '%s'.",
+                                                 taskIt->getObjectName().c_str(), fileName.c_str());
+
+                  taskIt->getReport().setTarget(fileName);
+                }
             }
         }
     }
