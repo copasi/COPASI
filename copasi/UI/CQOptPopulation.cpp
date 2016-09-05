@@ -105,6 +105,7 @@ CQOptPopulation::CQOptPopulation(COutputHandler * pHandler, CopasiUI3Window * pM
 void CQOptPopulation::createMenus()
 {
   QMenu *fileMenu = menuBar()->addMenu("&File");
+  fileMenu->addAction(mpaCloseWindow);
 //  fileMenu->addAction(mpaSaveImage);
 
   QMenu *viewMenu = menuBar()->addMenu("&View");
@@ -160,10 +161,10 @@ void CQOptPopulation::setMethod(COptMethod* pMethod)
   mpPopulationMethod = dynamic_cast<COptPopulationMethod*>(pMethod);
 
   if (mpPopulationMethod == NULL)
-  {
-    mGraphInitialized = false;
-    mDataInitialized = false;
-  }
+    {
+      mGraphInitialized = false;
+      mDataInitialized = false;
+    }
 }
 
 
@@ -236,7 +237,7 @@ void CQOptPopulation::output(const Activity & activity)
     {
       if (!mpSourceMethod)
         return;
-      
+
       CCopasiTask* pTask = dynamic_cast<CCopasiTask*>(mpSourceMethod->getObjectParent());
 
       if (!pTask)
@@ -253,7 +254,7 @@ void CQOptPopulation::output(const Activity & activity)
       mRangeMin.resize(mNumParameters);
       mIsLog.resize(mNumParameters);
 
-      unsigned C_INT32 i;
+      C_INT32 i;
 
       for (i = 0; i < mNumParameters; ++i)
         {
@@ -295,60 +296,64 @@ void CQOptPopulation::update()
       rect->setBrush(QColor(220, 220, 220));
 
 
-      C_INT32 numProjections = (mNumParameters+1) / 2;
+      C_INT32 numProjections = (mNumParameters + 1) / 2;
       mShiftX.resize(numProjections);
       mShiftY.resize(numProjections);
       mXIndex.resize(numProjections);
       mYIndex.resize(numProjections);
-      mGraphicItems.resize(numProjections+1); //extra space for the combined view
+      mGraphicItems.resize(numProjections + 1); //extra space for the combined view
 
       //if there's more than 2 parameters, create the combined view
-      if (mNumParameters>2)
-      {
-        QGraphicsRectItem* rect = mpGS->addRect(-2.2, 0, 2.1, 2.1);
-        rect->setBrush(QColor(230, 230, 250));
- 
-        mGraphicItems[numProjections].resize(mPopulation.size());
-        unsigned C_INT32 i;
-        for (i = 0; i < mPopulation.size(); ++i)
+      if (mNumParameters > 2)
         {
-          QGraphicsEllipseItem* ei = mpGS->addEllipse(-2.2,0, 0.05, 0.05);
-          mGraphicItems[numProjections][i] = ei;
-          ei->setBrush(QColor(10, 100, 10));
-          ei->setPen(QPen(QColor(0, 0, 0)));
+          QGraphicsRectItem* rect = mpGS->addRect(-2.2, 0, 2.1, 2.1);
+          rect->setBrush(QColor(230, 230, 250));
+
+          mGraphicItems[numProjections].resize(mPopulation.size());
+          unsigned C_INT32 i;
+
+          for (i = 0; i < mPopulation.size(); ++i)
+            {
+              QGraphicsEllipseItem* ei = mpGS->addEllipse(-2.2, 0, 0.05, 0.05);
+              mGraphicItems[numProjections][i] = ei;
+              ei->setBrush(QColor(10, 100, 10));
+              ei->setPen(QPen(QColor(0, 0, 0)));
+            }
+
         }
-      
-      }
 
       C_INT32 j;
-      for (j=0; j<numProjections; ++j)
-      {
-        mShiftX[j] = (j/2)*1.1;
-        mShiftY[j] = (j % 2)*1.1 ;
-        mXIndex[j] = j*2;
-        mYIndex[j] = (j*2+1) % mNumParameters;
-        QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1);
-        rect->setBrush(QColor(240, 240, 240));
 
-        mGraphicItems[j].resize(mPopulation.size());
-      
-        unsigned C_INT32 i;
-        for (i = 0; i < mPopulation.size(); ++i)
+      for (j = 0; j < numProjections; ++j)
         {
-          
-          QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05);
-          mGraphicItems[j][i] = ei;
-          ei->setBrush(QColor(10, 100, 10));
-          ei->setPen(QPen(QColor(0, 0, 0)));
+          mShiftX[j] = (j / 2) * 1.1;
+          mShiftY[j] = (j % 2) * 1.1 ;
+          mXIndex[j] = j * 2;
+          mYIndex[j] = (j * 2 + 1) % mNumParameters;
+          QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1);
+          rect->setBrush(QColor(240, 240, 240));
+
+          mGraphicItems[j].resize(mPopulation.size());
+
+          unsigned C_INT32 i;
+
+          for (i = 0; i < mPopulation.size(); ++i)
+            {
+
+              QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05);
+              mGraphicItems[j][i] = ei;
+              ei->setBrush(QColor(10, 100, 10));
+              ei->setPen(QPen(QColor(0, 0, 0)));
+            }
         }
-      }
-      
+
       static_cast<CQZoomableView*>(mpGV)->slotFitOnScreen();
+
       mGraphInitialized = true;
     }
 
   //--------------------------------
-  
+
   unsigned C_INT32 i;
 
   //Color scaling
@@ -356,78 +361,101 @@ void CQOptPopulation::update()
   C_INT32 min_index = 0;
   CColorScaleAuto cs;
   cs.startAutomaticParameterCalculation();
-  for (i = 0; i<mPopulation.size(); ++i)
-  {
-    cs.passValue(mObjectiveValues[i]);
-    if (mObjectiveValues[i]<tmp_min)
-      { tmp_min = mObjectiveValues[i]; min_index = i;}
-  }
+
+  for (i = 0; i < mPopulation.size(); ++i)
+    {
+      cs.passValue(mObjectiveValues[i]);
+
+      if (mObjectiveValues[i] < tmp_min)
+        { tmp_min = mObjectiveValues[i]; min_index = i;}
+    }
+
   cs.finishAutomaticParameterCalculation();
   //std::cout << std::endl;
 
-  
-  for (i=0; i<mPopulation.size(); ++i)
-  {
-    
-    //first scale the parameters to a unit box
-    bool isOnBorder = false;
-    std::vector<double> scaled_values; scaled_values.resize(mNumParameters);
-    double p0=0; double p1=0; C_INT32 count=0;
-    C_INT32 j;
-    for (j=0; j<mNumParameters; ++j)
-    {
-      if (mIsLog[j])
-        scaled_values[j] = (log(mPopulation[i]->operator[](j))-log(mRangeMin[j]))/(log(mRangeMax[j])-log(mRangeMin[j])) ;
-      else
-        scaled_values[j] = (mPopulation[i]->operator[](j)-mRangeMin[j])/(mRangeMax[j]-mRangeMin[j]);
 
-      if (scaled_values[j]<0.01 || scaled_values[j]>0.99)
-        isOnBorder=true;
-      
-      if (j % 4 == 0)
-        {p0 += scaled_values[j]; ++count;}
-      if (j % 4 == 1)
-        p1 += scaled_values[j];
-      if (j % 4 == 2)
-        p0 -= scaled_values[j];
-      if (j % 4 == 3)
-        p1 -= scaled_values[j];
-    }
-    
-    //now update the graph
-  
-    if (mNumParameters>2)
+  for (i = 0; i < mPopulation.size(); ++i)
     {
-      QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[mShiftX.size()][i]);
-      if (gie)
-      {
-        gie->setX((p0/count +1)*1.05  -0.025);
-        gie->setY((p1/count +1)*1.05  -0.025);
-        gie->setBrush(cs.getColor(mObjectiveValues[i]));
-        //highlight parameters on the border of the allowed space
-        if (i==min_index)
-          gie->setPen(QPen(QColor(0,200,0,200), 0.01));
-        else
-          gie->setPen(isOnBorder ? QColor(200,0,0,200) : QColor(0,0,0,40));
-      }
+
+      //first scale the parameters to a unit box
+      bool isOnBorder = false;
+      std::vector<double> scaled_values; scaled_values.resize(mNumParameters);
+      double p0 = 0; double p1 = 0; C_INT32 count = 0;
+      C_INT32 j;
+
+      for (j = 0; j < mNumParameters; ++j)
+        {
+          if (mIsLog[j])
+            scaled_values[j] = (log(mPopulation[i]->operator[](j)) - log(mRangeMin[j])) / (log(mRangeMax[j]) - log(mRangeMin[j])) ;
+          else
+            scaled_values[j] = (mPopulation[i]->operator[](j) - mRangeMin[j]) / (mRangeMax[j] - mRangeMin[j]);
+
+          if (scaled_values[j] < 0.01 || scaled_values[j] > 0.99)
+            isOnBorder = true;
+
+          if (j % 4 == 0)
+            {p0 += scaled_values[j]; ++count;}
+
+          if (j % 4 == 1)
+            p1 += scaled_values[j];
+
+          if (j % 4 == 2)
+            p0 -= scaled_values[j];
+
+          if (j % 4 == 3)
+            p1 -= scaled_values[j];
+        }
+
+      //now update the graph
+
+      if (mNumParameters > 2)
+        {
+          QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[mShiftX.size()][i]);
+
+          if (gie)
+            {
+              gie->setX((p0 / count + 1) * 1.05  - 0.025);
+              gie->setY((p1 / count + 1) * 1.05  - 0.025);
+              gie->setBrush(cs.getColor(mObjectiveValues[i]));
+
+              //highlight parameters on the border of the allowed space
+              if (i == min_index)
+                {
+                  gie->setPen(QPen(QColor(0, 200, 0, 200), 0.01));
+                  gie->setZValue(1.0);
+                }
+              else
+                {
+                  gie->setPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40));
+                  gie->setZValue(0.0);
+                }
+            }
+        }
+
+      for (j = 0; j < mShiftX.size(); ++j) //loop over the different projections
+        {
+          QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[j][i]);
+
+          if (gie)
+            {
+              gie->setX(scaled_values[mXIndex[j]] - 0.025);
+              gie->setY(scaled_values[mYIndex[j]] - 0.025);
+              gie->setBrush(cs.getColor(mObjectiveValues[i]));
+
+              //highlight parameters on the border of the allowed space
+              if (i == min_index)
+                {
+                  gie->setPen(QPen(QColor(0, 200, 0, 200), 0.01));
+                  gie->setZValue(1.0);
+                }
+              else
+                {
+                  gie->setPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40));
+                  gie->setZValue(0.0);
+                }
+            }
+        }
     }
-  
-    for (j=0; j<mShiftX.size(); ++j) //loop over the different projections
-    {
-      QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[j][i]);
-      if (gie)
-      {
-        gie->setX(scaled_values[mXIndex[j]]-0.025);
-        gie->setY(scaled_values[mYIndex[j]]-0.025);
-        gie->setBrush(cs.getColor(mObjectiveValues[i]));
-        //highlight parameters on the border of the allowed space
-        if (i==min_index)
-          gie->setPen(QPen(QColor(0,200,0,200), 0.01));
-        else
-          gie->setPen(isOnBorder ? QColor(200,0,0,200) : QColor(0,0,0,40));
-      }
-    }
-  }
-  
+
 }
 
