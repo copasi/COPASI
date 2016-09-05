@@ -85,7 +85,7 @@
 #endif
 
 #ifdef COPASI_PE_POPULATION_DISPLAY
-#include <copasi/ui/CQOptPopulation.h>
+#include <copasi/UI/CQOptPopulation.h>
 #endif // COPASI_PE_POPULATION_DISPLAY
 
 #include <copasi/UI/CQParameterEstimationResult.h>
