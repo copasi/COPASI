@@ -281,22 +281,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // We suppress all errors and warnings
   size_t MessageSize = CCopasiMessage::size();
 
-  try
+  if (!setQuantityUnit(tmp) &&
+      !setQuantityUnit(tmp.substr(0, 1) + "mol"))
     {
-      setQuantityUnit(tmp); // set the factors
-    }
-
-  catch (CCopasiException &)
-    {
-      try
-        {
-          setQuantityUnit(tmp.substr(0, 1) + "mol");
-        }
-
-      catch (CCopasiException &)
-        {
-          setQuantityUnit("mmol");
-        }
+      setQuantityUnit("mmol");
     }
 
   // Remove error messages created by the task initialization as this may fail
@@ -335,7 +323,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       pMetabolite = new CMetab;
       mCompartments[pDataModel->pOldMetabolites->operator[](i).getIndex()].addMetabolite(pMetabolite);
 
+      // The assignment operator requires the metabolite to be in a compartment.
       (*pMetabolite) = pDataModel->pOldMetabolites->operator[](i);
+      mMetabolites.add(pMetabolite, false);
     }
 
   initializeMetabolites();
@@ -1466,9 +1456,12 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 bool CModel::setQuantityUnit(const std::string & name)
 {
   mQuantityUnit = name;
-  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
   CUnit QuantityUnit(mQuantityUnit, mAvogadro);
+
+  mDimensionlessUnits[quantity] = QuantityUnit.isDimensionless();
+
+  if (QuantityUnit.isUndefined()) return false;
 
   // The first, dimensionless, component should have all the
   // scale and multiplier information
