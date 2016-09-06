@@ -280,22 +280,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // We suppress all errors and warnings
   size_t MessageSize = CCopasiMessage::size();
 
-  try
+  if (!setQuantityUnit(tmp) &&
+      !setQuantityUnit(tmp.substr(0, 1) + "mol"))
     {
-      setQuantityUnit(tmp, CModelParameter::Concentration); // set the factors
-    }
-
-  catch (CCopasiException &)
-    {
-      try
-        {
-          setQuantityUnit(tmp.substr(0, 1) + "mol", CModelParameter::Concentration);
-        }
-
-      catch (CCopasiException &)
-        {
-          setQuantityUnit("mmol", CModelParameter::Concentration);
-        }
+      setQuantityUnit("mmol");
     }
 
   // Remove error messages created by the task initialization as this may fail
@@ -334,7 +322,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
       pMetabolite = new CMetab;
       mCompartments[pDataModel->pOldMetabolites->operator[](i).getIndex()].addMetabolite(pMetabolite);
 
+      // The assignment operator requires the metabolite to be in a compartment.
       (*pMetabolite) = pDataModel->pOldMetabolites->operator[](i);
+      mMetabolites.add(pMetabolite, false);
     }
 
   initializeMetabolites();
@@ -1464,11 +1454,13 @@ bool CModel::setQuantityUnit(const std::string & name,
                              const CModelParameter::Framework & frameWork)
 {
   mQuantityUnit = name;
-  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
 
   CUnit QuantityUnit(mQuantityUnit);
 
-  // The dimensionless, component will have all the scale and multiplier information
+  mDimensionlessUnits[quantity] = QuantityUnit.isDimensionless();
+
+  if (QuantityUnit.isUndefined()) return false;
+
   std::set< CUnitComponent >::const_iterator dimensionless = QuantityUnit.getComponents().find(CBaseUnit::dimensionless);
   mQuantity2NumberFactor = dimensionless->getMultiplier() * pow(10.0, dimensionless->getScale());
 
@@ -2235,7 +2227,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2285,7 +2277,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
