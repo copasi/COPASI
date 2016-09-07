@@ -280,10 +280,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // We suppress all errors and warnings
   size_t MessageSize = CCopasiMessage::size();
 
-  if (!setQuantityUnit(tmp) &&
-      !setQuantityUnit(tmp.substr(0, 1) + "mol"))
+  if (!setQuantityUnit(tmp, CModelParameter::ParticleNumbers) &&
+      !setQuantityUnit(tmp.substr(0, 1) + "mol", CModelParameter::ParticleNumbers))
     {
-      setQuantityUnit("mmol");
+      setQuantityUnit("mmol", CModelParameter::ParticleNumbers);
     }
 
   // Remove error messages created by the task initialization as this may fail
