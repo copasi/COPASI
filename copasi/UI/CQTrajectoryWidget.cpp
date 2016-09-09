@@ -264,12 +264,6 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
-  if (trajectoryproblem->getContinueSimultaneousEvents() != mpCheckContinueEvents->isChecked())
-    {
-      trajectoryproblem->setContinueSimultaneousEvents(mpCheckContinueEvents->isChecked());
-      mChanged = true;
-    }
-
   if (trajectoryproblem->getStartInSteadyState() != mpCheckStartInSteadyState->isChecked())
     {
       trajectoryproblem->setStartInSteadyState(mpCheckStartInSteadyState->isChecked());
@@ -325,7 +319,6 @@ bool CQTrajectoryWidget::loadTask()
   mpEditDelay->setText(QString::number(TrajectoryProblem->getOutputStartTime()));
 
   mpCheckOutputEvent->setChecked(TrajectoryProblem->getOutputEvent());
-  mpCheckContinueEvents->setChecked(TrajectoryProblem->getContinueSimultaneousEvents());
   mpCheckStartInSteadyState->setChecked(TrajectoryProblem->getStartInSteadyState());
 
   //store time series checkbox

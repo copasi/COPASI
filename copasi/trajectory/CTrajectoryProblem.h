@@ -145,18 +145,6 @@ public:
    */
   const bool & getOutputEvent() const;
 
-  /**
-   * Set whether to continue on simultaneous events
-   * @param const bool & continueSimultaneousEvents
-   */
-  void setContinueSimultaneousEvents(const bool & continueSimultaneousEvents);
-
-  /**
-   * Retrieve whether to continue on simultaneous events.
-   * @return const bool & continueSimultaneousEvents
-   */
-  const bool & getContinueSimultaneousEvents() const;
-
   void setStartInSteadyState(bool flag);
   bool getStartInSteadyState() const;
 
@@ -220,12 +208,6 @@ protected:
    * output
    */
   bool * mpOutputEvent;
-
-  /**
-   * Pointer to parameter value indicating whether to continue when simultaneous events
-   * are encountered
-   */
-  bool * mpContinueSimultaneousEvents;
 
   /**
    * Indicates whether a time course is supposed to start in a steady state

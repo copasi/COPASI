@@ -43,7 +43,6 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
   mpTimeSeriesRequested(NULL),
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
-  mpContinueSimultaneousEvents(NULL),
   mpStartInSteadyState(NULL),
   mStepNumberSetLast(true)
 {
@@ -66,7 +65,6 @@ CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
   mpTimeSeriesRequested(NULL),
   mpOutputStartTime(NULL),
   mpOutputEvent(NULL),
-  mpContinueSimultaneousEvents(NULL),
   mpStartInSteadyState(NULL),
   mStepNumberSetLast(src.mStepNumberSetLast)
 {
@@ -90,7 +88,6 @@ void CTrajectoryProblem::initializeParameter()
   mpTimeSeriesRequested = assertParameter("TimeSeriesRequested", CCopasiParameter::BOOL, (bool) true);
   mpOutputStartTime = assertParameter("OutputStartTime", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
   mpOutputEvent = assertParameter("Output Event", CCopasiParameter::BOOL, (bool) false);
-  mpContinueSimultaneousEvents = assertParameter("Continue on Simultaneous Events", CCopasiParameter::BOOL, (bool) false);
   mpStartInSteadyState = assertParameter("Start in Steady State", CCopasiParameter::BOOL, false);
 }
 
@@ -200,16 +197,6 @@ void CTrajectoryProblem::setOutputEvent(const bool & outputEvent)
 
 const bool & CTrajectoryProblem::getOutputEvent() const
 {return *mpOutputEvent;}
-
-void CTrajectoryProblem::setContinueSimultaneousEvents(const bool & continueSimultaneousEvents)
-{
-  *mpContinueSimultaneousEvents = continueSimultaneousEvents;
-}
-
-const bool & CTrajectoryProblem::getContinueSimultaneousEvents() const
-{
-  return *mpContinueSimultaneousEvents;
-}
 
 /**
  * Load a trajectory problem

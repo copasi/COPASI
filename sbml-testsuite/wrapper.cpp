@@ -418,7 +418,6 @@ public:
     pProblem->setStepNumber((const unsigned C_INT32)steps);
     pProblem->setDuration((const C_FLOAT64)end_time);
     pProblem->setTimeSeriesRequested(true);
-    pProblem->setContinueSimultaneousEvents(true);
 
     pTrajectoryTask->setMethodType(methodType);
 
