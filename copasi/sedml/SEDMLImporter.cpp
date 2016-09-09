@@ -107,7 +107,6 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
         tProblem->setOutputStartTime(tc->getOutputStartTime());
         tProblem->setDuration(tc->getOutputEndTime() - tc->getOutputStartTime());
         tProblem->setStepNumber(tc->getNumberOfPoints());
-        tProblem->setContinueSimultaneousEvents(true);
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())

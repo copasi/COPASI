@@ -2318,10 +2318,6 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return false;
     }
 
-  // remember whether we had events before, if so it could be that
-  // we have two events triggering at the same time
-  bool hadEvents = getEvents().size() > 0;
-
   size_t numCols = experiment->getNumColumns();
   const std::map< const CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjects();
 
@@ -2378,28 +2374,6 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();
           pEvent->getAssignments().add(pNewAssignment, true);
-        }
-    }
-
-  // ensure that the 'continue on simultaneous events' option is enabled
-  // for time course simulations, this needs to happen whenever we already
-  // have events in the model, as then there is a chance that two events trigger at the same time
-
-  if (!hadEvents) return true;
-
-  CTrajectoryTask* task = dynamic_cast<CTrajectoryTask*>(&getObjectDataModel()->getTaskList()->operator[]("Time-Course"));
-
-  if (task != NULL)
-    {
-      CTrajectoryProblem* problem = dynamic_cast<CTrajectoryProblem*>(task->getProblem());
-
-      if (!problem->getContinueSimultaneousEvents())
-        {
-          problem->setContinueSimultaneousEvents(true);
-          CCopasiMessage(CCopasiMessage::WARNING,
-                         "Since the model contained events, the option 'Continue on Simultaneous Events' "
-                         "has been enabled in the 'Time 'Course' task to ensure that simulation continues "
-                         "if multiple events trigger at the same time.");
         }
     }
 
