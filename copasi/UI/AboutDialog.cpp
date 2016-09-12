@@ -37,7 +37,7 @@ const char* AboutDialog::text =
   "<p>"
   "COPASI is a simulator for biochemical networks. It is a joint project "
   "by the Hoops group (Biocomplexity Institute of Virginia Tech), the "
-  "Mendes group (UCONN School of Medicine), and the Kummer group "
+  "Mendes group (UCONN School of Medicine), the Kummer, and Sahle groups "
   "(University of Heidelberg)."
   "</p><p>"
   "Please check for new release at http://www.copasi.org, where new releases "
