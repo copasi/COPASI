@@ -287,6 +287,7 @@ void CQOptPopulation::output(const Activity & activity)
 
 void CQOptPopulation::update()
 {
+  setUpdatesEnabled(false);
 
   if (!mGraphInitialized)
     {
@@ -457,5 +458,8 @@ void CQOptPopulation::update()
         }
     }
 
+    setUpdatesEnabled(true);
+    QWidget * viewport = mpGV->viewport();
+    viewport->update();
 }
 
