@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,6 @@
 #include <QtCore/QObject>
 #include <QtGui/QApplication>
 
-#include "copasi/plotUI/COutputHandlerPlot.h"
 #include "copasi/UI/listviews.h"
 
 //class CMathModel;
@@ -30,6 +29,9 @@ class CQThread;
 class CProgressBar;
 class CQBrowserPaneDM;
 class QNetworkReply;
+class COutputDefinitionVector;
+class COutputHandlerPlot;
+class CCopasiDataModel;
 
 class DataModelGUI: public QObject
 {
@@ -38,7 +40,7 @@ private:
   void linkDataModelToGUI();
 
 public:
-  DataModelGUI(QObject * parent);
+  DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel);
   virtual ~DataModelGUI();
 
   bool createModel();
@@ -59,6 +61,13 @@ public:
   void exportSBMLToString(std::string & sbmlDocumentText);
   void exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile = false);
   void importCellDesigner();
+
+#ifdef WITH_COMBINE_ARCHIVE
+  void openCombineArchive(const std::string & fileName);
+  void exportCombineArchive(const std::string & fileName, bool overwriteFile = false);
+  void openCombineArchiveRun();
+  void exportCombineArchiveRun();
+#endif
 
   //TODO SEDML
 #ifdef COPASI_SEDML
@@ -89,6 +98,11 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
+#ifdef WITH_COMBINE_ARCHIVE
+  void importCombineFinished();
+  void exportCombineFinished();
+
+#endif
 #ifdef WITH_MERGEMODEL
   void addModelFinished();
 #endif
@@ -132,8 +146,8 @@ signals:
   void finished(bool success);
 
 private:
-  QApplication *mpApp;
-  COutputHandlerPlot mOutputHandlerPlot;
+  CCopasiDataModel * mpDataModel;
+  COutputHandlerPlot * mpOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;
 

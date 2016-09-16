@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -42,59 +42,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeFunction : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    LOG = 0x00000000,
-    LOG10 = 0x00000001,
-    EXP = 0x00000002,
-    SIN = 0x00000003,
-    COS = 0x00000004,
-    TAN = 0x00000005,
-#ifdef SEC
-# undef SEC
-#endif
-    SEC = 0x00000006,
-    CSC = 0x00000007,
-    COT = 0x00000008,
-    SINH = 0x00000009,
-    COSH = 0x0000000a,
-    TANH = 0x0000000b,
-    SECH = 0x0000000c,
-    CSCH = 0x0000000d,
-    COTH = 0x0000000e,
-    ARCSIN = 0x0000000f,
-    ARCCOS = 0x00000010,
-    ARCTAN = 0x00000011,
-    ARCSEC = 0x00000012,
-    ARCCSC = 0x00000013,
-    ARCCOT = 0x00000014,
-    ARCSINH = 0x00000015,
-    ARCCOSH = 0x00000016,
-    ARCTANH = 0x00000017,
-    ARCSECH = 0x00000018,
-    ARCCSCH = 0x00000019,
-    ARCCOTH = 0x0000001a,
-    SQRT = 0x0000001b,
-    ABS = 0x0000001c,
-    FLOOR = 0x0000001d,
-    CEIL = 0x0000001e,
-    FACTORIAL = 0x0000001f,
-    MINUS = 0x00000020,
-    PLUS = 0x00000021,
-    NOT = 0x00000022,
-    RUNIFORM = 0x00000023,
-    RNORMAL = 0x00000024,
-    MAX = 0x00000025,
-    MIN =  0x00000026,
-    RGAMMA = 0x00000027,
-    RPOISSON = 0x00000028
-  };
-
   // Operations
 private:
   /**
@@ -130,16 +77,15 @@ public:
   {
     if (mpFunction)
       {
-        mValue = (*mpFunction)(mpArg1->getValue());
+        mValue = (*mpFunction)(*mpArgValue1);
       }
     else if (mpFunction2)
       {
-        mValue = (*mpFunction2)(mpArg1->getValue(), mpArg2->getValue());
+        mValue = (*mpFunction2)(*mpArgValue1, *mpArgValue2);
       }
     else if (mpFunction4)
       {
-        mValue = (*mpFunction4)(mpArg1->getValue(), mpArg2->getValue(),
-                                mpArg3->getValue(), mpArg4->getValue());
+        mValue = (*mpFunction4)(*mpArgValue1, *mpArgValue2, *mpArgValue3, *mpArgValue4);
       }
   }
 
@@ -181,6 +127,28 @@ public:
    ** @return const Data & value
    **/
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
+
+  /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CValidatedUnit > & units
+   * @return CValidatedUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CValidatedUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -322,10 +290,15 @@ private:
                           const C_FLOAT64 & arg3,
                           const C_FLOAT64 & arg4);
 
-  CEvaluationNode * mpArg1;
-  CEvaluationNode * mpArg2;
-  CEvaluationNode * mpArg3;
-  CEvaluationNode * mpArg4;
+  CEvaluationNode * mpArgNode1;
+  CEvaluationNode * mpArgNode2;
+  CEvaluationNode * mpArgNode3;
+  CEvaluationNode * mpArgNode4;
+
+  const C_FLOAT64 * mpArgValue1;
+  const C_FLOAT64 * mpArgValue2;
+  const C_FLOAT64 * mpArgValue3;
+  const C_FLOAT64 * mpArgValue4;
 
   static CRandom * mpRandom;
 };

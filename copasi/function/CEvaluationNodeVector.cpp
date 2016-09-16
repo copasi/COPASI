@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.cpp,v $
-//   $Revision: 1.14 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/16 17:00:57 $
-// End CVS Header
-
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -24,22 +16,25 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeVector::CEvaluationNodeVector():
-    CEvaluationNode((Type)(CEvaluationNode::VECTOR), ""),
-    mVector()
+  CEvaluationNode(T_VECTOR, S_INVALID, ""),
+  mNodes(),
+  mValues()
 {mPrecedence = PRECEDENCE_FUNCTION;}
 
 CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
     const Data & data):
-    CEvaluationNode((Type)(CEvaluationNode::VECTOR | subType), data),
-    mVector()
+  CEvaluationNode(T_VECTOR, subType, data),
+  mNodes(),
+  mValues()
 {
   switch (subType)
     {
-      case VECTOR:
+      case S_VECTOR:
         break;
 
       default:
@@ -51,8 +46,9 @@ CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
 }
 
 CEvaluationNodeVector::CEvaluationNodeVector(const CEvaluationNodeVector & src):
-    CEvaluationNode(src),
-    mVector(src.mVector)
+  CEvaluationNode(src),
+  mNodes(src.mNodes),
+  mValues(src.mValues)
 {}
 
 CEvaluationNodeVector::~CEvaluationNodeVector() {}
@@ -107,6 +103,47 @@ std::string CEvaluationNodeVector::getXPPString(const std::vector< std::string >
   return "@";
 }
 
+// virtual
+CValidatedUnit CEvaluationNodeVector::getUnit(const CMathContainer & /* container */,
+    const std::vector< CValidatedUnit > & units) const
+{
+  CValidatedUnit Unit(CBaseUnit::undefined, false);
+
+  std::vector< CValidatedUnit >::const_iterator it = units.begin();
+  std::vector< CValidatedUnit >::const_iterator end = units.end();
+
+  for (; it != end; ++it)
+    {
+      Unit = CValidatedUnit::merge(Unit, *it);
+    }
+
+  if (mNodes.size() != units.size())
+    {
+      Unit.setConflict(true);
+    }
+
+  return Unit;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeVector::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeVector * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeVector * >(this)]);
+
+  std::vector< CEvaluationNode * >::const_iterator it = mNodes.begin();
+  std::vector< CEvaluationNode * >::const_iterator end = mNodes.end();
+
+  for (; it != end; ++it)
+    {
+      targetUnits[*it] = Result;
+    }
+
+  return Result;
+}
+
 // static
 CEvaluationNode * CEvaluationNodeVector::fromAST(const ASTNode * /* pASTNode */, const std::vector< CEvaluationNode * > & /* children */)
 {
@@ -124,10 +161,10 @@ bool CEvaluationNodeVector::addChild(CCopasiNode< Data > * pChild,
                                      CCopasiNode< Data > * pAfter)
 {
   CCopasiNode< Data >::addChild(pChild, pAfter);
-  mVector.push_back(static_cast<CEvaluationNode *>(pChild));
+  mNodes.push_back(static_cast<CEvaluationNode *>(pChild));
 
   return true;
 }
 
-const std::vector< CEvaluationNode * > & CEvaluationNodeVector::getVector() const
-{return mVector;}
+const std::vector< CEvaluationNode * > & CEvaluationNodeVector::getNodes() const
+{return mNodes;}

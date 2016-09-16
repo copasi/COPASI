@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CEvaluationNodeNormalizer.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/02/19 15:27:55 $
-// End CVS Header
-
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -118,11 +115,11 @@ private:
   static CEvaluationNode* normalizeModulusNode(const CEvaluationNodeOperator* pNode);
   static CEvaluationNode* normalizePlusNode(const CEvaluationNodeOperator* pNode);
   static CEvaluationNode* normalizeMinusNode(const CEvaluationNodeOperator* pNode);
-  static bool eliminateMultipleNumbers(CEvaluationNodeOperator::SubType subType, std::vector<CEvaluationNode*>& chainNodes);
-  static bool collectIdenticalBranches(CEvaluationNodeOperator::SubType subType, std::vector<CEvaluationNode*>& chainNodes);
+  static bool eliminateMultipleNumbers(CEvaluationNode::SubType subType, std::vector<CEvaluationNode*>& chainNodes);
+  static bool collectIdenticalBranches(CEvaluationNode::SubType subType, std::vector<CEvaluationNode*>& chainNodes);
   static bool reorderNodes(std::vector<CEvaluationNode*>& chainNodes);
   static void findChainNodes(CEvaluationNodeOperator* pNode, std::vector<CEvaluationNode*>& nodes);
-  static CEvaluationNodeOperator* buildOperatorBranchFromChain(CEvaluationNodeOperator::SubType subType, const std::vector<CEvaluationNode*>& chainNodes);
+  static CEvaluationNodeOperator* buildOperatorBranchFromChain(CEvaluationNode::SubType subType, const std::vector<CEvaluationNode*>& chainNodes);
 };
 
 class lessCEvaluationNodes

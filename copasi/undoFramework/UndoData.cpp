@@ -175,10 +175,9 @@ CCopasiObject *UndoData::getObject(CModel *pModel)
   return getObject(pModel->getObjectDataModel());
 }
 
-CCopasiObject *UndoData::getObject(CCopasiDataModel *pModel)
+CCopasiObject *UndoData::getObject(CCopasiDataModel *pDataModel)
 {
-  if (pModel == NULL) return NULL;
+  if (pDataModel == NULL) return NULL;
 
-  return const_cast<CCopasiObject*>(
-           dynamic_cast<const CCopasiObject*>(pModel->getObject(getCN())));
+  return const_cast< CCopasiObject * >(CObjectInterface::DataObject(pDataModel->getObject(mCN)));
 }

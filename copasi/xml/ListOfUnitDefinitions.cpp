@@ -173,7 +173,7 @@ void CCopasiXMLParser::UnitDefinitionElement::end(const XML_Char *pszName)
         {
           size_t Size = CCopasiMessage::size();
 
-          mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData, CUnit::Avogadro);
+          mCommon.pCurrentUnitDefinition->setExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.

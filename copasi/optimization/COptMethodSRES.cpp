@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,16 +35,9 @@
 COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
-  mGenerations(0),
-  mPopulationSize(0),
-  mpRandom(NULL),
-  mVariableSize(0),
-  mIndividual(0),
+  COptPopulationMethod(pParent, methodType, taskType),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mValue(0),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mGeneration(0)
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max())
 
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
@@ -58,16 +51,9 @@ COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent,
 
 COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
                                const CCopasiContainer * pParent):
-  COptMethod(src, pParent),
-  mGenerations(0),
-  mPopulationSize(0),
-  mpRandom(NULL),
-  mVariableSize(0),
-  mIndividual(0),
+  COptPopulationMethod(src, pParent),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mValue(0),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mGeneration(0)
+  mBestValue(std::numeric_limits< C_FLOAT64 >::max())
 {initObjects();}
 
 COptMethodSRES::~COptMethodSRES()
@@ -94,17 +80,17 @@ bool COptMethodSRES::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
 bool COptMethodSRES::swap(size_t from, size_t to)
 {
-  CVector< C_FLOAT64 > * pTmp = mIndividual[to];
-  mIndividual[to] = mIndividual[from];
-  mIndividual[from] = pTmp;
+  CVector< C_FLOAT64 > * pTmp = mIndividuals[to];
+  mIndividuals[to] = mIndividuals[from];
+  mIndividuals[from] = pTmp;
 
   pTmp = mVariance[to];
   mVariance[to] = mVariance[from];
   mVariance[from] = pTmp;
 
-  C_FLOAT64 dTmp = mValue[to];
-  mValue[to] = mValue[from];
-  mValue[from] = dTmp;
+  C_FLOAT64 dTmp = mValues[to];
+  mValues[to] = mValues[from];
+  mValues[from] = dTmp;
 
   dTmp = mPhi[to];
   mPhi[to] = mPhi[from];
@@ -120,7 +106,7 @@ bool COptMethodSRES::replicate()
   size_t Parent;
   size_t i, j;
 
-  std::vector< CVector < C_FLOAT64 > * >::iterator itSrc = mIndividual.begin();
+  std::vector< CVector < C_FLOAT64 > * >::iterator itSrc = mIndividuals.begin();
   std::vector< CVector < C_FLOAT64 > * >::iterator endSrc = itSrc + mPopulationSize;
   std::vector< CVector < C_FLOAT64 > * >::iterator itTarget = endSrc;
 
@@ -162,13 +148,13 @@ bool COptMethodSRES::replicate()
 //mutate one individual
 bool COptMethodSRES::mutate()
 {
-  std::vector< CVector < C_FLOAT64 > * >::iterator it = mIndividual.begin() + mPopulationSize;
-  std::vector< CVector < C_FLOAT64 > * >::iterator end = mIndividual.end();
+  std::vector< CVector < C_FLOAT64 > * >::iterator it = mIndividuals.begin() + mPopulationSize;
+  std::vector< CVector < C_FLOAT64 > * >::iterator end = mIndividuals.end();
   std::vector< CVector < C_FLOAT64 > * >::iterator itVariance = mVariance.begin() + mPopulationSize;
 
   C_FLOAT64 * pVariable, * pVariableEnd, * pVariance, * pMaxVariance;
   C_FLOAT64 * pPhi = mPhi.array() + mPopulationSize;
-  C_FLOAT64 * pValue = mValue.array() + mPopulationSize;
+  C_FLOAT64 * pValue = mValues.array() + mPopulationSize;
 
   bool Continue = true;
   size_t i, j;
@@ -235,7 +221,7 @@ bool COptMethodSRES::mutate()
 void COptMethodSRES::select()
 {
   size_t i, j;
-  size_t TotalPopulation = mIndividual.size();
+  size_t TotalPopulation = mIndividuals.size();
   bool wasSwapped;
   size_t sweepNum = TotalPopulation;  // This is default based on paper
 
@@ -254,7 +240,7 @@ void COptMethodSRES::select()
               (mpRandom->getRandomOO() < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
-              if (mValue[j] > mValue[j + 1])
+              if (mValues[j] > mValues[j + 1])
                 {
                   swap(j, j + 1);
                   wasSwapped = true;
@@ -282,10 +268,10 @@ size_t COptMethodSRES::fittest()
   C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0; i < mPopulationSize; i++)
-    if (mValue[i] < BestValue && mPhi[i] == 0)
+    if (mValues[i] < BestValue && mPhi[i] == 0)
       {
         BestIndex = i;
-        BestValue = mValue[i];
+        BestValue = mValues[i];
       }
 
   return BestIndex;
@@ -304,18 +290,18 @@ bool COptMethodSRES::creation(size_t first)
   bool Continue = true;
 
   std::vector< CVector < C_FLOAT64 > * >::iterator it =
-    mIndividual.begin() + first;
+    mIndividuals.begin() + first;
   std::vector< CVector < C_FLOAT64 > * >::iterator end =
-    mIndividual.begin() + mPopulationSize;
+    mIndividuals.begin() + mPopulationSize;
   std::vector< CVector < C_FLOAT64 > * >::iterator itVariance =
     mVariance.begin() + first;
 
   C_FLOAT64 * pVariable, * pVariableEnd, * pVariance, * pMaxVariance;
   C_FLOAT64 * pPhi = mPhi.array() + first;
-  C_FLOAT64 * pValue = mValue.array() + first;
+  C_FLOAT64 * pValue = mValues.array() + first;
 
   // set the first individual to the initial guess
-  if (it == mIndividual.begin())
+  if (it == mIndividuals.begin())
     {
       pVariable = (*it)->array();
       pVariableEnd = pVariable + mVariableSize;
@@ -494,7 +480,6 @@ bool COptMethodSRES::creation(size_t first)
 
 void COptMethodSRES::initObjects()
 {
-  addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
 }
 
 bool COptMethodSRES::initialize()
@@ -503,20 +488,7 @@ bool COptMethodSRES::initialize()
 
   size_t i;
 
-  if (!COptMethod::initialize()) return false;
-
-  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
-  mGeneration = 0;
-
-  if (mpCallBack)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mGeneration,
-                          & mGenerations);
-
-  mGeneration++;
-
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  if (!COptPopulationMethod::initialize()) return false;
 
   mPf = getValue< C_FLOAT64 >("Pf");
 
@@ -526,16 +498,11 @@ bool COptMethodSRES::initialize()
       setValue("Pf", mPf);
     }
 
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
 
-  mVariableSize = mpOptItem->size();
-
-  mIndividual.resize(childrate * mPopulationSize);
+  mIndividuals.resize(childrate * mPopulationSize);
 
   for (i = 0; i < childrate * mPopulationSize; i++)
-    mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
+    mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mVariance.resize(childrate * mPopulationSize);
 
@@ -559,8 +526,8 @@ bool COptMethodSRES::initialize()
         }
     }
 
-  mValue.resize(childrate * mPopulationSize);
-  mValue = std::numeric_limits<C_FLOAT64>::infinity();
+  mValues.resize(childrate * mPopulationSize);
+  mValues = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mPhi.resize(childrate * mPopulationSize);
@@ -589,15 +556,12 @@ bool COptMethodSRES::cleanup()
 {
   size_t i;
 
-  pdelete(mpRandom);
-
-  for (i = 0; i < mIndividual.size(); i++)
+  for (i = 0; i < mVariance.size(); i++)
     {
-      pdelete(mIndividual[i]);
       pdelete(mVariance[i]);
     }
 
-  return true;
+  return COptPopulationMethod::cleanup();
 }
 
 // evaluate the distance of parameters and constraints to boundaries
@@ -608,7 +572,7 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
 
   std::vector< COptItem * >::const_iterator it = mpOptItem->begin();
   std::vector< COptItem * >::const_iterator end = mpOptItem->end();
-  C_FLOAT64 * pValue = mIndividual[indivNum]->array();
+  C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
     {
@@ -669,8 +633,8 @@ bool COptMethodSRES::optimise()
   if (BestIndex != C_INVALID_INDEX)
     {
       // and store that value
-      mBestValue = mValue[BestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[BestIndex]);
+      mBestValue = mValues[BestIndex];
+      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[BestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -688,9 +652,9 @@ bool COptMethodSRES::optimise()
   // ITERATE FOR gener GENERATIONS
 #ifdef RANDOMIZE
 
-  for (mGeneration = 2;
-       mGeneration <= mGenerations && Continue;
-       mGeneration++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
+  for (mCurrentGeneration = 2;
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
@@ -716,9 +680,9 @@ bool COptMethodSRES::optimise()
 
 #else
 
-  for (mGeneration = 2;
-       mGeneration <= mGenerations && Continue;
-       mGeneration++)
+  for (mCurrentGeneration = 2;
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++)
     {
 #endif // RANDOMIZE
       Continue = replicate();
@@ -730,14 +694,14 @@ bool COptMethodSRES::optimise()
       BestIndex = fittest();
 
       if (BestIndex != C_INVALID_INDEX &&
-          mValue[BestIndex] < mBestValue)
+          mValues[BestIndex] < mBestValue)
         {
 #ifdef RANDOMIZE
           Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
 #endif // RANDOMIZE
-          mBestValue = mValue[BestIndex];
+          mBestValue = mValues[BestIndex];
 
-          Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[BestIndex]);
+          Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[BestIndex]);
 
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
@@ -745,6 +709,12 @@ bool COptMethodSRES::optimise()
 
       if (mpCallBack)
         Continue = mpCallBack->progressItem(mhGenerations);
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+      //use a different output channel. It will later get a proper enum name
+      mpParentTask->output(COutputInterface::Activity(8));
+#endif // COPASI_PE_POPULATION_DISPLAY
+
     }
 
   if (mpCallBack)

@@ -15,6 +15,8 @@
 #include "copasi/utilities/CUnitComponent.h"
 #include "copasi/utilities/CCopasiVector.h"
 
+class CUnitDefinition;
+
 class CUnit
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
@@ -72,6 +74,8 @@ public:
                                    const std::string & oldSymbol,
                                    const std::string & newSymbol);
 
+  static std::string prettyPrint(const std::string & expression);
+
   // constructors
   /**
    * Default constructor
@@ -86,10 +90,9 @@ public:
 
   /**
    * Expression constructor
-   * @param const CBaseUnit::Kind & kind
+   * @param const std::string & expression
    */
-  CUnit(std::string expression,
-        const C_FLOAT64 & avogadro = Avogadro);
+  CUnit(const std::string & expression);
 
   /**
    * Copy constructor
@@ -99,19 +102,21 @@ public:
 
   ~CUnit();
 
-  bool setExpression(const std::string & expression,
-                     const C_FLOAT64 & avogadro);
+  bool setExpression(const std::string & expression);
 
   std::string getExpression() const;
 
   const std::set< std::string > & getUsedSymbols() const;
+
+  void replaceSymbol(const std::string & oldSymbol,
+                     const std::string & newSymbol);
 
   bool isDimensionless() const;
   bool isUndefined() const;
   void addComponent(const CUnitComponent & component);
   const std::set< CUnitComponent > & getComponents() const;
 
-  bool compile(const C_FLOAT64 & avogadro = Avogadro);
+  bool compile();
 
   CUnit exponentiate(double exp) const;
   CUnit operator*(const CUnit & rightSide) const;
@@ -126,12 +131,9 @@ private:
   std::string mExpression;
   std::set< CUnitComponent > mComponents;
   std::set< std::string > mUsedSymbols;
+  CUnitComponent * mpDimensionless;
 
-  // Consolodate any components with exponent == 0
-  // into a/the single dimensionless component
-  void consolidateDimensionless();
-
-  static C_INT32 getExponentOfSymbol(const std::string & symbol, CUnit & unit);
+  static C_INT32 getExponentOfSymbol(const std::pair< std::string, CUnit > & SymbolDef, CUnit & unit);
 };
 
 #endif // CUNIT_H

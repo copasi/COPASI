@@ -76,6 +76,17 @@
 # include "analytics/CAnalyticsTask.h"
 #endif // WITH_ANALYTICS
 
+#ifdef WITH_COMBINE_ARCHIVE
+# include <combine/combinearchive.h>
+# include <combine/knownformats.h>
+# include <combine/util.h>
+# include <omex/CaContent.h>
+#endif // WITH_COMBINE_ARCHIVE
+
+#include <copasi/parameterFitting/CFitProblem.h>
+#include <copasi/parameterFitting/CExperimentSet.h>
+#include <copasi/parameterFitting/CExperiment.h>
+
 CDataModelRenameHandler::CDataModelRenameHandler():
   CRenameHandler(),
   mEnabled(true)
@@ -110,11 +121,17 @@ void CDataModelRenameHandler::handle(const std::string & oldCN, const std::strin
   return;
 }
 
+// virtual
 void CDataModelRenameHandler::setEnabled(const bool & enabled)
 {
   mEnabled = enabled;
 }
 
+// virtual
+bool CDataModelRenameHandler::isEnabled() const
+{
+  return mEnabled;
+}
 //********************************************************************
 
 CCopasiDataModel::CCopasiDataModel(const bool withGUI):
@@ -123,6 +140,8 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   mData(withGUI),
   mOldData(withGUI),
   mRenameHandler(),
+  mTempFolders(),
+  mNeedToSaveExperimentalData(false),
   pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   newModel(NULL, true);
@@ -140,6 +159,8 @@ CCopasiDataModel::CCopasiDataModel(const std::string & name,
   mData(withGUI),
   mOldData(withGUI),
   mRenameHandler(),
+  mTempFolders(),
+  mNeedToSaveExperimentalData(false),
   pOldMetabolites(new CCopasiVectorS < CMetabOld >)
 {
   newModel(NULL, true);
@@ -155,7 +176,9 @@ CCopasiDataModel::CCopasiDataModel(const CCopasiDataModel & src,
   mData(src.mData),
   mOldData(src.mOldData),
   mRenameHandler(src.mRenameHandler),
-  pOldMetabolites((src.pOldMetabolites != NULL) ? new CCopasiVectorS < CMetabOld >(*pOldMetabolites, NO_PARENT) : NULL)
+  mTempFolders(),
+  mNeedToSaveExperimentalData(false),
+  pOldMetabolites((src.pOldMetabolites != NULL) ? new CCopasiVectorS < CMetabOld >(*src.pOldMetabolites, NO_PARENT) : NULL)
 {}
 
 CCopasiDataModel::~CCopasiDataModel()
@@ -170,6 +193,19 @@ CCopasiDataModel::~CCopasiDataModel()
   deleteOldData();
 
   pdelete(pOldMetabolites);
+
+#ifdef WITH_COMBINE_ARCHIVE
+
+  std::vector<std::string>::iterator it = mTempFolders.begin();
+
+  for (; it != mTempFolders.end(); ++it)
+    {
+      Util::removeFileOrFolder(*it);
+    }
+
+  mTempFolders.clear();
+
+#endif
 }
 
 bool CCopasiDataModel::loadModel(std::istream & in,
@@ -395,9 +431,103 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
   return true;
 }
 
-bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
-                                 bool overwriteFile,
-                                 const bool & autoSave)
+#ifdef WITH_COMBINE_ARCHIVE
+void CCopasiDataModel::copyExperimentalDataTo(const std::string& path)
+{
+  CFitProblem* problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
+
+  if (!problem) return;
+
+  {
+    CExperimentSet& experiments = problem->getExperimentSet();
+
+    std::vector<std::string> fileNames = experiments.getFileNames();
+    std::vector<std::string>::iterator it = fileNames.begin();
+
+    std::map<std::string, std::string> renamedExperiments;
+    std::map<std::string, std::string>::iterator renameIt;
+
+    for (; it != fileNames.end(); ++it)
+      {
+        std::string destination = "./" + CDirEntry::fileName(*it);
+        CDirEntry::makePathAbsolute(destination, path);
+
+        int count = 0;
+
+        while (CDirEntry::exist(destination))
+          {
+            std::stringstream str; str << "./" << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
+            destination = str.str();
+            CDirEntry::makePathAbsolute(destination, path);
+          }
+
+        renamedExperiments[*it] = destination;
+        Util::copyFile(*it, destination);
+      }
+
+    // rename files
+    for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+      {
+        for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+          {
+            CExperiment* current = experiments.getExperiment(i);
+
+            if (current->getFileName() == renameIt->first)
+              {
+                current->setFileName(renameIt->second);
+              }
+          }
+      }
+  }
+
+  {
+    CExperimentSet& experiments = problem->getCrossValidationSet();
+
+    std::vector<std::string> fileNames = experiments.getFileNames();
+    std::vector<std::string>::iterator it = fileNames.begin();
+
+    std::map<std::string, std::string> renamedExperiments;
+    std::map<std::string, std::string>::iterator renameIt;
+
+    for (; it != fileNames.end(); ++it)
+      {
+        std::string destination = "./" + CDirEntry::fileName(*it);
+        CDirEntry::makePathAbsolute(destination, path);
+
+        int count = 0;
+
+        while (CDirEntry::exist(destination))
+          {
+            std::stringstream str; str << "./" << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
+            destination = str.str();
+            CDirEntry::makePathAbsolute(destination, path);
+          }
+
+        renamedExperiments[*it] = destination;
+        Util::copyFile(*it, destination);
+      }
+
+    // rename files
+    for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+      {
+        for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+          {
+            CExperiment* current = experiments.getExperiment(i);
+
+            if (current->getFileName() == renameIt->first)
+              {
+                current->setFileName(renameIt->second);
+              }
+          }
+      }
+  }
+}
+#endif // WITH_COMBINE_ARCHIVE
+
+bool
+CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
+                            bool overwriteFile,
+                            const bool & autoSave)
 {
   CCopasiMessage::clearDeque();
 
@@ -443,6 +573,16 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
     {
       return false;
     }
+
+#ifdef WITH_COMBINE_ARCHIVE
+
+  if (mNeedToSaveExperimentalData)
+    {
+      copyExperimentalDataTo(CDirEntry::dirName(FileName));
+      mNeedToSaveExperimentalData = false;
+    }
+
+#endif // WITH_COMBINE_ARCHIVE
 
   CCopasiXML XML;
 
@@ -505,6 +645,45 @@ bool CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* p
   return true;
 }
 
+std::string CCopasiDataModel::saveModelToString(CProcessReport * pProcessReport)
+{
+  CCopasiMessage::clearDeque();
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  try
+    {
+      // We do not care whether the model compiles or not
+      // We just save as much as we can
+      mData.pModel->compileIfNecessary(pProcessReport);
+
+      // Assure that the parameter set reflects all changes made to the model.
+      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+    }
+
+  catch (...)
+    {
+      return "";
+    }
+
+  CCopasiXML XML;
+
+  XML.setModel(mData.pModel);
+  XML.setTaskList(mData.pTaskList);
+  XML.setReportList(mData.pReportDefinitionList);
+  XML.setPlotList(mData.pPlotDefinitionList);
+  XML.setGUI(mData.pGUI);
+  XML.setLayoutList(*mData.pListOfLayouts);
+  XML.setDatamodel(this);
+
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  std::stringstream str;
+  XML.save(str, TmpFileName);
+  return str.str();
+}
+
 bool CCopasiDataModel::autoSave()
 {
   if (!mData.mAutoSaveNeeded) return true;
@@ -544,7 +723,9 @@ bool CCopasiDataModel::newModel(CProcessReport* pProcessReport,
   //deal with the CModel
   pushData();
 
+  mRenameHandler.setEnabled(false);
   commonAfterLoad(pProcessReport, deleteOldData);
+  mRenameHandler.setEnabled(true);
 
   return true;
 }
@@ -589,6 +770,16 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       throw except;
     }
 
+  catch (...)
+    {
+      importer.deleteCopasiModel();
+      importer.restoreFunctionDB();
+      popData();
+      mRenameHandler.setEnabled(true);
+
+      throw;
+    }
+
   if (pModel == NULL)
     {
       importer.restoreFunctionDB();
@@ -616,11 +807,6 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   mData.mFileType = SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
-
-  // when importing from SBML, allow continuation on simultaneous events.
-  static_cast<CTrajectoryProblem *>(
-    static_cast<CTrajectoryTask *>(&mData.pTaskList->operator[]("Time-Course"))->getProblem()
-  )->setContinueSimultaneousEvents(true);
 
   mRenameHandler.setEnabled(true);
   return true;
@@ -679,6 +865,15 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       mRenameHandler.setEnabled(true);
       throw except;
     }
+  catch (...)
+    {
+      importer.deleteCopasiModel();
+      importer.restoreFunctionDB();
+      popData();
+      mRenameHandler.setEnabled(true);
+
+      throw;
+    }
 
   if (pModel == NULL)
     {
@@ -707,11 +902,6 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   mData.mFileType = SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
-
-  // when importing from SBML, allow continuation on simultaneous events.
-  static_cast<CTrajectoryProblem *>(
-    static_cast<CTrajectoryTask *>(&mData.pTaskList->operator[]("Time-Course"))->getProblem()
-  )->setContinueSimultaneousEvents(true);
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -785,7 +975,7 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
 
   // only get the new model if it is not a Level 1 model
   // During export to Level 1 the function definitions have been deleted and therefore
-  // all information assiociated with the function definitions will be gone if the user exports
+  // all information associated with the function definitions will be gone if the user exports
   // to Level 2 after having exported to Level 1
   // This is actual vital to get around Bug 1086 as well.
   // Once I have a Level 1 model, all calls to setName on an
@@ -1092,6 +1282,331 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
   return pExporter->exportToStream(this, os);
 }
 
+#ifdef WITH_COMBINE_ARCHIVE
+
+
+void
+CCopasiDataModel::addCopasiFileToArchive(CombineArchive *archive,
+    const std::string& targetName /*= "./copasi/model.cps"*/,
+    CProcessReport * pProgressReport /*= NULL*/
+                                        )
+{
+  if (archive == NULL) return;
+
+  try
+    {
+      std::stringstream str; str << saveModelToString(pProgressReport);
+      archive->addFile(str, targetName, KnownFormats::lookupFormat("copasi"), true);
+    }
+  catch (...)
+    {
+    }
+}
+
+bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
+{
+  CCopasiMessage::clearDeque();
+
+  std::string PWD;
+  COptions::getValue("PWD", PWD);
+
+  if (CDirEntry::isRelativePath(fileName) &&
+      !CDirEntry::makePathAbsolute(fileName, PWD))
+    fileName = CDirEntry::fileName(fileName);
+
+  if (CDirEntry::exist(fileName))
+    {
+      if (!overwriteFile)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 1,
+                         fileName.c_str());
+          return false;
+        }
+
+      if (!CDirEntry::isWritable(fileName))
+        {
+          CCopasiMessage(CCopasiMessage::ERROR,
+                         MCDirEntry + 2,
+                         fileName.c_str());
+          return false;
+        }
+
+      // delete existing file
+      std::remove(fileName.c_str());
+    }
+
+  CombineArchive archive;
+
+  std::map<std::string, std::string> renamedExperiments;
+  std::map<std::string, std::string>::iterator renameIt;
+  CFitProblem *problem = NULL;
+
+  if (includeData)
+    {
+      // go through all experiments and find the files and add them to the archive
+      // alter COPASI file (temporarily) to reference those files
+      problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
+      {
+        CExperimentSet& experiments = problem->getExperimentSet();
+
+        std::vector<std::string> fileNames = experiments.getFileNames();
+        std::vector<std::string>::iterator it = fileNames.begin();
+
+        for (; it != fileNames.end(); ++it)
+          {
+            renamedExperiments[*it] = "./data/" + CDirEntry::fileName(*it);
+            archive.addFile(*it, "./data/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+          }
+
+        // rename files temporarily
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileName() == renameIt->first)
+                  {
+                    current->setFileName("." + renameIt->second);
+                  }
+              }
+          }
+      }
+      {
+        CExperimentSet& experiments = problem->getCrossValidationSet();
+
+        std::vector<std::string> fileNames = experiments.getFileNames();
+        std::vector<std::string>::iterator it = fileNames.begin();
+
+        for (; it != fileNames.end(); ++it)
+          {
+            renamedExperiments[*it] = "./data/" + CDirEntry::fileName(*it);
+            archive.addFile(*it, "./data/" + CDirEntry::fileName(*it), KnownFormats::guessFormat(*it), false);
+          }
+
+        // rename files temporarily
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileName() == renameIt->first)
+                  {
+                    current->setFileName("." + renameIt->second);
+                  }
+              }
+          }
+      }
+
+      if (includeCOPASI)
+        {
+          addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
+        }
+
+      // restore filenames
+      {
+        CExperimentSet& experiments = problem->getExperimentSet();
+
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileNameOnly() == "." + renameIt->second)
+                  {
+                    current->setFileName(renameIt->first);
+                  }
+              }
+          }
+      }
+      {
+        CExperimentSet& experiments = problem->getCrossValidationSet();
+
+        for (renameIt = renamedExperiments.begin(); renameIt != renamedExperiments.end(); ++renameIt)
+          {
+            for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+              {
+                CExperiment* current = experiments.getExperiment(i);
+
+                if (current->getFileNameOnly() == "." + renameIt->second)
+                  {
+                    current->setFileName(renameIt->first);
+                  }
+              }
+          }
+      }
+    }
+
+  if (includeCOPASI && !includeData)
+    {
+      addCopasiFileToArchive(&archive, "./copasi/model.cps", pProgressReport);
+    }
+
+  if (includeSBML)
+    {
+      try
+        {
+          std::stringstream str; str << exportSBMLToString(pProgressReport, 2, 4);
+          archive.addFile(str, "./sbml/model.xml", KnownFormats::lookupFormat("sbml"), !includeCOPASI);
+        }
+      catch (...)
+        {
+        }
+    }
+
+  if (includeSEDML)
+    {
+      std::stringstream str; str << exportSEDMLToString(pProgressReport, 1, 2, "../sbml/model.xml");
+      archive.addFile(str, "./sedml/simulation.xml", KnownFormats::lookupFormat("sedml"), !includeCOPASI);
+    }
+
+  archive.writeToFile(fileName);
+
+  return false;
+}
+
+bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
+    CProcessReport * pProgressReport,
+    const bool & deleteOldData)
+{
+  // TODO: figure out what to do with the archive, should we just extract all of it
+  //       at a certain location? if so when should it be deleted.
+
+  bool result = true;
+
+  CombineArchive archive;
+
+  if (!archive.initializeFromArchive(fileName))
+    {
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "Invalid COMBINE archive.");
+      return false;
+    }
+
+  std::string destinationDir;
+  COptions::getValue("Tmp", destinationDir);
+  destinationDir = CDirEntry::createTmpName(destinationDir, "");
+  CDirEntry::createDir(destinationDir);
+
+  archive.extractTo(destinationDir);
+  mTempFolders.push_back(destinationDir);
+
+  // read the master file
+  const CaContent* content = archive.getMasterFile();
+
+  // if we don't have one, or we have one we don't understand look for copasi file
+  if (content == NULL ||
+      (content->getFormat() != KnownFormats::lookupFormat("sbml") &&
+       content->getFormat() != KnownFormats::lookupFormat("copasi") &&
+       content->getFormat() != KnownFormats::lookupFormat("sedml")))
+    content = archive.getEntryByFormat("copasi");
+
+  // otherwise look for an sedml file
+  if (content == NULL)
+    content = archive.getEntryByFormat("sedml");
+
+  // otherwise look for an sbml file
+  if (content == NULL)
+    content = archive.getEntryByFormat("sbml");
+
+  if (content == NULL)
+    {
+      CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive without COPASI, SBML or SED-ML files.");
+      return false;
+    }
+
+  if (content->isFormat("copasi"))
+    {
+      result = this->loadModel(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+
+      if (result)
+        {
+          // figure out whether the file needs experimental data
+          CFitProblem* pProblem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
+          CExperimentSet& experiments = pProblem->getExperimentSet();
+          std::vector<std::string> experimentalDataFiles;
+
+          for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
+            {
+              CExperiment* experiment = experiments.getExperiment(i);
+              experimentalDataFiles.push_back(experiment->getFileNameOnly());
+            }
+
+          CExperimentSet& crossValidation = pProblem->getCrossValidationSet();
+          std::vector<std::string> crossValidationFiles;
+
+          for (size_t i = 0; i < crossValidation.getExperimentCount(); ++i)
+            {
+              CExperiment* experiment = crossValidation.getExperiment(i);
+              crossValidationFiles.push_back(experiment->getFileNameOnly());
+            }
+
+          if (crossValidationFiles.size() + experimentalDataFiles.size() > 0)
+            {
+              // need to save the files when saving the model
+              mNeedToSaveExperimentalData = true;
+            }
+
+
+          // update report destinations
+
+          std::string currentDir;
+          COptions::getValue("PWD", currentDir);
+
+
+          CCopasiVectorN< CCopasiTask >& tasks = *getTaskList();
+          CCopasiVectorN< CCopasiTask >::iterator taskIt = tasks.begin();
+
+          for (; taskIt != tasks.end(); ++taskIt)
+            {
+              std::string fileName = taskIt->getReport().getTarget();
+
+              if (fileName.empty())
+                continue;
+
+              // if we have a relative filename, or a fileName that
+              // points to a non-existing directory
+              if (CDirEntry::isRelativePath(fileName) ||
+                  !CDirEntry::exist(CDirEntry::dirName(fileName)))
+                {
+                  // we change the fileName to an absolute one
+                  // with the current PWD
+                  fileName = CDirEntry::fileName(fileName);
+
+                  if (CDirEntry::isWritable(currentDir))
+                    CDirEntry::makePathAbsolute(fileName, currentDir);
+
+                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING,
+                                                 "COMBINE archive import: The report target for the '%s' task has been changed to '%s'.",
+                                                 taskIt->getObjectName().c_str(), fileName.c_str());
+
+                  taskIt->getReport().setTarget(fileName);
+                }
+            }
+        }
+    }
+  else if (content->isFormat("sedml"))
+    {
+      result = this->importSEDML(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      this->mData.mSEDMLFileName = "";
+      this->mData.mSBMLFileName = "";
+    }
+  else if (content->isFormat("sbml"))
+    {
+      result = this->importSBML(destinationDir + "/" + content->getLocation(), pProgressReport, deleteOldData);
+      this->mData.mSBMLFileName = "";
+    }
+
+  this->mData.mSaveFileName = "";
+  this->changed();
+
+  return result;
+}
+
+#endif
+
 //TODO SEDML
 #ifdef COPASI_SEDML
 bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
@@ -1307,7 +1822,9 @@ std::map<CCopasiObject*, SedBase*>& CCopasiDataModel::getCopasi2SEDMLMap()
   return mData.mCopasi2SEDMLMap;
 }
 
-std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion)
+std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler,
+    int sedmlLevel, int sedmlVersion,
+    const std::string& modelLocation)
 {
   CCopasiMessage::clearDeque();
   SedDocument* pOrigSEDMLDocument = NULL;
@@ -1335,8 +1852,7 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
     }
 
   CSEDMLExporter exporter;
-  std::string sbmlDocument = this->exportSBMLToString(pExportHandler, 2, 4);
-  std::string str = exporter.exportModelAndTasksToString(*this, sbmlDocument, sedmlLevel, sedmlVersion);
+  std::string str = exporter.exportModelAndTasksToString(*this, modelLocation, sedmlLevel, sedmlVersion);
 
   // if we have saved the original SEDML model somewhere
   // we have to reset it

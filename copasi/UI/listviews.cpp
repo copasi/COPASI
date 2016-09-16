@@ -147,10 +147,13 @@ const std::string ListViews::ObjectTypeName[] =
  **               set up all the requirement and initialization of the
  **               components in the code.
  ************************************************************/
-ListViews::ListViews(QWidget *parent, const char *name):
+ListViews::ListViews(QWidget *parent,
+                     DataModelGUI * pDataModelGUI,
+                     CCopasiDataModel * pDataModel):
 
   QSplitter(Qt::Horizontal, parent),
-  mpDataModelGUI(NULL),
+  mpDataModelGUI(pDataModelGUI),
+  mpDataModel(pDataModel),
   mpTreeDM(NULL),
   mpTreeSortDM(NULL),
   mpMathModel(NULL),
@@ -219,6 +222,10 @@ ListViews::ListViews(QWidget *parent, const char *name):
   mpLayoutsWidget(NULL),
   mpMathMatrixWidget(NULL)
 {
+  // Sanity check
+  assert(mpDataModelGUI != NULL);
+  assert(mpDataModel != NULL);
+
   // Qt3 support to Qt4 reference states . . .
   // "Use the QSizePolicy() constructor and call the setHorizontalStretch(), setVerticalStretch(), and setHeightForWidth() functions instead."
   // The stretch was set at "1 ,1", before, but maybe it doesn't need to be explicitly set now.
@@ -258,6 +265,8 @@ ListViews::ListViews(QWidget *parent, const char *name):
   Sizes[1] = 560;
   setSizes(Sizes);
 
+  ConstructNodeWidgets();
+
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(slotSort(const QModelIndex &, const QModelIndex &)));
@@ -270,40 +279,18 @@ ListViews::~ListViews()
     mpLayoutsWidget->deleteLayoutWindows();
 }
 
-/************************ListViews::setDataModel(DataModel<Folder>* dm)----------->
- **
- ** Parameters:- DataModel<Folder>* :- pointer to the data model to be used by all the
- **              views
- ** Returns  :-  void(Nothing)
- ** Description:-This method is used to set the datamodel to be used by the
- ** listview class to extract the data from the data-model
- ************************************************************************************/
-void ListViews::setDataModel(DataModelGUI* pDM)
+void ListViews::resetCache()
 {
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
-  if (mpDataModelGUI)
-    {
-      disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
-                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
-    }
+  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
+             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
 
-  mpDataModelGUI = pDM;
   mpTreeDM->setGuiDM(mpDataModelGUI);
-
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-
-  //Set Model for the TableView
-  mpTreeDM->setCopasiDM(pDataModel);
+  mpTreeDM->setCopasiDM(mpDataModel);
   mpTreeView->expand(mpTreeSortDM->mapFromSource(mpTreeDM->index(0, 0, QModelIndex())));
 
-  if (mpDataModelGUI)
-    {
-      connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
-              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
-    }
-
-  ConstructNodeWidgets();
+  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
+          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -659,8 +646,7 @@ void ListViews::ConstructNodeWidgets()
  */
 CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
 {
-  if (!index.isValid() || !mpDataModelGUI)
-    return NULL;
+  if (!index.isValid()) return NULL;
 
   // first try ID
   size_t id = mpTreeDM->getIdFromIndex(index);
@@ -938,7 +924,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 {
   bool changeWidget = true;
 
-  if (!index.isValid() || !mpDataModelGUI) return;
+  if (!index.isValid()) return;
 
   // find the widget
   CopasiWidget* newWidget = findWidgetFromIndex(index);
@@ -987,8 +973,6 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
 void ListViews::switchToOtherWidget(const size_t & id, const std::string & key)
 {
-  if (!mpDataModelGUI) return;
-
   QModelIndex Index = mpTreeDM->index(id, key);
   QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
@@ -1001,8 +985,7 @@ size_t ListViews::getCurrentItemId()
 {
   QModelIndex index = mpTreeView->currentIndex();
 
-  if (!index.isValid() || !mpDataModelGUI)
-    return C_INVALID_INDEX;
+  if (!index.isValid()) return C_INVALID_INDEX;
 
   return mpTreeDM->getIdFromIndex(index);
 }
@@ -1057,6 +1040,11 @@ bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const 
 CopasiWidget* ListViews::getCurrentWidget()
 {return this->mpCurrentWidget;}
 
+void ListViews::clearCurrentWidget()
+{
+    mpCurrentWidget = NULL;
+}
+
 const std::string& ListViews::getCurrentItemKey() const
 {
   return mCurrentItemKey;
@@ -1098,6 +1086,16 @@ void ListViews::updateMIRIAMResourceContents()
       if (dynamic_cast<CQMiriamWidget* >(pWidget))
         dynamic_cast<CQMiriamWidget* >(pWidget)->updateResourcesList();
     }
+}
+
+DataModelGUI * ListViews::getDataModelGUI()
+{
+  return mpDataModelGUI;
+}
+
+CCopasiDataModel * ListViews::getDataModel()
+{
+  return mpDataModel;
 }
 
 void ListViews::setFramework(int framework)

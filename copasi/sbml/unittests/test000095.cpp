@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -59,11 +59,11 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT(pNode->subType() == CEvaluationNode::S_GT);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
@@ -77,7 +77,7 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
@@ -91,7 +91,7 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
@@ -123,11 +123,11 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT(pNode->subType() == CEvaluationNode::S_GT);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
@@ -141,7 +141,7 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
@@ -155,7 +155,7 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
@@ -187,11 +187,11 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT(pNode->subType() == CEvaluationNode::S_GT);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
@@ -205,7 +205,7 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
@@ -219,7 +219,7 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
@@ -253,11 +253,11 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT(pNode->subType() == CEvaluationNode::S_GT);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
@@ -271,7 +271,7 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
@@ -285,7 +285,7 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);
@@ -317,11 +317,11 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::LOGICAL);
-  CPPUNIT_ASSERT((CEvaluationNodeLogical::SubType)CEvaluationNode::subType(pNode->getType()) == CEvaluationNodeLogical::GT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_LOGICAL);
+  CPPUNIT_ASSERT(pNode->subType() == CEvaluationNode::S_GT);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::OBJECT);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCopasiObjectName objectCN = pObjectNode->getObjectCN();
@@ -335,7 +335,7 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 2.0) / 2.0) < 1e-6);
@@ -349,7 +349,7 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(CEvaluationNode::type(pNode->getType()) == CEvaluationNode::NUMBER);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_NUMBER);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pNode);
   CPPUNIT_ASSERT(pNumberNode != NULL);
   CPPUNIT_ASSERT((fabs(pNumberNode->getValue() - 8.0) / 8.0) < 1e-9);

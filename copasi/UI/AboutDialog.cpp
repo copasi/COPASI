@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,8 +36,9 @@ const char* AboutDialog::text =
   "<h2>COPASI %1</h2>"
   "<p>"
   "COPASI is a simulator for biochemical networks. It is a joint project "
-  "by the Mendes group (VBI and University of Manchester) and the Kummer group "
-  "(University of Heidelberg)"
+  "by the Hoops group (Biocomplexity Institute of Virginia Tech), the "
+  "Mendes group (UCONN School of Medicine), the Kummer, and Sahle groups "
+  "(University of Heidelberg)."
   "</p><p>"
   "Please check for new release at http://www.copasi.org, where new releases "
   "will be made available for download."

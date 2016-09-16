@@ -281,38 +281,22 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
 
       if (pModel == NULL) return QVariant();
 
+      std::string ValueUnit, RateUnit, FrequencyUnit, ExpressionUnit;
       QString ValueUnits, RateUnits, FrequencyUnits, ExpressionUnits;
 
-      if (pModel)
-        ValueUnits = FROM_UTF8(pModel->getConcentrationUnitsDisplayString());
+      ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + ")") : "?";
+      ValueUnits = "\n[" + FROM_UTF8(ValueUnit) + "]";
 
-      if (!ValueUnits.isEmpty())
-        ValueUnits = "\n(" + ValueUnits + ")";
+      RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")") : "?";
+      RateUnits = "\n[" + FROM_UTF8(RateUnit) + "]";
 
-      if (pModel)
-        RateUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
+      FrequencyUnit = (pModel != NULL) ? CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")") : "?";
+      FrequencyUnits = "\n[" + FROM_UTF8(FrequencyUnit) + "]";
 
-      if (!RateUnits.isEmpty())
-        RateUnits = "\n(" + RateUnits + ")";
-
-      if (pModel)
-        FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit());
-
-      if (FrequencyUnits != "none")
-        FrequencyUnits = "\n(" + FrequencyUnits + ")";
-
-      if (!ValueUnits.isEmpty() && !RateUnits.isEmpty())
-        {
-          if (ValueUnits == RateUnits)
-            ExpressionUnits = ValueUnits;
-          else
-            ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnitsDisplayString())
-                              + " or " + FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString()) + ")";
-        }
-      else if (!ValueUnits.isEmpty())
-        ExpressionUnits = "\n(" + FROM_UTF8(pModel->getConcentrationUnitsDisplayString()) + " or 1)";
-      else if (!RateUnits.isEmpty())
-        ExpressionUnits = "\n(1 or " + FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString()) + ")";
+      if (ValueUnit == RateUnit)
+        ExpressionUnits = ValueUnits;
+      else
+        ExpressionUnits = "\n[" + FROM_UTF8(ValueUnit) + "] or [" + FROM_UTF8(RateUnit) + "]";
 
       switch (section)
         {
@@ -448,7 +432,6 @@ bool CQSpecieDM::specieDataChange(
   const QVariant &value,
   int column)
 {
-
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
   GET_MODEL_OR(pModel, return false);
@@ -629,24 +612,26 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  size_t index = pModel->findMetabByName(pSpecieData->getName());
+  CMetab * pSpecies = dynamic_cast< CMetab * >(pSpecieData->getObject(pModel));
 
-  if (index == C_INVALID_INDEX) return;
+  if (pSpecies == NULL) return;
 
-  removeRow((int) index);
+  size_t Index = pModel->getMetabolites().getIndex(pSpecies);
+
+  removeRow((int) Index);
 
   if (!pSpecieData->getCreatedCompartment()) return;
 
-  index = pModel->getCompartments().getIndex(pSpecieData->getCompartment());
+  Index = pModel->getCompartments().getIndex(pSpecieData->getCompartment());
 
-  if (index == C_INVALID_INDEX) return;
+  if (Index == C_INVALID_INDEX) return;
 
-  CCompartment* pComp = &pModel->getCompartments()[index];
+  CCompartment* pComp = &pModel->getCompartments()[Index];
 
   if (pComp == NULL) return;
 
   std::string key = pComp->getKey();
-  pModel->removeCompartment(index);
+  pModel->removeCompartment(Index);
   emit notifyGUI(ListViews::COMPARTMENT, ListViews::DELETE, key);
 }
 

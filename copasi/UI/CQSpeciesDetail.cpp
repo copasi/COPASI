@@ -150,97 +150,55 @@ void CQSpeciesDetail::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
 
-  const CModel * pModel = NULL;
+  if (mpMetab == NULL) return;
 
-  if (mpMetab)
-    pModel = mpMetab->getModel();
+  const CModel * pModel = mpMetab->getModel();
 
-  QString ValueUnits;
-
-  if (pModel)
-    ValueUnits = FROM_UTF8(pModel->getConcentrationUnitsDisplayString());
-
-  if (!ValueUnits.isEmpty())
-    ValueUnits = " (" + ValueUnits + ")";
-
-  QString RateUnits;
-
-  if (pModel)
-    RateUnits = FROM_UTF8(pModel->getConcentrationRateUnitsDisplayString());
-
-  if (!RateUnits.isEmpty())
-    RateUnits = " (" + RateUnits + ")";
-
-  QString FrequencyUnits;
-
-  if (pModel)
-    FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit());
-
-  if (FrequencyUnits != "none")
-    FrequencyUnits = " (" + FrequencyUnits + ")";
+  QString ParticleNumberUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getValueReference()->getUnits())) + "]";
+  QString ParticleNumberRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getRateReference()->getUnits())) + "]";
+  QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getConcentrationReference()->getUnits())) + "]";
+  QString ConcentrationRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getConcentrationRateReference()->getUnits())) + "]";
 
   switch (mFramework)
     {
       case 0:
-        mpLblValue->setText("Concentration" + ValueUnits);
+        mpLblInitialValue->setText("Initial Concentration\n" + ConcentrationUnits);
+        mpLblInitialExpression->setText("Initial Expression\n" + ConcentrationUnits);
 
         if (mpMetab != NULL &&
             (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] == CModelEntity::ASSIGNMENT)
-          mpLblExpression->setText("Expression" + ValueUnits);
+          mpLblExpression->setText("Expression " + ConcentrationUnits);
         else
-          mpLblExpression->setText("Expression" + RateUnits);
+          mpLblExpression->setText("Expression " + ConcentrationRateUnits);
 
-        mpLblRate->setText("Rate" + RateUnits);
-
-        ValueUnits.replace(0, 1, '\n'); // Line break instead of space
-        mpLblInitialValue->setText("Initial Concentration" + ValueUnits);
-        mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
+        mpLblValue->setText("Concentration " + ConcentrationUnits);
+        mpLblRate->setText("Rate " + ConcentrationRateUnits);
 
         mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+        mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
 
-        if (mpMetab != NULL)
-          {
-            mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
-            mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
-            mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
-          }
-        else
-          {
-            mpEditInitialValue->setReadOnly(false);
-            mpEditCurrentValue->setText("");
-            mpEditRate->setText("");
-          }
+        mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
+        mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
 
         break;
 
       case 1:
-        mpLblInitialValue->setText("Initial Particle Number");
+        mpLblInitialValue->setText("Initial Particle Number " + ParticleNumberUnits);
+        mpLblInitialExpression->setText("Initial Expression " + ConcentrationUnits);
 
-        ValueUnits.replace(0, 1, '\n'); // Line break instead of space
-        mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
-
-        if (mpMetab != NULL &&
-            mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
-          mpLblExpression->setText("Expression" + ValueUnits);
+        if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
+          mpLblExpression->setText("Expression" + ConcentrationUnits);
         else
-          mpLblExpression->setText("Expression" + RateUnits);
+          mpLblExpression->setText("Expression" + ConcentrationRateUnits);
 
-        mpLblValue->setText("Particle Number");
-        mpLblRate->setText("Rate" + FrequencyUnits);
+        mpLblValue->setText("Particle Number " + ParticleNumberUnits);
+        mpLblRate->setText("Rate " + ParticleNumberRateUnits);
 
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
         mpEditInitialValue->setReadOnly(false);
 
-        if (mpMetab != NULL)
-          {
-            mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
-            mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
-          }
-        else
-          {
-            mpEditCurrentValue->setText("");
-            mpEditRate->setText("");
-          }
+        mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
+        mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
 
         break;
     }
@@ -271,13 +229,8 @@ void CQSpeciesDetail::load()
   if (mpMetab)
     pModel = mpMetab->getModel();
 
-  QString TimeUnits;
-
-  if (pModel)
-    TimeUnits = FROM_UTF8(pModel->getTimeUnitsDisplayString());
-
-  if (!TimeUnits.isEmpty())
-    TimeUnits = " (" + TimeUnits + ")";
+  std::string TimeUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getTimeUnit()) : "?";
+  QString TimeUnits = " [" + FROM_UTF8(TimeUnit) + "]";
 
   // Update the labels to reflect the model units
   mpLblTransitionTime->setText("Transition Time " + TimeUnits);
@@ -767,8 +720,10 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  size_t index = pModel->findMetabByName(pSData->getName());
-  CMetab *pSpecies = &pModel->getMetabolites()[index];
+  CMetab * pSpecies = dynamic_cast< CMetab * >(pSData->getObject(pModel));
+
+  if (pSpecies == NULL) return;
+
   std::string key = pSpecies->getKey();
   pModel->removeMetabolite(key);
 
@@ -865,11 +820,10 @@ void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
   GET_MODEL_OR_RETURN(pModel);
 
   //find the species of interest and switch to its widget
-  size_t index = pModel->findMetabByName(pSData->getName());
+  CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
 
-  if (index != C_INVALID_INDEX)
+  if (pSpecie != NULL)
     {
-      CMetab *pSpecie = &pModel->getMetabolites()[index];
       std::string key = pSpecie->getKey();
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
     }
@@ -920,11 +874,10 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
   GET_MODEL_OR_RETURN(pModel);
 
   //find the species of interest and switch to its widget
-  size_t index = pModel->findMetabByName(pSData->getName());
+  CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
 
-  if (index != C_INVALID_INDEX)
+  if (pSpecie != NULL)
     {
-      CMetab *pSpecie = &pModel->getMetabolites()[index];
       std::string key = pSpecie->getKey();
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
     }

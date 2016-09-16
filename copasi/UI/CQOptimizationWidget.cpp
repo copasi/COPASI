@@ -25,6 +25,7 @@
 #include "UI/CCopasiSelectionDialog.h"
 #include "UI/qtUtilities.h"
 #include "UI/CQExpressionWidget.h"
+#include "UI/CQCopasiApplication.h"
 
 #include "report/CKeyFactory.h"
 #include "optimization/COptTask.h"

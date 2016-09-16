@@ -261,6 +261,12 @@ public:
   ~CMetab();
 
   /**
+   * Retrieve the units of the object.
+   * @return std::string units
+   */
+  virtual const std::string getUnits() const;
+
+  /**
    * Retrieve the units of the child object.
    * @return const & CUnit units
    */
@@ -404,11 +410,6 @@ public:
    *
    */
   const CCompartment * getCompartment() const;
-
-  /**
-   *
-   */
-  const CModel * getModel() const;
 
   /**
    *  Set transition time

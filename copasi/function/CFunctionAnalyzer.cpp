@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1083,29 +1083,29 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
           continue;
         }
 
-      switch (CEvaluationNode::type(itNode->getType()))
+      switch (itNode->mainType())
         {
-          case CEvaluationNode::OPERATOR:
+          case CEvaluationNode::T_OPERATOR:
 
-            switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(itNode->getType()))
+            switch (itNode->subType())
               {
-                case CEvaluationNodeOperator::MULTIPLY:
+                case CEvaluationNode::S_MULTIPLY:
                   Result = itNode.context()[0] * itNode.context()[1];
                   break;
 
-                case CEvaluationNodeOperator::DIVIDE:
+                case CEvaluationNode::S_DIVIDE:
                   Result = itNode.context()[0] / itNode.context()[1];
                   break;
 
-                case CEvaluationNodeOperator::PLUS:
+                case CEvaluationNode::S_PLUS:
                   Result = itNode.context()[0] + itNode.context()[1];
                   break;
 
-                case CEvaluationNodeOperator::MINUS:
+                case CEvaluationNode::S_MINUS:
                   Result = itNode.context()[0] - itNode.context()[1];
                   break;
 
-                case CEvaluationNodeOperator::POWER:
+                case CEvaluationNode::S_POWER:
                   Result = itNode.context()[0] ^ itNode.context()[1];
                   break;
 
@@ -1121,11 +1121,11 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
             break;
 
-          case CEvaluationNode::NUMBER:
-            Result = itNode->getValue();
+          case CEvaluationNode::T_NUMBER:
+            Result = *itNode->getValuePointer();
             break;
 
-          case CEvaluationNode::VARIABLE:
+          case CEvaluationNode::T_VARIABLE:
           {
             const CEvaluationNodeVariable * pENV = static_cast<const CEvaluationNodeVariable*>(*itNode);
 
@@ -1141,11 +1141,11 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
           break;
 
-          case CEvaluationNode::FUNCTION:
+          case CEvaluationNode::T_FUNCTION:
 
-            switch ((CEvaluationNodeFunction::SubType) CEvaluationNode::subType(itNode->getType()))
+            switch (itNode->subType())
               {
-                case CEvaluationNodeFunction::MINUS:
+                case CEvaluationNode::S_MINUS:
                   Result = itNode.context()[0].invert();
                   break;
 
@@ -1156,12 +1156,12 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
             break;
 
-          case CEvaluationNode::CHOICE:
+          case CEvaluationNode::T_CHOICE:
             //TODO: implement
             Result = CValue::unknown;
             break;
 
-          case CEvaluationNode::CALL:
+          case CEvaluationNode::T_CALL:
           {
             const CEvaluationNodeCall * pENCall = static_cast<const CEvaluationNodeCall*>(*itNode);
 
@@ -1186,7 +1186,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
           }
           break;
 
-          case CEvaluationNode::OBJECT:
+          case CEvaluationNode::T_OBJECT:
 
             if (mode == NOOBJECT)
               {

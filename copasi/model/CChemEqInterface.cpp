@@ -757,7 +757,7 @@ bool CChemEqInterface::isMulticompartment() const
     else if (Compartment != *it)
       return true;
 
-  return false;
+  return Compartment.empty();
 }
 
 const CCompartment * CChemEqInterface::getCompartment() const
@@ -765,7 +765,7 @@ const CCompartment * CChemEqInterface::getCompartment() const
   CChemEq ce;
   writeToChemEq(ce);
 
-  if (ce.getCompartmentNumber() > 1)
+  if (isMulticompartment())
     return NULL;
   else
     {
@@ -781,6 +781,81 @@ const CCompartment * CChemEqInterface::getCompartment() const
       else
         return NULL;
     }
+}
+
+std::string CChemEqInterface::getDefaultCompartment() const
+{
+  std::map< std::string, size_t > CompartmentCount;
+  std::pair< std::map< std::string, size_t >::iterator, bool > Inserted;
+
+  std::vector< std::string >::const_iterator it;
+  std::vector< std::string >::const_iterator end;
+
+  for (it = mSubstrateCompartments.begin(), end = mSubstrateCompartments.end(); it != end; ++it)
+    {
+      Inserted = CompartmentCount.insert(std::make_pair(*it, 0));
+
+      if (!Inserted.second)
+        {
+          Inserted.first->second++;
+        }
+    }
+
+  for (it = mProductCompartments.begin(), end = mProductCompartments.end(); it != end; ++it)
+    {
+      Inserted = CompartmentCount.insert(std::make_pair(*it, 0));
+
+      if (!Inserted.second)
+        {
+          Inserted.first->second++;
+        }
+    }
+
+  for (it = mModifierCompartments.begin(), end = mModifierCompartments.end(); it != end; ++it)
+    {
+      Inserted = CompartmentCount.insert(std::make_pair(*it, 0));
+
+      if (!Inserted.second)
+        {
+          Inserted.first->second++;
+        }
+    }
+
+  std::map< std::string, size_t >::const_iterator itMap = CompartmentCount.begin();
+  std::map< std::string, size_t >::const_iterator endMap = CompartmentCount.end();
+
+  if (itMap == endMap) return "";
+
+  std::map< std::string, size_t >::const_iterator itCompartment = itMap++;
+
+  for (; itMap != endMap; ++itMap)
+    {
+      if (itMap->second > itCompartment->second)
+        {
+          itCompartment = itMap;
+        }
+    }
+
+  return itCompartment->first;
+}
+
+std::set< std::string > CChemEqInterface::getCompartments() const
+{
+  std::set< std::string > Compartments;
+
+  std::vector< std::string >::const_iterator it;
+  std::vector< std::string >::const_iterator end;
+
+  for (it = mSubstrateCompartments.begin(), end = mSubstrateCompartments.end(); it != end; ++it)
+    Compartments.insert(*it);
+
+  for (it = mProductCompartments.begin(), end = mProductCompartments.end(); it != end; ++it)
+    Compartments.insert(*it);
+
+  for (it = mModifierCompartments.begin(), end = mModifierCompartments.end(); it != end; ++it)
+    Compartments.insert(*it);
+
+  return Compartments;
 }
 
 /*static*/

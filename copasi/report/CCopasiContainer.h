@@ -40,10 +40,97 @@ class CCopasiContainer: public CCopasiObject
 {
   //Attributes
 public:
+  class CObjectMap: private std::map< std::string, std::set< CCopasiObject * > >
+  {
+  public:
+    class iterator
+    {
+    public:
+      iterator();
+
+      iterator(const CObjectMap & map,
+               const bool & begin);
+
+      iterator(const iterator & src);
+
+      ~iterator();
+
+      CCopasiObject * operator*() const;
+
+      CCopasiObject * operator->() const;
+
+      iterator & operator++();
+
+      iterator operator++(int);
+
+      bool operator != (const iterator & rhs) const;
+
+    private:
+      const std::map< std::string, std::set< CCopasiObject * > > * mpMap;
+      bool mNameEnd;
+      std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+      bool mObjectEnd;
+      std::set< CCopasiObject * >::iterator mObject;
+    };
+
+    class const_iterator
+    {
+    public:
+      const_iterator();
+
+      const_iterator(const CObjectMap & map,
+                     const bool & begin);
+
+      const_iterator(const const_iterator & src);
+
+      ~const_iterator();
+
+      CCopasiObject * operator*() const;
+
+      CCopasiObject * operator->() const;
+
+      const_iterator & operator++();
+
+      const_iterator operator++(int);
+
+      bool operator != (const const_iterator & rhs) const;
+
+    private:
+      const std::map< std::string, std::set< CCopasiObject * > > * mpMap;
+      bool mNameEnd;
+      std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+      bool mObjectEnd;
+      std::set< CCopasiObject * >::iterator mObject;
+    };
+
+  public:
+    typedef std::map< std::string, std::set< CCopasiObject * > > data;
+    typedef std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject * >::const_iterator > range;
+
+    CObjectMap();
+
+    CObjectMap(const CObjectMap & src);
+
+    ~CObjectMap();
+
+    std::pair< std::set< CCopasiObject * >::iterator, bool > insert(CCopasiObject * pObject);
+    bool erase(CCopasiObject * pObject);
+    void clear();
+
+    bool contains(CCopasiObject * pObject) const;
+
+    std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject * >::const_iterator > equal_range(const std::string & name) const;
+
+    iterator begin();
+    iterator end();
+
+    const_iterator begin() const;
+    const_iterator end() const;
+  };
 
   static const CObjectInterface::ContainerList EmptyList;
 
-  typedef std::multimap<std::string, CCopasiObject * > objectMap;
+  typedef CObjectMap objectMap;
 
 protected:
   objectMap mObjects;

@@ -17,7 +17,7 @@
 
 #include <set>
 
-#include <copasi/UI/qtUtilities.h>
+#include "copasi/UI/qtUtilities.h"
 
 typedef QPair<int, int> PathItem;
 typedef QList<PathItem> Path;
@@ -127,6 +127,7 @@ public:
     MODEL_VOLUME_UNIT_CHANGE, // change of model volume unit
     MODEL_AREA_UNIT_CHANGE, // change of model area unit
     MODEL_LENGTH_UNIT_CHANGE, // change of model length unit
+    MODEL_AVOGADRO_NUMBER_CHANGE, // change of the Avogadro number used in the model
     MODEL_STOCHASTIC_CORRECTION_CHANGE, // change of the stochastic correct on model
     COMPARTMENT_SIMULATION_TYPE_CHANGE, //change of compartment simulation type
     COMPARTMENT_INITIAL_VOLUME_CHANGE, // change of compartment initial volume
@@ -157,6 +158,7 @@ public:
     REACTION_FAST_CHANGE, // change of reaction fast flag
     REACTION_FUNCTION_CHANGE, // change of reaction kinetics
     REACTION_UNIT_CHANGE, // change of the units of the reaction kinetics
+    REACTION_SCALING_COMPARTMENT_CHANGE, // change of the scaling compartment for reaction kinetics
     REACTION_LOCAL_PARAMETER_VALUE_CHANGE, // change of a local parameter value
     REACTION_MAPPING_VOLUME_CHANGE, // mapping of volume in kinetic law changed
     REACTION_MAPPING_SPECIES_CHANGE, // mapping of metabolite changed

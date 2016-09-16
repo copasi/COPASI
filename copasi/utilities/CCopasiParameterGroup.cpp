@@ -29,6 +29,179 @@
 
 #include "utilities/utility.h"
 
+CCopasiParameterGroup::name_iterator::name_iterator():
+  mpGroup(NULL),
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject(),
+  mParameterEnd(true),
+  mParameter()
+{}
+
+CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup & group,
+    const bool & begin):
+  mpGroup(&group),
+  mNameEnd(true),
+  mName(),
+  mObjectEnd(true),
+  mObject(),
+  mParameterEnd(true),
+  mParameter()
+{
+  if (mpGroup != NULL &&
+      mpGroup->mObjects.begin() != mpGroup->mObjects.end())
+    {
+      if (begin)
+        {
+          mNameEnd = false;
+          mName = reinterpret_cast< objectMap::data * >(const_cast< objectMap * >(&mpGroup->mObjects))->begin();
+
+          if (!mName->second.empty())
+            {
+              mObjectEnd = false;
+              mObject = mName->second.begin();
+
+              if (mName->second.size() > 1)
+                {
+                  mParameterEnd = false;
+                  mParameter = mpGroup->beginIndex();
+
+                  while (mParameter != mpGroup->endIndex() &&
+                         (*mParameter)->getObjectName() != mName->first)
+                    ++mParameter;
+
+                  if (mParameter == mpGroup->endIndex())
+                    mParameterEnd = true;
+                }
+            }
+        }
+    }
+}
+
+CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup::name_iterator & src):
+  mpGroup(src.mpGroup),
+  mNameEnd(src.mNameEnd),
+  mName(src.mName),
+  mObjectEnd(src.mObjectEnd),
+  mObject(src.mObject),
+  mParameterEnd(src.mParameterEnd),
+  mParameter(src.mParameter)
+{}
+
+CCopasiParameterGroup::name_iterator::~name_iterator()
+{}
+
+CCopasiObject * CCopasiParameterGroup::name_iterator::operator*() const
+{
+  if (!mParameterEnd)
+    return *mParameter;
+
+  if (!mObjectEnd)
+    return *mObject;
+
+  return NULL;
+}
+
+CCopasiObject * CCopasiParameterGroup::name_iterator::operator->() const
+{
+  if (!mParameterEnd)
+    return *mParameter;
+
+  if (!mObjectEnd)
+    return *mObject;
+
+  return NULL;
+}
+
+CCopasiParameterGroup::name_iterator & CCopasiParameterGroup::name_iterator::operator++()
+{
+  // We first advance through all parameters
+  if (!mParameterEnd)
+    {
+      ++mParameter;
+
+      // We skip parameters which name is not matching
+      while (mParameter != mpGroup->endIndex() &&
+             (*mParameter)->getObjectName() != mName->first)
+        ++mParameter;
+
+      if (mParameter != mpGroup->endIndex())
+        return *this;
+
+      mParameterEnd = true;
+    }
+  else if (!mObjectEnd)
+    {
+      ++mObject;
+
+      if (mObject == mName->second.end())
+        mObjectEnd = true;
+    }
+
+  if (!mObjectEnd)
+    {
+      // We need to skip the parameters which have been handled above;
+      while (mObject != mName->second.end() &&
+             dynamic_cast< CCopasiParameter * >(*mObject) != NULL)
+        ++mObject;
+
+      if (mObject != mName->second.end())
+        return *this;
+
+      mObjectEnd = true;
+    }
+
+  if (!mNameEnd)
+    {
+      ++mName;
+
+      if (mName != reinterpret_cast< objectMap::data * >(const_cast< objectMap * >(&mpGroup->mObjects))->end())
+        {
+          mObjectEnd = false;
+          mObject = mName->second.begin();
+
+          if (mName->second.size() > 1)
+            {
+              mParameterEnd = false;
+              mParameter = mpGroup->beginIndex();
+
+              while (mParameter != mpGroup->endIndex() &&
+                     (*mParameter)->getObjectName() != mName->first)
+                ++mParameter;
+
+              if (mParameter == mpGroup->endIndex())
+                mParameterEnd = true;
+            }
+        }
+      else
+        {
+          mNameEnd = true;
+        }
+    }
+
+  return *this;
+}
+
+CCopasiParameterGroup::name_iterator CCopasiParameterGroup::name_iterator::operator++(int)
+{
+  name_iterator Current(*this);
+  operator++();
+
+  return Current;
+}
+
+bool CCopasiParameterGroup::name_iterator::operator != (const CCopasiParameterGroup::name_iterator & rhs) const
+{
+  return (mpGroup != rhs.mpGroup ||
+          mNameEnd != rhs.mNameEnd ||
+          mObjectEnd != rhs.mObjectEnd ||
+          mParameterEnd != rhs.mParameterEnd ||
+          (!mNameEnd && mName != rhs.mName) ||
+          (!mObjectEnd && mObject != rhs.mObject) ||
+          (!mParameterEnd && mParameter != rhs.mParameter));
+}
+
 CCopasiParameterGroup::CCopasiParameterGroup():
   CCopasiParameter("NoName", GROUP),
   mpElementTemplates(NULL)
@@ -97,11 +270,11 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   if (getObjectName() != rhs.getObjectName())
     setObjectName(rhs.getObjectName());
 
-  name_iterator itRHS = rhs.beginName();
-  name_iterator endRHS = rhs.endName();
+  name_iterator itRHS(rhs, true);
+  name_iterator endRHS(rhs, false);
 
-  name_iterator itLHS = beginName();
-  name_iterator endLHS = endName();
+  name_iterator itLHS(*this, true);
+  name_iterator endLHS(*this, false);
 
   std::vector< CCopasiParameter * > ToBeRemoved;
   std::vector< CCopasiParameter * > ToBeAdded;
@@ -112,14 +285,14 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   while (itRHS != endRHS && itLHS != endLHS)
     {
       // We only assign parameters
-      if ((pRHS = dynamic_cast< CCopasiParameter * >(itRHS->second)) == NULL)
+      if ((pRHS = dynamic_cast< CCopasiParameter * >(*itRHS)) == NULL)
         {
           ++itRHS;
           continue;
         }
 
       // We only assign parameters
-      if ((pLHS = dynamic_cast< CCopasiParameter * >(itLHS->second)) == NULL)
+      if ((pLHS = dynamic_cast< CCopasiParameter * >(*itLHS)) == NULL)
         {
           ++itLHS;
           continue;
@@ -154,7 +327,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   while (itLHS != endLHS)
     {
       // We only assign parameters
-      if ((pLHS = dynamic_cast< CCopasiParameter * >(itLHS->second)) != NULL)
+      if ((pLHS = dynamic_cast< CCopasiParameter * >(*itLHS)) != NULL)
         ToBeRemoved.push_back(pLHS);
 
       ++itLHS;
@@ -164,7 +337,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   while (itRHS != endRHS)
     {
       // We only assign parameters
-      if ((pRHS = dynamic_cast< CCopasiParameter * >(itRHS->second)) != NULL)
+      if ((pRHS = dynamic_cast< CCopasiParameter * >(*itRHS)) != NULL)
         ToBeAdded.push_back(pRHS);
 
       ++itRHS;
@@ -277,12 +450,6 @@ const CCopasiParameterGroup & CCopasiParameterGroup::getElementTemplates() const
   return *mpElementTemplates;
 }
 
-CCopasiParameterGroup::name_iterator CCopasiParameterGroup::beginName() const
-{return const_cast< CCopasiContainer::objectMap * >(&getObjects())->begin();}
-
-CCopasiParameterGroup::name_iterator CCopasiParameterGroup::endName() const
-{return const_cast< CCopasiContainer::objectMap * >(&getObjects())->end();}
-
 CCopasiParameterGroup::index_iterator CCopasiParameterGroup::beginIndex() const
 {return static_cast< elements * >(mpValue)->begin();}
 
@@ -373,26 +540,20 @@ bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
 
 CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
 {
-  std::pair < CCopasiContainer::objectMap::const_iterator,
-      CCopasiContainer::objectMap::const_iterator > range =
-        getObjects().equal_range(name);
+  objectMap::range range = getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
 
-  return
-    dynamic_cast<CCopasiParameter *>(const_cast< CCopasiObject * >(range.first->second));
+  return dynamic_cast<CCopasiParameter *>(const_cast< CCopasiObject * >(*range.first));
 }
 
 const CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name) const
 {
-  std::pair < CCopasiContainer::objectMap::const_iterator,
-      CCopasiContainer::objectMap::const_iterator > range =
-        getObjects().equal_range(name);
+  objectMap::range range = getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
 
-  return
-    dynamic_cast<CCopasiParameter *>(range.first->second);
+  return dynamic_cast<CCopasiParameter *>(*range.first);
 }
 
 CCopasiParameter * CCopasiParameterGroup::getParameter(const size_t & index)

@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeLogical.h,v $
-  $Revision: 1.22 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2012/05/16 23:11:31 $
-  End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -35,25 +27,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeLogical : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    //      NOT = 0x00000001,
-    OR = 0x00000001,
-    XOR = 0x00000002,
-    AND = 0x00000003,
-    EQ = 0x00000004,
-    NE = 0x00000005,
-    GT = 0x00000006,
-    GE = 0x00000007,
-    LT = 0x00000008,
-    LE = 0x00000009
-  };
-
   // Operations
 private:
   /**
@@ -87,45 +60,45 @@ public:
    */
   virtual inline void calculate()
   {
-    switch (mType & 0x00FFFFFF)
+    switch (mSubType)
       {
-        case OR:
-          mValue = (mpLeft->getValue() > 0.5 ||
-                    mpRight->getValue() > 0.5) ? 1.0 : 0.0;
+        case S_OR:
+          mValue = (*mpLeftValue > 0.5 ||
+                    *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
-        case XOR:
-          mValue = ((mpLeft->getValue() > 0.5 && mpRight->getValue() < 0.5) ||
-                    (mpLeft->getValue() < 0.5 && mpRight->getValue() > 0.5)) ? 1.0 : 0.0;
+        case S_XOR:
+          mValue = ((*mpLeftValue > 0.5 && *mpRightValue < 0.5) ||
+                    (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
           break;
 
-        case AND:
-          mValue = (mpLeft->getValue() > 0.5 &&
-                    mpRight->getValue() > 0.5) ? 1.0 : 0.0;
+        case S_AND:
+          mValue = (*mpLeftValue > 0.5 &&
+                    *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
-        case EQ:
-          mValue = (mpLeft->getValue() == mpRight->getValue()) ? 1.0 : 0.0;
+        case S_EQ:
+          mValue = (*mpLeftValue == *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case NE:
-          mValue = (mpLeft->getValue() != mpRight->getValue()) ? 1.0 : 0.0;
+        case S_NE:
+          mValue = (*mpLeftValue != *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case GT:
-          mValue = (mpLeft->getValue() > mpRight->getValue()) ? 1.0 : 0.0;
+        case S_GT:
+          mValue = (*mpLeftValue > *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case GE:
-          mValue = (mpLeft->getValue() >= mpRight->getValue()) ? 1.0 : 0.0;
+        case S_GE:
+          mValue = (*mpLeftValue >= *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case LT:
-          mValue = (mpLeft->getValue() < mpRight->getValue()) ? 1.0 : 0.0;
+        case S_LT:
+          mValue = (*mpLeftValue < *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case LE:
-          mValue = (mpLeft->getValue() <= mpRight->getValue()) ? 1.0 : 0.0;
+        case S_LE:
+          mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
           break;
       }
   }
@@ -170,6 +143,28 @@ public:
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
 
   /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CUnit > & units
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
+
+  /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
    * @param const ASTNode* pNode
    * @param const std::vector< CEvaluationNode * > & children
@@ -202,9 +197,13 @@ public:
 
   // Attributes
 private:
-  CEvaluationNode * mpLeft;
+  // Attributes
+private:
+  CEvaluationNode * mpLeftNode;
+  CEvaluationNode * mpRightNode;
 
-  CEvaluationNode * mpRight;
+  const C_FLOAT64 * mpLeftValue;
+  const C_FLOAT64 * mpRightValue;
 };
 
 #endif // COPASI_CEvaluationNodeLogical

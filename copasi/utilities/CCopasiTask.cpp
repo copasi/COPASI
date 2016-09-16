@@ -374,6 +374,9 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
             mpOutputHandler->output(activity);
 
           break;
+        
+        default: //any unspecified channel is just passed through
+          mpOutputHandler->output(activity);
       }
 }
 

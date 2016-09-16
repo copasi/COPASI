@@ -52,6 +52,10 @@ private:
   std::vector< int > mItemToType;
   CCompartment * mpCompartment;
   bool mChanged;
+  bool mExpressionValid;
+  bool mInitialExpressionValid;
+  QString mValueUnits;
+  QString mRateUnits;
 
   void init();
   void load();
@@ -67,6 +71,7 @@ private slots:
   void slotAddNoiseChanged(bool addNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotMetaboliteTableCurrentChanged(int row, int col);
+  void slotDimesionalityChanged(int);
 
   //additional functions for UNDO framework
   void deleteCompartment();

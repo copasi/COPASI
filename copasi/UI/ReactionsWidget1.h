@@ -64,6 +64,7 @@ protected slots:
   virtual void slotDefaultUnitChecked(const bool & checked);
   virtual void slotConcentrationUnitChecked(const bool & checked);
   virtual void slotAmountUnitChecked(const bool & checked);
+  virtual void slotCompartmentSelectionChanged(const QString &);
 
   //  public slots:
   virtual void slotTableChanged(int index, int sub, QString newValue);

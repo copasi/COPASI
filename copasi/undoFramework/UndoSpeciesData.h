@@ -25,10 +25,6 @@ class CMetab;
 class UndoSpeciesData: public UndoData
 {
 public:
-  UndoSpeciesData(const std::string &key = "",
-                  const std::string &name = "",
-                  const std::string &type = "");
-
   UndoSpeciesData(const CMetab* metab, bool trackDependencies = true);
 
   virtual ~UndoSpeciesData();

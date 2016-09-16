@@ -32,8 +32,12 @@ SIUnit SIUnits[] =
   {"second",     "s",        "s"},
   {"ampere",     "A",        "A"},
   {"kelvin",     "K",        "K"},
-  {"mole",      "mol",      "mol"},
-  {"candela",   "cd",       "cd"},
+  {"candela",    "cd",       "cd"},
+
+  // Additions of base terms for COPASI
+  {"Avogadro",   "Avogadro", "Avogadro"},
+  {"dimensionless",     "1", "1"},
+  {"item",       "#",        "#"},
 
   //SI derived
   {"becquerel",  "Bq",       "s^-1"},
@@ -61,8 +65,6 @@ SIUnit SIUnits[] =
   {"weber",      "Wb",       "m^2*kg*s^-2*A^-1"},
 
   // Fill in some COPASI default unit options
-  {"dimensionless",     "1",                 "1"},
-  {"item",              "#",                 "#"},
   {"minute",            "min",               "60*s"},
   {"hour",              "h",                 "3600*s"},
   {"day",               "d",                 "86400*s"},
@@ -70,38 +72,27 @@ SIUnit SIUnits[] =
   // This must be the last element of the SI unit list! Do not delete!
   {NULL,         NULL,        NULL}
 };
+
 // static
-CUnit CUnitDefinition::getSIUnit(const std::string & symbol,
-                                 const C_FLOAT64 & avogadro)
+CUnit CUnitDefinition::getSIUnit(const std::string & symbol)
 {
+  CUnit SIunit = CUnit();
+
   SIUnit * pSIUnit = SIUnits;
 
-  while (pSIUnit->name && strcmp(pSIUnit->symbol, symbol.c_str()) != 0)
+  while (pSIUnit->symbol && strcmp(pSIUnit->symbol, symbol.c_str()) != 0)
     ++pSIUnit;
 
-  if (!pSIUnit->name)
-    fatalError();
-
-  std::ostringstream buffer;
-
-  if (strcmp(pSIUnit->symbol, "mol"))
+  if (pSIUnit->name)
     {
-      buffer << pSIUnit->expression;
+      SIunit.setExpression(pSIUnit->expression);
     }
-  else
-    {
-      buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
-    }
-
-  CUnit SIunit = CUnit();
-  SIunit.setExpression(buffer.str(), avogadro);
 
   return SIunit;
 }
 
 // static
-void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
-    const C_FLOAT64 & avogadro)
+void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
 {
   SIUnit * pSIUnit = SIUnits;
 
@@ -118,20 +109,10 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units,
         {
           pUnitDef = new CUnitDefinition(pSIUnit->name, Units);
           pUnitDef->setSymbol(pSIUnit->symbol);
+          pUnitDef->mReadOnly = true;
         }
 
-      std::ostringstream buffer;
-
-      if (strcmp(pSIUnit->symbol, "mol"))
-        {
-          buffer << pSIUnit->expression;
-        }
-      else
-        {
-          buffer << CCopasiXMLInterface::DBL(avogadro) << "*#";
-        }
-
-      pUnitDef->setExpression(buffer.str(), avogadro);
+      pUnitDef->setExpression(pSIUnit->expression);
 
       pSIUnit++;
     }
@@ -144,18 +125,8 @@ CUnitDefinition::CUnitDefinition(const std::string & name,
   CCopasiContainer(name, pParent, "Unit"),
   CUnit(),
   CAnnotation(),
-  mSymbol("symbol")
-{
-  setup();
-}
-
-// kind
-CUnitDefinition::CUnitDefinition(const CBaseUnit::Kind & kind,
-                                 const CCopasiContainer * pParent):
-  CCopasiContainer(CBaseUnit::Name[kind], pParent, "Unit"),
-  CUnit(kind),
-  CAnnotation(),
-  mSymbol(CBaseUnit::getSymbol(kind))
+  mSymbol("symbol"),
+  mReadOnly(false)
 {
   setup();
 }
@@ -166,7 +137,8 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
   CCopasiContainer(src, pParent),
   CUnit(src),
   CAnnotation(src),
-  mSymbol(src.mSymbol)
+  mSymbol(src.mSymbol),
+  mReadOnly(src.mReadOnly && src.getObjectParent() != pParent)
 {
   setup();
 }
@@ -218,11 +190,15 @@ bool CUnitDefinition::setSymbol(const std::string & symbol)
 {
   CUnitDefinitionDB * pUnitDefinitionDB = dynamic_cast < CUnitDefinitionDB * >(getObjectParent());
 
-  if (pUnitDefinitionDB == NULL ||
-      pUnitDefinitionDB->changeSymbol(this, symbol))
+  if (pUnitDefinitionDB == NULL)
     {
       mSymbol = symbol;
+      return true;
+    }
 
+  if (pUnitDefinitionDB->changeSymbol(this, symbol))
+    {
+      mSymbol = symbol;
       return true;
     }
 
@@ -272,12 +248,7 @@ bool CUnitDefinition::isBuiltinUnitSymbol(std::string symbol)
 
 bool CUnitDefinition::isReadOnly() const
 {
-  SIUnit * pSIUnit = SIUnits;
-
-  while (pSIUnit->name && getObjectName() != pSIUnit->name)
-    ++pSIUnit;
-
-  return (pSIUnit->name != NULL);
+  return mReadOnly;
 }
 
 // friend

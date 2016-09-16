@@ -157,13 +157,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
             if (pModel == NULL) return QVariant();
 
-            QString RateUnits;
-
-            if (pModel)
-              RateUnits = FROM_UTF8(pModel->getQuantityRateUnitsDisplayString());
-
-            if (!RateUnits.isEmpty())
-              RateUnits = "\n(" + RateUnits + ")";
+            QString RateUnits = "\n[" + FROM_UTF8(CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")")) + "]";
 
             return QVariant("Flux" + RateUnits);
           }
@@ -174,13 +168,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
             if (pModel == NULL) return QVariant();
 
-            QString FrequencyUnits;
-
-            if (pModel)
-              FrequencyUnits = FROM_UTF8(pModel->getFrequencyUnit());
-
-            if (FrequencyUnits != "none")
-              FrequencyUnits = "\n(" + FrequencyUnits + ")";
+            QString FrequencyUnits = "\n[" + FROM_UTF8("1/(" + pModel->getTimeUnit() + ")") + "]";
 
             return QVariant("Flux" + FrequencyUnits);
           }

@@ -168,6 +168,7 @@ set (DEFAULT_HYBRIDODE45 OFF)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   # for the debug version we need to enable
   # COPASI_DEBUG
+  add_definitions(-D_DEBUG)
   add_definitions(-DCOPASI_DEBUG)
   set (DEFAULT_HYBRIDODE45 ON)  
   set (DEFAULT_EXTUNIT ON)
@@ -179,10 +180,13 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 # file system with trace files all over the place (or rather everywhere the
 # program is started)
 
+if (NOT WIN32)
 option(ENABLE_COPASI_DEBUG_TRACE "Enable COPASI Debug Tracing" ${DEFAULT_DEBUG_TRACING})
 if(ENABLE_COPASI_DEBUG_TRACE)
   add_definitions(-DCOPASI_DEBUG_TRACE)
 endif(ENABLE_COPASI_DEBUG_TRACE)
+mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
+endif()
 
 # another option to create the COPASI SE library directly from the files, instead of first building an 
 # object library (necessary sometimes as the object library messes up debugging on VS2013)
@@ -202,6 +206,13 @@ option(ENABLE_COPASI_BANDED_GRAPH "Enable the banded graph widget" OFF)
 if (ENABLE_COPASI_BANDED_GRAPH)
   add_definitions(-DCOPASI_BANDED_GRAPH)
 endif(ENABLE_COPASI_BANDED_GRAPH)
+
+option(ENABLE_COPASI_PE_POPULATION_DISPLAY "Enable the population display during optimization / parameter estimation" OFF)
+if (ENABLE_COPASI_PE_POPULATION_DISPLAY)
+  add_definitions(-DCOPASI_PE_POPULATION_DISPLAY)
+endif(ENABLE_COPASI_PE_POPULATION_DISPLAY)
+mark_as_advanced(ENABLE_COPASI_PE_POPULATION_DISPLAY)
+
 
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
@@ -227,6 +238,18 @@ option(ENABLE_PE_EVENT_CREATION "Enable Event Creation out of time series data" 
 if (ENABLE_PE_EVENT_CREATION)
   add_definitions(-DWITH_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
+
+option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" OFF)
+if (ENABLE_COMBINE_ARCHIVE)
+  add_definitions(-DWITH_COMBINE_ARCHIVE)
+
+  if (WIN32)
+    add_definitions(-DLIBCOMBINE_STATIC=1)
+  endif()
+
+  find_package(LIBCOMBINE REQUIRED)
+  include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
+endif(ENABLE_COMBINE_ARCHIVE)
 
 option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equationa" OFF)
 if (ENABLE_SDE_SUPPORT)
@@ -581,8 +604,12 @@ if(MSVC OR USING_INTEL)
     add_definitions( -D_MT)
     endif(WITH_STATIC_RUNTIME)
     
-    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)
+    # on VS enable multiprocessor build 
+    if (MSVC)
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")      
+    endif()
     
+    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)    
     mark_as_advanced(COPASI_USE_VLD)
     
     if (COPASI_USE_VLD)
@@ -772,6 +799,7 @@ message(STATUS "-----------------------------------------------------------
    SBML Unit                = ${ENABLE_USE_SBMLUNIT}
    Model Merging            = ${ENABLE_WITH_MERGEMODEL}
    SEDML support            = ${ENABLE_COPASI_SEDML}
+   Combine Archive support  = ${ENABLE_COMBINE_ARCHIVE}
    SDE support              = ${ENABLE_SDE_SUPPORT}
    GPROF support            = ${ENABLE_GPROF}
    UNDO framework           = ${ENABLE_COPASI_UNDO}

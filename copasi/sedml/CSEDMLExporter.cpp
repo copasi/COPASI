@@ -1,7 +1,7 @@
-// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /*
  * CSEDMLExporter.cpp
@@ -44,13 +44,13 @@
 #include "commandline/CLocaleString.h"
 
 const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& dataModel,
-    std::string &sbmlModelSource,
+    const std::string &modelLocation,
     unsigned int sedmlLevel,
     unsigned int sedmlVersion)
 {
   this->mSEDMLLevel = sedmlLevel;
   this->mSEDMLVersion = sedmlVersion;
-  this->createSEDMLDocument(dataModel, sbmlModelSource);
+  this->createSEDMLDocument(dataModel, modelLocation);
 
   CSBMLExporter exporter;
   SedWriter* writer = new SedWriter();
@@ -362,7 +362,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CCopasiDataModel& dataModel, c
 void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & modelRef)
 {
   SedModel *model = this->mpSEDMLDocument->createModel();
-  model->setId(modelRef.substr(0, modelRef.length() - 4));
+  model->setId(CDirEntry::baseName(modelRef));
   model->setSource(modelRef);
   model->setLanguage("urn:sedml:language:sbml");
 }
@@ -373,7 +373,7 @@ void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & mod
  */
 void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & modelRef)
 {
-  std::string modelId = modelRef.substr(0, modelRef.length() - 4);
+  std::string modelId = CDirEntry::baseName(modelRef);
   // create time course task
   std::string taskId = createTimeCourseTask(dataModel, modelId);
   createDataGenerators(dataModel, taskId, &dataModel.getTaskList()->operator[]("Time-Course"));

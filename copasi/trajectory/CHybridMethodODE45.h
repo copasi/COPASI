@@ -88,6 +88,13 @@ protected:
     HYBRID
   };
 
+  enum PartitioningStrategyType
+  {
+    AllDeterministic = 0,
+    UserSpecified,
+    AllStochastic
+  };
+
   static std::string PartitioningStrategy[];
 
   //================Function for Class================

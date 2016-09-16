@@ -1,27 +1,27 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_COptMethodEP
 #define COPASI_COptMethodEP
 
-#include "optimization/COptMethod.h"
+#include "optimization/COptPopulationMethod.h"
 
 #include "utilities/CVector.h"
 
 class CRandom;
 
-class COptMethodEP: public COptMethod
+class COptMethodEP: public COptPopulationMethod
 {
   // Operations
 private:
@@ -126,32 +126,7 @@ public:
   virtual bool optimise();
 
 private :
-  // variables
-
-  /**
-   * number of generations
-   */
-  unsigned C_INT32 mGenerations;
-
-  /**
-   * size of the population
-   */
-  unsigned C_INT32 mGeneration;
-
-  /**
-   * Handle to the process report item "Current Generation"
-   */
-  size_t mhGenerations;
-
-  /**
-   * size of the population
-   */
-  unsigned C_INT32 mPopulationSize;
-
-  /**
-   * a pointer to the randomnumber generator.
-   */
-  CRandom * mpRandom;
+  // variables  
 
   size_t mBestIndex;
 
@@ -175,29 +150,9 @@ private :
   C_FLOAT64 mEvaluationValue;
 
   /**
-   * array of values of objective function f/ individuals
-   */
-  CVector <C_FLOAT64> mValue;
-
-  /**
-   * number of parameters
-   */
-  size_t mVariableSize;
-
-  /**
-   * for array of individuals w/ candidate values for the parameters
-   */
-  std::vector< CVector < C_FLOAT64 > * > mIndividual;
-
-  /**
    * for array of variances w/ variance values for the parameters
    */
   std::vector< CVector < C_FLOAT64 > * > mVariance;
-
-  /**
-   * The current iteration
-   */
-  unsigned C_INT32 mCurrentIteration;
 
   /**
    * Pivot vector used for sorting

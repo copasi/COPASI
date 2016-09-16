@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +24,7 @@ bool CDerive::isOne(const CEvaluationNode* node)
 {
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
 
-  if (pENN && pENN->getValue() == 1)
+  if (pENN && *pENN->getValuePointer() == 1)
     return true;
 
   return false;
@@ -34,7 +34,7 @@ bool CDerive::isZero(const CEvaluationNode* node)
 {
   const CEvaluationNodeNumber * pENN = dynamic_cast<const CEvaluationNodeNumber*>(node);
 
-  if (pENN && pENN->getValue() == 0)
+  if (pENN && *pENN->getValuePointer() == 0)
     return true;
 
   return false;
@@ -58,7 +58,7 @@ CEvaluationNode* CDerive::multiply(CEvaluationNode* n1, CEvaluationNode* n2, boo
         {
           deleteBranch(n1);
           deleteBranch(n2);
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
         }
 
       if (isOne(n1))
@@ -67,7 +67,7 @@ CEvaluationNode* CDerive::multiply(CEvaluationNode* n1, CEvaluationNode* n2, boo
             {
               deleteBranch(n1);
               deleteBranch(n2);
-              return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
+              return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "1");
             }
           else
             {
@@ -84,7 +84,7 @@ CEvaluationNode* CDerive::multiply(CEvaluationNode* n1, CEvaluationNode* n2, boo
     }
 
   CEvaluationNode * tmpNode = NULL;
-  tmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MULTIPLY, "*");
+  tmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
   tmpNode->addChild(n1);
   tmpNode->addChild(n2);
   //tmpNode->compile(NULL);
@@ -100,7 +100,7 @@ CEvaluationNode* CDerive::divide(CEvaluationNode* n1, CEvaluationNode* n2, bool 
         {
           deleteBranch(n1);
           deleteBranch(n2);
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
         }
 
       /*if (isOne(n1))
@@ -109,7 +109,7 @@ CEvaluationNode* CDerive::divide(CEvaluationNode* n1, CEvaluationNode* n2, bool 
         {
           deleteBranch(n1);
           deleteBranch(n2);
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "1");
         }
         else
         {
@@ -126,7 +126,7 @@ CEvaluationNode* CDerive::divide(CEvaluationNode* n1, CEvaluationNode* n2, bool 
     }
 
   CEvaluationNode * tmpNode = NULL;
-  tmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+  tmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_DIVIDE, "/");
   tmpNode->addChild(n1);
   tmpNode->addChild(n2);
   //tmpNode->compile(NULL);
@@ -144,7 +144,7 @@ CEvaluationNode* CDerive::add(CEvaluationNode* n1, CEvaluationNode* n2, bool sim
             {
               deleteBranch(n1);
               deleteBranch(n2);
-              return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+              return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
             }
           else
             {
@@ -165,11 +165,11 @@ CEvaluationNode* CDerive::add(CEvaluationNode* n1, CEvaluationNode* n2, bool sim
 
       if (tmp1 && tmp2)
         {
-          return new CEvaluationNodeNumber(tmp1->getValue() + tmp2->getValue());
+          return new CEvaluationNodeNumber(*tmp1->getValuePointer() + *tmp2->getValuePointer());
         }
     }
 
-  CEvaluationNode *newNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::PLUS, "+");
+  CEvaluationNode *newNode = new CEvaluationNodeOperator(CEvaluationNode::S_PLUS, "+");
   newNode->addChild(n1);
   newNode->addChild(n2);
 
@@ -186,7 +186,7 @@ CEvaluationNode* CDerive::subtract(CEvaluationNode *n1, CEvaluationNode *n2, boo
             {
               deleteBranch(n1);
               deleteBranch(n2);
-              return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+              return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
             }
 
           //else
@@ -208,12 +208,12 @@ CEvaluationNode* CDerive::subtract(CEvaluationNode *n1, CEvaluationNode *n2, boo
 
       if (tmp1 && tmp2)
         {
-          CEvaluationNode* tmpNN = new CEvaluationNodeNumber(tmp1->getValue() - tmp2->getValue());
+          CEvaluationNode* tmpNN = new CEvaluationNodeNumber(*tmp1->getValuePointer() - *tmp2->getValuePointer());
           return tmpNN;
         }
     }
 
-  CEvaluationNode *newNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::MINUS, "-");
+  CEvaluationNode *newNode = new CEvaluationNodeOperator(CEvaluationNode::S_MINUS, "-");
   newNode->addChild(n1);
   newNode->addChild(n2);
 
@@ -234,26 +234,26 @@ CEvaluationNode* CDerive::power(CEvaluationNode* n1, CEvaluationNode* n2, bool s
         {
           deleteBranch(n1);
           deleteBranch(n2);
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "1");
         }
 
       if (isZero(n2) && !isZero(n1))
         {
           deleteBranch(n1);
           deleteBranch(n2);
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "1");
         }
 
       if (isZero(n1) && !isZero(n2))
         {
           deleteBranch(n1);
           deleteBranch(n2);
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
         }
     }
 
   CEvaluationNode * tmpNode = NULL;
-  tmpNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+  tmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
   tmpNode->addChild(n1);
   tmpNode->addChild(n2);
   //tmpNode->compile(NULL);
@@ -275,7 +275,7 @@ CEvaluationNode * CDerive::copyBranch_var2obj(const CEvaluationNode* node, std::
 
       if (itNode.parentContextPtr() != NULL)
         {
-          if (itNode->getType() == CEvaluationNode::VARIABLE)
+          if (itNode->mainType() == CEvaluationNode::T_VARIABLE)
             {
               //expand variable nodes
               const CEvaluationNodeVariable* tmpVar = dynamic_cast<const CEvaluationNodeVariable*>(*itNode);
@@ -288,7 +288,7 @@ CEvaluationNode * CDerive::copyBranch_var2obj(const CEvaluationNode* node, std::
         {
           assert(*itNode == node);
 
-          if (itNode->getType() == CEvaluationNode::VARIABLE)
+          if (itNode->mainType() == CEvaluationNode::T_VARIABLE)
             {
               //expand variable nodes
               const CEvaluationNodeVariable* tmpVar = dynamic_cast<const CEvaluationNodeVariable*>(*itNode);
@@ -327,9 +327,9 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
 
       // we now know that derivations of the left and right branch exist
 
-      switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(pENO->getType()))
+      switch (pENO->subType())
         {
-          case CEvaluationNodeOperator::MULTIPLY:
+          case CEvaluationNode::S_MULTIPLY:
           {
             CEvaluationNode * pLeftCopy = copyBranch_var2obj(pENO->getLeft(), env);
             CEvaluationNode * pRightCopy = copyBranch_var2obj(pENO->getRight(), env);
@@ -341,7 +341,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
           }
           break;
 
-          case CEvaluationNodeOperator::DIVIDE:
+          case CEvaluationNode::S_DIVIDE:
           {
             CEvaluationNode * pLeftCopy = copyBranch_var2obj(pENO->getLeft(), env);
             CEvaluationNode * pRightCopy = copyBranch_var2obj(pENO->getRight(), env);
@@ -356,28 +356,28 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
 
             //denominator
             CEvaluationNode * powerNode = power(copyBranch_var2obj(pENO->getRight(), env),
-                                                new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "2"),
+                                                new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "2"),
                                                 simplify);
 
             return divide(minusNode, powerNode, simplify);
           }
           break;
 
-          case CEvaluationNodeOperator::PLUS:
+          case CEvaluationNode::S_PLUS:
 
             return add(pLeftDeriv, pRightDeriv, simplify);
             break;
 
-          case CEvaluationNodeOperator::MINUS:
+          case CEvaluationNode::S_MINUS:
 
             return subtract(pLeftDeriv, pRightDeriv, simplify);
             break;
 
-          case CEvaluationNodeOperator::POWER:
+          case CEvaluationNode::S_POWER:
           {
             // b-1
             CEvaluationNode * tmpNode = subtract(copyBranch_var2obj(pENO->getRight(), env),
-                                                 new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1"),
+                                                 new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "1"),
                                                  simplify);
 
             // a^(b-1)
@@ -388,7 +388,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
                                pLeftDeriv, simplify);
 
             // ln a
-            CEvaluationNodeFunction * funcNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG, "ln");
+            CEvaluationNodeFunction * funcNode = new CEvaluationNodeFunction(CEvaluationNode::S_LOG, "ln");
             funcNode->addChild(copyBranch_var2obj(pENO->getLeft(), env)); // add a
 
             // a * b' * ln a
@@ -424,7 +424,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
 
   if (pENN)
     {
-      newNode = new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+      newNode = new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
       return newNode;
     }
 
@@ -436,7 +436,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
       if (pObject->getCN() == pENObj->getObjectCN())
         {
           //std::cout << "*";
-          return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "1");
+          return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "1");
         }
 
       //now we need to check if we know something about the object so that it needs to be expanded
@@ -451,13 +451,13 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
           //std::cout << "Concentration found" << std::endl;
           //In this context, the concentration is expanded as "amount of substance/volume"
           std::string tmpstr = tmpObj->getObjectParent() ? "<" + tmpObj->getObjectParent()->getCN() + ",Reference=ParticleNumber>" : "<>";
-          CEvaluationNodeObject* amount = new CEvaluationNodeObject(CEvaluationNodeObject::CN, tmpstr);
+          CEvaluationNodeObject* amount = new CEvaluationNodeObject(CEvaluationNode::S_CN, tmpstr);
           amount->compile(pTree);
 
           tmpstr = tmpObj->getObjectAncestor("Compartment") ? "<" + tmpObj->getObjectAncestor("Compartment")->getCN() + ",Reference=Volume>"  : "<>";
-          CEvaluationNodeObject* volume = new CEvaluationNodeObject(CEvaluationNodeObject::CN, tmpstr);
+          CEvaluationNodeObject* volume = new CEvaluationNodeObject(CEvaluationNode::S_CN, tmpstr);
           volume->compile(pTree);
-          CEvaluationNodeObject* volume2 = new CEvaluationNodeObject(CEvaluationNodeObject::CN, tmpstr); //we need this node twice
+          CEvaluationNodeObject* volume2 = new CEvaluationNodeObject(CEvaluationNode::S_CN, tmpstr); //we need this node twice
           volume2->compile(pTree);
 
           CEvaluationNode* damount = deriveBranch(amount, pObject, env, pTree, simplify);
@@ -467,7 +467,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
           return
             subtract(divide(damount, volume, simplify),
                      divide(multiply(amount, dvolume, simplify),
-                            power(volume2, new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "2"), simplify),
+                            power(volume2, new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "2"), simplify),
                             simplify),
                      simplify);
         }
@@ -478,7 +478,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
       //object is a reaction rate
 
       // otherwise return 0.
-      return new CEvaluationNodeNumber(CEvaluationNodeNumber::INTEGER, "0");
+      return new CEvaluationNodeNumber(CEvaluationNode::S_INTEGER, "0");
     }
 
   const CEvaluationNodeCall  *pENCall = dynamic_cast<const CEvaluationNodeCall*>(node);

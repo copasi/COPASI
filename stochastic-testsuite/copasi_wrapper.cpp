@@ -134,7 +134,10 @@ int main(int argc, char *argv[])
       std::cerr << "Invalid method type. Valid options are:" << std::endl;
       std::cerr << "    stochastic" << std::endl;
       std::cerr << "    directMethod" << std::endl;
+      std::cerr << "    adaptiveSA" << std::endl;
       std::cerr << "    tauLeap" << std::endl;
+      std::cerr << "    LSODA" << std::endl;
+      std::cerr << "    HybridODE45" << std::endl;
     }
 
   if (endTime == 0.0)

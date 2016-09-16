@@ -17,15 +17,16 @@
 #include <QtGui/QLineEdit>
 
 #include "parametertable.h"
+#include "CQComboDelegate.h"
 #include "resourcesUI/CQIconResource.h"
+#include "qtUtilities.h"
 
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "model/CMetabNameInterface.h"
-#include "qtUtilities.h"
-#include "utilities/CDimension.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "CQComboDelegate.h"
+#include "utilities/CUnitValidator.h"
+#include "report/CCopasiRootContainer.h"
+#include "math/CMathExpression.h"
 
 ParameterTable::ParameterTable(QWidget * parent)
   : QTableWidget(parent),
@@ -168,18 +169,56 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
 
   CModel * pModel = dynamic_cast< CModel * >(pReaction->getObjectAncestor("Model"));
 
-  //first get the units strings
-  CFindDimensions units(ri.getFunction(), CUnit(pModel->getQuantityUnit()).isDimensionless(),
-                        CUnit(pModel->getVolumeUnit()).isDimensionless(),
-                        CUnit(pModel->getTimeUnit()).isDimensionless(),
-                        CUnit(pModel->getAreaUnit()).isDimensionless(),
-                        CUnit(pModel->getLengthUnit()).isDimensionless()
-                       );
-  units.setUseHeuristics(true);
-  units.setMolecularitiesForMassAction(ri.getChemEqInterface().getMolecularity(CFunctionParameter::SUBSTRATE),
-                                       ri.getChemEqInterface().getMolecularity(CFunctionParameter::PRODUCT));
+  // Handle units
 
-  units.findDimensions(ri.getEffectiveKineticLawUnitType() == CReaction::AmountPerTime);
+  // Determine the units of the variables depending on the type
+  std::vector < CUnit > Variables;
+
+  size_t i, imax = ri.size();
+  size_t j, jmax;
+
+  for (i = 0; i < imax; ++i)
+    {
+      switch (ri.getUsage(i))
+        {
+          case CFunctionParameter::SUBSTRATE:
+          case CFunctionParameter::PRODUCT:
+          case CFunctionParameter::MODIFIER:
+
+            if (ri.isVector(i))
+              {
+                std::vector< std::string > Units = ri.getUnitVector(i);
+
+                std::vector< std::string >::const_iterator it = Units.begin();
+                std::vector< std::string >::const_iterator end = Units.end();
+
+                for (; it != end; ++it)
+                  {
+                    Variables.push_back(*it);
+                  }
+              }
+            else
+              {
+                Variables.push_back(ri.getUnit(i)); // This is just to compare the results
+              }
+
+            break;
+
+          case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::VARIABLE:
+          case CFunctionParameter::TEMPORARY:
+          case CFunctionParameter::VOLUME:
+          case CFunctionParameter::TIME:
+            Variables.push_back(ri.getUnit(i));
+            break;
+        }
+    }
+
+  // TODO CRITICAL This depends on the effective kinetic law units.
+  CMathContainer & Container = pModel->getMathContainer();
+  CUnitValidator Validator(Container, *ri.getFunction());
+
+  Validator.validateUnits(ri.getEffectiveKineticLawUnit(), Variables);
 
   CFunctionParameter::Role usage;
 
@@ -212,8 +251,6 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   mVolumes.clear();
   mVolumes = getListOfAllCompartmentNames(*pModel);
 
-  size_t i, imax = ri.size();
-  size_t j, jmax;
   size_t rowCounter = 0;
 
   QTableWidgetItem *pItem = NULL;
@@ -312,12 +349,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
       setItem((int) rowCounter, 1, pItem);
 
       // add units column
-      const CCopasiDataModel* pDataModel = pModel->getObjectDataModel();
-
-      if (pDataModel == NULL) return;
-
-      QString theseUnits = FROM_UTF8(" " + units.getDimensions()[i].getDisplayString(pModel));
-      pItem = new QTableWidgetItem(theseUnits);
+      pItem = new QTableWidgetItem(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
       pItem->setBackgroundColor(color);
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 4, pItem);
@@ -391,7 +423,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                         }
 
                       item((int) rowCounter, 2)->setText(FROM_UTF8((*metabNames)[j]));
-                      item((int) rowCounter, 4)->setText(theseUnits);
+                      item((int) rowCounter, 4)->setText(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
                     }
                 }
             }

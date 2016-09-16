@@ -765,13 +765,6 @@
     <attribute name="fast">
       <data type="boolean"/>
     </attribute>
-    <attribute name="kineticLawUnitType">
-      <choice>
-        <value type="string">Default</value>
-        <value type="string">AmountPerTime</value>
-        <value type="string">ConcentrationPerTime</value>
-      </choice>
-    </attribute>
     <ref name="annotation.datatype"/>
     <optional>
       <element name="ListOfSubstrates">
@@ -839,6 +832,20 @@
   </define>
 
   <define name="kineticLaw.datatype">
+    <attribute name="unitType">
+      <choice>
+        <value type="string">Default</value>
+        <value type="string">AmountPerTime</value>
+        <value type="string">ConcentrationPerTime</value>
+      </choice>
+    </attribute>
+    <optional>
+      <attribute name="scalingCompartment">
+        <data type="string">
+          <param name="pattern">CN=Root,Model=([^\\\[\]=,>]|\\.)*,Vector=Compartments\[([^\\\[\]=,>]|\\.)*\]</param>
+        </data>
+      </attribute>
+    </optional>
     <attribute name="function">
       <data type="IDREF">
         <param name="pattern">Function_\d+</param>

@@ -359,7 +359,6 @@ protected:
    */
   void exportAndAssignUnit(const CUnit& unit, SBase* sbmlElement);
 
-
   /**
    * Checks all assignments (initial and transient) for references to objects
    * that can not be exported to SBML.
@@ -502,7 +501,7 @@ protected:
    * random distribution functions.
    */
   static void checkForUnsupportedFunctionCalls(const CEvaluationNode& node,
-      const std::set<CEvaluationNodeFunction::SubType>& unsupportedFunctions,
+      const std::set<CEvaluationNode::SubType>& unsupportedFunctions,
       std::vector<SBMLIncompatibility>& result,
       const std::string& objectDescription);
 
@@ -669,7 +668,7 @@ protected:
    * Creates a set of all function subtypes that can not be exported for a
    * certain SBML level.
    */
-  static const std::set<CEvaluationNodeFunction::SubType> createUnsupportedFunctionTypeSet(
+  static const std::set<CEvaluationNode::SubType> createUnsupportedFunctionTypeSet(
     unsigned int sbmlLevel);
 
   /**

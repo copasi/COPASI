@@ -19,7 +19,7 @@
 #include "copasi/UI/ui_CQModelWidget.h"
 
 class QUndoStack;
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
+#include "copasi/undoFramework/CCopasiUndoCommand.h"
 
 class CModel;
 
@@ -39,6 +39,7 @@ public:
 protected slots:
   virtual void slotBtnRevertClicked();
   virtual void slotBtnOKClicked();
+  virtual void slotUpdateAvogadro();
 
 protected:
   virtual bool enterProtected();

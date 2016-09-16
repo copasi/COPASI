@@ -139,13 +139,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="mpCheckContinueEvents">
-         <property name="text">
-          <string>Continue on Simultaneous Events</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <spacer name="mpSpacerEvents">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -262,7 +255,6 @@
   <tabstop>mpEditIntervalSize</tabstop>
   <tabstop>mpEditIntervals</tabstop>
   <tabstop>mpEditDelay</tabstop>
-  <tabstop>mpCheckContinueEvents</tabstop>
  </tabstops>
  <includes>
   <include location="local">TaskWidget.h</include>

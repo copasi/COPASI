@@ -88,16 +88,16 @@ bool CFunction::setInfix(const std::string & infix, bool compile)
 
   for (; it != end; ++it)
     {
-      switch (CEvaluationNode::type((*it)->getType()))
+      switch ((*it)->mainType())
         {
-          case CEvaluationNode::OBJECT:
-          case CEvaluationNode::DELAY:
+          case CEvaluationNode::T_OBJECT:
+          case CEvaluationNode::T_DELAY:
             return false;
             break;
 
-          case CEvaluationNode::CALL:
+          case CEvaluationNode::T_CALL:
 
-            if ((CEvaluationNodeCall::SubType) CEvaluationNode::subType((*it)->getType()) == CEvaluationNodeCall::EXPRESSION)
+            if ((*it)->subType() == CEvaluationNode::S_EXPRESSION)
               {
                 return false;
               }
@@ -247,7 +247,7 @@ bool CFunction::initVariables()
       std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
       for (; it != end; ++it)
-        if (CEvaluationNode::type((*it)->getType()) == CEvaluationNode::VARIABLE)
+        if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
           {
             mVariables.add((*it)->getData(),
                            CFunctionParameter::FLOAT64,
@@ -339,7 +339,7 @@ bool CFunction::completeFunctionList(std::vector< const CFunction * > & list,
 
       for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
         {
-          if (((*it)->getType() & 0xFF000000) == CEvaluationNode::CALL &&
+          if ((*it)->mainType() == CEvaluationNode::T_CALL &&
               (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
               list.end() == std::find(list.begin(), list.end(), &Functions[Index]))
             {
@@ -374,13 +374,13 @@ std::string CFunction::writeMathML(const std::vector< std::vector< std::string >
 {
   std::ostringstream out;
 
-  if (expand && mpRoot)
+  if (expand && mpRootNode)
     {
       bool flag = false; //TODO include check if parentheses are necessary
 
       if (flag) out << "<mfenced>" << std::endl;
 
-      out << mpRoot->buildMMLString(fullExpand, variables);
+      out << mpRootNode->buildMMLString(fullExpand, variables);
 
       if (flag) out << "</mfenced>" << std::endl;
     }
@@ -450,8 +450,8 @@ CFunction * CFunction::createCopy() const
   //newFunction->mVariables = this->mVariables; //WRONG! only shallow copy!!
   newFunction->mReversible = this->mReversible;
 
-  if (this->mpRoot)
-    newFunction->setRoot(this->mpRoot->copyBranch());
+  if (this->mpRootNode)
+    newFunction->setRoot(this->mpRootNode->copyBranch());
 
   //newFunction->mInfix = newFunction->mpRoot->getInfix();
 
@@ -464,7 +464,7 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
     const std::string & name1,
     const std::string & name2) const
 {
-  if (!this->mpRoot) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
+  if (!this->mpRootNode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   if (this->mReversible != TriTrue) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
@@ -481,13 +481,13 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
   std::vector<CFunctionAnalyzer::CValue> callParameters;
   CFunctionAnalyzer::constructCallParameters(this->getVariables(), callParameters, true);
   // find the split point
-  const CEvaluationNode* splitnode = this->mpRoot->findTopMinus(callParameters);
+  const CEvaluationNode* splitnode = this->mpRootNode->findTopMinus(callParameters);
 
   if (!splitnode) return std::pair<CFunction *, CFunction *>((CFunction*)NULL, (CFunction*)NULL);
 
   //create the 2 split trees
-  CEvaluationNode* tmpRoots1 = this->mpRoot->splitBranch(splitnode, true); //left side
-  CEvaluationNode* tmpRoots2 = this->mpRoot->splitBranch(splitnode, false); //right side
+  CEvaluationNode* tmpRoots1 = this->mpRootNode->splitBranch(splitnode, true); //left side
+  CEvaluationNode* tmpRoots2 = this->mpRootNode->splitBranch(splitnode, false); //right side
 
   if (tmpRoots1)
     newFunction1->setRoot(tmpRoots1);

@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -8,14 +8,12 @@
 
 CUnitComponent::CUnitComponent(CBaseUnit::Kind kind,
                                double multiplier,
-                               int scale,
-                               double exponent,
-                               bool isMultiplierAvogadro):
+                               double scale,
+                               double exponent):
   mKind(kind),
   mMultiplier(multiplier),
   mScale(scale),
-  mExponent(exponent),
-  mIsMultiplierAvogadro(isMultiplierAvogadro)
+  mExponent(exponent)
 {}
 
 // copy constructor
@@ -23,8 +21,7 @@ CUnitComponent::CUnitComponent(const CUnitComponent & src):
   mKind(src.mKind),
   mMultiplier(src.mMultiplier),
   mScale(src.mScale),
-  mExponent(src.mExponent),
-  mIsMultiplierAvogadro(src.mIsMultiplierAvogadro)
+  mExponent(src.mExponent)
 {}
 
 CUnitComponent::~CUnitComponent() {}
@@ -39,7 +36,7 @@ double CUnitComponent::getMultiplier() const
   return mMultiplier;
 }
 
-int CUnitComponent::getScale() const
+double CUnitComponent::getScale() const
 {
   return mScale;
 }
@@ -59,7 +56,7 @@ void CUnitComponent::setMultiplier(double multiplier)
   mMultiplier = multiplier;
 }
 
-void CUnitComponent::setScale(int scale)
+void CUnitComponent::setScale(double scale)
 {
   mScale = scale;
 }

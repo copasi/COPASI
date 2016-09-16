@@ -12,6 +12,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#ifndef COPASI_UI3_WINDOW_H
+#define COPASI_UI3_WINDOW_H
+
 #include <string>
 
 #include <QtGui/QMainWindow>
@@ -54,6 +57,10 @@ class QUndoStack;
 #ifdef COPASI_Versioning
 class CModelVersion;
 #endif
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+class CQOptPopulation;
+#endif // COPASI_PE_POPULATION_DISPLAY
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -119,10 +126,16 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+  CQOptPopulation* getPopulationDisplay();
+  void setPopulationDisplay(CQOptPopulation* display);
+#endif // COPASI_PE_POPULATION_DISPLAY
+
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
 
@@ -236,6 +249,13 @@ protected slots:
   void slotOpenRecentSEDMLFile(QAction * pAction);
 #endif
 
+#ifdef WITH_COMBINE_ARCHIVE
+  void slotImportCombine(QString file = QString::null);
+  void slotImportCombineFinished(bool success);
+  void slotExportCombine(QString str = QString::null);
+  void slotExportCombineFinished(bool success);
+#endif
+
 #ifdef COPASI_UNDO
   void slotUndoHistory();
   void slotClearUndoHistory();
@@ -265,6 +285,8 @@ private:
   void setApplicationFont();
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
+  CCopasiDataModel* mpDataModel;
+
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
 
@@ -294,6 +316,11 @@ private:
   QAction* mpaParameterEstimationResult;
 
   QAction* mpaCloseAllWindows;
+
+#ifdef WITH_COMBINE_ARCHIVE
+  QAction* mpaImportCombine;
+  QAction* mpaExportCombine;
+#endif
 
 #ifdef WITH_MERGEMODEL
   QAction* mpaAddModel;
@@ -374,6 +401,10 @@ private:
   QString mProvenanceOrigionTime;
   QString mProvenanceOfOrigionOfFile;
 #endif
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+  CQOptPopulation* mpPopulationDisplay;
+#endif // COPASI_PE_POPULATION_DISPLAY
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
@@ -521,3 +552,5 @@ private:
 
 #endif // COPASI_SBW_INTEGRATION
 };
+
+#endif //COPASI_UI3_WINDOW_H

@@ -418,7 +418,6 @@ public:
     pProblem->setStepNumber((const unsigned C_INT32)steps);
     pProblem->setDuration((const C_FLOAT64)end_time);
     pProblem->setTimeSeriesRequested(true);
-    pProblem->setContinueSimultaneousEvents(true);
 
     pTrajectoryTask->setMethodType(methodType);
 
@@ -431,7 +430,7 @@ public:
 
     if (pMethod->getParameter("Partitioning Strategy"))
       {
-        pMethod->setValue("Partitioning Strategy", std::string("Deterministic Reaction Integration"));
+        pMethod->setValue("Partitioning Strategy", std::string("All Reactions Deterministic"));
       }
 
     CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

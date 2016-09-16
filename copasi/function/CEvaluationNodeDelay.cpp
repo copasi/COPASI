@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,24 +10,31 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "math/CMathContainer.h"
+#include "model/CModel.h"
 #include "utilities/utility.h"
+#include "utilities/CValidatedUnit.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
-  CEvaluationNode(CEvaluationNode::INVALID, ""),
-  mpDelayValue(NULL),
-  mpDelayLag(NULL)
+  CEvaluationNode(T_DELAY, S_INVALID, ""),
+  mpDelayValueNode(NULL),
+  mpDelayLagNode(NULL),
+  mpDelayValueValue(NULL),
+  mpDelayLagValue(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
     const Data & /* data */):
-  CEvaluationNode((Type)(CEvaluationNode::DELAY | subType), "delay"),
-  mpDelayValue(NULL),
-  mpDelayLag(NULL)
+  CEvaluationNode(T_DELAY, subType, "delay"),
+  mpDelayValueNode(NULL),
+  mpDelayLagNode(NULL),
+  mpDelayValueValue(NULL),
+  mpDelayLagValue(NULL)
 {
   switch (subType)
     {
-      case DELAY:
+      case S_DELAY:
         mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
 
@@ -41,8 +48,10 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
   CEvaluationNode(src),
-  mpDelayValue(NULL),
-  mpDelayLag(NULL)
+  mpDelayValueNode(src.mpDelayValueNode),
+  mpDelayLagNode(src.mpDelayLagNode),
+  mpDelayValueValue(src.mpDelayValueValue),
+  mpDelayLagValue(src.mpDelayLagValue)
 {}
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
@@ -51,18 +60,22 @@ bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
 {
   bool success = true;
 
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case DELAY:
-        mpDelayValue = static_cast<CEvaluationNode *>(getChild());
+      case S_DELAY:
+        mpDelayValueNode = static_cast<CEvaluationNode *>(getChild());
 
-        if (mpDelayValue == NULL) return false;
+        if (mpDelayValueNode == NULL) return false;
 
-        mpDelayLag = static_cast<CEvaluationNode *>(mpDelayValue->getSibling());
+        mpDelayValueValue = mpDelayValueNode->getValuePointer();
 
-        if (mpDelayLag == NULL) return false;
+        mpDelayLagNode = static_cast<CEvaluationNode *>(mpDelayValueNode->getSibling());
 
-        return (mpDelayLag->getSibling() == NULL); // We must have exactly 2 children
+        if (mpDelayLagNode == NULL) return false;
+
+        mpDelayLagValue = mpDelayLagNode->getValuePointer();
+
+        return (mpDelayLagNode->getSibling() == NULL); // We must have exactly 2 children
 
         break;
 
@@ -79,9 +92,9 @@ std::string CEvaluationNodeDelay::getInfix(const std::vector< std::string > & ch
 {
   if (const_cast<CEvaluationNodeDelay*>(this)->compile(NULL))
     {
-      switch (mType & 0x00FFFFFF)
+      switch (mSubType)
         {
-          case DELAY:
+          case S_DELAY:
             return mData + "(" + children[0] + "," + children[1] + ")";
             break;
 
@@ -96,9 +109,9 @@ std::string CEvaluationNodeDelay::getInfix(const std::vector< std::string > & ch
 // virtual
 std::string CEvaluationNodeDelay::getDisplayString(const std::vector< std::string > & children) const
 {
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case DELAY:
+      case S_DELAY:
         return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
@@ -112,9 +125,9 @@ std::string CEvaluationNodeDelay::getDisplayString(const std::vector< std::strin
 // virtual
 std::string CEvaluationNodeDelay::getCCodeString(const std::vector< std::string > & children) const
 {
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case DELAY:
+      case S_DELAY:
         return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
@@ -128,9 +141,9 @@ std::string CEvaluationNodeDelay::getCCodeString(const std::vector< std::string 
 // virtual
 std::string CEvaluationNodeDelay::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
 {
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case DELAY:
+      case S_DELAY:
         return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
@@ -144,9 +157,9 @@ std::string CEvaluationNodeDelay::getBerkeleyMadonnaString(const std::vector< st
 // virtual
 std::string CEvaluationNodeDelay::getXPPString(const std::vector< std::string > & children) const
 {
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case DELAY:
+      case S_DELAY:
         return mData + "(" + children[0] + "," + children[1] + ")";
         break;
 
@@ -157,6 +170,33 @@ std::string CEvaluationNodeDelay::getXPPString(const std::vector< std::string > 
   return "@";
 }
 
+// virtual
+CValidatedUnit CEvaluationNodeDelay::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
+{
+  // The units of the delay functions are the units of the delay value which is the first child
+  CValidatedUnit Delay = units[0];
+  CValidatedUnit Lag = CValidatedUnit::merge(CValidatedUnit(container.getModel().getTimeUnit(), false), units[1]);
+
+  Delay.setConflict(Delay.conflict() || Lag.conflict());
+
+  return Delay;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeDelay::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Delay = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeDelay * >(this))->second,
+                         targetUnits[const_cast< CEvaluationNodeDelay * >(this)]);
+
+  targetUnits[mpDelayValueNode] = Delay;
+  targetUnits[mpDelayLagNode] = CValidatedUnit(container.getModel().getTimeUnit(), false);
+
+  return Delay;
+}
+
 // static
 CEvaluationNode * CEvaluationNodeDelay::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
 {
@@ -164,7 +204,7 @@ CEvaluationNode * CEvaluationNodeDelay::fromAST(const ASTNode * pASTNode, const 
 
   size_t i = 0, iMax = children.size();
 
-  SubType subType = CEvaluationNodeDelay::DELAY;
+  SubType subType = S_DELAY;
   std::string data = "delay";
 
   CEvaluationNode * pConvertedNode = new CEvaluationNodeDelay(subType, data);
@@ -201,9 +241,9 @@ std::string CEvaluationNodeDelay::getMMLString(const std::vector< std::string > 
 {
   std::ostringstream out;
 
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case DELAY:
+      case S_DELAY:
         out << "<mrow>" << std::endl;
 
         out << "<mi>" << mData << "</mi>" << std::endl;

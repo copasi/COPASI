@@ -287,6 +287,8 @@ bool CCopasiObject::setObjectName(const std::string & name)
       mpObjectParent->getObject("[" + CCopasiObjectName::escape(Name) + "]"))
     return false;
 
+  bool Add = (mpObjectParent != NULL && mpObjectParent->CCopasiContainer::remove(this));
+
   if (smpRenameHandler && mpObjectParent)
     {
       std::string oldCN = this->getCN();
@@ -299,10 +301,11 @@ bool CCopasiObject::setObjectName(const std::string & name)
       //we may know that this is not necessary
     }
   else
-    {mObjectName = Name;}
+    {
+      mObjectName = Name;
+    }
 
-  if (mpObjectParent &&
-      mpObjectParent->CCopasiContainer::remove(this))
+  if (Add)
     {
       mpObjectParent->CCopasiContainer::add(this, false);
     }
@@ -605,7 +608,7 @@ const std::string CCopasiObject::getUnits() const
   if (mpObjectParent != NULL)
     return mpObjectParent->getChildObjectUnits(this);
 
-  return "";
+  return "?";
 }
 
 std::ostream &operator<<(std::ostream &os, const CCopasiObject & o)

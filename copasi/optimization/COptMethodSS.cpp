@@ -1,4 +1,4 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,20 +30,13 @@
 COptMethodSS::COptMethodSS(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
-  mIterations(0),
-  mPopulationSize(0),
-  mVariableSize(0),
-  mRefSet(0),
-  mRefSetVal(0),
+  COptPopulationMethod(pParent, methodType, taskType),
   mPool(0),
   mPoolVal(0),
   mPoolSize(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mIteration(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX),
-  mpRandom(NULL),
   mpOptProblemLocal(NULL),
   mpLocalMinimizer(NULL)
 {
@@ -60,20 +53,13 @@ COptMethodSS::COptMethodSS(const CCopasiContainer * pParent,
 
 COptMethodSS::COptMethodSS(const COptMethodSS & src,
                            const CCopasiContainer * pParent):
-  COptMethod(src, pParent),
-  mIterations(0),
-  mPopulationSize(0),
-  mVariableSize(0),
-  mRefSet(0),
-  mRefSetVal(0),
+  COptPopulationMethod(src, pParent),
   mPool(0),
   mPoolVal(0),
   mPoolSize(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mIteration(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX),
-  mpRandom(NULL),
   mpOptProblemLocal(NULL),
   mpLocalMinimizer(NULL)
 {
@@ -96,7 +82,7 @@ bool COptMethodSS::elevateChildren()
 
 void COptMethodSS::initObjects()
 {
-  addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentGeneration, CCopasiObject::ValueInt);
 }
 
 bool COptMethodSS::initialize()
@@ -105,26 +91,26 @@ bool COptMethodSS::initialize()
 
   size_t i;
 
-  if (!COptMethod::initialize())
+  if (!COptPopulationMethod::initialize())
     {
       if (mpCallBack)
-        mpCallBack->finishItem(mhIterations);
+        mpCallBack->finishItem(mhGenerations);
 
       return false;
     }
 
   // get total number of iterations
-  mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
+  mGenerations = getValue< unsigned C_INT32 >("Number of Iterations");
   // set current iteration to zero
-  mIteration = 0;
+  mCurrentGeneration = 0;
 
   if (mpCallBack)
-    mhIterations =
+    mhGenerations =
       mpCallBack->addItem("Current Iteration",
-                          mIteration,
-                          & mIterations);
+                          mCurrentGeneration,
+                          & mGenerations);
 
-  mIteration++;
+  mCurrentGeneration++;
 
 #ifdef COPASI_DEBUG
   mpRandom =
@@ -132,6 +118,7 @@ bool COptMethodSS::initialize()
                              getValue< unsigned C_INT32 >("Seed"));
 #else
   // Use the default random number generator which is the Mersenne Twister
+  pdelete(mpRandom);
   mpRandom = CRandom::createGenerator();
 #endif
 
@@ -139,9 +126,6 @@ bool COptMethodSS::initialize()
 
   // frequency of local optimiser; this is hardcoded as 20 per Jose Egea,
   mLocalFreq = 20;
-
-  // get number of variables in the problem
-  mVariableSize = mpOptItem->size();
 
   // calculate the number of individuals in population
   mPopulationSize = (C_INT32) ceil(1.0 + sqrt(1.0 + 40.0 * mVariableSize) / 2.0);
@@ -201,14 +185,14 @@ bool COptMethodSS::initialize()
   mpLocalMinimizer->setProblem(mpOptProblemLocal);
 
   // create matrix for the RefSet (population)
-  mRefSet.resize(mPopulationSize);
+  mIndividuals.resize(mPopulationSize);
 
   for (i = 0; i < (size_t)mPopulationSize; ++i)
-    mRefSet[i] = new CVector< C_FLOAT64 >(mVariableSize);
+    mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   // create vector for function values (of RefSet members)
-  mRefSetVal.resize(mPopulationSize);
-  mRefSetVal = std::numeric_limits<C_FLOAT64>::infinity();
+  mValues.resize(mPopulationSize);
+  mValues = std::numeric_limits<C_FLOAT64>::infinity();
 
   // create vector for counting stuck iterations
   mStuck.resize(mPopulationSize);
@@ -230,13 +214,13 @@ bool COptMethodSS::initialize()
   // create matrix for the pool of diverse solutions
   // this will also be used to store the initial and
   // final positions of local optimizations
-  if (10 * mVariableSize > 2 * mIterations / mLocalFreq)
+  if (10 * mVariableSize > 2 * mGenerations / mLocalFreq)
     {
       mPoolSize = 10 * mVariableSize;
     }
   else
     {
-      mPoolSize = 2 * mIterations / mLocalFreq;
+      mPoolSize = 2 * mGenerations / mLocalFreq;
     }
 
   mPool.resize(mPoolSize);
@@ -278,9 +262,6 @@ bool COptMethodSS::cleanup()
 
   pdelete(mpLocalMinimizer);
 
-  for (i = 0; i < mRefSet.size(); i++)
-    pdelete(mRefSet[i]);
-
   for (i = 0; i < mChild.size(); i++)
     pdelete(mChild[i]);
 
@@ -290,7 +271,7 @@ bool COptMethodSS::cleanup()
   for (i = 0; i < mFreq.size(); i++)
     pdelete(mFreq[i]);
 
-  return true;
+  return COptPopulationMethod::cleanup();
 }
 
 // Find a local minimum
@@ -362,7 +343,7 @@ bool COptMethodSS::randomize(C_INT32 i)
     {
       // get pointers to appropriate elements (easier reading of code)
       COptItem & OptItem = *(*mpOptItem)[j];
-      C_FLOAT64 & Sol = (*mRefSet[i])[j];
+      C_FLOAT64 & Sol = (*mIndividuals[i])[j];
       // calculate lower and upper bounds for this variable
       mn = *OptItem.getLowerBoundValue();
       mx = *OptItem.getUpperBoundValue();
@@ -408,8 +389,8 @@ bool COptMethodSS::randomize(C_INT32 i)
     }
 
   // calculate its fitness
-  Running = evaluate(*mRefSet[i]);
-  mRefSetVal[i] = mEvaluationValue;
+  Running = evaluate(*mIndividuals[i]);
+  mValues[i] = mEvaluationValue;
   // reset the stuck flag
   mStuck[i] = 1;
   return Running;
@@ -713,15 +694,15 @@ bool COptMethodSS::creation(void)
   // 1st b/2 are the best ones in the Pool (sorted already)
   // the 2nd b/2 are random (or later can be made diverse by
   // maximising the Euclidean distances)
-  for (i = 0; i < mPopulationSize; i++)
+  for (i = 0; i < (int)mPopulationSize; i++)
     {
-      (*mRefSet[i]) = (*mPool[i]); // copy the whole vector
-      mRefSetVal[i] = mPoolVal[i]; // keep the value
+      (*mIndividuals[i]) = (*mPool[i]); // copy the whole vector
+      mValues[i] = mPoolVal[i]; // keep the value
       mStuck[i] = 1;               // initialize the mStuck counter
     }
 
   // RefSet needs to be fully sorted. Note that top half is sorted
-  // and we are garanteed that it contains the best values
+  // and we are guaranteed that it contains the best values
   // so it is only bottom half that needs sorting.
   sortRefSet(h, mPopulationSize);
   // we're done
@@ -749,18 +730,18 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
 
           parent = (C_INT32)floor((double)(child - 1) / 2);
 
-          if (mRefSetVal[child] < mRefSetVal[parent])
+          if (mValues[child] < mValues[parent])
             {
               // swap with parent
-              tempval = mRefSetVal[child];
-              mRefSetVal[child] = mRefSetVal[parent];
-              mRefSetVal[parent] = tempval;
+              tempval = mValues[child];
+              mValues[child] = mValues[parent];
+              mValues[parent] = tempval;
               tempval = mStuck[child];
               mStuck[child] = mStuck[parent];
               mStuck[parent] = (C_INT32)tempval;
-              tempvec = mRefSet[child];
-              mRefSet[child] = mRefSet[parent];
-              mRefSet[parent] = tempvec;
+              tempvec = mIndividuals[child];
+              mIndividuals[child] = mIndividuals[parent];
+              mIndividuals[parent] = tempvec;
               // make parent the new child
               child = parent;
             }
@@ -778,17 +759,17 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
 
       for (i = lower; i < j; i++)
         {
-          if (mRefSetVal[i] > mRefSetVal[i + 1])
+          if (mValues[i] > mValues[i + 1])
             {
-              tempval = mRefSetVal[i];
-              mRefSetVal[i] = mRefSetVal[i + 1];
-              mRefSetVal[i + 1] = tempval;
+              tempval = mValues[i];
+              mValues[i] = mValues[i + 1];
+              mValues[i + 1] = tempval;
               tempval = mStuck[i];
               mStuck[i] = mStuck[i + 1];
               mStuck[i + 1] = (C_INT32)tempval;
-              tempvec = mRefSet[i];
-              mRefSet[i] = mRefSet[i + 1];
-              mRefSet[i + 1] = tempvec;
+              tempvec = mIndividuals[i];
+              mIndividuals[i] = mIndividuals[i + 1];
+              mIndividuals[i + 1] = tempvec;
               k = i;
             }
         }
@@ -822,9 +803,9 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 
   for (C_INT32 k = 0; k < (C_INT32)mVariableSize; ++k)
     {
-      mx = (fabs((*mRefSet[i])[k]) + fabs((*mRefSet[j])[k])) / 2.0;
+      mx = (fabs((*mIndividuals[i])[k]) + fabs((*mIndividuals[j])[k])) / 2.0;
 
-      if (fabs((*mRefSet[i])[k] - (*mRefSet[j])[k]) / mx > dist) return false;
+      if (fabs((*mIndividuals[i])[k] - (*mIndividuals[j])[k]) / mx > dist) return false;
     }
 
   return true;
@@ -858,12 +839,12 @@ bool COptMethodSS::combination(void)
   mChildrenGenerated = false;
 
   // generate children for each member of the population
-  for (i = 0; (i < mPopulationSize) && Running; i++)
+  for (i = 0; (i < (int)mPopulationSize) && Running; i++)
     {
       // keep the parent value in childval[i] so that we only accept better than that
-      mChildVal[i] = mRefSetVal[i];
+      mChildVal[i] = mValues[i];
 
-      for (j = 0; j < mPopulationSize; j++)
+      for (j = 0; j < (int)mPopulationSize; j++)
         {
           // no self-reproduction...
           if (i != j)
@@ -884,16 +865,16 @@ bool COptMethodSS::combination(void)
                   try
                     {
                       // calculate orders of magnitude of the interval
-                      if (((*mRefSet[i])[k] > 0.0) && ((*mRefSet[j])[k] > 0.0))
+                      if (((*mIndividuals[i])[k] > 0.0) && ((*mIndividuals[j])[k] > 0.0))
                         {
-                          la = log10((*mRefSet[i])[k]) - log10(std::max((*mRefSet[j])[k], std::numeric_limits< C_FLOAT64 >::min()));
+                          la = log10((*mIndividuals[i])[k]) - log10(std::max((*mIndividuals[j])[k], std::numeric_limits< C_FLOAT64 >::min()));
                         }
                       else
                         la = 1.0;
 
-                      dd = ((*mRefSet[i])[k] - (*mRefSet[j])[k]) * omatb;
+                      dd = ((*mIndividuals[i])[k] - (*mIndividuals[j])[k]) * omatb;
                       // one of the box limits
-                      c1 = (*mRefSet[i])[k] - dd;
+                      c1 = (*mIndividuals[i])[k] - dd;
 
                       // force it to be within the bounds
                       switch (OptItem.checkConstraint(c1))
@@ -908,7 +889,7 @@ bool COptMethodSS::combination(void)
                         }
 
                       // the other box limit
-                      c2 = (*mRefSet[i])[k] + dd;
+                      c2 = (*mIndividuals[i])[k] + dd;
 
                       // force it to be within the bounds
                       switch (OptItem.checkConstraint(c2))
@@ -927,7 +908,7 @@ bool COptMethodSS::combination(void)
                   catch (...)
                     {
                       // if something failed leave the value intact
-                      xnew[k] = (*mRefSet[i])[k];
+                      xnew[k] = (*mIndividuals[i])[k];
                     }
 
                   // We need to set the value here so that further checks take
@@ -958,8 +939,8 @@ bool COptMethodSS::combination(void)
       if (mStuck[i] == 0)
         {
           // copy the parent
-          xpr = (*mRefSet[i]);
-          xprval = mRefSetVal[i];
+          xpr = (*mIndividuals[i]);
+          xprval = mValues[i];
           lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
           improvement = 1;
 
@@ -1029,7 +1010,7 @@ bool COptMethodSS::childLocalMin(void)
   bestVal = std::numeric_limits<C_FLOAT64>::infinity();
 
   // find the best child
-  for (i = 0; i < mPopulationSize; i++)
+  for (i = 0; i < (int)mPopulationSize; i++)
     {
       if ((mStuck[i] == 0) && (mChildVal[i] < bestVal))
         {
@@ -1081,21 +1062,21 @@ bool COptMethodSS::optimise()
     {
       // initialisation failed, we exit
       if (mpCallBack)
-        mpCallBack->finishItem(mhIterations);
+        mpCallBack->finishItem(mhGenerations);
 
       return false;
     }
 
-  mIteration = 0;
+  mCurrentGeneration = 0;
 
   // create the Pool of diverse candidate solutions
   Running &= creation();
 
   // best value is (always) at position zero
   // store that value
-  mBestValue = mRefSetVal[0];
+  mBestValue = mValues[0];
   // set it upstream
-  Running &= mpOptProblem->setSolution(mBestValue, *mRefSet[0]);
+  Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
   // We found a new best value let's report it.
   mpParentTask->output(COutputInterface::DURING);
 
@@ -1103,7 +1084,7 @@ bool COptMethodSS::optimise()
   if (!Running)
     {
       if (mpCallBack)
-        mpCallBack->finishItem(mhIterations);
+        mpCallBack->finishItem(mhGenerations);
 
       cleanup();
       return true;
@@ -1111,14 +1092,14 @@ bool COptMethodSS::optimise()
 
   // mPool is now going to be used to keep track of initial and final
   // points of local minimizations (to avoid running them more than once)
-  mPoolSize = 2 * mIterations / mLocalFreq;
+  mPoolSize = 2 * mGenerations / mLocalFreq;
   // reset the number of stored minimizations
   mLocalStored = 0;
   // reset the counter for local minimisation
   mLocalIter = 1;
 
   // run the mIterations (and count the creation as being the first)
-  for (mIteration = 1; mIteration < mIterations && Running; mIteration++)
+  for (mCurrentGeneration = 1; mCurrentGeneration < mGenerations && Running; mCurrentGeneration++)
     {
       // check for stagnation or similarity
       needsort = false;
@@ -1178,9 +1159,9 @@ bool COptMethodSS::optimise()
           if (mStuck[i] == 0)
             {
               // copy the child into the population
-              (*mRefSet[i]) = (*mChild[i]);
+              (*mIndividuals[i]) = (*mChild[i]);
               // keep its obj funct value
-              mRefSetVal[i] = mChildVal[i];
+              mValues[i] = mChildVal[i];
               // and reset the stuck counter
               mStuck[i] = 1;
               needsort = true;
@@ -1196,44 +1177,50 @@ bool COptMethodSS::optimise()
       if (needsort) sortRefSet(0, mPopulationSize);
 
       // have we made any progress?
-      if (mRefSetVal[0] < mBestValue)
+      if (mValues[0] < mBestValue)
         {
           // and store that value
-          mBestValue = mRefSetVal[0];
-          Running &= mpOptProblem->setSolution(mBestValue, *mRefSet[0]);
+          mBestValue = mValues[0];
+          Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
 
       if (mpCallBack)
-        Running &= mpCallBack->progressItem(mhIterations);
+        Running &= mpCallBack->progressItem(mhGenerations);
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+      //use a different output channel. It will later get a proper enum name
+      mpParentTask->output(COutputInterface::Activity(8));
+#endif // COPASI_PE_POPULATION_DISPLAY
+
     }
 
   // end of loop for iterations
 
   // the best ever might not be what is on position 0, so bring it back
-  *mRefSet[0] = mpOptProblem->getSolutionVariables();
+  *mIndividuals[0] = mpOptProblem->getSolutionVariables();
 
   // now let's do a final local minimisation with a tighter tolerance
 
   if (Running)
     {
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-006);
-      Running &= localmin(*(mRefSet[0]), mRefSetVal[0]);
+      Running &= localmin(*(mIndividuals[0]), mValues[0]);
     }
 
   // has it improved?
-  if (mRefSetVal[0] < mBestValue)
+  if (mValues[0] < mBestValue)
     {
       // and store that value
-      mBestValue = mRefSetVal[0];
-      Running &= mpOptProblem->setSolution(mBestValue, *mRefSet[0]);
+      mBestValue = mValues[0];
+      Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }
 
   if (mpCallBack)
-    mpCallBack->finishItem(mhIterations);
+    mpCallBack->finishItem(mhGenerations);
 
   cleanup();
   return true;
@@ -1357,13 +1344,13 @@ bool COptMethodSS::serializerefset(C_INT32 first, C_INT32 last)
     {
       for (j = 0; j < mVariableSize; j++)
         {
-          C_FLOAT64 & mut = (*mRefSet[i])[j];
+          C_FLOAT64 & mut = (*mIndividuals[i])[j];
           // print this parameter
           ofile << mut << "\t";
         }
 
       // print the fitness of the individual
-      ofile << mRefSetVal[i] << std::endl;
+      ofile << mValues[i] << std::endl;
     }
 
   ofile << std::endl;

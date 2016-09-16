@@ -43,7 +43,12 @@ CColorScaleSimple::CColorScaleSimple()
 //virtual
 QColor CColorScaleSimple::getColor(const C_FLOAT64 & number) const
 {
-  C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
+  //scale to 0..1
+  C_FLOAT64 tmp;
+  if (mLog)
+    tmp = (log(number) - log(mMin)) / (log(mMax) - log(mMin));
+  else
+    tmp = (number - mMin) / (mMax - mMin);
 
   if (tmp > 1) tmp = 1;
 
@@ -86,6 +91,11 @@ void CColorScaleSimple::startAutomaticParameterCalculation()
 //virtual
 void CColorScaleSimple::passValue(const C_FLOAT64 & number)
 {
+  //if (number != number) return; //NaN
+  
+  if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf or max
+
+  
   if (number > mMax) mMax = number;
 
   if (number < mMin) mMin = number;
@@ -135,7 +145,12 @@ void CColorScaleAdvanced::setColorMax(QColor col)
 
 QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 {
-  C_FLOAT64 tmp = (number - mMin) / (mMax - mMin); //scale to 0..1
+  //scale to 0..1
+  C_FLOAT64 tmp;
+  if (mLog)
+    tmp = (log(number) - log(mMin)) / (log(mMax) - log(mMin));
+  else
+    tmp = (number - mMin) / (mMax - mMin);
 
   if (tmp > 1) tmp = 1;
 
@@ -144,10 +159,58 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
   int r = (int)(mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
   int g = (int)(mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
   int b = (int)(mColorMin.blue() * (1 - tmp) + mColorMax.blue() * tmp);
+  int a = (int)(mColorMin.alpha() * (1 - tmp) + mColorMax.alpha() * tmp);
 
-  QColor color(r, g, b);
+  QColor color(r, g, b, a);
   return color;
 }
+
+//**************************
+
+CColorScaleAuto::CColorScaleAuto()
+: CColorScaleAdvanced(),
+ mData()
+{
+  mColorMax = QColor(255, 0, 0, 80);
+  mColorMin = QColor(0, 255, 0, 80);
+}
+
+//virtual
+void CColorScaleAuto::startAutomaticParameterCalculation()
+{
+  CColorScaleSimple::startAutomaticParameterCalculation();
+  mData.resize(0);
+}
+
+//virtual
+void CColorScaleAuto::passValue(const C_FLOAT64 & number)
+{
+ CColorScaleSimple::passValue(number);
+ mData.push_back(number);
+}
+
+//virtual
+void CColorScaleAuto::finishAutomaticParameterCalculation()
+{
+  CColorScaleSimple::finishAutomaticParameterCalculation();
+  
+  if (mData.size()>=5)
+  {
+    C_INT32 q = mData.size() / 5;
+
+    std::nth_element(mData.begin(), mData.end() - q -1, mData.end());
+    mMax = *(mData.end() - q -1);
+  }
+  
+  if (mMin>0 && mMax>0 && mMax/mMin>100)
+  {
+    mLog=true;
+  }
+    
+}
+
+
+
 
 //**************************
 
@@ -289,3 +352,8 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
 void CColorScaleBiLog::setWhitepoint(const C_FLOAT64 & n) {m1 = log(n);}
 
 void CColorScaleBiLog::setMaxIntensityPoint(const C_FLOAT64 & n) {m2 = log(n);}
+
+
+
+
+

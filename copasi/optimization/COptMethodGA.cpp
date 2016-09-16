@@ -36,23 +36,16 @@
 COptMethodGA::COptMethodGA(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
-  mGenerations(0),
-  mPopulationSize(0),
-  mpRandom(NULL),
-  mVariableSize(0),
-  mIndividual(0),
+  COptPopulationMethod(pParent, methodType, taskType),
   mCrossOverFalse(0),
   mCrossOver(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mValue(0),
   mpPermutation(NULL),
   mLosses(0),
   mPivot(0),
   mMutationVarians(0.1),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX),
-  mGeneration(0)
+  mBestIndex(C_INVALID_INDEX)
 
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
@@ -65,23 +58,16 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent,
 
 COptMethodGA::COptMethodGA(const COptMethodGA & src,
                            const CCopasiContainer * pParent):
-  COptMethod(src, pParent),
-  mGenerations(0),
-  mPopulationSize(0),
-  mpRandom(NULL),
-  mVariableSize(0),
-  mIndividual(0),
+  COptPopulationMethod(src, pParent),
   mCrossOverFalse(0),
   mCrossOver(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mValue(0),
   mpPermutation(NULL),
   mLosses(0),
   mPivot(0),
   mMutationVarians(0.1),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX),
-  mGeneration(0)
+  mBestIndex(C_INVALID_INDEX)
 {initObjects();}
 
 COptMethodGA::~COptMethodGA()
@@ -109,13 +95,13 @@ bool COptMethodGA::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
 bool COptMethodGA::swap(size_t from, size_t to)
 {
-  CVector< C_FLOAT64 > * pTmp = mIndividual[to];
-  mIndividual[to] = mIndividual[from];
-  mIndividual[from] = pTmp;
+  CVector< C_FLOAT64 > * pTmp = mIndividuals[to];
+  mIndividuals[to] = mIndividuals[from];
+  mIndividuals[from] = pTmp;
 
-  C_FLOAT64 dTmp = mValue[to];
-  mValue[to] = mValue[from];
-  mValue[from] = dTmp;
+  C_FLOAT64 dTmp = mValues[to];
+  mValues[to] = mValues[from];
+  mValues[from] = dTmp;
 
   size_t iTmp = mLosses[to];
   mLosses[to] = mLosses[from];
@@ -135,7 +121,7 @@ bool COptMethodGA::mutate(CVector< C_FLOAT64 > & individual)
       COptItem & OptItem = *(*mpOptItem)[j];
       C_FLOAT64 & mut = individual[j];
 
-      // calculate the mutatated parameter
+      // calculate the mutated parameter
       mut *= mpRandom->getRandomNormal(1, mMutationVarians);
 
       // force it to be within the bounds
@@ -220,21 +206,21 @@ bool COptMethodGA::replicate()
 
   // reproduce in consecutive pairs
   for (i = 0; i < mPopulationSize / 2; i++)
-    crossover(*mIndividual[mpPermutation->next()],
-              *mIndividual[mpPermutation->next()],
-              *mIndividual[mPopulationSize + i * 2],
-              *mIndividual[mPopulationSize + i * 2 + 1]);
+    crossover(*mIndividuals[mpPermutation->next()],
+              *mIndividuals[mpPermutation->next()],
+              *mIndividuals[mPopulationSize + i * 2],
+              *mIndividuals[mPopulationSize + i * 2 + 1]);
 
   // check if there is one left over and just copy it
   if (mPopulationSize % 2 > 0)
-    *mIndividual[2 * mPopulationSize - 1] = *mIndividual[mPopulationSize - 1];
+    *mIndividuals[2 * mPopulationSize - 1] = *mIndividuals[mPopulationSize - 1];
 
   // mutate the offspring
   for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
     {
-      mutate(*mIndividual[i]);
-      Continue &= evaluate(*mIndividual[i]);
-      mValue[i] = mEvaluationValue;
+      mutate(*mIndividuals[i]);
+      Continue &= evaluate(*mIndividuals[i]);
+      mValues[i] = mEvaluationValue;
     }
 
   return Continue;
@@ -263,7 +249,7 @@ bool COptMethodGA::select()
           }
         while (i == opp);
 
-        if (mValue[i] < mValue[opp])
+        if (mValues[i] < mValues[opp])
           mLosses[opp]++;
         else
           mLosses[i]++;
@@ -288,10 +274,10 @@ size_t COptMethodGA::fittest()
   C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
   for (i = 0; i < mPopulationSize && !mLosses[i]; i++)
-    if (mValue[i] < BestValue)
+    if (mValues[i] < BestValue)
       {
         BestIndex = i;
-        BestValue = mValue[i];
+        BestValue = mValues[i];
       }
 
   return BestIndex;
@@ -362,7 +348,7 @@ bool COptMethodGA::creation(size_t first,
           mn = *OptItem.getLowerBoundValue();
           mx = *OptItem.getUpperBoundValue();
 
-          C_FLOAT64 & mut = (*mIndividual[i])[j];
+          C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
           try
             {
@@ -403,8 +389,8 @@ bool COptMethodGA::creation(size_t first,
         }
 
       // calculate its fitness
-      Continue &= evaluate(*mIndividual[i]);
-      mValue[i] = mEvaluationValue;
+      Continue &= evaluate(*mIndividuals[i]);
+      mValues[i] = mEvaluationValue;
     }
 
   return Continue;
@@ -412,7 +398,6 @@ bool COptMethodGA::creation(size_t first,
 
 void COptMethodGA::initObjects()
 {
-  addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
 }
 
 bool COptMethodGA::initialize()
@@ -421,7 +406,7 @@ bool COptMethodGA::initialize()
 
   size_t i;
 
-  if (!COptMethod::initialize())
+  if (!COptPopulationMethod::initialize())
     {
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
@@ -429,35 +414,18 @@ bool COptMethodGA::initialize()
       return false;
     }
 
-  mGenerations = (unsigned C_INT32)getValue< C_FLOAT64 >("Number of Generations");
-  mGeneration = 0;
 
-  if (mpCallBack)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mGeneration,
-                          & mGenerations);
-
-  mGeneration++;
-
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
-
-  mVariableSize = mpOptItem->size();
-
-  mIndividual.resize(2 * mPopulationSize);
+  mIndividuals.resize(2 * mPopulationSize);
 
   for (i = 0; i < 2 * mPopulationSize; i++)
-    mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
+    mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mCrossOverFalse.resize(mVariableSize);
   mCrossOverFalse = false;
   mCrossOver.resize(mVariableSize);
 
-  mValue.resize(2 * mPopulationSize);
-  mValue = std::numeric_limits<C_FLOAT64>::infinity();
+  mValues.resize(2 * mPopulationSize);
+  mValues = std::numeric_limits<C_FLOAT64>::infinity();
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
@@ -472,15 +440,9 @@ bool COptMethodGA::initialize()
 
 bool COptMethodGA::cleanup()
 {
-  size_t i;
-
-  pdelete(mpRandom);
   pdelete(mpPermutation);
 
-  for (i = 0; i < mIndividual.size(); i++)
-    pdelete(mIndividual[i]);
-
-  return true;
+  return COptPopulationMethod::cleanup();
 }
 
 bool COptMethodGA::optimise()
@@ -507,7 +469,7 @@ bool COptMethodGA::optimise()
   // first individual is the initial guess
   for (i = 0; i < mVariableSize; i++)
     {
-      C_FLOAT64 & mut = (*mIndividual[0])[i];
+      C_FLOAT64 & mut = (*mIndividuals[0])[i];
       COptItem & OptItem = *(*mpOptItem)[i];
 
       mut = OptItem.getStartValue();
@@ -529,21 +491,21 @@ bool COptMethodGA::optimise()
       *mContainerVariables[i] = mut;
     }
 
-  Continue &= evaluate(*mIndividual[0]);
-  mValue[0] = mEvaluationValue;
+  Continue &= evaluate(*mIndividuals[0]);
+  mValues[0] = mEvaluationValue;
 
   if (!isnan(mEvaluationValue))
     {
       // and store that value
-      mBestValue = mValue[0];
-      Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[0]);
+      mBestValue = mValues[0];
+      Continue &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
     }
 
   // the others are random
-  Continue &= creation(1, mPopulationSize);
+  Continue &= creation(1, 2 * mPopulationSize);
 
 #ifdef DEBUG_OPT
   serializepop(0, mPopulationSize);
@@ -553,11 +515,11 @@ bool COptMethodGA::optimise()
   mBestIndex = fittest();
 
   if (mBestIndex != C_INVALID_INDEX &&
-      mValue[mBestIndex] < mBestValue)
+      mValues[mBestIndex] < mBestValue)
     {
       // and store that value
-      mBestValue = mValue[mBestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
+      mBestValue = mValues[mBestIndex];
+      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -574,9 +536,9 @@ bool COptMethodGA::optimise()
     }
 
   // ITERATE FOR gener GENERATIONS
-  for (mGeneration = 2;
-       mGeneration <= mGenerations && Continue;
-       mGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
+  for (mCurrentGeneration = 2;
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
@@ -608,20 +570,26 @@ bool COptMethodGA::optimise()
       mBestIndex = fittest();
 
       if (mBestIndex != C_INVALID_INDEX &&
-          mValue[mBestIndex] < mBestValue)
+          mValues[mBestIndex] < mBestValue)
         {
           // reset the stalled counters, since we made progress this time
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
           // keep best value
-          mBestValue = mValue[mBestIndex];
+          mBestValue = mValues[mBestIndex];
           // pass the current best value upstream
-          Continue &= mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
+          Continue &= mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
           // We found a new best value lets report it.
           mpParentTask->output(COutputInterface::DURING);
         }
 
       if (mpCallBack)
         Continue &= mpCallBack->progressItem(mhGenerations);
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+      //use a different output channel. It will later get a proper enum name
+      mpParentTask->output(COutputInterface::Activity(8));
+#endif // COPASI_PE_POPULATION_DISPLAY
+
 
 #ifdef DEBUG_OPT
       serializepop(0, mPopulationSize);

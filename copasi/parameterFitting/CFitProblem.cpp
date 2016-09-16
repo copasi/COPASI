@@ -1760,11 +1760,23 @@ CArrayAnnotation & CFitProblem::getScaledFisherInformationEigenvectors() const
 CArrayAnnotation & CFitProblem::getCorrelations() const
 {return *mpCorrelationMatrix;}
 
-const CExperimentSet & CFitProblem::getExperiementSet() const
+const CExperimentSet & CFitProblem::getExperimentSet() const
 {return *mpExperimentSet;}
+
+CExperimentSet &
+CFitProblem::getExperimentSet()
+{
+  return *mpExperimentSet;
+}
 
 const CCrossValidationSet & CFitProblem::getCrossValidationSet() const
 {return *mpCrossValidationSet;}
+
+CCrossValidationSet&
+CFitProblem::getCrossValidationSet()
+{
+  return *mpCrossValidationSet;
+}
 
 bool CFitProblem::setSolution(const C_FLOAT64 & value,
                               const CVector< C_FLOAT64 > & variables)

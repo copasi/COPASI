@@ -412,6 +412,16 @@ unsigned C_INT32 strToUnsignedInt(const char * str,
   return Value;
 }
 
+bool strToIndex(const std::string & str, size_t & index)
+{
+  index = C_INVALID_INDEX;
+  char c = 0x0;
+
+  int found = sscanf(str.c_str(), "%zu%c", &index, &c);
+
+  return (found == 1 && index != C_INVALID_INDEX);
+}
+
 void * stringToPointer(const std::string str)
 {
 #ifdef _MSC_VER

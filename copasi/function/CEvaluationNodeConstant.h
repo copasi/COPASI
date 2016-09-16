@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeConstant.h,v $
-  $Revision: 1.28 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2012/05/16 23:11:31 $
-  End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,31 +28,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeConstant : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    PI = 0x00000000,
-    EXPONENTIALE = 0x00000001,
-
-#ifdef TRUE
-# undef TRUE
-#endif
-    TRUE = 0x00000002,
-
-#ifdef FALSE
-# undef FALSE
-#endif
-    FALSE = 0x00000003,
-
-    _INFINITY = 0x00000004,
-    _NaN = 0x00000005
-  };
-
-  // Operations
 private:
   /**
    * Default constructor
@@ -138,7 +105,6 @@ public:
   virtual std::string getMMLString(const std::vector< std::string > & children,
                                    bool expand,
                                    const std::vector< std::vector< std::string > > & variables) const;
-
 };
 
 #endif // COPASI_CEvaluationNodeConstant

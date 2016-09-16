@@ -124,6 +124,22 @@ public:
   static const CUnitDefinition * getUnitDefFromSymbol(const std::string symbol);
 
   /**
+   * Quote the given symbol if needed
+   * @param const std::string & symbol
+   * @return std::string quotedSymbol
+   */
+  static std::string quoteUnitDefSymbol(const std::string & symbol);
+
+  /**
+   * Replace all old symbols with new symbols in the unit definition DB
+   * and in all models
+   * @param const std::string & oldSymbol
+   * @param const std::string & newSymbol
+   */
+  static void replaceSymbol(const std::string & oldSymbol,
+                            const std::string & newSymbol);
+
+  /**
    * Creates a new datamodel instance and adds it to the list.
    * The new instance is returned by the method.
    */

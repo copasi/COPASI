@@ -21,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
-    <height>268</height>
+    <width>432</width>
+    <height>238</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -340,13 +340,6 @@ Expression</string>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="mpConcentrationUnit">
-       <property name="text">
-        <string>Concentration</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QRadioButton" name="mpAmountUnit">
        <property name="text">
         <string>Amount</string>
@@ -354,17 +347,21 @@ Expression</string>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QRadioButton" name="mpConcentrationUnit">
+       <property name="text">
+        <string>Concentration</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mpComboBoxCompartment">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-      </spacer>
+      </widget>
      </item>
     </layout>
    </item>
@@ -426,7 +423,6 @@ Expression</string>
   <tabstop>mpBtnAddFunction</tabstop>
   <tabstop>mpBoxAddNoise</tabstop>
   <tabstop>mpDefaultUnit</tabstop>
-  <tabstop>mpConcentrationUnit</tabstop>
   <tabstop>mpAmountUnit</tabstop>
   <tabstop>table</tabstop>
   <tabstop>LineEdit3</tabstop>
@@ -551,34 +547,18 @@ Expression</string>
    </hints>
   </connection>
   <connection>
-   <sender>mpBtnAddFunction</sender>
-   <signal>clicked()</signal>
+   <sender>mpComboBoxCompartment</sender>
+   <signal>currentIndexChanged(QString)</signal>
    <receiver>ReactionsWidget1</receiver>
-   <slot>slotNewFunction()</slot>
+   <slot>slotCompartmentSelectionChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>329</x>
-     <y>333</y>
+     <x>387</x>
+     <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>260</x>
-     <y>220</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ComboBox1</sender>
-   <signal>activated(QString)</signal>
-   <receiver>ReactionsWidget1</receiver>
-   <slot>slotComboBoxSelectionChanged(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>173</x>
-     <y>92</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
+     <x>215</x>
+     <y>118</y>
     </hint>
    </hints>
   </connection>
@@ -592,5 +572,6 @@ Expression</string>
   <slot>slotDefaultUnitChecked(bool)</slot>
   <slot>slotConcentrationUnitChecked(bool)</slot>
   <slot>slotAmountUnitChecked(bool)</slot>
+  <slot>slotCompartmentSelectionChanged(QString)</slot>
  </slots>
 </ui>

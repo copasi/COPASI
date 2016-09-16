@@ -1,12 +1,14 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test2/CNormalItem.cpp,v $
-   $Revision: 1.3 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:32:06 $
-   End CVS Header */
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -14,32 +16,34 @@
 #include "CNormalTranslation.h"
 
 CNormalItem::CNormalItem()
-    : mName("no name")
+  : mName("no name")
 {}
 
 CNormalItem::CNormalItem(const std::string& name, const Type& type)
-    : mName(name), mType(type)
+  : mName(name), mType(type)
 {}
 
 CNormalItem::CNormalItem(const CNormalItem& src)
-    : mName(src.mName), mType(src.mType)
+  : mName(src.mName), mType(src.mType)
 {}
 
 CNormalItem * CNormalItem::createItem(const CEvaluationNode* node)
 {
-  switch (CEvaluationNode::type(node->getType()))
+  switch (node->mainType())
     {
-    case CEvaluationNode::VARIABLE:
+      case CEvaluationNode::T_VARIABLE:
       {
         CNormalItem* item = new CNormalItem(node->getInfix(), CNormalItem::VARIABLE);
         return item;
       }
-    case CEvaluationNode::CONSTANT:
+
+      case CEvaluationNode::T_CONSTANT:
       {
         CNormalItem* item = new CNormalItem(node->getInfix(), CNormalItem::CONSTANT);
         return item;
       }
-    case CEvaluationNode::FUNCTION:
+
+      case CEvaluationNode::T_FUNCTION:
       {
         CNormalItem * child = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
 
@@ -55,7 +59,8 @@ CNormalItem * CNormalItem::createItem(const CEvaluationNode* node)
         delete child;
         return item;
       }
-    case CEvaluationNode::OPERATOR:
+
+      case CEvaluationNode::T_OPERATOR:
       {
         if ((node->getData() == "^") || (node->getData() == "%"))
           {
@@ -63,11 +68,14 @@ CNormalItem * CNormalItem::createItem(const CEvaluationNode* node)
             CNormalItem * child2 = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()->getSibling()));
 
             std::stringstream tmp;
+
             if ((child1->getType() == CNormalItem::VARIABLE) || (child1->getType() == CNormalItem::CONSTANT))
               tmp << *child1;
             else
               tmp << "(" << *child1 << ")";
+
             tmp << node->getData();
+
             if ((child2->getType() == CNormalItem::VARIABLE) || (child2->getType() == CNormalItem::CONSTANT))
               tmp << *child2;
             else
@@ -92,7 +100,8 @@ CNormalItem * CNormalItem::createItem(const CEvaluationNode* node)
             return item;
           }
       }
-    default:  //cases CALL, CHOICE, LOGICAL, OBJECT, VECTOR.  NUMBER should not occur!
+
+      default:  //cases CALL, CHOICE, LOGICAL, OBJECT, VECTOR.  NUMBER should not occur!
       {
         std::stringstream tmp;
         tmp << "(" << node->getInfix() << ")" << std::endl;
@@ -115,26 +124,28 @@ bool CNormalItem::setType(const Type& type)
 }
 
 const std::string CNormalItem::getName() const
-  {
-    return mName;
-  }
+{
+  return mName;
+}
 
 const CNormalItem::Type& CNormalItem::getType() const
-  {
-    return mType;
-  }
+{
+  return mType;
+}
 
 bool CNormalItem::operator==(const CNormalItem & rhs) const
-  {return ((rhs.mName == mName) && (rhs.mType == mType));}
+{return ((rhs.mName == mName) && (rhs.mType == mType));}
 
 bool CNormalItem::operator<(const CNormalItem & rhs) const
-  {
-    if (mType < rhs.mType)
-      return true;
-    if (rhs.mType < mType)
-      return false;
-    return (mName < rhs.mName);
-  }
+{
+  if (mType < rhs.mType)
+    return true;
+
+  if (rhs.mType < mType)
+    return false;
+
+  return (mName < rhs.mName);
+}
 
 std::ostream & operator<<(std::ostream &os, const CNormalItem & d)
 {

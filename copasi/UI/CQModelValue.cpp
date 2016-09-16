@@ -507,20 +507,15 @@ void CQModelValue::slotUnitChanged()
   mpModelValue->setUnitExpression(TO_UTF8(mpEditUnits->text()));
 
   CUnit Unit;
-  Unit.setExpression(mpModelValue->getUnitExpression(), CUnit::Avogadro);
+  Unit.setExpression(mpModelValue->getUnitExpression());
 
-  if (Unit.isUndefined())
-    {
-      mpLblInitialValue->setText("Initial Value");
-      mpLblValue->setText("Value");
-      mpLblRate->setText("Rate");
-    }
-  else
-    {
-      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + mpModelValue->getInitialValueReference()->getUnits()) + ")");
-      mpLblValue->setText(FROM_UTF8("Value (" + mpModelValue->getValueReference()->getUnits()) + ")");
-      mpLblRate->setText(FROM_UTF8("Rate (" + mpModelValue->getRateReference()->getUnits()) + ")");
-    }
+  // Update the labels to reflect the model units
+  QString ValueUnits = " [" + FROM_UTF8(CUnit::prettyPrint(mpModelValue->getValueReference()->getUnits())) + "]";
+  QString RateUnits = " [" + FROM_UTF8(CUnit::prettyPrint(CUnit::prettyPrint(mpModelValue->getRateReference()->getUnits()))) + "]";
+
+  mpLblInitialValue->setText("Initial Value" + ValueUnits);
+  mpLblValue->setText("Value" + ValueUnits);
+  mpLblRate->setText("Rate" + RateUnits);
 
   mpModelValue->setUnitExpression(OldUnit);
 }

@@ -28,20 +28,6 @@
 
 #include <copasi/report/CCopasiRootContainer.h>
 
-UndoSpeciesData::UndoSpeciesData(const std::string &key  /*= ""*/,
-                                 const std::string &name /*= ""*/,
-                                 const std::string &type /*= ""*/)
-  : UndoData(key, name, type)
-  , mIConc(0)
-  , mINumber(0)
-  , mCompartment()
-  , mStatus(CModelEntity::REACTIONS)
-  , mInitialExpression()
-  , mExpression()
-  , mCreatedCompartment(false)
-{
-}
-
 UndoSpeciesData::UndoSpeciesData(const CMetab *metab
                                  , bool trackDependencies /*= true*/)
   : UndoData(metab->getKey(), metab->getObjectName())

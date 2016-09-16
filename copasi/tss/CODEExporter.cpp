@@ -77,7 +77,7 @@ void CODEExporter::findFunctionsCalls(const CEvaluationNode* pNode)
 
   while (treeIt != NULL)
     {
-      if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+      if (treeIt->mainType() == CEvaluationNode::T_CALL)
         {
           const CFunction* ifunc;
           ifunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
@@ -429,7 +429,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
 
   for (j = 0; j < jMax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
@@ -562,13 +562,13 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
 
   for (j = 0; j < jMax; ++j)
     {
-      if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::CALL)
+      if (objectNodes[j]->mainType() == CEvaluationNode::T_CALL)
         {
           CEvaluationNodeCall* pObjectNode = dynamic_cast<CEvaluationNodeCall*>(objectNodes[j]);
           assert(pObjectNode);
           objectNodes[j]->setData(NameMap[pObjectNode->getCalledTree()->getKey()]);
         }
-      else if (CEvaluationNode::type(objectNodes[j]->getType()) == CEvaluationNode::OBJECT)
+      else if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
@@ -1376,7 +1376,7 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
 
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::VARIABLE)
+          if (treeIt->mainType() == CEvaluationNode::T_VARIABLE)
             {
 
               size_t index;
@@ -1545,7 +1545,7 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const std::strin
 
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+          if (treeIt->mainType() == CEvaluationNode::T_CALL)
             {
               const CFunction* func;
               func = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
@@ -1573,14 +1573,14 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const std::strin
               CEvaluationNode* tmproot = tmpfunc->getRoot();
               CCopasiTree<CEvaluationNode>::iterator iIt, newIt = tmproot;
 
-              if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+              if (newIt->mainType() == CEvaluationNode::T_VARIABLE)
                 {
                   CEvaluationNode* child = dynamic_cast<CEvaluationNode*>(treeIt->getChild());
                   tmproot = child->copyBranch();
                 }
               else while (newIt != NULL)
                   {
-                    if (CEvaluationNode::type(newIt->getType()) == CEvaluationNode::VARIABLE)
+                    if (newIt->mainType() == CEvaluationNode::T_VARIABLE)
                       {
                         vindex = tmpfunc->getVariableIndex((*newIt).getData());
 
@@ -1669,7 +1669,7 @@ void CODEExporter::modifyTreeForMassAction(CFunction* tmpfunc)
 
   while (treeIt != NULL)
     {
-      if (CEvaluationNode::type(treeIt->getType()) == CEvaluationNode::CALL)
+      if (treeIt->mainType() == CEvaluationNode::T_CALL)
         {
           const CFunction* callfunc;
           callfunc = static_cast<CFunction*>(pFunctionDB->findFunction((*treeIt).getData()));
@@ -1681,8 +1681,7 @@ void CODEExporter::modifyTreeForMassAction(CFunction* tmpfunc)
               CEvaluationNode* child2 = dynamic_cast<CEvaluationNode*>((treeIt->getChild())->getSibling());
 
               CEvaluationNode* newNode = NULL;
-              CEvaluationNode* newNode1 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR
-                                          | CEvaluationNodeOperator::MULTIPLY), "*");
+              CEvaluationNode* newNode1 = CEvaluationNode::create(CEvaluationNode::T_OPERATOR, CEvaluationNode::S_MULTIPLY, "*");
 
               CODEExporter::assembleSubTreeForMassAction(newNode1, child1, child2);
 
@@ -1690,12 +1689,10 @@ void CODEExporter::modifyTreeForMassAction(CFunction* tmpfunc)
 
               if (callfunc->getObjectName() == "Mass action (reversible)")
                 {
-                  newNode = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR
-                                                    | CEvaluationNodeOperator::MINUS), "-");
+                  newNode = CEvaluationNode::create(CEvaluationNode::T_OPERATOR, CEvaluationNode::S_MINUS, "-");
                   newNode->addChild(newNode1, NULL);
 
-                  CEvaluationNode* newNode2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR
-                                              | CEvaluationNodeOperator::MULTIPLY), "*");
+                  CEvaluationNode* newNode2 = CEvaluationNode::create(CEvaluationNode::T_OPERATOR, CEvaluationNode::S_MULTIPLY, "*");
                   CEvaluationNode* child3 = dynamic_cast<CEvaluationNode*>((child2)->getSibling());
                   CEvaluationNode* child4 = dynamic_cast<CEvaluationNode*>((child3)->getSibling());
 
@@ -1731,10 +1728,9 @@ void CODEExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvalu
   newparent->addChild(newchild1, NULL);
   CEvaluationNode* newchild2;
 
-  if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VARIABLE)
+  if (child2->mainType() == CEvaluationNode::T_VARIABLE)
     {
-      newchild2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR
-                                          | CEvaluationNodeOperator::MULTIPLY), "*");
+      newchild2 = CEvaluationNode::create(CEvaluationNode::T_OPERATOR, CEvaluationNode::S_MULTIPLY, "*");
       newparent->addChild(newchild2, newchild1);
       newparent = newchild2;
       newchild1 = child2->copyBranch();
@@ -1744,9 +1740,9 @@ void CODEExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvalu
     }
 
   if (0) // *************** TODO: the current Copasi version does not support the case bellow, the following part is not tested
-    if (CEvaluationNode::type(child2->getType()) == CEvaluationNode::VECTOR)
+    if (child2->mainType() == CEvaluationNode::T_VECTOR)
       {
-        const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *>(child2) ->getVector();
+        const std::vector<CEvaluationNode *> & vector = dynamic_cast< CEvaluationNodeVector *>(child2) ->getNodes();
         std::vector<CEvaluationNode *>::const_iterator it = vector.begin();
         std::vector<CEvaluationNode *>::const_iterator end = vector.end();
 
@@ -1754,8 +1750,7 @@ void CODEExporter::assembleSubTreeForMassAction(CEvaluationNode* newNode, CEvalu
 
         while (it != end)
           {
-            newchild2 = CEvaluationNode::create((CEvaluationNode::Type)(CEvaluationNode::OPERATOR
-                                                | CEvaluationNodeOperator::MULTIPLY), "*");
+            newchild2 = CEvaluationNode::create(CEvaluationNode::T_OPERATOR, CEvaluationNode::S_MULTIPLY, "*");
             newparent->addChild(newchild2, newchild1);
 
             newparent = newchild2;

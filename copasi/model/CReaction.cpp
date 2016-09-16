@@ -46,7 +46,6 @@
 #include "sbml/Compartment.h"
 #include "sbml/SBMLImporter.h"
 
-C_FLOAT64 CReaction::mDefaultScalingFactor = 1.0;
 // static
 const char * CReaction::KineticLawUnitTypeName[] =
 {
@@ -70,12 +69,12 @@ CReaction::CReaction(const std::string & name,
   mpParticleFluxReference(NULL),
   mPropensity(0),
   mpPropensityReference(NULL),
-  mScalingFactor(&mDefaultScalingFactor),
-  mUnitScalingFactor(&mDefaultScalingFactor),
   mMetabKeyMap(),
   mParameters("Parameters", this),
   mFast(false),
-  mKineticLawUnit(CReaction::Default)
+  mKineticLawUnit(CReaction::Default),
+  mScalingCompartmentCN(),
+  mpScalingCompartment(NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -98,13 +97,13 @@ CReaction::CReaction(const CReaction & src,
   mpParticleFluxReference(NULL),
   mPropensity(src.mPropensity),
   mpPropensityReference(NULL),
-  mScalingFactor(src.mScalingFactor),
-  mUnitScalingFactor(src.mUnitScalingFactor),
   mMap(src.mMap),
   mMetabKeyMap(src.mMetabKeyMap),
   mParameters(src.mParameters, this),
   mFast(src.mFast),
-  mKineticLawUnit(src.mKineticLawUnit)
+  mKineticLawUnit(src.mKineticLawUnit),
+  mScalingCompartmentCN(),
+  mpScalingCompartment(NULL)
 {
   mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
 
@@ -117,6 +116,7 @@ CReaction::CReaction(const CReaction & src,
     }
 
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
+  setScalingCompartmentCN(src.mScalingCompartmentCN);
 }
 
 CReaction::~CReaction()
@@ -136,16 +136,17 @@ std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
 
   const std::string & Name = pObject->getObjectName();
 
-  if (Name == "ParticleFlux")
-    return pModel->getFrequencyUnit();
+  if (Name == "ParticleFlux" ||
+      Name == "Propensity")
+    {
+      return "#/(" + pModel->getTimeUnit() + ")";
+    }
   else if (Name == "Flux")
     {
-      return pModel->getQuantityRateUnitsDisplayString();
+      return pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")";
     }
-  else if (Name == "Propensity")
-    return pModel->getFrequencyUnit();
 
-  return "";
+  return "?";
 }
 
 void CReaction::cleanup()
@@ -736,7 +737,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           configbuffer.getVariable(name, "C_INT32", &index);
 
           metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
-          addParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)].getKey());
+          addParameterMapping(parName, pModel->findMetabByName(metabName)->getKey());
         }
     }
   else //no vector
@@ -771,12 +772,12 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
             }
 
           parName = pParameter->getObjectName();
-          setParameterMapping(parName, Metabolites[pModel->findMetabByName(metabName)].getKey());
+          setParameterMapping(parName, pModel->findMetabByName(metabName)->getKey());
 
           // in the old files the chemical equation does not contain
           // information about modifiers. This has to be extracted from here.
           if (role == CFunctionParameter::MODIFIER)
-            mChemEq.addMetabolite(Metabolites[pModel->findMetabByName(metabName)].getKey(),
+            mChemEq.addMetabolite(pModel->findMetabByName(metabName)->getKey(),
                                   1, CChemEq::MODIFIER);
         }
 
@@ -851,53 +852,6 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   return Fail;
 }
 
-const C_FLOAT64 & CReaction::calculateFlux()
-{
-  calculate();
-  return mFlux;
-}
-
-const C_FLOAT64 & CReaction::calculateParticleFlux()
-{
-  if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
-    calculate();
-
-  return mParticleFlux;
-}
-
-void CReaction::calculate()
-{
-  mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
-  mParticleFlux = *mUnitScalingFactor * mFlux;
-  return;
-}
-
-C_FLOAT64 CReaction::calculatePartialDerivative(C_FLOAT64 * pXi,
-    const C_FLOAT64 & derivationFactor,
-    const C_FLOAT64 & resolution)
-{
-  if (mpFunction->dependsOn(pXi, mMap.getPointers()))
-    {
-      C_FLOAT64 store = *pXi;
-      C_FLOAT64 f1, f2;
-      C_FLOAT64 tmp =
-        (store < resolution) ? resolution * (1.0 + derivationFactor) : store; //TODO: why assymmetric?
-
-      *pXi = tmp * (1.0 + derivationFactor);
-      f1 = mpFunction->calcValue(mMap.getPointers());
-
-      *pXi = tmp * (1.0 - derivationFactor);
-      f2 = mpFunction->calcValue(mMap.getPointers());
-
-      *pXi = store;
-
-      return *mScalingFactor * (f1 - f2) / (2.0 * tmp * derivationFactor);
-      //this is d(flow)/d(concentration)
-    }
-  else
-    return 0.0;
-}
-
 size_t CReaction::getCompartmentNumber() const
 {return mChemEq.getCompartmentNumber();}
 
@@ -906,68 +860,40 @@ const CCompartment * CReaction::getLargestCompartment() const
 
 void CReaction::setScalingFactor()
 {
-  const CCompartment * pCompartment = NULL;
+  ContainerList Containers;
+  Containers.push_back(getObjectDataModel());
+
+  mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
 
   if (getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
     {
-      const CMetab *pMetab = NULL;
-
-      if (mChemEq.getSubstrates().size())
-        pMetab = mChemEq.getSubstrates()[0].getMetabolite();
-      else if (mChemEq.getProducts().size())
-        pMetab = mChemEq.getProducts()[0].getMetabolite();
-
-      if (pMetab != NULL)
-        pCompartment = pMetab->getCompartment();
-    }
-
-  if (pCompartment != NULL)
-    {
-      mScalingFactor = (C_FLOAT64 *) pCompartment->getValuePointer();
-
-      std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
-
-      Dependencies.insert(pCompartment->getValueReference());
-
-      mpFluxReference->setDirectDependencies(Dependencies);
-      mpParticleFluxReference->setDirectDependencies(Dependencies);
-    }
-  else
-    mScalingFactor = &mDefaultScalingFactor;
-
-#ifdef XXXX
-
-  if (mpFunctionCompartment)
-    {
-      // should propably check if the compartment appears in the chemical equation
-      mScalingFactor = & mpFunctionCompartment->getVolume();
-    }
-  else
-    {
-      try
-        {mScalingFactor = & mChemEq.CheckAndGetFunctionCompartment()->getVolume();}
-      catch (CCopasiException Exc)
+      if (mpScalingCompartment == NULL ||
+          mKineticLawUnit == Default)
         {
-          size_t nr = Exc.getMessage().getNumber();
+          const CMetab *pMetab = NULL;
 
-          if ((MCChemEq + 2 == nr) || (MCChemEq + 3 == nr))
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 2, getObjectName().c_str());
+          if (mChemEq.getSubstrates().size())
+            pMetab = mChemEq.getSubstrates()[0].getMetabolite();
+          else if (mChemEq.getProducts().size())
+            pMetab = mChemEq.getProducts()[0].getMetabolite();
 
-          if (MCChemEq + 1 == nr)
-            CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 3, getObjectName().c_str());
+          if (pMetab != NULL)
+            {
+              mpScalingCompartment = pMetab->getCompartment();
+              mScalingCompartmentCN = mpScalingCompartment->getCN();
+            }
+        }
 
-          throw;
+      if (mpScalingCompartment != NULL)
+        {
+          std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
+
+          Dependencies.insert(mpScalingCompartment->getValueReference());
+
+          mpFluxReference->setDirectDependencies(Dependencies);
+          mpParticleFluxReference->setDirectDependencies(Dependencies);
         }
     }
-
-#endif // XXXX
-
-  CModel * pModel = (CModel *) getObjectAncestor("Model");
-
-  if (pModel)
-    mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
-  else
-    mUnitScalingFactor = & mDefaultScalingFactor;
 }
 
 void CReaction::initObjects()
@@ -1154,16 +1080,6 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   //os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
   os << "   mFlux: " << d.mFlux << std::endl;
 
-  if (d.mScalingFactor)
-    os << "   *mScalingFactor " << *(d.mScalingFactor) << std::endl;
-  else
-    os << "   mScalingFactor == NULL " << std::endl;
-
-  if (d.mUnitScalingFactor)
-    os << "   *mUnitScalingFactor " << *(d.mUnitScalingFactor) << std::endl;
-  else
-    os << "   mUnitScalingFactor == NULL " << std::endl;
-
   os << "   parameter group:" << std::endl;
   os << d.mParameters;
 
@@ -1226,7 +1142,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                   if (j != jmax)
                     id = "\"" + id + "\"";
 
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1306,7 +1222,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   // usage = "PARAMETER"
                   id = dynamic_cast<Parameter*>(pos->second)->getId();
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1319,7 +1235,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   // usage = "VOLUME"
                   id = dynamic_cast<Compartment*>(pos->second)->getId();
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1332,7 +1248,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                 {
                   id = object->getObjectName();
                   id = this->escapeId(id);
-                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+                  pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
@@ -1357,7 +1273,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
         {
           id = object->getObjectName();
           id = this->escapeId(id);
-          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
 
           if (replacementMap.find(id) == replacementMap.end())
             {
@@ -1372,7 +1288,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
           // usage = "TIME"
           id = object->getObjectName();
           id = this->escapeId(id);
-          pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, id);
+          pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
               CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
@@ -1404,31 +1320,31 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
           continue;
         }
 
-      switch (CEvaluationNode::type(itNode->getType()))
+      switch (itNode->mainType())
         {
-          case CEvaluationNode::OBJECT:
+          case CEvaluationNode::T_OBJECT:
             // convert to a variable node
             pResult = object2variable(static_cast<const CEvaluationNodeObject * >(*itNode), replacementMap, copasi2sbmlmap);
             break;
 
-          case CEvaluationNode::STRUCTURE:
+          case CEvaluationNode::T_STRUCTURE:
             // this should not occur here
             fatalError();
             break;
 
-          case CEvaluationNode::VARIABLE:
+          case CEvaluationNode::T_VARIABLE:
             // error variables may not be in an expression
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 6);
             pResult = NULL;
             break;
 
-          case CEvaluationNode::MV_FUNCTION:
+          case CEvaluationNode::T_MV_FUNCTION:
             // create an error message until there is a class for it
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
             pResult = NULL;
             break;
 
-          case CEvaluationNode::INVALID:
+          case CEvaluationNode::T_INVALID:
             CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
             // create an error message
             pResult = NULL;
@@ -1500,7 +1416,6 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
           CFunctionParameter* pFunPar = it->second.second;
           std::string id = it->first;
           setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
-          delete pFunPar;
           ++it;
         }
 
@@ -1529,6 +1444,18 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
               pdelete(pTmpFunction);
 
+              // we still need to do the mapping, otherwise global parameters might not be mapped
+              it = replacementMap.begin();
+
+              while (it != replacementMap.end())
+                {
+                  CFunctionParameter* pFunPar = it->second.second;
+                  std::string id = it->first;
+                  setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+                  delete pFunPar;
+                  ++it;
+                }
+
               return NULL;
             }
 
@@ -1536,6 +1463,16 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
           numberStream.str("");
           numberStream << "_" << counter;
           appendix = numberStream.str();
+        }
+
+      // if we got here we didn't find a used function so we can clear the list
+      it = replacementMap.begin();
+
+      while (it != replacementMap.end())
+        {
+          CFunctionParameter* pFunPar = it->second.second;
+          delete pFunPar;
+          ++it;
         }
 
       pTmpFunction->setObjectName(functionName + appendix);
@@ -1550,18 +1487,18 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
   CEvaluationNode* pChildNode = NULL;
   CEvaluationNode* pChildNode2 = NULL;
 
-  switch (CEvaluationNode::type(expression->getType()))
+  switch (expression->mainType())
     {
-      case CEvaluationNode::NUMBER:
-        pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNodeNumber::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_NUMBER:
+        pTmpNode = new CEvaluationNodeNumber(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::CONSTANT:
-        pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNodeConstant::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_CONSTANT:
+        pTmpNode = new CEvaluationNodeConstant(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::OPERATOR:
-        pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNodeOperator::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_OPERATOR:
+        pTmpNode = new CEvaluationNodeOperator(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the two children as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1588,12 +1525,12 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::OBJECT:
-        pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNodeObject::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_OBJECT:
+        pTmpNode = new CEvaluationNodeObject(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::FUNCTION:
-        pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNodeFunction::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_FUNCTION:
+        pTmpNode = new CEvaluationNodeFunction(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the only child as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1609,8 +1546,8 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::CALL:
-        pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNodeCall::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_CALL:
+        pTmpNode = new CEvaluationNodeCall(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert all children
         pChildNode2 = static_cast<CEvaluationNode*>(expression->getChild());
 
@@ -1633,12 +1570,12 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::STRUCTURE:
-        pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNodeStructure::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_STRUCTURE:
+        pTmpNode = new CEvaluationNodeStructure(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::CHOICE:
-        pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNodeChoice::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_CHOICE:
+        pTmpNode = new CEvaluationNodeChoice(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the two children as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1665,16 +1602,16 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::VARIABLE:
+      case CEvaluationNode::T_VARIABLE:
         pTmpNode = this->variable2object(static_cast<CEvaluationNodeVariable*>(expression));
         break;
 
-      case CEvaluationNode::WHITESPACE:
-        pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNodeWhiteSpace::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_WHITESPACE:
+        pTmpNode = new CEvaluationNodeWhiteSpace(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         break;
 
-      case CEvaluationNode::LOGICAL:
-        pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNodeLogical::SubType>((int) CEvaluationNode::subType(expression->getType())), expression->getData());
+      case CEvaluationNode::T_LOGICAL:
+        pTmpNode = new CEvaluationNodeLogical(static_cast<CEvaluationNode::SubType>((int) expression->subType()), expression->getData());
         // convert the two children as well
         pChildNode = this->variables2objects(static_cast<CEvaluationNode*>(expression->getChild()));
 
@@ -1701,12 +1638,12 @@ CEvaluationNode* CReaction::variables2objects(CEvaluationNode* expression)
 
         break;
 
-      case CEvaluationNode::MV_FUNCTION:
+      case CEvaluationNode::T_MV_FUNCTION:
         // create an error message until there is a class for it
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "MV_FUNCTION");
         break;
 
-      case CEvaluationNode::INVALID:
+      case CEvaluationNode::T_INVALID:
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 5, "INVALID");
         // create an error message
         break;
@@ -1744,7 +1681,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ">");
   return pObjectNode;
 }
 
@@ -1872,8 +1809,28 @@ std::string CReaction::getKineticLawUnit() const
 
   if (getEffectiveKineticLawUnitType() == AmountPerTime)
     {
-      return pModel->getQuantityRateUnitsDisplayString();
+      return pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")";
     }
 
-  return pModel->getConcentrationRateUnitsDisplayString();
+  return pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")";
+}
+
+void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
+{
+  mScalingCompartmentCN = compartmentCN;
+  ContainerList Containers;
+  Containers.push_back(getObjectDataModel());
+
+  mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
+}
+
+void CReaction::setScalingCompartment(const CCompartment * pCompartment)
+{
+  mpScalingCompartment = pCompartment;
+  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getCN() : std::string();
+}
+
+const CCompartment * CReaction::getScalingCompartment() const
+{
+  return mpScalingCompartment;
 }

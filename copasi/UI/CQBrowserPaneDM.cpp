@@ -71,7 +71,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
             case 115:
             case 116:
             case 119:
-              return QVariant(pNode->getDisplayRole() + " (" + QString::number(pNode->getNumChildren()) + ")");
+              return QVariant(pNode->getDisplayRole() + " [" + QString::number(pNode->getNumChildren()) + "]");
               break;
 
             default:

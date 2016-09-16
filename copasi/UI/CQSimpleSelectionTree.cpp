@@ -426,7 +426,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+              ann = dynamic_cast<CArrayAnnotation*>(*its);
 
               if (!ann) continue;
 
@@ -459,7 +459,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
               for (; its != pObjects->end(); ++its)
                 {
-                  ann = dynamic_cast<CArrayAnnotation*>(its->second);
+                  ann = dynamic_cast<CArrayAnnotation*>(*its);
 
                   if (!ann) continue;
 
@@ -535,7 +535,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+              ann = dynamic_cast<CArrayAnnotation*>(*its);
 
               if (!ann) continue;
 
@@ -566,7 +566,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(its->second);
+              ann = dynamic_cast<CArrayAnnotation*>(*its);
 
               if (!ann) continue;
 

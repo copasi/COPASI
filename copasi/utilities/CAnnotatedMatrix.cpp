@@ -102,13 +102,26 @@ const std::vector<std::string> & CArrayAnnotation::getAnnotationsString(size_t d
 {
   assert(d < mModes.size());
 
-  std::vector<CRegisteredObjectName>::const_iterator itCN = mAnnotationsCN[d].begin();
-  std::vector<CRegisteredObjectName>::const_iterator endCN = mAnnotationsCN[d].end();
   std::vector< std::string >::iterator itName = mAnnotationsString[d].begin();
+  std::vector< std::string >::iterator endName = mAnnotationsString[d].end();
 
-  for (; itCN != endCN; ++itCN, ++itName)
+  if (mModes[d] == NUMBERS)
     {
-      *itName = createDisplayName(*itCN);
+      size_t Index = 1;
+
+      for (; itName != endName; ++Index, ++itName)
+        {
+          *itName = StringPrint("%d", Index);
+        }
+    }
+  else
+    {
+      std::vector<CRegisteredObjectName>::const_iterator itCN = mAnnotationsCN[d].begin();
+
+      for (; itName != endName; ++itCN, ++itName)
+        {
+          *itName = createDisplayName(*itCN);
+        }
     }
 
   return mAnnotationsString[d];
@@ -167,15 +180,19 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
 const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotation::index_type & index) const
 {
   CArrayAnnotation::name_index_type CNIndex(index.size());
-
+  CArrayAnnotation::name_index_type::iterator to = CNIndex.begin();
   CArrayAnnotation::index_type::const_iterator it = index.begin();
   CArrayAnnotation::index_type::const_iterator end = index.end();
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCN = mAnnotationsCN.begin();
-  CArrayAnnotation::name_index_type::iterator to = CNIndex.begin();
 
-  for (; it != end; ++it, ++itCN, ++to)
+  for (; it != end; ++it, ++to)
     {
       *to = itCN->operator [](*it);
+
+      if (to->empty())
+        {
+          *to = StringPrint("%d", *it);
+        }
     }
 
   return addElementReference(CNIndex);
@@ -183,68 +200,21 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
 
 const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
 {
-  CArrayAnnotation::name_index_type CNIndex(2);
+  CArrayAnnotation::index_type CIndex(2);
 
-  if ((C_INT32)mAnnotationsCN[0].size() <= u &&
-      (C_INT32)mpArray->size()[0] >= u)
-    {
-      const_cast< CArrayAnnotation * >(this)->autoAnnotation(0);
-    }
+  CIndex[0] = u;
+  CIndex[1] = v;
 
-  CNIndex[0] = mAnnotationsCN[0][u];
-
-  if ((C_INT32)mAnnotationsCN[1].size() <= v &&
-      (C_INT32)mpArray->size()[1] >= v)
-    {
-      const_cast< CArrayAnnotation * >(this)->autoAnnotation(1);
-    }
-
-  CNIndex[1] = mAnnotationsCN[1][v];
-
-  return addElementReference(CNIndex);
+  return addElementReference(CIndex);
 }
 
 const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u) const
 {
-  CArrayAnnotation::name_index_type CNIndex(1);
+  CArrayAnnotation::index_type CIndex(1);
 
-  if ((C_INT32)mAnnotationsCN[0].size() <= u &&
-      (C_INT32)mpArray->size()[0] >= u)
-    {
-      const_cast< CArrayAnnotation * >(this)->autoAnnotation(0);
-    }
+  CIndex[0] = u;
 
-  CNIndex[0] = mAnnotationsCN[0][u];
-
-  return addElementReference(CNIndex);
-}
-
-void CArrayAnnotation::autoAnnotation(const size_t & d)
-{
-  resizeOneDimension(d);
-
-  size_t i;
-
-  for (i = 0; i < mAnnotationsCN[d].size(); ++i)
-    {
-      std::stringstream I;
-      I << i;
-
-      mAnnotationsCN[d][i] = CCopasiObjectName("String=" + I.str());
-      mAnnotationsString[d][i] = createDisplayName(mAnnotationsCN[d][i]);
-    }
-}
-
-void CArrayAnnotation::appendElementReferences(std::set< const CCopasiObject * > & objects) const
-{
-  objectMap::const_iterator it = mObjects.begin();
-  objectMap::const_iterator end = mObjects.end();
-
-  for (; it != end; ++it)
-    if (dynamic_cast<const CArrayElementReference *>(it->second) != NULL)
-      objects.insert(it->second);
-
-  return;
+  return addElementReference(CIndex);
 }
 
 const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & cn) const
@@ -281,16 +251,13 @@ const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & c
   const CCopasiObject* pObject = NULL; //this will contain the element reference
 
   //if the reference object already exists, its name will be identical to the index
-  std::pair< objectMap::const_iterator, objectMap::const_iterator > range =
-    mObjects.equal_range(ObjectName);
+  objectMap::range range = mObjects.equal_range(ObjectName);
 
-  objectMap::const_iterator it = range.first;
+  while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 
-  while (it != range.second && it->second->getObjectType() != "ElementReference") ++it;
-
-  if (it != range.second) //not found
+  if (range.first != range.second) //not found
     {
-      pObject = it->second;
+      pObject = *range.first;
     }
   else
     {
@@ -458,13 +425,14 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
       if (itCN == endCN)
         {
-          const char * pTail = NULL;
+          size_t index;
 
-          C_INT32 index = strToInt(it->c_str(), &pTail);
-
-          if (itCNs->empty() || pTail != it->c_str() + it->size())
+          if (itCNs->empty())
             {
-              *to = std::string("not found");
+              if (strToIndex(*it, index))
+                *to = *it;
+              else
+                *to = std::string("not found");
             }
           else
             {
@@ -493,14 +461,15 @@ CArrayAnnotation::index_type CArrayAnnotation::cnToIndex(const CArrayAnnotation:
 
   for (; it != itEnd; ++it, ++itCNs, ++to)
     {
-      std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
-      std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
-
-      size_t index = 0;
-
-      for (; itCN != endCN; ++itCN, ++index)
+      if (!strToIndex(*it, index))
         {
-          if (*it == *itCN) break;
+          std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
+          std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
+
+          for (index = 0; itCN != endCN; ++itCN, ++index)
+            {
+              if (*it == *itCN) break;
+            }
         }
 
       *to = index;

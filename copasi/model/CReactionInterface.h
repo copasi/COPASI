@@ -88,6 +88,8 @@ private:
   std::string mNoiseExpression;
   CReaction::KineticLawUnit mKineticLawUnitType;
 
+  std::string mScalingCompartment;
+
 private:
   CReactionInterface();
 
@@ -180,6 +182,10 @@ public:
 
   const std::string & getMapping(size_t index) const;
 
+  std::vector< std::string > getUnitVector(size_t index) const;
+
+  std::string getUnit(size_t index) const;
+
   void setLocalValue(size_t index, C_FLOAT64 value);
 
   void setLocal(size_t index);
@@ -270,8 +276,12 @@ public:
   void setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType);
   const CReaction::KineticLawUnit & getKineticLawUnitType() const;
   CReaction::KineticLawUnit getEffectiveKineticLawUnitType() const;
-  std::string getConcentrationUnit() const;
-  std::string getAmountUnit() const;
+  std::string getConcentrationRateUnit() const;
+  std::string getAmountRateUnit() const;
+  std::string getEffectiveKineticLawUnit() const;
+  void setScalingCompartment(const std::string & scalingCompartment);
+  const std::string & getScalingCompartment() const;
+  std::string getDefaultScalingCompartment() const;
 
 #ifdef COPASI_DEBUG
   void printDebug() const;

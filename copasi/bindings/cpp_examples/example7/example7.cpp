@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +51,7 @@ int main()
   // and nanomole as the substance units
   pModel->setTimeUnit(CUnit::s);
   pModel->setVolumeUnit(CUnit::microl);
-  pModel->setQuantityUnit(CUnit::nMol);
+  pModel->setQuantityUnit(CUnit::nMol, CModelParameter::ParticleNumbers);
 
   // we have to keep a set of all the initial values that are changed during
   // the model building process

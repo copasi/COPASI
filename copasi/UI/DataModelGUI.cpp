@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 
@@ -25,6 +25,7 @@
 #include "listviews.h"
 #include "CQMessageBox.h"
 #include "CQBrowserPaneDM.h"
+#include "plotUI/COutputHandlerPlot.h"
 
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
@@ -81,10 +82,10 @@
 
 //*****************************************************************************
 
-DataModelGUI::DataModelGUI(QObject * parent):
+DataModelGUI::DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel):
   QObject(parent),
-  mpApp(NULL),
-  mOutputHandlerPlot(),
+  mpOutputHandlerPlot(NULL),
+  mpDataModel(pDataModel),
   mListViews(),
   mFramework(0),
   mpThread(NULL),
@@ -110,15 +111,13 @@ DataModelGUI::DataModelGUI(QObject * parent):
 #endif
 
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(&mOutputHandlerPlot);
-
-  //mpMathModel = NULL;
-  //mMathModelUpdateScheduled = false;
+  mpOutputHandlerPlot = new COutputHandlerPlot();
+  mpDataModel->addInterface(mpOutputHandlerPlot);
 }
 
 DataModelGUI::~DataModelGUI()
 {
+  pdelete(mpOutputHandlerPlot);
 }
 
 //************************************************************
@@ -134,7 +133,7 @@ void DataModelGUI::linkDataModelToGUI()
 
   for (; it != end; ++it)
     {
-      (*it)->setDataModel(this);
+      (*it)->resetCache();
     }
 
   pDataModel->deleteOldData();
@@ -215,7 +214,7 @@ bool DataModelGUI::createModel()
 
   if (!CCopasiRootContainer::getDatamodelList()->operator[](0).newModel(NULL, false)) return false;
 
-  mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+  mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
 
   linkDataModelToGUI();
   return true;
@@ -253,7 +252,7 @@ void DataModelGUI::loadModelFinished()
     {
       CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
 
-      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+      mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -335,7 +334,7 @@ void DataModelGUI::importSBMLFromStringFinished()
       // TODO maybe put the main part of this routine in a separate thread after
       // TODO asking the user
       this->importCellDesigner();
-      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+      mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -395,7 +394,7 @@ void DataModelGUI::importSBMLFinished()
       this->importCellDesigner();
       CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
-      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+      mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -657,7 +656,9 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
   if (action != ListViews::RENAME && // not needed after rename
       !(action == ListViews::ADD && objectType == ListViews::MODEL) // not needed when model was loaded
      )
-    refreshInitialValues();
+    {
+      refreshInitialValues();
+    }
 
   emit notifyView(objectType, action, key);
 
@@ -666,26 +667,29 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
 void DataModelGUI::registerListView(ListViews * pListView)
 {
-  pListView->setDataModel(this);
   mListViews.insert(pListView);
 }
 
 void DataModelGUI::deregisterListView(ListViews * pListView)
 {
-  pListView->setDataModel(NULL);
   mListViews.erase(pListView);
 }
 
 void DataModelGUI::refreshInitialValues()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  std::set< ListViews * >::iterator it = mListViews.begin();
+  std::set< ListViews * >::iterator end = mListViews.end();
 
-  if (!pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework)))
+  for (; it != end; ++it)
     {
-      CQMessageBox::warning(NULL, "Model Compile Warning",
-                            CCopasiMessage::getAllMessageText().c_str(),
-                            QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CModel * pModel = (*it)->getDataModel()->getModel();
+
+      if (!pModel->updateInitialValues(static_cast< CModelParameter::Framework >(mFramework)))
+        {
+          CQMessageBox::warning(NULL, "Model Compile Warning",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+        }
     }
 }
 
@@ -841,6 +845,89 @@ void DataModelGUI::importCellDesigner()
     }
 }
 
+#ifdef WITH_COMBINE_ARCHIVE
+
+void DataModelGUI::openCombineArchive(const std::string & fileName)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mpThread = new CQThread(this, &DataModelGUI::openCombineArchiveRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::exportCombineArchive(const std::string & fileName, bool overwriteFile)
+{
+  mpProgressBar = CProgressBar::create();
+
+  mSuccess = true;
+  mFileName = fileName;
+  mOverWrite = overwriteFile;
+
+  mpThread = new CQThread(this, &DataModelGUI::exportCombineArchiveRun);
+  connect(mpThread, SIGNAL(finished()), this, SLOT(exportCombineFinished()));
+  mpThread->start();
+}
+
+void DataModelGUI::openCombineArchiveRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).openCombineArchive(mFileName, mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::exportCombineArchiveRun()
+{
+  try
+    {
+      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = CCopasiRootContainer::getDatamodelList()->operator[](0).exportCombineArchive(mFileName,
+                 true,
+                 true,
+                 true,
+                 true,
+                 mOverWrite,
+                 mpProgressBar);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::importCombineFinished()
+{
+  if (mSuccess)
+  {
+
+    mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+    linkDataModelToGUI();
+  }
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
+
+  threadFinished();
+}
+
+void DataModelGUI::exportCombineFinished()
+{
+
+  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+
+  threadFinished();
+}
+
+#endif
 //TODO SEDML
 #ifdef COPASI_SEDML
 void DataModelGUI::importSEDMLFromString(const std::string & sedmlDocumentText)
@@ -875,7 +962,7 @@ void DataModelGUI::importSEDMLFromStringFinished()
 
   if (mSuccess)
     {
-      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+      mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 
@@ -914,7 +1001,7 @@ void DataModelGUI::importSEDMLFinished()
     {
       CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
 
-      mOutputHandlerPlot.setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
+      mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
 

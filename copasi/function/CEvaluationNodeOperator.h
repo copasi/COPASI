@@ -26,22 +26,6 @@ class CCopasiDataModel;
  */
 class CEvaluationNodeOperator : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    POWER = 0x00000000,
-    MULTIPLY = 0x00000001,
-    DIVIDE = 0x00000002,
-    MODULUS = 0x00000003,
-    PLUS = 0x00000004,
-    MINUS = 0x00000005,
-    REMAINDER = 0x00000006
-  };
-
   // Operations
 private:
   /**
@@ -73,47 +57,7 @@ public:
    * Calculate the numerical result of the node. It is assumed that
    * all child nodes are up to date.
    */
-  virtual inline void calculate()
-  {
-    switch (mType & 0x00FFFFFF)
-      {
-        case POWER:
-          mValue = pow(mpLeft->getValue(), mpRight->getValue());
-          break;
-
-        case MULTIPLY:
-          mValue = mpLeft->getValue() * mpRight->getValue();
-          break;
-
-        case DIVIDE:
-          mValue = mpLeft->getValue() / mpRight->getValue();
-          break;
-
-        case MODULUS:
-
-          if ((C_INT32) mpRight->getValue() == 0)
-            mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-          else
-            mValue = (C_FLOAT64)(((C_INT32) mpLeft->getValue()) % ((C_INT32) mpRight->getValue()));
-
-          break;
-
-        case PLUS:
-          mValue = mpLeft->getValue() + mpRight->getValue();
-          break;
-
-        case MINUS:
-          mValue = mpLeft->getValue() - mpRight->getValue();
-          break;
-
-        case REMAINDER:
-          mValue = fmod(mpLeft->getValue(), mpRight->getValue());
-          break;
-
-        default:
-          break;
-      }
-  }
+  virtual void calculate();
 
   /**
    * Compile a node;
@@ -153,6 +97,28 @@ public:
    * @return const Data & value
    */
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
+
+  /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CValidatedUnit > & units
+   * @return CValidatedUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CValidatedUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -200,11 +166,25 @@ public:
   CEvaluationNode * getRight();
   const CEvaluationNode * getRight() const;
 
-  // Attributes
 private:
-  CEvaluationNode * mpLeft;
+  void s_power();
+  void s_multiply();
+  void s_divide();
+  void s_modulus();
+  void s_plus();
+  void s_minus();
+  void s_remainder();
+  void s_invalid();
 
-  CEvaluationNode * mpRight;
+// Attributes
+  CEvaluationNode * mpLeftNode;
+  CEvaluationNode * mpRightNode;
+
+  const C_FLOAT64 * mpLeftValue;
+  const C_FLOAT64 * mpRightValue;
+
+  typedef void (CEvaluationNodeOperator::*OPERATOR)();
+  OPERATOR mpOperator;
 };
 
 #endif // COPASI_CEvaluationNodeOperator

@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,11 +12,13 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include <sstream>
+
 #include "copasi.h"
 
 #include "CEvaluationNode.h"
-#include <sstream>
 #include "CEvaluationTree.h"
+#include "utilities/CValidatedUnit.h"
 
 #include "randomGenerator/CRandom.h"
 
@@ -59,170 +61,178 @@ C_FLOAT64 CEvaluationNodeFunction::min(const C_FLOAT64 & x1, const C_FLOAT64 & x
 }
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
-  CEvaluationNode(CEvaluationNode::INVALID, ""),
+  CEvaluationNode(T_FUNCTION, S_INVALID, ""),
   mpFunction(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
-  mpArg1(NULL),
-  mpArg2(NULL),
-  mpArg3(NULL),
-  mpArg4(NULL)
+  mpArgNode1(NULL),
+  mpArgNode2(NULL),
+  mpArgNode3(NULL),
+  mpArgNode4(NULL),
+  mpArgValue1(NULL),
+  mpArgValue2(NULL),
+  mpArgValue3(NULL),
+  mpArgValue4(NULL)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
-  CEvaluationNode((Type)(CEvaluationNode::FUNCTION | subType), data),
+  CEvaluationNode(T_FUNCTION, subType, data),
   mpFunction(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
-  mpArg1(NULL),
-  mpArg2(NULL),
-  mpArg3(NULL),
-  mpArg4(NULL)
+  mpArgNode1(NULL),
+  mpArgNode2(NULL),
+  mpArgNode3(NULL),
+  mpArgNode4(NULL),
+  mpArgValue1(NULL),
+  mpArgValue2(NULL),
+  mpArgValue3(NULL),
+  mpArgValue4(NULL)
 {
   switch (subType)
     {
-      case LOG:
+      case S_LOG:
         mpFunction = log;
         break;
 
-      case LOG10:
+      case S_LOG10:
         mpFunction = log10;
         break;
 
-      case EXP:
+      case S_EXP:
         mpFunction = exp;
         break;
 
-      case SIN:
+      case S_SIN:
         mpFunction = sin;
         break;
 
-      case COS:
+      case S_COS:
         mpFunction = cos;
         break;
 
-      case TAN:
+      case S_TAN:
         mpFunction = tan;
         break;
 
-      case SEC:
+      case S_SEC:
         mpFunction = sec;
         break;
 
-      case CSC:
+      case S_CSC:
         mpFunction = csc;
         break;
 
-      case COT:
+      case S_COT:
         mpFunction = cot;
         break;
 
-      case SINH:
+      case S_SINH:
         mpFunction = sinh;
         break;
 
-      case COSH:
+      case S_COSH:
         mpFunction = cosh;
         break;
 
-      case TANH:
+      case S_TANH:
         mpFunction = tanh;
         break;
 
-      case SECH:
+      case S_SECH:
         mpFunction = sech;
         break;
 
-      case CSCH:
+      case S_CSCH:
         mpFunction = csch;
         break;
 
-      case COTH:
+      case S_COTH:
         mpFunction = coth;
         break;
 
-      case ARCSIN:
+      case S_ARCSIN:
         mpFunction = asin;
         break;
 
-      case ARCCOS:
+      case S_ARCCOS:
         mpFunction = acos;
         break;
 
-      case ARCTAN:
+      case S_ARCTAN:
         mpFunction = atan;
         break;
 
-      case ARCSEC:
+      case S_ARCSEC:
         mpFunction = arcsec;
         break;
 
-      case ARCCSC:
+      case S_ARCCSC:
         mpFunction = arccsc;
         break;
 
-      case ARCCOT:
+      case S_ARCCOT:
         mpFunction = arccot;
         break;
 
-      case ARCSINH:
+      case S_ARCSINH:
         mpFunction = asinh;
         break;
 
-      case ARCCOSH:
+      case S_ARCCOSH:
         mpFunction = acosh;
         break;
 
-      case ARCTANH:
+      case S_ARCTANH:
         mpFunction = atanh;
         break;
 
-      case ARCSECH:
+      case S_ARCSECH:
         mpFunction = asech;
         break;
 
-      case ARCCSCH:
+      case S_ARCCSCH:
         mpFunction = acsch;
         break;
 
-      case ARCCOTH:
+      case S_ARCCOTH:
         mpFunction = acoth;
         break;
 
-      case SQRT:
+      case S_SQRT:
         mpFunction = sqrt;
         break;
 
-      case ABS:
+      case S_ABS:
         mpFunction = fabs;
         break;
 
-      case FLOOR:
+      case S_FLOOR:
         mpFunction = floor;
         break;
 
-      case CEIL:
+      case S_CEIL:
         mpFunction = ceil;
         break;
 
-      case FACTORIAL:
+      case S_FACTORIAL:
         mpFunction = factorial;
         break;
 
-      case MINUS:
+      case S_MINUS:
         mpFunction = minus;
         break;
 
-      case PLUS:
+      case S_PLUS:
         mpFunction = plus;
         break;
 
-      case NOT:
+      case S_NOT:
         mpFunction = copasiNot;
         break;
 
-      case RUNIFORM:
+      case S_RUNIFORM:
         mpFunction2 = runiform;
 
         if (!mpRandom)
@@ -230,7 +240,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case RNORMAL:
+      case S_RNORMAL:
         mpFunction2 = rnormal;
 
         if (!mpRandom)
@@ -238,7 +248,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case RPOISSON:
+      case S_RPOISSON:
         mpFunction = rpoisson;
 
         if (!mpRandom)
@@ -246,7 +256,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case RGAMMA:
+      case S_RGAMMA:
         mpFunction2 = rgamma;
 
         if (!mpRandom)
@@ -254,11 +264,11 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case MAX:
+      case S_MAX:
         mpFunction2 = max;
         break;
 
-      case MIN:
+      case S_MIN:
         mpFunction2 = min;
         break;
 
@@ -276,63 +286,75 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction &
   mpFunction(src.mpFunction),
   mpFunction2(src.mpFunction2),
   mpFunction4(src.mpFunction4),
-  mpArg1(NULL),
-  mpArg2(NULL),
-  mpArg3(NULL),
-  mpArg4(NULL)
+  mpArgNode1(src.mpArgNode1),
+  mpArgNode2(src.mpArgNode2),
+  mpArgNode3(src.mpArgNode3),
+  mpArgNode4(src.mpArgNode4),
+  mpArgValue1(src.mpArgValue1),
+  mpArgValue2(src.mpArgValue2),
+  mpArgValue3(src.mpArgValue3),
+  mpArgValue4(src.mpArgValue4)
 {}
 
 CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
 bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
-  mpArg1 = static_cast<CEvaluationNode *>(getChild());
+  mpArgNode1 = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpArg1 == NULL) return false;
+  if (mpArgNode1 == NULL) return false;
+
+  mpArgValue1 = mpArgNode1->getValuePointer();
 
   if (mpFunction)
-    return (mpArg1->getSibling() == NULL); // We must have only one child
+    return (mpArgNode1->getSibling() == NULL); // We must have only one child
 
-  mpArg2 = static_cast<CEvaluationNode *>(mpArg1->getSibling());
+  mpArgNode2 = static_cast<CEvaluationNode *>(mpArgNode1->getSibling());
 
-  if (mpArg2 == NULL) return false;
+  if (mpArgNode2 == NULL) return false;
+
+  mpArgValue2 = mpArgNode2->getValuePointer();
 
   if (mpFunction2)
-    return (mpArg2->getSibling() == NULL); // We must have exactly 1 children
+    return (mpArgNode2->getSibling() == NULL); // We must have exactly 1 children
 
   // equality
-  mpArg3 = static_cast<CEvaluationNode *>(mpArg2->getSibling());
+  mpArgNode3 = static_cast<CEvaluationNode *>(mpArgNode2->getSibling());
 
-  if (mpArg3 == NULL) return false;
+  if (mpArgNode3 == NULL) return false;
 
-  mpArg4 = static_cast<CEvaluationNode *>(mpArg3->getSibling());
+  mpArgValue3 = mpArgNode3->getValuePointer();
 
-  if (mpArg4 == NULL) return false;
+  mpArgNode4 = static_cast<CEvaluationNode *>(mpArgNode3->getSibling());
 
-  return (mpArg4->getSibling() == NULL); // We must have exactly 4 children
+  if (mpArgNode4 == NULL) return false;
+
+  mpArgValue4 = mpArgNode4->getValuePointer();
+
+  return (mpArgNode4->getSibling() == NULL); // We must have exactly 4 children
 }
 
 // virtual
 std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-    switch (mType & 0x00FFFFFF)
+    switch (mSubType)
       {
-        case MINUS:
-        case PLUS:
+        case S_MINUS:
+        case S_PLUS:
           return handleSign(children[0]);
 
-        case RUNIFORM:
-        case RNORMAL:
-        case RGAMMA:
-        case MAX:
-        case MIN:
+        case S_RUNIFORM:
+        case S_RNORMAL:
+        case S_RGAMMA:
+        case S_MAX:
+        case S_MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
 
-        case RPOISSON:
+        case S_RPOISSON:
           return mData + "(" + children[0] + ")";
 
-        case NOT:
+        case S_NOT:
           return handleNot(children[0]);
 
         default:
@@ -346,23 +368,23 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
 std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::string > & children) const
 {
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
-    switch (mType & 0x00FFFFFF)
+    switch (mSubType)
       {
-        case MINUS:
-        case PLUS:
+        case S_MINUS:
+        case S_PLUS:
           return handleSign(children[0]);
 
-        case RUNIFORM:
-        case RNORMAL:
-        case RGAMMA:
-        case MAX:
-        case MIN:
+        case S_RUNIFORM:
+        case S_RNORMAL:
+        case S_RGAMMA:
+        case S_MAX:
+        case S_MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
 
-        case RPOISSON:
+        case S_RPOISSON:
           return mData + "(" + children[0] + ")";
 
-        case NOT:
+        case S_NOT:
           return handleNot(children[0]);
 
         default:
@@ -379,168 +401,168 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
     {
       std::string data = "";
 
-      switch ((SubType)CEvaluationNode::subType(this->getType()))
+      switch ((SubType)this->subType())
         {
-          case LOG:
+          case S_LOG:
             data = "log";
             break;
 
-          case LOG10:
+          case S_LOG10:
             data = "log10";
             break;
 
-          case EXP:
+          case S_EXP:
             data = "exp";
             break;
 
-          case SIN:
+          case S_SIN:
             data = "sin";
             break;
 
-          case COS:
+          case S_COS:
             data = "cos";
             break;
 
-          case TAN:
+          case S_TAN:
             data = "tan";
             break;
 
-          case SINH:
+          case S_SINH:
             data = "sinh";
             break;
 
-          case COSH:
+          case S_COSH:
             data = "cosh";
             break;
 
-          case TANH:
+          case S_TANH:
             data = "tanh";
             break;
 
-          case ARCSIN:
+          case S_ARCSIN:
             data = "asin";
             break;
 
-          case ARCCOS:
+          case S_ARCCOS:
             data = "acos";
             break;
 
-          case ARCTAN:
+          case S_ARCTAN:
             data = "atan";
             break;
 
-          case ARCSINH:
+          case S_ARCSINH:
             data = "asinh";
             break;
 
-          case ARCCOSH:
+          case S_ARCCOSH:
             data = "acosh";
             break;
 
-          case ARCTANH:
+          case S_ARCTANH:
             data = "atanh";
             break;
 
-          case SQRT:
+          case S_SQRT:
             data = "sqrt";
             break;
 
-          case ABS:
+          case S_ABS:
             data = "abs";
             break;
 
-          case NOT:
+          case S_NOT:
             data = "!";
             break;
 
-          case MINUS:
+          case S_MINUS:
             data = "-";
             break;
 
-          case PLUS:
+          case S_PLUS:
             break;
 
-          case SEC:
+          case S_SEC:
             data = "sec";
             break;
 
-          case CSC:
+          case S_CSC:
             data = "csc";
             break;
 
-          case COT:
+          case S_COT:
             data = "cot";
             break;
 
-          case SECH:
+          case S_SECH:
             data = "sech";
             break;
 
-          case CSCH:
+          case S_CSCH:
             data = "csch";
             break;
 
-          case COTH:
+          case S_COTH:
             data = "coth";
             break;
 
-          case ARCSEC:
+          case S_ARCSEC:
             data = "arcsec";
             break;
 
-          case ARCCSC:
+          case S_ARCCSC:
             data = "arccsc";
             break;
 
-          case ARCCOT:
+          case S_ARCCOT:
             data = "arccot";
             break;
 
-          case ARCSECH:
+          case S_ARCSECH:
             data = "asech";
             break;
 
-          case ARCCSCH:
+          case S_ARCCSCH:
             data = "acsch";
             break;
 
-          case ARCCOTH:
+          case S_ARCCOTH:
             data = "acoth";
             break;
 
-          case FLOOR:
+          case S_FLOOR:
             data = "floor";
             break;
 
-          case CEIL:
+          case S_CEIL:
             data = "ceil";
             break;
 
-          case FACTORIAL:
+          case S_FACTORIAL:
             data = "factorial";
             break;
 
-          case RUNIFORM:
+          case S_RUNIFORM:
             data = "user_provided_uniform";
             break;
 
-          case RNORMAL:
+          case S_RNORMAL:
             data = "user_provided_normal";
             break;
 
-          case RGAMMA:
+          case S_RGAMMA:
             data = "user_provided_normal";
             break;
 
-          case RPOISSON:
+          case S_RPOISSON:
             data = "user_provided_normal";
             break;
 
-          case MAX:
+          case S_MAX:
             data = "max";
             break;
 
-          case MIN:
+          case S_MIN:
             data = "min";
             break;
 
@@ -549,22 +571,22 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
             break;
         }
 
-      switch (mType & 0x00FFFFFF)
+      switch (mSubType)
         {
-          case MINUS:
+          case S_MINUS:
             return "(" + data + children[0] + ")";
             break;
 
-          case PLUS:
+          case S_PLUS:
             //return handleSign(mpLeft->getDisplay_C_String(pTree));
             return children[0];
             break;
 
-          case RUNIFORM:
-          case RNORMAL:
-          case RGAMMA:
-          case MAX:
-          case MIN:
+          case S_RUNIFORM:
+          case S_RNORMAL:
+          case S_RGAMMA:
+          case S_MAX:
+          case S_MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
@@ -585,78 +607,78 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
     {
       data = mData;
 
-      switch ((SubType)CEvaluationNode::subType(this->getType()))
+      switch ((SubType)this->subType())
         {
-          case LOG:
-          case LOG10:
-          case EXP:
-          case SIN:
-          case COS:
-          case TAN:
-          case SINH:
-          case COSH:
-          case TANH:
-          case ARCSIN:
-          case ARCCOS:
-          case ARCTAN:
-          case ARCSINH:
-          case ARCCOSH:
-          case ARCTANH:
-          case SQRT:
-          case ABS:
-          case NOT:
+          case S_LOG:
+          case S_LOG10:
+          case S_EXP:
+          case S_SIN:
+          case S_COS:
+          case S_TAN:
+          case S_SINH:
+          case S_COSH:
+          case S_TANH:
+          case S_ARCSIN:
+          case S_ARCCOS:
+          case S_ARCTAN:
+          case S_ARCSINH:
+          case S_ARCCOSH:
+          case S_ARCTANH:
+          case S_SQRT:
+          case S_ABS:
+          case S_NOT:
             break;
 
-          case MINUS:
+          case S_MINUS:
             data = "-";
             break;
 
-          case PLUS:
+          case S_PLUS:
             data = "";
             break;
 
-          case SEC:
-          case CSC:
-          case COT:
-          case SECH:
-          case CSCH:
-          case COTH:
-          case ARCSEC:
-          case ARCCSC:
-          case ARCCOT:
-          case ARCSECH:
-          case ARCCSCH:
-          case ARCCOTH:
-          case FLOOR:
-          case CEIL:
-          case FACTORIAL:
-          case RUNIFORM:
-          case RNORMAL:
-          case RGAMMA:
-          case RPOISSON:
-          case MAX:
-          case MIN:
+          case S_SEC:
+          case S_CSC:
+          case S_COT:
+          case S_SECH:
+          case S_CSCH:
+          case S_COTH:
+          case S_ARCSEC:
+          case S_ARCCSC:
+          case S_ARCCOT:
+          case S_ARCSECH:
+          case S_ARCCSCH:
+          case S_ARCCOTH:
+          case S_FLOOR:
+          case S_CEIL:
+          case S_FACTORIAL:
+          case S_RUNIFORM:
+          case S_RNORMAL:
+          case S_RGAMMA:
+          case S_RPOISSON:
+          case S_MAX:
+          case S_MIN:
           default:
             data = "ILLEGAL FUNCTION";
             break;
         }
 
-      switch (mType & 0x00FFFFFF)
+      switch (mSubType)
         {
-          case MINUS:
+          case S_MINUS:
             return "(" + data + children[0] + ")";
             break;
 
-          case PLUS:
+          case S_PLUS:
             //return handleSign(mpLeft->getDisplay_MMD_String(pTree));
             return children[0];
             break;
 
-          case RUNIFORM:
-          case RNORMAL:
-          case RGAMMA:
-          case MAX:
-          case MIN:
+          case S_RUNIFORM:
+          case S_RNORMAL:
+          case S_RGAMMA:
+          case S_MAX:
+          case S_MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
@@ -677,80 +699,80 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
     {
       data = mData;
 
-      switch ((SubType)CEvaluationNode::subType(this->getType()))
+      switch ((SubType)this->subType())
         {
-          case LOG:
-          case LOG10:
-          case EXP:
-          case SIN:
-          case COS:
-          case TAN:
-          case SINH:
-          case COSH:
-          case TANH:
-          case ARCSIN:
-          case ARCCOS:
-          case ARCTAN:
-          case SQRT:
-          case ABS:
-          case NOT:
-          case PLUS:
+          case S_LOG:
+          case S_LOG10:
+          case S_EXP:
+          case S_SIN:
+          case S_COS:
+          case S_TAN:
+          case S_SINH:
+          case S_COSH:
+          case S_TANH:
+          case S_ARCSIN:
+          case S_ARCCOS:
+          case S_ARCTAN:
+          case S_SQRT:
+          case S_ABS:
+          case S_NOT:
+          case S_PLUS:
             break;
 
-          case MINUS:
+          case S_MINUS:
             data = "-";
             break;
 
-          case FLOOR:
+          case S_FLOOR:
             data = "flr";
             break;
 
-          case CEIL:
+          case S_CEIL:
             data = "ceil";
             break;
 
-          case ARCSINH:
-          case ARCCOSH:
-          case ARCTANH:
-          case SEC:
-          case CSC:
-          case COT:
-          case SECH:
-          case CSCH:
-          case COTH:
-          case ARCSEC:
-          case ARCCSC:
-          case ARCCOT:
-          case ARCSECH:
-          case ARCCSCH:
-          case ARCCOTH:
-          case FACTORIAL:
-          case RUNIFORM:
-          case RNORMAL:
-          case RGAMMA:
-          case RPOISSON:
-          case MAX:
-          case MIN:
+          case S_ARCSINH:
+          case S_ARCCOSH:
+          case S_ARCTANH:
+          case S_SEC:
+          case S_CSC:
+          case S_COT:
+          case S_SECH:
+          case S_CSCH:
+          case S_COTH:
+          case S_ARCSEC:
+          case S_ARCCSC:
+          case S_ARCCOT:
+          case S_ARCSECH:
+          case S_ARCCSCH:
+          case S_ARCCOTH:
+          case S_FACTORIAL:
+          case S_RUNIFORM:
+          case S_RNORMAL:
+          case S_RGAMMA:
+          case S_RPOISSON:
+          case S_MAX:
+          case S_MIN:
           default:
             data = "@"; //TODO
             break;
         }
 
-      switch (mType & 0x00FFFFFF)
+      switch (mSubType)
         {
-          case MINUS:
+          case S_MINUS:
             return "(" + data + children[0] + ")";
             break;
 
-          case PLUS:
+          case S_PLUS:
             return children[0];
             break;
 
-          case RUNIFORM:
-          case RNORMAL:
-          case RGAMMA:
-          case MAX:
-          case MIN:
+          case S_RUNIFORM:
+          case S_RNORMAL:
+          case S_RGAMMA:
+          case S_MAX:
+          case S_MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
@@ -781,7 +803,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
       switch (iMax)
         {
           case 1:
-            pNode = new CEvaluationNodeFunction(CEvaluationNodeFunction::SQRT, "sqrt");
+            pNode = new CEvaluationNodeFunction(S_SQRT, "sqrt");
             pNode->addChild(children[0]);
             break;
 
@@ -791,11 +813,11 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
              * operator since COPASI does not have the ROOT function.
              */
           {
-            pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::POWER, "^");
+            pNode = new CEvaluationNodeOperator(S_POWER, "^");
             pNode->addChild(children[1]); // Value
-            CEvaluationNode * pExponent = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+            CEvaluationNode * pExponent = new CEvaluationNodeOperator(S_DIVIDE, "/");
             pNode->addChild(pExponent);
-            pExponent->addChild(new CEvaluationNodeNumber(CEvaluationNodeNumber::DOUBLE, "1"));
+            pExponent->addChild(new CEvaluationNodeNumber(S_DOUBLE, "1"));
             pExponent->addChild(children[0]); // Degree
           }
           break;
@@ -811,10 +833,10 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
        * as the argument for the divisor LOG10 node.
        */
 
-      CEvaluationNode * pNode = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
-      CEvaluationNode * pValue = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, "log10");
+      CEvaluationNode * pNode = new CEvaluationNodeOperator(S_DIVIDE, "/");
+      CEvaluationNode * pValue = new CEvaluationNodeFunction(S_LOG10, "log10");
       pValue->addChild(children[1]);
-      CEvaluationNode * pBase = new CEvaluationNodeFunction(CEvaluationNodeFunction::LOG10, "log10");
+      CEvaluationNode * pBase = new CEvaluationNodeFunction(S_LOG10, "log10");
       pBase->addChild(children[0]);
       pNode->addChild(pValue);
       pNode->addChild(pBase);
@@ -825,167 +847,167 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   switch (type)
     {
       case AST_FUNCTION_ABS:
-        subType = ABS;
+        subType = S_ABS;
         data = "abs";
         break;
 
       case AST_FUNCTION_ARCCOS:
-        subType = ARCCOS;
+        subType = S_ARCCOS;
         data = "acos";
         break;
 
       case AST_FUNCTION_ARCCOSH:
-        subType = ARCCOSH;
+        subType = S_ARCCOSH;
         data = "arccosh";
         break;
 
       case AST_FUNCTION_ARCCOT:
-        subType = ARCCOT;
+        subType = S_ARCCOT;
         data = "arccot";
         break;
 
       case AST_FUNCTION_ARCCOTH:
-        subType = ARCCOTH;
+        subType = S_ARCCOTH;
         data = "arccoth";
         break;
 
       case AST_FUNCTION_ARCCSC:
-        subType = ARCCSC;
+        subType = S_ARCCSC;
         data = "arccsc";
         break;
 
       case AST_FUNCTION_ARCCSCH:
-        subType = ARCCSCH;
+        subType = S_ARCCSCH;
         data = "arccsch";
         break;
 
       case AST_FUNCTION_ARCSEC:
-        subType = ARCSEC;
+        subType = S_ARCSEC;
         data = "arcsec";
         break;
 
       case AST_FUNCTION_ARCSECH:
-        subType = ARCSECH;
+        subType = S_ARCSECH;
         data = "arcsech";
         break;
 
       case AST_FUNCTION_ARCSIN:
-        subType = ARCSIN;
+        subType = S_ARCSIN;
         data = "asin";
         break;
 
       case AST_FUNCTION_ARCSINH:
-        subType = ARCSINH;
+        subType = S_ARCSINH;
         data = "arcsinh";
         break;
 
       case AST_FUNCTION_ARCTAN:
-        subType = ARCTAN;
+        subType = S_ARCTAN;
         data = "atan";
         break;
 
       case AST_FUNCTION_ARCTANH:
-        subType = ARCTANH;
+        subType = S_ARCTANH;
         data = "arctanh";
         break;
 
       case AST_FUNCTION_CEILING:
-        subType = CEIL;
+        subType = S_CEIL;
         data = "ceil";
         break;
 
       case AST_FUNCTION_COS:
-        subType = COS;
+        subType = S_COS;
         data = "cos";
         break;
 
       case AST_FUNCTION_COSH:
-        subType = COSH;
+        subType = S_COSH;
         data = "cosh";
         break;
 
       case AST_FUNCTION_COT:
-        subType = COT;
+        subType = S_COT;
         data = "cot";
         break;
 
       case AST_FUNCTION_COTH:
-        subType = COTH;
+        subType = S_COTH;
         data = "coth";
         break;
 
       case AST_FUNCTION_CSC:
-        subType = CSC;
+        subType = S_CSC;
         data = "csc";
         break;
 
       case AST_FUNCTION_CSCH:
-        subType = CSCH;
+        subType = S_CSCH;
         data = "csch";
         break;
 
       case AST_FUNCTION_EXP:
-        subType = EXP;
+        subType = S_EXP;
         data = "exp";
         break;
 
       case AST_FUNCTION_FACTORIAL:
-        subType = FACTORIAL;
+        subType = S_FACTORIAL;
         data = "factorial";
         break;
 
       case AST_FUNCTION_FLOOR:
-        subType = FLOOR;
+        subType = S_FLOOR;
         data = "floor";
         break;
 
       case AST_FUNCTION_LN:
-        subType = LOG;
+        subType = S_LOG;
         data = "log";
         break;
 
       case AST_FUNCTION_LOG:
-        subType = LOG10;
+        subType = S_LOG10;
         data = "log10";
         break;
 
       case AST_FUNCTION_SEC:
-        subType = SEC;
+        subType = S_SEC;
         data = "sec";
         break;
 
       case AST_FUNCTION_SECH:
-        subType = SECH;
+        subType = S_SECH;
         data = "sech";
         break;
 
       case AST_FUNCTION_SIN:
-        subType = SIN;
+        subType = S_SIN;
         data = "sin";
         break;
 
       case AST_FUNCTION_SINH:
-        subType = SINH;
+        subType = S_SINH;
         data = "sinh";
         break;
 
       case AST_FUNCTION_TAN:
-        subType = TAN;
+        subType = S_TAN;
         data = "tan";
         break;
 
       case AST_FUNCTION_TANH:
-        subType = TANH;
+        subType = S_TANH;
         data = "tanh";
         break;
 
       case AST_LOGICAL_NOT:
-        subType = NOT;
+        subType = S_NOT;
         data = "not";
         break;
 
       default:
-        subType = INVALID;
+        subType = S_INVALID;
         fatalError();
         break;
     }
@@ -1002,9 +1024,9 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
 // virtual
 bool CEvaluationNodeFunction::isBoolean() const
 {
-  switch ((SubType) CEvaluationNode::subType(mType))
+  switch (mSubType)
     {
-      case NOT:
+      case S_NOT:
         return true;
 
       default:
@@ -1014,20 +1036,20 @@ bool CEvaluationNodeFunction::isBoolean() const
 
 ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) const
 {
-  SubType subType = (SubType)CEvaluationNode::subType(this->getType());
+  SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
   bool needFirstArg = true;
 
   switch (subType)
     {
-      case INVALID:
+      case S_INVALID:
         break;
 
-      case LOG:
+      case S_LOG:
         node->setType(AST_FUNCTION_LN);
         break;
 
-      case LOG10:
+      case S_LOG10:
       {
         // log 10 needs two children, the log and the base
         node->setType(AST_FUNCTION_LOG);
@@ -1040,142 +1062,142 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         break;
       }
 
-      case EXP:
+      case S_EXP:
         node->setType(AST_FUNCTION_EXP);
         break;
 
-      case SIN:
+      case S_SIN:
         node->setType(AST_FUNCTION_SIN);
         break;
 
-      case COS:
+      case S_COS:
         node->setType(AST_FUNCTION_COS);
         break;
 
-      case TAN:
+      case S_TAN:
         node->setType(AST_FUNCTION_TAN);
         break;
 
-      case SEC:
+      case S_SEC:
         node->setType(AST_FUNCTION_SEC);
         break;
 
-      case CSC:
+      case S_CSC:
         node->setType(AST_FUNCTION_CSC);
         break;
 
-      case COT:
+      case S_COT:
         node->setType(AST_FUNCTION_COT);
         break;
 
-      case SINH:
+      case S_SINH:
         node->setType(AST_FUNCTION_SINH);
         break;
 
-      case COSH:
+      case S_COSH:
         node->setType(AST_FUNCTION_COSH);
         break;
 
-      case TANH:
+      case S_TANH:
         node->setType(AST_FUNCTION_TANH);
         break;
 
-      case SECH:
+      case S_SECH:
         node->setType(AST_FUNCTION_SECH);
         break;
 
-      case CSCH:
+      case S_CSCH:
         node->setType(AST_FUNCTION_CSCH);
         break;
 
-      case COTH:
+      case S_COTH:
         node->setType(AST_FUNCTION_COTH);
         break;
 
-      case ARCSIN:
+      case S_ARCSIN:
         node->setType(AST_FUNCTION_ARCSIN);
         break;
 
-      case ARCCOS:
+      case S_ARCCOS:
         node->setType(AST_FUNCTION_ARCCOS);
         break;
 
-      case ARCTAN:
+      case S_ARCTAN:
         node->setType(AST_FUNCTION_ARCTAN);
         break;
 
-      case ARCSEC:
+      case S_ARCSEC:
         node->setType(AST_FUNCTION_ARCSEC);
         break;
 
-      case ARCCSC:
+      case S_ARCCSC:
         node->setType(AST_FUNCTION_ARCCSC);
         break;
 
-      case ARCCOT:
+      case S_ARCCOT:
         node->setType(AST_FUNCTION_ARCCOT);
         break;
 
-      case ARCSINH:
+      case S_ARCSINH:
         node->setType(AST_FUNCTION_ARCSINH);
         break;
 
-      case ARCCOSH:
+      case S_ARCCOSH:
         node->setType(AST_FUNCTION_ARCCOSH);
         break;
 
-      case ARCTANH:
+      case S_ARCTANH:
         node->setType(AST_FUNCTION_ARCTANH);
         break;
 
-      case ARCSECH:
+      case S_ARCSECH:
         node->setType(AST_FUNCTION_ARCSECH);
         break;
 
-      case ARCCSCH:
+      case S_ARCCSCH:
         node->setType(AST_FUNCTION_ARCCSCH);
         break;
 
-      case ARCCOTH:
+      case S_ARCCOTH:
         node->setType(AST_FUNCTION_ARCCOTH);
         break;
 
-      case SQRT:
+      case S_SQRT:
         node->setType(AST_FUNCTION_ROOT);
         break;
 
-      case ABS:
+      case S_ABS:
         node->setType(AST_FUNCTION_ABS);
         break;
 
-      case CEIL:
+      case S_CEIL:
         node->setType(AST_FUNCTION_CEILING);
         break;
 
-      case FLOOR:
+      case S_FLOOR:
         node->setType(AST_FUNCTION_FLOOR);
         break;
 
-      case FACTORIAL:
+      case S_FACTORIAL:
         node->setType(AST_FUNCTION_FACTORIAL);
         break;
 
-      case MINUS:
+      case S_MINUS:
         node->setType(AST_MINUS);
         break;
 
-      case PLUS:
+      case S_PLUS:
         // if this is the unary plus as I suspect,
         // the node will be replaced by its only child
         delete node;
         node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel);
         break;
 
-      case NOT:
+      case S_NOT:
         node->setType(AST_LOGICAL_NOT);
         break;
 
-      case RUNIFORM:
+      case S_RUNIFORM:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1187,7 +1209,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       }
       break;
 
-      case RNORMAL:
+      case S_RNORMAL:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1199,7 +1221,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       }
       break;
 
-      case RGAMMA:
+      case S_RGAMMA:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1211,7 +1233,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       }
       break;
 
-      case RPOISSON:
+      case S_RPOISSON:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1221,7 +1243,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       }
       break;
 
-      case MAX:
+      case S_MAX:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1233,7 +1255,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       }
       break;
 
-      case MIN:
+      case S_MIN:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1249,13 +1271,13 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
       break;
     }
 
-  if (subType != INVALID)
+  if (subType != S_INVALID)
     {
       // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
       // where libsbml does not handle the case correctly that a root
       // function can have one or two children (MathML.cpp in function
       // writeFunctionRoot)
-      if (subType == SQRT)
+      if (subType == S_SQRT)
         {
           // add a degree node of value 2 as the first child
           ASTNode* pDegreeNode = new ASTNode();
@@ -1279,22 +1301,22 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
   assert(children.size() > 0);
   CEvaluationNode* child1 = children[0];
 
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case MINUS:
+      case S_MINUS:
       {
-        switch (CEvaluationNode::type(child1->getType()))
+        switch (child1->mainType())
           {
-            case CEvaluationNode::OPERATOR:
+            case CEvaluationNode::T_OPERATOR:
             {
-              switch ((CEvaluationNodeOperator::SubType) CEvaluationNode::subType(child1->getType()))
+              switch (child1->subType())
                 {
-                  case CEvaluationNodeOperator::DIVIDE:
+                  case S_DIVIDE:
                   {
                     // -(a/b) -> (-a)/b
                     // want to recognize a fraction in a sum easily
-                    CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::DIVIDE), "/");
-                    CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                    CEvaluationNode *newnode = CEvaluationNode::create(T_OPERATOR, S_DIVIDE, "/");
+                    CEvaluationNode *newchild1 = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
                     CEvaluationNode *newchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
                     CEvaluationNode *grandchild = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
                     newnode->addChild(newchild1, NULL);
@@ -1304,13 +1326,13 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
                     return newnode;
                   }
 
-                  case CEvaluationNodeOperator::PLUS:
+                  case S_PLUS:
                   {
                     // -(a+b) -> (-a)+(-b)
                     // negativity should be property of product
-                    CEvaluationNode *newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::PLUS), "+");
-                    CEvaluationNode *newchild1 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
-                    CEvaluationNode *newchild2 = CEvaluationNode::create((Type)(FUNCTION | MINUS), "-");
+                    CEvaluationNode *newnode = CEvaluationNode::create(T_OPERATOR, S_PLUS, "+");
+                    CEvaluationNode *newchild1 = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
+                    CEvaluationNode *newchild2 = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
                     CEvaluationNode *grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
                     CEvaluationNode *grandchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
                     newnode->addChild(newchild1, NULL);
@@ -1329,7 +1351,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
                 }
             }
 
-            case CEvaluationNode::FUNCTION:
+            case CEvaluationNode::T_FUNCTION:
             {
               if (child1->getData() == "-")
                 {
@@ -1344,11 +1366,11 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
               return newnode;
             }
 
-            case CEvaluationNode::NUMBER:
+            case CEvaluationNode::T_NUMBER:
             {
               std::stringstream tmp;
-              tmp << child1->getValue() *(-1.0);
-              CEvaluationNode* newnode = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), tmp.str());
+              tmp << *child1->getValuePointer() *(-1.0);
+              CEvaluationNode* newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
               delete child1;
               return newnode;
             }
@@ -1363,11 +1385,11 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
         break;
       }
 
-      case SQRT:
+      case S_SQRT:
       {
         // write as ^0.5
-        CEvaluationNode* newnode = CEvaluationNode::create((Type)(OPERATOR | CEvaluationNodeOperator::POWER), "^");
-        CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(NUMBER | CEvaluationNodeNumber::DOUBLE), "0.5");
+        CEvaluationNode* newnode = CEvaluationNode::create(T_OPERATOR, S_POWER, "^");
+        CEvaluationNode* newchild2 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, "0.5");
         newnode->addChild(child1, NULL);
         newnode->addChild(newchild2, child1);
         return newnode;
@@ -1385,14 +1407,15 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
 {
   Data Result;
 
-  Type T = mpArg1->getType();
+  MainType T = mpArgNode1->mainType();
 
-  if ((T & 0xFF000000) == OPERATOR)
+  if (T == T_OPERATOR)
     {
       Result = mData + "(" + str + ")";
     }
   else if (getParent() != NULL &&
-           static_cast< const CEvaluationNode * >(getParent())->getType() == (OPERATOR | CEvaluationNodeOperator::POWER))
+           static_cast< const CEvaluationNode * >(getParent())->mainType() == T_OPERATOR &&
+           static_cast< const CEvaluationNode * >(getParent())->subType() == S_POWER)
     {
       Result = "(" + mData + str + ")";
     }
@@ -1408,9 +1431,9 @@ std::string CEvaluationNodeFunction::handleNot(const std::string & str) const
 {
   Data Result = mData + " ";
 
-  Type T = mpArg1->getType();
+  MainType T = mpArgNode1->mainType();
 
-  if ((T & 0xFF000000) == LOGICAL)
+  if ((T & 0xFF000000) == T_LOGICAL)
     {
       Result += "(" + str + ")";
     }
@@ -1421,9 +1444,9 @@ std::string CEvaluationNodeFunction::handleNot(const std::string & str) const
 }
 
 CEvaluationNode * CEvaluationNodeFunction::getLeft()
-{return mpArg1;}
+{return mpArgNode1;}
 const CEvaluationNode * CEvaluationNodeFunction::getLeft() const
-{return mpArg1;}
+{return mpArgNode1;}
 
 #include "utilities/copasimathml.h"
 
@@ -1438,152 +1461,152 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   std::string ldata = "";
   std::string rdata = "";
 
-  bool flag = ((CEvaluationNode::type(mpArg1->getType()) == CEvaluationNode::NUMBER) ||
-               (CEvaluationNode::type(mpArg1->getType()) == CEvaluationNode::VARIABLE) ||
-               (CEvaluationNode::type(mpArg1->getType()) == CEvaluationNode::CONSTANT));
+  bool flag = ((mpArgNode1->mainType() == CEvaluationNode::T_NUMBER) ||
+               (mpArgNode1->mainType() == CEvaluationNode::T_VARIABLE) ||
+               (mpArgNode1->mainType() == CEvaluationNode::T_CONSTANT));
 
   bool flag1 = false;
 
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case INVALID:
+      case S_INVALID:
         data = "@";
         break;
 
-      case LOG:
+      case S_LOG:
         data = "ln";
         break;
 
-      case LOG10:
+      case S_LOG10:
         break;
 
-      case EXP:
+      case S_EXP:
         break;
 
-      case SIN:
+      case S_SIN:
         data = "sin";
         break;
 
-      case COS:
+      case S_COS:
         data = "cos";
         break;
 
-      case TAN:
+      case S_TAN:
         data = "tan";
         break;
 
-      case SEC:
+      case S_SEC:
         data = "sec";
         break;
 
-      case CSC:
+      case S_CSC:
         data = "csc";
         break;
 
-      case COT:
+      case S_COT:
         data = "cot";
         break;
 
-      case SINH:
+      case S_SINH:
         data = "sinh";
         break;
 
-      case COSH:
+      case S_COSH:
         data = "cosh";
         break;
 
-      case TANH:
+      case S_TANH:
         data = "tanh";
         break;
 
-      case SECH:
+      case S_SECH:
         data = "sech";
         break;
 
-      case CSCH:
+      case S_CSCH:
         data = "csch";
         break;
 
-      case COTH:
+      case S_COTH:
         data = "coth";
         break;
 
-      case ARCSIN:
+      case S_ARCSIN:
         data = "arcsin";
         break;
 
-      case ARCCOS:
+      case S_ARCCOS:
         data = "arccos";
         break;
 
-      case ARCTAN:
+      case S_ARCTAN:
         data = "arctan";
         break;
 
-      case ARCSEC:
+      case S_ARCSEC:
         data = "arcsec";
         break;
 
-      case ARCCSC:
+      case S_ARCCSC:
         data = "arccsc";
         break;
 
-      case ARCCOT:
+      case S_ARCCOT:
         data = "arccot";
         break;
 
-      case ARCSINH:
+      case S_ARCSINH:
         data = "arcsinh";
         break;
 
-      case ARCCOSH:
+      case S_ARCCOSH:
         data = "arccosh";
         break;
 
-      case ARCTANH:
+      case S_ARCTANH:
         data = "arctanh";
         break;
 
-      case ARCSECH:
+      case S_ARCSECH:
         data = "arcsech";
         break;
 
-      case ARCCSCH:
+      case S_ARCCSCH:
         data = "arccsch";
         break;
 
-      case ARCCOTH:
+      case S_ARCCOTH:
         data = "arccoth";
         break;
 
-      case SQRT:
+      case S_SQRT:
         ldata = "<msqrt>";
         rdata = "</msqrt>";
         break;
 
-      case ABS:
+      case S_ABS:
         ldata = "|";
         rdata = "|";
         break;
 
-      case CEIL:
+      case S_CEIL:
         data = "ceil";
         break;
 
-      case FLOOR:
+      case S_FLOOR:
         data = "floor";
         break;
 
-      case FACTORIAL:
+      case S_FACTORIAL:
         break;
 
-      case MINUS:
+      case S_MINUS:
         break;
 
-      case PLUS:
+      case S_PLUS:
         break;
 
-      case NOT:
+      case S_NOT:
         data = "!";
         break;
     }
@@ -1592,32 +1615,35 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
   out << "<mrow>" << std::endl;
 
-  switch (mType & 0x00FFFFFF)
+  switch (mSubType)
     {
-      case PLUS:
+      case S_PLUS:
+      {
+        size_t type = (mpArgNode1->mainType() | mpArgNode1->subType());
 
-        flag = ((mpArg1->getType() == (CEvaluationNode::OPERATOR | PLUS))
-                || (mpArg1->getType() == (CEvaluationNode::OPERATOR | MINUS))
-                || (((mpArg1->getType() & 0xFF000000) == CEvaluationNode::CALL) && expand));
+        flag = ((type == (T_OPERATOR | S_PLUS))
+                || (type == (T_OPERATOR | S_MINUS))
+                || ((mpArgNode1->mainType() == T_CALL) && expand));
+      }
 
-        if (flag) out << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << std::endl;
 
-        out << children[0];
+      out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << std::endl;
 
-        break;
+      break;
 
-      case MINUS:
+      case S_MINUS:
 
         if (pParent != 0)
           {
-            Type T = pParent->getType();
+            MainType T = pParent->mainType();
 
-            flag1 = ((T & 0xFF000000) == OPERATOR &&
+            flag1 = (T == T_OPERATOR &&
                      this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()));
 
-            flag1 |= (T == (OPERATOR | CEvaluationNodeOperator::POWER));
+            flag1 |= (T == (T_OPERATOR | S_POWER));
 
             if (flag1) out << "<mfenced>" << std::endl;
 
@@ -1638,7 +1664,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case FACTORIAL:
+      case S_FACTORIAL:
 
         if (!flag) out << "<mfenced>" << std::endl;
 
@@ -1650,8 +1676,8 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case SQRT:
-      case ABS:
+      case S_SQRT:
+      case S_ABS:
 
         out << ldata << std::endl;
 
@@ -1661,7 +1687,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case EXP:
+      case S_EXP:
 
         out << "<msup>" << std::endl;
         out << "<mo> e  </mo>" << std::endl;
@@ -1672,7 +1698,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case LOG10:
+      case S_LOG10:
 
         out << "<msub>" << std::endl;
         out << "<mo>" << "log" << "</mo>" << std::endl;
@@ -1691,8 +1717,8 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case CEIL:
-      case FLOOR:
+      case S_CEIL:
+      case S_FLOOR:
         out << "<mi> " << data << " </mi>" << std::endl;
 
         out << "<mfenced>" << std::endl;
@@ -1703,11 +1729,11 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case RUNIFORM:
-      case RNORMAL:
-      case RGAMMA:
-      case MAX:
-      case MIN:
+      case S_RUNIFORM:
+      case S_RNORMAL:
+      case S_RGAMMA:
+      case S_MAX:
+      case S_MIN:
         out << "<mrow>" << std::endl;
 
         out << "<mi>" << mData << "</mi>" << std::endl;
@@ -1728,7 +1754,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
         out << "</mrow>" << std::endl;
         break;
 
-      case RPOISSON:
+      case S_RPOISSON:
         out << "<mrow>" << std::endl;
 
         out << "<mi>" << mData << "</mi>" << std::endl;
@@ -1764,4 +1790,181 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   out << "</mrow>" << std::endl;
 
   return out.str();
+}
+
+CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* container */,
+    const std::vector< CValidatedUnit > & units) const
+{
+  CValidatedUnit Unit(CBaseUnit::dimensionless, false);
+
+  switch ((SubType)this->subType())
+    {
+      case S_LOG:
+      case S_LOG10:
+      case S_EXP:
+      case S_SIN:
+      case S_COS:
+      case S_TAN:
+      case S_SEC:
+      case S_CSC:
+      case S_COT:
+      case S_SINH:
+      case S_COSH:
+      case S_TANH:
+      case S_SECH:
+      case S_CSCH:
+      case S_COTH:
+      case S_ARCSIN:
+      case S_ARCCOS:
+      case S_ARCTAN:
+      case S_ARCSEC:
+      case S_ARCCSC:
+      case S_ARCCOT:
+      case S_ARCSINH:
+      case S_ARCCOSH:
+      case S_ARCTANH:
+      case S_ARCSECH:
+      case S_ARCCSCH:
+      case S_ARCCOTH:
+      case S_FACTORIAL:
+      case S_NOT:
+        Unit = CValidatedUnit::merge(Unit, units[0]);
+        break;
+
+      case S_MINUS:
+      case S_PLUS:
+      case S_MAX:
+      case S_MIN:
+      case S_RUNIFORM:
+      case S_RNORMAL:
+        Unit = CValidatedUnit::merge(units[0], units[1]);
+        break;
+
+      case S_FLOOR:
+      case S_CEIL:
+      case S_ABS:
+      case S_RPOISSON:
+        Unit = units[0];
+
+        break;
+
+      case S_RGAMMA:
+        // The unit of the gamma distribution is the inverse of the scale parameter (units[1])
+        Unit = units[1].exponentiate(-1);
+
+        // The shape parameter must be dimensionless
+        if (!Unit.conflict())
+          {
+            Unit.setConflict(!(units[0] == CUnit(CBaseUnit::dimensionless)));
+          }
+
+        break;
+
+      case S_SQRT:
+      {
+        // Exponentiate to 1/2.
+        // Test if each component's exponent
+        // is an integer. (don't want fractional exponents) by . . .
+        // modf(exp, NULL) =< std::numeric_limits::epsilon
+        Unit = units[0].exponentiate(1.0 / 2.0);
+
+        std::set< CUnitComponent >::const_iterator  it = Unit.getComponents().begin();
+        std::set< CUnitComponent >::const_iterator end = Unit.getComponents().end();
+
+        for (; it != end; it++)
+          {
+            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+              {
+                Unit = CValidatedUnit(CBaseUnit::undefined, true);
+
+                break;
+              }
+          }
+
+        break;
+      }
+
+      default:
+        Unit.setConflict(true);
+        break;
+    }
+
+  return Unit;
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeFunction * >(this))->second,
+                          targetUnits[const_cast< CEvaluationNodeFunction * >(this)]);
+
+  switch ((SubType)this->subType())
+    {
+      case S_LOG:
+      case S_LOG10:
+      case S_EXP:
+      case S_SIN:
+      case S_COS:
+      case S_TAN:
+      case S_SEC:
+      case S_CSC:
+      case S_COT:
+      case S_SINH:
+      case S_COSH:
+      case S_TANH:
+      case S_SECH:
+      case S_CSCH:
+      case S_COTH:
+      case S_ARCSIN:
+      case S_ARCCOS:
+      case S_ARCTAN:
+      case S_ARCSEC:
+      case S_ARCCSC:
+      case S_ARCCOT:
+      case S_ARCSINH:
+      case S_ARCCOSH:
+      case S_ARCTANH:
+      case S_ARCSECH:
+      case S_ARCCSCH:
+      case S_ARCCOTH:
+      case S_FACTORIAL:
+      case S_NOT:
+        targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        break;
+
+      case S_MINUS:
+      case S_PLUS:
+      case S_MAX:
+      case S_MIN:
+      case S_RUNIFORM:
+      case S_RNORMAL:
+        targetUnits[mpArgNode1] = Result;
+        targetUnits[mpArgNode2] = Result;
+        break;
+
+      case S_FLOOR:
+      case S_CEIL:
+      case S_ABS:
+      case S_RPOISSON:
+        targetUnits[mpArgNode1] = Result;
+        break;
+
+      case S_RGAMMA:
+        targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
+        targetUnits[mpArgNode2] = Result.exponentiate(-1);
+
+        break;
+
+      case S_SQRT:
+        targetUnits[mpArgNode1] = Result.exponentiate(2.0);
+        break;
+
+      default:
+        Result.setConflict(true);
+        break;
+    }
+
+  return Result;
 }

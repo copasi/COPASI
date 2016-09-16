@@ -258,7 +258,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
-      this->mpCopasiModel->setAvogadro(6.02214179e23);
+      this->mpCopasiModel->setAvogadro(6.02214179e23, CModelParameter::Concentration);
       this->mAvogadroSet = true;
 
       // we make copies of the unit definitions so that we do not have to remember
@@ -665,11 +665,11 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
           // the unit could not be handled, give an error message and
           // set the units to mole
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
-          this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
+          this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CModelParameter::Concentration);
         }
       else
         {
-          this->mpCopasiModel->setQuantityUnit(qUnit.first);
+          this->mpCopasiModel->setQuantityUnit(qUnit.first, CModelParameter::Concentration);
         }
 
       // check if the extends units are set and if they are equal to the substance units
@@ -945,7 +945,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setAreaUnit(CUnit::m2);
   this->mpCopasiModel->setVolumeUnit(CUnit::l);
   this->mpCopasiModel->setTimeUnit(CUnit::s);
-  this->mpCopasiModel->setQuantityUnit(CUnit::Mol);
+  this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CModelParameter::Concentration);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
   mCurrentStepHandle = C_INVALID_INDEX;
@@ -1020,7 +1020,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   CFunctionDB* pTmpFunctionDB = this->importFunctionDefinitions(sbmlModel, copasi2sbmlmap);
 
-  // try to find global parameters that represent avogadros number
+  // try to find global parameters that represent Avogadro's number
   this->findAvogadroConstant(sbmlModel, this->mpCopasiModel->getQuantity2NumberFactor());
 
   mCompartmentMap.clear();
@@ -1219,7 +1219,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     }
 
   // the information that is collected here is used in the creation of the reactions to
-  // adjust the stoichiometry of substrates and products with the conversion factos from
+  // adjust the stoichiometry of substrates and products with the conversion factors from
   // the SBML model
 
   // now that all parameters have been imported, we can check if the model
@@ -1289,7 +1289,17 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   this->mDivisionByCompartmentReactions.clear();
   this->mFastReactions.clear();
+  this->mReactions.clear();
   this->mReactionsWithReplacedLocalParameters.clear();
+  this->mParameterFluxMap.clear();
+
+  for (counter = 0; counter < num; counter++)
+    {
+      Reaction* current = sbmlModel->getReaction(counter);
+
+      if (current->isSetId())
+        mReactions.insert(current->getId());
+    }
 
   for (counter = 0; counter < num; counter++)
     {
@@ -1375,8 +1385,25 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 87, idList.c_str());
     }
 
+  if (!this->mParameterFluxMap.empty())
+    {
+      CCopasiVectorNS < CReaction >::iterator reactionIt = mpCopasiModel->getReactions().begin();
+
+      for (; reactionIt != mpCopasiModel->getReactions().end(); ++reactionIt)
+        {
+          CReaction& reaction = *reactionIt;
+          std::map < std::string, CModelValue* >::iterator it =
+            mParameterFluxMap.find(reaction.getSBMLId());
+
+          if (it == mParameterFluxMap.end())
+            continue;
+
+          it->second->setExpression("<" + reaction.getFluxReference()->getCN() + ">");
+        }
+    }
+
   // import the initial assignments
-  // we do this after the reactions since intial assignments can reference reaction ids.
+  // we do this after the reactions since initial assignments can reference reaction ids.
 
   if (createProgressStepOrStop(10, sbmlModel->getNumInitialAssignments(), "Importing initial assignments..."))
     return NULL;
@@ -1925,7 +1952,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
   // if the root node already is an object node, this has to be dealt with separately
   if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
     {
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
       pFun->setRoot(pVariableNode);
     }
   else
@@ -1934,7 +1961,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
         {
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
             {
-              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNodeVariable::ANY, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
 
               if ((*treeIt).getParent())
                 {
@@ -2582,7 +2609,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
   /* in the newly created CFunction set the types for all parameters and
    * either a mapping or a value
    */
-  const KineticLaw* kLaw = sbmlReaction->getKineticLaw();
+  KineticLaw* kLaw = sbmlReaction->getKineticLaw();
 
   if (kLaw != NULL)
     {
@@ -2620,7 +2647,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           else
             {
               // Set value to NaN and create a warning if it is the first time
-              // this happend
+              // this happened
               value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
               if (!this->mIncompleteModel)
@@ -2633,7 +2660,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           copasiReaction->getParameters().addParameter(id, CCopasiParameter::DOUBLE, value);
         }
 
-      const ASTNode* kLawMath = kLaw->getMath();
+      ASTNode* kLawMath = const_cast<ASTNode*>(kLaw->getMath());
 
       if (kLawMath == NULL || kLawMath->getType() == AST_UNKNOWN)
         {
@@ -2646,6 +2673,30 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           if (!SBMLImporter::findIdInASTTree(kLawMath, this->mSBMLSpeciesReferenceIds).empty())
             {
               CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
+            }
+
+          std::string reactionId;
+
+          while (!(reactionId = SBMLImporter::findIdInASTTree(kLawMath, mReactions)).empty())
+            {
+              std::string newParameterId = "rateOf_" + reactionId;
+
+              Parameter* sbmlParameter = pSBMLModel->createParameter();
+              sbmlParameter->setId(newParameterId);
+              sbmlParameter->setValue(0);
+
+              CModelValue* parameter = this->mpCopasiModel->createModelValue(newParameterId);
+              parameter->setSBMLId(newParameterId);
+              parameter->setStatus(CModelEntity::ASSIGNMENT);
+              parameter->setInitialExpression("0");
+
+              mParameterFluxMap[reactionId] = parameter;
+
+              copasi2sbmlmap[parameter] = sbmlParameter;
+
+              std::map<std::string, std::string> map;
+              map[reactionId] = newParameterId;
+              replace_name_nodes(kLawMath, map);
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
@@ -2763,9 +2814,9 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                   assert(pCFFun != NULL);
                   CEvaluationNodeCall* pCallNode = NULL;
 
-                  if (CEvaluationNode::type(pExpressionTreeRoot->getType()) == CEvaluationNode::OBJECT)
+                  if (pExpressionTreeRoot->mainType() == CEvaluationNode::T_OBJECT)
                     {
-                      pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                      pCallNode = new CEvaluationNodeCall(CEvaluationNode::S_EXPRESSION, "dummy_call");
                       // add the parameter
                       pCallNode->addChild(pExpressionTreeRoot->copyBranch());
                     }
@@ -2828,7 +2879,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                             }
 
                           // do the mapping
-                          CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                          CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNode::S_EXPRESSION, "dummy_call");
                           size_t i, iMax = v->size();
 
                           for (i = 0; i < iMax; ++i)
@@ -2865,7 +2916,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                               for (i = 0; (i < iMax) && pTmpNode; ++i)
                                 {
-                                  if (!(pTmpNode->getType() == CEvaluationNode::OBJECT)) fatalError();
+                                  if (!(pTmpNode->mainType() == CEvaluationNode::T_OBJECT)) fatalError();
 
                                   arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
                                   pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
@@ -2940,7 +2991,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                             }
 
                           // do the mapping
-                          CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNodeCall::EXPRESSION, "dummy_call");
+                          CEvaluationNodeCall* pCallNode = new CEvaluationNodeCall(CEvaluationNode::S_EXPRESSION, "dummy_call");
                           size_t i, iMax = v->size();
 
                           for (i = 0; i < iMax; ++i)
@@ -3123,6 +3174,7 @@ SBMLImporter::SBMLImporter():
   mCurrentStepTotal(0),
   mSubstanceOnlySpecies(),
   mFastReactions(),
+  mReactions(),
   mReactionsWithReplacedLocalParameters(),
   mExplicitelyTimeDependentFunctionDefinitions(),
   mIgnoredParameterUnits(),
@@ -3147,6 +3199,7 @@ SBMLImporter::SBMLImporter():
   mConversionFactorFound(false),
 #endif // LIBSBML_VERSION >= 40100
   mCompartmentMap(),
+  mParameterFluxMap(),
   mChangedObjects(),
   mUnitExpressions()
 {
@@ -3276,7 +3329,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 #endif
 
-  unsigned int checkResult = sbmlDoc->checkConsistency();
+  unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) + sbmlDoc->checkConsistency();
 
 #if LIBSBML_VERSION > 50800
 
@@ -3308,6 +3361,12 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
                 str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
 
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
+            }
+
+          // we check for unsupported SBML version
+          if (pSBMLError->getErrorId() == 99101)
+            {
+              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 102, sbmlDoc->getLevel(), sbmlDoc->getVersion());
             }
 
           CCopasiMessage::Type messageType = CCopasiMessage::RAW;
@@ -5242,7 +5301,10 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
 bool SBMLImporter::areEqualSubtrees(const CEvaluationNode* pNode1, const CEvaluationNode* pNode2)
 {
   // TODO CRITICAL We need to use a node iterator
-  bool result = ((pNode1->getType() == pNode2->getType()) && (pNode1->getData() == pNode2->getData()));
+  bool result = ((pNode1->mainType() == pNode2->mainType()) &&
+                 (pNode1->subType() == pNode2->subType()) &&
+                 (pNode1->getData() == pNode2->getData()));
+
   const CEvaluationNode* pChild1 = static_cast<const CEvaluationNode*>(pNode1->getChild());
   const CEvaluationNode* pChild2 = static_cast<const CEvaluationNode*>(pNode2->getChild());
 
@@ -5275,7 +5337,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassAction(const CEvaluatio
 
         while (pChildNode)
           {
-            if (pChildNode->getType() == CEvaluationNode::OBJECT)
+            if (pChildNode->mainType() == CEvaluationNode::T_OBJECT)
               {
                 str = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
                 functionArgumentCNs.push_back(std::vector<std::string>());
@@ -5319,7 +5381,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
       assert(pTmpNode != NULL);
       // the root node must be a minus operator
       // the two children must be irreversible mass action terms
-      result = (CEvaluationNode::type(pTmpNode->getType()) == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pTmpNode->getType())) == CEvaluationNodeOperator::MINUS);
+      result = (pTmpNode->mainType() == CEvaluationNode::T_OPERATOR && (pTmpNode->subType()) == CEvaluationNode::S_MINUS);
 
       if (result)
         {
@@ -5421,7 +5483,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
               // the node can either be an object node
               // or it can be a power function node
-              if (pNode->getType() == CEvaluationNode::OBJECT)
+              if (pNode->mainType() == CEvaluationNode::T_OBJECT)
                 {
                   // it can be a global or a local parameter or an metabolite
                   std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
@@ -5452,7 +5514,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                       else if (dynamic_cast<const CModelValue*>(pObject))
                         {
                           ++numParameters;
-                          v->push_back(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pNode->getType())), pNode->getData()));
+                          v->push_back(new CEvaluationNodeObject((pNode->subType()), pNode->getData()));
                         }
                       else
                         {
@@ -5463,7 +5525,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                   else if (dynamic_cast<const CCopasiParameter*>(pObject))
                     {
                       ++numParameters;
-                      v->push_back(new CEvaluationNodeObject((CEvaluationNodeObject::SubType)(CEvaluationNode::subType(pNode->getType())), pNode->getData()));
+                      v->push_back(new CEvaluationNodeObject((pNode->subType()), pNode->getData()));
                     }
                   else
                     {
@@ -5471,12 +5533,12 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                       break;
                     }
                 }
-              else if (pNode->getType() == CEvaluationNode::OPERATOR && (CEvaluationNodeOperator::SubType)(CEvaluationNode::subType(pNode->getType())) == CEvaluationNodeOperator::POWER)
+              else if (pNode->mainType() == CEvaluationNode::T_OPERATOR && pNode->subType() == CEvaluationNode::S_POWER)
                 {
                   // the two children must be a metabolite node and a number node in this order
                   const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pNode->getChild());
 
-                  if (pChildNode->getType() == CEvaluationNode::OBJECT)
+                  if (pChildNode->mainType() == CEvaluationNode::T_OBJECT)
                     {
                       std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
                       const CCopasiObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
@@ -5491,27 +5553,27 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                               pChildNode = static_cast<const CEvaluationNode*>(pChildNode->getSibling());
                               assert(pChildNode);
 
-                              CEvaluationNode::Type type = CEvaluationNode::type(pChildNode->getType());
+                              CEvaluationNode::MainType type = pChildNode->mainType();
 
-                              if (type == CEvaluationNode::NUMBER)
+                              if (type == CEvaluationNode::T_NUMBER)
                                 {
                                   const CMetab* pMetab = static_cast<const CMetab*>(pObject);
 
                                   if (multiplicityMap.find(pMetab) != multiplicityMap.end())
                                     {
-                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + pChildNode->getValue();
+                                      multiplicityMap[pMetab] = multiplicityMap[pMetab] + *pChildNode->getValuePointer();
                                     }
                                   else
                                     {
-                                      multiplicityMap[pMetab] = pChildNode->getValue();
+                                      multiplicityMap[pMetab] = *pChildNode->getValuePointer();
                                     }
                                 }
-                              else if (type == CEvaluationNode::FUNCTION &&
-                                       (CEvaluationNodeFunction::SubType)CEvaluationNode::subType(pChildNode->getType()) == CEvaluationNodeFunction::MINUS &&
-                                       CEvaluationNode::type(((CEvaluationNode*)pChildNode->getChild())->getType()) == CEvaluationNode::NUMBER)
+                              else if (type == CEvaluationNode::T_FUNCTION &&
+                                       pChildNode->subType() == CEvaluationNode::S_MINUS &&
+                                       static_cast< const CEvaluationNode * >(pChildNode->getChild())->mainType() == CEvaluationNode::T_NUMBER)
                                 {
                                   const CMetab* pMetab = static_cast<const CMetab*>(pObject);
-                                  multiplicityMap[pMetab] = -1 * ((CEvaluationNodeNumber*)(pChildNode->getChild()))->getValue();
+                                  multiplicityMap[pMetab] = -1 * *static_cast< const CEvaluationNodeNumber * >(pChildNode->getChild())->getValuePointer();
                                 }
                               else
                                 {
@@ -5625,7 +5687,7 @@ void SBMLImporter::separateProductArguments(const CEvaluationNode* pRootNode, st
   // TODO CRITICAL We need to use a node iterator
   const CEvaluationNodeOperator* pMultiplyNode = dynamic_cast<const CEvaluationNodeOperator*>(pRootNode);
 
-  if (pMultiplyNode && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pMultiplyNode->getType())) == CEvaluationNodeOperator::MULTIPLY))
+  if (pMultiplyNode && ((pMultiplyNode->subType()) == CEvaluationNode::S_MULTIPLY))
     {
       // check if one if the children is an object node or a power operator, if so,
       // add the node to the vector
@@ -5641,7 +5703,7 @@ void SBMLImporter::separateProductArguments(const CEvaluationNode* pRootNode, st
             {
               arguments.push_back(pObjectNode);
             }
-          else if (pOperatorNode && (((CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOperatorNode->getType())) == CEvaluationNodeOperator::POWER))
+          else if (pOperatorNode && ((pOperatorNode->subType()) == CEvaluationNode::S_POWER))
             {
               arguments.push_back(pOperatorNode);
             }
@@ -6086,11 +6148,11 @@ CEvaluationNode* SBMLImporter::variables2objects(const CEvaluationNode* pOrigNod
 
       if (pos == replacementMap.end()) fatalError();
 
-      pResultNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pos->second + ">");
+      pResultNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pos->second + ">");
     }
   else
     {
-      pResultNode = CEvaluationNode::create(pOrigNode->getType(), pOrigNode->getData());
+      pResultNode = CEvaluationNode::create(pOrigNode->mainType(), pOrigNode->subType(), pOrigNode->getData());
       const CEvaluationNode* pChildNode = static_cast<const CEvaluationNode*>(pOrigNode->getChild());
 
       while (pChildNode)
@@ -6392,7 +6454,7 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 
       while (treeIt != NULL)
         {
-          if (CEvaluationNode::type((*treeIt).getType()) == CEvaluationNode::CALL)
+          if (treeIt->mainType() == CEvaluationNode::T_CALL)
             {
               // unQuote not necessary since getIndex in CCopasiVector takes care of this.
               CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
@@ -6908,14 +6970,8 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<const CC
 
       if (pMath != NULL)
         {
-          std::set<std::string> reactionIds;
 
-          for (i = 0; i < sbmlModel->getListOfReactions()->size(); i++)
-            {
-              reactionIds.insert(sbmlModel->getReaction(i)->getId());
-            }
-
-          std::string id = SBMLImporter::findIdInASTTree(pMath, reactionIds);
+          std::string id = SBMLImporter::findIdInASTTree(pMath, mReactions);
 
           if (!id.empty())
             {
@@ -9732,17 +9788,17 @@ const CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, 
 {
   const CCopasiObject* pObject = NULL;
   CRegisteredObjectName name;
-  CEvaluationNode::Type type = pRoot->getType();
+  CEvaluationNode::MainType MainType = pRoot->mainType();
 
-  switch (CEvaluationNode::type(type))
+  switch (MainType)
     {
-      case CEvaluationNode::CALL:
+      case CEvaluationNode::T_CALL:
       {
         // the function call may only have one child
         // which must be o object node
         if (pRoot->getChild() != NULL &&
             pRoot->getChild()->getSibling() == NULL &&
-            CEvaluationNode::type(dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->getType()) == CEvaluationNode::OBJECT)
+            dynamic_cast<const CEvaluationNode*>(pRoot->getChild())->mainType() == CEvaluationNode::T_OBJECT)
           {
             const CEvaluationTree* pTree = pFunctionDB->findFunction(pRoot->getData());
 
@@ -9756,7 +9812,7 @@ const CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, 
             if (pTree != NULL &&
                 pTree->getRoot() != NULL &&
                 pTree->getRoot()->getChild() == NULL &&
-                CEvaluationNode::type(pTree->getRoot()->getType()) == CEvaluationNode::VARIABLE)
+                pTree->getRoot()->mainType() == CEvaluationNode::T_VARIABLE)
               {
                 name = dynamic_cast<const CEvaluationNodeObject*>(pRoot->getChild())->getObjectCN();
                 assert(!name.empty());
@@ -9767,7 +9823,7 @@ const CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, 
       }
       break;
 
-      case CEvaluationNode::OBJECT:
+      case CEvaluationNode::T_OBJECT:
         name = dynamic_cast<const CEvaluationNodeObject*>(pRoot)->getObjectCN();
         assert(!name.empty());
         break;
@@ -10867,13 +10923,13 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
       // first we check if this is thie reverse operation with the object
       // if so, we just drop the reverse operaqtion, otherwise we apply the operation with the
       // object
-      if (CEvaluationNode::type(pOrigNode->getType()) == CEvaluationNode::OPERATOR &&
-          (CEvaluationNodeOperator::SubType)CEvaluationNode::subType(pOrigNode->getType()) == CEvaluationNodeOperator::MULTIPLY)
+      if (pOrigNode->mainType() == CEvaluationNode::T_OPERATOR &&
+          pOrigNode->subType() == CEvaluationNode::S_MULTIPLY)
         {
           // either child can be the object
           const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
 
-          if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+          if (pChild->mainType() == CEvaluationNode::T_OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
             {
 
               pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -10884,7 +10940,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
             {
               pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
 
-              if (CEvaluationNode::type(pChild->getType()) == CEvaluationNode::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+              if (pChild->mainType() == CEvaluationNode::T_OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
                 {
 
                   pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -10895,8 +10951,8 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
 
       if (reverse == false)
         {
-          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNodeObject::CN, "<" + pObject->getCN() + ">");
-          pResult = new CEvaluationNodeOperator(CEvaluationNodeOperator::DIVIDE, "/");
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ">");
+          pResult = new CEvaluationNodeOperator(CEvaluationNode::S_DIVIDE, "/");
           pResult->addChild(pOrigNode->copyBranch());
           pResult->addChild(pVolumeNode);
         }

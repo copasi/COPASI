@@ -1,16 +1,16 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CModel
 #define COPASI_CModel
@@ -90,6 +90,12 @@ public:
    * @return bool success
    */
   virtual bool setObjectParent(const CCopasiContainer * pParent);
+
+  /**
+   * Retrieve the units of the object.
+   * @return std::string units
+   */
+  virtual const std::string getUnits() const;
 
   /**
    * Retrieve the units of the child object.
@@ -389,11 +395,11 @@ public:
   const CCopasiVector < CMoiety > & getMoieties() const;
 
   /**
-   * Returns the index of the metab
-   * @param const std::string & Target
-   * @return index
+   * Returns the pointer to the species with the given name
+   * @param const std::string & name
+   * @return CMetab * pSpecies
    */
-  size_t findMetabByName(const std::string & Target) const;
+  CMetab * findMetabByName(const std::string & name) const;
 
   /**
    * Returns the index of the moiety
@@ -580,7 +586,8 @@ public:
    * @param const std::string & name
    * @return bool success
    */
-  bool setQuantityUnit(const std::string & name);
+  bool setQuantityUnit(const std::string & name,
+                       const CModelParameter::Framework & frameWork);
 
   /**
    * Set the unit for quantities. If COPASI recognizes
@@ -589,7 +596,8 @@ public:
    * @param const CModel::QuantityUnit & unit
    * @return bool success
    */
-  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum);
+  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
+                       const CModelParameter::Framework & frameWork);
 
   /**
    * Get the current quantity unit of the model
@@ -626,7 +634,8 @@ public:
    * Set the Avogadro number used for the model.
    * @param const C_FLOAT64 & avogadro
    */
-  void setAvogadro(const C_FLOAT64 & avogadro);
+  void setAvogadro(const C_FLOAT64 & avogadro,
+                   const CModelParameter::Framework & frameWork);
 
   /**
    * Retrieve the Avogadro number.
@@ -933,67 +942,8 @@ public:
    * generates a string that contains a text description of all model parameters
    * (initial values and reaction parameters)
    */
-  std::string printParameterOverview();
-
-  /**
-   * Retrieve the time units
-   * @return std::string timeUnits
-   */
-  std::string getTimeUnitsDisplayString() const;
-
-  /**
-   * Retrieve the frequency units
-   * @return std::string frequencyUnits
-   */
-  std::string getFrequencyUnit() const;
-
-  /**
-   * Retrieve the volume units
-   * @return std::string volumeUnits
-   */
-  std::string getVolumeUnitsDisplayString() const;
-
-  /**
-   * Retrieve the area units
-   * @return std::string volumeUnits
-   */
-  std::string getAreaUnitsDisplayString() const;
-
-  /**
-   * Retrieve the length units
-   * @return std::string volumeUnits
-   */
-  std::string getLengthUnitsDisplayString() const;
-
-  /**
-   * Retrieve the volume rate units
-   * @return std::string volumeRateUnits
-   */
-  std::string getVolumeRateUnitsDisplayString() const;
-
-  /**
-   * Retrieve the concentration units
-   * @return std::string concentrationUnits
-   */
-  std::string getConcentrationUnitsDisplayString() const;
-
-  /**
-   * Retrieve the concentration rate units
-   * @return std::string concentrationRateUnits
-   */
-  std::string getConcentrationRateUnitsDisplayString() const;
-
-  /**
-   * Retrieve the quantity units
-   * @return std::string quantityUnits
-   */
-  std::string getQuantityUnitsDisplayString() const;
-
-  /**
-   * Retrieve the quantity rate units
-   * @return std::string quantityRateUnits
-   */
-  std::string getQuantityRateUnitsDisplayString() const;
+  // this member is no longer implemented, commenting it out
+  //std::string printParameterOverview();
 
   /**
    * List all trees which introduce discrete changes.
@@ -1041,11 +991,6 @@ private:
    * This updates the annotations of the link matrix and the stoichiometry matrix
    */
   void updateMatrixAnnotations();
-
-  /**
-   * Determine whether the model is autonomous
-   */
-  void determineIsAutonomous();
 
   /**
    * Compile the events
@@ -1228,12 +1173,14 @@ private:
    *  The Avogadro number used for this model.
    */
   C_FLOAT64 mAvogadro;
+  CCopasiObject * mpAvogadroReference;
 
   /**
    *  Factor to convert from quantity to particle number
    *  taking into account the unit for substance quantities
    */
   C_FLOAT64 mQuantity2NumberFactor;
+  CCopasiObject * mpQuantity2NumberFactorReference;
 
   /**
    *  Factor to convert from  particle number to quantity

@@ -1,22 +1,14 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CEvaluationNodeVector.h,v $
-  $Revision: 1.14 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2012/05/16 17:00:56 $
-  End CVS Header */
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -28,20 +20,10 @@
 class CCopasiDataModel;
 
 /**
- * This is the class for nodes presenting opertors used in an evaluation trees.
+ * This is the class for nodes presenting operators used in an evaluation trees.
  */
 class CEvaluationNodeVector : public CEvaluationNode
 {
-public:
-  /**
-   * Enumeration of possible node types.
-   */
-  enum SubType
-  {
-    INVALID = 0x00FFFFFF,
-    VECTOR = 0x00000000
-  };
-
   // Operations
 public:
   /**
@@ -101,6 +83,28 @@ public:
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
 
   /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CUnit > & units
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
+
+  /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
    * @param const ASTNode* pNode
    * @param const std::vector< CEvaluationNode * > & children
@@ -130,13 +134,14 @@ public:
    * Retrieve the vector of evaluation nodes
    * @return const std::vector< CEvaluationNode * > & vector
    */
-  const std::vector< CEvaluationNode * > & getVector() const;
+  const std::vector< CEvaluationNode * > & getNodes() const;
 
 private:
 
   // Attributes
 private:
-  std::vector< CEvaluationNode * > mVector;
+  std::vector< CEvaluationNode * > mNodes;
+  std::vector< const C_FLOAT64 * > mValues;
 };
 
 #endif // COPASI_CEvaluationNodeVector

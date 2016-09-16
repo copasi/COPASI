@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,18 +28,11 @@
 COptMethodEP::COptMethodEP(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType),
-  mGenerations(0),
-  mGeneration(0),
-  mPopulationSize(0),
-  mpRandom(NULL),
+  COptPopulationMethod(pParent, methodType, taskType),
   mBestIndex(C_INVALID_INDEX),
   mLosses(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mValue(0),
-  mVariableSize(0),
-  mIndividual(0),
   mVariance(0)
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
@@ -51,19 +44,13 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent,
 }
 
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
-                           const CCopasiContainer * pParent): COptMethod(src, pParent),
-  mGenerations(0),
-  mGeneration(0),
-  mPopulationSize(0),
-  mpRandom(NULL),
-  mBestIndex(C_INVALID_INDEX),
-  mLosses(0),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mValue(0),
-  mVariableSize(0),
-  mIndividual(0),
-  mVariance(0)
+                           const CCopasiContainer * pParent)
+  : COptPopulationMethod(src, pParent),
+    mBestIndex(C_INVALID_INDEX),
+    mLosses(0),
+    mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mVariance(0)
 {initObjects();}
 
 COptMethodEP::~COptMethodEP()
@@ -92,8 +79,8 @@ bool COptMethodEP::optimise()
   if (mBestIndex != C_INVALID_INDEX)
     {
       // and store that value
-      mBestValue = mValue[mBestIndex];
-      Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
+      mBestValue = mValues[mBestIndex];
+      Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -109,7 +96,7 @@ bool COptMethodEP::optimise()
     }
 
   // iterate over Generations
-  for (mGeneration = 2; mGeneration <= mGenerations && Continue; mGeneration++)
+  for (mCurrentGeneration = 2; mCurrentGeneration <= mGenerations && Continue; mCurrentGeneration++)
     {
       // replicate the individuals
       Continue = replicate();
@@ -121,11 +108,11 @@ bool COptMethodEP::optimise()
       mBestIndex = fittest();
 
       if (mBestIndex != C_INVALID_INDEX &&
-          mValue[mBestIndex] < mBestValue)
+          mValues[mBestIndex] < mBestValue)
         {
-          mBestValue = mValue[mBestIndex];
+          mBestValue = mValues[mBestIndex];
 
-          Continue = mpOptProblem->setSolution(mBestValue, *mIndividual[mBestIndex]);
+          Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
 
           // We found a new best value lets report it.
           //if (mpReport) mpReport->printBody();
@@ -134,6 +121,12 @@ bool COptMethodEP::optimise()
 
       if (mpCallBack)
         Continue = mpCallBack->progressItem(mhGenerations);
+
+#ifdef COPASI_PE_POPULATION_DISPLAY
+      //use a different output channel. It will later get a proper enum name
+      mpParentTask->output(COutputInterface::Activity(8));
+#endif // COPASI_PE_POPULATION_DISPLAY
+
     }
 
   if (mpCallBack)
@@ -146,17 +139,15 @@ bool COptMethodEP::optimise()
 
 bool COptMethodEP::cleanup()
 {
-  size_t i;
-  // pdelete all used variables
-  pdelete(mpRandom);
 
-  for (i = 0; i < mIndividual.size(); i++)
+  size_t i;
+
+  for (i = 0; i < mVariance.size(); i++)
     {
-      pdelete(mIndividual[i]);
       pdelete(mVariance[i]);
     }
 
-  return true;
+  return COptPopulationMethod::cleanup();
 }
 
 bool COptMethodEP::initialize()
@@ -165,37 +156,19 @@ bool COptMethodEP::initialize()
 
   size_t i;
 
-  if (!COptMethod::initialize()) return false;
+  if (!COptPopulationMethod::initialize()) return false;
 
-  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
-  mGeneration = 0;
-
-  if (mpCallBack)
-    mhGenerations =
-      mpCallBack->addItem("Current Generation",
-                          mGeneration,
-                          & mGenerations);
-
-  mGeneration++;
-
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
-
-  mVariableSize = mpOptItem->size();
-
-  mIndividual.resize(2 * mPopulationSize);
+  mIndividuals.resize(2 * mPopulationSize);
   mVariance.resize(2 * mPopulationSize);
 
   for (i = 0; i < 2 * mPopulationSize; i++)
     {
-      mIndividual[i] = new CVector< C_FLOAT64 >(mVariableSize);
+      mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
       mVariance[i] = new CVector< C_FLOAT64 >(mVariableSize);
     }
 
-  mValue.resize(2 * mPopulationSize);
-  mValue = std::numeric_limits< C_FLOAT64 >::infinity();
+  mValues.resize(2 * mPopulationSize);
+  mValues = std::numeric_limits< C_FLOAT64 >::infinity();
 
   mLosses.resize(2 * mPopulationSize);
   mLosses = 0;
@@ -229,7 +202,6 @@ bool COptMethodEP::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 
 void COptMethodEP::initObjects()
 {
-  addObjectReference("Current Generation", mGeneration, CCopasiObject::ValueInt);
 }
 
 bool COptMethodEP::creation()
@@ -247,7 +219,7 @@ bool COptMethodEP::creation()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      C_FLOAT64 & mut = (*mIndividual[0])[i];
+      C_FLOAT64 & mut = (*mIndividuals[0])[i];
       COptItem & OptItem = *(*mpOptItem)[i];
 
       mut = OptItem.getStartValue();
@@ -290,8 +262,8 @@ bool COptMethodEP::creation()
       (*mVariance[0])[i] = fabs(mut) * 0.5;
     }
 
-  Continue = evaluate(*mIndividual[0]);
-  mValue[0] = mEvaluationValue;
+  Continue = evaluate(*mIndividuals[0]);
+  mValues[0] = mEvaluationValue;
   //candx[0] = evaluate(0);
 
   // and copy it to the rest
@@ -304,7 +276,7 @@ bool COptMethodEP::creation()
     {
       for (j = 0; j < mVariableSize; j++)
         {
-          C_FLOAT64 & mut = (*mIndividual[i])[j];
+          C_FLOAT64 & mut = (*mIndividuals[i])[j];
           COptItem & OptItem = *(*mpOptItem)[j];
 
           // calculate lower and upper bounds
@@ -315,7 +287,7 @@ bool COptMethodEP::creation()
             {
               // First determine the location of the interval
               // Secondly determine whether to distribute the parameter linearly or not
-              // depending on the location and act uppon it.
+              // depending on the location and act upon it.
               if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
                 {
                   la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
@@ -403,8 +375,8 @@ bool COptMethodEP::creation()
         }
 
       // calculate its fitness
-      Continue = evaluate(*mIndividual[i]);
-      mValue[i] = mEvaluationValue;
+      Continue = evaluate(*mIndividuals[i]);
+      mValues[i] = mEvaluationValue;
     }
 
   return Continue;
@@ -432,7 +404,7 @@ bool COptMethodEP::select()
           }
         while (i == opp);
 
-        if (mValue[i] < mValue[opp])
+        if (mValues[i] < mValues[opp])
           mLosses[opp]++;
         else
           mLosses[i]++;
@@ -451,17 +423,17 @@ bool COptMethodEP::select()
 
 bool COptMethodEP::swap(size_t from, size_t to)
 {
-  CVector< C_FLOAT64 > * pTmp = mIndividual[to];
-  mIndividual[to] = mIndividual[from];
-  mIndividual[from] = pTmp;
+  CVector< C_FLOAT64 > * pTmp = mIndividuals[to];
+  mIndividuals[to] = mIndividuals[from];
+  mIndividuals[from] = pTmp;
 
   pTmp = mVariance[to];
   mVariance[to] = mVariance[from];
   mVariance[from] = pTmp;
 
-  C_FLOAT64 dTmp = mValue[to];
-  mValue[to] = mValue[from];
-  mValue[from] = dTmp;
+  C_FLOAT64 dTmp = mValues[to];
+  mValues[to] = mValues[from];
+  mValues[from] = dTmp;
 
   size_t iTmp = mLosses[to];
   mLosses[to] = mLosses[from];
@@ -473,13 +445,13 @@ bool COptMethodEP::swap(size_t from, size_t to)
 size_t COptMethodEP::fittest()
 {
   size_t i, BestIndex = 0;
-  C_FLOAT64 BestValue = mValue[0];
+  C_FLOAT64 BestValue = mValues[0];
 
   for (i = 1; i < mPopulationSize && !mLosses[i]; i++)
-    if (mValue[i] < BestValue)
+    if (mValues[i] < BestValue)
       {
         BestIndex = i;
-        BestValue = mValue[i];
+        BestValue = mValues[i];
       }
 
   return BestIndex;
@@ -497,11 +469,11 @@ bool COptMethodEP::replicate()
       // replicate them
       for (j = 0; j < mVariableSize; j++)
         {
-          (*mIndividual[mPopulationSize + i])[j] = (*mIndividual[i])[j];
+          (*mIndividuals[mPopulationSize + i])[j] = (*mIndividuals[i])[j];
           (*mVariance[mPopulationSize + i])[j] = (*mVariance[i])[j];
         }
 
-      mValue[mPopulationSize + i] = mValue[i];
+      mValues[mPopulationSize + i] = mValues[i];
 
       // possibly mutate the offspring
       Continue = mutate(mPopulationSize + i);
@@ -515,7 +487,7 @@ bool COptMethodEP::mutate(size_t i)
   size_t j;
   C_FLOAT64 v1;
 
-  CVector<C_FLOAT64> & Individual = *mIndividual[i];
+  CVector<C_FLOAT64> & Individual = *mIndividuals[i];
   CVector<C_FLOAT64> & Variance = *mVariance[i];
 
   v1 = mpRandom->getRandomNormal01();
@@ -560,7 +532,7 @@ bool COptMethodEP::mutate(size_t i)
 
   // calculate its fitness
   bool Continue = evaluate(Individual);
-  mValue[i] = mEvaluationValue;
+  mValues[i] = mEvaluationValue;
 
   return Continue;
 }

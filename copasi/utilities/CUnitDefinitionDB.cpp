@@ -6,13 +6,13 @@
 #include "utilities/CUnitDefinitionDB.h"
 #include "utilities/CUnitDefinition.h"
 #include "utilities/CCopasiMessage.h"
+#include "copasi/report/CCopasiRootContainer.h"
 
 CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
                                      const CCopasiContainer * pParent):
   CCopasiVectorN< CUnitDefinition >(name, pParent),
   mSymbolToUnitDefinitions()
-{
-}
+{}
 
 //virtual
 bool CUnitDefinitionDB::add(const CUnitDefinition & src)
@@ -95,15 +95,13 @@ void CUnitDefinitionDB::remove(const std::string & name)
 
 bool CUnitDefinitionDB::containsSymbol(std::string symbol)
 {
-  if (mSymbolToUnitDefinitions.count(symbol))
-    return true;
-  else
-    return false;
+  return (symbol == "?" ||
+          mSymbolToUnitDefinitions.count(symbol) > 0);
 }
 
 const CUnitDefinition * CUnitDefinitionDB::getUnitDefFromSymbol(std::string symbol) const
 {
-  std::map<std::string, CUnitDefinition *>::const_iterator found = mSymbolToUnitDefinitions.find(symbol);
+  std::map<std::string, CUnitDefinition *>::const_iterator found = mSymbolToUnitDefinitions.find(unQuote(symbol));
 
   if (found != mSymbolToUnitDefinitions.end())
     {
@@ -117,32 +115,74 @@ bool CUnitDefinitionDB::changeSymbol(CUnitDefinition *pUnitDef, const std::strin
 {
   if (pUnitDef->getObjectParent() != this) return true;
 
-  std::map<std::string, CUnitDefinition *>::iterator found = mSymbolToUnitDefinitions.find(symbol);
+  std::map<std::string, CUnitDefinition *>::iterator New = mSymbolToUnitDefinitions.find(symbol);
+  std::map<std::string, CUnitDefinition *>::iterator Old = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
 
-  if (found != mSymbolToUnitDefinitions.end() &&
-      found->second != pUnitDef) return false;
-
-  found = mSymbolToUnitDefinitions.find(pUnitDef->getSymbol());
-
-  if (found != mSymbolToUnitDefinitions.end())
+  if (New == mSymbolToUnitDefinitions.end())
     {
-      if (pUnitDef->getSymbol() == symbol) return true;
-
-      if (found->second == pUnitDef)
+      if (New != Old)
         {
-          mSymbolToUnitDefinitions.erase(found);
+          mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
+          replaceSymbol(pUnitDef->getSymbol(), symbol);
+          mSymbolToUnitDefinitions.erase(Old);
+
+          return true;
+        }
+      else
+        {
+          mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
+
+          return true;
         }
     }
+  else
+    {
+      if (New == Old)
+        {
+          replaceSymbol(pUnitDef->getSymbol(), symbol);
 
-  mSymbolToUnitDefinitions.insert(std::make_pair(symbol, pUnitDef));
+          return true;
+        }
+      else
+        {
+          return false;
+        }
+    }
 
   return true;
 }
 
-std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
+std::string CUnitDefinitionDB::quoteSymbol(const std::string & symbol) const
+{
+  const CUnitDefinition * pUnitDef = getUnitDefFromSymbol(symbol);
+
+  if (pUnitDef == NULL ||
+      CUnit(symbol) == *pUnitDef) return symbol;
+
+  return quote(" " + symbol).erase(1, 1);
+}
+
+void CUnitDefinitionDB::replaceSymbol(const std::string & oldSymbol,
+                                      const std::string & newSymbol)
+{
+  iterator it = begin();
+  iterator end = this->end();
+
+  for (; it != end; ++it)
+    {
+      it->replaceSymbol(oldSymbol, newSymbol);
+    }
+
+  if (getObjectParent() == CCopasiRootContainer::getRoot())
+    {
+      CCopasiRootContainer::replaceSymbol(oldSymbol, newSymbol);
+    }
+}
+
+std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol,
     const C_FLOAT64 & exponent) const
 {
-  std::set< CUnit > ValidUnits;
+  std::vector< CUnit > ValidUnits;
 
   if (getUnitDefFromSymbol(symbol) == NULL)
     {
@@ -153,7 +193,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
   CUnit Power = Base.exponentiate(exponent);
 
   // dimensionless is always valid
-  ValidUnits.insert(CUnit(CBaseUnit::dimensionless));
+  ValidUnits.push_back(CUnit(CBaseUnit::dimensionless));
 
   const_iterator it = begin();
   const_iterator itEnd = end();
@@ -164,7 +204,6 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
           it->isEquivalent(Base))
         {
           if ((it->getComponents().begin()->getMultiplier() == 1.0 ||
-               it->getComponents().begin()->getMultiplier() == CUnit::Avogadro ||
                it->getSymbol() == "l") &&
               !it->CUnit::operator==(CBaseUnit::item))
             {
@@ -172,7 +211,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                 {
                   CUnit Scale;
                   Scale.addComponent(CUnitComponent(CBaseUnit::dimensionless, 1.0, scale, 0));
-                  CUnit ScaledUnit = (Scale * CUnit(it->getSymbol()));
+                  CUnit ScaledUnit(Scale * CUnit(it->getSymbol()));
 
                   if (it->isEquivalent(Base))
                     {
@@ -180,12 +219,12 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                     }
 
                   ScaledUnit.buildExpression();
-                  ValidUnits.insert(ScaledUnit);
+                  ValidUnits.push_back(ScaledUnit);
                 }
             }
           else
             {
-              CUnit ScaledUnit = CUnit(it->getSymbol());
+              CUnit ScaledUnit(it->getSymbol());
 
               if (it->isEquivalent(Base))
                 {
@@ -193,7 +232,7 @@ std::set< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & symbol
                 }
 
               ScaledUnit.buildExpression();
-              ValidUnits.insert(ScaledUnit);
+              ValidUnits.push_back(ScaledUnit);
             }
         }
     }

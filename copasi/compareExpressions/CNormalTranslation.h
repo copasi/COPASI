@@ -1,22 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalTranslation.h,v $
-//   $Revision: 1.25 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/03/09 14:59:46 $
-// End CVS Header
-
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -50,13 +42,12 @@ protected:
   LIMIT_TYPE mType;
 };
 
-
 struct summ_match
 {
 
   summ_match() :
-      factor(0.0)
-      , pNode(NULL)
+    factor(0.0)
+    , pNode(NULL)
   {
   }
 
@@ -70,8 +61,8 @@ struct product_match : public summ_match
 {
 
   product_match() :
-      summ_match()
-      , pExponentNode(NULL)
+    summ_match()
+    , pExponentNode(NULL)
   {
   }
 
@@ -85,7 +76,6 @@ class CNormalTranslation
 {
 public:
   static bool has_duplicate_nodes(const CEvaluationNode* pNode);
-
 
   /**
    * Simplify an evaluation tree given by the root node by creating a new simplified tree from the original one.
@@ -142,13 +132,13 @@ public:
    * Given a vector of nodes, this method creates a multiplication chain of
    * all the nodes. The chain contains copies of the nodes passed in.
    */
-  static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes);
+  static CEvaluationNode* createOperatorChain(CEvaluationNode::SubType type, const char* data, const std::vector<CEvaluationNode*>& nodes);
 
   /**
    * Given a vector of nodes, this method creates a multiplication chain of
    * all the nodes. The chain contains copies of the nodes passed in.
    */
-  static CEvaluationNode* createOperatorChain(CEvaluationNodeOperator::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes);
+  static CEvaluationNode* createOperatorChain(CEvaluationNode::SubType type, const char* data, const std::vector<const CEvaluationNode*>& nodes);
 
   /**
    * Given a root node, this method traverses the tree and expands products in
@@ -395,9 +385,7 @@ protected:
   static std::pair<CEvaluationNode*, CEvaluationNode*> factorize(const std::vector<CEvaluationNode*>& additions, const std::vector<CEvaluationNode*>& subtractions);
 
   static void printPointers(const CEvaluationNode* pNode, const char* indent = "");
-
 };
-
 
 class CEvaluationNodeDepthFirstIterator
 {
@@ -418,6 +406,5 @@ public:
 
   CEvaluationNodeDepthFirstIterator& operator=(CEvaluationNode* pNode);
 };
-
 
 #endif // COPASI_CNormalTranslation_H__

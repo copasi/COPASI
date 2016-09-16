@@ -264,12 +264,6 @@ bool CQTrajectoryWidget::saveTask()
       mChanged = true;
     }
 
-  if (trajectoryproblem->getContinueSimultaneousEvents() != mpCheckContinueEvents->isChecked())
-    {
-      trajectoryproblem->setContinueSimultaneousEvents(mpCheckContinueEvents->isChecked());
-      mChanged = true;
-    }
-
   if (trajectoryproblem->getStartInSteadyState() != mpCheckStartInSteadyState->isChecked())
     {
       trajectoryproblem->setStartInSteadyState(mpCheckStartInSteadyState->isChecked());
@@ -325,7 +319,6 @@ bool CQTrajectoryWidget::loadTask()
   mpEditDelay->setText(QString::number(TrajectoryProblem->getOutputStartTime()));
 
   mpCheckOutputEvent->setChecked(TrajectoryProblem->getOutputEvent());
-  mpCheckContinueEvents->setChecked(TrajectoryProblem->getContinueSimultaneousEvents());
   mpCheckStartInSteadyState->setChecked(TrajectoryProblem->getStartInSteadyState());
 
   //store time series checkbox
@@ -473,7 +466,7 @@ void CQTrajectoryWidget::showUnits()
   if (mpDataModel != NULL &&
       (pModel = mpDataModel->getModel()) != NULL)
     {
-      TimeUnits = " (" + FROM_UTF8(pModel->getTimeUnitsDisplayString()) + ")";
+      TimeUnits = " [" + FROM_UTF8(CUnit::prettyPrint(pModel->getTimeUnit())) + "]";
     }
 
   mpLblDuration->setText("Duration" + TimeUnits);

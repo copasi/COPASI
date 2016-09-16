@@ -39,6 +39,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 
 #include "math/CMathContainer.h"
+#include "math/CMathExpression.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 
@@ -80,6 +81,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   mpConstraintItems(NULL),
   mpSubtask(NULL),
   mpObjectiveExpression(NULL),
+  mpMathObjectiveExpression(NULL),
   mInitialRefreshSequence(),
   mUpdateObjectiveFunction(),
   mUpdateConstraints(),
@@ -119,6 +121,7 @@ COptProblem::COptProblem(const COptProblem& src,
   mpConstraintItems(NULL),
   mpSubtask(NULL),
   mpObjectiveExpression(NULL),
+  mpMathObjectiveExpression(NULL),
   mInitialRefreshSequence(),
   mUpdateObjectiveFunction(),
   mUpdateConstraints(),
@@ -216,9 +219,9 @@ bool COptProblem::elevateChildren()
 
           removeParameter("ObjectiveFunction");
         }
-
-      setObjectiveFunction(*mpParmObjectiveExpression);
     }
+
+  setObjectiveFunction(*mpParmObjectiveExpression);
 
   mpGrpItems =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);
@@ -421,6 +424,10 @@ bool COptProblem::initialize()
       return false;
     }
 
+  pdelete(mpMathObjectiveExpression);
+
+  mpMathObjectiveExpression = new CMathExpression(*mpObjectiveExpression, *mpContainer, false);
+  Objects = mpMathObjectiveExpression->getPrerequisites();
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   return success;
@@ -453,6 +460,19 @@ bool COptProblem::restore(const bool & updateModel)
   updateContainer(updateModel);
   mpContainer->applyUpdateSequence(mInitialRefreshSequence);
   mpContainer->pushInitialState();
+
+  // Update the start values
+  if (updateModel && mSolutionValue != mWorstValue)
+    {
+      std::vector< COptItem * >::iterator it = mpOptItems->begin();
+      std::vector< COptItem * >::iterator end = mpOptItems->end();
+      C_FLOAT64 * pSolution = mSolutionVariables.array();
+
+      for (; it != end; ++it, ++pSolution)
+        {
+          (*it)->setStartValue(*pSolution);
+        }
+    }
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCOptimization + 8, mFailedCounter, mCounter);
@@ -529,7 +549,7 @@ bool COptProblem::calculate()
       mpContainer->applyUpdateSequence(mUpdateObjectiveFunction);
 
       // TODO CRITICAL PARRELIZATION We need to point to the created container objective function
-      mCalculateValue = *mpParmMaximize ? -mpObjectiveExpression->calcValue() : mpObjectiveExpression->calcValue();
+      mCalculateValue = *mpParmMaximize ? -mpMathObjectiveExpression->value() : mpMathObjectiveExpression->value();
     }
 
   catch (CCopasiException & /*Exception*/)
@@ -708,6 +728,8 @@ CVectorCore< C_FLOAT64 * > & COptProblem::getContainerVariables() const
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
 {
+  if (mpParmObjectiveExpression == NULL) return false;
+
   *mpParmObjectiveExpression = infix;
 
   if (mpObjectiveExpression == NULL)
@@ -718,6 +740,12 @@ bool COptProblem::setObjectiveFunction(const std::string & infix)
 
 const std::string COptProblem::getObjectiveFunction()
 {
+  if (mpObjectiveExpression != NULL)
+    {
+      mpObjectiveExpression->updateInfix();
+      *mpParmObjectiveExpression = mpObjectiveExpression->getInfix();
+    }
+
   return *mpParmObjectiveExpression;
 }
 

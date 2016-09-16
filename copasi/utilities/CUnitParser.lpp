@@ -38,43 +38,13 @@
 %}
 
 SCALE    ([afpnumcdhkMGTP]|\xc2\xb5)
-KIND     ([mgsAK#1]|cd)
+KIND     ([mgsAK#1\?]|cd|Avogadro)
 SI_UNIT  (Hz|N|Pa|J|W|C|V|F|\xCE\xA9|S|Wb|T|H|lm|lx|Bq|Gy|Sv|kat|l|mol|min|h|d)
-ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
+QUOTED   \"([^\\\"]|\\.)*\"
+ID       [a-z_A-Z][a-z_A-Z0-9]*
 DIGIT    [0-9]
 
 %%
-<INITIAL,sANY>{KIND}   %{
-  CUnitParserlval.token = KIND;
-  COMMON_ACTION;
-  return CUnitParserlval.token;
-%}
-
-<INITIAL,sANY>{SI_UNIT} %{
-  CUnitParserlval.token = SI_UNIT;
-  COMMON_ACTION;
-  return CUnitParserlval.token;
-%}
-
-<INITIAL,sANY>{SCALE}/{KIND}|{SI_UNIT}|{ID}   %{
-  CUnitParserlval.token = SCALE;
-  COMMON_ACTION;
-  return CUnitParserlval.token;
-%}
-
-<INITIAL,sANY,sNUMBER>"-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)?   %{
-  BEGIN(sANY);
-  CUnitParserlval.token = NUMBER;
-  COMMON_ACTION;
-  return CUnitParserlval.token;
-%}
-
-<INITIAL,sANY>"-"?10/^  %{
-  CUnitParserlval.token = POWER_OF_TEN;
-  COMMON_ACTION;
-  return CUnitParserlval.token;
-%}
-
 <INITIAL,sANY>"*"   %{
   CUnitParserlval.token = MULTIPLY;
   COMMON_ACTION;
@@ -118,12 +88,44 @@ DIGIT    [0-9]
   return CUnitParserlval.token;
 %}
 
-<INITIAL,sANY>{ID}  %{
+<INITIAL,sANY>{KIND}   %{
+  CUnitParserlval.token = KIND;
+  COMMON_ACTION;
+  return CUnitParserlval.token;
+%}
+
+<INITIAL,sANY>{SI_UNIT} %{
+  CUnitParserlval.token = SI_UNIT;
+  COMMON_ACTION;
+  return CUnitParserlval.token;
+%}
+
+<INITIAL,sANY>{SCALE}/{KIND}|{SI_UNIT}|{QUOTED} %{
+  CUnitParserlval.token = SCALE;
+  COMMON_ACTION;
+  return CUnitParserlval.token;
+%}
+
+<INITIAL,sANY>({QUOTED}|{ID}) %{
   CUnitParserlval.token = USER_DEFINED_UNIT;
   COMMON_ACTION;
   return CUnitParserlval.token;
 %}
-  
+
+<INITIAL,sANY,sNUMBER>"-"?{DIGIT}+("."?{DIGIT}*(((e|E)"+"?|(e|E)"-"){DIGIT}+)?)? %{
+  BEGIN(sANY);
+  CUnitParserlval.token = NUMBER;
+  COMMON_ACTION;
+  return CUnitParserlval.token;
+%}
+
+<INITIAL,sANY>"-"?10/^  %{
+  CUnitParserlval.token = POWER_OF_TEN;
+  COMMON_ACTION;
+  return CUnitParserlval.token;
+%}
+
+
 <INITIAL,sANY,sNUMBER>[ \t\r\n]+ %{
   COMMON_ACTION;
 %} 

@@ -17,19 +17,22 @@
 
 class UndoCompartmentData;
 class UndoReactionData;
+class CCompartment;
+template < class CType > class CCopasiVectorNS;
 
 #define COL_NAME_COMPARTMENTS         1
 #define COL_TYPE_COMPARTMENTS         2
-#define COL_IVOLUME                   3
-#define COL_VOLUME                    4
-#define COL_RATE_COMPARTMENTS         5
-#define COL_IEXPRESSION_COMPARTMENTS  6
-#define COL_EXPRESSION_COMPARTMENTS   7
+#define COL_UNIT                      3
+#define COL_IVOLUME                   4
+#define COL_VOLUME                    5
+#define COL_RATE_COMPARTMENTS         6
+#define COL_IEXPRESSION_COMPARTMENTS  7
+#define COL_EXPRESSION_COMPARTMENTS   8
 #ifdef WITH_SDE_SUPPORT
-# define COL_NEXPRESSION_COMPARTMENTS  8
-# define TOTAL_COLS_COMPARTMENTS       9
+# define COL_NEXPRESSION_COMPARTMENTS  9
+# define TOTAL_COLS_COMPARTMENTS       10
 #else
-# define TOTAL_COLS_COMPARTMENTS       8
+# define TOTAL_COLS_COMPARTMENTS       9
 #endif
 
 class CQCompartmentDM : public CQBaseDataModel
@@ -51,6 +54,8 @@ public:
                               int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
+  virtual void resetCache();
+
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
@@ -71,11 +76,14 @@ public:
 protected:
   QStringList mTypes;
   /**
-    * A vector mapping the item index to a model valu type
+    * A vector mapping the item index to a model value type
     */
   std::vector< unsigned C_INT32 > mItemToType;
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows);
+
+  QStringList mUnits;
+  CCopasiVectorNS< CCompartment > * mpCompartments;
 };
 
 #endif //CQCompartmentDM_H

@@ -1,7 +1,7 @@
-// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 /**
  * COptMethodSS class
@@ -11,13 +11,13 @@
 #define COPASI_COptMethodSS
 #include <limits>
 
-#include "optimization/COptMethod.h"
+#include "optimization/COptPopulationMethod.h"
 #include "optimization/COptProblem.h"
 #include "utilities/CVector.h"
 
 class CRandom;
 
-class COptMethodSS : public COptMethod
+class COptMethodSS : public COptPopulationMethod
 {
   // Operations
 public:
@@ -183,20 +183,10 @@ private:
 
   // Attributes
 private:
-  /**
-   * Number of generations.
-   */
-  unsigned C_INT32 mIterations;
 
-  /**
-   * Size of the population (b in Rodriguez-Fernandez et al).
-   */
-  C_INT32 mPopulationSize;
-
-  /**
-   * Number of parameters.
-   */
-  unsigned C_INT32 mVariableSize;
+  // mIterations -> mGenerations
+  // mRefSet -> mIndividuals
+  // mRefSetVal -> mValues
 
   /**
    * Number of iterations between local searches.
@@ -218,15 +208,6 @@ private:
    */
   bool mChildrenGenerated;
 
-  /**
-  * Array of candidate solutions in the RefSet.
-  */
-  std::vector< CVector < C_FLOAT64 > * > mRefSet;
-
-  /**
-   * Array of objective function values of the RefSet.
-   */
-  CVector< C_FLOAT64 > mRefSetVal;
 
   /**
    * Array of integers to count number of iterations that
@@ -276,11 +257,6 @@ private:
   C_FLOAT64 mEvaluationValue;
 
   /**
-    * Counter for iterations.
-    */
-  unsigned C_INT32 mIteration;
-
-  /**
    * The best value so far
    */
   C_FLOAT64 mBestValue;
@@ -294,16 +270,6 @@ private:
    * Threshold to decide a solution is too close to another
    */
   C_FLOAT64 mCloseValue;
-
-  /**
-   * Handle to the process report item "Current Iteration".
-   */
-  size_t mhIterations;
-
-  /**
-   * a pointer to the randomnumber generator.
-   */
-  CRandom * mpRandom;
 
   /**
    * a pointer to an opt problem used for local minimization

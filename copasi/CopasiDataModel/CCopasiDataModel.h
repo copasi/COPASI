@@ -45,6 +45,10 @@ LIBSEDML_CPP_NAMESPACE_END
 class CPlotItem;
 #endif
 
+#ifdef WITH_COMBINE_ARCHIVE
+class CombineArchive;
+#endif // WITH_COMBINE_ARCHIVE
+
 // :TODO: remove
 class CMetabOld;
 
@@ -69,7 +73,8 @@ public:
    * Enable and disable the rename handler
    * @param const bool & enabled
    */
-  void setEnabled(const bool & enabled);
+  virtual void setEnabled(const bool & enabled);
+  virtual bool isEnabled() const;
 
 private:
   /**
@@ -188,6 +193,8 @@ public:
                  bool overwriteFile = false,
                  const bool & autoSave = false);
 
+  std::string saveModelToString(CProcessReport* pProcessReport = NULL);
+
   bool autoSave();
 
   bool newModel(CProcessReport* pProcessReport,
@@ -202,11 +209,50 @@ public:
                   const bool & deleteOldData = true);
 
   std::string exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion);
+
   bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
 
   std::string exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
+
   bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                        const std::string & filter, bool overwriteFile = false);
+
+#ifdef WITH_COMBINE_ARCHIVE
+  /**
+   * Moves the experimental data referenced in the model to the specified
+   * path and update the referenced filenames to match it. Should the folder
+   * already have an experimental data file in there with the name, a new
+   * name will be chosen.
+   *
+   * @param path the target directory for the experimental data.
+   */
+  void copyExperimentalDataTo(const std::string& path);
+
+  bool exportCombineArchive(std::string fileName,
+                            bool includeCOPASI = true,
+                            bool includeSBML = true,
+                            bool includeData = true,
+                            bool includeSEDML = false,
+                            bool overwriteFile = false,
+                            CProcessReport* pProgressReport = NULL);
+
+  /**
+   * adds the current COPASI model to the archive with the given
+   * target name
+   *
+   * @param archive the COMBINE archive
+   * @param targetName the name and path that the COPASI file should have in the archive
+   * @param pProgressReport optional pointer to the progress report
+   */
+  void addCopasiFileToArchive(CombineArchive *archive,
+                              const std::string& targetName = "./copasi/model.cps",
+                              CProcessReport * pProgressReport = NULL
+                             );
+
+  bool openCombineArchive(const std::string& fileName, CProcessReport* pProgressReport = NULL,
+                          const bool & deleteOldData = true);
+
+#endif
 
   void deleteOldData();
 
@@ -263,7 +309,24 @@ public:
                    CProcessReport* pImportHandler = NULL,
                    const bool & deleteOldData = true);
 
-  std::string exportSEDMLToString(CProcessReport* pExportHandler, int sedmlLevel, int sedmlVersion);
+  /**
+   * exports the SED-ML with given level and version to a string. NOTE: the
+   * SBML model will not be exported, instead it is assumed to be available
+   * at the location provided in modelLocation
+   *
+   * @param pExportHandler export handler
+   * @param sedmlLevel the level to export
+   * @param sedmlVersion the version to export
+   * @param modelLocation the location where the SBML file has been written,
+   *                      defaults to 'model.xml'
+   *
+   * @return the SED-ML string.
+   */
+  std::string exportSEDMLToString(CProcessReport* pExportHandler,
+                                  int sedmlLevel, int sedmlVersion,
+                                  const std::string& modelLocation = "model.xml"
+                                 );
+
   bool exportSEDML(const std::string & fileName, bool overwriteFile = false, int sedmlLevel = 1, int sedmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport* pExportHandler = NULL);
 
   SedDocument* getCurrentSEDMLDocument();
@@ -285,6 +348,8 @@ protected:
   CData mData;
   CData mOldData;
   CDataModelRenameHandler mRenameHandler;
+  std::vector<std::string> mTempFolders;
+  bool mNeedToSaveExperimentalData;
 
 public:
   /**

@@ -21,8 +21,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>334</height>
+    <width>416</width>
+    <height>330</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -449,9 +449,25 @@ Expression</string>
  <connections>
   <connection>
    <sender>mpComboBoxType</sender>
-   <signal>activated(int)</signal>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>CQCompartment</receiver>
    <slot>slotTypeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpComboBoxDim</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CQCompartment</receiver>
+   <slot>slotDimesionalityChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
