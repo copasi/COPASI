@@ -35,7 +35,7 @@
 CQSpecieDM::CQSpecieDM(QObject *parent):
   CQBaseDataModel(parent),
   mFlagConc(true),
-  mpSpecies(NULL),
+  mpMetabolites(NULL),
   mNotify(true)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
@@ -47,6 +47,11 @@ CQSpecieDM::CQSpecieDM(QObject *parent):
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
+
+  mUnits.append("?");
+  mUnits.append("?");
+  mUnits.append("?");
+  mUnits.append("?");
 }
 
 const QStringList& CQSpecieDM::getTypes()
@@ -66,7 +71,7 @@ const std::vector< unsigned C_INT32 >& CQSpecieDM::getItemToType()
 
 int CQSpecieDM::rowCount(const QModelIndex&) const
 {
-  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites().size() + 1;
+  return mpMetabolites->size() + 1;
 }
 
 int CQSpecieDM::columnCount(const QModelIndex&) const
@@ -96,14 +101,14 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
     }
   else if (index.column() == COL_ICONCENTRATION)
     {
-      mpSpecies = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites()[index.row()];
+      CMetab & Species = mpMetabolites->operator[](index.row());
 
       if (this->index(index.row(), COL_TYPE_SPECIES).data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
         {
-          if (mpSpecies->isInitialConcentrationChangeAllowed())
+          if (Species.isInitialConcentrationChangeAllowed())
             return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
           else
             return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
@@ -132,6 +137,9 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
   if (index.column() > 0 && role == Qt::ForegroundRole && !(flags(index) & Qt::ItemIsEditable))
     return QColor(Qt::darkGray);
 
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
+
   if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
       if (isDefaultRow(index))
@@ -158,6 +166,9 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_SPECIES:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
 
+              case COL_UNIT:
+                return QVariant(mUnits[3]); //default to use volume-based
+
               case COL_ICONCENTRATION:
               {
                 if (mFlagConc)
@@ -180,7 +191,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          mpSpecies = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites()[index.row()];
+          CMetab & Species = mpMetabolites->operator[](index.row());
 
           switch (index.column())
             {
@@ -188,49 +199,52 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_SPECIES:
-                return QVariant(QString(FROM_UTF8(mpSpecies->getObjectName())));
+                return QVariant(QString(FROM_UTF8(Species.getObjectName())));
 
               case COL_COMPARTMENT:
-                return QVariant(QString(FROM_UTF8(mpSpecies->getCompartment()->getObjectName())));
+                return QVariant(QString(FROM_UTF8(Species.getCompartment()->getObjectName())));
 
               case COL_TYPE_SPECIES:
-                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mpSpecies->getStatus()])));
+                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[Species.getStatus()])));
+
+              case COL_UNIT:
+                return QVariant(mUnits[Species.getCompartment()->getDimensionality()]);
 
               case COL_ICONCENTRATION:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(mpSpecies->getInitialConcentration(), 'g', 10));
+                  return QVariant(QString::number(Species.getInitialConcentration(), 'g', 10));
                 else
-                  return QVariant(mpSpecies->getInitialConcentration());
+                  return QVariant(Species.getInitialConcentration());
               }
 
               case COL_INUMBER:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(mpSpecies->getInitialValue(), 'g', 10));
+                  return QVariant(QString::number(Species.getInitialValue(), 'g', 10));
                 else
-                  return QVariant(mpSpecies->getInitialValue());
+                  return QVariant(Species.getInitialValue());
               }
 
               case COL_CONCENTRATION:
-                return QVariant(mpSpecies->getConcentration());
+                return QVariant(Species.getConcentration());
 
               case COL_NUMBER:
-                return QVariant(mpSpecies->getValue());
+                return QVariant(Species.getValue());
 
               case COL_CRATE:
-                return QVariant(mpSpecies->getConcentrationRate());
+                return QVariant(Species.getConcentrationRate());
 
               case COL_NRATE:
-                return QVariant(mpSpecies->getRate());
+                return QVariant(Species.getRate());
 
               case COL_IEXPRESSION_SPECIES:
               {
                 const CExpression * pExpression = NULL;
 
-                if (mpSpecies->getInitialExpression() != "")
+                if (Species.getInitialExpression() != "")
                   {
-                    pExpression = mpSpecies->getInitialExpressionPtr();
+                    pExpression = Species.getInitialExpressionPtr();
 
                     if (pExpression != NULL)
                       return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -241,7 +255,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
               case COL_EXPRESSION_SPECIES:
               {
-                const CExpression * pExpression = mpSpecies->getExpressionPtr();
+                const CExpression * pExpression = Species.getExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -261,28 +275,17 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
   if (role != Qt::DisplayRole)
     return QVariant();
 
+  std::string tmp = CUnit::prettyPrint("1/(" + mpDataModel->getModel()->getTimeUnit() + ")");
+
+  QString ValueUnit = "[Unit]";
+  QString RateUnit = (tmp != "?") ? "[Unit" + FROM_UTF8(tmp.substr(1)) + "]" : "[?]";
+  QString NRateUnit = (tmp != "?") ? "[#" + FROM_UTF8(tmp.substr(1)) + "]" : "[?]";
+
   if (orientation == Qt::Horizontal)
     {
       const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
       if (pModel == NULL) return QVariant();
-
-      std::string ValueUnit, RateUnit, FrequencyUnit, ExpressionUnit;
-      QString ValueUnits, RateUnits, FrequencyUnits, ExpressionUnits;
-
-      ValueUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + ")") : "?";
-      ValueUnits = "\n[" + FROM_UTF8(ValueUnit) + "]";
-
-      RateUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getQuantityUnit() + "/(" + pModel->getVolumeUnit() + "*" + pModel->getTimeUnit() + ")") : "?";
-      RateUnits = "\n[" + FROM_UTF8(RateUnit) + "]";
-
-      FrequencyUnit = (pModel != NULL) ? CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")") : "?";
-      FrequencyUnits = "\n[" + FROM_UTF8(FrequencyUnit) + "]";
-
-      if (ValueUnit == RateUnit)
-        ExpressionUnits = ValueUnits;
-      else
-        ExpressionUnits = "\n[" + FROM_UTF8(ValueUnit) + "] or [" + FROM_UTF8(RateUnit) + "]";
 
       switch (section)
         {
@@ -298,29 +301,35 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
           case COL_TYPE_SPECIES:
             return QVariant(QString("     Type     "));
 
+          case COL_UNIT:
+            return QVariant(QString("Unit"));
+
           case COL_ICONCENTRATION:
-            return QVariant("Initial Concentration" + ValueUnits);
+            return QVariant("Initial Concentration\n" + ValueUnit);
 
           case COL_INUMBER:
             return QVariant(QString("Initial Number"));
 
           case COL_CONCENTRATION:
-            return QVariant("Concentration" + ValueUnits);
+            return QVariant("Concentration\n" + ValueUnit);
 
           case COL_NUMBER:
             return QVariant(QString("Number"));
 
           case COL_CRATE:
-            return QVariant("Rate" + RateUnits);
+            return QVariant("Rate\n" + RateUnit);
 
           case COL_NRATE:
-            return QVariant("Number Rate" + FrequencyUnits);
+            return QVariant("Number Rate\n" + NRateUnit);
 
           case COL_IEXPRESSION_SPECIES:
-            return QVariant("Initial Expression" + ValueUnits);
+            return QVariant("Initial Expression\n" + ValueUnit);
 
           case COL_EXPRESSION_SPECIES:
-            return QVariant("Expression" + ExpressionUnits);
+            if (ValueUnit == RateUnit)
+              return QVariant("Expression\n" + ValueUnit);
+            else
+              return QVariant("Expression\n" + ValueUnit + " or " + RateUnit);
 
           default:
             return QVariant();
@@ -353,10 +362,30 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
     }
   else
     {
-      mpUndoStack->push(new SpecieDataChangeCommand(mpSpecies, value, index.data(), index.column(), this));
+      CMetab * Species = &mpMetabolites->operator[](index.row());
+      mpUndoStack->push(new SpecieDataChangeCommand(Species, value, index.data(), index.column(), this));
     }
 
   return true;
+}
+
+// virtual
+void CQSpecieDM::resetCache()
+{
+  assert(mpDataModel != NULL);
+
+  mpMetabolites = dynamic_cast< CCopasiVector < CMetab > * >(&mpDataModel->getModel()->getMetabolites());
+  assert(mpMetabolites != NULL);
+
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
+
+  std::string QuantityUnit = "(" + pModel->getQuantityUnit() + ")";
+
+  mUnits[0] = FROM_UTF8(CUnit::prettyPrint(QuantityUnit));
+  mUnits[1] = FROM_UTF8(CUnit::prettyPrint(QuantityUnit + "/(" + pModel->getLengthUnit() + ")"));
+  mUnits[2] = FROM_UTF8(CUnit::prettyPrint(QuantityUnit + "/(" + pModel->getAreaUnit() + ")"));
+  mUnits[3] = FROM_UTF8(CUnit::prettyPrint(QuantityUnit + "/(" + pModel->getVolumeUnit() + ")"));
 }
 
 bool CQSpecieDM::insertRows(int position, int rows, const QModelIndex&)
@@ -381,7 +410,7 @@ bool CQSpecieDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CMetab >::const_iterator itRow = pModel->getMetabolites().begin() + position;
+  CCopasiVector< CMetab >::const_iterator itRow = mpMetabolites->begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -416,10 +445,10 @@ bool CQSpecieDM::specieDataChange(
 
   GET_MODEL_OR(pModel, return false);
 
-  mpSpecies =
+  CMetab * pSpecies =
     dynamic_cast<CMetab*>(pUndoSpeciesData->getObject(pModel));
 
-  if (mpSpecies == NULL)
+  if (pSpecies == NULL)
     return false;
 
   const CCompartment * pCompartment = NULL;
@@ -430,15 +459,15 @@ bool CQSpecieDM::specieDataChange(
     {
       try
         {
-          pCompartment = mpSpecies->getCompartment();
+          pCompartment = pSpecies->getCompartment();
         }
       catch (...) {}
     }
 
   if (column == COL_NAME_SPECIES)
     {
-      mpSpecies->setObjectName(TO_UTF8(value.toString()));
-      pUndoSpeciesData->setCN(mpSpecies->getCN());
+      pSpecies->setObjectName(TO_UTF8(value.toString()));
+      pUndoSpeciesData->setCN(pSpecies->getCN());
     }
   else if (column == COL_COMPARTMENT)
     {
@@ -448,12 +477,12 @@ bool CQSpecieDM::specieDataChange(
 
       if (Compartment != pCompartment->getObjectName())
         {
-          std::string CompartmentToRemove = mpSpecies->getCompartment()->getObjectName();
+          std::string CompartmentToRemove = pSpecies->getCompartment()->getObjectName();
 
-          if (!(pModel->getCompartments()[Compartment].addMetabolite(mpSpecies)))
+          if (!(pModel->getCompartments()[Compartment].addMetabolite(pSpecies)))
             {
               QString msg;
-              msg = "Unable to move species '" + FROM_UTF8(mpSpecies->getObjectName()) + "'\n"
+              msg = "Unable to move species '" + FROM_UTF8(pSpecies->getObjectName()) + "'\n"
                     + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + FROM_UTF8(Compartment) + "'\n"
                     + "since a species with that name already exist in the target compartment.";
 
@@ -465,48 +494,48 @@ bool CQSpecieDM::specieDataChange(
             }
           else
             {
-              pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(mpSpecies->getObjectName());
+              pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(pSpecies->getObjectName());
               pModel->setCompileFlag();
               pModel->initializeMetabolites();
 
-              if (mpSpecies && pCompartment)
+              if (pSpecies && pCompartment)
                 {
                   C_FLOAT64 Factor = 1.0 / pCompartment->getInitialValue();
                   Factor *= pCompartment->getInitialValue();
 
-                  mpSpecies->setInitialValue(Factor * pUndoSpeciesData->getINumber());
-                  mpSpecies->setValue(Factor * mpSpecies->getValue());
+                  pSpecies->setInitialValue(Factor * pUndoSpeciesData->getINumber());
+                  pSpecies->setValue(Factor * pSpecies->getValue());
                 }
 
-              emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, mpSpecies->getKey());
+              emit notifyGUI(ListViews::METABOLITE, ListViews::CHANGE, pSpecies->getKey());
               emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pCompartment->getKey());
             }
         }
     }
   else if (column == COL_TYPE_SPECIES)
-    mpSpecies->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+    pSpecies->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
   else if (column == COL_ICONCENTRATION)
     {
       if (mFlagConc)
-        mpSpecies->setInitialConcentration(value.toDouble());
+        pSpecies->setInitialConcentration(value.toDouble());
 
-      if (mpSpecies && pCompartment)
+      if (pSpecies && pCompartment)
         {
           const C_FLOAT64 initialValue =
             CMetab::convertToNumber(pUndoSpeciesData->getIConc(),
                                     *pCompartment,
                                     *pModel);
-          mpSpecies->setInitialValue(initialValue);
+          pSpecies->setInitialValue(initialValue);
         }
     }
   else if (column == COL_INUMBER)
     {
       if (!mFlagConc)
-        mpSpecies->setInitialValue(value.toDouble());
+        pSpecies->setInitialValue(value.toDouble());
 
-      if (mpSpecies && pCompartment)
+      if (pSpecies && pCompartment)
         {
-          mpSpecies->setInitialConcentration(
+          pSpecies->setInitialConcentration(
             CMetab::convertToConcentration(pUndoSpeciesData->getINumber(),
                                            *pCompartment,
                                            *pModel)
@@ -515,10 +544,10 @@ bool CQSpecieDM::specieDataChange(
     }
 
   //Save Key
-  std::string key = mpSpecies->getKey();
+  std::string key = pSpecies->getKey();
 
   // ask for refresh this may change the key!
-  QModelIndex index = getIndexFor(mpSpecies, column);
+  QModelIndex index = getIndexFor(pSpecies, column);
   emit dataChanged(index, index);
 
   if (column == COL_NAME_SPECIES)
@@ -566,18 +595,18 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
       CModelEntity::Status status = index.isValid() && column == COL_TYPE_SPECIES ?
                                     (CModelEntity::Status) mItemToType[value.toInt()] : CModelEntity::REACTIONS;
 
-      mpSpecies =
+      CMetab * pSpecies =
         pModel->createMetabolite(TO_UTF8(name), TO_UTF8(compartment), initial, status);
 
-      if (mpSpecies == NULL)
+      if (pSpecies == NULL)
         continue;
 
       if (mNotify)
         {
-          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, mpSpecies->getKey());
+          emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecies->getKey());
         }
 
-      UndoSpeciesData* data = new UndoSpeciesData(mpSpecies);
+      UndoSpeciesData* data = new UndoSpeciesData(pSpecies);
       data->setCreatedCompartment(row == 0 && createdCompartment);
       result.append(data);
     }
@@ -596,7 +625,7 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 
   if (pSpecies == NULL) return;
 
-  size_t Index = pModel->getMetabolites().getIndex(pSpecies);
+  size_t Index = mpMetabolites->getIndex(pSpecies);
 
   removeRow((int) Index);
 

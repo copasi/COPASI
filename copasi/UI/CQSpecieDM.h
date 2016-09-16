@@ -21,15 +21,16 @@ class UndoReactionData;
 #define COL_NAME_SPECIES          1
 #define COL_COMPARTMENT           2
 #define COL_TYPE_SPECIES          3
-#define COL_ICONCENTRATION        4
-#define COL_INUMBER               5
-#define COL_CONCENTRATION         6
-#define COL_NUMBER                7
-#define COL_CRATE                 8
-#define COL_NRATE                 9
-#define COL_IEXPRESSION_SPECIES  10
-#define COL_EXPRESSION_SPECIES   11
-#define TOTAL_COLS_SPECIES       12
+#define COL_UNIT                  4
+#define COL_ICONCENTRATION        5
+#define COL_INUMBER               6
+#define COL_CONCENTRATION         7
+#define COL_NUMBER                8
+#define COL_CRATE                 9
+#define COL_NRATE                10
+#define COL_IEXPRESSION_SPECIES  11
+#define COL_EXPRESSION_SPECIES   12
+#define TOTAL_COLS_SPECIES       13
 
 class CQSpecieDM : public CQBaseDataModel
 {
@@ -77,6 +78,8 @@ public:
 
   QModelIndex getIndexFor(const CMetab* pMetab, int column) const;
 
+  virtual void resetCache();
+
 protected:
   bool mFlagConc;
   QStringList mTypes;
@@ -87,14 +90,17 @@ protected:
   std::vector< unsigned C_INT32 > mItemToType;
 
   /**
-   * A pointer to the selected species
+   * A pointer to a vector of all metabolites in this model
    */
-  mutable CMetab * mpSpecies;
+
+  CCopasiVector< CMetab > * mpMetabolites;
 
   bool mNotify;
 
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows);
+
+  QStringList mUnits;
 };
 
 #endif //CQSpecieDM_H

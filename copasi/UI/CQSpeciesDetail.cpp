@@ -158,8 +158,11 @@ void CQSpeciesDetail::setFramework(int framework)
 
   QString ParticleNumberUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getValueReference()->getUnits())) + "]";
   QString ParticleNumberRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getRateReference()->getUnits())) + "]";
-  QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getConcentrationReference()->getUnits())) + "]";
-  QString ConcentrationRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getConcentrationRateReference()->getUnits())) + "]";
+
+  // These depend on the current selected compartment's unit (which depends on it's dimentionality)
+  std::string concUnitStdStr = "(" + pModel->getQuantityUnit() + ")/(" + mpCurrentCompartment->getUnits() + ")";
+  QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(concUnitStdStr)) + "]";
+  QString ConcentrationRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint("(" + concUnitStdStr + ")/(" + pModel->getTimeUnit() + ")")) + "]";
 
   switch (mFramework)
     {
@@ -542,6 +545,9 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
     mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
 
   mpCurrentCompartment = pNewCompartment;
+
+  // Update the units and values accordingly
+  setFramework(mFramework);
 }
 
 void CQSpeciesDetail::slotExpressionValid(bool valid)

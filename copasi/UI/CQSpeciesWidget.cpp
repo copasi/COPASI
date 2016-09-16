@@ -36,6 +36,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
 
   //Create Source Data Model.
   mpSpecieDM = new CQSpecieDM(this);
+  mpSpecieDM->setDataModel(mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
@@ -153,6 +154,7 @@ bool CQSpeciesWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
+  mpSpecieDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpSpecieDM);
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
