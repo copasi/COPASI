@@ -4651,8 +4651,8 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CCopasiD
       // the model in COPASI
       if (this->mSBMLLevel > 2)
         {
-          pTrigger->setInitialValue(true);
-          pTrigger->setPersistent(true);
+          pTrigger->setInitialValue(!event.getFireAtInitialTime());
+          pTrigger->setPersistent(event.getPersistentTrigger());
         }
 
 #endif  // LIBSBML_VERSION >= 40200
