@@ -10036,7 +10036,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   pCOPASIEvent->setTriggerExpressionPtr(pExpression);
 
   // import the priority
-  if (pEvent->isSetPriority())
+  if (pEvent->isSetPriority() && pEvent->getPriority()->isSetMath())
     {
       const Priority * pPriority = pEvent->getPriority();
 
@@ -10088,7 +10088,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       pCOPASIEvent->setDelayAssignment(true);
     }
 
-  if (pEvent->isSetDelay())
+  if (pEvent->isSetDelay() && pEvent->getDelay()->isSetMath())
     {
       const Delay* pDelay = pEvent->getDelay();
 
