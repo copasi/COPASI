@@ -145,6 +145,7 @@ bool CQGlobalQuantitiesWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
+  mpGlobalQuantityDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpGlobalQuantityDM);
   //Set Model for the TableView
   mpTblGlobalQuantities->setModel(NULL);

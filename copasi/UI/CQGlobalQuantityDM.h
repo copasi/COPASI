@@ -19,8 +19,8 @@ class UndoSpeciesData;
 class UndoReactionData;
 
 #define COL_NAME_GQ         1
-#define COL_UNIT_GQ         2
-#define COL_TYPE_GQ         3
+#define COL_TYPE_GQ         2
+#define COL_UNIT_GQ         3
 #define COL_INITIAL_GQ      4
 #define COL_TRANSIENT_GQ    5
 #define COL_RATE_GQ         6
@@ -47,6 +47,7 @@ public:
                       int role = Qt::DisplayRole) const;
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
+  virtual void resetCache();
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   const QString& indexToStatus(int index) const;
@@ -69,6 +70,11 @@ protected:
     * A vector mapping the item index to a model valu type
     */
   std::vector< unsigned C_INT32 > mItemToType;
+  CCopasiVectorN< CModelValue > * mpGlobalQuantities;
+
+  // cache the pretty-printed unit strings
+  mutable QMap< std::string, QVariant > mUnitCache;
+
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows);
 };

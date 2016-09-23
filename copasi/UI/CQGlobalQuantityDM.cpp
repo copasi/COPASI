@@ -33,7 +33,8 @@
 #include <copasi/UI/CQCopasiApplication.h>
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
-  : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent),
+    mpGlobalQuantities(NULL)
 
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -67,7 +68,7 @@ const std::vector< unsigned C_INT32 >& CQGlobalQuantityDM::getItemToType()
 
 int CQGlobalQuantityDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getModelValues().size() + 1;
+  return mpGlobalQuantities->size() + 1;
 }
 int CQGlobalQuantityDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -127,7 +128,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CModelValue *pGQ = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getModelValues()[index.row()];
+          CModelValue & GQ = mpGlobalQuantities->operator[](index.row());
           const CExpression * pExpression = NULL;
 
           switch (index.column())
@@ -136,32 +137,42 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_GQ:
-                return QVariant(QString(FROM_UTF8(pGQ->getObjectName())));
+                return QVariant(QString(FROM_UTF8(GQ.getObjectName())));
 
               case COL_UNIT_GQ:
-                return QVariant(QString(FROM_UTF8(CUnit::prettyPrint(pGQ->getUnitExpression()))));
+              {
+                std::string rawExpression = GQ.getUnitExpression();
+                QMap< std::string, QVariant >::const_iterator it = mUnitCache.find(rawExpression);
+
+                if (it != mUnitCache.end())
+                  return it.value(); // Use cached value, if available
+
+                QVariant prettyExpression(QString(FROM_UTF8(CUnit::prettyPrint(rawExpression))));
+                mUnitCache.insert(rawExpression, prettyExpression);
+                return prettyExpression;
+              }
 
               case COL_TYPE_GQ:
-                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[pGQ->getStatus()])));
+                return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[GQ.getStatus()])));
 
               case COL_INITIAL_GQ:
 
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(pGQ->getInitialValue(), 'g', 10));
+                  return QVariant(QString::number(GQ.getInitialValue(), 'g', 10));
                 else
-                  return QVariant(pGQ->getInitialValue());
+                  return QVariant(GQ.getInitialValue());
 
               case COL_TRANSIENT_GQ:
-                return QVariant(pGQ->getValue());
+                return QVariant(GQ.getValue());
 
               case COL_RATE_GQ:
-                return QVariant(pGQ->getRate());
+                return QVariant(GQ.getRate());
 
               case COL_IEXPRESSION_GQ:
 
-                if (pGQ->getInitialExpression() != "")
+                if (GQ.getInitialExpression() != "")
                   {
-                    pExpression = pGQ->getInitialExpressionPtr();
+                    pExpression = GQ.getInitialExpressionPtr();
 
                     if (pExpression != NULL)
                       return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -173,7 +184,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
 
               case COL_EXPRESSION_GQ:
               {
-                pExpression = pGQ->getExpressionPtr();
+                pExpression = GQ.getExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
@@ -193,6 +204,11 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
   if (role != Qt::DisplayRole)
     return QVariant();
 
+  std::string tmp = CUnit::prettyPrint("1/(" + mpDataModel->getModel()->getTimeUnit() + ")");
+
+  QString ValueUnit = "[Unit]";
+  QString RateUnit = (tmp != "?") ? "[Unit" + FROM_UTF8(tmp.substr(1)) + "]" : "[?]";
+
   if (orientation == Qt::Horizontal)
     {
       switch (section)
@@ -203,26 +219,29 @@ QVariant CQGlobalQuantityDM::headerData(int section, Qt::Orientation orientation
           case COL_NAME_GQ:
             return QVariant(QString("Name"));
 
-          case COL_UNIT_GQ:
-            return QVariant(QString("Unit"));
-
           case COL_TYPE_GQ:
             return QVariant(QString("     Type     "));
 
+          case COL_UNIT_GQ:
+            return QVariant(QString("Unit"));
+
           case COL_INITIAL_GQ:
-            return QVariant("Initial Value");
+            return QVariant("Initial Value\n" + ValueUnit);
 
           case COL_TRANSIENT_GQ:
-            return QVariant("Transient Value");
+            return QVariant("Transient Value\n" + ValueUnit);
 
           case COL_RATE_GQ:
-            return QVariant("Rate");
+            return QVariant("Rate\n" + RateUnit);
 
           case COL_IEXPRESSION_GQ:
-            return QVariant("Initial Expression");
+            return QVariant("Initial Expression\n" + ValueUnit);
 
           case COL_EXPRESSION_GQ:
-            return QVariant("Expression");
+            if (ValueUnit == RateUnit)
+              return QVariant("Expression\n" + ValueUnit);
+            else
+              return QVariant("Expression\n" + ValueUnit + " or " + RateUnit);
 
           default:
             return QVariant();
@@ -255,6 +274,17 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
   return true;
 }
 
+// virtual
+void CQGlobalQuantityDM::resetCache()
+{
+  assert(mpDataModel != NULL);
+
+  mpGlobalQuantities = dynamic_cast< CCopasiVectorN < CModelValue > * >(&mpDataModel->getModel()->getModelValues());
+  assert(mpGlobalQuantities != NULL);
+
+  mUnitCache.clear();// data() will add to the unit cache, as needed
+}
+
 bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
 {
   mpUndoStack->push(new InsertGlobalQuantityRowsCommand(position, rows, this));
@@ -269,15 +299,13 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
 
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CModelValue >::const_iterator itRow = pModel->getModelValues().begin() + position;
+  CCopasiVector< CModelValue >::const_iterator itRow = mpGlobalQuantities->begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -286,7 +314,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
     {
-      pModel->removeModelValue(*itDeletedKey);
+      mpDataModel->getModel()->removeModelValue(*itDeletedKey);
       emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, *itDeletedKey);
       emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
     }
@@ -305,6 +333,8 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role)
 {
+  assert((size_t)index.row() < mpGlobalQuantities->size());
+
   if (!index.isValid() || role != Qt::EditRole)
     return false;
 
@@ -325,32 +355,28 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
         return false;
     }
 
-  GET_MODEL_OR(pModel, return false);
-
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
-  CModelValue *pGQ = &pModel->getModelValues()[index.row()];
+  CModelValue & GQ = mpGlobalQuantities->operator [](index.row());
 
   if (index.column() == COL_NAME_GQ)
-    pGQ->setObjectName(TO_UTF8(value.toString()));
+    GQ.setObjectName(TO_UTF8(value.toString()));
   else if (index.column() == COL_TYPE_GQ)
-    pGQ->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+    GQ.setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
   else if (index.column() == COL_INITIAL_GQ)
-    pGQ->setInitialValue(value.toDouble());
+    GQ.setInitialValue(value.toDouble());
 
   if (defaultRow && this->index(index.row(), COL_NAME_GQ).data().toString() == "quantity")
-    pGQ->setObjectName(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
+    GQ.setObjectName(TO_UTF8(createNewName("quantity", COL_NAME_GQ)));
 
   emit dataChanged(index, index);
-  emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, pGQ->getKey());
+  emit notifyGUI(ListViews::MODELVALUE, ListViews::CHANGE, GQ.getKey());
 
   return true;
 }
 
 void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, const QModelIndex& index, const QVariant& value)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   int column = index.column();
@@ -361,7 +387,7 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
       double initial = index.isValid() && column == COL_INITIAL_GQ ? value.toDouble() : 0.0;
 
-      CModelValue *pGQ = pModel->createModelValue(TO_UTF8(name), initial);
+      CModelValue *pGQ = mpDataModel->getModel()->createModelValue(TO_UTF8(name), initial);
 
       if (pGQ == NULL) continue;
 
@@ -378,11 +404,9 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
-  size_t index = pModel->getModelValues().getIndex(pGlobalQuantityData->getName());
+  size_t index = mpGlobalQuantities->getIndex(pGlobalQuantityData->getName());
 
   if (index == C_INVALID_INDEX)
     return;
@@ -392,12 +416,10 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobal
 
 void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CModelValue *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(pModel);
+  CModelValue *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(mpDataModel->getModel());
 
   if (pGlobalQuantity != NULL)
     emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -410,8 +432,6 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
   if (rows.isEmpty())
     return false;
 
-  GET_MODEL_OR(pModel, return false);
-
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   //Build the list of pointers to items to be deleted
@@ -421,8 +441,8 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && &pModel->getModelValues()[i->row()])
-        pGlobalQuantities.append(&pModel->getModelValues()[i->row()]);
+      if (!isDefaultRow(*i) && &mpGlobalQuantities->operator [](i->row()))
+        pGlobalQuantities.append(&mpGlobalQuantities->operator [](i->row()));
     }
 
   QList <CModelValue *>::const_iterator j;
@@ -432,7 +452,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
       CModelValue * pGQ = *j;
 
       size_t delRow =
-        pModel->getModelValues().CCopasiVector< CModelValue >::getIndex(pGQ);
+        mpGlobalQuantities->CCopasiVector< CModelValue >::getIndex(pGQ);
 
       if (delRow == C_INVALID_INDEX)
         continue;
@@ -451,8 +471,6 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
 
 bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pData)
 {
-  GET_MODEL_OR(pModel, return false);
-
   //reinsert all the GlobalQuantities
   QList <UndoGlobalQuantityData *>::const_iterator i;
 
@@ -460,11 +478,11 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
     {
       UndoGlobalQuantityData * data = *i;
 
-      if (pModel->getModelValues().getIndex(data->getName()) != C_INVALID_INDEX)
+      if (mpGlobalQuantities->getIndex(data->getName()) != C_INVALID_INDEX)
         continue;
 
       beginInsertRows(QModelIndex(), 1, 1);
-      CModelValue *pGlobalQuantity = data->restoreObjectIn(pModel);
+      CModelValue *pGlobalQuantity = data->restoreObjectIn(mpDataModel->getModel());
 
       if (pGlobalQuantity != NULL)
         emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -479,8 +497,6 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   QList <UndoGlobalQuantityData *>::const_iterator j;
@@ -488,7 +504,7 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
       UndoGlobalQuantityData * data = *j;
-      size_t index = pModel->getModelValues().getIndex(data->getName());
+      size_t index = mpGlobalQuantities->getIndex(data->getName());
       removeRow((int) index);
     }
 }
