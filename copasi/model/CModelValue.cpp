@@ -68,6 +68,7 @@ CModelEntity::CModelEntity(const std::string & name,
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mIValue(1.0),
   mRate(0.0),
+  mNoise(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mpExpression(NULL),
   mpInitialExpression(NULL),
   mpNoiseExpression(NULL),
@@ -91,6 +92,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mValue(src.mValue),
   mIValue(src.mIValue),
   mRate(src.mRate),
+  mNoise(src.mNoise),
   mpExpression(src.mpExpression != NULL ? new CExpression(*src.mpExpression, this) : NULL),
   mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL),
   mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
@@ -514,6 +516,9 @@ CCopasiObject * CModelEntity::getValueReference() const
 CCopasiObject * CModelEntity::getRateReference() const
 {return mpRateReference;}
 
+CCopasiObject * CModelEntity::getNoiseReference() const
+{return mpNoiseReference;}
+
 CModel * CModelEntity::getModel() const
 {
   return mpModel;
@@ -646,6 +651,9 @@ void CModelEntity::initObjects()
 
   mpRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));
+
+  mpNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CCopasiObject::ValueDbl));
 
   addObjectReference("SBMLId", mSBMLId, CCopasiObject::ValueString);
 

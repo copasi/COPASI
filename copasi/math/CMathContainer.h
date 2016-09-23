@@ -49,6 +49,7 @@ private:
     size_t nFixedEventTargets; // auto determined
     size_t nTime; // 0 or 1
     size_t nODE;
+    size_t nODESpecies;
     size_t nReactionSpecies; // fixed
     size_t nAssignment;
     size_t nIntensiveValues; // fixed
@@ -64,10 +65,20 @@ private:
     CMathObject * pObject;
   };
 
-  static void createRelocation(const size_t & o, const size_t & n,
+  /**
+   * Modify the current relocation information based on old and new sizes. If appropriate
+   * append the relocation information to the vector of relocations. The size modification
+   * can appear at the beginning or the end of the current section.
+   * @param const size_t & oldSize
+   * @param const size_t & newSize
+   * @param CMath::sRelocate & currentRelocation
+   * @param std::vector< CMath::sRelocate > & relocations
+   * @param const bool & modifiedAtEnd (Default: true)
+   */
+  static void createRelocation(const size_t & oldSize, const size_t & newSize,
                                CMath::sRelocate & relocate,
                                std::vector< CMath::sRelocate > & relocations,
-                               const bool & end = true);
+                               const bool & modifiedAtEnd = true);
 
   template < class CType > void relocateVector(CVectorCore< CType > & vector, size_t size,
       const std::vector< CMath::sRelocate > & relocations)
@@ -278,6 +289,13 @@ public:
    * @return const CVectorCore< C_FLOAT64 > & rate
    */
   const CVectorCore< C_FLOAT64 > & getRate(const bool & reduced) const;
+
+  /**
+   * Retrieve the noise simulation type EventTarget, Time, ODE, Dependent, (and Independent).
+   * @param const bool & reduced
+   * @return const CVectorCore< C_FLOAT64 > & noise
+   */
+  const CVectorCore< C_FLOAT64 > & getNoise(const bool & reduced) const;
 
   /**
    * Retrieve the total masses of the moieties.
@@ -559,7 +577,7 @@ public:
    * Retrieve the count of values determined by ODEs
    * @return const size_t & countODEs
    */
-  const size_t & getCountODEs() const;
+  size_t getCountODEs() const;
 
   /**
    * Retrieve the count of independent species
@@ -584,6 +602,17 @@ public:
    * @return const size_t & countDependentSpecies
    */
   const size_t & getCountFixed() const;
+
+  /**
+   * Retrieve the count of noise added to the system
+   * @return const size_t & countNoise
+   */
+  const size_t & getCountNoise() const;
+
+  /**
+   * Increment the noise count
+   */
+  void incrementNoiseCount();
 
   /**
    * Retrieve the reactions
@@ -1031,6 +1060,10 @@ private:
   CVectorCore< C_FLOAT64 > mFluxes;
   CVectorCore< C_FLOAT64 > mTotalMasses;
   CVectorCore< C_FLOAT64 > mEventTriggers;
+  CVectorCore< C_FLOAT64 > mExtensiveNoise;
+  CVectorCore< C_FLOAT64 > mIntensiveNoise;
+  CVectorCore< C_FLOAT64 > mReactionNoise;
+  CVectorCore< C_FLOAT64 > mReactionParticleNoise;
 
   CVectorCore< C_FLOAT64 > mEventDelays;
   CVectorCore< C_FLOAT64 > mEventPriorities;
@@ -1083,6 +1116,11 @@ private:
    * The reduced rate derivatives for contains values of type EventTarget, Time, ODE, Independent
    */
   CVectorCore< C_FLOAT64 > mRateReduced;
+
+  /**
+   * The noise contains the mean values for entities of type ODE, Independent
+   */
+  CVectorCore< C_FLOAT64 > mNoiseReduced;
 
   /**
    * Dependency graph for initial value calculations
@@ -1259,6 +1297,11 @@ private:
    * Structure containing all the important size information
    */
   sSize mSize;
+
+  /**
+   * The count of the noise terms added to the system.
+   */
+  size_t mCountNoise;
 
   /**
    * Pointers to all update sequences associated with this container;

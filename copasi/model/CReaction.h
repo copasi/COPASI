@@ -379,6 +379,18 @@ public:
   const CCopasiObject * getFluxReference() const;
 
   /**
+   * Retrieve object referencing the particle noise
+   * @return const CCopasiObject * particleNoiseReference
+   */
+  const CCopasiObject * getParticleNoiseReference() const;
+
+  /**
+   * Retrieve object referencing the noise
+   * @return const CCopasiObject * noiseReference
+   */
+  const CCopasiObject * getNoiseReference() const;
+
+  /**
    * Retrieve object referencing the propensity
    * @return CCopasiObject * propensityReference
    */
@@ -655,6 +667,18 @@ private:
    */
   C_FLOAT64 mParticleFlux;
   CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
+
+  /**
+   *  The noise of the reaction
+   */
+  C_FLOAT64 mNoise;
+  CCopasiObjectReference<C_FLOAT64> *mpNoiseReference;
+
+  /**
+   *  The particle noise
+   */
+  C_FLOAT64 mParticleNoise;
+  CCopasiObjectReference<C_FLOAT64> *mpParticleNoiseReference;
 
   /**
    *  The propensity of the reaction

@@ -274,10 +274,31 @@ private:
   bool compileFlux(CMathContainer & container);
 
   /**
-   * Compile the reactions propensity
+   * Compile value noise objects
    * @param CMathContainer & container
    * @return bool success
    */
+  bool compileNoise(CMathContainer & container);
+
+  /**
+   * Compile the reactions particle noise
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool compileReactionParticleNoise(CMathContainer & container);
+
+  /**
+   * Compile the reactions noise
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool compileReactionNoise(CMathContainer & container);
+
+  /**
+  * Compile the reactions propensity
+  * @param CMathContainer & container
+  * @return bool success
+  */
   bool compilePropensity(CMathContainer & container);
 
   /**
@@ -360,6 +381,35 @@ private:
    * @return bool success
    */
   bool createExtensiveReactionRateExpression(const CMetab * pSpecies,
+      CMathContainer & container);
+
+  /**
+   * Create and compile an expression for the intensive noise of a species
+   * @param const CMetab * pSpecies
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool createIntensiveNoiseExpression(const CMetab * pSpecies,
+                                      CMathContainer & container);
+
+  /**
+   * Create and compile an expression for an extensive noise of a species determined
+   * by ODEs
+   * @param const CMetab * pSpecies
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool createExtensiveNoiseExpression(const CMetab * pSpecies,
+                                      CMathContainer & container);
+
+  /**
+   * Create and compile an expression for an extensive noise of a species determined
+   * by reactions
+   * @param const CMetab * pSpecies
+   * @param CMathContainer & container
+   * @return bool success
+   */
+  bool createExtensiveReactionNoiseExpression(const CMetab * pSpecies,
       CMathContainer & container);
 
   static C_FLOAT64 InvalidValue;

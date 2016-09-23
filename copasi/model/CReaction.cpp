@@ -67,6 +67,10 @@ CReaction::CReaction(const std::string & name,
   mpFluxReference(NULL),
   mParticleFlux(0),
   mpParticleFluxReference(NULL),
+  mNoise(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mpNoiseReference(NULL),
+  mParticleNoise(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mpParticleNoiseReference(NULL),
   mPropensity(0),
   mpPropensityReference(NULL),
   mMetabKeyMap(),
@@ -95,6 +99,10 @@ CReaction::CReaction(const CReaction & src,
   mpFluxReference(NULL),
   mParticleFlux(src.mParticleFlux),
   mpParticleFluxReference(NULL),
+  mNoise(src.mNoise),
+  mpNoiseReference(NULL),
+  mParticleNoise(src.mParticleNoise),
+  mpParticleNoiseReference(NULL),
   mPropensity(src.mPropensity),
   mpPropensityReference(NULL),
   mMap(src.mMap),
@@ -226,6 +234,12 @@ const CCopasiObject * CReaction::getParticleFluxReference() const
 
 CCopasiObject * CReaction::getParticleFluxReference()
 {return mpParticleFluxReference;}
+
+const CCopasiObject * CReaction::getParticleNoiseReference() const
+{return mpParticleNoiseReference;}
+
+const CCopasiObject * CReaction::getNoiseReference() const
+{return mpNoiseReference;}
 
 CCopasiObject * CReaction::getPropensityReference()
 {return mpPropensityReference;}
@@ -689,6 +703,14 @@ bool CReaction::compile()
         listOfContainer.push_back(pModel);
 
       success &= mpNoiseExpression->compile(listOfContainer);
+
+      mpNoiseReference->setDirectDependencies(mpNoiseExpression->getDirectDependencies());
+      mpParticleNoiseReference->setDirectDependencies(mpNoiseExpression->getDirectDependencies());
+    }
+  else
+    {
+      mpNoiseReference->clearDirectDependencies();
+      mpParticleNoiseReference->clearDirectDependencies();
     }
 
   return success;
@@ -904,6 +926,12 @@ void CReaction::initObjects()
   mpParticleFluxReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl));
 
+  mpNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CCopasiObject::ValueDbl));
+
+  mpParticleNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleNoise", mParticleNoise, CCopasiObject::ValueDbl));
+
   mpPropensityReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Propensity", mPropensity, CCopasiObject::ValueDbl));
 }
@@ -915,6 +943,9 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
   Deleted.insert(this);
   Deleted.insert(mpFluxReference);
   Deleted.insert(mpParticleFluxReference);
+  Deleted.insert(mpNoiseReference);
+  Deleted.insert(mpParticleNoiseReference);
+  Deleted.insert(mpPropensityReference);
 
   // We need to add all local reaction parameters
   CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();

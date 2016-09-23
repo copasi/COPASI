@@ -494,6 +494,23 @@ bool CMathObject::compile(CMathContainer & container)
         success = compileFlux(container);
         break;
 
+      case CMath::Noise:
+
+        if (mEntityType == CMath::Reaction)
+          {
+            success = compileReactionNoise(container);
+          }
+        else
+          {
+            success = compileNoise(container);
+          }
+
+        break;
+
+      case CMath::ParticleNoise:
+        success = compileReactionParticleNoise(container);
+        break;
+
       case CMath::Propensity:
         success = compilePropensity(container);
         break;
@@ -899,6 +916,182 @@ bool CMathObject::compileFlux(CMathContainer & container)
 
       pdelete(mpExpression);
       mpExpression = new CMathExpression(Tmp, container, false);
+    }
+
+  compileExpression();
+
+  return success;
+}
+
+bool CMathObject::compileNoise(CMathContainer & container)
+{
+  bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
+  const CModelEntity * pEntity = NULL;
+  const CMetab * pSpecies = NULL;
+
+  if (mpDataObject != NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
+    }
+
+  // Only species have corresponding properties (extensive vs intensive).
+  if (mEntityType == CMath::Species)
+    {
+      pSpecies = static_cast< const CMetab * >(pEntity);
+    }
+
+  if (mIsIntensiveProperty)
+    {
+      // Only species have intensive properties.
+      switch (mSimulationType)
+        {
+          case CMath::Assignment:
+            success &= createIntensiveNoiseExpression(pSpecies, container);
+            break;
+
+          case CMath::SimulationTypeUndefined:
+          case CMath::Fixed:
+          case CMath::EventTarget:
+          case CMath::Time:
+          case CMath::ODE:
+          case CMath::Independent:
+          case CMath::Dependent:
+          case CMath::Conversion:
+            success = false;
+            break;
+        }
+    }
+  else
+    {
+      switch (mSimulationType)
+        {
+          case CMath::ODE:
+
+            if (pEntity != NULL &&
+                pEntity->addNoise())
+              {
+                if (mEntityType == CMath::Species)
+                  {
+                    success &= createExtensiveNoiseExpression(pSpecies, container);
+                  }
+                else if (pEntity != NULL)
+                  {
+                    success &= createConvertedExpression(pEntity->getNoiseExpressionPtr(), container);
+                  }
+
+                container.incrementNoiseCount();
+                compileExpression();
+              }
+
+            else
+              {
+                *mpValue = 0.0;
+              }
+
+            break;
+
+          case CMath::Independent:
+          case CMath::Dependent:
+            // TODO CRITICAL Implement me!
+          {
+            success &= createExtensiveReactionNoiseExpression(pSpecies, container);
+          }
+
+          break;
+
+          case CMath::Fixed:
+          case CMath::Time:
+          case CMath::Assignment:
+          case CMath::SimulationTypeUndefined:
+          case CMath::EventTarget:
+          case CMath::Conversion:
+            success = false;
+            break;
+        }
+    }
+
+  return success;
+}
+
+bool CMathObject::compileReactionParticleNoise(CMathContainer & container)
+{
+  bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+  pdelete(mpExpression);
+
+  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+
+  // We need to check whether this reaction is a single compartment reaction and scale
+  // it if true.
+  //   mParticleNoise = *mUnitScalingFactor * mNoise;
+  //   mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
+
+  if (pReaction->addNoise())
+    {
+      std::string Infix = pointerToString(&container.getQuantity2NumberFactor());
+      Infix += "*" + pointerToString(container.getMathObject(pReaction->getNoiseReference())->getValuePointer());
+
+      mpExpression = new CMathExpression("ReactionParticleNoiseExpression", container);
+      success &= mpExpression->setInfix(Infix);
+      success &= mpExpression->compile();
+    }
+
+  compileExpression();
+
+  return success;
+}
+
+bool CMathObject::compileReactionNoise(CMathContainer & container)
+{
+  bool success = true;
+
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+  pdelete(mpExpression);
+
+  const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+
+  if (pReaction->addNoise())
+    {
+      // We need to check whether this reaction is a single compartment reaction and scale it if true.
+      //   mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
+      //   mScalingFactor = compartment volume or 1
+
+      mpExpression = new CMathExpression(*pReaction->getNoiseExpressionPtr(),
+                                         container,
+                                         !mIsInitialValue);
+
+      if (pReaction->getScalingCompartment() != NULL &&
+          pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+        {
+          CExpression Tmp(mpExpression->getObjectName(), &container);
+
+          std::string Infix = pointerToString(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+          Infix += "*(" + mpExpression->getInfix() + ")";
+
+          success &= Tmp.setInfix(Infix);
+          success &= Tmp.compile();
+
+          pdelete(mpExpression);
+          mpExpression = new CMathExpression(Tmp, container, false);
+        }
+
+      container.incrementNoiseCount();
     }
 
   compileExpression();
@@ -1502,6 +1695,156 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   success &= mpExpression->setInfix(Infix.str());
   success &= mpExpression->compile();
+  compileExpression();
+
+  return success;
+}
+
+bool CMathObject::createIntensiveNoiseExpression(const CMetab * pSpecies,
+    CMathContainer & container)
+{
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+  pdelete(mpExpression);
+
+  bool success = true;
+
+  if (pSpecies->addNoise())
+    {
+      mpExpression = new CMathExpression(*pSpecies->getNoiseExpressionPtr(), container, !mIsInitialValue);
+    }
+
+  compileExpression();
+
+  return success;
+}
+
+bool CMathObject::createExtensiveNoiseExpression(const CMetab * pSpecies,
+    CMathContainer & container)
+{
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+  pdelete(mpExpression);
+
+  bool success = true;
+
+  if (pSpecies->addNoise())
+    {
+      /*
+        mRate = mpModel->getQuantity2NumberFactor() *
+          mpCompartment->getValue() * mpNoiseExpression->calcValue();
+       */
+
+      std::string Infix;
+      Infix = pointerToString(&container.getQuantity2NumberFactor());
+      Infix += "*" + pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      Infix += "*(" + pSpecies->getNoiseExpression() + ")";
+
+      CExpression E("ExtensiveNoiseExpression", &container);
+      success &= E.setInfix(Infix);
+
+      mpExpression = new CMathExpression(E, container, !mIsInitialValue);
+    }
+  else
+    {
+      *mpValue = 0.0;
+    }
+
+  compileExpression();
+
+  return success;
+}
+
+bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies,
+    CMathContainer & container)
+{
+  // The default value is NaN
+  *mpValue = InvalidValue;
+
+  // Reset the prerequisites
+  mPrerequisites.clear();
+  pdelete(mpExpression);
+
+  bool success = true;
+
+  std::ostringstream Infix;
+  Infix.imbue(std::locale::classic());
+  Infix.precision(16);
+
+  std::string Key = pSpecies->getKey();
+  bool First = true;
+
+  CCopasiVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
+  CCopasiVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+
+  for (; it != end; ++it)
+    {
+      if (!it->addNoise()) continue;
+
+      const CCopasiVector< CChemEqElement > &Balances =
+        it->getChemEq().getBalances();
+      CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+      CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+
+      for (; itChem != endChem; ++itChem)
+        if (itChem->getMetaboliteKey() == Key)
+          break;
+
+      if (itChem != endChem)
+        {
+          const C_FLOAT64 & Multiplicity = itChem->getMultiplicity();
+
+          if (First || Multiplicity < 0.0)
+            {
+              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+                {
+                  Infix << "infinity";
+                }
+              else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
+                {
+                  Infix << "-infinity";
+                }
+              else
+                {
+                  Infix << Multiplicity;
+                }
+            }
+          else
+            {
+              if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
+                {
+                  Infix << "+infinity";
+                }
+              else
+                {
+                  Infix << "+" << Multiplicity;
+                }
+            }
+
+          First = false;
+
+          Infix << "*";
+          Infix << pointerToString(container.getMathObject(it->getParticleNoiseReference())->getValuePointer());
+        }
+    }
+
+  if (!First)
+    {
+      mpExpression = new CMathExpression("ExtensiveReactionNoiseExpression", container);
+      success &= mpExpression->setInfix(Infix.str());
+      success &= mpExpression->compile();
+    }
+  else
+    {
+      *mpValue = 0.0;
+    }
+
   compileExpression();
 
   return success;

@@ -370,6 +370,12 @@ public:
   CCopasiObject * getRateReference() const;
 
   /**
+   * Retrieve object referencing the noise
+   * @return CCopasiObject * rateReference
+   */
+  CCopasiObject * getNoiseReference() const;
+
+  /**
    * Retrieve a pointer to the model the entity belongs too
    * @return CModel * pModel
    */
@@ -390,6 +396,11 @@ protected:
    * Rate of change/time.
    */
   C_FLOAT64 mRate;
+
+  /**
+   * Noise
+   */
+  C_FLOAT64 mNoise;
 
   /**
    * The infix expression for objects of type ASSIGNMENT or ODE
@@ -432,6 +443,7 @@ protected:
   CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
   CCopasiObjectReference<C_FLOAT64> *mpValueReference;
   CCopasiObjectReference<C_FLOAT64> *mpRateReference;
+  CCopasiObjectReference<C_FLOAT64> *mpNoiseReference;
   mutable CModel * mpModel;
 
 private:

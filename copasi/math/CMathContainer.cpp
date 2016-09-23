@@ -22,47 +22,49 @@
 // #define DEBUG_OUTPUT 1
 
 // static
-void CMathContainer::createRelocation(const size_t & n, const size_t & o,
-                                      CMath::sRelocate & relocate,
+void CMathContainer::createRelocation(const size_t & newSize, const size_t & oldSize,
+                                      CMath::sRelocate & currentRelocation,
                                       std::vector< CMath::sRelocate > & relocations,
-                                      const bool & end)
+                                      const bool & modifiedAtEnd)
 {
-  if (n != o)
+  if (newSize != oldSize)
     {
-      if (end)
+      // Size modifications are made at the end of the current section
+      if (modifiedAtEnd)
         {
-          relocate.pValueEnd = relocate.pValueEnd + std::min(n, o);
-          relocate.pObjectEnd = relocate.pObjectEnd + std::min(n, o);
+          currentRelocation.pValueEnd = currentRelocation.pValueEnd + std::min(newSize, oldSize);
+          currentRelocation.pObjectEnd = currentRelocation.pObjectEnd + std::min(newSize, oldSize);
 
-          if (relocate.pValueStart != relocate.pValueEnd)
+          if (currentRelocation.pValueStart != currentRelocation.pValueEnd)
             {
-              relocations.push_back(relocate);
+              relocations.push_back(currentRelocation);
             }
 
-          relocate.pValueStart = relocate.pValueEnd - std::min(n, o) + o;
-          relocate.pObjectStart = relocate.pObjectEnd - std::min(n, o) + o;
-          relocate.pValueEnd = relocate.pValueStart;
-          relocate.pObjectEnd = relocate.pObjectStart;
-          relocate.offset += (n - o);
+          currentRelocation.pValueStart = currentRelocation.pValueEnd - std::min(newSize, oldSize) + oldSize;
+          currentRelocation.pObjectStart = currentRelocation.pObjectEnd - std::min(newSize, oldSize) + oldSize;
+          currentRelocation.pValueEnd = currentRelocation.pValueStart;
+          currentRelocation.pObjectEnd = currentRelocation.pObjectStart;
+          currentRelocation.offset += (newSize - oldSize);
         }
+      // Size modifications are made at the beginning of the current section
       else
         {
-          if (relocate.pValueStart != relocate.pValueEnd)
+          if (currentRelocation.pValueStart != currentRelocation.pValueEnd)
             {
-              relocations.push_back(relocate);
+              relocations.push_back(currentRelocation);
             }
 
-          relocate.pValueEnd += o;
-          relocate.pObjectEnd += o;
-          relocate.pValueStart = relocate.pValueEnd - std::min(n, o);
-          relocate.pObjectStart = relocate.pObjectEnd - std::min(n, o);
-          relocate.offset += (n - o);
+          currentRelocation.pValueEnd += oldSize;
+          currentRelocation.pObjectEnd += oldSize;
+          currentRelocation.pValueStart = currentRelocation.pValueEnd - std::min(newSize, oldSize);
+          currentRelocation.pObjectStart = currentRelocation.pObjectEnd - std::min(newSize, oldSize);
+          currentRelocation.offset += (newSize - oldSize);
         }
     }
-  else if (n > 0)
+  else if (newSize > 0)
     {
-      relocate.pValueEnd += n;
-      relocate.pObjectEnd += n;
+      currentRelocation.pValueEnd += newSize;
+      currentRelocation.pObjectEnd += newSize;
     }
 }
 
@@ -222,6 +224,10 @@ CMathContainer::CMathContainer():
   mFluxes(),
   mTotalMasses(),
   mEventTriggers(),
+  mExtensiveNoise(),
+  mIntensiveNoise(),
+  mReactionNoise(),
+  mReactionParticleNoise(),
   mEventDelays(),
   mEventPriorities(),
   mEventAssignments(),
@@ -241,6 +247,7 @@ CMathContainer::CMathContainer():
   mHistoryReduced(),
   mRate(),
   mRateReduced(),
+  mNoiseReduced(),
   mInitialDependencies(this),
   mTransientDependencies(this),
   mSynchronizeInitialValuesSequenceExtensive(),
@@ -273,6 +280,7 @@ CMathContainer::CMathContainer():
   mDelays(),
   mIsAutonomous(true),
   mSize(),
+  mCountNoise(0),
   mUpdateSequences()
 {
   memset(&mSize, 0, sizeof(mSize));
@@ -306,6 +314,10 @@ CMathContainer::CMathContainer(CModel & model):
   mFluxes(),
   mTotalMasses(),
   mEventTriggers(),
+  mExtensiveNoise(),
+  mIntensiveNoise(),
+  mReactionNoise(),
+  mReactionParticleNoise(),
   mEventDelays(),
   mEventPriorities(),
   mEventAssignments(),
@@ -325,6 +337,7 @@ CMathContainer::CMathContainer(CModel & model):
   mHistoryReduced(),
   mRate(),
   mRateReduced(),
+  mNoiseReduced(),
   mInitialDependencies(this),
   mTransientDependencies(this),
   mSynchronizeInitialValuesSequenceExtensive(),
@@ -357,6 +370,7 @@ CMathContainer::CMathContainer(CModel & model):
   mDelays(),
   mIsAutonomous(true),
   mSize(),
+  mCountNoise(0),
   mUpdateSequences()
 {
   memset(&mSize, 0, sizeof(mSize));
@@ -409,6 +423,10 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mFluxes(),
   mTotalMasses(),
   mEventTriggers(),
+  mExtensiveNoise(),
+  mIntensiveNoise(),
+  mReactionNoise(),
+  mReactionParticleNoise(),
   mEventDelays(),
   mEventPriorities(),
   mEventAssignments(),
@@ -427,6 +445,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mHistoryReduced(),
   mRate(),
   mRateReduced(),
+  mNoiseReduced(),
   mInitialDependencies(src.mInitialDependencies, this),
   mTransientDependencies(src.mTransientDependencies, this),
   mSynchronizeInitialValuesSequenceExtensive(src.mSynchronizeInitialValuesSequenceExtensive),
@@ -459,6 +478,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDelays(),
   mIsAutonomous(src.mIsAutonomous),
   mSize(),
+  mCountNoise(src.mCountNoise),
   mUpdateSequences()
 {
   // We do not want the model to know about the math container therefore we
@@ -763,6 +783,14 @@ const CVectorCore< C_FLOAT64 > & CMathContainer::getRate(const bool & reduced) c
     return mRateReduced;
 
   return mRate;
+}
+
+const CVectorCore< C_FLOAT64 > & CMathContainer::getNoise(const bool & reduced) const
+{
+  if (reduced)
+    return mNoiseReduced;
+
+  return mExtensiveNoise;
 }
 
 const CVectorCore< C_FLOAT64 > & CMathContainer::getTotalMasses() const
@@ -1403,9 +1431,9 @@ const size_t & CMathContainer::getCountFixedEventTargets() const
   return mSize.nFixedEventTargets;
 }
 
-const size_t & CMathContainer::getCountODEs() const
+size_t CMathContainer::getCountODEs() const
 {
-  return mSize.nODE;
+  return mSize.nODE + mSize.nODESpecies;
 }
 
 size_t CMathContainer::getCountIndependentSpecies() const
@@ -1426,6 +1454,16 @@ const size_t & CMathContainer::getCountAssignments() const
 const size_t & CMathContainer::getCountFixed() const
 {
   return mSize.nFixed;
+}
+
+const size_t & CMathContainer::getCountNoise() const
+{
+  return mCountNoise;
+}
+
+void CMathContainer::incrementNoiseCount()
+{
+  mCountNoise++;
 }
 
 CVectorCore< CMathReaction > & CMathContainer::getReactions()
@@ -1790,7 +1828,8 @@ void CMathContainer::allocate()
     }
 
   Size.nTime = 1;
-  Size.nODE = mpModel->getStateTemplate().getNumIndependent() - mpModel->getNumIndependentReactionMetabs();
+  Size.nODE = mpModel->getStateTemplate().getNumIndependent() - mpModel->getNumODEMetabs() - mpModel->getNumIndependentReactionMetabs();
+  Size.nODESpecies = mpModel->getNumODEMetabs();
   Size.nReactionSpecies = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
   Size.nAssignment = mpModel->getStateTemplate().getNumDependent() - mpModel->getNumDependentReactionMetabs();
 
@@ -1945,7 +1984,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
     }
 
   initializeMathObjects(ODEEntities, CMath::ODE, p);
-  assert(mSize.nODE == ODEEntities.size());
+  assert(mSize.nODE + mSize.nODESpecies == ODEEntities.size());
 
   // Process independent species
   std::vector< const CModelEntity * > IndependentSpecies;
@@ -2042,6 +2081,8 @@ void CMathContainer::initializeEvents(CMath::sPointers & p)
 bool CMathContainer::compileObjects()
 {
   bool success = true;
+
+  mCountNoise = 0;
 
   // Assure that Avogadro's number and the quantity conversion are up to date.
   quantityConversionChanged();
@@ -2460,7 +2501,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   //   ODE, Independent, and Dependent (not needed for reduced model) and EventRoots
   // The additional cost for calculating the rates for dependent species is neglected.
   pObject = mObjects.array() + (mExtensiveRates.array() - mValues.array()) + mSize.nFixed + mSize.nFixedEventTargets + mSize.nTime;
-  pObjectEnd = pObject + mSize.nODE + mSize.nReactionSpecies;
+  pObjectEnd = pObject + mSize.nODE + mSize.nODESpecies + mSize.nReactionSpecies;
 
   for (; pObject != pObjectEnd; ++pObject)
     {
@@ -2633,7 +2674,7 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
   size_t NumRows = mEventRoots.size();
 
   // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
-  size_t NumCols = mSize.nTime + mSize.nODE + mSize.nReactionSpecies;
+  size_t NumCols = mSize.nTime + mSize.nODE + mSize.nODESpecies + mSize.nReactionSpecies;
 
   // The rates of all state variables in the current state.
   CVector< C_FLOAT64 > Rate = mRate;
@@ -3058,6 +3099,10 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pFluxes = mFluxes.array();
   p.pTotalMasses = mTotalMasses.array();
   p.pEventTriggers = mEventTriggers.array();
+  p.pExtensiveNoise = mExtensiveNoise.array();
+  p.pIntensiveNoise = mIntensiveNoise.array();
+  p.pReactionNoise = mReactionNoise.array();
+  p.pReactionParticleNoise = mReactionParticleNoise.array();
 
   p.pEventDelays = mEventDelays.array();
   p.pEventPriorities = mEventPriorities.array();
@@ -3091,6 +3136,11 @@ void CMathContainer::initializePointers(CMath::sPointers & p)
   p.pFluxesObject = pObjects + (p.pFluxes - pValues);
   p.pTotalMassesObject = pObjects + (p.pTotalMasses - pValues);
   p.pEventTriggersObject = pObjects + (p.pEventTriggers - pValues);
+
+  p.pExtensiveNoiseObject = pObjects + (p.pExtensiveNoise - pValues);
+  p.pIntensiveNoiseObject = pObjects + (p.pIntensiveNoise - pValues);
+  p.pReactionNoiseObject = pObjects + (p.pReactionNoise - pValues);
+  p.pReactionParticleNoiseObject = pObjects + (p.pReactionParticleNoise - pValues);
 
   p.pEventDelaysObject = pObjects + (p.pEventDelays - pValues);
   p.pEventPrioritiesObject = pObjects + (p.pEventPriorities - pValues);
@@ -3281,6 +3331,17 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
                               CMath::Rate, EntityType, SimulationType, false, false,
                               (*it)->getRateReference());
 
+      // Intensive Noise
+      if (SimulationType == CMath::ODE ||
+          SimulationType == CMath::Independent ||
+          SimulationType == CMath::Dependent)
+        {
+          map((*it)->getNoiseReference(), p.pExtensiveNoiseObject);
+          CMathObject::initialize(p.pExtensiveNoiseObject++, p.pExtensiveNoise++,
+                                  CMath::Noise, EntityType, SimulationType, false, false,
+                                  (*it)->getNoiseReference());
+        }
+
       // Species have intensive values in addition to the extensive ones and transition time.
       if (EntityType == CMath::Species)
         {
@@ -3326,6 +3387,17 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
           CMathObject::initialize(p.pIntensiveRatesObject++, p.pIntensiveRates++,
                                   CMath::Rate, CMath::Species, CMath::Assignment, true, false,
                                   pSpecies->getConcentrationRateReference());
+
+          // Intensive Noise
+          if (SimulationType == CMath::ODE ||
+              SimulationType == CMath::Independent ||
+              SimulationType == CMath::Dependent)
+            {
+              map(pSpecies->getIntensiveNoiseReference(), p.pIntensiveNoiseObject);
+              CMathObject::initialize(p.pIntensiveNoiseObject++, p.pIntensiveNoise++,
+                                      CMath::Noise, CMath::Species, CMath::Assignment, true, false,
+                                      pSpecies->getIntensiveNoiseReference());
+            }
 
           // Transition Time
           map(pSpecies->getTransitionTimeReference(), p.pTransitionTimeObject);
@@ -3404,6 +3476,18 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
       CMathObject::initialize(p.pFluxesObject++, p.pFluxes++,
                               CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
                               it->getFluxReference());
+
+      // Noise
+      map(it->getNoiseReference(), p.pReactionNoiseObject);
+      CMathObject::initialize(p.pReactionNoiseObject++, p.pReactionNoise++,
+                              CMath::Noise, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              it->getNoiseReference());
+
+      // Particle Noise
+      map(it->getParticleNoiseReference(), p.pReactionParticleNoiseObject);
+      CMathObject::initialize(p.pReactionParticleNoiseObject++, p.pReactionParticleNoise++,
+                              CMath::ParticleNoise, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              it->getParticleNoiseReference());
 
       // Propensity
       map(it->getPropensityReference(), p.pPropensitiesObject);
@@ -3649,7 +3733,7 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
       case CMath::Assignment:
         Size.nAssignment--;
-        Index += mSize.nFixed + mSize.nFixedEventTargets + mSize.nTime + mSize.nODE + mSize.nReactionSpecies + mSize.nAssignment;
+        Index += mSize.nFixed + mSize.nFixedEventTargets + mSize.nTime + mSize.nODE + mSize.nODESpecies + mSize.nReactionSpecies + mSize.nAssignment;
         break;
 
       case CMath::SimulationTypeUndefined:
@@ -4423,7 +4507,9 @@ void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::
   createRelocation(size.nFixed, mSize.nFixed, Relocate, relocations);
   createRelocation(size.nFixedEventTargets, mSize.nFixedEventTargets, Relocate, relocations);
   createRelocation(size.nTime, mSize.nTime, Relocate, relocations);
+  // New ODE Values are the only values inserted at the beginning
   createRelocation(size.nODE, mSize.nODE, Relocate, relocations, false);
+  createRelocation(size.nODESpecies, mSize.nODESpecies, Relocate, relocations);
   createRelocation(size.nReactionSpecies, mSize.nReactionSpecies, Relocate, relocations);
   createRelocation(size.nAssignment, mSize.nAssignment, Relocate, relocations);
   createRelocation(size.nIntensiveValues, mSize.nIntensiveValues, Relocate, relocations);
@@ -4432,7 +4518,9 @@ void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::
   createRelocation(size.nFixed, mSize.nFixed, Relocate, relocations);
   createRelocation(size.nFixedEventTargets, mSize.nFixedEventTargets, Relocate, relocations);
   createRelocation(size.nTime, mSize.nTime, Relocate, relocations);
+  // New ODE Values are the only values inserted at the beginning
   createRelocation(size.nODE, mSize.nODE, Relocate, relocations, false);
+  createRelocation(size.nODESpecies, mSize.nODESpecies, Relocate, relocations);
   createRelocation(size.nReactionSpecies, mSize.nReactionSpecies, Relocate, relocations);
   createRelocation(size.nAssignment, mSize.nAssignment, Relocate, relocations);
   createRelocation(size.nIntensiveValues, mSize.nIntensiveValues, Relocate, relocations);
@@ -4447,7 +4535,9 @@ void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::
   createRelocation(size.nFixed, mSize.nFixed, Relocate, relocations);
   createRelocation(size.nFixedEventTargets, mSize.nFixedEventTargets, Relocate, relocations);
   createRelocation(size.nTime, mSize.nTime, Relocate, relocations);
+  // New ODE Values are the only values inserted at the beginning
   createRelocation(size.nODE, mSize.nODE, Relocate, relocations, false);
+  createRelocation(size.nODESpecies, mSize.nODESpecies, Relocate, relocations);
   createRelocation(size.nReactionSpecies, mSize.nReactionSpecies, Relocate, relocations);
   createRelocation(size.nAssignment, mSize.nAssignment, Relocate, relocations);
   createRelocation(size.nIntensiveValues, mSize.nIntensiveValues, Relocate, relocations);
@@ -4456,7 +4546,9 @@ void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::
   createRelocation(size.nFixed, mSize.nFixed, Relocate, relocations);
   createRelocation(size.nFixedEventTargets, mSize.nFixedEventTargets, Relocate, relocations);
   createRelocation(size.nTime, mSize.nTime, Relocate, relocations);
+  // New ODE Values are the only values inserted at the beginning
   createRelocation(size.nODE, mSize.nODE, Relocate, relocations, false);
+  createRelocation(size.nODESpecies, mSize.nODESpecies, Relocate, relocations);
   createRelocation(size.nReactionSpecies, mSize.nReactionSpecies, Relocate, relocations);
   createRelocation(size.nAssignment, mSize.nAssignment, Relocate, relocations);
   createRelocation(size.nIntensiveValues, mSize.nIntensiveValues, Relocate, relocations);
@@ -4466,6 +4558,16 @@ void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::
   createRelocation(size.nReactions, mSize.nReactions, Relocate, relocations);
   createRelocation(size.nMoieties, mSize.nMoieties, Relocate, relocations);
   createRelocation(size.nEvents, mSize.nEvents, Relocate, relocations);
+
+  // Noise
+  // New ODE Values are the only values inserted at the beginning
+  createRelocation(size.nODE, mSize.nODE, Relocate, relocations, false);
+  createRelocation(size.nODESpecies, mSize.nODESpecies, Relocate, relocations);
+  createRelocation(size.nReactionSpecies, mSize.nReactionSpecies, Relocate, relocations);
+  createRelocation(size.nODESpecies, mSize.nODESpecies, Relocate, relocations);
+  createRelocation(size.nReactionSpecies, mSize.nReactionSpecies, Relocate, relocations);
+  createRelocation(size.nReactions, mSize.nReactions, Relocate, relocations);
+  createRelocation(size.nReactions, mSize.nReactions, Relocate, relocations);
 
   createRelocation(size.nEvents, mSize.nEvents, Relocate, relocations);
   createRelocation(size.nEvents, mSize.nEvents, Relocate, relocations);
@@ -4493,6 +4595,7 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
       size.nFixedEventTargets == mSize.nFixedEventTargets &&
       size.nTime == mSize.nTime &&
       size.nODE == mSize.nODE &&
+      size.nODESpecies == mSize.nODESpecies &&
       size.nReactionSpecies == mSize.nReactionSpecies &&
       size.nAssignment == mSize.nAssignment &&
       size.nIntensiveValues == mSize.nIntensiveValues &&
@@ -4510,10 +4613,11 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
 
   // Determine the offsets
   // We have to cast all pointers to size_t to avoid pointer overflow.
-  size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nReactionSpecies + size.nAssignment;
+  size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nODESpecies + size.nReactionSpecies + size.nAssignment;
 
   size_t ObjectCount = 4 * (nExtensiveValues + size.nIntensiveValues) +
-                       5 * size.nReactions +
+                       size.nODE + 2 * size.nODESpecies + 2 * size.nReactionSpecies + // Noise
+                       7 * size.nReactions +
                        3 * size.nMoieties +
                        size.nDiscontinuities +
                        4 * size.nEvents + size.nEventAssignments + 2 * size.nEventRoots +
@@ -4560,7 +4664,7 @@ void CMathContainer::finishResize()
 void CMathContainer::relocate(const sSize & size,
                               const std::vector< CMath::sRelocate > & Relocations)
 {
-  size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nReactionSpecies + size.nAssignment;
+  size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nODESpecies + size.nReactionSpecies + size.nAssignment;
 
   // Move the objects to the new location
   C_FLOAT64 * pValue = mOldValues.array();
@@ -4626,6 +4730,15 @@ void CMathContainer::relocate(const sSize & size,
   mEventTriggers.initialize(size.nEvents, pArray);
   pArray += size.nEvents;
 
+  mExtensiveNoise.initialize(size.nODE + size.nODESpecies + size.nReactionSpecies, pArray);
+  pArray += size.nODE + size.nODESpecies + size.nReactionSpecies;
+  mIntensiveNoise.initialize(size.nODESpecies + size.nReactionSpecies, pArray);
+  pArray += size.nODESpecies + size.nReactionSpecies;
+  mReactionNoise.initialize(size.nReactions, pArray);
+  pArray += size.nReactions;
+  mReactionParticleNoise.initialize(size.nReactions, pArray);
+  pArray += size.nReactions;
+
   mEventDelays.initialize(size.nEvents, pArray);
   pArray += size.nEvents;
   mEventPriorities.initialize(size.nEvents, pArray);
@@ -4653,10 +4766,11 @@ void CMathContainer::relocate(const sSize & size,
 
   mInitialState.initialize(nExtensiveValues + size.nIntensiveValues,  mValues.array());
   mCompleteInitialState.initialize(mExtensiveValues.array() - mValues.array(), mValues.array());
-  mState.initialize(size.nFixedEventTargets + size.nTime + size.nODE + size.nReactionSpecies, mExtensiveValues.array() + size.nFixed);
+  mState.initialize(size.nFixedEventTargets + size.nTime + size.nODE + size.nODESpecies + size.nReactionSpecies, mExtensiveValues.array() + size.nFixed);
   mStateReduced.initialize(mState.size() - size.nMoieties, mExtensiveValues.array() + size.nFixed);
   mRate.initialize(mState.size(), mExtensiveRates.array() + size.nFixed);
   mRateReduced.initialize(mStateReduced.size(), mExtensiveRates.array() + size.nFixed);
+  mNoiseReduced.initialize(mExtensiveNoise.size() - size.nMoieties, mExtensiveNoise.array());
 
   mHistory.resize(mDelayLags.size(), mState.size(), mState.size());
   mHistoryReduced.initialize(mDelayLags.size(), mStateReduced.size(), mState.size(), mHistory.array());

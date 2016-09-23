@@ -210,6 +210,11 @@ private:
   C_FLOAT64 mConcRate;
 
   /**
+   * The intensive noise
+   */
+  C_FLOAT64 mIntensiveNoise;
+
+  /**
    *  Transition time of the metabolite
    */
   C_FLOAT64 mTT;
@@ -232,8 +237,9 @@ private:
 protected:
   CConcentrationReference *mpIConcReference;
   CConcentrationReference *mpConcReference;
-  CCopasiObjectReference<C_FLOAT64> *mpConcRateReference;
-  CCopasiObjectReference<C_FLOAT64> *mpTTReference;
+  CCopasiObjectReference< C_FLOAT64 > *mpConcRateReference;
+  CCopasiObjectReference< C_FLOAT64 > *mpIntensiveNoiseReference;
+  CCopasiObjectReference< C_FLOAT64 > *mpTTReference;
 
   CMetab(const CMetab & src);
 
@@ -394,6 +400,12 @@ public:
    * @return CCopasiObject * concentrationRateReference
    */
   CCopasiObject * getConcentrationRateReference() const;
+
+  /**
+   * Retrieve object referencing the concentration
+   * @return CCopasiObject * concentrationRateReference
+   */
+  CCopasiObject * getIntensiveNoiseReference() const;
 
   /**
    * Refresh the initial value
