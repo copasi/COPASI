@@ -452,13 +452,14 @@ QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role
 {
   if (role == Qt::DisplayRole)
     {
-      QMap<const CModelParameter*, QVariant>::const_iterator it = mUnitCache.find(pNode);
+      std::string rawUnit = pNode->getUnit(static_cast< CModelParameter::Framework >(mFramework));
+      QMap< std::string, QVariant >::const_iterator it = mUnitCache.find(rawUnit);
 
       if (it == mUnitCache.end())
         {
-          QVariant local(QString(FROM_UTF8(pNode->getUnit(static_cast< CModelParameter::Framework >(mFramework)))));
-          mUnitCache.insert(pNode, local);
-          return local;
+          QVariant prettyUnit(QString(FROM_UTF8(CUnit::prettyPrint(rawUnit))));
+          mUnitCache.insert(rawUnit, prettyUnit);
+          return prettyUnit;
         }
 
       return it.value();
