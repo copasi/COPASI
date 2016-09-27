@@ -150,7 +150,7 @@ void CQReportDefinition::btnAdvancedClicked()
 void CQReportDefinition::btnItemClicked()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  CModel* pModel = mpDataModel->getModel();
 
   if (!pModel) return;
 
@@ -395,7 +395,7 @@ void CQReportDefinition::btnNewReportClicked()
   CReportDefinition* pRep;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(pRep = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->createReportDefinition(Name, "")))
+  while (!(pRep = mpDataModel->getReportDefinitionList()->createReportDefinition(Name, "")))
     {
       i++;
       Name = "report_";
@@ -653,8 +653,8 @@ bool CQReportDefinition::save()
         pList->push_back(static_cast<CQReportListItem *>(mpTableList->item(i))->getCN());
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  assert(mpDataModel != NULL);
+  mpDataModel->changed();
 
   mChanged = false;
   return false;

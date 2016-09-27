@@ -282,9 +282,9 @@ void CMCAResultSubwidget::slotSave()
   if (file.fail())
     return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   CCopasiTask* mpTask =
-    dynamic_cast<CMCATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Metabolic Control Analysis"));
+    dynamic_cast<CMCATask *>(&mpDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
 
   if (mpTask != NULL)
     file << mpTask->getResult();

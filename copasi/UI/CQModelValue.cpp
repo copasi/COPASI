@@ -415,8 +415,7 @@ void CQModelValue::save()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      mpDataModel->changed();
       protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
 
       load();
@@ -488,9 +487,8 @@ void CQModelValue::createNewGlobalQuantity()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 1;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!(mpModelValue = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createModelValue(name)))
+  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
     {
       i++;
       name = "quantity_";
@@ -612,7 +610,8 @@ CQModelValue::changeValue(const std::string& key,
 
   if (mIgnoreUpdates) return true;
 
-  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  assert(mpDataModel != NULL);
+  mpDataModel->changed();
   protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
 
   load();

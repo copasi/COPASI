@@ -94,8 +94,8 @@ CQUpdatesWidget::~CQUpdatesWidget()
 
 void CQUpdatesWidget::loadWidget()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  assert(mpDataModel != NULL);
+  CModel* pModel = mpDataModel->getModel();
 
   if (!pModel) return;
 

@@ -230,9 +230,9 @@ bool CQTrajectoryWidget::saveTask()
     }
   else
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      assert(mpDataModel != NULL);
       C_FLOAT64 InitialTime =
-        CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime();
+        mpDataModel->getModel()->getInitialTime();
 
       if (trajectoryproblem->getStepSize() > 0.0)
         {
@@ -303,8 +303,8 @@ bool CQTrajectoryWidget::loadTask()
   mpEditDuration->setText(QString::number(TrajectoryProblem->getDuration()));
   mpCheckAutomaticInterval->setChecked(TrajectoryProblem->getAutomaticStepSize());
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  C_FLOAT64 InitialTime = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime();
+  assert(mpDataModel != NULL);
+  C_FLOAT64 InitialTime = mpDataModel->getModel()->getInitialTime();
 
   bool Delayed;
 
@@ -366,9 +366,9 @@ bool CQTrajectoryWidget::taskFinishedEvent()
 
 void CQTrajectoryWidget::checkTimeSeries()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
 
-  if (mpEditIntervals->text().toLong() * CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getStateTemplate().getNumVariable() > TSMAX)
+  if (mpEditIntervals->text().toLong() * mpDataModel->getModel()->getStateTemplate().getNumVariable() > TSMAX)
     {
       mpCheckSave->setChecked(false);
       mpCheckSave->setEnabled(false);
@@ -381,8 +381,8 @@ void CQTrajectoryWidget::checkTimeSeries()
 
 void CQTrajectoryWidget::updateIntervals()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  C_FLOAT64 InitialTime = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime();
+  assert(mpDataModel != NULL);
+  C_FLOAT64 InitialTime = mpDataModel->getModel()->getInitialTime();
   C_FLOAT64 Duration = mpEditDuration->text().toDouble();
   C_FLOAT64 OutputStartTime = InitialTime;
 

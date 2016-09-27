@@ -47,7 +47,7 @@ void CQLNAWidget::slotSteadyStateChecked()
   if (mpCheckSteadyState->isChecked())
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
+        dynamic_cast<CSteadyStateTask *>(&mpDataModel->getTaskList()->operator[]("Steady-State"));
 
       if (pSteadyStateTask != NULL)
         {
@@ -57,7 +57,7 @@ void CQLNAWidget::slotSteadyStateChecked()
   else
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
+        dynamic_cast<CSteadyStateTask *>(&mpDataModel->getTaskList()->operator[]("Steady-State"));
 
       if (pSteadyStateTask != NULL)
         {
@@ -112,7 +112,7 @@ bool CQLNAWidget::loadTask()
   if (mpCheckSteadyState->isChecked())
     {
       CSteadyStateTask * pSteadyStateTask =
-        dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
+        dynamic_cast<CSteadyStateTask *>(&mpDataModel->getTaskList()->operator[]("Steady-State"));
 
       if (pSteadyStateTask != NULL)
         {
@@ -147,7 +147,7 @@ bool CQLNAWidget::saveTask()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (mChanged) CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  if (mChanged) mpDataModel->changed();
 
   mChanged = false;
   return true;

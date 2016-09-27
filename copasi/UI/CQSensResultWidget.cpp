@@ -68,13 +68,11 @@ CQSensResultWidget::~CQSensResultWidget()
 
 void CQSensResultWidget::newResult()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-
   // clear the old one
   clearArrays();
 
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Sensitivities"));
+    dynamic_cast<CSensTask*>(&mpDataModel->getTaskList()->operator[]("Sensitivities"));
 
   if (!pTask)
     return;
@@ -132,9 +130,8 @@ bool CQSensResultWidget::leave()
 bool CQSensResultWidget::enterProtected()
 {
   //clear the widget if the pointer to the result has changed
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Sensitivities"));
+    dynamic_cast<CSensTask*>(&mpDataModel->getTaskList()->operator[]("Sensitivities"));
 
   if (!pTask)
     {
@@ -183,9 +180,9 @@ void CQSensResultWidget::saveToFile()
   if (file.fail())
     return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   CSensTask * pTask =
-    dynamic_cast<CSensTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Sensitivities"));
+    dynamic_cast<CSensTask*>(&mpDataModel->getTaskList()->operator[]("Sensitivities"));
 
   if (pTask != NULL)
     file << pTask->getResult();

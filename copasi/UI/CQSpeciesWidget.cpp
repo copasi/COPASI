@@ -226,10 +226,8 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;
@@ -315,7 +313,7 @@ void CQSpeciesWidget::setFramework(int framework)
 void CQSpeciesWidget::refreshCompartments()
 {
   const CCopasiVector < CCompartment > & compartments =
-    CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments();
+    mpDataModel->getModel()->getCompartments();
   mCompartments.clear();
 
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)

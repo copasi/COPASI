@@ -124,8 +124,8 @@ void CQDifferentialEquations::slotUpdateWidget()
   if (comboBoxParameters->currentIndex() == 0)
     parameterAsNumbers = true;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CMMLOutput::writeDifferentialEquations(mml, CCopasiRootContainer::getDatamodelList()->operator[](0).getModel(), parameterAsNumbers, expand, expandAll);
+  assert(mpDataModel != NULL);
+  CMMLOutput::writeDifferentialEquations(mml, mpDataModel->getModel(), parameterAsNumbers, expand, expandAll);
 
   QWidget* tmp = dynamic_cast<QWidget*>(parent());
 

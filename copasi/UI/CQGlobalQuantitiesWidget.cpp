@@ -212,10 +212,8 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;

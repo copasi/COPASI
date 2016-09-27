@@ -63,12 +63,9 @@ bool CQOptimizationResult::leave()
 
 bool CQOptimizationResult::enterProtected()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-
+  assert(mpDataModel != NULL);
   mpTask =
-    dynamic_cast<COptTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Optimization"));
+    dynamic_cast<COptTask *>(&mpDataModel->getTaskList()->operator[]("Optimization"));
 
   if (!mpTask) return false;
 
@@ -117,7 +114,7 @@ bool CQOptimizationResult::enterProtected()
     {
       //1st column: parameter name
       const CCopasiObject *pObject =
-        CObjectInterface::DataObject(pDataModel->getObjectFromCN(Items[i]->getObjectCN()));
+        CObjectInterface::DataObject(mpDataModel->getObjectFromCN(Items[i]->getObjectCN()));
 
       if (pObject)
         pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));

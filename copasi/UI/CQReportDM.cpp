@@ -28,7 +28,7 @@ CQReportDM::CQReportDM(QObject *parent)
 
 int CQReportDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->size() + 1;
+  return mpDataModel->getReportDefinitionList()->size() + 1;
 }
 int CQReportDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -75,7 +75,7 @@ QVariant CQReportDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CReportDefinition *pRepDef = &CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->operator[](index.row());
+          CReportDefinition *pRepDef = &mpDataModel->getReportDefinitionList()->operator[](index.row());
 
           switch (index.column())
             {
@@ -133,7 +133,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CReportDefinition *pRepDef = &CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->operator[](index.row());
+      CReportDefinition *pRepDef = &mpDataModel->getReportDefinitionList()->operator[](index.row());
 
       if (index.column() == COL_NAME_REPORTS)
         pRepDef->setObjectName(TO_UTF8(value.toString()));
@@ -152,7 +152,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & source)
   for (int row = 0; row < rows; ++row)
     {
       QString Name = createNewName(mNewName, COL_NAME_REPORTS);
-      CReportDefinition *pRepDef = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
+      CReportDefinition *pRepDef = mpDataModel->getReportDefinitionList()->createReportDefinition(TO_UTF8(Name), "");
       emit notifyGUI(ListViews::REPORT, ListViews::ADD, pRepDef->getKey());
     }
 
@@ -168,12 +168,10 @@ bool CQReportDM::removeRows(int position, int rows)
   if (rows <= 0)
     return true;
 
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-
-  if (pDataModel == NULL)
+  if (mpDataModel == NULL)
     return false;
 
-  CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
+  CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
 
   if (pReportList == NULL)
     return false;
@@ -191,7 +189,7 @@ bool CQReportDM::removeRows(int position, int rows)
       std::set< const CCopasiObject * > DeletedObjects;
       DeletedObjects.insert(pReport);
 
-      if (pDataModel->appendDependentTasks(DeletedObjects, Tasks))
+      if (mpDataModel->appendDependentTasks(DeletedObjects, Tasks))
         {
           std::set< const CCopasiObject * >::iterator it = Tasks.begin();
           std::set< const CCopasiObject * >::iterator end = Tasks.end();
@@ -218,10 +216,9 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  CCopasiVector< CReportDefinition > * pReportList = pDataModel->getReportDefinitionList();
+  CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
 
   if (pReportList == NULL)
     return false;

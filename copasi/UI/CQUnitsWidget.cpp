@@ -213,11 +213,9 @@ void CQUnitsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  if (!mpDataModel->getModel())
     return;
 
   // How do I deal with this?

@@ -69,8 +69,8 @@ CQMathMatrixWidget::~CQMathMatrixWidget()
 void CQMathMatrixWidget::loadMatrices()
 {
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  assert(mpDataModel != NULL);
+  const CModel* pModel = mpDataModel->getModel();
 
   const CArrayAnnotation * tmp;
 
@@ -122,7 +122,8 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
 #ifdef _DERIV_TEST_
   std::cout << "Deriv" << std::endl;
 
-  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  assert(mpDataModel != NULL);
+  CModel* pModel = mpDataModel->getModel();
   CEvaluationNode* tmpnode = pModel->prepareElasticity(&pModel->getReactions()[0],
                              &pModel->getMetabolites()[0], false);
 

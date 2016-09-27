@@ -155,7 +155,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_COMPARTMENT:
               {
                 const CCopasiVector < CCompartment > & compartments =
-                  CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments();
+                  pModel->getCompartments();
 
                 if (compartments.size())
                   return QVariant(QString(FROM_UTF8(compartments[0].getObjectName())));
@@ -283,7 +283,7 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
 
   if (orientation == Qt::Horizontal)
     {
-      const CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+      const CModel * pModel = mpDataModel->getModel();
 
       if (pModel == NULL) return QVariant();
 
@@ -402,7 +402,7 @@ bool CQSpecieDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  CModel * pModel = mpDataModel->getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -753,7 +753,7 @@ QModelIndex CQSpecieDM::getIndexFor(const CMetab *pMetab, int column) const
 {
   int max = rowCount();
 
-  CCopasiVector< CMetab >::const_iterator it = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getMetabolites().begin();
+  CCopasiVector< CMetab >::const_iterator it = mpDataModel->getModel()->getMetabolites().begin();
 
   for (int i = 0; i < max; ++i, ++it)
     {

@@ -206,14 +206,12 @@ void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  if (!mpDataModel->getModel())
     return;
 
-  std::string key = pDataModel->getReportDefinitionList()->operator[](index.row()).getKey();
+  std::string key = mpDataModel->getReportDefinitionList()->operator[](index.row()).getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);

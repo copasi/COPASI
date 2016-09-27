@@ -44,9 +44,9 @@ CLNAResultWidget::~CLNAResultWidget()
   clicked in the tree   */
 bool CLNAResultWidget::loadFromBackend()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   CLNATask * pTask =
-    dynamic_cast<CLNATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Linear Noise Approximation"));
+    dynamic_cast<CLNATask *>(&mpDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
 
   if (!pTask) return false;
 

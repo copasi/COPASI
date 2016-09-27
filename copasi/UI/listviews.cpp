@@ -1000,8 +1000,8 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key
       objectType != STATE &&
       action != ADD)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
     }
 
   bool success = true;
@@ -1042,7 +1042,7 @@ CopasiWidget* ListViews::getCurrentWidget()
 
 void ListViews::clearCurrentWidget()
 {
-    mpCurrentWidget = NULL;
+  mpCurrentWidget = NULL;
 }
 
 const std::string& ListViews::getCurrentItemKey() const

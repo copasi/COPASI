@@ -62,8 +62,8 @@ bool CQLyapResultWidget::loadFromBackend()
   //bool success = true;
   //std::ostringstream os;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mpTask = dynamic_cast<CLyapTask*>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Lyapunov Exponents"));
+  assert(mpDataModel != NULL);
+  mpTask = dynamic_cast<CLyapTask*>(&mpDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
 
   if (!mpTask) return false;
 

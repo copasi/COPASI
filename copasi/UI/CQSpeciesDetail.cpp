@@ -58,14 +58,6 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
 
-//  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  int Width = fontMetrics().width("Concentration (" +
-//                                  FROM_UTF8(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getConcentrationUnitsDisplayString()) +
-//                                  ")");
-//
-
-//  mpLblValue->setMinimumWidth(Width);
-
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);

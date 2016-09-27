@@ -84,7 +84,7 @@ bool CQLyapWidget::loadTask()
 
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
-    (CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime() != pProblem->getTransientTime());
+    (mpDataModel->getModel()->getInitialTime() != pProblem->getTransientTime());
 
   mpCheckDelay->setChecked(enabled);
   mpEditDelay->setEnabled(enabled);
@@ -117,9 +117,9 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   bool enabled =
-    (CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime() != pProblem->getTransientTime());
+    (mpDataModel->getModel()->getInitialTime() != pProblem->getTransientTime());
 
   if (mpCheckDelay->isChecked() != enabled ||
       (mpCheckDelay->isChecked() &&
@@ -128,7 +128,7 @@ bool CQLyapWidget::saveTask()
       if (mpCheckDelay->isChecked())
         pProblem->setTransientTime(mpEditDelay->text().toDouble());
       else
-        pProblem->setTransientTime(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getInitialTime());
+        pProblem->setTransientTime(mpDataModel->getModel()->getInitialTime());
 
       mChanged = true;
     }
@@ -139,7 +139,7 @@ bool CQLyapWidget::saveTask()
       mChanged = true;
     }
 
-  if (mChanged) CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  if (mChanged) mpDataModel->changed();
 
   mChanged = false;
   return true;

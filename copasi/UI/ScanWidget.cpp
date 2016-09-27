@@ -152,8 +152,7 @@ bool ScanWidget::loadTask()
 
   // the scan items
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  //CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  //assert(pDataModel != NULL);
+
   size_t i, imax = scanProblem->getNumberOfScanItems();
 
   for (i = 0; i < imax; ++i)
@@ -162,7 +161,7 @@ bool ScanWidget::loadTask()
 
       switch (type)
         {
-            //+++
+          //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));

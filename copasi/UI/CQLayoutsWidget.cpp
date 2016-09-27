@@ -131,8 +131,8 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   QModelIndexList::const_iterator it = mappedSelRows.begin();
   QModelIndexList::const_iterator end = mappedSelRows.end();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts * pListOfLayouts = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
+  assert(mpDataModel != NULL);
+  CListOfLayouts * pListOfLayouts = mpDataModel->getListOfLayouts();
 
   for (; it != end; ++it)
     {
@@ -163,17 +163,16 @@ bool CQLayoutsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts * pListOfLayouts = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
+  assert(mpDataModel != NULL);
+  CListOfLayouts * pListOfLayouts = mpDataModel->getListOfLayouts();
   mpLayoutsDM->setListOfLayouts(pListOfLayouts);
 
   // check if we have at least a compartment
   // that we can lay out.
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
 
-  if (pDataModel != NULL &&
-      pDataModel->getModel() != NULL &&
-      pDataModel->getModel()->getCompartments().size() > 0)
+  if (mpDataModel != NULL &&
+      mpDataModel->getModel() != NULL &&
+      mpDataModel->getModel()->getCompartments().size() > 0)
     {
       mpBtnNew->setEnabled(true);
     }
@@ -233,14 +232,13 @@ bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  const CModel* pModel = pDataModel->getModel();
+  const CModel* pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
   std::string name = "COPASI autolayout";
   int ncount = 1;
 
-  while (hasLayout(*(pDataModel->getListOfLayouts()), name))
+  while (hasLayout(*(mpDataModel->getListOfLayouts()), name))
     {
       std::stringstream str;
       str << "COPASI autolayout " << ncount++;
@@ -255,12 +253,12 @@ void CQLayoutsWidget::slotBtnNewClicked()
   // add the layout to the datamodel
   std::map<std::string, std::string> m;
 
-  CListOfLayouts * pListOfLayouts = pDataModel->getListOfLayouts();
+  CListOfLayouts * pListOfLayouts = mpDataModel->getListOfLayouts();
 
   // create the random layout
   CCopasiSpringLayout::Parameters p;
   CLayout* pLayout = CCopasiSpringLayout::createLayout(
-                       pDataModel, pWizard.getSelectedCompartments(),
+                       mpDataModel, pWizard.getSelectedCompartments(),
                        pWizard.getSelectedReactions(),
                        pWizard.getSelectedMetabolites(),
                        pWizard.getSideMetabolites(),
@@ -374,16 +372,16 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
 
   if (CCopasiRootContainer::getConfiguration()->useOpenGL())
     {
-      pWin = new CQNewMainWindow(&CCopasiRootContainer::getDatamodelList()->operator[](0));
+      pWin = new CQNewMainWindow(mpDataModel);
       (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
     }
   else
     {
-      pWin = new CQAnimationWindow(pLayout, &CCopasiRootContainer::getDatamodelList()->operator[](0));
+      pWin = new CQAnimationWindow(pLayout, mpDataModel);
     }
 
 #else
-  pWin = new CQNewMainWindow(CCopasiRootContainer::getDatamodelList()->operator[](0));
+  pWin = new CQNewMainWindow(mpDataModel);
   (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
 #endif //DISABLE_QT_LAYOUT_RENDERING
 
@@ -400,8 +398,8 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
 {
   int row = index.row();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CListOfLayouts* pListOfLayouts = CCopasiRootContainer::getDatamodelList()->operator[](0).getListOfLayouts();
+  assert(mpDataModel != NULL);
+  CListOfLayouts* pListOfLayouts = mpDataModel->getListOfLayouts();
 
   CLayout* pLayout = &pListOfLayouts->operator[](row);
   std::string Key = pLayout->getKey();

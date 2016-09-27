@@ -140,10 +140,8 @@ bool CQMoietiesTaskResult::enterProtected()
 
 void CQMoietiesTaskResult::load()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return;
 
@@ -257,8 +255,8 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
 {
   int row = index.row();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return;
 

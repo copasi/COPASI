@@ -221,9 +221,9 @@ bool CQTSSAWidget::loadTask()
 
 bool CQTSSAWidget::runTask()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   pCTSSATask =
-    dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
+    dynamic_cast<CTSSATask *>(&mpDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
 
   if (!pCTSSATask) return false;
 

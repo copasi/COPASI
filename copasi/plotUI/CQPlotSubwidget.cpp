@@ -357,7 +357,7 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem* item)
       mpStack->setEnabled(false);
     }
 
-  current->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
+  current->setModel(mpDataModel->getModel());
   current->LoadFromCurveSpec(item);
 
   pdelete(mLastItem);
@@ -383,10 +383,8 @@ void CQPlotSubwidget::addCurve2D()
   std::vector< const CCopasiObject * > vector1;
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
+  assert(mpDataModel != NULL);
+  pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
   if (pBrowser->exec() == QDialog::Rejected)
     {
@@ -485,9 +483,9 @@ void CQPlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addCurveTab(pDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
+          addCurveTab(mpDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getObjectFromCN(objects1[0])->getObjectDisplayName(),
+                      + mpDataModel->getObjectFromCN(objects1[0])->getObjectDisplayName(),
                       objects1[0], objects2[i]);
         }
     }
@@ -495,9 +493,9 @@ void CQPlotSubwidget::addCurve2D()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addCurveTab(pDataModel->getObjectFromCN(objects2[0])->getObjectDisplayName()
+          addCurveTab(mpDataModel->getObjectFromCN(objects2[0])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName(),
+                      + mpDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName(),
                       objects1[i], objects2[0]);
         }
     }
@@ -512,9 +510,9 @@ void CQPlotSubwidget::addCurve2D()
 
       for (i = 0; i < imax; ++i)
         {
-          addCurveTab(pDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
+          addCurveTab(mpDataModel->getObjectFromCN(objects2[i])->getObjectDisplayName()
                       + "|"
-                      + pDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName() ,
+                      + mpDataModel->getObjectFromCN(objects1[i])->getObjectDisplayName() ,
                       objects1[i], objects2[i]);
         }
     }
@@ -526,11 +524,10 @@ void CQPlotSubwidget::addSpectrum()
   std::vector< const CCopasiObject * > vector1;
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
 
-  pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
+  assert(mpDataModel != NULL);
+
+  pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
   if (pBrowser->exec() == QDialog::Rejected)
     {
@@ -629,9 +626,9 @@ void CQPlotSubwidget::addSpectrum()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addSpectrumTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addSpectrumTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
                          + "|"
-                         + pDataModel->getObject(objects1[0])->getObjectDisplayName(),
+                         + mpDataModel->getObject(objects1[0])->getObjectDisplayName(),
                          objects1[0], objects2[i]);
         }
     }
@@ -639,9 +636,9 @@ void CQPlotSubwidget::addSpectrum()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addSpectrumTab(pDataModel->getObject(objects2[0])->getObjectDisplayName()
+          addSpectrumTab(mpDataModel->getObject(objects2[0])->getObjectDisplayName()
                          + "|"
-                         + pDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                         + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
                          objects1[i], objects2[0]);
         }
     }
@@ -656,9 +653,9 @@ void CQPlotSubwidget::addSpectrum()
 
       for (i = 0; i < imax; ++i)
         {
-          addSpectrumTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addSpectrumTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
                          + "|"
-                         + pDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                         + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
                          objects1[i], objects2[i]);
         }
     }
@@ -684,10 +681,9 @@ void CQPlotSubwidget::addBandedGraph()
   std::vector< const CCopasiObject * > vector1;
   std::vector< const CCopasiObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  pBrowser->setModel(pDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
+
+  assert(mpDataModel != NULL);
+  pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
 
   if (pBrowser->exec() == QDialog::Rejected)
     {
@@ -786,9 +782,9 @@ void CQPlotSubwidget::addBandedGraph()
     {
       for (i = 0; i < objects2.size(); ++i)
         {
-          addBandedGraphTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addBandedGraphTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
                             + "|"
-                            + pDataModel->getObject(objects1[0])->getObjectDisplayName(),
+                            + mpDataModel->getObject(objects1[0])->getObjectDisplayName(),
                             objects1[0], objects2[i]);
         }
     }
@@ -796,9 +792,9 @@ void CQPlotSubwidget::addBandedGraph()
     {
       for (i = 0; i < objects1.size(); ++i)
         {
-          addBandedGraphTab(pDataModel->getObject(objects2[0])->getObjectDisplayName()
+          addBandedGraphTab(mpDataModel->getObject(objects2[0])->getObjectDisplayName()
                             + "|"
-                            + pDataModel->getObject(objects1[i])->getObjectDisplayName(),
+                            + mpDataModel->getObject(objects1[i])->getObjectDisplayName(),
                             objects1[i], objects2[0]);
         }
     }
@@ -813,9 +809,9 @@ void CQPlotSubwidget::addBandedGraph()
 
       for (i = 0; i < imax; ++i)
         {
-          addBandedGraphTab(pDataModel->getObject(objects2[i])->getObjectDisplayName()
+          addBandedGraphTab(mpDataModel->getObject(objects2[i])->getObjectDisplayName()
                             + "|"
-                            + pDataModel->getObject(objects1[i])->getObjectDisplayName() ,
+                            + mpDataModel->getObject(objects1[i])->getObjectDisplayName() ,
                             objects1[i], objects2[i]);
         }
     }
@@ -904,11 +900,9 @@ void CQPlotSubwidget::deletePlot()
 {
   size_t Index, Size;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  if (!mpDataModel->getModel())
     return;
 
   CPlotSpecification * pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
@@ -916,14 +910,14 @@ void CQPlotSubwidget::deletePlot()
   if (!pspec) return;
 
   Index =
-    pDataModel->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
-  pDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
+    mpDataModel->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
+  mpDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
   std::string deletedKey = mKey;
 
-  Size = pDataModel->getPlotDefinitionList()->size();
+  Size = mpDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
-    enter(pDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).CCopasiParameter::getKey());
+    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).CCopasiParameter::getKey());
   else
     enter("");
 
@@ -1205,7 +1199,7 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
 
   switch (objectType)
     {
-        //TODO: check list:
+      //TODO: check list:
       case ListViews::MODEL:
 
         switch (action)
