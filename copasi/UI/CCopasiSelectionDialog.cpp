@@ -23,6 +23,7 @@
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"
+#include "listviews.h"
 
 #include "copasi.h"
 
@@ -142,15 +143,17 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CQSimpleSelectionTree::ObjectClasses & classes,
                                         const CCopasiObject * pCurrentObject)
 {
+  CCopasiDataModel * pDataModel = ListViews::dataModel(parent);
+  assert(pDataModel != NULL);
+
   std::vector< const CCopasiObject * > Selection;
 
   if (pCurrentObject != NULL)
     Selection.push_back(pCurrentObject);
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   pDialog->setWindowTitle("Select Item");
-  pDialog->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel(), classes);
+  pDialog->setModel(pDataModel->getModel(), classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
@@ -182,6 +185,9 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     const CQSimpleSelectionTree::ObjectClasses & classes,
     const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
+  CCopasiDataModel * pDataModel = ListViews::dataModel(parent);
+  assert(pDataModel != NULL);
+
   std::vector< const CCopasiObject * > Selection;
 
   if (pCurrentSelection)
@@ -190,8 +196,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   pDialog->setWindowTitle("Select Items");
   pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pDialog->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel(), classes);
+  pDialog->setModel(pDataModel->getModel(), classes);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 

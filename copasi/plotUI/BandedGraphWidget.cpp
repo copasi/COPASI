@@ -81,10 +81,9 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   mpEditTitle->setText(FROM_UTF8(pCurve->getTitle()));
 
-  //TODO: check if objects exist....
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = pCurve->getObjectDataModel();
   assert(pDataModel != NULL);
+
   mpObjectX = mpObjectYone = mpObjectYtwo = NULL;
 
   if (pCurve->getChannels().size() >= 1)

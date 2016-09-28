@@ -133,6 +133,33 @@ const std::string ListViews::ObjectTypeName[] =
   ""
 };
 
+// static
+ListViews * ListViews::ancestor(QObject * qObject)
+{
+  QObject * pParent = qObject;
+
+  while (pParent != NULL)
+    {
+      if (pParent->inherits("ListViews"))
+        return static_cast< ListViews * >(pParent);
+
+      pParent = pParent->parent();
+    }
+
+  return NULL;
+}
+
+// static
+CCopasiDataModel * ListViews::dataModel(QObject * qObject)
+{
+  ListViews * pListView = ancestor(qObject);
+
+  if (pListView != NULL)
+    return pListView->getDataModel();
+
+  return NULL;
+}
+
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 // Definitions of the ListViews class as declared in listviews.h
