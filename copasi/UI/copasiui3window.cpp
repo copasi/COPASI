@@ -2248,7 +2248,7 @@ CopasiUI3Window::getPopulationDisplay()
 {
   if (mpPopulationDisplay == NULL)
     {
-      mpPopulationDisplay = new CQOptPopulation(&mpDataModel, this);
+      mpPopulationDisplay = new CQOptPopulation(mpDataModel, this);
     }
 
   return mpPopulationDisplay;
