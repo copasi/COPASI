@@ -13,9 +13,8 @@
 #include "CQUnitDM.h"
 #include "qtUtilities.h"
 
-CQUnitDM::CQUnitDM(QObject *parent)
-  : CQBaseDataModel(parent)
-
+CQUnitDM::CQUnitDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
 {
 }
 

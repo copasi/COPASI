@@ -19,8 +19,8 @@
 #include "CQFunctionDM.h"
 #include "qtUtilities.h"
 
-CQFunctionDM::CQFunctionDM(QObject *parent)
-  : CQBaseDataModel(parent)
+CQFunctionDM::CQFunctionDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
   , mNewName("function")
 {
 }

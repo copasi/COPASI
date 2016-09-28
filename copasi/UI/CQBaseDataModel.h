@@ -25,7 +25,7 @@ class CQBaseDataModel : public QAbstractTableModel
   Q_OBJECT
 
 public:
-  CQBaseDataModel(QObject *parent = 0);
+  CQBaseDataModel(QObject *parent, CCopasiDataModel * pDataModel);
   virtual QVariant data(const QModelIndex &index, int role) const = 0;
   virtual QVariant headerData(int section, Qt::Orientation orientation,
                               int role = Qt::DisplayRole) const = 0;

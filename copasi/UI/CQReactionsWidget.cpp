@@ -35,7 +35,7 @@ CQReactionsWidget::CQReactionsWidget(QWidget* parent, const char* name)
   setupUi(this);
 
   //Create Source Data Model.
-  mpReactionDM = new CQReactionDM(this);
+  mpReactionDM = new CQReactionDM(this, mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
@@ -98,9 +98,10 @@ void CQReactionsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQReactionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQReactionsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!mIgnoreUpdates && isVisible())
+  if (!mIgnoreUpdates &&
+      objectType == ListViews::MODEL)
     {
       enterProtected();
     }

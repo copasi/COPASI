@@ -20,8 +20,8 @@
 #include "CQReportDM.h"
 #include "qtUtilities.h"
 
-CQReportDM::CQReportDM(QObject *parent)
-  : CQBaseDataModel(parent)
+CQReportDM::CQReportDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
   , mNewName("report")
 {
 }

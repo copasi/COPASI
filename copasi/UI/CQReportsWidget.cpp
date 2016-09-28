@@ -34,7 +34,7 @@ CQReportsWidget::CQReportsWidget(QWidget* parent, const char* name)
   setupUi(this);
 
   //Create Source Data Model.
-  mpReportDM = new CQReportDM(this);
+  mpReportDM = new CQReportDM(this, mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();

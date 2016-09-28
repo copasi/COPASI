@@ -13,10 +13,10 @@
 #include "copasi.h"
 #include "CQBaseDataModel.h"
 
-CQBaseDataModel::CQBaseDataModel(QObject *parent)
+CQBaseDataModel::CQBaseDataModel(QObject *parent, CCopasiDataModel * pDataModel)
   : QAbstractTableModel(parent)
   , mpUndoStack(NULL)
-  , mpDataModel(NULL)
+  , mpDataModel(pDataModel)
 {}
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const

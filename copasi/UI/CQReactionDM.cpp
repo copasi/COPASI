@@ -28,8 +28,8 @@
 #include "undoFramework/ReactionChangeCommand.h"
 #include "undoFramework/UndoReactionData.h"
 
-CQReactionDM::CQReactionDM(QObject *parent)
-  : CQBaseDataModel(parent)
+CQReactionDM::CQReactionDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
   , mNewEquation()
   , mCreatedKeys()
 {}
@@ -38,6 +38,7 @@ int CQReactionDM::rowCount(const QModelIndex&) const
 {
   return (int) mpDataModel->getModel()->getReactions().size() + 1;
 }
+
 int CQReactionDM::columnCount(const QModelIndex&) const
 {
   return TOTAL_COLS_REACTIONS;

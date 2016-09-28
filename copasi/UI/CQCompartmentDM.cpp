@@ -41,7 +41,7 @@
 #include "function/CExpression.h"
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)
-  : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent, NULL)
   , mpCompartments(NULL)
 {
   mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
@@ -144,7 +144,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_COMPARTMENTS:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[Compartment.getStatus()])));
 
-              case COL_UNIT:
+              case COL_UNIT_COMPARTMENTS:
                 return QVariant(mUnits[Compartment.getDimensionality()]);
 
               case COL_IVOLUME:
@@ -210,7 +210,7 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
           case COL_TYPE_COMPARTMENTS:
             return QVariant(QString("     Type     "));
 
-          case COL_UNIT:
+          case COL_UNIT_COMPARTMENTS:
             return QVariant("Unit");
 
           case COL_IVOLUME:

@@ -33,7 +33,7 @@
 #include <copasi/UI/CQCopasiApplication.h>
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
-  : CQBaseDataModel(parent),
+  : CQBaseDataModel(parent, NULL),
     mpGlobalQuantities(NULL)
 
 {

@@ -26,8 +26,8 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 
-CQEventDM::CQEventDM(QObject *parent)
-  : CQBaseDataModel(parent)
+CQEventDM::CQEventDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
 
 {
 }

@@ -33,7 +33,7 @@
 #include "undoFramework/UndoEventAssignmentData.h"
 
 CQSpecieDM::CQSpecieDM(QObject *parent):
-  CQBaseDataModel(parent),
+  CQBaseDataModel(parent, NULL),
   mFlagConc(true),
   mpMetabolites(NULL),
   mNotify(true)
@@ -166,7 +166,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_SPECIES:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
 
-              case COL_UNIT:
+              case COL_UNIT_SPECIES:
                 return QVariant(mUnits[3]); //default to use volume-based
 
               case COL_ICONCENTRATION:
@@ -207,7 +207,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_TYPE_SPECIES:
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[Species.getStatus()])));
 
-              case COL_UNIT:
+              case COL_UNIT_SPECIES:
                 return QVariant(mUnits[Species.getCompartment()->getDimensionality()]);
 
               case COL_ICONCENTRATION:
@@ -301,7 +301,7 @@ QVariant CQSpecieDM::headerData(int section, Qt::Orientation orientation,
           case COL_TYPE_SPECIES:
             return QVariant(QString("     Type     "));
 
-          case COL_UNIT:
+          case COL_UNIT_SPECIES:
             return QVariant(QString("Unit"));
 
           case COL_ICONCENTRATION:

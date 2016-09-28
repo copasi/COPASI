@@ -15,7 +15,7 @@
 #include "model/CModelParameterSet.h"
 
 CQParameterSetsDM::CQParameterSetsDM(QObject *parent) :
-  CQBaseDataModel(parent),
+  CQBaseDataModel(parent, NULL),
   mpListOfParameterSets(NULL)
 {}
 

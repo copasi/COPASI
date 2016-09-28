@@ -131,9 +131,10 @@ void CQSpeciesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQSpeciesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!mIgnoreUpdates && isVisible())
+  if (!mIgnoreUpdates &&
+      objectType == ListViews::MODEL)
     {
       enterProtected();
     }

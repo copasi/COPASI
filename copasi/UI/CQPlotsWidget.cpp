@@ -35,7 +35,7 @@ CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
   setupUi(this);
 
   //Create Source Data Model.
-  mpPlotDM = new CQPlotDM(this);
+  mpPlotDM = new CQPlotDM(this, mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();

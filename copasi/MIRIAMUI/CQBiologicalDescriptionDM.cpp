@@ -16,7 +16,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQBiologicalDescriptionDM::CQBiologicalDescriptionDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-  : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent, NULL)
 
 {
   mpMIRIAMInfo = MIRIAMInfo;

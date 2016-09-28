@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +20,7 @@ class CQUnitDM : public CQBaseDataModel
   Q_OBJECT
 
 public:
-  CQUnitDM(QObject *parent = 0);
+  CQUnitDM(QObject *parent, CCopasiDataModel * pDataModel);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;

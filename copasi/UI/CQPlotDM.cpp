@@ -19,8 +19,8 @@
 #include "CQPlotDM.h"
 #include "qtUtilities.h"
 
-CQPlotDM::CQPlotDM(QObject *parent)
-  : CQBaseDataModel(parent)
+CQPlotDM::CQPlotDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
   , mNewName("plot")
 {
 }

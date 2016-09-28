@@ -21,7 +21,7 @@ class UndoReactionData;
 #define COL_NAME_SPECIES          1
 #define COL_COMPARTMENT           2
 #define COL_TYPE_SPECIES          3
-#define COL_UNIT                  4
+#define COL_UNIT_SPECIES          4
 #define COL_ICONCENTRATION        5
 #define COL_INUMBER               6
 #define COL_CONCENTRATION         7
