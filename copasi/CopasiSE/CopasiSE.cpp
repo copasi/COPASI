@@ -50,6 +50,8 @@ void writeLogo();
 int validate();
 int exportSBML();
 
+CCopasiDataModel* pDataModel = NULL;
+
 int main(int argc, char *argv[])
 {
   int retcode = 0;
@@ -126,7 +128,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+      pDataModel = CCopasiRootContainer::addDatamodel();
       assert(pDataModel != NULL);
 
 #ifdef XXXX
@@ -258,7 +260,6 @@ int main(int argc, char *argv[])
 
               if (!pDataModel->saveModel(Save, NULL, true))
                 {
-                  assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
                   std::cerr << "Save File: " << pDataModel->getFileName() << std::endl;
                   std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
@@ -498,8 +499,6 @@ int validate()
 
   // We are already sure that the COPASI model compiled. That means
   // we only need to test the active tasks
-  assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
   size_t i, imax = TaskList.size();
 
@@ -599,9 +598,7 @@ int exportSBML()
         break;
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() != 0);
-
-  if (!CCopasiRootContainer::getDatamodelList()->operator[](0).exportSBML(ExportSBML, true, Level, Version))
+  if (!pDataModel->exportSBML(ExportSBML, true, Level, Version))
     {
       std::cerr << "SBML Export File: " << ExportSBML << std::endl;
       std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
