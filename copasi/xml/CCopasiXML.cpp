@@ -270,6 +270,7 @@ bool CCopasiXML::load(std::istream & is,
 
 void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 {
+  size_t Size = CCopasiMessage::size();
 
   CUnitDefinitionDB * pCopasiUnitDefinitionList = CCopasiRootContainer::getUnitList();
 
@@ -357,6 +358,10 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
       pCopasiUnitDefinitionList->add(pUnitDefToAdd, true);
       unitDefsToAdd.insert(pUnitDefToAdd); // keep track of this, in-case need symbol update
     }
+
+  // Remove error messages created while merging
+  while (CCopasiMessage::size() > Size)
+    CCopasiMessage::getLastMessage();
 }
 
 bool CCopasiXML::setModel(CModel * pModel)
