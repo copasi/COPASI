@@ -458,7 +458,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
   0,    61,    61,    66,    71,    79,    87,    95,   103,   111,
-  119,   124,   130,   136,   142,   147,   154,   179,   189,   198
+  119,   124,   130,   136,   142,   148,   155,   171,   191,   198
 };
 #endif
 
@@ -1411,98 +1411,95 @@ yyreduce:
       case 14:
 #line 143 "CUnitParser.ypp" /* yacc.c:1646  */
         {
+          mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
           (yyval).pUnit = new CUnit(CBaseUnit::fromSymbol((yyvsp[0]).text));
           mSymbols.insert((yyvsp[0]).text);
         }
 
-#line 1387 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1388 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 15:
-#line 148 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 149 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text, mAvogadro));
-
+          mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
+          (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text));
           mSymbols.insert((yyvsp[0]).text);
           mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
         }
 
-#line 1398 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1399 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 16:
-#line 155 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 156 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          const CUnitDefinition * pUnitDefinition = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
+          mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
 
-          if (pUnitDefinition == NULL)
-            {
-              size_t Index = CCopasiRootContainer::getUnitList()->getIndex((yyvsp[0]).text);
-
-              if (Index != C_INVALID_INDEX)
-                {
-                  pUnitDefinition = CCopasiRootContainer::getUnitList()->begin() + Index;
-                }
-            }
-
-          if (pUnitDefinition == NULL)
+          if (mpCurrentUnitDef == NULL)
             {
               yyerror((yyvsp[0]).text);
             }
           else
             {
-              (yyval).pUnit = new CUnit(*pUnitDefinition);
-              mSymbols.insert(pUnitDefinition->getSymbol());
-              mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
+              (yyval).pUnit = new CUnit(*mpCurrentUnitDef);
+              mSymbols.insert(mpCurrentUnitDef->getSymbol());
+              mSymbols.insert(mpCurrentUnitDef->getUsedSymbols().begin(), mpCurrentUnitDef->getUsedSymbols().end());
             }
         }
 
-#line 1427 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1418 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 17:
-#line 180 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 172 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setScale(CBaseUnit::scaleFromPrefix((yyvsp[-1]).text));
-
           (yyval).pUnit = (yyvsp[0]).pUnit;
-          (yyval).pUnit->addComponent(component);
+
+          if (!(yyval).pUnit->isUndefined())
+            {
+              assert(mpCurrentUnitDef != NULL);
+
+              CUnitComponent component(CBaseUnit::dimensionless, 1.0, CBaseUnit::scaleFromPrefix((yyvsp[-1]).text), 0.0);
+              (yyval).pUnit->addComponent(component);
+
+              if (mpCurrentUnitDef->isReadOnly())
+                mSymbols.insert((yyvsp[-1]).text + mpCurrentUnitDef->getSymbol());
+              else
+                mSymbols.insert((yyvsp[-1]).text + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
+
+              mpCurrentUnitDef = NULL;
+            }
         }
 
-#line 1440 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1441 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 18:
-#line 190 "CUnitParser.ypp" /* yacc.c:1646  */
+#line 192 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setMultiplier(strToDouble((yyvsp[0]).text.c_str(), NULL));
+          CUnitComponent component(CBaseUnit::dimensionless, strToDouble((yyvsp[0]).text.c_str(), NULL), 0.0, 0.0);
 
           (yyval).pUnit = new CUnit();
           (yyval).pUnit->addComponent(component);
         }
 
-#line 1453 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1452 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 19:
 #line 199 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          CUnitComponent component;
-          component.setKind(CBaseUnit::dimensionless);
-          component.setMultiplier(pow(10.0, strToDouble((yyvsp[0]).text.c_str(), NULL)));
+          CUnitComponent component(CBaseUnit::dimensionless, pow(10.0, strToDouble((yyvsp[0]).text.c_str(), NULL)), 0.0, 0.0);
 
           (yyval).pUnit = new CUnit();
           (yyval).pUnit->addComponent(component);
         }
 
-#line 1466 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1463 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-#line 1470 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
+#line 1467 "CUnitParser_yacc.cpp" /* yacc.c:1646  */
 
       default: break;
     }
@@ -1741,4 +1738,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 208 "CUnitParser.ypp" /* yacc.c:1906  */
+#line 206 "CUnitParser.ypp" /* yacc.c:1906  */

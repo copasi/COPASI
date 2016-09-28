@@ -463,7 +463,7 @@ void CQModelValue::slotUnitChanged()
   mpModelValue->setUnitExpression(TO_UTF8(mpEditUnits->text()));
 
   CUnit Unit;
-  Unit.setExpression(mpModelValue->getUnitExpression(), CUnit::Avogadro);
+  Unit.setExpression(mpModelValue->getUnitExpression());
 
   if (Unit.isUndefined())
     {

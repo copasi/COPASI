@@ -1457,7 +1457,7 @@ bool CModel::setQuantityUnit(const std::string & name)
 {
   mQuantityUnit = name;
 
-  CUnit QuantityUnit(mQuantityUnit, mAvogadro);
+  CUnit QuantityUnit(mQuantityUnit);
 
   mDimensionlessUnits[quantity] = QuantityUnit.isDimensionless();
 
@@ -3841,7 +3841,7 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
 
   for (; it != end; ++it)
     {
-      unit.setExpression(it->getUnitExpression(), getAvogadro());
+      unit.setExpression(it->getUnitExpression());
 
       if (unit.getUsedSymbols().count(symbol))
         usages.insert(it);
