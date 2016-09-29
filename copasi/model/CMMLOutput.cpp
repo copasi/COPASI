@@ -410,9 +410,11 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
           mml << SPC(l + 3) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName)
               << "</mi></msub>" << std::endl;
           mml << SPC(l + 3) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+          mml << SPC(l + 3) << "<mo>" << "(" << "</mo>" << std::endl;
 
           writeRHS_ModelEntity(mml, &model->getMetabolites()[i],
                                expandFull, l + 3);
+          mml << SPC(l + 3) << "<mo>" << ")" << "</mo>" << std::endl;
           mml << SPC(l + 2) << "</mtd>" << std::endl;
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;
