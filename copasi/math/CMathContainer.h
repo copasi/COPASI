@@ -365,6 +365,12 @@ public:
   void updateSimulatedValues(const bool & useMoieties);
 
   /**
+   * Calculate all noise valuse based on the current state
+   * @param const bool & useMoieties
+   */
+  void updateNoiseValues(const bool & useMoieties);
+
+  /**
    * Calculate all transient data values. The simulated values need to be calculated beforehand.
    */
   void updateTransientDataValues();
@@ -689,6 +695,13 @@ public:
    * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
    */
   const CObjectInterface::UpdateSequence & getSimulationValuesSequence(const bool & useMoieties) const;
+
+  /**
+   * Retrieve the sequence for calculating all noise values.
+   * @param const bool & useMoieties
+   * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
+   */
+  const CObjectInterface::UpdateSequence & getNoiseSequence(const bool & useMoieties) const;
 
   /**
    * Retrieve the sequence for updating all transient values.
@@ -1160,6 +1173,18 @@ private:
    * on the assumption that all state values may have changed
    */
   CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
+
+  /**
+   * The sequence of updates needed to calculate all noise values based
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mNoiseSequence;
+
+  /**
+   * The sequence of updates needed to calculate all noise values based
+   * on the assumption that all reduced state values may have changed
+   */
+  CObjectInterface::UpdateSequence mNoiseSequenceReduced;
 
   /**
    * The sequence of updates needed to calculate all priorities

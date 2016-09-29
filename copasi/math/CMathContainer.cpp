@@ -255,6 +255,8 @@ CMathContainer::CMathContainer():
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mNoiseSequence(),
+  mNoiseSequenceReduced(),
   mPrioritySequence(),
   mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
@@ -345,6 +347,8 @@ CMathContainer::CMathContainer(CModel & model):
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mNoiseSequence(),
+  mNoiseSequenceReduced(),
   mPrioritySequence(),
   mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
@@ -453,6 +457,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mApplyInitialValuesSequence(src.mApplyInitialValuesSequence),
   mSimulationValuesSequence(src.mSimulationValuesSequence),
   mSimulationValuesSequenceReduced(src.mSimulationValuesSequenceReduced),
+  mNoiseSequence(src.mNoiseSequence),
+  mNoiseSequenceReduced(src.mNoiseSequenceReduced),
   mPrioritySequence(src.mPrioritySequence),
   mTransientDataObjectSequence(src.mTransientDataObjectSequence),
   mInitialStateValueExtensive(src.mInitialStateValueExtensive),
@@ -974,6 +980,18 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
     }
 }
 
+void CMathContainer::updateNoiseValues(const bool & useMoieties)
+{
+  if (useMoieties)
+    {
+      applyUpdateSequence(mNoiseSequenceReduced);
+    }
+  else
+    {
+      applyUpdateSequence(mNoiseSequence);
+    }
+}
+
 void CMathContainer::updateTransientDataValues()
 {
   applyUpdateSequence(mTransientDataObjectSequence);
@@ -1009,6 +1027,18 @@ const CObjectInterface::UpdateSequence & CMathContainer::getSimulationValuesSequ
   else
     {
       return mSimulationValuesSequence;
+    }
+}
+
+const CObjectInterface::UpdateSequence & CMathContainer::getNoiseSequence(const bool & useMoieties) const
+{
+  if (useMoieties)
+    {
+      return mNoiseSequenceReduced;
+    }
+  else
+    {
+      return mNoiseSequence;
     }
 }
 
@@ -1783,6 +1813,8 @@ void CMathContainer::allocate()
   mApplyInitialValuesSequence.clear();
   mSimulationValuesSequence.clear();
   mSimulationValuesSequenceReduced.clear();
+  mNoiseSequence.clear();
+  mNoiseSequenceReduced.clear();
   mPrioritySequence.clear();
   mTransientDataObjectSequence.clear();
 
@@ -2539,6 +2571,26 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   // Build the update sequence
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
+
+  // Create the update sequences for the transient noise;
+  pObject = getMathObject(mExtensiveNoise.array());
+  pObjectEnd = getMathObject(mEventDelays.array());
+
+  CObjectInterface::ObjectSet ReducedNoise;
+  CObjectInterface::ObjectSet Noise;
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      if (pObject->getSimulationType() != CMath::Dependent)
+        {
+          ReducedNoise.insert(pObject);
+        }
+
+      Noise.insert(pObject);
+    }
+
+  mTransientDependencies.getUpdateSequence(mNoiseSequence, CMath::Default, mStateValues, Noise);
+  mTransientDependencies.getUpdateSequence(mNoiseSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedNoise);
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
   // We need to additionally add the event assignments to the simulation required values as they may time dependent
