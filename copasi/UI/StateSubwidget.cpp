@@ -308,8 +308,8 @@ void StateSubwidget::showUnits()
 bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)
 {
   mpTask = pTask;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  assert(mpDataModel != NULL);
+  mpModel = mpDataModel->getModel();
 
   if (mpTask == NULL || mpModel == NULL)
     {
@@ -439,8 +439,8 @@ bool StateSubwidget::update(ListViews::ObjectType objectType,
         switch (action)
           {
             case ListViews::ADD:
-              assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-              mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+              assert(mpDataModel != NULL);
+              mpModel = mpDataModel->getModel();
               clear();
               showUnits();
               mpTask = NULL;

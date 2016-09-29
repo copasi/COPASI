@@ -15,7 +15,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQCreatorDM::CQCreatorDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
-  : CQBaseDataModel(parent)
+  : CQBaseDataModel(parent, NULL)
 
 {
   mpMIRIAMInfo = MIRIAMInfo;

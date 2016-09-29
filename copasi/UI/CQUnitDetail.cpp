@@ -151,10 +151,8 @@ void CQUnitDetail::slotBtnCopy()
 //! Slot for being activated whenever Delete button is clicked
 void CQUnitDetail::slotBtnDelete()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;
@@ -465,8 +463,8 @@ void CQUnitDetail::save()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
       protectedNotify(ListViews::UNIT, ListViews::CHANGE, mKey);
     }
 

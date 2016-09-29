@@ -122,9 +122,10 @@ void CQGlobalQuantitiesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!mIgnoreUpdates && isVisible())
+  if (!mIgnoreUpdates &&
+      objectType == ListViews::MODEL)
     {
       enterProtected();
     }
@@ -145,6 +146,7 @@ bool CQGlobalQuantitiesWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
+  mpGlobalQuantityDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpGlobalQuantityDM);
   //Set Model for the TableView
   mpTblGlobalQuantities->setModel(NULL);
@@ -211,10 +213,8 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;

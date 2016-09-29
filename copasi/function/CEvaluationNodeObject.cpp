@@ -284,7 +284,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);
 
-  if (mRegisteredObjectCN == "rateOf")
+  if (mRegisteredObjectCN == "rateOf" || mData == "<rateOf>")
     {
       node->setType(AST_FUNCTION);
       const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());

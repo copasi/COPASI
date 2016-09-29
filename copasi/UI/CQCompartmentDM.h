@@ -22,7 +22,7 @@ template < class CType > class CCopasiVectorNS;
 
 #define COL_NAME_COMPARTMENTS         1
 #define COL_TYPE_COMPARTMENTS         2
-#define COL_UNIT                      3
+#define COL_UNIT_COMPARTMENTS         3
 #define COL_IVOLUME                   4
 #define COL_VOLUME                    5
 #define COL_RATE_COMPARTMENTS         6

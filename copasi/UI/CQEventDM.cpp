@@ -26,15 +26,15 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 
-CQEventDM::CQEventDM(QObject *parent)
-  : CQBaseDataModel(parent)
+CQEventDM::CQEventDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
 
 {
 }
 
 int CQEventDM::rowCount(const QModelIndex&) const
 {
-  return CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getEvents().size() + 1;
+  return mpDataModel->getModel()->getEvents().size() + 1;
 }
 int CQEventDM::columnCount(const QModelIndex&) const
 {
@@ -83,7 +83,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CEvent *pEvent = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getEvents()[index.row()];
+          CEvent *pEvent = &mpDataModel->getModel()->getEvents()[index.row()];
           QString assignmentTarget = "";
           QString assignmentExpression = "";
 
@@ -236,7 +236,7 @@ bool CQEventDM::removeRows(int position, int rows)
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
 
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  CModel * pModel = mpDataModel->getModel();
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -253,7 +253,7 @@ bool CQEventDM::removeRows(int position, int rows)
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey)
     {
-      CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->removeEvent(*itDeletedKey);
+      mpDataModel->getModel()->removeEvent(*itDeletedKey);
       emit notifyGUI(ListViews::EVENT, ListViews::DELETE, *itDeletedKey);
     }
 

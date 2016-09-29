@@ -84,12 +84,9 @@ bool CQFittingResult::leave()
 
 bool CQFittingResult::enterProtected()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-
+  assert(mpDataModel != NULL);
   mpTask =
-    dynamic_cast<CFitTask *>(&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
+    dynamic_cast<CFitTask *>(&mpDataModel->getTaskList()->operator[]("Parameter Estimation"));
 
   if (!mpTask) return false;
 
@@ -153,7 +150,7 @@ bool CQFittingResult::enterProtected()
     {
       //1st column: parameter name
       const CCopasiObject *pObject =
-        CObjectInterface::DataObject(pDataModel->getObjectFromCN(Items[i]->getObjectCN()));
+        CObjectInterface::DataObject(mpDataModel->getObjectFromCN(Items[i]->getObjectCN()));
 
       if (pObject)
         {

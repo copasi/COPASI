@@ -435,8 +435,8 @@ void CQEventWidget1::saveToEvent()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
       protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
     }
 
@@ -599,16 +599,17 @@ void CQEventWidget1::createNewEvent()
   // if the standard name already exists then creating the new event will fail
   // thus, a growing index will automatically be added to the standard name
   int i = 1;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  while (!CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createEvent(name))
+  assert(mpDataModel != NULL);
+
+  while (!mpDataModel->getModel()->createEvent(name))
     {
       i++;
       name = "event_";
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getEvents()[name].getKey();
+  std::string key = mpDataModel->getModel()->getEvents()[name].getKey();
   protectedNotify(ListViews::EVENT, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
@@ -754,8 +755,8 @@ CQEventWidget1::changeValue(const std::string &key,
 
   if (mIgnoreUpdates) return true;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  assert(mpDataModel != NULL);
+  mpDataModel->changed();
   protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
 
   loadFromEvent();

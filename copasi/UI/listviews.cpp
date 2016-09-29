@@ -133,6 +133,33 @@ const std::string ListViews::ObjectTypeName[] =
   ""
 };
 
+// static
+ListViews * ListViews::ancestor(QObject * qObject)
+{
+  QObject * pParent = qObject;
+
+  while (pParent != NULL)
+    {
+      if (pParent->inherits("ListViews"))
+        return static_cast< ListViews * >(pParent);
+
+      pParent = pParent->parent();
+    }
+
+  return NULL;
+}
+
+// static
+CCopasiDataModel * ListViews::dataModel(QObject * qObject)
+{
+  ListViews * pListView = ancestor(qObject);
+
+  if (pListView != NULL)
+    return pListView->getDataModel();
+
+  return NULL;
+}
+
 // -----------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 // Definitions of the ListViews class as declared in listviews.h
@@ -1000,8 +1027,8 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key
       objectType != STATE &&
       action != ADD)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
     }
 
   bool success = true;
@@ -1042,7 +1069,7 @@ CopasiWidget* ListViews::getCurrentWidget()
 
 void ListViews::clearCurrentWidget()
 {
-    mpCurrentWidget = NULL;
+  mpCurrentWidget = NULL;
 }
 
 const std::string& ListViews::getCurrentItemKey() const

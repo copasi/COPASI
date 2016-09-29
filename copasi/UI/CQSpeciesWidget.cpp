@@ -36,6 +36,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
 
   //Create Source Data Model.
   mpSpecieDM = new CQSpecieDM(this);
+  mpSpecieDM->setDataModel(mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
@@ -130,9 +131,10 @@ void CQSpeciesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQSpeciesWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
 {
-  if (!mIgnoreUpdates && isVisible())
+  if (!mIgnoreUpdates &&
+      objectType == ListViews::MODEL)
     {
       enterProtected();
     }
@@ -153,6 +155,7 @@ bool CQSpeciesWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
     }
 
+  mpSpecieDM->setDataModel(mpDataModel);
   mpProxyModel->setSourceModel(mpSpecieDM);
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
@@ -224,10 +227,8 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;
@@ -313,7 +314,7 @@ void CQSpeciesWidget::setFramework(int framework)
 void CQSpeciesWidget::refreshCompartments()
 {
   const CCopasiVector < CCompartment > & compartments =
-    CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getCompartments();
+    mpDataModel->getModel()->getCompartments();
   mCompartments.clear();
 
   for (unsigned C_INT32 jj = 0; jj < compartments.size(); jj++)

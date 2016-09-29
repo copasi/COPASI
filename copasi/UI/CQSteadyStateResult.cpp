@@ -66,9 +66,9 @@ bool CQSteadyStateResult::enterProtected()
 
 void CQSteadyStateResult::loadResult()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   mpTask =
-    dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
+    dynamic_cast<CSteadyStateTask *>(&mpDataModel->getTaskList()->operator[]("Steady-State"));
 
   if (!mpTask) return;
 

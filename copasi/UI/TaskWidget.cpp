@@ -53,7 +53,6 @@
 #include <copasi/optimization/COptPopulationMethod.h>
 #include <copasi/parameterFitting/CFitTask.h>
 
-
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -278,12 +277,11 @@ bool TaskWidget::commonBeforeRunTask()
       if (pMethod != NULL)
         {
           pPopWidget->show();
-          CCopasiRootContainer::getDatamodelList()->operator[](0).addInterface(pPopWidget);
+          mpDataModel->addInterface(pPopWidget);
         }
     }
 
 #endif // COPASI_PE_POPULATION_DISPLAY
-
 
   return true;
 }
@@ -303,12 +301,11 @@ bool TaskWidget::commonAfterRunTask()
 
       if (pMethod != NULL)
         {
-          CCopasiRootContainer::getDatamodelList()->operator[](0).removeInterface(pPopWidget);
+          mpDataModel->removeInterface(pPopWidget);
         }
     }
 
 #endif // COPASI_PE_POPULATION_DISPLAY
-
 
   if (mProgressBar != NULL)
     {
@@ -321,8 +318,8 @@ bool TaskWidget::commonAfterRunTask()
 
   CCopasiMessage::clearDeque();
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).finish();
+  assert(mpDataModel != NULL);
+  mpDataModel->finish();
 
   // Update all values shown in the GUI
   CMathContainer * pContainer = mpTask->getMathContainer();
@@ -344,9 +341,9 @@ bool TaskWidget::commonRunTask()
   // Initialize the task
   try
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      assert(mpDataModel != NULL);
 
-      if (!mpTask->initialize(CCopasiTask::OUTPUT_UI, &CCopasiRootContainer::getDatamodelList()->operator[](0), NULL))
+      if (!mpTask->initialize(CCopasiTask::OUTPUT_UI, mpDataModel, NULL))
         throw CCopasiException(CCopasiMessage::peekLastMessage());
     }
 

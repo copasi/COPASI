@@ -101,7 +101,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to the reaction
   pdelete(mpRi);
-  mpRi = new CReactionInterface(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
+  mpRi = new CReactionInterface(mpDataModel->getModel());
 
   mpRi->initFromReaction(reaction);
 
@@ -123,11 +123,9 @@ bool ReactionsWidget1::saveToReaction()
 
   if (!mpRi->isValid()) return false;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  CModel * pModel = pDataModel->getModel();
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return false;
 
@@ -1049,8 +1047,8 @@ bool ReactionsWidget1::changeReaction(
 
   if (mIgnoreUpdates) return true;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  assert(mpDataModel != NULL);
+  mpDataModel->changed();
   protectedNotify(ListViews::REACTION, ListViews::CHANGE, mKey);
 
   FillWidgetFromRI();

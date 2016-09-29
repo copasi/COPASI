@@ -217,9 +217,9 @@ void CLNAResultSubwidget::slotSave()
   if (file.fail())
     return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   CCopasiTask* mpTask =
-    dynamic_cast<CLNATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Linear Noise Approximation"));
+    dynamic_cast<CLNATask *>(& mpDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
 
   if (mpTask != NULL)
     file << mpTask->getResult();

@@ -32,7 +32,7 @@ class CQEventDM : public CQBaseDataModel
   friend class InsertEventRowsCommand;
 
 public:
-  CQEventDM(QObject *parent = 0);
+  CQEventDM(QObject *parent, CCopasiDataModel * pDataModel);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;

@@ -138,8 +138,8 @@ bool CQParameterOverviewWidget::leave()
     {
       mpParameterSet->assignSetContent(*mpParameterSetCopy, false);
 
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
 
       if (mpParameterSet->isActive())
         {

@@ -35,7 +35,7 @@ CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
   setupUi(this);
 
   //Create Source Data Model.
-  mpPlotDM = new CQPlotDM(this);
+  mpPlotDM = new CQPlotDM(this, mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
@@ -71,15 +71,14 @@ CQPlotsWidget::~CQPlotsWidget()
 
 void CQPlotsWidget::slotBtnActivateAllClicked()
 {
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  if (!mpDataModel->getModel())
     return;
 
-  for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
+  for (size_t i = 0; i < mpDataModel->getPlotDefinitionList()->size(); i++)
     {
-      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&pDataModel->getPlotDefinitionList()->operator[](i));
+      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&mpDataModel->getPlotDefinitionList()->operator[](i));
       pPS->setActive(true);
     }
 
@@ -88,15 +87,14 @@ void CQPlotsWidget::slotBtnActivateAllClicked()
 
 void CQPlotsWidget::slotBtnDeactivateAllClicked()
 {
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  if (!mpDataModel->getModel())
     return;
 
-  for (size_t i = 0; i < pDataModel->getPlotDefinitionList()->size(); i++)
+  for (size_t i = 0; i < mpDataModel->getPlotDefinitionList()->size(); i++)
     {
-      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&pDataModel->getPlotDefinitionList()->operator[](i));
+      CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&mpDataModel->getPlotDefinitionList()->operator[](i));
       pPS->setActive(false);
     }
 
@@ -243,14 +241,12 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
+  assert(mpDataModel != NULL);
 
-  if (!pDataModel->getModel())
+  if (mpDataModel->getModel() == NULL)
     return;
 
-  CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&pDataModel->getPlotDefinitionList()->operator[](index.row()));
+  CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&mpDataModel->getPlotDefinitionList()->operator[](index.row()));
   const std::string key = static_cast<CCopasiParameter *>(pPS)->getKey();
 
   if (CCopasiRootContainer::getKeyFactory()->get(key))

@@ -14,7 +14,7 @@
 #include "layout/CListOfLayouts.h"
 
 CQLayoutsDM::CQLayoutsDM(QObject *parent) :
-  CQBaseDataModel(parent),
+  CQBaseDataModel(parent, NULL),
   mpListOfLayouts(NULL),
   mNewName("layout")
 {}

@@ -110,6 +110,8 @@ class ListViews : public QSplitter
 
 public:
   static const std::string ObjectTypeName[];
+  static ListViews * ancestor(QObject * qObject);
+  static CCopasiDataModel * dataModel(QObject * qObject);
 
   ListViews(QWidget * parent, DataModelGUI * pDataModelGUI, CCopasiDataModel * pDataModel);
   virtual ~ListViews();
@@ -153,8 +155,8 @@ public:
 
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
-    
-  /* 
+
+  /*
    *
    */
   void clearCurrentWidget();

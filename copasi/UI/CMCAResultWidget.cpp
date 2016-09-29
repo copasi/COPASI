@@ -54,9 +54,9 @@ CMCAResultWidget::~CMCAResultWidget()
   clicked in the tree   */
 bool CMCAResultWidget::loadFromBackend()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   CMCATask * pTask =
-    dynamic_cast<CMCATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Metabolic Control Analysis"));
+    dynamic_cast<CMCATask *>(&mpDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
 
   if (!pTask) return false;
 

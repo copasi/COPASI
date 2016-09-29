@@ -13,9 +13,8 @@
 #include "CQUnitDM.h"
 #include "qtUtilities.h"
 
-CQUnitDM::CQUnitDM(QObject *parent)
-  : CQBaseDataModel(parent)
-
+CQUnitDM::CQUnitDM(QObject *parent, CCopasiDataModel * pDataModel)
+  : CQBaseDataModel(parent, pDataModel)
 {
 }
 
@@ -252,10 +251,8 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return false;

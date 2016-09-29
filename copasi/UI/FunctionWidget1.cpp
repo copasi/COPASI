@@ -119,10 +119,8 @@ bool FunctionWidget1::loadParameterTable()
     functionType += (FROM_UTF8(CFunctionParameter::DataTypeName[i]));
 
   //find parameter units
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
-  CModel * pModel = pDataModel->getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
   // Determine the units of the variables depending on the type
@@ -825,8 +823,8 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
 
 bool FunctionWidget1::leave()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel * pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return true;

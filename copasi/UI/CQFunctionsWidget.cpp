@@ -34,7 +34,7 @@ CQFunctionsWidget::CQFunctionsWidget(QWidget* parent, const char* name)
   setupUi(this);
 
   //Create Source Data Model.
-  mpFunctionDM = new CQFunctionDM(this);
+  mpFunctionDM = new CQFunctionDM(this, mpDataModel);
 
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();

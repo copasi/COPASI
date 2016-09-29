@@ -112,8 +112,8 @@ bool CQOptimizationWidget::saveTask()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
     }
 
   mChanged = false;

@@ -213,9 +213,9 @@ bool CQFittingWidget::saveTask()
   mChanged |= mpParameters->save(&ExperimentMap, &CrossValidationMap);
   mChanged |= mpConstraints->save(&ExperimentMap, &CrossValidationMap);
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
 
-  if (mChanged) CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  if (mChanged) mpDataModel->changed();
 
   mChanged = false;
   return true;

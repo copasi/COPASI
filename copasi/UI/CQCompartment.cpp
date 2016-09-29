@@ -530,8 +530,8 @@ void CQCompartment::save()
 
   if (mChanged)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+      assert(mpDataModel != NULL);
+      mpDataModel->changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
 
       load();
@@ -645,9 +645,9 @@ void CQCompartment::createNewCompartment()
   std::string name = "compartment_1";
   int i = 1;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
 
-  while (!(mpCompartment = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createCompartment(name)))
+  while (!(mpCompartment = mpDataModel->getModel()->createCompartment(name)))
     {
       i++;
       name = "compartment_";
@@ -782,8 +782,8 @@ bool CQCompartment::changeValue(const std::string& key,
 
   if (mIgnoreUpdates) return true;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiRootContainer::getDatamodelList()->operator[](0).changed();
+  assert(mpDataModel != NULL);
+  mpDataModel->changed();
   protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
 
   load();

@@ -1145,9 +1145,6 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
   const CCopasiObject *pObject;
   CExperiment::Type Type;
   QTableWidgetItem *pItem = NULL;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel *pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
 
   for (i = 0; i < imax; i++)
     {
@@ -1227,7 +1224,8 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       if (ObjectMap.getObjectCN(i) != "")
         {
-          pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(ObjectMap.getObjectCN(i)));
+          assert(mpDataModel != NULL);
+          pObject = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(ObjectMap.getObjectCN(i)));
 
           if (pObject)
             mpTable->item((int) i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
@@ -1289,9 +1287,6 @@ void CQExperimentData::slotTypeChanged(int row, int index)
   mpTable->item(row, COL_TYPE_HIDDEN)->setText(QString::number(NewType));
 
   CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->item(row, COL_OBJECT_HIDDEN)->text()));
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
 
   switch (NewType)
     {
@@ -1300,10 +1295,11 @@ void CQExperimentData::slotTypeChanged(int row, int index)
         break;
 
       case CExperiment::independent:
+        assert(mpDataModel != NULL);
 
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::InitialTime |
                                            CQSimpleSelectionTree::Parameters,
-                                           CObjectInterface::DataObject(pDataModel->getObjectFromCN(CN))))
+                                           CObjectInterface::DataObject(mpDataModel->getObjectFromCN(CN))))
           {
             mModelObjectRow = row;
             // slotModelObject(row);
@@ -1317,7 +1313,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
 
         if (!CQSimpleSelectionTree::filter(CQSimpleSelectionTree::Variables |
                                            CQSimpleSelectionTree::ObservedValues,
-                                           CObjectInterface::DataObject(pDataModel->getObjectFromCN(CN))))
+                                           CObjectInterface::DataObject(mpDataModel->getObjectFromCN(CN))))
           {
             mModelObjectRow = row;
             // slotModelObject(row);

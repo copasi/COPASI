@@ -71,7 +71,8 @@ bool CopasiWidget::enter(const std::string & key)
     {
       mpDataModel = mpObject->getObjectDataModel();
     }
-  else
+
+  if (mpDataModel == NULL)
     {
       mpDataModel = mpListView->getDataModel();
     }
