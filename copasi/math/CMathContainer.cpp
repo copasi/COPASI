@@ -2255,8 +2255,17 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
                   break;
 
                 case CMath::Assignment:
-                  RequestedExtensive.insert(pObject);
-                  RequestedIntensive.insert(pObject);
+                  if (pObject->getPrerequisites().size() > 0)
+                    {
+                      RequestedExtensive.insert(pObject);
+                      RequestedIntensive.insert(pObject);
+                    }
+                  else
+                    {
+                      mInitialStateValueExtensive.insert(pObject);
+                      mInitialStateValueIntensive.insert(pObject);
+                    }
+
                   break;
               }
 
