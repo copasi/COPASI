@@ -106,7 +106,7 @@ void CQReportDefinition::btnAdvancedClicked()
           for (i = 0, imax = mpBodyList->count(); i < imax; i++)
             if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
                 != "Separator")
-              new CQReportListItem(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN());
+              new CQReportListItem(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN(), mpDataModel);
 
           mpHeaderList->clear();
           mpBodyList->clear();
@@ -187,7 +187,7 @@ void CQReportDefinition::btnSeparatorClicked()
   else
     Separator = TO_UTF8(mpSeparator->text());
 
-  static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Separator.getCN()));
+  static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Separator.getCN(), mpDataModel));
 
   mChanged = true;
 
@@ -203,7 +203,7 @@ void CQReportDefinition::btnTextClicked()
     {
       CCopasiStaticString Text(TO_UTF8(pDialog->getText()));
 
-      static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Text.getCN()));
+      static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Text.getCN(), mpDataModel));
     }
 
   delete pDialog;
@@ -538,7 +538,7 @@ bool CQReportDefinition::load()
       pList = mpReportDefinition->getTableAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpTableList->addItem(new CQReportListItem(*it));
+        mpTableList->addItem(new CQReportListItem(*it, mpDataModel));
     }
   else
     {
@@ -547,17 +547,17 @@ bool CQReportDefinition::load()
       pList = mpReportDefinition->getHeaderAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpHeaderList->addItem(new CQReportListItem(*it));
+        mpHeaderList->addItem(new CQReportListItem(*it, mpDataModel));
 
       pList = mpReportDefinition->getBodyAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpBodyList->addItem(new CQReportListItem(*it));
+        mpBodyList->addItem(new CQReportListItem(*it, mpDataModel));
 
       pList = mpReportDefinition->getFooterAddr();
 
       for (it = pList->begin(), end = pList->end(); it != end; ++it)
-        mpFooterList->addItem(new CQReportListItem(*it));
+        mpFooterList->addItem(new CQReportListItem(*it, mpDataModel));
     }
 
   mChanged = false;

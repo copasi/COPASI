@@ -21,11 +21,11 @@
 #include "report/CCopasiStaticString.h"
 #include "report/CCopasiRootContainer.h"
 
-CQReportListItem::CQReportListItem(const std::string & cn):
+CQReportListItem::CQReportListItem(const std::string & cn, CCopasiDataModel * pDataModel):
   QListWidgetItem(),
   mCN(cn)
 {
-  refreshText();
+  refreshText(pDataModel);
 }
 
 CQReportListItem::CQReportListItem(const CCopasiObject * pObject):
@@ -48,11 +48,8 @@ CQReportListItem::~CQReportListItem() {}
 
 const CCopasiObjectName & CQReportListItem::getCN() const {return mCN;};
 
-void CQReportListItem::refreshText()
+void CQReportListItem::refreshText(CCopasiDataModel * pDataModel)
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-  assert(pDataModel != NULL);
   const CCopasiObject * pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(mCN));
 
   if (pObject)
