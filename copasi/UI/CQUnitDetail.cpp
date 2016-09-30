@@ -107,47 +107,6 @@ void CQUnitDetail::slotBtnCopy()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-//void CQUnitDetail::slotBtnDelete()
-//{
-////#ifdef COPASI_UNDO
-////  mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
-////#else
-//  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-//  assert(pDataModel != NULL);
-//  CModel * pModel = pDataModel->getModel();
-
-//  if (pModel == NULL)
-//    return;
-
-//  if (mpUnitDefinition == NULL)
-//    return;
-
-//  QMessageBox::StandardButton choice =
-//    CQMessageBox::confirmDelete(this, "unit",
-//                                FROM_UTF8(mpUnitDefinition->getObjectName()),
-//                                mpUnitDefinition->getDeletedObjects());
-
-//  switch (choice)
-//    {
-//      case QMessageBox::Ok:
-//      {
-//        pDataModel->getModel()->re(mKey);
-//        mpUnitDefinition = NULL;
-
-//#undef DELETE
-//        protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
-//        protectedNotify(ListViews::UNIT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-//        break;
-//}
-
-//      default:
-//        break;
-//}
-
-//////#endif
-//}
-
 //! Slot for being activated whenever Delete button is clicked
 void CQUnitDetail::slotBtnDelete()
 {

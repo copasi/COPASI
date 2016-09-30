@@ -407,8 +407,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   // find all result matrices
   // Metabolic Control Analysis
   CCopasiTask *task;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = pModel->getObjectDataModel();
   assert(pDataModel != NULL);
   // MCA
   task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
