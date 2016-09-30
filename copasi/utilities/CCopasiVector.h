@@ -968,7 +968,18 @@ private:
    * @return bool insertAllowed
    */
   virtual bool isInsertAllowed(const CType * src)
-  {return (getObject(src->getObjectName()) == NULL);}
+  {
+    bool isInserAllowed = true;
+    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(src->getObjectName());
+
+    for (; Range.first != Range.second && isInserAllowed; ++Range.first)
+      {
+        if (dynamic_cast< CType * >(*Range.first) != NULL)
+          isInserAllowed = (CCopasiVector< CType >::getIndex(src) == C_INVALID_INDEX);
+      }
+
+    return isInserAllowed;
+  }
 };
 
 template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
