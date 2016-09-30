@@ -2573,8 +2573,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
   // Create the update sequences for the transient noise;
-  pObject = getMathObject(mExtensiveNoise.array());
-  pObjectEnd = getMathObject(mEventDelays.array());
+  pObject = mObjects.array() + (mExtensiveNoise.array() - mValues.array());
+  pObjectEnd = mObjects.array() + (mEventDelays.array() - mValues.array());
 
   CObjectInterface::ObjectSet ReducedNoise;
   CObjectInterface::ObjectSet Noise;

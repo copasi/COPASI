@@ -425,24 +425,27 @@ bool CMetab::compile()
 
         mpConcRateReference->setDirectDependencies(Dependencies);
 
-        // Noise (particle number rate)
-        success = mpNoiseExpression->compile(listOfContainer);
-        Dependencies = mpNoiseExpression->getDirectDependencies();
+        if (mpNoiseExpression != NULL)
+          {
+            // Noise (particle number rate)
+            success = mpNoiseExpression->compile(listOfContainer);
+            Dependencies = mpNoiseExpression->getDirectDependencies();
 
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
+            if (pVolumeReference)
+              Dependencies.insert(pVolumeReference);
 
-        mpNoiseReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
+            mpNoiseReference->setDirectDependencies(Dependencies);
+            Dependencies.clear();
 
-        // Intensive Noise
-        Dependencies.insert(mpNoiseReference);
+            // Intensive Noise
+            Dependencies.insert(mpNoiseReference);
 
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
+            if (pVolumeReference)
+              Dependencies.insert(pVolumeReference);
 
-        mpIntensiveNoiseReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
+            mpIntensiveNoiseReference->setDirectDependencies(Dependencies);
+            Dependencies.clear();
+          }
 
         // Transition Time
         Dependencies.insert(mpValueReference);
