@@ -179,6 +179,20 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
                 else
                   return QVariant();
               }
+
+#ifdef WITH_SDE_SUPPORT
+
+              case COL_NEXPRESSION_COMPARTMENTS:
+              {
+                pExpression = Compartment.getNoiseExpressionPtr();
+
+                if (Compartment.addNoise() && pExpression != NULL)
+                  return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
+                else
+                  return QVariant();
+              }
+
+#endif
             }
         }
     }
@@ -230,6 +244,12 @@ QVariant CQCompartmentDM::headerData(int section, Qt::Orientation orientation,
               return QVariant("Expression\n" + ValueUnit);
             else
               return QVariant("Expression\n" + ValueUnit + " or " + RateUnit);
+
+#ifdef WITH_SDE_SUPPORT
+
+          case COL_NEXPRESSION_COMPARTMENTS:
+            return QVariant("Noise Expression");
+#endif
 
           default:
             return QVariant();

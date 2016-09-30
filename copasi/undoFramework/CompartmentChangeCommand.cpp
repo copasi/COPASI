@@ -18,7 +18,6 @@
 
 #include <copasi/undoFramework/UndoCompartmentData.h>
 
-
 CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type,
     const QVariant& oldValue,
     const QVariant& newValue,
@@ -60,6 +59,16 @@ CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type
       case COMPARTMENT_SPATIAL_DIMENSION_CHANGE:
         setProperty("Spatial Dimensions");
         setText(": Changed compartment spatial dimensions");
+        break;
+
+      case COMPARTMENT_ADD_NOISE_CHANGE:
+        setText(": Changed adding noise");
+        setProperty("Function");
+        break;
+
+      case COMPARTMENT_NOISE_EXPRESSION_CHANGE:
+        setText(": Changed noise expression");
+        setProperty("Function");
         break;
 
       default:

@@ -1199,7 +1199,7 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
 
   switch (objectType)
     {
-      //TODO: check list:
+        //TODO: check list:
       case ListViews::MODEL:
 
         switch (action)

@@ -161,7 +161,7 @@ bool ScanWidget::loadTask()
 
       switch (type)
         {
-          //+++
+            //+++
           case CScanProblem::SCAN_LINEAR:
             tmp1 = new CScanWidgetScan(scrollview);
             tmp1->load(scanProblem->getScanItem(i));

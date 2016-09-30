@@ -86,6 +86,16 @@ ReactionChangeCommand::ReactionChangeCommand(
         setProperty("Function");
         break;
 
+      case REACTION_ADD_NOISE_CHANGE:
+        setText(": Changed adding noise");
+        setProperty("Function");
+        break;
+
+      case REACTION_NOISE_EXPRESSION_CHANGE:
+        setText(": Changed noise expression");
+        setProperty("Function");
+        break;
+
       default:
         break;
     }

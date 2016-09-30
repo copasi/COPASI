@@ -54,10 +54,126 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2" colspan="3">
-    <widget class="MyLineEdit" name="LineEdit2"/>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="ComboBox1">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
+    </widget>
    </item>
-   <item row="1" column="2" colspan="3">
+   <item row="3" column="0">
+    <widget class="QLabel" name="TextLabel6">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Rate Law</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QToolButton" name="mpBtnEditFunction">
+     <property name="minimumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>add target</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="5">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="5">
+    <widget class="Line" name="mpLine1">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="TextLabel7">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Symbol Definition</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QCheckBox" name="mpBoxAddNoise">
+     <property name="text">
+      <string>Add Noise</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="TextLabel8">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Flux</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="CheckBox">
@@ -94,15 +210,8 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="5">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="TextLabel6">
+   <item row="7" column="0">
+    <widget class="QLabel" name="mpLblNoiseExpression">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
        <horstretch>0</horstretch>
@@ -110,103 +219,53 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Rate Law</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QComboBox" name="ComboBox1">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="3">
-    <widget class="QToolButton" name="newKinetics">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Rate Law&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="4">
-    <widget class="QToolButton" name="editKinetics">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Edit Rate Law&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="TextLabel6_2">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Rate Law Unit</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="TextLabel7">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Symbol Definition</string>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::AutoText</enum>
+      <string>Noise
+Expression</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
      </property>
      <property name="wordWrap">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="5" column="2" colspan="3">
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="LineEdit3">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QToolButton" name="mpBtnAddFunction">
+     <property name="minimumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>add target</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="4">
     <widget class="ParameterTable" name="table">
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
@@ -250,49 +309,28 @@
      </column>
     </widget>
    </item>
-   <item row="6" column="0" colspan="5">
-    <widget class="Line" name="mpLine1">
-     <property name="frameShape">
-      <enum>QFrame::HLine</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="TextLabel8">
+   <item row="7" column="1" colspan="4">
+    <widget class="CQExpressionMmlStackedWidget" name="mpNoiseExpressionWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text">
-      <string>Flux</string>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>30</height>
+      </size>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <property name="currentIndex">
+      <number>1</number>
      </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
+     <widget class="QWidget" name="page_5"/>
+     <widget class="QWidget" name="page_6"/>
     </widget>
    </item>
-   <item row="7" column="2">
-    <widget class="QLineEdit" name="LineEdit3">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="3">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="mpDefaultUnit">
@@ -327,6 +365,28 @@
      </item>
     </layout>
    </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="TextLabel6_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Rate Law Unit</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="4">
+    <widget class="MyLineEdit" name="LineEdit2"/>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -347,14 +407,21 @@
    <extends>QTableWidget</extends>
    <header>copasi/UI/parametertable.h</header>
   </customwidget>
+  <customwidget>
+   <class>CQExpressionMmlStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>CQExpressionMmlStackedWidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>LineEdit2</tabstop>
   <tabstop>CheckBox</tabstop>
   <tabstop>mpMultiCompartment</tabstop>
   <tabstop>ComboBox1</tabstop>
-  <tabstop>newKinetics</tabstop>
-  <tabstop>editKinetics</tabstop>
+  <tabstop>mpBtnEditFunction</tabstop>
+  <tabstop>mpBtnAddFunction</tabstop>
+  <tabstop>mpBoxAddNoise</tabstop>
   <tabstop>mpDefaultUnit</tabstop>
   <tabstop>mpAmountUnit</tabstop>
   <tabstop>table</tabstop>
@@ -367,22 +434,6 @@
  </includes>
  <resources/>
  <connections>
-  <connection>
-   <sender>ComboBox1</sender>
-   <signal>activated(QString)</signal>
-   <receiver>ReactionsWidget1</receiver>
-   <slot>slotComboBoxSelectionChanged(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>173</x>
-     <y>92</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>LineEdit2</sender>
    <signal>edited()</signal>
@@ -464,34 +515,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>newKinetics</sender>
-   <signal>clicked()</signal>
+   <sender>mpBoxAddNoise</sender>
+   <signal>toggled(bool)</signal>
    <receiver>ReactionsWidget1</receiver>
-   <slot>slotNewFunction()</slot>
+   <slot>slotAddNoiseChanged(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>306</x>
-     <y>77</y>
+     <x>329</x>
+     <y>333</y>
     </hint>
     <hint type="destinationlabel">
-     <x>176</x>
-     <y>117</y>
+     <x>260</x>
+     <y>220</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>editKinetics</sender>
+   <sender>mpBtnEditFunction</sender>
    <signal>clicked()</signal>
    <receiver>ReactionsWidget1</receiver>
    <slot>slotGotoFunction()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>77</y>
+     <x>329</x>
+     <y>333</y>
     </hint>
     <hint type="destinationlabel">
-     <x>176</x>
-     <y>117</y>
+     <x>260</x>
+     <y>220</y>
     </hint>
    </hints>
   </connection>

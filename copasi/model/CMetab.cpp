@@ -50,6 +50,7 @@ CMetab::CMetab(const std::string & name,
   mConc(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mIConc(0.0),
   mConcRate(0.0),
+  mIntensiveNoise(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mTT(0.0),
   mpCompartment(NULL),
   mpMoiety(NULL),
@@ -77,6 +78,7 @@ CMetab::CMetab(const CMetab & src,
   mConc(src.mConc),
   mIConc(src.mIConc),
   mConcRate(src.mConcRate),
+  mIntensiveNoise(src.mIntensiveNoise),
   mTT(src.mTT),
   mpCompartment(NULL),
   mpMoiety(src.mpMoiety),
@@ -326,6 +328,10 @@ bool CMetab::compile()
   // Concentration Rate
   mpConcRateReference->clearDirectDependencies();
 
+  // Noise
+  mpNoiseReference->clearDirectDependencies();
+  mpIntensiveNoiseReference->clearDirectDependencies();
+
   // Transition Time
   mpTTReference->clearDirectDependencies();
 
@@ -366,6 +372,7 @@ bool CMetab::compile()
         // Fixed values
         mRate = 0.0;
         mConcRate = 0.0;
+        mIntensiveNoise = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         mTT = std::numeric_limits<C_FLOAT64>::infinity();
         break;
 
@@ -383,6 +390,7 @@ bool CMetab::compile()
         // Fixed values
         mRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
         mConcRate = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+        mIntensiveNoise = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         mTT = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
         break;
 
@@ -416,7 +424,28 @@ bool CMetab::compile()
           Dependencies.insert(mpCompartment->getRateReference());
 
         mpConcRateReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
+
+        if (mpNoiseExpression != NULL)
+          {
+            // Noise (particle number rate)
+            success = mpNoiseExpression->compile(listOfContainer);
+            Dependencies = mpNoiseExpression->getDirectDependencies();
+
+            if (pVolumeReference)
+              Dependencies.insert(pVolumeReference);
+
+            mpNoiseReference->setDirectDependencies(Dependencies);
+            Dependencies.clear();
+
+            // Intensive Noise
+            Dependencies.insert(mpNoiseReference);
+
+            if (pVolumeReference)
+              Dependencies.insert(pVolumeReference);
+
+            mpIntensiveNoiseReference->setDirectDependencies(Dependencies);
+            Dependencies.clear();
+          }
 
         // Transition Time
         Dependencies.insert(mpValueReference);
@@ -426,6 +455,7 @@ bool CMetab::compile()
         break;
 
       case REACTIONS:
+      {
         // Concentration
         Dependencies.insert(mpValueReference);
 
@@ -435,35 +465,35 @@ bool CMetab::compile()
         mpConcReference->setDirectDependencies(Dependencies);
 
         Dependencies.clear();
+        std::set<const CCopasiObject *> NoiseDependencies;
 
         // Create the rate vector
-        {
-          CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
-          CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
+        CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
+        CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
 
-          for (; it != end; ++it)
-            {
-              const CCopasiVector< CChemEqElement > &Balances =
-                it->getChemEq().getBalances();
-              CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-              CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+        for (; it != end; ++it)
+          {
+            const CCopasiVector< CChemEqElement > &Balances =
+              it->getChemEq().getBalances();
+            CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+            CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
-              for (; itChem != endChem; ++itChem)
-                if (itChem->getMetaboliteKey() == mKey)
-                  break;
+            for (; itChem != endChem; ++itChem)
+              if (itChem->getMetaboliteKey() == mKey)
+                break;
 
-              if (itChem != endChem)
-                {
-                  Dependencies.insert(it->getParticleFluxReference());
+            if (itChem != endChem)
+              {
+                Dependencies.insert(it->getParticleFluxReference());
+                NoiseDependencies.insert(it->getParticleNoiseReference());
 
-                  std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
-                  Insert.first = itChem->getMultiplicity();
-                  Insert.second = &it->getParticleFlux();
+                std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
+                Insert.first = itChem->getMultiplicity();
+                Insert.second = &it->getParticleFlux();
 
-                  mRateVector.push_back(Insert);
-                }
-            }
-        }
+                mRateVector.push_back(Insert);
+              }
+          }
 
         // Rate (particle number rate)
         mpRateReference->setDirectDependencies(Dependencies);
@@ -485,7 +515,15 @@ bool CMetab::compile()
         mpConcRateReference->setDirectDependencies(Dependencies);
         Dependencies.clear();
 
-        break;
+        mpNoiseReference->setDirectDependencies(NoiseDependencies);
+
+        if (pVolumeReference)
+          NoiseDependencies.insert(pVolumeReference);
+
+        mpIntensiveNoiseReference->setDirectDependencies(NoiseDependencies);
+      }
+
+      break;
 
       default:
         break;
@@ -703,6 +741,9 @@ void CMetab::initObjects()
   mpConcRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mConcRate, CCopasiObject::ValueDbl));
 
+  mpIntensiveNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("IntensiveNoise", mIntensiveNoise, CCopasiObject::ValueDbl));
+
   mpTTReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl));
 }
@@ -770,6 +811,9 @@ CConcentrationReference * CMetab::getConcentrationReference() const
 
 CCopasiObject * CMetab::getConcentrationRateReference() const
 {return mpConcRateReference;}
+
+CCopasiObject * CMetab::getIntensiveNoiseReference() const
+{return mpIntensiveNoiseReference;}
 
 C_FLOAT64 CMetab::getConcentrationRate() const
 {

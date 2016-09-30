@@ -68,9 +68,8 @@ private slots:
   void slotBtnCopy(); //dummy, to bypass warnings from TabWidget connections
   void slotBtnDelete();
   void slotTypeChanged(int type);
+  void slotAddNoiseChanged(bool addNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
-  void slotExpressionValid(bool valid);
-  void slotInitialExpressionValid(bool valid);
   void slotMetaboliteTableCurrentChanged(int row, int col);
   void slotDimesionalityChanged(int);
 

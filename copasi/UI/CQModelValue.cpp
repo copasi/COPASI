@@ -99,7 +99,8 @@ void CQModelValue::slotTypeChanged(int type)
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
 
-        // we don't need to update the expression widget as it is already hidden
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
 
         break;
 
@@ -115,6 +116,9 @@ void CQModelValue::slotTypeChanged(int type)
         // update the expression widget
         mpExpressionEMW->updateWidget();
 
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
+
         break;
 
       case CModelEntity::ODE:
@@ -129,6 +133,14 @@ void CQModelValue::slotTypeChanged(int type)
         // update the expression widget
         mpExpressionEMW->updateWidget();
 
+#ifdef WITH_SDE_SUPPORT
+        mpBoxAddNoise->show();
+        slotAddNoiseChanged(mpBoxAddNoise->isChecked());
+#else
+        mpBoxAddNoise->hide();
+        slotAddNoiseChanged(false);
+#endif
+
         break;
 
       default:
@@ -136,17 +148,19 @@ void CQModelValue::slotTypeChanged(int type)
     }
 }
 
-/*!
-    This function is used in case of not FIXED type
- */
-void CQModelValue::slotExpressionValid(bool valid)
+void CQModelValue::slotAddNoiseChanged(bool addNoise)
 {
-  mExpressionValid = valid;
-}
-
-void CQModelValue::slotInitialExpressionValid(bool valid)
-{
-  mInitialExpressionValid = valid;
+  if (addNoise)
+    {
+      mpLblNoiseExpression->show();
+      mpNoiseExpressionWidget->show();
+      mpNoiseExpressionWidget->updateWidget();
+    }
+  else
+    {
+      mpLblNoiseExpression->hide();
+      mpNoiseExpressionWidget->hide();
+    }
 }
 
 void CQModelValue::init()
@@ -159,11 +173,9 @@ void CQModelValue::init()
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
 
-  mExpressionValid = false;
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
-
-  mInitialExpressionValid = false;
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
 
   mpEditUnits->setValidator(new CQValidatorUnit(mpEditUnits));
 }
@@ -298,6 +310,11 @@ void CQModelValue::load()
   // Update Initial Expression Widget
   mpInitialExpressionEMW->updateWidget();
 
+  // Noise Expression
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpModelValue->getNoiseExpression());
+  mpNoiseExpressionWidget->updateWidget();
+  mpBoxAddNoise->setChecked(mpModelValue->addNoise());
+
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
 
@@ -395,6 +412,33 @@ void CQModelValue::save()
                             ));
           mChanged = true;
         }
+    }
+
+  // Add Noise
+  if (mpModelValue->addNoise() != mpBoxAddNoise->isChecked())
+    {
+      mpUndoStack->push(new GlobalQuantityChangeCommand(
+                          CCopasiUndoCommand::GLOBALQUANTITY_ADD_NOISE_CHANGE,
+                          mpModelValue->addNoise(),
+                          mpBoxAddNoise->isChecked(),
+                          mpModelValue,
+                          this
+                        ));
+
+      mChanged = true;
+    }
+
+  // Noise Expression
+  if (mpModelValue->getNoiseExpression() != mpNoiseExpressionWidget->mpExpressionWidget->getExpression())
+    {
+      mpUndoStack->push(new GlobalQuantityChangeCommand(
+                          CCopasiUndoCommand::GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE,
+                          FROM_UTF8(mpModelValue->getNoiseExpression()),
+                          FROM_UTF8(mpNoiseExpressionWidget->mpExpressionWidget->getExpression()),
+                          mpModelValue,
+                          this
+                        ));
+      mChanged = true;
     }
 
   // set unit
@@ -598,6 +642,14 @@ CQModelValue::changeValue(const std::string& key,
 
       case CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE:
         mpModelValue->setStatus((CModelEntity::Status) newValue.toInt());
+        break;
+
+      case CCopasiUndoCommand::GLOBALQUANTITY_ADD_NOISE_CHANGE:
+        mpModelValue->setAddNoise(newValue.toBool());
+        break;
+
+      case CCopasiUndoCommand::GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE:
+        mpModelValue->setNoiseExpression(TO_UTF8(newValue.toString()));
         break;
 
       case CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE:

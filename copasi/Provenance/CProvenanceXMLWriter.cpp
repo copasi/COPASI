@@ -298,7 +298,7 @@ QHash<QString, QString> CProvenanceXMLWriter::reconstructProvenanceEntityNameMap
         }
     }
 
-  return(ProvenanceEntityNameMap);
+  return (ProvenanceEntityNameMap);
 }
 
 void CProvenanceXMLWriter::updateCurrentSessionProvenance()

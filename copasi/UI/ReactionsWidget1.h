@@ -60,6 +60,7 @@ protected slots:
   virtual void slotLineEditChanged();
   virtual void slotGotoFunction();
   virtual void slotNewFunction();
+  virtual void slotAddNoiseChanged(bool addNoise);
   virtual void slotDefaultUnitChecked(const bool & checked);
   virtual void slotConcentrationUnitChecked(const bool & checked);
   virtual void slotAmountUnitChecked(const bool & checked);

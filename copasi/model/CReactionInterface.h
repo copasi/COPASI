@@ -83,6 +83,9 @@ private:
    */
   std::vector<bool> mIsLocal;
 
+  bool mAddNoise;
+
+  std::string mNoiseExpression;
   CReaction::KineticLawUnit mKineticLawUnitType;
 
   std::string mScalingCompartment;
@@ -283,6 +286,31 @@ public:
 #ifdef COPASI_DEBUG
   void printDebug() const;
 #endif // COPASI_DEBUG
+
+  /**
+   * Set whether to add noise to the reaction rate
+   * @param const bool & addNoise
+   */
+  void setAddNoise(const bool & addNoise);
+
+  /**
+   * Check whether noise is added to the reaction rate
+   * @return const bool & addNoise
+   */
+  const bool & addNoise() const;
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setNoiseExpression(const std::string & expression);
+
+  /**
+   * Retrieve the expression for non FIXED model values.
+   * @return const std::string &  expression
+   */
+  const std::string &  getNoiseExpression() const;
 
 private:
 

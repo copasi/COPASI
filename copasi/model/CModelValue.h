@@ -255,6 +255,50 @@ public:
    * @param const std::string & expression
    * @return bool success
    */
+  bool setNoiseExpression(const std::string & expression);
+
+  /**
+   * Retrieve the expression for non FIXED model values.
+   * @return std::string expression
+   */
+  std::string getNoiseExpression() const;
+
+  /**
+   * Set the noise expression for ODE model values
+   * @param CExpression*
+   * @return bool success
+   */
+  bool setNoiseExpressionPtr(CExpression* pExpression);
+
+  /**
+   * Retrieve the pointer to the expression for ODE model values.
+   * @return CExpression*
+   */
+  const CExpression* getNoiseExpressionPtr() const;
+
+  /**
+   * Retrieve the pointer to the expression for ODE model values.
+   * @return CExpression*
+   */
+  CExpression* getNoiseExpressionPtr();
+
+  /**
+   * Set whether to add noise to the ODE
+   * @param const bool & addNoise
+   */
+  void setAddNoise(const bool & addNoise);
+
+  /**
+   * Check whether noise is added to the ODE
+   * @return const bool & addNoise
+   */
+  const bool & addNoise() const;
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param const std::string & expression
+   * @return bool success
+   */
   bool setExpression(const std::string & expression);
 
   /**
@@ -326,6 +370,12 @@ public:
   CCopasiObject * getRateReference() const;
 
   /**
+   * Retrieve object referencing the noise
+   * @return CCopasiObject * rateReference
+   */
+  CCopasiObject * getNoiseReference() const;
+
+  /**
    * Retrieve a pointer to the model the entity belongs too
    * @return CModel * pModel
    */
@@ -348,6 +398,11 @@ protected:
   C_FLOAT64 mRate;
 
   /**
+   * Noise
+   */
+  C_FLOAT64 mNoise;
+
+  /**
    * The infix expression for objects of type ASSIGNMENT or ODE
    */
   CExpression * mpExpression;
@@ -356,6 +411,16 @@ protected:
    * Optional initial expression
    */
   CExpression * mpInitialExpression;
+
+  /**
+   * Optional noise term for entities of type ODE
+   */
+  CExpression * mpNoiseExpression;
+
+  /**
+   * A Boolean flag indicating whether to add noise to the reaction
+   */
+  bool mAddNoise;
 
   /**
    * Pointer to the Unit of the model entity.
@@ -378,6 +443,7 @@ protected:
   CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
   CCopasiObjectReference<C_FLOAT64> *mpValueReference;
   CCopasiObjectReference<C_FLOAT64> *mpRateReference;
+  CCopasiObjectReference<C_FLOAT64> *mpNoiseReference;
   mutable CModel * mpModel;
 
 private:

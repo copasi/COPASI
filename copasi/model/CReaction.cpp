@@ -61,10 +61,16 @@ CReaction::CReaction(const std::string & name,
   CAnnotation(),
   mChemEq("Chemical Equation", this),
   mpFunction(NULL),
+  mpNoiseExpression(NULL),
+  mAddNoise(false),
   mFlux(0),
   mpFluxReference(NULL),
   mParticleFlux(0),
   mpParticleFluxReference(NULL),
+  mNoise(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mpNoiseReference(NULL),
+  mParticleNoise(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mpParticleNoiseReference(NULL),
   mPropensity(0),
   mpPropensityReference(NULL),
   mMetabKeyMap(),
@@ -87,10 +93,16 @@ CReaction::CReaction(const CReaction & src,
   CAnnotation(src),
   mChemEq(src.mChemEq, this),
   mpFunction(src.mpFunction),
+  mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
+  mAddNoise(src.mAddNoise),
   mFlux(src.mFlux),
   mpFluxReference(NULL),
   mParticleFlux(src.mParticleFlux),
   mpParticleFluxReference(NULL),
+  mNoise(src.mNoise),
+  mpNoiseReference(NULL),
+  mParticleNoise(src.mParticleNoise),
+  mpParticleNoiseReference(NULL),
   mPropensity(src.mPropensity),
   mpPropensityReference(NULL),
   mMap(src.mMap),
@@ -222,6 +234,12 @@ const CCopasiObject * CReaction::getParticleFluxReference() const
 
 CCopasiObject * CReaction::getParticleFluxReference()
 {return mpParticleFluxReference;}
+
+const CCopasiObject * CReaction::getParticleNoiseReference() const
+{return mpParticleNoiseReference;}
+
+const CCopasiObject * CReaction::getNoiseReference() const
+{return mpNoiseReference;}
 
 CCopasiObject * CReaction::getPropensityReference()
 {return mpPropensityReference;}
@@ -596,8 +614,10 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
   return mMap.getFunctionParameters();
 }
 
-void CReaction::compile()
+bool CReaction::compile()
 {
+  bool success = true;
+
   clearDirectDependencies();
   std::set< const CCopasiObject * > Dependencies;
 
@@ -673,6 +693,27 @@ void CReaction::compile()
   mpParticleFluxReference->setDirectDependencies(Dependencies);
 
   setScalingFactor();
+
+  if (mAddNoise && mpNoiseExpression != NULL)
+    {
+      CObjectInterface::ContainerList listOfContainer;
+      CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+      if (pModel != NULL)
+        listOfContainer.push_back(pModel);
+
+      success &= mpNoiseExpression->compile(listOfContainer);
+
+      mpNoiseReference->setDirectDependencies(mpNoiseExpression->getDirectDependencies());
+      mpParticleNoiseReference->setDirectDependencies(mpNoiseExpression->getDirectDependencies());
+    }
+  else
+    {
+      mpNoiseReference->clearDirectDependencies();
+      mpParticleNoiseReference->clearDirectDependencies();
+    }
+
+  return success;
 }
 
 bool CReaction::loadOneRole(CReadConfig & configbuffer,
@@ -885,6 +926,12 @@ void CReaction::initObjects()
   mpParticleFluxReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl));
 
+  mpNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CCopasiObject::ValueDbl));
+
+  mpParticleNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleNoise", mParticleNoise, CCopasiObject::ValueDbl));
+
   mpPropensityReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Propensity", mPropensity, CCopasiObject::ValueDbl));
 }
@@ -896,6 +943,9 @@ std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
   Deleted.insert(this);
   Deleted.insert(mpFluxReference);
   Deleted.insert(mpParticleFluxReference);
+  Deleted.insert(mpNoiseReference);
+  Deleted.insert(mpParticleNoiseReference);
+  Deleted.insert(mpPropensityReference);
 
   // We need to add all local reaction parameters
   CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
@@ -957,6 +1007,92 @@ bool CReaction::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObject
     }
 
   return MustBeDeleted;
+}
+
+bool CReaction::setNoiseExpression(const std::string & expression)
+{
+  CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    pModel->setCompileFlag(true);
+
+  if (mpNoiseExpression == NULL)
+    {
+      mpNoiseExpression = new CExpression("NoiseExpression", this);
+    }
+
+  if (!mpNoiseExpression->setInfix(expression)) return false;
+
+  return compile();
+}
+
+std::string CReaction::getNoiseExpression() const
+{
+  if (mpNoiseExpression == NULL)
+    return "";
+
+  mpNoiseExpression->updateInfix();
+  return mpNoiseExpression->getInfix();
+}
+
+bool CReaction::setNoiseExpressionPtr(CExpression* pExpression)
+{
+  if (pExpression == mpNoiseExpression) return true;
+
+  if (pExpression == NULL) return false;
+
+  CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    pModel->setCompileFlag(true);
+
+  CExpression * pOld = mpNoiseExpression;
+  mpNoiseExpression = pExpression;
+
+  mpNoiseExpression->setObjectName("NoiseExpression");
+  add(mpNoiseExpression, true);
+
+  if (compile())
+    {
+      pdelete(pOld);
+      return true;
+    }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpNoiseExpression);
+  mpNoiseExpression->setObjectParent(NULL);
+  mpNoiseExpression = pOld;
+
+  return false;
+}
+
+CExpression* CReaction::getNoiseExpressionPtr()
+{
+  if (mpNoiseExpression != NULL) mpNoiseExpression->updateInfix();
+
+  return mpNoiseExpression;
+}
+
+const CExpression* CReaction::getNoiseExpressionPtr() const
+{
+  if (mpNoiseExpression != NULL) mpNoiseExpression->updateInfix();
+
+  return mpNoiseExpression;
+}
+
+void CReaction::setAddNoise(const bool & addNoise)
+{
+  mAddNoise = addNoise;
+}
+
+/**
+ * Check whether noise is added to the ODE
+ * @return const bool & addNoise
+ */
+const bool & CReaction::addNoise() const
+{
+  return mAddNoise;
 }
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)

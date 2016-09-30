@@ -66,7 +66,6 @@ public:
    */
   virtual void fillDependentObjects(CModel* pModel);
 
-
   /**
    * @return the key of the object
    */

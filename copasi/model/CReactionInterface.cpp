@@ -151,6 +151,9 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
       mScalingCompartment = rea->getScalingCompartment()->getObjectName();
     }
 
+  mAddNoise = rea->addNoise();
+
+  mNoiseExpression = rea->getNoiseExpression();
   mKineticLawUnitType = rea->getKineticLawUnitType();
 }
 
@@ -348,6 +351,9 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
         }
     }
 
+  rea->setAddNoise(mAddNoise);
+
+  rea->setNoiseExpression(mNoiseExpression);
   rea->setKineticLawUnitType(mKineticLawUnitType);
 
   std::string ScalingCompartmentCN;
@@ -1241,6 +1247,26 @@ CReactionInterface::isValid() const
       return false;
 
   return true;
+}
+
+void CReactionInterface::setAddNoise(const bool & addNoise)
+{
+  mAddNoise = addNoise;
+}
+
+const bool & CReactionInterface::addNoise() const
+{
+  return mAddNoise;
+}
+
+bool CReactionInterface::setNoiseExpression(const std::string & expression)
+{
+  mNoiseExpression = expression;
+}
+
+const std::string & CReactionInterface::getNoiseExpression() const
+{
+  return mNoiseExpression;
 }
 
 void CReactionInterface::setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType)

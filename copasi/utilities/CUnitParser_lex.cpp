@@ -280,8 +280,8 @@ int yy_buffer_status;
  * Returns the top of the stack, or NULL.
  */
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
-                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
-                            : NULL)
+                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
+                           : NULL)
 
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.

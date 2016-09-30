@@ -80,7 +80,7 @@ void CModelVersion::clear()
 
 int CModelVersion::getNumberOfVersions() const
 {
-  return(mNRow);
+  return (mNRow);
 }
 
 QString CModelVersion::getParentOfCurrentModel() const
@@ -95,7 +95,7 @@ QStandardItemModel *  CModelVersion::getModelVersionHierarchy() const
 
 QString CModelVersion::getPathFile()
 {
-  return(mPathFile);
+  return (mPathFile);
 }
 
 bool CModelVersion::setPathFile(QString PathFile)
@@ -105,11 +105,11 @@ bool CModelVersion::setPathFile(QString PathFile)
   if (dir.exists())
     {
       mPathFile = PathFile;
-      return(true);
+      return (true);
     }
   else
     {
-      return(false);
+      return (false);
     }
 }
 
@@ -121,23 +121,23 @@ bool CModelVersion::isVersionRepeated(QString Version)
     {
       if ((QString::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
         {
-          return(true);
+          return (true);
         }
     }
 
-  return(false);
+  return (false);
 }
 
 int CModelVersion::addNewVersion(QString Version, QString AuthorGivenName, QString AuthorFamilyName, QString AuthorOrganization, QString AuthorEmail, QString Comments)
 {
   if (Version.isEmpty())
     {
-      return(2);
+      return (2);
     }
 
   if (isVersionRepeated(Version))
     {
-      return(1);
+      return (1);
     }
 
   QString DerivedFrom;
@@ -157,11 +157,11 @@ int CModelVersion::addNewVersion(QString Version, QString AuthorGivenName, QStri
 
   if (updateVersionXML())
     {
-      return(0);
+      return (0);
     }
   else
     {
-      return(3);  //If Versioning Hierarchy xml file was not updated properly
+      return (3); //If Versioning Hierarchy xml file was not updated properly
     }
 }
 
@@ -222,12 +222,12 @@ int CModelVersion::deleteVersion(QString Version)
 
   if (Version.isEmpty())
     {
-      return(1);
+      return (1);
     }
 
   if (isVersionRepeated(Version) == false)
     {
-      return(2);
+      return (2);
     }
 
   QString parentVersion;
@@ -244,7 +244,7 @@ int CModelVersion::deleteVersion(QString Version)
 
   if ((deletedRow == 0) && (mNRow > 1))
     {
-      return(3);
+      return (3);
     }
 
   if ((QString::compare(mParentOfCurrentModel, Version, Qt::CaseInsensitive)) == 0)
@@ -282,11 +282,11 @@ int CModelVersion::deleteVersion(QString Version)
 
   if (updateVersionXML())
     {
-      return(0);
+      return (0);
     }
   else
     {
-      return(4);  //If Versioning Hierarchy xml file was not updated properly
+      return (4); //If Versioning Hierarchy xml file was not updated properly
     }
 }
 
@@ -294,23 +294,23 @@ int CModelVersion::restoreVersion(QString Version)
 {
   if (Version.isEmpty())
     {
-      return(1);
+      return (1);
     }
 
   if (isVersionRepeated(Version) == false)
     {
-      return(2);
+      return (2);
     }
 
   mParentOfCurrentModel = Version;
 
   if (updateVersionXML())
     {
-      return(0);
+      return (0);
     }
   else
     {
-      return(3);  //If Versioning Hierarchy xml file was not updated properly
+      return (3); //If Versioning Hierarchy xml file was not updated properly
     }
 }
 
@@ -318,23 +318,23 @@ int CModelVersion::updateSelectedCell(const QModelIndex &index, QString text)
 {
   if ((index.row() < 0) || (index.row() > mNRow - 1) || (index.column() < 0) || (index.column() > mNCol - 1))
     {
-      return(1);
+      return (1);
     }
 
   if (text.isEmpty())
     {
-      return(2);
+      return (2);
     }
 
   mpModelVersionHierarchy->setData(index, QVariant(text));
 
   if (updateVersionXML())
     {
-      return(0);
+      return (0);
     }
   else
     {
-      return(3);  //If Versioning Hierarchy xml file was not updated properly
+      return (3); //If Versioning Hierarchy xml file was not updated properly
     }
 }
 
@@ -467,7 +467,7 @@ bool CModelVersion::updateVersionXML()
       success = true;
     }
 
-  return(success);
+  return (success);
 }
 
 int CModelVersion::readVersionXML()
@@ -491,7 +491,7 @@ int CModelVersion::readVersionXML()
 
   if (!Fout.exists())
     {
-      return(1);
+      return (1);
     }
 
   XMLInputStream stream(dataFile.toUtf8(), true, "", &log);
@@ -503,7 +503,7 @@ int CModelVersion::readVersionXML()
   else
     {
       //qDebug() << "stream is niether start nor peek name is version heirarchy " <<endl;
-      return(3);
+      return (3);
     }
 
   XMLToken VersioningHierarchy = stream.next();
@@ -605,10 +605,10 @@ int CModelVersion::readVersionXML()
   if (log.getNumErrors() > 0)
     {
       log.printErrors();
-      return(2);
+      return (2);
     }
 
-  return(0);
+  return (0);
 }
 
 #ifdef COPASI_Provenance
@@ -626,7 +626,7 @@ QList<QString>  CModelVersion::getChildrenOfVersionForProvenanceXML(QString Vers
         }
     }
 
-  return(ChildrenVersions);
+  return (ChildrenVersions);
 }
 QList<QString>  CModelVersion::getVersionsPathToCurrentModel()
 {
@@ -671,7 +671,7 @@ QList<QString>  CModelVersion::getVersionsPathToCurrentModel()
         }
     }
 
-  return(DirectPath);
+  return (DirectPath);
 }
 
 #endif
@@ -696,5 +696,5 @@ QString CModelVersion::getParentVersion(QString Version)
         }
     }
 
-  return(ParentVersion);
+  return (ParentVersion);
 }

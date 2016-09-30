@@ -108,6 +108,10 @@ public:
     C_FLOAT64 * pTotalMasses;
     C_FLOAT64 * pEventTriggers;
 
+    C_FLOAT64 * pExtensiveNoise;
+    C_FLOAT64 * pIntensiveNoise;
+    C_FLOAT64 * pReactionNoise;
+    C_FLOAT64 * pReactionParticleNoise;
     C_FLOAT64 * pEventDelays;
     C_FLOAT64 * pEventPriorities;
     C_FLOAT64 * pEventAssignments;
@@ -137,6 +141,11 @@ public:
     CMathObject * pFluxesObject;
     CMathObject * pTotalMassesObject;
     CMathObject * pEventTriggersObject;
+
+    CMathObject * pExtensiveNoiseObject;
+    CMathObject * pIntensiveNoiseObject;
+    CMathObject * pReactionNoiseObject;
+    CMathObject * pReactionParticleNoiseObject;
 
     CMathObject * pEventDelaysObject;
     CMathObject * pEventPrioritiesObject;
@@ -211,6 +220,8 @@ public:
     ParticleFlux,
     Flux,
     Propensity,
+    Noise,
+    ParticleNoise,
     TotalMass,
     DependentMass,
     Discontinuous,

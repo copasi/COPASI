@@ -68,8 +68,11 @@ CModelEntity::CModelEntity(const std::string & name,
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mIValue(1.0),
   mRate(0.0),
+  mNoise(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mpExpression(NULL),
   mpInitialExpression(NULL),
+  mpNoiseExpression(NULL),
+  mAddNoise(false),
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
@@ -89,8 +92,11 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mValue(src.mValue),
   mIValue(src.mIValue),
   mRate(src.mRate),
+  mNoise(src.mNoise),
   mpExpression(src.mpExpression != NULL ? new CExpression(*src.mpExpression, this) : NULL),
   mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL),
+  mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
+  mAddNoise(src.mAddNoise),
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
@@ -161,6 +167,12 @@ bool CModelEntity::compile()
 
         success &= mpExpression->compile(listOfContainer);
         mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
+
+        if (mAddNoise && mpNoiseExpression != NULL)
+          {
+            success &= mpNoiseExpression->compile(listOfContainer);
+          }
+
         break;
 
       default:
@@ -297,6 +309,94 @@ const CExpression* CModelEntity::getInitialExpressionPtr() const
   return mpInitialExpression;
 }
 
+bool CModelEntity::setNoiseExpression(const std::string & expression)
+{
+  if (mStatus != ODE) return false;
+
+  if (mpModel)
+    mpModel->setCompileFlag(true);
+
+  if (mpNoiseExpression == NULL)
+    {
+      mpNoiseExpression = new CExpression("NoiseExpression", this);
+    }
+
+  if (!mpNoiseExpression->setInfix(expression)) return false;
+
+  return compile();
+}
+
+std::string CModelEntity::getNoiseExpression() const
+{
+  if (mStatus != ODE || mpNoiseExpression == NULL)
+    return "";
+
+  mpNoiseExpression->updateInfix();
+  return mpNoiseExpression->getInfix();
+}
+
+bool CModelEntity::setNoiseExpressionPtr(CExpression* pExpression)
+{
+  if (mStatus != ODE) return false;
+
+  if (pExpression == mpNoiseExpression) return true;
+
+  if (pExpression == NULL) return false;
+
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
+
+  CExpression * pOld = mpNoiseExpression;
+  mpNoiseExpression = pExpression;
+
+  mpNoiseExpression->setObjectName("NoiseExpression");
+  add(mpNoiseExpression, true);
+
+  if (compile())
+    {
+      pdelete(pOld);
+      return true;
+    }
+
+  // If compile fails we do not take ownership
+  // and we remove the object from the container
+  remove(mpNoiseExpression);
+  mpNoiseExpression->setObjectParent(NULL);
+  mpNoiseExpression = pOld;
+
+  return false;
+}
+
+CExpression* CModelEntity::getNoiseExpressionPtr()
+{
+  if (mpNoiseExpression != NULL) mpNoiseExpression->updateInfix();
+
+  return mpNoiseExpression;
+}
+
+const CExpression* CModelEntity::getNoiseExpressionPtr() const
+{
+  if (mpNoiseExpression != NULL) mpNoiseExpression->updateInfix();
+
+  return mpNoiseExpression;
+}
+
+void CModelEntity::setAddNoise(const bool & addNoise)
+{
+  mAddNoise = addNoise;
+}
+
+/**
+ * Check whether noise is added to the ODE
+ * @return const bool & addNoise
+ */
+const bool & CModelEntity::addNoise() const
+{
+  return mAddNoise;
+}
+
 bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
   if (mStatus == ASSIGNMENT) return false;
@@ -415,6 +515,9 @@ CCopasiObject * CModelEntity::getValueReference() const
 
 CCopasiObject * CModelEntity::getRateReference() const
 {return mpRateReference;}
+
+CCopasiObject * CModelEntity::getNoiseReference() const
+{return mpNoiseReference;}
 
 CModel * CModelEntity::getModel() const
 {
@@ -548,6 +651,9 @@ void CModelEntity::initObjects()
 
   mpRateReference =
     static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));
+
+  mpNoiseReference =
+    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CCopasiObject::ValueDbl));
 
   addObjectReference("SBMLId", mSBMLId, CCopasiObject::ValueString);
 

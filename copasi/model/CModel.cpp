@@ -3220,6 +3220,15 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
       switch ((*ppEntity)->getStatus())
         {
           case ODE:
+
+            if ((*ppEntity)->getNoiseExpressionPtr() &&
+                (*ppEntity)->getNoiseExpressionPtr()->hasDiscontinuity())
+              {
+                TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
+              }
+
+            // Intentionally no break statement!
+
           case ASSIGNMENT:
 
             if ((*ppEntity)->getExpressionPtr() &&
@@ -3245,6 +3254,12 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
           itReaction->getFunction()->hasDiscontinuity())
         {
           TreesWithDiscontinuities.push_back(itReaction->getFunction());
+        }
+
+      if (itReaction->getNoiseExpressionPtr() &&
+          itReaction->getNoiseExpressionPtr()->hasDiscontinuity())
+        {
+          TreesWithDiscontinuities.push_back(itReaction->getNoiseExpressionPtr());
         }
     }
 

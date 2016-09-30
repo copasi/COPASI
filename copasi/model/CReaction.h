@@ -350,9 +350,9 @@ public:
    *  rate function. The connection of the reaction and the function parameter mapping
    *  to the actual metabolites is established (before compile() the chemical equation
    *  and the reaction only hold the names of the metabolites).
-   *  @param "CCopasiVectorNS < CCompartment > &" compartments
+   *  @return bool success
    */
-  void compile();
+  bool compile();
 
   /**
    * Retrieve object referencing the particle flux
@@ -379,6 +379,18 @@ public:
   const CCopasiObject * getFluxReference() const;
 
   /**
+   * Retrieve object referencing the particle noise
+   * @return const CCopasiObject * particleNoiseReference
+   */
+  const CCopasiObject * getParticleNoiseReference() const;
+
+  /**
+   * Retrieve object referencing the noise
+   * @return const CCopasiObject * noiseReference
+   */
+  const CCopasiObject * getNoiseReference() const;
+
+  /**
    * Retrieve object referencing the propensity
    * @return CCopasiObject * propensityReference
    */
@@ -395,6 +407,56 @@ public:
    * @return const CCallParameters< C_FLOAT64 > & callParameters
    */
   const CCallParameters< C_FLOAT64 > & getCallParameters() const;
+
+  /**
+   * Set the expression for non FIXED model values
+   * @param const std::string & expression
+   * @return bool success
+   */
+  bool setNoiseExpression(const std::string & expression);
+
+  /**
+   * Retrieve the expression for non FIXED model values.
+   * @return std::string expression
+   */
+  std::string getNoiseExpression() const;
+
+  /**
+   * Set the noise expression for ODE model values
+   * @param CExpression*
+   * @return bool success
+   */
+  bool setNoiseExpressionPtr(CExpression* pExpression);
+
+  /**
+   * Retrieve the pointer to the expression for ODE model values.
+   * @return CExpression*
+   */
+  const CExpression* getNoiseExpressionPtr() const;
+
+  /**
+   * Retrieve the pointer to the expression for ODE model values.
+   * @return CExpression*
+   */
+  CExpression* getNoiseExpressionPtr();
+
+  /**
+   * Set whether to add noise to the reaction rate
+   * @param const bool & addNoise
+   */
+  void setAddNoise(const bool & addNoise);
+
+  /**
+   * Check whether noise is added to the reaction rate
+   * @return const bool & addNoise
+   */
+  const bool & addNoise() const;
+
+private:
+  /**
+   * Calculate the kinetic function
+   */
+  void calculate();
 
 public:
   /**
@@ -585,6 +647,16 @@ private:
   CFunction * mpFunction;
 
   /**
+   * Optional noise term
+   */
+  CExpression * mpNoiseExpression;
+
+  /**
+   * A Boolean flag indicating whether to add noise to the reaction
+   */
+  bool mAddNoise;
+
+  /**
    *  The flux of the reaction, as amount of substance/time
    */
   C_FLOAT64 mFlux;
@@ -595,6 +667,18 @@ private:
    */
   C_FLOAT64 mParticleFlux;
   CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
+
+  /**
+   *  The noise of the reaction
+   */
+  C_FLOAT64 mNoise;
+  CCopasiObjectReference<C_FLOAT64> *mpNoiseReference;
+
+  /**
+   *  The particle noise
+   */
+  C_FLOAT64 mParticleNoise;
+  CCopasiObjectReference<C_FLOAT64> *mpParticleNoiseReference;
 
   /**
    *  The propensity of the reaction

@@ -31,7 +31,6 @@ public:
   void redo();
   void undo();
 
-
 private:
   UndoSpeciesData* mpSpeciesData;
   QVariant mNew, mOld;

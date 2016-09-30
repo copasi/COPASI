@@ -52,8 +52,6 @@ private:
   std::vector< int > mItemToType;
   CModelValue * mpModelValue;
   bool mChanged;
-  bool mExpressionValid;
-  bool mInitialExpressionValid;
 
   void init();
   void destroy();
@@ -72,8 +70,7 @@ private slots:
   void slotBtnCopy();
   void slotBtnDelete();
   void slotTypeChanged(int type);
-  void slotExpressionValid(bool valid);
-  void slotInitialExpressionValid(bool valid);
+  void slotAddNoiseChanged(bool addNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotUnitChanged();
 
