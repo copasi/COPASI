@@ -26,7 +26,7 @@ class CQMergingData : public QDialog, public Ui::CQMergingData
   Q_OBJECT
 
 public:
-  CQMergingData(QWidget* parent = 0, Qt::WindowFlags fl = 0, bool simple = false);
+  CQMergingData(QWidget* parent = 0, CModel * pModel = 0, Qt::WindowFlags fl = 0);
   ~CQMergingData();
 
   std::map< QTreeWidgetItem *, const CCopasiObject * > mItemMap1;

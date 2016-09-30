@@ -31,7 +31,9 @@ DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
 {
   mpReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mpReactionWidget->mKey));
   mReaObjectName = mpReaction->getObjectName();
-  mpRi = new CReactionInterface(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
+  CCopasiDataModel* pDataModel = pReactionWidget->getDataModel();
+  assert(pDataModel != NULL);
+  mpRi = new CReactionInterface(pDataModel->getModel());
   mpRi->initFromReaction(mpReaction);
 
   mpReactionData = new UndoReactionData(mpReaction);

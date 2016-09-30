@@ -74,7 +74,7 @@ bool CQTSSAResultWidget::loadFromBackend()
 
 #if 0
   mCentralWidget->displayOptimizationTab(false);
-  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  CCopasiDataModel* pDataModel = getDataModel();
   assert(pDataModel != NULL);
   mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"))->getTimeSeries());
 #endif

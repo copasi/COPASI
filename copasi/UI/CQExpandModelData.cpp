@@ -11,7 +11,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModelExpansion.h"
 #include "report/CCopasiRootContainer.h"
-//#include "UI/CCopasiSelectionDialog.h"
+#include "listviews.h"
 
 #include "UI/qtUtilities.h"
 
@@ -37,9 +37,10 @@ CQExpandModelData::~CQExpandModelData()
 
 void CQExpandModelData::load()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
+  assert(pDataModel != NULL);
 
-  pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  pModel = pDataModel->getModel();
 
   size_t i, imax = pModel->getCompartments().size();
 

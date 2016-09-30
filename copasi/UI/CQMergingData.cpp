@@ -11,12 +11,13 @@
 #include <map>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CModelValue.h"
 #include "model/CModelExpansion.h"
 #include "model/CChemEqInterface.h"
 
-#include "report/CCopasiRootContainer.h"
+//#include "report/CCopasiRootContainer.h"
 
 #include "UI/qtUtilities.h"
 #include "resourcesUI/CQIconResource.h"
@@ -31,12 +32,14 @@ class CModelEntity;
  *  name 'name'.'
  */
 
-CQMergingData::CQMergingData(QWidget* parent, Qt::WindowFlags fl, bool simple)
+CQMergingData::CQMergingData(QWidget* parent, CModel * pModel, Qt::WindowFlags fl)
   : QDialog(parent, fl)
 {
   setupUi(this);
   connect(mpTree1, SIGNAL(currentItemChanged(QTreeWidgetItem * , QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
   connect(mpTree2, SIGNAL(currentItemChanged(QTreeWidgetItem * , QTreeWidgetItem *)), this, SLOT(treeSelectionChanged()));
+
+  mpModel = pModel;
 
   load();
 }
@@ -241,12 +244,10 @@ void CQMergingData::treeSelectionChanged()
 void CQMergingData::load()
 {
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpModel != NULL);
 
-  mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
-
-  fillTree(mpTree1, mpModel, mItemMap1, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, true);
-  fillTree(mpTree1, mpModel, mItemMap1, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, false);
+  fillTree(mpTree1, mpModel, mItemMap1, true, true, mpModel->getObjectDataModel()->mLastAddedObjects, true);
+  fillTree(mpTree1, mpModel, mItemMap1, true, true, mpModel->getObjectDataModel()->mLastAddedObjects, false);
 
   treeSelectionChanged();
 }
@@ -291,7 +292,6 @@ void CQMergingData::slotBtnMerge()
 
   //TODO it would be better to check this constantly and disable the merge button accordingly
 
-  //pModel = &CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
   CModelExpansion expa(mpModel);
   CModelExpansion::ElementsMap emap;
   emap.add(p1, p2);

@@ -23,6 +23,7 @@
 #include "CQMessageBox.h"
 #include "CCopasiSelectionDialog.h"
 #include "qtUtilities.h"
+#include "listviews.h"
 
 #include "copasi.h"
 
@@ -81,7 +82,7 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mExpression()
 {
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = ListViews::dataModel(parent);
   assert(pDataModel != NULL);
 
   mExpression.setObjectParent(pDataModel);
@@ -132,7 +133,7 @@ CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mFunction()
 {
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = ListViews::dataModel(parent);
   assert(pDataModel != NULL);
 
   mFunction.setObjectParent(pDataModel);
@@ -565,8 +566,7 @@ void CQExpressionWidget::setExpression(const std::string & expression)
   mCursor = textCursor();
 
   CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
   CObjectInterface::ContainerList containers;
   containers.push_back(pDataModel);
@@ -826,8 +826,10 @@ std::string CQExpressionWidget::getExpression() const
             DisplayName.erase(bsPos, 1);
 
           // here we don't have an object recognized, what we ought to do is to find it in the model
+          CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
+          assert(pDataModel != NULL);
           const CCopasiObject* object = findObjectByDisplayName(
-                                          mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : &CCopasiRootContainer::getDatamodelList()->operator[](0),
+                                          mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : pDataModel,
                                           DisplayName);
 
           if (object != NULL)
