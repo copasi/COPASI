@@ -74,8 +74,9 @@ bool CQTSSAResultWidget::loadFromBackend()
 
 #if 0
   mCentralWidget->displayOptimizationTab(false);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"))->getTimeSeries());
+  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  assert(pDataModel != NULL);
+  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"))->getTimeSeries());
 #endif
 
   return true;
@@ -120,8 +121,10 @@ bool CQTSSAResultWidget::leave()
 
 bool CQTSSAResultWidget::enterProtected()
 {
+  CCopasiDataModel* pDataModel = getDataModel();
+  assert(pDataModel != NULL);
   pTask =
-    dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
+    dynamic_cast<CTSSATask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
   pTSSILDM = dynamic_cast<CTSSAMethod*>(pTask->getMethod());
 
   if (!pTSSILDM->getCurrentStep())

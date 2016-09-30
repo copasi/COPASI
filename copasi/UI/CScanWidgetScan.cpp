@@ -127,8 +127,7 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
     mpObject = NULL;
   else
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+      CCopasiDataModel* pDataModel = pItem->getObjectDataModel();
       assert(pDataModel != NULL);
       mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(tmpString));
     }

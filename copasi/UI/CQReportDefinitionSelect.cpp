@@ -48,8 +48,9 @@ void CQReportDefinitionSelect::setReport(CReport * newReport)
 
 void CQReportDefinitionSelect::loadReportDefinitionVector()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList();
+  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  assert(pDataModel != NULL);
+  CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   unsigned C_INT32 i;
 
   for (i = 0; i < pReportDefinitionVector->size(); i++)
@@ -60,10 +61,10 @@ void CQReportDefinitionSelect::loadReportDefinitionVector()
   if (mpComboDefinition->count() == 0)
     {
       std::string name = "ReportDefinition_0";
-      CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->createReportDefinition(name, "");
+      pDataModel->getReportDefinitionList()->createReportDefinition(name, "");
       mpComboDefinition->insertItem(mpComboDefinition->count(), FROM_UTF8(name));
       mpComboDefinition->setCurrentIndex(1);
-      mpReport->setReportDefinition(&CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList()->operator[](0)); //first one report definition
+      mpReport->setReportDefinition(&pDataModel->getReportDefinitionList()->operator[](0)); //first one report definition
       mpReport->setAppend(mpCheckAppend->isChecked());
       mpReport->setConfirmOverwrite(mpCheckConfirmOverwrite->isChecked());
       mpReport->setTarget(TO_UTF8(mpEditTarget->text()));
@@ -117,8 +118,9 @@ void CQReportDefinitionSelect::accept()
     //exception made here
     return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList();
+  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  assert(pDataModel != NULL);
+  CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
   mpReport->setReportDefinition(&pReportDefinitionVector->operator[](row));
@@ -137,8 +139,9 @@ void CQReportDefinitionSelect::reject()
 
 void CQReportDefinitionSelect::slotEdit()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CReportDefinitionVector* pReportDefinitionVector = CCopasiRootContainer::getDatamodelList()->operator[](0).getReportDefinitionList();
+  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  assert(pDataModel != NULL);
+  CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pReportDefinitionVector->operator[](row).getKey());
