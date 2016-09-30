@@ -981,7 +981,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
                   {
                     success &= createExtensiveNoiseExpression(pSpecies, container);
                   }
-                else if (pEntity != NULL)
+                else if (pEntity->getNoiseExpressionPtr() != NULL)
                   {
                     success &= createConvertedExpression(pEntity->getNoiseExpressionPtr(), container);
                   }
