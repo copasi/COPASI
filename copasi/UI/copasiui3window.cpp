@@ -2459,7 +2459,7 @@ void CopasiUI3Window::slotApplyInitialState()
       pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
 
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, pModel->getKey());
     }
 }
 

@@ -18,7 +18,7 @@
 
 #include "utilities/CCopasiTask.h"
 #include "report/COutputAssistant.h"
-#include "report/CCopasiRootContainer.h"
+#include "listviews.h"
 
 /*
  *  Constructs a DefaultPlotDialog as a child of 'parent', with the
@@ -47,8 +47,7 @@ void DefaultPlotDialog::slotCreate()
 {
   if (!mpTask) return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
 
   if (COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel))

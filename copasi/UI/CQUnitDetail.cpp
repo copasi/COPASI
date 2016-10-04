@@ -478,7 +478,7 @@ void CQUnitDetail::save()
 //  int i = 1;
 //  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-//  while (!(mpModelValue = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel()->createModelValue(name)))
+//  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
 //    {
 //      i++;
 //      name = "quantity_";
@@ -493,10 +493,8 @@ void CQUnitDetail::save()
 //void CQUnitDetail::deleteGlobalQuantity()
 //{
 
-//  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-//  assert(pDataModel != NULL);
-//  CModel * pModel = pDataModel->getModel();
+//  assert(mpDataModel != NULL);
+//  CModel * mpModel = pDataModel->getModel();
 
 //  if (pModel == NULL)
 //    return;
@@ -531,11 +529,10 @@ void CQUnitDetail::save()
 
 //void CQUnitDetail::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
 //{
-//  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-//  assert(pDataModel != NULL);
 
-//  CModel * pModel = pDataModel->getModel();
+//  assert(mpDataModel != NULL);
+
+//  CModel * pModel = mpDataModel->getModel();
 //  assert(pModel != NULL);
 
 //  CModelValue * pGQ = pModel->getModelValues()[pGlobalQuantityData->getName()];
@@ -552,11 +549,9 @@ void CQUnitDetail::save()
 
 //void CQUnitDetail::addGlobalQuantity(UndoGlobalQuantityData *pSData)
 //{
-//  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-//  assert(pDataModel != NULL);
+//  assert(mpDataModel != NULL);
 
-//  CModel * pModel = pDataModel->getModel();
+//  CModel * pModel = mpDataModel->getModel();
 //  assert(pModel != NULL);
 
 //  //reinsert the Global Quantity
