@@ -93,7 +93,14 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(pUnitDef->getSymbol())));
 
               case COL_EXPRESSION_UNITS:
-                return QVariant(QString(FROM_UTF8(pUnitDef->getExpression())));
+                QMap< const CUnitDefinition *, QVariant >::const_iterator it = mUnitCache.find(pUnitDef);
+
+                if (it != mUnitCache.end())
+                  return it.value(); // Use cached value, if available
+
+                QVariant prettyExpression(QString(FROM_UTF8(CUnit::prettyPrint(pUnitDef->getExpression()))));
+                mUnitCache.insert(pUnitDef, prettyExpression);
+                return prettyExpression;
             }
         }
     }
@@ -294,4 +301,10 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
     }
 
   return true;
+}
+
+// virtual
+void CQUnitDM::resetCache()
+{
+  mUnitCache.clear();// data() will add to the unit cache, as needed
 }

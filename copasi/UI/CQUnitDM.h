@@ -29,11 +29,15 @@ public:
                       int role = Qt::DisplayRole) const;
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
+  virtual void resetCache();
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
   bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex());
   bool removeRows(int position, int rows);
+
+  // cache the pretty-printed unit strings
+  mutable QMap< const CUnitDefinition *, QVariant > mUnitCache;
 
 private:
   bool isFunctionReadOnly(const QModelIndex &index) const;
