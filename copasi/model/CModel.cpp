@@ -1463,12 +1463,17 @@ bool CModel::setQuantityUnit(const std::string & name)
 
   if (QuantityUnit.isUndefined()) return false;
 
-  // The first, dimensionless, component should have all the
-  // scale and multiplier information
-  std::set< CUnitComponent >::const_iterator it = QuantityUnit.getComponents().begin();
+  std::set< CUnitComponent >::const_iterator dimensionless = QuantityUnit.getComponents().find(CBaseUnit::dimensionless);
+  mQuantity2NumberFactor = dimensionless->getMultiplier() * pow(10.0, dimensionless->getScale());
 
-  // Avogadro, if present, will be in the multiplier
-  mQuantity2NumberFactor = it->getMultiplier() * pow(10.0, it->getScale());
+  // Avogadro is no longer stored in the multiplier it has its own component:
+  std::set< CUnitComponent >::const_iterator avogadro = QuantityUnit.getComponents().find(CBaseUnit::avogadro);
+
+  if (avogadro != QuantityUnit.getComponents().end())
+    {
+      mQuantity2NumberFactor *= pow(mAvogadro, avogadro->getExponent());
+    }
+
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
   //adapt particle numbers
