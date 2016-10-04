@@ -78,6 +78,9 @@ const std::string CTaskEnum::MethodName[] =
   "Hybrid (LSODA)",
   "Hybrid (RK-45)",
   "Hybrid (DSA-LSODAR)",
+#ifdef WITH_SDE_SUPPORT
+  "Stochastic Runge Kutta (RI5)",
+#endif // WITH_SDE_SUPPORT
   "ILDM (LSODA,Deuflhard)",
   "ILDM (LSODA,Modified)",
   "CSP (LSODA)",
@@ -131,6 +134,9 @@ const char * CTaskEnum::MethodXML[] =
   "Hybrid (LSODA)",
   "Hybrid (DSA-ODE45)",
   "Hybrid (DSA-LSODAR)",
+#ifdef WITH_SDE_SUPPORT
+  "Stochastic Runge Kutta (RI5)",
+#endif // WITH_SDE_SUPPORT
   "TimeScaleSeparation(ILDM,Deuflhard)",
   "TimeScaleSeparation(ILDM,Modified)",
   "TimeScaleSeparation(CSP)",

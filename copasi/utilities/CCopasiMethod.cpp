@@ -71,6 +71,7 @@
 #include "trajectory/CTauLeapMethod.h"
 #include "trajectory/CTrajAdaptiveSA.h"
 #include "trajectory/CTrajectoryMethodDsaLsodar.h"
+#include "trajectory/CStochasticRungeKuttaRI5.h"
 #include "tssanalysis/CCSPMethod.h"
 #include "tssanalysis/CILDMMethod.h"
 #include "tssanalysis/CILDMModifiedMethod.h"
@@ -196,6 +197,13 @@ CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
       case CTaskEnum::DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar(pParent, methodType, taskType);
         break;
+
+#ifdef WITH_SDE_SUPPORT
+
+      case CTaskEnum::stochasticRunkeKuttaRI5:
+        pMethod = new CStochasticRungeKuttaRI5(pParent, methodType, taskType);
+        break;
+#endif // WITH_SDE_SUPPORT
 
       case CTaskEnum::tssILDM:
         pMethod = new CILDMMethod(pParent, methodType, taskType);
