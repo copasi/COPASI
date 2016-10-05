@@ -71,8 +71,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //TODO: check if objects exist....
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = NULL;
 

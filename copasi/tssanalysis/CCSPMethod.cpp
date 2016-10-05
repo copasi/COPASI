@@ -2462,12 +2462,6 @@ void CCSPMethod::printResult(std::ostream * ostream) const
   C_INT32 stepNumber;
   //double timeScale;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
-
-  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
-
   stepNumber = (int)mVec_SlowModes.size();
 
   this->print(&os);

@@ -83,8 +83,7 @@ CQSpectogramWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
   mpEditTitle->setText(FROM_UTF8(pCurve->getTitle()));
 
   //TODO: check if objects exist....
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = mpObjectZ = NULL;
 

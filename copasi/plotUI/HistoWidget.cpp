@@ -103,8 +103,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   //variable
   mpObjectX = NULL;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (curve->getChannels().size() >= 1)

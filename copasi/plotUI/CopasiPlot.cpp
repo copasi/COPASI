@@ -274,7 +274,8 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
     }
 
-  CCopasiDataModel* dataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel* dataModel = mpPlotSpecification->getObjectDataModel();
+  assert(dataModel != NULL);
 
   setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
   enableAxis(xBottom);

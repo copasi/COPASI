@@ -404,7 +404,7 @@ void SliderSettingsDialog::browseButtonPressed()
       if (mpSlider == NULL)
         {
           // temporarily add the slider the the first datamodel
-          mpSlider = new CSlider("slider", &CCopasiRootContainer::getDatamodelList()->operator[](0));
+          mpSlider = new CSlider("slider", pObject->getObjectDataModel());
           mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
 
           if (pAncestor)

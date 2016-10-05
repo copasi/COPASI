@@ -194,7 +194,10 @@ void SliderDialog::createNewSlider()
       assert((*it) != NULL);
       pTmpObject = const_cast<CCopasiObject*>(determineCorrectObjectForSlider(*it));
 
-      CSlider* pCSlider = new CSlider("slider", &CCopasiRootContainer::getDatamodelList()->operator[](0));
+      CCopasiDataModel * pDataModel = pTmpObject->getObjectDataModel();
+      assert(pDataModel != NULL);
+
+      CSlider* pCSlider = new CSlider("slider", pDataModel);
 
       if (pCSlider)
         {
@@ -271,7 +274,7 @@ void SliderDialog::createNewSlider()
             {
               CObjectInterface::ContainerList listOfContainers;
               assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-              listOfContainers.push_back(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
+              listOfContainers.push_back(pDataModel->getModel());
               pCSlider->compile(listOfContainers);
               pCSlider->resetRange();
               addSlider(pCSlider);
@@ -289,8 +292,9 @@ void SliderDialog::removeSlider()
 {
   if (mpCurrSlider)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      CCopasiVector<CSlider>* pSliderList = CCopasiRootContainer::getDatamodelList()->operator[](0).getGUI()->getSliderList();
+      CCopasiDataModel * pDataModel = mpCurrSlider->getCSlider()->getObjectDataModel();
+      assert(pDataModel != NULL);
+      CCopasiVector<CSlider>* pSliderList = pDataModel->getGUI()->getSliderList();
       size_t i, maxCount = pSliderList->size();
 
       for (i = 0; i < maxCount; ++i)
@@ -338,12 +342,14 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
 void SliderDialog::editSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pSettingsDialog->setModel(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
   // set the list of sliders that is already known
   CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
 
   if (!object) return;
+
+  CCopasiDataModel * pDataModel = object->getObjectDataModel();
+  assert(pDataModel != NULL);
+  pSettingsDialog->setModel(pDataModel->getModel());
 
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
   pSettingsDialog->setDefinedSliders(*pVector);
@@ -411,15 +417,16 @@ void SliderDialog::addSlider(CSlider* pSlider)
     return;
 
   // check if there already is a slider for this  object
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  SCopasiXMLGUI* pGUI = CCopasiRootContainer::getDatamodelList()->operator[](0).getGUI();
+  CCopasiDataModel * pDataModel = pSlider->getObjectDataModel();
+  assert(pDataModel != NULL);
+  SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
 
   if (!equivalentSliderExists(pSlider))
     {
       CObjectInterface::ContainerList listOfContainers;
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      listOfContainers.push_back(CCopasiRootContainer::getDatamodelList()->operator[](0).getModel());
+      listOfContainers.push_back(pDataModel->getModel());
       pSlider->compile(listOfContainers);
       pGUI->getSliderList()->add(pSlider, true);
     }
@@ -456,8 +463,9 @@ void SliderDialog::addSlider(CSlider* pSlider)
 CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
 {
   CSlider* pResult = NULL;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  SCopasiXMLGUI* pGUI = CCopasiRootContainer::getDatamodelList()->operator[](0).getGUI();
+  CCopasiDataModel * pDataModel = pCSlider->getObjectDataModel();
+  assert(pDataModel != NULL);
+  SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
   size_t i, maxCount = pGUI->getSliderList()->size();
 
@@ -790,8 +798,9 @@ void SliderDialog::runTimeCourse()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time-Course").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(pDataModel->getTaskList()->operator[]("Time-Course").getKey());
       mpParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
     }
 }
@@ -808,8 +817,9 @@ void SliderDialog::runScanTask()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getScanWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Scan").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getScanWidget()->enter(pDataModel->getTaskList()->operator[]("Scan").getKey());
       mpParentWindow->getMainWidget()->getScanWidget()->runTask();
     }
 }
@@ -818,8 +828,9 @@ void SliderDialog::runMCATask()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getMCAWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Metabolic Control Analysis").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getMCAWidget()->enter(pDataModel->getTaskList()->operator[]("Metabolic Control Analysis").getKey());
       mpParentWindow->getMainWidget()->getMCAWidget()->runTask();
     }
 }
@@ -828,8 +839,9 @@ void SliderDialog::runLNATask()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getLNAWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Linear Noise Approximation").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getLNAWidget()->enter(pDataModel->getTaskList()->operator[]("Linear Noise Approximation").getKey());
       mpParentWindow->getMainWidget()->getLNAWidget()->runTask();
     }
 }
@@ -838,8 +850,9 @@ void SliderDialog::runParameterEstimationTask()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getFittingWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Parameter Estimation").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getFittingWidget()->enter(pDataModel->getTaskList()->operator[]("Parameter Estimation").getKey());
       mpParentWindow->getMainWidget()->getFittingWidget()->runTask();
     }
 }
@@ -848,8 +861,9 @@ void SliderDialog::runCrossSectionTask()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Cross Section").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(pDataModel->getTaskList()->operator[]("Cross Section").getKey());
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
     }
 }
@@ -858,8 +872,9 @@ void SliderDialog::runOptimizationTask()
 {
   if (mpParentWindow)
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Optimization").getKey());
+      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      assert(pDataModel != NULL);
+      mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(pDataModel->getTaskList()->operator[]("Optimization").getKey());
       mpParentWindow->getMainWidget()->getOptimizationWidget()->runTask();
     }
 }
@@ -878,40 +893,41 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
 {
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+  assert(pDataModel != NULL);
 
   switch (folderId)
     {
       case 21:
-        task = dynamic_cast<CSteadyStateTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Steady-State"));
+        task = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
       case 23:
-        task = dynamic_cast<CTrajectoryTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time-Course"));
+        task = dynamic_cast<CTrajectoryTask *>(&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
       case 24:
-        task = dynamic_cast<CMCATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Metabolic Control Analysis"));
+        task = dynamic_cast<CMCATask *>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
         break;
 
       case 31:
-        task = dynamic_cast<CScanTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Scan"));
+        task = dynamic_cast<CScanTask *>(&pDataModel->getTaskList()->operator[]("Scan"));
         break;
 
       case 35:
-        task = dynamic_cast<CLNATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Linear Noise Approximation"));
+        task = dynamic_cast<CLNATask *>(&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
         break;
 
       case 33:
-        task = dynamic_cast<CFitTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Parameter Estimation"));
+        task = dynamic_cast<CFitTask *>(&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
       case 32:
-        task = dynamic_cast<COptTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Optimization"));
+        task = dynamic_cast<COptTask *>(&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
       case 28:
-        task = dynamic_cast<CCrossSectionTask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Cross Section"));
+        task = dynamic_cast<CCrossSectionTask *>(&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;
 
       default:
@@ -995,8 +1011,7 @@ void SliderDialog::editSlider(CopasiSlider* slider)
 
 std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CCopasiDataModel * pDataModel = pObject->getObjectDataModel();
   assert(pDataModel != NULL);
   SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
@@ -1111,8 +1126,10 @@ void SliderDialog::setDefault()
 
 bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CModel* pModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
+  CCopasiDataModel * pDataModel = pSlider->getObjectDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
   return !pSlider->compile(listOfContainers);
