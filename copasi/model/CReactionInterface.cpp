@@ -1262,6 +1262,7 @@ const bool & CReactionInterface::addNoise() const
 bool CReactionInterface::setNoiseExpression(const std::string & expression)
 {
   mNoiseExpression = expression;
+  return true;
 }
 
 const std::string & CReactionInterface::getNoiseExpression() const
