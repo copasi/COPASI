@@ -71,6 +71,8 @@ void StateSubwidget::loadMetabolites()
 
   QTableWidgetItem * pItem;  // for use with setData method, to set numberical sorting of appropriate columns
 
+  mpTblMetabolites->setSortingEnabled(false);
+
   for (; it != end; ++it)
     if (it->getStatus() == CModelEntity::ODE ||
         (it->getStatus() == CModelEntity::REACTIONS && it->isUsed()))
@@ -105,6 +107,7 @@ void StateSubwidget::loadMetabolites()
   mpTblMetabolites->setRowCount(i);
   mpTblMetabolites->resizeColumnsToContents();
   mpTblMetabolites->resizeRowsToContents();
+  mpTblMetabolites->setSortingEnabled(true);
 }
 
 void StateSubwidget::loadCompartments()
@@ -114,6 +117,8 @@ void StateSubwidget::loadCompartments()
   C_INT32 i = 0;
 
   mpTblCompartments->setRowCount((int) mpModel->getCompartments().size());
+
+  mpTblCompartments->setSortingEnabled(false);
 
   QTableWidgetItem * pItem;
 
@@ -137,6 +142,7 @@ void StateSubwidget::loadCompartments()
   mpTblCompartments->setRowCount(i);
   mpTblCompartments->resizeColumnsToContents();
   mpTblCompartments->resizeRowsToContents();
+  mpTblCompartments->setSortingEnabled(true);
 }
 
 void StateSubwidget::loadReactions()
@@ -149,6 +155,8 @@ void StateSubwidget::loadReactions()
   mpTblReactions->setRowCount((int) mpModel->getReactions().size());
 
   QTableWidgetItem * pItem;
+
+  mpTblReactions->setSortingEnabled(false);
 
   for (; it != end; ++it)
     {
@@ -167,8 +175,10 @@ void StateSubwidget::loadReactions()
       i++;
     }
 
+  mpTblReactions->setRowCount(i);
   mpTblReactions->resizeColumnsToContents();
   mpTblReactions->resizeRowsToContents();
+  mpTblReactions->setSortingEnabled(true);
 }
 
 void StateSubwidget::loadModelValues()
@@ -180,6 +190,8 @@ void StateSubwidget::loadModelValues()
   mpTblModelValues->setRowCount((int) mpModel->getModelValues().size());
 
   QTableWidgetItem * pItem;
+
+  mpTblModelValues->setSortingEnabled(false);
 
   for (; it != end; ++it)
     if (it->getStatus() == CModelEntity::ODE)
@@ -201,6 +213,7 @@ void StateSubwidget::loadModelValues()
   mpTblModelValues->setRowCount(i);
   mpTblModelValues->resizeColumnsToContents();
   mpTblModelValues->resizeRowsToContents();
+  mpTblModelValues->setSortingEnabled(true);
 }
 
 void StateSubwidget::loadJacobian()
@@ -219,6 +232,8 @@ void StateSubwidget::loadJacobian()
   const CVector< C_FLOAT64 > & eigen_r = mpTask->getEigenValues().getR();
   const CVector< C_FLOAT64 > & eigen_i = mpTask->getEigenValues().getI();
 
+  tableEigenValues->setSortingEnabled(false);
+
   size_t i, imax = eigen_i.size();
   tableEigenValues->setRowCount((int) imax);
 
@@ -235,6 +250,7 @@ void StateSubwidget::loadJacobian()
 
   tableEigenValues->resizeColumnsToContents();
   tableEigenValues->resizeRowsToContents();
+  tableEigenValues->setSortingEnabled(true);
 
   //JacobianX
 
@@ -249,6 +265,8 @@ void StateSubwidget::loadJacobian()
   //Eigenvalues...
   const CVector< C_FLOAT64 > & eigen_iX = mpTask->getEigenValuesReduced().getI();
   const CVector< C_FLOAT64 > & eigen_rX = mpTask->getEigenValuesReduced().getR();
+
+  tableEigenValuesX->setSortingEnabled(false);
 
   imax = eigen_iX.size();
   tableEigenValuesX->setRowCount((int) imax);
@@ -266,6 +284,7 @@ void StateSubwidget::loadJacobian()
 
   tableEigenValuesX->resizeColumnsToContents();
   tableEigenValuesX->resizeRowsToContents();
+  tableEigenValuesX->setSortingEnabled(true);
 
   //stability report
   stabilityTextEdit->setReadOnly(true);
