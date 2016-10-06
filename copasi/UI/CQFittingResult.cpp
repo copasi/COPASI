@@ -146,6 +146,8 @@ bool CQFittingResult::enterProtected()
 
   BackgroundColor.setHsv(0, s, v);
 
+  mpParameters->setSortingEnabled(false);
+
   for (i = 0; i != imax; i++)
     {
       //1st column: parameter name
@@ -222,6 +224,7 @@ bool CQFittingResult::enterProtected()
 
   mpParameters->resizeColumnsToContents();
   mpParameters->resizeRowsToContents();
+  mpParameters->setSortingEnabled(true);
 
   // Loop over the experiments
   const CExperimentSet & Experiments = mpProblem->getExperimentSet();
@@ -232,6 +235,7 @@ bool CQFittingResult::enterProtected()
     imax = 0;
 
   mpExperiments->setRowCount((int) imax);
+  mpExperiments->setSortingEnabled(false);
 
   for (i = 0; i != imax; i++)
     {
@@ -259,6 +263,7 @@ bool CQFittingResult::enterProtected()
 
   mpExperiments->resizeColumnsToContents();
   mpExperiments->resizeRowsToContents();
+  mpExperiments->setSortingEnabled(true);
 
   // Loop over the dependent objects
   imax = Experiments.getDependentObjects().size();
@@ -267,6 +272,7 @@ bool CQFittingResult::enterProtected()
     imax = 0;
 
   mpValues->setRowCount((int) imax);
+  mpValues->setSortingEnabled(false);
 
   for (i = 0; i != imax; i++)
     {
@@ -298,6 +304,7 @@ bool CQFittingResult::enterProtected()
 
   mpValues->resizeColumnsToContents();
   mpValues->resizeRowsToContents();
+  mpValues->setSortingEnabled(true);
 
   // Fill correlation matrix
   imax = Items.size();
@@ -358,6 +365,7 @@ bool CQFittingResult::enterProtected()
     imax = 0;
 
   mpCrossValidations->setRowCount(imax);
+  mpCrossValidations->setSortingEnabled(false);
 
   for (i = 0; i != imax; i++)
     {
@@ -385,6 +393,7 @@ bool CQFittingResult::enterProtected()
 
   mpCrossValidations->resizeColumnsToContents();
   mpCrossValidations->resizeRowsToContents();
+  mpCrossValidations->setSortingEnabled(false);
 
   // Loop over the dependent objects
   imax = CrossValidations.getDependentObjects().size();
@@ -393,6 +402,7 @@ bool CQFittingResult::enterProtected()
     imax = 0;
 
   mpCrossValidationValues->setRowCount(imax);
+  mpCrossValidationValues->setSortingEnabled(false);
 
   for (i = 0; i != imax; i++)
     {
@@ -424,6 +434,7 @@ bool CQFittingResult::enterProtected()
 
   mpCrossValidationValues->resizeColumnsToContents();
   mpCrossValidationValues->resizeRowsToContents();
+  mpCrossValidationValues->setSortingEnabled(true);
 
   return true;
 }
