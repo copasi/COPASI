@@ -163,6 +163,7 @@ void CQMoietiesTaskResult::load()
       CCopasiVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
       CCopasiVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
       mpMoieties->setRowCount(pModel->getMoieties().size());
+      mpMoieties->setSortingEnabled(false);
 
       QTableWidgetItem * pItem;
 
@@ -197,6 +198,7 @@ void CQMoietiesTaskResult::load()
 
   mpMoieties->resizeColumnsToContents();
   mpMoieties->resizeRowsToContents();
+  mpMoieties->setSortingEnabled(true);
 
   // Fill the stoichiometry matrix
   CColorScaleBiLog * tcs = NULL;
