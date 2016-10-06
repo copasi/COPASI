@@ -97,6 +97,7 @@ bool CQOptimizationResult::enterProtected()
     imax = 0;
 
   mpParameters->setRowCount((int) imax);
+  mpParameters->setSortingEnabled(false);
 
   QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 
@@ -161,6 +162,7 @@ bool CQOptimizationResult::enterProtected()
 
   mpParameters->resizeColumnsToContents();
   mpParameters->resizeRowsToContents();
+  mpParameters->setSortingEnabled(true);
 
   return true;
 }
