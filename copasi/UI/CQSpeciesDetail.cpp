@@ -430,6 +430,7 @@ void CQSpeciesDetail::loadReactionTable()
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
 
   mpReactionTable->setRowCount((int) Reactions.size());
+  mpReactionTable->setSortingEnabled(false);
 
   std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
   std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
@@ -445,6 +446,8 @@ void CQSpeciesDetail::loadReactionTable()
 
   if (i == 0)
     mpReactionTable->setItem(i, 0, new QTableWidgetItem("none"));
+
+  mpReactionTable->setSortingEnabled(true);
 
   // Provide count of reactions, in label.
   mpLblReactions->setText("Involved in \n" + QString::number(mpReactionTable->rowCount()) + " Reactions");
