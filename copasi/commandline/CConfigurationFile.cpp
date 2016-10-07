@@ -112,6 +112,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
+  mpDisplayPopulations(NULL),
   mpWorkingDirectory(NULL),
   mpProxyServer(NULL),
   mpProxyPort(NULL),
@@ -136,6 +137,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
+  mpDisplayPopulations(NULL),
   mpWorkingDirectory(NULL),
   mpProxyServer(NULL),
   mpProxyPort(NULL),
@@ -193,6 +195,7 @@ void CConfigurationFile::initializeParameter()
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
+  mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""));
 
   mpProxyServer = assertParameter("Proxy Server", CCopasiParameter::STRING, std::string(""));
@@ -339,9 +342,19 @@ void CConfigurationFile::setNormalizePerExperiment(bool flag)
   *mpNormalizePerExperiment = flag;
 }
 
+bool CConfigurationFile::displayPopulations() const
+{
+  return *mpDisplayPopulations;
+}
+
 bool CConfigurationFile::validateUnits() const
 {
   return *mpValidateUnits;
+}
+
+void CConfigurationFile::setDisplayPopulations(bool flag)
+{
+  *mpDisplayPopulations = flag;
 }
 
 const std::string CConfigurationFile::getWorkingDirectory() const

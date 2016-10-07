@@ -84,9 +84,7 @@
 #include "CQSEDMLFileDialog.h"
 #endif
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
 #include <copasi/UI/CQOptPopulation.h>
-#endif // COPASI_PE_POPULATION_DISPLAY
 
 #include <copasi/UI/CQParameterEstimationResult.h>
 
@@ -225,9 +223,7 @@ CopasiUI3Window::CopasiUI3Window():
   , mProvenanceOrigionTime(QDateTime::currentDateTimeUtc().toString())
   , mProvenanceOfOrigionOfFile(QString(""))
 #endif
-#ifdef COPASI_PE_POPULATION_DISPLAY
   , mpPopulationDisplay(NULL)
-#endif // COPASI_PE_POPULATION_DISPLAY
 {
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
@@ -2241,8 +2237,6 @@ const QList< QPointer<QMainWindow> >& CopasiUI3Window::getWindows() const
   return mWindows;
 }
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
-
 CQOptPopulation *
 CopasiUI3Window::getPopulationDisplay()
 {
@@ -2259,7 +2253,6 @@ void CopasiUI3Window::setPopulationDisplay(CQOptPopulation * display)
   mpPopulationDisplay = display;
 }
 
-#endif // COPASI_PE_POPULATION_DISPLAY
 
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 {

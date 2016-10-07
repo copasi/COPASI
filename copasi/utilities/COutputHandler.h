@@ -42,7 +42,8 @@ public:
   {
     BEFORE = 0x01,
     DURING = 0x02,
-    AFTER = 0x04
+    AFTER = 0x04,
+    MONITORING = 0x08
   };
 
   /**

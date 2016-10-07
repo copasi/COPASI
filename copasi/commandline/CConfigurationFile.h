@@ -225,6 +225,16 @@ public:
   void setNormalizePerExperiment(bool flag);
 
   /**
+  * @return a flag on whether populations should be displayed during optimization / parameter estimation
+  */
+  bool displayPopulations() const;
+
+  /**
+  *  Set whether weights in Parameter Estimation should be normalized per experiment
+  */
+  void setDisplayPopulations(bool flag);
+
+  /**
    * Retrieve the working directory
    * @return const std::string & workingDirectory
    */
@@ -437,9 +447,14 @@ private:
   bool *mpUseAdvancedEditing;
 
   /**
-   * A pointer indicating whether to experiments should be normalized by default
-   */
+  * A pointer indicating whether to experiments should be normalized by default
+  */
   bool *mpNormalizePerExperiment;
+
+  /**
+  * A pointer indicating whether to display the population visualization window
+  */
+  bool *mpDisplayPopulations;
 
   /**
    * A pointer to the last used working directory of the GUI.

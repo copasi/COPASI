@@ -58,9 +58,7 @@ class QUndoStack;
 class CModelVersion;
 #endif
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
 class CQOptPopulation;
-#endif // COPASI_PE_POPULATION_DISPLAY
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -131,10 +129,8 @@ public:
   #endif
   */
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
   CQOptPopulation* getPopulationDisplay();
   void setPopulationDisplay(CQOptPopulation* display);
-#endif // COPASI_PE_POPULATION_DISPLAY
 
   void addWindow(QMainWindow * pWindow);
   void removeWindow(QMainWindow * pWindow);
@@ -402,9 +398,7 @@ private:
   QString mProvenanceOfOrigionOfFile;
 #endif
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
   CQOptPopulation* mpPopulationDisplay;
-#endif // COPASI_PE_POPULATION_DISPLAY
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

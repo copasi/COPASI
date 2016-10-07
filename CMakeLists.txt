@@ -207,13 +207,6 @@ if (ENABLE_COPASI_BANDED_GRAPH)
   add_definitions(-DCOPASI_BANDED_GRAPH)
 endif(ENABLE_COPASI_BANDED_GRAPH)
 
-option(ENABLE_COPASI_PE_POPULATION_DISPLAY "Enable the population display during optimization / parameter estimation" OFF)
-if (ENABLE_COPASI_PE_POPULATION_DISPLAY)
-  add_definitions(-DCOPASI_PE_POPULATION_DISPLAY)
-endif(ENABLE_COPASI_PE_POPULATION_DISPLAY)
-mark_as_advanced(ENABLE_COPASI_PE_POPULATION_DISPLAY)
-
-
 option(ENABLE_COPASI_NONLIN_DYN_OSCILLATION "Oscillation Widget" OFF)
 if (ENABLE_COPASI_NONLIN_DYN_OSCILLATION)
   add_definitions(-DCOPASI_NONLIN_DYN_OSCILLATION)
@@ -311,7 +304,7 @@ mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
   add_definitions(-DCOPASI_SEDML)
   if (WIN32)
-	add_definitions(-DLIBSEDML_STATIC)
+  add_definitions(-DLIBSEDML_STATIC)
   endif()
   
   find_package(LIBSEDML REQUIRED)
@@ -742,11 +735,11 @@ install(FILES ${WIZARD_HELP_FILES} DESTINATION share/copasi/doc/html)
 install(FILES ${WIZARD_IMAGE_FILES} DESTINATION share/copasi/doc/html/figures)
 install(FILES ${EXAMPLE_FILES} DESTINATION share/copasi/examples)
 install(FILES  
-		"${PROJECT_SOURCE_DIR}/copasi/UI/icons/Copasi.ico"
-		"${PROJECT_SOURCE_DIR}/copasi/UI/icons/CopasiDoc.ico"
+    "${PROJECT_SOURCE_DIR}/copasi/UI/icons/Copasi.ico"
+    "${PROJECT_SOURCE_DIR}/copasi/UI/icons/CopasiDoc.ico"
         DESTINATION share/copasi/icons)
 install(FILES  
-		"${PROJECT_SOURCE_DIR}/copasi/MIRIAM/MIRIAMResources.xml"
+    "${PROJECT_SOURCE_DIR}/copasi/MIRIAM/MIRIAMResources.xml"
         DESTINATION share/copasi/config)
 
 # set up variables for cpack

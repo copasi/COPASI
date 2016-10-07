@@ -555,10 +555,8 @@ bool COptMethodPS::optimise()
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhGenerations);
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
       //use a different output channel. It will later get a proper enum name
-      mpParentTask->output(COutputInterface::Activity(8));
-#endif // COPASI_PE_POPULATION_DISPLAY
+      mpParentTask->output(COutputInterface::MONITORING);
     }
 
   if (mpCallBack)

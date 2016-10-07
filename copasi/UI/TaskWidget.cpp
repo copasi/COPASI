@@ -53,6 +53,9 @@
 #include <copasi/optimization/COptPopulationMethod.h>
 #include <copasi/parameterFitting/CFitTask.h>
 
+#include <copasi/report/CCopasiRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
+
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
@@ -265,23 +268,24 @@ bool TaskWidget::commonBeforeRunTask()
   CCopasiMessage::clearDeque();
 
   // create population display if needed
-#ifdef COPASI_PE_POPULATION_DISPLAY
-
-  if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
+  if (CCopasiRootContainer::getConfiguration()->displayPopulations())
     {
-      CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
-      CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
-      COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
-      pPopWidget->setMethod(pMethod);
 
-      if (pMethod != NULL)
+      if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
         {
-          pPopWidget->show();
-          mpDataModel->addInterface(pPopWidget);
-        }
-    }
+          CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
+          CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
+          COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+          pPopWidget->setMethod(pMethod);
 
-#endif // COPASI_PE_POPULATION_DISPLAY
+          if (pMethod != NULL)
+            {
+              pPopWidget->show();
+              mpDataModel->addInterface(pPopWidget);
+            }
+        }
+
+    }
 
   return true;
 }
@@ -290,22 +294,22 @@ bool TaskWidget::commonAfterRunTask()
 {
   if (!mpTask) return false;
 
-#ifdef COPASI_PE_POPULATION_DISPLAY
-
-  if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
+  if (CCopasiRootContainer::getConfiguration()->displayPopulations())
     {
-      CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
-      CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
-      COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
-      pPopWidget->setMethod(NULL);
 
-      if (pMethod != NULL)
+      if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
         {
-          mpDataModel->removeInterface(pPopWidget);
+          CopasiUI3Window* pWindow = CopasiUI3Window::getMainWindow();
+          CQOptPopulation* pPopWidget = pWindow->getPopulationDisplay();
+          COptPopulationMethod* pMethod = dynamic_cast<COptPopulationMethod*>(mpTask->getMethod());
+          pPopWidget->setMethod(NULL);
+
+          if (pMethod != NULL)
+            {
+              mpDataModel->removeInterface(pPopWidget);
+            }
         }
     }
-
-#endif // COPASI_PE_POPULATION_DISPLAY
 
   if (mProgressBar != NULL)
     {

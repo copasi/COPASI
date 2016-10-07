@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -137,6 +137,16 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
+  pParameter = configFile->getParameter("Display Populations during Optimization");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Display Populations during Optimization");
+      Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
   pParameter = configFile->getParameter("Allow Simultaneous Event Assignments");
 
   if (pParameter != NULL)
@@ -187,46 +197,46 @@ void CQPreferenceDialog::init()
       new QTreeWidgetItem(mpTreeWidget, Values);
     }
 
+  // Adding current author information
+  pParameter = configFile->getParameter("Given Name");
+
   if (pParameter != NULL)
-     {
-       QStringList Values;
-       Values.append("Allow Simultaneous Event Assignments");
-       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-       new QTreeWidgetItem(mpTreeWidget, Values);
-     }
-   // Adding current author information
-   pParameter = configFile->getParameter("Given Name");
-   if (pParameter != NULL)
-     {
-       QStringList Values;
-       Values.append("Given Name");
-       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-       new QTreeWidgetItem(mpTreeWidget, Values);
-     }
-   pParameter = configFile->getParameter("Famliy Name");
-   if (pParameter != NULL)
-     {
-       QStringList Values;
-       Values.append("Famliy Name");
-       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-       new QTreeWidgetItem(mpTreeWidget, Values);
-     }
-   pParameter = configFile->getParameter("Organization");
-   if (pParameter != NULL)
-     {
-       QStringList Values;
-       Values.append("Organization");
-       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-       new QTreeWidgetItem(mpTreeWidget, Values);
-     }
-     pParameter = configFile->getParameter("Email");
-     if (pParameter != NULL)
-     {
-       QStringList Values;
-       Values.append("Email");
-       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-       new QTreeWidgetItem(mpTreeWidget, Values);
-     }
+    {
+      QStringList Values;
+      Values.append("Given Name");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Famliy Name");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Famliy Name");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Organization");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Organization");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
+
+  pParameter = configFile->getParameter("Email");
+
+  if (pParameter != NULL)
+    {
+      QStringList Values;
+      Values.append("Email");
+      Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
+      new QTreeWidgetItem(mpTreeWidget, Values);
+    }
 
 }
 
@@ -336,6 +346,15 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
+  Items = mpTreeWidget->findItems("Display Populations during Optimization", 0, 0);
+  pParameter = configFile->getParameter("Display Populations during Optimization");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
+    }
+
   Items = mpTreeWidget->findItems("Allow Simultaneous Event Assignments", 0, 0);
   pParameter = configFile->getParameter("Allow Simultaneous Event Assignments");
 
@@ -388,38 +407,45 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-   Items = mpTreeWidget->findItems("Given Name", 0, 0);
-   pParameter = configFile->getParameter("Given Name");
-   if (Items.size() > 0 &&
-       pParameter != NULL)
-     {
-       if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
-         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
-     }
-   Items = mpTreeWidget->findItems("Famliy Name", 0, 0);
-   pParameter = configFile->getParameter("Famliy Name");
-   if (Items.size() > 0 &&
-       pParameter != NULL)
-     {
-       if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
-         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
-     }
-   Items = mpTreeWidget->findItems("Organization", 0, 0);
-   pParameter = configFile->getParameter("Organization");
-   if (Items.size() > 0 &&
-       pParameter != NULL)
-     {
-       if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
-         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
-     }
-   Items = mpTreeWidget->findItems("Email", 0, 0);
-   pParameter = configFile->getParameter("Email");
-   if (Items.size() > 0 &&
-       pParameter != NULL)
-     {
-       if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
-         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
-     }
+  Items = mpTreeWidget->findItems("Given Name", 0, 0);
+  pParameter = configFile->getParameter("Given Name");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
+
+  Items = mpTreeWidget->findItems("Famliy Name", 0, 0);
+  pParameter = configFile->getParameter("Famliy Name");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
+
+  Items = mpTreeWidget->findItems("Organization", 0, 0);
+  pParameter = configFile->getParameter("Organization");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
+
+  Items = mpTreeWidget->findItems("Email", 0, 0);
+  pParameter = configFile->getParameter("Email");
+
+  if (Items.size() > 0 &&
+      pParameter != NULL)
+    {
+      if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
+        pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
+    }
 
   done(1);
 }
