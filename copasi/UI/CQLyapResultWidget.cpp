@@ -90,6 +90,7 @@ bool CQLyapResultWidget::loadFromBackend()
   unsigned C_INT32 i, imax = pProblem->getExponentNumber();
 
   mTableExponents->setRowCount(imax);
+  mTableExponents->setSortingEnabled(false);
 
   for (i = 0; i < imax; ++i)
     {
@@ -107,6 +108,8 @@ bool CQLyapResultWidget::loadFromBackend()
           pItem->setData(Qt::DisplayRole, mpTask->exponents()[i]);
         }
     }
+
+  mTableExponents->setSortingEnabled(true);
 
   mLineEditSum->setText(QString::number(mpTask->sumOfExponents()));
 
