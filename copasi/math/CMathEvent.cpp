@@ -1428,7 +1428,7 @@ void CMathEvent::createUpdateSequences()
   CObjectInterface::UpdateSequence StateEffects;
   mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CMath::Default, EventTargets, ExtendedStateValues);
 
-  if (!StateEffects.empty() > 0)
+  if (!StateEffects.empty())
     {
       mEffectsSimulation |= CMath::State;
     }
@@ -1436,7 +1436,7 @@ void CMathEvent::createUpdateSequences()
   CObjectInterface::UpdateSequence ContiousSimulationEffects;
   mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CMath::Default, EventTargets, ContinuousSimulationValues);
 
-  if (!ContiousSimulationEffects.empty() > 0)
+  if (!ContiousSimulationEffects.empty())
     {
       mEffectsSimulation |=  CMath::ContinuousSimulation;
     }
@@ -1444,7 +1444,7 @@ void CMathEvent::createUpdateSequences()
   CObjectInterface::UpdateSequence DiscreteSimulationEffects;
   mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CMath::Default, EventTargets, DiscreteSimulationValues);
 
-  if (!DiscreteSimulationEffects.empty() > 0)
+  if (!DiscreteSimulationEffects.empty())
     {
       mEffectsSimulation |=  CMath::EventSimulation;
     }
