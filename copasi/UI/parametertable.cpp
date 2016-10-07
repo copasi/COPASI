@@ -160,6 +160,9 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
 
 void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction * pReaction)
 {
+  bool wasSortingEnabled = isSortingEnabled();
+  setSortingEnabled(false);
+
   blockSignals(true); // So cellChanged doesn't fire when items are set.
 
   setRowCount(0);
@@ -472,6 +475,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
   resizeColumnsToContents();
 
   blockSignals(false);
+  setSortingEnabled(wasSortingEnabled);
 }
 
 void ParameterTable::handleCurrentCell(int row, int col, int, int)
