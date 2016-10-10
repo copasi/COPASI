@@ -618,9 +618,11 @@ void CQEventWidget1::deleteEvent()
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
-  pDataModel->getModel()->removeEvent(mKey);
+  pModel->removeEvent(mKey);
 
   mpEvent = NULL;
 
@@ -631,7 +633,9 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CEvent* pEvent = &pModel->getEvents()[pEventData->getName()];
 
@@ -649,7 +653,9 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 
 void CQEventWidget1::addEvent(UndoEventData *pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CEvent* pEvent = pData->restoreObjectIn(pModel);
 

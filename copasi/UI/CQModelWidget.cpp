@@ -280,7 +280,9 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
 
   if (mpModel == NULL)
     {
-      GET_MODEL_OR(pModel, return false);
+      assert(mpDataModel != NULL);
+      CModel * pModel = mpDataModel->getModel();
+      assert(pModel != NULL);
       mpModel = pModel;
     }
 

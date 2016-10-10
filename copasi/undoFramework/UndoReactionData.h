@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,14 +13,12 @@
 #ifndef UNDOREACTIONDATA_H_
 #define UNDOREACTIONDATA_H_
 
-#include "qtUtilities.h"
 #include "UndoData.h"
 
 #include <copasi/model/CReaction.h>
 
 class CReactionInterface;
 class UndoSpeciesData;
-
 
 class UndoReactionData: public UndoData
 {
@@ -30,7 +28,6 @@ public:
                    const std::string &type = "");
 
   UndoReactionData(const CReaction* pReaction, bool trackDependencies = true);
-
 
   virtual ~UndoReactionData();
 
@@ -52,8 +49,6 @@ private:
    */
   CReactionInterface* mpRi;
   std::vector<std::string> mAdditionalKeys;
-
-
 };
 
 #endif /* UNDOREACTIONDATA_H_ */

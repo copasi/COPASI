@@ -210,7 +210,9 @@ void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   std::string key = pModel->getEvents()[index.row()].getKey();
 

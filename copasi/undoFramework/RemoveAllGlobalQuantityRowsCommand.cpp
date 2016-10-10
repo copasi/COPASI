@@ -29,7 +29,10 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(
   , mpGlobalQuantityDM(pGlobalQuantityDM)
   , mpGlobalQuantityData()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = mpGlobalQuantityDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   for (int i = 0; i != pGlobalQuantityDM->rowCount() - 1; ++i)
     {
@@ -61,9 +64,10 @@ void RemoveAllGlobalQuantityRowsCommand::undo()
 RemoveAllGlobalQuantityRowsCommand::~RemoveAllGlobalQuantityRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoGlobalQuantityData * data, mpGlobalQuantityData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoGlobalQuantityData * data, mpGlobalQuantityData)
+    {
+      pdelete(data);
+    }
+
   mpGlobalQuantityData.clear();
 }

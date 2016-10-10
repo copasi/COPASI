@@ -662,8 +662,6 @@ void CQCompartment::createNewCompartment()
 
 void CQCompartment::deleteCompartment()
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   if (mpCompartment == NULL) return;
 
   QMessageBox::StandardButton choice =
@@ -675,7 +673,9 @@ void CQCompartment::deleteCompartment()
     {
       case QMessageBox::Ok:
       {
-        pDataModel->getModel()->removeCompartment(mKey);
+        CModel * pModel = mpCompartment->getModel();
+        assert(pModel != NULL);
+        pModel->removeCompartment(mKey);
 
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
         protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
@@ -691,9 +691,10 @@ void CQCompartment::deleteCompartment()
 
 void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
+
+  CModel * pModel = mpCompartment->getModel();
+  assert(pModel != NULL);
 
   CCompartment* pComp = &pModel->getCompartments()[pCompartmentData->getName()];
 
@@ -710,9 +711,9 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 
 void CQCompartment::addCompartment(UndoCompartmentData *pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   //reinsert all the Compartments
+  CModel * pModel = mpCompartment->getModel();
+  assert(pModel != NULL);
   pData->restoreObjectIn(pModel);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pData->getKey());
   switchToWidget(C_INVALID_INDEX, pData->getKey());
@@ -754,7 +755,8 @@ bool CQCompartment::changeValue(const std::string& key,
 
         if (pUndoData != NULL)
           {
-            GET_MODEL_OR(pModel, return false);
+            CModel * pModel = mpCompartment->getModel();
+            assert(pModel != NULL);
             pUndoData->fillDependentObjects(pModel);
           }
 

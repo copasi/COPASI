@@ -25,30 +25,6 @@ class CCopasiParameterGroup;
 class CopasiWidget;
 class QObject;
 
-#define GET_MODEL(target)\
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);\
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);\
-  assert(pDataModel != NULL);\
-  CModel * target = pDataModel->getModel();\
-  assert(target != NULL);
-
-#define GET_MODEL_OR(target, code)\
-  if (CCopasiRootContainer::getDatamodelList()->size()  == 0) code;\
-  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);\
-  if (pDataModel == NULL) code;\
-  CModel * target = pDataModel->getModel();\
-  if (target == NULL) code;
-
-#define GET_MODEL_OR_RETURN(target)\
-  GET_MODEL_OR(target,return);
-
-//#define GET_MODEL_OR_RETURN(target)\
-//  if (CCopasiRootContainer::getDatamodelList()->size()  == 0) return;\
-//  CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);\
-//  if (pDataModel == NULL) return;\
-//  CModel * target = pDataModel->getModel();\
-//  if (target == NULL) return;
-
 /**
  * notifies the UI of a modification of the model.
  *

@@ -215,7 +215,9 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QVariant &value)
   mNewEquation = value.toString();
   mCreatedKeys.clear();
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   // this loads the reaction into a CReactionInterface object.
   // the gui works on this object and later writes back the changes to ri;
@@ -406,7 +408,9 @@ bool CQReactionDM::reactionDataChange(const std::string & key,
 }
 bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &funcName)
 {
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CReactionInterface ri(pModel);
   ri.initFromReaction(pRea->getKey());
@@ -417,7 +421,9 @@ bool CQReactionDM::updateReactionWithFunctionName(CReaction *pRea, QString &func
 
 void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   int position = command->position();
   int rows = command->rows();
@@ -452,7 +458,9 @@ void CQReactionDM::insertNewReactionRow(InsertReactionRowsCommand* command)
 
 void CQReactionDM::addReactionRow(CReaction *pReaction)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
@@ -465,7 +473,9 @@ void CQReactionDM::addReactionRow(CReaction *pReaction)
 
 void CQReactionDM::deleteReactionRow(CReaction *pReaction)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
@@ -482,7 +492,9 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
@@ -539,7 +551,9 @@ bool CQReactionDM::insertReactionRows(QList <UndoReactionData *>& pData)
 
 void CQReactionDM::addReactionRow(UndoReactionData *pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CReaction *pReaction = pData->restoreObjectIn(pModel);
 
@@ -556,7 +570,9 @@ void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
 {
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   if (pModel->getReactions().getIndex(pData->getName()) == C_INVALID_INDEX)
     return;

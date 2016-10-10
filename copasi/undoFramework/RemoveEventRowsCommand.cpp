@@ -28,7 +28,10 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
   , mpEventData()
   , mFirstTime(true)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pEventDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   QModelIndexList::const_iterator i;
 
@@ -71,9 +74,10 @@ void RemoveEventRowsCommand::undo()
 RemoveEventRowsCommand::~RemoveEventRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoEventData * data, mpEventData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoEventData * data, mpEventData)
+    {
+      pdelete(data);
+    }
+
   mpEventData.clear();
 }

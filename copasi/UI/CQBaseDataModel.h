@@ -43,6 +43,7 @@ public:
   void setDataModel(CCopasiDataModel * pDataModel);
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
+  CCopasiDataModel * getDataModel() const;
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;

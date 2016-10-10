@@ -12,7 +12,6 @@
 #include "report/CCopasiRootContainer.h"
 #include "model/CModelValue.h"
 #include "model/CModel.h"
-#include "qtUtilities.h"
 
 #include "CQGlobalQuantityDM.h"
 
@@ -83,7 +82,10 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
 void GlobalQuantityDataChangeCommand::redo()
 {
   mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mNew, mRole);
-  GET_MODEL_OR_RETURN(pModel);
+
+  assert(mpGlobalQuantityDM->getDataModel() != NULL);
+  CModel * pModel = mpGlobalQuantityDM->getDataModel()->getModel();
+  assert(pModel != NULL);
 
   CModelValue *pModelValue = pModelValue = &pModel->getModelValues()[mIndex.row()];
   setName(pModelValue->getObjectName());

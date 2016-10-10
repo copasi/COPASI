@@ -49,7 +49,10 @@ void InsertEventRowsCommand::redo()
   if (mpEventData == NULL)
     {
       mpEventDM->insertNewEventRow(mPosition, mRows, mIndex, mValue);
-      GET_MODEL_OR_RETURN(pModel);
+
+      assert(mpEventDM->getDataModel() != NULL);
+      CModel * pModel = mpEventDM->getDataModel()->getModel();
+      assert(pModel != NULL);
 
       int Index = mIndex.isValid() ? mIndex.row() : mPosition;
 

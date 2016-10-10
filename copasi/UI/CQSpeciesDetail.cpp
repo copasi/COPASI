@@ -649,7 +649,9 @@ void CQSpeciesDetail::slotTypeChanged(int type)
 //Undo methods
 void CQSpeciesDetail::createNewSpecies()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   leave();
 
@@ -717,7 +719,9 @@ void CQSpeciesDetail::deleteSpecies()
 
 void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
@@ -735,7 +739,9 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
 void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   //reinsert the species
   CMetab *pSpecies =  pSData->restoreObjectIn(pModel);
@@ -818,7 +824,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 
 void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   //find the species of interest and switch to its widget
   CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
@@ -872,7 +880,9 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
 
 void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   //find the species of interest and switch to its widget
   CMetab *pSpecie = pModel->findMetabByName(pSData->getName());

@@ -13,7 +13,6 @@
 #include "report/CCopasiRootContainer.h"
 #include "model/CEvent.h"
 #include "model/CModel.h"
-#include "qtUtilities.h"
 
 #include "CQEventDM.h"
 
@@ -29,7 +28,9 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
   , mPathIndex()
 {
   //set the data for UNDO history
-  GET_MODEL_OR_RETURN(pModel);
+  assert(pEventDM->mpDataModel != NULL);
+  CModel * pModel = pEventDM->getDataModel()->getModel();
+  assert(pModel != NULL);
 
   if (pModel->getEvents().size() <= (size_t)index.row())
     {

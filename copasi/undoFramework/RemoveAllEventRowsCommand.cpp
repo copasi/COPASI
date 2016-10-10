@@ -25,7 +25,10 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(
   , mpEventDM(pEventDM)
   , mpEventData()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = mpEventDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   for (int i = 0; i != pEventDM->rowCount() - 1; ++i)
     {
@@ -56,9 +59,10 @@ void RemoveAllEventRowsCommand::undo()
 RemoveAllEventRowsCommand::~RemoveAllEventRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoEventData * data, mpEventData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoEventData * data, mpEventData)
+    {
+      pdelete(data);
+    }
+
   mpEventData.clear();
 }

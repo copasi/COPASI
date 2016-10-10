@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +38,11 @@ UndoReactionData::UndoReactionData(const CReaction *pReaction
   : UndoData(pReaction->getKey(), pReaction->getObjectName())
   , mpRi(NULL)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pReaction->getObjectDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
+
   mpRi = new CReactionInterface(pModel);
   mpRi->initFromReaction(pReaction->getKey());
 
@@ -94,7 +98,6 @@ UndoReactionData::fillObject(CModel *pModel)
   mpRi->createMetabolites(mAdditionalKeys);
   mpRi->createOtherObjects(mAdditionalKeys);
   mpRi->writeBackToReaction(pRea);
-
 }
 
 CReactionInterface *UndoReactionData::getRi() const
@@ -117,5 +120,3 @@ UndoReactionData::setAdditionalKeys(const std::vector<std::string> &additionalKe
 {
   mAdditionalKeys = additionalKeys;
 }
-
-

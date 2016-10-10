@@ -30,7 +30,10 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
   , mFirstTime(true)
 {
 
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pGlobalQuantityDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   QModelIndexList::const_iterator i;
 
@@ -74,9 +77,10 @@ void RemoveGlobalQuantityRowsCommand::undo()
 RemoveGlobalQuantityRowsCommand::~RemoveGlobalQuantityRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoGlobalQuantityData * data, mpGlobalQuantityData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoGlobalQuantityData * data, mpGlobalQuantityData)
+    {
+      pdelete(data);
+    }
+
   mpGlobalQuantityData.clear();
 }

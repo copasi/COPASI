@@ -550,8 +550,6 @@ void CQModelValue::deleteGlobalQuantity()
   if (mpModelValue == NULL)
     return;
 
-  GET_MODEL_OR_RETURN(pModel);
-
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "quantity",
                                 FROM_UTF8(mpModelValue->getObjectName()),
@@ -561,7 +559,10 @@ void CQModelValue::deleteGlobalQuantity()
     {
       case QMessageBox::Ok:
       {
-        pDataModel->getModel()->removeModelValue(mKey);
+        assert(mpDataModel != NULL);
+        CModel * pModel = mpDataModel->getModel();
+        assert(pModel != NULL);
+        pModel->removeModelValue(mKey);
         mpModelValue = NULL;
 
 #undef DELETE
@@ -579,7 +580,9 @@ void CQModelValue::deleteGlobalQuantity()
 
 void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
 
@@ -594,7 +597,9 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
 
 void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CModelValue *pGlobalQuantity =  pData->restoreObjectIn(pModel);
 

@@ -29,7 +29,9 @@ RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM
   , mpCompartmentDM(pCompartmentDM)
   , mpCompartmentData()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(pCompartmentDM->getDataModel() != NULL);
+  CModel * pModel = pCompartmentDM->getDataModel()->getModel();
+  assert(pModel != NULL);
 
   for (int i = 0; i != pCompartmentDM->rowCount() - 1; ++i)
     {
@@ -62,9 +64,10 @@ void RemoveAllCompartmentRowsCommand::undo()
 RemoveAllCompartmentRowsCommand::~RemoveAllCompartmentRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoCompartmentData * data, mpCompartmentData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoCompartmentData * data, mpCompartmentData)
+    {
+      pdelete(data);
+    }
+
   mpCompartmentData.clear();
 }

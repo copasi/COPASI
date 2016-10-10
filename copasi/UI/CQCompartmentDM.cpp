@@ -450,8 +450,6 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
   if (rows.isEmpty())
     return false;
 
-  GET_MODEL_OR(pModel, return false);
-
   // Build the list of pointers to items to be deleted
   // before actually deleting any item.
   QList <CCompartment *> pCompartments;
@@ -459,8 +457,8 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
   for (i = rows.begin(); i != rows.end(); ++i)
     {
-      if (!isDefaultRow(*i) && &pModel->getCompartments()[i->row()])
-        pCompartments.append(&pModel->getCompartments()[i->row()]);
+      if (!isDefaultRow(*i) && &mpCompartments->operator[](i->row()))
+        pCompartments.append(&mpCompartments->operator[](i->row()));
     }
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
@@ -472,7 +470,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
       CCompartment * pCompartment = *j;
 
       size_t delRow =
-        pModel->getCompartments().CCopasiVector< CCompartment >::getIndex(pCompartment);
+        mpCompartments->CCopasiVector< CCompartment >::getIndex(pCompartment);
 
       if (delRow == C_INVALID_INDEX)
         continue;
@@ -491,8 +489,6 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
 bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData)
 {
-  GET_MODEL_OR(pModel, return false);
-
   //reinsert all the Compartments
   QList <UndoCompartmentData *>::const_iterator k;
 
@@ -501,6 +497,10 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
   for (k = pData.begin(); k != pData.end(); ++k)
     {
       UndoCompartmentData* data = *k;
+
+      assert(mpDataModel != NULL);
+      CModel * pModel = mpDataModel->getModel();
+      assert(pModel != NULL);
 
       CCompartment *pCompartment = data->restoreObjectIn(pModel);
 
@@ -518,14 +518,16 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
 
 void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
   QList <UndoCompartmentData *>::const_iterator j;
 
   for (j = pData.begin(); j != pData.end(); ++j)
     {
+      assert(mpDataModel != NULL);
+      CModel * pModel = mpDataModel->getModel();
+      assert(pModel != NULL);
+
       UndoCompartmentData * data = *j;
       size_t index = pModel->getCompartments().getIndex(data->getName());
 

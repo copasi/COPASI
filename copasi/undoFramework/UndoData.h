@@ -99,11 +99,6 @@ public:
   bool hasCN() const;
 
   /**
-   * @returns the resolved object (from CN) if found, NULL otherwise.
-   */
-  virtual const CCopasiObject * getObject() const;
-
-  /**
    * @param pModel the model to use as base for the search
    * @returns the resolved object (from CN) if found, NULL otherwise.
    */
@@ -114,11 +109,6 @@ public:
    * @returns the resolved object (from CN) if found, NULL otherwise.
    */
   virtual const CCopasiObject * getObject(const CCopasiDataModel* pModel) const;
-
-  /**
-   * @returns the resolved object (from CN) if found, NULL otherwise.
-   */
-  virtual CCopasiObject * getObject();
 
   /**
    * @param pModel the model to use as base for the search

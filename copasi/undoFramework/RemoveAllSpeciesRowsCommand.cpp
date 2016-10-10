@@ -33,7 +33,10 @@ RemoveAllSpecieRowsCommand::RemoveAllSpecieRowsCommand(
   , mpSpecieDM(pSpecieDM)
   , mpSpeciesData()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pSpecieDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   for (int i = 0; i != pSpecieDM->rowCount() - 1; ++i)
     {
@@ -65,9 +68,10 @@ void RemoveAllSpecieRowsCommand::undo()
 RemoveAllSpecieRowsCommand::~RemoveAllSpecieRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoSpeciesData * data, mpSpeciesData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoSpeciesData * data, mpSpeciesData)
+    {
+      pdelete(data);
+    }
+
   mpSpeciesData.clear();
 }

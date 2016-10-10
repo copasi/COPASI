@@ -31,7 +31,10 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   , mpCompartmentData()
   , mFirstTime(true)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = mpCompartmentDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   QModelIndexList::const_iterator i;
 
@@ -72,9 +75,10 @@ void RemoveCompartmentRowsCommand::undo()
 
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()
 {
-  foreach(UndoCompartmentData * data, mpCompartmentData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoCompartmentData * data, mpCompartmentData)
+    {
+      pdelete(data);
+    }
+
   mpCompartmentData.clear();
 }

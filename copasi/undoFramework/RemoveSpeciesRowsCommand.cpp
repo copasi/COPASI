@@ -31,7 +31,10 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
   , mpSpeciesData()
   , mFirstTime(true)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pSpecieDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   QModelIndexList::const_iterator i;
 
@@ -73,9 +76,10 @@ void RemoveSpecieRowsCommand::undo()
 RemoveSpecieRowsCommand::~RemoveSpecieRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoSpeciesData * data, mpSpeciesData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoSpeciesData * data, mpSpeciesData)
+    {
+      pdelete(data);
+    }
+
   mpSpeciesData.clear();
 }

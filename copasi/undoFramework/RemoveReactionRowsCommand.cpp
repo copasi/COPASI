@@ -29,7 +29,10 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
   , mpReaData()
   , mFirstTime(true)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pReaDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   QModelIndexList::const_iterator i;
 
@@ -72,9 +75,10 @@ void RemoveReactionRowsCommand::undo()
 RemoveReactionRowsCommand::~RemoveReactionRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoReactionData * data, mpReaData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoReactionData * data, mpReaData)
+    {
+      pdelete(data);
+    }
+
   mpReaData.clear();
 }

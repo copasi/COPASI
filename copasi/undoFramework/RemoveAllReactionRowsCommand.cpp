@@ -28,7 +28,10 @@ RemoveAllReactionRowsCommand::RemoveAllReactionRowsCommand(
   , mpReaData()
 {
 
-  GET_MODEL_OR_RETURN(pModel);
+  CCopasiDataModel * pDataModel = pReaDM->getDataModel();
+  assert(pDataModel != NULL);
+  CModel * pModel = pDataModel->getModel();
+  assert(pModel != NULL);
 
   for (int i = 0; i != pReaDM->rowCount() - 1; ++i)
     {
@@ -59,9 +62,10 @@ void RemoveAllReactionRowsCommand::undo()
 RemoveAllReactionRowsCommand::~RemoveAllReactionRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoReactionData * data, mpReaData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoReactionData * data, mpReaData)
+    {
+      pdelete(data);
+    }
+
   mpReaData.clear();
 }

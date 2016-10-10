@@ -54,54 +54,54 @@ public:
    */
   virtual ~CEvaluationNodeLogical();
 
-  /**
-   * Calculate the numerical result of the node. It is assumed that
-   * all child nodes are up to date.
-   */
-  virtual inline void calculate()
-  {
-    switch (mSubType)
-      {
-        case S_OR:
-          mValue = (*mpLeftValue > 0.5 ||
-                    *mpRightValue > 0.5) ? 1.0 : 0.0;
-          break;
+//  /**
+//   * Calculate the numerical result of the node. It is assumed that
+//   * all child nodes are up to date.
+//   */
+//  virtual inline void calculate()
+//  {
+//    switch (mSubType)
+//      {
+//        case S_OR:
+//          mValue = (*mpLeftValue > 0.5 ||
+//                    *mpRightValue > 0.5) ? 1.0 : 0.0;
+//          break;
 
-        case S_XOR:
-          mValue = ((*mpLeftValue > 0.5 && *mpRightValue < 0.5) ||
-                    (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
-          break;
+//        case S_XOR:
+//          mValue = ((*mpLeftValue > 0.5 && *mpRightValue < 0.5) ||
+//                    (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
+//          break;
 
-        case S_AND:
-          mValue = (*mpLeftValue > 0.5 &&
-                    *mpRightValue > 0.5) ? 1.0 : 0.0;
-          break;
+//        case S_AND:
+//          mValue = (*mpLeftValue > 0.5 &&
+//                    *mpRightValue > 0.5) ? 1.0 : 0.0;
+//          break;
 
-        case S_EQ:
-          mValue = (*mpLeftValue == *mpRightValue) ? 1.0 : 0.0;
-          break;
+//        case S_EQ:
+//          mValue = (*mpLeftValue == *mpRightValue) ? 1.0 : 0.0;
+//          break;
 
-        case S_NE:
-          mValue = (*mpLeftValue != *mpRightValue) ? 1.0 : 0.0;
-          break;
+//        case S_NE:
+//          mValue = (*mpLeftValue != *mpRightValue) ? 1.0 : 0.0;
+//          break;
 
-        case S_GT:
-          mValue = (*mpLeftValue > *mpRightValue) ? 1.0 : 0.0;
-          break;
+//        case S_GT:
+//          mValue = (*mpLeftValue > *mpRightValue) ? 1.0 : 0.0;
+//          break;
 
-        case S_GE:
-          mValue = (*mpLeftValue >= *mpRightValue) ? 1.0 : 0.0;
-          break;
+//        case S_GE:
+//          mValue = (*mpLeftValue >= *mpRightValue) ? 1.0 : 0.0;
+//          break;
 
-        case S_LT:
-          mValue = (*mpLeftValue < *mpRightValue) ? 1.0 : 0.0;
-          break;
+//        case S_LT:
+//          mValue = (*mpLeftValue < *mpRightValue) ? 1.0 : 0.0;
+//          break;
 
-        case S_LE:
-          mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
-          break;
-      }
-  }
+//        case S_LE:
+//          mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
+//          break;
+//}
+//}
 
   /**
    * Compile a node;

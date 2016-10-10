@@ -14,7 +14,6 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 #include "CQCompartmentDM.h"
-#include "qtUtilities.h"
 
 #include "CompartmentDataChangeCommand.h"
 #include "UndoCompartmentData.h"
@@ -35,7 +34,9 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
 {
   //set the data for UNDO history
-  GET_MODEL_OR_RETURN(pModel);
+  assert(pCompartmentDM->getDataModel() != NULL);
+  CModel * pModel = pCompartmentDM->getDataModel()->getModel();
+  assert(pModel != NULL);
 
   if (pModel->getCompartments().size() <= (size_t)index.row())
     {

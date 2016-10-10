@@ -29,7 +29,6 @@
 
 #include <copasi/report/CCopasiRootContainer.h>
 
-#include <copasi/UI/qtUtilities.h>
 #include <copasi/UI/listviews.h>
 
 UndoData::UndoData(const std::string &key  /*= ""*/,
@@ -142,12 +141,6 @@ UndoData::hasCN() const
   return mCN.empty();
 }
 
-const CCopasiObject *UndoData::getObject() const
-{
-  GET_MODEL_OR(pModel, return NULL);
-  return getObject(pModel);
-}
-
 const CCopasiObject *UndoData::getObject(const CModel *pModel) const
 {
   if (pModel == NULL) return NULL;
@@ -160,12 +153,6 @@ const CCopasiObject *UndoData::getObject(const CCopasiDataModel *pModel) const
   if (pModel == NULL) return NULL;
 
   return dynamic_cast<const CCopasiObject*>(pModel->getObject(getCN()));
-}
-
-CCopasiObject *UndoData::getObject()
-{
-  GET_MODEL_OR(pModel, return NULL);
-  return getObject(pModel);
 }
 
 CCopasiObject *UndoData::getObject(CModel *pModel)

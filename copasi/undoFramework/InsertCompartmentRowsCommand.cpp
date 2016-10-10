@@ -59,7 +59,9 @@ void InsertCompartmentRowsCommand::redo()
 {
   if (mpCompartmentData == NULL)
     {
-      GET_MODEL_OR_RETURN(pModel);
+      assert(mpCompartmentDM->getDataModel() != NULL);
+      CModel * pModel = mpCompartmentDM->getDataModel()->getModel();
+      assert(pModel != NULL);
 
       mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, mIndex, mValue);
 

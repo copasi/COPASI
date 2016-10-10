@@ -14,7 +14,6 @@
 #include "ReactionDataChangeCommand.h"
 #include "CQReactionDM.h"
 #include <QDebug>
-#include "qtUtilities.h"
 
 ReactionDataChangeCommand::ReactionDataChangeCommand(
   const QModelIndex& index,
@@ -32,7 +31,9 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
 {
   // stores the data
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(pReactionDM->getDataModel() != NULL);
+  CModel * pModel = pReactionDM->getDataModel()->getModel();
+  assert(pModel != NULL);
 
   CCopasiVectorNS < CReaction > &reactions = pModel->getReactions();
 

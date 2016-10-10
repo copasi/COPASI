@@ -98,3 +98,8 @@ QUndoStack* CQBaseDataModel::getUndoStack()
 {
   return mpUndoStack;
 }
+
+CCopasiDataModel * CQBaseDataModel::getDataModel() const
+{
+  return mpDataModel;
+}

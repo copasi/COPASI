@@ -837,7 +837,10 @@ void ReactionsWidget1::setFramework(int framework)
 //Undo methods
 void ReactionsWidget1::createNewReaction()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
+
   std::string name = "reaction_1";
   size_t i = 1;
 
@@ -856,7 +859,9 @@ void ReactionsWidget1::createNewReaction()
 
 void ReactionsWidget1::deleteReaction()
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CReaction * pReaction =
     dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
@@ -872,7 +877,7 @@ void ReactionsWidget1::deleteReaction()
     {
       case QMessageBox::Ok:                                                     // Yes or Enter
       {
-        pDataModel->getModel()->removeReaction(mKey);
+        pModel->removeReaction(mKey);
 
         mpRi->setFunctionWithEmptyMapping("");
 
@@ -889,7 +894,9 @@ void ReactionsWidget1::deleteReaction()
 
 void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterface *pRi)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CReaction *pRea = pModel->createReaction(reaObjectName);
   std::string key = pRea->getKey();
@@ -903,7 +910,9 @@ void ReactionsWidget1::deleteReaction(CReaction *pReaction)
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
 
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   std::string key = pReaction->getKey();
   pModel->removeReaction(key);
@@ -1058,7 +1067,9 @@ bool ReactionsWidget1::changeReaction(
 
 void ReactionsWidget1::addReaction(UndoReactionData *pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CReaction *pReaction = pData->restoreObjectIn(pModel);
 

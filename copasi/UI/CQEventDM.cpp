@@ -275,8 +275,6 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
   if (!index.isValid() || role != Qt::EditRole)
     return false;
 
-  GET_MODEL_OR(pModel, return false);
-
   bool defaultRow = isDefaultRow(index);
 
   if (defaultRow)
@@ -286,6 +284,10 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
       else
         return false;
     }
+
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   if ((int)pModel->getEvents().size() <= index.row())
     return false;
@@ -308,7 +310,9 @@ bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
 
 void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
@@ -324,7 +328,9 @@ void CQEventDM::insertNewEventRow(int position, int rows, const QModelIndex& ind
 
 void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   size_t index = pModel->getEvents().getIndex(pEventData->getName());
 
@@ -338,7 +344,9 @@ void CQEventDM::deleteEventRow(UndoEventData *pEventData)
 
 void CQEventDM::addEventRow(UndoEventData *pEventData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
@@ -360,7 +368,9 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
@@ -402,7 +412,9 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
 {
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
@@ -426,7 +438,9 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
 
 void CQEventDM::deleteEventRows(QList <UndoEventData *>& pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 

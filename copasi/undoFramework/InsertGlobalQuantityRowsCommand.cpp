@@ -50,7 +50,10 @@ void InsertGlobalQuantityRowsCommand::redo()
   if (mpGlobalQuantityData == NULL)
     {
       mpGlobalQuantityDM->insertNewGlobalQuantityRow(mPosition, mRows, mIndex, mValue);
-      GET_MODEL_OR_RETURN(pModel);
+
+      assert(mpGlobalQuantityDM->getDataModel() != NULL);
+      CModel * pModel = mpGlobalQuantityDM->getDataModel()->getModel();
+      assert(pModel != NULL);
 
       int Index = mIndex.isValid() ? mIndex.row() : mPosition;
       CModelValue *pGlobalQuantity = &pModel->getModelValues()[Index];

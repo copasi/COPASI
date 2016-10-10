@@ -463,7 +463,9 @@ bool CQSpecieDM::specieDataChange(
 {
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CMetab * pSpecies =
     dynamic_cast<CMetab*>(pUndoSpeciesData->getObject(pModel));
@@ -585,7 +587,9 @@ bool CQSpecieDM::specieDataChange(
 QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows, const QModelIndex&index, const QVariant& value)
 {
   QList <UndoSpeciesData *> result;
-  GET_MODEL_OR(pModel, return result);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   bool createdCompartment = false;
 
@@ -637,7 +641,9 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
 
 void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
@@ -666,7 +672,9 @@ void CQSpecieDM::deleteSpecieRow(UndoSpeciesData *pSpecieData)
 
 void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 {
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
@@ -685,7 +693,9 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
   if (rows.isEmpty())
     return false;
 
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
@@ -726,7 +736,9 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
 
 bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
 {
-  GET_MODEL_OR(pModel, return false);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   //reinsert all the species
   QList <UndoSpeciesData *>::const_iterator i;
@@ -751,8 +763,6 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
 
 void CQSpecieDM::deleteSpecieRows(QList <UndoSpeciesData *>& pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
   QList <UndoSpeciesData *>::const_iterator j;

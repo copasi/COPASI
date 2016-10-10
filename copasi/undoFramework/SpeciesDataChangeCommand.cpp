@@ -17,8 +17,6 @@
 
 #include <copasi/undoFramework/UndoSpeciesData.h>
 
-#include "qtUtilities.h"
-
 #include "SpeciesDataChangeCommand.h"
 
 SpecieDataChangeCommand::SpecieDataChangeCommand(
@@ -36,7 +34,8 @@ SpecieDataChangeCommand::SpecieDataChangeCommand(
 {
 
   //set the data for UNDO history
-  GET_MODEL_OR_RETURN(pModel);
+  CModel * pModel = pMetab->getModel();
+  assert(pModel != NULL);
 
   if (pMetab == NULL)
     return;
