@@ -80,9 +80,7 @@ public:
     hybridLSODA,
     hybridODE45,
     DsaLsodar,
-#ifdef WITH_SDE_SUPPORT
     stochasticRunkeKuttaRI5,
-#endif // WITH_SDE_SUPPORT
     tssILDM,
     tssILDMModified,
     tssCSP,

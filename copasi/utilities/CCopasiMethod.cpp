@@ -198,12 +198,9 @@ CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
         pMethod = new CTrajectoryMethodDsaLsodar(pParent, methodType, taskType);
         break;
 
-#ifdef WITH_SDE_SUPPORT
-
       case CTaskEnum::stochasticRunkeKuttaRI5:
         pMethod = new CStochasticRungeKuttaRI5(pParent, methodType, taskType);
         break;
-#endif // WITH_SDE_SUPPORT
 
       case CTaskEnum::tssILDM:
         pMethod = new CILDMMethod(pParent, methodType, taskType);
