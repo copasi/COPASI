@@ -170,9 +170,6 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
       // TODO In case a function is deleted we need to loop through all data models
       CCopasiDataModel* pDataModel = ListViews::dataModel(parent);
 
-      if (pDataModel == NULL) //Maybe should ensure a non-NULL, ListView-ancestor, parent is always set.
-        pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-
       assert(pDataModel != NULL);
     }
   else
