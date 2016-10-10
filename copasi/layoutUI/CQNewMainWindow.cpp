@@ -1856,3 +1856,35 @@ void CQNewMainWindow::closeEvent(QCloseEvent * event)
   removeFromMainWindow();
   this->QMainWindow::closeEvent(event);
 }
+
+CCopasiDataModel * CQNewMainWindow::getDataModel() const
+{
+  return mpDataModel;
+}
+
+// static
+CQNewMainWindow * CQNewMainWindow::ancestor(QObject * qObject)
+{
+  QObject * pParent = qObject;
+
+  while (pParent != NULL)
+    {
+      if (pParent->inherits("CQNewMainWindow"))
+        return static_cast< CQNewMainWindow * >(pParent);
+
+      pParent = pParent->parent();
+    }
+
+  return NULL;
+}
+
+// static
+CCopasiDataModel * CQNewMainWindow::dataModel(QObject * qObject)
+{
+  CQNewMainWindow * pNewMainWindow = ancestor(qObject);
+
+  if (pNewMainWindow != NULL)
+    return pNewMainWindow->getDataModel();
+
+  return NULL;
+}

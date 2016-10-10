@@ -58,6 +58,7 @@ C_FLOAT64 log2(const C_FLOAT64 __x)
 #include "CQLayoutMainWindow.h"
 
 #include "report/CCopasiRootContainer.h"
+#include "CQNewMainWindow.h"
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
 #include "utilities/CCopasiVector.h"
@@ -2066,11 +2067,12 @@ bool CQGLNetworkPainter::createDataSets()
 {
   int counter = 0;
   bool loadDataSuccessful = false;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
 
-  if (&CCopasiRootContainer::getDatamodelList()->operator[](0) != NULL)
+  CCopasiDataModel * pDataModel = CQNewMainWindow::dataModel(parent());
+
+  if (pDataModel != NULL)
     {
-      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time-Course"));
+      CTrajectoryTask *ptask = dynamic_cast< CTrajectoryTask * >(&pDataModel->getTaskList()->operator[]("Time-Course"));
       const CTimeSeries* pTimeSer = &ptask->getTimeSeries();
       CTimeSeries dummyTimeSeries;
 

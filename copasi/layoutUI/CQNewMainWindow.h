@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -358,6 +358,16 @@ public:
    * at the end.
    */
   void createSpringLayout(int numIterations, int updateInterval);
+
+  // Help a descendant get to it's potential CQNewMainWindow
+  // ancestor (e.g. to figure out mpDataModel)
+  static CQNewMainWindow * ancestor(QObject * qObject);
+
+  // convenience function to find/return the CCopasiDataModel
+  // from the/a CQNewMainWindow ancestor of a QObject
+  static CCopasiDataModel * dataModel(QObject * qObject);
+
+  CCopasiDataModel * getDataModel() const;
 
 protected:
   /** the layout thread */
