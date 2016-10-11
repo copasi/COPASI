@@ -239,3 +239,54 @@ std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & sym
 
   return ValidUnits;
 }
+
+bool CUnitDefinitionDB::appendDependentUnits(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependentUnits) const
+{
+  std::set< std::string > DeletedSymbols;
+
+  std::set< const CCopasiObject * >::const_iterator itCandidate = candidates.begin();
+  std::set< const CCopasiObject * >::const_iterator endCandidate = candidates.end();
+
+  for (; itCandidate != endCandidate; ++itCandidate)
+    {
+      const CUnitDefinition * pUnit = dynamic_cast< const CUnitDefinition * >(*itCandidate);
+
+      if (pUnit)
+        {
+          DeletedSymbols.insert(pUnit->getSymbol());
+        }
+    }
+
+  CCopasiVectorN< CUnitDefinition >::const_iterator it = begin();
+  CCopasiVectorN< CUnitDefinition >::const_iterator itEnd = end();
+
+  for (; it != itEnd; ++it)
+    {
+      std::set< std::string >::const_iterator itUsedSymbols = it->getUsedSymbols().begin();
+      std::set< std::string >::const_iterator endUsedSymbols = it->getUsedSymbols().end();
+      std::set< std::string >::const_iterator itDeletedSymbols = DeletedSymbols.begin();
+      std::set< std::string >::const_iterator endDeletedSymbols = DeletedSymbols.end();
+
+      while (itUsedSymbols != endUsedSymbols && itDeletedSymbols != endDeletedSymbols)
+        {
+          if (*itUsedSymbols < *itDeletedSymbols)
+            {
+              ++itUsedSymbols;
+              continue;
+            }
+
+          if (*itDeletedSymbols < *itUsedSymbols)
+            {
+              ++itDeletedSymbols;
+              continue;
+            }
+
+          dependentUnits.insert(&*it);
+
+          break;
+        }
+    }
+
+  return dependentUnits.size() > 0;
+}

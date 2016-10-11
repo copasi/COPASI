@@ -415,152 +415,173 @@ UndoDependentData::freeUndoData()
 
 void
 UndoDependentData::initializeFrom(
-  const std::set<const CCopasiObject *> &deletedObjects)
+  const std::set< const CCopasiObject * > &deletedObjects)
 {
   freeUndoData();
 
   if (deletedObjects.size() == 0)
     return;
 
-  // Determine the affected data model
-  const CCopasiDataModel * pDataModel = (*deletedObjects.begin())->getObjectDataModel();
+  std::set<const CCopasiObject *> DeletedObjects = deletedObjects;
 
-  // Determine the affected function DB
-  CFunctionDB * pFunctionDB =
-    dynamic_cast< CFunctionDB * >((*deletedObjects.begin())->getObjectAncestor("FunctionDB"));
+  std::set< const CCopasiDataModel * > DMs;
+  std::set< const CCopasiObject * >::const_iterator it = deletedObjects.begin();
+  std::set< const CCopasiObject * >::const_iterator end = deletedObjects.end();
 
-  if (pDataModel == NULL && pFunctionDB == NULL)
+  for (; it != end; ++it)
+    {
+      CCopasiDataModel * pDataModel = (*it)->getObjectDataModel();
+
+      if (pDataModel != NULL)
+        {
+          DMs.insert(pDataModel);
+        }
+      else
+        {
+          // We may have a unit definition or a function which may be used in any data model.
+          CCopasiVector< CCopasiDataModel >::const_iterator itDM = CCopasiRootContainer::getDatamodelList()->begin();
+          CCopasiVector< CCopasiDataModel >::const_iterator endDM = CCopasiRootContainer::getDatamodelList()->end();
+
+          for (; itDM != endDM; ++itDM)
+            {
+              DMs.insert(&*itDM);
+            }
+
+          break;
+        }
+    }
+
+  if (DMs.size() == 0)
     return;
-
-  if (pFunctionDB != NULL)
-    {
-      // TODO In case a function is deleted we need to loop through all data models
-      pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
-    }
-  else
-    {
-      pFunctionDB = CCopasiRootContainer::getFunctionList();
-    }
 
   //TODO presently assume only reaction objects can be deleted when GlobalQuantity is deleted
   std::set< const CCopasiObject * > Functions;
-  std::set< const CCopasiObject * > Reactions;
-  std::set< const CCopasiObject * > Metabolites;
-  std::set< const CCopasiObject * > Values;
-  std::set< const CCopasiObject * > Compartments;
-  std::set< const CCopasiObject * > Events;
+  std::set< const CCopasiObject * > Units;
 
-  bool Used = false;
+  // First check whether any units depend on the deleted objects since functions may have units.
+  CCopasiRootContainer::getUnitList()->appendDependentUnits(deletedObjects, Units);
 
-  if (pFunctionDB != NULL)
+  it = Units.begin();
+  end = Units.end();
+  DeletedObjects.insert(it, end);
+
+  for (; it != end; ++it)
     {
-      Used |= pFunctionDB->appendDependentFunctions(deletedObjects, Functions);
+      // TODO store the unit data
+    }
 
-      if (Functions.size() > 0)
+  // Check whether any functions depend on the deleted objects
+  CCopasiRootContainer::getFunctionList()->appendDependentFunctions(deletedObjects, Functions);
+  it = Functions.begin();
+  end = Functions.end();
+  DeletedObjects.insert(it, end);
+
+  for (; it != end; ++it)
+    {
+      // TODO store the function data
+    }
+
+  std::set< const CCopasiDataModel * >::const_iterator itDM = DMs.begin();
+  std::set< const CCopasiDataModel * >::const_iterator endDM = DMs.end();
+
+  for (; itDM != endDM; ++itDM)
+    {
+      const CModel* pModel = (*itDM)->getModel();
+
+      if (pModel == NULL)
+        continue;
+
+      std::set< const CCopasiObject * > Reactions;
+      std::set< const CCopasiObject * > Metabolites;
+      std::set< const CCopasiObject * > Values;
+      std::set< const CCopasiObject * > Compartments;
+      std::set< const CCopasiObject * > Events;
+
+      pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events);
+
+      if (Reactions.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Functions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Functions.end();
+          std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
 
           for (; it != end; ++it)
             {
-              //TODO store the function data
+              //store the Reactions data
+              const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
+
+              if (pRea == NULL) continue;
+
+              UndoReactionData *data = new UndoReactionData(pRea, false);
+              mReactionData.append(data);
             }
         }
-    }
 
-  if (pDataModel == NULL)
-    return;
-
-  const CModel* pModel = pDataModel->getModel();
-
-  if (pModel == NULL)
-    return;
-
-  Used |= pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites,
-          Compartments, Values, Events);
-
-  if (Reactions.size() > 0)
-    {
-      std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
-
-      for (; it != end; ++it)
+      if (Metabolites.size() > 0)
         {
-          //store the Reactions data
-          const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
+          std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
 
-          if (pRea == NULL) continue;
+          for (; it != end; ++it)
+            {
+              //store the Metabolites data
+              const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
 
-          UndoReactionData *data = new UndoReactionData(pRea, false);
-          mReactionData.append(data);
+              if (pMetab == NULL) continue;
+
+              UndoSpeciesData *data = new UndoSpeciesData(pMetab, false);
+              mSpeciesData.append(data);
+            }
         }
-    }
 
-  if (Metabolites.size() > 0)
-    {
-      std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
-
-      for (; it != end; ++it)
+      if (Compartments.size() > 0)
         {
-          //store the Metabolites data
-          const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
+          std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
 
-          if (pMetab == NULL) continue;
+          for (; it != end; ++it)
+            {
+              const CCompartment * pCompartment = dynamic_cast<const CCompartment*>(*it);
 
-          UndoSpeciesData *data = new UndoSpeciesData(pMetab, false);
-          mSpeciesData.append(data);
+              if (pCompartment == NULL)
+                continue;
+
+              //store the Global Quantity data
+              UndoCompartmentData *data = new UndoCompartmentData(pCompartment, false);
+              mCompartmentData.append(data);
+            }
         }
-    }
 
-  if (Compartments.size() > 0)
-    {
-      std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
-
-      for (; it != end; ++it)
+      if (Values.size() > 0)
         {
-          const CCompartment * pCompartment = dynamic_cast<const CCompartment*>(*it);
+          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Values.end();
 
-          if (pCompartment == NULL)
-            continue;
+          for (; it != end; ++it)
+            {
+              const CModelValue * pModelValue = dynamic_cast<const CModelValue*>(*it);
 
-          //store the Global Quantity data
-          UndoCompartmentData *data = new UndoCompartmentData(pCompartment, false);
-          mCompartmentData.append(data);
+              if (pModelValue == NULL)
+                continue;
+
+              //store the Global Quantity data
+              UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue, false);
+              mParameterData.append(data);
+            }
         }
-    }
 
-  if (Values.size() > 0)
-    {
-      std::set< const CCopasiObject * >::const_iterator it = Values.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Values.end();
-
-      for (; it != end; ++it)
+      if (Events.size() > 0)
         {
-          const CModelValue * pModelValue = dynamic_cast<const CModelValue*>(*it);
+          std::set< const CCopasiObject * >::const_iterator it = Events.begin();
+          std::set< const CCopasiObject * >::const_iterator end = Events.end();
 
-          if (pModelValue == NULL)
-            continue;
+          for (; it != end; ++it)
+            {
+              //store the Event data
+              const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
 
-          //store the Global Quantity data
-          UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue, false);
-          mParameterData.append(data);
-        }
-    }
-
-  if (Events.size() > 0)
-    {
-      std::set< const CCopasiObject * >::const_iterator it = Events.begin();
-      std::set< const CCopasiObject * >::const_iterator end = Events.end();
-
-      for (; it != end; ++it)
-        {
-          //store the Event data
-          const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
-
-          UndoEventData *data = new UndoEventData(pEvent);
-          mEventData.append(data);
+              UndoEventData *data = new UndoEventData(pEvent);
+              mEventData.append(data);
+            }
         }
     }
 }

@@ -41,6 +41,16 @@ public:
   std::vector< CUnit > getAllValidUnits(const std::string & expression,
                                         const C_FLOAT64 & exponent) const;
 
+  /**
+   * Appends pointers to units, which are dependent on any of the candidates
+   * to the list dependentUnits.
+   * @param std::set< const CCopasiObject * > candidates
+   * @param std::set< const CCopasiObject * > & dependentUnits
+   * @return bool unitsAppended
+   */
+  bool appendDependentUnits(std::set< const CCopasiObject * > candidates,
+                            std::set< const CCopasiObject * > & dependentUnits) const;
+
 private:
   /**
    * Replace all old symbols with new symbols in the unit definition DB
