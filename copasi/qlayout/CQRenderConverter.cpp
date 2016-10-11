@@ -928,7 +928,7 @@ void fillItemFromText(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const 
   item->addToGroup(result);
 }
 
-void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const CLImage *pImage, const CLGroup *group, const CLRenderResolver* /* resolver*/)
+void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const CLImage *pImage, const CLGroup *group, const CLRenderResolver * resolver)
 {
   double x = pBB->getPosition().getX() + pImage->getX().getAbsoluteValue() + pImage->getX().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth();
   double y = pBB->getPosition().getY() + pImage->getY().getAbsoluteValue() + pImage->getY().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
@@ -940,7 +940,7 @@ void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const
   if (!fileName->exists())
     {
       delete fileName;
-      std::string file = CCopasiRootContainer::getDatamodelList()->operator[](0).getReferenceDirectory() + "/" + pImage->getImageReference();
+      std::string file = resolver->getObjectDataModel()->getReferenceDirectory() + "/" + pImage->getImageReference();
       fileName = new QFile(file.c_str());
     }
 

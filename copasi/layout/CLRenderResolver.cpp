@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -444,4 +444,13 @@ const CLColorDefinition* CLRenderResolver::getBackgroundColor() const
 void  CLRenderResolver::setDeducedObjectRoles(const std::map<const CLMetabReferenceGlyph*, std::string>& deducedObjectRoles)
 {
   this->mDeducedObjectRoles = deducedObjectRoles;
+}
+
+CCopasiDataModel * CLRenderResolver::getObjectDataModel() const
+{
+  CCopasiDataModel * pDataModel = mpRenderInformation->getObjectDataModel();
+
+  assert(pDataModel != NULL);
+
+  return pDataModel;
 }
