@@ -429,7 +429,7 @@ bool COptMethodGA::initialize()
       return false;
     }
 
-  mGenerations = (unsigned C_INT32)getValue< C_FLOAT64 >("Number of Generations");
+  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
   mGeneration = 0;
 
   if (mpCallBack)
