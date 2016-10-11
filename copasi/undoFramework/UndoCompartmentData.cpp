@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +25,6 @@
 
 #include <copasi/report/CCopasiRootContainer.h>
 
-
 UndoCompartmentData::UndoCompartmentData()
   : UndoData()
   , mInitialValue()
@@ -33,7 +32,6 @@ UndoCompartmentData::UndoCompartmentData()
   , mExpression()
   , mStatus()
 {
-
 }
 
 UndoCompartmentData::UndoCompartmentData(const CCompartment *compartment,
@@ -50,7 +48,6 @@ UndoCompartmentData::UndoCompartmentData(const CCompartment *compartment,
 
 UndoCompartmentData::~UndoCompartmentData()
 {
-
 }
 
 CCompartment *
@@ -64,7 +61,6 @@ UndoCompartmentData::createObjectIn(CModel *pModel)
     return NULL;
 
   createDependentObjects(pModel);
-
 
   mKey = pCompartment->getKey();
 
@@ -98,14 +94,12 @@ void UndoCompartmentData::fillObject(CModel *)
   if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
     {
       pCompartment->setExpression(getExpression());
-      pCompartment->getExpressionPtr()->compile();
     }
 
   // set initial expression
   if (getStatus() != CModelEntity::ASSIGNMENT)
     {
       pCompartment->setInitialExpression(getInitialExpression());
-      pCompartment->getInitialExpressionPtr()->compile();
     }
 }
 
@@ -153,5 +147,3 @@ void UndoCompartmentData::setExpression(const std::string &expression)
 {
   mExpression = expression;
 }
-
-

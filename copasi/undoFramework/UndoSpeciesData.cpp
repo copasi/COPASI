@@ -111,14 +111,12 @@ UndoSpeciesData::fillObject(CModel *)
   if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
     {
       pSpecies->setExpression(getExpression());
-      pSpecies->getExpressionPtr()->compile();
     }
 
   // set initial expression
   if (getStatus() != CModelEntity::ASSIGNMENT)
     {
       pSpecies->setInitialExpression(getInitialExpression());
-      pSpecies->getInitialExpressionPtr()->compile();
     }
 }
 

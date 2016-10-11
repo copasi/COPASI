@@ -1,4 +1,4 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -107,16 +107,13 @@ UndoGlobalQuantityData::fillObject(CModel *)
   if (getStatus() != CModelEntity::FIXED)
     {
       pGlobalQuantity->setExpression(getExpression());
-      pGlobalQuantity->getExpressionPtr()->compile();
     }
 
   // set initial expression
   if (getStatus() != CModelEntity::ASSIGNMENT)
     {
       pGlobalQuantity->setInitialExpression(getInitialExpression());
-      pGlobalQuantity->getInitialExpressionPtr()->compile();
     }
-
 }
 
 double
