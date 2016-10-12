@@ -52,6 +52,50 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
     }
 
   mpTaskBox->addItems(TaskNames);
+
+  QAction* separator = new QAction("", this);
+  separator->setSeparator(true);
+
+  this->mpTableList->addAction(this->mpActAddItem);
+  this->mpTableList->addAction(this->mpActAddSeparator);
+  this->mpTableList->addAction(this->mpActEditItem);
+  this->mpTableList->addAction(this->mpActEditText);
+  this->mpTableList->addAction(separator);
+  this->mpTableList->addAction(this->mpActDeleteItem);
+
+  this->mpHeaderList->addAction(this->mpActAddItem);
+  this->mpHeaderList->addAction(this->mpActAddSeparator);
+  this->mpHeaderList->addAction(this->mpActEditItem);
+  this->mpHeaderList->addAction(this->mpActEditText);
+  this->mpHeaderList->addAction(separator);
+  this->mpHeaderList->addAction(this->mpActDeleteItem);
+
+  this->mpBodyList->addAction(this->mpActAddItem);
+  this->mpBodyList->addAction(this->mpActAddSeparator);
+  this->mpBodyList->addAction(this->mpActEditItem);
+  this->mpBodyList->addAction(this->mpActEditText);
+  this->mpBodyList->addAction(separator);
+  this->mpBodyList->addAction(this->mpActDeleteItem);
+
+  this->mpFooterList->addAction(this->mpActAddItem);
+  this->mpFooterList->addAction(this->mpActAddSeparator);
+  this->mpFooterList->addAction(this->mpActEditItem);
+  this->mpFooterList->addAction(this->mpActEditText);
+  this->mpFooterList->addAction(separator);
+  this->mpFooterList->addAction(this->mpActDeleteItem);
+
+  connect(mpTableList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
+  connect(mpTableList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
+
+  connect(mpHeaderList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
+  connect(mpHeaderList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
+
+  connect(mpBodyList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
+  connect(mpBodyList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
+
+  connect(mpFooterList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
+  connect(mpFooterList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
+
 }
 
 /*
@@ -101,12 +145,16 @@ void CQReportDefinition::btnAdvancedClicked()
           // We convert the body without the separators to a table.
           mpTableList->clear();
 
-          unsigned C_INT32 i, imax;
+          unsigned C_INT32 i, imax = mpBodyList->count();
 
-          for (i = 0, imax = mpBodyList->count(); i < imax; i++)
-            if (static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN().getObjectType()
-                != "Separator")
-              new CQReportListItem(static_cast<CQReportListItem *>(mpBodyList->item(i))->getCN(), mpDataModel);
+          for (i = 0; i < imax; ++i)
+            {
+              CQReportListItem *current = static_cast<CQReportListItem *>(mpBodyList->item(i));
+              const CCopasiObjectName& name = current->getCN();
+
+              if (name.getObjectType() != "Separator")
+                mpTableList->addItem(new CQReportListItem(name, mpDataModel));
+            }
 
           mpHeaderList->clear();
           mpBodyList->clear();
@@ -149,7 +197,7 @@ void CQReportDefinition::btnAdvancedClicked()
 
 void CQReportDefinition::btnItemClicked()
 {
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(mpDataModel != NULL);
   CModel* pModel = mpDataModel->getModel();
 
   if (!pModel) return;
@@ -444,6 +492,170 @@ void CQReportDefinition::btnRevertClicked()
 
 void CQReportDefinition::btnCommitClicked()
 {save();}
+
+void CQReportDefinition::slotDeleteCurrentItem()
+{
+  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+  QList<QListWidgetItem*> selected = current->selectedItems();
+
+  if (selected.empty())
+    {
+      return;
+    }
+
+  qDeleteAll(selected);
+  setDirty();
+}
+
+void CQReportDefinition::slotEditCurrentItem()
+{
+  assert(mpDataModel != NULL);
+  CModel* pModel = mpDataModel->getModel();
+
+  if (!pModel) return;
+
+  QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+  QList<QListWidgetItem*> selectedItems = pList->selectedItems();
+
+  foreach(QListWidgetItem * item, selectedItems)
+  {
+    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+    const CCopasiObjectName & name = current->getCN();
+
+    if (name.getObjectType() == "Separator")
+      continue;
+
+    const CCopasiObject* pObject = dynamic_cast<const CCopasiObject*>(mpDataModel->getObject(name));
+
+    if (pObject == NULL)
+      {
+        continue;
+      }
+
+    const CCopasiObject* pNewObject =
+      CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
+
+    if (pNewObject == NULL || pNewObject == pObject) continue;
+
+    current->setObject(pNewObject);
+    mChanged = true;
+  }
+
+
+}
+
+void CQReportDefinition::slotEditCurrentItemText()
+{
+  assert(mpDataModel != NULL);
+  CModel* pModel = mpDataModel->getModel();
+
+  if (!pModel) return;
+
+  QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+  QList<QListWidgetItem*> selectedItems = pList->selectedItems();
+
+  CQTextDialog * pDialog = new CQTextDialog(this);
+
+  foreach(QListWidgetItem * item, selectedItems)
+  {
+    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+    const CCopasiObjectName & name = current->getCN();
+
+    std::string objectType = name.getObjectType();
+
+    if (objectType == "Separator")
+      continue;
+
+    if (objectType == "String")
+      pDialog->setText(FROM_UTF8(name.getObjectName()));
+    else
+      pDialog->setText(FROM_UTF8(name));
+
+    if (pDialog->exec() == QDialog::Accepted &&
+        pDialog->getText() != "")
+      {
+        CCopasiStaticString Text(TO_UTF8(pDialog->getText()));
+
+        current->setObject(&Text);
+        mChanged = true;
+      }
+
+
+  }
+
+  delete pDialog;
+}
+
+void CQReportDefinition::slotAddSeparator()
+{
+  CCopasiReportSeparator Separator;
+
+  if (mpTabCheck->isChecked())
+    Separator = "\t";
+  else
+    Separator = TO_UTF8(mpSeparator->text());
+
+  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+
+  QList<QListWidgetItem*> selected = current->selectedItems();
+
+  if (selected.empty())
+    {
+      current->addItem(new CQReportListItem(Separator.getCN(), mpDataModel));
+    }
+  else
+    {
+      current->insertItem(current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
+    }
+
+
+
+  mChanged = true;
+
+  return;
+}
+
+void CQReportDefinition::slotAddItem()
+{
+  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+
+  QList<QListWidgetItem*> selected = current->selectedItems();
+
+  std::vector< const CCopasiObject * > SelectedVector =
+    //    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::NO_RESTRICTION);
+    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::AnyObject);
+
+  CQReportListItem * pItem;
+
+  if (SelectedVector.size() != 0)
+    {
+      QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+      std::vector< const CCopasiObject * >::const_iterator it = SelectedVector.begin();
+      std::vector< const CCopasiObject * >::const_iterator end = SelectedVector.end();
+
+      for (; it != end; ++it)
+        {
+          pItem = new CQReportListItem(*it);
+
+          if (selected.empty())
+            {
+              pList->addItem(pItem);
+            }
+          else
+            {
+              current->insertItem(current->row(selected.first()), pItem);
+            }
+        }
+
+      mChanged = true;
+    }
+
+}
+
+void CQReportDefinition::setDirty()
+{
+  mChanged = true;
+}
 
 bool CQReportDefinition::update(ListViews::ObjectType objectType,
                                 ListViews::Action action,

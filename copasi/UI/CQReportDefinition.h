@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -67,6 +67,13 @@ private slots:
   void btnCopyReportClicked();
   void btnRevertClicked();
   void btnCommitClicked();
+  void slotDeleteCurrentItem();
+  void slotEditCurrentItem();
+  void slotEditCurrentItemText();
+  void slotAddSeparator();
+  void slotAddItem();
+  void setDirty();
+
 };
 
 #endif // CQREPORTDEFINITION_H

@@ -398,8 +398,23 @@
         <number>0</number>
        </property>
        <widget class="QListWidget" name="mpTableList">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
@@ -409,8 +424,23 @@
         </attribute>
        </widget>
        <widget class="QListWidget" name="mpHeaderList">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
@@ -420,8 +450,23 @@
         </attribute>
        </widget>
        <widget class="QListWidget" name="mpBodyList">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
@@ -431,8 +476,23 @@
         </attribute>
        </widget>
        <widget class="QListWidget" name="mpFooterList">
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
@@ -517,6 +577,49 @@
     </layout>
    </item>
   </layout>
+  <action name="mpActDeleteItem">
+   <property name="text">
+    <string>Delete Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Deletes the selected item</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="mpActEditItem">
+   <property name="text">
+    <string>Edit Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Edits the current Item</string>
+   </property>
+  </action>
+  <action name="mpActEditText">
+   <property name="text">
+    <string>Edit Text</string>
+   </property>
+   <property name="toolTip">
+    <string>Edits the text of the item directly</string>
+   </property>
+  </action>
+  <action name="mpActAddSeparator">
+   <property name="text">
+    <string>Add Separator</string>
+   </property>
+   <property name="toolTip">
+    <string>Adds a new Separator at the current position</string>
+   </property>
+  </action>
+  <action name="mpActAddItem">
+   <property name="text">
+    <string>Add Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Adds a new Item at the current position</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -832,8 +935,93 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mpActAddItem</sender>
+   <signal>triggered()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>slotAddItem()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActAddSeparator</sender>
+   <signal>triggered()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>slotAddSeparator()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActDeleteItem</sender>
+   <signal>triggered()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>slotDeleteCurrentItem()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActEditItem</sender>
+   <signal>triggered()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>slotEditCurrentItem()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActEditText</sender>
+   <signal>triggered()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>slotEditCurrentItemText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>btnCopyReportClicked()</slot>
+  <slot>slotDeleteCurrentItem()</slot>
+  <slot>slotEditCurrentItem()</slot>
+  <slot>slotEditCurrentItemText()</slot>
+  <slot>slotAddSeparator()</slot>
+  <slot>slotAddItem()</slot>
  </slots>
 </ui>

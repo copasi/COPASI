@@ -33,6 +33,8 @@ public:
 
   const CCopasiObjectName & getCN() const;
 
+  void setObject(const CCopasiObject* pObject);
+
   void refreshText(CCopasiDataModel * pDataModel);
 
   // Attributes
