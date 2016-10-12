@@ -192,6 +192,7 @@ bool CUnit::compile()
     }
   catch (CCopasiException & /*exception*/)
     {
+      CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 3, mExpression.c_str());
       return false;
     }
 

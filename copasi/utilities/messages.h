@@ -303,7 +303,7 @@ const MESSAGES Messages[] =
   {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true. This may change results of time course simulations."},
   {MCSBML + 100, "SBML (100): Model with conversion factors encountered. In order to calculate correct results with this model COPASI has changed the stoichiometries of all species with conversion factors. Exporting this model again will lead to a model with changed stoichiometries."},
   {MCSBML + 101, "SBML (101): Assignment rule for species reference \"%s\" imported. Please be aware that COPASI does not support stoichiometries that change over time. The imported expression has therefore been converted to a constant value."},
-  { MCSBML + 102, "SBML (102): The SBML document you are trying to load uses SBML Level %d Version %d.This version is not yet supported by this version of COPASI." },
+  {MCSBML + 102, "SBML (102): The SBML document you are trying to load uses SBML Level %d Version %d.This version is not yet supported by this version of COPASI." },
 
   // SEDML To be completed
   {MCSEDML + 1, "SEDML (1): SEDML contains no simulation."},
@@ -488,6 +488,7 @@ const MESSAGES Messages[] =
   // Unit
   {MCUnit + 1, "CUnit (1): Parser error near character position: '%d'."},
   {MCUnit + 2, "CUnit (2): Lexer error near character position: '%d'."},
+  {MCUnit + 3, "CUnit (3): Problem parsing: '%s'."},
 
   // UnitDefinition
   {MCUnitDefinition + 1, "CUnitDefinition (1): CUnitDefintion needs to be child of a CUnitDefinitionDB."},
