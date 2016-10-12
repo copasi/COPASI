@@ -185,7 +185,7 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
   CArrayAnnotation::index_type::const_iterator end = index.end();
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCN = mAnnotationsCN.begin();
 
-  for (; it != end; ++it, ++to)
+  for (; it != end; ++it, ++to, ++itCN)
     {
       *to = itCN->operator [](*it);
 
