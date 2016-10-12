@@ -37,6 +37,7 @@
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/COutputHandler.h"
+#include "utilities/CDirEntry.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"
@@ -234,10 +235,17 @@ bool TaskWidget::commonBeforeRunTask()
 
   // if overwrite is enabled and the file exists, then ask
   if (!mpTask->getReport().getTarget().empty() &&
-      mpTask->getReport().confirmOverwrite() &&
-      QFile(mpTask->getReport().getTarget().c_str()).exists())
+      mpTask->getReport().confirmOverwrite())
     {
-      if (QMessageBox::question(this,
+      // The target might be a relative path
+      std::string Target = mpTask->getReport().getTarget();
+
+      if (CDirEntry::isRelativePath(Target) &&
+          !CDirEntry::makePathAbsolute(Target, mpDataModel->getReferenceDirectory()))
+        Target = CDirEntry::fileName(Target);
+
+      if (CDirEntry::exist(Target) &&
+          QMessageBox::question(this,
                                 QString("Confirm Overwrite"),
                                 QString("The report file already exists. Would you like to overwrite it? \n\n(You can disable this dialog by clicking the 'Report' button.)"),
                                 QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
