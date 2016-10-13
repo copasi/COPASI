@@ -18,16 +18,9 @@ CQBaseDataModel::CQBaseDataModel(QObject *parent, CCopasiDataModel * pDataModel)
   , mpUndoStack(NULL)
   , mpDataModel(pDataModel)
 {
-  ListViews * pListView = ListViews::ancestor(this);
-
-  if (pListView != NULL)
+  if (mpDataModel == NULL)
     {
-      connect(pListView, SIGNAL(signalResetCache()), this, SLOT(resetCache()));
-
-      if (mpDataModel == NULL)
-        {
-          mpDataModel = pListView->getDataModel();
-        }
+      mpDataModel = ListViews::dataModel(this);
     }
 }
 
