@@ -35,7 +35,6 @@ public:
   bool insertRow(int position, const QModelIndex & source);
   bool removeRow(int position);
   virtual bool clear();
-  virtual void resetCache();
   virtual bool isDefaultRow(const QModelIndex& i) const;
 
   QString createNewName(const QString name, const int nameCol);
@@ -44,6 +43,9 @@ public:
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
   CCopasiDataModel * getDataModel() const;
+
+public slots:
+  virtual void resetCache();
 
 protected:
   virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;

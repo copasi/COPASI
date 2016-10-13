@@ -17,7 +17,19 @@ CQBaseDataModel::CQBaseDataModel(QObject *parent, CCopasiDataModel * pDataModel)
   : QAbstractTableModel(parent)
   , mpUndoStack(NULL)
   , mpDataModel(pDataModel)
-{}
+{
+  ListViews * pListView = ListViews::ancestor(this);
+
+  if (pListView != NULL)
+    {
+      connect(pListView, SIGNAL(signalResetCache()), this, SLOT(resetCache()));
+
+      if (mpDataModel == NULL)
+        {
+          mpDataModel = pListView->getDataModel();
+        }
+    }
+}
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
 {

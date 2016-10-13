@@ -29,7 +29,10 @@ public:
                       int role = Qt::DisplayRole) const;
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
+
+public slots:
   virtual void resetCache();
+
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:

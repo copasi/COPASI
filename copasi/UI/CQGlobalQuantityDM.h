@@ -52,7 +52,7 @@ public:
                       int role = Qt::DisplayRole) const;
   bool setData(const QModelIndex &index, const QVariant &value,
                int role = Qt::EditRole);
-  virtual void resetCache();
+
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   const QString& indexToStatus(int index) const;
@@ -68,6 +68,9 @@ public:
   void deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pGlobalQuantityData);
   bool removeAllGlobalQuantityRows();
   bool clear();
+
+public slots:
+  virtual void resetCache();
 
 protected:
   QStringList mTypes;

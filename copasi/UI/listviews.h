@@ -180,6 +180,7 @@ public:
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
+  void signalResetCache();
 
 private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;

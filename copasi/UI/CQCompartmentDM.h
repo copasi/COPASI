@@ -54,7 +54,6 @@ public:
                               int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
-  virtual void resetCache();
 
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
@@ -72,6 +71,9 @@ public:
   void deleteCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
   bool removeAllCompartmentRows();
   bool clear();
+
+public slots:
+  virtual void resetCache();
 
 protected:
   QStringList mTypes;

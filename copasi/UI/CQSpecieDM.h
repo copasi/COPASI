@@ -83,6 +83,7 @@ public:
 
   QModelIndex getIndexFor(const CMetab* pMetab, int column) const;
 
+public slots:
   virtual void resetCache();
 
 protected:

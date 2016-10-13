@@ -316,6 +316,8 @@ void ListViews::resetCache()
   mpTreeDM->setCopasiDM(mpDataModel);
   mpTreeView->expand(mpTreeSortDM->mapFromSource(mpTreeDM->index(0, 0, QModelIndex())));
 
+  emit signalResetCache();
+
   connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
           this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
 }
