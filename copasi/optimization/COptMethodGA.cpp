@@ -309,13 +309,13 @@ bool COptMethodGA::serializepop(size_t first, size_t last)
     {
       for (j = 0; j < mVariableSize; j++)
         {
-          C_FLOAT64 & mut = (*mIndividual[i])[j];
+          C_FLOAT64 & mut = (*mIndividuals[i])[j];
           // print this parameter
           ofile << mut << "\t";
         }
 
       // print the fitness of the individual
-      ofile << mValue[i] << std::endl;
+      ofile << mValues[i] << std::endl;
     }
 
   ofile << std::endl;
@@ -413,7 +413,6 @@ bool COptMethodGA::initialize()
 
       return false;
     }
-
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -587,7 +586,6 @@ bool COptMethodGA::optimise()
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
-
 
 #ifdef DEBUG_OPT
       serializepop(0, mPopulationSize);
