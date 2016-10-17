@@ -954,6 +954,13 @@ bool CCopasiXML::saveModel()
               endSaveElement("DelayExpression");
             }
 
+          if (pEvent->getPriorityExpression() != "")
+            {
+              startSaveElement("PriorityExpression");
+              saveData(pEvent->getPriorityExpression());
+              endSaveElement("PriorityExpression");
+            }
+
           const CCopasiVectorN< CEventAssignment > & Assignments = pEvent->getAssignments();
 
           if (Assignments.size() > 0)

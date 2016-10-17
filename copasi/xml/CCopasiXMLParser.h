@@ -1609,6 +1609,7 @@ private:
       ListOfUnsupportedAnnotations,
       TriggerExpression,
       DelayExpression,
+      PriorityExpression,
       ListOfAssignments
     };
 

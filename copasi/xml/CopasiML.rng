@@ -919,6 +919,11 @@
       </group>
     </optional>
     <optional>
+      <element name="PriorityExpression">
+        <ref name="expression.simpletype"/>
+      </element>
+    </optional>
+    <optional>
       <element name="ListOfAssignments">
         <ref name="listOfEventAssignments.datatype"/>
       </element>

@@ -3406,6 +3406,13 @@ void CCopasiXMLParser::EventElement::start(const XML_Char *pszName,
 
             break;
 
+          case PriorityExpression:
+
+            if (!strcmp(pszName, "PriorityExpression"))
+              mpCurrentHandler = &mParser.mCharacterDataElement;
+
+            break;
+
           case ListOfAssignments:
 
             if (!strcmp(pszName, "ListOfAssignments"))
@@ -3525,6 +3532,29 @@ void CCopasiXMLParser::EventElement::end(const XML_Char *pszName)
           size_t Size = CCopasiMessage::size();
 
           mCommon.pEvent->setDelayExpression(mCommon.CharacterData);
+
+          // Remove error messages created by setExpression as this may fail
+          // due to incomplete model specification at this time.
+          while (CCopasiMessage::size() > Size)
+            {
+              CCopasiMessage msg = CCopasiMessage::getLastMessage();
+            }
+        }
+
+        break;
+
+      case PriorityExpression:
+
+        if (strcmp(pszName, "PriorityExpression"))
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                           pszName, "PriorityExpression", mParser.getCurrentLineNumber());
+          }
+
+        {
+          size_t Size = CCopasiMessage::size();
+
+          mCommon.pEvent->setPriorityExpression(mCommon.CharacterData);
 
           // Remove error messages created by setExpression as this may fail
           // due to incomplete model specification at this time.

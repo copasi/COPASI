@@ -245,8 +245,17 @@ bool CEvaluationTree::parse()
 
   mpNodeList = Parser.getNodeList();
   mpRootNode = Parser.getRootNode();
-  mpRootValue = mpRootNode->getValuePointer();
-  mValue = *mpRootValue;
+
+  if (mpRootNode != NULL)
+    {
+      mpRootValue = mpRootNode->getValuePointer();
+      mValue = *mpRootValue;
+    }
+  else
+    {
+      mpRootValue = NULL;
+      mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+    }
 
   // clean up if parsing failed
   if (!success)
