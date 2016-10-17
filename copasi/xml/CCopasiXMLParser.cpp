@@ -82,6 +82,9 @@
 #include "copasi/layout/CLLocalRenderInformation.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"
 
+// Uncomment this line below to get debug print out.
+// #define DEBUG_OUTPUT 1
+
 #define START_ELEMENT   -1
 #define UNKNOWN_ELEMENT -2
 
@@ -274,12 +277,20 @@ CCopasiXMLParser::~CCopasiXMLParser()
 void CCopasiXMLParser::onStartElement(const XML_Char *pszName,
                                       const XML_Char **papszAttrs)
 {
+#ifdef DEBUG_OUTPUT
+  std::cout << mElementHandlerStack.size() << ", " << getCurrentLineNumber() << ": Start " << pszName << std::endl;
+#endif // DEBUG_OUTPUT
+
   assert(mElementHandlerStack.size() != 0);
   mElementHandlerStack.top()->start(pszName, papszAttrs);
 }
 
 void CCopasiXMLParser::onEndElement(const XML_Char *pszName)
 {
+#ifdef DEBUG_OUTPUT
+  std::cout << mElementHandlerStack.size() << ", " << getCurrentLineNumber() << ": End   " << pszName << std::endl;
+#endif // DEBUG_OUTPUT
+
   if (mElementHandlerStack.size() != 0)
     mElementHandlerStack.top()->end(pszName);
   else
@@ -684,6 +695,8 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfFunctions", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         if (!mCommon.pFunctionList)
           mCommon.pFunctionList = new CCopasiVectorN< CFunction >;
 
@@ -695,6 +708,8 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "Function", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         /* If we do not have a function element handler we create one. */
         if (!mpCurrentHandler)
           mpCurrentHandler = new FunctionElement(mParser, mCommon);
@@ -705,7 +720,6 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mParser.pushElementHandler(&mParser.mUnknownElement);
         mParser.onStartElement(pszName, papszAttrs);
@@ -5556,31 +5570,35 @@ void CCopasiXMLParser::ListOfPlotItemsElement::start(const XML_Char * pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfPlotItems", mParser.getCurrentLineNumber());
 
+        mLastKnownElement =  mCurrentElement;
+        return;
+
         break;
 
       case PlotItem:
 
-        if (strcmp(pszName, "PlotItem"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "PlotItem", mParser.getCurrentLineNumber());
-
-        // If we do not have a plot specification element handler, we create one
-        if (!mpCurrentHandler)
+        if (!strcmp(pszName, "PlotItem"))
           {
-            mpCurrentHandler = new PlotItemElement(mParser, mCommon);
+            mLastKnownElement =  ListOfPlotItems;
+
+            // If we do not have a plot specification element handler, we create one
+            if (!mpCurrentHandler)
+              {
+                mpCurrentHandler = new PlotItemElement(mParser, mCommon);
+              }
+
+            mParser.pushElementHandler(mpCurrentHandler);
           }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
         break;
     }
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -5646,30 +5664,34 @@ void CCopasiXMLParser::ListOfChannelsElement::start(const XML_Char * pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfChannels", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
+        return;
         break;
 
       case ChannelSpec:
 
-        if (strcmp(pszName, "ChannelSpec"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "ChannelSpec", mParser.getCurrentLineNumber());
-
-        if (!mpCurrentHandler)
+        if (!strcmp(pszName, "ChannelSpec"))
           {
-            mpCurrentHandler = new ChannelSpecElement(mParser, mCommon);
+            mLastKnownElement = ListOfChannels;
+
+            if (!mpCurrentHandler)
+              {
+                mpCurrentHandler = new ChannelSpecElement(mParser, mCommon);
+              }
+
+            mParser.pushElementHandler(mpCurrentHandler);
           }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
         break;
     }
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -5738,36 +5760,40 @@ void CCopasiXMLParser::ListOfPlotsElement::start(const XML_Char * pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfPlots", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         if (!mCommon.pPlotList)
           {
             mCommon.pPlotList = new COutputDefinitionVector;
           }
 
+        return;
         break;
 
       case PlotSpecification:
 
-        if (strcmp(pszName, "PlotSpecification"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "PlotSpecification", mParser.getCurrentLineNumber());
-
-        // If we do not have a plot specification element handler, we create one
-        if (!mpCurrentHandler)
+        if (!strcmp(pszName, "PlotSpecification"))
           {
-            mpCurrentHandler = new PlotSpecificationElement(mParser, mCommon);
+            mLastKnownElement = ListOfPlots;
+
+            // If we do not have a plot specification element handler, we create one
+            if (!mpCurrentHandler)
+              {
+                mpCurrentHandler = new PlotSpecificationElement(mParser, mCommon);
+              }
+
+            mParser.pushElementHandler(mpCurrentHandler);
           }
 
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
         break;
     }
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -5839,6 +5865,8 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ChannelSpec", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         // create a new CPlotSpecification element depending on the type
         name = mParser.getAttributeValue("cn", papszAttrs);
 
@@ -5871,7 +5899,6 @@ void CCopasiXMLParser::ChannelSpecElement::start(const XML_Char *pszName, const 
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mpCurrentHandler = &mParser.mUnknownElement;
         break;
@@ -5946,6 +5973,8 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "PlotItem", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         // create a new CPlotSpecification element depending on the type
         name = mParser.getAttributeValue("name", papszAttrs);
         sType = mParser.getAttributeValue("type", papszAttrs);
@@ -5959,6 +5988,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
 
         if (!strcmp(pszName, "Parameter"))
           {
+            mLastKnownElement = PlotItem;
             mLineNumber = mParser.getCurrentLineNumber();
 
             if (!mpParameterElement)
@@ -5975,6 +6005,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
 
         if (!strcmp(pszName, "ParameterGroup"))
           {
+            mLastKnownElement = PlotItem;
             mLineNumber = mParser.getCurrentLineNumber();
 
             if (!mpParameterGroupElement)
@@ -5991,6 +6022,7 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
 
         if (!strcmp(pszName, "ListOfChannels"))
           {
+            mLastKnownElement = PlotItem;
             mLineNumber = mParser.getCurrentLineNumber();
 
             if (!mpListOfChannelsElement)
@@ -6004,7 +6036,6 @@ void CCopasiXMLParser::PlotItemElement::start(const XML_Char *pszName, const XML
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mpCurrentHandler = &mParser.mUnknownElement;
         break;
@@ -6174,6 +6205,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "PlotSpecification", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         // create a new CPlotSpecification element depending on the type
         mCommon.pCurrentPlot = new CPlotSpecification();
         mCommon.pCurrentPlotItem = mCommon.pCurrentPlot;
@@ -6191,6 +6224,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 
         if (!strcmp(pszName, "Parameter"))
           {
+            mLastKnownElement = PlotSpecification;
+
             mLineNumber = mParser.getCurrentLineNumber();
 
             if (!mpCurrentHandler)
@@ -6205,6 +6240,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 
         if (!strcmp(pszName, "ParameterGroup"))
           {
+            mLastKnownElement = PlotSpecification;
+
             mLineNumber = mParser.getCurrentLineNumber();
 
             if (!mpCurrentHandler)
@@ -6219,6 +6256,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 
         if (!strcmp(pszName, "ListOfChannels"))
           {
+            mLastKnownElement = mCurrentElement;
+
             if (!mpCurrentHandler)
               {
                 mpCurrentHandler = new ListOfChannelsElement(mParser, mCommon);
@@ -6231,6 +6270,8 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
 
         if (!strcmp(pszName, "ListOfPlotItems"))
           {
+            mLastKnownElement = PlotSpecification;
+
             if (!mpCurrentHandler)
               {
                 mpCurrentHandler = new ListOfPlotItemsElement(mParser, mCommon);
@@ -6240,7 +6281,6 @@ void CCopasiXMLParser::PlotSpecificationElement::start(const XML_Char *pszName, 
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mpCurrentHandler = &mParser.mUnknownElement;
         break;
@@ -9557,33 +9597,38 @@ void CCopasiXMLParser::ListOfReportsElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfReports", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         if (!mCommon.pReportList)
           mCommon.pReportList = new CReportDefinitionVector;
+
+        return;
 
         break;
 
       case Report:
 
-        if (strcmp(pszName, "Report"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
-                         pszName, "Report", mParser.getCurrentLineNumber());
+        if (!strcmp(pszName, "Report"))
+          {
+            mLastKnownElement = ListOfReports;
 
-        /* If we do not have a report element handler we create one. */
-        if (!mpCurrentHandler)
-          mpCurrentHandler = new ReportElement(mParser, mCommon);
+            /* If we do not have a report element handler we create one. */
+            if (!mpCurrentHandler)
+              mpCurrentHandler = new ReportElement(mParser, mCommon);
 
-        /* Push the report element handler on the stack and call it. */
-        mParser.pushElementHandler(mpCurrentHandler);
-        mpCurrentHandler->start(pszName, papszAttrs);
+            /* Push the report element handler on the stack and call it. */
+            mParser.pushElementHandler(mpCurrentHandler);
+          }
+
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mParser.pushElementHandler(&mParser.mUnknownElement);
-        mParser.onStartElement(pszName, papszAttrs);
         break;
     }
+
+  mParser.onStartElement(pszName, papszAttrs);
 
   return;
 }
@@ -9710,6 +9755,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "Report", mParser.getCurrentLineNumber());
 
+        mLastKnownElement = mCurrentElement;
+
         // We have not found anything yet.
         tableFound = false;
         otherFound = false;
@@ -9753,6 +9800,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         if (!strcmp(pszName, "Comment"))
           {
+            mLastKnownElement = mCurrentElement;
+
             /* Push the Comment element handler on the stack and call it. */
             mpCurrentHandler = &mParser.mCommentElement;
           }
@@ -9763,6 +9812,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         if (!strcmp(pszName, "Header"))
           {
+            mLastKnownElement = mCurrentElement;
+
             /* If we do not have a Header element handler we create one. */
             if (tableFound) fatalError();
 
@@ -9782,6 +9833,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         if (!strcmp(pszName, "Body"))
           {
+            mLastKnownElement = mCurrentElement;
+
             /* If we do not have a Body element handler we create one. */
             if (tableFound) fatalError();
 
@@ -9801,6 +9854,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         if (!strcmp(pszName, "Footer"))
           {
+            mLastKnownElement = Report;
+
             /* If we do not have a Body element handler we create one. */
             if (tableFound) fatalError();
 
@@ -9820,6 +9875,8 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
 
         if (!strcmp(pszName, "Table"))
           {
+            mLastKnownElement = Report;
+
             if (otherFound) fatalError();
 
             tableFound = true;
@@ -9836,7 +9893,6 @@ void CCopasiXMLParser::ReportElement::start(const XML_Char *pszName,
         break;
 
       default:
-        mLastKnownElement = mCurrentElement - 1;
         mCurrentElement = UNKNOWN_ELEMENT;
         mpCurrentHandler = &mParser.mUnknownElement;
         break;
