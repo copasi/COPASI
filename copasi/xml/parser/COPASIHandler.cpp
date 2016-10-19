@@ -6,8 +6,8 @@
 #include "copasi.h"
 
 #include "COPASIHandler.h"
-
 #include "CXMLParser.h"
+
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiParameter.h"
 #include "report/CCopasiRootContainer.h"
@@ -81,9 +81,9 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
 }
 
 // virtual
-CXMLHandler * COPASIHandler::processEnd(const XML_Char * pszName)
+bool COPASIHandler::processEnd(const XML_Char * pszName)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  bool finished = false;
 
   switch (mCurrentElement)
     {
@@ -118,7 +118,13 @@ CXMLHandler * COPASIHandler::processEnd(const XML_Char * pszName)
             mpData->pFunctionList->remove("Objective Function");
           }
       }
+
+      finished = true;
       break;
+
+      case ParameterGroup:
+        finished = true;
+        break;
 
       case GUI:
         if (mpData->pGUI == NULL)
@@ -132,7 +138,7 @@ CXMLHandler * COPASIHandler::processEnd(const XML_Char * pszName)
         break;
     }
 
-  return pHandlerToCall;
+  return finished;
 }
 
 // virtual

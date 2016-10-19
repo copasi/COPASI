@@ -76,10 +76,7 @@
 #include "copasi/layout/CLGlobalRenderInformation.h"
 
 // Uncomment this line below to get debug print out.
-// #define DEBUG_OUTPUT 1
-
-#define START_ELEMENT   -1
-#define UNKNOWN_ELEMENT -2
+#define DEBUG_OUTPUT 1
 
 CXMLParser::CXMLParser(CVersion & version) :
   CExpat(),
@@ -88,18 +85,15 @@ CXMLParser::CXMLParser(CVersion & version) :
   mCharacterData(),
   mCharacterDataEncoding(CCopasiXMLInterface::none),
   mElementHandlerStack()
-  // mUnknownElement(*this, this->mData),
   // mCharacterDataElement(*this, this->mData),
   // mListOfUnsupportedAnnotationsElement(*this, this->mData),
   // mCommentElement(*this, this->mData),
   // mMiriamAnnotationElement(*this, this->mData)
-  // Attributes
 {
   create();
 
   mpFactory = new CXMLHandlerFactory(*this, mData);
-
-  // mElementHandlerStack.push(new COPASIElement(*this, mData));
+  mElementHandlerStack.push(mpFactory->getHandler(CXMLHandler::COPASI));
 
   //  mCommon.pParser = this;
   mData.pVersion = & version;
@@ -319,4 +313,9 @@ const CCopasiObject * CXMLParser::getObjectFromCN(const std::string & cn) const
 CXMLHandler * CXMLParser::getHandler(const CXMLHandler::Type & type)
 {
   return mpFactory->getHandler(type);
+}
+
+void CXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
+{
+  mData.pDataModel = pDataModel;
 }

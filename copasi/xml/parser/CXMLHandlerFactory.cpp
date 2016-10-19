@@ -135,7 +135,7 @@
 
 CXMLHandlerFactory::CXMLHandlerFactory(CXMLParser & parser,
                                        CXMLParserData & data) :
-  CVector< CXMLHandler * >(CXMLHandler::BEFORE),
+  CVector< CXMLHandler * >(CXMLHandler::Template),
   mpParser(&parser),
   mpData(&data)
 {

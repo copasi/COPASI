@@ -1,0 +1,372 @@
+<element name="COPASI">
+  <element name="ListOfFunctions"> {0,1}
+    <element name="Function">
+      <elementGroup name="annotation"> {1}
+      <element name="Expression"/> {1}
+      <element name="ListOfParameterDescriptions"> {0,1}
+        <element name="ParameterDescription"/> {1, inf}
+      </element>
+    </element>
+  </element>
+  <element name="Model"> {0,1}
+    <elementGroup name="annotation"> {1}
+    <element name="InitialExpression"/> {0,1}
+    <element name="ListOfCompartments"> {0,1}
+      <element name="Compartment"> {1, inf}
+        <elementGroup name="annotation"> {1}
+        <element name="Expression"/> {0,1}
+        <element name="InitialExpression"/> {0,1}
+        <element name="NoiseExpression"/> {0,1}
+      </element>
+    </element>
+    <element name="ListOfMetabolites"> {0,1}
+      <element name="Metabolite"> {1, inf}
+        <elementGroup name="annotation"> {1}
+        <element name="Expression"/> {0,1}
+        <element name="InitialExpression"/> {0,1}
+        <element name="NoiseExpression"/> {0,1}
+      </element>
+    </element>
+    <element name="ListOfModelValues"> {0,1}
+      <element name="ModelValue"> {1, inf}
+        <elementGroup name="annotation"> {1}
+        <element name="Expression"/> {0,1}
+        <element name="InitialExpression"/> {0,1}
+        <element name="NoiseExpression"/> {0,1}
+        <element name="Unit"/> {0,1}
+      </element>
+    </element>
+    <element name="ListOfReactions"> {0,1}
+      <element name="Reaction"> {1, inf}
+        <elementGroup name="annotation"> {1}
+        <element name="ListOfSubstrates"> {0,1}
+          <element name="Substrate"/> {1, inf}
+        </element>
+        <element name="ListOfProducts"> {0,1}
+          <element name="Product"/> {1, inf}
+        </element>
+        <element name="ListOfModifiers"> {0,1}
+          <element name="Modifier"/> {1, inf}
+        </element>
+        <element name="ListOfConstants"> {0,1}
+          <element name="Constant"> {1, inf}
+        </element>
+        <element name="KineticLaw"> {0,1}
+          <element name="ListOfCallParameters"> {0,1}
+            <element name="CallParameter"> {1, inf}
+              <element name="SourceParameter"/> {1, inf}
+            </element>
+          </element>
+        <element name="NoiseExpression"/> {0,1}
+      </element>
+    </element>
+    <element name="ListOfEvents"> {0,1}
+      <element name="Event"> {1, inf}
+        <elementGroup name="annotation"> {1}
+        <element name="Expression"/> {1}
+        <element name="DelayExpression"/> {0,1}
+        <element name="PriorityExpression"/> {0,1}
+        <element name="ListOfAssignments"> {0,1}
+          <element name="Assignment"> {1, inf}
+            <element name="Expression"/> {1}
+          </element>
+        </element>
+      </element>
+    </element>
+    <element name="ListOfModelParameterSets"> {0,1}
+      <element name="ModelParameterSet"> {1, inf}
+        <elementGroup name="annotation"> {1}
+        <elementGroup name="modelParameters"> {0, inf}
+      </element>
+    </element>
+    <element name="StateTemplate"> {0,1}
+      <element name="StateTemplateVariable"/> {0, inf}
+    </element>
+    <element name="InitialState"/> {0,1}
+  </element>
+  <element name="ListOfTasks"> {0,1}
+    <element name="Task"> {1, inf}
+      <element name="Report"/> {0,1}
+      <element name="Problem"> {1}
+        <elementGroup name="parameters"> {0, inf}
+      </element>
+      <element name="Method"> {1}
+        <elementGroup name="parameters"> {0, inf}
+      </element>
+    </element>
+  </element>
+  <element name="ListOfReports"> {0,1}
+    <element name="Report"> {1, inf}
+      <element name="Comment"/> {0,1}
+      <choice>
+        <element name="Table"> {1}
+          <element name="Object"/> {0, inf} 
+        </element>
+        <elementGroup> {1}
+          <element name="Header"> {0,1}
+            <elementGroup name=reportSectionElement> {1, inf}
+          </element>
+          <element name="Body"> {0,1}
+            <elementGroup name=reportSectionElement> {1, inf}
+          </element>
+          <element name="Footer"> {0,1}
+            <elementGroup name=reportSectionElement> {1, inf}
+          </element>
+        </elementGroup>
+      </choice>
+    </element>
+  </element>
+  <element name="ListOfPlots"> {0,1}
+    <element name="PlotSpecification"> {1, inf} 
+      <elementGroup name="parameters"> {0, inf}
+      <element name="ListOfPlotItems"> {1}
+        <element name="PlotItem"> {1, inf} 
+          <elementGroup name="parameters"> {0, inf}
+          <element name="ListOfChannels"> {1}
+            <element name="ChannelSpec"> {1, inf}
+          </element>
+        </element>
+      </element>
+    </element>
+  </element>
+  <element name="GUI"> {0,1}
+    <element name="ListOfSliders"> {0,1}
+      <element name="Slider"/> {1, inf} 
+    </element>
+  </element>
+  <element name="ListOfLayouts"> {0,1}
+    <element name="Layout"> {0, inf}
+      <element name="Dimensions"/> {1} 
+      <element name="ListOfCompartmentGlyphs"> {0,1}
+        <element name="CompartmentGlyph"> {0, inf}
+          <element name="BoundingBox"> {1} 
+            <element name="Position"/> {1} 
+            <element name="Dimensions"/> {1} 
+          </element>
+        </element>
+      </element>
+      <element name="ListOfMetabGlyphs"> {0,1}
+        <element name="MetaboliteGlyph"> {0, inf}
+          <element name="BoundingBox"> {1} 
+            <element name="Position"/> {1} 
+            <element name="Dimensions"/> {1} 
+          </element>
+        </element>
+      </element>
+      <element name="ListOfReactionGlyphs"> {0,1}
+        <element name="ReactionGlyph"> {0, inf}
+          <element name="BoundingBox"> {0,1} 
+            <element name="Position"/> {1} 
+            <element name="Dimensions"/> {1} 
+          </element>
+          <element name="Curve"> {0,1}
+            <element name="ListOfCurveSegments">  {1} 
+              <choice> {1, inf}
+                <element name="LineSegment"> {1} 
+                  <element name="Start"/> {1}
+                  <element name="End"/> {1}
+                </element>
+                <element name="CurveSegment"> {1} 
+                  <element name="Start"/> {1}
+                  <element name="End"/> {1}
+                </element>
+                <element name="CubicBezier"> {1} 
+                  <element name="Start"/> {1}
+                  <element name="End"/> {1}
+                  <element name="BasePoint1"/> {0,1}
+                  <element name="BasePoint2"/> {0,1}
+                </element>
+                <element name="CurveSegment"> {1} 
+                  <element name="Start"/> {1}
+                  <element name="End"/> {1}
+                  <element name="BasePoint1"/> {0,1}
+                  <element name="BasePoint2"/> {0,1}
+                </element>
+              </choice>
+            </element>
+          </element>
+          <element name="ListOfMetaboliteReferenceGlyphs"> {0,1}
+            <element name="MetaboliteReferenceGlyph"> {1, inf}
+              <element name="BoundingBox"> {0,1} 
+                <element name="Position"/> {1} 
+                <element name="Dimensions"/> {1} 
+              </element>
+              <element name="Curve"> {0,1}
+                <element name="ListOfCurveSegments">  {1} 
+                  <choice> {1, inf}
+                    <element name="LineSegment"> {1} 
+                      <element name="Start"/> {1}
+                      <element name="End"/> {1}
+                    </element>
+                    <element name="CurveSegment"> {1} 
+                      <element name="Start"/> {1}
+                      <element name="End"/> {1}
+                    </element>
+                    <element name="CubicBezier"> {1} 
+                      <element name="Start"/> {1}
+                      <element name="End"/> {1}
+                      <element name="BasePoint1"/> {0,1}
+                      <element name="BasePoint2"/> {0,1}
+                    </element>
+                    <element name="CurveSegment"> {1} 
+                      <element name="Start"/> {1}
+                      <element name="End"/> {1}
+                      <element name="BasePoint1"/> {0,1}
+                      <element name="BasePoint2"/> {0,1}
+                    </element>
+                  </choice>
+                </element>
+              </element>
+            </element>
+          </element>
+        </element>
+      </element>
+      <element name="ListOfTextGlyphs"> {0,1}
+        <element name="TextGlyph"> {1, inf}
+          <element name="BoundingBox"> {0,1} 
+            <element name="Position"/> {1} 
+            <element name="Dimensions"/> {1} 
+          </element>
+        </element>
+      </element>
+      <element name="ListOfAdditionalGraphicalObjects"> {0,1}
+        <element name="AdditionalGraphicalObject"> {1, inf}
+          <element name="BoundingBox"> {0,1} 
+            <element name="Position"/> {1} 
+            <element name="Dimensions"/> {1} 
+          </element>
+        </element>
+      </element>
+      <element name="ListOfRenderInformation"> {0,1}
+        <element name="RenderInformation"> {1, inf}
+          <element name="ListOfColorDefinitions">  {0,1}
+            <element name="ColorDefinition"/> {1, inf}
+          </element>
+          <element name="ListOfGradientDefinitions"> {0,1}
+            <choice> {1, inf}
+              <element name="RadialGradient"> {1}
+              <element name="LinearGradient"> {1}
+            </choice>
+          </element>
+          <element name="ListOfLineEndings"> {0,1}
+            <element name="LineEnding"> {1, inf}
+              <element name="BoundingBox"> {0,1} 
+                <element name="Position"/> {1} 
+                <element name="Dimensions"/> {1} 
+              </element>
+              <element name="Group"> {1}
+                <elementGroup name="layoutGroup"> {1}
+              </element>
+            </element>
+          </element>
+          <element name="ListOfStyles"> {0,1}
+            <element name="Style"/> {1, inf}
+          </element>
+        </element>
+      </element>
+    </element>
+    <element name="ListOfGlobalRenderInformation"> {0,1}
+      <element name="RenderInformation"> {1, inf}
+        <element name="ListOfColorDefinitions">  {0,1}
+          <element name="ColorDefinition"/> {1, inf}
+        </element>
+        <element name="ListOfGradientDefinitions"> {0,1}
+          <choice> {1, inf}
+            <element name="RadialGradient"> {1}
+            <element name="LinearGradient"> {1}
+          </choice>
+        </element>
+        <element name="ListOfLineEndings"> {0,1}
+          <element name="LineEnding"> {1, inf}
+            <element name="BoundingBox"> {0,1} 
+              <element name="Position"/> {1} 
+              <element name="Dimensions"/> {1} 
+            </element>
+            <element name="Group"> {1}
+          </element>
+        </element>
+        <element name="ListOfStyles"> {0,1}
+          <element name="Style"> {1, inf}
+            <element name="Group"> {1}
+              <elementGroup name="layoutGroup"> {1}
+            </element>
+          </element>
+        </element>
+      </element>
+    </element>
+  </element>
+  <element name="SBMLReference"> {0,1}
+    <element name="SBMLMap"/> {1, inf}
+  </element>
+  <element name="ListOfUnitDefinitions"> {0,1}
+    <element name="UnitDefinition"> {1, inf}
+      <elementGroup name="annotation"> {1}
+      <element name="Expression"/> {1}
+    </element>
+  </element>
+</element>
+
+<elementGroup name="annotation">
+  <element name="MiriamAnnotation"/> {0,1}
+  <element name="Comment"/> {0,1}
+  <element name="ListOfUnsupportedAnnotations"> {0,1}
+    <element name="UnsupportedAnnotation"/> {1, inf}
+  </element>
+</elementGroup>
+
+<elementGroup name="modelParameters">
+  <choice>
+    <element name="ModelParameterGroup"> {1}
+      <elementGroup name="modelParameters"> {0, inf}
+    </element>
+    <element name="ModelParameter"> {1}
+      <element name="InitialExpression"/> {0,1}
+    </element>
+  </choice>
+</elementGroup>
+
+<elementGroup name="parameters">
+  <choice>
+    <element name="ParameterGroup"> {1}
+      <elementGroup name="parameters"> {0, inf}
+    </element>
+    <element name="Parameter"/> {1}
+    <element name="ParameterText"/> {1}
+  </choice>
+</elementGroup>
+
+<elementGroup name=reportSectionElement>
+  <choice>
+    <element name="Object"/> {1} 
+    <element name="html"/> {1} 
+    <element name="Report"/> {1} 
+  </choice>
+</elementGroup>
+
+<elementGroup name="layoutGroup">
+  <choice>
+    <element name="Group">
+      <elementGroup name="layoutGroup">
+    </element>
+    <element name="Text"/> {1}
+    <element name="Rectangle"/> {1}
+    <element name="Ellipse"/> {1}
+    <element name="Polygon"> {1}
+      <element name="ListOfElements"> {1}
+        <choice> {1, inf}
+          <element name="RenderPoint"/> {1} 
+          <element name="RenderCubicBezier"/> {1}  
+        </choice>
+      </element>
+    </element>
+    <element name="Image"/> {1} 
+    <element name="Curve"> {1} 
+      <element name="ListOfElements"> {1}
+        <choice> {1, inf}
+          <element name="RenderPoint"/> {1} 
+          <element name="RenderCubicBezier"/> {1}  
+        </choice>
+      </element>
+    </element>
+  </choice>
+</elementGroup>

@@ -26,11 +26,6 @@ public:
    */
   virtual ~COPASIHandler();
 
-  virtual void start(const XML_Char * pszName,
-                     const XML_Char ** papszAttrs);
-
-  virtual void end(const XML_Char *  pszName);
-
 protected:
 
   /**
@@ -45,9 +40,9 @@ protected:
   /**
    * Process the end of an element
    * @param const XML_Char *pszName
-   * @return CXMLHandler * pHandlerToCall
+   * @return bool finished
    */
-  virtual CXMLHandler * processEnd(const XML_Char * pszName);
+  virtual bool processEnd(const XML_Char * pszName);
 
   /**
    * Retrieve the structure containing the process logic for the handler.

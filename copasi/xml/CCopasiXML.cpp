@@ -32,7 +32,13 @@
 #include "copasi.h"
 
 #include "CCopasiXML.h"
-#include "CCopasiXMLParser.h"
+
+#ifdef WITH_NEW_PARSER
+# include "parser/CXMLParser.h"
+#else
+# include "CCopasiXMLParser.h"
+#endif
+
 #include "CFixLocalReactionParameters.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -178,7 +184,12 @@ bool CCopasiXML::load(std::istream & is,
   bool done = false;
 
   CVersion FileVersion;
+
+#ifdef WITH_NEW_PARSER
+  CXMLParser Parser(FileVersion);
+#else
   CCopasiXMLParser Parser(FileVersion);
+#endif
 
   Parser.setFunctionList(mpFunctionList);
   Parser.setGUI(mpGUI);

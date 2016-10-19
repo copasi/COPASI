@@ -73,15 +73,15 @@ void CXMLHandler::start(const XML_Char * pszName,
 
 void CXMLHandler::end(const XML_Char * pszName)
 {
-  CXMLHandler * pNextHandler = NULL;
+  bool finished = false;
   std::map< std::string, Type >::iterator itElementType = mElementName2Type.find(pszName);
 
   if (itElementType != mElementName2Type.end() &&
       itElementType->second == mCurrentElement)
     {
-      pNextHandler = processEnd(pszName);
+      finished = processEnd(pszName);
     }
-  else if (mCurrentElement != UNKNOWN)
+  else if (mCurrentElement == UNKNOWN)
     {
       mCurrentElement = mLastKnownElement;
     }
@@ -91,9 +91,9 @@ void CXMLHandler::end(const XML_Char * pszName)
                      pszName, getElementName(mCurrentElement).c_str(), mpParser->getCurrentLineNumber());
     }
 
-  if (pNextHandler != NULL)
+  if (finished)
     {
-      mpParser->pushElementHandler(pNextHandler);
+      mpParser->popElementHandler();
       mpParser->onEndElement(pszName);
     }
 }
@@ -116,7 +116,7 @@ void CXMLHandler::init()
   sProcessLogic * pElementInfo = getProcessLogic();
   assert(pElementInfo != NULL);
 
-  do
+  while (pElementInfo != NULL)
     {
       std::set< CXMLHandler::Type > ValidElements;
       Type * pValidElement = pElementInfo->validElements;
@@ -130,9 +130,10 @@ void CXMLHandler::init()
       mElementName2Type[pElementInfo->elementName] = pElementInfo->elementType;
       mValidElements[pElementInfo->elementType] = ValidElements;
 
+      if (pElementInfo->elementType == BEFORE) break;
+
       ++pElementInfo;
     }
-  while (pElementInfo != NULL && pElementInfo->elementType != BEFORE);
 }
 
 std::string CXMLHandler::getElementName(const Type & type) const

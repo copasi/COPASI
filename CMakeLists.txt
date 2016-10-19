@@ -249,6 +249,12 @@ if (ENABLE_SDE_SUPPORT)
   add_definitions(-DWITH_SDE_SUPPORT)
 endif(ENABLE_SDE_SUPPORT)
 
+option(ENABLE_NEW_PARSER "Enable the use of the new XML parser" OFF)
+if (ENABLE_NEW_PARSER)
+  add_definitions(-DWITH_NEW_PARSER)
+endif(ENABLE_NEW_PARSER)
+
+
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 
 option(ENABLE_FLEX_BISON "Enable the use of flex and bison to create parsers." OFF)
@@ -799,6 +805,7 @@ message(STATUS "-----------------------------------------------------------
    Versioning framework     = ${ENABLE_VERSIONING}
    Provenance framework     = ${ENABLE_PROVENANCE}
    Analytics Task           = ${ENABLE_ANALYTICS}
+   New XML Parser           = ${ENABLE_NEW_PARSER}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:

@@ -28,13 +28,20 @@ CXMLHandler * TemplateHandler::processStart(const XML_Char * pszName,
 }
 
 // virtual
-CXMLHandler * TemplateHandler::processEnd(const XML_Char * pszName)
+bool TemplateHandler::processEnd(const XML_Char * pszName)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  bool finished = false;
 
-  // TODO CRITICAL Implement me!
-  
-  return pHandlerToCall;
+  switch (mCurrentElement)
+    {
+      case COPASI:
+        finished = true;
+        break;
+        
+      // TODO CRITICAL Implement me!
+    }
+    
+  return finished;
 }
 
 // virtual

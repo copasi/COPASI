@@ -6,13 +6,15 @@
 #include "copasi.h"
 
 #include "UNKNOWNHandler.h"
+#include "CXMLParser.h"
 
 /**
  * Replace UNKNOWN with the name type of the handler and implement the
  * three methods below.
  */
 UNKNOWNHandler::UNKNOWNHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::UNKNOWN)
+  CXMLHandler(parser, data, CXMLHandler::UNKNOWN),
+  mLevel(0)
 {
   init();
 }
@@ -22,31 +24,42 @@ UNKNOWNHandler::~UNKNOWNHandler()
 {}
 
 // virtual
-CXMLHandler * UNKNOWNHandler::processStart(const XML_Char * pszName,
-    const XML_Char ** papszAttrs)
+void UNKNOWNHandler::start(const XML_Char * pszName,
+                           const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
-
-  // TODO CRITICAL Implement me!
-
-  return pHandlerToCall;
+  processStart(pszName, papszAttrs);
 }
 
 // virtual
-CXMLHandler * UNKNOWNHandler::processEnd(const XML_Char * pszName)
+void UNKNOWNHandler::end(const XML_Char * pszName)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  if (processEnd(pszName))
+    {
+      mpParser->popElementHandler();
+      mpParser->onEndElement(pszName);
+    }
+}
 
-  // TODO CRITICAL Implement me!
+// virtual
+CXMLHandler * UNKNOWNHandler::processStart(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  mLevel++;
 
-  return pHandlerToCall;
+  return NULL;
+}
+
+// virtual
+bool UNKNOWNHandler::processEnd(const XML_Char * pszName)
+{
+  mLevel--;
+
+  return (mLevel == 0);
 }
 
 // virtual
 CXMLHandler::sProcessLogic * UNKNOWNHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"UNKNOWN", UNKNOWN, {BEFORE}},

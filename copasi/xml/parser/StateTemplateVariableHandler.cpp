@@ -33,13 +33,20 @@ CXMLHandler * StateTemplateVariableHandler::processStart(const XML_Char * pszNam
 }
 
 // virtual
-CXMLHandler * StateTemplateVariableHandler::processEnd(const XML_Char * pszName)
+bool StateTemplateVariableHandler::processEnd(const XML_Char * pszName)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  bool finished = false;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case COPASI:
+        finished = true;
+        break;
 
-  return pHandlerToCall;
+        // TODO CRITICAL Implement me!
+    }
+
+  return finished;
 }
 
 // virtual

@@ -33,13 +33,20 @@ CXMLHandler * ListOfUnsupportedAnnotationsHandler::processStart(const XML_Char *
 }
 
 // virtual
-CXMLHandler * ListOfUnsupportedAnnotationsHandler::processEnd(const XML_Char * pszName)
+bool ListOfUnsupportedAnnotationsHandler::processEnd(const XML_Char * pszName)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  bool finished = false;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case COPASI:
+        finished = true;
+        break;
 
-  return pHandlerToCall;
+        // TODO CRITICAL Implement me!
+    }
+
+  return finished;
 }
 
 // virtual

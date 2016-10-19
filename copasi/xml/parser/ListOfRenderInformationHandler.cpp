@@ -33,13 +33,20 @@ CXMLHandler * ListOfRenderInformationHandler::processStart(const XML_Char * pszN
 }
 
 // virtual
-CXMLHandler * ListOfRenderInformationHandler::processEnd(const XML_Char * pszName)
+bool ListOfRenderInformationHandler::processEnd(const XML_Char * pszName)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  bool finished = false;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case COPASI:
+        finished = true;
+        break;
 
-  return pHandlerToCall;
+        // TODO CRITICAL Implement me!
+    }
+
+  return finished;
 }
 
 // virtual

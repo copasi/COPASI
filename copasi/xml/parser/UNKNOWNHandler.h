@@ -26,6 +26,20 @@ public:
    */
   virtual ~UNKNOWNHandler();
 
+  /**
+   * Start element handler
+   * @param const XML_Char *pszName
+   * @param const XML_Char **papszAttrs
+   */
+  virtual void start(const XML_Char * pszName,
+                     const XML_Char ** papszAttrs);
+
+  /**
+   * End element handler
+   * @param const XML_Char *pszName
+   */
+  virtual void end(const XML_Char * pszName);
+
 protected:
 
   /**
@@ -40,15 +54,18 @@ protected:
   /**
    * Process the end of an element
    * @param const XML_Char *pszName
-   * @return CXMLHandler * pHandlerToCall
+   * @return bool finished
    */
-  virtual CXMLHandler * processEnd(const XML_Char * pszName);
+  virtual bool processEnd(const XML_Char * pszName);
 
   /**
    * Retrieve the structure containing the process logic for the handler.
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  size_t mLevel;
 };
 
 #endif //COPASI_UNKNOWNHandler

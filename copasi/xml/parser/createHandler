@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 AllHandler=""
-AllHandler="${AllHandler} UNKNOWN"
+# AllHandler="${AllHandler} UNKNOWN"
 AllHandler="${AllHandler} AdditionalGraphicalObject"
 AllHandler="${AllHandler} Assignment"
 AllHandler="${AllHandler} BasePoint1"

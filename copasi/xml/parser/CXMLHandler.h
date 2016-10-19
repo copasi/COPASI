@@ -195,14 +195,14 @@ public:
    * @param const XML_Char *pszName
    * @param const XML_Char **papszAttrs
    */
-  void start(const XML_Char * pszName,
-             const XML_Char ** papszAttrs);
+  virtual void start(const XML_Char * pszName,
+                     const XML_Char ** papszAttrs);
 
   /**
    * End element handler
    * @param const XML_Char *pszName
    */
-  void end(const XML_Char * pszName);
+  virtual void end(const XML_Char * pszName);
 
 protected:
   /**
@@ -217,9 +217,9 @@ protected:
   /**
    * Process the end of an element
    * @param const XML_Char *pszName
-   * @return CXMLHandler * pHandlerToCall
+   * @return bool finished
    */
-  virtual CXMLHandler * processEnd(const XML_Char * pszName) = 0;
+  virtual bool processEnd(const XML_Char * pszName) = 0;
 
   /**
    * Retrieve the structure containing the process logic for the handler.
