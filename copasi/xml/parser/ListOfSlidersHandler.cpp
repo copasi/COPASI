@@ -39,7 +39,7 @@ bool ListOfSlidersHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfSliders:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool PolygonHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Polygon:
         finished = true;
         break;
 

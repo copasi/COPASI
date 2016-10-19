@@ -39,7 +39,7 @@ bool MetaboliteReferenceGlyphHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case MetaboliteReferenceGlyph:
         finished = true;
         break;
 

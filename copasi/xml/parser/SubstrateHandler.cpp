@@ -39,7 +39,7 @@ bool SubstrateHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Substrate:
         finished = true;
         break;
 

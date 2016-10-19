@@ -39,7 +39,7 @@ bool ListOfCurveSegmentsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfCurveSegments:
         finished = true;
         break;
 

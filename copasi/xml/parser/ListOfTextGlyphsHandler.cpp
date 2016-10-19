@@ -39,7 +39,7 @@ bool ListOfTextGlyphsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfTextGlyphs:
         finished = true;
         break;
 

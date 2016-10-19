@@ -39,7 +39,7 @@ bool CompartmentHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Compartment:
         finished = true;
         break;
 

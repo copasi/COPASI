@@ -39,7 +39,7 @@ bool PlotItemHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case PlotItem:
         finished = true;
         break;
 

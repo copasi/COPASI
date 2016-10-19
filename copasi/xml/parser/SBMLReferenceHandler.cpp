@@ -39,7 +39,7 @@ bool SBMLReferenceHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case SBMLReference:
         finished = true;
         break;
 

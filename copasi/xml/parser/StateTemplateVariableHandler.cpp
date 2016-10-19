@@ -39,7 +39,7 @@ bool StateTemplateVariableHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case StateTemplateVariable:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool FooterHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Footer:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool GUIHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case GUI:
         finished = true;
         break;
 

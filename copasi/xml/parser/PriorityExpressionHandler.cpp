@@ -39,7 +39,7 @@ bool PriorityExpressionHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case PriorityExpression:
         finished = true;
         break;
 

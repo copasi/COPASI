@@ -39,7 +39,7 @@ bool ListOfChannelsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfChannels:
         finished = true;
         break;
 

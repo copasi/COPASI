@@ -39,7 +39,7 @@ bool htmlHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case html:
         finished = true;
         break;
 

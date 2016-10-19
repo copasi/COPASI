@@ -39,7 +39,7 @@ bool RenderPointHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case RenderPoint:
         finished = true;
         break;
 

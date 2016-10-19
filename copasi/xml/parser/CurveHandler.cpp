@@ -39,7 +39,7 @@ bool CurveHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Curve:
         finished = true;
         break;
 

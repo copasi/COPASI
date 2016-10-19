@@ -39,7 +39,7 @@ bool ReactionGlyphHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ReactionGlyph:
         finished = true;
         break;
 

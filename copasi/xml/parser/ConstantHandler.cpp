@@ -39,7 +39,7 @@ bool ConstantHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Constant:
         finished = true;
         break;
 

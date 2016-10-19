@@ -39,7 +39,7 @@ bool SBMLMapHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case SBMLMap:
         finished = true;
         break;
 

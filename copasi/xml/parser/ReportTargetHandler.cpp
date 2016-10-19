@@ -39,7 +39,7 @@ bool ReportTargetHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ReportTarget:
         finished = true;
         break;
 

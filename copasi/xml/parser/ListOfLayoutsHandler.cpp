@@ -39,7 +39,7 @@ bool ListOfLayoutsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfLayouts:
         finished = true;
         break;
 

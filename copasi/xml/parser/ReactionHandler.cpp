@@ -39,7 +39,7 @@ bool ReactionHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Reaction:
         finished = true;
         break;
 

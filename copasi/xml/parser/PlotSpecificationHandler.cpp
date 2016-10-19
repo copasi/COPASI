@@ -39,7 +39,7 @@ bool PlotSpecificationHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case PlotSpecification:
         finished = true;
         break;
 

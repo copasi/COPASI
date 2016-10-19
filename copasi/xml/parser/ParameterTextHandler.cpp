@@ -39,7 +39,7 @@ bool ParameterTextHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ParameterText:
         finished = true;
         break;
 

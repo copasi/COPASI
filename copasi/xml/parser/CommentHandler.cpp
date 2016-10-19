@@ -39,7 +39,7 @@ bool CommentHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Comment:
         finished = true;
         break;
 

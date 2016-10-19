@@ -39,7 +39,7 @@ bool SourceParameterHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case SourceParameter:
         finished = true;
         break;
 

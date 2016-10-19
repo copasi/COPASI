@@ -39,7 +39,7 @@ bool ListOfStylesHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfStyles:
         finished = true;
         break;
 

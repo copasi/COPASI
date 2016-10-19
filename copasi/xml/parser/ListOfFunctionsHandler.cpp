@@ -39,7 +39,7 @@ bool ListOfFunctionsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfFunctions:
         finished = true;
         break;
 

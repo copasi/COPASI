@@ -39,7 +39,7 @@ bool ListOfRenderInformationHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfRenderInformation:
         finished = true;
         break;
 

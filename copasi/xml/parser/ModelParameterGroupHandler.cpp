@@ -39,7 +39,7 @@ bool ModelParameterGroupHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ModelParameterGroup:
         finished = true;
         break;
 

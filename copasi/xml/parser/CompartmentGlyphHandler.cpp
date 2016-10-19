@@ -39,7 +39,7 @@ bool CompartmentGlyphHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case CompartmentGlyph:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool ListOfCompartmentsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfCompartments:
         finished = true;
         break;
 

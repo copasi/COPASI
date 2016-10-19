@@ -39,7 +39,7 @@ bool ChannelSpecHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ChannelSpec:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool ListOfCallParametersHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfCallParameters:
         finished = true;
         break;
 

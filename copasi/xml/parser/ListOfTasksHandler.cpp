@@ -39,7 +39,7 @@ bool ListOfTasksHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfTasks:
         finished = true;
         break;
 

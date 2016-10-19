@@ -39,7 +39,7 @@ bool KineticLawHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case KineticLaw:
         finished = true;
         break;
 

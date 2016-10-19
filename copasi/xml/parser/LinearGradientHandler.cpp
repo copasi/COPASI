@@ -39,7 +39,7 @@ bool LinearGradientHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case LinearGradient:
         finished = true;
         break;
 

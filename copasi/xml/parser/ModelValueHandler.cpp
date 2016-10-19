@@ -39,7 +39,7 @@ bool ModelValueHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ModelValue:
         finished = true;
         break;
 

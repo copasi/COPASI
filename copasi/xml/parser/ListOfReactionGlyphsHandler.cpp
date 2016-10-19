@@ -39,7 +39,7 @@ bool ListOfReactionGlyphsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfReactionGlyphs:
         finished = true;
         break;
 

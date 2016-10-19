@@ -39,7 +39,7 @@ bool CubicBezierHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case CubicBezier:
         finished = true;
         break;
 

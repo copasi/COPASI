@@ -39,7 +39,7 @@ bool ModifierHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Modifier:
         finished = true;
         break;
 

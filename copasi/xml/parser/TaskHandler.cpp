@@ -39,7 +39,7 @@ bool TaskHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Task:
         finished = true;
         break;
 

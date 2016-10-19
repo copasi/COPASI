@@ -39,7 +39,7 @@ bool ListOfAdditionalGraphicalObjectsHandler::processEnd(const XML_Char * pszNam
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfAdditionalGraphicalObjects:
         finished = true;
         break;
 

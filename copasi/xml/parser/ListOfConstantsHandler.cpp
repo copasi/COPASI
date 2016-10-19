@@ -39,7 +39,7 @@ bool ListOfConstantsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfConstants:
         finished = true;
         break;
 

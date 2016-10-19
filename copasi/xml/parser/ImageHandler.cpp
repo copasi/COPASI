@@ -39,7 +39,7 @@ bool ImageHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Image:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool ListOfSubstratesHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfSubstrates:
         finished = true;
         break;
 

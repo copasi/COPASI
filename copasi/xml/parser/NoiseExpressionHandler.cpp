@@ -39,7 +39,7 @@ bool NoiseExpressionHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case NoiseExpression:
         finished = true;
         break;
 

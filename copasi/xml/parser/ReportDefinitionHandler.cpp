@@ -39,7 +39,7 @@ bool ReportDefinitionHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ReportDefinition:
         finished = true;
         break;
 

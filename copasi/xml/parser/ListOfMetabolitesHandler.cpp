@@ -39,7 +39,7 @@ bool ListOfMetabolitesHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfMetabolites:
         finished = true;
         break;
 

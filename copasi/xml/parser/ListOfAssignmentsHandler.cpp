@@ -39,7 +39,7 @@ bool ListOfAssignmentsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfAssignments:
         finished = true;
         break;
 

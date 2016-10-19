@@ -39,7 +39,7 @@ bool TableHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Table:
         finished = true;
         break;
 

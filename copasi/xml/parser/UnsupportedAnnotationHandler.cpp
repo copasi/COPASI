@@ -39,7 +39,7 @@ bool UnsupportedAnnotationHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case UnsupportedAnnotation:
         finished = true;
         break;
 

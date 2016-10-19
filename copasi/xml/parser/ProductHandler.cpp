@@ -39,7 +39,7 @@ bool ProductHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Product:
         finished = true;
         break;
 

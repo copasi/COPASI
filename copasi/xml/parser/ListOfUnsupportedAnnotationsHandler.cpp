@@ -39,7 +39,7 @@ bool ListOfUnsupportedAnnotationsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfUnsupportedAnnotations:
         finished = true;
         break;
 

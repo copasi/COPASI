@@ -39,7 +39,7 @@ bool BoundingBoxHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case BoundingBox:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool DimensionsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Dimensions:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool ListOfPlotItemsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfPlotItems:
         finished = true;
         break;
 

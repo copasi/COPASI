@@ -39,7 +39,7 @@ bool ListOfModelParameterSetsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfModelParameterSets:
         finished = true;
         break;
 

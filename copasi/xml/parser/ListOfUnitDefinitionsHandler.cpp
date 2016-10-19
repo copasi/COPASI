@@ -39,7 +39,7 @@ bool ListOfUnitDefinitionsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfUnitDefinitions:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool RadialGradientHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case RadialGradient:
         finished = true;
         break;
 

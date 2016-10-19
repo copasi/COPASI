@@ -39,7 +39,7 @@ bool GroupHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Group:
         finished = true;
         break;
 

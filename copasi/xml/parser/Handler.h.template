@@ -1,3 +1,8 @@
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
 #ifndef COPASI_TemplateHandler
 #define COPASI_TemplateHandler
 
@@ -44,7 +49,6 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
-
 };
 
 #endif //COPASI_TemplateHandler

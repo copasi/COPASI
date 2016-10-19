@@ -39,7 +39,7 @@ bool ListOfColorDefinitionsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfColorDefinitions:
         finished = true;
         break;
 

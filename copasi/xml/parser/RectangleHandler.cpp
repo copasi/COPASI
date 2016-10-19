@@ -39,7 +39,7 @@ bool RectangleHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Rectangle:
         finished = true;
         break;
 

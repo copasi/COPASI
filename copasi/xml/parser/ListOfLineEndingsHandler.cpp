@@ -39,7 +39,7 @@ bool ListOfLineEndingsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfLineEndings:
         finished = true;
         break;
 

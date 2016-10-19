@@ -39,7 +39,7 @@ bool StyleLocalHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case StyleLocal:
         finished = true;
         break;
 

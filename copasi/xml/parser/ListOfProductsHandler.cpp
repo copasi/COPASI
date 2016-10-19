@@ -39,7 +39,7 @@ bool ListOfProductsHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case ListOfProducts:
         finished = true;
         break;
 

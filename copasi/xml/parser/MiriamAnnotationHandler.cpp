@@ -39,7 +39,7 @@ bool MiriamAnnotationHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case MiriamAnnotation:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool ProblemHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Problem:
         finished = true;
         break;
 

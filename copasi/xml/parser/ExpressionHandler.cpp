@@ -39,7 +39,7 @@ bool ExpressionHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Expression:
         finished = true;
         break;
 

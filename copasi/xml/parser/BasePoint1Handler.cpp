@@ -39,7 +39,7 @@ bool BasePoint1Handler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case BasePoint1:
         finished = true;
         break;
 

@@ -39,7 +39,7 @@ bool BodyHandler::processEnd(const XML_Char * pszName)
 
   switch (mCurrentElement)
     {
-      case COPASI:
+      case Body:
         finished = true;
         break;
 
