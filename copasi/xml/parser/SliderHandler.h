@@ -1,0 +1,54 @@
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#ifndef COPASI_SliderHandler
+#define COPASI_SliderHandler
+
+#include "copasi/xml/parser/CXMLHandler.h"
+
+class SliderHandler : public CXMLHandler
+{
+private:
+  SliderHandler();
+
+public:
+  /**
+   * Constructor
+   * @param CXMLParser & parser
+   * @param CXMLParserData & data
+   */
+  SliderHandler(CXMLParser & parser, CXMLParserData & data);
+
+  /**
+   * Destructor
+   */
+  virtual ~SliderHandler();
+
+protected:
+
+  /**
+   * Process the start of an element
+   * @param const XML_Char *pszName
+   * @param const XML_Char **papszAttrs
+   * @return CXMLHandler * pHandlerToCall
+   */
+  virtual CXMLHandler * processStart(const XML_Char * pszName,
+                                     const XML_Char ** papszAttrs);
+
+  /**
+   * Process the end of an element
+   * @param const XML_Char *pszName
+   * @return CXMLHandler * pHandlerToCall
+   */
+  virtual CXMLHandler * processEnd(const XML_Char * pszName);
+
+  /**
+   * Retrieve the structure containing the process logic for the handler.
+   * @return sElementInfo *
+   */
+  virtual sProcessLogic * getProcessLogic() const;
+};
+
+#endif //COPASI_SliderHandler

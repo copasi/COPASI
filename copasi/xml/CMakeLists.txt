@@ -36,32 +36,13 @@
 file(GLOB HEADERS_XML xml/*.h)
 file(GLOB SOURCES_XML xml/*.cpp)
 
+file(GLOB HEADERS_XML_PARSER xml/parser/*.h)
+file(GLOB SOURCES_XML_PARSER xml/parser/*.cpp)
+
 # create source group for IDEs
 source_group(xml FILES ${SOURCES_XML} ${HEADERS_XML})
+source_group(xmlParser FILES ${SOURCES_XML_PARSER} ${HEADERS_XML_PARSER})
 
 # add files to main COPASI sources
-set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_XML})
-set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_XML})
-
-
-
-# set(HEADERS ${HEADERS} CCopasiXML.h)
-# set(HEADERS ${HEADERS} CCopasiXMLInterface.h)
-# set(HEADERS ${HEADERS} CCopasiXMLVersion.h)
-# set(HEADERS ${HEADERS} CExpat.h)
-# set(HEADERS ${HEADERS} CFixLocalReactionParameters.h)
-# set(HEADERS ${HEADERS} CXMLHandler.h)
-# set(HEADERS ${HEADERS} CCopasiXMLParser.h)
-# 
-# set(SOURCES ${SOURCES} CCopasiXML.cpp)
-# set(SOURCES ${SOURCES} CCopasiXMLInterface.cpp)
-# set(SOURCES ${SOURCES} CExpat.cpp)
-# set(SOURCES ${SOURCES} CFixLocalReactionParameters.cpp)
-# set(SOURCES ${SOURCES} CCopasiXMLParser.cpp)
-# if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ListOfModelParameterSets.cpp)
-# set(SOURCES ${SOURCES} ListOfModelParameterSets.cpp)
-# endif()
-
-#add_library(copasiXML STATIC ${SOURCES} ${HEADERS})
-#target_link_libraries(copasiXML function utilities scan elementaryFluxModes steadystate optimization lyap tssanalysis sensitivities moieties lna ${EXPAT_LIBRARY})
-
+set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_XML} ${SOURCES_XML_PARSER})
+set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_XML} ${HEADERS_XML_PARSER})

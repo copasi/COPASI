@@ -1889,15 +1889,19 @@
   </define>
 
   <define name="listOfGlobalRenderInformation.datatype">
-    <element name="RenderInformation">
-      <ref name="globalRenderInformation.datatype"/>
-    </element>
+    <oneOrMore>
+      <element name="RenderInformation">
+        <ref name="globalRenderInformation.datatype"/>
+      </element>
+    </oneOrMore>
   </define>
 
   <define name="listOfLocalRenderInformation.datatype">
-    <element name="RenderInformation">
-      <ref name="localRenderInformation.datatype"/>
-    </element>
+    <oneOrMore>
+      <element name="RenderInformation">
+        <ref name="localRenderInformation.datatype"/>
+      </element>
+    </oneOrMore>
   </define>
 
   <define name="renderPoint.datatytpe">
