@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,8 +54,7 @@ public:
   CCopasiSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false);
   ~CCopasiSelectionDialog();
   void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
-  void setModel(const CModel* model,
-                const CQSimpleSelectionTree::ObjectClasses & classes);
+  void setFilter(const CQSimpleSelectionTree::ObjectClasses & classes);
   void setValidObjects(const std::vector< const CCopasiObject * > & objectList);
   void setSingleSelection(bool singleSelectionMode);
   void enableExpertMode(bool enable);

@@ -83,10 +83,12 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
   delete mpTmpVector;
 }
 
-void CCopasiSelectionDialog::setModel(const CModel* pModel,
-                                      const CQSimpleSelectionTree::ObjectClasses & classes)
+void CCopasiSelectionDialog::setFilter(const CQSimpleSelectionTree::ObjectClasses & classes)
 {
-  this->mpSelectionWidget->populateTree(pModel, classes);
+  CCopasiDataModel * pDataModel = ListViews::dataModel(this);
+  assert(pDataModel != NULL);
+
+  this->mpSelectionWidget->populateTree(pDataModel->getModel(), classes);
 }
 
 void CCopasiSelectionDialog::setValidObjects(const std::vector< const CCopasiObject * > & objectList)
@@ -143,9 +145,6 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CQSimpleSelectionTree::ObjectClasses & classes,
                                         const CCopasiObject * pCurrentObject)
 {
-  CCopasiDataModel * pDataModel = ListViews::dataModel(parent);
-  assert(pDataModel != NULL);
-
   std::vector< const CCopasiObject * > Selection;
 
   if (pCurrentObject != NULL)
@@ -153,7 +152,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   pDialog->setWindowTitle("Select Item");
-  pDialog->setModel(pDataModel->getModel(), classes);
+  pDialog->setFilter(classes);
   pDialog->setSingleSelection(true);
   pDialog->setOutputVector(&Selection);
 
@@ -185,9 +184,6 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     const CQSimpleSelectionTree::ObjectClasses & classes,
     const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
-  CCopasiDataModel * pDataModel = ListViews::dataModel(parent);
-  assert(pDataModel != NULL);
-
   std::vector< const CCopasiObject * > Selection;
 
   if (pCurrentSelection)
@@ -196,7 +192,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   pDialog->setWindowTitle("Select Items");
   pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
-  pDialog->setModel(pDataModel->getModel(), classes);
+  pDialog->setFilter(classes);
   pDialog->setSingleSelection(false);
   pDialog->setOutputVector(&Selection);
 

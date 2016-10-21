@@ -275,13 +275,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpListView->show();
   this->setCentralWidget(mpListView);
 
-  //create sliders window
-  this->mpSliders = new SliderDialog(NULL);
-  this->mpSliders->setParentWindow(this);
   size_t id = mpListView->getCurrentItemId();
-  this->mpSliders->setCurrentFolderId(id);
-  this->mpSliders->resize(320, 350);
-  this->mSliderDialogEnabled = this->mpSliders->isEnabled();
 
   resize(800, 600);
   show();
@@ -291,7 +285,6 @@ CopasiUI3Window::CopasiUI3Window():
   // Assure that the changed flag is still false;
   assert(mpDataModel != NULL);
   mpDataModel->changed(false);
-  this->mpSliders->setChanged(false);
 
   mpAutoSaveTimer = new QTimer(this);
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
@@ -299,6 +292,15 @@ CopasiUI3Window::CopasiUI3Window():
   // TODO CRITICAL We need to disable autosave to avoid race conditions.
   // connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
   // mpDataModelGUI->notify(ListViews::FUNCTION, ListViews::ADD, "");
+
+  //create sliders window
+  mpSliders = new SliderDialog(mpListView);
+  mpSliders->setParentWindow(this);
+  mpSliders->setCurrentFolderId(id);
+  mpSliders->resize(320, 350);
+  mpSliders->hide();
+  mpSliders->setChanged(false);
+  mSliderDialogEnabled = mpSliders->isEnabled();
 
   setApplicationFont();
 
@@ -2252,7 +2254,6 @@ void CopasiUI3Window::setPopulationDisplay(CQOptPopulation * display)
 {
   mpPopulationDisplay = display;
 }
-
 
 void CopasiUI3Window::addWindow(QMainWindow * pWindow)
 {
