@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "RectangleHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Rectangle with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * RectangleHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Rectangle:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool RectangleHandler::processEnd(const XML_Char * pszName)
     {
       case Rectangle:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * RectangleHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Rectangle", Rectangle, {BEFORE}},
-    {"BEFORE", BEFORE, {Rectangle, BEFORE}}
+    {"BEFORE", BEFORE, {Rectangle, HANDLER_COUNT}},
+    {"Rectangle", Rectangle, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "EventHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Event with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * EventHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Event:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool EventHandler::processEnd(const XML_Char * pszName)
     {
       case Event:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * EventHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Event", Event, {BEFORE}},
-    {"BEFORE", BEFORE, {Event, BEFORE}}
+    {"BEFORE", BEFORE, {Event, HANDLER_COUNT}},
+    {"Event", Event, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

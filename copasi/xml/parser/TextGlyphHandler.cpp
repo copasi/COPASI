@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "TextGlyphHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace TextGlyph with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * TextGlyphHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case TextGlyph:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool TextGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case TextGlyph:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * TextGlyphHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"TextGlyph", TextGlyph, {BEFORE}},
-    {"BEFORE", BEFORE, {TextGlyph, BEFORE}}
+    {"BEFORE", BEFORE, {TextGlyph, HANDLER_COUNT}},
+    {"TextGlyph", TextGlyph, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

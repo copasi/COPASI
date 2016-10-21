@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "BasePoint2Handler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace BasePoint2 with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * BasePoint2Handler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case BasePoint2:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool BasePoint2Handler::processEnd(const XML_Char * pszName)
     {
       case BasePoint2:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * BasePoint2Handler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BasePoint2", BasePoint2, {BEFORE}},
-    {"BEFORE", BEFORE, {BasePoint2, BEFORE}}
+    {"BEFORE", BEFORE, {BasePoint2, HANDLER_COUNT}},
+    {"BasePoint2", BasePoint2, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

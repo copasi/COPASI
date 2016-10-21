@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ExpressionHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Expression with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ExpressionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Expression:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ExpressionHandler::processEnd(const XML_Char * pszName)
     {
       case Expression:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ExpressionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Expression", Expression, {BEFORE}},
-    {"BEFORE", BEFORE, {Expression, BEFORE}}
+    {"BEFORE", BEFORE, {Expression, HANDLER_COUNT}},
+    {"Expression", Expression, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

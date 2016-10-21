@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "PolygonHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Polygon with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * PolygonHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Polygon:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool PolygonHandler::processEnd(const XML_Char * pszName)
     {
       case Polygon:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * PolygonHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Polygon", Polygon, {BEFORE}},
-    {"BEFORE", BEFORE, {Polygon, BEFORE}}
+    {"BEFORE", BEFORE, {Polygon, HANDLER_COUNT}},
+    {"Polygon", Polygon, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

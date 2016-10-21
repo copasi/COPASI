@@ -38,8 +38,9 @@ public:
 
   enum Type
   {
-    BEFORE = -1,
-    UNKNOWN = 0,
+    BEFORE = 0,
+    AFTER,
+    UNKNOWN,
     AdditionalGraphicalObject,
     Assignment,
     BasePoint1,
@@ -48,6 +49,7 @@ public:
     BoundingBox,
     CallParameter,
     ChannelSpec,
+    CharacterData,
     ColorDefinition,
     Comment,
     Compartment,
@@ -164,14 +166,14 @@ public:
     Unit,
     UnitDefinition,
     UnsupportedAnnotation,
-    Template // Do not remove! This must be the last type.
+    HANDLER_COUNT // Do not remove! This must be the last type.
   };
 
   struct sProcessLogic
   {
     std::string elementName;
     Type elementType;
-    Type validElements[10];
+    Type validElements[15];
   };
 
   // Operations

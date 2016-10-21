@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfModelParameterSetsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfModelParameterSets with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfModelParameterSetsHandler::processStart(const XML_Char * psz
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfModelParameterSets:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfModelParameterSetsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfModelParameterSets:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfModelParameterSetsHandler::getProcessLogic() 
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfModelParameterSets", ListOfModelParameterSets, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfModelParameterSets, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfModelParameterSets, HANDLER_COUNT}},
+    {"ListOfModelParameterSets", ListOfModelParameterSets, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

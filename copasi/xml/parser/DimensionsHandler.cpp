@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "DimensionsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Dimensions with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * DimensionsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Dimensions:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool DimensionsHandler::processEnd(const XML_Char * pszName)
     {
       case Dimensions:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * DimensionsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Dimensions", Dimensions, {BEFORE}},
-    {"BEFORE", BEFORE, {Dimensions, BEFORE}}
+    {"BEFORE", BEFORE, {Dimensions, HANDLER_COUNT}},
+    {"Dimensions", Dimensions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

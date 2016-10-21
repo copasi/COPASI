@@ -177,6 +177,7 @@ const MESSAGES Messages[] =
   {MCXML + 21, "XML (21): One or more layout elements reference model objects that no longer exists. These references have been deleted."},
   {MCXML + 22, "XML (22): Duplicate XML Id '%s' encountered in line '%d'."},
   {MCXML + 23, "XML (23): Duplicate Unit Definition '%s' encountered in line '%d'."},
+  {MCXML + 24, "XML (24): At least one of the following elements '%s' is missing in line '%d'."},
 
   // CCopasiMessage
   {MCCopasiMessage + 1, "Message (1): No more messages."},

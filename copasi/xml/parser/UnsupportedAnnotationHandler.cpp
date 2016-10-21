@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "UnsupportedAnnotationHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace UnsupportedAnnotation with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * UnsupportedAnnotationHandler::processStart(const XML_Char * pszNam
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case UnsupportedAnnotation:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool UnsupportedAnnotationHandler::processEnd(const XML_Char * pszName)
     {
       case UnsupportedAnnotation:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * UnsupportedAnnotationHandler::getProcessLogic() con
 
   static sProcessLogic Elements[] =
   {
-    {"UnsupportedAnnotation", UnsupportedAnnotation, {BEFORE}},
-    {"BEFORE", BEFORE, {UnsupportedAnnotation, BEFORE}}
+    {"BEFORE", BEFORE, {UnsupportedAnnotation, HANDLER_COUNT}},
+    {"UnsupportedAnnotation", UnsupportedAnnotation, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

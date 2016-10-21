@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "EllipseHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Ellipse with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * EllipseHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Ellipse:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool EllipseHandler::processEnd(const XML_Char * pszName)
     {
       case Ellipse:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * EllipseHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Ellipse", Ellipse, {BEFORE}},
-    {"BEFORE", BEFORE, {Ellipse, BEFORE}}
+    {"BEFORE", BEFORE, {Ellipse, HANDLER_COUNT}},
+    {"Ellipse", Ellipse, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

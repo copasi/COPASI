@@ -8,6 +8,8 @@
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
+class CCopasiParameterGroup;
+
 class ParameterGroupHandler : public CXMLHandler
 {
 private:
@@ -25,6 +27,12 @@ public:
    * Destructor
    */
   virtual ~ParameterGroupHandler();
+
+  /**
+   * Set the derived element for which the handler is called such as methods and problems
+   * @param CCopasiParameterGroup * pDerivedElement
+   */
+  void setDerivedElement(CCopasiParameterGroup * pDerivedElement);
 
 protected:
 
@@ -49,6 +57,17 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * A flag indicating whether the current element is derived from
+   * a parameter group.
+   */
+  bool mDerivedElement;
+
+  size_t mLevel;
+
+  std::stack< CCopasiParameterGroup * > mParameterGroupStack;
 };
 
 #endif //COPASI_ParameterGroupHandler

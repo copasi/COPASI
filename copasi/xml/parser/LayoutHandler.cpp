@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "LayoutHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Layout with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * LayoutHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Layout:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool LayoutHandler::processEnd(const XML_Char * pszName)
     {
       case Layout:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * LayoutHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Layout", Layout, {BEFORE}},
-    {"BEFORE", BEFORE, {Layout, BEFORE}}
+    {"BEFORE", BEFORE, {Layout, HANDLER_COUNT}},
+    {"Layout", Layout, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

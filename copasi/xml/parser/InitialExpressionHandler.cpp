@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "InitialExpressionHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace InitialExpression with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * InitialExpressionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case InitialExpression:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool InitialExpressionHandler::processEnd(const XML_Char * pszName)
     {
       case InitialExpression:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * InitialExpressionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"InitialExpression", InitialExpression, {BEFORE}},
-    {"BEFORE", BEFORE, {InitialExpression, BEFORE}}
+    {"BEFORE", BEFORE, {InitialExpression, HANDLER_COUNT}},
+    {"InitialExpression", InitialExpression, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

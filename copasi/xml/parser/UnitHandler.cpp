@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "UnitHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Unit with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * UnitHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Unit:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool UnitHandler::processEnd(const XML_Char * pszName)
     {
       case Unit:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * UnitHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Unit", Unit, {BEFORE}},
-    {"BEFORE", BEFORE, {Unit, BEFORE}}
+    {"BEFORE", BEFORE, {Unit, HANDLER_COUNT}},
+    {"Unit", Unit, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

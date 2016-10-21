@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "PlotItemHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace PlotItem with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * PlotItemHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case PlotItem:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool PlotItemHandler::processEnd(const XML_Char * pszName)
     {
       case PlotItem:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * PlotItemHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"PlotItem", PlotItem, {BEFORE}},
-    {"BEFORE", BEFORE, {PlotItem, BEFORE}}
+    {"BEFORE", BEFORE, {PlotItem, HANDLER_COUNT}},
+    {"PlotItem", PlotItem, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "StateTemplateVariableHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace StateTemplateVariable with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * StateTemplateVariableHandler::processStart(const XML_Char * pszNam
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case StateTemplateVariable:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool StateTemplateVariableHandler::processEnd(const XML_Char * pszName)
     {
       case StateTemplateVariable:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * StateTemplateVariableHandler::getProcessLogic() con
 
   static sProcessLogic Elements[] =
   {
-    {"StateTemplateVariable", StateTemplateVariable, {BEFORE}},
-    {"BEFORE", BEFORE, {StateTemplateVariable, BEFORE}}
+    {"BEFORE", BEFORE, {StateTemplateVariable, HANDLER_COUNT}},
+    {"StateTemplateVariable", StateTemplateVariable, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

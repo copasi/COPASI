@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfColorDefinitionsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfColorDefinitions with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfColorDefinitionsHandler::processStart(const XML_Char * pszNa
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfColorDefinitions:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfColorDefinitionsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfColorDefinitions:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfColorDefinitionsHandler::getProcessLogic() co
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfColorDefinitions", ListOfColorDefinitions, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfColorDefinitions, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfColorDefinitions, HANDLER_COUNT}},
+    {"ListOfColorDefinitions", ListOfColorDefinitions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

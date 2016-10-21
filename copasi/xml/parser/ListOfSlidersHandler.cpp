@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfSlidersHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfSliders with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfSlidersHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfSliders:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfSlidersHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfSliders:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfSlidersHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfSliders", ListOfSliders, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfSliders, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfSliders, HANDLER_COUNT}},
+    {"ListOfSliders", ListOfSliders, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ModelParameterHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ModelParameter with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ModelParameter:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ModelParameterHandler::processEnd(const XML_Char * pszName)
     {
       case ModelParameter:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ModelParameterHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ModelParameter", ModelParameter, {BEFORE}},
-    {"BEFORE", BEFORE, {ModelParameter, BEFORE}}
+    {"BEFORE", BEFORE, {ModelParameter, HANDLER_COUNT}},
+    {"ModelParameter", ModelParameter, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

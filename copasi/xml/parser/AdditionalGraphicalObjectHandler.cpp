@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "AdditionalGraphicalObjectHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace AdditionalGraphicalObject with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * AdditionalGraphicalObjectHandler::processStart(const XML_Char * ps
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case AdditionalGraphicalObject:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool AdditionalGraphicalObjectHandler::processEnd(const XML_Char * pszName)
     {
       case AdditionalGraphicalObject:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * AdditionalGraphicalObjectHandler::getProcessLogic()
 
   static sProcessLogic Elements[] =
   {
-    {"AdditionalGraphicalObject", AdditionalGraphicalObject, {BEFORE}},
-    {"BEFORE", BEFORE, {AdditionalGraphicalObject, BEFORE}}
+    {"BEFORE", BEFORE, {AdditionalGraphicalObject, HANDLER_COUNT}},
+    {"AdditionalGraphicalObject", AdditionalGraphicalObject, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

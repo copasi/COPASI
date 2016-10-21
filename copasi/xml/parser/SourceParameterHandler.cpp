@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "SourceParameterHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace SourceParameter with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * SourceParameterHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case SourceParameter:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool SourceParameterHandler::processEnd(const XML_Char * pszName)
     {
       case SourceParameter:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * SourceParameterHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"SourceParameter", SourceParameter, {BEFORE}},
-    {"BEFORE", BEFORE, {SourceParameter, BEFORE}}
+    {"BEFORE", BEFORE, {SourceParameter, HANDLER_COUNT}},
+    {"SourceParameter", SourceParameter, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

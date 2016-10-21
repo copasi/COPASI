@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfMetaboliteReferenceGlyphsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfMetaboliteReferenceGlyphs with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfMetaboliteReferenceGlyphsHandler::processStart(const XML_Cha
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfMetaboliteReferenceGlyphs:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfMetaboliteReferenceGlyphsHandler::processEnd(const XML_Char * pszName
     {
       case ListOfMetaboliteReferenceGlyphs:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfMetaboliteReferenceGlyphsHandler::getProcessL
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfMetaboliteReferenceGlyphs", ListOfMetaboliteReferenceGlyphs, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfMetaboliteReferenceGlyphs, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfMetaboliteReferenceGlyphs, HANDLER_COUNT}},
+    {"ListOfMetaboliteReferenceGlyphs", ListOfMetaboliteReferenceGlyphs, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

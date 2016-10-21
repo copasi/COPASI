@@ -135,7 +135,7 @@
 
 CXMLHandlerFactory::CXMLHandlerFactory(CXMLParser & parser,
                                        CXMLParserData & data) :
-  CVector< CXMLHandler * >(CXMLHandler::Template),
+  CVector< CXMLHandler * >(CXMLHandler::HANDLER_COUNT),
   mpParser(&parser),
   mpData(&data)
 {
@@ -673,7 +673,7 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new UnsupportedAnnotationHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::Template:
+      case CXMLHandler::HANDLER_COUNT:
       case CXMLHandler::BEFORE:
         break;
     }

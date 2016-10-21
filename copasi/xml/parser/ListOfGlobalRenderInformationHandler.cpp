@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfGlobalRenderInformationHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfGlobalRenderInformation with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfGlobalRenderInformationHandler::processStart(const XML_Char 
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfGlobalRenderInformation:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfGlobalRenderInformationHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfGlobalRenderInformation:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfGlobalRenderInformationHandler::getProcessLog
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfGlobalRenderInformation", ListOfGlobalRenderInformation, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfGlobalRenderInformation, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfGlobalRenderInformation, HANDLER_COUNT}},
+    {"ListOfGlobalRenderInformation", ListOfGlobalRenderInformation, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

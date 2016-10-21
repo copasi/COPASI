@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfConstantsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfConstants with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfConstantsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfConstants:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfConstantsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfConstants:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfConstantsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfConstants", ListOfConstants, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfConstants, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfConstants, HANDLER_COUNT}},
+    {"ListOfConstants", ListOfConstants, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

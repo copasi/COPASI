@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "MiriamAnnotationHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace MiriamAnnotation with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * MiriamAnnotationHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case MiriamAnnotation:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool MiriamAnnotationHandler::processEnd(const XML_Char * pszName)
     {
       case MiriamAnnotation:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * MiriamAnnotationHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"MiriamAnnotation", MiriamAnnotation, {BEFORE}},
-    {"BEFORE", BEFORE, {MiriamAnnotation, BEFORE}}
+    {"BEFORE", BEFORE, {MiriamAnnotation, HANDLER_COUNT}},
+    {"MiriamAnnotation", MiriamAnnotation, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

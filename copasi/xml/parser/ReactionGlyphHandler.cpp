@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ReactionGlyphHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ReactionGlyph with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ReactionGlyphHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ReactionGlyph:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ReactionGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case ReactionGlyph:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ReactionGlyphHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ReactionGlyph", ReactionGlyph, {BEFORE}},
-    {"BEFORE", BEFORE, {ReactionGlyph, BEFORE}}
+    {"BEFORE", BEFORE, {ReactionGlyph, HANDLER_COUNT}},
+    {"ReactionGlyph", ReactionGlyph, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

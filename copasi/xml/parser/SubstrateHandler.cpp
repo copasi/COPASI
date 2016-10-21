@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "SubstrateHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Substrate with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * SubstrateHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Substrate:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool SubstrateHandler::processEnd(const XML_Char * pszName)
     {
       case Substrate:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * SubstrateHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Substrate", Substrate, {BEFORE}},
-    {"BEFORE", BEFORE, {Substrate, BEFORE}}
+    {"BEFORE", BEFORE, {Substrate, HANDLER_COUNT}},
+    {"Substrate", Substrate, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

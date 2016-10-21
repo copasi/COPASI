@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "LinearGradientHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace LinearGradient with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * LinearGradientHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case LinearGradient:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool LinearGradientHandler::processEnd(const XML_Char * pszName)
     {
       case LinearGradient:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * LinearGradientHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"LinearGradient", LinearGradient, {BEFORE}},
-    {"BEFORE", BEFORE, {LinearGradient, BEFORE}}
+    {"BEFORE", BEFORE, {LinearGradient, HANDLER_COUNT}},
+    {"LinearGradient", LinearGradient, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

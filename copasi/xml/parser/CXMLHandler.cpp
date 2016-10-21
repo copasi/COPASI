@@ -76,10 +76,26 @@ void CXMLHandler::end(const XML_Char * pszName)
   bool finished = false;
   std::map< std::string, Type >::iterator itElementType = mElementName2Type.find(pszName);
 
-  if (itElementType != mElementName2Type.end() &&
-      itElementType->second == mCurrentElement)
+  if (itElementType != mElementName2Type.end())
     {
-      finished = processEnd(pszName);
+      if (itElementType->second == mType)
+        {
+          const std::set< Type > ValidElements =  mValidElements[mLastKnownElement];
+
+          if (ValidElements.find(AFTER) == ValidElements.end())
+            {
+              // We have an element closing without finding all required child elements
+              CCopasiMessage(CCopasiMessage::WARNING, MCXML + 24,
+                             getExpectedElements(mLastKnownElement).c_str(), mpParser->getCurrentLineNumber());
+            }
+
+          mCurrentElement = mType;
+        }
+
+      if (itElementType->second == mCurrentElement)
+        {
+          finished = processEnd(pszName);
+        }
     }
   else if (mCurrentElement == UNKNOWN)
     {
@@ -93,6 +109,8 @@ void CXMLHandler::end(const XML_Char * pszName)
 
   if (finished)
     {
+      mCurrentElement = BEFORE;
+      mLastKnownElement = BEFORE;
       mpParser->popElementHandler();
       mpParser->onEndElement(pszName);
     }
@@ -116,12 +134,12 @@ void CXMLHandler::init()
   sProcessLogic * pElementInfo = getProcessLogic();
   assert(pElementInfo != NULL);
 
-  while (pElementInfo != NULL)
+  while (pElementInfo != NULL && pElementInfo->elementType != AFTER)
     {
       std::set< CXMLHandler::Type > ValidElements;
       Type * pValidElement = pElementInfo->validElements;
 
-      while (pValidElement != NULL && *pValidElement != BEFORE)
+      while (pValidElement != NULL && *pValidElement != HANDLER_COUNT)
         {
           ValidElements.insert(*pValidElement);
           ++pValidElement;
@@ -129,8 +147,6 @@ void CXMLHandler::init()
 
       mElementName2Type[pElementInfo->elementName] = pElementInfo->elementType;
       mValidElements[pElementInfo->elementType] = ValidElements;
-
-      if (pElementInfo->elementType == BEFORE) break;
 
       ++pElementInfo;
     }

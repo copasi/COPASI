@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "SBMLReferenceHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace SBMLReference with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * SBMLReferenceHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case SBMLReference:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool SBMLReferenceHandler::processEnd(const XML_Char * pszName)
     {
       case SBMLReference:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * SBMLReferenceHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"SBMLReference", SBMLReference, {BEFORE}},
-    {"BEFORE", BEFORE, {SBMLReference, BEFORE}}
+    {"BEFORE", BEFORE, {SBMLReference, HANDLER_COUNT}},
+    {"SBMLReference", SBMLReference, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

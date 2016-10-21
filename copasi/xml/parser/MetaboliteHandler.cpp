@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "MetaboliteHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Metabolite with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Metabolite:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool MetaboliteHandler::processEnd(const XML_Char * pszName)
     {
       case Metabolite:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * MetaboliteHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Metabolite", Metabolite, {BEFORE}},
-    {"BEFORE", BEFORE, {Metabolite, BEFORE}}
+    {"BEFORE", BEFORE, {Metabolite, HANDLER_COUNT}},
+    {"Metabolite", Metabolite, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -62,8 +62,9 @@ CXMLHandler::sProcessLogic * UNKNOWNHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"UNKNOWN", UNKNOWN, {BEFORE}},
-    {"BEFORE", BEFORE, {UNKNOWN, BEFORE}}
+    {"BEFORE", BEFORE, {UNKNOWN, HANDLER_COUNT}},
+    {"UNKNOWN", UNKNOWN, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

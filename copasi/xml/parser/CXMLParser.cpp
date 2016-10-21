@@ -135,18 +135,8 @@ CXMLParser::CXMLParser(CVersion & version) :
 
 CXMLParser::~CXMLParser()
 {
-  // We need to destruct the top most element on the stack since it has been
-  // allocated in the constructor.
-  if (mElementHandlerStack.empty())
-    return;
-
-  while (mElementHandlerStack.size() > 1)
-    mElementHandlerStack.pop();
-
-  delete mElementHandlerStack.top();
-
+  pdelete(mpFactory);
   pdelete(mData.pLineSegment);
-
   pdelete(mData.pUnitDefinitionImportList);
 }
 

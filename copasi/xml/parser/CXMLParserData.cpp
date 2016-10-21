@@ -30,7 +30,6 @@ CXMLParserData::CXMLParserData():
   pReport(NULL),
   pCurrentTask(NULL),
   pCurrentParameter(NULL),
-  ParameterGroupStack(),
   ModelParameterGroupStack(),
   pCurrentModelParameter(NULL),
   pCurrentPlot(NULL),

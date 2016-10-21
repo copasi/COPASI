@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "StyleLocalHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace StyleLocal with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * StyleLocalHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case StyleLocal:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool StyleLocalHandler::processEnd(const XML_Char * pszName)
     {
       case StyleLocal:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * StyleLocalHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"StyleLocal", StyleLocal, {BEFORE}},
-    {"BEFORE", BEFORE, {StyleLocal, BEFORE}}
+    {"BEFORE", BEFORE, {StyleLocal, HANDLER_COUNT}},
+    {"StyleLocal", StyleLocal, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

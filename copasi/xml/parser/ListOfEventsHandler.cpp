@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfEventsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfEvents with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfEventsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfEvents:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfEventsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfEvents:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfEventsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfEvents", ListOfEvents, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfEvents, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfEvents, HANDLER_COUNT}},
+    {"ListOfEvents", ListOfEvents, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

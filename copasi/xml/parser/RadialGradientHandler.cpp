@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "RadialGradientHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace RadialGradient with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * RadialGradientHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case RadialGradient:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool RadialGradientHandler::processEnd(const XML_Char * pszName)
     {
       case RadialGradient:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * RadialGradientHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"RadialGradient", RadialGradient, {BEFORE}},
-    {"BEFORE", BEFORE, {RadialGradient, BEFORE}}
+    {"BEFORE", BEFORE, {RadialGradient, HANDLER_COUNT}},
+    {"RadialGradient", RadialGradient, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

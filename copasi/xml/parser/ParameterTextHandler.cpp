@@ -6,6 +6,10 @@
 #include "copasi.h"
 
 #include "ParameterTextHandler.h"
+#include "CXMLParser.h"
+
+#include "utilities/CCopasiMessage.h"
+#include "utilities/CCopasiParameter.h"
 
 /**
  * Replace ParameterText with the name type of the handler and implement the
@@ -27,7 +31,38 @@ CXMLHandler * ParameterTextHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  std::string name;
+  const char * cType;
+  CCopasiParameter::Type type;
+
+  switch (mCurrentElement)
+    {
+      case ParameterText:
+        // Parameter has attributes name, type and value
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        cType = mpParser->getAttributeValue("type", papszAttrs);
+        type = toEnum(cType, CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+
+        switch (type)
+          {
+            case CCopasiParameter::EXPRESSION:
+              pHandlerToCall = mpParser->getHandler(CharacterData);
+              break;
+
+            default:
+              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mpParser->getCurrentLineNumber());
+              break;
+          }
+
+        mpData->pCurrentParameter = new CCopasiParameter(name, type, NULL);
+
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +76,18 @@ bool ParameterTextHandler::processEnd(const XML_Char * pszName)
     {
       case ParameterText:
         finished = true;
+
+        if (mpData->pCurrentParameter != NULL)
+          {
+            mpData->pCurrentParameter->setValue(mpData->CharacterData);
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -52,12 +96,11 @@ bool ParameterTextHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ParameterTextHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
-    {"ParameterText", ParameterText, {BEFORE}},
-    {"BEFORE", BEFORE, {ParameterText, BEFORE}}
+    {"BEFORE", BEFORE, {ParameterText, HANDLER_COUNT}},
+    {"ParameterText", ParameterText, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

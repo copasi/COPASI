@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfCurveSegmentsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfCurveSegments with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfCurveSegmentsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfCurveSegments:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfCurveSegmentsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfCurveSegments:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfCurveSegmentsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfCurveSegments", ListOfCurveSegments, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfCurveSegments, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfCurveSegments, HANDLER_COUNT}},
+    {"ListOfCurveSegments", ListOfCurveSegments, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

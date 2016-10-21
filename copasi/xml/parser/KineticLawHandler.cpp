@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "KineticLawHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace KineticLaw with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * KineticLawHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case KineticLaw:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool KineticLawHandler::processEnd(const XML_Char * pszName)
     {
       case KineticLaw:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * KineticLawHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"KineticLaw", KineticLaw, {BEFORE}},
-    {"BEFORE", BEFORE, {KineticLaw, BEFORE}}
+    {"BEFORE", BEFORE, {KineticLaw, HANDLER_COUNT}},
+    {"KineticLaw", KineticLaw, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

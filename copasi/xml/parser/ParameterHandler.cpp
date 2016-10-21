@@ -7,6 +7,9 @@
 
 #include "ParameterHandler.h"
 
+#include "CXMLParser.h"
+#include "utilities/CCopasiParameter.h"
+
 /**
  * Replace Parameter with the name type of the handler and implement the
  * three methods below.
@@ -27,7 +30,118 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  const char * cValue = NULL;
+  const char * cType = NULL;
+
+  std::string name;
+  std::string sValue("");
+  bool UnmappedKey = false;
+
+  void * pValue = NULL;
+  CCopasiParameter::Type type;
+
+  C_FLOAT64 d;
+  C_INT32 i;
+  size_t ui;
+  bool b;
+
+  switch (mCurrentElement)
+    {
+      case Parameter:
+        // Parameter has attributes name, type and value
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        cType = mpParser->getAttributeValue("type", papszAttrs);
+        type = toEnum(cType, CCopasiParameter::XMLType, CCopasiParameter::INVALID);
+        cValue = mpParser->getAttributeValue("value", papszAttrs);
+
+        if (cValue != NULL)
+          {
+            sValue = cValue;
+          }
+
+        switch (type)
+          {
+            case CCopasiParameter::DOUBLE:
+              d = CCopasiXMLInterface::DBL(sValue.c_str());
+              pValue = &d;
+              break;
+
+            case CCopasiParameter::UDOUBLE:
+              d = CCopasiXMLInterface::DBL(sValue.c_str());
+              pValue = &d;
+              break;
+
+            case CCopasiParameter::INT:
+              i = strToInt(sValue.c_str());
+              pValue = &i;
+              break;
+
+            case CCopasiParameter::UINT:
+              ui = strToUnsignedInt(sValue.c_str());
+              pValue = &ui;
+              break;
+
+            case CCopasiParameter::BOOL:
+
+              if (sValue == "0" || sValue == "false")
+                {
+                  b = false;
+                }
+              else
+                {
+                  b = true;
+                }
+
+              pValue = &b;
+              break;
+
+            case CCopasiParameter::STRING:
+            case CCopasiParameter::FILE:
+            case CCopasiParameter::CN:
+              pValue = &sValue;
+              break;
+
+            case CCopasiParameter::KEY:
+            {
+              if (sValue != "" &&
+                  CKeyFactory::isValidKey(sValue))
+                {
+                  CCopasiObject * pObject = mpData->mpKeyMap->get(sValue);
+
+                  if (pObject)
+                    {
+                      sValue = pObject->getKey();
+                    }
+                  else
+                    {
+                      UnmappedKey = true;
+                    }
+                }
+
+              pValue = &sValue;
+            }
+            break;
+
+            default:
+              CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mpParser->getCurrentLineNumber());
+              pValue = NULL;
+              break;
+          }
+
+        mpData->pCurrentParameter = new CCopasiParameter(name, type, pValue);
+
+        if (UnmappedKey)
+          {
+            mpData->UnmappedKeyParameters.push_back(mpData->pCurrentParameter->getKey());
+          }
+
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -43,7 +157,10 @@ bool ParameterHandler::processEnd(const XML_Char * pszName)
         finished = true;
         break;
 
-        // TODO CRITICAL Implement me!
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -52,12 +169,11 @@ bool ParameterHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ParameterHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
-    {"Parameter", Parameter, {BEFORE}},
-    {"BEFORE", BEFORE, {Parameter, BEFORE}}
+    {"BEFORE", BEFORE, {Parameter, HANDLER_COUNT}},
+    {"Parameter", Parameter, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

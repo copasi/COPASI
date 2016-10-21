@@ -73,7 +73,8 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
         break;
 
       default:
-        fatalError();
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
         break;
     }
 
@@ -126,6 +127,16 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
         finished = true;
         break;
 
+      case ListOfFunctions:
+      case Model:
+      case ListOfTasks:
+      case ListOfReports:
+      case ListOfPlots:
+      case ListOfLayouts:
+      case SBMLReference:
+      case ListOfUnitDefinitions:
+        break;
+
       case GUI:
         if (mpData->pGUI == NULL)
           {
@@ -135,6 +146,8 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
         break;
 
       default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
         break;
     }
 
@@ -146,18 +159,19 @@ CXMLHandler::sProcessLogic * COPASIHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"COPASI", COPASI, {ListOfFunctions, Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"ListOfFunctions", ListOfFunctions, {Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"Model", Model, {ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"ListOfTasks", ListOfTasks, {ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"ListOfReports", ListOfReports, {ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"ListOfPlots", ListOfPlots, {GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"GUI", GUI, {ListOfLayouts, SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"ListOfLayouts", ListOfLayouts, {SBMLReference, ListOfUnitDefinitions, BEFORE}},
-    {"SBMLReference", SBMLReference, {ListOfUnitDefinitions, BEFORE}},
-    {"ListOfUnitDefinitions", ListOfUnitDefinitions, {BEFORE}},
-    {"ParameterGroup", ParameterGroup, {BEFORE}},
-    {"BEFORE", BEFORE, {COPASI, ParameterGroup, BEFORE}}
+    {"BEFORE", BEFORE, {COPASI, ParameterGroup, HANDLER_COUNT}},
+    {"COPASI", COPASI, {ListOfFunctions, Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfFunctions", ListOfFunctions, {Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"Model", Model, {ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfTasks", ListOfTasks, {ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfReports", ListOfReports, {ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfPlots", ListOfPlots, {GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"GUI", GUI, {ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfLayouts", ListOfLayouts, {SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"SBMLReference", SBMLReference, {ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfUnitDefinitions", ListOfUnitDefinitions, {AFTER, HANDLER_COUNT}},
+    {"ParameterGroup", ParameterGroup, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

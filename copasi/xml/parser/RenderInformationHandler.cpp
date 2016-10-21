@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "RenderInformationHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace RenderInformation with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * RenderInformationHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case RenderInformation:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool RenderInformationHandler::processEnd(const XML_Char * pszName)
     {
       case RenderInformation:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * RenderInformationHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"RenderInformation", RenderInformation, {BEFORE}},
-    {"BEFORE", BEFORE, {RenderInformation, BEFORE}}
+    {"BEFORE", BEFORE, {RenderInformation, HANDLER_COUNT}},
+    {"RenderInformation", RenderInformation, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

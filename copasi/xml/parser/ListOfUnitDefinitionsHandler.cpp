@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfUnitDefinitionsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfUnitDefinitions with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfUnitDefinitionsHandler::processStart(const XML_Char * pszNam
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfUnitDefinitions:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfUnitDefinitionsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfUnitDefinitions:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfUnitDefinitionsHandler::getProcessLogic() con
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfUnitDefinitions", ListOfUnitDefinitions, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfUnitDefinitions, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfUnitDefinitions, HANDLER_COUNT}},
+    {"ListOfUnitDefinitions", ListOfUnitDefinitions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

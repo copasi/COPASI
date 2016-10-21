@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ConstantHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Constant with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ConstantHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Constant:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ConstantHandler::processEnd(const XML_Char * pszName)
     {
       case Constant:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ConstantHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Constant", Constant, {BEFORE}},
-    {"BEFORE", BEFORE, {Constant, BEFORE}}
+    {"BEFORE", BEFORE, {Constant, HANDLER_COUNT}},
+    {"Constant", Constant, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

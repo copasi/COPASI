@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfTextGlyphsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfTextGlyphs with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfTextGlyphsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfTextGlyphs:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfTextGlyphsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfTextGlyphs:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfTextGlyphsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfTextGlyphs", ListOfTextGlyphs, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfTextGlyphs, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfTextGlyphs, HANDLER_COUNT}},
+    {"ListOfTextGlyphs", ListOfTextGlyphs, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

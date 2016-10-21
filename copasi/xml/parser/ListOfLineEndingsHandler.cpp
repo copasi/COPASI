@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ListOfLineEndingsHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace ListOfLineEndings with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ListOfLineEndingsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case ListOfLineEndings:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ListOfLineEndingsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfLineEndings:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ListOfLineEndingsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"ListOfLineEndings", ListOfLineEndings, {BEFORE}},
-    {"BEFORE", BEFORE, {ListOfLineEndings, BEFORE}}
+    {"BEFORE", BEFORE, {ListOfLineEndings, HANDLER_COUNT}},
+    {"ListOfLineEndings", ListOfLineEndings, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

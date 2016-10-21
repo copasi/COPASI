@@ -204,12 +204,6 @@ public:
   CCopasiParameter* pCurrentParameter;
 
   /**
-   * Stack of parameter groups which is needed since nesting
-   * of groups is possible.
-   */
-  std::stack< CCopasiParameterGroup * > ParameterGroupStack;
-
-  /**
    * Stack of Model Parameter Groups which is needed since nesting
    * of groups is possible.
    */

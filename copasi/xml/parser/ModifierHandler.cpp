@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "ModifierHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Modifier with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * ModifierHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Modifier:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool ModifierHandler::processEnd(const XML_Char * pszName)
     {
       case Modifier:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * ModifierHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Modifier", Modifier, {BEFORE}},
-    {"BEFORE", BEFORE, {Modifier, BEFORE}}
+    {"BEFORE", BEFORE, {Modifier, HANDLER_COUNT}},
+    {"Modifier", Modifier, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

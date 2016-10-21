@@ -6,6 +6,8 @@
 #include "copasi.h"
 
 #include "CurveHandler.h"
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
 
 /**
  * Replace Curve with the name type of the handler and implement the
@@ -27,7 +29,19 @@ CXMLHandler * CurveHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  // TODO CRITICAL Implement me!
+  switch (mCurrentElement)
+    {
+      case Curve:
+        // TODO CRITICAL Implement me!
+        break;
+
+        // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
 
   return pHandlerToCall;
 }
@@ -41,9 +55,15 @@ bool CurveHandler::processEnd(const XML_Char * pszName)
     {
       case Curve:
         finished = true;
+        // TODO CRITICAL Implement me!
         break;
 
         // TODO CRITICAL Implement me!
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
     }
 
   return finished;
@@ -56,8 +76,9 @@ CXMLHandler::sProcessLogic * CurveHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"Curve", Curve, {BEFORE}},
-    {"BEFORE", BEFORE, {Curve, BEFORE}}
+    {"BEFORE", BEFORE, {Curve, HANDLER_COUNT}},
+    {"Curve", Curve, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;
