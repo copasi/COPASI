@@ -144,10 +144,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CCopasiObject * pCurrentObject)
 {
   CCopasiDataModel * pDataModel = ListViews::dataModel(parent);
-
-  if (pDataModel == NULL)
-    pDataModel = &(*CCopasiRootContainer::getDatamodelList())[0];
-
+  assert(pDataModel != NULL);
 
   std::vector< const CCopasiObject * > Selection;
 
@@ -189,10 +186,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
     const std::vector< const CCopasiObject * > * pCurrentSelection)
 {
   CCopasiDataModel * pDataModel = ListViews::dataModel(parent);
-
-  if (pDataModel == NULL)
-    pDataModel = &(*CCopasiRootContainer::getDatamodelList())[0];
-
+  assert(pDataModel != NULL);
 
   std::vector< const CCopasiObject * > Selection;
 
