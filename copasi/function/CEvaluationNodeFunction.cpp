@@ -1831,8 +1831,6 @@ CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* contai
         Unit = CValidatedUnit::merge(Unit, units[0]);
         break;
 
-      case S_MINUS:
-      case S_PLUS:
       case S_MAX:
       case S_MIN:
       case S_RUNIFORM:
@@ -1840,6 +1838,8 @@ CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* contai
         Unit = CValidatedUnit::merge(units[0], units[1]);
         break;
 
+      case S_MINUS:
+      case S_PLUS:
       case S_FLOOR:
       case S_CEIL:
       case S_ABS:
@@ -1934,8 +1934,6 @@ CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container
         targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
         break;
 
-      case S_MINUS:
-      case S_PLUS:
       case S_MAX:
       case S_MIN:
       case S_RUNIFORM:
@@ -1944,6 +1942,8 @@ CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container
         targetUnits[mpArgNode2] = Result;
         break;
 
+      case S_MINUS:
+      case S_PLUS:
       case S_FLOOR:
       case S_CEIL:
       case S_ABS:
