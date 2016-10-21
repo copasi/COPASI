@@ -1334,6 +1334,10 @@ bool CModel::setVolumeUnit(const std::string & name)
 {
   mVolumeUnit = name;
   mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
+
+  if (CUnit(mVolumeUnit).isDimensionless())
+    mVolumeUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1365,6 +1369,10 @@ bool CModel::setAreaUnit(const std::string & name)
 {
   mAreaUnit = name;
   mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
+
+  if (CUnit(mAreaUnit).isDimensionless())
+    mAreaUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1395,6 +1403,10 @@ bool CModel::setLengthUnit(const std::string & name)
 {
   mLengthUnit = name;
   mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
+
+  if (CUnit(mLengthUnit).isDimensionless())
+    mLengthUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1426,6 +1438,10 @@ bool CModel::setTimeUnit(const std::string & name)
 {
   mTimeUnit = name;
   mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
+
+  if (CUnit(mTimeUnit).isDimensionless())
+    mTimeUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1460,6 +1476,9 @@ bool CModel::setQuantityUnit(const std::string & name)
   CUnit QuantityUnit(mQuantityUnit);
 
   mDimensionlessUnits[quantity] = QuantityUnit.isDimensionless();
+
+  if (QuantityUnit.isDimensionless())
+    mQuantityUnit = CUnit::prettyPrint(name);
 
   if (QuantityUnit.isUndefined()) return false;
 

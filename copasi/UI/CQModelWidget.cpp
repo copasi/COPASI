@@ -51,20 +51,20 @@ void CQModelWidget::load()
 
   updateUnitComboBoxes(); //findText, below, needs any newly loaded units to be available to match.
 
-  mpComboTimeUnit->setCurrentIndex(mpComboTimeUnit->findText(FROM_UTF8(mpModel->getTimeUnitName())));
-  mpComboVolumeUnit->setCurrentIndex(mpComboVolumeUnit->findText(FROM_UTF8(mpModel->getVolumeUnitName())));
-  mpComboQuantityUnit->setCurrentIndex(mpComboQuantityUnit->findText(FROM_UTF8(mpModel->getQuantityUnitName())));
-  mpComboAreaUnit->setCurrentIndex(mpComboAreaUnit->findText(FROM_UTF8(mpModel->getAreaUnitName())));
-  mpComboLengthUnit->setCurrentIndex(mpComboLengthUnit->findText(FROM_UTF8(mpModel->getLengthUnitName())));
+  mpComboTimeUnit->setCurrentIndex(mTimeUnitMap[mpModel->getTimeUnitName()]);
+  mpComboVolumeUnit->setCurrentIndex(mVolumeUnitMap[mpModel->getVolumeUnitName()]);
+  mpComboQuantityUnit->setCurrentIndex(mQuantityUnitMap[mpModel->getQuantityUnitName()]);
+  mpComboAreaUnit->setCurrentIndex(mAreaUnitMap[mpModel->getAreaUnitName()]);
+  mpComboLengthUnit->setCurrentIndex(mLengthUnitMap[mpModel->getLengthUnitName()]);
 
   mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::deterministic);
 
-  mpLblInitialTime->setText("Initial Time (" + mpComboTimeUnit->currentText() + ")");
-  mpEditInitialTime->setText(QString::number(mpModel->getInitialTime()));
+  mpLblInitialTime->setText("Initial Time [" + mpComboTimeUnit->currentText().replace(" (dimensionless)", "") + "]");
+  mpEditInitialTime->setText(QString::number(mpModel->getInitialTime(), 'g', 10));
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
 
-  mpLblCurrentTime->setText("Time (" + mpComboTimeUnit->currentText() + ")");
-  mpEditCurrentTime->setText(QString::number(mpModel->getTime()));
+  mpLblCurrentTime->setText("Time [" + mpComboTimeUnit->currentText().replace(" (dimensionless)", "") + "]");
+  mpEditCurrentTime->setText(QString::number(mpModel->getTime(), 'g', 10));
 
   return;
 }
@@ -84,48 +84,55 @@ void CQModelWidget::save()
                     ->getMainWindow()->getUndoStack();
     }
 
-  if (TO_UTF8(mpComboTimeUnit->currentText()) != mpModel->getTimeUnitName())
+  if (mpComboTimeUnit->currentIndex() != mTimeUnitMap[mpModel->getTimeUnitName()])
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_TIME_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getTimeUnitName()),
-                               mpComboTimeUnit->currentText(),
+                               mpComboTimeUnit->currentText().replace(" (dimensionless)", ""),
                                this));
       changed = true;
     }
 
-  if (TO_UTF8(mpComboVolumeUnit->currentText()) != mpModel->getVolumeUnitName())
+  if (mpComboVolumeUnit->currentIndex() != mVolumeUnitMap[mpModel->getVolumeUnitName()])
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_VOLUME_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getVolumeUnitName()),
-                               mpComboVolumeUnit->currentText(),
+                               mpComboVolumeUnit->currentText().replace(" (dimensionless)", ""),
                                this));
       changed = true;
     }
 
-  if (TO_UTF8(mpComboAreaUnit->currentText()) != mpModel->getAreaUnitName())
+  if (mpComboAreaUnit->currentIndex() != mAreaUnitMap[mpModel->getAreaUnitName()])
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_AREA_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getAreaUnitName()),
-                               mpComboAreaUnit->currentText(),
+                               mpComboAreaUnit->currentText().replace(" (dimensionless)", ""),
                                this));
       changed = true;
     }
 
-  if (TO_UTF8(mpComboLengthUnit->currentText()) != mpModel->getLengthUnitName())
+  if (mpComboLengthUnit->currentIndex() != mLengthUnitMap[mpModel->getLengthUnitName()])
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_LENGTH_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getLengthUnitName()),
-                               mpComboLengthUnit->currentText(),
+                               mpComboLengthUnit->currentText().replace(" (dimensionless)", ""),
                                this));
       changed = true;
     }
 
-  if (TO_UTF8(mpComboQuantityUnit->currentText()) != mpModel->getQuantityUnitName())
+  if (mpComboQuantityUnit->currentIndex() != mQuantityUnitMap[mpModel->getQuantityUnitName()])
     {
+      QList< QVariant > OldValues, NewValues;
+
+      OldValues.append(FROM_UTF8(mpModel->getQuantityUnitName()));
+      NewValues.append(mpComboQuantityUnit->currentText().replace(" (dimensionless)", ""));
+      OldValues.append(mFramework);
+      NewValues.append(mFramework);
+
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_QUANTITY_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getQuantityUnitName()),
@@ -296,13 +303,16 @@ void CQModelWidget::updateUnitComboBoxes()
 {
   QStringList ComboEntries;
   std::vector< CUnit >::const_iterator it, itEnd;
+  int index;
 
   // Take advantage of the implicit sorting in std::set
-  std::vector< CUnit >  ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", 1);
+  std::vector< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", 1);
+  mTimeUnitMap.clear();
 
-  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
+  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
     {
-      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
+      mTimeUnitMap.insert(std::make_pair(it->getExpression(), index));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
     }
 
   mpComboTimeUnit->clear();
@@ -310,10 +320,12 @@ void CQModelWidget::updateUnitComboBoxes()
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 3);
   ComboEntries.clear();
+  mVolumeUnitMap.clear();
 
-  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
+  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
     {
-      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
+      mVolumeUnitMap.insert(std::make_pair(it->getExpression(), index));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
     }
 
   mpComboVolumeUnit->clear();
@@ -321,10 +333,12 @@ void CQModelWidget::updateUnitComboBoxes()
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 2);
   ComboEntries.clear();
+  mAreaUnitMap.clear();
 
-  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
+  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
     {
-      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
+      mAreaUnitMap.insert(std::make_pair(it->getExpression(), index));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
     }
 
   mpComboAreaUnit->clear();
@@ -332,10 +346,12 @@ void CQModelWidget::updateUnitComboBoxes()
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 1);
   ComboEntries.clear();
+  mLengthUnitMap.clear();
 
-  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
+  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
     {
-      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
+      mLengthUnitMap.insert(std::make_pair(it->getExpression(), index));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
     }
 
   mpComboLengthUnit->clear();
@@ -343,10 +359,12 @@ void CQModelWidget::updateUnitComboBoxes()
 
   ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("#", 1);
   ComboEntries.clear();
+  mQuantityUnitMap.clear();
 
-  for (it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it)
+  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
     {
-      ComboEntries.push_back(FROM_UTF8(it->getExpression()));
+      mQuantityUnitMap.insert(std::make_pair(it->getExpression(), index));
+      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
     }
 
   mpComboQuantityUnit->clear();
