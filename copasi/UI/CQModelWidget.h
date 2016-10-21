@@ -21,6 +21,8 @@
 class QUndoStack;
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
 
+#include <map>
+
 class CModel;
 
 class CQModelWidget : public CopasiWidget, public Ui::CQModelWidget
@@ -53,6 +55,12 @@ private:
 
   QUndoStack *mpUndoStack;
   void updateUnitComboBoxes();
+
+  std::map<std::string, int> mTimeUnitMap;
+  std::map<std::string, int> mQuantityUnitMap;
+  std::map<std::string, int> mVolumeUnitMap;
+  std::map<std::string, int> mAreaUnitMap;
+  std::map<std::string, int> mLengthUnitMap;
 };
 
 #endif // COPASI_CQModelWidget

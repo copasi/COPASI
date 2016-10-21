@@ -66,7 +66,6 @@ CModel::CModel(CCopasiContainer* pParent):
   mLengthUnit("m"),
   mTimeUnit("s"),
   mQuantityUnit("mmol"),
-  mDimensionlessUnits(5),
   mType(deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
@@ -1338,7 +1337,10 @@ const std::string CModel::getUnits() const
 bool CModel::setVolumeUnit(const std::string & name)
 {
   mVolumeUnit = name;
-  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
+
+  if (CUnit(mVolumeUnit).isDimensionless())
+    mVolumeUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1367,7 +1369,10 @@ CUnit::VolumeUnit CModel::getVolumeUnitEnum() const
 bool CModel::setAreaUnit(const std::string & name)
 {
   mAreaUnit = name;
-  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
+
+  if (CUnit(mAreaUnit).isDimensionless())
+    mAreaUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1395,7 +1400,10 @@ CUnit::AreaUnit CModel::getAreaUnitEnum() const
 bool CModel::setLengthUnit(const std::string & name)
 {
   mLengthUnit = name;
-  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
+
+  if (CUnit(mLengthUnit).isDimensionless())
+    mLengthUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1424,7 +1432,10 @@ CUnit::LengthUnit CModel::getLengthUnitEnum() const
 bool CModel::setTimeUnit(const std::string & name)
 {
   mTimeUnit = name;
-  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
+
+  if (CUnit(mTimeUnit).isDimensionless())
+    mTimeUnit = CUnit::prettyPrint(name);
+
   return true;
 }
 
@@ -1457,7 +1468,8 @@ bool CModel::setQuantityUnit(const std::string & name,
 
   CUnit QuantityUnit(mQuantityUnit);
 
-  mDimensionlessUnits[quantity] = QuantityUnit.isDimensionless();
+  if (QuantityUnit.isDimensionless())
+    mQuantityUnit = CUnit::prettyPrint(name);
 
   if (QuantityUnit.isUndefined()) return false;
 
@@ -3061,12 +3073,6 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
-  mDimensionlessUnits[volume] = CUnit(mVolumeUnit).isDimensionless();
-  mDimensionlessUnits[area] = CUnit(mAreaUnit).isDimensionless();
-  mDimensionlessUnits[length] = CUnit(mLengthUnit).isDimensionless();
-  mDimensionlessUnits[time] = CUnit(mTimeUnit).isDimensionless();
-  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
-
   // mpMathModel = new CMathModel(this);
 }
 
@@ -3601,9 +3607,4 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
   UsedUnits[mQuantityUnit] = CUnit(mQuantityUnit);
 
   return UsedUnits;
-}
-
-bool CModel::isDimensionless(UnitType type) const
-{
-  return mDimensionlessUnits[type];
 }
