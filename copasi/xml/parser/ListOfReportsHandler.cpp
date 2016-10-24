@@ -29,7 +29,7 @@ CXMLHandler * ListOfReportsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfReports:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfReportsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfReports:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfReportsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfReports, HANDLER_COUNT}},
-    {"ListOfReports", ListOfReports, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfReports, HANDLER_COUNT}},
+    {"ListOfReports", ListOfReports, ListOfReports, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

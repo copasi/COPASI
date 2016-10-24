@@ -29,7 +29,7 @@ CXMLHandler * ProblemHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Problem:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ProblemHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Problem:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ProblemHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Problem, HANDLER_COUNT}},
-    {"Problem", Problem, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Problem, HANDLER_COUNT}},
+    {"Problem", Problem, Problem, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

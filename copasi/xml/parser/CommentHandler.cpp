@@ -29,7 +29,7 @@ CXMLHandler * CommentHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Comment:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool CommentHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Comment:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * CommentHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Comment, HANDLER_COUNT}},
-    {"Comment", Comment, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Comment, HANDLER_COUNT}},
+    {"Comment", Comment, Comment, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

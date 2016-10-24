@@ -29,7 +29,7 @@ CXMLHandler * TableHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Table:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool TableHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Table:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * TableHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Table, HANDLER_COUNT}},
-    {"Table", Table, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Table, HANDLER_COUNT}},
+    {"Table", Table, Table, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

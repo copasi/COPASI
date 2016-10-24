@@ -29,7 +29,7 @@ CXMLHandler * ListOfRenderInformationHandler::processStart(const XML_Char * pszN
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfRenderInformation:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfRenderInformationHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfRenderInformation:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfRenderInformationHandler::getProcessLogic() c
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfRenderInformation, HANDLER_COUNT}},
-    {"ListOfRenderInformation", ListOfRenderInformation, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfRenderInformation, HANDLER_COUNT}},
+    {"ListOfRenderInformation", ListOfRenderInformation, ListOfRenderInformation, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

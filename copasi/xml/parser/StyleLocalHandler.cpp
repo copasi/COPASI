@@ -29,7 +29,7 @@ CXMLHandler * StyleLocalHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case StyleLocal:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool StyleLocalHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case StyleLocal:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * StyleLocalHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {StyleLocal, HANDLER_COUNT}},
-    {"StyleLocal", StyleLocal, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {StyleLocal, HANDLER_COUNT}},
+    {"StyleLocal", StyleLocal, StyleLocal, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

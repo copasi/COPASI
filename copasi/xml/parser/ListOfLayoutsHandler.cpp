@@ -29,7 +29,7 @@ CXMLHandler * ListOfLayoutsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfLayouts:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfLayoutsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfLayouts:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfLayoutsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfLayouts, HANDLER_COUNT}},
-    {"ListOfLayouts", ListOfLayouts, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfLayouts, HANDLER_COUNT}},
+    {"ListOfLayouts", ListOfLayouts, ListOfLayouts, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

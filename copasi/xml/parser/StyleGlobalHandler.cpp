@@ -29,7 +29,7 @@ CXMLHandler * StyleGlobalHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case StyleGlobal:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool StyleGlobalHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case StyleGlobal:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * StyleGlobalHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {StyleGlobal, HANDLER_COUNT}},
-    {"StyleGlobal", StyleGlobal, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {StyleGlobal, HANDLER_COUNT}},
+    {"StyleGlobal", StyleGlobal, StyleGlobal, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

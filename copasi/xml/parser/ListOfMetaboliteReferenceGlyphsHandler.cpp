@@ -29,7 +29,7 @@ CXMLHandler * ListOfMetaboliteReferenceGlyphsHandler::processStart(const XML_Cha
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfMetaboliteReferenceGlyphs:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfMetaboliteReferenceGlyphsHandler::processEnd(const XML_Char * pszName
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfMetaboliteReferenceGlyphs:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfMetaboliteReferenceGlyphsHandler::getProcessL
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfMetaboliteReferenceGlyphs, HANDLER_COUNT}},
-    {"ListOfMetaboliteReferenceGlyphs", ListOfMetaboliteReferenceGlyphs, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfMetaboliteReferenceGlyphs, HANDLER_COUNT}},
+    {"ListOfMetaboliteReferenceGlyphs", ListOfMetaboliteReferenceGlyphs, ListOfMetaboliteReferenceGlyphs, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

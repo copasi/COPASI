@@ -29,7 +29,7 @@ CXMLHandler * ListOfUnsupportedAnnotationsHandler::processStart(const XML_Char *
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfUnsupportedAnnotations:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfUnsupportedAnnotationsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfUnsupportedAnnotations:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfUnsupportedAnnotationsHandler::getProcessLogi
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfUnsupportedAnnotations, HANDLER_COUNT}},
-    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfUnsupportedAnnotations, HANDLER_COUNT}},
+    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

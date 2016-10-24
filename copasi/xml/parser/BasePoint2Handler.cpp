@@ -29,7 +29,7 @@ CXMLHandler * BasePoint2Handler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case BasePoint2:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool BasePoint2Handler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case BasePoint2:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * BasePoint2Handler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {BasePoint2, HANDLER_COUNT}},
-    {"BasePoint2", BasePoint2, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {BasePoint2, HANDLER_COUNT}},
+    {"BasePoint2", BasePoint2, BasePoint2, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

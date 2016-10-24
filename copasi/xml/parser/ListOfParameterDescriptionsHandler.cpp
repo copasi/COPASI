@@ -29,7 +29,7 @@ CXMLHandler * ListOfParameterDescriptionsHandler::processStart(const XML_Char * 
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfParameterDescriptions:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfParameterDescriptionsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfParameterDescriptions:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfParameterDescriptionsHandler::getProcessLogic
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfParameterDescriptions, HANDLER_COUNT}},
-    {"ListOfParameterDescriptions", ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfParameterDescriptions, HANDLER_COUNT}},
+    {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

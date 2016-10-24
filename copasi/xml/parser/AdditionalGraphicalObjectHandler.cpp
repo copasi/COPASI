@@ -29,7 +29,7 @@ CXMLHandler * AdditionalGraphicalObjectHandler::processStart(const XML_Char * ps
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case AdditionalGraphicalObject:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool AdditionalGraphicalObjectHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case AdditionalGraphicalObject:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * AdditionalGraphicalObjectHandler::getProcessLogic()
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {AdditionalGraphicalObject, HANDLER_COUNT}},
-    {"AdditionalGraphicalObject", AdditionalGraphicalObject, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {AdditionalGraphicalObject, HANDLER_COUNT}},
+    {"AdditionalGraphicalObject", AdditionalGraphicalObject, AdditionalGraphicalObject, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

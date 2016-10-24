@@ -29,7 +29,7 @@ CXMLHandler * ListOfColorDefinitionsHandler::processStart(const XML_Char * pszNa
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfColorDefinitions:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfColorDefinitionsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfColorDefinitions:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfColorDefinitionsHandler::getProcessLogic() co
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfColorDefinitions, HANDLER_COUNT}},
-    {"ListOfColorDefinitions", ListOfColorDefinitions, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfColorDefinitions, HANDLER_COUNT}},
+    {"ListOfColorDefinitions", ListOfColorDefinitions, ListOfColorDefinitions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

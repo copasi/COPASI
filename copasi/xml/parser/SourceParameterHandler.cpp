@@ -29,7 +29,7 @@ CXMLHandler * SourceParameterHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case SourceParameter:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool SourceParameterHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case SourceParameter:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * SourceParameterHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {SourceParameter, HANDLER_COUNT}},
-    {"SourceParameter", SourceParameter, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {SourceParameter, HANDLER_COUNT}},
+    {"SourceParameter", SourceParameter, SourceParameter, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

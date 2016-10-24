@@ -29,7 +29,7 @@ CXMLHandler * CurveHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Curve:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool CurveHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Curve:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * CurveHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Curve, HANDLER_COUNT}},
-    {"Curve", Curve, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Curve, HANDLER_COUNT}},
+    {"Curve", Curve, Curve, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

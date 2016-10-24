@@ -37,7 +37,7 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
   C_INT32 VersionDevel;
   bool CopasiSourcesModified = true;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case COPASI:
         versionMajor = mpParser->getAttributeValue("versionMajor", papszAttrs, "0");
@@ -60,15 +60,15 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
       case ListOfLayouts:
       case SBMLReference:
       case ListOfUnitDefinitions:
-        pHandlerToCall = mpParser->getHandler(mCurrentElement);
+        pHandlerToCall = getHandler(mCurrentElement.second);
 
         break;
 
       case GUI:
         if (!mpData->pGUI)
-          mCurrentElement = UNKNOWN;
+          mCurrentElement = std::make_pair(UNKNOWN, UNKNOWN);
 
-        pHandlerToCall = mpParser->getHandler(mCurrentElement);
+        pHandlerToCall = getHandler(mCurrentElement.second);
 
         break;
 
@@ -86,7 +86,7 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case COPASI:
       {
@@ -159,19 +159,19 @@ CXMLHandler::sProcessLogic * COPASIHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {COPASI, ParameterGroup, HANDLER_COUNT}},
-    {"COPASI", COPASI, {ListOfFunctions, Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"ListOfFunctions", ListOfFunctions, {Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"Model", Model, {ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"ListOfTasks", ListOfTasks, {ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"ListOfReports", ListOfReports, {ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"ListOfPlots", ListOfPlots, {GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"GUI", GUI, {ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"ListOfLayouts", ListOfLayouts, {SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"SBMLReference", SBMLReference, {ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
-    {"ListOfUnitDefinitions", ListOfUnitDefinitions, {AFTER, HANDLER_COUNT}},
-    {"ParameterGroup", ParameterGroup, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {COPASI, ParameterGroup, HANDLER_COUNT}},
+    {"COPASI", COPASI, COPASI, {ListOfFunctions, Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfFunctions", ListOfFunctions, ListOfFunctions, {Model, ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"Model", Model, Model, {ListOfTasks, ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfTasks", ListOfTasks, ListOfTasks, {ListOfReports, ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfReports", ListOfReports, ListOfReports, {ListOfPlots, GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfPlots", ListOfPlots, ListOfPlots, {GUI, ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"GUI", GUI, GUI, {ListOfLayouts, SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfLayouts", ListOfLayouts, ListOfLayouts, {SBMLReference, ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"SBMLReference", SBMLReference, SBMLReference, {ListOfUnitDefinitions, AFTER, HANDLER_COUNT}},
+    {"ListOfUnitDefinitions", ListOfUnitDefinitions, ListOfUnitDefinitions, {AFTER, HANDLER_COUNT}},
+    {"ParameterGroup", ParameterGroup, ParameterGroup, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

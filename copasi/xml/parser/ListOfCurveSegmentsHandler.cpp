@@ -29,7 +29,7 @@ CXMLHandler * ListOfCurveSegmentsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfCurveSegments:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfCurveSegmentsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfCurveSegments:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfCurveSegmentsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfCurveSegments, HANDLER_COUNT}},
-    {"ListOfCurveSegments", ListOfCurveSegments, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfCurveSegments, HANDLER_COUNT}},
+    {"ListOfCurveSegments", ListOfCurveSegments, ListOfCurveSegments, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

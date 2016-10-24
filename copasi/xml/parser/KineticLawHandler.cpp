@@ -29,7 +29,7 @@ CXMLHandler * KineticLawHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case KineticLaw:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool KineticLawHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case KineticLaw:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * KineticLawHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {KineticLaw, HANDLER_COUNT}},
-    {"KineticLaw", KineticLaw, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {KineticLaw, HANDLER_COUNT}},
+    {"KineticLaw", KineticLaw, KineticLaw, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

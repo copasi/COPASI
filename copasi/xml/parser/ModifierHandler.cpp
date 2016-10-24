@@ -29,7 +29,7 @@ CXMLHandler * ModifierHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Modifier:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ModifierHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Modifier:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ModifierHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Modifier, HANDLER_COUNT}},
-    {"Modifier", Modifier, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Modifier, HANDLER_COUNT}},
+    {"Modifier", Modifier, Modifier, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

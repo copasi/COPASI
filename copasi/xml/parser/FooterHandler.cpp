@@ -29,7 +29,7 @@ CXMLHandler * FooterHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Footer:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool FooterHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Footer:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * FooterHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Footer, HANDLER_COUNT}},
-    {"Footer", Footer, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Footer, HANDLER_COUNT}},
+    {"Footer", Footer, Footer, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -29,7 +29,7 @@ CXMLHandler * TextHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Text:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool TextHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Text:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * TextHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Text, HANDLER_COUNT}},
-    {"Text", Text, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Text, HANDLER_COUNT}},
+    {"Text", Text, Text, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -29,7 +29,7 @@ CXMLHandler * ListOfPlotItemsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfPlotItems:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfPlotItemsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfPlotItems:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfPlotItemsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfPlotItems, HANDLER_COUNT}},
-    {"ListOfPlotItems", ListOfPlotItems, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfPlotItems, HANDLER_COUNT}},
+    {"ListOfPlotItems", ListOfPlotItems, ListOfPlotItems, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

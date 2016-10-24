@@ -29,7 +29,7 @@ CXMLHandler * GUIHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case GUI:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool GUIHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case GUI:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * GUIHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {GUI, HANDLER_COUNT}},
-    {"GUI", GUI, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {GUI, HANDLER_COUNT}},
+    {"GUI", GUI, GUI, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

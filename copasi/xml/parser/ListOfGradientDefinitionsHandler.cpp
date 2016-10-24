@@ -29,7 +29,7 @@ CXMLHandler * ListOfGradientDefinitionsHandler::processStart(const XML_Char * ps
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfGradientDefinitions:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfGradientDefinitionsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfGradientDefinitions:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfGradientDefinitionsHandler::getProcessLogic()
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfGradientDefinitions, HANDLER_COUNT}},
-    {"ListOfGradientDefinitions", ListOfGradientDefinitions, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfGradientDefinitions, HANDLER_COUNT}},
+    {"ListOfGradientDefinitions", ListOfGradientDefinitions, ListOfGradientDefinitions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

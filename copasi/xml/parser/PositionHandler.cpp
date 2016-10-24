@@ -29,7 +29,7 @@ CXMLHandler * PositionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Position:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool PositionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Position:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * PositionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Position, HANDLER_COUNT}},
-    {"Position", Position, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Position, HANDLER_COUNT}},
+    {"Position", Position, Position, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

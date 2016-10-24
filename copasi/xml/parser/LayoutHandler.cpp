@@ -29,7 +29,7 @@ CXMLHandler * LayoutHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Layout:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool LayoutHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Layout:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * LayoutHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Layout, HANDLER_COUNT}},
-    {"Layout", Layout, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Layout, HANDLER_COUNT}},
+    {"Layout", Layout, Layout, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

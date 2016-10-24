@@ -29,7 +29,7 @@ CXMLHandler * InitialStateHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case InitialState:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool InitialStateHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case InitialState:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * InitialStateHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {InitialState, HANDLER_COUNT}},
-    {"InitialState", InitialState, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {InitialState, HANDLER_COUNT}},
+    {"InitialState", InitialState, InitialState, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

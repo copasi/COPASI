@@ -29,7 +29,7 @@ CXMLHandler * ListOfGlobalRenderInformationHandler::processStart(const XML_Char 
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfGlobalRenderInformation:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfGlobalRenderInformationHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfGlobalRenderInformation:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfGlobalRenderInformationHandler::getProcessLog
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfGlobalRenderInformation, HANDLER_COUNT}},
-    {"ListOfGlobalRenderInformation", ListOfGlobalRenderInformation, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfGlobalRenderInformation, HANDLER_COUNT}},
+    {"ListOfGlobalRenderInformation", ListOfGlobalRenderInformation, ListOfGlobalRenderInformation, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

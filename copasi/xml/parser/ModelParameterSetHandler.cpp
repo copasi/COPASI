@@ -29,7 +29,7 @@ CXMLHandler * ModelParameterSetHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ModelParameterSet:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ModelParameterSetHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ModelParameterSet:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ModelParameterSetHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ModelParameterSet, HANDLER_COUNT}},
-    {"ModelParameterSet", ModelParameterSet, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ModelParameterSet, HANDLER_COUNT}},
+    {"ModelParameterSet", ModelParameterSet, ModelParameterSet, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

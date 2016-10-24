@@ -29,7 +29,7 @@ CXMLHandler * ListOfAdditionalGraphicalObjectsHandler::processStart(const XML_Ch
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfAdditionalGraphicalObjects:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfAdditionalGraphicalObjectsHandler::processEnd(const XML_Char * pszNam
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfAdditionalGraphicalObjects:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfAdditionalGraphicalObjectsHandler::getProcess
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfAdditionalGraphicalObjects, HANDLER_COUNT}},
-    {"ListOfAdditionalGraphicalObjects", ListOfAdditionalGraphicalObjects, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfAdditionalGraphicalObjects, HANDLER_COUNT}},
+    {"ListOfAdditionalGraphicalObjects", ListOfAdditionalGraphicalObjects, ListOfAdditionalGraphicalObjects, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

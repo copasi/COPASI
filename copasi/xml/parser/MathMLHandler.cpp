@@ -5,33 +5,33 @@
 
 #include "copasi.h"
 
-#include "ListOfCompartmentGlyphsHandler.h"
+#include "MathMLHandler.h"
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
 /**
- * Replace ListOfCompartmentGlyphs with the name type of the handler and implement the
+ * Replace MathML with the name type of the handler and implement the
  * three methods below.
  */
-ListOfCompartmentGlyphsHandler::ListOfCompartmentGlyphsHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::ListOfCompartmentGlyphs)
+MathMLHandler::MathMLHandler(CXMLParser & parser, CXMLParserData & data):
+  CXMLHandler(parser, data, CXMLHandler::MathML)
 {
   init();
 }
 
 // virtual
-ListOfCompartmentGlyphsHandler::~ListOfCompartmentGlyphsHandler()
+MathMLHandler::~MathMLHandler()
 {}
 
 // virtual
-CXMLHandler * ListOfCompartmentGlyphsHandler::processStart(const XML_Char * pszName,
+CXMLHandler * MathMLHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
 
   switch (mCurrentElement.first)
     {
-      case ListOfCompartmentGlyphs:
+      case MathML:
         // TODO CRITICAL Implement me!
         break;
 
@@ -47,13 +47,13 @@ CXMLHandler * ListOfCompartmentGlyphsHandler::processStart(const XML_Char * pszN
 }
 
 // virtual
-bool ListOfCompartmentGlyphsHandler::processEnd(const XML_Char * pszName)
+bool MathMLHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
   switch (mCurrentElement.first)
     {
-      case ListOfCompartmentGlyphs:
+      case MathML:
         finished = true;
         // TODO CRITICAL Implement me!
         break;
@@ -70,14 +70,14 @@ bool ListOfCompartmentGlyphsHandler::processEnd(const XML_Char * pszName)
 }
 
 // virtual
-CXMLHandler::sProcessLogic * ListOfCompartmentGlyphsHandler::getProcessLogic() const
+CXMLHandler::sProcessLogic * MathMLHandler::getProcessLogic() const
 {
   // TODO CRITICAL Implement me!
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, BEFORE, {ListOfCompartmentGlyphs, HANDLER_COUNT}},
-    {"ListOfCompartmentGlyphs", ListOfCompartmentGlyphs, ListOfCompartmentGlyphs, {AFTER, HANDLER_COUNT}},
+    {"BEFORE", BEFORE, BEFORE, {MathML, HANDLER_COUNT}},
+    {"MathML", MathML, MathML, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

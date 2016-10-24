@@ -29,7 +29,7 @@ CXMLHandler * ListOfCallParametersHandler::processStart(const XML_Char * pszName
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfCallParameters:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfCallParametersHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfCallParameters:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfCallParametersHandler::getProcessLogic() cons
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfCallParameters, HANDLER_COUNT}},
-    {"ListOfCallParameters", ListOfCallParameters, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfCallParameters, HANDLER_COUNT}},
+    {"ListOfCallParameters", ListOfCallParameters, ListOfCallParameters, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

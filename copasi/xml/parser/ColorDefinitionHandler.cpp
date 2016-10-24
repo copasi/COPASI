@@ -29,7 +29,7 @@ CXMLHandler * ColorDefinitionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ColorDefinition:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ColorDefinitionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ColorDefinition:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ColorDefinitionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ColorDefinition, HANDLER_COUNT}},
-    {"ColorDefinition", ColorDefinition, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ColorDefinition, HANDLER_COUNT}},
+    {"ColorDefinition", ColorDefinition, ColorDefinition, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

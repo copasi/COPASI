@@ -29,7 +29,7 @@ CXMLHandler * ListOfAssignmentsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfAssignments:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfAssignmentsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfAssignments:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfAssignmentsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfAssignments, HANDLER_COUNT}},
-    {"ListOfAssignments", ListOfAssignments, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfAssignments, HANDLER_COUNT}},
+    {"ListOfAssignments", ListOfAssignments, ListOfAssignments, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

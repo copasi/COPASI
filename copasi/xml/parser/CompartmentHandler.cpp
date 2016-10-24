@@ -29,7 +29,7 @@ CXMLHandler * CompartmentHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Compartment:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool CompartmentHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Compartment:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * CompartmentHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Compartment, HANDLER_COUNT}},
-    {"Compartment", Compartment, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Compartment, HANDLER_COUNT}},
+    {"Compartment", Compartment, Compartment, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

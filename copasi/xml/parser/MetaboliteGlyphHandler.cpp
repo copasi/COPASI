@@ -29,7 +29,7 @@ CXMLHandler * MetaboliteGlyphHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case MetaboliteGlyph:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool MetaboliteGlyphHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case MetaboliteGlyph:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * MetaboliteGlyphHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {MetaboliteGlyph, HANDLER_COUNT}},
-    {"MetaboliteGlyph", MetaboliteGlyph, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {MetaboliteGlyph, HANDLER_COUNT}},
+    {"MetaboliteGlyph", MetaboliteGlyph, MetaboliteGlyph, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

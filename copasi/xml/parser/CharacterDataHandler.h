@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_FunctionHandler
-#define COPASI_FunctionHandler
+#ifndef COPASI_CharacterDataHandler
+#define COPASI_CharacterDataHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class FunctionHandler : public CXMLHandler
+class CharacterDataHandler : public CXMLHandler
 {
 private:
-  FunctionHandler();
+  CharacterDataHandler();
 
 public:
   /**
@@ -19,12 +19,26 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  FunctionHandler(CXMLParser & parser, CXMLParserData & data);
+  CharacterDataHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~FunctionHandler();
+  virtual ~CharacterDataHandler();
+
+  /**
+   * Start element handler
+   * @param const XML_Char *pszName
+   * @param const XML_Char **papszAttrs
+   */
+  virtual void start(const XML_Char * pszName,
+                     const XML_Char ** papszAttrs);
+
+  /**
+   * End element handler
+   * @param const XML_Char *pszName
+   */
+  virtual void end(const XML_Char * pszName);
 
 protected:
 
@@ -51,15 +65,7 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 
 private:
-  /**
-   * The key in the CopasiML file
-   */
-  std::string mKey;
-
-  /**
-   * The index of a function with the same name
-   */
-  std::set< size_t > mExistingFunctionIndex;
+  std::string mCurrentElementName;
 };
 
-#endif //COPASI_FunctionHandler
+#endif //COPASI_CharacterDataHandler

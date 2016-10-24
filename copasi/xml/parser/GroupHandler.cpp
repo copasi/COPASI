@@ -29,7 +29,7 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Group:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool GroupHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Group:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * GroupHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Group, HANDLER_COUNT}},
-    {"Group", Group, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Group, HANDLER_COUNT}},
+    {"Group", Group, Group, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

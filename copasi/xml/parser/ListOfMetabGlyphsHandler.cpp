@@ -29,7 +29,7 @@ CXMLHandler * ListOfMetabGlyphsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfMetabGlyphs:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfMetabGlyphsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfMetabGlyphs:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfMetabGlyphsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfMetabGlyphs, HANDLER_COUNT}},
-    {"ListOfMetabGlyphs", ListOfMetabGlyphs, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfMetabGlyphs, HANDLER_COUNT}},
+    {"ListOfMetabGlyphs", ListOfMetabGlyphs, ListOfMetabGlyphs, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

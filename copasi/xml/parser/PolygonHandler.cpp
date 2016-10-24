@@ -29,7 +29,7 @@ CXMLHandler * PolygonHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Polygon:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool PolygonHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Polygon:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * PolygonHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Polygon, HANDLER_COUNT}},
-    {"Polygon", Polygon, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Polygon, HANDLER_COUNT}},
+    {"Polygon", Polygon, Polygon, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

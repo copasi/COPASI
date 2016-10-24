@@ -29,7 +29,7 @@ CXMLHandler * DelayExpressionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case DelayExpression:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool DelayExpressionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case DelayExpression:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * DelayExpressionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {DelayExpression, HANDLER_COUNT}},
-    {"DelayExpression", DelayExpression, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {DelayExpression, HANDLER_COUNT}},
+    {"DelayExpression", DelayExpression, DelayExpression, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

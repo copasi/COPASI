@@ -29,7 +29,7 @@ CXMLHandler * TextGlyphHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case TextGlyph:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool TextGlyphHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case TextGlyph:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * TextGlyphHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {TextGlyph, HANDLER_COUNT}},
-    {"TextGlyph", TextGlyph, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {TextGlyph, HANDLER_COUNT}},
+    {"TextGlyph", TextGlyph, TextGlyph, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

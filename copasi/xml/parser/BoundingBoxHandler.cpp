@@ -29,7 +29,7 @@ CXMLHandler * BoundingBoxHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case BoundingBox:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool BoundingBoxHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case BoundingBox:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * BoundingBoxHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {BoundingBox, HANDLER_COUNT}},
-    {"BoundingBox", BoundingBox, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {BoundingBox, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

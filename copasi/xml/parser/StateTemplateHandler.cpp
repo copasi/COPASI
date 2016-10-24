@@ -29,7 +29,7 @@ CXMLHandler * StateTemplateHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case StateTemplate:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool StateTemplateHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case StateTemplate:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * StateTemplateHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {StateTemplate, HANDLER_COUNT}},
-    {"StateTemplate", StateTemplate, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {StateTemplate, HANDLER_COUNT}},
+    {"StateTemplate", StateTemplate, StateTemplate, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

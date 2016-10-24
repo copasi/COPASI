@@ -29,7 +29,7 @@ CXMLHandler * LineSegmentHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case LineSegment:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool LineSegmentHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case LineSegment:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * LineSegmentHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {LineSegment, HANDLER_COUNT}},
-    {"LineSegment", LineSegment, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {LineSegment, HANDLER_COUNT}},
+    {"LineSegment", LineSegment, LineSegment, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

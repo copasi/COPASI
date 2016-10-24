@@ -29,7 +29,7 @@ CXMLHandler * ListOfUnitDefinitionsHandler::processStart(const XML_Char * pszNam
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfUnitDefinitions:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfUnitDefinitionsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfUnitDefinitions:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfUnitDefinitionsHandler::getProcessLogic() con
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfUnitDefinitions, HANDLER_COUNT}},
-    {"ListOfUnitDefinitions", ListOfUnitDefinitions, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfUnitDefinitions, HANDLER_COUNT}},
+    {"ListOfUnitDefinitions", ListOfUnitDefinitions, ListOfUnitDefinitions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

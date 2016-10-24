@@ -65,8 +65,6 @@ private:
    */
   bool mDerivedElement;
 
-  size_t mLevel;
-
   std::stack< CCopasiParameterGroup * > mParameterGroupStack;
 };
 

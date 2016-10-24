@@ -29,7 +29,7 @@ CXMLHandler * RenderPointHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case RenderPoint:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool RenderPointHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case RenderPoint:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * RenderPointHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {RenderPoint, HANDLER_COUNT}},
-    {"RenderPoint", RenderPoint, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {RenderPoint, HANDLER_COUNT}},
+    {"RenderPoint", RenderPoint, RenderPoint, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

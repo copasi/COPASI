@@ -35,7 +35,7 @@ CXMLHandler * ParameterTextHandler::processStart(const XML_Char * pszName,
   const char * cType;
   CCopasiParameter::Type type;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ParameterText:
         // Parameter has attributes name, type and value
@@ -46,7 +46,7 @@ CXMLHandler * ParameterTextHandler::processStart(const XML_Char * pszName,
         switch (type)
           {
             case CCopasiParameter::EXPRESSION:
-              pHandlerToCall = mpParser->getHandler(CharacterData);
+              pHandlerToCall = getHandler(CharacterData);
               break;
 
             default:
@@ -72,7 +72,7 @@ bool ParameterTextHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ParameterText:
         finished = true;
@@ -98,9 +98,9 @@ CXMLHandler::sProcessLogic * ParameterTextHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ParameterText, HANDLER_COUNT}},
-    {"ParameterText", ParameterText, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ParameterText, HANDLER_COUNT}},
+    {"ParameterText", ParameterText, ParameterText, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

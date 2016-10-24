@@ -29,7 +29,7 @@ CXMLHandler * ExpressionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Expression:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ExpressionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Expression:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ExpressionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Expression, HANDLER_COUNT}},
-    {"Expression", Expression, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Expression, HANDLER_COUNT}},
+    {"Expression", Expression, Expression, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -29,7 +29,7 @@ CXMLHandler * ReactionGlyphHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ReactionGlyph:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ReactionGlyphHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ReactionGlyph:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ReactionGlyphHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ReactionGlyph, HANDLER_COUNT}},
-    {"ReactionGlyph", ReactionGlyph, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ReactionGlyph, HANDLER_COUNT}},
+    {"ReactionGlyph", ReactionGlyph, ReactionGlyph, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

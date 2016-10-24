@@ -29,7 +29,7 @@ CXMLHandler * RadialGradientHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case RadialGradient:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool RadialGradientHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case RadialGradient:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * RadialGradientHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {RadialGradient, HANDLER_COUNT}},
-    {"RadialGradient", RadialGradient, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {RadialGradient, HANDLER_COUNT}},
+    {"RadialGradient", RadialGradient, RadialGradient, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

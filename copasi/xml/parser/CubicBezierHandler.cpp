@@ -29,7 +29,7 @@ CXMLHandler * CubicBezierHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case CubicBezier:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool CubicBezierHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case CubicBezier:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * CubicBezierHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {CubicBezier, HANDLER_COUNT}},
-    {"CubicBezier", CubicBezier, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {CubicBezier, HANDLER_COUNT}},
+    {"CubicBezier", CubicBezier, CubicBezier, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

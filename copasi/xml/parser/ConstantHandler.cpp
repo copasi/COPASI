@@ -29,7 +29,7 @@ CXMLHandler * ConstantHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Constant:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ConstantHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Constant:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ConstantHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Constant, HANDLER_COUNT}},
-    {"Constant", Constant, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Constant, HANDLER_COUNT}},
+    {"Constant", Constant, Constant, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

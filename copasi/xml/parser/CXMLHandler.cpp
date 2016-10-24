@@ -11,11 +11,12 @@
 CXMLHandler::CXMLHandler(CXMLParser & parser, CXMLParserData & data, const CXMLHandler::Type & type):
   mpParser(&parser),
   mpData(&data),
-  mType(type),
+  mHandlerType(type),
   mElementName2Type(),
   mValidElements(),
-  mCurrentElement(BEFORE),
-  mLastKnownElement(BEFORE)
+  mCurrentElement(BEFORE, BEFORE),
+  mLastKnownElement(BEFORE, BEFORE),
+  mLevel(0)
 {}
 
 // virtual
@@ -25,12 +26,22 @@ void CXMLHandler::start(const XML_Char * pszName,
                         const XML_Char ** papszAttrs)
 {
   CXMLHandler * pNextHandler = NULL;
-  std::map< std::string, Type >::iterator itElementType = mElementName2Type.find(pszName);
+  std::map< std::string, std::pair< Type, Type > >::iterator itElementType = mElementName2Type.find(pszName);
 
   if (itElementType != mElementName2Type.end())
     {
-      const std::set< Type > ValidElements =  mValidElements[mLastKnownElement];
-      std::set< Type >::iterator itValidElement = ValidElements.find(itElementType->second);
+      if (mLevel == 0)
+        {
+          mElementType = itElementType->second.first;
+          mLevel++;
+        }
+      else if (mElementType == itElementType->second.first)
+        {
+          mLevel++;
+        }
+
+      const std::set< Type > ValidElements =  mValidElements[mLastKnownElement.first];
+      std::set< Type >::iterator itValidElement = ValidElements.find(itElementType->second.first);
 
       if (itValidElement != ValidElements.end())
         {
@@ -41,10 +52,10 @@ void CXMLHandler::start(const XML_Char * pszName,
         {
           // The element is out of order
           CCopasiMessage(CCopasiMessage::WARNING, MCXML + 10,
-                         pszName, getExpectedElements(mCurrentElement).c_str(), mpParser->getCurrentLineNumber());
+                         pszName, getExpectedElements(mCurrentElement.first).c_str(), mpParser->getCurrentLineNumber());
 
           // We ignore it
-          mCurrentElement = UNKNOWN;
+          mCurrentElement = std::make_pair(UNKNOWN, UNKNOWN);
         }
     }
   else
@@ -52,10 +63,10 @@ void CXMLHandler::start(const XML_Char * pszName,
       CCopasiMessage(CCopasiMessage::WARNING, MCXML + 3,
                      pszName, mpParser->getCurrentLineNumber());
 
-      mCurrentElement = UNKNOWN;
+      mCurrentElement = std::make_pair(UNKNOWN, UNKNOWN);
     }
 
-  if (mCurrentElement != UNKNOWN)
+  if (mCurrentElement.first != UNKNOWN)
     {
       pNextHandler = processStart(pszName, papszAttrs);
     }
@@ -74,22 +85,23 @@ void CXMLHandler::start(const XML_Char * pszName,
 void CXMLHandler::end(const XML_Char * pszName)
 {
   bool finished = false;
-  std::map< std::string, Type >::iterator itElementType = mElementName2Type.find(pszName);
+  std::map< std::string, std::pair< Type, Type > >::iterator itElementType = mElementName2Type.find(pszName);
 
   if (itElementType != mElementName2Type.end())
     {
-      if (itElementType->second == mType)
+      if (itElementType->second == std::make_pair(mElementType, mHandlerType))
         {
-          const std::set< Type > ValidElements =  mValidElements[mLastKnownElement];
+          const std::set< Type > ValidElements =  mValidElements[mLastKnownElement.first];
 
           if (ValidElements.find(AFTER) == ValidElements.end())
             {
               // We have an element closing without finding all required child elements
               CCopasiMessage(CCopasiMessage::WARNING, MCXML + 24,
-                             getExpectedElements(mLastKnownElement).c_str(), mpParser->getCurrentLineNumber());
+                             getExpectedElements(mLastKnownElement.first).c_str(), mpParser->getCurrentLineNumber());
             }
 
-          mCurrentElement = mType;
+          mCurrentElement = std::make_pair(mElementType, mHandlerType);
+          mLevel--;
         }
 
       if (itElementType->second == mCurrentElement)
@@ -97,20 +109,20 @@ void CXMLHandler::end(const XML_Char * pszName)
           finished = processEnd(pszName);
         }
     }
-  else if (mCurrentElement == UNKNOWN)
+  else if (mCurrentElement.first == UNKNOWN)
     {
       mCurrentElement = mLastKnownElement;
     }
   else
     {
       CCopasiMessage(CCopasiMessage::WARNING, MCXML + 11,
-                     pszName, getElementName(mCurrentElement).c_str(), mpParser->getCurrentLineNumber());
+                     pszName, getElementName(mCurrentElement.first).c_str(), mpParser->getCurrentLineNumber());
     }
 
   if (finished)
     {
-      mCurrentElement = BEFORE;
-      mLastKnownElement = BEFORE;
+      mCurrentElement = std::make_pair(BEFORE, BEFORE);
+      mLastKnownElement = std::make_pair(BEFORE, BEFORE);
       mpParser->popElementHandler();
       mpParser->onEndElement(pszName);
     }
@@ -145,7 +157,7 @@ void CXMLHandler::init()
           ++pValidElement;
         }
 
-      mElementName2Type[pElementInfo->elementName] = pElementInfo->elementType;
+      mElementName2Type[pElementInfo->elementName] = std::make_pair(pElementInfo->elementType, pElementInfo->handlerType);
       mValidElements[pElementInfo->elementType] = ValidElements;
 
       ++pElementInfo;
@@ -154,12 +166,12 @@ void CXMLHandler::init()
 
 std::string CXMLHandler::getElementName(const Type & type) const
 {
-  std::map< std::string, Type >::const_iterator it = mElementName2Type.begin();
-  std::map< std::string, Type >::const_iterator end = mElementName2Type.end();
+  std::map< std::string, std::pair< Type, Type > >::const_iterator it = mElementName2Type.begin();
+  std::map< std::string, std::pair< Type, Type > >::const_iterator end = mElementName2Type.end();
 
   for (; it != end; ++it)
     {
-      if (it->second == type) return it->first;
+      if (it->second.first == type) return it->first;
     }
 
   return "UNKNOWN";

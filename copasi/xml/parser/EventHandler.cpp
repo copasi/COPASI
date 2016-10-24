@@ -29,7 +29,7 @@ CXMLHandler * EventHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Event:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool EventHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Event:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * EventHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Event, HANDLER_COUNT}},
-    {"Event", Event, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Event, HANDLER_COUNT}},
+    {"Event", Event, Event, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

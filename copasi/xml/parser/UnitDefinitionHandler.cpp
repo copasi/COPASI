@@ -29,7 +29,7 @@ CXMLHandler * UnitDefinitionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case UnitDefinition:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool UnitDefinitionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case UnitDefinition:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * UnitDefinitionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {UnitDefinition, HANDLER_COUNT}},
-    {"UnitDefinition", UnitDefinition, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {UnitDefinition, HANDLER_COUNT}},
+    {"UnitDefinition", UnitDefinition, UnitDefinition, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

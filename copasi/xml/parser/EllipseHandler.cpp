@@ -29,7 +29,7 @@ CXMLHandler * EllipseHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Ellipse:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool EllipseHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Ellipse:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * EllipseHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Ellipse, HANDLER_COUNT}},
-    {"Ellipse", Ellipse, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Ellipse, HANDLER_COUNT}},
+    {"Ellipse", Ellipse, Ellipse, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

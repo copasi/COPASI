@@ -29,7 +29,7 @@ CXMLHandler * RectangleHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Rectangle:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool RectangleHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Rectangle:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * RectangleHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Rectangle, HANDLER_COUNT}},
-    {"Rectangle", Rectangle, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Rectangle, HANDLER_COUNT}},
+    {"Rectangle", Rectangle, Rectangle, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

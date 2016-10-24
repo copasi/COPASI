@@ -29,7 +29,7 @@ CXMLHandler * ModelParameterGroupHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ModelParameterGroup:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ModelParameterGroupHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ModelParameterGroup:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ModelParameterGroupHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ModelParameterGroup, HANDLER_COUNT}},
-    {"ModelParameterGroup", ModelParameterGroup, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ModelParameterGroup, HANDLER_COUNT}},
+    {"ModelParameterGroup", ModelParameterGroup, ModelParameterGroup, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

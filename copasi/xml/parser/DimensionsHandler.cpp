@@ -29,7 +29,7 @@ CXMLHandler * DimensionsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Dimensions:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool DimensionsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Dimensions:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * DimensionsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Dimensions, HANDLER_COUNT}},
-    {"Dimensions", Dimensions, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Dimensions, HANDLER_COUNT}},
+    {"Dimensions", Dimensions, Dimensions, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

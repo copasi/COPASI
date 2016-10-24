@@ -29,7 +29,7 @@ CXMLHandler * SBMLReferenceHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case SBMLReference:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool SBMLReferenceHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case SBMLReference:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * SBMLReferenceHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {SBMLReference, HANDLER_COUNT}},
-    {"SBMLReference", SBMLReference, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {SBMLReference, HANDLER_COUNT}},
+    {"SBMLReference", SBMLReference, SBMLReference, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

@@ -29,7 +29,7 @@ CXMLHandler * NoiseExpressionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case NoiseExpression:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool NoiseExpressionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case NoiseExpression:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * NoiseExpressionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {NoiseExpression, HANDLER_COUNT}},
-    {"NoiseExpression", NoiseExpression, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {NoiseExpression, HANDLER_COUNT}},
+    {"NoiseExpression", NoiseExpression, NoiseExpression, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

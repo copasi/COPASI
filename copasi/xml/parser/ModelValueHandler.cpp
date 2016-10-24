@@ -29,7 +29,7 @@ CXMLHandler * ModelValueHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ModelValue:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ModelValueHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ModelValue:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ModelValueHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ModelValue, HANDLER_COUNT}},
-    {"ModelValue", ModelValue, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ModelValue, HANDLER_COUNT}},
+    {"ModelValue", ModelValue, ModelValue, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

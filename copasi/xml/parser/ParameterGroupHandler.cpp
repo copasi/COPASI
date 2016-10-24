@@ -19,7 +19,6 @@
 ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::ParameterGroup),
   mDerivedElement(false),
-  mLevel(0),
   mParameterGroupStack()
 {
   init();
@@ -37,11 +36,9 @@ CXMLHandler * ParameterGroupHandler::processStart(const XML_Char * pszName,
 
   std::string name;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ParameterGroup:
-        mLevel++;
-
         if (mParameterGroupStack.size() != mLevel)
           {
             name = mpParser->getAttributeValue("name", papszAttrs);
@@ -52,7 +49,7 @@ CXMLHandler * ParameterGroupHandler::processStart(const XML_Char * pszName,
 
       case Parameter:
       case ParameterText:
-        pHandlerToCall = mpParser->getHandler(mCurrentElement);
+        pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
       default:
@@ -69,10 +66,9 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ParameterGroup:
-        mLevel--;
         finished = (mLevel == 0);
 
         mpData->pCurrentParameter = mParameterGroupStack.top();
@@ -155,11 +151,11 @@ CXMLHandler::sProcessLogic * ParameterGroupHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ParameterGroup, HANDLER_COUNT}},
-    {"ParameterGroup", ParameterGroup, {ParameterGroup, Parameter, ParameterText, AFTER, HANDLER_COUNT}},
-    {"Parameter", Parameter, {ParameterGroup, Parameter, ParameterText, AFTER, HANDLER_COUNT}},
-    {"ParameterText", ParameterText, {ParameterGroup, Parameter, ParameterText, AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ParameterGroup, HANDLER_COUNT}},
+    {"ParameterGroup", ParameterGroup, ParameterGroup, {ParameterGroup, Parameter, ParameterText, AFTER, HANDLER_COUNT}},
+    {"Parameter", Parameter, Parameter, {ParameterGroup, Parameter, ParameterText, AFTER, HANDLER_COUNT}},
+    {"ParameterText", ParameterText, ParameterText, {ParameterGroup, Parameter, ParameterText, AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

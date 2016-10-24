@@ -116,6 +116,7 @@ public:
     ListOfTextGlyphs,
     ListOfUnitDefinitions,
     ListOfUnsupportedAnnotations,
+    MathML,
     Metabolite,
     MetaboliteGlyph,
     MetaboliteReferenceGlyph,
@@ -173,6 +174,7 @@ public:
   {
     std::string elementName;
     Type elementType;
+    Type handlerType;
     Type validElements[15];
   };
 
@@ -253,12 +255,17 @@ protected:
   /**
    *
    */
-  const Type mType;
+  const Type mHandlerType;
 
   /**
    *
    */
-  std::map< std::string, Type > mElementName2Type;
+  Type mElementType;
+
+  /**
+   *
+   */
+  std::map< std::string, std::pair< Type, Type > > mElementName2Type;
 
   /**
    *
@@ -268,12 +275,17 @@ protected:
   /**
    * The currently processed element.
    */
-  Type mCurrentElement;
+  std::pair< Type, Type > mCurrentElement;
 
   /**
    *
    */
-  Type mLastKnownElement;
+  std::pair< Type, Type > mLastKnownElement;
+
+  /**
+   *
+   */
+  size_t mLevel;
 };
 
 #endif // COPASI_CXMLHandler

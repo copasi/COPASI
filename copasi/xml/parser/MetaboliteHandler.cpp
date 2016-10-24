@@ -29,7 +29,7 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Metabolite:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool MetaboliteHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Metabolite:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * MetaboliteHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Metabolite, HANDLER_COUNT}},
-    {"Metabolite", Metabolite, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Metabolite, HANDLER_COUNT}},
+    {"Metabolite", Metabolite, Metabolite, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

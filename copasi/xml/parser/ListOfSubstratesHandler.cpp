@@ -29,7 +29,7 @@ CXMLHandler * ListOfSubstratesHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfSubstrates:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfSubstratesHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfSubstrates:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfSubstratesHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfSubstrates, HANDLER_COUNT}},
-    {"ListOfSubstrates", ListOfSubstrates, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfSubstrates, HANDLER_COUNT}},
+    {"ListOfSubstrates", ListOfSubstrates, ListOfSubstrates, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

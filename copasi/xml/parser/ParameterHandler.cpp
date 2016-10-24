@@ -45,7 +45,7 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
   size_t ui;
   bool b;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Parameter:
         // Parameter has attributes name, type and value
@@ -151,7 +151,7 @@ bool ParameterHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case Parameter:
         finished = true;
@@ -171,9 +171,9 @@ CXMLHandler::sProcessLogic * ParameterHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {Parameter, HANDLER_COUNT}},
-    {"Parameter", Parameter, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {Parameter, HANDLER_COUNT}},
+    {"Parameter", Parameter, Parameter, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

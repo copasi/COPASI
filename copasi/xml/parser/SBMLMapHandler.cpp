@@ -29,7 +29,7 @@ CXMLHandler * SBMLMapHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case SBMLMap:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool SBMLMapHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case SBMLMap:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * SBMLMapHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {SBMLMap, HANDLER_COUNT}},
-    {"SBMLMap", SBMLMap, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {SBMLMap, HANDLER_COUNT}},
+    {"SBMLMap", SBMLMap, SBMLMap, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

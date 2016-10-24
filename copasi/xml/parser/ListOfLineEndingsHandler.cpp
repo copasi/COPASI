@@ -29,7 +29,7 @@ CXMLHandler * ListOfLineEndingsHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfLineEndings:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ListOfLineEndingsHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ListOfLineEndings:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ListOfLineEndingsHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ListOfLineEndings, HANDLER_COUNT}},
-    {"ListOfLineEndings", ListOfLineEndings, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ListOfLineEndings, HANDLER_COUNT}},
+    {"ListOfLineEndings", ListOfLineEndings, ListOfLineEndings, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

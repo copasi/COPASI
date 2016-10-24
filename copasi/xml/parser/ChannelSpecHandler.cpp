@@ -29,7 +29,7 @@ CXMLHandler * ChannelSpecHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ChannelSpec:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool ChannelSpecHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case ChannelSpec:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * ChannelSpecHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {ChannelSpec, HANDLER_COUNT}},
-    {"ChannelSpec", ChannelSpec, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {ChannelSpec, HANDLER_COUNT}},
+    {"ChannelSpec", ChannelSpec, ChannelSpec, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

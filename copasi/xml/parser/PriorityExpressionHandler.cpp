@@ -29,7 +29,7 @@ CXMLHandler * PriorityExpressionHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case PriorityExpression:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool PriorityExpressionHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case PriorityExpression:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * PriorityExpressionHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {PriorityExpression, HANDLER_COUNT}},
-    {"PriorityExpression", PriorityExpression, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {PriorityExpression, HANDLER_COUNT}},
+    {"PriorityExpression", PriorityExpression, PriorityExpression, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;

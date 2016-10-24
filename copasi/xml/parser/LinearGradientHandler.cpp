@@ -29,7 +29,7 @@ CXMLHandler * LinearGradientHandler::processStart(const XML_Char * pszName,
 {
   CXMLHandler * pHandlerToCall = NULL;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case LinearGradient:
         // TODO CRITICAL Implement me!
@@ -51,7 +51,7 @@ bool LinearGradientHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement)
+  switch (mCurrentElement.first)
     {
       case LinearGradient:
         finished = true;
@@ -76,9 +76,9 @@ CXMLHandler::sProcessLogic * LinearGradientHandler::getProcessLogic() const
 
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, {LinearGradient, HANDLER_COUNT}},
-    {"LinearGradient", LinearGradient, {AFTER, HANDLER_COUNT}},
-    {"AFTER", AFTER, {HANDLER_COUNT}}
+    {"BEFORE", BEFORE, BEFORE, {LinearGradient, HANDLER_COUNT}},
+    {"LinearGradient", LinearGradient, LinearGradient, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;
