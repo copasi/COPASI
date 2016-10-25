@@ -32,10 +32,11 @@ CXMLHandler * ListOfReactionsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfReactions:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Reaction:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfReactionsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfReactions:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Reaction:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfReactionsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfReactionsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfReactions, HANDLER_COUNT}},
-    {"ListOfReactions", ListOfReactions, ListOfReactions, {AFTER, HANDLER_COUNT}},
+    {"ListOfReactions", ListOfReactions, ListOfReactions, {Reaction, AFTER, HANDLER_COUNT}},
+    {"Reaction", Reaction, Reaction, {Reaction, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

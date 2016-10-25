@@ -8,6 +8,8 @@
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
+class CModelValue;
+
 class ModelValueHandler : public CXMLHandler
 {
 private:
@@ -49,6 +51,17 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * A pointer to the current model value
+   */
+  CModelValue * mpMV;
+
+  /**
+   * The original key of the model value.
+   */
+  std::string mKey;
 };
 
 #endif //COPASI_ModelValueHandler

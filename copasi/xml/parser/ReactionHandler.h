@@ -49,6 +49,12 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * The original key of the reaction
+   */
+  std::string mKey;
 };
 
 #endif //COPASI_ReactionHandler

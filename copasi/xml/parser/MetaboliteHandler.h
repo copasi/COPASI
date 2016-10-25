@@ -8,6 +8,8 @@
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
+class CMetab;
+
 class MetaboliteHandler : public CXMLHandler
 {
 private:
@@ -49,6 +51,17 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * A pointer to the current metabolite.
+   */
+  CMetab * mpMetabolite;
+
+  /**
+   * The key in the CopasiML file
+   */
+  std::string mKey;
 };
 
 #endif //COPASI_MetaboliteHandler

@@ -8,6 +8,8 @@
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
+class CCompartment;
+
 class CompartmentHandler : public CXMLHandler
 {
 private:
@@ -49,6 +51,17 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * A pointer to the current compartment
+   */
+  CCompartment * mpCompartment;
+
+  /**
+   * The original key of the model.
+   */
+  std::string mKey;
 };
 
 #endif //COPASI_CompartmentHandler

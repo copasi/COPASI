@@ -32,10 +32,11 @@ CXMLHandler * ListOfMetabolitesHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfMetabolites:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Metabolite:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfMetabolitesHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfMetabolites:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Metabolite:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfMetabolitesHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfMetabolitesHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfMetabolites, HANDLER_COUNT}},
-    {"ListOfMetabolites", ListOfMetabolites, ListOfMetabolites, {AFTER, HANDLER_COUNT}},
+    {"ListOfMetabolites", ListOfMetabolites, ListOfMetabolites, {Metabolite, AFTER, HANDLER_COUNT}},
+    {"Metabolite", Metabolite, Metabolite, {Metabolite, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

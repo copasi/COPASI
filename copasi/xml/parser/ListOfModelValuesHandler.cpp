@@ -32,10 +32,11 @@ CXMLHandler * ListOfModelValuesHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfModelValues:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case ModelValue:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfModelValuesHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfModelValues:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case ModelValue:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfModelValuesHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfModelValuesHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfModelValues, HANDLER_COUNT}},
-    {"ListOfModelValues", ListOfModelValues, ListOfModelValues, {AFTER, HANDLER_COUNT}},
+    {"ListOfModelValues", ListOfModelValues, ListOfModelValues, {ModelValue, AFTER, HANDLER_COUNT}},
+    {"ModelValue", ModelValue, ModelValue, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

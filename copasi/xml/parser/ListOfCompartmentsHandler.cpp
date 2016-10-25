@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModel.h"
+
 /**
  * Replace ListOfCompartments with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,12 @@ CXMLHandler * ListOfCompartmentsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfCompartments:
-        // TODO CRITICAL Implement me!
+        mpData->pModel->getCompartments().clear();
         break;
 
-        // TODO CRITICAL Implement me!
+      case Compartment:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +59,10 @@ bool ListOfCompartmentsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfCompartments:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Compartment:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +76,11 @@ bool ListOfCompartmentsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfCompartmentsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfCompartments, HANDLER_COUNT}},
-    {"ListOfCompartments", ListOfCompartments, ListOfCompartments, {AFTER, HANDLER_COUNT}},
+    {"ListOfCompartments", ListOfCompartments, ListOfCompartments, {Compartment, AFTER, HANDLER_COUNT}},
+    {"Compartment", Compartment, Compartment, {Compartment, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
