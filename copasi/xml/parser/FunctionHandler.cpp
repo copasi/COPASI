@@ -8,6 +8,8 @@
 #include "FunctionHandler.h"
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
+
+#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "function/CFunction.h"
 #include "function/CExpression.h"
 
@@ -212,10 +214,111 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
     {
       case Function:
         finished = true;
-        // TODO CRITICAL Implement me!
+
+        if (mpData->pFunction != NULL)
+          {
+            if (!mpData->mPredefinedFunction)
+              {
+                // TODO We need to check whether any existing function with the same
+                // name is identical
+
+                std::set< size_t >::const_iterator it = mExistingFunctionIndex.begin();
+                std::set< size_t >::const_iterator end = mExistingFunctionIndex.end();
+
+                for (; it != end; ++it)
+                  {
+                    CFunction * pFunction = &mpData->pFunctionList->operator[](*it);
+
+                    if (*pFunction == *mpData->pFunction)
+                      {
+                        pdelete(mpData->pFunction);
+                        mpData->pFunction = &mpData->pFunctionList->operator[](*it);
+
+                        break;
+                      }
+                  }
+
+                /* We have a new function and add it to the list */
+                if (it == end)
+                  {
+                    mpData->pFunctionList->add(mpData->pFunction, true);
+                  }
+              }
+
+            addFix(mKey , mpData->pFunction);
+
+            std::map< size_t, std::string >::const_iterator it = mpData->mFunctionParameterKeyMap.begin();
+            std::map< size_t, std::string >::const_iterator end = mpData->mFunctionParameterKeyMap.end();
+
+            for (; it != end; ++it)
+              {
+                addFix(it->second, mpData->pFunction->getVariables()[it->first]);
+              }
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case MiriamAnnotation:
+
+        if (mpData->pFunction != NULL)
+          {
+            mpData->pFunction->setMiriamAnnotation(mpData->CharacterData, mpData->pFunction->getKey(), mKey);
+            mpData->CharacterData = "";
+          }
+
+        break;
+
+      case Comment:
+
+        if (mpData->pFunction != NULL)
+          {
+            mpData->pFunction->setNotes(mpData->CharacterData);
+            mpData->CharacterData = "";
+          }
+
+        break;
+
+      case ListOfUnsupportedAnnotations:
+
+        if (mpData->pFunction != NULL)
+          {
+            ListOfUnsupportedAnnotationsHandler * pHandler = static_cast< ListOfUnsupportedAnnotationsHandler * >(getHandler(ListOfUnsupportedAnnotations));
+            mpData->pFunction->getUnsupportedAnnotations() = pHandler->getUnsupportedAnnotations();
+          }
+
+        break;
+
+      case Expression:
+
+        if (mpData->pFunction != NULL &&
+            !mpData->mPredefinedFunction)
+          {
+            // do not yet compile the function as it might depend on elements not
+            // read yet
+            mpData->pFunction->setInfix(mpData->CharacterData, false);
+          }
+
+        break;
+
+      case ListOfParameterDescriptions:
+
+        if (strcmp(pszName, "ListOfParameterDescriptions"))
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+                         pszName, "ListOfParameterDescriptions", mpParser->getCurrentLineNumber());
+
+        break;
+
+      case MathML:
+
+        if (mpData->pFunction != NULL &&
+            !mpData->mPredefinedFunction)
+          {
+            // do not yet compile the function as it might depend on elements not
+            // read yet
+            mpData->pFunction->setInfix(mpData->CharacterData, false);
+          }
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,

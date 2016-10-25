@@ -12,6 +12,7 @@
 #include <stack>
 
 #include "copasi/report/CCopasiObjectName.h"
+#include "copasi/report/CKeyFactory.h"
 
 class CCompartment;
 class CMetab;
@@ -163,7 +164,7 @@ public:
    * A map relating CopasiXML function keys with internal keys
    */
   //    std::map< std::string, std::string > KeyMap;
-  CKeyFactory *mpKeyMap;
+  CKeyFactory mKeyMap;
 
   /**
    * A map relating StateVariables to model entities.

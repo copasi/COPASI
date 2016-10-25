@@ -103,7 +103,7 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
                 pParameter->getType() == CCopasiParameter::KEY)
               {
                 CCopasiObject * pObject =
-                  mpData->mpKeyMap->get(pParameter->getValue< std::string >());
+                  mpData->mKeyMap.get(pParameter->getValue< std::string >());
 
                 if (pObject != NULL)
                   pParameter->setValue(pObject->getKey());

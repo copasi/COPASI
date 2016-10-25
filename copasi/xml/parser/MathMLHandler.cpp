@@ -32,10 +32,11 @@ CXMLHandler * MathMLHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case MathML:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Text:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool MathMLHandler::processEnd(const XML_Char * pszName)
     {
       case MathML:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Text:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool MathMLHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * MathMLHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {MathML, HANDLER_COUNT}},
-    {"MathML", MathML, MathML, {AFTER, HANDLER_COUNT}},
+    {"MathML", MathML, MathML, {Text, AFTER, HANDLER_COUNT}},
+    {"Text", Text, CharacterData, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

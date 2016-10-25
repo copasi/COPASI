@@ -6,6 +6,7 @@
 #ifndef COPASI_MiriamAnnotationHandler
 #define COPASI_MiriamAnnotationHandler
 
+#include <sstream>
 #include "copasi/xml/parser/CXMLHandler.h"
 
 class MiriamAnnotationHandler : public CXMLHandler
@@ -49,6 +50,17 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * String stream to handle RDF contents
+   */
+  std::ostringstream mRDF;
+
+  /**
+   * Information whether an element is empty
+   */
+  std::stack< bool > mElementEmpty;
 };
 
 #endif //COPASI_MiriamAnnotationHandler

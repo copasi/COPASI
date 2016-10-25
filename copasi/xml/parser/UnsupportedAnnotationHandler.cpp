@@ -14,7 +14,10 @@
  * three methods below.
  */
 UnsupportedAnnotationHandler::UnsupportedAnnotationHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::UnsupportedAnnotation)
+  CXMLHandler(parser, data, CXMLHandler::UnsupportedAnnotation),
+  mName(),
+  mXML(),
+  mElementEmpty()
 {
   init();
 }
@@ -27,43 +30,93 @@ UnsupportedAnnotationHandler::~UnsupportedAnnotationHandler()
 CXMLHandler * UnsupportedAnnotationHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const XML_Char ** ppAttrs;
 
-  switch (mCurrentElement.first)
+  if (mLevel == 0)
     {
-      case UnsupportedAnnotation:
-        // TODO CRITICAL Implement me!
-        break;
+      mName = mpParser->getAttributeValue("name", papszAttrs);
+      mXML.str("");
+      mpParser->enableCharacterDataHandler();
+      mElementEmpty.push(false);
+    }
+  else
+    {
+      if (mElementEmpty.top() == true)
+        {
+          mXML << ">";
+          mElementEmpty.top() = false;
+        }
 
-        // TODO CRITICAL Implement me!
+      mXML << CCopasiXMLInterface::encode(mpParser->getCharacterData(), CCopasiXMLInterface::character);
+      mXML << "<" << pszName;
 
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
-                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
-        break;
+      for (ppAttrs = papszAttrs; *ppAttrs && **ppAttrs; ppAttrs += 2)
+        mXML << " " << *ppAttrs << "=\""
+             << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
+
+      mLevel++;
+      mElementEmpty.push(true);
+      mpParser->enableCharacterDataHandler();
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
 bool UnsupportedAnnotationHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
+  std::string XML;
 
-  switch (mCurrentElement.first)
+  if (mLevel == 0)
     {
-      case UnsupportedAnnotation:
-        finished = true;
-        // TODO CRITICAL Implement me!
-        break;
+      finished = true;
+      mXML << CCopasiXMLInterface::encode(mpParser->getCharacterData(), CCopasiXMLInterface::character);
+      XML = mXML.str();
 
-        // TODO CRITICAL Implement me!
+      // remove leading whitepsaces
+      std::string::size_type pos = XML.find_first_not_of("\x0a\x0d\t ");
 
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
-                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
-        break;
+      if (pos != 0) XML.erase(0, pos);
+
+      // remove trailing whitepsace
+      pos = XML.find_last_not_of("\x0a\x0d\t ");
+
+      if (pos < XML.length())
+        XML = XML.substr(0, pos + 1);
+
+      mXML.str(XML);
+
+      mElementEmpty.pop();
+      assert(mElementEmpty.empty());
+    }
+  else
+    {
+      XML = mpParser->getCharacterData();
+
+      // Check whether and how we need to close the element
+      if (mElementEmpty.top() == true)
+        {
+          if (XML != "")
+            {
+              mElementEmpty.top() = false;
+              mXML << ">";
+            }
+          else
+            mXML << " />";
+        }
+
+      if (XML != "")
+        mXML << CCopasiXMLInterface::encode(XML, CCopasiXMLInterface::character);
+
+      if (mElementEmpty.top() == false)
+        mXML << "</" << pszName << ">";
+
+      mElementEmpty.pop();
+      mElementEmpty.top() = false;
+      mLevel--;
+
+      mpParser->enableCharacterDataHandler();
     }
 
   return finished;
@@ -72,8 +125,6 @@ bool UnsupportedAnnotationHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * UnsupportedAnnotationHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {UnsupportedAnnotation, HANDLER_COUNT}},
@@ -82,4 +133,20 @@ CXMLHandler::sProcessLogic * UnsupportedAnnotationHandler::getProcessLogic() con
   };
 
   return Elements;
+}
+
+/**
+ * Retrieve the name
+ * @return const std::string & name
+ */
+const std::string & UnsupportedAnnotationHandler::getName() const
+{
+}
+
+/**
+ * Retrieve the XML
+ * @return std::string XML
+ */
+std::string UnsupportedAnnotationHandler::getXML() const
+{
 }

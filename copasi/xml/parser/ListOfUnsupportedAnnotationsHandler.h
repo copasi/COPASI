@@ -7,6 +7,7 @@
 #define COPASI_ListOfUnsupportedAnnotationsHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
+#include "copasi/model/CAnnotation.h"
 
 class ListOfUnsupportedAnnotationsHandler : public CXMLHandler
 {
@@ -25,6 +26,12 @@ public:
    * Destructor
    */
   virtual ~ListOfUnsupportedAnnotationsHandler();
+
+  /**
+   * Retrieve the list of unsupported annotations.
+   * @return
+   */
+  const CAnnotation::UnsupportedAnnotation & getUnsupportedAnnotations() const;
 
 protected:
 
@@ -49,6 +56,12 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * The list of unsupported annotations.
+   */
+  CAnnotation::UnsupportedAnnotation mUnsupportedAnnotations;
 };
 
 #endif //COPASI_ListOfUnsupportedAnnotationsHandler

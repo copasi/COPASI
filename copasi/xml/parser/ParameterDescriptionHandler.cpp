@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "function/CFunction.h"
+
 /**
  * Replace ParameterDescription with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,106 @@ ParameterDescriptionHandler::~ParameterDescriptionHandler()
 CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Key;
+  const char * Name;
+  const char * order;
+  unsigned C_INT32 Order;
+  const char * role; /*substrate, product, modifier, constant, other*/
+  CFunctionParameter::Role Role;
+  const char * minOccurs;
+  unsigned C_INT32 MinOccurs;
+  const char * maxOccurs;
+  unsigned C_INT32 MaxOccurs;
+
+  //std::string Usage[] = {"SUBSTRATE", "PRODUCT", "MODIFIER", "PARAMETER"};
+  CFunctionParameter * pParm = NULL;
+  CFunction * pFunction = dynamic_cast<CFunction *>(mpData->pFunction);
 
   switch (mCurrentElement.first)
     {
       case ParameterDescription:
-        // TODO CRITICAL Implement me!
-        break;
+        Key = mpParser->getAttributeValue("key", papszAttrs);
+        Name = mpParser->getAttributeValue("name", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        order = mpParser->getAttributeValue("order", papszAttrs);
+        Order = (unsigned C_INT32) atoi(order);
+
+        role = mpParser->getAttributeValue("role", papszAttrs);
+        Role = CFunctionParameter::xmlRole2Enum(role);
+        //if (Role == "") fatalError();
+
+        minOccurs = mpParser->getAttributeValue("minOccurs", papszAttrs, "1");
+        MinOccurs = strToUnsignedInt(minOccurs);
+
+        maxOccurs = mpParser->getAttributeValue("maxOccurs", papszAttrs , "1");
+
+        if (std::string("unbounded") == std::string(maxOccurs))
+          MaxOccurs = (unsigned C_INT32) - 1;
+        else
+          MaxOccurs = strToUnsignedInt(maxOccurs);
+
+        if (mpData->mPredefinedFunction)
+          {
+            addFix(Key, pFunction->getVariables()[Name]);
+          }
+        else if (pFunction != NULL)
+          {
+            // If we are here we have a user defined function.
+            // We need to check whether the variable exists within the function.
+            CFunctionParameter::DataType DataType;
+            size_t Index =
+              pFunction->getVariables().findParameterByName(Name, DataType);
+
+            bool isUsed = true;
+
+            if (Index == C_INVALID_INDEX)
+              {
+                // We add the missing parameter and mark it as unused.
+                pFunction->getVariables().add(Name,
+                                              CFunctionParameter::FLOAT64,
+                                              Role);
+
+                Index = pFunction->getVariables().findParameterByName(Name, DataType);
+                isUsed = false;
+              }
+
+            // Make sure that we have enough parameter to swap
+            size_t Counter = 0;
+
+            while (Order >= pFunction->getVariables().size())
+              {
+                std::string NewName = StringPrint("TMP_%d", Counter++);
+
+                while (!pFunction->getVariables().add(NewName,
+                                                      CFunctionParameter::FLOAT64,
+                                                      CFunctionParameter::TEMPORARY)) {};
+
+                NewName = StringPrint("TMP_%d", Counter++);
+              }
+
+            // Assure that the order is correct
+            if (Order != Index)
+              pFunction->getVariables().swap(Order, Index);
+
+            pParm = pFunction->getVariables()[Order];
+            pParm->setObjectName(Name);
+            pParm->setUsage(Role);
+            pParm->setIsUsed(isUsed);
+
+            if (MaxOccurs == 1 && MinOccurs == 1)
+              pParm->setType(CFunctionParameter::FLOAT64);
+            else
+              pParm->setType(CFunctionParameter::VFLOAT64);
+
+            mpData->mFunctionParameterKeyMap[Order] = Key;
+          }
+        else
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                           mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+          }
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +136,7 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -58,8 +151,6 @@ bool ParameterDescriptionHandler::processEnd(const XML_Char * pszName)
         // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
-
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
                        mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
@@ -72,8 +163,6 @@ bool ParameterDescriptionHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ParameterDescriptionHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ParameterDescription, HANDLER_COUNT}},

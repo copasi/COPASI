@@ -9,12 +9,15 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "UnsupportedAnnotationHandler.h"
+
 /**
  * Replace ListOfUnsupportedAnnotations with the name type of the handler and implement the
  * three methods below.
  */
 ListOfUnsupportedAnnotationsHandler::ListOfUnsupportedAnnotationsHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::ListOfUnsupportedAnnotations)
+  CXMLHandler(parser, data, CXMLHandler::ListOfUnsupportedAnnotations),
+  mUnsupportedAnnotations()
 {
   init();
 }
@@ -32,10 +35,12 @@ CXMLHandler * ListOfUnsupportedAnnotationsHandler::processStart(const XML_Char *
   switch (mCurrentElement.first)
     {
       case ListOfUnsupportedAnnotations:
-        // TODO CRITICAL Implement me!
+        mUnsupportedAnnotations.clear();
         break;
 
-        // TODO CRITICAL Implement me!
+      case UnsupportedAnnotation:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +60,14 @@ bool ListOfUnsupportedAnnotationsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfUnsupportedAnnotations:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case UnsupportedAnnotation:
+      {
+        UnsupportedAnnotationHandler * pHandler = static_cast< UnsupportedAnnotationHandler * >(getHandler(UnsupportedAnnotation));
+        mUnsupportedAnnotations[pHandler->getName()] = pHandler->getXML();
+      }
+      break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,14 +81,18 @@ bool ListOfUnsupportedAnnotationsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfUnsupportedAnnotationsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfUnsupportedAnnotations, HANDLER_COUNT}},
-    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {AFTER, HANDLER_COUNT}},
+    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {UnsupportedAnnotation, AFTER, HANDLER_COUNT}},
+    {"UnsupportedAnnotations", UnsupportedAnnotation, UnsupportedAnnotation, {UnsupportedAnnotation, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
   return Elements;
+}
+
+const CAnnotation::UnsupportedAnnotation & ListOfUnsupportedAnnotationsHandler::getUnsupportedAnnotations() const
+{
+  return mUnsupportedAnnotations;
 }

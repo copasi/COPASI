@@ -14,7 +14,9 @@
  * three methods below.
  */
 MiriamAnnotationHandler::MiriamAnnotationHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::MiriamAnnotation)
+  CXMLHandler(parser, data, CXMLHandler::MiriamAnnotation),
+  mRDF(),
+  mElementEmpty()
 {
   init();
 }
@@ -27,23 +29,35 @@ MiriamAnnotationHandler::~MiriamAnnotationHandler()
 CXMLHandler * MiriamAnnotationHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const XML_Char ** ppAttrs;
 
-  switch (mCurrentElement.first)
+  if (mLevel == 0)
     {
-      case MiriamAnnotation:
-        // TODO CRITICAL Implement me!
-        break;
+      mRDF.str("");
+      mpParser->enableCharacterDataHandler();
+      mElementEmpty.push(false);
+    }
+  else
+    {
+      if (mElementEmpty.top() == true)
+        {
+          mRDF << ">";
+          mElementEmpty.top() = false;
+        }
 
-        // TODO CRITICAL Implement me!
+      mRDF << CCopasiXMLInterface::encode(mpParser->getCharacterData());
+      mRDF << "<" << pszName;
 
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
-                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
-        break;
+      for (ppAttrs = papszAttrs; *ppAttrs && **ppAttrs; ppAttrs += 2)
+        mRDF << " " << *ppAttrs << "=\""
+             << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
+
+      mLevel++;
+      mElementEmpty.push(true);
+      mpParser->enableCharacterDataHandler();
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -51,19 +65,60 @@ bool MiriamAnnotationHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
-  switch (mCurrentElement.first)
+  if (mLevel == 0)
     {
-      case MiriamAnnotation:
-        finished = true;
-        // TODO CRITICAL Implement me!
-        break;
+      finished = true;
 
-        // TODO CRITICAL Implement me!
+      if (mRDF.str() != "")
+        mRDF << CCopasiXMLInterface::encode(mpParser->getCharacterData());
+      else
+        mRDF << mpParser->getCharacterData();
 
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
-                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
-        break;
+      mpData->CharacterData = mRDF.str();
+
+      {
+        // remove leading whitepsaces
+        std::string::size_type pos = mpData->CharacterData.find_first_not_of("\x0a\x0d\t ");
+
+        if (pos != 0) mpData->CharacterData.erase(0, pos);
+
+        // remove trailing whitepsace
+        pos = mpData->CharacterData.find_last_not_of("\x0a\x0d\t ");
+
+        if (pos < mpData->CharacterData.length())
+          mpData->CharacterData = mpData->CharacterData.substr(0, pos + 1);
+      }
+
+      mElementEmpty.pop();
+      assert(mElementEmpty.empty());
+    }
+  else
+    {
+      std::string rdf = mpParser->getCharacterData();
+
+      // Check whether and how we need to close the attribute
+      if (mElementEmpty.top() == true)
+        {
+          if (rdf != "")
+            {
+              mElementEmpty.top() = false;
+              mRDF << ">";
+            }
+          else
+            mRDF << " />";
+        }
+
+      if (rdf != "")
+        mRDF << CCopasiXMLInterface::encode(rdf);
+
+      if (mElementEmpty.top() == false)
+        mRDF << "</" << pszName << ">";
+
+      mElementEmpty.pop();
+      mElementEmpty.top() = false;
+      mLevel--;
+
+      mpParser->enableCharacterDataHandler();
     }
 
   return finished;
@@ -72,8 +127,6 @@ bool MiriamAnnotationHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * MiriamAnnotationHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {MiriamAnnotation, HANDLER_COUNT}},

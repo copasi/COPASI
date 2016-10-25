@@ -16,6 +16,7 @@
 #include "BoundingBoxHandler.h"
 #include "CallParameterHandler.h"
 #include "ChannelSpecHandler.h"
+#include "CharacterDataHandler.h"
 #include "ColorDefinitionHandler.h"
 #include "CommentHandler.h"
 #include "CompartmentHandler.h"
@@ -207,6 +208,10 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::ChannelSpec:
         pHandler = new ChannelSpecHandler(*mpParser, *mpData);
+        break;
+
+      case CXMLHandler::CharacterData:
+        pHandler = new CharacterDataHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::ColorDefinition:

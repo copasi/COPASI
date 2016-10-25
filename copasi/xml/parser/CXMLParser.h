@@ -231,6 +231,8 @@ public:
   const CCopasiObject * getObjectFromCN(const std::string & cn) const;
 
   CXMLHandler * getHandler(const CXMLHandler::Type & type);
+
+  void setCharacterEncoding(const CCopasiXMLInterface::EncodingType & encoding);
 };
 
 #endif // COPASI_CXMLParser

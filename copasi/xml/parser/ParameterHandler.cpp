@@ -106,7 +106,7 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
               if (sValue != "" &&
                   CKeyFactory::isValidKey(sValue))
                 {
-                  CCopasiObject * pObject = mpData->mpKeyMap->get(sValue);
+                  CCopasiObject * pObject = mpData->mKeyMap.get(sValue);
 
                   if (pObject)
                     {

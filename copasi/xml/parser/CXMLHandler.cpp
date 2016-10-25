@@ -26,6 +26,8 @@ void CXMLHandler::start(const XML_Char * pszName,
                         const XML_Char ** papszAttrs)
 {
   CXMLHandler * pNextHandler = NULL;
+  bool IncreaseLevel = false;
+
   std::map< std::string, std::pair< Type, Type > >::iterator itElementType = mElementName2Type.find(pszName);
 
   if (itElementType != mElementName2Type.end())
@@ -33,11 +35,11 @@ void CXMLHandler::start(const XML_Char * pszName,
       if (mLevel == 0)
         {
           mElementType = itElementType->second.first;
-          mLevel++;
+          IncreaseLevel = true;
         }
       else if (mElementType == itElementType->second.first)
         {
-          mLevel++;
+          IncreaseLevel = true;
         }
 
       const std::set< Type > ValidElements =  mValidElements[mLastKnownElement.first];
@@ -74,6 +76,8 @@ void CXMLHandler::start(const XML_Char * pszName,
     {
       pNextHandler = getHandler(UNKNOWN);
     }
+
+  if (IncreaseLevel) mLevel++;
 
   if (pNextHandler != NULL)
     {
@@ -135,7 +139,7 @@ CXMLHandler * CXMLHandler::getHandler(const Type & type)
 
 void CXMLHandler::addFix(const std::string & key, CCopasiObject * pObject)
 {
-  if (!mpData->mpKeyMap->addFix(key, pObject))
+  if (!mpData->mKeyMap.addFix(key, pObject))
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 22, key.c_str(), mpParser->getCurrentLineNumber());
     }

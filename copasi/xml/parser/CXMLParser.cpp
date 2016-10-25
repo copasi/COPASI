@@ -309,3 +309,8 @@ void CXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
 {
   mData.pDataModel = pDataModel;
 }
+
+void CXMLParser::setCharacterEncoding(const CCopasiXMLInterface::EncodingType & encoding)
+{
+  mCharacterDataEncoding = encoding;
+}

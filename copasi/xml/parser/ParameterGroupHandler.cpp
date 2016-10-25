@@ -39,7 +39,7 @@ CXMLHandler * ParameterGroupHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ParameterGroup:
-        if (mParameterGroupStack.size() != mLevel)
+        if (mParameterGroupStack.size() != mLevel + 1)
           {
             name = mpParser->getAttributeValue("name", papszAttrs);
             mParameterGroupStack.push(new CCopasiParameterGroup(name));

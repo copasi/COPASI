@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "function/CFunction.h"
+
 /**
  * Replace ListOfParameterDescriptions with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,12 @@ CXMLHandler * ListOfParameterDescriptionsHandler::processStart(const XML_Char * 
   switch (mCurrentElement.first)
     {
       case ListOfParameterDescriptions:
-        // TODO CRITICAL Implement me!
+        mpData->mFunctionParameterKeyMap.clear();
         break;
 
-        // TODO CRITICAL Implement me!
+      case ParameterDescription:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +59,25 @@ bool ListOfParameterDescriptionsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfParameterDescriptions:
         finished = true;
-        // TODO CRITICAL Implement me!
+
+        // We need to remove all parameters which have been temporarily added to the list of variables
+        {
+          CFunction * pFunction = dynamic_cast<CFunction *>(mpData->pFunction);
+
+          if (pFunction)
+            {
+              CFunctionParameters & Variables = pFunction->getVariables();
+              size_t i = Variables.size() - 1;
+
+              for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
+                Variables.remove(Variables[i]->getObjectName());
+            }
+        }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case ParameterDescription:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +91,11 @@ bool ListOfParameterDescriptionsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfParameterDescriptionsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfParameterDescriptions, HANDLER_COUNT}},
-    {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {AFTER, HANDLER_COUNT}},
+    {"ListOfParameterDescriptions", ListOfParameterDescriptions, ListOfParameterDescriptions, {ParameterDescription, AFTER, HANDLER_COUNT}},
+    {"ParameterDescription", ParameterDescription, ParameterDescription, {ParameterDescription, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

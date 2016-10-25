@@ -6,6 +6,8 @@
 #ifndef COPASI_UnsupportedAnnotationHandler
 #define COPASI_UnsupportedAnnotationHandler
 
+#include <sstream>
+
 #include "copasi/xml/parser/CXMLHandler.h"
 
 class UnsupportedAnnotationHandler : public CXMLHandler
@@ -25,6 +27,18 @@ public:
    * Destructor
    */
   virtual ~UnsupportedAnnotationHandler();
+
+  /**
+   * Retrieve the name
+   * @return const std::string & name
+   */
+  const std::string & getName() const;
+
+  /**
+   * Retrieve the XML
+   * @return std::string XML
+   */
+  std::string getXML() const;
 
 protected:
 
@@ -49,6 +63,22 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * The name of the unsupported annotation
+   */
+  std::string mName;
+
+  /**
+   * String stream to handle XML content
+   */
+  std::ostringstream mXML;
+
+  /**
+   * Information whether an element is empty
+   */
+  std::stack< bool > mElementEmpty;
 };
 
 #endif //COPASI_UnsupportedAnnotationHandler

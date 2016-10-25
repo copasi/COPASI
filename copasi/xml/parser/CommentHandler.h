@@ -6,6 +6,8 @@
 #ifndef COPASI_CommentHandler
 #define COPASI_CommentHandler
 
+#include <sstream>
+
 #include "copasi/xml/parser/CXMLHandler.h"
 
 class CommentHandler : public CXMLHandler
@@ -49,6 +51,17 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * String stream to handle xhtml comments
+   */
+  std::ostringstream mXhtml;
+
+  /**
+   * Information whether an element is empty
+   */
+  std::stack< bool > mElementEmpty;
 };
 
 #endif //COPASI_CommentHandler

@@ -27,43 +27,94 @@ CommentHandler::~CommentHandler()
 CXMLHandler * CommentHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const XML_Char ** ppAttrs;
 
-  switch (mCurrentElement.first)
+  if (mLevel == 0)
     {
-      case Comment:
-        // TODO CRITICAL Implement me!
-        break;
+      mXhtml.str("");
+      mpParser->enableCharacterDataHandler();
+      mpParser->enableSkippedEntityHandler();
+      mpParser->setCharacterEncoding(CCopasiXMLInterface::character);
+      mElementEmpty.push(false);
+    }
+  else
+    {
+      if (mElementEmpty.top() == true)
+        {
+          mXhtml << ">";
+          mElementEmpty.top() = false;
+        }
 
-        // TODO CRITICAL Implement me!
+      mXhtml << CCopasiXMLInterface::encode(mpParser->getCharacterData());
+      mXhtml << "<" << pszName;
 
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
-                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
-        break;
+      for (ppAttrs = papszAttrs; *ppAttrs && **ppAttrs; ppAttrs += 2)
+        mXhtml << " " << *ppAttrs << "=\""
+               << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
+
+      mLevel++;
+      mElementEmpty.push(true);
+      mpParser->enableCharacterDataHandler();
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
 bool CommentHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
+  std::string Xhtml;
 
-  switch (mCurrentElement.first)
+  if (mLevel == 0)
     {
-      case Comment:
-        finished = true;
-        // TODO CRITICAL Implement me!
-        break;
+      finished = true;
 
-        // TODO CRITICAL Implement me!
+      mXhtml << mpParser->getCharacterData();
+      mpData->CharacterData = mXhtml.str();
 
-      default:
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
-                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
-        break;
+      // remove leading whitepsaces
+      std::string::size_type pos = mpData->CharacterData.find_first_not_of("\x0a\x0d\t ");
+
+      if (pos != 0) mpData->CharacterData.erase(0, pos);
+
+      // remove trailing whitepsace
+      pos = mpData->CharacterData.find_last_not_of("\x0a\x0d\t ");
+
+      if (pos < mpData->CharacterData.length())
+        mpData->CharacterData = mpData->CharacterData.substr(0, pos + 1);
+
+      mpParser->enableSkippedEntityHandler(false);
+      mpParser->setCharacterEncoding(CCopasiXMLInterface::none);
+      mElementEmpty.pop();
+      assert(mElementEmpty.empty());
+    }
+  else
+    {
+      Xhtml = mpParser->getCharacterData();
+
+      // Check whether and how we need to close the attribute
+      if (mElementEmpty.top() == true)
+        {
+          if (Xhtml != "")
+            {
+              mElementEmpty.top() = false;
+              mXhtml << ">";
+            }
+          else
+            mXhtml << " />";
+        }
+
+      mXhtml << Xhtml;
+
+      if (mElementEmpty.top() == false)
+        mXhtml << "</" << pszName << ">";
+
+      mElementEmpty.pop();
+      mElementEmpty.top() = false;
+      mLevel--;
+
+      mpParser->enableCharacterDataHandler();
     }
 
   return finished;
@@ -72,8 +123,6 @@ bool CommentHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * CommentHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Comment, HANDLER_COUNT}},

@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "function/CFunction.h"
+
 /**
  * Replace ListOfFunctions with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,11 @@ CXMLHandler * ListOfFunctionsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfFunctions:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Function:
+        pHandlerToCall = getHandler(Function);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +58,29 @@ bool ListOfFunctionsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfFunctions:
         finished = true;
-        // TODO CRITICAL Implement me!
+        {
+          size_t i, imax = mpData->pFunctionList->size();
+
+          for (i = imax - 1; i != C_INVALID_INDEX; i--)
+            {
+              CFunction * pFunction =
+                dynamic_cast<CFunction *>(&mpData->pFunctionList->operator[](i));
+
+              if (pFunction && !pFunction->compile())
+                {
+                  CCopasiMessage(CCopasiMessage::RAW, MCXML + 6,
+                                 pFunction->getObjectName().c_str(),
+                                 mpParser->getCurrentLineNumber());
+                  // We can keep the function as the compile is later checked again.
+                  // mpData->pFunctionList->CCopasiVector< CEvaluationTree >::remove(i);
+                }
+            }
+        }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case Function:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +94,11 @@ bool ListOfFunctionsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfFunctionsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfFunctions, HANDLER_COUNT}},
-    {"ListOfFunctions", ListOfFunctions, ListOfFunctions, {AFTER, HANDLER_COUNT}},
+    {"ListOfFunctions", ListOfFunctions, ListOfFunctions, {Function, AFTER, HANDLER_COUNT}},
+    {"Function", Function, Function, {Function, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
