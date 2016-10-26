@@ -289,6 +289,7 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
         break;
 
       case Expression:
+      case MathML:
 
         if (mpData->pFunction != NULL &&
             !mpData->mPredefinedFunction)
@@ -305,18 +306,6 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
         if (strcmp(pszName, "ListOfParameterDescriptions"))
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "ListOfParameterDescriptions", mpParser->getCurrentLineNumber());
-
-        break;
-
-      case MathML:
-
-        if (mpData->pFunction != NULL &&
-            !mpData->mPredefinedFunction)
-          {
-            // do not yet compile the function as it might depend on elements not
-            // read yet
-            mpData->pFunction->setInfix(mpData->CharacterData, false);
-          }
 
         break;
 

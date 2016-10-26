@@ -70,6 +70,7 @@ CXMLHandler * ModelValueHandler::processStart(const XML_Char * pszName,
       case Comment:
       case ListOfUnsupportedAnnotations:
       case Expression:
+      case MathML:
       case InitialExpression:
       case NoiseExpression:
       case Unit:
@@ -116,7 +117,7 @@ bool ModelValueHandler::processEnd(const XML_Char * pszName)
       break;
 
       case Expression:
-
+      case MathML:
       {
         size_t Size = CCopasiMessage::size();
 
@@ -191,11 +192,12 @@ CXMLHandler::sProcessLogic * ModelValueHandler::getProcessLogic() const
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ModelValue, HANDLER_COUNT}},
-    {"ModelValue", ModelValue, ModelValue, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
-    {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
-    {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
-    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
+    {"ModelValue", ModelValue, ModelValue, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, MathML, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
+    {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, MathML, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
+    {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, MathML, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
+    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, MathML, InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
     {"Expression", Expression, CharacterData, {InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
+    {"MathML", MathML, MathML, {InitialExpression, NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
     {"InitialExpression", InitialExpression, CharacterData, {NoiseExpression, Unit, AFTER, HANDLER_COUNT}},
     {"NoiseExpression", NoiseExpression, CharacterData, {Unit, AFTER, HANDLER_COUNT}},
     {"Unit", Unit, CharacterData, {AFTER, HANDLER_COUNT}},
