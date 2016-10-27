@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CReaction.h"
+
 /**
  * Replace Product with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,23 @@ ProductHandler::~ProductHandler()
 CXMLHandler * ProductHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Metabolite;
+  CMetab * pMetabolite;
+  const char * Stoichiometry;
 
   switch (mCurrentElement.first)
     {
       case Product:
-        // TODO CRITICAL Implement me!
-        break;
+        Metabolite = mpParser->getAttributeValue("metabolite", papszAttrs);
+        Stoichiometry = mpParser->getAttributeValue("stoichiometry", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        pMetabolite = dynamic_cast< CMetab * >(mpData->mKeyMap.get(Metabolite));
+
+        if (!pMetabolite) fatalError();
+
+        mpData->pReaction->addProduct(pMetabolite->getKey(),
+                                      CCopasiXMLInterface::DBL(Stoichiometry));
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +53,7 @@ CXMLHandler * ProductHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +65,7 @@ bool ProductHandler::processEnd(const XML_Char * pszName)
     {
       case Product:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +79,6 @@ bool ProductHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ProductHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Product, HANDLER_COUNT}},

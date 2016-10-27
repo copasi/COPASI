@@ -26,6 +26,26 @@ MiriamAnnotationHandler::~MiriamAnnotationHandler()
 {}
 
 // virtual
+void MiriamAnnotationHandler::start(const XML_Char * pszName,
+                                    const XML_Char ** papszAttrs)
+{
+  processStart(pszName, papszAttrs);
+  mLevel++;
+}
+
+// virtual
+void MiriamAnnotationHandler::end(const XML_Char * pszName)
+{
+  mLevel--;
+
+  if (processEnd(pszName))
+    {
+      mpParser->popElementHandler();
+      mpParser->onEndElement(pszName);
+    }
+}
+
+// virtual
 CXMLHandler * MiriamAnnotationHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
@@ -52,7 +72,6 @@ CXMLHandler * MiriamAnnotationHandler::processStart(const XML_Char * pszName,
         mRDF << " " << *ppAttrs << "=\""
              << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
 
-      mLevel++;
       mElementEmpty.push(true);
       mpParser->enableCharacterDataHandler();
     }
@@ -116,7 +135,6 @@ bool MiriamAnnotationHandler::processEnd(const XML_Char * pszName)
 
       mElementEmpty.pop();
       mElementEmpty.top() = false;
-      mLevel--;
 
       mpParser->enableCharacterDataHandler();
     }

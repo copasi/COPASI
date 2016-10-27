@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModelValue.h"
+
 /**
  * Replace InitialState with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,8 @@ CXMLHandler * InitialStateHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case InitialState:
-        // TODO CRITICAL Implement me!
+        pHandlerToCall = getHandler(CharacterData);
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -50,15 +50,35 @@ CXMLHandler * InitialStateHandler::processStart(const XML_Char * pszName,
 bool InitialStateHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
+  std::istringstream Values;
+  std::string StringValue;
+  std::vector< CModelEntity * >::iterator it;
+  std::vector< CModelEntity * >::iterator end;
+  double Value;
 
   switch (mCurrentElement.first)
     {
       case InitialState:
         finished = true;
-        // TODO CRITICAL Implement me!
-        break;
+        Values.str(mpData->CharacterData);
 
-        // TODO CRITICAL Implement me!
+        it = mpData->StateVariableList.begin();
+        end = mpData->StateVariableList.end();
+
+        for (Values >> StringValue; it != end; ++it, Values >> StringValue)
+          {
+            if (Values.fail()) break;
+
+            Value = CCopasiXMLInterface::DBL(StringValue.c_str());
+            (*it)->setInitialValue(Value);
+          }
+
+        if (it != end || !Values.fail() || !Values.eof())
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 17, mpParser->getCurrentLineNumber());
+          }
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +92,6 @@ bool InitialStateHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * InitialStateHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {InitialState, HANDLER_COUNT}},

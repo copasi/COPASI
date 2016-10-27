@@ -32,10 +32,11 @@ CXMLHandler * ListOfSubstratesHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfSubstrates:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Substrate:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfSubstratesHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfSubstrates:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Substrate:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfSubstratesHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfSubstratesHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfSubstrates, HANDLER_COUNT}},
-    {"ListOfSubstrates", ListOfSubstrates, ListOfSubstrates, {AFTER, HANDLER_COUNT}},
+    {"ListOfSubstrates", ListOfSubstrates, ListOfSubstrates, {Substrate, AFTER, HANDLER_COUNT}},
+    {"Substrate", Substrate, Substrate, {Substrate, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

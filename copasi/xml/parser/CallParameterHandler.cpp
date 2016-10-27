@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "function/CFunctionParameter.h"
+
 /**
  * Replace CallParameter with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +30,27 @@ CXMLHandler * CallParameterHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * FunctionParameter;
 
   switch (mCurrentElement.first)
     {
       case CallParameter:
-        // TODO CRITICAL Implement me!
+        FunctionParameter =
+          mpParser->getAttributeValue("functionParameter", papszAttrs);
+
+        mpData->pFunctionVariable =
+          dynamic_cast< CFunctionParameter* >(mpData->mKeyMap.get(FunctionParameter));
+
+        if (!mpData->pFunctionVariable)
+          {
+            fatalError();
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case SourceParameter:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +70,10 @@ bool CallParameterHandler::processEnd(const XML_Char * pszName)
     {
       case CallParameter:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case SourceParameter:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +87,11 @@ bool CallParameterHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * CallParameterHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {CallParameter, HANDLER_COUNT}},
-    {"CallParameter", CallParameter, CallParameter, {AFTER, HANDLER_COUNT}},
+    {"CallParameter", CallParameter, CallParameter, {SourceParameter, HANDLER_COUNT}},
+    {"SourceParameter", SourceParameter, SourceParameter, {SourceParameter, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

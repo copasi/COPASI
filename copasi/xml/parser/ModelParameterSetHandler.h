@@ -49,6 +49,12 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * The key as provided in the XML
+   */
+  std::string mKey;
 };
 
 #endif //COPASI_ModelParameterSetHandler

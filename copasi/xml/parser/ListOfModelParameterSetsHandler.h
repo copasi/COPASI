@@ -49,6 +49,12 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * The key of the active parameter set
+   */
+  std::string mActiveSet;
 };
 
 #endif //COPASI_ListOfModelParameterSetsHandler

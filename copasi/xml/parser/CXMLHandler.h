@@ -164,6 +164,7 @@ public:
     Task,
     Text,
     TextGlyph,
+    TriggerExpression,
     Unit,
     UnitDefinition,
     UnsupportedAnnotation,

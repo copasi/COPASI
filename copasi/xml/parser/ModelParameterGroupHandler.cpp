@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModelParameterGroup.h"
+
 /**
  * Replace ModelParameterGroup with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +30,30 @@ CXMLHandler * ModelParameterGroupHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * CN;
+  const char * pType;
+  CModelParameter::Type Type;
 
   switch (mCurrentElement.first)
     {
       case ModelParameterGroup:
-        // TODO CRITICAL Implement me!
+        // Element specific code.
+        assert(!mpData->ModelParameterGroupStack.empty());
+
+        CN = mpParser->getAttributeValue("cn", papszAttrs);
+        pType = mpParser->getAttributeValue("type", papszAttrs);
+        Type = toEnum(pType, CModelParameter::TypeNames, CModelParameter::Group);
+
+        {
+          CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mpData->ModelParameterGroupStack.top(), Type);
+          pModelParameterGroup->setCN(std::string(CN));
+          mpData->ModelParameterGroupStack.push(pModelParameterGroup);
+        }
         break;
 
-        // TODO CRITICAL Implement me!
+      case ModelParameter:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -54,16 +72,24 @@ bool ModelParameterGroupHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case ModelParameterGroup:
-        finished = true;
-        // TODO CRITICAL Implement me!
+        finished = (mLevel == 0);
+        mpData->pCurrentModelParameter = mpData->ModelParameterGroupStack.top();
+        mpData->ModelParameterGroupStack.pop();
         break;
 
-        // TODO CRITICAL Implement me!
+      case ModelParameter:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
                        mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
         break;
+    }
+
+  if (mpData->pCurrentModelParameter != NULL)
+    {
+      mpData->ModelParameterGroupStack.top()->add(mpData->pCurrentModelParameter);
+      mpData->pCurrentModelParameter = NULL;
     }
 
   return finished;
@@ -72,12 +98,11 @@ bool ModelParameterGroupHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ModelParameterGroupHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ModelParameterGroup, HANDLER_COUNT}},
-    {"ModelParameterGroup", ModelParameterGroup, ModelParameterGroup, {AFTER, HANDLER_COUNT}},
+    {"ModelParameterGroup", ModelParameterGroup, ModelParameterGroup, {ModelParameterGroup, ModelParameter, AFTER, HANDLER_COUNT}},
+    {"ModelParameter", ModelParameter, ModelParameter, {ModelParameterGroup, ModelParameter, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

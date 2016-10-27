@@ -85,7 +85,7 @@ CXMLHandler::sProcessLogic * ListOfUnsupportedAnnotationsHandler::getProcessLogi
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfUnsupportedAnnotations, HANDLER_COUNT}},
     {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {UnsupportedAnnotation, AFTER, HANDLER_COUNT}},
-    {"UnsupportedAnnotations", UnsupportedAnnotation, UnsupportedAnnotation, {UnsupportedAnnotation, AFTER, HANDLER_COUNT}},
+    {"UnsupportedAnnotation", UnsupportedAnnotation, UnsupportedAnnotation, {UnsupportedAnnotation, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

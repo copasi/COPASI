@@ -32,10 +32,11 @@ CXMLHandler * ListOfEventsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfEvents:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Event:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfEventsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfEvents:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Event:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfEventsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfEventsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfEvents, HANDLER_COUNT}},
-    {"ListOfEvents", ListOfEvents, ListOfEvents, {AFTER, HANDLER_COUNT}},
+    {"ListOfEvents", ListOfEvents, ListOfEvents, {Event, AFTER, HANDLER_COUNT}},
+    {"Event", Event, Event, {Event, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

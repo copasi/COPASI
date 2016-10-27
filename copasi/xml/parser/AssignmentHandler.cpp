@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModel.h"
+
 /**
  * Replace Assignment with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +30,28 @@ CXMLHandler * AssignmentHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * Key;
+  const CModelEntity* pME = NULL;
 
   switch (mCurrentElement.first)
     {
       case Assignment:
-        // TODO CRITICAL Implement me!
+        mpData->pEventAssignment = NULL;
+        Key = mpParser->getAttributeValue("targetKey", papszAttrs);
+        pME = dynamic_cast<const CModelEntity *>(mpData->mKeyMap.get(Key));
+
+        if (pME != NULL &&
+            mpData->pEvent->getAssignments().getIndex(pME->getKey()) == C_INVALID_INDEX)
+          {
+            mpData->pEventAssignment = new CEventAssignment(pME->getKey());
+            mpData->pEvent->getAssignments().add(mpData->pEventAssignment, true);
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case Expression:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +71,25 @@ bool AssignmentHandler::processEnd(const XML_Char * pszName)
     {
       case Assignment:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Expression:
+
+      {
+        size_t Size = CCopasiMessage::size();
+
+        if (mpData->pEventAssignment != NULL)
+          mpData->pEventAssignment->setExpression(mpData->CharacterData);
+
+        // Remove error messages created by setExpression as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          {
+            CCopasiMessage::getLastMessage();
+          }
+      }
+
+      break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +103,11 @@ bool AssignmentHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * AssignmentHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Assignment, HANDLER_COUNT}},
-    {"Assignment", Assignment, Assignment, {AFTER, HANDLER_COUNT}},
+    {"Assignment", Assignment, Assignment, {Expression, AFTER, HANDLER_COUNT}},
+    {"Expression", Expression, CharacterData, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

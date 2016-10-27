@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModelValue.h"
+
 /**
  * Replace StateTemplateVariable with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,22 @@ StateTemplateVariableHandler::~StateTemplateVariableHandler()
 CXMLHandler * StateTemplateVariableHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * ObjectReference;
+  CModelEntity * pME;
 
   switch (mCurrentElement.first)
     {
       case StateTemplateVariable:
-        // TODO CRITICAL Implement me!
-        break;
+        ObjectReference = mpParser->getAttributeValue("objectReference",  papszAttrs);
+        pME = dynamic_cast< CModelEntity * >(mpData->mKeyMap.get(ObjectReference));
 
-        // TODO CRITICAL Implement me!
+        if (pME != NULL)
+          mpData->StateVariableList.push_back(pME);
+        else
+          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                         mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +52,7 @@ CXMLHandler * StateTemplateVariableHandler::processStart(const XML_Char * pszNam
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +64,7 @@ bool StateTemplateVariableHandler::processEnd(const XML_Char * pszName)
     {
       case StateTemplateVariable:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +78,6 @@ bool StateTemplateVariableHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * StateTemplateVariableHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {StateTemplateVariable, HANDLER_COUNT}},

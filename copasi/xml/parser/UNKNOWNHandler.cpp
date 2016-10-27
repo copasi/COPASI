@@ -27,6 +27,11 @@ UNKNOWNHandler::~UNKNOWNHandler()
 void UNKNOWNHandler::start(const XML_Char * pszName,
                            const XML_Char ** papszAttrs)
 {
+  if (mLevel == 0)
+    {
+      std::cout << "UNKNONWN" << std::endl;
+    }
+
   processStart(pszName, papszAttrs);
 }
 

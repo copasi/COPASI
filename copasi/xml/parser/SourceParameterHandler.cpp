@@ -9,6 +9,10 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModelValue.h"
+#include "utilities/CCopasiParameter.h"
+#include "function/CCallParameters.h"
+
 /**
  * Replace SourceParameter with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +31,34 @@ SourceParameterHandler::~SourceParameterHandler()
 CXMLHandler * SourceParameterHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Reference;
+  CCopasiObject * pObject;
+  CCopasiParameter * pParameter;
+  CModelEntity * pME;
 
   switch (mCurrentElement.first)
     {
       case SourceParameter:
-        // TODO CRITICAL Implement me!
-        break;
+        Reference =
+          mpParser->getAttributeValue("reference", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        pObject = mpData->mKeyMap.get(Reference);
+
+        if ((pParameter = dynamic_cast< CCopasiParameter * >(pObject)))
+          {
+            // We need to assure that the parameter name for variables which are not
+            // of type vector match.
+            if (mpData->pFunctionVariable->getType() < CFunctionParameter::VINT32)
+              pParameter->setObjectName(mpData->pFunctionVariable->getObjectName());
+
+            mpData->SourceParameterKeys[mpData->pFunctionVariable->getObjectName()].push_back(pParameter->getKey());
+          }
+        else if ((pME = dynamic_cast<CModelEntity*>(pObject)))
+          mpData->SourceParameterKeys[mpData->pFunctionVariable->getObjectName()].push_back(pME->getKey());
+        else
+          mpData->SourceParameterKeys[mpData->pFunctionVariable->getObjectName()].push_back(CFunctionParameterMap::pUnmappedObject->getKey());
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +66,7 @@ CXMLHandler * SourceParameterHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +78,7 @@ bool SourceParameterHandler::processEnd(const XML_Char * pszName)
     {
       case SourceParameter:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +92,6 @@ bool SourceParameterHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * SourceParameterHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {SourceParameter, HANDLER_COUNT}},

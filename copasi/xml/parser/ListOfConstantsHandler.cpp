@@ -32,10 +32,11 @@ CXMLHandler * ListOfConstantsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfConstants:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Constant:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfConstantsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfConstants:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Constant:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfConstantsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfConstantsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfConstants, HANDLER_COUNT}},
-    {"ListOfConstants", ListOfConstants, ListOfConstants, {AFTER, HANDLER_COUNT}},
+    {"ListOfConstants", ListOfConstants, ListOfConstants, {Constant, AFTER, HANDLER_COUNT}},
+    {"Constant", Constant, Constant, {Constant, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

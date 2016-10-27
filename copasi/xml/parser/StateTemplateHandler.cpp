@@ -32,10 +32,12 @@ CXMLHandler * StateTemplateHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case StateTemplate:
-        // TODO CRITICAL Implement me!
+        mpData->StateVariableList.clear();
         break;
 
-        // TODO CRITICAL Implement me!
+      case StateTemplateVariable:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +57,10 @@ bool StateTemplateHandler::processEnd(const XML_Char * pszName)
     {
       case StateTemplate:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case StateTemplateVariable:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +74,11 @@ bool StateTemplateHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * StateTemplateHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {StateTemplate, HANDLER_COUNT}},
-    {"StateTemplate", StateTemplate, StateTemplate, {AFTER, HANDLER_COUNT}},
+    {"StateTemplate", StateTemplate, StateTemplate, {StateTemplateVariable, AFTER, HANDLER_COUNT}},
+    {"StateTemplateVariable", StateTemplateVariable, StateTemplateVariable, {StateTemplateVariable, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

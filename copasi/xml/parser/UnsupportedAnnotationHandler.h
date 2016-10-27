@@ -29,6 +29,20 @@ public:
   virtual ~UnsupportedAnnotationHandler();
 
   /**
+   * Start element handler
+   * @param const XML_Char *pszName
+   * @param const XML_Char **papszAttrs
+   */
+  virtual void start(const XML_Char * pszName,
+                     const XML_Char ** papszAttrs);
+
+  /**
+   * End element handler
+   * @param const XML_Char *pszName
+   */
+  virtual void end(const XML_Char * pszName);
+
+  /**
    * Retrieve the name
    * @return const std::string & name
    */

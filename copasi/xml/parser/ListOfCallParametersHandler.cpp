@@ -32,10 +32,11 @@ CXMLHandler * ListOfCallParametersHandler::processStart(const XML_Char * pszName
   switch (mCurrentElement.first)
     {
       case ListOfCallParameters:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case CallParameter:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfCallParametersHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfCallParameters:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case CallParameter:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfCallParametersHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfCallParametersHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfCallParameters, HANDLER_COUNT}},
-    {"ListOfCallParameters", ListOfCallParameters, ListOfCallParameters, {AFTER, HANDLER_COUNT}},
+    {"ListOfCallParameters", ListOfCallParameters, ListOfCallParameters, {CallParameter, AFTER, HANDLER_COUNT}},
+    {"CallParameter", CallParameter, CallParameter, {CallParameter, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

@@ -32,10 +32,11 @@ CXMLHandler * ListOfAssignmentsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfAssignments:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Assignment:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfAssignmentsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfAssignments:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Assignment:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfAssignmentsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfAssignmentsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfAssignments, HANDLER_COUNT}},
-    {"ListOfAssignments", ListOfAssignments, ListOfAssignments, {AFTER, HANDLER_COUNT}},
+    {"ListOfAssignments", ListOfAssignments, ListOfAssignments, {Assignment, AFTER, HANDLER_COUNT}},
+    {"Assignment", Assignment, Assignment, {Assignment, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

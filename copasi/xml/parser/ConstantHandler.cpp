@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CReaction.h"
+
 /**
  * Replace Constant with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,23 @@ ConstantHandler::~ConstantHandler()
 CXMLHandler * ConstantHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Key;
+  const char * Name;
+  const char * Value;
 
   switch (mCurrentElement.first)
     {
       case Constant:
-        // TODO CRITICAL Implement me!
-        break;
+        Key = mpParser->getAttributeValue("key", papszAttrs);
+        Name = mpParser->getAttributeValue("name", papszAttrs);
+        Value = mpParser->getAttributeValue("value", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        mpData->pReaction->getParameters().addParameter(Name,
+            CCopasiParameter::DOUBLE,
+            (C_FLOAT64) CCopasiXMLInterface::DBL(Value));
+
+        addFix(Key, mpData->pReaction->getParameters().getParameter(Name));
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +53,7 @@ CXMLHandler * ConstantHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +65,7 @@ bool ConstantHandler::processEnd(const XML_Char * pszName)
     {
       case Constant:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +79,6 @@ bool ConstantHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ConstantHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Constant, HANDLER_COUNT}},

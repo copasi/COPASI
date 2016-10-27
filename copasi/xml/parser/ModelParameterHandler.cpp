@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CModelParameter.h"
+
 /**
  * Replace ModelParameter with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +30,60 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * CN;
+  const char * pValue;
+  C_FLOAT64 Value = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  const char * pType;
+  CModelParameter::Type Type;
+  const char * pSimulationType;
+  CModelEntity::Status SimulationType;
 
   switch (mCurrentElement.first)
     {
       case ModelParameter:
-        // TODO CRITICAL Implement me!
+        // Element specific code.
+        CN = mpParser->getAttributeValue("cn", papszAttrs);
+        pValue = mpParser->getAttributeValue("value", papszAttrs);
+        pType = mpParser->getAttributeValue("type", papszAttrs);
+        pSimulationType = mpParser->getAttributeValue("simulationType", papszAttrs);
+
+        if (pValue != NULL)
+          {
+            Value = CCopasiXMLInterface::DBL(pValue);
+          }
+
+        Type = toEnum(pType, CModelParameter::TypeNames, CModelParameter::unknown);
+
+        switch (Type)
+          {
+            case CModelParameter::Species:
+              mpData->pCurrentModelParameter = new CModelParameterSpecies(mpData->ModelParameterGroupStack.top());
+              break;
+
+            case CModelParameter::Compartment:
+              mpData->pCurrentModelParameter = new CModelParameterCompartment(mpData->ModelParameterGroupStack.top());
+              break;
+
+            case CModelParameter::ReactionParameter:
+              mpData->pCurrentModelParameter = new CModelParameterReactionParameter(mpData->ModelParameterGroupStack.top());
+              break;
+
+            default:
+              mpData->pCurrentModelParameter = new CModelParameter(mpData->ModelParameterGroupStack.top(), Type);
+              break;
+          }
+
+        mpData->pCurrentModelParameter->setCN(std::string(CN));
+
+        SimulationType = toEnum(pSimulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
+        mpData->pCurrentModelParameter->setSimulationType(SimulationType);
+
+        mpData->pCurrentModelParameter->setValue(Value, CModelParameter::ParticleNumbers);
         break;
 
-        // TODO CRITICAL Implement me!
+      case InitialExpression:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +103,21 @@ bool ModelParameterHandler::processEnd(const XML_Char * pszName)
     {
       case ModelParameter:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case InitialExpression:
+      {
+        size_t Size = CCopasiMessage::size();
+
+        mpData->pCurrentModelParameter->setInitialExpression(mpData->CharacterData);
+
+        // Remove error messages created by setExpression as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
+      }
+
+      break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +131,11 @@ bool ModelParameterHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ModelParameterHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ModelParameter, HANDLER_COUNT}},
-    {"ModelParameter", ModelParameter, ModelParameter, {AFTER, HANDLER_COUNT}},
+    {"ModelParameter", ModelParameter, ModelParameter, {InitialExpression, AFTER, HANDLER_COUNT}},
+    {"InitialExpression", InitialExpression, CharacterData, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

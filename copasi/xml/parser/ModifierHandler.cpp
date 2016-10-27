@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CReaction.h"
+
 /**
  * Replace Modifier with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,20 @@ ModifierHandler::~ModifierHandler()
 CXMLHandler * ModifierHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Metabolite;
+  CMetab * pMetabolite;
 
   switch (mCurrentElement.first)
     {
       case Modifier:
-        // TODO CRITICAL Implement me!
-        break;
+        Metabolite = mpParser->getAttributeValue("metabolite", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        pMetabolite = dynamic_cast< CMetab * >(mpData->mKeyMap.get(Metabolite));
+
+        if (!pMetabolite) fatalError();
+
+        mpData->pReaction->addModifier(pMetabolite->getKey());
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +50,7 @@ CXMLHandler * ModifierHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +62,7 @@ bool ModifierHandler::processEnd(const XML_Char * pszName)
     {
       case Modifier:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +76,6 @@ bool ModifierHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ModifierHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Modifier, HANDLER_COUNT}},

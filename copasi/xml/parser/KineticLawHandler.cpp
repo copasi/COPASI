@@ -9,6 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "model/CReaction.h"
+#include "report/CCopasiRootContainer.h"
+
 /**
  * Replace KineticLaw with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +31,39 @@ CXMLHandler * KineticLawHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * Function;
+  CReaction::KineticLawUnit KineticLawUnitType;
+  std::string ScalingCompartment;
 
   switch (mCurrentElement.first)
     {
       case KineticLaw:
-        // TODO CRITICAL Implement me!
+        Function = mpParser->getAttributeValue("function", papszAttrs);
+        KineticLawUnitType = toEnum(mpParser->getAttributeValue("unitType", papszAttrs, "Default"), CReaction::KineticLawUnitTypeName, CReaction::Default);
+        ScalingCompartment = mpParser->getAttributeValue("scalingCompartment", papszAttrs, "");
+
+        mpData->pFunction =
+          dynamic_cast< CFunction* >(mpData->mKeyMap.get(Function));
+
+        if (!mpData->pFunction)
+          {
+            CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
+                           mpData->pReaction->getObjectName().c_str(),
+                           mpParser->getCurrentLineNumber());
+            mpData->pFunction = CCopasiRootContainer::getUndefinedFunction();
+          }
+
+        mpData->pReaction->setKineticLawUnitType(KineticLawUnitType);
+        mpData->pReaction->setScalingCompartmentCN(ScalingCompartment);
+
+        // This must be deferred till the end since we need to check for consistency
+        // of the parameters first (Bug 832)
+        // mpData->pReaction->setFunction(pFunction);
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfCallParameters:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +83,25 @@ bool KineticLawHandler::processEnd(const XML_Char * pszName)
     {
       case KineticLaw:
         finished = true;
-        // TODO CRITICAL Implement me!
+        mpData->pReaction->setFunction(dynamic_cast< CFunction * >(mpData->pFunction));
+
+        {
+          std::map< std::string, std::vector< std::string > >::const_iterator it
+            = mpData->SourceParameterKeys.begin();
+          std::map< std::string, std::vector< std::string > >::const_iterator end
+            = mpData->SourceParameterKeys.end();
+
+          for (; it != end; ++it)
+            if (it->second.size() > 0)
+              mpData->pReaction->setParameterMappingVector(it->first, it->second);
+        }
+
+        mpData->SourceParameterKeys.clear();
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfCallParameters:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +115,11 @@ bool KineticLawHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * KineticLawHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {KineticLaw, HANDLER_COUNT}},
-    {"KineticLaw", KineticLaw, KineticLaw, {AFTER, HANDLER_COUNT}},
+    {"KineticLaw", KineticLaw, KineticLaw, {ListOfCallParameters, AFTER, HANDLER_COUNT}},
+    {"ListOfCallParameters", ListOfCallParameters, ListOfCallParameters, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

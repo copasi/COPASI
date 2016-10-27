@@ -27,6 +27,26 @@ UnsupportedAnnotationHandler::~UnsupportedAnnotationHandler()
 {}
 
 // virtual
+void UnsupportedAnnotationHandler::start(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  processStart(pszName, papszAttrs);
+  mLevel++;
+}
+
+// virtual
+void UnsupportedAnnotationHandler::end(const XML_Char * pszName)
+{
+  mLevel--;
+
+  if (processEnd(pszName))
+    {
+      mpParser->popElementHandler();
+      mpParser->onEndElement(pszName);
+    }
+}
+
+// virtual
 CXMLHandler * UnsupportedAnnotationHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
@@ -54,7 +74,6 @@ CXMLHandler * UnsupportedAnnotationHandler::processStart(const XML_Char * pszNam
         mXML << " " << *ppAttrs << "=\""
              << CCopasiXMLInterface::encode(*(ppAttrs + 1), CCopasiXMLInterface::attribute) << "\"";
 
-      mLevel++;
       mElementEmpty.push(true);
       mpParser->enableCharacterDataHandler();
     }
@@ -114,7 +133,6 @@ bool UnsupportedAnnotationHandler::processEnd(const XML_Char * pszName)
 
       mElementEmpty.pop();
       mElementEmpty.top() = false;
-      mLevel--;
 
       mpParser->enableCharacterDataHandler();
     }
@@ -141,6 +159,7 @@ CXMLHandler::sProcessLogic * UnsupportedAnnotationHandler::getProcessLogic() con
  */
 const std::string & UnsupportedAnnotationHandler::getName() const
 {
+  return mName;
 }
 
 /**
@@ -149,4 +168,5 @@ const std::string & UnsupportedAnnotationHandler::getName() const
  */
 std::string UnsupportedAnnotationHandler::getXML() const
 {
+  return mXML.str();
 }

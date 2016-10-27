@@ -49,6 +49,12 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * The original key of the event.
+   */
+  std::string mKey;
 };
 
 #endif //COPASI_EventHandler

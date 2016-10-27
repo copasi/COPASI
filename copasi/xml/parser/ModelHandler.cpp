@@ -201,7 +201,7 @@ CXMLHandler::sProcessLogic * ModelHandler::getProcessLogic() const
     {"ListOfModelValues", ListOfModelValues, ListOfModelValues, {ListOfReactions, ListOfEvents, ListOfModelParameterSets, StateTemplate, HANDLER_COUNT}},
     {"ListOfReactions", ListOfReactions, ListOfReactions, {ListOfEvents, ListOfModelParameterSets, StateTemplate, HANDLER_COUNT}},
     {"ListOfEvents", ListOfEvents, ListOfEvents, {ListOfModelParameterSets, StateTemplate, HANDLER_COUNT}},
-    {"ListOfModelParameterSets", ListOfModelParameterSets, ListOfModelParameterSets, {InitialState, AFTER, HANDLER_COUNT}},
+    {"ListOfModelParameterSets", ListOfModelParameterSets, ListOfModelParameterSets, {StateTemplate, AFTER, HANDLER_COUNT}},
     {"StateTemplate", StateTemplate, StateTemplate, {InitialState, AFTER, HANDLER_COUNT}},
     {"InitialState", InitialState, InitialState, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}

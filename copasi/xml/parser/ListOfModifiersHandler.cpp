@@ -32,10 +32,11 @@ CXMLHandler * ListOfModifiersHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfModifiers:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Modifier:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool ListOfModifiersHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfModifiers:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Modifier:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool ListOfModifiersHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfModifiersHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfModifiers, HANDLER_COUNT}},
-    {"ListOfModifiers", ListOfModifiers, ListOfModifiers, {AFTER, HANDLER_COUNT}},
+    {"ListOfModifiers", ListOfModifiers, ListOfModifiers, {Modifier, AFTER, HANDLER_COUNT}},
+    {"Modifier", Modifier, Modifier, {Modifier, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
