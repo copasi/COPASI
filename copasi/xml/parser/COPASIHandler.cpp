@@ -54,14 +54,22 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
       case ParameterGroup:
       case ListOfFunctions:
       case Model:
-      case ListOfTasks:
       case ListOfReports:
       case ListOfPlots:
       case ListOfLayouts:
       case SBMLReference:
       case ListOfUnitDefinitions:
         pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
+      case ListOfTasks:
+        if (!mpData->pTaskList)
+          {
+            mpData->pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
+          }
+
+        mpData->pTaskList->clear();
+        pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
       case GUI:

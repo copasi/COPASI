@@ -3,28 +3,33 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_ListOfReactionsHandler
-#define COPASI_ListOfReactionsHandler
+#ifndef COPASI_ListOfHandler
+#define COPASI_ListOfHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class ListOfReactionsHandler : public CXMLHandler
+class ListOfHandler : public CXMLHandler
 {
 private:
-  ListOfReactionsHandler();
+  ListOfHandler();
 
 public:
   /**
    * Constructor
+   * @param const CXMLHandler::sProcessLogic & listLogic
+   * @param const CXMLHandler::sProcessLogic & contentLogic
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  ListOfReactionsHandler(CXMLParser & parser, CXMLParserData & data);
+  ListOfHandler(const sProcessLogic & listLogic,
+                const sProcessLogic & contentLogic,
+                CXMLParser & parser,
+                CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~ListOfReactionsHandler();
+  virtual ~ListOfHandler();
 
 protected:
 
@@ -49,6 +54,10 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  sProcessLogic mListLogic;
+  sProcessLogic mContentLogic;
 };
 
-#endif //COPASI_ListOfReactionsHandler
+#endif //COPASI_ListOfHandler

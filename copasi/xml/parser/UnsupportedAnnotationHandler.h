@@ -42,18 +42,6 @@ public:
    */
   virtual void end(const XML_Char * pszName);
 
-  /**
-   * Retrieve the name
-   * @return const std::string & name
-   */
-  const std::string & getName() const;
-
-  /**
-   * Retrieve the XML
-   * @return std::string XML
-   */
-  std::string getXML() const;
-
 protected:
 
   /**

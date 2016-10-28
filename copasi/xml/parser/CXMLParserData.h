@@ -13,6 +13,7 @@
 
 #include "copasi/report/CCopasiObjectName.h"
 #include "copasi/report/CKeyFactory.h"
+#include "copasi/model/CAnnotation.h"
 
 class CCompartment;
 class CMetab;
@@ -291,6 +292,8 @@ public:
   CUnitDefinitionDB * pUnitDefinitionImportList;
 
   CUnitDefinition * pCurrentUnitDefinition;
+
+  CAnnotation::UnsupportedAnnotation mUnsupportedAnnotations;
 };
 
 #endif // COPASI_CXMLParserData

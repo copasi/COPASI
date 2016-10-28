@@ -9,7 +9,6 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "model/CModel.h"
 
 /**
@@ -60,9 +59,13 @@ CXMLHandler * ModelParameterSetHandler::processStart(const XML_Char * pszName,
 
       case MiriamAnnotation:
       case Comment:
-      case ListOfUnsupportedAnnotations:
       case ModelParameterGroup:
       case ModelParameter:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfUnsupportedAnnotations:
+        mpData->mUnsupportedAnnotations.clear();
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -104,13 +107,8 @@ bool ModelParameterSetHandler::processEnd(const XML_Char * pszName)
         break;
 
       case ListOfUnsupportedAnnotations:
-
-      {
-        ListOfUnsupportedAnnotationsHandler * pHandler = static_cast< ListOfUnsupportedAnnotationsHandler * >(getHandler(ListOfUnsupportedAnnotations));
-        static_cast< CModelParameterSet * >(mpData->ModelParameterGroupStack.top())->getUnsupportedAnnotations() = pHandler->getUnsupportedAnnotations();
-      }
-
-      break;
+        static_cast< CModelParameterSet * >(mpData->ModelParameterGroupStack.top())->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
+        break;
 
       case ModelParameterGroup:
       case ModelParameter:

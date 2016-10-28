@@ -9,7 +9,6 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "utilities/CVersion.h"
 #include "model/CModel.h"
 
@@ -69,11 +68,15 @@ CXMLHandler * EventHandler::processStart(const XML_Char * pszName,
 
       case MiriamAnnotation:
       case Comment:
-      case ListOfUnsupportedAnnotations:
       case TriggerExpression:
       case DelayExpression:
       case PriorityExpression:
       case ListOfAssignments:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfUnsupportedAnnotations:
+        mpData->mUnsupportedAnnotations.clear();
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -108,13 +111,9 @@ bool EventHandler::processEnd(const XML_Char * pszName)
         break;
 
       case ListOfUnsupportedAnnotations:
+        mpData->pEvent->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
 
-      {
-        ListOfUnsupportedAnnotationsHandler * pHandler = static_cast< ListOfUnsupportedAnnotationsHandler * >(getHandler(ListOfUnsupportedAnnotations));
-        mpData->pEvent->getUnsupportedAnnotations() = pHandler->getUnsupportedAnnotations();
-      }
-
-      break;
+        break;
 
       case TriggerExpression:
 

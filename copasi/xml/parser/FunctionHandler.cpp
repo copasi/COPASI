@@ -9,7 +9,6 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "function/CFunction.h"
 #include "function/CExpression.h"
 
@@ -189,10 +188,18 @@ CXMLHandler * FunctionHandler::processStart(const XML_Char * pszName,
 
       case MiriamAnnotation:
       case Comment:
-      case ListOfUnsupportedAnnotations:
-      case ListOfParameterDescriptions:
       case Expression:
       case MathML:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfParameterDescriptions:
+        mpData->mFunctionParameterKeyMap.clear();
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfUnsupportedAnnotations:
+        mpData->mUnsupportedAnnotations.clear();
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -282,8 +289,7 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
 
         if (mpData->pFunction != NULL)
           {
-            ListOfUnsupportedAnnotationsHandler * pHandler = static_cast< ListOfUnsupportedAnnotationsHandler * >(getHandler(ListOfUnsupportedAnnotations));
-            mpData->pFunction->getUnsupportedAnnotations() = pHandler->getUnsupportedAnnotations();
+            mpData->pFunction->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
           }
 
         break;
@@ -302,12 +308,21 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
         break;
 
       case ListOfParameterDescriptions:
+        // We need to remove all parameters which have been temporarily added to the list of variables
+      {
+        CFunction * pFunction = dynamic_cast<CFunction *>(mpData->pFunction);
 
-        if (strcmp(pszName, "ListOfParameterDescriptions"))
-          CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-                         pszName, "ListOfParameterDescriptions", mpParser->getCurrentLineNumber());
+        if (pFunction)
+          {
+            CFunctionParameters & Variables = pFunction->getVariables();
+            size_t i = Variables.size() - 1;
 
-        break;
+            for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
+              Variables.remove(Variables[i]->getObjectName());
+          }
+      }
+
+      break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,

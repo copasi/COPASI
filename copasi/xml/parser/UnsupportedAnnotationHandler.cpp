@@ -108,6 +108,8 @@ bool UnsupportedAnnotationHandler::processEnd(const XML_Char * pszName)
 
       mElementEmpty.pop();
       assert(mElementEmpty.empty());
+
+      mpData->mUnsupportedAnnotations[mName] = mXML.str();
     }
   else
     {
@@ -151,22 +153,4 @@ CXMLHandler::sProcessLogic * UnsupportedAnnotationHandler::getProcessLogic() con
   };
 
   return Elements;
-}
-
-/**
- * Retrieve the name
- * @return const std::string & name
- */
-const std::string & UnsupportedAnnotationHandler::getName() const
-{
-  return mName;
-}
-
-/**
- * Retrieve the XML
- * @return std::string XML
- */
-std::string UnsupportedAnnotationHandler::getXML() const
-{
-  return mXML.str();
 }

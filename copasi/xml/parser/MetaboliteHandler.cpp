@@ -9,7 +9,6 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "model/CModel.h"
 
 /**
@@ -82,10 +81,14 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
 
       case MiriamAnnotation:
       case Comment:
-      case ListOfUnsupportedAnnotations:
       case Expression:
       case InitialExpression:
       case NoiseExpression:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfUnsupportedAnnotations:
+        mpData->mUnsupportedAnnotations.clear();
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -120,13 +123,8 @@ bool MetaboliteHandler::processEnd(const XML_Char * pszName)
         break;
 
       case ListOfUnsupportedAnnotations:
-
-      {
-        ListOfUnsupportedAnnotationsHandler * pHandler = static_cast< ListOfUnsupportedAnnotationsHandler * >(getHandler(ListOfUnsupportedAnnotations));
-        mpMetabolite->getUnsupportedAnnotations() = pHandler->getUnsupportedAnnotations();
-      }
-
-      break;
+        mpMetabolite->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
+        break;
 
       case Expression:
 

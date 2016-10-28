@@ -55,6 +55,11 @@ private:
    * The original key of the model.
    */
   std::string mKey;
+
+  /**
+   * The key of the active parameter set
+   */
+  std::string mActiveSet;
 };
 
 #endif //COPASI_ModelHandler

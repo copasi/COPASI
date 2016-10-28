@@ -47,42 +47,27 @@
 #include "LineEndingHandler.h"
 #include "LineSegmentHandler.h"
 #include "ListOfAdditionalGraphicalObjectsHandler.h"
-#include "ListOfAssignmentsHandler.h"
-#include "ListOfCallParametersHandler.h"
 #include "ListOfChannelsHandler.h"
 #include "ListOfColorDefinitionsHandler.h"
 #include "ListOfCompartmentGlyphsHandler.h"
-#include "ListOfCompartmentsHandler.h"
-#include "ListOfConstantsHandler.h"
 #include "ListOfCurveSegmentsHandler.h"
 #include "ListOfElementsHandler.h"
-#include "ListOfEventsHandler.h"
-#include "ListOfFunctionsHandler.h"
 #include "ListOfGlobalRenderInformationHandler.h"
 #include "ListOfGradientDefinitionsHandler.h"
+#include "ListOfHandler.h"
 #include "ListOfLayoutsHandler.h"
 #include "ListOfLineEndingsHandler.h"
 #include "ListOfMetabGlyphsHandler.h"
 #include "ListOfMetaboliteReferenceGlyphsHandler.h"
-#include "ListOfMetabolitesHandler.h"
-#include "ListOfModelParameterSetsHandler.h"
-#include "ListOfModelValuesHandler.h"
-#include "ListOfModifiersHandler.h"
-#include "ListOfParameterDescriptionsHandler.h"
 #include "ListOfPlotItemsHandler.h"
 #include "ListOfPlotsHandler.h"
-#include "ListOfProductsHandler.h"
 #include "ListOfReactionGlyphsHandler.h"
-#include "ListOfReactionsHandler.h"
 #include "ListOfRenderInformationHandler.h"
 #include "ListOfReportsHandler.h"
 #include "ListOfSlidersHandler.h"
 #include "ListOfStylesHandler.h"
-#include "ListOfSubstratesHandler.h"
-#include "ListOfTasksHandler.h"
 #include "ListOfTextGlyphsHandler.h"
 #include "ListOfUnitDefinitionsHandler.h"
-#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "MetaboliteHandler.h"
 #include "MetaboliteGlyphHandler.h"
 #include "MetaboliteReferenceGlyphHandler.h"
@@ -335,12 +320,22 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfAssignments:
-        pHandler = new ListOfAssignmentsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfAssignments", CXMLHandler::ListOfAssignments, CXMLHandler::ListOfAssignments};
+        CXMLHandler::sProcessLogic contentLogic = {"Assignment", CXMLHandler::Assignment, CXMLHandler::Assignment};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfCallParameters:
-        pHandler = new ListOfCallParametersHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfCallParameters", CXMLHandler::ListOfCallParameters, CXMLHandler::ListOfCallParameters};
+        CXMLHandler::sProcessLogic contentLogic = {"CallParameter", CXMLHandler::CallParameter, CXMLHandler::CallParameter};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfChannels:
         pHandler = new ListOfChannelsHandler(*mpParser, *mpData);
@@ -355,12 +350,23 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfCompartments:
-        pHandler = new ListOfCompartmentsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfCompartments", CXMLHandler::ListOfCompartments, CXMLHandler::ListOfCompartments};
+        CXMLHandler::sProcessLogic contentLogic = {"Compartment", CXMLHandler::Compartment, CXMLHandler::Compartment};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfConstants:
-        pHandler = new ListOfConstantsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfConstants", CXMLHandler::ListOfConstants, CXMLHandler::ListOfConstants};
+        CXMLHandler::sProcessLogic contentLogic = {"Constant", CXMLHandler::Constant, CXMLHandler::Constant};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+
+      break;
 
       case CXMLHandler::ListOfCurveSegments:
         pHandler = new ListOfCurveSegmentsHandler(*mpParser, *mpData);
@@ -371,12 +377,22 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfEvents:
-        pHandler = new ListOfEventsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfEvents", CXMLHandler::ListOfEvents, CXMLHandler::ListOfEvents};
+        CXMLHandler::sProcessLogic contentLogic = {"Event", CXMLHandler::Event, CXMLHandler::Event};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfFunctions:
-        pHandler = new ListOfFunctionsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfFunctions", CXMLHandler::ListOfFunctions, CXMLHandler::ListOfFunctions};
+        CXMLHandler::sProcessLogic contentLogic = {"Function", CXMLHandler::Function, CXMLHandler::Function};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfGlobalRenderInformation:
         pHandler = new ListOfGlobalRenderInformationHandler(*mpParser, *mpData);
@@ -403,24 +419,49 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfMetabolites:
-        pHandler = new ListOfMetabolitesHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfMetabolites", CXMLHandler::ListOfMetabolites, CXMLHandler::ListOfMetabolites};
+        CXMLHandler::sProcessLogic contentLogic = {"Metabolite", CXMLHandler::Metabolite, CXMLHandler::Metabolite};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfModelParameterSets:
-        pHandler = new ListOfModelParameterSetsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfModelParameterSets", CXMLHandler::ListOfModelParameterSets, CXMLHandler::ListOfModelParameterSets};
+        CXMLHandler::sProcessLogic contentLogic = {"ModelParameterSet", CXMLHandler::ModelParameterSet, CXMLHandler::ModelParameterSet};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfModelValues:
-        pHandler = new ListOfModelValuesHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfModelValues", CXMLHandler::ListOfModelValues, CXMLHandler::ListOfModelValues};
+        CXMLHandler::sProcessLogic contentLogic = {"ModelValue", CXMLHandler::ModelValue, CXMLHandler::ModelValue};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfModifiers:
-        pHandler = new ListOfModifiersHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfModifiers", CXMLHandler::ListOfModifiers, CXMLHandler::ListOfModifiers};
+        CXMLHandler::sProcessLogic contentLogic = {"Modifier", CXMLHandler::Modifier, CXMLHandler::Modifier};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfParameterDescriptions:
-        pHandler = new ListOfParameterDescriptionsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfParameterDescriptions", CXMLHandler::ListOfParameterDescriptions, CXMLHandler::ListOfParameterDescriptions};
+        CXMLHandler::sProcessLogic contentLogic = {"ParameterDescription", CXMLHandler::ParameterDescription, CXMLHandler::ParameterDescription};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfPlotItems:
         pHandler = new ListOfPlotItemsHandler(*mpParser, *mpData);
@@ -431,16 +472,26 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfProducts:
-        pHandler = new ListOfProductsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfProducts", CXMLHandler::ListOfProducts, CXMLHandler::ListOfProducts};
+        CXMLHandler::sProcessLogic contentLogic = {"Product", CXMLHandler::Product, CXMLHandler::Product};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfReactionGlyphs:
         pHandler = new ListOfReactionGlyphsHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::ListOfReactions:
-        pHandler = new ListOfReactionsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfReactions", CXMLHandler::ListOfReactions, CXMLHandler::ListOfReactions};
+        CXMLHandler::sProcessLogic contentLogic = {"Reaction", CXMLHandler::Reaction, CXMLHandler::Reaction};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfRenderInformation:
         pHandler = new ListOfRenderInformationHandler(*mpParser, *mpData);
@@ -459,12 +510,22 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfSubstrates:
-        pHandler = new ListOfSubstratesHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfSubstrates", CXMLHandler::ListOfSubstrates, CXMLHandler::ListOfSubstrates};
+        CXMLHandler::sProcessLogic contentLogic = {"Substrate", CXMLHandler::Substrate, CXMLHandler::Substrate};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfTasks:
-        pHandler = new ListOfTasksHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfTasks", CXMLHandler::ListOfTasks, CXMLHandler::ListOfTasks};
+        CXMLHandler::sProcessLogic contentLogic = {"Task", CXMLHandler::Task, CXMLHandler::Task};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfTextGlyphs:
         pHandler = new ListOfTextGlyphsHandler(*mpParser, *mpData);
@@ -475,8 +536,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfUnsupportedAnnotations:
-        pHandler = new ListOfUnsupportedAnnotationsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfUnsupportedAnnotations", CXMLHandler::ListOfUnsupportedAnnotations, CXMLHandler::ListOfUnsupportedAnnotations};
+        CXMLHandler::sProcessLogic contentLogic = {"UnsupportedAnnotation", CXMLHandler::UnsupportedAnnotation, CXMLHandler::UnsupportedAnnotation};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::Metabolite:
         pHandler = new MetaboliteHandler(*mpParser, *mpData);

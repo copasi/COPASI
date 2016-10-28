@@ -9,7 +9,6 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "ListOfUnsupportedAnnotationsHandler.h"
 #include "model/CModel.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 
@@ -19,7 +18,8 @@
  */
 ModelHandler::ModelHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::Model),
-  mKey()
+  mKey(),
+  mActiveSet()
 {
   init();
 }
@@ -97,16 +97,25 @@ CXMLHandler * ModelHandler::processStart(const XML_Char * pszName,
 
       case MiriamAnnotation:
       case Comment:
-      case ListOfUnsupportedAnnotations:
       case InitialExpression:
       case ListOfCompartments:
       case ListOfMetabolites:
       case ListOfModelValues:
       case ListOfReactions:
       case ListOfEvents:
-      case ListOfModelParameterSets:
       case StateTemplate:
       case InitialState:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfModelParameterSets:
+        mpData->pModel->getModelParameterSets().clear();
+        mActiveSet = mpParser->getAttributeValue("activeSet", papszAttrs, "");
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfUnsupportedAnnotations:
+        mpData->mUnsupportedAnnotations.clear();
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -142,13 +151,8 @@ bool ModelHandler::processEnd(const XML_Char * pszName)
         break;
 
       case ListOfUnsupportedAnnotations:
-
-      {
-        ListOfUnsupportedAnnotationsHandler * pHandler = static_cast< ListOfUnsupportedAnnotationsHandler * >(getHandler(ListOfUnsupportedAnnotations));
-        mpData->pModel->getUnsupportedAnnotations() = pHandler->getUnsupportedAnnotations();
-      }
-
-      break;
+        mpData->pModel->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
+        break;
 
       case InitialExpression:
 
@@ -170,10 +174,29 @@ bool ModelHandler::processEnd(const XML_Char * pszName)
       case ListOfModelValues:
       case ListOfReactions:
       case ListOfEvents:
-      case ListOfModelParameterSets:
       case StateTemplate:
       case InitialState:
         break;
+
+      case ListOfModelParameterSets:
+      {
+        const CModelParameterSet * pModelParameterSet = dynamic_cast< CModelParameterSet * >(mpData->mKeyMap.get(mActiveSet));
+
+        if (pModelParameterSet != NULL)
+          {
+            size_t Size = CCopasiMessage::size();
+
+            mpData->pModel->getActiveModelParameterSet().assignSetContent(*pModelParameterSet, false);
+            delete pModelParameterSet;
+            mActiveSet = "";
+
+            // Remove error messages created by setExpression as this may fail
+            // due to incomplete model specification at this time.
+            while (CCopasiMessage::size() > Size)
+              CCopasiMessage::getLastMessage();
+          }
+      }
+      break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
