@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "utilities/CCopasiTask.h"
+
 /**
  * Replace ReportTarget with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,31 @@ ReportTargetHandler::~ReportTargetHandler()
 CXMLHandler * ReportTargetHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  std::string target;
+  bool append;
+  bool confirmOverwrite;
+  std::string reference;
 
   switch (mCurrentElement.first)
     {
       case ReportTarget:
-        // TODO CRITICAL Implement me!
-        break;
+        reference = mpParser->getAttributeValue("reference", papszAttrs);
+        target = mpParser->getAttributeValue("target", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        append = mpParser->toBool(mpParser->getAttributeValue("append", papszAttrs, "false"));
+        mpData->pCurrentTask->getReport().setAppend(append);
+        confirmOverwrite = mpParser->toBool(mpParser->getAttributeValue("confirmOverwrite", papszAttrs, "false"));
+
+        mpData->pCurrentTask->getReport().setConfirmOverwrite(confirmOverwrite);
+        mpData->pCurrentTask->getReport().setTarget(target);
+
+        if (mpData->taskReferenceMap.find(reference) == mpData->taskReferenceMap.end())
+          {
+            mpData->taskReferenceMap[reference] = std::vector<CCopasiTask*>();
+          }
+
+        mpData->taskReferenceMap[reference].push_back(mpData->pCurrentTask);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +61,7 @@ CXMLHandler * ReportTargetHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +73,7 @@ bool ReportTargetHandler::processEnd(const XML_Char * pszName)
     {
       case ReportTarget:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +87,10 @@ bool ReportTargetHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ReportTargetHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ReportTarget, HANDLER_COUNT}},
-    {"ReportTarget", ReportTarget, ReportTarget, {AFTER, HANDLER_COUNT}},
+    {"Report", ReportTarget, ReportTarget, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

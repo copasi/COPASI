@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "utilities/CCopasiTask.h"
+
 /**
  * Replace ListOfTasks with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,17 @@ CXMLHandler * ListOfTasksHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfTasks:
-        // TODO CRITICAL Implement me!
+
+        if (!mpData->pTaskList)
+          {
+            mpData->pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case Task:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +64,11 @@ bool ListOfTasksHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfTasks:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Task:
+        mpData->pCurrentTask = NULL;
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +82,11 @@ bool ListOfTasksHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfTasksHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfTasks, HANDLER_COUNT}},
-    {"ListOfTasks", ListOfTasks, ListOfTasks, {AFTER, HANDLER_COUNT}},
+    {"ListOfTasks", ListOfTasks, ListOfTasks, {Task, AFTER, HANDLER_COUNT}},
+    {"Task", Task, Task, {Task, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

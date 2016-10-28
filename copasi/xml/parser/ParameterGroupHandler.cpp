@@ -18,7 +18,7 @@
  */
 ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::ParameterGroup),
-  mDerivedElement(false),
+  mDerivedElement(),
   mParameterGroupStack()
 {
   init();
@@ -106,7 +106,7 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
       CCopasiParameter * pParameter = NULL;
 
       // Derived elements like methods and problems have already parameters:
-      if (mDerivedElement)
+      if (mDerivedElement != "")
         {
           pParameter =
             mParameterGroupStack.top()->getParameter(mpData->pCurrentParameter->getObjectName());
@@ -138,9 +138,10 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
           mpData->pCurrentParameter = NULL;
         }
     }
-  else
+  else if (mDerivedElement != "")
     {
-      mDerivedElement = false;
+      mElementName2Type.erase(mDerivedElement);
+      mDerivedElement = "";
     }
 
   return finished;
@@ -161,9 +162,15 @@ CXMLHandler::sProcessLogic * ParameterGroupHandler::getProcessLogic() const
   return Elements;
 }
 
-void ParameterGroupHandler::setDerivedElement(CCopasiParameterGroup * pDerivedElement)
+void ParameterGroupHandler::setDerivedElement(const XML_Char * pszName, CCopasiParameterGroup * pDerivedElement)
 {
   assert(mLevel == 0);
+
+  if (mElementName2Type.find(pszName) == mElementName2Type.end())
+    {
+      mDerivedElement = pszName;
+      mElementName2Type[mDerivedElement] = std::make_pair(ParameterGroup, ParameterGroup);
+    }
+
   mParameterGroupStack.push(pDerivedElement);
-  mDerivedElement = true;
 }

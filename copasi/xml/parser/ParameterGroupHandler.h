@@ -30,9 +30,10 @@ public:
 
   /**
    * Set the derived element for which the handler is called such as methods and problems
+   * @param const XML_Char * pszName,
    * @param CCopasiParameterGroup * pDerivedElement
    */
-  void setDerivedElement(CCopasiParameterGroup * pDerivedElement);
+  void setDerivedElement(const XML_Char * pszName, CCopasiParameterGroup * pDerivedElement);
 
 protected:
 
@@ -63,7 +64,7 @@ private:
    * A flag indicating whether the current element is derived from
    * a parameter group.
    */
-  bool mDerivedElement;
+  std::string mDerivedElement;
 
   std::stack< CCopasiParameterGroup * > mParameterGroupStack;
 };

@@ -77,7 +77,7 @@ CXMLHandler::sProcessLogic * ReportDefinitionHandler::getProcessLogic() const
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ReportDefinition, HANDLER_COUNT}},
-    {"ReportDefinition", ReportDefinition, ReportDefinition, {AFTER, HANDLER_COUNT}},
+    {"Report", ReportDefinition, ReportDefinition, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

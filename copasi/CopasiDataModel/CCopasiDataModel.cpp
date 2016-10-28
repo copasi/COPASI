@@ -31,50 +31,33 @@
 #include "commandline/CLocaleString.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
-#include "optimization/COptTask.h"
-#include "parameterFitting/CFitTask.h"
+#include "utilities/CTaskFactory.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinitionVector.h"
 #include "sbml/CSBMLExporter.h"
 #include "sbml/SBMLImporter.h"
 #include "sbml/SBMLIncompatibility.h"
-#include "scan/CScanTask.h"
-#include "elementaryFluxModes/CEFMTask.h"
-#include "steadystate/CMCATask.h"
 #include "steadystate/CMCAProblem.h"
-#include "lna/CLNATask.h"
 #include "lna/CLNAProblem.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-#include "sensitivities/CSensTask.h"
-#include "tssanalysis/CTSSATask.h"
-#include "crosssection/CCrossSectionTask.h"
-#include "lyap/CLyapTask.h"
 #include "tss/CODEExporter.h"
 #include "tss/CODEExporterC.h"
 #include "tss/CODEExporterBM.h"
 #include "tss/CODEExporterXPPAUT.h"
-#include "moieties/CMoietiesTask.h"
 #include "trajectory/CTrajectoryProblem.h"
-#include "trajectory/CTrajectoryTask.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiVector.h"
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
 
+#include "steadystate/CSteadyStateTask.h"
+#include "trajectory/CTrajectoryTask.h"
+
 #include "layout/CListOfLayouts.h"
 #include "layout/CLayoutInitializer.h"
 #include "report/CCopasiRootContainer.h"
-
-#include "crosssection/CCrossSectionTask.h"
-
-#ifdef WITH_ANALYTICS
-# include "analytics/CAnalyticsTask.h"
-#endif // WITH_ANALYTICS
 
 #ifdef WITH_COMBINE_ARCHIVE
 # include <combine/combinearchive.h>
@@ -1284,7 +1267,6 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 
 #ifdef WITH_COMBINE_ARCHIVE
 
-
 void
 CCopasiDataModel::addCopasiFileToArchive(CombineArchive *archive,
     const std::string& targetName /*= "./copasi/model.cps"*/,
@@ -1549,12 +1531,10 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
               mNeedToSaveExperimentalData = true;
             }
 
-
           // update report destinations
 
           std::string currentDir;
           COptions::getValue("PWD", currentDir);
-
 
           CCopasiVectorN< CCopasiTask >& tasks = *getTaskList();
           CCopasiVectorN< CCopasiTask >::iterator taskIt = tasks.begin();
@@ -1987,75 +1967,7 @@ const CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList() const
 CCopasiTask * CCopasiDataModel::addTask(const CTaskEnum::Task & taskType)
 {
   CCopasiTask * pTask = NULL;
-
-  switch (taskType)
-    {
-      case CTaskEnum::steadyState:
-        pTask = new CSteadyStateTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::timeCourse:
-        pTask = new CTrajectoryTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::scan:
-        pTask = new CScanTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::fluxMode:
-        pTask = new CEFMTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::optimization:
-        pTask = new COptTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::parameterFitting:
-        pTask = new CFitTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::mca:
-        pTask = new CMCATask(mData.pTaskList);
-        static_cast< CMCAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
-        break;
-
-      case CTaskEnum::lna:
-        pTask = new CLNATask(mData.pTaskList);
-        static_cast< CLNAProblem * >(pTask->getProblem())->setSteadyStateRequested(true);
-        break;
-
-      case CTaskEnum::lyap:
-        pTask = new CLyapTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::sens:
-        pTask = new CSensTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::tssAnalysis:
-        pTask = new CTSSATask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::moieties:
-        pTask = new CMoietiesTask(mData.pTaskList);
-        break;
-
-      case CTaskEnum::crosssection:
-        pTask = new CCrossSectionTask(mData.pTaskList);
-        break;
-
-#ifdef  WITH_ANALYTICS
-
-      case CTaskEnum::analytics:
-        pTask = new CAnalyticsTask(mData.pTaskList);
-        break;
-#endif // WITH_ANALYTICS
-
-      default:
-        return pTask;
-    }
-
-  mData.pTaskList->add(pTask, true);
+  pTask = CTaskFactory::createTask(taskType, mData.pTaskList);
 
   return pTask;
 }

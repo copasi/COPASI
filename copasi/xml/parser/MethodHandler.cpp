@@ -9,6 +9,11 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "ParameterGroupHandler.h"
+#include "utilities/CTaskEnum.h"
+#include "utilities/CCopasiTask.h"
+#include "utilities/CCopasiMethod.h"
+
 /**
  * Replace Method with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +33,36 @@ CXMLHandler * MethodHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  std::string name;
+  std::string sType;
+  CTaskEnum::Method type;
 
   switch (mCurrentElement.first)
     {
       case Method:
-        // TODO CRITICAL Implement me!
-        break;
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        sType = mpParser->getAttributeValue("type", papszAttrs, "default");
+        // first set the type of the with setMethodType of the current task
+        // object
+        type = toEnum(sType.c_str(), CTaskEnum::MethodXML, CTaskEnum::UnsetMethod);
 
-        // TODO CRITICAL Implement me!
+        if (type != CTaskEnum::UnsetMethod)
+          {
+            mpData->pCurrentTask->setMethodType(type);
+          }
+        else
+          {
+            // We use the default method for this task and issue a warning
+            CCopasiMessage(CCopasiMessage::WARNING, MCXML + 18, sType.c_str(),
+                           mpParser->getCurrentLineNumber(),
+                           CTaskEnum::MethodXML[mpData->pCurrentTask->getMethod()->getSubType()]);
+          }
+
+        mpData->pCurrentTask->getMethod()->setObjectName(name);
+
+        pHandlerToCall = getHandler(ParameterGroup);
+        static_cast< ParameterGroupHandler * >(pHandlerToCall)->setDerivedElement(pszName, mpData->pCurrentTask->getMethod());
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +82,7 @@ bool MethodHandler::processEnd(const XML_Char * pszName)
     {
       case Method:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +96,6 @@ bool MethodHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * MethodHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Method, HANDLER_COUNT}},
