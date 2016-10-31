@@ -158,7 +158,17 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 
 %extend CModel
 {
-    
+   
+   bool setQuantityUnit(const std::string & name)
+   {
+     return self->setQuantityUnit(name, CModelParameter::Concentration);
+   }
+   
+   bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
+   {
+     return self->setQuantityUnit(unitEnum, CModelParameter::Concentration);
+   }
+   
    /**
     *  Get the number of compartments 
     *  @return C_INT32 getCompartments().size()
