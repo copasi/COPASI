@@ -9,6 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "utilities/CTaskEnum.h"
+#include "report/CReportDefinitionVector.h"
+
 /**
  * Replace ReportDefinition with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +31,65 @@ CXMLHandler * ReportDefinitionHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * Key;
+  const char * Name;
+  const char * Separator;
+  const char * Precision;
+  CTaskEnum::Task type;
 
   switch (mCurrentElement.first)
     {
       case ReportDefinition:
-        // TODO CRITICAL Implement me!
+        Key = mpParser->getAttributeValue("key", papszAttrs);
+        Name = mpParser->getAttributeValue("name", papszAttrs);
+        type = toEnum(mpParser->getAttributeValue("taskType", papszAttrs),
+                      CTaskEnum::TaskXML, CTaskEnum::UnsetTask);
+
+        Separator = mpParser->getAttributeValue("separator", papszAttrs, "\t");
+        Precision = mpParser->getAttributeValue("precision", papszAttrs, "6");
+
+        // create a new report
+        mpData->pReport = new CReportDefinition();
+        mpData->pReport->setTaskType(type);
+        mpData->pReport->setSeparator(Separator);
+        mpData->pReport->setPrecision(strToUnsignedInt(Precision));
+
+        {
+          // We need to make sure that the name is unique.
+          std::string ValidName(Name);
+          size_t Index = 1;
+
+          while (mpData->pReportList->getIndex(ValidName) != C_INVALID_INDEX)
+            {
+              std::ostringstream ValidNameStream;
+              ValidNameStream << Name << " " << Index++;
+              ValidName = ValidNameStream.str();
+            }
+
+          mpData->pReport->setObjectName(ValidName);
+        }
+
+        /* We have a new report and add it to the list */
+        mpData->pReportList->add(mpData->pReport, true);
+        addFix(Key, mpData->pReport);
         break;
 
-        // TODO CRITICAL Implement me!
+      case Comment:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case Header:
+      case Body:
+      case Footer:
+        mpData->pReport->setIsTable(false);
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case Table:
+        mpData->pReport->setIsTable(true);
+        pHandlerToCall = getHandler(mCurrentElement.second);
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +109,19 @@ bool ReportDefinitionHandler::processEnd(const XML_Char * pszName)
     {
       case ReportDefinition:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Comment:
+        // check parameter type CCopasiStaticString
+        mpData->pReport->setComment(mpData->CharacterData);
+        mpData->CharacterData = "";
+        break;
+
+      case Table:
+      case Header:
+      case Body:
+      case Footer:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +135,15 @@ bool ReportDefinitionHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ReportDefinitionHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ReportDefinition, HANDLER_COUNT}},
-    {"Report", ReportDefinition, ReportDefinition, {AFTER, HANDLER_COUNT}},
+    {"Report", ReportDefinition, ReportDefinition, {Comment, Table, Header, Body, Footer, AFTER, AFTER, HANDLER_COUNT}},
+    {"Comment", Comment, Comment, {Table, Header, Body, Footer, AFTER, HANDLER_COUNT}},
+    {"Header", Header, ReportSection, {Body, Footer, AFTER, HANDLER_COUNT}},
+    {"Body", Body, ReportSection, {Footer, AFTER, HANDLER_COUNT}},
+    {"Footer", Footer, ReportSection, {AFTER, HANDLER_COUNT}},
+    {"Table", Table, Table, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

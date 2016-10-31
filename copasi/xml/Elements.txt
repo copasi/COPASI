@@ -96,13 +96,13 @@
       </element>
     * </element>
   * </element>
-  <element name="ListOfReports"> {0,1}
-    <element name="Report"> {1, inf}
-      <element name="Comment"/> {0,1}
-      <choice>
-        <element name="Table"> {1}
-          <element name="Object"/> {0, inf} 
-        </element>
+  * <element name="ListOfReports"> {0,1}
+    * <element name="Report"> {1, inf}
+      * <element name="Comment"/> {0,1}
+      * <choice>
+        * <element name="Table"> {1}
+          * <element name="Object"/> {0, inf} 
+        * </element>
         <elementGroup> {1}
           <element name="Header"> {0,1}
             <elementGroup name=reportSectionElement> {1, inf}
@@ -114,9 +114,9 @@
             <elementGroup name=reportSectionElement> {1, inf}
           </element>
         </elementGroup>
-      </choice>
-    </element>
-  </element>
+      * </choice>
+    * </element>
+  * </element>
   <element name="ListOfPlots"> {0,1}
     <element name="PlotSpecification"> {1, inf} 
       <elementGroup name="parameters"> {0, inf}

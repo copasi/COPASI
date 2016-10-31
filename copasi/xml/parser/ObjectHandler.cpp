@@ -27,15 +27,11 @@ ObjectHandler::~ObjectHandler()
 CXMLHandler * ObjectHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
-
   switch (mCurrentElement.first)
     {
       case Object:
-        // TODO CRITICAL Implement me!
+        mpData->CharacterData = mpParser->getAttributeValue("cn", papszAttrs);
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +39,7 @@ CXMLHandler * ObjectHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +51,7 @@ bool ObjectHandler::processEnd(const XML_Char * pszName)
     {
       case Object:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +65,6 @@ bool ObjectHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ObjectHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Object, HANDLER_COUNT}},

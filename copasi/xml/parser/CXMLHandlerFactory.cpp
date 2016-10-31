@@ -12,7 +12,6 @@
 #include "AssignmentHandler.h"
 #include "BasePoint1Handler.h"
 #include "BasePoint2Handler.h"
-#include "BodyHandler.h"
 #include "BoundingBoxHandler.h"
 #include "CallParameterHandler.h"
 #include "ChannelSpecHandler.h"
@@ -32,12 +31,9 @@
 #include "EndHandler.h"
 #include "EventHandler.h"
 #include "ExpressionHandler.h"
-#include "FooterHandler.h"
 #include "FunctionHandler.h"
 #include "GroupHandler.h"
 #include "GUIHandler.h"
-#include "HeaderHandler.h"
-#include "htmlHandler.h"
 #include "ImageHandler.h"
 #include "InitialExpressionHandler.h"
 #include "InitialStateHandler.h"
@@ -63,7 +59,6 @@
 #include "ListOfPlotsHandler.h"
 #include "ListOfReactionGlyphsHandler.h"
 #include "ListOfRenderInformationHandler.h"
-#include "ListOfReportsHandler.h"
 #include "ListOfSlidersHandler.h"
 #include "ListOfStylesHandler.h"
 #include "ListOfTextGlyphsHandler.h"
@@ -100,6 +95,7 @@
 #include "RenderInformationHandler.h"
 #include "RenderPointHandler.h"
 #include "ReportDefinitionHandler.h"
+#include "ReportSectionHandler.h"
 #include "ReportTargetHandler.h"
 #include "SBMLMapHandler.h"
 #include "SBMLReferenceHandler.h"
@@ -179,10 +175,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new BasePoint2Handler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::Body:
-        pHandler = new BodyHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::BoundingBox:
         pHandler = new BoundingBoxHandler(*mpParser, *mpData);
         break;
@@ -259,10 +251,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new ExpressionHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::Footer:
-        pHandler = new FooterHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::Function:
         pHandler = new FunctionHandler(*mpParser, *mpData);
         break;
@@ -273,14 +261,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::GUI:
         pHandler = new GUIHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::Header:
-        pHandler = new HeaderHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::html:
-        pHandler = new htmlHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::Image:
@@ -498,8 +478,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfReports:
-        pHandler = new ListOfReportsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfReports", CXMLHandler::ListOfReports, CXMLHandler::ListOfReports};
+        CXMLHandler::sProcessLogic contentLogic = {"Report", CXMLHandler::ReportDefinition, CXMLHandler::ReportDefinition};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfSliders:
         pHandler = new ListOfSlidersHandler(*mpParser, *mpData);
@@ -670,6 +655,10 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::ReportDefinition:
         pHandler = new ReportDefinitionHandler(*mpParser, *mpData);
+        break;
+
+      case CXMLHandler::ReportSection:
+        pHandler = new ReportSectionHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::ReportTarget:

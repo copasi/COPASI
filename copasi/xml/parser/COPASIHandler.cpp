@@ -11,6 +11,7 @@
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiParameter.h"
 #include "report/CCopasiRootContainer.h"
+#include "report/CReportDefinitionVector.h"
 #include "function/CFunction.h"
 
 COPASIHandler::COPASIHandler(CXMLParser & parser, CXMLParserData & data):
@@ -49,12 +50,12 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
         CopasiSourcesModified = mpParser->toBool(mpParser->getAttributeValue("copasiSourcesModified", papszAttrs, "true"));
 
         mpData->pVersion->setVersion(VersionMajor, VersionMinor, VersionDevel, CopasiSourcesModified);
+
         break;
 
       case ParameterGroup:
       case ListOfFunctions:
       case Model:
-      case ListOfReports:
       case ListOfPlots:
       case ListOfLayouts:
       case SBMLReference:
@@ -63,12 +64,20 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
         break;
 
       case ListOfTasks:
-        if (!mpData->pTaskList)
-          {
-            mpData->pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
-          }
+        if (mpData->pTaskList != NULL)
+          mpData->pTaskList->clear();
+        else
+          mpData->pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
 
-        mpData->pTaskList->clear();
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfReports:
+        if (mpData->pReportList != NULL)
+          mpData->pReportList->clear();
+        else
+          mpData->pReportList = new CReportDefinitionVector();
+
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 

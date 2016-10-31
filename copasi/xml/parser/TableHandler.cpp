@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "report/CReportDefinition.h"
+
 /**
  * Replace Table with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +30,18 @@ CXMLHandler * TableHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * printTitle;
 
   switch (mCurrentElement.first)
     {
       case Table:
-        // TODO CRITICAL Implement me!
+        printTitle = mpParser->getAttributeValue("printTitle", papszAttrs, "false");
+        mpData->pReport->setTitle(mpParser->toBool(printTitle));
         break;
 
-        // TODO CRITICAL Implement me!
+      case Object:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +61,12 @@ bool TableHandler::processEnd(const XML_Char * pszName)
     {
       case Table:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Object:
+        mpData->pReport->getTableAddr()->push_back(mpData->CharacterData);
+        mpData->CharacterData = "";
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +80,11 @@ bool TableHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * TableHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Table, HANDLER_COUNT}},
-    {"Table", Table, Table, {AFTER, HANDLER_COUNT}},
+    {"Table", Table, Table, {Object, AFTER, HANDLER_COUNT}},
+    {"Object", Object, Object, {Object, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

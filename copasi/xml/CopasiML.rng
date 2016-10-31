@@ -335,19 +335,7 @@
 
   <define name="reportSection.datatype">
     <oneOrMore>
-      <choice>
-        <ref name="object.element"/>
-        <element name="html">
-          <ref name="xhtml.datatype"/>
-        </element>
-        <element name="Report">
-          <attribute name="reference">
-            <data type="IDREF">
-              <param name="pattern">Report_\d+</param>
-            </data>
-          </attribute>
-        </element>
-      </choice>
+      <ref name="object.element"/>
     </oneOrMore>
     <empty/>
   </define>

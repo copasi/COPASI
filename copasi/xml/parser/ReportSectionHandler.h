@@ -6,12 +6,15 @@
 #ifndef COPASI_HeaderHandler
 #define COPASI_HeaderHandler
 
+#include <vector>
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class HeaderHandler : public CXMLHandler
+class CRegisteredObjectName;
+
+class ReportSectionHandler : public CXMLHandler
 {
 private:
-  HeaderHandler();
+  ReportSectionHandler();
 
 public:
   /**
@@ -19,12 +22,12 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  HeaderHandler(CXMLParser & parser, CXMLParserData & data);
+  ReportSectionHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~HeaderHandler();
+  virtual ~ReportSectionHandler();
 
 protected:
 
@@ -49,6 +52,11 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+  void setSectionContent(std::vector< CRegisteredObjectName > * pSectionContent);
+
+private:
+  std::vector< CRegisteredObjectName > * mpSectionContent;
 };
 
 #endif //COPASI_HeaderHandler
