@@ -2584,7 +2584,7 @@ void CopasiUI3Window::slotMergeModels()
 
   CModel *pModel = mpDataModel->getModel();
 
-  CQMergingData *widget = new CQMergingData(NULL, 0, true);
+  CQMergingData *widget = new CQMergingData(NULL, NULL, 0);
   widget->exec();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
