@@ -43,7 +43,6 @@
 #include "LineEndingHandler.h"
 #include "LineSegmentHandler.h"
 #include "ListOfAdditionalGraphicalObjectsHandler.h"
-#include "ListOfChannelsHandler.h"
 #include "ListOfColorDefinitionsHandler.h"
 #include "ListOfCompartmentGlyphsHandler.h"
 #include "ListOfCurveSegmentsHandler.h"
@@ -55,8 +54,6 @@
 #include "ListOfLineEndingsHandler.h"
 #include "ListOfMetabGlyphsHandler.h"
 #include "ListOfMetaboliteReferenceGlyphsHandler.h"
-#include "ListOfPlotItemsHandler.h"
-#include "ListOfPlotsHandler.h"
 #include "ListOfReactionGlyphsHandler.h"
 #include "ListOfRenderInformationHandler.h"
 #include "ListOfSlidersHandler.h"
@@ -85,7 +82,6 @@
 #include "PolygonHandler.h"
 #include "PositionHandler.h"
 #include "PriorityExpressionHandler.h"
-#include "ProblemHandler.h"
 #include "ProductHandler.h"
 #include "RadialGradientHandler.h"
 #include "ReactionHandler.h"
@@ -318,8 +314,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfChannels:
-        pHandler = new ListOfChannelsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfChannels", CXMLHandler::ListOfChannels, CXMLHandler::ListOfChannels};
+        CXMLHandler::sProcessLogic contentLogic = {"ChannelSpec", CXMLHandler::ChannelSpec, CXMLHandler::ChannelSpec};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfColorDefinitions:
         pHandler = new ListOfColorDefinitionsHandler(*mpParser, *mpData);
@@ -444,12 +445,22 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfPlotItems:
-        pHandler = new ListOfPlotItemsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfPlotItems", CXMLHandler::ListOfPlotItems, CXMLHandler::ListOfPlotItems};
+        CXMLHandler::sProcessLogic contentLogic = {"PlotItem", CXMLHandler::PlotItem, CXMLHandler::PlotItem};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfPlots:
-        pHandler = new ListOfPlotsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfPlots", CXMLHandler::ListOfPlots, CXMLHandler::ListOfPlots};
+        CXMLHandler::sProcessLogic contentLogic = {"PlotSpecification", CXMLHandler::PlotSpecification, CXMLHandler::PlotSpecification};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfProducts:
       {
@@ -615,10 +626,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::PriorityExpression:
         pHandler = new PriorityExpressionHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::Problem:
-        pHandler = new ProblemHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::Product:

@@ -267,6 +267,9 @@ bool CCopasiParameterGroup::elevateChildren() {return true;}
 
 CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParameterGroup & rhs)
 {
+  // Check for assignment to itself
+  if (this == &rhs) return *this;
+
   if (getObjectName() != rhs.getObjectName())
     setObjectName(rhs.getObjectName());
 

@@ -103,33 +103,33 @@
         * <element name="Table"> {1}
           * <element name="Object"/> {0, inf} 
         * </element>
-        <elementGroup> {1}
-          <element name="Header"> {0,1}
-            <elementGroup name=reportSectionElement> {1, inf}
-          </element>
-          <element name="Body"> {0,1}
-            <elementGroup name=reportSectionElement> {1, inf}
-          </element>
-          <element name="Footer"> {0,1}
-            <elementGroup name=reportSectionElement> {1, inf}
-          </element>
-        </elementGroup>
+        * <elementGroup> {1}
+          * <element name="Header"> {0,1}
+            * <elementGroup name=reportSectionElement> {1, inf}
+          * </element>
+          * <element name="Body"> {0,1}
+            * <elementGroup name=reportSectionElement> {1, inf}
+          * </element>
+          * <element name="Footer"> {0,1}
+            * <elementGroup name=reportSectionElement> {1, inf}
+          * </element>
+        * </elementGroup>
       * </choice>
     * </element>
   * </element>
-  <element name="ListOfPlots"> {0,1}
-    <element name="PlotSpecification"> {1, inf} 
-      <elementGroup name="parameters"> {0, inf}
-      <element name="ListOfPlotItems"> {1}
+  * <element name="ListOfPlots"> {0,1}
+    * <element name="PlotSpecification"> {1, inf} 
+      * <elementGroup name="parameters"> {0, inf}
+      * <element name="ListOfPlotItems"> {1}
         <element name="PlotItem"> {1, inf} 
           <elementGroup name="parameters"> {0, inf}
           <element name="ListOfChannels"> {1}
             <element name="ChannelSpec"> {1, inf}
           </element>
         </element>
-      </element>
-    </element>
-  </element>
+      * </element>
+    * </element>
+  * </element>
   <element name="GUI"> {0,1}
     <element name="ListOfSliders"> {0,1}
       <element name="Slider"/> {1, inf} 

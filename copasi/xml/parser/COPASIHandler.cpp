@@ -12,6 +12,7 @@
 #include "utilities/CCopasiParameter.h"
 #include "report/CCopasiRootContainer.h"
 #include "report/CReportDefinitionVector.h"
+#include "plot/COutputDefinitionVector.h"
 #include "function/CFunction.h"
 
 COPASIHandler::COPASIHandler(CXMLParser & parser, CXMLParserData & data):
@@ -56,7 +57,6 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
       case ParameterGroup:
       case ListOfFunctions:
       case Model:
-      case ListOfPlots:
       case ListOfLayouts:
       case SBMLReference:
       case ListOfUnitDefinitions:
@@ -77,6 +77,15 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
           mpData->pReportList->clear();
         else
           mpData->pReportList = new CReportDefinitionVector();
+
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfPlots:
+        if (mpData->pPlotList != NULL)
+          mpData->pPlotList->clear();
+        else
+          mpData->pPlotList = new COutputDefinitionVector();
 
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;

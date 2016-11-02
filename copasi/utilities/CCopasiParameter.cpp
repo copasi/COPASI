@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -118,6 +118,9 @@ CCopasiParameter::~CCopasiParameter()
 
 CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
 {
+  // Check for assignment to itself
+  if (this == &rhs) return *this;
+
   if (getObjectName() != rhs.getObjectName())
     setObjectName(rhs.getObjectName());
 

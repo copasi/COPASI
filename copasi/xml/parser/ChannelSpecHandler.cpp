@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "plot/CPlotItem.h"
+
 /**
  * Replace ChannelSpec with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +30,43 @@ CXMLHandler * ChannelSpecHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  std::string name;
+  double min;
+  double max;
+  const char* sMin;
+  const char* sMax;
 
   switch (mCurrentElement.first)
     {
       case ChannelSpec:
-        // TODO CRITICAL Implement me!
-        break;
+        name = mpParser->getAttributeValue("cn", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        mpData->pCurrentChannelSpec = new CPlotDataChannelSpec(name);
+        sMin = mpParser->getAttributeValue("min", papszAttrs, false);
+
+        if (sMin == NULL)
+          {
+            mpData->pCurrentChannelSpec->minAutoscale = true;
+          }
+        else
+          {
+            min = CCopasiXMLInterface::DBL(sMin);
+            mpData->pCurrentChannelSpec->min = min;
+          }
+
+        sMax = mpParser->getAttributeValue("max", papszAttrs, false);
+
+        if (sMax == NULL)
+          {
+            mpData->pCurrentChannelSpec->maxAutoscale = true;
+          }
+        else
+          {
+            max = CCopasiXMLInterface::DBL(sMax);
+            mpData->pCurrentChannelSpec->max = max;
+          }
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -54,11 +85,9 @@ bool ChannelSpecHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case ChannelSpec:
+        mpData->pCurrentPlotItem->getChannels().push_back(*(mpData->pCurrentChannelSpec));
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +101,6 @@ bool ChannelSpecHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ChannelSpecHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ChannelSpec, HANDLER_COUNT}},

@@ -9,6 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "ParameterGroupHandler.h"
+#include "plot/COutputDefinitionVector.h"
+
 /**
  * Replace PlotSpecification with the name type of the handler and implement the
  * three methods below.
@@ -28,14 +31,37 @@ CXMLHandler * PlotSpecificationHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * name;
+  const char * sType;
+  const char * active;
+  CCopasiParameterGroup * pGroup = NULL;
 
   switch (mCurrentElement.first)
     {
       case PlotSpecification:
-        // TODO CRITICAL Implement me!
+        // create a new CPlotSpecification element depending on the type
+        mpData->pCurrentPlot = new CPlotSpecification();
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        mpData->pCurrentPlot->setObjectName(name);
+        sType = mpParser->getAttributeValue("type", papszAttrs);
+        mpData->pCurrentPlot->setType(toEnum(sType, CPlotItem::XMLType, CPlotItem::curve2d));
+        active = mpParser->getAttributeValue("active", papszAttrs, "true");
+        mpData->pCurrentPlot->setActive(mpParser->toBool(active));
         break;
 
-        // TODO CRITICAL Implement me!
+      case ParameterGroup:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        pGroup = dynamic_cast< CCopasiParameterGroup * >(mpData->pCurrentPlot->getParameter(pszName));
+
+        if (pGroup != NULL)
+          static_cast< ParameterGroupHandler * >(pHandlerToCall)->setDerivedElement(pszName, pGroup);
+
+        break;
+
+      case Parameter:
+      case ListOfPlotItems:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -50,15 +76,45 @@ CXMLHandler * PlotSpecificationHandler::processStart(const XML_Char * pszName,
 bool PlotSpecificationHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
+  CCopasiParameter* pParameter;
 
   switch (mCurrentElement.first)
     {
       case PlotSpecification:
+        mpData->pPlotList->add(*mpData->pCurrentPlot);
+        pdelete(mpData->pCurrentPlot);
+
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Parameter:
+      case ParameterGroup:
+        // Check whether a parameter of that name exist
+        pParameter = mpData->pCurrentPlot->getParameter(mpData->pCurrentParameter->getObjectName());
+
+        if (pParameter != NULL)
+          {
+            *pParameter = *mpData->pCurrentParameter;
+
+            if (pParameter != mpData->pCurrentParameter)
+              {
+                pdelete(mpData->pCurrentParameter);
+              }
+            else
+              {
+                mpData->pCurrentParameter = NULL;
+              }
+          }
+        else
+          {
+            mpData->pCurrentPlot->addParameter(mpData->pCurrentParameter);
+            mpData->pCurrentParameter = NULL;
+          }
+
+        break;
+
+      case ListOfPlotItems:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +128,13 @@ bool PlotSpecificationHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * PlotSpecificationHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {PlotSpecification, HANDLER_COUNT}},
-    {"PlotSpecification", PlotSpecification, PlotSpecification, {AFTER, HANDLER_COUNT}},
+    {"PlotSpecification", PlotSpecification, PlotSpecification, {ParameterGroup, Parameter, ListOfPlotItems, AFTER, HANDLER_COUNT}},
+    {"ParameterGroup", ParameterGroup, ParameterGroup, {ParameterGroup, Parameter, ListOfPlotItems, AFTER, HANDLER_COUNT}},
+    {"Parameter", Parameter, Parameter, {ParameterGroup, Parameter, ListOfPlotItems, AFTER, HANDLER_COUNT}},
+    {"ListOfPlotItems", ListOfPlotItems, ListOfPlotItems, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

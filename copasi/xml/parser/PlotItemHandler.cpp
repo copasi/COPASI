@@ -9,10 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace PlotItem with the name type of the handler and implement the
- * three methods below.
- */
+#include "ParameterGroupHandler.h"
+#include "plot/CPlotSpecification.h"
+
 PlotItemHandler::PlotItemHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::PlotItem)
 {
@@ -28,14 +27,36 @@ CXMLHandler * PlotItemHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  std::string name;
+  std::string sType;
+  CCopasiParameterGroup * pGroup = NULL;
 
   switch (mCurrentElement.first)
     {
       case PlotItem:
-        // TODO CRITICAL Implement me!
+        // create a new CPlotSpecification element depending on the type
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        sType = mpParser->getAttributeValue("type", papszAttrs);
+        mpData->pCurrentPlotItem =
+          mpData->pCurrentPlot->createItem(name, toEnum(sType.c_str(), CPlotItem::XMLType, CPlotItem::unset));
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case ParameterGroup:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        pGroup = dynamic_cast< CCopasiParameterGroup * >(mpData->pCurrentPlot->getParameter(pszName));
+
+        if (pGroup != NULL)
+          static_cast< ParameterGroupHandler * >(pHandlerToCall)->setDerivedElement(pszName, pGroup);
+
+        break;
+
+      case Parameter:
+      case ListOfChannels:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -50,15 +71,43 @@ CXMLHandler * PlotItemHandler::processStart(const XML_Char * pszName,
 bool PlotItemHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
+  CCopasiParameter * pParameter = NULL;
 
   switch (mCurrentElement.first)
     {
       case PlotItem:
+        mpData->pCurrentPlotItem = NULL;
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Parameter:
+      case ParameterGroup:
+        // Check whether a parameter of that name exist
+        pParameter = mpData->pCurrentPlot->getParameter(mpData->pCurrentParameter->getObjectName());
+
+        if (pParameter != NULL)
+          {
+            *pParameter = *mpData->pCurrentParameter;
+
+            if (pParameter != mpData->pCurrentParameter)
+              {
+                pdelete(mpData->pCurrentParameter);
+              }
+            else
+              {
+                mpData->pCurrentParameter = NULL;
+              }
+          }
+        else
+          {
+            mpData->pCurrentPlot->addParameter(mpData->pCurrentParameter);
+            mpData->pCurrentParameter = NULL;
+          }
+
+        break;
+
+      case ListOfChannels:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +121,13 @@ bool PlotItemHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * PlotItemHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {PlotItem, HANDLER_COUNT}},
-    {"PlotItem", PlotItem, PlotItem, {AFTER, HANDLER_COUNT}},
+    {"PlotItem", PlotItem, PlotItem, {ParameterGroup, Parameter, ListOfChannels, AFTER, HANDLER_COUNT}},
+    {"ParameterGroup", ParameterGroup, ParameterGroup, {ParameterGroup, Parameter, ListOfChannels, AFTER, HANDLER_COUNT}},
+    {"Parameter", Parameter, Parameter, {ParameterGroup, Parameter, ListOfChannels, AFTER, HANDLER_COUNT}},
+    {"ListOfChannels", ListOfChannels, ListOfChannels, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
