@@ -32,10 +32,11 @@ CXMLHandler * GUIHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case GUI:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfSliders:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +56,10 @@ bool GUIHandler::processEnd(const XML_Char * pszName)
     {
       case GUI:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfSliders:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +73,11 @@ bool GUIHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * GUIHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {GUI, HANDLER_COUNT}},
-    {"GUI", GUI, GUI, {AFTER, HANDLER_COUNT}},
+    {"GUI", GUI, GUI, {ListOfSliders, AFTER, HANDLER_COUNT}},
+    {"ListOfSliders", ListOfSliders, ListOfSliders, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

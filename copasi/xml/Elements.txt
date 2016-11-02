@@ -121,20 +121,20 @@
     * <element name="PlotSpecification"> {1, inf} 
       * <elementGroup name="parameters"> {0, inf}
       * <element name="ListOfPlotItems"> {1}
-        <element name="PlotItem"> {1, inf} 
-          <elementGroup name="parameters"> {0, inf}
-          <element name="ListOfChannels"> {1}
-            <element name="ChannelSpec"> {1, inf}
-          </element>
-        </element>
+        * <element name="PlotItem"> {1, inf} 
+          * <elementGroup name="parameters"> {0, inf}
+          * <element name="ListOfChannels"> {1}
+            * <element name="ChannelSpec"> {1, inf}
+          * </element>
+        * </element>
       * </element>
     * </element>
   * </element>
-  <element name="GUI"> {0,1}
-    <element name="ListOfSliders"> {0,1}
-      <element name="Slider"/> {1, inf} 
-    </element>
-  </element>
+  * <element name="GUI"> {0,1}
+    * <element name="ListOfSliders"> {0,1}
+      * <element name="Slider"/> {1, inf} 
+    * </element>
+  * </element>
   <element name="ListOfLayouts"> {0,1}
     <element name="Layout"> {0, inf}
       <element name="Dimensions"/> {1} 

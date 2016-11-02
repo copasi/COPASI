@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "utilities/CSlider.h"
+
 /**
  * Replace Slider with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,69 @@ SliderHandler::~SliderHandler()
 CXMLHandler * SliderHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  CSlider * pSlider = NULL;
+  const char * Key;
+  const char * AssociatedEntityKey;
+  const char * ObjectCN;
+  const char * objectType;
+  CSlider::Type ObjectType;
+  const char * tmp;
+  C_FLOAT64 ObjectValue;
+  C_FLOAT64 MinValue;
+  C_FLOAT64 MaxValue;
+  unsigned C_INT32 TickNumber;
+  unsigned C_INT32 TickFactor;
+  const char* scaling;
 
   switch (mCurrentElement.first)
     {
       case Slider:
-        // TODO CRITICAL Implement me!
-        break;
+        Key = mpParser->getAttributeValue("key", papszAttrs);
+        AssociatedEntityKey = mpParser->getAttributeValue("associatedEntityKey", papszAttrs);
+        ObjectCN = mpParser->getAttributeValue("objectCN", papszAttrs);
+        objectType = mpParser->getAttributeValue("objectType", papszAttrs);
+        ObjectType = toEnum(objectType, CSlider::TypeName, CSlider::Float);
+        tmp = mpParser->getAttributeValue("objectValue", papszAttrs);
+        ObjectValue = CCopasiXMLInterface::DBL(tmp);
+        tmp = mpParser->getAttributeValue("minValue", papszAttrs);
+        MinValue = CCopasiXMLInterface::DBL(tmp);
+        tmp = mpParser->getAttributeValue("maxValue", papszAttrs);
+        MaxValue = CCopasiXMLInterface::DBL(tmp);
+        tmp = mpParser->getAttributeValue("tickNumber", papszAttrs, "1000");
+        TickNumber = strToUnsignedInt(tmp);
+        tmp = mpParser->getAttributeValue("tickFactor", papszAttrs, "100");
+        TickFactor = strToUnsignedInt(tmp);
 
-        // TODO CRITICAL Implement me!
+        scaling = mpParser->getAttributeValue("scaling", papszAttrs, "linear");
+
+        // This is always the case if the XML is conforming to the schema.
+
+        if (mpData->mKeyMap.get(AssociatedEntityKey))
+          {
+            pSlider = new CSlider("slider", mpData->pGUI->getSliderList());
+            addFix(Key, pSlider);
+
+            if (strncmp(AssociatedEntityKey, "", 1))
+              {
+                pSlider->setAssociatedEntityKey(mpData->mKeyMap.get(AssociatedEntityKey)->getKey());
+              }
+            else
+              {
+                pSlider->setAssociatedEntityKey("");
+              }
+
+            pSlider->setSliderObject((std::string) ObjectCN);
+            pSlider->setSliderType(ObjectType);
+            pSlider->setMaxValue(MaxValue);
+            pSlider->setMinValue(MinValue);
+            pSlider->setSliderValue(ObjectValue);
+            pSlider->setTickNumber(TickNumber);
+            pSlider->setTickFactor(TickFactor);
+            pSlider->setScaling(pSlider->convertScaleNameToScale(scaling));
+            mpData->pGUI->getSliderList()->add(pSlider, true);
+          }
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +99,7 @@ CXMLHandler * SliderHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +111,7 @@ bool SliderHandler::processEnd(const XML_Char * pszName)
     {
       case Slider:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +125,6 @@ bool SliderHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * SliderHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Slider, HANDLER_COUNT}},

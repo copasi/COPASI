@@ -56,7 +56,6 @@
 #include "ListOfMetaboliteReferenceGlyphsHandler.h"
 #include "ListOfReactionGlyphsHandler.h"
 #include "ListOfRenderInformationHandler.h"
-#include "ListOfSlidersHandler.h"
 #include "ListOfStylesHandler.h"
 #include "ListOfTextGlyphsHandler.h"
 #include "ListOfUnitDefinitionsHandler.h"
@@ -498,8 +497,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfSliders:
-        pHandler = new ListOfSlidersHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfSliders", CXMLHandler::ListOfSliders, CXMLHandler::ListOfSliders};
+        CXMLHandler::sProcessLogic contentLogic = {"Slider", CXMLHandler::Slider, CXMLHandler::Slider};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfStyles:
         pHandler = new ListOfStylesHandler(*mpParser, *mpData);
