@@ -1274,7 +1274,7 @@ void CMathContainer::compile()
   for (; itReaction != endReaction; ++itReaction)
     {
       // We ignore reactions which do not have any effect.
-      if (itReaction->getChemEq().getBalances().size() > 0)
+      if (itReaction->getChemEq().getBalances().size() > 0 || true)
         {
           pReaction->initialize(itReaction, *this);
           ++pReaction;
@@ -1738,7 +1738,7 @@ void CMathContainer::allocate()
   for (; itReaction != endReaction; ++itReaction)
     {
       // We ignore reactions which do not have any effect.
-      if (itReaction->getChemEq().getBalances().size() > 0)
+      if (itReaction->getChemEq().getBalances().size() > 0 || true)
         {
           Size.nReactions++;
         }
