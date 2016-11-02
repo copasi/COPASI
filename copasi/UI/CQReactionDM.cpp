@@ -191,8 +191,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 bool CQReactionDM::setData(const QModelIndex &index, const QVariant &value,
                            int role)
 {
-  if (index.data() == value &&
-      role != Qt::EditRole)
+  if (index.data() == value)
     return false;
 
   bool defaultRow = isDefaultRow(index);
