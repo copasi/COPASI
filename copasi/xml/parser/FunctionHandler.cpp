@@ -296,16 +296,26 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
 
       case Expression:
       case MathML:
+      {
+        size_t Size = CCopasiMessage::size();
 
         if (mpData->pFunction != NULL &&
             !mpData->mPredefinedFunction)
           {
-            // do not yet compile the function as it might depend on elements not
-            // read yet
-            mpData->pFunction->setInfix(mpData->CharacterData, false);
+            mpData->pFunction->setInfix(mpData->CharacterData);
+          }
+        else if (mpData->mpExpression != NULL)
+          {
+            mpData->mpExpression->setInfix(mpData->CharacterData);
           }
 
-        break;
+        // Remove error messages created by setInfix as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
+      }
+
+      break;
 
       case ListOfParameterDescriptions:
         // We need to remove all parameters which have been temporarily added to the list of variables

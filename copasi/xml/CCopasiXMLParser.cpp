@@ -1150,9 +1150,14 @@ void CCopasiXMLParser::FunctionElement::end(const XML_Char *pszName)
           {
             if (!mCommon.mPredefinedFunction)
               {
-                // do not yet compile the function as it might depend on elements not
-                // read yet
-                mCommon.pFunction->setInfix(mCommon.CharacterData, false);
+                size_t Size = CCopasiMessage::size();
+
+                mCommon.pFunction->setInfix(mCommon.CharacterData);
+
+                // Remove error messages created by setInfix as this may fail
+                // due to incomplete model specification at this time.
+                while (CCopasiMessage::size() > Size)
+                  CCopasiMessage::getLastMessage();
               }
           }
         else if (mCommon.mpExpression != NULL)

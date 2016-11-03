@@ -81,14 +81,6 @@ public:
   virtual bool setInfix(const std::string & infix);
 
   /**
-   * Function to set the infix description of the tree and (optionally) compile it.
-   * @param const std::string & infix
-   * @param bool compile, boolean indicating whether the expression ought to be compiled
-   * @return bool success
-   */
-  virtual bool setInfix(const std::string & infix, bool compile);
-
-  /**
    * Check whether a function is read only
    * @return bool isReadOnly
    */

@@ -1,17 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CMassAction.cpp,v $
-//   $Revision: 1.44 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/06/15 15:32:27 $
-// End CVS Header
-
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,25 +25,25 @@
 
 // static
 const char * CMassAction::Infix[] =
-  {"k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>", "k1*PRODUCT<substrate_i>"};
+{"k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>", "k1*PRODUCT<substrate_i>"};
 
 CMassAction::CMassAction(const std::string & name,
                          const CCopasiContainer * pParent):
-    CFunction(name, pParent, CEvaluationTree::MassAction)
+  CFunction(name, pParent, CEvaluationTree::MassAction)
 {}
 
 CMassAction::CMassAction(const CFunction & src,
                          const CCopasiContainer * pParent):
-    CFunction(src, pParent)
+  CFunction(src, pParent)
 {}
 
 CMassAction::CMassAction(const TriLogic & reversible,
                          const CCopasiContainer * pParent):
-    CFunction((reversible == TriTrue) ?
-              "Mass action (reversible)" :
-              "Mass action (irreversible)",
-              pParent,
-              CFunction::MassAction)
+  CFunction((reversible == TriTrue) ?
+            "Mass action (reversible)" :
+            "Mass action (irreversible)",
+            pParent,
+            CFunction::MassAction)
 {
   CONSTRUCTOR_TRACE;
 
@@ -131,12 +123,14 @@ bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
 
 bool CMassAction::setInfix(const std::string & infix)
 {
+  mUsable = false;
+
   if (infix == "k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>")
     setReversible(TriTrue);
   else if (infix == "k1*PRODUCT<substrate_i>")
     setReversible(TriFalse);
   else
-    return false;
+    return mUsable;
 
   CFunction::setInfix(infix);
   getVariables().cleanup();
@@ -158,13 +152,14 @@ bool CMassAction::setInfix(const std::string & infix)
                          CFunctionParameter::PRODUCT);
     }
 
-  return true;
+  mUsable = true;
+
+  return mUsable;
 }
 
 bool CMassAction::compile()
 {
-  mUsable = true;
-  return true;
+  return mUsable;
 }
 
 #include "utilities/copasimathml.h"
