@@ -296,9 +296,9 @@
       </element>
     </element>
   </element>
-  <element name="SBMLReference"> {0,1}
-    <element name="SBMLMap"/> {1, inf}
-  </element>
+  * <element name="SBMLReference"> {0,1}
+    * <element name="SBMLMap"/> {1, inf}
+  * </element>
   <element name="ListOfUnitDefinitions"> {0,1}
     <element name="UnitDefinition"> {1, inf}
       <elementGroup name="annotation"> {1}

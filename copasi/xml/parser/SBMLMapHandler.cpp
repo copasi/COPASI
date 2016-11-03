@@ -9,6 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "function/CFunction.h"
+#include "model/CModel.h"
+
 /**
  * Replace SBMLMap with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +30,37 @@ SBMLMapHandler::~SBMLMapHandler()
 CXMLHandler * SBMLMapHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * SBMLid;
+  const char * COPASIkey;
+  CCopasiObject * pObject;
 
   switch (mCurrentElement.first)
     {
       case SBMLMap:
-        // TODO CRITICAL Implement me!
-        break;
+        SBMLid = mpParser->getAttributeValue("SBMLid", papszAttrs);
+        COPASIkey = mpParser->getAttributeValue("COPASIkey", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        if ((pObject = mpData->mKeyMap.get(COPASIkey)))
+          {
+            CFunction * pFunction;
+            CCompartment* pCompartment;
+            CMetab * pMetab;
+            CModelValue * pModelValue;
+            CReaction * pReaction;
+
+            if ((pFunction = dynamic_cast<CFunction *>(pObject)))
+              pFunction->setSBMLId(SBMLid);
+            else if ((pCompartment = dynamic_cast<CCompartment *>(pObject)))
+              pCompartment->setSBMLId(SBMLid);
+            else if ((pMetab = dynamic_cast<CMetab *>(pObject)))
+              pMetab->setSBMLId(SBMLid);
+            else if ((pModelValue = dynamic_cast<CModelValue *>(pObject)))
+              pModelValue->setSBMLId(SBMLid);
+            else if ((pReaction = dynamic_cast<CReaction *>(pObject)))
+              pReaction->setSBMLId(SBMLid);
+          }
+
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +68,7 @@ CXMLHandler * SBMLMapHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +80,7 @@ bool SBMLMapHandler::processEnd(const XML_Char * pszName)
     {
       case SBMLMap:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +94,6 @@ bool SBMLMapHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * SBMLMapHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {SBMLMap, HANDLER_COUNT}},

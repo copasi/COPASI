@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +18,6 @@
 
 #include "MIRIAM/CRDFUtilities.h"
 #include "utilities/CCopasiMessage.h"
-#include "xml/CCopasiXMLParser.h"
 #include "utilities/CVersion.h"
 #include "report/CKeyFactory.h"
 #include "model/CModelValue.h"
@@ -28,6 +27,12 @@
 #include "function/CFunction.h"
 #include "utilities/CUnitDefinition.h"
 #include "report/CCopasiRootContainer.h"
+
+#ifdef WITH_NEW_PARSER
+# include "xml/parser/CXMLParser.h"
+#else
+# include "xml/CCopasiXMLParser.h"
+#endif
 
 // static
 CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
@@ -68,6 +73,7 @@ const CAnnotation * CAnnotation::castObject(const CCopasiObject * pObject)
   const CReaction * pReaction = NULL;
   const CFunction * pFunction = NULL;
   const CUnitDefinition * pUnitDefinition = NULL;
+  const CModelParameterSet * pParameterSet = NULL;
 
   if ((pEntity = dynamic_cast< const CModelEntity * >(pObject)) != NULL)
     return static_cast< const CAnnotation * >(pEntity);
@@ -77,6 +83,9 @@ const CAnnotation * CAnnotation::castObject(const CCopasiObject * pObject)
 
   if ((pReaction = dynamic_cast< const CReaction * >(pObject)) != NULL)
     return static_cast< const CAnnotation * >(pReaction);
+
+  if ((pParameterSet = dynamic_cast< const CModelParameterSet * >(pObject)) != NULL)
+    return static_cast< const CAnnotation * >(pParameterSet);
 
   if ((pFunction = dynamic_cast< const CFunction * >(pObject)) != NULL)
     return static_cast< const CAnnotation * >(pFunction);
@@ -291,7 +300,12 @@ bool CAnnotation::isValidXML(const std::string & xml)
   bool done = false;
 
   CVersion Version;
+
+#ifdef WITH_NEW_PARSER
+  CXMLParser Parser(Version);
+#else
   CCopasiXMLParser Parser(Version);
+#endif
 
   size_t Size = CCopasiMessage::size();
 

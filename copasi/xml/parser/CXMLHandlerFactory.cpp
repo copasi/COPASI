@@ -93,7 +93,6 @@
 #include "ReportSectionHandler.h"
 #include "ReportTargetHandler.h"
 #include "SBMLMapHandler.h"
-#include "SBMLReferenceHandler.h"
 #include "SliderHandler.h"
 #include "SourceParameterHandler.h"
 #include "StartHandler.h"
@@ -681,8 +680,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::SBMLReference:
-        pHandler = new SBMLReferenceHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"SBMLReference", CXMLHandler::SBMLReference, CXMLHandler::SBMLReference};
+        CXMLHandler::sProcessLogic contentLogic = {"SBMLMap", CXMLHandler::SBMLMap, CXMLHandler::SBMLMap};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::Slider:
         pHandler = new SliderHandler(*mpParser, *mpData);
