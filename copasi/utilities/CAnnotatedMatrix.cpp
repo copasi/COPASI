@@ -407,9 +407,9 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
   std::vector< std::string >::const_iterator it = DisplayNames.begin();
   std::vector< std::string >::const_iterator end = DisplayNames.end();
   std::vector< std::vector<CRegisteredObjectName> >::const_iterator itCNs = mAnnotationsCN.begin();
-  size_t index = 0;
+  size_t dimension = 0;
 
-  for (; it != end && index < dimensionality(); ++it, ++itCNs, ++index, ++to)
+  for (; it != end && dimension < dimensionality(); ++it, ++itCNs, ++dimension, ++to)
     {
       std::vector<CRegisteredObjectName>::const_iterator itCN = itCNs->begin();
       std::vector<CRegisteredObjectName>::const_iterator endCN = itCNs->end();
@@ -425,11 +425,12 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
       if (itCN == endCN)
         {
-          size_t index;
+          size_t index = C_INVALID_INDEX;
+          bool ValidIndex = strToIndex(*it, index);
 
           if (itCNs->empty())
             {
-              if (strToIndex(*it, index))
+              if (ValidIndex)
                 *to = *it;
               else
                 *to = std::string("not found");
