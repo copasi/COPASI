@@ -3530,11 +3530,9 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
 
 size_t getUsedSymbolCount(const std::string& unit, const std::string& symbol)
 {
-  const CUnitDefinition * unitDef = CCopasiRootContainer::getUnitDefFromSymbol(unit);
+  CUnit Unit(unit);
 
-  if (unitDef == NULL) return 0;
-
-  return unitDef->getUsedSymbols().count(symbol);
+  return Unit.getUsedSymbols().count(symbol);
 }
 
 // Return a set of any COPASI object using this symbol.
