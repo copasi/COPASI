@@ -58,7 +58,6 @@
 #include "ListOfRenderInformationHandler.h"
 #include "ListOfStylesHandler.h"
 #include "ListOfTextGlyphsHandler.h"
-#include "ListOfUnitDefinitionsHandler.h"
 #include "MetaboliteHandler.h"
 #include "MetaboliteGlyphHandler.h"
 #include "MetaboliteReferenceGlyphHandler.h"
@@ -105,7 +104,6 @@
 #include "TaskHandler.h"
 #include "TextHandler.h"
 #include "TextGlyphHandler.h"
-#include "UnitHandler.h"
 #include "UnitDefinitionHandler.h"
 #include "UnsupportedAnnotationHandler.h"
 
@@ -531,8 +529,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfUnitDefinitions:
-        pHandler = new ListOfUnitDefinitionsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfUnitDefinitions", CXMLHandler::ListOfUnitDefinitions, CXMLHandler::ListOfUnitDefinitions};
+        CXMLHandler::sProcessLogic contentLogic = {"UnitDefinition", CXMLHandler::UnitDefinition, CXMLHandler::UnitDefinition};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfUnsupportedAnnotations:
       {
@@ -734,10 +737,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::TextGlyph:
         pHandler = new TextGlyphHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::Unit:
-        pHandler = new UnitHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::UnitDefinition:

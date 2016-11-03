@@ -58,7 +58,6 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
       case ListOfFunctions:
       case Model:
       case ListOfLayouts:
-      case ListOfUnitDefinitions:
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -100,6 +99,15 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
       case SBMLReference:
         if (mpData->pDataModel)
           mpData->pDataModel->setSBMLFileName(mpParser->getAttributeValue("file", papszAttrs));
+
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
+      case ListOfUnitDefinitions:
+        if (mpData->pUnitDefinitionImportList != NULL)
+          mpData->pUnitDefinitionImportList->clear();
+        else
+          mpData->pUnitDefinitionImportList = new CUnitDefinitionDB("importUnitDefintionsList");
 
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;

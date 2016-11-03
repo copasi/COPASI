@@ -9,12 +9,15 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "utilities/CUnitDefinition.h"
+
 /**
  * Replace UnitDefinition with the name type of the handler and implement the
  * three methods below.
  */
 UnitDefinitionHandler::UnitDefinitionHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::UnitDefinition)
+  CXMLHandler(parser, data, CXMLHandler::UnitDefinition),
+  mKey()
 {
   init();
 }
@@ -28,14 +31,32 @@ CXMLHandler * UnitDefinitionHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * Name;
+  const char * Symbol;
 
   switch (mCurrentElement.first)
     {
       case UnitDefinition:
-        // TODO CRITICAL Implement me!
-        break;
+        // Element specific code.
+        mKey = mpParser->getAttributeValue("key", papszAttrs);
+        Name = mpParser->getAttributeValue("name", papszAttrs);
+        Symbol = mpParser->getAttributeValue("symbol", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        // Need a CUnitDefinition.
+        // This is manipulated in this case and the Expression case.
+        // No test for NULL here. If this already was pointing to something,
+        // we don't want that object for this.
+        mpData->pCurrentUnitDefinition = new CUnitDefinition(Name, NULL);
+        mpData->pCurrentUnitDefinition->setSymbol(Symbol);
+
+        break;;
+
+      case MiriamAnnotation:
+      case Comment:
+      case ListOfUnsupportedAnnotations:
+      case Expression:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -54,11 +75,38 @@ bool UnitDefinitionHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case UnitDefinition:
+        mpData->mKeyMap.addFix(mKey, mpData->pCurrentUnitDefinition);
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case MiriamAnnotation:
+        mpData->pCurrentUnitDefinition->setMiriamAnnotation(mpData->CharacterData, mpData->pCurrentUnitDefinition->getKey(), mKey);
+        mpData->CharacterData = "";
+        break;
+
+      case Comment:
+        mpData->pCurrentUnitDefinition->setNotes(mpData->CharacterData);
+        mpData->CharacterData = "";
+        break;
+
+      case ListOfUnsupportedAnnotations:
+        mpData->pCurrentUnitDefinition->getUnsupportedAnnotations() = mpData->mUnsupportedAnnotations;
+        break;
+
+        break;
+
+      case Expression:
+      {
+        size_t Size = CCopasiMessage::size();
+
+        mpData->pCurrentUnitDefinition->setExpression(mpData->CharacterData);
+
+        // Remove error messages created by setExpression as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
+      }
+      break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +120,14 @@ bool UnitDefinitionHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * UnitDefinitionHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {UnitDefinition, HANDLER_COUNT}},
-    {"UnitDefinition", UnitDefinition, UnitDefinition, {AFTER, HANDLER_COUNT}},
+    {"UnitDefinition", UnitDefinition, UnitDefinition, {MiriamAnnotation, Comment, ListOfUnsupportedAnnotations, Expression, AFTER, HANDLER_COUNT}},
+    {"MiriamAnnotation", MiriamAnnotation, MiriamAnnotation, {Comment, ListOfUnsupportedAnnotations, Expression, AFTER, HANDLER_COUNT}},
+    {"Comment", Comment, Comment, {ListOfUnsupportedAnnotations, Expression, AFTER, HANDLER_COUNT}},
+    {"ListOfUnsupportedAnnotations", ListOfUnsupportedAnnotations, ListOfUnsupportedAnnotations, {Expression, AFTER, HANDLER_COUNT}},
+    {"Expression", Expression, CharacterData, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

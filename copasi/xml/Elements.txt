@@ -8,7 +8,7 @@
       * </element>
     * </element>
   * </element>
-  <element name="Model"> {0,1}
+  * <element name="Model"> {0,1}
     * <elementGroup name="annotation"> {1}
     * <element name="InitialExpression"/> {0,1}
     * <element name="ListOfCompartments"> {0,1}
@@ -299,13 +299,13 @@
   * <element name="SBMLReference"> {0,1}
     * <element name="SBMLMap"/> {1, inf}
   * </element>
-  <element name="ListOfUnitDefinitions"> {0,1}
-    <element name="UnitDefinition"> {1, inf}
-      <elementGroup name="annotation"> {1}
-      <element name="Expression"/> {1}
-    </element>
-  </element>
-</element>
+  * <element name="ListOfUnitDefinitions"> {0,1}
+    * <element name="UnitDefinition"> {1, inf}
+      * <elementGroup name="annotation"> {1}
+      * <element name="Expression"/> {1}
+    * </element>
+  * </element>
+* </element>
 
 * <elementGroup name="annotation">
   * <element name="MiriamAnnotation"/> {0,1}
