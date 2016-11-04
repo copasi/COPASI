@@ -1085,8 +1085,8 @@
       <data type="boolean"/>
     </attribute>
     <ref name="parameterList.datatype"/>
-    <element name="ListOfChannels">
-      <ref name="listOfChannels.datatype"/>
+    <element name="ListOfPlotItems">
+      <ref name="listOfPlotItems.datatype"/>
     </element>
   </define>
 

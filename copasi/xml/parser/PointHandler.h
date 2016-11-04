@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_BasePoint1Handler
-#define COPASI_BasePoint1Handler
+#ifndef COPASI_PointHandler
+#define COPASI_PointHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class BasePoint1Handler : public CXMLHandler
+class PointHandler : public CXMLHandler
 {
 private:
-  BasePoint1Handler();
+  PointHandler();
 
 public:
   /**
@@ -19,12 +19,12 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  BasePoint1Handler(CXMLParser & parser, CXMLParserData & data);
+  PointHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~BasePoint1Handler();
+  virtual ~PointHandler();
 
 protected:
 
@@ -51,4 +51,4 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 };
 
-#endif //COPASI_BasePoint1Handler
+#endif //COPASI_PointHandler

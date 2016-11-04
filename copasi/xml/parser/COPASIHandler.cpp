@@ -14,6 +14,7 @@
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "function/CFunction.h"
+#include "layout/CListOfLayouts.h"
 
 COPASIHandler::COPASIHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::COPASI)
@@ -57,7 +58,6 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
       case ParameterGroup:
       case ListOfFunctions:
       case Model:
-      case ListOfLayouts:
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -89,11 +89,22 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
         break;
 
       case GUI:
+
+        // For command line processing we can ignore all GUI related information
         if (!mpData->pGUI)
           mCurrentElement = std::make_pair(UNKNOWN, UNKNOWN);
 
         pHandlerToCall = getHandler(mCurrentElement.second);
 
+        break;
+
+      case ListOfLayouts:
+        if (mpData->pLayoutList != NULL)
+          mpData->pLayoutList->clear();
+        else
+          mpData->pLayoutList = new CListOfLayouts();
+
+        pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
       case SBMLReference:

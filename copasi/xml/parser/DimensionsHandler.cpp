@@ -9,33 +9,41 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace Dimensions with the name type of the handler and implement the
- * three methods below.
- */
+#include "layout/CLBase.h"
+
 DimensionsHandler::DimensionsHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::Dimensions)
 {
   init();
+
+  if (mpData->pDimensions == NULL)
+    {
+      mpData->pDimensions = new CLDimensions();
+    }
 }
 
 // virtual
 DimensionsHandler::~DimensionsHandler()
-{}
+{
+  pdelete(mpData->pDimensions);
+}
 
 // virtual
 CXMLHandler * DimensionsHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * attr;
 
   switch (mCurrentElement.first)
     {
       case Dimensions:
-        // TODO CRITICAL Implement me!
+        attr = mpParser->getAttributeValue("width", papszAttrs, "0");
+        mpData->pDimensions->setWidth(CCopasiXMLInterface::DBL(attr));
+        attr = mpParser->getAttributeValue("height", papszAttrs, "0");
+        mpData->pDimensions->setHeight(CCopasiXMLInterface::DBL(attr));
+        attr = mpParser->getAttributeValue("depth", papszAttrs, "0");
+        mpData->pDimensions->setDepth(CCopasiXMLInterface::DBL(attr));
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +51,7 @@ CXMLHandler * DimensionsHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +63,7 @@ bool DimensionsHandler::processEnd(const XML_Char * pszName)
     {
       case Dimensions:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +77,6 @@ bool DimensionsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * DimensionsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Dimensions, HANDLER_COUNT}},

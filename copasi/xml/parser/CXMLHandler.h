@@ -135,6 +135,7 @@ public:
     ParameterText,
     PlotItem,
     PlotSpecification,
+    Point,
     Polygon,
     Position,
     PriorityExpression,

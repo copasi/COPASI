@@ -10,8 +10,6 @@
 #include "UNKNOWNHandler.h"
 #include "AdditionalGraphicalObjectHandler.h"
 #include "AssignmentHandler.h"
-#include "BasePoint1Handler.h"
-#include "BasePoint2Handler.h"
 #include "BoundingBoxHandler.h"
 #include "CallParameterHandler.h"
 #include "ChannelSpecHandler.h"
@@ -24,13 +22,10 @@
 #include "COPASIHandler.h"
 #include "CubicBezierHandler.h"
 #include "CurveHandler.h"
-#include "CurveSegmentHandler.h"
 #include "DelayExpressionHandler.h"
 #include "DimensionsHandler.h"
 #include "EllipseHandler.h"
-#include "EndHandler.h"
 #include "EventHandler.h"
-#include "ExpressionHandler.h"
 #include "FunctionHandler.h"
 #include "GroupHandler.h"
 #include "GUIHandler.h"
@@ -44,7 +39,6 @@
 #include "LineSegmentHandler.h"
 #include "ListOfAdditionalGraphicalObjectsHandler.h"
 #include "ListOfColorDefinitionsHandler.h"
-#include "ListOfCompartmentGlyphsHandler.h"
 #include "ListOfCurveSegmentsHandler.h"
 #include "ListOfElementsHandler.h"
 #include "ListOfGlobalRenderInformationHandler.h"
@@ -52,12 +46,8 @@
 #include "ListOfHandler.h"
 #include "ListOfLayoutsHandler.h"
 #include "ListOfLineEndingsHandler.h"
-#include "ListOfMetabGlyphsHandler.h"
-#include "ListOfMetaboliteReferenceGlyphsHandler.h"
-#include "ListOfReactionGlyphsHandler.h"
 #include "ListOfRenderInformationHandler.h"
 #include "ListOfStylesHandler.h"
-#include "ListOfTextGlyphsHandler.h"
 #include "MetaboliteHandler.h"
 #include "MetaboliteGlyphHandler.h"
 #include "MetaboliteReferenceGlyphHandler.h"
@@ -77,8 +67,8 @@
 #include "ParameterTextHandler.h"
 #include "PlotItemHandler.h"
 #include "PlotSpecificationHandler.h"
+#include "PointHandler.h"
 #include "PolygonHandler.h"
-#include "PositionHandler.h"
 #include "PriorityExpressionHandler.h"
 #include "ProductHandler.h"
 #include "RadialGradientHandler.h"
@@ -94,7 +84,6 @@
 #include "SBMLMapHandler.h"
 #include "SliderHandler.h"
 #include "SourceParameterHandler.h"
-#include "StartHandler.h"
 #include "StateTemplateHandler.h"
 #include "StateTemplateVariableHandler.h"
 #include "StyleLocalHandler.h"
@@ -159,14 +148,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new AssignmentHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::BasePoint1:
-        pHandler = new BasePoint1Handler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::BasePoint2:
-        pHandler = new BasePoint2Handler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::BoundingBox:
         pHandler = new BoundingBoxHandler(*mpParser, *mpData);
         break;
@@ -215,10 +196,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new CurveHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::CurveSegment:
-        pHandler = new CurveSegmentHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::DelayExpression:
         pHandler = new DelayExpressionHandler(*mpParser, *mpData);
         break;
@@ -231,16 +208,8 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new EllipseHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::End:
-        pHandler = new EndHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::Event:
         pHandler = new EventHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::Expression:
-        pHandler = new ExpressionHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::Function:
@@ -323,8 +292,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfCompartmentGlyphs:
-        pHandler = new ListOfCompartmentGlyphsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfCompartmentGlyphs", CXMLHandler::ListOfCompartmentGlyphs, CXMLHandler::ListOfCompartmentGlyphs};
+        CXMLHandler::sProcessLogic contentLogic = {"CompartmentGlyph", CXMLHandler::CompartmentGlyph, CXMLHandler::CompartmentGlyph};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfCompartments:
       {
@@ -388,12 +362,22 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfMetabGlyphs:
-        pHandler = new ListOfMetabGlyphsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfMetabGlyphs", CXMLHandler::ListOfMetabGlyphs, CXMLHandler::ListOfMetabGlyphs};
+        CXMLHandler::sProcessLogic contentLogic = {"MetaboliteGlyph", CXMLHandler::MetaboliteGlyph, CXMLHandler::MetaboliteGlyph};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfMetaboliteReferenceGlyphs:
-        pHandler = new ListOfMetaboliteReferenceGlyphsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfMetaboliteReferenceGlyphs", CXMLHandler::ListOfMetaboliteReferenceGlyphs, CXMLHandler::ListOfMetaboliteReferenceGlyphs};
+        CXMLHandler::sProcessLogic contentLogic = {"MetaboliteReferenceGlyph", CXMLHandler::MetaboliteReferenceGlyph, CXMLHandler::MetaboliteReferenceGlyph};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfMetabolites:
       {
@@ -468,8 +452,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfReactionGlyphs:
-        pHandler = new ListOfReactionGlyphsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfReactionGlyphs", CXMLHandler::ListOfReactionGlyphs, CXMLHandler::ListOfReactionGlyphs};
+        CXMLHandler::sProcessLogic contentLogic = {"ReactionGlyph", CXMLHandler::ReactionGlyph, CXMLHandler::ReactionGlyph};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfReactions:
       {
@@ -525,8 +514,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfTextGlyphs:
-        pHandler = new ListOfTextGlyphsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfTextGlyphs", CXMLHandler::ListOfTextGlyphs, CXMLHandler::ListOfTextGlyphs};
+        CXMLHandler::sProcessLogic contentLogic = {"TextGlyph", CXMLHandler::TextGlyph, CXMLHandler::TextGlyph};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfUnitDefinitions:
       {
@@ -626,8 +620,8 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new PolygonHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::Position:
-        pHandler = new PositionHandler(*mpParser, *mpData);
+      case CXMLHandler::Point:
+        pHandler = new PointHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::PriorityExpression:
@@ -697,10 +691,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::SourceParameter:
         pHandler = new SourceParameterHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::Start:
-        pHandler = new StartHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::StateTemplate:

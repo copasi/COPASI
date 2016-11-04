@@ -135,101 +135,101 @@
       * <element name="Slider"/> {1, inf} 
     * </element>
   * </element>
-  <element name="ListOfLayouts"> {0,1}
-    <element name="Layout"> {0, inf}
-      <element name="Dimensions"/> {1} 
-      <element name="ListOfCompartmentGlyphs"> {0,1}
-        <element name="CompartmentGlyph"> {0, inf}
-          <element name="BoundingBox"> {1} 
-            <element name="Position"/> {1} 
-            <element name="Dimensions"/> {1} 
-          </element>
-        </element>
-      </element>
-      <element name="ListOfMetabGlyphs"> {0,1}
-        <element name="MetaboliteGlyph"> {0, inf}
-          <element name="BoundingBox"> {1} 
-            <element name="Position"/> {1} 
-            <element name="Dimensions"/> {1} 
-          </element>
-        </element>
-      </element>
-      <element name="ListOfReactionGlyphs"> {0,1}
-        <element name="ReactionGlyph"> {0, inf}
-          <element name="BoundingBox"> {0,1} 
-            <element name="Position"/> {1} 
-            <element name="Dimensions"/> {1} 
-          </element>
-          <element name="Curve"> {0,1}
-            <element name="ListOfCurveSegments">  {1} 
-              <choice> {1, inf}
-                <element name="LineSegment"> {1} 
-                  <element name="Start"/> {1}
-                  <element name="End"/> {1}
-                </element>
-                <element name="CurveSegment"> {1} 
-                  <element name="Start"/> {1}
-                  <element name="End"/> {1}
-                </element>
-                <element name="CubicBezier"> {1} 
-                  <element name="Start"/> {1}
-                  <element name="End"/> {1}
-                  <element name="BasePoint1"/> {0,1}
-                  <element name="BasePoint2"/> {0,1}
-                </element>
-                <element name="CurveSegment"> {1} 
-                  <element name="Start"/> {1}
-                  <element name="End"/> {1}
-                  <element name="BasePoint1"/> {0,1}
-                  <element name="BasePoint2"/> {0,1}
-                </element>
-              </choice>
-            </element>
-          </element>
-          <element name="ListOfMetaboliteReferenceGlyphs"> {0,1}
-            <element name="MetaboliteReferenceGlyph"> {1, inf}
-              <element name="BoundingBox"> {0,1} 
-                <element name="Position"/> {1} 
-                <element name="Dimensions"/> {1} 
-              </element>
-              <element name="Curve"> {0,1}
-                <element name="ListOfCurveSegments">  {1} 
-                  <choice> {1, inf}
-                    <element name="LineSegment"> {1} 
-                      <element name="Start"/> {1}
-                      <element name="End"/> {1}
-                    </element>
-                    <element name="CurveSegment"> {1} 
-                      <element name="Start"/> {1}
-                      <element name="End"/> {1}
-                    </element>
-                    <element name="CubicBezier"> {1} 
-                      <element name="Start"/> {1}
-                      <element name="End"/> {1}
-                      <element name="BasePoint1"/> {0,1}
-                      <element name="BasePoint2"/> {0,1}
-                    </element>
-                    <element name="CurveSegment"> {1} 
-                      <element name="Start"/> {1}
-                      <element name="End"/> {1}
-                      <element name="BasePoint1"/> {0,1}
-                      <element name="BasePoint2"/> {0,1}
-                    </element>
-                  </choice>
-                </element>
-              </element>
-            </element>
-          </element>
-        </element>
-      </element>
-      <element name="ListOfTextGlyphs"> {0,1}
-        <element name="TextGlyph"> {1, inf}
-          <element name="BoundingBox"> {0,1} 
-            <element name="Position"/> {1} 
-            <element name="Dimensions"/> {1} 
-          </element>
-        </element>
-      </element>
+  * <element name="ListOfLayouts"> {0,1}
+    * <element name="Layout"> {0, inf}
+      * <element name="Dimensions"/> {1} 
+      * <element name="ListOfCompartmentGlyphs"> {0,1}
+        * <element name="CompartmentGlyph"> {0, inf}
+          * <element name="BoundingBox"> {1} 
+            * <element name="Position"/> {1} 
+            * <element name="Dimensions"/> {1} 
+          * </element>
+        * </element>
+      * </element>
+      * <element name="ListOfMetabGlyphs"> {0,1}
+        * <element name="MetaboliteGlyph"> {0, inf}
+          * <element name="BoundingBox"> {1} 
+            * <element name="Position"/> {1} 
+            * <element name="Dimensions"/> {1} 
+          * </element>
+        * </element>
+      * </element>
+      * <element name="ListOfReactionGlyphs"> {0,1}
+        * <element name="ReactionGlyph"> {0, inf}
+          * <element name="BoundingBox"> {0,1} 
+            * <element name="Position"/> {1} 
+            * <element name="Dimensions"/> {1} 
+          * </element>
+          * <element name="Curve"> {0,1}
+            * <element name="ListOfCurveSegments">  {1} 
+              * <choice> {1, inf}
+                * <element name="LineSegment"> {1} 
+                  * <element name="Start"/> {1}
+                  * <element name="End"/> {1}
+                * </element>
+                * <element name="CurveSegment"> {1} 
+                  * <element name="Start"/> {1}
+                  * <element name="End"/> {1}
+                * </element>
+                * <element name="CubicBezier"> {1} 
+                  * <element name="Start"/> {1}
+                  * <element name="End"/> {1}
+                  * <element name="BasePoint1"/> {0,1}
+                  * <element name="BasePoint2"/> {0,1}
+                * </element>
+                * <element name="CurveSegment"> {1} 
+                  * <element name="Start"/> {1}
+                  * <element name="End"/> {1}
+                  * <element name="BasePoint1"/> {0,1}
+                  * <element name="BasePoint2"/> {0,1}
+                * </element>
+              * </choice>
+            * </element>
+          * </element>
+          * <element name="ListOfMetaboliteReferenceGlyphs"> {0,1}
+            * <element name="MetaboliteReferenceGlyph"> {1, inf}
+              * <element name="BoundingBox"> {0,1} 
+                * <element name="Position"/> {1} 
+                * <element name="Dimensions"/> {1} 
+              * </element>
+              * <element name="Curve"> {0,1}
+                * <element name="ListOfCurveSegments">  {1} 
+                  * <choice> {1, inf}
+                    * <element name="LineSegment"> {1} 
+                      * <element name="Start"/> {1}
+                      * <element name="End"/> {1}
+                    * </element>
+                    * <element name="CurveSegment"> {1} 
+                      * <element name="Start"/> {1}
+                      * <element name="End"/> {1}
+                    * </element>
+                    * <element name="CubicBezier"> {1} 
+                      * <element name="Start"/> {1}
+                      * <element name="End"/> {1}
+                      * <element name="BasePoint1"/> {0,1}
+                      * <element name="BasePoint2"/> {0,1}
+                    * </element>
+                    * <element name="CurveSegment"> {1} 
+                      * <element name="Start"/> {1}
+                      * <element name="End"/> {1}
+                      * <element name="BasePoint1"/> {0,1}
+                      * <element name="BasePoint2"/> {0,1}
+                    * </element>
+                  * </choice>
+                * </element>
+              * </element>
+            * </element>
+          * </element>
+        * </element>
+      * </element>
+      * <element name="ListOfTextGlyphs"> {0,1}
+        * <element name="TextGlyph"> {1, inf}
+          * <element name="BoundingBox"> {0,1} 
+            * <element name="Position"/> {1} 
+            * <element name="Dimensions"/> {1} 
+          * </element>
+        * </element>
+      * </element>
       <element name="ListOfAdditionalGraphicalObjects"> {0,1}
         <element name="AdditionalGraphicalObject"> {1, inf}
           <element name="BoundingBox"> {0,1} 
@@ -265,7 +265,7 @@
           </element>
         </element>
       </element>
-    </element>
+    * </element>
     <element name="ListOfGlobalRenderInformation"> {0,1}
       <element name="RenderInformation"> {1, inf}
         <element name="ListOfColorDefinitions">  {0,1}
@@ -295,7 +295,7 @@
         </element>
       </element>
     </element>
-  </element>
+  * </element>
   * <element name="SBMLReference"> {0,1}
     * <element name="SBMLMap"/> {1, inf}
   * </element>

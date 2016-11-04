@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLCurve.h"
+
 /**
  * Replace Curve with the name type of the handler and implement the
  * three methods below.
@@ -17,11 +19,18 @@ CurveHandler::CurveHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::Curve)
 {
   init();
+
+  if (mpData->pCurve == NULL)
+    {
+      mpData->pCurve = new CLCurve();
+    }
 }
 
 // virtual
 CurveHandler::~CurveHandler()
-{}
+{
+  pdelete(mpData->pCurve);
+}
 
 // virtual
 CXMLHandler * CurveHandler::processStart(const XML_Char * pszName,
@@ -32,10 +41,12 @@ CXMLHandler * CurveHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case Curve:
-        // TODO CRITICAL Implement me!
+        mpData->pCurve->clear();
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfCurveSegments:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +66,10 @@ bool CurveHandler::processEnd(const XML_Char * pszName)
     {
       case Curve:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfCurveSegments:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +83,11 @@ bool CurveHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * CurveHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Curve, HANDLER_COUNT}},
-    {"Curve", Curve, Curve, {AFTER, HANDLER_COUNT}},
+    {"Curve", Curve, Curve, {ListOfCurveSegments, HANDLER_COUNT}},
+    {"ListOfCurveSegments", ListOfCurveSegments, ListOfCurveSegments, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

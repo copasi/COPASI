@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CListOfLayouts.h"
+
 /**
  * Replace Layout with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,28 @@ CXMLHandler * LayoutHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case Layout:
-        // TODO CRITICAL Implement me!
-        break;
+      {
+        //workload
+        const char * key;
+        const char * name;
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        mpData->pCurrentLayout = new CLayout();
+        addFix(key, mpData->pCurrentLayout);
+        mpData->pCurrentLayout->setObjectName(name);
+      }
+      break;
+
+      case Dimensions:
+      case ListOfCompartmentGlyphs:
+      case ListOfMetabGlyphs:
+      case ListOfReactionGlyphs:
+      case ListOfTextGlyphs:
+      case ListOfAdditionalGraphicalObjects:
+      case ListOfRenderInformation:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -54,11 +74,23 @@ bool LayoutHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case Layout:
+        mpData->pLayoutList->add(mpData->pCurrentLayout, true);
+        mpData->pCurrentLayout = NULL;
+
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Dimensions:
+        mpData->pCurrentLayout->setDimensions(*mpData->pDimensions);
+        break;
+
+      case ListOfCompartmentGlyphs:
+      case ListOfMetabGlyphs:
+      case ListOfReactionGlyphs:
+      case ListOfTextGlyphs:
+      case ListOfAdditionalGraphicalObjects:
+      case ListOfRenderInformation:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +104,17 @@ bool LayoutHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * LayoutHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Layout, HANDLER_COUNT}},
-    {"Layout", Layout, Layout, {AFTER, HANDLER_COUNT}},
+    {"Layout", Layout, Layout, {Dimensions, HANDLER_COUNT}},
+    {"Dimensions", Dimensions, Dimensions, {ListOfCompartmentGlyphs, ListOfMetabGlyphs, ListOfReactionGlyphs, ListOfTextGlyphs, ListOfAdditionalGraphicalObjects, ListOfRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfCompartmentGlyphs", ListOfCompartmentGlyphs, ListOfCompartmentGlyphs, {ListOfMetabGlyphs, ListOfReactionGlyphs, ListOfTextGlyphs, ListOfAdditionalGraphicalObjects, ListOfRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfMetabGlyphs", ListOfMetabGlyphs, ListOfMetabGlyphs, {ListOfReactionGlyphs, ListOfTextGlyphs, ListOfAdditionalGraphicalObjects, ListOfRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfReactionGlyphs", ListOfReactionGlyphs, ListOfReactionGlyphs, {ListOfTextGlyphs, ListOfAdditionalGraphicalObjects, ListOfRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfTextGlyphs", ListOfTextGlyphs, ListOfTextGlyphs, {ListOfAdditionalGraphicalObjects, ListOfRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfAdditionalGraphicalObjects", ListOfAdditionalGraphicalObjects, ListOfAdditionalGraphicalObjects, {ListOfRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfRenderInformation", ListOfRenderInformation, ListOfRenderInformation, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

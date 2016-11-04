@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLCurve.h"
+
 /**
  * Replace LineSegment with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,13 @@ CXMLHandler * LineSegmentHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case LineSegment:
-        // TODO CRITICAL Implement me!
+      case CurveSegment:
         break;
 
-        // TODO CRITICAL Implement me!
+      case Start:
+      case End:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +60,15 @@ bool LineSegmentHandler::processEnd(const XML_Char * pszName)
     {
       case LineSegment:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Start:
+        mpData->pLineSegment->setStart(*mpData->pPosition);
+        break;
+
+      case End:
+        mpData->pLineSegment->setEnd(*mpData->pPosition);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +82,13 @@ bool LineSegmentHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * LineSegmentHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, BEFORE, {LineSegment, HANDLER_COUNT}},
-    {"LineSegment", LineSegment, LineSegment, {AFTER, HANDLER_COUNT}},
+    {"BEFORE", BEFORE, BEFORE, {LineSegment, CurveSegment, HANDLER_COUNT}},
+    {"LineSegment", LineSegment, LineSegment, {Start, HANDLER_COUNT}},
+    {"CurveSegment", CurveSegment, LineSegment, {Start, HANDLER_COUNT}},
+    {"Start", Start, Point, {End, HANDLER_COUNT}},
+    {"End", End, Point, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

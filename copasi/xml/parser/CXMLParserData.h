@@ -62,6 +62,9 @@ class CLStyle;
 class CLGroup;
 class CLText;
 class CLRenderPoint;
+class CLDimensions;
+class CLBoundingBox;
+class CLPoint;
 class CUnitDefinitionDB;
 class CUnitDefinition;
 class CKeyFactory;
@@ -252,7 +255,6 @@ public:
   CLMetabGlyph * pMetaboliteGlyph;
   CLReactionGlyph * pReactionGlyph;
   CLTextGlyph * pTextGlyph;
-  //CLGraphicalObject * pAdditionalGO;
   CLGeneralGlyph * pGeneralGlyph;
   CLCurve *pCurve;
   CLLineSegment *pLineSegment;
@@ -263,12 +265,10 @@ public:
   CLStyle* pStyle;
   CLGroup* pGroup;
   CLText* pText;
+  CLDimensions *pDimensions;
+  CLBoundingBox *pBoundingBox;
+  CLPoint * pPosition;
   std::vector<CLRenderPoint*>* pListOfCurveElements;
-
-  /**
-   * Nesting level of the currently processed parameter group
-   */
-  int mParameterGroupLevel;
 
   /**
    * A map that stores a vector of tasks that reference a certain key

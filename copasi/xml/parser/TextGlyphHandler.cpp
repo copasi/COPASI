@@ -9,6 +9,10 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLayout.h"
+#include "model/CModelValue.h"
+#include "model/CReaction.h"
+
 /**
  * Replace TextGlyph with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +36,70 @@ CXMLHandler * TextGlyphHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case TextGlyph:
-        // TODO CRITICAL Implement me!
+      {
+        //workload
+        const char * key;
+        const char * name;
+        const char * graphicalObject;
+        const char * originOfText;
+        const char * text;
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        graphicalObject = mpParser->getAttributeValue("graphicalObject", papszAttrs); //TODO
+        originOfText = mpParser->getAttributeValue("originOfText", papszAttrs, false);
+        text = mpParser->getAttributeValue("text", papszAttrs, false);
+
+        mpData->pTextGlyph = new CLTextGlyph(name);
+        const char * objectRole = mpParser->getAttributeValue("objectRole", papszAttrs, false);
+
+        if (objectRole != NULL && objectRole[0] != 0)
+          {
+            mpData->pTextGlyph->setObjectRole(objectRole);
+          }
+
+        CLGraphicalObject * pGO = dynamic_cast<CLGraphicalObject *>(mpData->mKeyMap.get(graphicalObject));
+
+        if (pGO)
+          mpData->pTextGlyph->setGraphicalObjectKey(pGO->getKey());
+
+        if (text)
+          mpData->pTextGlyph->setText(text);
+        else if (originOfText && originOfText[0])
+          {
+            CCopasiObject * pObj = mpData->mKeyMap.get(originOfText);
+            CModelEntity * pME = dynamic_cast<CModelEntity *>(pObj);
+            CReaction * pR = dynamic_cast<CReaction *>(pObj);
+
+            if (pME)
+              {
+                mpData->pTextGlyph->setModelObjectKey(pME->getKey());
+              }
+            else if (pR)
+              {
+                mpData->pTextGlyph->setModelObjectKey(pR->getKey());
+              }
+            else
+              {
+                if (!text)
+                  {
+                    mpData->pTextGlyph->setText("unset");
+                    CCopasiMessage(CCopasiMessage::WARNING, MCXML + 20, key);
+                  }
+              }
+
+            //TODO: When we have a way to handle references to metab references, this needs to be adapted.
+          }
+
+        mpData->pCurrentLayout->addTextGlyph(mpData->pTextGlyph);
+        addFix(key, mpData->pTextGlyph);
+      }
+      break;
+
+      case BoundingBox:
+        pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
-        // TODO CRITICAL Implement me!
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +119,11 @@ bool TextGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case TextGlyph:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        mpData->pTextGlyph->setBoundingBox(*mpData->pBoundingBox);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +137,11 @@ bool TextGlyphHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * TextGlyphHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {TextGlyph, HANDLER_COUNT}},
-    {"TextGlyph", TextGlyph, TextGlyph, {AFTER, HANDLER_COUNT}},
+    {"TextGlyph", TextGlyph, TextGlyph, {BoundingBox, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

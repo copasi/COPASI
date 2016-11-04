@@ -9,19 +9,24 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace BoundingBox with the name type of the handler and implement the
- * three methods below.
- */
+#include "layout/CLBase.h"
+
 BoundingBoxHandler::BoundingBoxHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::BoundingBox)
 {
   init();
+
+  if (mpData->pBoundingBox == NULL)
+    {
+      mpData->pBoundingBox = new CLBoundingBox();
+    }
 }
 
 // virtual
 BoundingBoxHandler::~BoundingBoxHandler()
-{}
+{
+  pdelete(mpData->pBoundingBox);
+}
 
 // virtual
 CXMLHandler * BoundingBoxHandler::processStart(const XML_Char * pszName,
@@ -32,10 +37,12 @@ CXMLHandler * BoundingBoxHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case BoundingBox:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Position:
+      case Dimensions:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +62,15 @@ bool BoundingBoxHandler::processEnd(const XML_Char * pszName)
     {
       case BoundingBox:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Position:
+        mpData->pBoundingBox->setPosition(*mpData->pPosition);
+        break;
+
+      case Dimensions:
+        mpData->pBoundingBox->setDimensions(*mpData->pDimensions);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +84,12 @@ bool BoundingBoxHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * BoundingBoxHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {BoundingBox, HANDLER_COUNT}},
-    {"BoundingBox", BoundingBox, BoundingBox, {AFTER, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {Position, HANDLER_COUNT}},
+    {"Position", Position, Point, {Dimensions, HANDLER_COUNT}},
+    {"Dimensions", Dimensions, Dimensions, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

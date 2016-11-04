@@ -9,10 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace CompartmentGlyph with the name type of the handler and implement the
- * three methods below.
- */
+#include "layout/CLayout.h"
+#include "model/CCompartment.h"
+
 CompartmentGlyphHandler::CompartmentGlyphHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::CompartmentGlyph)
 {
@@ -32,10 +31,45 @@ CXMLHandler * CompartmentGlyphHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case CompartmentGlyph:
-        // TODO CRITICAL Implement me!
-        break;
+      {
+        //workload
+        const char * key;
+        const char * name;
+        const char * compartment;
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        compartment = mpParser->getAttributeValue("compartment", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        mpData->pCompartmentGlyph = new CLCompartmentGlyph(name);
+        const char * objectRole = mpParser->getAttributeValue("objectRole", papszAttrs, false);
+
+        if (objectRole != NULL && objectRole[0] != 0)
+          {
+            mpData->pCompartmentGlyph->setObjectRole(objectRole);
+          }
+
+        if (compartment && compartment[0])
+          {
+            CCompartment * pComp = dynamic_cast< CCompartment * >(mpData->mKeyMap.get(compartment));
+
+            if (!pComp)
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, MCXML + 19 , "CompartmentGlyph", key);
+              }
+            else
+              {
+                mpData->pCompartmentGlyph->setModelObjectKey(pComp->getKey());
+              }
+          }
+
+        mpData->pCurrentLayout->addCompartmentGlyph(mpData->pCompartmentGlyph);
+        addFix(key, mpData->pCompartmentGlyph);
+      }
+      break;
+
+      case BoundingBox:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +89,11 @@ bool CompartmentGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case CompartmentGlyph:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        mpData->pCompartmentGlyph->setBoundingBox(*mpData->pBoundingBox);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +107,11 @@ bool CompartmentGlyphHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * CompartmentGlyphHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {CompartmentGlyph, HANDLER_COUNT}},
-    {"CompartmentGlyph", CompartmentGlyph, CompartmentGlyph, {AFTER, HANDLER_COUNT}},
+    {"CompartmentGlyph", CompartmentGlyph, CompartmentGlyph, {BoundingBox, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

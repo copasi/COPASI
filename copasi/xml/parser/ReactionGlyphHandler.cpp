@@ -9,6 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLayout.h"
+#include "model/CReaction.h"
+
 /**
  * Replace ReactionGlyph with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +35,47 @@ CXMLHandler * ReactionGlyphHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ReactionGlyph:
-        // TODO CRITICAL Implement me!
-        break;
+      {
+        //workload
+        const char * key;
+        const char * name;
+        const char * reaction;
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        reaction = mpParser->getAttributeValue("reaction", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        mpData->pReactionGlyph = new CLReactionGlyph(name);
+        const char * objectRole = mpParser->getAttributeValue("objectRole", papszAttrs, false);
+
+        if (objectRole != NULL && objectRole[0] != 0)
+          {
+            mpData->pReactionGlyph->setObjectRole(objectRole);
+          }
+
+        if (reaction && reaction[0])
+          {
+            CReaction * pReaction = dynamic_cast< CReaction * >(mpData->mKeyMap.get(reaction));
+
+            if (!pReaction)
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, MCXML + 19, "ReactionGlyph" , key);
+              }
+            else
+              {
+                mpData->pReactionGlyph->setModelObjectKey(pReaction->getKey());
+              }
+          }
+
+        mpData->pCurrentLayout->addReactionGlyph(mpData->pReactionGlyph);
+        addFix(key, mpData->pReactionGlyph);
+      }
+      break;
+
+      case BoundingBox:
+      case Curve:
+      case ListOfMetaboliteReferenceGlyphs:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +95,18 @@ bool ReactionGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case ReactionGlyph:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        mpData->pReactionGlyph->setBoundingBox(*mpData->pBoundingBox);
+        break;
+
+      case Curve:
+        mpData->pReactionGlyph->setCurve(*mpData->pCurve);
+        break;
+
+      case ListOfMetaboliteReferenceGlyphs:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +120,13 @@ bool ReactionGlyphHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ReactionGlyphHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ReactionGlyph, HANDLER_COUNT}},
-    {"ReactionGlyph", ReactionGlyph, ReactionGlyph, {AFTER, HANDLER_COUNT}},
+    {"ReactionGlyph", ReactionGlyph, ReactionGlyph, {BoundingBox, Curve, ListOfMetaboliteReferenceGlyphs, AFTER, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {Curve, ListOfMetaboliteReferenceGlyphs, AFTER, HANDLER_COUNT}},
+    {"Curve", Curve, Curve, {ListOfMetaboliteReferenceGlyphs, AFTER, HANDLER_COUNT}},
+    {"ListOfMetaboliteReferenceGlyphs", ListOfMetaboliteReferenceGlyphs, ListOfMetaboliteReferenceGlyphs, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

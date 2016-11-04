@@ -32,10 +32,12 @@ CXMLHandler * ListOfLayoutsHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case ListOfLayouts:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Layout:
+      case ListOfGlobalRenderInformation:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +57,11 @@ bool ListOfLayoutsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfLayouts:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case Layout:
+      case ListOfGlobalRenderInformation:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +75,12 @@ bool ListOfLayoutsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfLayoutsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfLayouts, HANDLER_COUNT}},
-    {"ListOfLayouts", ListOfLayouts, ListOfLayouts, {AFTER, HANDLER_COUNT}},
+    {"ListOfLayouts", ListOfLayouts, ListOfLayouts, {Layout, ListOfGlobalRenderInformation, AFTER, HANDLER_COUNT}},
+    {"Layout", Layout, Layout, {Layout, ListOfGlobalRenderInformation, AFTER, HANDLER_COUNT}},
+    {"ListOfGlobalRenderInformation", ListOfGlobalRenderInformation, ListOfGlobalRenderInformation, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

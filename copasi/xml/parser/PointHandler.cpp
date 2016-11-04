@@ -1,0 +1,94 @@
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#include "PointHandler.h"
+
+#include "copasi.h"
+
+#include "CXMLParser.h"
+#include "utilities/CCopasiMessage.h"
+
+#include "layout/CLBase.h"
+
+PointHandler::PointHandler(CXMLParser & parser, CXMLParserData & data):
+  CXMLHandler(parser, data, CXMLHandler::Point)
+{
+  init();
+
+  if (mpData->pPosition == NULL)
+    {
+      mpData->pPosition = new CLPoint();
+    }
+}
+
+// virtual
+PointHandler::~PointHandler()
+{
+  pdelete(mpData->pPosition);
+}
+
+// virtual
+CXMLHandler * PointHandler::processStart(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
+{
+  const char * attr;
+
+  switch (mCurrentElement.first)
+    {
+      case Point:
+        attr = mpParser->getAttributeValue("x", papszAttrs, "0");
+        mpData->pPosition->setX(CCopasiXMLInterface::DBL(attr));
+        attr = mpParser->getAttributeValue("y", papszAttrs, "0");
+        mpData->pPosition->setY(CCopasiXMLInterface::DBL(attr));
+        attr = mpParser->getAttributeValue("z", papszAttrs, "0");
+        mpData->pPosition->setZ(CCopasiXMLInterface::DBL(attr));
+
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
+
+  return NULL;
+}
+
+// virtual
+bool PointHandler::processEnd(const XML_Char * pszName)
+{
+  bool finished = false;
+
+  switch (mCurrentElement.first)
+    {
+      case Position:
+        finished = true;
+        break;
+
+      default:
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
+                       mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
+        break;
+    }
+
+  return finished;
+}
+
+// virtual
+CXMLHandler::sProcessLogic * PointHandler::getProcessLogic() const
+{
+  static sProcessLogic Elements[] =
+  {
+    {"BEFORE", BEFORE, BEFORE, {Position, Start, End, BasePoint1, BasePoint2, HANDLER_COUNT}},
+    {"Position", Position, Point, {AFTER, HANDLER_COUNT}},
+    {"Start", Start, Point, {AFTER, HANDLER_COUNT}},
+    {"End", End, Point, {AFTER, HANDLER_COUNT}},
+    {"BasePoint1", BasePoint1, Point, {AFTER, HANDLER_COUNT}},
+    {"BasePoint2", BasePoint2, Point, {AFTER, HANDLER_COUNT}},
+    {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
+  };
+
+  return Elements;
+}

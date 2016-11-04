@@ -85,50 +85,13 @@ CXMLParser::CXMLParser(CVersion & version) :
   mCharacterData(),
   mCharacterDataEncoding(CCopasiXMLInterface::none),
   mElementHandlerStack()
-  // mCharacterDataElement(*this, this->mData),
-  // mListOfUnsupportedAnnotationsElement(*this, this->mData),
-  // mCommentElement(*this, this->mData),
-  // mMiriamAnnotationElement(*this, this->mData)
 {
   create();
 
+  mData.pVersion = & version;
+
   mpFactory = new CXMLHandlerFactory(*this, mData);
   mElementHandlerStack.push(mpFactory->getHandler(CXMLHandler::COPASI));
-
-  //  mCommon.pParser = this;
-  mData.pVersion = & version;
-  mData.pModel = NULL;
-  mData.pFunctionList = NULL;
-  mData.pFunction = NULL;
-  mData.pTaskList = NULL;
-  mData.pReportList = NULL;
-  mData.pReport = NULL;
-  mData.mParameterGroupLevel = -1;
-  mData.pGUI = NULL;
-
-  mData.pPlotList = NULL;
-  mData.UnmappedKeyParameters.clear();
-
-  mData.pLayoutList = NULL;
-  mData.pCurrentLayout = NULL;
-  mData.pCompartmentGlyph = NULL;
-  mData.pMetaboliteGlyph = NULL;
-  mData.pReactionGlyph = NULL;
-  mData.pTextGlyph = NULL;
-  //mCommon.pAdditionalGO = NULL;
-  mData.pGeneralGlyph = NULL;
-  mData.pCurve = NULL;
-  mData.pLineSegment = NULL;
-  mData.pMetaboliteReferenceGlyph = NULL;
-  mData.pRenderInformation = NULL;
-  mData.pGradient = NULL;
-  mData.pLineEnding = NULL;
-  mData.pStyle = NULL;
-  mData.pGroup = NULL;
-  mData.pText = NULL;
-  mData.pListOfCurveElements = NULL;
-  mData.pUnitDefinitionImportList = NULL;
-  mData.pCurrentUnitDefinition = NULL;
 
   enableElementHandler(true);
 }

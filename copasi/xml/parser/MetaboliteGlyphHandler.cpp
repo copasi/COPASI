@@ -9,6 +9,9 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLayout.h"
+#include "model/CMetab.h"
+
 /**
  * Replace MetaboliteGlyph with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +35,45 @@ CXMLHandler * MetaboliteGlyphHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case MetaboliteGlyph:
-        // TODO CRITICAL Implement me!
-        break;
+      {
+        //workload
+        const char * key;
+        const char * name;
+        const char * metabolite;
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        metabolite = mpParser->getAttributeValue("metabolite", papszAttrs, false);
 
-        // TODO CRITICAL Implement me!
+        mpData->pMetaboliteGlyph = new CLMetabGlyph(name);
+        const char * objectRole = mpParser->getAttributeValue("objectRole", papszAttrs, false);
+
+        if (objectRole != NULL && objectRole[0] != 0)
+          {
+            mpData->pMetaboliteGlyph->setObjectRole(objectRole);
+          }
+
+        if (metabolite && metabolite[0])
+          {
+            CMetab * pMetab = dynamic_cast< CMetab * >(mpData->mKeyMap.get(metabolite));
+
+            if (!pMetab)
+              {
+                CCopasiMessage(CCopasiMessage::WARNING, MCXML + 19, "MetaboliteGlyph", key);
+              }
+            else
+              {
+                mpData->pMetaboliteGlyph->setModelObjectKey(pMetab->getKey());
+              }
+          }
+
+        mpData->pCurrentLayout->addMetaboliteGlyph(mpData->pMetaboliteGlyph);
+        addFix(key, mpData->pMetaboliteGlyph);
+      }
+      break;
+
+      case BoundingBox:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +93,11 @@ bool MetaboliteGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case MetaboliteGlyph:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        mpData->pMetaboliteGlyph->setBoundingBox(*mpData->pBoundingBox);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +111,11 @@ bool MetaboliteGlyphHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * MetaboliteGlyphHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {MetaboliteGlyph, HANDLER_COUNT}},
-    {"MetaboliteGlyph", MetaboliteGlyph, MetaboliteGlyph, {AFTER, HANDLER_COUNT}},
+    {"MetaboliteGlyph", MetaboliteGlyph, MetaboliteGlyph, {BoundingBox, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

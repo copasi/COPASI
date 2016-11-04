@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLCurve.h"
+
 /**
  * Replace ListOfCurveSegments with the name type of the handler and implement the
  * three methods below.
@@ -17,25 +19,51 @@ ListOfCurveSegmentsHandler::ListOfCurveSegmentsHandler(CXMLParser & parser, CXML
   CXMLHandler(parser, data, CXMLHandler::ListOfCurveSegments)
 {
   init();
+
+  if (mpData->pLineSegment == NULL)
+    {
+      mpData->pLineSegment = new CLLineSegment();
+    }
 }
 
 // virtual
 ListOfCurveSegmentsHandler::~ListOfCurveSegmentsHandler()
-{}
+{
+  pdelete(mpData->pLineSegment);
+}
 
 // virtual
 CXMLHandler * ListOfCurveSegmentsHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * type;
 
   switch (mCurrentElement.first)
     {
       case ListOfCurveSegments:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case CurveSegment:
+        type = mpParser->getAttributeValue("xsi:type", papszAttrs);
+        mpData->pLineSegment->setIsBezier(!strcmp(type, "CubicBezier"));
+
+        if (mpData->pLineSegment->isBezier())
+          pHandlerToCall = getHandler(CubicBezier);
+        else
+          pHandlerToCall = getHandler(LineSegment);
+
+        break;
+
+      case LineSegment:
+        mpData->pLineSegment->setIsBezier(false);
+        pHandlerToCall = getHandler(LineSegment);
+        break;
+
+      case CubicBezier:
+        mpData->pLineSegment->setIsBezier(true);
+        pHandlerToCall = getHandler(CubicBezier);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +83,13 @@ bool ListOfCurveSegmentsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfCurveSegments:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case CurveSegment:
+      case LineSegment:
+      case CubicBezier:
+        mpData->pCurve->addCurveSegment(mpData->pLineSegment);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +103,13 @@ bool ListOfCurveSegmentsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfCurveSegmentsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfCurveSegments, HANDLER_COUNT}},
-    {"ListOfCurveSegments", ListOfCurveSegments, ListOfCurveSegments, {AFTER, HANDLER_COUNT}},
+    {"ListOfCurveSegments", ListOfCurveSegments, ListOfCurveSegments, {CurveSegment, LineSegment, CubicBezier, AFTER, HANDLER_COUNT}},
+    {"CurveSegment", CurveSegment, LineSegment, {CurveSegment, LineSegment, CubicBezier, AFTER, HANDLER_COUNT}},
+    {"LineSegment", LineSegment, LineSegment, {CurveSegment, LineSegment, CubicBezier, AFTER, HANDLER_COUNT}},
+    {"CubicBezier", CubicBezier, CubicBezier, {CurveSegment, LineSegment, CubicBezier, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

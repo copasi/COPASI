@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLReactionGlyph.h"
+
 /**
  * Replace MetaboliteReferenceGlyph with the name type of the handler and implement the
  * three methods below.
@@ -32,10 +34,51 @@ CXMLHandler * MetaboliteReferenceGlyphHandler::processStart(const XML_Char * psz
   switch (mCurrentElement.first)
     {
       case MetaboliteReferenceGlyph:
-        // TODO CRITICAL Implement me!
-        break;
+      {
+        //workload
+        const char * key;
+        const char * name;
+        const char * metaboliteGlyph;
+        const char * role;
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        metaboliteGlyph = mpParser->getAttributeValue("metaboliteGlyph", papszAttrs);
+        role = mpParser->getAttributeValue("role", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        mpData->pMetaboliteReferenceGlyph = new CLMetabReferenceGlyph(name);
+        const char * objectRole = mpParser->getAttributeValue("objectRole", papszAttrs, false);
+
+        if (objectRole != NULL && objectRole[0] != 0)
+          {
+            mpData->pMetaboliteReferenceGlyph->setObjectRole(objectRole);
+          }
+
+        CLMetabGlyph * pMetabGlyph = dynamic_cast< CLMetabGlyph * >(mpData->mKeyMap.get(metaboliteGlyph));
+
+        //if (!pMetabGlyph) fatalError();
+
+        if (pMetabGlyph)
+          mpData->pMetaboliteReferenceGlyph->setMetabGlyphKey(pMetabGlyph->getKey());
+
+        //interpret role string
+        C_INT32 i;
+
+        for (i = 0; (CLMetabReferenceGlyph::XMLRole[i] != "") && (CLMetabReferenceGlyph::XMLRole[i] != role); ++i) {};
+
+        if (CLMetabReferenceGlyph::XMLRole[i] == "")
+          mpData->pMetaboliteReferenceGlyph->setRole(CLMetabReferenceGlyph::UNDEFINED);
+        else
+          mpData->pMetaboliteReferenceGlyph->setRole(CLMetabReferenceGlyph::Role(i));
+
+        mpData->pReactionGlyph->addMetabReferenceGlyph(mpData->pMetaboliteReferenceGlyph);
+        addFix(key, mpData->pMetaboliteReferenceGlyph);
+      }
+      break;
+
+      case BoundingBox:
+      case Curve:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +98,15 @@ bool MetaboliteReferenceGlyphHandler::processEnd(const XML_Char * pszName)
     {
       case MetaboliteReferenceGlyph:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        mpData->pMetaboliteReferenceGlyph->setBoundingBox(*mpData->pBoundingBox);
+        break;
+
+      case Curve:
+        mpData->pMetaboliteReferenceGlyph->setCurve(*mpData->pCurve);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +120,12 @@ bool MetaboliteReferenceGlyphHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * MetaboliteReferenceGlyphHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {MetaboliteReferenceGlyph, HANDLER_COUNT}},
-    {"MetaboliteReferenceGlyph", MetaboliteReferenceGlyph, MetaboliteReferenceGlyph, {AFTER, HANDLER_COUNT}},
+    {"MetaboliteReferenceGlyph", MetaboliteReferenceGlyph, MetaboliteReferenceGlyph, {BoundingBox, Curve, AFTER, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {Curve, AFTER, HANDLER_COUNT}},
+    {"Curve", Curve, Curve, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 
