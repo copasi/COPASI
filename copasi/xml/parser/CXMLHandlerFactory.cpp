@@ -22,7 +22,6 @@
 #include "COPASIHandler.h"
 #include "CubicBezierHandler.h"
 #include "CurveHandler.h"
-#include "DelayExpressionHandler.h"
 #include "DimensionsHandler.h"
 #include "EllipseHandler.h"
 #include "EventHandler.h"
@@ -30,7 +29,6 @@
 #include "GroupHandler.h"
 #include "GUIHandler.h"
 #include "ImageHandler.h"
-#include "InitialExpressionHandler.h"
 #include "InitialStateHandler.h"
 #include "KineticLawHandler.h"
 #include "LayoutHandler.h"
@@ -59,7 +57,6 @@
 #include "ModelParameterSetHandler.h"
 #include "ModelValueHandler.h"
 #include "ModifierHandler.h"
-#include "NoiseExpressionHandler.h"
 #include "ObjectHandler.h"
 #include "ParameterHandler.h"
 #include "ParameterDescriptionHandler.h"
@@ -69,7 +66,6 @@
 #include "PlotSpecificationHandler.h"
 #include "PointHandler.h"
 #include "PolygonHandler.h"
-#include "PriorityExpressionHandler.h"
 #include "ProductHandler.h"
 #include "RadialGradientHandler.h"
 #include "ReactionHandler.h"
@@ -196,10 +192,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new CurveHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::DelayExpression:
-        pHandler = new DelayExpressionHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::Dimensions:
         pHandler = new DimensionsHandler(*mpParser, *mpData);
         break;
@@ -226,10 +218,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::Image:
         pHandler = new ImageHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::InitialExpression:
-        pHandler = new InitialExpressionHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::InitialState:
@@ -584,10 +572,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new ModifierHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::NoiseExpression:
-        pHandler = new NoiseExpressionHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::Object:
         pHandler = new ObjectHandler(*mpParser, *mpData);
         break;
@@ -622,10 +606,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::Point:
         pHandler = new PointHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::PriorityExpression:
-        pHandler = new PriorityExpressionHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::Product:

@@ -148,7 +148,6 @@ bool ParameterDescriptionHandler::processEnd(const XML_Char * pszName)
     {
       case ParameterDescription:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
       default:
