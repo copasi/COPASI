@@ -127,7 +127,8 @@ std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
   if (pObject == mpIValueReference ||
       pObject == mpValueReference)
     {
-      return mpModel->getQuantityUnit();
+      // Value and initial value are always in items '#';
+      return "#";
     }
   else if (pObject == mpTTReference)
     {
