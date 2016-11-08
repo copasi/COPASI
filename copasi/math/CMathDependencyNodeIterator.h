@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,7 +55,7 @@ public:
    * combination of the enumeration value State. Please note the iterator will always
    * return and End and Recursive
    */
-  typedef CMathFlags< State > Flag;
+  typedef CFlags< State > Flag;
 
 private:
   /**

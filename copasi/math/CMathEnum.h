@@ -8,78 +8,12 @@
 
 #include <map>
 #include <vector>
+#include "copasi/utilities/CFlags.h"
 
 class CCopasiObject;
 class CMathObject;
 class CEvaluationNode;
 class CObjectInterface;
-
-template <class Enum> class CMathFlags
-{
-public:
-  CMathFlags():
-    mFlags(0)
-  {}
-
-  CMathFlags(const CMathFlags & src):
-    mFlags(src.mFlags)
-  {}
-
-  CMathFlags(const Enum & flag):
-    mFlags((int) flag)
-  {}
-
-  CMathFlags(const int & flag):
-    mFlags(flag)
-  {}
-
-  ~CMathFlags() {}
-
-  operator int () const
-  {
-    return mFlags;
-  }
-
-  Enum operator & (const Enum & flag) const
-  {
-    return (Enum)(mFlags & flag);
-  }
-
-  CMathFlags operator & (const CMathFlags & mask) const
-  {
-    return (mFlags & mask);
-  }
-
-  CMathFlags operator & (const int & mask) const
-  {
-    return (mFlags & mask);
-  }
-
-  CMathFlags & operator = (const CMathFlags & rhs)
-  {
-    mFlags = rhs.mFlags;
-    return *this;
-  }
-
-  CMathFlags operator | (const Enum & flag) const
-  {
-    return (mFlags | flag);
-  }
-
-  CMathFlags operator | (const CMathFlags & other) const
-  {
-    return (mFlags | other);
-  }
-
-  CMathFlags & operator |= (const CMathFlags & other)
-  {
-    mFlags |= other.mFlags;
-    return *this;
-  }
-
-private:
-  int mFlags;
-};
 
 class CMath
 {
@@ -210,7 +144,7 @@ public:
     DelayValues = 0x20
   };
 
-  typedef CMathFlags< SimulationContext > SimulationContextFlag;
+  typedef CFlags< SimulationContext > SimulationContextFlag;
 
   enum ValueType
   {
@@ -281,7 +215,7 @@ public:
     ToggleInequality = 0x3
   };
 
-  typedef CMathFlags< eStateChange > StateChange;
+  typedef CFlags< eStateChange > StateChange;
 
   template < class Type > class Variables: public std::vector< Type >
   {

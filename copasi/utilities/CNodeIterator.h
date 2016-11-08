@@ -1,4 +1,4 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,7 +16,7 @@
 #include <stack>
 #include <limits>
 
-#include "copasi/math/CMathEnum.h"
+#include "copasi/utilities/CFlags.h"
 
 /**
  * Iterator processing modes determining to which the method
@@ -34,7 +34,7 @@ public:
     End = 0x08
   };
 
-  typedef CMathFlags< State > Flag;
+  typedef CFlags< State > Flag;
 };
 
 template < class Node, class Context > class CNodeContextIterator
