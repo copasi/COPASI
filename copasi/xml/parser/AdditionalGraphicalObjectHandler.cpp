@@ -9,10 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace AdditionalGraphicalObject with the name type of the handler and implement the
- * three methods below.
- */
+#include "layout/CLayout.h"
+
 AdditionalGraphicalObjectHandler::AdditionalGraphicalObjectHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::AdditionalGraphicalObject)
 {
@@ -28,14 +26,31 @@ CXMLHandler * AdditionalGraphicalObjectHandler::processStart(const XML_Char * ps
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * key;
+  const char * name;
+  const char * objectRole;
 
   switch (mCurrentElement.first)
     {
       case AdditionalGraphicalObject:
-        // TODO CRITICAL Implement me!
+        key = mpParser->getAttributeValue("key", papszAttrs);
+        name = mpParser->getAttributeValue("name", papszAttrs);
+        objectRole = mpParser->getAttributeValue("objectRole", papszAttrs, false);
+
+        mpData->pGeneralGlyph = new CLGeneralGlyph(name);
+
+        if (objectRole != NULL && objectRole[0] != 0)
+          {
+            mpData->pGeneralGlyph->setObjectRole(objectRole);
+          }
+
+        mpData->pCurrentLayout->addGeneralGlyph(mpData->pGeneralGlyph);
+        addFix(key, mpData->pGeneralGlyph);
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +70,11 @@ bool AdditionalGraphicalObjectHandler::processEnd(const XML_Char * pszName)
     {
       case AdditionalGraphicalObject:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case BoundingBox:
+        mpData->pGeneralGlyph->setBoundingBox(*mpData->pBoundingBox);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +88,11 @@ bool AdditionalGraphicalObjectHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * AdditionalGraphicalObjectHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {AdditionalGraphicalObject, HANDLER_COUNT}},
-    {"AdditionalGraphicalObject", AdditionalGraphicalObject, AdditionalGraphicalObject, {AFTER, HANDLER_COUNT}},
+    {"AdditionalGraphicalObject", AdditionalGraphicalObject, AdditionalGraphicalObject, {BoundingBox, HANDLER_COUNT}},
+    {"BoundingBox", BoundingBox, BoundingBox, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

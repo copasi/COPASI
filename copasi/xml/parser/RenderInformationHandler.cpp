@@ -9,10 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace RenderInformation with the name type of the handler and implement the
- * three methods below.
- */
+#include "layout/CLayout.h"
+
 RenderInformationHandler::RenderInformationHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::RenderInformation)
 {
@@ -28,14 +26,32 @@ CXMLHandler * RenderInformationHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * background;
 
   switch (mCurrentElement.first)
     {
       case RenderInformation:
-        // TODO CRITICAL Implement me!
+        background = mpParser->getAttributeValue("backgroundColor", papszAttrs);
+        assert(background != NULL);
+
+        mpData->pCurrentLayout->addLocalRenderInformation(new CLLocalRenderInformation());
+        // delete the global render information again since the addLocalRenderInformationObject method made a copy
+        assert(mpData->pCurrentLayout->getListOfLocalRenderInformationObjects().size() > 0);
+        mpData->pRenderInformation = &mpData->pCurrentLayout->getListOfLocalRenderInformationObjects()[mpData->pCurrentLayout->getListOfLocalRenderInformationObjects().size() - 1];
+
+        if (background != NULL)
+          {
+            mpData->pRenderInformation->setBackgroundColor(background);
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfColorDefinitions:
+      case ListOfGradientDefinitions:
+      case ListOfLineEndings:
+      case ListOfStyles:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +71,13 @@ bool RenderInformationHandler::processEnd(const XML_Char * pszName)
     {
       case RenderInformation:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case ListOfColorDefinitions:
+      case ListOfGradientDefinitions:
+      case ListOfLineEndings:
+      case ListOfStyles:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +91,14 @@ bool RenderInformationHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * RenderInformationHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {RenderInformation, HANDLER_COUNT}},
-    {"RenderInformation", RenderInformation, RenderInformation, {AFTER, HANDLER_COUNT}},
+    {"RenderInformation", RenderInformation, RenderInformation, {ListOfColorDefinitions, ListOfGradientDefinitions, ListOfLineEndings, ListOfStyles, AFTER, HANDLER_COUNT}},
+    {"ListOfColorDefinitions", ListOfColorDefinitions, ListOfColorDefinitions, {ListOfGradientDefinitions, ListOfLineEndings, ListOfStyles, AFTER, HANDLER_COUNT}},
+    {"ListOfGradientDefinitions", ListOfGradientDefinitions, ListOfGradientDefinitions, {ListOfLineEndings, ListOfStyles, AFTER, HANDLER_COUNT}},
+    {"ListOfLineEndings", ListOfLineEndings, ListOfLineEndings, {ListOfStyles, AFTER, HANDLER_COUNT}},
+    {"ListOfStyles", ListOfStyles, ListOfStyles, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

@@ -66,6 +66,10 @@ private:
    */
   std::string mDerivedElement;
 
+  /**
+   * A stack of groups which contains the hierarchy of currently
+   * processed groups.
+   */
   std::stack< CCopasiParameterGroup * > mParameterGroupStack;
 };
 

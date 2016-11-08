@@ -5,24 +5,28 @@
 
 #include "copasi.h"
 
-#include "PolygonHandler.h"
+#include "RenderCurveHandler.h"
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-#include "layout/CLPolygon.h"
+#include "layout/CLRenderCurve.h"
 
-PolygonHandler::PolygonHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::Polygon)
+/**
+ * Replace RenderCurve with the name type of the handler and implement the
+ * three methods below.
+ */
+RenderCurveHandler::RenderCurveHandler(CXMLParser & parser, CXMLParserData & data):
+  CXMLHandler(parser, data, CXMLHandler::RenderCurve)
 {
   init();
 }
 
 // virtual
-PolygonHandler::~PolygonHandler()
+RenderCurveHandler::~RenderCurveHandler()
 {}
 
 // virtual
-CXMLHandler * PolygonHandler::processStart(const XML_Char * pszName,
+CXMLHandler * RenderCurveHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
@@ -30,69 +34,56 @@ CXMLHandler * PolygonHandler::processStart(const XML_Char * pszName,
   const char * Stroke;
   const char * StrokeWidth;
   const char * StrokeDashArray;
-  const char * Fill;
-  const char * FillRule;
+  const char * StartHead;
+  const char * EndHead;
 
   switch (mCurrentElement.first)
     {
-      case Polygon:
-        mpData->pPolygon =  new CLPolygon();
+      case RenderCurve:
+        mpData->pRenderCurve = new CLRenderCurve();
 
         Transform = mpParser->getAttributeValue("transform", papszAttrs, false);
         Stroke = mpParser->getAttributeValue("stroke", papszAttrs, false);
         StrokeWidth = mpParser->getAttributeValue("stroke-width", papszAttrs, false);
         StrokeDashArray = mpParser->getAttributeValue("stroke-dasharray", papszAttrs, false);
-        Fill = mpParser->getAttributeValue("fill", papszAttrs, false);
-        FillRule = mpParser->getAttributeValue("fill-rule", papszAttrs, false);
+        StartHead = mpParser->getAttributeValue("startHead", papszAttrs, false);
+        EndHead = mpParser->getAttributeValue("endHead", papszAttrs, false);
 
         if (Transform != NULL)
           {
-            mpData->pPolygon->parseTransformation(Transform);
+            mpData->pRenderCurve->parseTransformation(Transform);
           }
 
         if (Stroke != NULL)
           {
-            mpData->pPolygon->setStroke(Stroke);
+            mpData->pRenderCurve->setStroke(Stroke);
           }
 
         if (StrokeWidth != NULL)
           {
             double width = strToDouble(StrokeWidth, NULL);
-            mpData->pPolygon->setStrokeWidth(width);
+            mpData->pRenderCurve->setStrokeWidth(width);
           }
 
         if (StrokeDashArray != NULL)
           {
-            mpData->pPolygon->parseDashArray(StrokeDashArray);
+            mpData->pRenderCurve->parseDashArray(StrokeDashArray);
           }
 
-        if (Fill != NULL)
+        if (StartHead != NULL)
           {
-            mpData->pPolygon->setFillColor(Fill);
+            mpData->pRenderCurve->setStartHead(StartHead);
           }
 
-        if (FillRule != NULL)
+        if (EndHead != NULL)
           {
-            std::string f(FillRule);
-
-            if (f == "nonzero")
-              {
-                mpData->pPolygon->setFillRule(CLGraphicalPrimitive2D::NONZERO);
-              }
-            else if (f == "evenodd")
-              {
-                mpData->pPolygon->setFillRule(CLGraphicalPrimitive2D::EVENODD);
-              }
-            else
-              {
-                mpData->pPolygon->setFillRule(CLGraphicalPrimitive2D::INHERIT);
-              }
+            mpData->pRenderCurve->setEndHead(EndHead);
           }
 
         break;
 
       case ListOfElements:
-        mpData->pListOfCurveElements = mpData->pPolygon->getListOfElements();
+        mpData->pListOfCurveElements = mpData->pRenderCurve->getListOfCurveElements();
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -106,13 +97,13 @@ CXMLHandler * PolygonHandler::processStart(const XML_Char * pszName,
 }
 
 // virtual
-bool PolygonHandler::processEnd(const XML_Char * pszName)
+bool RenderCurveHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
   switch (mCurrentElement.first)
     {
-      case Polygon:
+      case RenderCurve:
         finished = true;
         break;
 
@@ -129,12 +120,12 @@ bool PolygonHandler::processEnd(const XML_Char * pszName)
 }
 
 // virtual
-CXMLHandler::sProcessLogic * PolygonHandler::getProcessLogic() const
+CXMLHandler::sProcessLogic * RenderCurveHandler::getProcessLogic() const
 {
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, BEFORE, {Polygon, HANDLER_COUNT}},
-    {"Polygon", Polygon, Polygon, {ListOfElements, HANDLER_COUNT}},
+    {"BEFORE", BEFORE, BEFORE, {RenderCurve, HANDLER_COUNT}},
+    {"RenderCurve", RenderCurve, RenderCurve, {ListOfElements, HANDLER_COUNT}},
     {"ListOfElements", ListOfElements, ListOfElements, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };

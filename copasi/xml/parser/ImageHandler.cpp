@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLImage.h"
+
 /**
  * Replace Image with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,35 @@ ImageHandler::~ImageHandler()
 CXMLHandler * ImageHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Transform;
+  const char * X;
+  const char * Y;
+  const char * Z;
+  const char * WIDTH;
+  const char * HEIGHT;
+  const char * HREF;
 
   switch (mCurrentElement.first)
     {
       case Image:
-        // TODO CRITICAL Implement me!
-        break;
+        Transform = mpParser->getAttributeValue("transform", papszAttrs, false);
+        X = mpParser->getAttributeValue("x", papszAttrs);
+        Y = mpParser->getAttributeValue("y", papszAttrs);
+        Z = mpParser->getAttributeValue("z", papszAttrs, "0.0");
+        WIDTH = mpParser->getAttributeValue("width", papszAttrs);
+        HEIGHT = mpParser->getAttributeValue("height", papszAttrs);
+        HREF = mpParser->getAttributeValue("href", papszAttrs);
+        mpData->pImage = new CLImage();
 
-        // TODO CRITICAL Implement me!
+        if (Transform != NULL)
+          {
+            mpData->pImage->parseTransformation(Transform);
+          }
+
+        mpData->pImage->setCoordinates(CLRelAbsVector(X), CLRelAbsVector(Y), CLRelAbsVector(Z));
+        mpData->pImage->setDimensions(CLRelAbsVector(WIDTH), CLRelAbsVector(HEIGHT));
+        mpData->pImage->setImageReference(HREF);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +65,7 @@ CXMLHandler * ImageHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +77,7 @@ bool ImageHandler::processEnd(const XML_Char * pszName)
     {
       case Image:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +91,6 @@ bool ImageHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ImageHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Image, HANDLER_COUNT}},

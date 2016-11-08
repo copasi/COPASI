@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_ListOfColorDefinitionsHandler
-#define COPASI_ListOfColorDefinitionsHandler
+#ifndef COPASI_GradientStopHandler
+#define COPASI_GradientStopHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class ListOfColorDefinitionsHandler : public CXMLHandler
+class GradientStopHandler : public CXMLHandler
 {
 private:
-  ListOfColorDefinitionsHandler();
+  GradientStopHandler();
 
 public:
   /**
@@ -19,12 +19,12 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  ListOfColorDefinitionsHandler(CXMLParser & parser, CXMLParserData & data);
+  GradientStopHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~ListOfColorDefinitionsHandler();
+  virtual ~GradientStopHandler();
 
 protected:
 
@@ -51,4 +51,4 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 };
 
-#endif //COPASI_ListOfColorDefinitionsHandler
+#endif //COPASI_GradientStopHandler

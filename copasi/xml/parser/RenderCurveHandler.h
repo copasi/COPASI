@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_ListOfRenderInformationHandler
-#define COPASI_ListOfRenderInformationHandler
+#ifndef COPASI_RenderCurveHandler
+#define COPASI_RenderCurveHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class ListOfRenderInformationHandler : public CXMLHandler
+class RenderCurveHandler : public CXMLHandler
 {
 private:
-  ListOfRenderInformationHandler();
+  RenderCurveHandler();
 
 public:
   /**
@@ -19,12 +19,12 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  ListOfRenderInformationHandler(CXMLParser & parser, CXMLParserData & data);
+  RenderCurveHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~ListOfRenderInformationHandler();
+  virtual ~RenderCurveHandler();
 
 protected:
 
@@ -51,4 +51,4 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 };
 
-#endif //COPASI_ListOfRenderInformationHandler
+#endif //COPASI_RenderCurveHandler

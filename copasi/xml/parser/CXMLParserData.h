@@ -65,6 +65,11 @@ class CLRenderPoint;
 class CLDimensions;
 class CLBoundingBox;
 class CLPoint;
+class CLRenderCurve;
+class CLPolygon;
+class CLRectangle;
+class CLEllipse;
+class CLImage;
 class CUnitDefinitionDB;
 class CUnitDefinition;
 class CKeyFactory;
@@ -269,6 +274,12 @@ public:
   CLBoundingBox *pBoundingBox;
   CLPoint * pPosition;
   std::vector<CLRenderPoint*>* pListOfCurveElements;
+  CLRenderCurve * pRenderCurve;
+  CLPolygon * pPolygon;
+  CLRectangle * pRectangle;
+  CLEllipse * pEllipse;
+  CLImage * pImage;
+  CLText * pRenderText;
 
   /**
    * A map that stores a vector of tasks that reference a certain key

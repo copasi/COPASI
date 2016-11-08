@@ -9,10 +9,6 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace ListOfGradientDefinitions with the name type of the handler and implement the
- * three methods below.
- */
 ListOfGradientDefinitionsHandler::ListOfGradientDefinitionsHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::ListOfGradientDefinitions)
 {
@@ -32,10 +28,12 @@ CXMLHandler * ListOfGradientDefinitionsHandler::processStart(const XML_Char * ps
   switch (mCurrentElement.first)
     {
       case ListOfGradientDefinitions:
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case RadialGradient:
+      case LinearGradient:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -55,10 +53,11 @@ bool ListOfGradientDefinitionsHandler::processEnd(const XML_Char * pszName)
     {
       case ListOfGradientDefinitions:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
-        // TODO CRITICAL Implement me!
+      case RadialGradient:
+      case LinearGradient:
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +71,12 @@ bool ListOfGradientDefinitionsHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ListOfGradientDefinitionsHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ListOfGradientDefinitions, HANDLER_COUNT}},
-    {"ListOfGradientDefinitions", ListOfGradientDefinitions, ListOfGradientDefinitions, {AFTER, HANDLER_COUNT}},
+    {"ListOfGradientDefinitions", ListOfGradientDefinitions, ListOfGradientDefinitions, {RadialGradient, LinearGradient, AFTER, HANDLER_COUNT}},
+    {"RadialGradient", RadialGradient, RadialGradient, {RadialGradient, LinearGradient, AFTER, HANDLER_COUNT}},
+    {"LinearGradient", LinearGradient, LinearGradient, {RadialGradient, LinearGradient, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

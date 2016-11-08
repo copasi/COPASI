@@ -230,36 +230,40 @@
           * </element>
         * </element>
       * </element>
-      <element name="ListOfAdditionalGraphicalObjects"> {0,1}
-        <element name="AdditionalGraphicalObject"> {1, inf}
-          <element name="BoundingBox"> {0,1} 
-            <element name="Position"/> {1} 
-            <element name="Dimensions"/> {1} 
-          </element>
-        </element>
-      </element>
-      <element name="ListOfRenderInformation"> {0,1}
-        <element name="RenderInformation"> {1, inf}
-          <element name="ListOfColorDefinitions">  {0,1}
-            <element name="ColorDefinition"/> {1, inf}
-          </element>
-          <element name="ListOfGradientDefinitions"> {0,1}
-            <choice> {1, inf}
-              <element name="RadialGradient"> {1}
-              <element name="LinearGradient"> {1}
-            </choice>
-          </element>
-          <element name="ListOfLineEndings"> {0,1}
-            <element name="LineEnding"> {1, inf}
-              <element name="BoundingBox"> {0,1} 
-                <element name="Position"/> {1} 
-                <element name="Dimensions"/> {1} 
-              </element>
-              <element name="Group"> {1}
-                <elementGroup name="layoutGroup"> {1}
-              </element>
-            </element>
-          </element>
+      * <element name="ListOfAdditionalGraphicalObjects"> {0,1}
+        * <element name="AdditionalGraphicalObject"> {1, inf}
+          * <element name="BoundingBox"> {0,1} 
+            * <element name="Position"/> {1} 
+            * <element name="Dimensions"/> {1} 
+          * </element>
+        * </element>
+      * </element>
+      * <element name="ListOfRenderInformation"> {0,1}
+        * <element name="RenderInformation"> {1, inf}
+          * <element name="ListOfColorDefinitions">  {0,1}
+            * <element name="ColorDefinition"/> {1, inf}
+          * </element>
+          * <element name="ListOfGradientDefinitions"> {0,1}
+            * <choice> {1, inf}
+              * <element name="RadialGradient"> {1}
+                * <element name="Stop"/> {1, inf}
+              * </element>
+              * <element name="LinearGradient"> {1}
+                * <element name="Stop"/> {1, inf}
+              * </element>
+            * </choice>
+          * </element>
+          * <element name="ListOfLineEndings"> {0,1}
+            * <element name="LineEnding"> {1, inf}
+              * <element name="BoundingBox"> {0,1} 
+                * <element name="Position"/> {1} 
+                * <element name="Dimensions"/> {1} 
+              * </element>
+              * <element name="Group"> {1}
+                * <elementGroup name="layoutGroup"> {1}
+              * </element>
+            * </element>
+          * </element>
           <element name="ListOfStyles"> {0,1}
             <element name="Style"/> {1, inf}
           </element>
@@ -344,30 +348,30 @@
   </choice>
 </elementGroup>
 
-<elementGroup name="layoutGroup">
-  <choice>
-    <element name="Group">
+* <elementGroup name="layoutGroup">
+  * <choice>
+    * <element name="Group">
       <elementGroup name="layoutGroup">
-    </element>
-    <element name="Text"/> {1}
-    <element name="Rectangle"/> {1}
-    <element name="Ellipse"/> {1}
-    <element name="Polygon"> {1}
-      <element name="ListOfElements"> {1}
-        <choice> {1, inf}
-          <element name="RenderPoint"/> {1} 
-          <element name="RenderCubicBezier"/> {1}  
-        </choice>
-      </element>
-    </element>
-    <element name="Image"/> {1} 
-    <element name="Curve"> {1} 
-      <element name="ListOfElements"> {1}
-        <choice> {1, inf}
-          <element name="RenderPoint"/> {1} 
-          <element name="RenderCubicBezier"/> {1}  
-        </choice>
-      </element>
-    </element>
-  </choice>
-</elementGroup>
+    * </element>
+    * <element name="Text"/> {1}
+    * <element name="Rectangle"/> {1}
+    * <element name="Ellipse"/> {1}
+    * <element name="Image"/> {1} 
+    * <element name="Curve"> {1} 
+      * <element name="ListOfElements"> {1}
+        * <choice> {1, inf}
+          * <element name="RenderPoint"/> {1} 
+          * <element name="RenderCubicBezier"/> {1}  
+        * </choice>
+      * </element>
+    * </element>
+    * <element name="Polygon"> {1}
+      * <element name="ListOfElements"> {1}
+        * <choice> {1, inf}
+          * <element name="RenderPoint"/> {1} 
+          * <element name="RenderCubicBezier"/> {1}  
+        * </choice>
+      * </element>
+    * </element>
+  * </choice>
+* </elementGroup>

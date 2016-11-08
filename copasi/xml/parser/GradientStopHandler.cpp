@@ -5,37 +5,40 @@
 
 #include "copasi.h"
 
-#include "TextHandler.h"
+#include "GradientStopHandler.h"
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace Text with the name type of the handler and implement the
- * three methods below.
- */
-TextHandler::TextHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::Text)
+#include "layout/CLayout.h"
+
+GradientStopHandler::GradientStopHandler(CXMLParser & parser, CXMLParserData & data):
+  CXMLHandler(parser, data, CXMLHandler::GradientStop)
 {
   init();
 }
 
 // virtual
-TextHandler::~TextHandler()
+GradientStopHandler::~GradientStopHandler()
 {}
 
 // virtual
-CXMLHandler * TextHandler::processStart(const XML_Char * pszName,
-                                        const XML_Char ** papszAttrs)
+CXMLHandler * GradientStopHandler::processStart(const XML_Char * pszName,
+    const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Offset;
+  const char * StopColor;
+  CLGradientStop Stop;
 
   switch (mCurrentElement.first)
     {
-      case Text:
-        // TODO CRITICAL Implement me!
-        break;
+      case GradientStop:
+        Offset = mpParser->getAttributeValue("offset", papszAttrs);
+        StopColor = mpParser->getAttributeValue("stop-color", papszAttrs);
 
-        // TODO CRITICAL Implement me!
+        Stop.setOffset(Offset);
+        Stop.setStopColor(StopColor);
+        mpData->pGradient->addGradientStop(&Stop);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,22 +46,19 @@ CXMLHandler * TextHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
-bool TextHandler::processEnd(const XML_Char * pszName)
+bool GradientStopHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
   switch (mCurrentElement.first)
     {
-      case Text:
+      case GradientStop:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -70,14 +70,12 @@ bool TextHandler::processEnd(const XML_Char * pszName)
 }
 
 // virtual
-CXMLHandler::sProcessLogic * TextHandler::getProcessLogic() const
+CXMLHandler::sProcessLogic * GradientStopHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, BEFORE, {Text, HANDLER_COUNT}},
-    {"Text", Text, Text, {AFTER, HANDLER_COUNT}},
+    {"BEFORE", BEFORE, BEFORE, {GradientStop, HANDLER_COUNT}},
+    {"Stop", GradientStop, GradientStop, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

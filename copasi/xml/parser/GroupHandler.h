@@ -8,6 +8,8 @@
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
+class CLGroup;
+
 class GroupHandler : public CXMLHandler
 {
 private:
@@ -49,6 +51,13 @@ protected:
    * @return sElementInfo *
    */
   virtual sProcessLogic * getProcessLogic() const;
+
+private:
+  /**
+   * A stack of groups which contains the hierarchy of currently
+   * processed groups.
+   */
+  std::stack< CLGroup * > mGroupStack;
 };
 
 #endif //COPASI_GroupHandler

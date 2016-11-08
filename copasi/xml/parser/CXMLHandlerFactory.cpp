@@ -26,6 +26,7 @@
 #include "EllipseHandler.h"
 #include "EventHandler.h"
 #include "FunctionHandler.h"
+#include "GradientStopHandler.h"
 #include "GroupHandler.h"
 #include "GUIHandler.h"
 #include "ImageHandler.h"
@@ -35,16 +36,11 @@
 #include "LinearGradientHandler.h"
 #include "LineEndingHandler.h"
 #include "LineSegmentHandler.h"
-#include "ListOfAdditionalGraphicalObjectsHandler.h"
-#include "ListOfColorDefinitionsHandler.h"
 #include "ListOfCurveSegmentsHandler.h"
-#include "ListOfElementsHandler.h"
 #include "ListOfGlobalRenderInformationHandler.h"
 #include "ListOfGradientDefinitionsHandler.h"
 #include "ListOfHandler.h"
 #include "ListOfLayoutsHandler.h"
-#include "ListOfLineEndingsHandler.h"
-#include "ListOfRenderInformationHandler.h"
 #include "ListOfStylesHandler.h"
 #include "MetaboliteHandler.h"
 #include "MetaboliteGlyphHandler.h"
@@ -72,8 +68,11 @@
 #include "ReactionGlyphHandler.h"
 #include "RectangleHandler.h"
 #include "RenderCubicBezierHandler.h"
+#include "RenderCurveHandler.h"
+#include "RenderCurveElementHandler.h"
 #include "RenderInformationHandler.h"
 #include "RenderPointHandler.h"
+#include "RenderTextHandler.h"
 #include "ReportDefinitionHandler.h"
 #include "ReportSectionHandler.h"
 #include "ReportTargetHandler.h"
@@ -87,7 +86,6 @@
 #include "SubstrateHandler.h"
 #include "TableHandler.h"
 #include "TaskHandler.h"
-#include "TextHandler.h"
 #include "TextGlyphHandler.h"
 #include "UnitDefinitionHandler.h"
 #include "UnsupportedAnnotationHandler.h"
@@ -208,6 +206,10 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new FunctionHandler(*mpParser, *mpData);
         break;
 
+      case CXMLHandler::GradientStop:
+        pHandler = new GradientStopHandler(*mpParser, *mpData);
+        break;
+
       case CXMLHandler::Group:
         pHandler = new GroupHandler(*mpParser, *mpData);
         break;
@@ -245,8 +247,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfAdditionalGraphicalObjects:
-        pHandler = new ListOfAdditionalGraphicalObjectsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfAdditionalGraphicalObjects", CXMLHandler::ListOfAdditionalGraphicalObjects, CXMLHandler::ListOfAdditionalGraphicalObjects};
+        CXMLHandler::sProcessLogic contentLogic = {"AdditionalGraphicalObject", CXMLHandler::AdditionalGraphicalObject, CXMLHandler::AdditionalGraphicalObject};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfAssignments:
       {
@@ -276,8 +283,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfColorDefinitions:
-        pHandler = new ListOfColorDefinitionsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfColorDefinitions", CXMLHandler::ListOfColorDefinitions, CXMLHandler::ListOfColorDefinitions};
+        CXMLHandler::sProcessLogic contentLogic = {"ColorDefinition", CXMLHandler::ColorDefinition, CXMLHandler::ColorDefinition};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfCompartmentGlyphs:
       {
@@ -312,8 +324,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfElements:
-        pHandler = new ListOfElementsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfElements", CXMLHandler::ListOfElements, CXMLHandler::ListOfElements};
+        CXMLHandler::sProcessLogic contentLogic = {"Element", CXMLHandler::RenderCurveElement, CXMLHandler::RenderCurveElement};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfEvents:
       {
@@ -346,8 +363,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         break;
 
       case CXMLHandler::ListOfLineEndings:
-        pHandler = new ListOfLineEndingsHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfLineEndings", CXMLHandler::ListOfLineEndings, CXMLHandler::ListOfLineEndings};
+        CXMLHandler::sProcessLogic contentLogic = {"LineEnding", CXMLHandler::LineEnding, CXMLHandler::LineEnding};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfMetabGlyphs:
       {
@@ -458,8 +480,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfRenderInformation:
-        pHandler = new ListOfRenderInformationHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfRenderInformation", CXMLHandler::ListOfRenderInformation, CXMLHandler::ListOfRenderInformation};
+        CXMLHandler::sProcessLogic contentLogic = {"RenderInformation", CXMLHandler::RenderInformation, CXMLHandler::RenderInformation};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfReports:
       {
@@ -632,12 +659,24 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new RenderCubicBezierHandler(*mpParser, *mpData);
         break;
 
+      case CXMLHandler::RenderCurve:
+        pHandler = new RenderCurveHandler(*mpParser, *mpData);
+        break;
+
+      case CXMLHandler::RenderCurveElement:
+        pHandler = new RenderCurveElementHandler(*mpParser, *mpData);
+        break;
+
       case CXMLHandler::RenderInformation:
         pHandler = new RenderInformationHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::RenderPoint:
         pHandler = new RenderPointHandler(*mpParser, *mpData);
+        break;
+
+      case CXMLHandler::RenderText:
+        pHandler = new RenderTextHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::ReportDefinition:
@@ -699,10 +738,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::Task:
         pHandler = new TaskHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::Text:
-        pHandler = new TextHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::TextGlyph:

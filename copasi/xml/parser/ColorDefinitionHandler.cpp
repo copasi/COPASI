@@ -9,10 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
-/**
- * Replace ColorDefinition with the name type of the handler and implement the
- * three methods below.
- */
+#include "layout/CLayout.h"
+
 ColorDefinitionHandler::ColorDefinitionHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::ColorDefinition)
 {
@@ -27,15 +25,19 @@ ColorDefinitionHandler::~ColorDefinitionHandler()
 CXMLHandler * ColorDefinitionHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Id;
+  const char * Value;
+  CLColorDefinition ColorDef;
 
   switch (mCurrentElement.first)
     {
       case ColorDefinition:
-        // TODO CRITICAL Implement me!
+        Id = mpParser->getAttributeValue("id", papszAttrs);
+        Value = mpParser->getAttributeValue("value", papszAttrs);
+        ColorDef.setColorValue(Value);
+        ColorDef.setId(Id);
+        mpData->pRenderInformation->addColorDefinition(&ColorDef);
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +45,7 @@ CXMLHandler * ColorDefinitionHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +57,7 @@ bool ColorDefinitionHandler::processEnd(const XML_Char * pszName)
     {
       case ColorDefinition:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +71,6 @@ bool ColorDefinitionHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * ColorDefinitionHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {ColorDefinition, HANDLER_COUNT}},

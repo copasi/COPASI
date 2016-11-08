@@ -9,12 +9,21 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLayout.h"
+#include "layout/CLRenderCurve.h"
+#include "layout/CLPolygon.h"
+#include "layout/CLRectangle.h"
+#include "layout/CLEllipse.h"
+#include "layout/CLImage.h"
+#include "layout/CLText.h"
+
 /**
  * Replace Group with the name type of the handler and implement the
  * three methods below.
  */
 GroupHandler::GroupHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::Group)
+  CXMLHandler(parser, data, CXMLHandler::Group),
+  mGroupStack()
 {
   init();
 }
@@ -28,14 +37,182 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * Fill;
+  const char * FillRule;
+  const char * FontFamily;
+  const char * FontSize;
+  const char * FontWeight;
+  const char * FontStyle;
+  const char * TextAnchor;
+  const char * VTextAnchor;
+  const char * StartHead;
+  const char * EndHead;
+  CLGroup* pGroup = NULL;
 
   switch (mCurrentElement.first)
     {
-      case Group:
-        // TODO CRITICAL Implement me!
+        Transform = mpParser->getAttributeValue("transform", papszAttrs, false);
+        Stroke = mpParser->getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mpParser->getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mpParser->getAttributeValue("stroke-dasharray", papszAttrs, false);
+        Fill = mpParser->getAttributeValue("fill", papszAttrs, false);
+        FillRule = mpParser->getAttributeValue("fill-rule", papszAttrs, false);
+        FontFamily = mpParser->getAttributeValue("font-family", papszAttrs, false);
+        FontSize = mpParser->getAttributeValue("font-size", papszAttrs, false);
+        FontWeight = mpParser->getAttributeValue("font-weight", papszAttrs, false);
+        FontStyle = mpParser->getAttributeValue("font-style", papszAttrs, false);
+        TextAnchor = mpParser->getAttributeValue("text-anchor", papszAttrs, false);
+        VTextAnchor = mpParser->getAttributeValue("vtext-anchor", papszAttrs, false);
+        StartHead = mpParser->getAttributeValue("startHead", papszAttrs, false);
+        EndHead = mpParser->getAttributeValue("endHead", papszAttrs, false);
+
+        mpData->pGroup = new CLGroup();
+        mGroupStack.push(mpData->pGroup);
+
+        if (Transform != NULL)
+          {
+            pGroup->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            pGroup->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strToDouble(StrokeWidth, NULL);
+            pGroup->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            pGroup->parseDashArray(StrokeDashArray);
+          }
+
+        if (Fill != NULL)
+          {
+            pGroup->setFillColor(Fill);
+          }
+
+        if (FillRule != NULL)
+          {
+            std::string f(FillRule);
+
+            if (f == "nonzero")
+              {
+                pGroup->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+              }
+            else if (f == "evenodd")
+              {
+                pGroup->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+              }
+            else
+              {
+                pGroup->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+              }
+          }
+
+        if (FontFamily != NULL)
+          {
+            pGroup->setFontFamily(FontFamily);
+          }
+
+        if (FontSize != NULL)
+          {
+            pGroup->setFontSize(CLRelAbsVector(FontSize));
+          }
+
+        if (FontStyle != NULL)
+          {
+            std::string s(FontStyle);
+
+            if (s == "normal")
+              {
+                pGroup->setFontStyle(CLText::STYLE_NORMAL);
+              }
+            else if (s == "italic")
+              {
+                pGroup->setFontStyle(CLText::STYLE_ITALIC);
+              }
+          }
+
+        if (FontWeight != NULL)
+          {
+            std::string s(FontWeight);
+
+            if (s == "normal")
+              {
+                pGroup->setFontWeight(CLText::WEIGHT_NORMAL);
+              }
+            else if (s == "bold")
+              {
+                pGroup->setFontWeight(CLText::WEIGHT_BOLD);
+              }
+          }
+
+        if (TextAnchor != NULL)
+          {
+            std::string s(TextAnchor);
+
+            if (s == "start")
+              {
+                pGroup->setTextAnchor(CLText::ANCHOR_START);
+              }
+            else if (s == "middle")
+              {
+                pGroup->setTextAnchor(CLText::ANCHOR_MIDDLE);
+              }
+            else if (s == "end")
+              {
+                pGroup->setTextAnchor(CLText::ANCHOR_END);
+              }
+          }
+
+        if (VTextAnchor != NULL)
+          {
+            std::string s(VTextAnchor);
+
+            if (s == "top")
+              {
+                pGroup->setVTextAnchor(CLText::ANCHOR_TOP);
+              }
+            else if (s == "middle")
+              {
+                pGroup->setVTextAnchor(CLText::ANCHOR_MIDDLE);
+              }
+            else if (s == "bottom")
+              {
+                pGroup->setVTextAnchor(CLText::ANCHOR_BOTTOM);
+              }
+          }
+
+        if (StartHead != NULL)
+          {
+            pGroup->setStartHead(StartHead);
+          }
+
+        if (EndHead != NULL)
+          {
+            pGroup->setEndHead(EndHead);
+          }
+
+        assert(mpData->pGroup != NULL);
         break;
 
-        // TODO CRITICAL Implement me!
+        // a group can have many different children
+      case Curve:
+      case RenderText:
+      case Rectangle:
+      case Polygon:
+      case Ellipse:
+      case Image:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -54,11 +231,53 @@ bool GroupHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case Group:
-        finished = true;
-        // TODO CRITICAL Implement me!
+        finished = (mLevel == 0);
+
+        if (mLevel > 0)
+          {
+            CLGroup * pGroup = mpData->pGroup;
+            mGroupStack.pop();
+            mpData->pGroup = mGroupStack.top();
+            mpData->pGroup->addChildElement(pGroup);
+
+            // delete the group element again since the add/set methods made a copy
+            delete pGroup;
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case Curve:
+        mpData->pGroup->addChildElement(mpData->pRenderCurve);
+        pdelete(mpData->pRenderCurve);
+        break;
+
+      case Polygon:
+        mpData->pGroup->addChildElement(mpData->pPolygon);
+        pdelete(mpData->pPolygon);
+        break;
+
+      case Rectangle:
+        mpData->pGroup->addChildElement(mpData->pRectangle);
+        pdelete(mpData->pRectangle);
+        break;
+
+      case Ellipse:
+        mpData->pGroup->addChildElement(mpData->pEllipse);
+        // delete the gradient stop since the add method made a copy
+        pdelete(mpData->pEllipse);
+        break;
+
+      case RenderText:
+        mpData->pGroup->addChildElement(mpData->pRenderText);
+        // delete the text element again since the add method made a copy
+        pdelete(mpData->pRenderText);
+        break;
+
+      case Image:
+        mpData->pGroup->addChildElement(mpData->pImage);
+        // delete the image since the add method made a copy
+        pdelete(mpData->pImage);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,12 +291,16 @@ bool GroupHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * GroupHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Group, HANDLER_COUNT}},
-    {"Group", Group, Group, {AFTER, HANDLER_COUNT}},
+    {"Group", Group, Group, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
+    {"Curve", Curve, RenderCurve, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
+    {"Text", RenderText, RenderText, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
+    {"Rectangle", Rectangle, Rectangle, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
+    {"Polygon", Polygon, Polygon, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
+    {"Ellipse", Ellipse, Ellipse, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
+    {"Image", Image, Image, {Group, Curve, RenderText, Rectangle, Polygon, Ellipse, Image, AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

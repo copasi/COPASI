@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_ListOfAdditionalGraphicalObjectsHandler
-#define COPASI_ListOfAdditionalGraphicalObjectsHandler
+#ifndef COPASI_TextHandler
+#define COPASI_TextHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class ListOfAdditionalGraphicalObjectsHandler : public CXMLHandler
+class RenderTextHandler : public CXMLHandler
 {
 private:
-  ListOfAdditionalGraphicalObjectsHandler();
+  RenderTextHandler();
 
 public:
   /**
@@ -19,12 +19,12 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  ListOfAdditionalGraphicalObjectsHandler(CXMLParser & parser, CXMLParserData & data);
+  RenderTextHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~ListOfAdditionalGraphicalObjectsHandler();
+  virtual ~RenderTextHandler();
 
 protected:
 
@@ -51,4 +51,4 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 };
 
-#endif //COPASI_ListOfAdditionalGraphicalObjectsHandler
+#endif //COPASI_TextHandler

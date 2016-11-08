@@ -9,6 +9,8 @@
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
+#include "layout/CLEllipse.h"
+
 /**
  * Replace Ellipse with the name type of the handler and implement the
  * three methods below.
@@ -27,15 +29,81 @@ EllipseHandler::~EllipseHandler()
 CXMLHandler * EllipseHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
-  CXMLHandler * pHandlerToCall = NULL;
+  const char * Transform;
+  const char * Stroke;
+  const char * StrokeWidth;
+  const char * StrokeDashArray;
+  const char * Fill;
+  const char * FillRule;
+  const char * CX;
+  const char * CY;
+  const char * CZ;
+  const char * RX;
+  const char * RY;
 
   switch (mCurrentElement.first)
     {
       case Ellipse:
-        // TODO CRITICAL Implement me!
-        break;
+        Transform = mpParser->getAttributeValue("transform", papszAttrs, false);
+        Stroke = mpParser->getAttributeValue("stroke", papszAttrs, false);
+        StrokeWidth = mpParser->getAttributeValue("stroke-width", papszAttrs, false);
+        StrokeDashArray = mpParser->getAttributeValue("stroke-dasharray", papszAttrs, false);
+        Fill = mpParser->getAttributeValue("fill", papszAttrs, false);
+        FillRule = mpParser->getAttributeValue("fill-rule", papszAttrs, false);
+        CX = mpParser->getAttributeValue("cx", papszAttrs);
+        CY = mpParser->getAttributeValue("cy", papszAttrs);
+        CZ = mpParser->getAttributeValue("cz", papszAttrs, "0.0");
+        RX = mpParser->getAttributeValue("rx", papszAttrs);
+        RY = mpParser->getAttributeValue("ry", papszAttrs, RX);
+        mpData->pEllipse = new CLEllipse();
 
-        // TODO CRITICAL Implement me!
+        if (Transform != NULL)
+          {
+            mpData->pEllipse->parseTransformation(Transform);
+          }
+
+        if (Stroke != NULL)
+          {
+            mpData->pEllipse->setStroke(Stroke);
+          }
+
+        if (StrokeWidth != NULL)
+          {
+            double width = strToDouble(StrokeWidth, NULL);
+            mpData->pEllipse->setStrokeWidth(width);
+          }
+
+        if (StrokeDashArray != NULL)
+          {
+            mpData->pEllipse->parseDashArray(StrokeDashArray);
+          }
+
+        if (Fill != NULL)
+          {
+            mpData->pEllipse->setFillColor(Fill);
+          }
+
+        if (FillRule != NULL)
+          {
+            std::string f(FillRule);
+
+            if (f == "nonzero")
+              {
+                mpData->pEllipse->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+              }
+            else if (f == "evenodd")
+              {
+                mpData->pEllipse->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+              }
+            else
+              {
+                mpData->pEllipse->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+              }
+          }
+
+        mpData->pEllipse->setCenter3D(CLRelAbsVector(CX), CLRelAbsVector(CY), CLRelAbsVector(CZ));
+        mpData->pEllipse->setRadii(CLRelAbsVector(RX), CLRelAbsVector(RY));
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -43,7 +111,7 @@ CXMLHandler * EllipseHandler::processStart(const XML_Char * pszName,
         break;
     }
 
-  return pHandlerToCall;
+  return NULL;
 }
 
 // virtual
@@ -55,10 +123,7 @@ bool EllipseHandler::processEnd(const XML_Char * pszName)
     {
       case Ellipse:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
-
-        // TODO CRITICAL Implement me!
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -72,8 +137,6 @@ bool EllipseHandler::processEnd(const XML_Char * pszName)
 // virtual
 CXMLHandler::sProcessLogic * EllipseHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {Ellipse, HANDLER_COUNT}},
