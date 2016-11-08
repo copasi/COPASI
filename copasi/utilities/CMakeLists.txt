@@ -26,10 +26,6 @@
 file(GLOB HEADERS_UTILITIES utilities/*.h)
 file(GLOB SOURCES_UTILITIES utilities/*.cpp)
 
-list(REMOVE_ITEM SOURCES_UTILITIES 
-   ${CMAKE_CURRENT_SOURCE_DIR}/utilities/CWriteConfig.cpp
-)
-
 if (ENABLE_FLEX_BISON)
   BISON_TARGET(CUnitParser utilities/CUnitParser.ypp ${COPASI_SOURCE_DIR}/utilities/CUnitParser_yacc.cpp COMPILE_FLAGS ${BISON_BINARY})
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/utilities/CUnitParser_yacc.cpp)
