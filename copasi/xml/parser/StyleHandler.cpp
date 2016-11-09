@@ -3,41 +3,93 @@
 // of Manchester.
 // All rights reserved.
 
+#include "StyleHandler.h"
+
 #include "copasi.h"
 
-#include "StyleLocalHandler.h"
 #include "CXMLParser.h"
 #include "utilities/CCopasiMessage.h"
 
 #include "layout/CLayout.h"
+#include "layout/CLGlobalRenderInformation.h"
+#include "layout/CLGlobalStyle.h"
 
 /**
  * Replace StyleLocal with the name type of the handler and implement the
  * three methods below.
  */
-StyleLocalHandler::StyleLocalHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::StyleLocal)
+StyleHandler::StyleHandler(CXMLParser & parser, CXMLParserData & data):
+  CXMLHandler(parser, data, CXMLHandler::Style)
 {
   init();
 }
 
 // virtual
-StyleLocalHandler::~StyleLocalHandler()
+StyleHandler::~StyleHandler()
 {}
 
 // virtual
-CXMLHandler * StyleLocalHandler::processStart(const XML_Char * pszName,
+CXMLHandler * StyleHandler::processStart(const XML_Char * pszName,
     const XML_Char ** papszAttrs)
 {
   CXMLHandler * pHandlerToCall = NULL;
+  const char * RoleList;
+  const char * TypeList;
+  const char * KeyList;
 
   switch (mCurrentElement.first)
     {
-      case StyleLocal:
-        // TODO CRITICAL Implement me!
+      case Style:
+        mpData->pStyle = mpData->pRenderInformation->createStyle();
+
+        RoleList = mpParser->getAttributeValue("roleList", papszAttrs, false);
+        TypeList = mpParser->getAttributeValue("typeList", papszAttrs, false);
+        KeyList = mpParser->getAttributeValue("keyList", papszAttrs, false);
+
+        if (RoleList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(RoleList, s);
+            mpData->pStyle->setRoleList(s);
+          }
+
+        if (TypeList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(TypeList, s);
+            mpData->pStyle->setTypeList(s);
+          }
+
+        if (dynamic_cast< CLLocalStyle * >(mpData->pStyle) != NULL && KeyList != NULL)
+          {
+            std::set<std::string> s;
+            CLStyle::readIntoSet(KeyList, s);
+            // we need to translate the keys from the file to the actual keys assigned now
+            std::set<std::string> s_conv;
+            std::set<std::string>::const_iterator keyIt = s.begin(), keyEndit = s.end();
+            CLGraphicalObject* pGO = NULL;
+
+            while (keyIt != keyEndit)
+              {
+                pGO = dynamic_cast<CLGraphicalObject *>(mpData->mKeyMap.get(*keyIt));
+                assert(pGO);
+
+                if (pGO != NULL)
+                  {
+                    s_conv.insert(pGO->getKey());
+                  }
+
+                ++keyIt;
+              }
+
+            static_cast< CLLocalStyle * >(mpData->pStyle)->setKeyList(s_conv);
+          }
+
         break;
 
-        // TODO CRITICAL Implement me!
+      case Group:
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
 
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
@@ -49,15 +101,14 @@ CXMLHandler * StyleLocalHandler::processStart(const XML_Char * pszName,
 }
 
 // virtual
-bool StyleLocalHandler::processEnd(const XML_Char * pszName)
+bool StyleHandler::processEnd(const XML_Char * pszName)
 {
   bool finished = false;
 
   switch (mCurrentElement.first)
     {
-      case StyleLocal:
+      case Style:
         finished = true;
-        // TODO CRITICAL Implement me!
         break;
 
       case Group:
@@ -122,8 +173,6 @@ bool StyleLocalHandler::processEnd(const XML_Char * pszName)
 
         break;
 
-        // TODO CRITICAL Implement me!
-
       default:
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 2,
                        mpParser->getCurrentLineNumber(), mpParser->getCurrentColumnNumber(), pszName);
@@ -134,14 +183,13 @@ bool StyleLocalHandler::processEnd(const XML_Char * pszName)
 }
 
 // virtual
-CXMLHandler::sProcessLogic * StyleLocalHandler::getProcessLogic() const
+CXMLHandler::sProcessLogic * StyleHandler::getProcessLogic() const
 {
-  // TODO CRITICAL Implement me!
-
   static sProcessLogic Elements[] =
   {
-    {"BEFORE", BEFORE, BEFORE, {StyleLocal, HANDLER_COUNT}},
-    {"StyleLocal", StyleLocal, StyleLocal, {AFTER, HANDLER_COUNT}},
+    {"BEFORE", BEFORE, BEFORE, {Style, HANDLER_COUNT}},
+    {"Style", Style, Style, {Group, HANDLER_COUNT}},
+    {"Group", Group, Group, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

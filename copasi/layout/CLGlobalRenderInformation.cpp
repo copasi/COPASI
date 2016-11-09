@@ -99,7 +99,7 @@ const CLStyle* CLGlobalRenderInformation::getStyle(size_t i) const
   return (i < this->mListOfStyles.size()) ? &this->mListOfStyles[i] : NULL;
 }
 
-CLGlobalStyle* CLGlobalRenderInformation::createStyle()
+CLStyle* CLGlobalRenderInformation::createStyle()
 {
   CLGlobalStyle* pStyle = new CLGlobalStyle();
   this->mListOfStyles.add(pStyle, true);

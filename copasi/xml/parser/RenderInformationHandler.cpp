@@ -31,13 +31,10 @@ CXMLHandler * RenderInformationHandler::processStart(const XML_Char * pszName,
   switch (mCurrentElement.first)
     {
       case RenderInformation:
+        mpData->pRenderInformation = CXMLParserData::createRenderInformation(mpData);
+
         background = mpParser->getAttributeValue("backgroundColor", papszAttrs);
         assert(background != NULL);
-
-        mpData->pCurrentLayout->addLocalRenderInformation(new CLLocalRenderInformation());
-        // delete the global render information again since the addLocalRenderInformationObject method made a copy
-        assert(mpData->pCurrentLayout->getListOfLocalRenderInformationObjects().size() > 0);
-        mpData->pRenderInformation = &mpData->pCurrentLayout->getListOfLocalRenderInformationObjects()[mpData->pCurrentLayout->getListOfLocalRenderInformationObjects().size() - 1];
 
         if (background != NULL)
           {

@@ -5,6 +5,11 @@
 
 #include "CXMLParserData.h"
 
+#include "layout/CLayout.h"
+#include "layout/CListOfLayouts.h"
+#include "layout/CLLocalRenderInformation.h"
+#include "layout/CLGlobalRenderInformation.h"
+
 CXMLParserData::CXMLParserData():
   pVersion(NULL),
   pModel(NULL),
@@ -62,6 +67,7 @@ CXMLParserData::CXMLParserData():
   pEllipse(NULL),
   pImage(NULL),
   pRenderText(NULL),
+  LocalRenderInformation(true),
   taskReferenceMap(),
   reportReferenceMap(),
   pGUI(NULL),
@@ -70,3 +76,36 @@ CXMLParserData::CXMLParserData():
   pCurrentUnitDefinition(NULL),
   mUnsupportedAnnotations()
 {}
+
+// static
+CLRenderInformationBase * CXMLParserData::createRenderInformation(CXMLParserData * pData)
+{
+  if (pData->LocalRenderInformation)
+    {
+      if (pData->pCurrentLayout == NULL) return NULL;
+
+      pData->pCurrentLayout->addLocalRenderInformation(new CLLocalRenderInformation());
+
+      size_t index = pData->pCurrentLayout->getListOfLocalRenderInformationObjects().size();
+
+      if (index > 0)
+        {
+          return &pData->pCurrentLayout->getListOfLocalRenderInformationObjects()[index - 1];
+        }
+    }
+  else
+    {
+      if (pData->pLayoutList == NULL) return NULL;
+
+      pData->pLayoutList->addGlobalRenderInformation(new CLGlobalRenderInformation());
+
+      size_t index = pData->pLayoutList->getListOfGlobalRenderInformationObjects().size();
+
+      if (index > 0)
+        {
+          return &pData->pLayoutList->getListOfGlobalRenderInformationObjects()[index - 1];
+        }
+    }
+
+  return NULL;
+}

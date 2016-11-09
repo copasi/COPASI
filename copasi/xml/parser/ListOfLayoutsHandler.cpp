@@ -35,7 +35,12 @@ CXMLHandler * ListOfLayoutsHandler::processStart(const XML_Char * pszName,
         break;
 
       case Layout:
+        mpData->LocalRenderInformation = true;
+        pHandlerToCall = getHandler(mCurrentElement.second);
+        break;
+
       case ListOfGlobalRenderInformation:
+        mpData->LocalRenderInformation = false;
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
 
@@ -61,6 +66,7 @@ bool ListOfLayoutsHandler::processEnd(const XML_Char * pszName)
 
       case Layout:
       case ListOfGlobalRenderInformation:
+        mpData->LocalRenderInformation = true;
         break;
 
       default:

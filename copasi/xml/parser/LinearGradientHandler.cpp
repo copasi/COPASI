@@ -51,7 +51,7 @@ CXMLHandler * LinearGradientHandler::processStart(const XML_Char * pszName,
         Z2 = mpParser->getAttributeValue("z2", papszAttrs, false);
         ID = mpParser->getAttributeValue("id", papszAttrs);
         SPREADMETHOD = mpParser->getAttributeValue("spreadMethod", papszAttrs, "pad");
-        pLinearGradient = new CLLinearGradient();
+        pLinearGradient = mpData->pRenderInformation->createLinearGradientDefinition();
         pLinearGradient->setId(ID);
 
         if (Z1 == NULL)
@@ -109,9 +109,6 @@ bool LinearGradientHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case LinearGradient:
-        mpData->pRenderInformation->addGradientDefinition(mpData->pGradient);
-        // delete the gradient since the add method made a copy
-        delete mpData->pGradient;
         mpData->pGradient = NULL;
         finished = true;
         break;

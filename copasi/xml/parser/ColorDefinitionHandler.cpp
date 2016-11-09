@@ -27,16 +27,17 @@ CXMLHandler * ColorDefinitionHandler::processStart(const XML_Char * pszName,
 {
   const char * Id;
   const char * Value;
-  CLColorDefinition ColorDef;
+  CLColorDefinition * pColorDef;
 
   switch (mCurrentElement.first)
     {
       case ColorDefinition:
         Id = mpParser->getAttributeValue("id", papszAttrs);
         Value = mpParser->getAttributeValue("value", papszAttrs);
-        ColorDef.setColorValue(Value);
-        ColorDef.setId(Id);
-        mpData->pRenderInformation->addColorDefinition(&ColorDef);
+
+        pColorDef = mpData->pRenderInformation->createColorDefinition();
+        pColorDef->setColorValue(Value);
+        pColorDef->setId(Id);
         break;
 
       default:

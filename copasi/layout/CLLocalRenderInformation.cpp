@@ -98,7 +98,7 @@ const CLLocalStyle* CLLocalRenderInformation::getStyle(size_t i) const
   return (i < this->mListOfStyles.size()) ? &this->mListOfStyles[i] : NULL;
 }
 
-CLLocalStyle* CLLocalRenderInformation::createStyle()
+CLStyle * CLLocalRenderInformation::createStyle()
 {
   CLLocalStyle* pStyle = new CLLocalStyle();
   this->mListOfStyles.add(pStyle, true);

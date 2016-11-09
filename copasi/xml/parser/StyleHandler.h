@@ -3,15 +3,15 @@
 // of Manchester.
 // All rights reserved.
 
-#ifndef COPASI_ListOfStylesHandler
-#define COPASI_ListOfStylesHandler
+#ifndef COPASI_StyleLocalHandler
+#define COPASI_StyleLocalHandler
 
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class ListOfStylesHandler : public CXMLHandler
+class StyleHandler : public CXMLHandler
 {
 private:
-  ListOfStylesHandler();
+  StyleHandler();
 
 public:
   /**
@@ -19,12 +19,12 @@ public:
    * @param CXMLParser & parser
    * @param CXMLParserData & data
    */
-  ListOfStylesHandler(CXMLParser & parser, CXMLParserData & data);
+  StyleHandler(CXMLParser & parser, CXMLParserData & data);
 
   /**
    * Destructor
    */
-  virtual ~ListOfStylesHandler();
+  virtual ~StyleHandler();
 
 protected:
 
@@ -51,4 +51,4 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 };
 
-#endif //COPASI_ListOfStylesHandler
+#endif //COPASI_StyleLocalHandler

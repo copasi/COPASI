@@ -32,30 +32,24 @@ CXMLHandler * LineEndingHandler::processStart(const XML_Char * pszName,
   CXMLHandler * pHandlerToCall = NULL;
   const char * Id;
   const char * EnableRotationalMapping;
-  CLLineEnding* pLineEnding = NULL;
 
   switch (mCurrentElement.first)
     {
       case LineEnding:
         Id = mpParser->getAttributeValue("id", papszAttrs);
         EnableRotationalMapping = mpParser->getAttributeValue("enableRotationalMapping", papszAttrs, "true");
-        pLineEnding = new CLLineEnding();
-        pLineEnding->setId(Id);
+        mpData->pLineEnding = mpData->pRenderInformation->createLineEnding();
+        mpData->pLineEnding->setId(Id);
 
         if (!strcmp(EnableRotationalMapping, "true"))
           {
-            pLineEnding->setEnableRotationalMapping(true);
+            mpData->pLineEnding->setEnableRotationalMapping(true);
           }
         else
           {
-            pLineEnding->setEnableRotationalMapping(false);
+            mpData->pLineEnding->setEnableRotationalMapping(false);
           }
 
-        mpData->pRenderInformation->addLineEnding(pLineEnding);
-        // delete the line ending again since the addLineEnding method made a copy
-        delete pLineEnding;
-        assert(mpData->pRenderInformation->getNumLineEndings() > 0);
-        mpData->pLineEnding = mpData->pRenderInformation->getLineEnding(mpData->pRenderInformation->getNumLineEndings() - 1);
         break;
 
       case BoundingBox:
@@ -80,6 +74,7 @@ bool LineEndingHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case LineEnding:
+        mpData->pLineEnding = NULL;
         finished = true;
         break;
 

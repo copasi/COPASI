@@ -79,6 +79,11 @@ template <class CType> class CCopasiVectorN;
 class CXMLParserData
 {
 public:
+  typedef CLRenderInformationBase * (*CreateRenderInformation)(CXMLParserData * pData);
+
+public:
+  static CLRenderInformationBase * createRenderInformation(CXMLParserData * pData);
+
   // Operations
   /**
    * Default Constructor
@@ -280,6 +285,7 @@ public:
   CLEllipse * pEllipse;
   CLImage * pImage;
   CLText * pRenderText;
+  bool LocalRenderInformation;
 
   /**
    * A map that stores a vector of tasks that reference a certain key

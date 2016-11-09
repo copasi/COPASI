@@ -1,4 +1,4 @@
-<element name="COPASI">
+* <element name="COPASI">
   * <element name="ListOfFunctions"> {0,1}
     * <element name="Function">
       * <elementGroup name="annotation"> {1}
@@ -264,41 +264,41 @@
               * </element>
             * </element>
           * </element>
-          <element name="ListOfStyles"> {0,1}
-            <element name="Style"/> {1, inf}
-          </element>
-        </element>
+          * <element name="ListOfStyles"> {0,1}
+            * <element name="Style"/> {1, inf}
+          * </element>
+        * </element>
       </element>
     * </element>
-    <element name="ListOfGlobalRenderInformation"> {0,1}
-      <element name="RenderInformation"> {1, inf}
-        <element name="ListOfColorDefinitions">  {0,1}
-          <element name="ColorDefinition"/> {1, inf}
-        </element>
-        <element name="ListOfGradientDefinitions"> {0,1}
-          <choice> {1, inf}
-            <element name="RadialGradient"> {1}
-            <element name="LinearGradient"> {1}
-          </choice>
-        </element>
-        <element name="ListOfLineEndings"> {0,1}
-          <element name="LineEnding"> {1, inf}
-            <element name="BoundingBox"> {0,1} 
-              <element name="Position"/> {1} 
-              <element name="Dimensions"/> {1} 
-            </element>
-            <element name="Group"> {1}
-          </element>
-        </element>
-        <element name="ListOfStyles"> {0,1}
-          <element name="Style"> {1, inf}
-            <element name="Group"> {1}
-              <elementGroup name="layoutGroup"> {1}
-            </element>
-          </element>
-        </element>
-      </element>
-    </element>
+    * <element name="ListOfGlobalRenderInformation"> {0,1}
+      * <element name="RenderInformation"> {1, inf}
+        * <element name="ListOfColorDefinitions">  {0,1}
+          * <element name="ColorDefinition"/> {1, inf}
+        * </element>
+        * <element name="ListOfGradientDefinitions"> {0,1}
+          * <choice> {1, inf}
+            * <element name="RadialGradient"> {1}
+            * <element name="LinearGradient"> {1}
+          * </choice>
+        * </element>
+        * <element name="ListOfLineEndings"> {0,1}
+          * <element name="LineEnding"> {1, inf}
+            * <element name="BoundingBox"> {0,1} 
+              * <element name="Position"/> {1} 
+              * <element name="Dimensions"/> {1} 
+            * </element>
+            * <element name="Group"> {1}
+          * </element>
+        * </element>
+        * <element name="ListOfStyles"> {0,1}
+          * <element name="Style"> {1, inf}
+            * <element name="Group"> {1}
+              * <elementGroup name="layoutGroup"> {1}
+            * </element>
+          * </element>
+        * </element>
+      * </element>
+    * </element>
   * </element>
   * <element name="SBMLReference"> {0,1}
     * <element name="SBMLMap"/> {1, inf}
@@ -340,18 +340,18 @@
   * </choice>
 * </elementGroup>
 
-<elementGroup name=reportSectionElement>
-  <choice>
-    <element name="Object"/> {1} 
-    <element name="html"/> {1} 
-    <element name="Report"/> {1} 
-  </choice>
-</elementGroup>
+* <elementGroup name=reportSectionElement>
+  * <choice>
+    * <element name="Object"/> {1} 
+    * <element name="html"/> {1} 
+    * <element name="Report"/> {1} 
+  * </choice>
+* </elementGroup>
 
 * <elementGroup name="layoutGroup">
   * <choice>
     * <element name="Group">
-      <elementGroup name="layoutGroup">
+      * <elementGroup name="layoutGroup">
     * </element>
     * <element name="Text"/> {1}
     * <element name="Rectangle"/> {1}

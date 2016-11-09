@@ -37,11 +37,9 @@
 #include "LineEndingHandler.h"
 #include "LineSegmentHandler.h"
 #include "ListOfCurveSegmentsHandler.h"
-#include "ListOfGlobalRenderInformationHandler.h"
 #include "ListOfGradientDefinitionsHandler.h"
 #include "ListOfHandler.h"
 #include "ListOfLayoutsHandler.h"
-#include "ListOfStylesHandler.h"
 #include "MetaboliteHandler.h"
 #include "MetaboliteGlyphHandler.h"
 #include "MetaboliteReferenceGlyphHandler.h"
@@ -67,11 +65,9 @@
 #include "ReactionHandler.h"
 #include "ReactionGlyphHandler.h"
 #include "RectangleHandler.h"
-#include "RenderCubicBezierHandler.h"
 #include "RenderCurveHandler.h"
 #include "RenderCurveElementHandler.h"
 #include "RenderInformationHandler.h"
-#include "RenderPointHandler.h"
 #include "RenderTextHandler.h"
 #include "ReportDefinitionHandler.h"
 #include "ReportSectionHandler.h"
@@ -81,8 +77,7 @@
 #include "SourceParameterHandler.h"
 #include "StateTemplateHandler.h"
 #include "StateTemplateVariableHandler.h"
-#include "StyleLocalHandler.h"
-#include "StyleGlobalHandler.h"
+#include "StyleHandler.h"
 #include "SubstrateHandler.h"
 #include "TableHandler.h"
 #include "TaskHandler.h"
@@ -351,8 +346,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfGlobalRenderInformation:
-        pHandler = new ListOfGlobalRenderInformationHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfGlobalRenderInformation", CXMLHandler::ListOfGlobalRenderInformation, CXMLHandler::ListOfGlobalRenderInformation};
+        CXMLHandler::sProcessLogic contentLogic = {"RenderInformation", CXMLHandler::RenderInformation, CXMLHandler::RenderInformation};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfGradientDefinitions:
         pHandler = new ListOfGradientDefinitionsHandler(*mpParser, *mpData);
@@ -507,8 +507,13 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
       break;
 
       case CXMLHandler::ListOfStyles:
-        pHandler = new ListOfStylesHandler(*mpParser, *mpData);
-        break;
+      {
+        CXMLHandler::sProcessLogic listLogic = {"ListOfStyles", CXMLHandler::ListOfStyles, CXMLHandler::ListOfStyles};
+        CXMLHandler::sProcessLogic contentLogic = {"Style", CXMLHandler::Style, CXMLHandler::Style};
+
+        pHandler = new ListOfHandler(listLogic, contentLogic, *mpParser, *mpData);
+      }
+      break;
 
       case CXMLHandler::ListOfSubstrates:
       {
@@ -655,10 +660,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new RectangleHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::RenderCubicBezier:
-        pHandler = new RenderCubicBezierHandler(*mpParser, *mpData);
-        break;
-
       case CXMLHandler::RenderCurve:
         pHandler = new RenderCurveHandler(*mpParser, *mpData);
         break;
@@ -669,10 +670,6 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
 
       case CXMLHandler::RenderInformation:
         pHandler = new RenderInformationHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::RenderPoint:
-        pHandler = new RenderPointHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::RenderText:
@@ -720,12 +717,8 @@ CXMLHandler * CXMLHandlerFactory::createHandler(const CXMLHandler::Type & type)
         pHandler = new StateTemplateVariableHandler(*mpParser, *mpData);
         break;
 
-      case CXMLHandler::StyleLocal:
-        pHandler = new StyleLocalHandler(*mpParser, *mpData);
-        break;
-
-      case CXMLHandler::StyleGlobal:
-        pHandler = new StyleGlobalHandler(*mpParser, *mpData);
+      case CXMLHandler::Style:
+        pHandler = new StyleHandler(*mpParser, *mpData);
         break;
 
       case CXMLHandler::Substrate:

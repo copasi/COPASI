@@ -49,7 +49,7 @@ CXMLHandler * RadialGradientHandler::processStart(const XML_Char * pszName,
         R =  mpParser->getAttributeValue("r", papszAttrs);
         ID = mpParser->getAttributeValue("id", papszAttrs);
         SPREADMETHOD = mpParser->getAttributeValue("spreadMethod", papszAttrs, "pad");
-        pRadialGradient = new CLRadialGradient();
+        pRadialGradient = mpData->pRenderInformation->createRadialGradientDefinition();
         pRadialGradient->setId(ID);
 
         if (CX == NULL)
@@ -130,9 +130,6 @@ bool RadialGradientHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case RadialGradient:
-        mpData->pRenderInformation->addGradientDefinition(mpData->pGradient);
-        // delete the gradient since the add method made a copy
-        delete mpData->pGradient;
         mpData->pGradient = NULL;
         finished = true;
         break;
