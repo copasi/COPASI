@@ -37,7 +37,11 @@ CXMLHandler * PointHandler::processStart(const XML_Char * pszName,
 
   switch (mCurrentElement.first)
     {
-      case Point:
+      case Position:
+      case Start:
+      case End:
+      case BasePoint1:
+      case BasePoint2:
         attr = mpParser->getAttributeValue("x", papszAttrs, "0");
         mpData->pPosition->setX(CCopasiXMLInterface::DBL(attr));
         attr = mpParser->getAttributeValue("y", papszAttrs, "0");
@@ -64,6 +68,10 @@ bool PointHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case Position:
+      case Start:
+      case End:
+      case BasePoint1:
+      case BasePoint2:
         finished = true;
         break;
 

@@ -59,6 +59,7 @@ bool LineSegmentHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case LineSegment:
+      case CurveSegment:
         finished = true;
         break;
 
