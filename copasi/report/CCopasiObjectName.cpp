@@ -79,7 +79,13 @@ std::string CCopasiObjectName::getObjectName() const
   if (pos == std::string::npos) return "";
 
   CCopasiObjectName tmp = Primary.substr(pos + 1);
-  return CCopasiObjectName::unescape(tmp.substr(0, tmp.findEx("[")));
+
+  if (getObjectType() != "String")
+    {
+      tmp = tmp.substr(0, tmp.findEx("["));
+    }
+
+  return CCopasiObjectName::unescape(tmp);
 }
 
 size_t
