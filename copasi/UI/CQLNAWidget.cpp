@@ -11,8 +11,6 @@
 #include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 #include "qtUtilities.h"
-#include "CQTaskMethodParametersDM.h"
-
 #include "steadystate/CSteadyStateTask.h"
 #include "lna/CLNATask.h"
 #include "lna/CLNAProblem.h"

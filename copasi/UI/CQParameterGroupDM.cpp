@@ -1,4 +1,4 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,12 +10,11 @@
  *      Author: shoops
  */
 
-#include "CQTaskMethodParametersDM.h"
+#include "CQParameterGroupDM.h"
 
-#include "CQTaskMethodParametersDM.h"
 #include "qtUtilities.h"
 
-#include "utilities/CCopasiMethod.h"
+#include "utilities/CCopasiParameterGroup.h"
 #include "resourcesUI/CQIconResource.h"
 
 #define COL_NAME       0
@@ -24,24 +23,24 @@
 
 #define COLUMN_COUNT   2
 
-CQTaskMethodParametersDM::CQTaskMethodParametersDM(QObject * pParent):
+CQParameterGroupDM::CQParameterGroupDM(QObject * pParent):
   QAbstractItemModel(pParent),
-  mMethods(),
+  mTopLevelGroups(),
   mFramework(0)
 {}
 
 // virtual
-CQTaskMethodParametersDM::~CQTaskMethodParametersDM()
+CQParameterGroupDM::~CQParameterGroupDM()
 {}
 
 // virtual
-int CQTaskMethodParametersDM::columnCount(const QModelIndex & /* parent */) const
+int CQParameterGroupDM::columnCount(const QModelIndex & /* parent */) const
 {
   return COLUMN_COUNT;
 }
 
 // virtual
-QVariant CQTaskMethodParametersDM::data(const QModelIndex & index, int role) const
+QVariant CQParameterGroupDM::data(const QModelIndex & index, int role) const
 {
   CCopasiParameter * pNode = nodeFromIndex(index);
 
@@ -66,7 +65,7 @@ QVariant CQTaskMethodParametersDM::data(const QModelIndex & index, int role) con
 }
 
 // virtual
-Qt::ItemFlags CQTaskMethodParametersDM::flags(const QModelIndex &index) const
+Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
 {
   CCopasiParameter * pNode = nodeFromIndex(index);
 
@@ -106,7 +105,7 @@ Qt::ItemFlags CQTaskMethodParametersDM::flags(const QModelIndex &index) const
 }
 
 // virtual
-QVariant CQTaskMethodParametersDM::headerData(int section, Qt::Orientation /* orientation */, int role) const
+QVariant CQParameterGroupDM::headerData(int section, Qt::Orientation /* orientation */, int role) const
 {
   if (role != Qt::DisplayRole)
     return QVariant();
@@ -130,15 +129,15 @@ QVariant CQTaskMethodParametersDM::headerData(int section, Qt::Orientation /* or
 }
 
 // virtual
-QModelIndex CQTaskMethodParametersDM::index(int row, int column, const QModelIndex & parent) const
+QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & parent) const
 {
   CCopasiParameterGroup * pParent = static_cast< CCopasiParameterGroup * >(nodeFromIndex(parent));
 
   if (pParent == NULL &&
-      mMethods.size() > 0)
+      mTopLevelGroups.size() > 0)
     {
-      QVector< CCopasiMethod * >::const_iterator it = mMethods.constBegin();
-      QVector< CCopasiMethod * >::const_iterator end = mMethods.constEnd();
+      QVector< CCopasiParameterGroup * >::const_iterator it = mTopLevelGroups.constBegin();
+      QVector< CCopasiParameterGroup * >::const_iterator end = mTopLevelGroups.constEnd();
 
       int Row = row;
 
@@ -162,16 +161,16 @@ QModelIndex CQTaskMethodParametersDM::index(int row, int column, const QModelInd
 }
 
 // virtual
-QModelIndex CQTaskMethodParametersDM::parent(const QModelIndex & index) const
+QModelIndex CQParameterGroupDM::parent(const QModelIndex & index) const
 {
   CCopasiParameter * pNode = nodeFromIndex(index);
 
-  if (pNode == NULL || isMethod(pNode))
+  if (pNode == NULL || isTopLevelGroup(pNode))
     {
       return QModelIndex();
     }
 
-  if (isMethod(dynamic_cast<CCopasiParameter *>(pNode->getObjectParent())))
+  if (isTopLevelGroup(dynamic_cast<CCopasiParameter *>(pNode->getObjectParent())))
     {
       return QModelIndex();
     }
@@ -182,12 +181,12 @@ QModelIndex CQTaskMethodParametersDM::parent(const QModelIndex & index) const
 }
 
 // virtual
-int CQTaskMethodParametersDM::rowCount(const QModelIndex & parent) const
+int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 {
   if (!parent.isValid())
     {
-      QVector< CCopasiMethod * >::const_iterator it = mMethods.constBegin();
-      QVector< CCopasiMethod * >::const_iterator end = mMethods.constEnd();
+      QVector< CCopasiParameterGroup * >::const_iterator it = mTopLevelGroups.constBegin();
+      QVector< CCopasiParameterGroup * >::const_iterator end = mTopLevelGroups.constEnd();
 
       int size = 0;
 
@@ -213,7 +212,7 @@ int CQTaskMethodParametersDM::rowCount(const QModelIndex & parent) const
 }
 
 // virtual
-bool CQTaskMethodParametersDM::setData(const QModelIndex &_index, const QVariant &value, int role)
+bool CQParameterGroupDM::setData(const QModelIndex &_index, const QVariant &value, int role)
 {
   CCopasiParameter * pNode = nodeFromIndex(_index);
 
@@ -240,67 +239,67 @@ bool CQTaskMethodParametersDM::setData(const QModelIndex &_index, const QVariant
   return success;
 }
 
-void CQTaskMethodParametersDM::pushMethod(CCopasiMethod * pMethod)
+void CQParameterGroupDM::pushGroup(CCopasiParameterGroup * pTopLevelGroup)
 {
-  assert(pMethod != NULL);
+  assert(pTopLevelGroup != NULL);
 
-  QVector< CCopasiMethod * >::const_iterator it = mMethods.constBegin();
-  QVector< CCopasiMethod * >::const_iterator end = mMethods.constEnd();
+  QVector< CCopasiParameterGroup * >::const_iterator it = mTopLevelGroups.constBegin();
+  QVector< CCopasiParameterGroup * >::const_iterator end = mTopLevelGroups.constEnd();
 
   for (; it != end; ++it)
-    if (*it == pMethod) return;
+    if (*it == pTopLevelGroup) return;
 
   beginResetModel();
-  mMethods.append(pMethod);
+  mTopLevelGroups.append(pTopLevelGroup);
   endResetModel();
 }
 
-void CQTaskMethodParametersDM::popMethod(CCopasiMethod * pMethod)
+void CQParameterGroupDM::popGroup(CCopasiParameterGroup * pTopLevelGroup)
 {
-  QVector< CCopasiMethod * >::iterator it = mMethods.begin();
-  QVector< CCopasiMethod * >::iterator end = mMethods.end();
+  QVector< CCopasiParameterGroup * >::iterator it = mTopLevelGroups.begin();
+  QVector< CCopasiParameterGroup * >::iterator end = mTopLevelGroups.end();
 
   for (; it != end; ++it)
-    if (*it == pMethod)
+    if (*it == pTopLevelGroup)
       {
         beginResetModel();
-        mMethods.erase(it);
+        mTopLevelGroups.erase(it);
         endResetModel();
       }
 }
 
-void CQTaskMethodParametersDM::clearMethods()
+void CQParameterGroupDM::clearGroups()
 {
   beginResetModel();
-  mMethods.clear();
+  mTopLevelGroups.clear();
   endResetModel();
 }
 
-void CQTaskMethodParametersDM::setFramework(const int & framework)
+void CQParameterGroupDM::setFramework(const int & framework)
 {
   QAbstractItemModel::beginResetModel();
   mFramework = framework;
   QAbstractItemModel::endResetModel();
 }
 
-void CQTaskMethodParametersDM::beginResetModel()
+void CQParameterGroupDM::beginResetModel()
 {
   QAbstractItemModel::beginResetModel();
 }
 
-void CQTaskMethodParametersDM::endResetModel()
+void CQParameterGroupDM::endResetModel()
 {
   QAbstractItemModel::endResetModel();
 }
 
-QModelIndex CQTaskMethodParametersDM::index(CCopasiParameter * pNode) const
+QModelIndex CQParameterGroupDM::index(CCopasiParameter * pNode) const
 {
   if (pNode == NULL)
     {
       return QModelIndex();
     }
 
-  if (isMethod(pNode))
+  if (isTopLevelGroup(pNode))
     {
       return index(0, 0, QModelIndex());
     }
@@ -310,19 +309,19 @@ QModelIndex CQTaskMethodParametersDM::index(CCopasiParameter * pNode) const
   return index(getRow(pNode), 0, Parent);
 }
 
-bool CQTaskMethodParametersDM::isMethod(CCopasiParameter * pNode) const
+bool CQParameterGroupDM::isTopLevelGroup(CCopasiParameter * pNode) const
 {
-  QVector< CCopasiMethod * >::const_iterator it = mMethods.constBegin();
-  QVector< CCopasiMethod * >::const_iterator end = mMethods.constEnd();
+  QVector< CCopasiParameterGroup * >::const_iterator it = mTopLevelGroups.constBegin();
+  QVector< CCopasiParameterGroup * >::const_iterator end = mTopLevelGroups.constEnd();
 
   for (; it != end; ++it)
-    if (*it == static_cast< CCopasiMethod * >(pNode)) return true;
+    if (*it == static_cast< CCopasiParameterGroup * >(pNode)) return true;
 
   return false;
 }
 
 // static
-CCopasiParameter * CQTaskMethodParametersDM::nodeFromIndex(const QModelIndex & index)
+CCopasiParameter * CQParameterGroupDM::nodeFromIndex(const QModelIndex & index)
 {
   if (!index.isValid()) return NULL;
 
@@ -336,7 +335,7 @@ CCopasiParameter * CQTaskMethodParametersDM::nodeFromIndex(const QModelIndex & i
   return static_cast< CCopasiParameter * >(Source.internalPointer());
 }
 
-int CQTaskMethodParametersDM::getRow(const CCopasiParameter * pNode) const
+int CQParameterGroupDM::getRow(const CCopasiParameter * pNode) const
 {
   if (pNode == NULL)
     {
@@ -350,14 +349,14 @@ int CQTaskMethodParametersDM::getRow(const CCopasiParameter * pNode) const
       return 0;
     }
 
-  if (isMethod(pParent))
+  if (isTopLevelGroup(pParent))
     {
-      QVector< CCopasiMethod * >::const_iterator itMethod = mMethods.constBegin();
-      QVector< CCopasiMethod * >::const_iterator endMethod = mMethods.constEnd();
+      QVector< CCopasiParameterGroup * >::const_iterator itTopLevelGroup = mTopLevelGroups.constBegin();
+      QVector< CCopasiParameterGroup * >::const_iterator endTopLevelGroup = mTopLevelGroups.constEnd();
 
       int i = 0;
 
-      for (; itMethod != endMethod; ++itMethod)
+      for (; itTopLevelGroup != endTopLevelGroup; ++itTopLevelGroup)
         {
           CCopasiParameterGroup::index_iterator it = pParent->beginIndex();
           CCopasiParameterGroup::index_iterator end = pParent->endIndex();
@@ -387,7 +386,7 @@ int CQTaskMethodParametersDM::getRow(const CCopasiParameter * pNode) const
 }
 
 // static
-QVariant CQTaskMethodParametersDM::nameData(const CCopasiParameter * pNode, int role)
+QVariant CQParameterGroupDM::nameData(const CCopasiParameter * pNode, int role)
 {
   if (role == Qt::DisplayRole)
     {
@@ -398,12 +397,12 @@ QVariant CQTaskMethodParametersDM::nameData(const CCopasiParameter * pNode, int 
 }
 
 // static
-QVariant CQTaskMethodParametersDM::typeData(const CCopasiParameter * pNode, int role)
+QVariant CQParameterGroupDM::typeData(const CCopasiParameter * pNode, int role)
 {
   return QVariant(pNode->getType());
 }
 
-QVariant CQTaskMethodParametersDM::valueData(const CCopasiParameter * pNode, int role)
+QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
 {
   switch (role)
     {

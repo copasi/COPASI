@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,7 +12,7 @@
 #include "copasi/utilities/CCopasiMethod.h"
 
 class CCopasiTask;
-class CQTaskMethodParametersDM;
+class CQParameterGroupDM;
 class CQComboDelegate;
 class CQPushButtonDelegate;
 class CCopasiParameterGroup;
@@ -45,10 +45,6 @@ public:
 protected slots:
 
 protected slots:
-  void slotCreateComboBox(const QModelIndex & index);
-  void slotCreatePushButton(const QModelIndex & index);
-  void slotCloseEditor(const QModelIndex & index);
-  void slotPushButtonClicked(const QModelIndex & index);
   void slotChangeMethod(int);
 
 protected:
@@ -56,7 +52,6 @@ protected:
   void removeFromHistory(CCopasiMethod * pMethod);
   CCopasiMethod * getFromHistory(const CTaskEnum::Method & Type) const;
   void setActiveMethod(const CTaskEnum::Method & Type);
-  void modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate);
 
 protected:
   CCopasiTask * mpTask;
@@ -65,9 +60,6 @@ protected:
   std::map< CTaskEnum::Method, CCopasiMethod * > mMethodHistory;
   bool mShowMethods;
   bool mShowMethodParameters;
-  CQTaskMethodParametersDM * mpMethodParameterDM;
-  CQComboDelegate * mpComboBoxDelegate;
-  CQPushButtonDelegate * mpPushButtonDelegate;
 };
 
 #endif // COPASI_CQTaskMethodWidget

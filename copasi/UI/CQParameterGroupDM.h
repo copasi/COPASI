@@ -1,4 +1,4 @@
-// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,21 +17,21 @@
 
 #include "copasi/UI/listviews.h"
 
-class CCopasiMethod;
+class CCopasiParameterGroup;
 class CCopasiParameter;
 
 class QUndoStack;
 
-class CQTaskMethodParametersDM : public QAbstractItemModel
+class CQParameterGroupDM : public QAbstractItemModel
 {
   Q_OBJECT
 
   friend class TaskMethodParametersDataChangeCommand;
 
 public:
-  CQTaskMethodParametersDM(QObject * pParent);
+  CQParameterGroupDM(QObject * pParent);
 
-  virtual ~CQTaskMethodParametersDM();
+  virtual ~CQParameterGroupDM();
 
   virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
 
@@ -50,9 +50,9 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
 
-  void pushMethod(CCopasiMethod * pMethod);
-  void popMethod(CCopasiMethod * pMethod);
-  void clearMethods();
+  void pushGroup(CCopasiParameterGroup * pMethod);
+  void popGroup(CCopasiParameterGroup * pMethod);
+  void clearGroups();
 
   void setFramework(const int & framework);
 
@@ -69,7 +69,7 @@ signals:
 private:
   QModelIndex index(CCopasiParameter * pNode) const;
 
-  bool isMethod(CCopasiParameter * pNode) const;
+  bool isTopLevelGroup(CCopasiParameter * pNode) const;
 
   int getRow(const CCopasiParameter * pNode) const;
 
@@ -80,7 +80,7 @@ private:
   static QVariant valueData(const CCopasiParameter * pNode, int role);
 
 private:
-  QVector< CCopasiMethod * > mMethods;
+  QVector< CCopasiParameterGroup * > mTopLevelGroups;
 
   int mFramework;
 };
