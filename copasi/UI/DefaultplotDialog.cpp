@@ -51,8 +51,18 @@ void DefaultPlotDialog::slotCreate()
   CCopasiDataModel* pDataModel = &CCopasiRootContainer::getDatamodelList()->operator[](0);
   assert(pDataModel != NULL);
 
-  if (COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel))
-    this->accept();
+  CCopasiObject* result = COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel);
+
+  if (result != NULL)
+    {
+      QString current = lineEditTitle->text();
+      int count = 0;
+
+      while (!result->setObjectName(TO_UTF8(current)))
+        current = QString("%1 %2").arg(lineEditTitle->text()).arg(++count);
+
+      this->accept();
+    }
   else
     this->reject();
 }
@@ -105,7 +115,7 @@ void DefaultPlotDialog::slotSelect()
 
       createButton->setEnabled(!lineEditTitle->text().startsWith("-- "));
     }
-  else //Listbox is emtpy, so there is no current row (-1)
+  else //Listbox is empty, so there is no current row (-1)
     {
       mIndex = 0;
       lineEditTitle->setText("");
