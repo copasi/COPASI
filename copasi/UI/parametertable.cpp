@@ -347,6 +347,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
           if (locked)
             {
               pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
+              mpComboDelegate->setItems(rowCounter, QStringList());
               closePersistentEditor(pItem);
             }
           else

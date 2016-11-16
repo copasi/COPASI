@@ -33,7 +33,7 @@ CFunctionParameterMap::CFunctionParameterMap():
       C_FLOAT64 InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
       pUnmappedObject =
-        new CCopasiParameter("NaN", CCopasiParameter::DOUBLE, & InvalidValue);
+        new CCopasiParameter("unknown", CCopasiParameter::DOUBLE, & InvalidValue);
     }
 };
 
