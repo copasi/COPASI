@@ -969,7 +969,6 @@ CReactionInterface::getMappings(size_t index) const
 const std::string &
 CReactionInterface::getMapping(size_t index) const
 {
-  assert(!isVector(index));
   return mNameMap[index][0];
 }
 
