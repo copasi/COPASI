@@ -249,7 +249,7 @@ if (ENABLE_SDE_SUPPORT)
   add_definitions(-DWITH_SDE_SUPPORT)
 endif(ENABLE_SDE_SUPPORT)
 
-option(ENABLE_NEW_PARSER "Enable the use of the new XML parser" OFF)
+option(ENABLE_NEW_PARSER "Enable the use of the new XML parser" ON)
 if (ENABLE_NEW_PARSER)
   add_definitions(-DWITH_NEW_PARSER)
 endif(ENABLE_NEW_PARSER)

@@ -76,7 +76,7 @@
 #include "copasi/layout/CLGlobalRenderInformation.h"
 
 // Uncomment this line below to get debug print out.
-#define DEBUG_OUTPUT 1
+// #define DEBUG_OUTPUT 1
 
 CXMLParser::CXMLParser(CVersion & version) :
   CExpat(),
