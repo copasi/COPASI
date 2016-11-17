@@ -50,11 +50,11 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
 
+  void setAdvanced(const bool & advanced);
+
   void pushGroup(CCopasiParameterGroup * pMethod);
   void popGroup(CCopasiParameterGroup * pMethod);
   void clearGroups();
-
-  void setFramework(const int & framework);
 
   void beginResetModel();
   void endResetModel();
@@ -74,15 +74,12 @@ private:
   int getRow(const CCopasiParameter * pNode) const;
 
   static QVariant nameData(const CCopasiParameter * pNode, int role);
-
   static QVariant typeData(const CCopasiParameter * pNode, int role);
-
   static QVariant valueData(const CCopasiParameter * pNode, int role);
 
 private:
   QVector< CCopasiParameterGroup * > mTopLevelGroups;
-
-  int mFramework;
+  bool mAdvanced;
 };
 
 #endif // COPASI_CQTaskMethodParametersDM

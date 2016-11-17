@@ -26,7 +26,7 @@
 CQParameterGroupDM::CQParameterGroupDM(QObject * pParent):
   QAbstractItemModel(pParent),
   mTopLevelGroups(),
-  mFramework(0)
+  mAdvanced(true)
 {}
 
 // virtual
@@ -74,17 +74,24 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
       return Qt::ItemIsEnabled;
     }
 
+  Qt::ItemFlags Flags = QAbstractItemModel::flags(index);
+
+  if (pNode->isEditable())
+    Flags |= Qt::ItemIsEditable;
+  else
+    Flags &= ~Qt::ItemIsEditable;
+
   if (index.column() == COL_VALUE)
     {
       if (pNode->getType() == CCopasiParameter::BOOL)
-        return QAbstractItemModel::flags(index) | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;;
+        return Flags | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
 
       if (pNode->hasValidValues())
         {
           emit signalCreateComboBox(index);
         }
       else if (pNode->getType() == CCopasiParameter::GROUP &&
-               static_cast< CCopasiParameterGroup * >(pNode)->getElementTemplates().size() > 0)
+               static_cast< CCopasiParameterGroup * >(pNode)->haveTemplate() > 0)
         {
           emit signalCreatePushButton(index);
         }
@@ -95,10 +102,10 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
 
       if (pNode->getType() == CCopasiParameter::CN)
         {
-          return (QAbstractItemModel::flags(index) | Qt::ItemIsEnabled) & ~Qt::ItemIsEditable;
+          return (Flags | Qt::ItemIsEnabled) & ~Qt::ItemIsEditable;
         }
 
-      return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+      return Flags | Qt::ItemIsEnabled;
     }
 
   return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable;
@@ -132,6 +139,7 @@ QVariant CQParameterGroupDM::headerData(int section, Qt::Orientation /* orientat
 QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & parent) const
 {
   CCopasiParameterGroup * pParent = static_cast< CCopasiParameterGroup * >(nodeFromIndex(parent));
+  int Row = row;
 
   if (pParent == NULL &&
       mTopLevelGroups.size() > 0)
@@ -139,12 +147,28 @@ QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & p
       QVector< CCopasiParameterGroup * >::const_iterator it = mTopLevelGroups.constBegin();
       QVector< CCopasiParameterGroup * >::const_iterator end = mTopLevelGroups.constEnd();
 
-      int Row = row;
-
       for (; it != end; ++it)
         if (Row < (int)(*it)->size())
           {
-            return createIndex(row, column, *((*it)->beginIndex() + Row));
+            if (mAdvanced)
+              {
+                return createIndex(row, column, *((*it)->beginIndex() + Row));
+              }
+
+            CCopasiParameterGroup::index_iterator itRow = (*it)->beginIndex();
+            CCopasiParameterGroup::index_iterator endRow = (*it)->endIndex();
+
+            for (; itRow != endRow; ++itRow)
+              {
+                if ((*itRow)->isBasic()) --Row;
+
+                if (Row == -1)
+                  {
+                    return createIndex(row, column, *(itRow));
+                  }
+              }
+
+            return QModelIndex();
           }
         else
           {
@@ -155,9 +179,27 @@ QModelIndex CQParameterGroupDM::index(int row, int column, const QModelIndex & p
     }
 
   if (pParent != NULL && row < (int) pParent->size())
-    return createIndex(row, column, *(pParent->beginIndex() + row));
-  else
-    return QModelIndex();
+    {
+      if (mAdvanced)
+        {
+          return createIndex(row, column, *(pParent->beginIndex() + row));
+        }
+
+      CCopasiParameterGroup::index_iterator itRow = pParent->beginIndex();
+      CCopasiParameterGroup::index_iterator endRow = pParent->endIndex();
+
+      for (; itRow != endRow; ++itRow)
+        {
+          if ((*itRow)->isBasic()) --Row;
+
+          if (Row == -1)
+            {
+              return createIndex(row, column, *(itRow));
+            }
+        }
+    }
+
+  return QModelIndex();
 }
 
 // virtual
@@ -183,6 +225,8 @@ QModelIndex CQParameterGroupDM::parent(const QModelIndex & index) const
 // virtual
 int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 {
+  CCopasiParameter::UserInterfaceFlag Flag(mAdvanced ? CCopasiParameter::all : CCopasiParameter::basic);
+
   if (!parent.isValid())
     {
       QVector< CCopasiParameterGroup * >::const_iterator it = mTopLevelGroups.constBegin();
@@ -191,7 +235,9 @@ int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
       int size = 0;
 
       for (; it != end; ++it)
-        size += (int)(*it)->size();
+        {
+          size += (int)(*it)->size(Flag);
+        }
 
       return size;
     }
@@ -201,7 +247,7 @@ int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
   switch (pParent->getType())
     {
       case CCopasiParameter::GROUP:
-        return (int) static_cast< CCopasiParameterGroup * >(pParent)->size();
+        return (int) static_cast< CCopasiParameterGroup * >(pParent)->size(Flag);
         break;
 
       default:
@@ -239,6 +285,11 @@ bool CQParameterGroupDM::setData(const QModelIndex &_index, const QVariant &valu
   return success;
 }
 
+void CQParameterGroupDM::setAdvanced(const bool & advanced)
+{
+  mAdvanced = advanced;
+}
+
 void CQParameterGroupDM::pushGroup(CCopasiParameterGroup * pTopLevelGroup)
 {
   assert(pTopLevelGroup != NULL);
@@ -273,13 +324,6 @@ void CQParameterGroupDM::clearGroups()
   beginResetModel();
   mTopLevelGroups.clear();
   endResetModel();
-}
-
-void CQParameterGroupDM::setFramework(const int & framework)
-{
-  QAbstractItemModel::beginResetModel();
-  mFramework = framework;
-  QAbstractItemModel::endResetModel();
 }
 
 void CQParameterGroupDM::beginResetModel()
@@ -361,10 +405,12 @@ int CQParameterGroupDM::getRow(const CCopasiParameter * pNode) const
           CCopasiParameterGroup::index_iterator it = pParent->beginIndex();
           CCopasiParameterGroup::index_iterator end = pParent->endIndex();
 
-          for (; it != end; ++it, ++i)
-            if (*it == pNode)
+          for (; it != end; ++it)
+            if (mAdvanced || (*it)->isBasic())
               {
-                return i;
+                if (*it == pNode) return i;
+
+                ++i;
               }
         }
     }
@@ -376,9 +422,11 @@ int CQParameterGroupDM::getRow(const CCopasiParameter * pNode) const
       CCopasiParameterGroup::index_iterator end = pParent->endIndex();
 
       for (; it != end; ++it, ++i)
-        if (*it == pNode)
+        if (mAdvanced || (*it)->isBasic())
           {
-            return i;
+            if (*it == pNode) return i;
+
+            ++i;
           }
     }
 
@@ -435,7 +483,7 @@ QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
 
             case CCopasiParameter::GROUP:
 
-              if (static_cast< const CCopasiParameterGroup * >(pNode)->getElementTemplates().size() > 0)
+              if (static_cast< const CCopasiParameterGroup * >(pNode)->haveTemplate())
                 {
                   QVariant(QString("Add"));
                 }

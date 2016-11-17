@@ -25,6 +25,8 @@ public:
 
   virtual ~CQParameterGroupView();
 
+  void setAdvanced(const bool & advanced);
+
   void pushGroup(CCopasiParameterGroup * pGroup);
   void popGroup(CCopasiParameterGroup * pGroup);
   void clearGroups();

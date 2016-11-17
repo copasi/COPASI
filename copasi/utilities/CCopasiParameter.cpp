@@ -69,7 +69,8 @@ CCopasiParameter::CCopasiParameter():
   mSize(0),
   mpValue(NULL),
   mpValueReference(NULL),
-  mpValidValues(NULL)
+  mpValidValues(NULL),
+  mUserInterfaceFlag(all)
 {}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
@@ -80,7 +81,8 @@ CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
   mSize(0),
   mpValue(NULL),
   mpValueReference(NULL),
-  mpValidValues(NULL)
+  mpValidValues(NULL),
+  mUserInterfaceFlag(src.mUserInterfaceFlag)
 {
   createValue(src.mpValue);
   createValidValues(src.mpValidValues);
@@ -102,7 +104,8 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
   mSize(0),
   mpValue(NULL),
   mpValueReference(NULL),
-  mpValidValues(NULL)
+  mpValidValues(NULL),
+  mUserInterfaceFlag(all)
 {
   createValue(pValue);
 }
@@ -786,4 +789,25 @@ std::string CCopasiParameter::getObjectDisplayName() const
     }
 
   return CCopasiObject::getObjectDisplayName();
+}
+
+// virtual
+void CCopasiParameter::setUserInterfaceFlag(const CCopasiParameter::UserInterfaceFlag & flag)
+{
+  mUserInterfaceFlag = flag;
+}
+
+const CCopasiParameter::UserInterfaceFlag & CCopasiParameter::getUserInterfaceFlag() const
+{
+  return mUserInterfaceFlag;
+}
+
+bool CCopasiParameter::isEditable() const
+{
+  return mUserInterfaceFlag & editable;
+}
+
+bool CCopasiParameter::isBasic() const
+{
+  return mUserInterfaceFlag & basic;
 }

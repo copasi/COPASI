@@ -429,6 +429,8 @@ void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
 {
   if (pParameter == NULL) return;
 
+  pParameter->setUserInterfaceFlag(mUserInterfaceFlag & pParameter->getUserInterfaceFlag());
+
   CCopasiContainer::add(pParameter, true);
   static_cast< elements * >(mpValue)->push_back(pParameter);
 }
@@ -445,12 +447,28 @@ CCopasiParameterGroup & CCopasiParameterGroup::getElementTemplates()
 
 const CCopasiParameterGroup & CCopasiParameterGroup::getElementTemplates() const
 {
-  if (mpElementTemplates == NULL)
-    {
-      mpElementTemplates = new CCopasiParameterGroup("Element Templates", this);
-    }
+  assert(mpElementTemplates != NULL);
 
   return *mpElementTemplates;
+}
+
+bool CCopasiParameterGroup::haveTemplate() const
+{
+  return (mpElementTemplates != NULL && mpElementTemplates->size() > 0);
+}
+
+// virtual
+void CCopasiParameterGroup::setUserInterfaceFlag(const CCopasiParameter::UserInterfaceFlag & flag)
+{
+  CCopasiParameter::setUserInterfaceFlag(flag);
+
+  elements::iterator it = beginIndex();
+  elements::iterator end = endIndex();
+
+  for (; it != end; ++it)
+    {
+      (*it)->setUserInterfaceFlag(mUserInterfaceFlag);
+    }
 }
 
 CCopasiParameterGroup::index_iterator CCopasiParameterGroup::beginIndex() const
@@ -494,19 +512,7 @@ CCopasiParameterGroup * CCopasiParameterGroup::assertGroup(const std::string & n
 
 bool CCopasiParameterGroup::removeParameter(const std::string & name)
 {
-  size_t index = getIndex(name);
-
-  if (index != C_INVALID_INDEX)
-    {
-      index_iterator it = static_cast< elements * >(mpValue)->begin() + index;
-
-      pdelete(*it);
-      static_cast< elements * >(mpValue)->erase(it, it + 1);
-
-      return true;
-    }
-
-  return false;
+  return removeParameter(getIndex(name));
 }
 
 bool CCopasiParameterGroup::removeParameter(const size_t & index)
@@ -662,8 +668,24 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
   return true;
 }
 
-size_t CCopasiParameterGroup::size() const
-{return static_cast< elements * >(mpValue)->size();}
+size_t CCopasiParameterGroup::size(const CCopasiParameter::UserInterfaceFlag & flag) const
+{
+  if (flag == all)
+    {
+      return static_cast< elements * >(mpValue)->size();
+    }
+
+  elements::const_iterator it = beginIndex();
+  elements::const_iterator end = endIndex();
+
+  size_t size = 0;
+
+  for (; it != end; ++it)
+    if (flag & (*it)->getUserInterfaceFlag())
+      ++size;
+
+  return size;
+}
 
 void CCopasiParameterGroup::clear()
 {

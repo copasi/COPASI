@@ -40,6 +40,11 @@ CQParameterGroupView::CQParameterGroupView(QWidget* parent):
 CQParameterGroupView::~CQParameterGroupView()
 {}
 
+void CQParameterGroupView::setAdvanced(const bool & advanced)
+{
+  mpParameterGroupDM->setAdvanced(advanced);
+}
+
 void CQParameterGroupView::pushGroup(CCopasiParameterGroup * pGroup)
 {
   mpParameterGroupDM->pushGroup(pGroup);

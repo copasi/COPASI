@@ -470,7 +470,7 @@ public:
    * The size of the parameter group
    * @ return size_t size
    */
-  size_t size() const;
+  size_t size(const UserInterfaceFlag & flag = all) const;
 
   /**
    * Clear all parameters and subgroups
@@ -525,9 +525,12 @@ public:
 
   CCopasiParameterGroup & getElementTemplates();
   const CCopasiParameterGroup & getElementTemplates() const;
+  bool haveTemplate() const;
+
+  virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
 
 private:
-  mutable CCopasiParameterGroup *mpElementTemplates;
+  CCopasiParameterGroup *mpElementTemplates;
 };
 
 // :TODO: This should be a member function but Visual C++ 6.0

@@ -20,6 +20,7 @@
 
 #include "copasi/report/CCopasiContainer.h"
 #include "copasi/report/CCopasiObjectName.h"
+#include "copasi/utilities/CFlags.h"
 
 class CCopasiParameterGroup;
 
@@ -53,6 +54,15 @@ public:
     INVALID
   };
 
+  enum eUserInterfaceFlag
+  {
+    editable = 0x1,
+    basic = 0x2,
+    all = editable | basic
+  };
+
+  typedef CFlags< eUserInterfaceFlag > UserInterfaceFlag;
+
   /**
    * String literals for the GUI to display type names of parameters known
    * to COPASI.
@@ -74,7 +84,7 @@ protected:
   std::string mKey;
 
 private:
-  /**
+  /**CCopasiParameter
    * The type of the parameter
    */
   CCopasiParameter::Type mType;
@@ -102,6 +112,8 @@ protected:
 
   // Operations
   CCopasiParameter(const CCopasiParameter & src);
+
+  UserInterfaceFlag mUserInterfaceFlag;
 
 private:
   /**
@@ -337,6 +349,14 @@ public:
    *  to provide a shorter display.
    */
   virtual std::string getObjectDisplayName() const;
+
+  virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
+
+  const UserInterfaceFlag & getUserInterfaceFlag() const;
+
+  bool isEditable() const;
+
+  bool isBasic() const;
 
 private:
   /**

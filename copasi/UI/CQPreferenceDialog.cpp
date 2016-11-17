@@ -49,10 +49,9 @@ CQPreferenceDialog::~CQPreferenceDialog()
 
 void CQPreferenceDialog::init()
 {
-  mpTreeWidget->setColumnWidth(COL_NAME, 150);
-  mpTreeWidget->setColumnWidth(COL_VALUE, 100);
-
   CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+  mpTreeView->setAdvanced(false);
+  mpTreeView->pushGroup(configFile);
 
   CCopasiParameter * pParameter = configFile->getRecentFiles().getParameter("MaxFiles");
 
@@ -62,7 +61,7 @@ void CQPreferenceDialog::init()
       Values.append("Max Last Visited Files");
       Values.append(QString::number(pParameter->getValue< unsigned C_INT32 >()));
 
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
@@ -73,7 +72,7 @@ void CQPreferenceDialog::init()
       Values.append("Max Last Visited SBML Files");
       Values.append(QString::number(pParameter->getValue< unsigned C_INT32 >()));
 
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Application for opening URLs");
@@ -84,7 +83,7 @@ void CQPreferenceDialog::init()
       Values.append("Application for opening URLs");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
 
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Validate Units");
@@ -94,7 +93,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Validate Units");
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Use OpenGL");
@@ -104,7 +103,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Use OpenGL");
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Use Advanced Sliders");
@@ -114,7 +113,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Use Advanced Sliders");
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Use Advanced Editing");
@@ -124,7 +123,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Use Advanced Editing");
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Normalize Weights per Experiment");
@@ -134,7 +133,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Normalize Weights per Experiment");
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Display Populations during Optimization");
@@ -144,7 +143,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Display Populations during Optimization");
       Values.append((pParameter->getValue< bool >() ? "YES" : "NO"));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Proxy Server");
@@ -154,7 +153,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Proxy Server");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Proxy Port");
@@ -164,7 +163,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Proxy Port");
       Values.append(QString::number(pParameter->getValue< C_INT32 >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Proxy User");
@@ -174,7 +173,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Proxy User");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Proxy Password");
@@ -184,7 +183,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Proxy Password");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   // Adding current author information
@@ -195,7 +194,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Given Name");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Famliy Name");
@@ -205,7 +204,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Famliy Name");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Organization");
@@ -215,7 +214,7 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Organization");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
 
   pParameter = configFile->getParameter("Email");
@@ -225,9 +224,8 @@ void CQPreferenceDialog::init()
       QStringList Values;
       Values.append("Email");
       Values.append(FROM_UTF8(pParameter->getValue< std::string >()));
-      new QTreeWidgetItem(mpTreeWidget, Values);
+      // new QTreeWidgetItem(mpTreeView, Values);
     }
-
 }
 
 void CQPreferenceDialog::slotBtnOk()
@@ -236,7 +234,8 @@ void CQPreferenceDialog::slotBtnOk()
   unsigned C_INT32 newMaxFiles = 0;
   CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
 
-  QList< QTreeWidgetItem *> Items = mpTreeWidget->findItems("Max Last Visited Files", 0, 0);
+  /*
+  QList< QTreeWidgetItem *> Items = mpTreeView->findItems("Max Last Visited Files", 0, 0);
   CCopasiParameter * pParameter = configFile->getRecentFiles().getParameter("MaxFiles");
 
   if (Items.size() > 0 &&
@@ -258,7 +257,7 @@ void CQPreferenceDialog::slotBtnOk()
         }
     }
 
-  Items = mpTreeWidget->findItems("Max Last Visited SBML Files", 0, 0);
+  Items = mpTreeView->findItems("Max Last Visited SBML Files", 0, 0);
   pParameter = configFile->getRecentSBMLFiles().getParameter("MaxFiles");
 
   if (Items.size() > 0 &&
@@ -280,7 +279,7 @@ void CQPreferenceDialog::slotBtnOk()
         }
     }
 
-  Items = mpTreeWidget->findItems("Application for opening URLs", 0, 0);
+  Items = mpTreeView->findItems("Application for opening URLs", 0, 0);
   pParameter = configFile->getParameter("Application for opening URLs");
 
   if (Items.size() > 0 &&
@@ -291,7 +290,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Validate Units", 0, 0);
+  Items = mpTreeView->findItems("Validate Units", 0, 0);
   pParameter = configFile->getParameter("Validate Units");
 
   if (Items.size() > 0 &&
@@ -300,7 +299,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
-  Items = mpTreeWidget->findItems("Use OpenGL", 0, 0);
+  Items = mpTreeView->findItems("Use OpenGL", 0, 0);
   pParameter = configFile->getParameter("Use OpenGL");
 
   if (Items.size() > 0 &&
@@ -309,7 +308,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
-  Items = mpTreeWidget->findItems("Use Advanced Sliders", 0, 0);
+  Items = mpTreeView->findItems("Use Advanced Sliders", 0, 0);
   pParameter = configFile->getParameter("Use Advanced Sliders");
 
   if (Items.size() > 0 &&
@@ -318,7 +317,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
-  Items = mpTreeWidget->findItems("Use Advanced Editing", 0, 0);
+  Items = mpTreeView->findItems("Use Advanced Editing", 0, 0);
   pParameter = configFile->getParameter("Use Advanced Editing");
 
   if (Items.size() > 0 &&
@@ -327,7 +326,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
-  Items = mpTreeWidget->findItems("Normalize Weights per Experiment", 0, 0);
+  Items = mpTreeView->findItems("Normalize Weights per Experiment", 0, 0);
   pParameter = configFile->getParameter("Normalize Weights per Experiment");
 
   if (Items.size() > 0 &&
@@ -336,7 +335,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
-  Items = mpTreeWidget->findItems("Display Populations during Optimization", 0, 0);
+  Items = mpTreeView->findItems("Display Populations during Optimization", 0, 0);
   pParameter = configFile->getParameter("Display Populations during Optimization");
 
   if (Items.size() > 0 &&
@@ -345,7 +344,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(Items[0]->text(COL_VALUE).toUpper() == "YES");
     }
 
-  Items = mpTreeWidget->findItems("Proxy Server", 0, 0);
+  Items = mpTreeView->findItems("Proxy Server", 0, 0);
   pParameter = configFile->getParameter("Proxy Server");
 
   if (Items.size() > 0 &&
@@ -356,7 +355,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Proxy Port", 0, 0);
+  Items = mpTreeView->findItems("Proxy Port", 0, 0);
   pParameter = configFile->getParameter("Proxy Port");
 
   if (Items.size() > 0 &&
@@ -366,7 +365,7 @@ void CQPreferenceDialog::slotBtnOk()
       pParameter->setValue(port);
     }
 
-  Items = mpTreeWidget->findItems("Proxy User", 0, 0);
+  Items = mpTreeView->findItems("Proxy User", 0, 0);
   pParameter = configFile->getParameter("Proxy User");
 
   if (Items.size() > 0 &&
@@ -377,7 +376,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Proxy Password", 0, 0);
+  Items = mpTreeView->findItems("Proxy Password", 0, 0);
   pParameter = configFile->getParameter("Proxy Password");
 
   if (Items.size() > 0 &&
@@ -388,7 +387,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Given Name", 0, 0);
+  Items = mpTreeView->findItems("Given Name", 0, 0);
   pParameter = configFile->getParameter("Given Name");
 
   if (Items.size() > 0 &&
@@ -398,7 +397,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Famliy Name", 0, 0);
+  Items = mpTreeView->findItems("Famliy Name", 0, 0);
   pParameter = configFile->getParameter("Famliy Name");
 
   if (Items.size() > 0 &&
@@ -408,7 +407,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Organization", 0, 0);
+  Items = mpTreeView->findItems("Organization", 0, 0);
   pParameter = configFile->getParameter("Organization");
 
   if (Items.size() > 0 &&
@@ -418,7 +417,7 @@ void CQPreferenceDialog::slotBtnOk()
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
 
-  Items = mpTreeWidget->findItems("Email", 0, 0);
+  Items = mpTreeView->findItems("Email", 0, 0);
   pParameter = configFile->getParameter("Email");
 
   if (Items.size() > 0 &&
@@ -427,7 +426,7 @@ void CQPreferenceDialog::slotBtnOk()
       if (Items[0]->text(COL_VALUE) != FROM_UTF8(pParameter->getValue< std::string >()))
         pParameter->setValue(std::string(TO_UTF8(Items[0]->text(COL_VALUE))));
     }
-
+  */
   done(1);
 }
 
@@ -435,18 +434,4 @@ void CQPreferenceDialog::slotBtnOk()
 void CQPreferenceDialog::slotBtnCancel()
 {
   done(0);
-}
-
-// virtual
-void CQPreferenceDialog::slotItemDoubleClicked(QTreeWidgetItem* pItem, int column)
-{
-  if (column == COL_VALUE)
-    {
-      Qt::ItemFlags Flags = pItem->flags();
-      pItem->setFlags(Flags | Qt::ItemIsEditable);
-
-      mpTreeWidget->editItem(pItem, column);
-
-      pItem->setFlags(Flags);
-    }
 }
