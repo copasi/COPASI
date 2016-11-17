@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
-
+<!-- Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
+<!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.copasi.org/static/schema" xmlns:x="http://www.w3.org/2001/XMLSchema-instance" xmlns:schema="http://www.copasi.org/static/schema">
   <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="x.xsd"/>
   <xs:element name="COPASI">
@@ -14,7 +17,6 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element minOccurs="0" ref="schema:ListOfFunctions"/>
-        <xs:element minOccurs="0" ref="schema:ListOfUnits"/>
         <xs:element minOccurs="0" ref="schema:Model"/>
         <xs:element minOccurs="0" ref="schema:ListOfTasks"/>
         <xs:element minOccurs="0" ref="schema:ListOfReports"/>
@@ -22,6 +24,7 @@
         <xs:element minOccurs="0" ref="schema:GUI"/>
         <xs:element minOccurs="0" ref="schema:ListOfLayouts"/>
         <xs:element minOccurs="0" ref="schema:SBMLReference"/>
+        <xs:element minOccurs="0" ref="schema:ListOfUnitDefinitions"/>
         <xs:any minOccurs="0" maxOccurs="unbounded" namespace="##other" processContents="skip">
           <xs:annotation>
             <xs:documentation> We explicitedly allow the addition of elements which are not in the
@@ -37,7 +40,6 @@
     </xs:complexType>
   </xs:element>
   <xs:element name="ListOfFunctions" type="schema:listOfFunctions.datatype"/>
-  <xs:element name="ListOfUnits" type="schema:listOfUnits.datatype"/>
   <xs:element name="Model" type="schema:model.datatype"/>
   <xs:element name="ListOfTasks" type="schema:listOfTasks.datatype"/>
   <xs:element name="ListOfReports" type="schema:listOfReportSpecifications.datatype"/>
@@ -70,6 +72,7 @@
       </xs:attribute>
     </xs:complexType>
   </xs:element>
+  <xs:element name="ListOfUnitDefinitions" type="schema:listOfUnitDefinitions.datatype"/>
   <xs:attributeGroup name="reactionParticipant.datatype">
     <xs:attribute name="stoichiometry" use="required" type="xs:double"/>
     <xs:attribute name="metabolite" use="required">
@@ -229,14 +232,17 @@
       <xs:group ref="schema:xhtml.datatype"/>
     </xs:complexType>
   </xs:element>
-  <xs:complexType name="listOfUnits.datatype">
+  <xs:complexType name="listOfUnitDefinitions.datatype">
     <xs:sequence>
-      <xs:element maxOccurs="unbounded" ref="schema:Unit"/>
+      <xs:element maxOccurs="unbounded" ref="schema:UnitDefinition"/>
     </xs:sequence>
   </xs:complexType>
-  <xs:element name="Unit">
+  <xs:element name="UnitDefinition">
     <xs:complexType>
-      <xs:attributeGroup ref="schema:name.attribute"/>
+      <xs:sequence>
+        <xs:group ref="schema:annotation.datatype"/>
+        <xs:element ref="schema:Expression"/>
+      </xs:sequence>
       <xs:attribute name="key" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:ID">
@@ -244,8 +250,11 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
+      <xs:attributeGroup ref="schema:name.attribute"/>
+      <xs:attribute name="symbol" use="required" type="xs:string"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="Expression" type="schema:expression.simpletype"/>
   <xs:complexType name="listOfFunctions.datatype">
     <xs:sequence>
       <xs:element maxOccurs="unbounded" ref="schema:Function"/>
@@ -351,80 +360,11 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="timeUnit" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="d"/>
-          <xs:enumeration value="ps"/>
-          <xs:enumeration value="ms"/>
-          <xs:enumeration value="fs"/>
-          <xs:enumeration value="µs"/>
-          <xs:enumeration value="min"/>
-          <xs:enumeration value="h"/>
-          <xs:enumeration value="ns"/>
-          <xs:enumeration value="s"/>
-          <xs:enumeration value="dimensionless"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="volumeUnit" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="pl"/>
-          <xs:enumeration value="m³"/>
-          <xs:enumeration value="nl"/>
-          <xs:enumeration value="µl"/>
-          <xs:enumeration value="l"/>
-          <xs:enumeration value="fl"/>
-          <xs:enumeration value="ml"/>
-          <xs:enumeration value="dimensionless"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="areaUnit" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="µm²"/>
-          <xs:enumeration value="mm²"/>
-          <xs:enumeration value="pm²"/>
-          <xs:enumeration value="nm²"/>
-          <xs:enumeration value="m²"/>
-          <xs:enumeration value="cm²"/>
-          <xs:enumeration value="fm²"/>
-          <xs:enumeration value="dm²"/>
-          <xs:enumeration value="dimensionless"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="lengthUnit" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="m"/>
-          <xs:enumeration value="fm"/>
-          <xs:enumeration value="mm"/>
-          <xs:enumeration value="dm"/>
-          <xs:enumeration value="cm"/>
-          <xs:enumeration value="pm"/>
-          <xs:enumeration value="nm"/>
-          <xs:enumeration value="µm"/>
-          <xs:enumeration value="dimensionless"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
-    <xs:attribute name="quantityUnit" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="mmol"/>
-          <xs:enumeration value="µmol"/>
-          <xs:enumeration value="fmol"/>
-          <xs:enumeration value="mol"/>
-          <xs:enumeration value="pmol"/>
-          <xs:enumeration value="#"/>
-          <xs:enumeration value="nmol"/>
-          <xs:enumeration value="dimensionless"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
+    <xs:attribute name="timeUnit" use="required" type="xs:string"/>
+    <xs:attribute name="volumeUnit" use="required" type="xs:string"/>
+    <xs:attribute name="areaUnit" use="required" type="xs:string"/>
+    <xs:attribute name="lengthUnit" use="required" type="xs:string"/>
+    <xs:attribute name="quantityUnit" use="required" type="xs:string"/>
     <xs:attribute name="type" use="required">
       <xs:simpleType>
         <xs:restriction base="xs:string">
@@ -558,6 +498,7 @@
       <xs:group ref="schema:annotation.datatype"/>
       <xs:element minOccurs="0" ref="schema:Expression"/>
       <xs:element minOccurs="0" ref="schema:InitialExpression"/>
+      <xs:element minOccurs="0" ref="schema:Unit"/>
     </xs:sequence>
     <xs:attribute name="key" use="required">
       <xs:simpleType>
@@ -745,6 +686,22 @@
     <xs:sequence>
       <xs:element minOccurs="0" ref="schema:ListOfCallParameters"/>
     </xs:sequence>
+    <xs:attribute name="unitType" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Default"/>
+          <xs:enumeration value="AmountPerTime"/>
+          <xs:enumeration value="ConcentrationPerTime"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="scalingCompartment">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:pattern value="CN=Root,Model=([^\\\[\]=,&gt;]|\\.)*,Vector=Compartments\[([^\\\[\]=,&gt;]|\\.)*\]"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
     <xs:attribute name="function" use="required">
       <xs:simpleType>
         <xs:restriction base="xs:IDREF">
@@ -794,6 +751,7 @@
       <xs:group ref="schema:annotation.datatype"/>
       <xs:element ref="schema:TriggerExpression"/>
       <xs:element minOccurs="0" ref="schema:DelayExpression"/>
+      <xs:element minOccurs="0" ref="schema:PriorityExpression"/>
       <xs:element minOccurs="0" ref="schema:ListOfAssignments"/>
     </xs:sequence>
     <xs:attribute name="key" use="required">
@@ -810,6 +768,7 @@
   </xs:complexType>
   <xs:element name="TriggerExpression" type="schema:expression.simpletype"/>
   <xs:element name="DelayExpression" type="schema:expression.simpletype"/>
+  <xs:element name="PriorityExpression" type="schema:expression.simpletype"/>
   <xs:element name="ListOfAssignments" type="schema:listOfEventAssignments.datatype"/>
   <xs:complexType name="listOfEventAssignments.datatype">
     <xs:sequence>
@@ -1063,8 +1022,8 @@
       </xs:simpleType>
     </xs:attribute>
   </xs:attributeGroup>
-  <xs:element name="Expression" type="schema:expression.simpletype"/>
   <xs:element name="InitialExpression" type="schema:expression.simpletype"/>
+  <xs:element name="Unit" type="schema:expression.simpletype"/>
   <xs:element name="Object">
     <xs:complexType>
       <xs:attribute name="cn" use="required" type="xs:string"/>
