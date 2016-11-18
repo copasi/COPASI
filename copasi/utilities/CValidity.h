@@ -19,7 +19,7 @@ enum eKind
   EventMissingTriggerExpression = 0x10,
   UnitUndefined = 0x20,
   UnitConflict = 0x40,
-  NaN = 0x80
+  NaNissue = 0x80
 };
 
 enum eSeverity

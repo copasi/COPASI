@@ -127,6 +127,16 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
   return const_cast< CObjectInterface * >(pObject);
 }
 
+CValidity & CObjectInterface::getValidity()
+{
+  return mValidity;
+}
+
+const CValidity & CObjectInterface::getValidity() const
+{
+  return mValidity;
+}
+
 CObjectInterface::CObjectInterface()
 {}
 

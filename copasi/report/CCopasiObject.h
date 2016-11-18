@@ -36,6 +36,8 @@
 
 #include "copasi/math/CMathEnum.h"
 
+#include "copasi/utilities/CValidity.h"
+
 class CCopasiObjectName;
 class CCopasiContainer;
 class CCopasiObject;
@@ -142,6 +144,21 @@ public:
    * @return std::string objectDisplayName
    */
   virtual std::string getObjectDisplayName() const = 0;
+
+  /**
+   * Get the aggregation of any issues associated with this object
+   * @return CValidity & validity
+   */
+  CValidity & getValidity();
+
+  /**
+   * Get the aggregation of any issues associated with this object
+   * @return const CValidity & validity
+   */
+  const CValidity & getValidity() const;
+
+protected:
+  CValidity mValidity;
 };
 
 class CCopasiObject: public CObjectInterface
