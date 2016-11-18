@@ -19,7 +19,7 @@ if(ENABLE_COMBINE_ARCHIVE)
   # this assumes that the libCombine archive uses the 
   # Qt filesystem backend.
   include(${QT_USE_FILE})
-  set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${COMBINE_LIBRARY} ${ZIPPER_LIBRARY} ${QT_QTCORE_LIBRARY})
+  set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${COMBINE_LIBRARY_NAME})
 endif()
 
 set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${LIBSBML_LIBRARY})
