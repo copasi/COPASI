@@ -64,6 +64,7 @@
 # include <combine/knownformats.h>
 # include <combine/util.h>
 # include <omex/CaContent.h>
+# include <copasi/utilities/CCopasiMessage.h>
 #endif // WITH_COMBINE_ARCHIVE
 
 #include <copasi/parameterFitting/CFitProblem.h>
@@ -1463,7 +1464,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
 
   if (!archive.initializeFromArchive(fileName))
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "Invalid COMBINE archive.");
+      CCopasiMessage(CCopasiMessage::ERROR, "Invalid COMBINE archive.");
       return false;
     }
 
@@ -1495,7 +1496,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
 
   if (content == NULL)
     {
-      CCopasiMessage::CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive without COPASI, SBML or SED-ML files.");
+      CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive without COPASI, SBML or SED-ML files.");
       return false;
     }
 
@@ -1558,9 +1559,9 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
                   if (CDirEntry::isWritable(currentDir))
                     CDirEntry::makePathAbsolute(fileName, currentDir);
 
-                  CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING,
-                                                 "COMBINE archive import: The report target for the '%s' task has been changed to '%s'.",
-                                                 taskIt->getObjectName().c_str(), fileName.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING,
+                                 "COMBINE archive import: The report target for the '%s' task has been changed to '%s'.",
+                                 taskIt->getObjectName().c_str(), fileName.c_str());
 
                   taskIt->getReport().setTarget(fileName);
                 }
@@ -2075,7 +2076,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2104,7 +2105,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2121,7 +2122,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2138,7 +2139,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2155,7 +2156,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2172,7 +2173,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
         pReport->getFooterAddr()->push_back(CCopasiObjectName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
