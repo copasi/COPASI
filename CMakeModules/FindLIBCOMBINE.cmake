@@ -26,7 +26,7 @@ else()
 endif()
 
 find_package(${COMBINE_LIBRARY_NAME} CONFIG REQUIRED
-  CONFIGS Combine-static-config
+  CONFIGS Combine-static-config.cmake
   PATHS ${COPASI_DEPENDENCY_DIR}/lib/cmake
         /usr/lib/cmake
         /usr/lib64/cmake
