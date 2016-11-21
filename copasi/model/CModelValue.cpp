@@ -464,13 +464,21 @@ std::string CModelEntity::getInitialExpression() const
 // virtual
 bool CModelEntity::setUnitExpression(std::string unitExpression)
 {
-  if (unitExpression == mUnitExpression)
-    return false;
-  else
+  CIssue Issue;
+
+  if (mUnitExpression != unitExpression)
     {
       mUnitExpression = unitExpression;
-      return true;
+      mValidity.remove(CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid);
+
+      if (!CUnit().setExpression(mUnitExpression))
+        {
+          Issue = CIssue(CValidity::Error, CValidity::UnitUndefined);
+          mValidity.add(Issue);
+        }
     }
+
+  return Issue;
 }
 
 // virtual
