@@ -163,6 +163,7 @@ CUnit::CUnit(const CUnit & src):
 CUnit::~CUnit()
 {}
 
+//virtual
 bool CUnit::setExpression(const std::string & expression)
 {
   if (expression.empty())

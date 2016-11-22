@@ -53,6 +53,8 @@ public:
 
   const std::string & getSymbol() const;
 
+  virtual bool setExpression(const std::string & expression);
+
   CUnitDefinition & operator=(const CUnitDefinition & src);
 
   static bool isBuiltinUnitSymbol(std::string symbol);

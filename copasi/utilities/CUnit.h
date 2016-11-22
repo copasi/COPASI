@@ -102,7 +102,7 @@ public:
 
   ~CUnit();
 
-  bool setExpression(const std::string & expression);
+  virtual bool setExpression(const std::string & expression);
 
   std::string getExpression() const;
 

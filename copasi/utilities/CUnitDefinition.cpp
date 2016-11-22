@@ -207,6 +207,27 @@ bool CUnitDefinition::setSymbol(const std::string & symbol)
   return false;
 }
 
+//virtual
+bool CUnitDefinition::setExpression(const std::string & expression)
+{
+  CIssue Issue;
+
+  mValidity.remove(CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid);
+
+  if (!CUnit::setExpression(expression))
+    {
+      Issue = CIssue(CValidity::Error, CValidity::UnitInvalid);
+      mValidity.add(Issue);
+    }
+  else if (isUndefined())
+    {
+      Issue = CIssue(CValidity::Warning, CValidity::UnitUndefined);
+      mValidity.add(Issue);
+    }
+
+  return Issue;
+}
+
 const std::string & CUnitDefinition::getSymbol() const
 {
   return mSymbol;
