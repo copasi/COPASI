@@ -471,9 +471,16 @@ bool CModelEntity::setUnitExpression(std::string unitExpression)
       mUnitExpression = unitExpression;
       mValidity.remove(CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid);
 
-      if (!CUnit().setExpression(mUnitExpression))
+      CUnit Unit;
+
+      if (!Unit.setExpression(mUnitExpression))
         {
-          Issue = CIssue(CValidity::Error, CValidity::UnitUndefined);
+          Issue = CIssue(CValidity::Error, CValidity::UnitInvalid);
+          mValidity.add(Issue);
+        }
+      else if (Unit.isUndefined())
+        {
+          Issue = CIssue(CValidity::Warning, CValidity::UnitUndefined);
           mValidity.add(Issue);
         }
     }
