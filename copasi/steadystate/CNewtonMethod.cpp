@@ -611,7 +611,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
   C_FLOAT64 tmp;
 
-  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++pMathObject)
+  for (; pDistance != pDistanceEnd; ++pDistance, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
     {
       *pAtol = std::max(fabs(*pCurrentState), *pAtol);
 
@@ -1022,7 +1022,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
       C_FLOAT64 tmp;
 
-      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++pMathObject)
+      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
         {
           // Prevent division by 0
           tmp = fabs(*pAx - *pB) / std::max(fabs(*pCurrentState), *pAtol);
