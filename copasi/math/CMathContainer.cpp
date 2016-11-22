@@ -688,7 +688,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
           case CMath::GlobalQuantity:
           case CMath::Compartment:
-
+          case CMath::Model:
             if (InitialValue != 0.0)
               *pAtol *= std::min(1.0, InitialValue);
 
