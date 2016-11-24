@@ -1292,27 +1292,35 @@ void SliderDialog::deleteInvalidSliders()
   bool sliderDeleted = false;
   CopasiSlider* pCopasiSlider = NULL;
 
-  while (wit != wendit)
+  std::vector<CopasiSlider*> invalidSliders;
+
+  for (; wit != wendit; ++wit)
     {
       pCopasiSlider = dynamic_cast<CopasiSlider*>(*wit);
 
       if (pCopasiSlider && !pCopasiSlider->isValid())
         {
-          // we need to remove the slider
-          this->removeSlider(pCopasiSlider);
-          wit = v.erase(wit);
-          wendit = v.end();
-          sliderDeleted = true;
+          invalidSliders.push_back(pCopasiSlider);
           continue;
         }
 
-      ++wit;
+
     }
+
+  std::vector<CopasiSlider*>::iterator it = invalidSliders.begin();
+
+  for (; it != invalidSliders.end(); ++it)
+    {
+      this->removeSlider(pCopasiSlider);
+      sliderDeleted = true;
+    }
+
+
 
   if (sliderDeleted)
     {
       CQMessageBox::information(NULL, "Invalid Slider",
-                                "One or more sliders are invalid and have been deleted!",
+                                "One or more sliders were invalid and have been deleted!",
                                 QMessageBox::Ok, QMessageBox::NoButton);
     }
 }
