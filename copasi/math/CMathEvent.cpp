@@ -1218,15 +1218,9 @@ void CMathEvent::relocate(const CMathContainer * pContainer,
       pAssignment->relocate(pContainer, relocations);
     }
 
-  if (mAssignments.size() > 0)
-    {
-      mTargetValues.initialize(mAssignments.size(),
-                               (C_FLOAT64 *) mAssignments[0].getAssignment()->getValuePointer());
-    }
-  else
-    {
-      mTargetValues.initialize(0, NULL);
-    }
+  C_FLOAT64 * pArray = mTargetValues.array();
+  mpContainer->relocateValue(pArray, relocations);
+  mTargetValues.initialize(mAssignments.size(), pArray);
 
   pContainer->relocateObject(mpDelay, relocations);
   pContainer->relocateObject(mpPriority, relocations);
