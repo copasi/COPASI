@@ -8586,7 +8586,7 @@ std::string SBMLImporter::createUnitExpressionFor(const UnitDefinition *pSBMLUni
           CBaseUnit::dimensionless,
           current->getMultiplier(),
           current->getScale()));
-      copasiUnit = copasiUnit * tmp;
+      copasiUnit = copasiUnit.getComponents().empty() ? tmp :  copasiUnit * tmp;
     }
 
   // construct expression
