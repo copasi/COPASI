@@ -40,7 +40,10 @@ public:
 
   typedef CFlags< CValidity::eSeverity > Severity;
   typedef CFlags< CValidity::eKind > Kind;
+
   CValidity();
+
+  CValidity(const CValidity & src);
 
   void add(const CIssue & issue);
 

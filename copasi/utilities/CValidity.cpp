@@ -32,6 +32,12 @@ CValidity::CValidity():
   mInformation(NoKind)
 {}
 
+CValidity::CValidity(const CValidity & src):
+  mErrors(src.mErrors),
+  mWarnings(src.mWarnings),
+  mInformation(src.mInformation)
+{}
+
 void CValidity::add(const CIssue & issue)
 {
   switch (issue.mSeverity)

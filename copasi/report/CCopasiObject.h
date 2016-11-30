@@ -77,6 +77,11 @@ public:
   CObjectInterface();
 
   /**
+   * Copy Constructor
+   */
+  CObjectInterface(const CObjectInterface & src);
+
+  /**
    * Destructor
    */
   virtual ~CObjectInterface();

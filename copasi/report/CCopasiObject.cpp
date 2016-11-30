@@ -140,6 +140,10 @@ const CValidity & CObjectInterface::getValidity() const
 CObjectInterface::CObjectInterface()
 {}
 
+CObjectInterface::CObjectInterface(const CObjectInterface & src):
+  mValidity(src.mValidity)
+{}
+
 // virtual
 CObjectInterface::~CObjectInterface()
 {};
@@ -173,7 +177,7 @@ CCopasiObject::CCopasiObject(const std::string & name,
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
                              const CCopasiContainer * pParent):
-  CObjectInterface(),
+  CObjectInterface(src),
   mObjectName(src.mObjectName),
   mObjectType(src.mObjectType),
   mpObjectParent(src.mpObjectParent),
