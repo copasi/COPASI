@@ -672,7 +672,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
           this->mpCopasiModel->setQuantityUnit(qUnit.first);
         }
 
-      // check if the extends units are set and if they are equal to the substance units
+      // check if the extent units are set and if they are equal to the substance units
       // otherwise issue a warning
       if (this->mLevel > 2)
         {
@@ -682,18 +682,22 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
             }
           else
             {
-              const UnitDefinition* pExtendsUnits = sbmlModel->getUnitDefinition(sbmlModel->getExtentUnits());
+              const UnitDefinition* pExtentUnits = sbmlModel->getUnitDefinition(sbmlModel->getExtentUnits());
 
-              if (pExtendsUnits != NULL)
+              if (pExtentUnits != NULL)
                 {
-                  if (!areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pExtendsUnits))
+                  if (!areSBMLUnitDefinitionsIdentical(pSubstanceUnits, pExtentUnits))
                     {
                       CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
                     }
                 }
               else
                 {
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "extends", "the same units as the substances");
+                  // only issue warning if the extent units are actual different
+                  if (sbmlModel->getExtentUnits() != sbmlModel->getSubstanceUnits())
+                    {
+                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "extent", "the same units as the substances");
+                    }
                 }
             }
         }
