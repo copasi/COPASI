@@ -132,7 +132,9 @@ CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
  *  Destructor.
  */
 CTSSAMethod::~CTSSAMethod()
-{}
+{
+  pdelete(mpLsodaMethod);
+}
 
 /**
  *  Set a pointer to the problem.
