@@ -28,7 +28,9 @@ CQArrayAnnotationsWidgetDM::CQArrayAnnotationsWidgetDM(QObject *parent):
 // };
 
 CQArrayAnnotationsWidgetDM::~CQArrayAnnotationsWidgetDM()
-{}
+{
+  pdeletev(mHeaderData);
+}
 
 // virtual
 QVariant CQArrayAnnotationsWidgetDM::data(const QModelIndex &index, int role) const

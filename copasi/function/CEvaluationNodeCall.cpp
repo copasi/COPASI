@@ -86,7 +86,10 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
   mRegisteredFunctionCN(src.mRegisteredFunctionCN)
 {mpCallParameters = buildParameters(mCallNodes);}
 
-CEvaluationNodeCall::~CEvaluationNodeCall() {}
+CEvaluationNodeCall::~CEvaluationNodeCall()
+{
+  clearParameters(mpCallParameters, mCallNodes);
+}
 
 void CEvaluationNodeCall::calculate()
 {
