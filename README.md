@@ -50,7 +50,7 @@ command line version of COPASI (aka `CopasiSE`). To build the graphical
 frontend (aka `CopasiUI`), and having Qt 4 installed, the option would 
 need to be `BUILD_GUI=ON`. The option `CMAKE_INSTALL_PREFIX=~/copasi`
  specifies, that COPASI ought to be installed in the current users home 
-directory in a subfolder `copasi`. 
+directory in a subfolder `copasi`. The path `../COPASI` is the source directory of COPASI that has been created by the git clone command in the first statement.  
 
 There are many more compile options available, options for building the 
 language bindings as well as options to enable some experimental features that
@@ -60,6 +60,26 @@ be done with:
 
 	cmake-gui ../COPASI
 
+### Linking a C++ program against the COPASI API
+To link your own program against the COPASI C++ API you would first build COPASI as described above however, with an additional CMake option `-DCOPASI_INSTALL_C_API=ON`. Thus the full configure / make / install commands from above would be: 
+
+
+	git clone https://github.com/copasi/COPASI
+	mkdir build_copasi
+	cd build_copasi
+	cmake -DCOPASI_INSTALL_C_API=ON -DBUILD_GUI=OFF -DCMAKE_INSTALL_PREFIX=~/copasi -DCOPASI_DEPENDENCY_DIR=../copasi-dependencies/bin ../COPASI
+	make
+	make install 
+
+Now additionally to the COPASI SE executable being built, also all COPASI header files and the COPASI (static) library will be installed into the `CMAKE_INSTALL_PREFIX` (thus in the example above header files will end up in `~/copasi/include` and libraries in `~/copasi/lib`). We also export a CMAKE configuration that you can import for your own CMAKE projects. That way you only need to add a line like: 
+
+	find_package(libCOPASISE-static CONFIG REQUIRED)
+
+to the `CMakeLists.txt` file of your project. And later link your project against `libCOPASISE-static`. This will then automatically link against all the libraries that the COPASISE library was linked against. In order for CMake to find the configuration you would either have to include the `lib/cmake` folder of your install prefix into your projects `CMAKE_PREFIX_PATH` variable or specify an option `libCOPASISE-static_DIR` with the folder of the config file when configuring your project. For the prefix specified above this would be: 
+
+	-DlibCOPASISE-static_DIR=~/copasi/lib/cmake
+
+The gist of a complete example [CMakeList.txt](https://gist.github.com/fbergmann/5eb625a23cb17eb8463b8a6365885fd1) is also available.   
 
 ### Feedback
 To submit feedback, or bug reports, please use the [COPASI Tracker](http://www.copasi.org/tracker/), 
