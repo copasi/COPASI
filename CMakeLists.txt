@@ -73,18 +73,6 @@ if (COPASI_OVERRIDE_VERSION)
     
 endif()
 
-set(COPASI_VERSION)
-# the CopasiVersion file only exists when the git tools have been configured
-# and used. if that is not the case, we default to the canned version. 
-if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
-  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
-endif()
-if (COPASI_VERSION)
-  string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
-  string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
-  string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
-endif()
-
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
 include (CheckCXXSourceCompiles)
@@ -95,6 +83,20 @@ include (CheckCCompilerFlag)
 include (CheckCSourceRuns)
 include (CheckSymbolExists)
 include (CheckTypeSize)
+
+set(COPASI_VERSION)
+# the CopasiVersion file only exists when the git tools have been configured
+# and used. if that is not the case, we default to the canned version. 
+if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
+  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+
+endif()
+if (COPASI_VERSION)
+  string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
+endif()
+
 
 CHECK_TYPE_SIZE("void*"  CMAKE_SIZEOF_VOID_P)
 
@@ -254,6 +256,7 @@ if (ENABLE_NEW_PARSER)
   add_definitions(-DWITH_NEW_PARSER)
 endif(ENABLE_NEW_PARSER)
 
+option(COPASI_INSTALL_C_API "Enable this option to also install the COPASI C API" OFF)
 
 option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (CopasiUI)." ON)
 

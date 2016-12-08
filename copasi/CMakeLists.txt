@@ -32,6 +32,11 @@ endif(POLICY CMP0048)
 project (COPASI)
 cmake_policy(SET CMP0011 NEW)
 
+
+if (COPASI_INSTALL_C_API)
+    include (CMakePackageConfigHelpers)
+endif()
+
 include (common.cmake)
 
 set(COPASI_SOURCES)
@@ -115,7 +120,7 @@ if(ENABLE_COPASI_SEDML)
   target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
 endif()
 
-target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${CLAPACK_LIBRARIES})
+target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -123,6 +128,49 @@ if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
     target_link_libraries(libCOPASISE-static ${ICONV_LIBRARIES})
   endif()
 endif()
+
+SET(INCLUDE_DESTINATION)
+if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
+    SET(INCLUDE_DESTINATION INCLUDES DESTINATION include)
+endif()
+
+if (COPASI_INSTALL_C_API)
+    # install headers
+    file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+    install(FILES ${current_header} DESTINATION include/copasi)
+    foreach (dir
+             analytics commandline compareExpressions CopasiDataModel crosssection
+             elementaryFluxModes function GL lapack layout lna lyap math miase MIRIAM
+             model moieties odepack++ optimization oscillation parameterFitting plot
+             randomGenerator report sbml sbmlunit scan sedml sensitivities steadystate
+             tex trajectory tss tssanalysis utilities xml)
+         file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*.h")
+         install(FILES ${current_header} DESTINATION include/copasi/${dir})
+    endforeach(dir)
+
+    install(TARGETS libCOPASISE-static EXPORT libcopasise-static-config
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        ${INCLUDE_DESTINATION}
+        )
+
+    install (EXPORT libcopasise-static-config
+        DESTINATION lib/cmake
+        )
+
+    WRITE_BASIC_PACKAGE_VERSION_FILE(
+        ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-static-config-version.cmake
+        VERSION ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}
+        COMPATIBILITY AnyNewerVersion
+        )
+
+    install (FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-static-config-version.cmake
+        DESTINATION lib/cmake)
+
+endif()
+
 
 if(ENABLE_LIBCOPASISE_SHARED)
 
@@ -146,6 +194,33 @@ if(ENABLE_LIBCOPASISE_SHARED)
       target_link_libraries(libCOPASISE-shared ${ICONV_LIBRARIES})
     endif()
   endif()
+
+  if (COPASI_INSTALL_C_API)
+
+      install(TARGETS libCOPASISE-shared EXPORT libcopasise-shared-config
+          RUNTIME DESTINATION bin
+          LIBRARY DESTINATION lib
+          ARCHIVE DESTINATION lib
+          ${INCLUDE_DESTINATION}
+          )
+
+      install (EXPORT libCOPASISE-shared-config
+          DESTINATION lib/cmake
+          )
+
+      WRITE_BASIC_PACKAGE_VERSION_FILE(
+          ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-shared-config-version.cmake
+          VERSION ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}
+          COMPATIBILITY AnyNewerVersion
+          )
+
+      install (FILES
+          ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-shared-config-version.cmake
+          DESTINATION lib/cmake)
+
+
+  endif()
+
 endif (ENABLE_LIBCOPASISE_SHARED)
 
 
@@ -318,6 +393,29 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
     set(UI_DEPENDENCIES ${UI_DEPENDENCIES} mml)
   endif (HAVE_MML)
 
+
+  install(TARGETS libCOPASIUI EXPORT libcopasiui-config
+      RUNTIME DESTINATION bin
+      LIBRARY DESTINATION lib
+      ARCHIVE DESTINATION lib
+      ${INCLUDE_DESTINATION}
+      )
+
+  install (EXPORT libcopasiui-config
+      DESTINATION lib/cmake
+      )
+
+  WRITE_BASIC_PACKAGE_VERSION_FILE(
+      ${CMAKE_CURRENT_BINARY_DIR}/libcopasiui-config-version.cmake
+      VERSION ${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}
+      COMPATIBILITY AnyNewerVersion
+      )
+
+  install (FILES
+      ${CMAKE_CURRENT_BINARY_DIR}/libcopasiui-config-version.cmake
+      DESTINATION lib/cmake)
+
+
   add_subdirectory(CopasiUI)
   add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
 
@@ -328,6 +426,17 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
     add_subdirectory(ViewCurrentUI)
   endif(BUILD_VIEWCURRENT)
 
+  if (COPASI_INSTALL_C_API)
+      # install headers
+      file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+      install(FILES ${current_header} DESTINATION include/copasi)
+      foreach (dir
+               barChart layoutUI MIRIAMUI plotUI resourcesUI
+               UI undoFramework versioning wizard)
+           file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*.h")
+           install(FILES ${current_header} DESTINATION include/copasi/${dir})
+      endforeach(dir)
+  endif()
 
 endif(BUILD_GUI)
 
