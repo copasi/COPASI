@@ -394,6 +394,8 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
   endif (HAVE_MML)
 
 
+  if (COPASI_INSTALL_C_API)
+  
   install(TARGETS libCOPASIUI EXPORT libcopasiui-config
       RUNTIME DESTINATION bin
       LIBRARY DESTINATION lib
@@ -415,6 +417,7 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
       ${CMAKE_CURRENT_BINARY_DIR}/libcopasiui-config-version.cmake
       DESTINATION lib/cmake)
 
+  endif(COPASI_INSTALL_C_API)
 
   add_subdirectory(CopasiUI)
   add_dependencies(CopasiUI ${SE_DEPENDENCIES} libCOPASIUI ${UI_DEPENDENCIES})
