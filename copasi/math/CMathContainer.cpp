@@ -2573,10 +2573,13 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
   // Partial derivatives with respect to time and all variables determined by ODEs and reactions.
   size_t NumCols = mSize.nTime + mSize.nODE + mSize.nReactionSpecies;
 
+  jacobian.resize(NumRows, NumCols);
+
+  if (jacobian.size() == 0) return;
+
   // The rates of all state variables in the current state.
   CVector< C_FLOAT64 > Rate = mRate;
 
-  jacobian.resize(NumRows, NumCols);
 
   size_t Col = 0;
 
