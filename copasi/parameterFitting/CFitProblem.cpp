@@ -872,8 +872,10 @@ bool CFitProblem::calculate()
               break;
 
               case CTaskEnum::timeCourse:
-
+              {
                 size_t numIntermediateSteps;
+                C_FLOAT64 LastTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+                bool Advanced = true;
 
                 if (mStoreResults)
                   {
@@ -903,7 +905,14 @@ bool CFitProblem::calculate()
                           }
 
                         //do the regular step
-                        mpTrajectory->processStep(pExp->getTimeData()[j]);
+                        C_FLOAT64 NextTime = pExp->getTimeData()[j];
+                        Advanced = (NextTime != LastTime);
+
+                        if (Advanced)
+                          {
+                            mpTrajectory->processStep(NextTime);
+                            LastTime = NextTime;
+                          }
                       }
                     else
                       {
@@ -914,21 +923,27 @@ bool CFitProblem::calculate()
                         static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
-                        if (pExp->getTimeData()[0] != *mpInitialStateTime)
+                        C_FLOAT64 NextTime = pExp->getTimeData()[0];
+
+                        if (NextTime != *mpInitialStateTime)
                           {
-                            mpTrajectory->processStep(pExp->getTimeData()[0]);
+                            mpTrajectory->processStep(NextTime);
+                            LastTime = NextTime;
                           }
                       }
 
-                    // We check after each simulation step whether the constraints are violated.
-                    // Make sure the constraint values are up to date.
-                    mpContainer->applyUpdateSequence(mExperimentConstraintUpdates[i]);
+                    if (Advanced)
+                      {
+                        // We check after each simulation step whether the constraints are violated.
+                        // Make sure the constraint values are up to date.
+                        mpContainer->applyUpdateSequence(mExperimentConstraintUpdates[i]);
 
-                    ppConstraint = mExperimentConstraints[i];
-                    ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
+                        ppConstraint = mExperimentConstraints[i];
+                        ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
 
-                    for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                      if (*ppConstraint)(*ppConstraint)->calculateConstraintViolation();
+                        for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                          if (*ppConstraint)(*ppConstraint)->calculateConstraintViolation();
+                      }
 
                     if (mStoreResults)
                       mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
@@ -941,8 +956,8 @@ bool CFitProblem::calculate()
                         pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
                       }
                   }
-
-                break;
+              }
+              break;
 
               default:
                 break;
@@ -1891,8 +1906,10 @@ bool CFitProblem::calculateCrossValidation()
               break;
 
               case CTaskEnum::timeCourse:
-
+              {
                 size_t numIntermediateSteps;
+                C_FLOAT64 LastTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+                bool Advanced = true;
 
                 if (mStoreResults)
                   {
@@ -1922,7 +1939,14 @@ bool CFitProblem::calculateCrossValidation()
                           }
 
                         //do the regular step
-                        mpTrajectory->processStep(pExp->getTimeData()[j]);
+                        C_FLOAT64 NextTime = pExp->getTimeData()[j];
+                        Advanced = (NextTime != LastTime);
+
+                        if (Advanced)
+                          {
+                            mpTrajectory->processStep(NextTime);
+                            LastTime = NextTime;
+                          }
                       }
                     else
                       {
@@ -1937,21 +1961,27 @@ bool CFitProblem::calculateCrossValidation()
                         static_cast< CTrajectoryProblem * >(mpTrajectory->getProblem())->setStepNumber(1);
                         mpTrajectory->processStart(true);
 
-                        if (pExp->getTimeData()[0] != *mpInitialStateTime)
+                        C_FLOAT64 NextTime = pExp->getTimeData()[0];
+
+                        if (NextTime != *mpInitialStateTime)
                           {
-                            mpTrajectory->processStep(pExp->getTimeData()[0]);
+                            mpTrajectory->processStep(NextTime);
+                            LastTime = NextTime;
                           }
                       }
 
-                    // We check after each simulation whether the constraints are violated.
-                    // Make sure the constraint values are up to date.
-                    mpContainer->applyUpdateSequence(mCrossValidationConstraintUpdates[i]);
+                    if (Advanced)
+                      {
+                        // We check after each simulation whether the constraints are violated.
+                        // Make sure the constraint values are up to date.
+                        mpContainer->applyUpdateSequence(mCrossValidationConstraintUpdates[i]);
 
-                    ppConstraint = mCrossValidationConstraints[i];
-                    ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
+                        ppConstraint = mCrossValidationConstraints[i];
+                        ppConstraintEnd = ppConstraint + mCrossValidationConstraints.numCols();
 
-                    for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                      if (*ppConstraint)(*ppConstraint)->checkConstraint();
+                        for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
+                          if (*ppConstraint)(*ppConstraint)->checkConstraint();
+                      }
 
                     if (mStoreResults)
                       CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
@@ -1964,8 +1994,8 @@ bool CFitProblem::calculateCrossValidation()
                         pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
                       }
                   }
-
-                break;
+              }
+              break;
 
               default:
                 break;
