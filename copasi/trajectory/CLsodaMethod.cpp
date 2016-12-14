@@ -23,8 +23,11 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 
-// Uncomment this line below to get debug print out.
-// #define DEBUG_OUTPUT 1
+// Uncomment this line below to get numeric debug print out.
+// #define DEBUG_NUMERICS 1
+
+// Uncomment this line below to get processing flow output.
+// #define DEBUG_FLOW 1
 
 CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
@@ -282,6 +285,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
           // Obviously the trivial case is where LSODAR did not advance at all, i.e, the start time
           // equals the current time. It may also happen that a very small steps has been taken.
           // We reset short before we reach the internal step limit.
+#ifdef DEBUG_FLOW
+          std::cout << "mTime = " << mTime << ", EndTime = " << EndTime << ", mTask = " << mTask << ", mLsodaStatus = " << mLsodaStatus << ", mRootCounter = " << mRootCounter << std::endl;
+#endif // DEBUG_FLOW
+
           if (mLsodaStatus == 3 &&
               (mRootCounter > 0.99 * *mpMaxInternalSteps ||
                mTime == StartTime))
@@ -296,6 +303,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
             {
               if (mTask == 4 || mTask == 5)
                 {
+#ifdef DEBUG_FLOW
+                  std::cout << "FAILURE: Attempt to prevent over shooting failed." << std::endl;
+#endif // DEBUG_FLOW
+
                   Status = FAILURE;
                   mPeekAheadMode = false;
 
@@ -310,22 +321,27 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                 }
 
               // We try to recover by preventing overshooting.
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
               std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
               mContainerState = mLastSuccessState;
 
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
               std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
               mTime = *mpContainerStateTime;
               mTask += 3;
               mDWork[0] = EndTime;
               stateChange(CMath::State);
 
+#ifdef DEBUG_FLOW
+              std::cout << "Attempting to prevent over shooting." << std::endl;
+#endif // DEBUG_FLOW
+
               Status = step(deltaT);
+
               mTask -= 3;
 
               return Status;
@@ -347,7 +363,13 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
                   mLsodaStatus = 1;
 
                   // Create a mask which hides all roots being constant and zero.
+#ifdef DEBUG_FLOW
+                  std::cout << "Creating Root Mask." << std::endl;
+#endif // DEBUG_FLOW
                   createRootMask();
+
+                  return step(deltaT);
+
                   break;
 
                 case ALL:
@@ -372,7 +394,15 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
             // integration until the state changes are larger than the relative tolerances
             if (!mPeekAheadMode)
               {
+#ifdef DEBUG_FLOW
+                std::cout << "Starting peek ahead." << std::endl;
+#endif // DEBUG_FLOW
+
                 Status = peekAhead();
+
+#ifdef DEBUG_FLOW
+                std::cout << "Finishing peek ahead." << std::endl;
+#endif // DEBUG_FLOW
               }
 
             // The break statement is intentionally missing since we
@@ -409,10 +439,18 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 
                   if (Destroy)
                     {
+#ifdef DEBUG_FLOW
+                      std::cout << "Destroy Root Mask." << std::endl;
+#endif // DEBUG_FLOW
+
                       destroyRootMask();
                     }
                   else
                     {
+#ifdef DEBUG_FLOW
+                      std::cout << "Root Mask Discrete." << std::endl;
+#endif // DEBUG_FLOW
+
                       mRootMasking = DISCRETE;
                     }
 
@@ -465,14 +503,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
             }
 
           // We try to recover by preventing overshooting.
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
           std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
           mContainerState = mLastSuccessState;
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
           std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
           mTime = *mpContainerStateTime;
           mTask += 3;
@@ -555,10 +593,10 @@ void CLsodaMethod::evalF(const C_FLOAT64 * t , const C_FLOAT64 * /* y */, C_FLOA
   mpContainer->updateSimulatedValues(*mpReducedModel);
   memcpy(ydot, mpYdot, mData.dim * sizeof(C_FLOAT64));
 
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
   std::cout << "State:     " << mpContainer->getState(false) << std::endl;
   std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
   return;
 }
@@ -576,7 +614,7 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
   RootValues = mpContainer->getRoots();
 
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
   std::cout << "State: " << mpContainer->getState(*mpReducedModel) << std::endl;
   std::cout << "Roots: " << RootValues << std::endl;
 #endif // DEBUG_OUTPUT
@@ -586,9 +624,9 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
       maskRoots(RootValues);
     }
 
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
   std::cout << "Roots: " << RootValues << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 };
 
 // static
@@ -660,14 +698,14 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   Status PeekAheadStatus = ROOT;
 
   CVector< C_FLOAT64 > CurrentRoots = mpContainer->getRoots();
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
   std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
   CVector< C_INT > CombinedRootsFound = mRootsFound;
 #ifdef DEBUG_OUTPUT
   std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
 
   C_FLOAT64 MaxPeekAheadTime = std::max(mTargetTime, mTime * (1.0 + 2.0 * *mpRelativeTolerance));
 
@@ -703,7 +741,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 mContainerState = StartState;
                 mTime = *mpContainerStateTime;
 
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
                 std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
                 std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
 #endif // DEBUG_OUTPUT
@@ -786,9 +824,9 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                       }
                   }
 
-#ifdef DEBUG_OUTPUT
+#ifdef DEBUG_NUMERICS
                 std::cout << "Combined Roots found: " << CombinedRootsFound << std::endl;
-#endif // DEBUG_OUTPUT
+#endif // DEBUG_NUMERICS
               }
           }
           break;
