@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.18 (Build 136) (http://www.copasi.org) at 2016-12-14 18:57:00 UTC -->
+<!-- generated with COPASI 4.18 (Build 136) (http://www.copasi.org) at 2016-12-15 21:41:55 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="18" versionDevel="136" copasiSourcesModified="0">
-  <Model key="Model_23" name="Griewangk function" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
+  <Model key="Model_3" name="Griewangk function" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Model_23">
+  <rdf:Description rdf:about="#Model_3">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:47:52Z</dcterms:W3CDTF>
@@ -32,10 +32,10 @@
 </body>
     </Comment>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_25" name="x1" simulationType="fixed">
+      <ModelValue key="ModelValue_0" name="x1" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_25">
+  <rdf:Description rdf:about="#ModelValue_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:48:47Z</dcterms:W3CDTF>
@@ -45,10 +45,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_24" name="x2" simulationType="fixed">
+      <ModelValue key="ModelValue_1" name="x2" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_24">
+  <rdf:Description rdf:about="#ModelValue_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:51:41Z</dcterms:W3CDTF>
@@ -58,10 +58,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_7" name="Griewangk function" simulationType="assignment">
+      <ModelValue key="ModelValue_2" name="Griewangk function" simulationType="assignment">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_7">
+  <rdf:Description rdf:about="#ModelValue_2">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-03-28T02:51:50Z</dcterms:W3CDTF>
@@ -74,14 +74,14 @@
           1+0.00025*(&lt;CN=Root,Model=Griewangk function,Vector=Values[x1],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x2],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x3],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x4],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x5],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x6],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x7],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x8],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x9],Reference=InitialValue>^2+&lt;CN=Root,Model=Griewangk function,Vector=Values[x10],Reference=InitialValue>^2)-cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x1],Reference=InitialValue>)*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x2],Reference=InitialValue>/sqrt(2))*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x3],Reference=InitialValue>/sqrt(3))*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x4],Reference=InitialValue>/2)*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x5],Reference=InitialValue>/sqrt(5))*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x6],Reference=InitialValue>/sqrt(6))*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x7],Reference=InitialValue>/sqrt(7))*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x8],Reference=InitialValue>/sqrt(8))*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x9],Reference=InitialValue>/3)*cos(&lt;CN=Root,Model=Griewangk function,Vector=Values[x10],Reference=InitialValue>/sqrt(10))
         </Expression>
       </ModelValue>
-      <ModelValue key="ModelValue_8" name="x3" simulationType="fixed">
+      <ModelValue key="ModelValue_3" name="x3" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_9" name="x4" simulationType="fixed">
+      <ModelValue key="ModelValue_4" name="x4" simulationType="fixed">
       </ModelValue>
-      <ModelValue key="ModelValue_10" name="x5" simulationType="fixed">
+      <ModelValue key="ModelValue_5" name="x5" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_10">
+  <rdf:Description rdf:about="#ModelValue_5">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:56:42Z</dcterms:W3CDTF>
@@ -91,10 +91,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_11" name="x6" simulationType="fixed">
+      <ModelValue key="ModelValue_6" name="x6" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_11">
+  <rdf:Description rdf:about="#ModelValue_6">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:56:51Z</dcterms:W3CDTF>
@@ -104,10 +104,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_20" name="x7" simulationType="fixed">
+      <ModelValue key="ModelValue_7" name="x7" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_20">
+  <rdf:Description rdf:about="#ModelValue_7">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:56:56Z</dcterms:W3CDTF>
@@ -117,10 +117,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_19" name="x8" simulationType="fixed">
+      <ModelValue key="ModelValue_8" name="x8" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_19">
+  <rdf:Description rdf:about="#ModelValue_8">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:57:00Z</dcterms:W3CDTF>
@@ -130,10 +130,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_18" name="x9" simulationType="fixed">
+      <ModelValue key="ModelValue_9" name="x9" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_18">
+  <rdf:Description rdf:about="#ModelValue_9">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:57:04Z</dcterms:W3CDTF>
@@ -143,10 +143,10 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_17" name="x10" simulationType="fixed">
+      <ModelValue key="ModelValue_10" name="x10" simulationType="fixed">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_17">
+  <rdf:Description rdf:about="#ModelValue_10">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-10-10T00:57:09Z</dcterms:W3CDTF>
@@ -184,26 +184,26 @@
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_23"/>
+      <StateTemplateVariable objectReference="Model_3"/>
+      <StateTemplateVariable objectReference="ModelValue_2"/>
+      <StateTemplateVariable objectReference="ModelValue_0"/>
+      <StateTemplateVariable objectReference="ModelValue_1"/>
+      <StateTemplateVariable objectReference="ModelValue_3"/>
+      <StateTemplateVariable objectReference="ModelValue_4"/>
+      <StateTemplateVariable objectReference="ModelValue_5"/>
+      <StateTemplateVariable objectReference="ModelValue_6"/>
       <StateTemplateVariable objectReference="ModelValue_7"/>
-      <StateTemplateVariable objectReference="ModelValue_25"/>
-      <StateTemplateVariable objectReference="ModelValue_24"/>
       <StateTemplateVariable objectReference="ModelValue_8"/>
       <StateTemplateVariable objectReference="ModelValue_9"/>
       <StateTemplateVariable objectReference="ModelValue_10"/>
-      <StateTemplateVariable objectReference="ModelValue_11"/>
-      <StateTemplateVariable objectReference="ModelValue_20"/>
-      <StateTemplateVariable objectReference="ModelValue_19"/>
-      <StateTemplateVariable objectReference="ModelValue_18"/>
-      <StateTemplateVariable objectReference="ModelValue_17"/>
     </StateTemplate>
     <InitialState type="initialState">
       0 0 0 0 0 0 0 0 0 0 0 0 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_26" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_14" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -239,7 +239,7 @@
       </Method>
     </Task>
     <Task key="Task_16" name="Scan" type="scan" scheduled="true" updateModel="false">
-      <Report reference="Report_9" target="Griewangk10Gunction.txt" append="1" confirmOverwrite="0"/>
+      <Report reference="Report_9" target="Griewangk10Function.txt" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="4"/>
         <ParameterGroup name="ScanItems">
@@ -256,7 +256,7 @@
       </Method>
     </Task>
     <Task key="Task_17" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_12" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_11" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
@@ -345,7 +345,7 @@
       </Method>
     </Task>
     <Task key="Task_19" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_14" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_13" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -372,9 +372,9 @@
       </Method>
     </Task>
     <Task key="Task_20" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_14" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_14"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1e-09"/>
@@ -383,7 +383,7 @@
       </Method>
     </Task>
     <Task key="Task_21" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_16" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_15" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -398,7 +398,7 @@
       </Method>
     </Task>
     <Task key="Task_22" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_17" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_16" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -411,7 +411,7 @@
       </Method>
     </Task>
     <Task key="Task_23" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="1"/>
+      <Report reference="Report_17" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -473,10 +473,10 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_27" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+    <Task key="Task_26" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
       <Report reference="Report_18" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_26"/>
+        <Parameter name="Steady-State" type="key" value="Task_14"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
@@ -507,7 +507,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"/>
       </Body>
     </Report>
-    <Report key="Report_11" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -515,7 +515,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_11" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -523,7 +523,7 @@
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_12" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -547,7 +547,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_14" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_13" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -571,7 +571,7 @@
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_14" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -583,7 +583,7 @@
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_15" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -595,7 +595,7 @@
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_17" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_16" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -607,7 +607,7 @@
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_19" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_17" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
