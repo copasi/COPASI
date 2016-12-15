@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.18 (Build 136) (http://www.copasi.org) at 2016-12-14 19:03:05 UTC -->
+<!-- generated with COPASI 4.18 (Build 136) (http://www.copasi.org) at 2016-12-15 21:47:24 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="18" versionDevel="136" copasiSourcesModified="0">
-  <Model key="Model_25" name="Eggholder function" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
+  <Model key="Model_7" name="Eggholder function" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
     <MiriamAnnotation>
 <rdf:RDF
    xmlns:dcterms="http://purl.org/dc/terms/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Model_25">
+  <rdf:Description rdf:about="#Model_7">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-08-31T17:02:03Z</dcterms:W3CDTF>
@@ -34,12 +34,10 @@
 </body>
     </Comment>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_17" name="x1" simulationType="fixed">
+      <ModelValue key="ModelValue_0" name="x1" simulationType="fixed">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_17">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#ModelValue_0">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-08-31T17:29:26Z</dcterms:W3CDTF>
@@ -47,15 +45,12 @@
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_18" name="x2" simulationType="fixed">
+      <ModelValue key="ModelValue_1" name="x2" simulationType="fixed">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_18">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#ModelValue_1">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-08-31T17:02:24Z</dcterms:W3CDTF>
@@ -63,15 +58,12 @@
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_19" name="Eggholder function" simulationType="assignment">
+      <ModelValue key="ModelValue_2" name="Eggholder function" simulationType="assignment">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#ModelValue_19">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="#ModelValue_2">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2012-08-31T17:02:23Z</dcterms:W3CDTF>
@@ -79,7 +71,6 @@
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
         <Expression>
           -1*(&lt;CN=Root,Model=Eggholder function,Vector=Values[x2],Reference=InitialValue>+47)*sin(sqrt(abs(&lt;CN=Root,Model=Eggholder function,Vector=Values[x1],Reference=InitialValue>/2+(&lt;CN=Root,Model=Eggholder function,Vector=Values[x2],Reference=InitialValue>+47))))-&lt;CN=Root,Model=Eggholder function,Vector=Values[x1],Reference=InitialValue>*sin(sqrt(abs(&lt;CN=Root,Model=Eggholder function,Vector=Values[x1],Reference=InitialValue>-(&lt;CN=Root,Model=Eggholder function,Vector=Values[x2],Reference=InitialValue>+47))))
@@ -105,10 +96,10 @@
       </ModelParameterSet>
     </ListOfModelParameterSets>
     <StateTemplate>
-      <StateTemplateVariable objectReference="Model_25"/>
-      <StateTemplateVariable objectReference="ModelValue_19"/>
-      <StateTemplateVariable objectReference="ModelValue_17"/>
-      <StateTemplateVariable objectReference="ModelValue_18"/>
+      <StateTemplateVariable objectReference="Model_7"/>
+      <StateTemplateVariable objectReference="ModelValue_2"/>
+      <StateTemplateVariable objectReference="ModelValue_0"/>
+      <StateTemplateVariable objectReference="ModelValue_1"/>
     </StateTemplate>
     <InitialState type="initialState">
       0 -25.46033718528631 0 0 
@@ -116,7 +107,7 @@
   </Model>
   <ListOfTasks>
     <Task key="Task_27" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="" append="1" confirmOverwrite="0"/>
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -133,8 +124,8 @@
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
       </Method>
     </Task>
-    <Task key="Task_25" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
-      <Report reference="Report_18" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_15" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="1"/>
@@ -153,8 +144,8 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_24" name="Scan" type="scan" scheduled="true" updateModel="false">
-      <Report reference="Report_18" target="EggholderFunction.txt" append="1" confirmOverwrite="0"/>
+    <Task key="Task_16" name="Scan" type="scan" scheduled="true" updateModel="false">
+      <Report reference="Report_9" target="EggholderFunction.txt" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="4"/>
         <ParameterGroup name="ScanItems">
@@ -173,19 +164,19 @@
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_23" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_17" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_17" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_22" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_16" target="" append="0" confirmOverwrite="0"/>
+    <Task key="Task_18" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_12" target="" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
-          &lt;CN=Root,Model=New Model,Vector=Values[f],Reference=InitialValue>
+          &lt;CN=Root,Model=Eggholder function,Vector=Values[Eggholder function],Reference=InitialValue>
         </ParameterText>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="1"/>
@@ -208,14 +199,14 @@
         </ParameterGroup>
       </Problem>
       <Method name="Genetic Algorithm" type="GeneticAlgorithm">
-        <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
+        <Parameter name="Number of Generations" type="unsignedInteger" value="500"/>
         <Parameter name="Population Size" type="unsignedInteger" value="20"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_21" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_15" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_19" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -252,8 +243,8 @@
         <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_19" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_13" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_21" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_15" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -267,8 +258,8 @@
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_18" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_12" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_22" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_16" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -280,8 +271,8 @@
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="1e-06"/>
       </Method>
     </Task>
-    <Task key="Task_17" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_11" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_23" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_17" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -304,14 +295,14 @@
         <Parameter name="Delta minimum" type="unsignedFloat" value="1e-12"/>
       </Method>
     </Task>
-    <Task key="Task_16" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_24" name="Moieties" type="moieties" scheduled="false" updateModel="false">
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_15" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_9" target="" append="1" confirmOverwrite="0"/>
+    <Task key="Task_25" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_18" target="" append="1" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="Steady-State" type="key" value="Task_27"/>
       </Problem>
@@ -356,7 +347,7 @@
     </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_18" name="Optimization profile" taskType="scan" separator="&#x09;" precision="12">
+    <Report key="Report_9" name="Optimization profile" taskType="scan" separator="&#x09;" precision="12">
       <Comment>
         This table outputs time and the target function of the optimization.
       </Comment>
@@ -380,7 +371,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"/>
       </Body>
     </Report>
-    <Report key="Report_19" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -388,7 +379,7 @@
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_17" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_11" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -396,7 +387,7 @@
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_16" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_12" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -420,7 +411,7 @@
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_15" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_13" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -456,7 +447,7 @@
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_13" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_15" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -468,7 +459,7 @@
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_12" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_16" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -480,7 +471,7 @@
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_11" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_17" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -492,7 +483,7 @@
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_9" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_18" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
