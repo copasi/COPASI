@@ -1267,6 +1267,16 @@ private:
   CVector< CMathEvent::CTrigger::CRootProcessor * > mRootProcessors;
 
   /**
+   * The state for which the root derivatives are calculated
+   */
+  CVector< C_FLOAT64 > mRootDerivativesState;
+
+  /**
+   * The root derivatives calculated for mRootDerivativesState
+   */
+  CVector< C_FLOAT64 > mRootDerivatives;
+
+  /**
    * Structure of pointers used for creating discontinuities.
    */
   sDiscontinuous mCreateDiscontinuousPointer;
