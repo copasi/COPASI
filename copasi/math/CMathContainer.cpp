@@ -261,6 +261,8 @@ CMathContainer::CMathContainer():
   mRootIsDiscrete(),
   mRootIsTimeDependent(),
   mRootProcessors(),
+  mRootDerivativesState(),
+  mRootDerivatives(),
   mCreateDiscontinuousPointer(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
@@ -344,6 +346,8 @@ CMathContainer::CMathContainer(CModel & model):
   mRootIsDiscrete(),
   mRootIsTimeDependent(),
   mRootProcessors(),
+  mRootDerivativesState(),
+  mRootDerivatives(),
   mDataObject2MathObject(),
   mDataValue2MathObject(),
   mDataValue2DataObject(),
@@ -432,6 +436,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mRootIsDiscrete(src.mRootIsDiscrete),
   mRootIsTimeDependent(src.mRootIsTimeDependent),
   mRootProcessors(src.mRootProcessors),
+  mRootDerivativesState(src.mRootDerivativesState),
+  mRootDerivatives(src.mRootDerivatives),
   mDataObject2MathObject(src.mDataObject2MathObject),
   mDataValue2MathObject(src.mDataValue2MathObject),
   mDataValue2DataObject(src.mDataValue2DataObject),
@@ -798,10 +804,6 @@ void CMathContainer::applyInitialValues()
   // Start the process queue
   mpProcessQueue->start();
 
-  // Calculate the current root derivatives
-  CVector< C_FLOAT64 > RootDerivatives;
-  calculateRootDerivatives(RootDerivatives);
-
   // Determine the initial root states.
   CMathEvent::CTrigger::CRootProcessor ** pRoot = mRootProcessors.array();
   CMathEvent::CTrigger::CRootProcessor ** pRootEnd = pRoot + mRootProcessors.size();
@@ -843,8 +845,10 @@ void CMathContainer::applyInitialValues()
   CVector< C_INT > FoundRoots(mEventRoots.size());
   C_INT * pFoundRoot = FoundRoots.array();
   C_FLOAT64 * pRootValue = mEventRoots.array();
-  C_FLOAT64 * pRootDerivative = RootDerivatives.array();
   pRoot = mRootProcessors.array();
+
+  bool HaveRootDerivatives = (memcmp(mRootDerivativesState.array(), mState.array(), sizeof(C_FLOAT64) * mState.size()) == 0);
+  C_FLOAT64 * pRootDerivative = mRootDerivatives.array();
 
   for (; pRoot != pRootEnd; ++pRoot, ++pFoundRoot, ++pRootValue, ++pRootDerivative)
     {
@@ -854,6 +858,15 @@ void CMathContainer::applyInitialValues()
       if (*pRootValue != 0.0)
         {
           continue;
+        }
+
+      // Calculate the current root derivatives on demand
+      if (!HaveRootDerivatives)
+        {
+          calculateRootDerivatives(mRootDerivatives);
+          mRootDerivativesState = mState;
+
+          HaveRootDerivatives = true;
         }
 
       if ((*pRoot)->isEquality())
@@ -2522,6 +2535,10 @@ void CMathContainer::analyzeRoots()
   mRootIsTimeDependent.resize(RootCount, true);
 
   mRootProcessors.resize(RootCount);
+  mRootDerivatives.resize(RootCount);
+  mRootDerivatives = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  mRootDerivativesState.resize(mState.size());
+  mRootDerivativesState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   CMathEvent * pEvent = mEvents.array();
   CMathEvent * pEventEnd = pEvent + mEvents.size();
@@ -2579,7 +2596,6 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
 
   // The rates of all state variables in the current state.
   CVector< C_FLOAT64 > Rate = mRate;
-
 
   size_t Col = 0;
 
