@@ -499,8 +499,9 @@ bool CEvent::setTriggerExpression(const std::string & expression)
       mpTriggerExpression->setIsBoolean(true);
     }
 
-  if (mpTriggerExpression->getInfix() != expression &&
-      mpModel != NULL)
+  if (mType != Discontinuity &&
+      mpModel != NULL &&
+      mpTriggerExpression->getInfix() != expression)
     {
       mpModel->setCompileFlag(true);
     }
