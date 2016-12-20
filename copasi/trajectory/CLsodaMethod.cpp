@@ -218,6 +218,14 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
 
 CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 {
+  if (mData.dim == 1 && mNumRoots == 0) //just do nothing if there are no variables except time
+    {
+      mTime += deltaT;
+      *mpContainerStateTime = mTime;
+
+      return NORMAL;
+    }
+
   C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
 
