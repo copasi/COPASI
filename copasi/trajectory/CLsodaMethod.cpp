@@ -37,6 +37,7 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
   mpMaxInternalSteps(NULL),
+  mpMaxInternalStepSize(NULL),
   mData(),
   mpY(NULL),
   mpYdot(NULL),
@@ -73,6 +74,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
   mpMaxInternalSteps(NULL),
+  mpMaxInternalStepSize(NULL),
   mData(src.mData),
   mpY(NULL),
   mpYdot(NULL),
@@ -113,6 +115,7 @@ void CLsodaMethod::initializeParameter()
   mpRelativeTolerance = assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   mpAbsoluteTolerance = assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
   mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  mpMaxInternalStepSize = assertParameter("Max Internal Step Size", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.0);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("LSODA.RelativeTolerance")) != NULL)
@@ -287,6 +290,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
           // We reset short before we reach the internal step limit.
 #ifdef DEBUG_FLOW
           std::cout << "mTime = " << mTime << ", EndTime = " << EndTime << ", mTask = " << mTask << ", mLsodaStatus = " << mLsodaStatus << ", mRootCounter = " << mRootCounter << std::endl;
+          std::cout << "mDWork = " << CVectorCore< C_FLOAT64 >(22, mDWork.array()) << std::endl;
+          std::cout << "mIWork = " << CVectorCore< C_INT >(20, mIWork.array()) << std::endl;
 #endif // DEBUG_FLOW
 
           if (mLsodaStatus == 3 &&
@@ -560,7 +565,10 @@ void CLsodaMethod::start()
 
   /* Configure lsoda(r) */
   mDWork.resize(22 + mData.dim * std::max<C_INT>(16, mData.dim + 9) + 3 * mNumRoots);
-  mDWork[4] = mDWork[5] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
+  mDWork[4] = mDWork[6] = mDWork[7] = mDWork[8] = mDWork[9] = 0.0;
+
+  mDWork[5] = *mpMaxInternalStepSize;
+
   mIWork.resize(20 + mData.dim);
   mIWork[4] = mIWork[6] = mIWork[9] = 0;
 

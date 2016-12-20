@@ -75,6 +75,11 @@ private:
    */
   unsigned C_INT32 * mpMaxInternalSteps;
 
+  /**
+   * A pointer to the value of "Max Internal Step Size"
+   */
+  C_FLOAT64 * mpMaxInternalStepSize;
+
 protected:
   /**
    * mData.dim is the dimension of the ODE system.
