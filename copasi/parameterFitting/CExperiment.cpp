@@ -760,7 +760,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   for (i = 0; i <= imax; i++)
     {
       const CCopasiObject *currentObject = Objects[i];
-      CObjectInterface * pObject = mpContainer->getMathObject(currentObject);
+      CMathObject * pObject = mpContainer->getMathObject(currentObject);
 
       switch (mpObjectMap->getRole(i))
         {

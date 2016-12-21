@@ -2340,8 +2340,8 @@ void CMathContainer::createApplyInitialValuesSequence()
             }
         }
 
-      CObjectInterface * pDiscontinuity = getMathObject(mDiscontinuous.array());
-      CObjectInterface * pDiscontinuityEnd = pDiscontinuity + mDiscontinuous.size();
+      CMathObject * pDiscontinuity = getMathObject(mDiscontinuous.array());
+      CMathObject * pDiscontinuityEnd = pDiscontinuity + mDiscontinuous.size();
       std::set< CObjectInterface * > OutofDateDiscontinuities;
 
       for (; pDiscontinuity != pDiscontinuityEnd; ++pDiscontinuity)
@@ -2750,8 +2750,8 @@ void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobian
   jacobianDependencies = 0;
 
   // The required values are the rates of the variables
-  CObjectInterface * pRateObject = getMathObject(mRate.array() + mSize.nFixedEventTargets + mSize.nTime);
-  CObjectInterface * pRateObjectEnd = pRateObject + Dim;
+  CMathObject * pRateObject = getMathObject(mRate.array() + mSize.nFixedEventTargets + mSize.nTime);
+  CMathObject * pRateObjectEnd = pRateObject + Dim;
 
   ObjectSet Requested;
 
@@ -2765,8 +2765,8 @@ void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobian
 
   // For each of the variables we check whether a the rate objects needs to be calculated
   // which indicates that it is dependent.
-  CObjectInterface * pVariable = getMathObject(mState.array() + mSize.nFixedEventTargets + mSize.nTime);
-  CObjectInterface * pVariableEnd = pVariable + Dim;
+  CMathObject * pVariable = getMathObject(mState.array() + mSize.nFixedEventTargets + mSize.nTime);
+  CMathObject * pVariableEnd = pVariable + Dim;
   size_t col = 0;
 
   for (; pVariable != pVariableEnd; ++pVariable, ++col)
@@ -2785,7 +2785,7 @@ void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobian
         if (pRateObject <= *it && *it < pRateObjectEnd)
           {
             // it points to a rate object, i.e., it is dependent.
-            jacobianDependencies[(*it) - pRateObject][col] = 1;
+            jacobianDependencies[static_cast< CMathObject * >(*it) - pRateObject][col] = 1;
           }
     }
 

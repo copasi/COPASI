@@ -194,7 +194,7 @@ void CStochDirectMethod::start()
 
   // Determine whether we have time dependent roots;
 
-  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
+  CMathObject * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
   Changed.insert(pTimeObject);
 
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateTimeDependentRoots, CMath::Default, Changed, Requested);

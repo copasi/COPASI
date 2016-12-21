@@ -173,7 +173,7 @@ void CTrajAdaptiveSA::start()
     }
 
   CObjectInterface::ObjectSet Changed;
-  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
+  CMathObject * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
   pPropensityObject = mPropensityObjects.array();
 
   for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject)

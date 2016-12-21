@@ -1281,7 +1281,7 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
     }
 
   // Discontinuities
-  for (; pAssignment != pAssignmentEnd; ++pAssignment, ++itAssignment, ++ppTarget)
+  for (; pAssignment != pAssignmentEnd; ++pAssignment, ++ppTarget)
     {
       *ppTarget = (C_FLOAT64 *) pAssignment->getTarget()->getValuePointer();
     }
