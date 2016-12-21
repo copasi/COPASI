@@ -1,4 +1,4 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -461,7 +461,7 @@ void CTrajectoryMethodDsaLsodar::start()
   // The container state is now up to date we just need to calculate all values needed for simulation.
   mpContainer->updateSimulatedValues(false);
 
-  CObjectInterface * pTimeObject = mpContainer->getMathObject(mpContainer->getModel().getValueReference());
+  CMathObject * pTimeObject = mpContainer->getMathObject(mpContainer->getModel().getValueReference());
 
   // Build the reaction dependencies
   mReactions.initialize(mpContainer->getReactions());

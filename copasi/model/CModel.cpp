@@ -3331,7 +3331,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   for (; it != end; ++it)
     {
-      CObjectInterface * pObject = mpMathContainer->getMathObject(*it);
+      CMathObject * pObject = mpMathContainer->getMathObject(*it);
 
       if (pObject != NULL)
         {
