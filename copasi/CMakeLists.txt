@@ -34,8 +34,8 @@ cmake_policy(SET CMP0011 NEW)
 
 
 if (COPASI_INSTALL_C_API)
-    include (CMakePackageConfigHelpers)
-endif()
+  include (CMakePackageConfigHelpers)
+endif(COPASI_INSTALL_C_API)
 
 include (common.cmake)
 
@@ -45,6 +45,8 @@ set(COPASI_HEADERS)
 if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
+
+file(GLOB COPASI_HEADERS *.h lapack/*.h GL/*.h)
 
 include(CopasiDataModel/CMakeLists.txt)
 include(MIRIAM/CMakeLists.txt)
@@ -136,17 +138,11 @@ endif()
 
 if (COPASI_INSTALL_C_API)
     # install headers
-    file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-    install(FILES ${current_header} DESTINATION include/copasi)
-    foreach (dir
-             analytics commandline compareExpressions CopasiDataModel crosssection
-             elementaryFluxModes function GL lapack layout lna lyap math miase MIRIAM
-             model moieties odepack++ optimization oscillation parameterFitting plot
-             randomGenerator report sbml sbmlunit scan sedml sensitivities steadystate
-             tex trajectory tss tssanalysis utilities xml)
-         file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*.h")
-         install(FILES ${current_header} DESTINATION include/copasi/${dir})
-    endforeach(dir)
+    foreach (file ${COPASI_HEADERS})
+      get_filename_component(dir ${file} DIRECTORY)
+      string(REPLACE ${CMAKE_CURRENT_SOURCE_DIR} include/copasi destination ${dir})
+      install(FILES ${file} DESTINATION ${destination})
+    endforeach()
 
     install(TARGETS libCOPASISE-static EXPORT libcopasise-static-config
         RUNTIME DESTINATION bin
@@ -169,7 +165,7 @@ if (COPASI_INSTALL_C_API)
         ${CMAKE_CURRENT_BINARY_DIR}/libcopasise-static-config-version.cmake
         DESTINATION lib/cmake)
 
-endif()
+endif(COPASI_INSTALL_C_API)
 
 
 if(ENABLE_LIBCOPASISE_SHARED)
@@ -219,7 +215,7 @@ if(ENABLE_LIBCOPASISE_SHARED)
           DESTINATION lib/cmake)
 
 
-  endif()
+  endif(COPASI_INSTALL_C_API)
 
 endif (ENABLE_LIBCOPASISE_SHARED)
 
@@ -431,15 +427,12 @@ set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
   if (COPASI_INSTALL_C_API)
       # install headers
-      file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-      install(FILES ${current_header} DESTINATION include/copasi)
-      foreach (dir
-               barChart layoutUI MIRIAMUI plotUI resourcesUI
-               UI undoFramework versioning wizard)
-           file (GLOB current_header "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*.h")
-           install(FILES ${current_header} DESTINATION include/copasi/${dir})
-      endforeach(dir)
-  endif()
+      foreach (file ${COPASI_UI_HEADERS})
+        get_filename_component(dir ${file} DIRECTORY)
+        string(REPLACE ${CMAKE_CURRENT_SOURCE_DIR} include/copasi destination ${dir})
+        install(FILES ${file} DESTINATION ${destination})
+      endforeach()
+  endif(COPASI_INSTALL_C_API)
 
 endif(BUILD_GUI)
 
