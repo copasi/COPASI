@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -181,7 +186,57 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
       case ListOfFunctions:
       case Model:
       case ListOfTasks:
+        break;
+
       case ListOfReports:
+      {
+        // We need to resolve the report references for the individual tasks
+        std::map<std::string, std::vector<CCopasiTask*> >::iterator it;
+        std::vector<CCopasiTask*>::iterator innerIt;
+        CReportDefinition* reportDefinition;
+
+        std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > >::iterator outerIt;
+        std::vector<std::pair < std::vector <CRegisteredObjectName >*, size_t > >::iterator innerIt2;
+        std::vector<CRegisteredObjectName>* nameVector;
+
+        size_t reportIndex;
+        it = mpData->taskReferenceMap.begin();
+
+        while (it != mpData->taskReferenceMap.end())
+          {
+            reportDefinition = dynamic_cast<CReportDefinition*>(mpData->mKeyMap.get((*it).first));
+            innerIt = (*it).second.begin();
+
+            while (innerIt != (*it).second.end())
+              {
+                (*innerIt)->getReport().setReportDefinition(reportDefinition);
+                ++innerIt;
+              }
+
+            ++it;
+          }
+
+        // We need to resolve the report references for for reports
+        outerIt = mpData->reportReferenceMap.begin();
+
+        while (outerIt != mpData->reportReferenceMap.end())
+          {
+            reportDefinition = dynamic_cast<CReportDefinition*>(mpData->mKeyMap.get((*outerIt).first));
+            innerIt2 = (*outerIt).second.begin();
+
+            while (innerIt2 != (*outerIt).second.end())
+              {
+                reportIndex = (*innerIt2).second;
+                nameVector = (*innerIt2).first;
+                (*nameVector)[reportIndex] = reportDefinition->getCN();
+                ++innerIt2;
+              }
+
+            ++outerIt;
+          }
+      }
+      break;
+
       case ListOfPlots:
       case ListOfLayouts:
       case SBMLReference:
