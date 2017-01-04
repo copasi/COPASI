@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -3568,9 +3573,6 @@ std::string CModel::printParameterOverview()
 
 std::string CModel::getTimeUnitsDisplayString() const
 {
-  if (CUnit(mTimeUnit).isDimensionless())
-    return "";
-
   return mTimeUnit;
 }
 
@@ -3578,137 +3580,48 @@ std::string CModel::getFrequencyUnit() const
 {
   CUnit frequencyCUnit = CUnit(getTimeUnit()).exponentiate(-1);
   frequencyCUnit.buildExpression();
+
   return frequencyCUnit.getExpression();
 }
 
 std::string CModel::getVolumeUnitsDisplayString() const
 {
-  if (CUnit(getVolumeUnit()).isDimensionless())
-    return "";
-
   return mVolumeUnit;
 }
 
 std::string CModel::getAreaUnitsDisplayString() const
 {
-  if (CUnit(mAreaUnit).isDimensionless())
-    return "";
-
   return mAreaUnit;
 }
 
 std::string CModel::getLengthUnitsDisplayString() const
 {
-  if (CUnit(mLengthUnit).isDimensionless())
-    return "";
-
   return mLengthUnit;
 }
 
 std::string CModel::getVolumeRateUnitsDisplayString() const
 {
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    {
-      if (CUnit(mTimeUnit).isDimensionless())
-        return "";
-
-      return std::string("1/") + mTimeUnit;
-    }
-
-  if (CUnit(mTimeUnit).isDimensionless())
-    return mVolumeUnit;
-
-  return mVolumeUnit + "/" + mTimeUnit;
+  return CUnit::prettyPrint(mVolumeUnit + "/(" + mTimeUnit + ")");
 }
 
 std::string CModel::getConcentrationUnitsDisplayString() const
 {
-  std::string Units;
-
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-        return "";
-
-      return std::string("1/") + mVolumeUnit;
-    }
-
-  Units = mQuantityUnit;
-
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    return Units;
-
-  return Units + "/" + mVolumeUnit;
+  return CUnit::prettyPrint(mQuantityUnit + "/(" + mVolumeUnit + ")");
 }
 
 std::string CModel::getConcentrationRateUnitsDisplayString() const
 {
-  std::string Units;
-
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      Units = "1";
-
-      if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-        {
-          if (CUnit(mTimeUnit).isDimensionless())
-            return "";
-
-          return Units + "/" + mTimeUnit;
-        }
-      else
-        {
-          if (CUnit(mTimeUnit).isDimensionless())
-            return Units + "/" + mVolumeUnit;
-
-          return Units + "/(" + mVolumeUnit + "*" + mTimeUnit + ")";
-        }
-    }
-
-  Units = mQuantityUnit;
-
-  if (getVolumeUnitEnum() == CUnit::dimensionlessVolume)
-    {
-      if (CUnit(mTimeUnit).isDimensionless())
-        return Units;
-
-      return Units + "/" + mTimeUnit;
-    }
-
-  if (CUnit(mTimeUnit).isDimensionless())
-    return Units + "/" + mVolumeUnit;
-
-  return Units + "/(" + mVolumeUnit + "*" + mTimeUnit + ")";
+  return CUnit::prettyPrint(mQuantityUnit + "/(" + mVolumeUnit + "*" + mTimeUnit + ")");
 }
 
 std::string CModel::getQuantityUnitsDisplayString() const
 {
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      return "";
-    }
-
   return mQuantityUnit;
 }
 
 std::string CModel::getQuantityRateUnitsDisplayString() const
 {
-  std::string Units;
-
-  if (CUnit(mQuantityUnit).isDimensionless())
-    {
-      if (CUnit(mTimeUnit).isDimensionless())
-        return "";
-
-      return std::string("1/") + mTimeUnit;
-    }
-
-  Units = mQuantityUnit;
-
-  if (CUnit(mTimeUnit).isDimensionless())
-    return Units;
-
-  return Units + "/" + mTimeUnit;
+  return CUnit::prettyPrint(mQuantityUnit + "/(" + mTimeUnit + ")");
 }
 
 const CMathContainer & CModel::getMathContainer() const
