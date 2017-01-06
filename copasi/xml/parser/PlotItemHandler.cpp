@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -83,7 +88,7 @@ bool PlotItemHandler::processEnd(const XML_Char * pszName)
       case Parameter:
       case ParameterGroup:
         // Check whether a parameter of that name exist
-        pParameter = mpData->pCurrentPlot->getParameter(mpData->pCurrentParameter->getObjectName());
+        pParameter = mpData->pCurrentPlotItem->getParameter(mpData->pCurrentParameter->getObjectName());
 
         if (pParameter != NULL)
           {
@@ -100,7 +105,7 @@ bool PlotItemHandler::processEnd(const XML_Char * pszName)
           }
         else
           {
-            mpData->pCurrentPlot->addParameter(mpData->pCurrentParameter);
+            mpData->pCurrentPlotItem->addParameter(mpData->pCurrentParameter);
             mpData->pCurrentParameter = NULL;
           }
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,9 +24,19 @@
 ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::ParameterGroup),
   mDerivedElement(),
-  mParameterGroupStack()
+  mParameterGroupStack(),
+  mNonUniqueParameters()
 {
   init();
+
+  mNonUniqueParameters["OptimizationItemList"].insert("OptItem");
+  mNonUniqueParameters["OptimizationItemList"].insert("FitItem");
+
+  mNonUniqueParameters["OptimizationConstraintList"].insert("OptItem");
+  mNonUniqueParameters["OptimizationConstraintList"].insert("FitItem");
+
+  mNonUniqueParameters["Affected Experiments"].insert("Experiment Key");
+  mNonUniqueParameters["Affected Cross Validation Experiments"].insert("Experiment Key");
 }
 
 // virtual
@@ -106,7 +121,9 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
       CCopasiParameter * pParameter = NULL;
 
       // Derived elements like methods and problems have already parameters:
-      if (mDerivedElement != "")
+      // TODO CRITICAL Some groups may allow multiple parameters with the same name this enforces uniqueness
+      if (mDerivedElement != "" &&
+          isUniqueParameter())
         {
           pParameter =
             mParameterGroupStack.top()->getParameter(mpData->pCurrentParameter->getObjectName());
@@ -173,4 +190,13 @@ void ParameterGroupHandler::setDerivedElement(const XML_Char * pszName, CCopasiP
     }
 
   mParameterGroupStack.push(pDerivedElement);
+}
+
+bool ParameterGroupHandler::isUniqueParameter() const
+{
+  std::map< std::string, std::set< std::string > >::const_iterator found = mNonUniqueParameters.find(mParameterGroupStack.top()->getObjectName());
+
+  if (found == mNonUniqueParameters.end()) return true;
+
+  return (found->second.find(mpData->pCurrentParameter->getObjectName()) == found->second.end());
 }

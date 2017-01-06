@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -60,6 +65,8 @@ protected:
   virtual sProcessLogic * getProcessLogic() const;
 
 private:
+  bool isUniqueParameter() const;
+
   /**
    * A flag indicating whether the current element is derived from
    * a parameter group.
@@ -71,6 +78,11 @@ private:
    * processed groups.
    */
   std::stack< CCopasiParameterGroup * > mParameterGroupStack;
+
+  /**
+   * A map listing parameters for which the uniqueness is not enforced
+   */
+  std::map< std::string, std::set< std::string > > mNonUniqueParameters;
 };
 
 #endif //COPASI_ParameterGroupHandler
