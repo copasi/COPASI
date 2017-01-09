@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -48,6 +53,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
+  mpResultLNASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Linear Noise Approximation"));
 
   mpModelMatrixSubtree = new QTreeWidgetItem(this, QStringList("Matrices"));
 
@@ -542,6 +548,34 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
               if (!ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultSensitivitySubtree, QStringList(FROM_UTF8(ann->getObjectName())));
+                  treeItems[pItem] = (CCopasiObject *) ann;
+                }
+            }
+        }
+    }
+  catch (...)
+    {}
+
+  // LNA
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
+
+  try
+    {
+      if (task && task->updateMatrices())
+        {
+          const CCopasiContainer::objectMap * pObjects = & task->getMethod()->getObjects();
+          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          CArrayAnnotation *ann;
+
+          for (; its != pObjects->end(); ++its)
+            {
+              ann = dynamic_cast<CArrayAnnotation*>(*its);
+
+              if (!ann) continue;
+
+              if (!ann->isEmpty() && filter(classes, ann))
+                {
+                  pItem = new QTreeWidgetItem(this->mpResultLNASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
                   treeItems[pItem] = (CCopasiObject *) ann;
                 }
             }
@@ -1158,6 +1192,8 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
 
   removeEmptySubTree(&mpResultMCASubtree);
   removeEmptySubTree(&mpResultTSSASubtree);
+  removeEmptySubTree(&mpResultLNASubtree);
+
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
 

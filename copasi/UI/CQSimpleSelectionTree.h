@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -83,6 +88,7 @@ protected:
 
   QTreeWidgetItem* mpResultMCASubtree;
   QTreeWidgetItem* mpResultTSSASubtree;
+  QTreeWidgetItem* mpResultLNASubtree;
 
   std::map< QTreeWidgetItem *, const CCopasiObject * > treeItems;
   std::vector< const CCopasiObject * > * mpOutputVector;
