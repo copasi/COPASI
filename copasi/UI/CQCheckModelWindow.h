@@ -16,6 +16,7 @@
 
 class QMenu;
 class QLineEdit;
+class QComboBox;
 class CModelAnalyzer;
 
 class CQCheckModelWindow : public CWindowInterface, public Ui::CQCheckModelWindow
