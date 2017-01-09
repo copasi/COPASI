@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -18,6 +23,9 @@
   </property>
   <property name="windowTitle">
    <string>Check Model</string>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -47,10 +55,130 @@
      <string>&amp;Window</string>
     </property>
    </widget>
+   <widget class="QMenu" name="mpFileMenu">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="mpActSave"/>
+    <addaction name="separator"/>
+    <addaction name="mpActClose"/>
+   </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="mpActVerbose"/>
+   </widget>
+   <addaction name="mpFileMenu"/>
+   <addaction name="menu_View"/>
    <addaction name="mpWindowMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mpActSave"/>
+   <addaction name="mpActClose"/>
+   <addaction name="separator"/>
+   <addaction name="mpActVerbose"/>
+  </widget>
+  <action name="mpActSave">
+   <property name="text">
+    <string>Save &amp;As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="mpActClose">
+   <property name="text">
+    <string>&amp;Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="mpActVerbose">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Verbose Output</string>
+   </property>
+  </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mpActClose</sender>
+   <signal>triggered()</signal>
+   <receiver>CQCheckModelWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActSave</sender>
+   <signal>triggered()</signal>
+   <receiver>CQCheckModelWindow</receiver>
+   <slot>slotSaveAs()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActVerbose</sender>
+   <signal>triggered()</signal>
+   <receiver>CQCheckModelWindow</receiver>
+   <slot>displayResult()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotSaveAs()</slot>
+  <slot>displayResult()</slot>
+ </slots>
 </ui>

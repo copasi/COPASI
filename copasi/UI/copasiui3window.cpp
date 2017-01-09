@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -2374,17 +2379,10 @@ const bool & CopasiUI3Window::messageShown() const
 void CopasiUI3Window::slotCheckModel()
 {
   assert(mpDataModel != NULL);
-  CModelAnalyzer MA(mpDataModel->getModel());
-
-  std::ostringstream ss;
-  // MA.writeReport(ss, true, false);
-  MA.writeReport(ss, true, true);
+  CModelAnalyzer* analyzer = new CModelAnalyzer(mpDataModel->getModel());
 
   CQCheckModelWindow * checkModelWindow = new CQCheckModelWindow(this);
-
-  checkModelWindow->setWindowTitle("Check Model");
-  checkModelWindow->textEdit->setText(FROM_UTF8(ss.str()));
-
+  checkModelWindow->setAnalyzer(analyzer);
   checkModelWindow->show();
 }
 
