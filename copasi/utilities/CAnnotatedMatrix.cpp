@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -428,16 +433,20 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
           size_t index = C_INVALID_INDEX;
           bool ValidIndex = strToIndex(*it, index);
 
-          if (itCNs->empty())
+          if (ValidIndex)
             {
-              if (ValidIndex)
-                *to = *it;
+              if (itCNs->empty())
+                {
+                  *to = *it;
+                }
               else
-                *to = std::string("not found");
+                {
+                  *to = itCNs->operator [](index);
+                }
             }
           else
             {
-              *to = itCNs->operator [](index);
+              *to = std::string("not found");
             }
         }
     }
