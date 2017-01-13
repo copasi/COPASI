@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -578,18 +583,22 @@ public:
    * the unit the conversion factors are set accordingly
    * and true is returned.
    * @param const std::string & name
+   * @param const CModelParameter::Framework & frameWork
    * @return bool success
    */
-  bool setQuantityUnit(const std::string & name);
+  bool setQuantityUnit(const std::string & name,
+                       const CModelParameter::Framework & frameWork = CModelParameter::ParticleNumbers);
 
   /**
    * Set the unit for quantities. If COPASI recognizes
    * the unit the conversion factors are set accordingly
    * and true is returned.
    * @param const CModel::QuantityUnit & unit
+   * @param const CModelParameter::Framework & frameWork
    * @return bool success
    */
-  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum);
+  bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
+                       const CModelParameter::Framework & frameWork = CModelParameter::ParticleNumbers);
 
   /**
    * Get the current quantity unit of the model

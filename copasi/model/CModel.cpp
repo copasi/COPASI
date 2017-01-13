@@ -1474,7 +1474,8 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 
 //****
 
-bool CModel::setQuantityUnit(const std::string & name)
+bool CModel::setQuantityUnit(const std::string & name,
+                             const CModelParameter::Framework & frameWork)
 {
   mQuantityUnit = name;
 
@@ -1503,84 +1504,42 @@ bool CModel::setQuantityUnit(const std::string & name)
   //adapt particle numbers
   size_t i, imax = mMetabolitesX.size();
 
-  for (i = 0; i < imax; ++i)
+  switch (frameWork)
     {
-      //update particle numbers
-      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
-      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
+      case CModelParameter::Concentration:
+        for (i = 0; i < imax; ++i)
+          {
+            //update particle numbers
+            mMetabolitesX[i].refreshInitialValue();
+            mMetabolitesX[i].refreshNumber();
+          }
+
+        break;
+
+      case CModelParameter::ParticleNumbers:
+        for (i = 0; i < imax; ++i)
+          {
+            //update particle numbers
+            mMetabolitesX[i].refreshInitialConcentration();
+            mMetabolitesX[i].refreshConcentration();
+          }
+
+        break;
+    }
+
+  if (mpMathContainer != NULL)
+    {
+      mpMathContainer->compile();
     }
 
   return true;
 }
 
-bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
+bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
+                             const CModelParameter::Framework & frameWork)
 {
-  // TODO: Commented out the code below, to allow the quantity unit to be set again
-  //       but this needs to be solved correctly.
-  //
-  //   // if it is already there and set properly . . .
-  //   if (mpQuantityUnit != NULL) // &&
-  // //      *mpQuantityUnit == unitEnum) //create appropriate comparison operator
-  //     return true;
-
-  mQuantityUnit = CUnit::QuantityUnitNames[unitEnum];
-  mDimensionlessUnits[quantity] = CUnit(mQuantityUnit).isDimensionless();
-
-  bool success = true;
-
-  switch (unitEnum)
-    {
-      case CUnit::Mol:
-        mQuantity2NumberFactor = mAvogadro;
-        break;
-
-      case CUnit::mMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-3;
-        break;
-
-      case CUnit::microMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-6;
-        break;
-
-      case CUnit::nMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-9;
-        break;
-
-      case CUnit::pMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-12;
-        break;
-
-      case CUnit::fMol:
-        mQuantity2NumberFactor = mAvogadro * 1E-15;
-        break;
-
-      case CUnit::number:
-        mQuantity2NumberFactor = 1.0;
-        break;
-
-      case CUnit::dimensionlessQuantity:
-        mQuantity2NumberFactor = 1.0;
-        break;
-
-      default:
-        mQuantity2NumberFactor = 1.0;
-        success = false;
-        break;
-    }
-
-  mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
-
-  //adapt particle numbers
-  size_t i, imax = mMetabolitesX.size();
-
-  for (i = 0; i < imax; ++i)
-    {
-      //update particle numbers
-      mMetabolitesX[i].setInitialConcentration(mMetabolitesX[i].getInitialConcentration());
-      mMetabolitesX[i].setConcentration(mMetabolitesX[i].getConcentration());
-    }
-
-  return success;
+  return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum],
+                         frameWork);
 }
 
 const std::string CModel::getQuantityUnit() const
