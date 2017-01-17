@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -38,6 +43,9 @@
 #include "model/CCompartment.h"
 #include "math/CMathContainer.h"
 
+// static
+const bool CTrajectoryMethod::ReducedModel(false);
+
 /**
  *  Default constructor.
  */
@@ -49,7 +57,8 @@ CTrajectoryMethod::CTrajectoryMethod(const CCopasiContainer * pParent,
   mpContainerStateTime(NULL),
   mpTask(NULL),
   mpProblem(NULL),
-  mRootsFound(0)
+  mRootsFound(0),
+  mpReducedModel(&ReducedModel)
 {
   mpTask = const_cast< CTrajectoryTask * >(dynamic_cast< const CTrajectoryTask * >(getObjectParent()));
 }
@@ -65,7 +74,8 @@ CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
   mpContainerStateTime(NULL),
   mpTask(NULL),
   mpProblem(NULL),
-  mRootsFound(0)
+  mRootsFound(0),
+  mpReducedModel(&ReducedModel)
 {
   mpTask = const_cast< CTrajectoryTask * >(dynamic_cast< const CTrajectoryTask * >(getObjectParent()));
 }
@@ -81,14 +91,7 @@ void CTrajectoryMethod::signalMathContainerChanged()
 {
   if (mpContainer != NULL)
     {
-      bool UpdateMoieties = false;
-
-      CCopasiParameter * pParameter = getParameter("Integrate Reduced Model");
-
-      if (pParameter != NULL)
-        UpdateMoieties = pParameter->getValue< bool >();
-
-      mContainerState.initialize(mpContainer->getState(UpdateMoieties));
+      mContainerState.initialize(mpContainer->getState(*mpReducedModel));
       mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
     }
   else
@@ -137,14 +140,7 @@ CTrajectoryMethod::Status CTrajectoryMethod::step(const double & C_UNUSED(deltaT
 
 void CTrajectoryMethod::start()
 {
-  bool UpdateMoieties = false;
-
-  CCopasiParameter * pParameter = getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    UpdateMoieties = pParameter->getValue< bool >();
-
-  mContainerState.initialize(mpContainer->getState(UpdateMoieties));
+  mContainerState.initialize(mpContainer->getState(*mpReducedModel));
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   return;
@@ -170,4 +166,9 @@ bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)
 const CVector< C_INT > & CTrajectoryMethod::getRoots() const
 {
   return mRootsFound;
+}
+
+const bool & CTrajectoryMethod::integrateReducedModel() const
+{
+  return *mpReducedModel;
 }

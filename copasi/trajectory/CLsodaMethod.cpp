@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -33,7 +38,6 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
-  mpReducedModel(NULL),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
   mpMaxInternalSteps(NULL),
@@ -70,7 +74,6 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
 CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
                            const CCopasiContainer * pParent):
   CTrajectoryMethod(src, pParent),
-  mpReducedModel(NULL),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
   mpMaxInternalSteps(NULL),

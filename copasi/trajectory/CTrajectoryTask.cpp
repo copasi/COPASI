@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -95,12 +100,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent,
   mpMethod = createMethod(CTaskEnum::deterministic);
   this->add(mpMethod, true);
 
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = pParameter->getValue< bool >();
-  else
-    mUpdateMoieties = false;
+  mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   signalMathContainerChanged();
 }
@@ -131,12 +131,7 @@ CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
 
   this->add(mpMethod, true);
 
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = pParameter->getValue< bool >();
-  else
-    mUpdateMoieties = false;
+  mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   signalMathContainerChanged();
 }
@@ -161,10 +156,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   pdelete(mpMethod);
   mpMethod = createMethod(CTaskEnum::deterministic);
 
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = pParameter->getValue< bool >();
+  mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   ((CTrajectoryMethod *)mpMethod)->setProblem((CTrajectoryProblem *) mpProblem);
 }
@@ -185,12 +177,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   bool success = mpMethod->isValidProblem(mpProblem);
 
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = pParameter->getValue< bool >();
-  else
-    mUpdateMoieties = false;
+  mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   // Handle the time series as a regular output.
   mTimeSeriesRequested = mpTrajectoryProblem->timeSeriesRequested();
@@ -575,12 +562,7 @@ const CTaskEnum::Method * CTrajectoryTask::getValidMethods() const
 // virtual
 void CTrajectoryTask::signalMethodChanged()
 {
-  CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
-
-  if (pParameter != NULL)
-    mUpdateMoieties = pParameter->getValue< bool >();
-  else
-    mUpdateMoieties = false;
+  mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 
   return;
 }

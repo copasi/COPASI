@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -119,6 +124,12 @@ public:
    */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
+  /**
+   * Check whether to integrate the reduced model
+   * @return const bool & integrateReducedModel
+   */
+  const bool & integrateReducedModel() const;
+
 protected:
   /**
    * Signal that the math container has changed
@@ -155,6 +166,17 @@ protected:
    * Vector containing information on the current roots
    */
   CVector< C_INT > mRootsFound;
+
+  /**
+   * Pointer to the value indicating whether to integrate the reduced model.
+   */
+  const bool * mpReducedModel;
+
+  /**
+   * Default value whether indicating whether to integrate the reduced model
+   * initialized to false.
+   */
+  static const bool ReducedModel;
 };
 
 #endif // COPASI_CTrajectoryMethod
