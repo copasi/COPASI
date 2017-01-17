@@ -123,7 +123,6 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
       CCopasiParameter * pParameter = NULL;
 
       // Derived elements like methods and problems have already parameters:
-      // TODO CRITICAL Some groups may allow multiple parameters with the same name this enforces uniqueness
       if (mDerivedElement != "" &&
           isUniqueParameter())
         {
