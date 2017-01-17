@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,6 +23,7 @@
 
 #include "copasi.h"
 
+#include "listviews.h"
 #include "CScanWidgetRandom.h"
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
@@ -137,7 +143,7 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
     mpObject = NULL;
   else
     {
-      CCopasiDataModel* pDataModel = pItem->getObjectDataModel();
+      CCopasiDataModel* pDataModel = ListViews::dataModel(this);
       assert(pDataModel != NULL);
       mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(String));
     }

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,8 +23,9 @@
 
 #include <QtGui/QValidator>
 
-#include "UI/qtUtilities.h"
-#include "UI/CCopasiSelectionDialog.h"
+#include "listviews.h"
+#include "qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
 #include "resourcesUI/CQIconResource.h"
 
 #include "report/CCopasiRootContainer.h"
@@ -127,7 +133,7 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
     mpObject = NULL;
   else
     {
-      CCopasiDataModel* pDataModel = pItem->getObjectDataModel();
+      CCopasiDataModel* pDataModel = ListViews::dataModel(this);
       assert(pDataModel != NULL);
       mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(tmpString));
     }
