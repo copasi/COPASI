@@ -29,6 +29,8 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
 {
   init();
 
+  mNonUniqueParameters["ScanItems"].insert("ScanItem");
+
   mNonUniqueParameters["OptimizationItemList"].insert("OptItem");
   mNonUniqueParameters["OptimizationItemList"].insert("FitItem");
 
