@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -284,7 +289,7 @@ CMathContainer::CMathContainer():
   mDelays(),
   mIsAutonomous(true),
   mSize(),
-  mCountNoise(0),
+  mNoiseInputObjects(),
   mUpdateSequences()
 {
   memset(&mSize, 0, sizeof(mSize));
@@ -378,7 +383,7 @@ CMathContainer::CMathContainer(CModel & model):
   mDelays(),
   mIsAutonomous(true),
   mSize(),
-  mCountNoise(0),
+  mNoiseInputObjects(),
   mUpdateSequences()
 {
   memset(&mSize, 0, sizeof(mSize));
@@ -490,7 +495,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDelays(),
   mIsAutonomous(src.mIsAutonomous),
   mSize(),
-  mCountNoise(src.mCountNoise),
+  mNoiseInputObjects(src.mNoiseInputObjects),
   mUpdateSequences()
 {
   // We do not want the model to know about the math container therefore we
@@ -1499,14 +1504,19 @@ const size_t & CMathContainer::getCountFixed() const
   return mSize.nFixed;
 }
 
-const size_t & CMathContainer::getCountNoise() const
+size_t CMathContainer::getCountNoise() const
 {
-  return mCountNoise;
+  return mNoiseInputObjects.size();
 }
 
-void CMathContainer::incrementNoiseCount()
+void CMathContainer::addNoiseInputObject(const CMathObject * pObject)
 {
-  mCountNoise++;
+  mNoiseInputObjects.insert(pObject);
+}
+
+const CObjectInterface::ObjectSet & CMathContainer::getNoiseInputObjects() const
+{
+  return mNoiseInputObjects;
 }
 
 CVectorCore< CMathReaction > & CMathContainer::getReactions()
@@ -2127,7 +2137,7 @@ bool CMathContainer::compileObjects()
 {
   bool success = true;
 
-  mCountNoise = 0;
+  mNoiseInputObjects.clear();
 
   // Assure that Avogadro's number and the quantity conversion are up to date.
   quantityConversionChanged();
@@ -4694,15 +4704,16 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
   // Determine the offsets
   // We have to cast all pointers to size_t to avoid pointer overflow.
   size_t nExtensiveValues = size.nFixed + size.nFixedEventTargets + size.nTime + size.nODE + size.nODESpecies + size.nReactionSpecies + size.nAssignment;
+  size_t nNoise = size.nODE + 2 * size.nODESpecies + 2 * size.nReactionSpecies + 2 * size.nReactions;
 
   size_t ObjectCount = 4 * (nExtensiveValues + size.nIntensiveValues) +
-                       size.nODE + 2 * size.nODESpecies + 2 * size.nReactionSpecies + // Noise
-                       7 * size.nReactions +
+                       5 * size.nReactions +
                        3 * size.nMoieties +
                        size.nDiscontinuities +
                        4 * size.nEvents + size.nEventAssignments + 2 * size.nEventRoots +
                        size.nDelayLags + size.nDelayValues +
-                       size.nIntensiveValues;
+                       size.nIntensiveValues +
+                       nNoise;
 
   // We need to preserve the old values and objects until they are properly relocated;
   mpValuesBuffer = (ObjectCount > 0) ? new C_FLOAT64[ObjectCount] : NULL;
@@ -4873,6 +4884,7 @@ void CMathContainer::relocate(const sSize & size,
   relocateObjectSet(mStateValues, Relocations);
   relocateObjectSet(mReducedStateValues, Relocations);
   relocateObjectSet(mSimulationRequiredValues, Relocations);
+  relocateObjectSet(mNoiseInputObjects, Relocations);
 
   std::map< const CCopasiObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
   std::map< const CCopasiObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();

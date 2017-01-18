@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -611,14 +616,21 @@ public:
 
   /**
    * Retrieve the count of noise added to the system
-   * @return const size_t & countNoise
+   * @return size_t countNoise
    */
-  const size_t & getCountNoise() const;
+  size_t getCountNoise() const;
 
   /**
-   * Increment the noise count
+   * Add a noise input object
+   * @param const CMathObject * pObject
    */
-  void incrementNoiseCount();
+  void addNoiseInputObject(const CMathObject * pObject);
+
+  /**
+   * ARetrieve the set of noise input objects
+   * @return const CObjectInterface::ObjectSet & noiseInputObjects
+   */
+  const CObjectInterface::ObjectSet & getNoiseInputObjects() const;
 
   /**
    * Retrieve the reactions
@@ -1334,9 +1346,9 @@ private:
   sSize mSize;
 
   /**
-   * The count of the noise terms added to the system.
+   * The objects from which the noise originates
    */
-  size_t mCountNoise;
+  CObjectInterface::ObjectSet mNoiseInputObjects;
 
   /**
    * Pointers to all update sequences associated with this container;

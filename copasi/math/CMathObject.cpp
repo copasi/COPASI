@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -986,7 +991,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
                     success &= createConvertedExpression(pEntity->getNoiseExpressionPtr(), container);
                   }
 
-                container.incrementNoiseCount();
+                container.addNoiseInputObject(this);
                 compileExpression();
               }
 
@@ -1091,7 +1096,7 @@ bool CMathObject::compileReactionNoise(CMathContainer & container)
           mpExpression = new CMathExpression(Tmp, container, false);
         }
 
-      container.incrementNoiseCount();
+      container.addNoiseInputObject(this);
     }
 
   compileExpression();
@@ -1890,6 +1895,14 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
         os << "Propensity" << std::endl;
         break;
 
+      case CMath::Noise:
+        os << "Noise" << std::endl;
+        break;
+
+      case CMath::ParticleNoise:
+        os << "ParticleNoise" << std::endl;
+        break;
+
       case CMath::TotalMass:
         os << "TotalMass" << std::endl;
         break;
@@ -1924,6 +1937,18 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
       case CMath::EventRootState:
         os << "EventRootState" << std::endl;
+        break;
+
+      case CMath::DelayValue:
+        os << "DelayValue" << std::endl;
+        break;
+
+      case CMath::DelayLag:
+        os << "DelayLag" << std::endl;
+        break;
+
+      case CMath::TransitionTime:
+        os << "TransitionTime" << std::endl;
         break;
     }
 

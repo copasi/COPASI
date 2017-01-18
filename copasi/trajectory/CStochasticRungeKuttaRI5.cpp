@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -160,6 +165,8 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT)
 
 void CStochasticRungeKuttaRI5::start()
 {
+  CTrajectoryMethod::start();
+
   mNumVariables = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
   mContainerVariables.initialize(mNumVariables, mContainerState.begin() + mpContainer->getCountFixedEventTargets() + 1);
   mContainerRates.initialize(mNumVariables, const_cast< C_FLOAT64 * >(mpContainer->getRate(false).begin()) + mpContainer->getCountFixedEventTargets() + 1);
@@ -168,6 +175,8 @@ void CStochasticRungeKuttaRI5::start()
   assert(mContainerNoise.size() == mNumVariables);
 
   mNumNoise = mpContainer->getCountNoise();
+
+  std::cout << "mNumVariables = " << mNumVariables << ", mNumNoise = " << mNumNoise << std::endl;
 
   mContainerRoots.initialize(mpContainer->getRoots());
   mNumRoots = mContainerRoots.size();
@@ -225,33 +234,24 @@ void CStochasticRungeKuttaRI5::start()
     }
 
   // Noise input values are all math objects of ValueType = Noise and SimulationType = ODE or SimulationTypeUndefined
-  pObject = mpContainer->getMathObject(mContainerNoise.begin());
-  pObjectEnd = mpContainer->getMathObject(mpContainer->getValues().begin()) + mpContainer->getValues().size();
+  CObjectInterface::ObjectSet::const_iterator itNoiseInputObject = mpContainer->getNoiseInputObjects().begin();
+  CObjectInterface::ObjectSet::const_iterator endNoiseInputObject = mpContainer->getNoiseInputObjects().end();
+
   C_FLOAT64 ** ppNoiseInput = mNoiseInputValues.begin();
   UpdateSequence * pUpdateSequence = mNoiseUpdateSequences.begin();
 
-  for (; pObject != pObjectEnd && pObject->getValueType() == CMath::Noise; ++pObject)
+  for (; itNoiseInputObject != endNoiseInputObject; ++itNoiseInputObject, ++ppNoiseInput, ++pUpdateSequence)
     {
-      if (pObject->getSimulationType() == CMath::ODE ||
-          pObject->getSimulationType() == CMath::SimulationTypeUndefined)
-        {
-          *ppNoiseInput = (C_FLOAT64 *) pObject->getValuePointer();
+      *ppNoiseInput = (C_FLOAT64 *)(*itNoiseInputObject)->getValuePointer();
 
-          ObjectSet Objects;
-          Objects.insert(pObject);
+      ObjectSet Objects;
+      Objects.insert(*itNoiseInputObject);
 
-          mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Objects);
-          UpdateSequence Sequence;
-          mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CMath::Default, Objects, NoiseObjects);
-          pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
-
-          // Advance pointer
-          ++ppNoiseInput;
-          ++pUpdateSequence;
-        }
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Objects);
+      UpdateSequence Sequence;
+      mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CMath::Default, Objects, NoiseObjects);
+      pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
     }
-
-  assert(ppNoiseInput == mNoiseInputValues.begin() + mNumNoise);
 
   mTime = *mpContainerStateTime;
   mTargetTime = mTime;
@@ -311,17 +311,19 @@ void CStochasticRungeKuttaRI5::evalRoot(const double & time, CVectorCore< C_FLOA
 
 void CStochasticRungeKuttaRI5::generateRandomNumbers()
 {
+  if (mNumNoise == 0) return;
+
   C_FLOAT64 * pRandom = mRandomIHat.begin();
   C_FLOAT64 * pRandomEnd = pRandom + mNumNoise;
 
   for (; pRandom != pRandomEnd; ++pRandom)
     *pRandom = randomIHat();
 
+  // mRandomITilde[0] and mRandomITilde[mNumNoise - 1] are not needed
   pRandom = mRandomITilde.begin();
   pRandomEnd = pRandom + mNumNoise;
 
-  // mRandomITilde[0] and mRandomITilde[mNumNoise - 1] are not needed
-  for (++pRandom; pRandom != pRandomEnd; ++pRandom)
+  for (; pRandom != pRandomEnd; ++pRandom)
     *pRandom = randomITilde();
 
   C_FLOAT64 * pRandomMatrix = mRandomIMatrix.array();
@@ -627,7 +629,7 @@ void CStochasticRungeKuttaRI5::buildStage3()
 void CStochasticRungeKuttaRI5::calculateStateVariables(const double & time)
 {
   // Sanity Checks
-  assert(mTime <= time && time < mTime + *mpInternalStepSize);
+  assert(mTime <= time && time <= mTime + (1 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) **mpInternalStepSize);
 
   if (time == mCurrentTime) return;
 
@@ -697,7 +699,7 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
   // Check whether we have negative compartment sizes and particle numbers
   // or any other roots.
   if ((*mpForcePhysicalCorrectness || mNumRoots > 0) &&
-      mRootFinder.checkRoots(mTime, std::min(mTime + mStepSize, mTargetTime)))
+      mRootFinder.checkRoots(mTime, std::min(mTime + *mpInternalStepSize, mTargetTime)))
     {
       calculateStateVariables(mRootFinder.getRootTime());
       *mpContainerStateTime = mRootFinder.getRootTime();
@@ -717,7 +719,7 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
     }
   else
     {
-      calculateStateVariables(std::min(mTime + mStepSize, mTargetTime));
+      calculateStateVariables(std::min(mTime + *mpInternalStepSize, mTargetTime));
     }
 
   // Check whether the new state is valid
