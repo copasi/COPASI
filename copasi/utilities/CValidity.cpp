@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -59,11 +64,25 @@ void CValidity::add(const CIssue & issue)
     }
 }
 
-void CValidity::remove(const CValidity::Kind & kind)
+void CValidity::remove(const CIssue & issue)
 {
-  mErrors & ~kind;
-  mWarnings & ~kind;
-  mInformation & ~kind;
+  switch (issue.mSeverity)
+    {
+      case Error:
+        mErrors & ~issue.mKind;
+        break;
+
+      case Warning:
+        mWarnings & ~issue.mKind;
+        break;
+
+      case Information:
+        mInformation & ~issue.mKind;
+        break;
+
+      default:
+        break;
+    }
 }
 
 CValidity::eSeverity CValidity::getHighestSeverity() const

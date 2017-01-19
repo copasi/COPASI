@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -47,7 +52,7 @@ public:
 
   void add(const CIssue & issue);
 
-  void remove(const Kind & kind);
+  void remove(const CIssue & issue);
 
   eSeverity getHighestSeverity() const;
 
@@ -71,8 +76,8 @@ public:
 
   operator bool();
 
-  CValidity::Severity mSeverity;
-  CValidity::Kind mKind;
+  CValidity::eSeverity mSeverity;
+  CValidity::eKind mKind;
 };
 
 #endif // COPASI_CValidity
