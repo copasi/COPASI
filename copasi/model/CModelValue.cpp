@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -469,7 +474,7 @@ bool CModelEntity::setUnitExpression(std::string unitExpression)
   if (mUnitExpression != unitExpression)
     {
       mUnitExpression = unitExpression;
-      mValidity.remove(CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid);
+      mValidity.remove(CIssue(CValidity::Error | CValidity::Warning | CValidity::Information, CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid));
 
       CUnit Unit;
 

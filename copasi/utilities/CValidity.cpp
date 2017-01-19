@@ -10,7 +10,7 @@
 
 #include "CValidity.h"
 
-CIssue::CIssue(CValidity::eSeverity severity, CValidity::eKind kind):
+CIssue::CIssue(CValidity::Severity severity, CValidity::Kind kind):
   mSeverity(severity),
   mKind(kind)
 {}
@@ -66,23 +66,11 @@ void CValidity::add(const CIssue & issue)
 
 void CValidity::remove(const CIssue & issue)
 {
-  switch (issue.mSeverity)
-    {
-      case Error:
-        mErrors & ~issue.mKind;
-        break;
+  if (issue.mSeverity & Error) mErrors & ~issue.mKind;
 
-      case Warning:
-        mWarnings & ~issue.mKind;
-        break;
+  if (issue.mSeverity & Warning) mWarnings & ~issue.mKind;
 
-      case Information:
-        mInformation & ~issue.mKind;
-        break;
-
-      default:
-        break;
-    }
+  if (issue.mSeverity & Information) mInformation & ~issue.mKind;
 }
 
 CValidity::eSeverity CValidity::getHighestSeverity() const

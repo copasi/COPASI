@@ -68,7 +68,7 @@ class CIssue
 {
 public:
 
-  CIssue(CValidity::eSeverity severity = CValidity::OK, CValidity::eKind kind = CValidity::NoKind);
+  CIssue(CValidity::Severity severity = CValidity::OK, CValidity::Kind kind = CValidity::NoKind);
 
   CIssue(const CIssue & src);
 
@@ -76,8 +76,8 @@ public:
 
   operator bool();
 
-  CValidity::eSeverity mSeverity;
-  CValidity::eKind mKind;
+  CValidity::Severity mSeverity;
+  CValidity::Kind mKind;
 };
 
 #endif // COPASI_CValidity

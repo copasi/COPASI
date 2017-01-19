@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -212,7 +217,7 @@ bool CUnitDefinition::setExpression(const std::string & expression)
 {
   CIssue Issue;
 
-  mValidity.remove(CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid);
+  mValidity.remove(CIssue(CValidity::Error | CValidity::Warning | CValidity::Information, CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid));
 
   if (!CUnit::setExpression(expression))
     {
