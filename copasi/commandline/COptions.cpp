@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -246,6 +251,12 @@ void COptions::cleanup()
   optionType::iterator end = mOptions.end();
 
   for (; begin != end; begin++) pdelete(begin->second);
+}
+
+// static
+bool COptions::isSet(const std::string & name)
+{
+  return mOptions.find(name) != mOptions.end();
 }
 
 const COptions::nonOptionType & COptions::getNonOptions() {return mNonOptions;}

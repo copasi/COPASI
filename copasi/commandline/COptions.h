@@ -1,22 +1,19 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptions.h,v $
- $Revision: 1.13 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/07 19:26:18 $
- End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -51,7 +48,7 @@ class COptions
     //Operations
   protected:
     COptionValue():
-        mpValue(NULL)
+      mpValue(NULL)
     {CONSTRUCTOR_TRACE;}
 
   public:
@@ -81,7 +78,7 @@ class COptions
     //Operations
   private:
     COptionValueTemplate():
-        COptionValue()
+      COptionValue()
     {
       CONSTRUCTOR_TRACE;
       mpValue = new valueType;
@@ -89,7 +86,7 @@ class COptions
 
   public:
     COptionValueTemplate(const valueType & value):
-        COptionValue()
+      COptionValue()
     {
       CONSTRUCTOR_TRACE;
       mpValue = new valueType;
@@ -123,15 +120,25 @@ public:
 
   template< class CType > static void getValue(const std::string & name,
       CType & value)
-  {mOptions[name]->getValue(value);}
+  {
+    if (!isSet(name)) return;
+
+    mOptions[name]->getValue(value);
+  }
 
   template< class CType > static bool compareValue(const std::string & name,
       const CType & value)
-  {return mOptions[name]->compareValue(value);}
+  {
+    if (!isSet(name)) return false;
+
+    return mOptions[name]->compareValue(value);
+  }
 
   static void init(C_INT argc = 0, char *argv[] = NULL);
 
   static void cleanup();
+
+  static bool isSet(const std::string & name);
 
   static const nonOptionType & getNonOptions();
 
