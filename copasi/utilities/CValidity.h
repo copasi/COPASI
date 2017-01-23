@@ -52,6 +52,9 @@ public:
 
   static const CIssue OkNoKind;
 
+  // convenience function to reset CValidity
+  void clear();
+
   void add(const CIssue & issue);
 
   void remove(const CIssue & issue);

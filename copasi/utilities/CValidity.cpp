@@ -46,6 +46,13 @@ CValidity::CValidity(const CValidity & src):
 //static
 const CIssue CValidity::OkNoKind = CIssue();
 
+void CValidity::clear()
+{
+  mErrors = NoKind;
+  mWarnings = NoKind;
+  mInformation = NoKind;
+}
+
 void CValidity::add(const CIssue & issue)
 {
   switch (issue.mSeverity)
