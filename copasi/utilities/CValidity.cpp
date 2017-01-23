@@ -26,9 +26,9 @@ CIssue::~CIssue()
 CIssue::operator bool()
 {
   // If this type is implicity cast to a bool, in a conditional
-  // evaluation, it will evaluate to "true" that there IS a
-  // significant "issue", if it is at "Error" severity.
-  return (mSeverity == CValidity::Error);
+  // evaluation, it will evaluate to "true" that there IS NOT a
+  // significant "issue", if it is not at "Error" severity.
+  return (mSeverity != CValidity::Error);
 }
 
 CValidity::CValidity():
@@ -42,6 +42,9 @@ CValidity::CValidity(const CValidity & src):
   mWarnings(src.mWarnings),
   mInformation(src.mInformation)
 {}
+
+//static
+const CIssue CValidity::OkNoKind = CIssue();
 
 void CValidity::add(const CIssue & issue)
 {

@@ -213,7 +213,7 @@ bool CUnitDefinition::setSymbol(const std::string & symbol)
 }
 
 //virtual
-bool CUnitDefinition::setExpression(const std::string & expression)
+CIssue CUnitDefinition::setExpression(const std::string & expression)
 {
   CIssue Issue;
 

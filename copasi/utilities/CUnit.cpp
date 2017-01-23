@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -164,13 +169,12 @@ CUnit::~CUnit()
 {}
 
 //virtual
-bool CUnit::setExpression(const std::string & expression)
+CIssue CUnit::setExpression(const std::string & expression)
 {
   if (expression.empty())
     {
       *this = CBaseUnit::undefined;
-
-      return true;
+      return CIssue(CValidity::Warning, CValidity::UnitUndefined);
     }
 
   mExpression = expression;
@@ -178,7 +182,7 @@ bool CUnit::setExpression(const std::string & expression)
   return compile();
 }
 
-bool CUnit::compile()
+CIssue CUnit::compile()
 {
   mComponents.clear();
   mUsedSymbols.clear();
@@ -194,7 +198,7 @@ bool CUnit::compile()
   catch (CCopasiException & /*exception*/)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 3, mExpression.c_str());
-      return false;
+      return CIssue(CValidity::Error, CValidity::UnitInvalid);
     }
 
   mComponents = Parser.getComponents();
@@ -205,7 +209,7 @@ bool CUnit::compile()
       mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.begin());
     }
 
-  return true;
+  return CValidity::OkNoKind;
 }
 
 std::string CUnit::getExpression() const

@@ -467,7 +467,7 @@ std::string CModelEntity::getInitialExpression() const
 }
 
 // virtual
-bool CModelEntity::setUnitExpression(std::string unitExpression)
+CIssue CModelEntity::setUnitExpression(std::string unitExpression)
 {
   CIssue Issue;
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -323,9 +328,9 @@ public:
   /**
    * Set the unit.
    * @param const CUnit & unit
-   * @return bool success
+   * @return CIssue issue
    */
-  virtual bool setUnitExpression(std::string unitExpression);
+  virtual CIssue setUnitExpression(std::string unitExpression);
 
   /**
    * Get the unit.

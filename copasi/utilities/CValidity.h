@@ -50,6 +50,8 @@ public:
 
   CValidity(const CValidity & src);
 
+  static const CIssue OkNoKind;
+
   void add(const CIssue & issue);
 
   void remove(const CIssue & issue);
