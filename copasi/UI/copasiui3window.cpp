@@ -942,19 +942,10 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   unsetCursor();
   mCommitRequired = true;
 
-  if (!success)
-    {
-      QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
-      Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
-
-      CQMessageBox::critical(this, QString("File Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
-      mpDataModelGUI->createModel();
-    }
 
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
 
-  if (msg.getNumber() == 6303 &&
+  if (msg.getNumber() == MCXML + 3 &&
       (msg.getText().find("'sbml'") != std::string::npos || msg.getText().find(":sbml'") != std::string::npos))
     {
 
@@ -994,6 +985,16 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
 #endif
 
+  if (!success)
+    {
+      QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
+      Message += FROM_UTF8(CCopasiMessage::getAllMessageText(true));
+
+      CQMessageBox::critical(this, QString("File Error"), Message,
+                             QMessageBox::Ok, QMessageBox::Ok);
+      mpDataModelGUI->createModel();
+    }
+
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
       QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
@@ -1011,6 +1012,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       CQMessageBox::warning(this, QString("File Warning"), Message,
                             QMessageBox::Ok, QMessageBox::Ok);
     }
+
 
   if (strcasecmp(CDirEntry::suffix(TO_UTF8(mNewFile)).c_str(), ".cps") == 0 &&
       CDirEntry::isWritable(TO_UTF8(mNewFile)))
@@ -2792,7 +2794,7 @@ void CopasiUI3Window::dragEnterEvent(QDragEnterEvent *event)
  * be an SBML file. If so it should contain an SBML tag in the
  * first couple of lines.
  */
-bool isProabablySBML(QString &fileName)
+bool isProbablySBML(QString &fileName)
 {
   QFile file(fileName);
 
@@ -2824,11 +2826,11 @@ void CopasiUI3Window::dropEvent(QDropEvent *event)
   if (fileName.isEmpty())
     return;
 
-  if (isProabablySBML(fileName))
+  if (isProbablySBML(fileName))
     slotImportSBML(fileName);
 
 #ifdef COPASI_SEDML
-  else if (isProabablySBML(fileName))
+  else if (isProbablySBML(fileName))
     slotImportSEDML(fileName);
 
 #endif
