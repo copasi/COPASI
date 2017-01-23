@@ -28,18 +28,22 @@ public:
     MissingInitialValue = 0x1,
     CalculationIssue = 0x2,
     EventMissingAssignment = 0x4,
-    EventMissingTriggerExpression = 0x08,
+    EventMissingTriggerExpression = 0x8,
     UnitUndefined = 0x10,
     UnitConflict = 0x20,
     UnitInvalid = 0x40,
-    NaNissue = 0x80
+    NaNissue = 0x80,
+    ObjectNotFound = 0x100,
+    ValueNotFound = 0x200,
+    VariableNotfound = 0x400,
+    InvalidStructure = 0x800
   };
 
   enum eSeverity
   {
-    Error = 0x80000000, //32 bit is guaranteed. Set at high end, in case one wanted to bitwise combine with eKind.
-    Warning = 0x40000000,
-    Information = 0x20000000,
+    Error = 0x4,
+    Warning = 0x2,
+    Information = 0x1,
     OK = 0x0
   };
 
