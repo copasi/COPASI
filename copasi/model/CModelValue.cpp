@@ -77,7 +77,7 @@ CModelEntity::CModelEntity(const std::string & name,
   mpExpression(NULL),
   mpInitialExpression(NULL),
   mpNoiseExpression(NULL),
-  mAddNoise(false),
+  mHasNoise(false),
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
@@ -101,7 +101,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mpExpression(src.mpExpression != NULL ? new CExpression(*src.mpExpression, this) : NULL),
   mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL),
   mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
-  mAddNoise(src.mAddNoise),
+  mHasNoise(src.mHasNoise),
   mStatus(FIXED),
   mUsed(false),
   mpModel(NULL),
@@ -173,7 +173,7 @@ bool CModelEntity::compile()
         success &= mpExpression->compile(listOfContainer);
         mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
-        if (mAddNoise && mpNoiseExpression != NULL)
+        if (mHasNoise && mpNoiseExpression != NULL)
           {
             success &= mpNoiseExpression->compile(listOfContainer);
           }
@@ -388,18 +388,18 @@ const CExpression* CModelEntity::getNoiseExpressionPtr() const
   return mpNoiseExpression;
 }
 
-void CModelEntity::setAddNoise(const bool & addNoise)
+void CModelEntity::setHasNoise(const bool & hasNoise)
 {
-  mAddNoise = addNoise;
+  mHasNoise = hasNoise;
 }
 
 /**
  * Check whether noise is added to the ODE
- * @return const bool & addNoise
+ * @return const bool & hasNoise
  */
-const bool & CModelEntity::addNoise() const
+const bool & CModelEntity::hasNoise() const
 {
-  return mAddNoise;
+  return mHasNoise;
 }
 
 bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)

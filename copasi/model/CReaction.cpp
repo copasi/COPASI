@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -62,7 +67,7 @@ CReaction::CReaction(const std::string & name,
   mChemEq("Chemical Equation", this),
   mpFunction(NULL),
   mpNoiseExpression(NULL),
-  mAddNoise(false),
+  mHasNoise(false),
   mFlux(0),
   mpFluxReference(NULL),
   mParticleFlux(0),
@@ -96,7 +101,7 @@ CReaction::CReaction(const CReaction & src,
   mChemEq(src.mChemEq, this),
   mpFunction(src.mpFunction),
   mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
-  mAddNoise(src.mAddNoise),
+  mHasNoise(src.mHasNoise),
   mFlux(src.mFlux),
   mpFluxReference(NULL),
   mParticleFlux(src.mParticleFlux),
@@ -697,7 +702,7 @@ bool CReaction::compile()
 
   setScalingFactor();
 
-  if (mAddNoise && mpNoiseExpression != NULL)
+  if (mHasNoise && mpNoiseExpression != NULL)
     {
       CObjectInterface::ContainerList listOfContainer;
       CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
@@ -1084,18 +1089,14 @@ const CExpression* CReaction::getNoiseExpressionPtr() const
   return mpNoiseExpression;
 }
 
-void CReaction::setAddNoise(const bool & addNoise)
+void CReaction::setHasNoise(const bool & hasNoise)
 {
-  mAddNoise = addNoise;
+  mHasNoise = hasNoise;
 }
 
-/**
- * Check whether noise is added to the ODE
- * @return const bool & addNoise
- */
-const bool & CReaction::addNoise() const
+const bool & CReaction::hasNoise() const
 {
-  return mAddNoise;
+  return mHasNoise;
 }
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)

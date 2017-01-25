@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -60,7 +65,7 @@ CXMLHandler * ModelValueHandler::processStart(const XML_Char * pszName,
         addFix(mKey, mpMV);
         mpMV->setObjectName(Name);
         mpMV->setStatus(SimulationType);
-        mpMV->setAddNoise(AddNoise);
+        mpMV->setHasNoise(AddNoise);
 
         mpData->pModel->getModelValues().add(mpMV, true);
         break;

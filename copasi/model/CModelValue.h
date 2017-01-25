@@ -289,15 +289,15 @@ public:
 
   /**
    * Set whether to add noise to the ODE
-   * @param const bool & addNoise
+   * @param const bool & hasNoise
    */
-  void setAddNoise(const bool & addNoise);
+  void setHasNoise(const bool & hasNoise);
 
   /**
    * Check whether noise is added to the ODE
-   * @return const bool & addNoise
+   * @return const bool & hasNoise
    */
-  const bool & addNoise() const;
+  const bool & hasNoise() const;
 
   /**
    * Set the expression for non FIXED model values
@@ -425,7 +425,7 @@ protected:
   /**
    * A Boolean flag indicating whether to add noise to the reaction
    */
-  bool mAddNoise;
+  bool mHasNoise;
 
   /**
    * Pointer to the Unit of the model entity.

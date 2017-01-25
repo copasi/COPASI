@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,7 +60,7 @@ CXMLHandler * CompartmentHandler::processStart(const XML_Char * pszName,
         mpCompartment->setObjectName(Name);
         mpCompartment->setStatus(SimulationType);
         mpCompartment->setDimensionality(strToUnsignedInt(Dimensionality));
-        mpCompartment->setAddNoise(AddNoise);
+        mpCompartment->setHasNoise(AddNoise);
 
         mpData->pModel->getCompartments().add(mpCompartment, true);
         break;

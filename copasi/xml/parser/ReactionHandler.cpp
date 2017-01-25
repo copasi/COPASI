@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -61,7 +66,7 @@ CXMLHandler * ReactionHandler::processStart(const XML_Char * pszName,
         mpData->pReaction->setObjectName(Name);
         mpData->pReaction->setReversible(Reversible);
         mpData->pReaction->setFast(Fast);
-        mpData->pReaction->setAddNoise(AddNoise);
+        mpData->pReaction->setHasNoise(AddNoise);
 
         SBMLId = mpParser->getAttributeValue("sbmlid", papszAttrs, "");
 

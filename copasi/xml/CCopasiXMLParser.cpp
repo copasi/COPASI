@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -2302,7 +2307,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
             mpCompartment->setObjectName(Name);
             mpCompartment->setStatus(SimulationType);
             mpCompartment->setDimensionality(strToUnsignedInt(Dimensionality));
-            mpCompartment->setAddNoise(AddNoise);
+            mpCompartment->setHasNoise(AddNoise);
 
             mCommon.pModel->getCompartments().add(mpCompartment, true);
             mLastKnownElement = Compartment;
@@ -2634,7 +2639,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
             addFix(mKey, mpMetabolite);
             mpMetabolite->setObjectName(Name);
             mpMetabolite->setStatus(SimulationType);
-            mpMetabolite->setAddNoise(AddNoise);
+            mpMetabolite->setHasNoise(AddNoise);
 
             pCompartment =
               dynamic_cast< CCompartment* >(mCommon.KeyMap.get(Compartment));
@@ -2976,7 +2981,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
             addFix(mKey, mpMV);
             mpMV->setObjectName(Name);
             mpMV->setStatus(SimulationType);
-            mpMV->setAddNoise(AddNoise);
+            mpMV->setHasNoise(AddNoise);
 
             mCommon.pModel->getModelValues().add(mpMV, true);
             mLastKnownElement = mCurrentElement;
@@ -3953,7 +3958,7 @@ void CCopasiXMLParser::ReactionElement::start(const XML_Char *pszName,
             mCommon.pReaction->setObjectName(Name);
             mCommon.pReaction->setReversible(Reversible);
             mCommon.pReaction->setFast(Fast);
-            mCommon.pReaction->setAddNoise(AddNoise);
+            mCommon.pReaction->setHasNoise(AddNoise);
 
             SBMLId = mParser.getAttributeValue("sbmlid", papszAttrs, "");
 

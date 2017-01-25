@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -442,15 +447,15 @@ public:
 
   /**
    * Set whether to add noise to the reaction rate
-   * @param const bool & addNoise
+   * @param const bool & hasNoise
    */
-  void setAddNoise(const bool & addNoise);
+  void setHasNoise(const bool & hasNoise);
 
   /**
    * Check whether noise is added to the reaction rate
-   * @return const bool & addNoise
+   * @return const bool & hasNoise
    */
-  const bool & addNoise() const;
+  const bool & hasNoise() const;
 
 private:
   /**
@@ -654,7 +659,7 @@ private:
   /**
    * A Boolean flag indicating whether to add noise to the reaction
    */
-  bool mAddNoise;
+  bool mHasNoise;
 
   /**
    *  The flux of the reaction, as amount of substance/time

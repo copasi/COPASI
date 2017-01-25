@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -574,7 +579,7 @@ bool CCopasiXML::saveModel()
           CModelEntity::Status SimulationType = pComp->getStatus();
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
           Attributes.setValue(3, pComp->getDimensionality());
-          Attributes.setValue(4, pComp->addNoise() ? "true" : "false");
+          Attributes.setValue(4, pComp->hasNoise() ? "true" : "false");
 
           startSaveElement("Compartment", Attributes);
 
@@ -595,7 +600,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pComp->addNoise() &&
+          if (pComp->hasNoise() &&
               SimulationType == CModelEntity::ODE &&
               pComp->getNoiseExpression() != "")
             {
@@ -634,7 +639,7 @@ bool CCopasiXML::saveModel()
           CModelEntity::Status SimulationType = pMetab->getStatus();
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
           Attributes.setValue(3, pMetab->getCompartment()->getKey());
-          Attributes.setValue(4, pMetab->addNoise() ? "true" : "false");
+          Attributes.setValue(4, pMetab->hasNoise() ? "true" : "false");
 
           startSaveElement("Metabolite", Attributes);
 
@@ -656,7 +661,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pMetab->addNoise() &&
+          if (pMetab->hasNoise() &&
               SimulationType == CModelEntity::ODE &&
               pMetab->getNoiseExpression() != "")
             {
@@ -693,7 +698,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pMV->getObjectName());
           CModelEntity::Status SimulationType = pMV->getStatus();
           Attributes.setValue(2, CModelEntity::XMLStatus[SimulationType]);
-          Attributes.setValue(3, pMV->addNoise() ? "true" : "false");
+          Attributes.setValue(3, pMV->hasNoise() ? "true" : "false");
 
           startSaveElement("ModelValue", Attributes);
 
@@ -714,7 +719,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pMV->addNoise() &&
+          if (pMV->hasNoise() &&
               SimulationType == CModelEntity::ODE &&
               pMV->getNoiseExpression() != "")
             {
@@ -766,7 +771,7 @@ bool CCopasiXML::saveModel()
           Attributes.setValue(1, pReaction->getObjectName());
           Attributes.setValue(2, pReaction->isReversible() ? "true" : "false");
           Attributes.setValue(3, pReaction->isFast() ? "true" : "false");
-          Attributes.setValue(4, pReaction->addNoise() ? "true" : "false");
+          Attributes.setValue(4, pReaction->hasNoise() ? "true" : "false");
 
           if (pReaction->getSBMLId() != "")
             mSBMLReference[pReaction->getSBMLId()] = pReaction->getKey();
@@ -902,7 +907,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("KineticLaw");
             }
 
-          if (pReaction->addNoise() &&
+          if (pReaction->hasNoise() &&
               pReaction->getNoiseExpression() != "")
             {
               startSaveElement("NoiseExpression");

@@ -980,7 +980,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::ODE:
 
             if (pEntity != NULL &&
-                pEntity->addNoise())
+                pEntity->hasNoise())
               {
                 if (mEntityType == CMath::Species)
                   {
@@ -991,7 +991,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
                     success &= createConvertedExpression(pEntity->getNoiseExpressionPtr(), container);
                   }
 
-                container.addNoiseInputObject(this);
+                container.hasNoiseInputObject(this);
                 compileExpression();
               }
 
@@ -1043,7 +1043,7 @@ bool CMathObject::compileReactionParticleNoise(CMathContainer & container)
   //   mParticleNoise = *mUnitScalingFactor * mNoise;
   //   mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
 
-  if (pReaction->addNoise())
+  if (pReaction->hasNoise())
     {
       std::string Infix = pointerToString(&container.getQuantity2NumberFactor());
       Infix += "*" + pointerToString(container.getMathObject(pReaction->getNoiseReference())->getValuePointer());
@@ -1071,7 +1071,7 @@ bool CMathObject::compileReactionNoise(CMathContainer & container)
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
-  if (pReaction->addNoise())
+  if (pReaction->hasNoise())
     {
       // We need to check whether this reaction is a single compartment reaction and scale it if true.
       //   mFlux = *mScalingFactor * mpFunction->calcValue(mMap.getPointers());
@@ -1096,7 +1096,7 @@ bool CMathObject::compileReactionNoise(CMathContainer & container)
           mpExpression = new CMathExpression(Tmp, container, false);
         }
 
-      container.addNoiseInputObject(this);
+      container.hasNoiseInputObject(this);
     }
 
   compileExpression();
@@ -1717,7 +1717,7 @@ bool CMathObject::createIntensiveNoiseExpression(const CMetab * pSpecies,
 
   bool success = true;
 
-  if (pSpecies->addNoise())
+  if (pSpecies->hasNoise())
     {
       mpExpression = new CMathExpression(*pSpecies->getNoiseExpressionPtr(), container, !mIsInitialValue);
     }
@@ -1739,7 +1739,7 @@ bool CMathObject::createExtensiveNoiseExpression(const CMetab * pSpecies,
 
   bool success = true;
 
-  if (pSpecies->addNoise())
+  if (pSpecies->hasNoise())
     {
       /*
         mRate = mpModel->getQuantity2NumberFactor() *
@@ -1790,7 +1790,7 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
 
   for (; it != end; ++it)
     {
-      if (!it->addNoise()) continue;
+      if (!it->hasNoise()) continue;
 
       const CCopasiVector< CChemEqElement > &Balances =
         it->getChemEq().getBalances();

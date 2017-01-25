@@ -624,7 +624,7 @@ public:
    * Add a noise input object
    * @param const CMathObject * pObject
    */
-  void addNoiseInputObject(const CMathObject * pObject);
+  void hasNoiseInputObject(const CMathObject * pObject);
 
   /**
    * ARetrieve the set of noise input objects

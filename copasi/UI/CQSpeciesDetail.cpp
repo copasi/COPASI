@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -270,7 +275,7 @@ void CQSpeciesDetail::load()
   // Noise Expression
   mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpMetab->getNoiseExpression());
   mpNoiseExpressionWidget->updateWidget();
-  mpBoxAddNoise->setChecked(mpMetab->addNoise());
+  mpBoxAddNoise->setChecked(mpMetab->hasNoise());
 
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
@@ -394,9 +399,9 @@ void CQSpeciesDetail::save()
     }
 
   // Add Noise
-  if (mpMetab->addNoise() != mpBoxAddNoise->isChecked())
+  if (mpMetab->hasNoise() != mpBoxAddNoise->isChecked())
     {
-      mpMetab->setAddNoise(mpBoxAddNoise->isChecked());
+      mpMetab->setHasNoise(mpBoxAddNoise->isChecked());
       mChanged = true;
     }
 
@@ -581,9 +586,9 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
     }
 }
 
-void CQSpeciesDetail::slotAddNoiseChanged(bool addNoise)
+void CQSpeciesDetail::slotAddNoiseChanged(bool hasNoise)
 {
-  if (addNoise)
+  if (hasNoise)
     {
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();

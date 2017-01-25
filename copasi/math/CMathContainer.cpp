@@ -1509,7 +1509,7 @@ size_t CMathContainer::getCountNoise() const
   return mNoiseInputObjects.size();
 }
 
-void CMathContainer::addNoiseInputObject(const CMathObject * pObject)
+void CMathContainer::hasNoiseInputObject(const CMathObject * pObject)
 {
   mNoiseInputObjects.insert(pObject);
 }

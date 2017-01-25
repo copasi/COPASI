@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -262,9 +267,9 @@ void CQCompartment::slotTypeChanged(int type)
     }
 }
 
-void CQCompartment::slotAddNoiseChanged(bool addNoise)
+void CQCompartment::slotAddNoiseChanged(bool hasNoise)
 {
-  if (addNoise)
+  if (hasNoise)
     {
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();
@@ -383,7 +388,7 @@ void CQCompartment::load()
   // Noise Expression
   mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpCompartment->getNoiseExpression());
   mpNoiseExpressionWidget->updateWidget();
-  mpBoxAddNoise->setChecked(mpCompartment->addNoise());
+  mpBoxAddNoise->setChecked(mpCompartment->hasNoise());
 
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
@@ -500,11 +505,11 @@ void CQCompartment::save()
     }
 
   // Add Noise
-  if (mpCompartment->addNoise() != mpBoxAddNoise->isChecked())
+  if (mpCompartment->hasNoise() != mpBoxAddNoise->isChecked())
     {
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_ADD_NOISE_CHANGE,
-                          mpCompartment->addNoise(),
+                          mpCompartment->hasNoise(),
                           mpBoxAddNoise->isChecked(),
                           mpCompartment,
                           this
@@ -771,7 +776,7 @@ bool CQCompartment::changeValue(const std::string& key,
         break;
 
       case CCopasiUndoCommand::COMPARTMENT_ADD_NOISE_CHANGE:
-        mpCompartment->setAddNoise(newValue.toBool());
+        mpCompartment->setHasNoise(newValue.toBool());
         break;
 
       case CCopasiUndoCommand::COMPARTMENT_NOISE_EXPRESSION_CHANGE:

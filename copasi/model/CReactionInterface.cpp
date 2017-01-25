@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -151,7 +156,7 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
       mScalingCompartment = rea->getScalingCompartment()->getObjectName();
     }
 
-  mAddNoise = rea->addNoise();
+  mHasNoise = rea->hasNoise();
 
   mNoiseExpression = rea->getNoiseExpression();
   mKineticLawUnitType = rea->getKineticLawUnitType();
@@ -351,7 +356,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
         }
     }
 
-  rea->setAddNoise(mAddNoise);
+  rea->setHasNoise(mHasNoise);
 
   rea->setNoiseExpression(mNoiseExpression);
   rea->setKineticLawUnitType(mKineticLawUnitType);
@@ -1248,14 +1253,14 @@ CReactionInterface::isValid() const
   return true;
 }
 
-void CReactionInterface::setAddNoise(const bool & addNoise)
+void CReactionInterface::setHasNoise(const bool & hasNoise)
 {
-  mAddNoise = addNoise;
+  mHasNoise = hasNoise;
 }
 
-const bool & CReactionInterface::addNoise() const
+const bool & CReactionInterface::hasNoise() const
 {
-  return mAddNoise;
+  return mHasNoise;
 }
 
 bool CReactionInterface::setNoiseExpression(const std::string & expression)

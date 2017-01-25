@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -208,11 +213,11 @@ bool ReactionsWidget1::saveToReaction()
     }
 
   // Add Noise
-  if (reac->addNoise() != mpBoxAddNoise->isChecked())
+  if (reac->hasNoise() != mpBoxAddNoise->isChecked())
     {
       mpUndoStack->push(new ReactionChangeCommand(
                           CCopasiUndoCommand::REACTION_ADD_NOISE_CHANGE,
-                          reac->addNoise(),
+                          reac->hasNoise(),
                           mpBoxAddNoise->isChecked(),
                           this,
                           reac
@@ -519,10 +524,10 @@ void ReactionsWidget1::FillWidgetFromRI()
   // Noise Expression
   mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpRi->getNoiseExpression());
   mpNoiseExpressionWidget->updateWidget();
-  mpBoxAddNoise->setChecked(mpRi->addNoise());
+  mpBoxAddNoise->setChecked(mpRi->hasNoise());
 
 #ifdef WITH_SDE_SUPPORT
-  slotAddNoiseChanged(mpRi->addNoise());
+  slotAddNoiseChanged(mpRi->hasNoise());
 #else
   slotAddNoiseChanged(false);
 #endif
@@ -695,9 +700,9 @@ void ReactionsWidget1::slotNewFunction()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
 }
 
-void ReactionsWidget1::slotAddNoiseChanged(bool addNoise)
+void ReactionsWidget1::slotAddNoiseChanged(bool hasNoise)
 {
-  if (addNoise)
+  if (hasNoise)
     {
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();
@@ -1045,8 +1050,8 @@ bool ReactionsWidget1::changeReaction(
         break;
 
       case CCopasiUndoCommand::REACTION_ADD_NOISE_CHANGE:
-        mpRi->setAddNoise(newValue.toBool());
-        pReaction->setAddNoise(newValue.toBool());
+        mpRi->setHasNoise(newValue.toBool());
+        pReaction->setHasNoise(newValue.toBool());
         break;
 
       case CCopasiUndoCommand::REACTION_NOISE_EXPRESSION_CHANGE:

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -198,7 +203,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               {
                 pExpression = GQ.getNoiseExpressionPtr();
 
-                if (GQ.addNoise() && pExpression != NULL)
+                if (GQ.hasNoise() && pExpression != NULL)
                   return QVariant(QString(FROM_UTF8(pExpression->getDisplayString())));
                 else
                   return QVariant();

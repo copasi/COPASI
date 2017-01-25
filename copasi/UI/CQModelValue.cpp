@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -148,9 +153,9 @@ void CQModelValue::slotTypeChanged(int type)
     }
 }
 
-void CQModelValue::slotAddNoiseChanged(bool addNoise)
+void CQModelValue::slotAddNoiseChanged(bool hasNoise)
 {
-  if (addNoise)
+  if (hasNoise)
     {
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();
@@ -313,7 +318,7 @@ void CQModelValue::load()
   // Noise Expression
   mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpModelValue->getNoiseExpression());
   mpNoiseExpressionWidget->updateWidget();
-  mpBoxAddNoise->setChecked(mpModelValue->addNoise());
+  mpBoxAddNoise->setChecked(mpModelValue->hasNoise());
 
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
@@ -415,11 +420,11 @@ void CQModelValue::save()
     }
 
   // Add Noise
-  if (mpModelValue->addNoise() != mpBoxAddNoise->isChecked())
+  if (mpModelValue->hasNoise() != mpBoxAddNoise->isChecked())
     {
       mpUndoStack->push(new GlobalQuantityChangeCommand(
                           CCopasiUndoCommand::GLOBALQUANTITY_ADD_NOISE_CHANGE,
-                          mpModelValue->addNoise(),
+                          mpModelValue->hasNoise(),
                           mpBoxAddNoise->isChecked(),
                           mpModelValue,
                           this
@@ -642,7 +647,7 @@ CQModelValue::changeValue(const std::string& key,
         break;
 
       case CCopasiUndoCommand::GLOBALQUANTITY_ADD_NOISE_CHANGE:
-        mpModelValue->setAddNoise(newValue.toBool());
+        mpModelValue->setHasNoise(newValue.toBool());
         break;
 
       case CCopasiUndoCommand::GLOBALQUANTITY_NOISE_EXPRESSION_CHANGE:

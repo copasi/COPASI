@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -68,7 +73,7 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
         addFix(mKey, mpMetabolite);
         mpMetabolite->setObjectName(Name);
         mpMetabolite->setStatus(SimulationType);
-        mpMetabolite->setAddNoise(AddNoise);
+        mpMetabolite->setHasNoise(AddNoise);
 
         pCompartment =
           dynamic_cast< CCompartment* >(mpData->mKeyMap.get(Compartment));
