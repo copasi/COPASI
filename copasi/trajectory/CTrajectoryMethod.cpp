@@ -163,7 +163,7 @@ bool CTrajectoryMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-const CVector< C_INT > & CTrajectoryMethod::getRoots() const
+const CVectorCore< C_INT > & CTrajectoryMethod::getRoots() const
 {
   return mRootsFound;
 }

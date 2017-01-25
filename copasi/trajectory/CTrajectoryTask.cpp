@@ -288,9 +288,6 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
       return false;
     }
 
-  // We need to execute any scheduled events for T_0
-  mpContainer->processQueue(true);;
-
   output(COutputInterface::BEFORE);
 
   bool flagProceed = true;
@@ -308,10 +305,22 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
                                      &hundred);
     }
 
-  if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime)) output(COutputInterface::DURING);
-
   try
     {
+      // We need to execute any scheduled events for T_0
+      CMath::StateChange StateChange = mpContainer->processQueue(true);
+
+      if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime))
+        {
+          output(COutputInterface::DURING);
+        }
+
+      if (StateChange != CMath::NoChange)
+        {
+          mContainerState = mpContainer->getState(mUpdateMoieties);
+          mpTrajectoryMethod->stateChange(StateChange);
+        }
+
       do
         {
           // This is numerically more stable then adding

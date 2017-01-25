@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -187,8 +192,10 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
  */
 CHybridMethodODE45::~CHybridMethodODE45()
 {
-  cleanup();
-  DESTRUCTOR_TRACE;
+  if (mRootsFound.array() != NULL)
+    {
+      delete [] mRootsFound.array();
+    }
 }
 
 //================Function for System================
@@ -317,7 +324,14 @@ void CHybridMethodODE45::start()
   mRootsNonZero.resize(mpContainer->getRoots().size());
   mRootsNonZero = 0.0;
 
-  mRootsFound.resize(mpContainer->getRoots().size());
+  if (mRootsFound.array() != NULL)
+    {
+      delete [] mRootsFound.array();
+    }
+
+  size_t NumRoots = mpContainer->getRoots().size();
+
+  mRootsFound.initialize(NumRoots, new C_INT[NumRoots]);
 
   if (mIntegrationType == HYBRID)
     {
@@ -337,14 +351,6 @@ void CHybridMethodODE45::start()
   mRootMasking    = NONE;
   mRKMethodStatus = CRungeKutta::INITIALIZE;
 
-  return;
-}
-
-/**
- *  Clean up memory, etc.
- */
-void CHybridMethodODE45::cleanup()
-{
   return;
 }
 

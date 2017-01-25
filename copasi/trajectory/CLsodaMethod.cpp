@@ -108,7 +108,12 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
 }
 
 CLsodaMethod::~CLsodaMethod()
-{}
+{
+  if (mRootsFound.array() != NULL)
+    {
+      delete [] mRootsFound.array();
+    }
+}
 
 void CLsodaMethod::initializeParameter()
 {
@@ -563,7 +568,14 @@ void CLsodaMethod::start()
   mPeekAheadMode = false;
 
   mNumRoots = (C_INT) mpContainer->getRoots().size();
-  mRootsFound.resize(mNumRoots);
+
+  if (mRootsFound.array() != NULL)
+    {
+      delete [] mRootsFound.array();
+    }
+
+  mRootsFound.initialize(mNumRoots, new C_INT[mNumRoots]);
+
   destroyRootMask();
 
   mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);

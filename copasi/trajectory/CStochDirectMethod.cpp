@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -100,7 +105,12 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
 }
 
 CStochDirectMethod::~CStochDirectMethod()
-{}
+{
+  if (mRootsFound.array() != NULL)
+    {
+      delete [] mRootsFound.array();
+    }
+}
 
 void CStochDirectMethod::initializeParameter()
 {
@@ -172,7 +182,13 @@ void CStochDirectMethod::start()
 
   //========Initialize Roots Related Arguments========
   mNumRoot = mpContainer->getRoots().size();
-  mRootsFound.resize(mNumRoot);
+
+  if (mRootsFound.array() != NULL)
+    {
+      delete [] mRootsFound.array();
+    }
+
+  mRootsFound.initialize(mNumRoot, new C_INT[mNumRoot]);
   mRootsA.resize(mNumRoot);
   mRootsB.resize(mNumRoot);
   mpRootValueNew = &mRootsA;

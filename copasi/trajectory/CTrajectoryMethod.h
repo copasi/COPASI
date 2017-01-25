@@ -114,9 +114,9 @@ public:
 
   /**
    * Retrieve the roots.
-   * @return const CVector< C_INT > & roots
+   * @return const CVectorCore< C_INT > & roots
    */
-  const CVector< C_INT > & getRoots() const;
+  const CVectorCore< C_INT > & getRoots() const;
 
   /**
    * Check if the method is suitable for this problem
@@ -165,7 +165,7 @@ protected:
   /**
    * Vector containing information on the current roots
    */
-  CVector< C_INT > mRootsFound;
+  CVectorCore< C_INT > mRootsFound;
 
   /**
    * Pointer to the value indicating whether to integrate the reduced model.
