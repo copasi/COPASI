@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,13 +30,6 @@ public:
 
   // Operations
 private:
-  enum RootMasking
-  {
-    NONE = 0,
-    ALL,
-    DISCRETE
-  };
-
   /**
    * Constructor.
    */
@@ -98,7 +96,7 @@ public:
 
 private:
   /**
-   *  This evaluates the derivatives
+   *  This evaluates the derivativesmRootMasking
    */
   void evalRate(C_FLOAT64 * rates);
 
@@ -123,6 +121,8 @@ private:
   CTrajectoryMethod::Status internalStep();
 
   C_FLOAT64 calculateSmallestPhysicalValue() const;
+  void createRootMask();
+  void destroyRootMask();
 
   CVectorCore< C_FLOAT64 > mContainerVariables;
   CVectorCore< C_FLOAT64 > mContainerRates;
@@ -166,8 +166,12 @@ private:
   CMatrix< C_FLOAT64 > mRandomIMatrix;
 
   C_FLOAT64 mTime;
-  C_FLOAT64 mCurrentTime;
   C_FLOAT64 mTargetTime;
+  C_FLOAT64 mTargetDelta;
+
+  C_FLOAT64 mLastCalculatedTime;
+  CVector< C_FLOAT64 > mLastCalculatedVariables;
+
   size_t mInternalSteps;
 
   CVector< C_FLOAT64 > mH10;
@@ -195,12 +199,10 @@ private:
   CRootFinder mRootFinder;
   CRootFinder::Eval * mpRootValueCalculator;
   CVectorCore< C_FLOAT64 > mRoots;
-  CVectorCore< C_INT > mRootsFound;
   size_t mRootCounter;
 
-  RootMasking mRootMasking;
-  CVector< bool > mRootMask;
-  CVectorCore< bool > mDiscreteRoots;
+  CVector< C_INT > mRootMask;
+  CRootFinder::RootMasking mRootMasking;
 };
 
 #endif // COPASI_CStochasticRungeKuttaRI5

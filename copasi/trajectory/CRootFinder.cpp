@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,10 +21,37 @@ CRootFinder::CRootFinder():
   mRootsLeft(),
   mRootsRight(),
   mRootsCurrent(),
-  mToggledRoots(),
+  mToggledRootsLeft(),
+  mToggledRootsCurrent(),
+  mToggledRootsLeftValid(false),
+  mRootMask(),
+  mRootMasking(CRootFinder::NONE),
+  mRootError(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpBrentRootValueCalculator(NULL),
   mpRootValueCalculator(NULL)
 {
+  mpBrentRootValueCalculator = new CBrent::EvalTemplate< CRootFinder >(this, & CRootFinder::brentRootValue);
+}
+
+CRootFinder::CRootFinder(const CRootFinder & src)
+  :
+  mRelativeTolerance(src.mRelativeTolerance),
+  mTimeLeft(src.mTimeLeft),
+  mTimeRight(src.mTimeRight),
+  mTimeCurrent(src.mTimeCurrent),
+  mRootsLeft(src.mRootsLeft),
+  mRootsRight(src.mRootsRight),
+  mRootsCurrent(src.mRootsCurrent),
+  mToggledRootsLeft(src.mToggledRootsLeft),
+  mToggledRootsCurrent(src.mToggledRootsCurrent),
+  mToggledRootsLeftValid(src.mToggledRootsLeftValid),
+  mRootMask(),
+  mRootMasking(src.mRootMasking),
+  mRootError(src.mRootError),
+  mpBrentRootValueCalculator(NULL),
+  mpRootValueCalculator(src.mpRootValueCalculator)
+{
+  mRootMask.initialize(src.mRootMask);
   mpBrentRootValueCalculator = new CBrent::EvalTemplate< CRootFinder >(this, & CRootFinder::brentRootValue);
 }
 
@@ -31,31 +63,81 @@ CRootFinder::~CRootFinder()
 
 void CRootFinder::initialize(CRootFinder::Eval * pRootValueCalculator,
                              const C_FLOAT64 & relativeTolerance,
-                             const size_t & numRoots)
+                             const CVectorCore< C_INT > & rootMask)
 {
+  size_t numRoots = rootMask.size();
+
+  mRootMask.initialize(rootMask);
+  mRootMasking = NONE;
+
   mpRootValueCalculator = pRootValueCalculator;
   mRelativeTolerance = relativeTolerance;
-
-  mTimeLeft = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-  mTimeRight = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-  mTimeCurrent = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   mRootsLeft.resize(numRoots);
   mRootsRight.resize(numRoots);
   mRootsCurrent.resize(numRoots);
-  mToggledRoots.resize(numRoots);
-  mToggledRoots = CMath::NoToggle;
+
+  mToggledRootsLeft.resize(numRoots);
+  mToggledRootsLeft = CMath::NoToggle;
+
+  mToggledRootsCurrent.resize(numRoots);
+  mToggledRootsCurrent = CMath::NoToggle;
+
+  mToggledRootsLeftValid = false;
+  mRootError = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  restart();
 }
 
-bool CRootFinder::checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeRight)
+CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
+    const C_FLOAT64 & timeRight,
+    const CRootFinder::RootMasking & rootMasking)
 {
   // Default return values
-  bool RootFound = false;
+  ReturnStatus Status = NotFound;
+  mRootMasking = rootMasking;
 
   // Sanity check
-  if (timeLeft == timeRight)
+  if (timeLeft >= timeRight)
     {
-      return RootFound;
+      return InvalidInterval;
+    }
+
+  // Check whether we are restarting
+  if (std::isnan(mTimeLeft) &&
+      std::isnan(mTimeRight) &&
+      timeLeft == mTimeCurrent)
+    {
+      mTimeCurrent = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      calculateCurrentRoots(timeLeft);
+
+      // If the newly calculated roots differ only in the sign for the previously toggled roots we
+      // can resume
+      C_FLOAT64 * pLeftRoot = mRootsLeft.begin();
+      C_FLOAT64 * pLeftRootEnd = mRootsLeft.end();
+      C_FLOAT64 * pRoot = mRootsCurrent.begin();
+      C_INT * pRootFound = mToggledRootsCurrent.begin();
+      bool Reset = false;
+
+      for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRoot, ++pRootFound)
+        if (*pRootFound != CMath::NoToggle &&
+            *pRoot == -1.0 * *pLeftRoot)
+          {
+            *pLeftRoot = -1.0 * *pRoot;
+          }
+        else if (*pRoot != *pLeftRoot)
+          {
+            *pLeftRoot = *pRoot;
+            Reset = true;
+          }
+
+      mTimeLeft = mTimeCurrent;
+
+      if (Reset)
+        {
+          // We have a clean restart and reset
+          mToggledRootsLeft = CMath::NoToggle;
+        }
     }
 
   // Check whether we have roots for timeLeft
@@ -94,33 +176,47 @@ bool CRootFinder::checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeR
   C_FLOAT64 * pLeftRoot = mRootsLeft.begin();
   C_FLOAT64 * pLeftRootEnd = mRootsLeft.end();
   C_FLOAT64 * pRightRoot = mRootsRight.begin();
+  const C_INT * pMask = mRootMask.begin();
 
-  for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRightRoot)
-    if (*pLeftRoot **pRightRoot < 0 || *pRightRoot == 0) break;
+  for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRightRoot, ++pMask)
+    if (!(*pMask & mRootMasking) &&
+        (*pLeftRoot **pRightRoot < 0 || *pRightRoot == 0)) break;
 
   if (pLeftRoot != pLeftRootEnd)
     {
-      // We have found at least one root in the current interval.
-      C_FLOAT64 RootTime;
+      // std::cout.precision(16);
+      // std::cout << "timeLeft = " << timeLeft << ", timeRight = " << timeRight << std::endl;
+      // std::cout << "mTimeLeft = " << mTimeLeft << ", mTimeRight = " << mTimeRight << ", mTimeCurrent = " << mTimeCurrent << std::endl;
+
+      C_FLOAT64 RootTime = mTimeLeft;
       C_FLOAT64 RootValue;
 
       // Find the "exact" location of the left most root.
       if (!CBrent::findRoot(mTimeLeft, mTimeRight, mpBrentRootValueCalculator, &RootTime, &RootValue, mRelativeTolerance * fabs(mTimeRight)))
         {
-          fatalError();
+          mToggledRootsCurrent = CMath::NoToggle;
+          mToggledRootsLeft = CMath::NoToggle;
+          return NotFound;
         }
 
       // We have found the left most root in the interval [mTimeLeft, mTimeRight]
       calculateCurrentRoots(RootTime);
 
       C_FLOAT64 * pRoot = mRootsCurrent.begin();
-      C_INT * pRootFound = mToggledRoots.begin();
-      pLeftRoot = mRootsLeft.begin();
-      pRightRoot = mRootsRight.begin();
+      C_INT * pRootFound = mToggledRootsCurrent.begin();
+      C_INT * pRootFoundLeft = mToggledRootsLeft.begin();
+      C_FLOAT64 * pLeftRoot = mRootsLeft.begin();
+      C_FLOAT64 * pLeftRootEnd = mRootsLeft.end();
+      C_FLOAT64 * pRightRoot = mRootsRight.begin();
+      pMask = mRootMask.begin();
+      bool Advanced = false;
 
-      for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRightRoot, ++pRoot, ++pRootFound)
+      for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRightRoot, ++pRoot, ++pRootFound, ++pRootFoundLeft, ++pMask)
         {
           *pRootFound = CMath::NoToggle;
+
+          if (*pMask & mRootMasking)
+            continue;
 
           // We are only looking for roots which change sign in [pLeftRoots, pRightRoots]
           if (*pLeftRoot **pRightRoot < 0 || *pRightRoot == 0)
@@ -128,19 +224,60 @@ bool CRootFinder::checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeR
               if (*pLeftRoot **pRoot < 0)
                 {
                   *pRootFound = CMath::ToggleBoth;
-                  RootFound = true;
+                  Status = RootFound;
+
+                  if (mToggledRootsLeftValid &&
+                      *pRootFoundLeft == CMath::NoToggle)
+                    Advanced = true;
                 }
               else if (fabs(*pRoot) <= (1.0 + std::numeric_limits< C_FLOAT64 >::epsilon()) * fabs(RootValue))
                 {
-                  *pRoot *= -1;
+                  *pRoot *= -1; // Change sign to avoid finding it again
                   *pRootFound = CMath::ToggleBoth;
-                  RootFound = true;
+                  Status = RootFound;
+
+                  if (mToggledRootsLeftValid &&
+                      *pRootFoundLeft == CMath::NoToggle)
+                    Advanced = true;
                 }
             }
         }
+
+      if (Status == RootFound)
+        {
+          // Check whether we advanced in time
+          if (!Advanced &&
+              fabs(RootTime - mTimeLeft) <= RootTime * std::numeric_limits< C_FLOAT64 >::epsilon())
+            {
+              return NotAdvanced;
+            }
+
+          // Prepare for continuation from the current position i.e., start with the current root values and time.
+          mTimeLeft = RootTime;
+          mRootsLeft = mRootsCurrent;
+          mToggledRootsLeft = mToggledRootsCurrent;
+          mRootError = RootValue;
+
+          // std::cout.precision(16);
+          // std::cout << "RootTime:             " << RootTime << std::endl;
+          // std::cout << "mRootsLeft:           " << mRootsLeft << std::endl;
+          // std::cout << "mRootsCurrent:        " << mRootsCurrent << std::endl;
+          // std::cout << "mRootsRight:          " << mRootsRight << std::endl;
+          // std::cout << "mToggledRootsLeft:    " << mToggledRootsLeft << std::endl;
+          // std::cout << "mToggledRootsCurrent: " << mToggledRootsCurrent << std::endl;
+          // std::cout << "mRootMask:            " << mRootMask << std::endl;
+        }
     }
 
-  return RootFound;
+  mToggledRootsLeftValid = true;
+
+  return Status;
+}
+
+void CRootFinder::restart()
+{
+  mTimeLeft = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  mTimeRight = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
 C_FLOAT64 CRootFinder::brentRootValue(const C_FLOAT64 & time)
@@ -152,14 +289,16 @@ C_FLOAT64 CRootFinder::brentRootValue(const C_FLOAT64 & time)
 
   const C_FLOAT64 * pRootLeft = mRootsLeft.begin();
   const C_FLOAT64 * pRootRight = mRootsRight.begin();
+  const C_INT *pMask = mRootMask.begin();
 
   C_FLOAT64 MaxRootValue = - std::numeric_limits< C_FLOAT64 >::infinity();
   C_FLOAT64 RootValue;
 
-  for (; pRoot != pRootEnd; ++pRoot, ++pRootLeft, ++pRootRight)
+  for (; pRoot != pRootEnd; ++pRoot, ++pRootLeft, ++pRootRight, ++pMask)
     {
       // We are only looking for roots which change sign in [pOld, pNew]
-      if (*pRootLeft **pRootRight < 0 || *pRootRight == 0)
+      if (!(*pMask & mRootMasking) &&
+          (*pRootLeft **pRootRight < 0 || *pRootRight == 0))
         {
           // Assure that the RootValue is increasing between old and new for each
           // candidate root.
@@ -177,7 +316,7 @@ C_FLOAT64 CRootFinder::brentRootValue(const C_FLOAT64 & time)
 
 const CVectorCore< C_INT > & CRootFinder::getToggledRoots() const
 {
-  return mToggledRoots;
+  return mToggledRootsCurrent;
 }
 
 const C_FLOAT64 & CRootFinder::getRootTime() const
@@ -190,6 +329,11 @@ const CVectorCore< C_FLOAT64 > & CRootFinder::getRootValues() const
   return mRootsCurrent;
 }
 
+const C_FLOAT64 & CRootFinder::getRootError() const
+{
+  return mRootError;
+}
+
 void CRootFinder::calculateCurrentRoots(const C_FLOAT64 & time)
 {
   if (time != mTimeCurrent)
@@ -197,4 +341,8 @@ void CRootFinder::calculateCurrentRoots(const C_FLOAT64 & time)
       mTimeCurrent = time;
       (*mpRootValueCalculator)(mTimeCurrent, mRootsCurrent);
     }
+
+  // std::cout.precision(16);
+  // std::cout << "mTimeCurrent:  " << mTimeCurrent << std::endl;
+  // std::cout << "mRootsCurrent: " << mRootsCurrent << std::endl;
 }

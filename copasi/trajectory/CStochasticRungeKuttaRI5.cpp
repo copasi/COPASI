@@ -84,14 +84,52 @@ CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CCopasiContainer * pPar
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
+  mContainerVariables(),
   mContainerRates(),
   mContainerNoise(),
   mContainerRoots(),
+  mNumVariables(0),
+  mNumNoise(0),
+  mNumRoots(0),
   mpInternalStepSize(NULL),
   mpMaxInternalSteps(NULL),
+  mpForcePhysicalCorrectness(NULL),
+  mpRootRelativeTolerance(NULL),
   mpRandom(NULL),
+  mStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mSqrtStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mRandomIHat(),
+  mRandomITilde(),
+  mRandomIMatrix(),
+  mTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mTargetTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mTargetDelta(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mLastCalculatedTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
+  mLastCalculatedVariables(),
+  mInternalSteps(0),
+  mH10(),
+  mSumAll1(),
+  mSumPartial1(),
+  mH20(),
+  mH2k(),
+  mHH2k(),
+  mSumAll2(),
+  mSumPartial2(),
+  mH30(),
+  mH3k(),
+  mHH3k(),
+  mA(),
+  mB(),
+  mBB(),
+  mNoiseInputValues(),
+  mNoiseUpdateSequences(),
+  mPhysicalValues(),
   mRootFinder(),
-  mpRootValueCalculator(NULL)
+  mpRootValueCalculator(NULL),
+  mRoots(),
+  mRootCounter(0),
+  mRootMask(),
+  mRootMasking(CRootFinder::NONE)
 {
   mpRootValueCalculator = new CRootFinder::EvalTemplate< CStochasticRungeKuttaRI5 >(this, & CStochasticRungeKuttaRI5::evalRoot);
   initializeParameter();
@@ -100,16 +138,60 @@ CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CCopasiContainer * pPar
 CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CStochasticRungeKuttaRI5 & src,
     const CCopasiContainer * pParent):
   CTrajectoryMethod(src, pParent),
+  mContainerVariables(),
   mContainerRates(),
   mContainerNoise(),
   mContainerRoots(),
+  mNumVariables(src.mNumVariables),
+  mNumNoise(src.mNumNoise),
+  mNumRoots(src.mNumRoots),
   mpInternalStepSize(NULL),
   mpMaxInternalSteps(NULL),
+  mpForcePhysicalCorrectness(NULL),
+  mpRootRelativeTolerance(NULL),
   mpRandom(NULL),
-  mRootFinder(),
-  mpRootValueCalculator(NULL)
+  mStepSize(src.mStepSize),
+  mSqrtStepSize(src.mSqrtStepSize),
+  mRandomIHat(src.mRandomIHat),
+  mRandomITilde(src.mRandomITilde),
+  mRandomIMatrix(src.mRandomIMatrix),
+  mTime(src.mTime),
+  mTargetTime(src.mTargetTime),
+  mTargetDelta(src.mTargetDelta),
+  mLastCalculatedTime(src.mLastCalculatedTime),
+  mLastCalculatedVariables(src.mLastCalculatedVariables),
+  mInternalSteps(src.mInternalSteps),
+  mH10(src.mH10),
+  mSumAll1(src.mSumAll1),
+  mSumPartial1(src.mSumPartial1),
+  mH20(src.mH20),
+  mH2k(src.mH2k),
+  mHH2k(src.mHH2k),
+  mSumAll2(src.mSumAll2),
+  mSumPartial2(src.mSumPartial2),
+  mH30(src.mH30),
+  mH3k(src.mH3k),
+  mHH3k(src.mHH3k),
+  mA(src.mA),
+  mB(src.mB),
+  mBB(src.mBB),
+  mNoiseInputValues(src.mNoiseInputValues),
+  mNoiseUpdateSequences(src.mNoiseUpdateSequences),
+  mPhysicalValues(src.mPhysicalValues),
+  mRootFinder(src.mRootFinder),
+  mpRootValueCalculator(NULL),
+  mRoots(),
+  mRootCounter(src.mRootCounter),
+  mRootMask(src.mRootMask),
+  mRootMasking(src.mRootMasking)
 {
   initializeParameter();
+
+  mContainerVariables.initialize(src.mContainerVariables);
+  mContainerRates.initialize(src.mContainerRates);
+  mContainerNoise.initialize(src.mContainerNoise);
+  mContainerRoots.initialize(src.mContainerRoots);
+  mRoots.initialize(src.mRoots);
 }
 
 CStochasticRungeKuttaRI5::~CStochasticRungeKuttaRI5()
@@ -133,17 +215,26 @@ bool CStochasticRungeKuttaRI5::elevateChildren()
 void CStochasticRungeKuttaRI5::stateChange(const CMath::StateChange & change)
 {
   if (change & (CMath::ContinuousSimulation | CMath::State))
-    {}
+    {
+      mLastCalculatedTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mH10 = mContainerVariables;
+      mRootFinder.restart();
+    }
+
+  destroyRootMask();
 }
 
 CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT)
 {
   Status Result = NORMAL;
 
+  // std::cout << "mContainerState: " << mContainerState << std::endl;
+
   // Check whether we have a new target time
   if (mTargetTime != mTime + deltaT)
     {
-      mTargetTime = mTime + deltaT;
+      mTargetDelta = deltaT;
+      mTargetTime = mTime + mTargetDelta;
       mInternalSteps = 0;
       mRootCounter = 0;
     }
@@ -154,11 +245,13 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT)
 
       mInternalSteps++;
 
-      if (*mpInternalStepSize * mInternalSteps > *mpMaxInternalSteps * deltaT)
+      if (*mpInternalStepSize * mInternalSteps > *mpMaxInternalSteps * mTargetDelta)
         {
           Result = FAILURE;
         }
     }
+
+  // std::cout << "mContainerState: " << mContainerState << std::endl;
 
   return Result;
 }
@@ -175,8 +268,6 @@ void CStochasticRungeKuttaRI5::start()
   assert(mContainerNoise.size() == mNumVariables);
 
   mNumNoise = mpContainer->getCountNoise();
-
-  std::cout << "mNumVariables = " << mNumVariables << ", mNumNoise = " << mNumNoise << std::endl;
 
   mContainerRoots.initialize(mpContainer->getRoots());
   mNumRoots = mContainerRoots.size();
@@ -255,17 +346,30 @@ void CStochasticRungeKuttaRI5::start()
 
   mTime = *mpContainerStateTime;
   mTargetTime = mTime;
-  mCurrentTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  mLastCalculatedTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   mH10 = mContainerVariables;
 
   mStepSize = *mpInternalStepSize;
   mSqrtStepSize = sqrt(mStepSize);
 
   mpRandom = &mpContainer->getRandomGenerator();
-  mRootFinder.initialize(mpRootValueCalculator, *mpRootRelativeTolerance, mNumRoots + 1);
+
+  mRootMask.resize(mNumRoots + 1);
+  mRootMask = CRootFinder::DISCRETE;
+
+  C_INT *pMask = mRootMask.begin() + 1;
+  C_INT *pMaskEnd = mRootMask.end();
+  const bool * pDiscrete = mpContainer->getRootIsDiscrete().begin();
+
+  // We ignore all discrete roots since they cannot be triggered during continuous integration.
+  for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
+    *pMask = *pDiscrete ? CRootFinder::DISCRETE : CRootFinder::NONE;
+
+  mRootFinder.initialize(mpRootValueCalculator, *mpRootRelativeTolerance, mRootMask);
+
   mRoots.initialize(mRootFinder.getRootValues());
-  mRootsFound.initialize(mRootFinder.getToggledRoots());
-  mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
+  // We ignore the first root which checks for physical correctness as this is treated with only internally.
+  mRootsFound.initialize(mNumRoots, const_cast< C_INT * >(mRootFinder.getToggledRoots().begin() + 1));
 }
 
 void CStochasticRungeKuttaRI5::evalRate(C_FLOAT64 * pRates)
@@ -312,6 +416,9 @@ void CStochasticRungeKuttaRI5::evalRoot(const double & time, CVectorCore< C_FLOA
 void CStochasticRungeKuttaRI5::generateRandomNumbers()
 {
   if (mNumNoise == 0) return;
+
+  // We always need to recalculate if we generate new random numbers.
+  mLastCalculatedTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   C_FLOAT64 * pRandom = mRandomIHat.begin();
   C_FLOAT64 * pRandomEnd = pRandom + mNumNoise;
@@ -631,11 +738,17 @@ void CStochasticRungeKuttaRI5::calculateStateVariables(const double & time)
   // Sanity Checks
   assert(mTime <= time && time <= mTime + (1 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()) **mpInternalStepSize);
 
-  if (time == mCurrentTime) return;
+  if (time == mLastCalculatedTime)
+    {
+      *mpContainerStateTime = time;
+      mContainerVariables = mLastCalculatedVariables;
+
+      return;
+    }
 
   mStepSize = time - mTime;
   mSqrtStepSize = sqrt(mStepSize);
-  mCurrentTime = time;
+  mLastCalculatedTime = time;
 
   buildStage1();
   buildStage2();
@@ -688,6 +801,9 @@ void CStochasticRungeKuttaRI5::calculateStateVariables(const double & time)
                   (beta33 **pIHat + beta43) **pBB2k);
         }
     }
+
+  mLastCalculatedVariables = mContainerVariables;
+  *mpContainerStateTime = time;
 }
 
 CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
@@ -698,24 +814,58 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
 
   // Check whether we have negative compartment sizes and particle numbers
   // or any other roots.
-  if ((*mpForcePhysicalCorrectness || mNumRoots > 0) &&
-      mRootFinder.checkRoots(mTime, std::min(mTime + *mpInternalStepSize, mTargetTime)))
+  if (*mpForcePhysicalCorrectness || mNumRoots > 0)
     {
-      calculateStateVariables(mRootFinder.getRootTime());
-      *mpContainerStateTime = mRootFinder.getRootTime();
+      bool Step = true;
 
-      // If only the the first root is found we can continue with the integration otherwise
-      // we have found a possible trigger for an event.
-      C_INT * pRootFound = mRootsFound.begin() + 1;
-      C_INT * pRootFoundEnd = mRootsFound.end();
+      while (Step)
+        {
+          switch (mRootFinder.checkRoots(mTime, std::min(mTime + *mpInternalStepSize, mTargetTime), mRootMasking))
+            {
+              case CRootFinder::NotFound:
+                calculateStateVariables(std::min(mTime + *mpInternalStepSize, mTargetTime));
+                Step = false;
+                break;
 
-      for (; pRootFound != pRootFoundEnd; ++pRootFound)
-        if (*pRootFound != CMath::NoToggle)
-          {
-            Result = ROOT;
-          }
+              case CRootFinder::RootFound:
+              {
+                calculateStateVariables(mRootFinder.getRootTime());
+                *mpContainerStateTime = mRootFinder.getRootTime();
 
-      // We should peek ahead to check for roots which are triggered simultaneously
+                // It is possible that the root for physical correctness is found.
+                // If this is the only root we can continue with the integration otherwise
+                // we have found a possible trigger for an event.
+                C_INT * pRootFound = mRootsFound.begin();
+                C_INT * pRootFoundEnd = mRootsFound.end();
+
+                for (; pRootFound != pRootFoundEnd; ++pRootFound)
+                  if (*pRootFound != CMath::NoToggle)
+                    {
+                      Result = ROOT;
+                      break;
+                    }
+
+                // We should peek ahead to check for roots which are triggered simultaneously
+              }
+
+              Step = false;
+              break;
+
+              case CRootFinder::NotAdvanced:
+                if (mRootMasking == CRootFinder::ALL)
+                  fatalError();
+
+                createRootMask();
+                break;
+
+              case CRootFinder::InvalidInterval:
+                fatalError();
+                break;
+            }
+        }
+
+      if (mRootMasking == CRootFinder::ALL)
+        mRootMasking = CRootFinder::DISCRETE;
     }
   else
     {
@@ -736,7 +886,7 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
 
 C_FLOAT64 CStochasticRungeKuttaRI5::calculateSmallestPhysicalValue() const
 {
-  if (*mpForcePhysicalCorrectness) return 1.0;
+  if (!*mpForcePhysicalCorrectness) return 1.0;
 
   C_FLOAT64 SmallestPhysicalValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
@@ -750,5 +900,61 @@ C_FLOAT64 CStochasticRungeKuttaRI5::calculateSmallestPhysicalValue() const
         SmallestPhysicalValue = *pV;
       }
 
-  return SmallestPhysicalValue;
+  return SmallestPhysicalValue + 1.0e-12;
+}
+
+void CStochasticRungeKuttaRI5::createRootMask()
+{
+  double absoluteTolerance = 1.e-12;
+
+  CVector< C_FLOAT64 > RootDerivatives;
+  RootDerivatives.resize(mNumRoots);
+
+  mpContainer->updateSimulatedValues(false);
+  mpContainer->calculateRootDerivatives(RootDerivatives);
+
+  C_INT *pMask = mRootMask.begin() + 1;
+  C_INT *pMaskEnd = mRootMask.end();
+  const C_FLOAT64 * pRootValue = mContainerRoots.begin();
+  const C_FLOAT64 * pRootDerivative = RootDerivatives.array();
+  const bool * pDiscrete = mpContainer->getRootIsDiscrete().begin();
+
+  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative, ++pDiscrete)
+    if (*pDiscrete)
+      {
+        *pMask = CRootFinder::DISCRETE;
+      }
+    else if (fabs(*pRootDerivative) < absoluteTolerance &&
+             fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min())
+      {
+        *pMask = CRootFinder::CONTINUOUS;
+      }
+
+  mRootMasking = CRootFinder::ALL;
+
+  // std::cout << "mRootMask:     " << mRootMask << std::endl;
+}
+
+void CStochasticRungeKuttaRI5::destroyRootMask()
+{
+
+  mpContainer->updateSimulatedValues(false);
+
+  C_FLOAT64 RootLimit = (1.0 + std::numeric_limits< C_FLOAT64 >::epsilon()) * fabs(mRootFinder.getRootError()) + 100.0 * std::numeric_limits< C_FLOAT64 >::min();
+  mRootMasking = CRootFinder::NONE;
+
+  C_INT *pMask = mRootMask.begin() + 1;
+  C_INT *pMaskEnd = mRootMask.end();
+  const C_FLOAT64 * pRootValue = mContainerRoots.begin();
+
+  for (; pMask != pMaskEnd; ++pMask, ++pRootValue)
+    if (*pMask != CRootFinder::DISCRETE ||
+        fabs(*pRootValue) >= RootLimit)
+      {
+        *pMask = CRootFinder::NONE;
+      }
+    else
+      {
+        mRootMasking = CRootFinder::DISCRETE;
+      }
 }

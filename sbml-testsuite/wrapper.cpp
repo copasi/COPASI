@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -431,6 +436,11 @@ public:
     if (pMethod->getParameter("Partitioning Strategy"))
       {
         pMethod->setValue("Partitioning Strategy", std::string("All Reactions Deterministic"));
+      }
+
+    if (pMethod->getParameter("Internal Steps Size"))
+      {
+        pMethod->setValue("Internal Steps Size", 1.0e-5);
       }
 
     CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

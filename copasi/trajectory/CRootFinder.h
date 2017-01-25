@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,10 +60,31 @@ public:
   };
 
 public:
+  enum RootMasking
+  {
+    NONE = 0,
+    DISCRETE = 1,
+    CONTINUOUS = 2,
+    ALL = 3
+  };
+
+  enum ReturnStatus
+  {
+    NotFound = 0,
+    RootFound = 1,
+    NotAdvanced = -1,
+    InvalidInterval = -2
+  };
+
   /**
    * Default Constructor
    */
   CRootFinder();
+
+  /**
+   * Copy Constructor
+   */
+  CRootFinder(const CRootFinder & src);
 
   /**
    * Destructor
@@ -69,20 +95,26 @@ public:
    * Set the function used to evaluate all root values for a given time
    * @param CRootFinder::Eval * pRootValueCalculator
    * @param const C_FLOAT64 & relativeTolerance
-   * @param const size_t & numRoots
+   * @param const CVectorCore< bool > & rootMask
    */
   void initialize(Eval * pRootValueCalculator,
                   const C_FLOAT64 & relativeTolerance,
-                  const size_t & numRoots);
+                  const CVectorCore< C_INT > & rootMask);
+
+  /**
+   * Restart the root finder in case the systems state has changed
+   */
+  void restart();
 
   /**
    * Check for roots in the interval [timeLeft, timeRight]. If a root is found true is returned
    * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
    * @param const C_FLOAT64 & timeLeft
    * @param const C_FLOAT64 & timeRight
-   * @return bool rootFound
+   * @param const RootMasking & rootMasking
+   * @return bool ReturnStatus
    */
-  bool checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeRight);
+  ReturnStatus checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeRight, const RootMasking & rootMasking);
 
   /**
    * Callback function for the one dimensional Brent method
@@ -109,8 +141,15 @@ public:
    */
   const CVectorCore< C_FLOAT64 > & getRootValues() const;
 
+  /**
+   * Retrieve the error of the last successful root calculation
+   */
+  const C_FLOAT64 & getRootError() const;
+
 private:
   void calculateCurrentRoots(const C_FLOAT64 & time);
+
+  bool findToggledRoots(C_FLOAT64 & rootTime);
 
   C_FLOAT64 mRelativeTolerance;
 
@@ -122,7 +161,13 @@ private:
   CVector< C_FLOAT64 > mRootsRight;
   CVector< C_FLOAT64 > mRootsCurrent;
 
-  CVector< C_INT > mToggledRoots;
+  CVector< C_INT > mToggledRootsLeft;
+  CVector< C_INT > mToggledRootsCurrent;
+  bool mToggledRootsLeftValid;
+
+  CVectorCore< C_INT > mRootMask;
+  RootMasking mRootMasking;
+  C_FLOAT64 mRootError;
 
   /**
    * Pointer to method used for function evaluations for the Brent root finding method.
