@@ -1017,6 +1017,11 @@ bool CReaction::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObject
   return MustBeDeleted;
 }
 
+std::string CReaction::getDefaultNoiseExpression() const
+{
+  return "sqrt(abs(<" + mpFluxReference->getCN() + ">))";
+}
+
 bool CReaction::setNoiseExpression(const std::string & expression)
 {
   CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));

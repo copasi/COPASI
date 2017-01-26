@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -88,12 +93,12 @@ ReactionChangeCommand::ReactionChangeCommand(
 
       case REACTION_ADD_NOISE_CHANGE:
         setText(": Changed adding noise");
-        setProperty("Function");
+        setProperty("Add Noise");
         break;
 
       case REACTION_NOISE_EXPRESSION_CHANGE:
         setText(": Changed noise expression");
-        setProperty("Function");
+        setProperty("Noise Expression");
         break;
 
       default:

@@ -112,10 +112,8 @@ std::string CReactionInterface::getParameterName(size_t index) const
 
 void CReactionInterface::initFromReaction(const std::string & key)
 {
-  mReactionReferenceKey = key;
+  const CReaction *rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(key));
 
-  const CReaction *rea;
-  rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(key));
   assert(rea);
   initFromReaction(rea);
 }
@@ -124,13 +122,14 @@ void CReactionInterface::initFromReaction(const C_INT32 index)
 {
   const CReaction *rea = &mpModel->getReactions()[index];
 
-  mReactionReferenceKey = rea->getKey();
   assert(rea);
   initFromReaction(rea);
 }
 
 void CReactionInterface::initFromReaction(const CReaction *rea)
 {
+  mReactionReferenceKey = rea->getKey();
+
   //chemical equation
   mChemEqI.loadFromChemEq(rea->getChemEq());
 
@@ -1256,6 +1255,14 @@ CReactionInterface::isValid() const
 void CReactionInterface::setHasNoise(const bool & hasNoise)
 {
   mHasNoise = hasNoise;
+
+  if (!mHasNoise || !mNoiseExpression.empty()) return;
+
+  const CReaction * pReaction = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
+
+  if (pReaction == NULL) return;
+
+  mNoiseExpression = pReaction->getDefaultNoiseExpression();
 }
 
 const bool & CReactionInterface::hasNoise() const

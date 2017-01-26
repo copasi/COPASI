@@ -414,14 +414,20 @@ public:
   const CCallParameters< C_FLOAT64 > & getCallParameters() const;
 
   /**
-   * Set the expression for non FIXED model values
+   * Retrieve the default expression for the noise.
+   * @return std::string expression
+   */
+  std::string getDefaultNoiseExpression() const;
+
+  /**
+   * Set the expression expression for the noise
    * @param const std::string & expression
    * @return bool success
    */
   bool setNoiseExpression(const std::string & expression);
 
   /**
-   * Retrieve the expression for non FIXED model values.
+   * Retrieve the expression for the noise.
    * @return std::string expression
    */
   std::string getNoiseExpression() const;

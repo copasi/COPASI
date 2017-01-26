@@ -702,6 +702,9 @@ void ReactionsWidget1::slotNewFunction()
 
 void ReactionsWidget1::slotAddNoiseChanged(bool hasNoise)
 {
+  mpRi->setHasNoise(hasNoise);
+  mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpRi->getNoiseExpression());
+
   if (hasNoise)
     {
       mpLblNoiseExpression->show();
