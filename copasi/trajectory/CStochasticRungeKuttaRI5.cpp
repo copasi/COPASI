@@ -199,7 +199,7 @@ CStochasticRungeKuttaRI5::~CStochasticRungeKuttaRI5()
 
 void CStochasticRungeKuttaRI5::initializeParameter()
 {
-  mpInternalStepSize = assertParameter("Internal Steps Size", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  mpInternalStepSize = assertParameter("Internal Steps Size", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-4);
   mpMaxInternalSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   mpForcePhysicalCorrectness = assertParameter("Force Physical Correctness", CCopasiParameter::BOOL, true);
   mpRootRelativeTolerance = assertParameter("Tolerance for Root Finder", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);

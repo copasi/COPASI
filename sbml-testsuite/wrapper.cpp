@@ -440,7 +440,7 @@ public:
 
     if (pMethod->getParameter("Internal Steps Size"))
       {
-        pMethod->setValue("Internal Steps Size", 1.0e-5);
+        pMethod->setValue("Internal Steps Size", 1.0e-4);
       }
 
     CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
