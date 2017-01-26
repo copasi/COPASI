@@ -307,21 +307,28 @@ void CStochasticRungeKuttaRI5::start()
     }
 
   mPhysicalValues.resize(mNumVariables);
+
+  CMathObject * pObject = mpContainer->getMathObject(mContainerVariables.begin());
+  CMathObject * pObjectEnd = pObject + mNumVariables;
+  bool * pPhysicalValue = mPhysicalValues.begin();
+
+  for (; pObject != pObjectEnd; ++pObject, ++pPhysicalValue)
+    {
+      *pPhysicalValue = (pObject->getEntityType() == CMath::Compartment ||
+                         pObject->getEntityType() == CMath::Species);
+    }
+
   mNoiseInputValues.resize(mNumNoise);
   mNoiseUpdateSequences.resize(mNumNoise);
 
   // Noise output values are all values in mContainerNoise
   ObjectSet NoiseObjects;
-  CMathObject * pObject = mpContainer->getMathObject(mContainerNoise.begin());
-  CMathObject * pObjectEnd = pObject + mNumVariables;
-  bool * pPhysicalValue = mPhysicalValues.begin();
+  pObject = mpContainer->getMathObject(mContainerNoise.begin());
+  pObjectEnd = pObject + mNumVariables;
 
   for (; pObject != pObjectEnd; ++pObject)
     {
       NoiseObjects.insert(pObject);
-
-      *pPhysicalValue = (pObject->getEntityType() == CMath::Compartment ||
-                         pObject->getEntityType() == CMath::Species);
     }
 
   // Noise input values are all math objects of ValueType = Noise and SimulationType = ODE or SimulationTypeUndefined
@@ -339,10 +346,20 @@ void CStochasticRungeKuttaRI5::start()
       Objects.insert(*itNoiseInputObject);
 
       mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Objects);
+
+      if (pUpdateSequence->empty())
+        {
+          pUpdateSequence->insert(pUpdateSequence->end(), *itNoiseInputObject);
+        }
+
       UpdateSequence Sequence;
       mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CMath::Default, Objects, NoiseObjects);
       pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
     }
+
+  mRandomIHat.resize(mNumNoise);
+  mRandomITilde.resize(mNumNoise);
+  mRandomIMatrix.resize(mNumNoise, mNumNoise);
 
   mTime = *mpContainerStateTime;
   mTargetTime = mTime;
@@ -355,7 +372,7 @@ void CStochasticRungeKuttaRI5::start()
   mpRandom = &mpContainer->getRandomGenerator();
 
   mRootMask.resize(mNumRoots + 1);
-  mRootMask = CRootFinder::DISCRETE;
+  mRootMask = CRootFinder::NONE;
 
   C_INT *pMask = mRootMask.begin() + 1;
   C_INT *pMaskEnd = mRootMask.end();
@@ -852,11 +869,32 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
               break;
 
               case CRootFinder::NotAdvanced:
-                if (mRootMasking == CRootFinder::ALL)
-                  fatalError();
+              {
+                // It is possible that the root for physical correctness is found.
+                // If this is the only root we can continue with the integration otherwise
+                // we have to attempt root masking.
+                C_INT * pRootFound = mRootsFound.begin();
+                C_INT * pRootFoundEnd = mRootsFound.end();
 
-                createRootMask();
-                break;
+                for (; pRootFound != pRootFoundEnd; ++pRootFound)
+                  if (*pRootFound != CMath::NoToggle)
+                    {
+                      break;
+                    }
+
+                if (pRootFound != pRootFoundEnd)
+                  {
+                    if (mRootMasking == CRootFinder::ALL)
+                      fatalError();
+
+                    createRootMask();
+                  }
+                else
+                  {
+                    return Result;
+                  }
+              }
+              break;
 
               case CRootFinder::InvalidInterval:
                 fatalError();

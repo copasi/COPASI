@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -58,6 +63,13 @@ CMathUpdateSequence & CMathUpdateSequence::operator = (const std::vector< CObjec
     }
 
   return *this;
+}
+
+void CMathUpdateSequence::insert(const CMathUpdateSequence::iterator & loc, const CObjectInterface * pObject)
+{
+  std::vector< CObjectInterface * > Insert(1, const_cast< CObjectInterface * >(pObject));
+
+  insert(loc, Insert.begin(), Insert.end());
 }
 
 void CMathUpdateSequence::setMathContainer(CMathContainer * pContainer)
