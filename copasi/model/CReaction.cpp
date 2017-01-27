@@ -1097,6 +1097,11 @@ const CExpression* CReaction::getNoiseExpressionPtr() const
 void CReaction::setHasNoise(const bool & hasNoise)
 {
   mHasNoise = hasNoise;
+
+  CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+  if (pModel != NULL)
+    pModel->setCompileFlag(true);
 }
 
 const bool & CReaction::hasNoise() const
