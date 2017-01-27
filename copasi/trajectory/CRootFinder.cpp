@@ -104,8 +104,8 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
     }
 
   // Check whether we are restarting
-  if (std::isnan(mTimeLeft) &&
-      std::isnan(mTimeRight) &&
+  if (isnan(mTimeLeft) &&
+      isnan(mTimeRight) &&
       timeLeft == mTimeCurrent)
     {
       mTimeCurrent = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
