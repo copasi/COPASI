@@ -600,9 +600,8 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pComp->hasNoise() &&
-              SimulationType == CModelEntity::ODE &&
-              pComp->getNoiseExpression() != "")
+          // We save the noise expression even if it is not used
+          if (pComp->getNoiseExpression() != "")
             {
               startSaveElement("NoiseExpression");
               saveData(pComp->getNoiseExpression());
@@ -661,9 +660,8 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pMetab->hasNoise() &&
-              SimulationType == CModelEntity::ODE &&
-              pMetab->getNoiseExpression() != "")
+          // We save the noise expression even if it is not used
+          if (pMetab->getNoiseExpression() != "")
             {
               startSaveElement("NoiseExpression");
               saveData(pMetab->getNoiseExpression());
@@ -719,9 +717,8 @@ bool CCopasiXML::saveModel()
               endSaveElement("InitialExpression");
             }
 
-          if (pMV->hasNoise() &&
-              SimulationType == CModelEntity::ODE &&
-              pMV->getNoiseExpression() != "")
+          // We save the noise expression even if it is not used
+          if (pMV->getNoiseExpression() != "")
             {
               startSaveElement("NoiseExpression");
               saveData(pMV->getNoiseExpression());
@@ -907,8 +904,8 @@ bool CCopasiXML::saveModel()
               endSaveElement("KineticLaw");
             }
 
-          if (pReaction->hasNoise() &&
-              pReaction->getNoiseExpression() != "")
+          // We save the noise expression even if it is not used
+          if (pReaction->getNoiseExpression() != "")
             {
               startSaveElement("NoiseExpression");
               saveData(pReaction->getNoiseExpression());
