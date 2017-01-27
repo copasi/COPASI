@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -591,7 +596,7 @@ void CModel::buildStoi()
 
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
-      if (!itStep->getFunction()->isUsable())
+      if (!itStep->getFunction()->getIssue())
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 11,
                        itStep->getObjectName().c_str(),
                        itStep->getFunction()->getObjectName().c_str());
@@ -3233,7 +3238,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-            // Intentionally no break statement!
+          // Intentionally no break statement!
 
           case ASSIGNMENT:
 

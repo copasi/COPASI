@@ -30,6 +30,7 @@
 
 class CMathContainer;
 class CValidatedUnit;
+class CIssue;
 
 class CEvaluationTree;
 LIBSBML_CPP_NAMESPACE_BEGIN
@@ -254,9 +255,9 @@ public:
   /**
    * Compile a node;
    * @param const CEvaluationTree * pTree
-   * @return bool success;
+   * @return CIssue issue;
    */
-  virtual bool compile(const CEvaluationTree * pTree);
+  virtual CIssue compile(const CEvaluationTree * pTree);
 
   /**
    * Retrieve the infix value of the node and its eventual child nodes.

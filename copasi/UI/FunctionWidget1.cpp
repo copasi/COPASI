@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -503,7 +508,7 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   // application table
   loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
 
-  isValid = mpFunction->isUsable();
+  isValid = mpFunction->getIssue();
 
   flagChanged = false;
 

@@ -25,22 +25,33 @@ public:
   enum eKind
   {
     NoKind = 0x0,
-    MissingInitialValue = 0x1,
-    CalculationIssue = 0x2,
-    EventMissingAssignment = 0x4,
-    EventMissingTriggerExpression = 0x8,
-    UnitUndefined = 0x10,
-    UnitConflict = 0x20,
-    UnitInvalid = 0x40,
-    NaNissue = 0x80,
-    ObjectNotFound = 0x100,
-    ValueNotFound = 0x200,
-    VariableNotfound = 0x400,
-    InvalidStructure = 0x800
+    ExpressionInvalid = 0x1,
+    ExpressionEmpty = 0x2,
+    MissingInitialValue = 0x4,
+    CalculationIssue = 0x8,
+    EventMissingAssignment = 0x10,
+    EventMissingTriggerExpression = 0x20,
+    UnitUndefined = 0x40,
+    UnitConflict = 0x80,
+    UnitInvalid = 0x100,
+    NaNissue = 0x200,
+    ObjectNotFound = 0x400,
+    ValueNotFound = 0x800,
+    VariableNotfound = 0x1000,
+    StructureInvalid = 0x2000,
+    TooManyArguments = 0x4000,
+    HasCircularDependency = 0x8000,
+    ExpressionDataTypeInvalid = 0x10000,
+    VariableInExpression = 0x20000,
+    CExpressionNotFound = 0x40000,
+    CFunctionNotFound = 0x80000,
+    VariablesMismatch = 0x1000000,
+    AllKinds = 0xffffffff
   };
 
   enum eSeverity
   {
+    AllSeverity = 0xffffffff,
     Error = 0x4,
     Warning = 0x2,
     Information = 0x1,
@@ -55,6 +66,10 @@ public:
   CValidity(const CValidity & src);
 
   static const CIssue OkNoKind;
+
+  // Use this to initialize a CIssue to "false"
+  // ("not acceptable"), until it is found to be otherwise.
+  static const CIssue DefaultError;
 
   // convenience function to reset CValidity
   void clear();

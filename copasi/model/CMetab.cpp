@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -562,7 +567,7 @@ bool CMetab::compileInitialValueDependencies()
 
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices others are updated lated again.
-      if (mpInitialExpression->isUsable())
+      if (mpInitialExpression->getIssue())
         mIConc = mpInitialExpression->calcValue();
 
       return success;

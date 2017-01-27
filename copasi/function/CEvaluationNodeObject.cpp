@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -82,7 +87,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const CEvaluationNodeObject & src):
 
 CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
-bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
   mpObject = NULL;
   mpValue = NULL;
@@ -93,7 +98,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       {
         const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
 
-        if (!pExpression) return false;
+        if (!pExpression) return CIssue(CValidity::Error, CValidity::CExpressionNotFound);
 
         mpObject =
           pExpression->getNodeObject(mRegisteredObjectCN);
@@ -107,7 +112,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             const CObjectInterface * pObject = pDataObject->getValueObject();
 
             if (!pObject)
-              return false;
+              return CIssue(CValidity::Error, CValidity::ObjectNotFound);
 
             if (mpObject != pObject && pObject != NULL)
               {
@@ -130,7 +135,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           {
             mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
             mpValue = &mValue;
-            return false;
+            return CIssue(CValidity::Error, CValidity::ValueNotFound);
           }
 
         mData = "<" + mRegisteredObjectCN + ">";
@@ -155,7 +160,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           {
             mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
             mpValue = &mValue;
-            return false;
+            return CIssue(CValidity::Error, CValidity::ValueNotFound);
           }
 
         break;
@@ -164,7 +169,10 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         break;
     }
 
-  return (getChild() == NULL); // We must not have any children.
+  if (getChild() == NULL) // We must not have any children.
+    return CValidity::OkNoKind;
+  else
+    return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }
 
 const CEvaluationNode::Data & CEvaluationNodeObject::getData() const

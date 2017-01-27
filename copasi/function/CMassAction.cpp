@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -121,16 +126,16 @@ bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
   return false;
 }
 
-bool CMassAction::setInfix(const std::string & infix)
+CIssue CMassAction::setInfix(const std::string & infix)
 {
-  mUsable = false;
+  mIssue = CValidity::DefaultError;
 
   if (infix == "k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>")
     setReversible(TriTrue);
   else if (infix == "k1*PRODUCT<substrate_i>")
     setReversible(TriFalse);
   else
-    return mUsable;
+    return mIssue;
 
   CFunction::setInfix(infix);
   getVariables().cleanup();
@@ -152,14 +157,14 @@ bool CMassAction::setInfix(const std::string & infix)
                          CFunctionParameter::PRODUCT);
     }
 
-  mUsable = true;
+  mIssue = CValidity::OkNoKind;
 
-  return mUsable;
+  return mIssue;
 }
 
-bool CMassAction::compile()
+CIssue CMassAction::compile()
 {
-  return mUsable;
+  return mIssue;
 }
 
 #include "utilities/copasimathml.h"

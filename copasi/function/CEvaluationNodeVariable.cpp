@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -40,17 +45,20 @@ CEvaluationNodeVariable::CEvaluationNodeVariable(const CEvaluationNodeVariable &
 
 CEvaluationNodeVariable::~CEvaluationNodeVariable() {}
 
-bool CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
 {
   mpTree = pTree;
 
-  if (!pTree) return false;
+  if (!pTree) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   mIndex = pTree->getVariableIndex(mData);
 
-  if (mIndex == C_INVALID_INDEX) return false;
+  if (mIndex == C_INVALID_INDEX) return CIssue(CValidity::Error, CValidity::ValueNotFound);
 
-  return (getChild() == NULL); // We must not have any children.
+  if (getChild() == NULL) // We must not have any children.
+    return CValidity::OkNoKind;
+  else
+    return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }
 
 void CEvaluationNodeVariable::calculate()

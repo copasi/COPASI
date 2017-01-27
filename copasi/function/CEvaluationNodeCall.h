@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -65,9 +70,9 @@ public:
   /**
    * Compile a node;
    * @param const CEvaluationTree * pTree
-   * @return bool success;
+   * @return CIssue issue;
    */
-  virtual bool compile(const CEvaluationTree * pTree);
+  virtual CIssue compile(const CEvaluationTree * pTree);
 
   /**
    * Check whether node the calls any tree in the list

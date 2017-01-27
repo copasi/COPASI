@@ -307,40 +307,53 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction &
 
 CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
-bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
   mpArgNode1 = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpArgNode1 == NULL) return false;
+  if (mpArgNode1 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
 
   mpArgValue1 = mpArgNode1->getValuePointer();
 
   if (mpFunction)
-    return (mpArgNode1->getSibling() == NULL); // We must have only one child
+    {
+      if (mpArgNode1->getSibling() == NULL)
+        return CValidity::OkNoKind;
+      else
+        return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have only one child
+    }
 
   mpArgNode2 = static_cast<CEvaluationNode *>(mpArgNode1->getSibling());
 
-  if (mpArgNode2 == NULL) return false;
+  if (mpArgNode2 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
 
   mpArgValue2 = mpArgNode2->getValuePointer();
 
   if (mpFunction2)
-    return (mpArgNode2->getSibling() == NULL); // We must have exactly 1 children
+    {
+      if (mpArgNode2->getSibling() == NULL)
+        return CValidity::OkNoKind;
+      else
+        return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have only 2 children
+    }
 
   // equality
   mpArgNode3 = static_cast<CEvaluationNode *>(mpArgNode2->getSibling());
 
-  if (mpArgNode3 == NULL) return false;
+  if (mpArgNode3 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
 
   mpArgValue3 = mpArgNode3->getValuePointer();
 
   mpArgNode4 = static_cast<CEvaluationNode *>(mpArgNode3->getSibling());
 
-  if (mpArgNode4 == NULL) return false;
+  if (mpArgNode4 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
 
   mpArgValue4 = mpArgNode4->getValuePointer();
 
-  return (mpArgNode4->getSibling() == NULL); // We must have exactly 4 children
+  if (mpArgNode4->getSibling() == NULL)
+    return CValidity::OkNoKind;
+  else
+    return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have exactly 4 children
 }
 
 // virtual
@@ -1275,8 +1288,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-      // :TODO: Bug 894: Implement me.
-      //fatalError();
+        // :TODO: Bug 894: Implement me.
+        //fatalError();
       break;
     }
 

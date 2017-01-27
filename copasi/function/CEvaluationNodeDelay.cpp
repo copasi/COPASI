@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -56,35 +61,36 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
 
-bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
+CIssue CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
 {
-  bool success = true;
-
   switch (mSubType)
     {
       case S_DELAY:
         mpDelayValueNode = static_cast<CEvaluationNode *>(getChild());
 
-        if (mpDelayValueNode == NULL) return false;
+        if (mpDelayValueNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);;
 
         mpDelayValueValue = mpDelayValueNode->getValuePointer();
 
         mpDelayLagNode = static_cast<CEvaluationNode *>(mpDelayValueNode->getSibling());
 
-        if (mpDelayLagNode == NULL) return false;
+        if (mpDelayLagNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
         mpDelayLagValue = mpDelayLagNode->getValuePointer();
 
-        return (mpDelayLagNode->getSibling() == NULL); // We must have exactly 2 children
+        if (mpDelayLagNode->getSibling() == NULL) // We must have exactly 2 children
+          return CValidity::OkNoKind;
+        else
+          return CIssue(CValidity::Error, CValidity::TooManyArguments);
 
         break;
 
       default:
-        success = false;
+        return CIssue(CValidity::Error, CValidity::StructureInvalid);
         break;
     }
 
-  return success;
+  return CValidity::OkNoKind;
 }
 
 // virtual

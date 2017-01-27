@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -69,27 +74,30 @@ void CEvaluationNodeChoice::calculate()
   mValue = (*mpIfValue > 0.5) ? *mpTrueValue : *mpFalseValue;
 }
 
-bool CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
 {
   mpIfNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpIfNode == NULL) return false;
+  if (mpIfNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   mpIfValue = mpIfNode->getValuePointer();
 
   mpTrueNode = static_cast<CEvaluationNode *>(mpIfNode->getSibling());
 
-  if (mpTrueNode == NULL) return false;
+  if (mpTrueNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   mpTrueValue = mpTrueNode->getValuePointer();
 
   mpFalseNode = static_cast<CEvaluationNode *>(mpTrueNode->getSibling());
 
-  if (mpFalseNode == NULL) return false;
+  if (mpFalseNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   mpFalseValue = mpFalseNode->getValuePointer();
 
-  return (mpFalseNode->getSibling() == NULL); // We must have exactly three children
+  if (mpFalseNode->getSibling() == NULL) // We must have exactly three children
+    return CValidity::OkNoKind;
+  else
+    return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }
 
 // virtual

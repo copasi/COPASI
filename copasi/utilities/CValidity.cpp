@@ -46,6 +46,9 @@ CValidity::CValidity(const CValidity & src):
 //static
 const CIssue CValidity::OkNoKind = CIssue();
 
+//static
+const CIssue CValidity::DefaultError = CIssue(CValidity::Error, CValidity::NoKind);
+
 void CValidity::clear()
 {
   mErrors = NoKind;

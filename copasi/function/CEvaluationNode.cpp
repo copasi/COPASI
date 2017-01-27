@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -214,8 +219,8 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
 
 CEvaluationNode::~CEvaluationNode() {}
 
-bool CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
-{return true;}
+CIssue CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
+{return CValidity::OkNoKind;}
 
 // virtual
 std::string CEvaluationNode::getInfix(const std::vector< std::string > & /* children */) const

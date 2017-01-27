@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -70,11 +75,11 @@ const std::string& CFunction::getSBMLId() const
   return this->mSBMLId;
 }
 
-bool CFunction::setInfix(const std::string & infix)
+CIssue CFunction::setInfix(const std::string & infix)
 {
-  if (!CEvaluationTree::setInfix(infix)) return false;
+  mIssue = CEvaluationTree::setInfix(infix);
 
-  if (mpNodeList == NULL) return true;
+  if (!mIssue || mpNodeList == NULL) return mIssue;
 
   // We need to check that the function does not contain any objects, calls to expression
   // or delay nodes.
@@ -87,14 +92,18 @@ bool CFunction::setInfix(const std::string & infix)
         {
           case CEvaluationNode::T_OBJECT:
           case CEvaluationNode::T_DELAY:
-            return false;
+            mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+            mValidity.add(mIssue);
+            return mIssue;
             break;
 
           case CEvaluationNode::T_CALL:
 
             if ((*it)->subType() == CEvaluationNode::S_EXPRESSION)
               {
-                return false;
+                mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+                mValidity.add(mIssue);
+                return mIssue;
               }
 
             break;
@@ -104,11 +113,14 @@ bool CFunction::setInfix(const std::string & infix)
         }
     }
 
-  if (!initVariables()) return false;
+  mIssue = initVariables();
+  mValidity.add(mIssue);
+
+  if (!mIssue) return mIssue;
 
   compileNodes();
 
-  return true;
+  return mIssue;
 }
 
 // virtual
@@ -229,9 +241,9 @@ void CFunction::load(CReadConfig & configBuffer,
   // the only ones occuring in those files.
 }
 
-bool CFunction::initVariables()
+CIssue CFunction::initVariables()
 {
-  if (mpNodeList == NULL && mInfix != "") return false;
+  if (mpNodeList == NULL && mInfix != "") return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   CFunctionParameters NewVariables;
 
@@ -261,7 +273,7 @@ bool CFunction::initVariables()
     if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
       mVariables.remove(mVariables[i]->getObjectName());
 
-  return true;
+  return CValidity::OkNoKind;
 }
 
 bool CFunction::isSuitable(const size_t noSubstrates,

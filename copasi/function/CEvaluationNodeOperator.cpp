@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -95,21 +100,24 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const CEvaluationNodeOperator &
 
 CEvaluationNodeOperator::~CEvaluationNodeOperator() {}
 
-bool CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
 {
   mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpLeftNode == NULL) return false;
+  if (mpLeftNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   mpLeftValue = mpLeftNode->getValuePointer();
 
   mpRightNode = static_cast<CEvaluationNode *>(mpLeftNode->getSibling());
 
-  if (mpRightNode == NULL) return false;
+  if (mpRightNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
 
   mpRightValue = mpRightNode->getValuePointer();
 
-  return (mpRightNode->getSibling() == NULL); // We must have only two children
+  if (mpRightNode->getSibling() == NULL) // We must have only two children
+    return CValidity::OkNoKind;
+  else
+    return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }
 
 // virtual

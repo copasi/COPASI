@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -146,20 +151,22 @@ public:
   /**
    * Set the infix description of the tree and compile it.
    * @param const std::string & infix
-   * @return bool success
+   * @return CIssue issue
    */
-  virtual bool setInfix(const std::string & infix);
+  virtual CIssue setInfix(const std::string & infix);
 
   /**
    * Compile the evaluation tree.
    */
-  virtual bool compile();
+  virtual CIssue compile();
 
   /**
-   * Check whether this function is usable, i.e., properly defined
-   * @return bool isUsable
+   * Get any key issue with this function.
+   * A CIssue cast to bool will return true if there
+   * are NOT any error level issues.
+   * @return CIssue mIssue
    */
-  bool isUsable() const;
+  CIssue getIssue() const;
 
   /**
    * Check whether this function evaluates to a boolean value.
@@ -220,7 +227,7 @@ public:
   /**
    * Updates the infix and the nodeList
    */
-  bool updateTree();
+  CIssue updateTree();
 
   /**
    * Check whether the the tree has circular dependencies.
@@ -258,15 +265,15 @@ public:
 protected:
   /**
    * Parse the description
-   * @return bool success
+   * @return CIssue issue
    */
-  bool parse();
+  CIssue parse();
 
   /**
    * Compile the individual nodes.
-   * @return bool success
+   * @return CIssue issue
    */
-  bool compileNodes();
+  CIssue compileNodes();
 
   /**
    * Build the sequence of calculations required to determine
@@ -310,9 +317,10 @@ protected:
   std::string mInfix;
 
   /**
-   * Value indicating whether this functions might be used in a model
+   * Save any key issue which might indicate a function
+   * should not be used in the model.
    */
-  bool mUsable;
+  CIssue mIssue;
 
 private:
   /**

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -110,9 +115,9 @@ void CEvaluationNodeCall::calculate()
     }
 }
 
-bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
+CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 {
-  bool success = true;
+  CIssue issue = CValidity::OkNoKind;
   clearParameters(mpCallParameters, mCallNodes);
 
   CObjectInterface * pObjectInterface = NULL;
@@ -136,13 +141,13 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
               dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
           }
 
-        if (!mpFunction) return false;
+        if (!mpFunction) return CIssue(CValidity::Error, CValidity::CFunctionNotFound);
 
         mRegisteredFunctionCN = mpFunction->getCN();
 
         // We need to check whether the provided arguments match the on needed by the
         // function;
-        if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
+        if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return CIssue(CValidity::Error, CValidity::VariablesMismatch);
 
         mpCallParameters = buildParameters(mCallNodes);
         break;
@@ -173,30 +178,30 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
                   dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
               }
 
-            if (!mpFunction) return false;
+            if (!mpFunction) return CIssue(CValidity::Error, CValidity::CFunctionNotFound);
 
             mRegisteredFunctionCN = mpFunction->getCN();
 
             mMainType = T_CALL;
             mSubType = S_FUNCTION;
 
-            success = compile(pTree);
+            issue = compile(pTree);
           }
         else
           {
             mRegisteredFunctionCN = mpExpression->getCN();
 
-            success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
+            issue = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
           }
 
         break;
 
       default:
-        success = false;
+        issue = CValidity::DefaultError;
         break;
     }
 
-  return success;
+  return issue;
 }
 
 bool CEvaluationNodeCall::calls(std::set< std::string > & list) const

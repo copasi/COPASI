@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -132,7 +137,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
   CCopasiContainer(name, pParent, "Function"),
   mType(type),
   mInfix(),
-  mUsable(false),
+  mIssue(CValidity::DefaultError),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
   mpRootNode(NULL),
@@ -150,7 +155,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
   CCopasiContainer(src, pParent),
   mType(src.mType),
   mInfix(),
-  mUsable(false),
+  mIssue(CValidity::DefaultError),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
   mpRootNode(NULL),
@@ -176,17 +181,27 @@ void CEvaluationTree::setType(const CEvaluationTree::Type & type)
   mType = type;
 }
 
-bool CEvaluationTree::setInfix(const std::string & infix)
+CIssue CEvaluationTree::setInfix(const std::string & infix)
 {
-  if (infix == mInfix &&
-      infix != "") return true;
+  mValidity.clear();
 
   // We assume until proven otherwise that the tree is not usable
-  mUsable = false;
+  mIssue = CIssue(CValidity::DefaultError);
+
+  // Assume whatever (non null) string which was there before,
+  // is still ok.
+  if (infix == mInfix &&
+      infix != "")
+    {
+      mIssue = CValidity::OkNoKind;
+      return mIssue;
+    }
 
   mInfix = infix;
 
-  return parse();
+  mIssue = parse();
+
+  return mIssue;
 }
 
 const std::string & CEvaluationTree::getInfix() const
@@ -217,14 +232,16 @@ const C_FLOAT64 & CEvaluationTree::getVariableValue(const size_t & /*index*/) co
   return Value;
 }
 
-bool CEvaluationTree::parse()
+CIssue CEvaluationTree::parse()
 {
-  bool success = true;
-
   // clean up
   clearNodes();
 
-  if (mType == MassAction) return true;
+  if (mType == MassAction)
+    {
+      mIssue = CValidity::OkNoKind;
+      return mIssue;
+    }
 
   if (mInfix == "")
     {
@@ -234,14 +251,22 @@ bool CEvaluationTree::parse()
       mValue = *mpRootValue;
       mpNodeList->push_back(mpRootNode);
 
-      return true;
+      mIssue = CIssue(CValidity::Warning, CValidity::ExpressionEmpty);
+      mValidity.add(mIssue);
+      return mIssue;
     }
 
   // parse the description into a linked node tree
   std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
 
-  success = (Parser.yyparse() == 0);
+  if (Parser.yyparse() == 0)
+    mIssue = CValidity::OkNoKind;
+  else
+    {
+      mIssue = CIssue(CValidity::Error, CValidity::ExpressionInvalid);
+      mValidity.add(mIssue);
+    }
 
   mpNodeList = Parser.getNodeList();
   mpRootNode = Parser.getRootNode();
@@ -258,26 +283,27 @@ bool CEvaluationTree::parse()
     }
 
   // clean up if parsing failed
-  if (!success)
+  if (!mIssue)
     {
       mErrorPosition = Parser.getErrorPosition();
       clearNodes();
     }
 
-  if (success && hasCircularDependency())
+  if (mIssue && hasCircularDependency())
     {
-      success = false;
+      mIssue = CIssue(CValidity::Error, CValidity::HasCircularDependency);
+      mValidity.add(mIssue);
       CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 4, mErrorPosition);
     }
 
-  return success;
+  return mIssue;
 }
 
-bool CEvaluationTree::compile()
+CIssue CEvaluationTree::compile()
 {return compileNodes();}
 
-bool CEvaluationTree::isUsable() const
-{return mUsable;}
+CIssue CEvaluationTree::getIssue() const
+{return mIssue;}
 
 bool CEvaluationTree::isBoolean() const
 {
@@ -320,36 +346,50 @@ void CEvaluationTree::buildCalculationSequence()
     }
 }
 
-bool CEvaluationTree::compileNodes()
+CIssue CEvaluationTree::compileNodes()
 {
   clearDirectDependencies();
   mCalculationSequence.resize(0);
 
+  // Clear all mValidity flags, except those only set via setInfix
+  mValidity.remove(CIssue(CValidity::AllSeverity, ~(CValidity::ExpressionInvalid |
+                          CValidity::ExpressionEmpty |
+                          CValidity::HasCircularDependency)));
+  mIssue = CValidity::OkNoKind;
+
   if (mInfix == "")
-    return mUsable = true;
+    {
+      mIssue = CIssue(CValidity::Warning, CValidity::NaNissue);
+      mValidity.add(mIssue);
+      return mIssue;
+    }
 
   if (mpNodeList == NULL)
-    return mUsable = false;
+    {
+      mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+      mValidity.add(mIssue);
+      return mIssue;
+    }
 
   // The compile order must be child first.
   CNodeIterator< CEvaluationNode > itNode(mpRootNode);
   CEvaluationNode *pErrorNode = NULL;
-  mUsable = true;
+
+  CIssue NodeIssue;
 
   while (itNode.next() != itNode.end())
-    {
-      if (*itNode != NULL)
-        {
-          if (!itNode->compile(this))
-            {
-              if (mUsable)
-                {
-                  mUsable = false;
-                  pErrorNode = *itNode;
-                }
-            }
-        }
-    }
+    if (*itNode != NULL &&
+        !(NodeIssue = itNode->compile(this)))
+      {
+        mValidity.add(NodeIssue);
+
+        if (mIssue) // . . . if it was OkNoKind, before this, . . .
+          {
+            // Set mIssue to this first encountered Error.
+            mIssue = NodeIssue;
+            pErrorNode = *itNode;
+          }
+      }
 
   // Compile may change the value pointer of the root node.
   mpRootValue = mpRootNode->getValuePointer();
@@ -358,7 +398,7 @@ bool CEvaluationTree::compileNodes()
   std::vector< CEvaluationNode * >::iterator it;
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
-  if (!mUsable)
+  if (!mIssue)
     {
       // Find the error node in the node list
       for (it = mpNodeList->begin(); it != end; ++it)
@@ -414,7 +454,7 @@ bool CEvaluationTree::compileNodes()
       buildCalculationSequence();
     }
 
-  return mUsable;
+  return mIssue;
 }
 
 void CEvaluationTree::calculate()
@@ -484,13 +524,16 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
   return updateTree();
 }
 
-bool CEvaluationTree::updateTree()
+CIssue CEvaluationTree::updateTree()
 {
+  mIssue = CValidity::OkNoKind;
+
   if (mpRootNode == NULL)
     {
       clearNodes();
-
-      return false;
+      mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+      mValidity.add(mIssue);
+      return mIssue;
     }
 
   mpRootValue = mpRootNode->getValuePointer();
@@ -512,7 +555,20 @@ bool CEvaluationTree::updateTree()
 
   mInfix = mpRootNode->buildInfix();
 
-  return true;
+  // Clear any infix-determined flags, assuming
+  // buildInfix does the right things.
+  mValidity.remove(CIssue(CValidity::AllSeverity, (CValidity::ExpressionInvalid |
+                          CValidity::ExpressionEmpty |
+                          CValidity::HasCircularDependency)));
+
+  if (mInfix == "")
+    {
+      mIssue = CIssue(CValidity::Warning, CValidity::ExpressionEmpty);
+      mValidity.add(mIssue);
+      return mIssue;
+    }
+
+  return mIssue;
 }
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode)

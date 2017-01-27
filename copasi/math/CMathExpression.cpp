@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -186,25 +191,33 @@ const CObjectInterface::ObjectSet & CMathExpression::getPrerequisites() const
 }
 
 // virtual
-bool CMathExpression::compile()
+CIssue CMathExpression::compile()
 {
   mPrerequisites.clear();
-  mUsable = true;
+  mValidity.clear();
+  mIssue = CValidity::OkNoKind;
 
-  if (!updateTree())
+  if (!(mIssue = updateTree()))
     {
-      mUsable = false;
       mCalculationSequence.resize(0);
 
-      return mUsable;
+      return mIssue;
     }
 
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
+  CIssue NodeIssue;
+
   for (; it != end; ++it)
     {
-      mUsable &= (*it)->compile(this);
+      NodeIssue = (*it)->compile(this);
+
+      mValidity.add(NodeIssue);
+
+      // Set mIssue to the first encountered Error level issue.
+      if (mIssue && !NodeIssue)
+        mIssue = NodeIssue;
 
       if ((*it)->mainType() == CEvaluationNode::T_OBJECT &&
           (*it)->subType() == CEvaluationNode::S_POINTER)
@@ -236,12 +249,12 @@ bool CMathExpression::compile()
 
   if (mInfix == "@")
     {
-      mUsable = true;
+      mIssue = CValidity::OkNoKind;
     }
 
   buildCalculationSequence();
 
-  return mUsable;
+  return mIssue;
 }
 
 bool CMathExpression::convertToInitialExpression()

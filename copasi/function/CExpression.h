@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -74,17 +79,17 @@ public:
   /**
    * Set the infix description of the tree and compile it.
    * @param const std::string & infix
-   * @return bool success
+   * @return CIssue issue
    */
-  virtual bool setInfix(const std::string & infix);
+  virtual CIssue setInfix(const std::string & infix);
 
   /**
    * Compile the evaluation tree.
    * @param CObjectInterface::ContainerList listOfContainer (Default: CCopasiContainer::EmptyList)
-   * @return bool success
+   * @return CIssue issue
    */
-  virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CCopasiContainer::EmptyList);
+  virtual CIssue compile(CObjectInterface::ContainerList listOfContainer =
+                           CCopasiContainer::EmptyList);
 
   /**
    * Calculates the value of the function

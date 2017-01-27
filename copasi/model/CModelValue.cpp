@@ -193,7 +193,7 @@ bool CModelEntity::compile()
 
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
-      if (mpInitialExpression->isUsable())
+      if (mpInitialExpression->getIssue())
         mIValue = mpInitialExpression->calcValue();
     }
   else

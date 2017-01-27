@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -85,21 +90,24 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const CEvaluationNodeLogical & sr
 
 CEvaluationNodeLogical::~CEvaluationNodeLogical() {}
 
-bool CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
+CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 {
   mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpLeftNode == NULL) return false;
+  if (mpLeftNode == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
 
   mpLeftValue = mpLeftNode->getValuePointer();
 
   mpRightNode = static_cast<CEvaluationNode *>(mpLeftNode->getSibling());
 
-  if (mpRightNode == NULL) return false;
+  if (mpRightNode == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
 
   mpRightValue = mpRightNode->getValuePointer();
 
-  return (mpRightNode->getSibling() == NULL); // We must have exactly two children
+  if (mpRightNode->getSibling() == NULL) // We must have exactly two children
+    return CValidity::OkNoKind;
+  else
+    return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }
 
 // virtual
@@ -248,8 +256,8 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
             data = "OR";
             break;
 
-            /* case S_XOR:
-               break; */
+          /* case S_XOR:
+             break; */
           case S_EQ:
             data = "=";
             break;
