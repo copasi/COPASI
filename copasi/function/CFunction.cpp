@@ -273,7 +273,7 @@ CIssue CFunction::initVariables()
     if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
       mVariables.remove(mVariables[i]->getObjectName());
 
-  return CValidity::OkNoKind;
+  return CIssue::Success;
 }
 
 bool CFunction::isSuitable(const size_t noSubstrates,

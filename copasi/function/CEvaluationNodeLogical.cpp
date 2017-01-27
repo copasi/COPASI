@@ -105,7 +105,7 @@ CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
   mpRightValue = mpRightNode->getValuePointer();
 
   if (mpRightNode->getSibling() == NULL) // We must have exactly two children
-    return CValidity::OkNoKind;
+    return CIssue::Success;
   else
     return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }
@@ -256,8 +256,8 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
             data = "OR";
             break;
 
-          /* case S_XOR:
-             break; */
+            /* case S_XOR:
+               break; */
           case S_EQ:
             data = "=";
             break;

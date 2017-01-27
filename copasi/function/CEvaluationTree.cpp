@@ -137,7 +137,7 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
   CCopasiContainer(name, pParent, "Function"),
   mType(type),
   mInfix(),
-  mIssue(CValidity::DefaultError),
+  mIssue(CIssue::Error),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
   mpRootNode(NULL),
@@ -155,7 +155,7 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
   CCopasiContainer(src, pParent),
   mType(src.mType),
   mInfix(),
-  mIssue(CValidity::DefaultError),
+  mIssue(CIssue::Error),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
   mpRootNode(NULL),
@@ -186,14 +186,14 @@ CIssue CEvaluationTree::setInfix(const std::string & infix)
   mValidity.clear();
 
   // We assume until proven otherwise that the tree is not usable
-  mIssue = CIssue(CValidity::DefaultError);
+  mIssue = CIssue(CIssue::Error);
 
   // Assume whatever (non null) string which was there before,
   // is still ok.
   if (infix == mInfix &&
       infix != "")
     {
-      mIssue = CValidity::OkNoKind;
+      mIssue = CIssue::Success;
       return mIssue;
     }
 
@@ -239,7 +239,7 @@ CIssue CEvaluationTree::parse()
 
   if (mType == MassAction)
     {
-      mIssue = CValidity::OkNoKind;
+      mIssue = CIssue::Success;
       return mIssue;
     }
 
@@ -261,7 +261,7 @@ CIssue CEvaluationTree::parse()
   CEvaluationLexer Parser(&buffer);
 
   if (Parser.yyparse() == 0)
-    mIssue = CValidity::OkNoKind;
+    mIssue = CIssue::Success;
   else
     {
       mIssue = CIssue(CValidity::Error, CValidity::ExpressionInvalid);
@@ -355,7 +355,7 @@ CIssue CEvaluationTree::compileNodes()
   mValidity.remove(CIssue(CValidity::AllSeverity, ~(CValidity::ExpressionInvalid |
                           CValidity::ExpressionEmpty |
                           CValidity::HasCircularDependency)));
-  mIssue = CValidity::OkNoKind;
+  mIssue = CIssue::Success;
 
   if (mInfix == "")
     {
@@ -526,7 +526,7 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
 CIssue CEvaluationTree::updateTree()
 {
-  mIssue = CValidity::OkNoKind;
+  mIssue = CIssue::Success;
 
   if (mpRootNode == NULL)
     {

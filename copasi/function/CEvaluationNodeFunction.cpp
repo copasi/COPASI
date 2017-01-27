@@ -318,7 +318,7 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   if (mpFunction)
     {
       if (mpArgNode1->getSibling() == NULL)
-        return CValidity::OkNoKind;
+        return CIssue::Success;
       else
         return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have only one child
     }
@@ -332,7 +332,7 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   if (mpFunction2)
     {
       if (mpArgNode2->getSibling() == NULL)
-        return CValidity::OkNoKind;
+        return CIssue::Success;
       else
         return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have only 2 children
     }
@@ -351,7 +351,7 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   mpArgValue4 = mpArgNode4->getValuePointer();
 
   if (mpArgNode4->getSibling() == NULL)
-    return CValidity::OkNoKind;
+    return CIssue::Success;
   else
     return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have exactly 4 children
 }
@@ -1288,8 +1288,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) cons
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-        // :TODO: Bug 894: Implement me.
-        //fatalError();
+      // :TODO: Bug 894: Implement me.
+      //fatalError();
       break;
     }
 

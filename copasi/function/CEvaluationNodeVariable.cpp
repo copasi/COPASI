@@ -56,7 +56,7 @@ CIssue CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
   if (mIndex == C_INVALID_INDEX) return CIssue(CValidity::Error, CValidity::ValueNotFound);
 
   if (getChild() == NULL) // We must not have any children.
-    return CValidity::OkNoKind;
+    return CIssue::Success;
   else
     return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }

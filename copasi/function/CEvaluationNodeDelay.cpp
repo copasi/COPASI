@@ -79,7 +79,7 @@ CIssue CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
         mpDelayLagValue = mpDelayLagNode->getValuePointer();
 
         if (mpDelayLagNode->getSibling() == NULL) // We must have exactly 2 children
-          return CValidity::OkNoKind;
+          return CIssue::Success;
         else
           return CIssue(CValidity::Error, CValidity::TooManyArguments);
 
@@ -90,7 +90,7 @@ CIssue CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
         break;
     }
 
-  return CValidity::OkNoKind;
+  return CIssue::Success;
 }
 
 // virtual

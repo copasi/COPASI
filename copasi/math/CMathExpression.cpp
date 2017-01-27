@@ -195,7 +195,7 @@ CIssue CMathExpression::compile()
 {
   mPrerequisites.clear();
   mValidity.clear();
-  mIssue = CValidity::OkNoKind;
+  mIssue = CIssue::Success;
 
   if (!(mIssue = updateTree()))
     {
@@ -249,7 +249,7 @@ CIssue CMathExpression::compile()
 
   if (mInfix == "@")
     {
-      mIssue = CValidity::OkNoKind;
+      mIssue = CIssue::Success;
     }
 
   buildCalculationSequence();

@@ -117,7 +117,7 @@ void CEvaluationNodeCall::calculate()
 
 CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 {
-  CIssue issue = CValidity::OkNoKind;
+  CIssue issue = CIssue::Success;
   clearParameters(mpCallParameters, mCallNodes);
 
   CObjectInterface * pObjectInterface = NULL;
@@ -197,7 +197,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         break;
 
       default:
-        issue = CValidity::DefaultError;
+        issue = CIssue::Error;
         break;
     }
 

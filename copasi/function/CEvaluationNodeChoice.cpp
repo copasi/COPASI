@@ -95,7 +95,7 @@ CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
   mpFalseValue = mpFalseNode->getValuePointer();
 
   if (mpFalseNode->getSibling() == NULL) // We must have exactly three children
-    return CValidity::OkNoKind;
+    return CIssue::Success;
   else
     return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }

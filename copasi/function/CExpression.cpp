@@ -162,7 +162,7 @@ const CObjectInterface::ContainerList & CExpression::getListOfContainer() const
 
 bool CExpression::updateInfix()
 {
-  mIssue = CValidity::OkNoKind;
+  mIssue = CIssue::Success;
 
   if (mpNodeList == NULL)
     {

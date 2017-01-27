@@ -128,7 +128,7 @@ bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
 
 CIssue CMassAction::setInfix(const std::string & infix)
 {
-  mIssue = CValidity::DefaultError;
+  mIssue = CIssue::Error;
 
   if (infix == "k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>")
     setReversible(TriTrue);
@@ -157,7 +157,7 @@ CIssue CMassAction::setInfix(const std::string & infix)
                          CFunctionParameter::PRODUCT);
     }
 
-  mIssue = CValidity::OkNoKind;
+  mIssue = CIssue::Success;
 
   return mIssue;
 }

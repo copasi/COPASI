@@ -65,12 +65,6 @@ public:
 
   CValidity(const CValidity & src);
 
-  static const CIssue OkNoKind;
-
-  // Use this to initialize a CIssue to "false"
-  // ("not acceptable"), until it is found to be otherwise.
-  static const CIssue DefaultError;
-
   // convenience function to reset CValidity
   void clear();
 
@@ -91,6 +85,11 @@ private:
 class CIssue
 {
 public:
+  static const CIssue Success;
+
+  // Use this to initialize a CIssue to "false"
+  // ("not acceptable"), until it is found to be otherwise.
+  static const CIssue Error;
 
   CIssue(CValidity::Severity severity = CValidity::OK, CValidity::Kind kind = CValidity::NoKind);
 

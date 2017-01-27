@@ -115,7 +115,7 @@ CIssue CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
   mpRightValue = mpRightNode->getValuePointer();
 
   if (mpRightNode->getSibling() == NULL) // We must have only two children
-    return CValidity::OkNoKind;
+    return CIssue::Success;
   else
     return CIssue(CValidity::Error, CValidity::TooManyArguments);
 }

@@ -209,7 +209,7 @@ CIssue CUnit::compile()
       mpDimensionless = const_cast< CUnitComponent * >(&*mComponents.begin());
     }
 
-  return CValidity::OkNoKind;
+  return CIssue::Success;
 }
 
 std::string CUnit::getExpression() const

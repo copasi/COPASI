@@ -220,7 +220,7 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
 CEvaluationNode::~CEvaluationNode() {}
 
 CIssue CEvaluationNode::compile(const CEvaluationTree * /* pTree */)
-{return CValidity::OkNoKind;}
+{return CIssue::Success;}
 
 // virtual
 std::string CEvaluationNode::getInfix(const std::vector< std::string > & /* children */) const

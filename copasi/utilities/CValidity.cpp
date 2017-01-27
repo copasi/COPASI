@@ -10,6 +10,12 @@
 
 #include "CValidity.h"
 
+// static
+const CIssue CIssue::Success;
+
+//static
+const CIssue CIssue::Error = CIssue(CValidity::Error, CValidity::NoKind);
+
 CIssue::CIssue(CValidity::Severity severity, CValidity::Kind kind):
   mSeverity(severity),
   mKind(kind)
@@ -42,12 +48,6 @@ CValidity::CValidity(const CValidity & src):
   mWarnings(src.mWarnings),
   mInformation(src.mInformation)
 {}
-
-//static
-const CIssue CValidity::OkNoKind = CIssue();
-
-//static
-const CIssue CValidity::DefaultError = CIssue(CValidity::Error, CValidity::NoKind);
 
 void CValidity::clear()
 {
