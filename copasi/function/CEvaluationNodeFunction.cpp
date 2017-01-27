@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -198,6 +203,10 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
       case S_ARCCOTH:
         mpFunction = acoth;
+        break;
+
+      case S_SIGN:
+        mpFunction = sign;
         break;
 
       case S_SQRT:
@@ -1587,6 +1596,10 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
       case S_ABS:
         ldata = "|";
         rdata = "|";
+        break;
+
+      case S_SIGN:
+        data = "sign";
         break;
 
       case S_CEIL:

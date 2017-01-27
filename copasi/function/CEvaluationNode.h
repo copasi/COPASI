@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -146,6 +151,7 @@ public:
     S_MIN = 0x0000004B,
     S_RGAMMA = 0x0000004C,
     S_RPOISSON = 0x0000004D,
+    S_SIGN = 0x0000004E,
     S_INVALID = 0x00FFFFFF
   };
 

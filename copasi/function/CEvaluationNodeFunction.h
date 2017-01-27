@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -260,6 +265,9 @@ private:
 
   static inline C_FLOAT64 copasiNot(C_FLOAT64 value)
   {return (value != 0.0) ? 0.0 : 1.0;}
+
+  static inline C_FLOAT64 sign(C_FLOAT64 value)
+  {return (value < 0.0) ? -1.0 : (value > 0.0) ? 1.0 : 0.0;}
 
   static C_FLOAT64 runiform(const C_FLOAT64 & lowerBound,
                             const C_FLOAT64 & upperBound);

@@ -383,6 +383,13 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
   return TOKEN_FUNCTION;
 %}
 
+<INITIAL,sSIGNorVALUE,sVALUE>(sign|SIGN)/\(   %{
+  mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SIGN,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_FUNCTION;
+%}
+
 <INITIAL,sSIGNorVALUE,sVALUE>(sqrt|SQRT)/\(   %{
   mpNode = new CEvaluationNodeFunction(CEvaluationNode::S_SQRT,
                                        yytext);
