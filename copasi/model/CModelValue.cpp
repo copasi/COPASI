@@ -314,6 +314,11 @@ const CExpression* CModelEntity::getInitialExpressionPtr() const
   return mpInitialExpression;
 }
 
+std::string CModelEntity::getDefaultNoiseExpression() const
+{
+  return "sign(<" + mpRateReference->getCN() + ">)*sqrt(abs(<" + mpRateReference->getCN() + ">))";
+}
+
 bool CModelEntity::setNoiseExpression(const std::string & expression)
 {
   if (mStatus != ODE) return false;
@@ -391,6 +396,11 @@ const CExpression* CModelEntity::getNoiseExpressionPtr() const
 void CModelEntity::setHasNoise(const bool & hasNoise)
 {
   mHasNoise = hasNoise;
+
+  if (mpModel != NULL)
+    {
+      mpModel->setCompileFlag(true);
+    }
 }
 
 /**

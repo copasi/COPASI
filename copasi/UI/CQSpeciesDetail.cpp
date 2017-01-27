@@ -590,6 +590,12 @@ void CQSpeciesDetail::slotAddNoiseChanged(bool hasNoise)
 {
   if (hasNoise)
     {
+      if (mpMetab != NULL &&
+          mpMetab->getNoiseExpression().empty())
+        {
+          mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpMetab->getDefaultNoiseExpression());
+        }
+
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();
       mpNoiseExpressionWidget->updateWidget();

@@ -256,6 +256,12 @@ public:
   CExpression* getInitialExpressionPtr();
 
   /**
+   * Retrieve the default expression for the noise.
+   * @return std::string expression
+   */
+  std::string getDefaultNoiseExpression() const;
+
+  /**
    * Set the expression for non FIXED model values
    * @param const std::string & expression
    * @return bool success

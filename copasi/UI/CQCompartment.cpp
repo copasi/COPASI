@@ -271,6 +271,12 @@ void CQCompartment::slotAddNoiseChanged(bool hasNoise)
 {
   if (hasNoise)
     {
+      if (mpCompartment != NULL &&
+          mpCompartment->getNoiseExpression().empty())
+        {
+          mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpCompartment->getDefaultNoiseExpression());
+        }
+
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();
       mpNoiseExpressionWidget->updateWidget();

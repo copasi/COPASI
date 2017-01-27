@@ -157,6 +157,12 @@ void CQModelValue::slotAddNoiseChanged(bool hasNoise)
 {
   if (hasNoise)
     {
+      if (mpModelValue != NULL &&
+          mpModelValue->getNoiseExpression().empty())
+        {
+          mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpModelValue->getDefaultNoiseExpression());
+        }
+
       mpLblNoiseExpression->show();
       mpNoiseExpressionWidget->show();
       mpNoiseExpressionWidget->updateWidget();

@@ -1019,7 +1019,7 @@ bool CReaction::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObject
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpFluxReference->getCN() + ">))";
+  return "sign(<" + mpFluxReference->getCN() + ">)*sqrt(abs(<" + mpFluxReference->getCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)
