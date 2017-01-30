@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -44,9 +49,10 @@ protected slots:
 private:
   QString MMLStr;
 
-  void saveTeX(const QString filename);
-  void savePNG(const QString filename);
-  void saveMML(const QString filename);
+  void saveTeX(const QString& filename);
+  void savePNG(const QString& filename);
+  void savePDF(const QString& filename);
+  void saveMML(const QString& filename);
 
 private slots:
   void slotSaveExpression();

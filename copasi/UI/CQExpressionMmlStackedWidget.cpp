@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,6 +17,8 @@
 
 #include <QtCore/QString>
 #include <QtGui/QPainter>
+#include <QtGui/QPrinter>
+
 
 #include "utilities/CCopasiException.h"
 
@@ -21,6 +28,8 @@
 #include "tex/CMathMLToTeX.h"
 #include "commandline/CLocaleString.h"
 #include "resourcesUI/CQIconResource.h"
+
+#include <fstream>
 
 #include <utilities/CCopasiMessage.h>
 // turns out that the fatalError definition in copasi message is incompatible
@@ -163,7 +172,7 @@ void CQExpressionMmlStackedWidget::init()
 
 void CQExpressionMmlStackedWidget::slotSaveExpression()
 {
-  QString *filter = new QString;
+  QString filter;
   QString outfilename;
 
   C_INT32 Answer = QMessageBox::No;
@@ -174,9 +183,9 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
                                           "untitled.mml",
-                                          "MathML (*.mml);;TeX (*.tex);;PNG (*.png)",
+                                          "MathML (*.mml);;TeX (*.tex);;PDF files (*.pdf);;PNG (*.png)",
 //                                          "Save Expression to Disk", new QString);
-                                          "Save Expression to Disk", filter);
+                                          "Save Expression to Disk", &filter);
 
       if (outfilename.isEmpty()) return;
 
@@ -191,15 +200,42 @@ void CQExpressionMmlStackedWidget::slotSaveExpression()
   qDebug() << "\non CQEMSW::slotSaveExpression -> filter = " << *filter << "\n";
 #endif
 
-  if (filter->contains(".tex"))
+  if (filter.contains(".tex"))
     saveTeX(outfilename);
-  else if (filter->contains(".png"))
+  else if (filter.contains(".png"))
     savePNG(outfilename);
+  else if (filter.contains(".pdf"))
+    savePDF(outfilename);
   else
     saveMML(outfilename);
 }
 
-void CQExpressionMmlStackedWidget::savePNG(const QString outfilename)
+
+void CQExpressionMmlStackedWidget::savePDF(const QString& outfilename)
+{
+  std::ostringstream mml;
+  mpExpressionWidget->writeMathML(mml);
+  QtMmlDocument doc;
+  doc.setBaseFontPointSize(20);
+  doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+  doc.setContent(FROM_UTF8(mml.str()));
+
+  const QSize &size = doc.size();
+  QPrinter printer(QPrinter::ScreenResolution);
+  QPainter painter;
+  printer.setOutputFormat(QPrinter::PdfFormat);
+  printer.setOutputFileName(outfilename);
+  painter.setRenderHints(
+    QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+  printer.setPaperSize(QSizeF(size.width(), size.height()), QPrinter::Point);
+
+  painter.begin(&printer);
+  doc.paint(&painter, QPoint(0, 0));
+  painter.end();
+
+}
+
+void CQExpressionMmlStackedWidget::savePNG(const QString& outfilename)
 {
   std::ostringstream mml;
   mpExpressionWidget->writeMathML(mml);
@@ -219,7 +255,7 @@ void CQExpressionMmlStackedWidget::savePNG(const QString outfilename)
   pixmap.save(outfilename, "PNG");
 }
 
-void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)
+void CQExpressionMmlStackedWidget::saveMML(const QString& outfilename)
 {
   std::ofstream ofile;
   ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
@@ -235,7 +271,7 @@ void CQExpressionMmlStackedWidget::saveMML(const QString outfilename)
   ofile.close();
 }
 
-void CQExpressionMmlStackedWidget::saveTeX(const QString outfilename)
+void CQExpressionMmlStackedWidget::saveTeX(const QString& outfilename)
 {
   std::ostringstream mml;
   mpExpressionWidget->writeMathML(mml);

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,6 +21,7 @@
 
 #include <QtCore/QVariant>
 #include <QtGui/QPainter>
+#include <QtGui/QPrinter>
 
 #include "CQDifferentialEquations.h"
 
@@ -77,7 +83,7 @@ void CQDifferentialEquations::init()
   comboBoxFunctions->setCurrentIndex(1);
 }
 
-void CQDifferentialEquations::saveMML(const QString outfilename)
+void CQDifferentialEquations::saveMML(const QString& outfilename)
 {
   std::ofstream ofile;
   ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
@@ -150,7 +156,7 @@ bool CQDifferentialEquations::enterProtected()
 void CQDifferentialEquations::newFunction()
 {}
 
-void CQDifferentialEquations::saveTeX(const QString outfilename)
+void CQDifferentialEquations::saveTeX(const QString& outfilename)
 {
   QString latexStr(FROM_UTF8(mml.str()));
 
@@ -166,7 +172,28 @@ void CQDifferentialEquations::saveTeX(const QString outfilename)
   ofile.close();
 }
 
-void CQDifferentialEquations::savePNG(const QString outfilename)
+void CQDifferentialEquations::savePDF(const QString& outfilename)
+{
+  QtMmlDocument doc;
+  doc.setBaseFontPointSize(20);
+  doc.setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+  doc.setContent(FROM_UTF8(mml.str()));
+
+  const QSize &size = doc.size();
+  QPrinter printer(QPrinter::ScreenResolution);
+  QPainter painter;
+  printer.setOutputFormat(QPrinter::PdfFormat);
+  printer.setOutputFileName(outfilename);
+  printer.setPaperSize(QSizeF(size.width(), size.height()), QPrinter::Point);
+  painter.setRenderHints(
+    QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+  painter.begin(&printer);
+  doc.paint(&painter, QPoint(0, 0));
+  painter.end();
+
+}
+
+void CQDifferentialEquations::savePNG(const QString& outfilename)
 {
   QtMmlDocument doc;
   doc.setBaseFontPointSize(20);
@@ -187,6 +214,7 @@ void CQDifferentialEquations::savePNG(const QString outfilename)
 void CQDifferentialEquations::slotSave()
 {
   QString outfilename;
+  QString filter;
 
   C_INT32 Answer = QMessageBox::No;
 
@@ -196,8 +224,8 @@ void CQDifferentialEquations::slotSave()
         CopasiFileDialog::getSaveFileName(this,
                                           "Save File Dialog",
                                           "untitled.mml",
-                                          "MathML (*.mml);;TeX (*.tex);;PNG (*.png)",
-                                          "Save Formula to Disk", new QString);
+                                          "MathML (*.mml);;TeX (*.tex);;PDF (*.pdf);;PNG (*.png)",
+                                          "Save Formula to Disk", &filter);
 
       if (outfilename.isEmpty()) return;
 
@@ -214,13 +242,17 @@ void CQDifferentialEquations::slotSave()
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  if (outfilename.contains(".tex"))
+  if (filter.contains(".tex"))
     {
       saveTeX(outfilename);
     }
-  else if (outfilename.contains(".png"))
+  else if (filter.contains(".png"))
     {
       savePNG(outfilename);
+    }
+  else if (filter.contains(".pdf"))
+    {
+      savePDF(outfilename);
     }
   else
     {
