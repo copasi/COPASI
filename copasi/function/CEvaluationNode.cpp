@@ -156,6 +156,7 @@ const char * CEvaluationNode::Keywords[] =
   "arccsch", "ARCCSCH",
   "arccoth", "ARCCOTH",
   "sqrt", "SQRT",
+  "sign", "SIGN",
   "abs", "ABS",
   "floor", "FLOOR",
   "ceil", "CEIL",
