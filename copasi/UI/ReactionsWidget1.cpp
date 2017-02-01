@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -68,10 +73,10 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlag
 
   setWindowTitle(trUtf8("ReactionsWidget1"));
 
-  LineEdit2->setValidator(new ChemEqValidator(LineEdit2));
+  mpEditReactionScheme->setValidator(new ChemEqValidator(mpEditReactionScheme));
 
-  editKinetics->setIcon(CQIconResource::icon(CQIconResource::edit));
-  newKinetics->setIcon(CQIconResource::icon(CQIconResource::editAdd));
+  mpBtnEditFunction->setIcon(CQIconResource::icon(CQIconResource::edit));
+  mpBtnNewFunction->setIcon(CQIconResource::icon(CQIconResource::editAdd));
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
 }
@@ -111,9 +116,9 @@ bool ReactionsWidget1::saveToReaction()
 
   if (reac == NULL) return true;
 
-  if (!LineEdit2->isValid()) return false;
+  if (!mpEditReactionScheme->isValid()) return false;
 
-  LineEdit2->slotForceUpdate();
+  mpEditReactionScheme->slotForceUpdate();
 
   if (!mpRi->isValid()) return false;
 
@@ -218,10 +223,10 @@ bool ReactionsWidget1::saveToReaction()
 
 void ReactionsWidget1::slotCheckBoxClicked()
 {
-  LineEdit2->slotForceUpdate();
+  mpEditReactionScheme->slotForceUpdate();
 
   // tell the reaction interface
-  mpRi->setReversibility(CheckBox->isChecked(), "");
+  mpRi->setReversibility(mpChkReversible->isChecked(), "");
 
   // update the widget
   FillWidgetFromRI();
@@ -240,7 +245,7 @@ void ReactionsWidget1::slotComboBoxSelectionChanged(const QString & p2)
 /*This function is called when the "Chemical Reaction" LineEdit is changed.*/
 void ReactionsWidget1::slotLineEditChanged()
 {
-  std::string eq = TO_UTF8(LineEdit2->text());
+  std::string eq = TO_UTF8(mpEditReactionScheme->text());
 
   //first check if the string is a valid equation
   if (!CChemEqInterface::isValidEq(eq))
@@ -407,16 +412,16 @@ void ReactionsWidget1::slotBtnDelete()
 
 void ReactionsWidget1::FillWidgetFromRI()
 {
-  LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
+  mpEditReactionScheme->setText(FROM_UTF8(mpRi->getChemEqString()));
 
   setFramework(mFramework);
 
   // the reversibility checkbox
-  CheckBox->setChecked(false);
+  mpChkReversible->setChecked(false);
 
   if (mpRi->isReversible() == true)
     {
-      CheckBox->setChecked(true);
+      mpChkReversible->setChecked(true);
     }
 
   mpMultiCompartment->setChecked(mpRi->isMulticompartment());
@@ -425,8 +430,8 @@ void ReactionsWidget1::FillWidgetFromRI()
   QStringList comboEntries;
   vectorOfStrings2QStringList(mpRi->getListOfPossibleFunctions(), comboEntries);
 
-  ComboBox1->clear();
-  ComboBox1->insertItems(0, comboEntries);
+  mpCmbRateLaw->clear();
+  mpCmbRateLaw->insertItems(0, comboEntries);
 
   // Initialize scaling compartment combobox
   QMap<QString, QString> Compartments;
@@ -470,19 +475,19 @@ void ReactionsWidget1::FillWidgetFromRI()
   if (mpRi->getFunctionName() != "")
     {
       if (comboEntries.filter(FROM_UTF8(mpRi->getFunctionName())).size() == 0)
-        ComboBox1->insertItem(0, FROM_UTF8(mpRi->getFunctionName()));
+        mpCmbRateLaw->insertItem(0, FROM_UTF8(mpRi->getFunctionName()));
 
-      ComboBox1->setCurrentIndex(ComboBox1->findText(FROM_UTF8(mpRi->getFunctionName())));
-      ComboBox1->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
+      mpCmbRateLaw->setCurrentIndex(mpCmbRateLaw->findText(FROM_UTF8(mpRi->getFunctionName())));
+      mpCmbRateLaw->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
 
       assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
+      mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
     }
   else
     {
-      ComboBox1->insertItem(0, "undefined");
-      ComboBox1->setCurrentIndex(0);
-      table->initTable();
+      mpCmbRateLaw->insertItem(0, "undefined");
+      mpCmbRateLaw->setCurrentIndex(0);
+      mpParameterMapping->initTable();
     }
 
   mpDefaultUnit->setChecked(mpRi->getKineticLawUnitType() == CReaction::Default);
@@ -543,7 +548,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
 
       // Run a table update, to update the mapped value, and it's
       // editing status, in the adjacent cell.
-      table->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
+      mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
     }
   else if (mpRi->getUsage(Index) == CFunctionParameter::VOLUME)
     {
@@ -565,7 +570,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     {
       if (sub == 0) //here we assume that vector parameters cannot be edited
         {
-          //          mpRi->setMapping((int) Index, TO_UTF8(table->item((int) table->mIndex2Line[index], 3)->text()));
+          //          mpRi->setMapping((int) Index, TO_UTF8(mpParameterMapping->item((int) mpParameterMapping->mIndex2Line[index], 3)->text()));
           mpUndoStack->push(
             new ReactionChangeCommand(
               CCopasiUndoCommand::REACTION_MAPPING_SPECIES_CHANGE,
@@ -578,7 +583,7 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
             )
           );
 
-          LineEdit2->setText(FROM_UTF8(mpRi->getChemEqString()));
+          mpEditReactionScheme->setText(FROM_UTF8(mpRi->getChemEqString()));
         }
     }
 
@@ -597,9 +602,9 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
     return;
 
   // update the widget
-  int rrr = table->currentRow();
-  int ccc = table->currentColumn();
-  table->setCurrentCell(rrr, ccc);
+  int rrr = mpParameterMapping->currentRow();
+  int ccc = mpParameterMapping->currentColumn();
+  mpParameterMapping->setCurrentCell(rrr, ccc);
 }
 
 void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
@@ -681,6 +686,8 @@ void ReactionsWidget1::slotConcentrationUnitChecked(const bool & checked)
     {
       mpRi->setKineticLawUnitType(checked ? CReaction::ConcentrationPerTime : CReaction::AmountPerTime);
     }
+
+  mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
 void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
@@ -693,12 +700,16 @@ void ReactionsWidget1::slotAmountUnitChecked(const bool & checked)
     {
       mpRi->setKineticLawUnitType(checked ? CReaction::AmountPerTime : CReaction::ConcentrationPerTime);
     }
+
+  mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
 // virtual
 void ReactionsWidget1::slotCompartmentSelectionChanged(const QString & compartment)
 {
   mpRi->setScalingCompartment(TO_UTF8(compartment));
+  mpConcentrationUnit->setText(FROM_UTF8(CUnit::prettyPrint(mpRi->getConcentrationRateUnit())));
+  mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
@@ -763,10 +774,10 @@ void ReactionsWidget1::setFramework(int framework)
         if (!Units.isEmpty())
           Units = " (" + Units + ")";
 
-        TextLabel8->setText("Flux" + Units);
+        mpLblFlux->setText("Flux" + Units);
 
         if (pReaction != NULL)
-          LineEdit3->setText(QString::number(pReaction->getFlux(), 'g', 10));
+          mpEditFlux->setText(QString::number(pReaction->getFlux(), 'g', 10));
 
         break;
 
@@ -778,10 +789,10 @@ void ReactionsWidget1::setFramework(int framework)
         if (Units != "none")
           Units = " (" + Units + ")";
 
-        TextLabel8->setText("Particle Flux" + Units);
+        mpLblFlux->setText("Particle Flux" + Units);
 
         if (pReaction != NULL)
-          LineEdit3->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));
+          mpEditFlux->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));
 
         break;
     }
