@@ -906,6 +906,8 @@ CReactionInterface::updateModifiersInChemEq()
 void
 CReactionInterface::setMapping(size_t index, std::string mn)
 {
+  if (mIsLocal.size() <= index) return;
+
   mIsLocal[index] = false;
 
   switch (getUsage(index))
