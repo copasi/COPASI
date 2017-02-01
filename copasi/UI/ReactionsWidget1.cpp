@@ -557,8 +557,8 @@ void ReactionsWidget1::slotTableChanged(int index, int sub, QString newValue)
       mpUndoStack->push(
         new ReactionChangeCommand(
           CCopasiUndoCommand::REACTION_MAPPING_VOLUME_CHANGE,
-          newValue,
           FROM_UTF8(mpRi->getMapping(Index)),
+          newValue,
           this,
           reaction,
           index,
