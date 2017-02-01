@@ -1120,9 +1120,9 @@ void CMathContainer::fetchInitialState()
 
 void CMathContainer::pushInitialState()
 {
-  C_FLOAT64 * pValue = mInitialState.array();
-  C_FLOAT64 * pValueEnd = pValue + mInitialState.size();
-  CMathObject * pObject = mObjects.array();
+  C_FLOAT64 * pValue = mInitialState.begin();
+  C_FLOAT64 * pValueEnd = mInitialState.end();
+  CMathObject * pObject = getMathObject(pValue);
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
@@ -1139,9 +1139,9 @@ void CMathContainer::pushInitialState()
 
 void CMathContainer::fetchState()
 {
-  C_FLOAT64 * pValue = mState.array();
-  C_FLOAT64 * pValueEnd = pValue + mState.size();
-  CMathObject * pObject = mObjects.array();
+  C_FLOAT64 * pValue = mState.begin();
+  C_FLOAT64 * pValueEnd = mState.end();
+  CMathObject * pObject = getMathObject(pValue);
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
