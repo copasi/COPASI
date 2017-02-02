@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -264,14 +269,12 @@ CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
 CCopasiMethod::CCopasiMethod(const CCopasiContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType):
-  CCopasiParameterGroup(CTaskEnum::TaskName[taskType], pParent, "Method"),
+  CCopasiParameterGroup(CTaskEnum::MethodName[methodType], pParent, "Method"),
   mTaskType(taskType),
   mSubType(methodType),
   mpContainer(NULL),
   mpCallBack(NULL)
-{
-  setObjectName(CTaskEnum::MethodName[mSubType]);
-}
+{}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CCopasiContainer * pParent):

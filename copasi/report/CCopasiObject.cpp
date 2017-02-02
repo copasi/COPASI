@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -140,7 +145,9 @@ CCopasiObject::CCopasiObject():
   mObjectType("Unknown Type"),
   mpObjectParent(NULL),
   mpObjectDisplayName(NULL),
-  mObjectFlag(0)
+  mObjectFlag(0),
+  mDependencies(),
+  mReferences()
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
@@ -152,13 +159,17 @@ CCopasiObject::CCopasiObject(const std::string & name,
   mObjectType(type),
   mpObjectParent(const_cast<CCopasiContainer * >(pParent)),
   mpObjectDisplayName(NULL),
-  mObjectFlag(flag)
+  mObjectFlag(flag),
+  mDependencies(),
+  mReferences()
 {
   if (mpObjectParent != NULL &&
       mpObjectParent->isContainer())
     {
       mpObjectParent->add(this, true);
     }
+
+  addReference(mpObjectParent);
 }
 
 CCopasiObject::CCopasiObject(const CCopasiObject & src,
@@ -168,7 +179,9 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   mObjectType(src.mObjectType),
   mpObjectParent(src.mpObjectParent),
   mpObjectDisplayName(NULL),
-  mObjectFlag(src.mObjectFlag)
+  mObjectFlag(src.mObjectFlag),
+  mDependencies(),
+  mReferences()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -179,12 +192,23 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
     {
       mpObjectParent->add(this, true);
     }
+
+  addReference(mpObjectParent);
 }
 
 CCopasiObject::~CCopasiObject()
 {
   if (mpObjectParent)
-    mpObjectParent->remove(this);
+    {
+      mpObjectParent->remove(this);
+      removeReference(mpObjectParent);
+    }
+
+  std::set< CCopasiContainer * >::iterator it = mReferences.begin();
+  std::set< CCopasiContainer * >::iterator end = mReferences.end();
+
+  for (; it != end; ++it)
+    (*it)->remove(this);
 
   pdelete(mpObjectDisplayName);
 }
@@ -287,7 +311,7 @@ bool CCopasiObject::setObjectName(const std::string & name)
       mpObjectParent->getObject("[" + CCopasiObjectName::escape(Name) + "]"))
     return false;
 
-  bool Add = (mpObjectParent != NULL && mpObjectParent->CCopasiContainer::remove(this));
+  std::string OldName = mObjectName;
 
   if (smpRenameHandler && mpObjectParent)
     {
@@ -305,10 +329,11 @@ bool CCopasiObject::setObjectName(const std::string & name)
       mObjectName = Name;
     }
 
-  if (Add)
-    {
-      mpObjectParent->CCopasiContainer::add(this, false);
-    }
+  std::set< CCopasiContainer * >::iterator it = mReferences.begin();
+  std::set< CCopasiContainer * >::iterator end = mReferences.end();
+
+  for (; it != end; ++it)
+    (*it)->objectRenamed(this, OldName);
 
   return true;
 }
@@ -367,14 +392,33 @@ bool CCopasiObject::setObjectParent(const CCopasiContainer * pParent)
 
   if (mpObjectParent != NULL &&
       pParent != NULL)
-    mpObjectParent->remove(this);
+    {
+      mpObjectParent->remove(this);
+    }
+
+  removeReference(mpObjectParent);
 
   mpObjectParent = const_cast<CCopasiContainer *>(pParent);
+
+  addReference(mpObjectParent);
 
   return true;
 }
 
 CCopasiContainer * CCopasiObject::getObjectParent() const {return mpObjectParent;}
+
+void CCopasiObject::addReference(const CCopasiContainer * pReference)
+{
+  if (pReference != NULL)
+    {
+      mReferences.insert(const_cast< CCopasiContainer * >(pReference));
+    }
+}
+
+void CCopasiObject::removeReference(const CCopasiContainer * pReference)
+{
+  mReferences.erase(const_cast< CCopasiContainer * >(pReference));
+}
 
 CCopasiContainer *
 CCopasiObject::getObjectAncestor(const std::string & type) const

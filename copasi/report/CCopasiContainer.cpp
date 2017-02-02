@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -305,6 +310,27 @@ bool CCopasiContainer::CObjectMap::contains(CCopasiObject * pObject) const
   return false;
 }
 
+void CCopasiContainer::CObjectMap::objectRenamed(CCopasiObject * pObject, const std::string & oldName)
+{
+  if (pObject != NULL)
+    {
+      // We cannot use erase since the object has already been renamed.
+      std::map< std::string, std::set< CCopasiObject * > >::iterator itMap = data::find(oldName);
+
+      if (itMap != data::end())
+        {
+          bool success = (itMap->second.erase(pObject) > 0);
+
+          if (itMap->second.empty())
+            {
+              data::erase(itMap);
+            }
+        }
+
+      insert(pObject);
+    }
+}
+
 std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject * >::const_iterator > CCopasiContainer::CObjectMap::equal_range(const std::string & name) const
 {
   std::map< std::string, std::set< CCopasiObject * > >::const_iterator itMap = data::find(name);
@@ -484,6 +510,7 @@ const CCopasiObject * CCopasiContainer::getValueObject() const
 
 void CCopasiContainer::initObjects() {}
 
+// virtual
 bool CCopasiContainer::add(CCopasiObject * pObject,
                            const bool & adopt)
 {
@@ -499,14 +526,28 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
   /* This object is not contained, so we can add it. */
   mObjects.insert(pObject);
 
-  if (adopt) pObject->setObjectParent(this);
+  if (adopt)
+    pObject->setObjectParent(this);
+  else
+    pObject->addReference(this);
 
   return true;
 }
 
+// virtual
 bool CCopasiContainer::remove(CCopasiObject * pObject)
 {
+  if (pObject != NULL)
+    {
+      pObject->removeReference(this);
+    }
+
   return mObjects.erase(pObject);
+}
+
+void CCopasiContainer::objectRenamed(CCopasiObject * pObject, const std::string & oldName)
+{
+  mObjects.objectRenamed(pObject, oldName);
 }
 
 // virtual
