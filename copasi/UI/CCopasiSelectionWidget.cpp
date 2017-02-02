@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,6 +24,8 @@
 #include "CCopasiSelectionWidget.h"
 #include "ObjectBrowserWidget.h"
 #include "CQSimpleSelectionTree.h"
+
+#include <copasi/utilities/CCopasiMessage.h>
 
 CCopasiSelectionWidget::CCopasiSelectionWidget(QWidget* parent):
   QStackedWidget(parent),
@@ -43,12 +50,24 @@ CCopasiSelectionWidget::~CCopasiSelectionWidget()
 void CCopasiSelectionWidget::populateTree(const CModel * model,
     const CQSimpleSelectionTree::ObjectClasses & classes)
 {
+  size_t lastError = CCopasiMessage::peekLastMessage().getNumber();
+
   this->mpSimpleTree->populateTree(model, classes);
+
+  // in case getObjectVector issues an error, remove it from the list
+  if (lastError != CCopasiMessage::peekLastMessage().getNumber())
+    CCopasiMessage::clearDeque();
 }
 
 void CCopasiSelectionWidget::populateTree(const std::vector< const CCopasiObject * > & objectList)
 {
+  size_t lastError = CCopasiMessage::peekLastMessage().getNumber();
+
   this->mpSimpleTree->populateTree(objectList);
+
+  // in case getObjectVector issues an error, remove it from the list
+  if (lastError != CCopasiMessage::peekLastMessage().getNumber())
+    CCopasiMessage::clearDeque();
 }
 
 void CCopasiSelectionWidget::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
