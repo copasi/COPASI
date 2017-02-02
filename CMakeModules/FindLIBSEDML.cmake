@@ -1,4 +1,9 @@
-# Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -19,6 +24,8 @@
 find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
     PATHS $ENV{LIBSEDML_DIR}/include
           $ENV{LIBSEDML_DIR}
+	  ${COPASI_DEPENDENCY_DIR}/include
+          ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -39,6 +46,8 @@ find_library(LIBSEDML_LIBRARY
           libsedml
     PATHS $ENV{LIBSEDML_DIR}/lib
           $ENV{LIBSEDML_DIR}
+          ${COPASI_DEPENDENCY_DIR}/lib
+          ${COPASI_DEPENDENCY_DIR}
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib        # Fink
@@ -53,6 +62,24 @@ if (NOT LIBSEDML_LIBRARY)
         NAMES sedml-static 
               sedml)
 endif (NOT LIBSEDML_LIBRARY)
+
+find_library(LIBNUML_LIBRARY 
+    NAMES numl-static 
+          numl
+          libnuml-static 
+          libnuml
+    PATHS $ENV{LIBSEDML_DIR}/lib
+          $ENV{LIBSEDML_DIR}
+          ${COPASI_DEPENDENCY_DIR}/lib
+          ${COPASI_DEPENDENCY_DIR}
+          ~/Library/Frameworks
+          /Library/Frameworks
+          /sw/lib        # Fink
+          /opt/local/lib # MacPorts
+          /opt/csw/lib   # Blastwave
+          /opt/lib
+          /usr/freeware/lib64
+    NO_DEFAULT_PATH)
 
 if (NOT LIBSEDML_INCLUDE_DIR)
     message(FATAL_ERROR "libsedml include dir not found not found!")
@@ -74,4 +101,4 @@ endif(LIBSEDML_LIBRARY)
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBSEDML DEFAULT_MSG LIBSEDML_LIBRARY LIBSEDML_INCLUDE_DIR)
 
-mark_as_advanced(LIBSEDML_INCLUDE_DIR LIBSEDML_LIBRARY)
+mark_as_advanced(LIBSEDML_INCLUDE_DIR LIBSEDML_LIBRARY LIBNUML_LIBRARY)

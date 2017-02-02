@@ -34,5 +34,5 @@ include(../../../CMakeConsoleApp.cmake)
 
 add_executable(assignParameterSet ${SOURCES} ${HEADERS})
 add_dependencies(assignParameterSet ${SE_DEPENDENCIES}) 
-target_link_libraries(assignParameterSet ${SE_EXTERNAL_LIBS} ${SE_LIBS})
+target_link_libraries(assignParameterSet ${SE_LIBS} ${SE_EXTERNAL_LIBS} )
 

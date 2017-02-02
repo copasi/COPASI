@@ -34,5 +34,5 @@ include(../../../CMakeConsoleApp.cmake)
 
 add_executable(printAffectedExperiments ${SOURCES} ${HEADERS})
 add_dependencies(printAffectedExperiments ${SE_DEPENDENCIES}) 
-target_link_libraries(printAffectedExperiments ${SE_EXTERNAL_LIBS} ${SE_LIBS})
+target_link_libraries(printAffectedExperiments ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
