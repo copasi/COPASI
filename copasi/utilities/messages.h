@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -420,8 +425,8 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 11, "CILDMModifiedMethod (11): At time t='%f'  no reduction is possible."},
   {MCTSSAMethod + 12, "CCSPMethod (12): At time t='%f'  no reduction is possible."},
   {MCTSSAMethod + 13, "CTSSAMethod (13): Number of compartments has to be exactly one. "},
-  {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assigments or ODE are presenting. "},
-  {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f': there are negativ time scales. "},
+  {MCTSSAMethod + 14, "CTSSAMethod (14): The problem is not valid for this method: the metabolites determined by assignments or ODE are presenting. "},
+  {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f': there are negative time scales. "},
   {MCTSSAMethod + 16, "CTSSAMethod (16): This method is not applicable for a system with more than one compartment. "},
   {MCTSSAMethod + 17, "CTSSAMethod (17): In this version of Copasi the CSP Method only supports  compartments with equal size  "},
 
