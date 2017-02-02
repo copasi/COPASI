@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -352,7 +357,11 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
       setItem((int) rowCounter, 1, pItem);
 
       // add units column
-      pItem = new QTableWidgetItem(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
+      if (rowCounter < Validator.getVariableUnits().size())
+        pItem = new QTableWidgetItem(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
+      else
+        pItem = new QTableWidgetItem(" ? ");
+
       pItem->setBackgroundColor(color);
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
       setItem((int) rowCounter, 4, pItem);
