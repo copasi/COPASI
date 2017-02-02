@@ -216,7 +216,6 @@ CCopasiObject::~CCopasiObject()
   if (mpObjectParent)
     {
       mpObjectParent->remove(this);
-      removeReference(mpObjectParent);
     }
 
   std::set< CCopasiContainer * >::iterator it = mReferences.begin();
