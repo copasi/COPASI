@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -118,10 +123,9 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
   else if (type == "Flux")
     {
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
-      splitStrings(displayName, ')', stringsContainer);
-      displayName = stringsContainer[0];
 
-      removeCharactersFromString(displayName, "(");
+      std::string::size_type pos = displayName.rfind(".Flux");
+      displayName = displayName.substr(1, pos - 2);
 
       sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_REACTION, displayName);
 
