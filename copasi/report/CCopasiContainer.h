@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -118,6 +123,7 @@ public:
     void clear();
 
     bool contains(CCopasiObject * pObject) const;
+    void objectRenamed(CCopasiObject * pObject, const std::string & oldName);
 
     std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject * >::const_iterator > equal_range(const std::string & name) const;
 
@@ -162,6 +168,8 @@ public:
   virtual bool add(CCopasiObject * pObject, const bool & adopt = true);
 
   virtual bool remove(CCopasiObject * pObject);
+
+  void objectRenamed(CCopasiObject * pObject, const std::string & oldName);
 
   /**
    * Retrieve the units of the object.

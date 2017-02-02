@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -210,12 +215,13 @@ private:
 
   unsigned C_INT32 mObjectFlag;
 
-private:
   /**
    * A list of all objects the object depends on directly, i.e, the
    * objects which are used to calculate the object.
    */
   DataObjectSet mDependencies;
+
+  std::set< CCopasiContainer * > mReferences;
 
 protected:
 
@@ -277,6 +283,10 @@ public:
   virtual bool setObjectParent(const CCopasiContainer * pParent);
 
   CCopasiContainer * getObjectParent() const;
+
+  void addReference(const CCopasiContainer * pReference);
+
+  void removeReference(const CCopasiContainer * pReference);
 
   /**
    * Returns a pointer to the CCopasiDataModel the element belongs to.
