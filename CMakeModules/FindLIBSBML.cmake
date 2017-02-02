@@ -1,4 +1,9 @@
-# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -8,19 +13,48 @@
 # LIBSBML_INCLUDE_DIR, where to find the headers
 #
 # LIBSBML_LIBRARY, LIBSBML_LIBRARY_DEBUG
-# LIBSBML_FOUND
-#
-# $LIBSBML_DIR is an environment variable that would
-# correspond to the ./configure --prefix=$LIBSBML_DIR
-#
-# Created by Robert Osfield.
-# Modified by Ralph Gauges
+# LIBSBML_FOUND, LIBSBML_LIBRARY_NAME
 
-message (STATUS "$ENV{LIBSBML_DIR}")
+
+if(UNIX OR CYGWIN OR MINGW)
+  set(LIBSBML_LIBRARY_NAME sbml)
+else()
+  set(LIBSBML_LIBRARY_NAME libsbml)
+endif()
+
+if (NOT LIBSBML_SHARED)
+  set(LIBSBML_LIBRARY_NAME "${LIBSBML_LIBRARY_NAME}-static")
+endif()
+
+message (STATUS "Looking for ${LIBSBML_LIBRARY_NAME}")
+
+find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET)
+
+if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
+  find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET
+    PATHS /usr/lib/cmake
+          /usr/local/lib/cmake
+          /opt/lib/cmake
+          /opt/local/lib/cmake
+          /sw/lib/cmake
+  )
+endif()
+
+if (${LIBSBML_LIBRARY_NAME}_FOUND)
+
+  get_target_property(LIBSBML_LIBRARY ${LIBSBML_LIBRARY_NAME} LOCATION)
+  get_filename_component(LIB_PATH ${LIBSBML_LIBRARY} DIRECTORY)
+  file(TO_CMAKE_PATH ${LIB_PATH}/../include LIBSBML_INCLUDE_DIR)  
+  get_filename_component (LIBSBML_INCLUDE_DIR ${LIBSBML_INCLUDE_DIR} REALPATH)
+  get_target_property(LIBSBML_VERSION ${LIBSBML_LIBRARY_NAME} VERSION)
+
+else()
 
 find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
     PATHS $ENV{LIBSBML_DIR}/include
           $ENV{LIBSBML_DIR}
+          ${COPASI_DEPENDENCY_DIR}
+          ${COPASI_DEPENDENCY_DIR}/include
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/include        # Fink
@@ -31,12 +65,14 @@ find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
     NO_DEFAULT_PATH)
 
 if (NOT LIBSBML_INCLUDE_DIR)
+    find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h)
+endif (NOT LIBSBML_INCLUDE_DIR)
+
+
+if (NOT LIBSBML_INCLUDE_DIR)
     message(FATAL_ERROR "libsbml include dir not found not found!")
 endif (NOT LIBSBML_INCLUDE_DIR)
 
-if (NOT LIBSBML_INCLUDE_DIR)
-    find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h)
-endif (NOT LIBSBML_INCLUDE_DIR)
 
 find_library(LIBSBML_LIBRARY 
     NAMES sbml-static 
@@ -45,6 +81,8 @@ find_library(LIBSBML_LIBRARY
           libsbml
     PATHS $ENV{LIBSBML_DIR}/lib
           $ENV{LIBSBML_DIR}
+          ${COPASI_DEPENDENCY_DIR}
+          ${COPASI_DEPENDENCY_DIR}/lib
           ~/Library/Frameworks
           /Library/Frameworks
           /sw/lib        # Fink
@@ -64,9 +102,16 @@ if (NOT LIBSBML_LIBRARY)
     message(FATAL_ERROR "LIBSBML library not found!")
 endif (NOT LIBSBML_LIBRARY)
 
+  add_library(${LIBSBML_LIBRARY_NAME} UNKNOWN IMPORTED)
+  set_target_properties(${LIBSBML_LIBRARY_NAME} PROPERTIES IMPORTED_LOCATION ${LIBSBML_LIBRARY})
+
+endif()
+
+
+
 set(LIBSBML_FOUND "NO")
 if(LIBSBML_LIBRARY)
-    if   (LIBSBML_INCLUDE_DIR)
+    if (LIBSBML_INCLUDE_DIR)
         SET(LIBSBML_FOUND "YES")
     endif(LIBSBML_INCLUDE_DIR)
 endif(LIBSBML_LIBRARY)
@@ -74,6 +119,7 @@ endif(LIBSBML_LIBRARY)
 # handle the QUIETLY and REQUIRED arguments and set LIBSBML_FOUND to TRUE if 
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBSBML DEFAULT_MSG LIBSBML_LIBRARY LIBSBML_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBSBML DEFAULT_MSG LIBSBML_LIBRARY_NAME LIBSBML_LIBRARY LIBSBML_INCLUDE_DIR)
 
-mark_as_advanced(LIBSBML_INCLUDE_DIR LIBSBML_LIBRARY)
+mark_as_advanced(LIBSBML_INCLUDE_DIR LIBSBML_LIBRARY LIBSBML_LIBRARY_NAME)
+
