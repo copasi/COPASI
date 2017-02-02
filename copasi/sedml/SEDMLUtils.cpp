@@ -149,6 +149,27 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
       if (stringsContainer.size() == 1)
         {
           // not found ... might be a local parameter
+          size_t parameterPos = displayName.rfind(".");
+
+          if (parameterPos != std::string::npos)
+            {
+              std::string parameterId = displayName.substr(parameterPos + 1);
+              std::string reactionName = displayName.substr(1, parameterPos - 2);
+              sbmlId = findIdByNameAndType(copasi2sbmlmap, SBML_REACTION, reactionName);
+
+              std::stringstream xpath;
+              xpath << "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
+              xpath << sbmlId;
+              xpath << "\']/sbml:kineticLaw/sbml:listOfParameters/sbml:parameter[@id=\'";
+              xpath << parameterId;
+              xpath << "\']";
+
+              sbmlId += "_" + parameterId;
+
+              return xpath.str();
+
+            }
+
           removeCharactersFromString(displayName, "()");
           splitStrings(displayName, '.', stringsContainer);
 
