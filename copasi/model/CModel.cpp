@@ -920,31 +920,37 @@ void CModel::initializeMetabolites()
   mNumMetabolitesAssignment = AssignmentMetabs.size();
   mNumMetabolitesUnused = FixedMetabs.size();
 
-  mMetabolitesX.resize(mNumMetabolitesODE + mNumMetabolitesReaction + mNumMetabolitesAssignment + mNumMetabolitesUnused);
-  itMetab = mMetabolitesX.begin();
   std::vector< CMetab *>::const_iterator itSorted = ODEMetabs.begin();
   std::vector< CMetab *>::const_iterator endSorted = ODEMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    itMetab = *itSorted;
+    {
+      mMetabolitesX.add(*itSorted, false);
+    }
 
   itSorted = ReactionMetabs.begin();
   endSorted = ReactionMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    itMetab = *itSorted;
+    {
+      mMetabolitesX.add(*itSorted, false);
+    }
 
   itSorted = AssignmentMetabs.begin();
   endSorted = AssignmentMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    itMetab = *itSorted;
+    {
+      mMetabolitesX.add(*itSorted, false);
+    }
 
   itSorted = FixedMetabs.begin();
   endSorted = FixedMetabs.end();
 
   for (; itSorted != endSorted; ++itSorted, ++itMetab)
-    itMetab = *itSorted;
+    {
+      mMetabolitesX.add(*itSorted, false);
+    }
 
   // mMetabolitesX = mMetabolites;
 }

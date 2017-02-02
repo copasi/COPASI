@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -286,8 +291,7 @@ void CTSSAMethod::initializeParameter()
 {
   if (mpLsodaMethod == NULL)
     {
-      mpLsodaMethod = static_cast< CLsodaMethod *>(createMethod(getObjectParent(), CTaskEnum::deterministic, getType()));
-      mpLsodaMethod->setObjectParent(this);
+      mpLsodaMethod = static_cast< CLsodaMethod *>(createMethod(this, CTaskEnum::deterministic, getType()));
 
       mpLsodaMethod->setValue("Integrate Reduced Model", true);
       mpLsodaMethod->setValue("Relative Tolerance", (C_FLOAT64) 1.0e-6);
