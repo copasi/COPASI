@@ -929,7 +929,7 @@ void CModel::initializeMetabolites()
   itSorted = ReactionMetabs.begin();
   endSorted = ReactionMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
@@ -937,7 +937,7 @@ void CModel::initializeMetabolites()
   itSorted = AssignmentMetabs.begin();
   endSorted = AssignmentMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
@@ -945,7 +945,7 @@ void CModel::initializeMetabolites()
   itSorted = FixedMetabs.begin();
   endSorted = FixedMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
@@ -2250,7 +2250,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2300,7 +2300,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
@@ -3244,7 +3244,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            // Intentionally no break statement!
 
           case ASSIGNMENT:
 
