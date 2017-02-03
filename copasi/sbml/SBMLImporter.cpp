@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -2581,6 +2586,20 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
       copasiReaction->addModifier(pos->second->getKey());
 
+      if (compartment == NULL)
+        {
+          compartment = pos->second->getCompartment();
+        }
+      else
+        {
+          if (singleCompartment && compartment != pos->second->getCompartment())
+            {
+              singleCompartment = false;
+            }
+        }
+
+
+
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import
       // expressions that reference a species reference
@@ -4954,7 +4973,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
         {
           std::set<const Parameter*>::const_iterator avoIt = this->mPotentialAvogadroNumbers.begin();
           std::set<const Parameter*>::const_iterator avoEndit = this->mPotentialAvogadroNumbers.end();
-          // check if one of the potantial avogrador numbers is a child to this multiplication
+          // check if one of the potential avogradro numbers is a child to this multiplication
           ASTNode* pChild1 = itNode->getChild(0);
           ASTNode* pChild2 = itNode->getChild(1);
           assert(pChild1 != NULL);
