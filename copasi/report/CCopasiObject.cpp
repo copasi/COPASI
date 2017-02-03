@@ -203,11 +203,17 @@ CCopasiObject::~CCopasiObject()
       mpObjectParent->remove(this);
     }
 
-  std::set< CCopasiContainer * >::iterator it = mReferences.begin();
-  std::set< CCopasiContainer * >::iterator end = mReferences.end();
+  if (!mReferences.empty())
+    {
+      std::set< CCopasiContainer * > References(mReferences);
+      mReferences.clear();
 
-  for (; it != end; ++it)
-    (*it)->remove(this);
+      std::set< CCopasiContainer * >::iterator it = References.begin();
+      std::set< CCopasiContainer * >::iterator end = References.end();
+
+      for (; it != end; ++it)
+        (*it)->remove(this);
+    }
 
   pdelete(mpObjectDisplayName);
 }
