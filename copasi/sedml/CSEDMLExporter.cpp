@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -262,7 +267,15 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
           range->setType(log ? "log" : "linear");
 
           const CRegisteredObjectName& cn = (current->getParameter("Object")->getValue< CCopasiObjectName >());
-          std::string xpath = SEDMLUtils::getXPathForObject(*static_cast<const CCopasiObject*>(dataModel.getObject(cn)));
+          const CCopasiObject* pObject = static_cast<const CCopasiObject*>(dataModel.getObject(cn));
+
+          if (pObject == NULL)
+            {
+              CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI cannot export the selected scan object, it will be ignored.");
+              continue;
+            }
+
+          std::string xpath = SEDMLUtils::getXPathForObject(*pObject);
 
           if (xpath.empty())
             {
