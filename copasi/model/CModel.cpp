@@ -931,7 +931,7 @@ void CModel::initializeMetabolites()
   itSorted = ReactionMetabs.begin();
   endSorted = ReactionMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
@@ -939,7 +939,7 @@ void CModel::initializeMetabolites()
   itSorted = AssignmentMetabs.begin();
   endSorted = AssignmentMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
@@ -947,7 +947,7 @@ void CModel::initializeMetabolites()
   itSorted = FixedMetabs.begin();
   endSorted = FixedMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
