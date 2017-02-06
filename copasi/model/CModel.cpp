@@ -921,7 +921,7 @@ void CModel::initializeMetabolites()
   std::vector< CMetab *>::const_iterator itSorted = ODEMetabs.begin();
   std::vector< CMetab *>::const_iterator endSorted = ODEMetabs.end();
 
-  for (; itSorted != endSorted; ++itSorted, ++itMetab)
+  for (; itSorted != endSorted; ++itSorted)
     {
       mMetabolitesX.add(*itSorted, false);
     }
