@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5198,13 +5203,14 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
 
       if (reaction.getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
         {
-          const CCompartment& compartment = (reaction.getChemEq().getSubstrates().size() != 0) ? (*reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (*reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
+          const CCompartment* compartment = reaction.getScalingCompartment() != NULL ? reaction.getScalingCompartment() :
+                                            (reaction.getChemEq().getSubstrates().size() != 0) ? (reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
 
-          if (compartment.getDimensionality() != 0)
+          if (compartment->getDimensionality() != 0)
             {
               // check if the importer has added a division by the volume
               // if so remove it instead of multiplying again
-              ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment.getSBMLId());
+              ASTNode* pTNode = CSBMLExporter::isDividedByVolume(pNode, compartment->getSBMLId());
 
               if (pTNode)
                 {
@@ -5227,7 +5233,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CCopasiDa
                 {
                   pTNode = new ASTNode(AST_TIMES);
                   ASTNode* pVNode = new ASTNode(AST_NAME);
-                  pVNode->setName(compartment.getSBMLId().c_str());
+                  pVNode->setName(compartment->getSBMLId().c_str());
                   pTNode->addChild(pVNode);
                   pTNode->addChild(pNode);
                   pNode = pTNode;
