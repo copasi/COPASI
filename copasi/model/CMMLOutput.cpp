@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -107,9 +112,10 @@ void CMMLOutput::writeRHS(std::ostream & out,
     }
 
   //compartment volume?
-  if (pReac->getCompartmentNumber() == 1)
+  if (pReac->getScalingCompartment() != NULL &&
+      pReac->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
     {
-      std::string compName = pMetab->getCompartment()->getObjectName();
+      std::string compName = pReac->getScalingCompartment()->getObjectName();
       out << SPC(l + 1) << "<msub><mi>V</mi><mi>" << CMathMl::fixName(compName)
           << "</mi></msub>" << std::endl;
       out << SPC(l + 1) << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
