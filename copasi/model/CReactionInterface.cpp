@@ -137,7 +137,10 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
       mpParameters = new CFunctionParameters(mpFunction->getVariables(), NO_PARENT);
 
       //mapping
-      loadMappingAndValues(*rea);
+      if (!loadMappingAndValues(*rea))
+        {
+          setFunctionAndDoMapping(mpFunction->getObjectName());
+        }
     }
   else
     {
@@ -198,7 +201,11 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
             {
               metabName = CMetabNameInterface::getDisplayName(mpModel, *jt, true);
 
-              if (metabName == "") continue;
+              if (metabName == "")
+                {
+                  success = false;
+                  continue;
+                }
 
               assert(metabName != "");
               SubList.push_back(metabName);
