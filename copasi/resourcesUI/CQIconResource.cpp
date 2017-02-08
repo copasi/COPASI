@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -49,7 +54,7 @@ void CQIconResource::init()
   Icons[miriam].addFile(QString::fromUtf8(":/images/miriam.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[moveDown].addFile(QString::fromUtf8(":/images/moveDown.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[moveUp].addFile(QString::fromUtf8(":/images/moveUp.png"), QSize(), QIcon::Normal, QIcon::On);
-  Icons[parameterConflict].addFile(QString::fromUtf8(":/images/parameterConflict.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[warning].addFile(QString::fromUtf8(":/images/warning.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[parameterMissing].addFile(QString::fromUtf8(":/images/parameterMissing.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[parameterModified].addFile(QString::fromUtf8(":/images/parameterModified.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[parameterObsolete].addFile(QString::fromUtf8(":/images/parameterObsolete.png"), QSize(), QIcon::Normal, QIcon::On);

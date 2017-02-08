@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -353,7 +358,7 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
               break;
 
             case CModelParameter::Conflict:
-              return QVariant(CQIconResource::icon(CQIconResource::parameterConflict));
+              return QVariant(CQIconResource::icon(CQIconResource::warning));
               break;
 
             case CModelParameter::Identical:
