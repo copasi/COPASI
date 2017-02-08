@@ -279,7 +279,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
   return success;
 }
 
-bool CReactionInterface::writeBackToReaction(CReaction * rea)
+bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
 {
   bool success = true;
 
@@ -378,8 +378,11 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
 
   rea->setScalingCompartmentCN(ScalingCompartmentCN);
 
-  rea->compile();
-  mpModel->setCompileFlag(); //TODO: check if really necessary
+  if (compile)
+    {
+      rea->compile();
+      mpModel->setCompileFlag(); //TODO: check if really necessary
+    }
 
   return success;
 }

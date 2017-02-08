@@ -1553,9 +1553,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
           {
             // If we are here we have a user defined function.
             // We need to check whether the variable exists within the function.
-            CFunctionParameter::DataType DataType;
-            size_t Index =
-              pFunction->getVariables().findParameterByName(Name, DataType);
+            size_t Index = pFunction->getVariables().findParameterByName(Name);
 
             bool isUsed = true;
 
@@ -1566,7 +1564,7 @@ void CCopasiXMLParser::ParameterDescriptionElement::start(const XML_Char *pszNam
                                               CFunctionParameter::FLOAT64,
                                               Role);
 
-                Index = pFunction->getVariables().findParameterByName(Name, DataType);
+                Index = pFunction->getVariables().findParameterByName(Name);
                 isUsed = false;
               }
 

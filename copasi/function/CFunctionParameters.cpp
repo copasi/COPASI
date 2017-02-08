@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -131,7 +136,7 @@ size_t CFunctionParameters::getNumberOfParametersByUsage(CFunctionParameter::Rol
 }
 
 size_t CFunctionParameters::findParameterByName(const std::string & name,
-    CFunctionParameter::DataType & dataType) const
+    const CFunctionParameter ** ppFunctionParameter) const
 {
   //std::string VectorName = name.substr(0, name.find_last_of('_'));
   std::string Name;
@@ -143,9 +148,18 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
 
       if (Name == name)
         {
-          dataType = mParameters[i].getType();
+          if (ppFunctionParameter != NULL)
+            {
+              *ppFunctionParameter = & mParameters[i];
+            }
+
           return i;
         }
+    }
+
+  if (ppFunctionParameter != NULL)
+    {
+      *ppFunctionParameter = NULL;
     }
 
   return C_INVALID_INDEX;

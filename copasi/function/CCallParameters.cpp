@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,6 +22,7 @@
 #include "CFunction.h"
 
 #include "utilities/CCopasiParameter.h"
+#include "model/CModel.h"
 
 // static
 CCopasiObject * CFunctionParameterMap::pUnmappedObject = NULL;
@@ -140,52 +146,117 @@ void CFunctionParameterMap::checkCallParameters() const
     }
 }
 
-void CFunctionParameterMap::setCallParameter(const std::string paramName, const CCopasiObject* obj)
+bool CFunctionParameterMap::setCallParameter(const std::string paramName, const CCopasiObject* obj)
 {
-  CFunctionParameter::DataType type;
-  size_t index = findParameterByName(paramName, type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = findParameterByName(paramName, &pFunctionParameter);
 
-  if (type >= CFunctionParameter::VINT32) fatalError(); // is a vector
-
-  // TODO: check type of object
-  mObjects[index].value = obj;
+  if (index == C_INVALID_INDEX ||
+      pFunctionParameter == NULL ||
+      pFunctionParameter->getType() >= CFunctionParameter::VINT32) fatalError(); // is a vector
 
   assert(obj->getValuePointer());
   assert(obj->isValueDbl());
+
+  mObjects[index].value = obj;
   mPointers[index].value = (const C_FLOAT64*) obj->getValuePointer();
+
+  bool success = true;
+
+  switch (pFunctionParameter->getUsage())
+    {
+      case CFunctionParameter::SUBSTRATE:
+      case CFunctionParameter::PRODUCT:
+      case CFunctionParameter::MODIFIER:
+        success = dynamic_cast< const CMetab * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::PARAMETER:
+        success = dynamic_cast< const CCopasiParameter * >(obj) != NULL ||
+                  dynamic_cast< const CModelValue * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::VOLUME:
+        success = dynamic_cast< const CCompartment * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::TIME:
+        success = dynamic_cast< const CModel * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::VARIABLE:
+      case CFunctionParameter::TEMPORARY:
+        break;
+    }
+
+  return success;
 }
 
-void CFunctionParameterMap::addCallParameter(const std::string paramName, const CCopasiObject* obj)
+bool CFunctionParameterMap::addCallParameter(const std::string paramName, const CCopasiObject* obj)
 {
-  CFunctionParameter::DataType type;
-  size_t index = findParameterByName(paramName, type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = findParameterByName(paramName, &pFunctionParameter);
 
-  if (type < CFunctionParameter::VINT32) fatalError(); // is not a vector
+  if (index == C_INVALID_INDEX ||
+      pFunctionParameter == NULL ||
+      pFunctionParameter->getType() < CFunctionParameter::VINT32) fatalError(); // is not a vector
 
   assert(obj->getValuePointer());
   assert(obj->isValueDbl());
 
   mObjects[index].vector->push_back(obj);
   mPointers[index].vector->push_back((const C_FLOAT64*) obj->getValuePointer());
+
+  bool success = true;
+
+  switch (pFunctionParameter->getUsage())
+    {
+      case CFunctionParameter::SUBSTRATE:
+      case CFunctionParameter::PRODUCT:
+      case CFunctionParameter::MODIFIER:
+        success = dynamic_cast< const CMetab * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::PARAMETER:
+        success = dynamic_cast< const CCopasiParameter * >(obj) != NULL ||
+                  dynamic_cast< const CModelValue * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::VOLUME:
+        success = dynamic_cast< const CCompartment * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::TIME:
+        success = dynamic_cast< const CModel * >(obj) != NULL;
+        break;
+
+      case CFunctionParameter::VARIABLE:
+      case CFunctionParameter::TEMPORARY:
+        break;
+    }
+
+  return success;
 }
 
 void CFunctionParameterMap::clearCallParameter(const std::string paramName)
 {
-  CFunctionParameter::DataType type;
-  size_t index = findParameterByName(paramName, type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = findParameterByName(paramName, &pFunctionParameter);
 
-  if (type < CFunctionParameter::VINT32) fatalError(); // is not a vector
+  if (index == C_INVALID_INDEX ||
+      pFunctionParameter == NULL ||
+      pFunctionParameter->getType() < CFunctionParameter::VINT32)
+    fatalError(); // is not a vector
 
   // TODO: check type of object
   mObjects[index].vector->clear();
-
   mPointers[index].vector->clear();
 }
 
 size_t CFunctionParameterMap::findParameterByName(const std::string & name,
-    CFunctionParameter::DataType & dataType) const
+    const CFunctionParameter ** ppFunctionParameter) const
 {
-  return mpFunctionParameters->findParameterByName(name, dataType);
+  return mpFunctionParameters->findParameterByName(name, ppFunctionParameter);
 }
 
 CCallParameters<C_FLOAT64> & CFunctionParameterMap::getPointers()
