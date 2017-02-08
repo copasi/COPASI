@@ -1547,7 +1547,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
           // update report destinations
 
           std::string currentDir;
-          COptions::getValue("PWD", currentDir);
+          CDirEntry::dirName(fileName);
 
           CCopasiVectorN< CCopasiTask >& tasks = *getTaskList();
           CCopasiVectorN< CCopasiTask >::iterator taskIt = tasks.begin();
