@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -278,7 +283,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
   return success;
 }
 
-bool CReactionInterface::writeBackToReaction(CReaction * rea)
+bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
 {
   bool success = true;
 
@@ -374,8 +379,11 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea)
 
   rea->setScalingCompartmentCN(ScalingCompartmentCN);
 
-  rea->compile();
-  mpModel->setCompileFlag(); //TODO: check if really necessary
+  if (compile)
+    {
+      rea->compile();
+      mpModel->setCompileFlag(); //TODO: check if really necessary
+    }
 
   return success;
 }

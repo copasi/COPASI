@@ -1,17 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CCallParameters.h,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/07/05 19:24:03 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -52,11 +54,11 @@ public:
   // Operations
 public:
   CCallParameters(const size_t & size = 0):
-      std::vector<void *>(size)
+    std::vector<void *>(size)
   {}
 
   CCallParameters(const CCallParameters & src):
-      std::vector<void *>(src)
+    std::vector<void *>(src)
   {}
 
   ~CCallParameters() {}
@@ -66,9 +68,9 @@ public:
     ((std::vector<void *> *) this)->resize(size);
 
     std::vector<void *>::iterator it
-    = ((std::vector<void *> *) this)->begin();
+      = ((std::vector<void *> *) this)->begin();
     typename std::vector<void *>::iterator end
-    = ((std::vector<void *> *) this)->end();
+      = ((std::vector<void *> *) this)->end();
 
     for (; it != end; ++it) *it = NULL;
   }
@@ -122,12 +124,12 @@ public:
   /**
    * Sets a specific parameter. Works only if the parameter is no vector
    */
-  void setCallParameter(const std::string paramName, const CCopasiObject* obj);
+  bool setCallParameter(const std::string paramName, const CCopasiObject* obj);
 
   /**
    * Adds an object to a specific parameter vector. Works only if the parameter is a vector
    */
-  void addCallParameter(const std::string paramName, const CCopasiObject* obj);
+  bool addCallParameter(const std::string paramName, const CCopasiObject* obj);
 
   /**
    * Removes an object from a specific parameter vector. Works only if the parameter is a vector
@@ -145,7 +147,7 @@ public:
   void initializeFromFunctionParameters(const CFunctionParameters & src);
 
   size_t findParameterByName(const std::string & name,
-                             CFunctionParameter::DataType & dataType) const;
+                             const CFunctionParameter ** ppFunctionParameter = NULL) const;
 
 private:
 

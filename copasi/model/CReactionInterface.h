@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -207,8 +212,9 @@ public:
   /**
    * writes the information back to a CReaction.
    * createMetabolites() and createOtherObjects() should be called before.
+   * @param bool compile (default: true)
    */
-  bool writeBackToReaction(CReaction * rea);
+  bool writeBackToReaction(CReaction * rea, bool compile = true);
 
   /**
    * create all metabolites that are needed by the reaction but do

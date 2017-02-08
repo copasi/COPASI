@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -451,7 +456,6 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
   //Parameters
   CFunctionParameters &functParam = target->getVariables();
   const CFunctionParameters &pfunctParam = src->getVariables();
-  CFunctionParameter::DataType Type;
   size_t index;
   size_t i, j;
 
@@ -461,8 +465,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
   for (i = 0; i < pfunctParam.size(); i++)
     {
       // check if function parameter exists in pFunctionParameter
-      if ((index = functParam.findParameterByName(pfunctParam[i]->getObjectName(),
-                   Type)) != C_INVALID_INDEX)
+      if ((index = functParam.findParameterByName(pfunctParam[i]->getObjectName())) != C_INVALID_INDEX)
         // match found
         {
           if (functParam[index]->getUsage() != pfunctParam[i]->getUsage())
@@ -493,8 +496,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
     {
       for (j = 0; j < functParam.size(); j++)
         {
-          if ((index = pfunctParam.findParameterByName(functParam[j]->getObjectName(),
-                       Type)) == C_INVALID_INDEX)
+          if ((index = pfunctParam.findParameterByName(functParam[j]->getObjectName())) == C_INVALID_INDEX)
             // the lines below occurs if new functionParameter does not exist in pfunctParam
             {
               //changed = true;

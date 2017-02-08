@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -150,8 +155,7 @@ bool CFunction::operator == (const CFunction & rhs) const
 
 size_t CFunction::getVariableIndex(const std::string & name) const
 {
-  CFunctionParameter::DataType VariableType;
-  return mVariables.findParameterByName(name, VariableType);
+  return mVariables.findParameterByName(name);
 }
 
 const C_FLOAT64 & CFunction::getVariableValue(const size_t & index) const
@@ -259,11 +263,10 @@ bool CFunction::initVariables()
     }
 
   //now remove all variables that are not in the tree anymore
-  CFunctionParameter::DataType Type;
   size_t i;
 
   for (i = mVariables.size() - 1; i != C_INVALID_INDEX; i--)
-    if (NewVariables.findParameterByName(mVariables[i]->getObjectName(), Type) == C_INVALID_INDEX)
+    if (NewVariables.findParameterByName(mVariables[i]->getObjectName()) == C_INVALID_INDEX)
       mVariables.remove(mVariables[i]->getObjectName());
 
   return true;

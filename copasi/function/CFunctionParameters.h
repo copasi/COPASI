@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -160,7 +165,7 @@ public:
    * find a parameter by its name and return its index
    */
   size_t findParameterByName(const std::string & name,
-                             CFunctionParameter::DataType & dataType) const;
+                             const CFunctionParameter ** ppFunctionParameter = NULL) const;
 
   bool operator==(const CFunctionParameters & rhs) const;
 

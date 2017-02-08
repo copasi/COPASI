@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -26,6 +31,7 @@
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "CReaction.h"
+#include "CReactionInterface.h"
 #include "CCompartment.h"
 #include "CModel.h"
 #include "utilities/CReadConfig.h"
@@ -307,15 +313,10 @@ bool CReaction::setFunction(CFunction * pFunction)
  * @param const std::string & parameterName
  * @return size_t index;
  */
-size_t CReaction::getParameterIndex(const std::string & parameterName, CFunctionParameter::DataType * pType) const
+size_t CReaction::getParameterIndex(const std::string & parameterName,
+                                    const CFunctionParameter ** ppFunctionParameter) const
 {
-  if (pType != NULL)
-    {
-      return mMap.findParameterByName(parameterName, *pType);
-    }
-
-  CFunctionParameter::DataType Type;
-  return mMap.findParameterByName(parameterName, Type);
+  return mMap.findParameterByName(parameterName, ppFunctionParameter);
 }
 
 void CReaction::setParameterValue(const std::string & parameterName,
@@ -376,13 +377,14 @@ bool CReaction::setParameterMapping(const std::string & parameterName, const std
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index = getParameterIndex(parameterName, &type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
 
   if (C_INVALID_INDEX == index)
     return false;
 
-  if (type != CFunctionParameter::FLOAT64) fatalError();
+  if (pFunctionParameter == NULL ||
+      pFunctionParameter->getType() != CFunctionParameter::FLOAT64) fatalError();
 
   mMetabKeyMap[index][0] = key;
 
@@ -393,14 +395,14 @@ void CReaction::addParameterMapping(const std::string & parameterName, const std
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index;
-  index = getParameterIndex(parameterName, &type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
 
   if (C_INVALID_INDEX == index)
     return;
 
-  if (type != CFunctionParameter::VFLOAT64) fatalError();
+  if (pFunctionParameter == NULL ||
+      pFunctionParameter->getType() != CFunctionParameter::VFLOAT64) fatalError();
 
   mMetabKeyMap[index].push_back(key);
 }
@@ -410,14 +412,15 @@ void CReaction::setParameterMappingVector(const std::string & parameterName,
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index;
-  index = getParameterIndex(parameterName, &type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
 
   if (C_INVALID_INDEX == index)
     return;
 
-  if ((type == CFunctionParameter::FLOAT64) && (keys.size() != 1)) fatalError();
+  if (pFunctionParameter == NULL ||
+      (pFunctionParameter->getType() == CFunctionParameter::FLOAT64 &&
+       keys.size() != 1)) fatalError();
 
   mMetabKeyMap[index] = keys;
 }
@@ -426,14 +429,14 @@ void CReaction::clearParameterMapping(const std::string & parameterName)
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index;
-  index = getParameterIndex(parameterName, &type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
 
   if (C_INVALID_INDEX == index)
     return;
 
-  if (type != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
+  if (pFunctionParameter == NULL ||
+      pFunctionParameter->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
 
   mMetabKeyMap[index].clear();
 }
@@ -481,13 +484,14 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
 {
   if (!mpFunction) fatalError();
 
-  CFunctionParameter::DataType type;
-  size_t index = getParameterIndex(parameterName, &type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
 
   if (C_INVALID_INDEX == index)
     return false;
 
-  if (type != CFunctionParameter::FLOAT64) fatalError();
+  if (pFunctionParameter == NULL ||
+      pFunctionParameter->getType() != CFunctionParameter::FLOAT64) fatalError();
 
   return isLocalParameter(index);
 }
@@ -621,7 +625,9 @@ void CReaction::compile()
       size_t imax = mMap.getFunctionParameters().size();
       std::string paramName;
 
-      for (i = 0; i < imax; ++i)
+      bool success = true;
+
+      for (i = 0; i < imax && success; ++i)
         {
           paramName = getFunctionParameters()[i]->getObjectName();
 
@@ -633,22 +639,66 @@ void CReaction::compile()
               for (j = 0; j < jmax; ++j)
                 if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                   {
-                    mMap.addCallParameter(paramName, pObject);
+                    success &= mMap.addCallParameter(paramName, pObject);
                     Dependencies.insert(pObject->getValueObject());
                   }
                 else
                   {
+                    success = false;
                     mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
                   }
             }
           else if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
             {
-              mMap.setCallParameter(paramName, pObject);
+              success = mMap.setCallParameter(paramName, pObject);
               Dependencies.insert(pObject->getValueObject());
             }
           else
             {
+              success = false;
               mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
+            }
+        }
+
+      if (!success)
+        {
+          CReactionInterface Interface(static_cast<CModel *>(getObjectAncestor("Model")));
+          Interface.initFromReaction(this);
+          Interface.setFunctionAndDoMapping(mpFunction->getObjectName());
+          Interface.writeBackToReaction(this, false);
+
+          Dependencies.clear();
+          imax = mMap.getFunctionParameters().size();
+
+          for (i = 0; i < imax; ++i)
+            {
+              paramName = getFunctionParameters()[i]->getObjectName();
+
+              if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
+                {
+                  mMap.clearCallParameter(paramName);
+                  jmax = mMetabKeyMap[i].size();
+
+                  for (j = 0; j < jmax; ++j)
+                    if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
+                      {
+                        mMap.addCallParameter(paramName, pObject);
+                        Dependencies.insert(pObject->getValueObject());
+                      }
+                    else
+                      {
+                        mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
+                      }
+                }
+              else if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
+                {
+                  mMap.setCallParameter(paramName, pObject);
+                  Dependencies.insert(pObject->getValueObject());
+                }
+              else
+                {
+                  mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
+                }
             }
         }
     }
@@ -1556,15 +1606,17 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 {
   CEvaluationNodeObject* pObjectNode = NULL;
   const std::string paraName = static_cast<const std::string>(pVariableNode->getData());
-  CFunctionParameter::DataType type;
-  size_t index = this->getFunction()->getVariables().findParameterByName(paraName, type);
+  const CFunctionParameter * pFunctionParameter;
+  size_t index = getParameterIndex(paraName, &pFunctionParameter);
 
-  if (index == C_INVALID_INDEX)
+  if (index == C_INVALID_INDEX ||
+      pFunctionParameter == NULL)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
 
-  if (type == CFunctionParameter::VFLOAT64 || type == CFunctionParameter::VINT32)
+  if (pFunctionParameter->getType() == CFunctionParameter::VFLOAT64 ||
+      pFunctionParameter->getType() == CFunctionParameter::VINT32)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
