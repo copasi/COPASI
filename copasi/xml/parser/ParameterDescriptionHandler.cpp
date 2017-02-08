@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -75,9 +80,8 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
           {
             // If we are here we have a user defined function.
             // We need to check whether the variable exists within the function.
-            CFunctionParameter::DataType DataType;
             size_t Index =
-              pFunction->getVariables().findParameterByName(Name, DataType);
+              pFunction->getVariables().findParameterByName(Name);
 
             bool isUsed = true;
 
@@ -88,7 +92,7 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
                                               CFunctionParameter::FLOAT64,
                                               Role);
 
-                Index = pFunction->getVariables().findParameterByName(Name, DataType);
+                Index = pFunction->getVariables().findParameterByName(Name);
                 isUsed = false;
               }
 
