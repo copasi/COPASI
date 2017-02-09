@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -65,13 +70,13 @@
 
     /**
      * find a parameter by its name and return its index
-     */
     unsigned C_INT32 findParameterByName(const std::string & name, int dataType) const
     {
         CFunctionParameter::DataType type=(CFunctionParameter::DataType)dataType;
         return (unsigned C_INT32)$self->findParameterByName(name,type);
     }
-
+    */
+    
     CFunctionParameter* getParameter(unsigned C_INT32 index)
     {
         return (*self)[index];
