@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -34,12 +39,12 @@ typedef CCallParameters<C_FLOAT64> PointerCallParameters;
 typedef CCallParameters<CCopasiObject> ObjectCallParameters;
 
 // unignore findParameterByName
-%rename(findParameterByName) CFunctionParameterMap::findParameterByName;
-
-%extend CFunctionParameterMap
-{
-  unsigned C_INT32 findParameterbyName(const std::string& name, CFunctionParameter::DataType dataType)
-  {
-    return (unsigned C_INT32)$self->findParameterByName(name,dataType);
-  }
-}
+// %rename(findParameterByName) CFunctionParameterMap::findParameterByName;
+// 
+// %extend CFunctionParameterMap
+// {
+//   unsigned C_INT32 findParameterbyName(const std::string& name, CFunctionParameter::DataType dataType)
+//   {
+//     return (unsigned C_INT32)$self->findParameterByName(name,dataType);
+//   }
+// }
