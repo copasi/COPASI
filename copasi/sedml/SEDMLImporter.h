@@ -1,4 +1,9 @@
-// Copyright (C) 2013 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -43,9 +48,6 @@ class SEDMLImporter
 protected:
   static
   C_FLOAT64 round(const C_FLOAT64 & x);
-
-  static
-  bool areApproximatelyEqual(const double & x, const double & y, const double & t = 1e-9);
 
 protected:
   std::string mArchiveFileName;
