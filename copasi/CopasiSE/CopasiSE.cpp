@@ -183,17 +183,70 @@ int main(int argc, char *argv[])
 
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
-      if (!COptions::compareValue("ImportSBML", std::string("")))
+      bool importSBML = !COptions::compareValue("ImportSBML", std::string(""));
+      bool importSEDML = !COptions::compareValue("ImportSEDML", std::string(""));
+      bool importCA = !COptions::compareValue("ImportCombineArchive", std::string(""));
+      bool needImport = importSBML | importSEDML | importCA;
+
+      if (needImport)
         {
-          // Import the SBML File
-          std::string ImportSBML;
-          COptions::getValue("ImportSBML", ImportSBML);
-
-          if (!pDataModel->importSBML(ImportSBML))
+          if (importSBML)
             {
-              std::cerr << "SBML Import File: " << ImportSBML << std::endl;
-              std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+              // Import the SBML File
+              std::string ImportSBML;
+              COptions::getValue("ImportSBML", ImportSBML);
 
+              if (!pDataModel->importSBML(ImportSBML))
+                {
+                  std::cerr << "SBML Import File: " << ImportSBML << std::endl;
+                  std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+
+                  retcode = 1;
+                  goto finish;
+                }
+            }
+
+#ifdef COPASI_SEDML
+          else if (importSEDML)
+            {
+              // Import the SED-ML File
+              std::string ImportSEDML;
+              COptions::getValue("ImportSEDML", ImportSEDML);
+
+              if (!pDataModel->importSEDML(ImportSEDML))
+                {
+                  std::cerr << "SED-ML Import File: " << ImportSEDML << std::endl;
+                  std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+
+                  retcode = 1;
+                  goto finish;
+                }
+            }
+
+#endif //COPASI_SEDML
+
+#ifdef WITH_COMBINE_ARCHIVE
+          else if (importCA)
+            {
+              // Import the SED-ML File
+              std::string ImportCombineArchive;
+              COptions::getValue("ImportCombineArchive", ImportCombineArchive);
+
+              if (!pDataModel->openCombineArchive(ImportCombineArchive))
+                {
+                  std::cerr << "CombineArchive Import File: " << ImportCombineArchive << std::endl;
+                  std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+
+                  retcode = 1;
+                  goto finish;
+                }
+            }
+
+#endif // WITH_COMBINE_ARCHIVE
+
+          else
+            {
+              std::cerr << "Unsupported Import operation" << std::endl;
               retcode = 1;
               goto finish;
             }
@@ -213,6 +266,13 @@ int main(int argc, char *argv[])
               // for export we stop execution.
               goto finish;
             }
+
+          if (!importSBML)
+            {
+              // combine archives or SED-ML will have defined tasks
+              retcode = runScheduledTasks(pProcessReport);
+            }
+
 
           // If no export file was given, we write to the save file or
           // the default file.
@@ -447,6 +507,53 @@ int exportCurrentModel()
       return retcode;
     }
 
+#ifdef COPASI_SEDML
+
+  // Check whether exporting to SEDML is requested.
+  if (!COptions::compareValue("ExportSEDML", std::string("")))
+    {
+      // Export the Berkeley Madonna File
+      std::string ExportSEDML;
+      COptions::getValue("ExportSEDML", ExportSEDML);
+
+      if (!pDataModel->exportSEDML(ExportSEDML, true, 1, 2, true))
+        {
+          std::cerr << "SED-ML File: " << ExportSEDML << std::endl;
+          std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+
+          retcode = 1;
+        }
+
+#endif //COPASI_SEDML
+
+#ifdef WITH_COMBINE_ARCHIVE
+
+      // Check whether exporting to SEDML is requested.
+      if (!COptions::compareValue("ExportCombineArchive", std::string("")))
+        {
+          // Export the Berkeley Madonna File
+          std::string ExportCombineArchive;
+          COptions::getValue("ExportCombineArchive", ExportCombineArchive);
+
+          if (!pDataModel->exportCombineArchive(ExportCombineArchive, true,
+                                                true,
+                                                true,
+                                                true,
+                                                true))
+            {
+              std::cerr << "Combine Archive File: " << ExportCombineArchive << std::endl;
+              std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
+
+              retcode = 1;
+            }
+        }
+
+#endif //WITH_COMBINE_ARCHIVE
+
+
+      return retcode;
+    }
+
   return NO_EXPORT_REQUESTED;
 }
 
@@ -576,9 +683,19 @@ int exportSBML()
         Version = 4;
         break;
 
+      case copasi::SBMLSchema_L2V5:
+        Level = 2;
+        Version = 5;
+        break;
+
       case copasi::SBMLSchema_L3V1:
         Level = 3;
         Version = 1;
+        break;
+
+      case copasi::SBMLSchema_L3V2:
+        Level = 3;
+        Version = 2;
         break;
 
       default:
