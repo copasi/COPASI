@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -48,8 +53,12 @@ const char const_usage[] =
   "                                default is copasi in the ConfigDir.\n"
   "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
   "  --exportC file                The C code file to export.\n"
+  "  --exportCA file               The COMBINE archive file to export.\n"
+  "  --exportSEDML file            The SEDML file to export.\n"
   "  --exportXPPAUT file           The XPPAUT file to export.\n"
   "  --home dir                    Your home directory.\n"
+  "  --importCA file               A COMBINE archive file to import.\n"
+  "  --importSEDML file            A SEDML file to import.\n"
   "  --license                     Display the license.\n"
   "  --maxTime seconds             The maximal time CopasiSE may run in\n"
   "                                seconds.\n"
@@ -204,8 +213,14 @@ void copasi::COptionParser::finalize(void)
           case option_ExportC:
             throw option_error("missing value for 'exportC' option");
 
+          case option_ExportCombineArchive:
+            throw option_error("missing value for 'exportCA' option");
+
           case option_ExportSBML:
             throw option_error("missing value for 'exportSBML' option");
+
+          case option_ExportSEDML:
+            throw option_error("missing value for 'exportSEDML' option");
 
           case option_ExportXPPAUT:
             throw option_error("missing value for 'exportXPPAUT' option");
@@ -213,8 +228,14 @@ void copasi::COptionParser::finalize(void)
           case option_Home:
             throw option_error("missing value for 'home' option");
 
+          case option_ImportCombineArchive:
+            throw option_error("missing value for 'importCA' option");
+
           case option_ImportSBML:
             throw option_error("missing value for 'importSBML' option");
+
+          case option_ImportSEDML:
+            throw option_error("missing value for 'importSEDML' option");
 
           case option_License:
             throw option_error("missing value for 'license' option");
@@ -239,14 +260,10 @@ void copasi::COptionParser::finalize(void)
 
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
-
-#ifdef COPASI_SEDML
-
-          case option_ImportSEDML:
-            throw option_error("missing value for 'importSEDML' option");
-#endif
         }
+
     }
+
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -260,10 +277,9 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
         break;
 
       case state_option:
-
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) {state_ = state_consume; return;}
+            if (length == 2) { state_ = state_consume; return; }
 
             element += 2;
             const char *value = element;
@@ -334,7 +350,6 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
   switch (option)
     {
       case 'c':
-
         if (source != source_cl) throw option_error("the 'copasidir' option can only be used on the command line");
 
         if (locations_.CopasiDir)
@@ -348,7 +363,6 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         return;
 
       case 'e':
-
         if (source != source_cl) throw option_error("the 'exportSBML' option can only be used on the command line");
 
         if (locations_.ExportSBML)
@@ -362,7 +376,6 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         return;
 
       case 'i':
-
         if (source != source_cl) throw option_error("the 'importSBML' option can only be used on the command line");
 
         if (locations_.ImportSBML)
@@ -402,13 +415,11 @@ void copasi::COptionParser::parse_short_option(char option, int position, opsour
         return;
 
       case 'h':
-
         if (source != source_cl) break;
 
         throw autoexcept(autothrow_help, const_usage);
 
       case '?':
-
         if (source != source_cl) break;
 
         throw autoexcept(autothrow_help, const_usage);
@@ -506,6 +517,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "exportCA") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'exportCA' option is only allowed on the command line");
+
+      if (locations_.ExportCombineArchive)
+        {
+          throw option_error("the 'exportCA' option is only allowed once");
+        }
+
+      openum_ = option_ExportCombineArchive;
+      locations_.ExportCombineArchive = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "exportSBML") == 0)
     {
       if (source != source_cl) throw option_error("the 'exportSBML' option is only allowed on the command line");
@@ -517,6 +542,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
 
       openum_ = option_ExportSBML;
       locations_.ExportSBML = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "exportSEDML") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'exportSEDML' option is only allowed on the command line");
+
+      if (locations_.ExportSEDML)
+        {
+          throw option_error("the 'exportSEDML' option is only allowed once");
+        }
+
+      openum_ = option_ExportSEDML;
+      locations_.ExportSEDML = position;
       state_ = state_value;
       return;
     }
@@ -548,6 +587,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
       state_ = state_value;
       return;
     }
+  else if (strcmp(option, "importCA") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'importCA' option is only allowed on the command line");
+
+      if (locations_.ImportCombineArchive)
+        {
+          throw option_error("the 'importCA' option is only allowed once");
+        }
+
+      openum_ = option_ImportCombineArchive;
+      locations_.ImportCombineArchive = position;
+      state_ = state_value;
+      return;
+    }
   else if (strcmp(option, "importSBML") == 0)
     {
       if (source != source_cl) throw option_error("the 'importSBML' option is only allowed on the command line");
@@ -559,6 +612,20 @@ void copasi::COptionParser::parse_long_option(const char *option, int position, 
 
       openum_ = option_ImportSBML;
       locations_.ImportSBML = position;
+      state_ = state_value;
+      return;
+    }
+  else if (strcmp(option, "importSEDML") == 0)
+    {
+      if (source != source_cl) throw option_error("the 'importSEDML' option is only allowed on the command line");
+
+      if (locations_.ImportSEDML)
+        {
+          throw option_error("the 'importSEDML' option is only allowed once");
+        }
+
+      openum_ = option_ImportSEDML;
+      locations_.ImportSEDML = position;
       state_ = state_value;
       return;
     }
@@ -703,9 +770,21 @@ void copasi::COptionParser::parse_value(const char *value)
       }
       break;
 
+      case option_ExportCombineArchive:
+      {
+        options_.ExportCombineArchive = value;
+      }
+      break;
+
       case option_ExportSBML:
       {
         options_.ExportSBML = value;
+      }
+      break;
+
+      case option_ExportSEDML:
+      {
+        options_.ExportSEDML = value;
       }
       break;
 
@@ -721,9 +800,21 @@ void copasi::COptionParser::parse_value(const char *value)
       }
       break;
 
+      case option_ImportCombineArchive:
+      {
+        options_.ImportCombineArchive = value;
+      }
+      break;
+
       case option_ImportSBML:
       {
         options_.ImportSBML = value;
+      }
+      break;
+
+      case option_ImportSEDML:
+      {
+        options_.ImportSEDML = value;
       }
       break;
 
@@ -782,9 +873,17 @@ void copasi::COptionParser::parse_value(const char *value)
           {
             evalue = SBMLSchema_L2V4;
           }
+        else if (strcmp(value, "L2V5") == 0)
+          {
+            evalue = SBMLSchema_L2V5;
+          }
         else if (strcmp(value, "L3V1") == 0)
           {
             evalue = SBMLSchema_L3V1;
+          }
+        else if (strcmp(value, "L3V2") == 0)
+          {
+            evalue = SBMLSchema_L3V2;
           }
         else
           {
@@ -813,15 +912,6 @@ void copasi::COptionParser::parse_value(const char *value)
 
       case option_Verbose:
         break;
-
-#ifdef COPASI_SEDML
-
-      case option_ImportSEDML:
-      {
-        options_.ImportSEDML = value;
-      }
-
-#endif
     }
 }
 //#########################################################################
@@ -837,59 +927,72 @@ const char* expand_long_name(const std::string &name)
   std::string::size_type name_size = name.size();
   std::vector<const char*> matches;
 
-  if (name_size <= 10 && name.compare("SBMLSchema") == 0)
+  if (name_size <= 10 && name.compare(0, name_size, "SBMLSchema", name_size) == 0)
     matches.push_back("SBMLSchema");
 
-  if (name_size <= 9 && name.compare("configdir") == 0)
+  if (name_size <= 9 && name.compare(0, name_size, "configdir", name_size) == 0)
     matches.push_back("configdir");
 
-  if (name_size <= 10 && name.compare("configfile") == 0)
+  if (name_size <= 10 && name.compare(0, name_size, "configfile", name_size) == 0)
     matches.push_back("configfile");
 
-  if (name_size <= 9 && name.compare("copasidir") == 0)
+  if (name_size <= 9 && name.compare(0, name_size, "copasidir", name_size) == 0)
     matches.push_back("copasidir");
 
-  if (name_size <= 21 && name.compare("exportBerkeleyMadonna") == 0)
+  if (name_size <= 21 && name.compare(0, name_size, "exportBerkeleyMadonna", name_size) == 0)
     matches.push_back("exportBerkeleyMadonna");
 
-  if (name_size <= 7 && name.compare("exportC") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "exportC", name_size) == 0)
     matches.push_back("exportC");
 
-  if (name_size <= 10 && name.compare("exportSBML") == 0)
+  if (name_size <= 8 && name.compare(0, name_size, "exportCA", name_size) == 0)
+    matches.push_back("exportCA");
+
+  if (name_size <= 10 && name.compare(0, name_size, "exportSBML", name_size) == 0)
     matches.push_back("exportSBML");
 
-  if (name_size <= 12 && name.compare("exportXPPAUT") == 0)
+  if (name_size <= 11 && name.compare(0, name_size, "exportSEDML", name_size) == 0)
+    matches.push_back("exportSEDML");
+
+  if (name_size <= 12 && name.compare(0, name_size, "exportXPPAUT", name_size) == 0)
     matches.push_back("exportXPPAUT");
 
-  if (name_size <= 4 && name.compare("home") == 0)
+  if (name_size <= 4 && name.compare(0, name_size, "home", name_size) == 0)
     matches.push_back("home");
 
-  if (name_size <= 10 && name.compare("importSBML") == 0)
+  if (name_size <= 8 && name.compare(0, name_size, "importCA", name_size) == 0)
+    matches.push_back("importCA");
+
+  if (name_size <= 10 && name.compare(0, name_size, "importSBML", name_size) == 0)
     matches.push_back("importSBML");
 
-  if (name_size <= 7 && name.compare("license") == 0)
+  if (name_size <= 11 && name.compare(0, name_size, "importSEDML", name_size) == 0)
+    matches.push_back("importSEDML");
+
+  if (name_size <= 7 && name.compare(0, name_size, "license", name_size) == 0)
     matches.push_back("license");
 
-  if (name_size <= 7 && name.compare("maxTime") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "maxTime", name_size) == 0)
     matches.push_back("maxTime");
 
-  if (name_size <= 6 && name.compare("nologo") == 0)
+  if (name_size <= 6 && name.compare(0, name_size, "nologo", name_size) == 0)
     matches.push_back("nologo");
 
-  if (name_size <= 4 && name.compare("save") == 0)
+  if (name_size <= 4 && name.compare(0, name_size, "save", name_size) == 0)
     matches.push_back("save");
 
-  if (name_size <= 3 && name.compare("tmp") == 0)
+  if (name_size <= 3 && name.compare(0, name_size, "tmp", name_size) == 0)
     matches.push_back("tmp");
 
-  if (name_size <= 8 && name.compare("validate") == 0)
+  if (name_size <= 8 && name.compare(0, name_size, "validate", name_size) == 0)
     matches.push_back("validate");
 
-  if (name_size <= 7 && name.compare("verbose") == 0)
+  if (name_size <= 7 && name.compare(0, name_size, "verbose", name_size) == 0)
     matches.push_back("verbose");
 
-  if (name_size <= 4 && name.compare("help") == 0)
+  if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
     matches.push_back("help");
+
 
   if (matches.empty())
     {

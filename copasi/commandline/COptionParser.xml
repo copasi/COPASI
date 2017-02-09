@@ -1,22 +1,23 @@
 <!--
     This file demostrates how to specify options to clo++
 -->
-<!-- Begin CVS Header -->
-<!--   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/commandline/COptionParser.xml,v $ -->
-<!--   $Revision: 1.19 $ -->
-<!--   $Name:  $ -->
-<!--   $Author: shoops $ -->
-<!--   $Date: 2012/06/01 17:25:01 $ -->
-<!-- End CVS Header -->
+<!-- Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and University of -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
 
-<!-- Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
 
-<!-- Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., EML Research, gGmbH, University of Heidelberg, -->
 <!-- and The University of Manchester. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc. and EML Research, gGmbH. -->
 <!-- All rights reserved. -->
 
 <cloxx>
@@ -231,9 +232,51 @@
      <enum id="L2V2" name="L2V2" />
      <enum id="L2V3" name="L2V3" />
      <enum id="L2V4" name="L2V4" />
+     <enum id="L2V5" name="L2V5" />
      <enum id="L3V1" name="L3V1" />
+     <enum id="L3V2" name="L3V2" />
      <name>SBMLSchema</name>
      <comment>The Schema of the SBML file to export.</comment>
+   </option>
+   <option id="ImportCombineArchive"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>importCA</name>
+    <comment>A COMBINE archive file to import.</comment>
+   </option>
+   <option id="ExportCombineArchive"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>exportCA</name>
+    <comment>The COMBINE archive file to export.</comment>
+   </option>
+   <option id="ImportSEDML"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>importSEDML</name>
+    <comment>A SEDML file to import.</comment>
+   </option>
+   <option id="ExportSEDML"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+    <name>exportSEDML</name>
+    <comment>The SEDML file to export.</comment>
    </option>
    <option id="ExportBerkeleyMadonna"
            type="string"
