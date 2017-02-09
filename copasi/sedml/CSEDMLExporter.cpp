@@ -469,7 +469,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
   SedDataGenerator *pPDGen;
 
   if (imax == 0 && (task == NULL || task->getReport().getTarget().empty()))
-    CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No plot/report definition for this SED-ML document.");
+    CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: No plot/report definition for this SED-ML document.");
 
   // export report
   if (task != NULL && !task->getReport().getTarget().empty())
