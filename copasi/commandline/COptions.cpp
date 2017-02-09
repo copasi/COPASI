@@ -232,6 +232,12 @@ void COptions::init(C_INT argc, char *argv[])
 
 #ifdef COPASI_SEDML
   setValue("ImportSEDML", Options.ImportSEDML);
+  setValue("ExportSEDML", Options.ExportSEDML);
+#endif
+
+#ifdef WITH_COMBINE_ARCHIVE
+  setValue("ImportCombineArchive", Options.ImportCombineArchive);
+  setValue("ExportCombineArchive", Options.ExportCombineArchive);
 #endif
 
   delete pPreParser;

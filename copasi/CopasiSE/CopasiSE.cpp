@@ -183,9 +183,9 @@ int main(int argc, char *argv[])
 
       const COptions::nonOptionType & Files = COptions::getNonOptions();
 
-      bool importSBML = !COptions::compareValue("ImportSBML", std::string(""));
-      bool importSEDML = !COptions::compareValue("ImportSEDML", std::string(""));
-      bool importCA = !COptions::compareValue("ImportCombineArchive", std::string(""));
+      bool importSBML = COptions::isSet("ImportSBML") && !COptions::compareValue("ImportSBML", std::string(""));
+      bool importSEDML = COptions::isSet("ImportSEDML") && !COptions::compareValue("ImportSEDML", std::string(""));
+      bool importCA = COptions::isSet("ImportCombineArchive") && !COptions::compareValue("ImportCombineArchive", std::string(""));
       bool needImport = importSBML | importSEDML | importCA;
 
       if (needImport)
