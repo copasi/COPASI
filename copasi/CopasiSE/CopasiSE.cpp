@@ -492,7 +492,7 @@ int exportCurrentModel()
   // Check whether exporting to XPPAUT is requested.
   if (!COptions::compareValue("ExportXPPAUT", std::string("")))
     {
-      // Export the Berkeley Madonna File
+      // Export the XPPAUT File
       std::string ExportXPPAUT;
       COptions::getValue("ExportXPPAUT", ExportXPPAUT);
 
@@ -512,7 +512,7 @@ int exportCurrentModel()
   // Check whether exporting to SEDML is requested.
   if (!COptions::compareValue("ExportSEDML", std::string("")))
     {
-      // Export the Berkeley Madonna File
+      // Export the SEDML File
       std::string ExportSEDML;
       COptions::getValue("ExportSEDML", ExportSEDML);
 
@@ -523,36 +523,35 @@ int exportCurrentModel()
 
           retcode = 1;
         }
+    }
 
 #endif //COPASI_SEDML
 
 #ifdef WITH_COMBINE_ARCHIVE
 
-      // Check whether exporting to SEDML is requested.
-      if (!COptions::compareValue("ExportCombineArchive", std::string("")))
+  // Check whether exporting to Combine Archive is requested.
+  if (!COptions::compareValue("ExportCombineArchive", std::string("")))
+    {
+      // Export the Combine Archive File
+      std::string ExportCombineArchive;
+      COptions::getValue("ExportCombineArchive", ExportCombineArchive);
+
+      if (!pDataModel->exportCombineArchive(ExportCombineArchive, true,
+                                            true,
+                                            true,
+                                            true,
+                                            true))
         {
-          // Export the Berkeley Madonna File
-          std::string ExportCombineArchive;
-          COptions::getValue("ExportCombineArchive", ExportCombineArchive);
+          std::cerr << "Combine Archive File: " << ExportCombineArchive << std::endl;
+          std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
 
-          if (!pDataModel->exportCombineArchive(ExportCombineArchive, true,
-                                                true,
-                                                true,
-                                                true,
-                                                true))
-            {
-              std::cerr << "Combine Archive File: " << ExportCombineArchive << std::endl;
-              std::cerr << CCopasiMessage::getAllMessageText() << std::endl;
-
-              retcode = 1;
-            }
+          retcode = 1;
         }
+    }
 
 #endif //WITH_COMBINE_ARCHIVE
 
 
-      return retcode;
-    }
 
   return NO_EXPORT_REQUESTED;
 }
