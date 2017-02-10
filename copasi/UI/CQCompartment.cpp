@@ -44,8 +44,11 @@
 #include "undoFramework/UndoCompartmentData.h"
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoSpeciesData.h"
-#include <copasi/undoFramework/CompartmentChangeCommand.h>
+#include "copasi/undoFramework/CompartmentChangeCommand.h"
 #include "copasiui3window.h"
+
+#include "undo/CUndoStack.h"
+#include "undo/CUndoData.h"
 
 /*
  *  Constructs a CQCompartment which is a child of 'parent', with the
@@ -423,11 +426,15 @@ void CQCompartment::save()
 
   mIgnoreUpdates = true;
 
+  CUndoData Data(CUndoData::CHANGE, mpCompartment);
+
 #ifdef COPASI_EXTUNIT
 
   //Dimensionality
   if ((C_INT32)mpCompartment->getDimensionality() != mpComboBoxDim->currentIndex()) //this makes assumptions about the order of entries in the combo box!
     {
+      Data.addProperty(CData::SPATIAL_DIMENSION, mpCompartment->getDimensionality(), (unsigned C_INT32) mpComboBoxDim->currentIndex());
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_SPATIAL_DIMENSION_CHANGE,
                           mpCompartment->getDimensionality(),
@@ -444,6 +451,10 @@ void CQCompartment::save()
   // Type
   if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
+      Data.addProperty(CData::SIMULATION_TYPE,
+                       (unsigned C_INT32) mpCompartment->getStatus(),
+                       (unsigned C_INT32) mItemToType[mpComboBoxType->currentIndex()]);
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE,
                           (int)mpCompartment->getStatus(),
@@ -457,6 +468,10 @@ void CQCompartment::save()
   // Initial Volume
   if (QString::number(mpCompartment->getInitialValue(), 'g', 10) != mpEditInitialVolume->text())
     {
+      Data.addProperty(CData::INITIAL_VALUE,
+                       mpCompartment->getInitialValue(),
+                       mpEditInitialVolume->text().toDouble());
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_INITIAL_VOLUME_CHANGE,
                           mpCompartment->getInitialValue(),
@@ -470,6 +485,10 @@ void CQCompartment::save()
   // Expression
   if (mpCompartment->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
     {
+      Data.addProperty(CData::EXPRESSION,
+                       mpCompartment->getExpression(),
+                       mpExpressionEMW->mpExpressionWidget->getExpression());
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_EXPRESSION_CHANGE,
                           FROM_UTF8(mpCompartment->getExpression()),
@@ -486,6 +505,10 @@ void CQCompartment::save()
       if (mpBoxUseInitialExpression->isChecked() &&
           mpCompartment->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
         {
+          Data.addProperty(CData::INITIAL_EXPRESSION,
+                           mpCompartment->getInitialExpression(),
+                           mpInitialExpressionEMW->mpExpressionWidget->getExpression());
+
           mpUndoStack->push(new CompartmentChangeCommand(
                               CCopasiUndoCommand::COMPARTMENT_INITIAL_EXPRESSION_CHANGE,
                               FROM_UTF8(mpCompartment->getInitialExpression()),
@@ -500,6 +523,10 @@ void CQCompartment::save()
       else if (!mpBoxUseInitialExpression->isChecked() &&
                mpCompartment->getInitialExpression() != "")
         {
+          Data.addProperty(CData::INITIAL_EXPRESSION,
+                           mpCompartment->getInitialExpression(),
+                           "");
+
           mpUndoStack->push(new CompartmentChangeCommand(
                               CCopasiUndoCommand::COMPARTMENT_INITIAL_EXPRESSION_CHANGE,
                               FROM_UTF8(mpCompartment->getInitialExpression()),
@@ -514,6 +541,10 @@ void CQCompartment::save()
   // Add Noise
   if (mpCompartment->hasNoise() != mpBoxAddNoise->isChecked())
     {
+      Data.addProperty(CData::ADD_NOISE,
+                       mpCompartment->hasNoise(),
+                       mpBoxAddNoise->isChecked());
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_ADD_NOISE_CHANGE,
                           mpCompartment->hasNoise(),
@@ -528,6 +559,10 @@ void CQCompartment::save()
   // Noise Expression
   if (mpCompartment->getNoiseExpression() != mpNoiseExpressionWidget->mpExpressionWidget->getExpression())
     {
+      Data.addProperty(CData::NOISE_EXPRESSION,
+                       mpCompartment->getNoiseExpression(),
+                       mpNoiseExpressionWidget->mpExpressionWidget->getExpression());
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_NOISE_EXPRESSION_CHANGE,
                           FROM_UTF8(mpCompartment->getNoiseExpression()),
@@ -542,6 +577,8 @@ void CQCompartment::save()
 
   if (mChanged)
     {
+      mpDataModel->applyData(Data);
+
       assert(mpDataModel != NULL);
       mpDataModel->changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);

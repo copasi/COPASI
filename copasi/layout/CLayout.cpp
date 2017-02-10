@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -34,6 +39,13 @@
 #include "report/CKeyFactory.h"
 #include "sbml/CSBMLExporter.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+// static
+CLayout * CLayout::create(const CData & data)
+{
+  return new CLayout(data.getProperty(CData::OBJECT_NAME).toString(),
+                     NO_PARENT);
+}
 
 CLayout::CLayout(const std::string & name,
                  const CCopasiContainer * pParent)

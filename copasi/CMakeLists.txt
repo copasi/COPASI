@@ -81,6 +81,7 @@ include(steadystate/CMakeLists.txt)
 include(trajectory/CMakeLists.txt)
 include(tss/CMakeLists.txt)
 include(tssanalysis/CMakeLists.txt)
+include(undo/CMakeLists.txt)
 include(utilities/CMakeLists.txt)
 include(xml/CMakeLists.txt)
 

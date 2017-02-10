@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,13 +27,16 @@
 
 #include <string>
 
-#include "copasi/copasi.h"
-#include "copasi/utilities/CCopasiParameter.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
-#include "copasi/utilities/CCopasiMessage.h"
-#include "copasi/report/CKeyFactory.h"
-#include "copasi/report/CCopasiObjectReference.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi.h"
+
+#include "utilities/CCopasiParameter.h"
+
+#include "../undo/CData.h"
+#include "utilities/CCopasiParameterGroup.h"
+#include "utilities/CCopasiMessage.h"
+#include "report/CKeyFactory.h"
+#include "report/CCopasiObjectReference.h"
+#include "report/CCopasiRootContainer.h"
 
 const std::string CCopasiParameter::TypeName[] =
 {
@@ -117,6 +125,165 @@ CCopasiParameter::~CCopasiParameter()
 
   deleteValue(mType, mpValue);
   deleteValidValues(mType, mpValidValues);
+}
+
+// virtual
+CData CCopasiParameter::data() const
+{
+  CData Data = CCopasiContainer::data();
+
+  Data.addProperty(CData::PARAMETER_TYPE, (unsigned C_INT32) mType);
+
+  switch (mType)
+    {
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< C_FLOAT64 * >(mpValue));
+        break;
+
+      case CCopasiParameter::INT:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< C_INT32 * >(mpValue));
+        break;
+
+      case CCopasiParameter::UINT:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< unsigned C_INT32 * >(mpValue));
+        break;
+
+      case CCopasiParameter::BOOL:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< bool * >(mpValue));
+        break;
+
+      case CCopasiParameter::STRING:
+      case CCopasiParameter::KEY:
+      case CCopasiParameter::FILE:
+      case CCopasiParameter::EXPRESSION:
+      case CCopasiParameter::CN:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::GROUP:
+      case CCopasiParameter::INVALID:
+        break;
+    }
+
+  return Data;
+}
+
+// virtual
+bool CCopasiParameter::change(const CData & data)
+{
+  bool success = CCopasiContainer::change(data);
+
+  Type DataType = (Type) data.getProperty(CData::PARAMETER_TYPE).toUint();
+
+  switch (DataType)
+    {
+      case CCopasiParameter::DOUBLE:
+      case CCopasiParameter::UDOUBLE:
+
+        if (mType != DOUBLE &&
+            mType != UDOUBLE)
+          {
+            deleteValue(mType, mpValue);
+            deleteValidValues(mType, mpValidValues);
+            mType = DataType;
+          }
+        else
+          {
+            mType = DataType;
+          }
+
+        *static_cast< C_FLOAT64 * >(mpValue) = data.getProperty(CData::PARAMETER_VALUE).toDouble();
+        break;
+
+      case CCopasiParameter::INT:
+      case CCopasiParameter::UINT:
+
+        if (mType != INT &&
+            mType != UINT)
+          {
+            deleteValue(mType, mpValue);
+            deleteValidValues(mType, mpValidValues);
+            mType = DataType;
+          }
+        else
+          {
+            mType = DataType;
+          }
+
+        *static_cast< C_INT32 * >(mpValue) = data.getProperty(CData::PARAMETER_VALUE).toInt();
+        break;
+
+      case CCopasiParameter::BOOL:
+
+        if (mType != BOOL)
+          {
+            deleteValue(mType, mpValue);
+            deleteValidValues(mType, mpValidValues);
+            mType = BOOL;
+          }
+
+        *static_cast< bool * >(mpValue) = data.getProperty(CData::PARAMETER_VALUE).toBool();
+        break;
+
+      case CCopasiParameter::STRING:
+      case CCopasiParameter::KEY:
+      case CCopasiParameter::FILE:
+      case CCopasiParameter::EXPRESSION:
+
+        if (mType != STRING &&
+            mType != KEY &&
+            mType != FILE &&
+            mType != EXPRESSION)
+          {
+            deleteValue(mType, mpValue);
+            deleteValidValues(mType, mpValidValues);
+            mType = DataType;
+          }
+        else
+          {
+            mType = DataType;
+          }
+
+        *static_cast< std::string * >(mpValue) = data.getProperty(CData::PARAMETER_VALUE).toString();
+        break;
+
+      case CCopasiParameter::CN:
+
+        if (mType != CN)
+          {
+            deleteValue(mType, mpValue);
+            deleteValidValues(mType, mpValidValues);
+            mType = CN;
+          }
+
+        *static_cast< CRegisteredObjectName * >(mpValue) = data.getProperty(CData::PARAMETER_VALUE).toString();
+        break;
+
+      case CCopasiParameter::GROUP:
+
+        if (mType != GROUP)
+          {
+            deleteValue(mType, mpValue);
+            mType = GROUP;
+            createValue(NULL);
+          }
+
+        break;
+
+      case CCopasiParameter::INVALID:
+
+        if (mType != INVALID)
+          {
+            deleteValue(mType, mpValue);
+            mType = INVALID;
+            createValue(NULL);
+          }
+
+        break;
+    }
+
+  return success;
 }
 
 CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)

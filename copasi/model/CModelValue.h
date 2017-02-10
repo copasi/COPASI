@@ -518,6 +518,8 @@ TIME                    implemented
 class CModelValue : public CModelEntity
 {
 public:
+  static CModelValue * create(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")

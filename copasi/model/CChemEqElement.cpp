@@ -1,17 +1,14 @@
-/* Begin CVS Header
- $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CChemEqElement.cpp,v $
- $Revision: 1.34 $
- $Name:  $
- $Author: shoops $
- $Date: 2011/03/21 15:48:15 $
- End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -37,12 +34,19 @@
 #include "CMetabNameInterface.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
+// static
+CChemEqElement * CChemEqElement::create(const CData & data)
+{
+  return new CChemEqElement(data.getProperty(CData::OBJECT_NAME).toString(),
+                            NO_PARENT);
+}
+
 CChemEqElement::CChemEqElement(const std::string & name,
                                const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Chemical Equation Element"),
-    mMetaboliteKey(),
-    mMultiplicity(0)
-    //mpMetabolite(NULL)
+  CCopasiContainer(name, pParent, "Chemical Equation Element"),
+  mMetaboliteKey(),
+  mMultiplicity(0)
+  //mpMetabolite(NULL)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -50,10 +54,10 @@ CChemEqElement::CChemEqElement(const std::string & name,
 
 CChemEqElement::CChemEqElement(const CChemEqElement & src,
                                const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mMetaboliteKey(src.mMetaboliteKey),
-    mMultiplicity(src.mMultiplicity)
-    //mpMetabolite(src.mpMetabolite)
+  CCopasiContainer(src, pParent),
+  mMetaboliteKey(src.mMetaboliteKey),
+  mMultiplicity(src.mMultiplicity)
+  //mpMetabolite(src.mpMetabolite)
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -100,7 +104,7 @@ const C_FLOAT64 & CChemEqElement::getMultiplicity() const
 std::ostream & operator<<(std::ostream &os, const CChemEqElement & d)
 {
   os << "CChemEqElement: " << d.mMultiplicity
-  << " * " << d.mMetaboliteKey << std::endl;
+     << " * " << d.mMetaboliteKey << std::endl;
 
   return os;
 }

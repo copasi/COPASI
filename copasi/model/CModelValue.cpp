@@ -783,6 +783,13 @@ const bool & CModelEntity::isUsed() const
 
 //********************************************************************+
 
+// static
+CModelValue * CModelValue::create(const CData & data)
+{
+  return new CModelValue(data.getProperty(CData::OBJECT_NAME).toString(),
+                         NO_PARENT);
+}
+
 CModelValue::CModelValue(const std::string & name,
                          const CCopasiContainer * pParent):
   CModelEntity(name, pParent, "ModelValue")

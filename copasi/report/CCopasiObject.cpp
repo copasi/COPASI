@@ -28,18 +28,20 @@
 #include <sstream>
 #include <algorithm>
 
-#include "copasi/copasi.h"
-#include "copasi/report/CCopasiObjectName.h"
-#include "copasi/report/CCopasiObject.h"
-#include "copasi/report/CCopasiContainer.h"
-#include "copasi/report/CCopasiStaticString.h"
-#include "copasi/report/CRenameHandler.h"
-#include "copasi/utilities/CCopasiVector.h"
-#include "copasi/model/CModelValue.h"
-#include "copasi/model/CModel.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/function/CFunctionDB.h"
+#include "copasi.h"
+#include "CCopasiObjectName.h"
+#include "CCopasiObject.h"
+
+#include "../undo/CData.h"
+#include "CCopasiContainer.h"
+#include "CCopasiStaticString.h"
+#include "CRenameHandler.h"
+#include "utilities/CCopasiVector.h"
+#include "model/CModelValue.h"
+#include "model/CModel.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "report/CCopasiRootContainer.h"
+#include "function/CFunctionDB.h"
 
 //static
 C_FLOAT64 CCopasiObject::DummyValue = 0.0;
@@ -609,6 +611,35 @@ const CCopasiObject * CCopasiObject::getDataObject() const
 const CCopasiObject * CCopasiObject::getValueObject() const
 {
   return NULL;
+}
+
+// virtual
+CData CCopasiObject::data() const
+{
+  CData Data;
+
+  Data.addProperty(CData::OBJECT_NAME, mObjectName);
+  Data.addProperty(CData::OBJECT_TYPE, mObjectType);
+  Data.addProperty(CData::OBJECT_PARENT_CN, (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string(""));
+  Data.addProperty(CData::OBJECT_FLAG, mObjectFlag);
+  Data.addProperty(CData::OBJECT_INDEX, (mpObjectParent != NULL) ? (unsigned C_INT32) mpObjectParent->getIndex(this) : 0);
+
+  return Data;
+}
+
+// static
+CCopasiObject * CCopasiObject::create(const CData & data)
+{
+  return new CCopasiObject(data.getProperty(CData::OBJECT_NAME).toString(),
+                           NO_PARENT,
+                           data.getProperty(CData::OBJECT_TYPE).toString(),
+                           data.getProperty(CData::OBJECT_FLAG).toUint());
+}
+
+// virtual
+bool CCopasiObject::change(const CData & data)
+{
+  return false;
 }
 
 bool CCopasiObject::isContainer() const

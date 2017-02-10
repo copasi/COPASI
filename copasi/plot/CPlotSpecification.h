@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -42,6 +47,8 @@ protected:
   CPlotSpecification(const CPlotSpecification & src);
 
 public:
+  static CPlotSpecification * create(const CData & data);
+
   CPlotSpecification(const std::string & name = "NoName",
                      const CCopasiContainer * pParent = NO_PARENT,
                      const CPlotItem::Type & type = plot2d);

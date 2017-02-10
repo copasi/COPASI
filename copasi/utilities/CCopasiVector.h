@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,12 +30,13 @@
 #include <iterator>
 #include <cstddef>
 
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
-#include "report/CCopasiObjectName.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/report/CCopasiContainer.h"
 
+#include "../undo/CData.h"
 #undef min
 #undef max
 #undef ERROR
@@ -637,6 +643,26 @@ public:
       }
 
     return C_INVALID_INDEX;
+  }
+
+  virtual CCopasiObject * insert(const CData & data)
+  {
+    CType * pNew = CType::create(data);
+
+    if (pNew->getObjectType() == data.getProperty(CData::OBJECT_TYPE).toString())
+      {
+        size_t Index = data.getProperty(CData::OBJECT_INDEX).toUint();
+        std::vector< CType * >::insert(std::vector< CType * >::begin() + Index, pNew);
+
+        CCopasiContainer::add(pNew, true);
+      }
+    else
+      {
+        delete pNew;
+        pNew = NULL;
+      }
+
+    return pNew;
   }
 
   /**

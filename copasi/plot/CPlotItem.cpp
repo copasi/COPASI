@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,6 +18,8 @@
 // All rights reserved.
 
 #include "CPlotItem.h"
+
+#include "../undo/CData.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
 
@@ -65,6 +72,14 @@ const char* CPlotItem::XMLRecordingActivity[] =
   "before&during&after",
   NULL
 };
+
+// static
+CPlotItem * CPlotItem::create(const CData & data)
+{
+  return new CPlotItem(data.getProperty(CData::OBJECT_NAME).toString(),
+                       NO_PARENT,
+                       (CPlotItem::Type) data.getProperty(CData::PLOT_ITEM_TYPE).toUint());
+}
 
 CPlotItem::CPlotItem(const std::string & name,
                      const CCopasiContainer * pParent,

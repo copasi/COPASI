@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -35,6 +40,8 @@ protected:
   CLMetabGlyph(const CLMetabGlyph & src);
 
 public:
+  static CLMetabGlyph * create(const CData & data);
+
   CLMetabGlyph(const std::string & name = "MetabGlyph",
                const CCopasiContainer * pParent = NO_PARENT);
 
@@ -82,6 +89,8 @@ protected:
   CLCompartmentGlyph(const CLCompartmentGlyph & src);
 
 public:
+  static CLCompartmentGlyph * create(const CData & data);
+
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
                      const CCopasiContainer * pParent = NO_PARENT);
 
@@ -143,6 +152,8 @@ protected:
   CLTextGlyph(const CLTextGlyph & src);
 
 public:
+  static CLTextGlyph * create(const CData & data);
+
   CLTextGlyph(const std::string & name = "TextGlyph",
               const CCopasiContainer * pParent = NO_PARENT);
 

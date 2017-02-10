@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLColorDefinition.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:50 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,12 +23,18 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
+// static
+CLColorDefinition * CLColorDefinition::create(const CData & data)
+{
+  return new CLColorDefinition(NO_PARENT);
+}
+
 /**
  * Contructor which sets the CLColorDefinition to completely opaque
  * black.
  */
 CLColorDefinition::CLColorDefinition(CCopasiContainer* pParent)
-    : CLBase(),
+  : CLBase(),
     CCopasiObject("ColorDefinition", pParent),
     mRed(0),
     mGreen(0),
@@ -47,7 +50,7 @@ CLColorDefinition::CLColorDefinition(CCopasiContainer* pParent)
  * Constructor which sets the CLColorDefinition to the given RGBA values.
  */
 CLColorDefinition::CLColorDefinition(unsigned char r, unsigned char g, unsigned char b, unsigned char a, CCopasiContainer* pParent)
-    : CLBase(),
+  : CLBase(),
     CCopasiObject("ColorDefinition", pParent),
     mRed(r),
     mGreen(g),
@@ -63,14 +66,14 @@ CLColorDefinition::CLColorDefinition(unsigned char r, unsigned char g, unsigned 
  * Copy Contructor
  */
 CLColorDefinition::CLColorDefinition(const CLColorDefinition& source, CCopasiContainer* pParent):
-    CLBase(source),
-    CCopasiObject(source, pParent),
-    mRed(source.mRed),
-    mGreen(source.mGreen),
-    mBlue(source.mBlue),
-    mAlpha(source.mAlpha),
-    mKey(""),
-    mId(source.mId)
+  CLBase(source),
+  CCopasiObject(source, pParent),
+  mRed(source.mRed),
+  mGreen(source.mGreen),
+  mBlue(source.mBlue),
+  mAlpha(source.mAlpha),
+  mKey(""),
+  mId(source.mId)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("ColorDefinition", this);
 }
@@ -79,14 +82,14 @@ CLColorDefinition::CLColorDefinition(const CLColorDefinition& source, CCopasiCon
  * Constructor to generate object from the corresponding SBML object.
  */
 CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiObject("ColorDefinition", pParent),
-    mRed(source.getRed()),
-    mGreen(source.getGreen()),
-    mBlue(source.getBlue()),
-    mAlpha(source.getAlpha()),
-    mKey(""),
-    mId(source.getId())
+  CLBase(),
+  CCopasiObject("ColorDefinition", pParent),
+  mRed(source.getRed()),
+  mGreen(source.getGreen()),
+  mBlue(source.getBlue()),
+  mAlpha(source.getAlpha()),
+  mKey(""),
+  mId(source.getId())
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("ColorDefinition", this);
 }

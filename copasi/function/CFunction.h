@@ -39,6 +39,8 @@ protected:
 
   // Operations
 public:
+  static CFunction * create(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")

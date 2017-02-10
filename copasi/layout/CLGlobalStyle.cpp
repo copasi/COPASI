@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlobalStyle.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +17,12 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
+// static
+CLGlobalStyle * CLGlobalStyle::create(const CData & data)
+{
+  return new CLGlobalStyle(NO_PARENT);
+}
+
 CLGlobalStyle::CLGlobalStyle(CCopasiContainer* pParent): CLStyle("GlobalStyle", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalStyle", this);
@@ -29,7 +32,7 @@ CLGlobalStyle::CLGlobalStyle(CCopasiContainer* pParent): CLStyle("GlobalStyle", 
  * Copy Constructor.
  */
 CLGlobalStyle::CLGlobalStyle(const CLGlobalStyle& source, CCopasiContainer* pParent):
-    CLStyle(source, pParent)
+  CLStyle(source, pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalStyle", this);
 }
@@ -38,7 +41,7 @@ CLGlobalStyle::CLGlobalStyle(const CLGlobalStyle& source, CCopasiContainer* pPar
  * Constructor to generate object from the corresponding SBML object.
  */
 CLGlobalStyle::CLGlobalStyle(const GlobalStyle& source, CCopasiContainer* pParent):
-    CLStyle(source, "GlobalStyle", pParent)
+  CLStyle(source, "GlobalStyle", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalStyle", this);
 }

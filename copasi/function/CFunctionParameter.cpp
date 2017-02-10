@@ -1,17 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CFunctionParameter.cpp,v $
-//   $Revision: 1.37 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2009/04/24 12:44:38 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,15 +31,15 @@
 
 //static
 const std::string CFunctionParameter::DataTypeName[] =
-  {"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
+{"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
 
 //static
 const std::string CFunctionParameter::RoleNameXML[] =
-  {"substrate", "product", "modifier", "constant", "volume", "time", "variable", ""};
+{"substrate", "product", "modifier", "constant", "volume", "time", "variable", ""};
 
 //static
 const std::string CFunctionParameter::RoleNameDisplay[] =
-  {"Substrate", "Product", "Modifier", "Parameter", "Volume", "Time", "Variable", ""};
+{"Substrate", "Product", "Modifier", "Parameter", "Volume", "Time", "Variable", ""};
 
 //static
 CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xmlrole)
@@ -52,33 +54,40 @@ CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xm
     return (Role)i;
 }
 
+// static
+CFunctionParameter * CFunctionParameter::create(const CData & data)
+{
+  return new CFunctionParameter(data.getProperty(CData::OBJECT_NAME).toString(),
+                                NO_PARENT);
+}
+
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Variable"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
-    mType((CFunctionParameter::DataType) - 1),
-    mUsage(VARIABLE),
-    mIsUsed(true)
+  CCopasiContainer(name, pParent, "Variable"),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+  mType((CFunctionParameter::DataType) - 1),
+  mUsage(VARIABLE),
+  mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CCopasiContainer * pParent):
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
-    mType(src.mType),
-    mUsage(src.mUsage),
-    mIsUsed(src.mIsUsed)
+  CCopasiContainer(src, pParent),
+  mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+  mType(src.mType),
+  mUsage(src.mUsage),
+  mIsUsed(src.mIsUsed)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
                                        Role usage,
-                                       const CCopasiContainer * pParent):
-    CCopasiContainer(name, pParent, "Variable"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
-    mType(type),
-    mUsage(usage),
-    mIsUsed(true)
+                                       const CCopasiContainer * pParent) :
+CCopasiContainer(name, pParent, "Variable"),
+                 mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+                 mType(type),
+                 mUsage(usage),
+                 mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::~CFunctionParameter()

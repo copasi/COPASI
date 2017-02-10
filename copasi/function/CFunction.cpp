@@ -27,6 +27,31 @@
 #include "report/CCopasiRootContainer.h"
 #include "utilities/copasimathml.h"
 
+// static
+CFunction * CFunction::create(const CData & data)
+{
+  CFunction * pNew = NULL;
+
+  switch (data.getProperty(CData::EVALUATION_TREE_TYPE).toUint())
+    {
+      case Function:
+      case MassAction:
+      case PreDefined:
+      case UserDefined:
+        pNew = static_cast< CFunction * >(CEvaluationTree::create((CEvaluationTree::Type) data.getProperty(CData::EVALUATION_TREE_TYPE).toUint()));
+        break;
+
+      case Expression:
+      case MathExpression:
+        break;
+    }
+
+  if (pNew != NULL)
+    pNew->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
+
+  return pNew;
+}
+
 CFunction::CFunction(const std::string & name,
                      const CCopasiContainer * pParent,
                      const CEvaluationTree::Type & type):

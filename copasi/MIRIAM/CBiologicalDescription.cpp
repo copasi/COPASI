@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +23,15 @@
 #include "report/CKeyFactory.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "report/CCopasiRootContainer.h"
+#include "undo/CData.h"
+
+// static
+CBiologicalDescription * CBiologicalDescription::create(const CData & data)
+{
+  return new CBiologicalDescription(data.getProperty(CData::OBJECT_NAME).toString(),
+                                    NO_PARENT);
+}
 
 CBiologicalDescription::CBiologicalDescription(const std::string & objectName,
     const CCopasiContainer * pParent):

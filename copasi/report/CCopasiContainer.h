@@ -183,6 +183,10 @@ public:
    */
   virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
 
+  virtual size_t getIndex(const CCopasiObject * pObject) const;
+
+  virtual CCopasiObject * insert(const CData & data);
+
 protected:
   void initObjects();
 

@@ -28,6 +28,8 @@ gitTools/.UpdateCopasiVersion
 trace
 /autom4te.cache
 InitialDependencies.dot
+TransientDependencies\.dot
+GetUpdateSequence\.dot
 SimulationDependencies.dot
 .kdev4/
 ninja/

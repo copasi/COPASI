@@ -545,6 +545,12 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
   return mObjects.erase(pObject);
 }
 
+// virtual
+size_t CCopasiContainer::getIndex(const CCopasiObject * pObject) const
+{
+  return 0;
+}
+
 void CCopasiContainer::objectRenamed(CCopasiObject * pObject, const std::string & oldName)
 {
   mObjects.objectRenamed(pObject, oldName);
@@ -557,3 +563,9 @@ const std::string CCopasiContainer::getUnits() const
 // virtual
 std::string CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
 {return "?";}
+
+// virtual
+CCopasiObject * CCopasiContainer::insert(const CData & data)
+{
+  return NULL;
+}

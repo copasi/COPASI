@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -35,6 +40,8 @@ class CProcessReport;
 class CConfigurationFile;
 class SBMLIncompatibility;
 class CListOfLayouts;
+class CUndoStack;
+class CUndoData;
 
 //TODO SEDML
 #ifdef COPASI_SEDML
@@ -117,9 +124,8 @@ private:
     CListOfLayouts * pListOfLayouts;
     SCopasiXMLGUI * pGUI;
     SBMLDocument* pCurrentSBMLDocument;
-
     bool mWithGUI;
-
+    CUndoStack * mpUndoStack;
     std::string mSaveFileName;
     FileType mFileType;
     bool mChanged;
@@ -167,6 +173,8 @@ private:
 
   // Operations
 public:
+  static CCopasiDataModel * create(const ::CData & data);
+
   CCopasiDataModel(const bool withGUI = false);
 
   CCopasiDataModel(const std::string & name,
@@ -336,6 +344,9 @@ public:
   std::map<CCopasiObject*, SedBase*>& getCopasi2SEDMLMap();
 
 #endif
+
+  void applyData(const CUndoData & data);
+  void recordData(const CUndoData & data);
 
 protected:
   void pushData();

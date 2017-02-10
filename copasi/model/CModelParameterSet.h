@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,6 +22,8 @@ class CModel;
 class CModelParameterSet: public CCopasiContainer, public CModelParameterGroup, public CAnnotation
 {
 public:
+  static CModelParameterSet * create(const CData & data);
+
   /**
    * Constructor
    * @param const std::string & name

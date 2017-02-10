@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -99,6 +104,9 @@ public:
    * Destructor
    */
   virtual ~CCopasiParameterGroup();
+
+  virtual CData data() const;
+  virtual bool change(const CData & data);
 
   virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
 
@@ -476,6 +484,10 @@ public:
    * Clear all parameters and subgroups
    */
   void clear();
+
+  virtual size_t getIndex(const CCopasiObject * pObject) const;
+
+  virtual CCopasiObject * insert(const CData & data);
 
   /**
    * Retrieve the index of a parameter or subgroup with a given name

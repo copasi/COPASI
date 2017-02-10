@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGradientStop.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:50 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,15 +19,21 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
+// static
+CLGradientStop * CLGradientStop::create(const CData & data)
+{
+  return new CLGradientStop(NO_PARENT);
+}
+
 /**
  * Constructor.
  */
 CLGradientStop::CLGradientStop(CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiObject("GradientStop", pParent),
-    mOffset(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
-    mStopColor("#00000000"),
-    mKey("")
+  CLBase(),
+  CCopasiObject("GradientStop", pParent),
+  mOffset(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
+  mStopColor("#00000000"),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GradientStop", this);
 }
@@ -39,11 +42,11 @@ CLGradientStop::CLGradientStop(CCopasiContainer* pParent):
  * Copy Constructor
  */
 CLGradientStop::CLGradientStop(const CLGradientStop& source, CCopasiContainer* pParent):
-    CLBase(source),
-    CCopasiObject(source, pParent),
-    mOffset(source.mOffset),
-    mStopColor(source.mStopColor),
-    mKey("")
+  CLBase(source),
+  CCopasiObject(source, pParent),
+  mOffset(source.mOffset),
+  mStopColor(source.mStopColor),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GradientStop", this);
 }
@@ -52,11 +55,11 @@ CLGradientStop::CLGradientStop(const CLGradientStop& source, CCopasiContainer* p
  * Copy Constructor
  */
 CLGradientStop::CLGradientStop(const GradientStop& source, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiObject("GradientStop", pParent),
-    mOffset(source.getOffset()),
-    mStopColor(source.getStopColor()),
-    mKey("")
+  CLBase(),
+  CCopasiObject("GradientStop", pParent),
+  mOffset(source.getOffset()),
+  mStopColor(source.getStopColor()),
+  mKey("")
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("GradientStop", this);
 }

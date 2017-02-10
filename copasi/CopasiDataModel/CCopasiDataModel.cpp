@@ -56,7 +56,8 @@
 #include "utilities/CCopasiVector.h"
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
-
+#include "undo/CUndoStack.h"
+#include "undo/CUndoData.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
 
@@ -137,6 +138,13 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
   CCopasiObject::setRenameHandler(&mRenameHandler);
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::PROCESS, this);
+}
+
+// static
+CCopasiDataModel * CCopasiDataModel::create(const ::CData & data)
+{
+  return new CCopasiDataModel(data.getProperty(::CData::OBJECT_NAME).toString(),
+                              NO_PARENT);
 }
 
 CCopasiDataModel::CCopasiDataModel(const std::string & name,
@@ -1486,7 +1494,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
   CDirEntry::createDir(destinationDir);
 
   archive.extractTo(destinationDir);
-  mTempFolders.push_back(destinationDir);
+  mTempFolders.record(destinationDir);
 
   // read the master file
   const CaContent* content = archive.getMasterFile();
@@ -1526,7 +1534,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
           for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
             {
               CExperiment* experiment = experiments.getExperiment(i);
-              experimentalDataFiles.push_back(experiment->getFileNameOnly());
+              experimentalDataFiles.record(experiment->getFileNameOnly());
             }
 
           CExperimentSet& crossValidation = pProblem->getCrossValidationSet();
@@ -1535,7 +1543,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
           for (size_t i = 0; i < crossValidation.getExperimentCount(); ++i)
             {
               CExperiment* experiment = crossValidation.getExperiment(i);
-              crossValidationFiles.push_back(experiment->getFileNameOnly());
+              crossValidationFiles.record(experiment->getFileNameOnly());
             }
 
           if (crossValidationFiles.size() + experimentalDataFiles.size() > 0)
@@ -1944,6 +1952,7 @@ void CCopasiDataModel::deleteOldData()
   pdelete(mOldData.pListOfLayouts);
   pdelete(mOldData.pGUI);
   pdelete(mOldData.pCurrentSBMLDocument);
+  pdelete(mOldData.mpUndoStack);
 
 #ifdef COPASI_SEDML
   pdelete(mOldData.pCurrentSEDMLDocument);
@@ -2388,14 +2397,18 @@ CCopasiDataModel::CData::CData(const bool & withGUI):
   pGUI(NULL),
   pCurrentSBMLDocument(NULL),
   mWithGUI(withGUI),
+  mpUndoStack(NULL),
   mSaveFileName(),
   mFileType(unset),
   mChanged(false),
   mAutoSaveNeeded(false),
   mSBMLFileName(""),
+  mCopasi2SBMLMap(),
   mReferenceDir("")
 #ifdef COPASI_SEDML
   , pCurrentSEDMLDocument(NULL)
+  , mCopasi2SEDMLMap()
+  , mSEDMLFileName("")
 #endif
 {}
 
@@ -2408,14 +2421,18 @@ CCopasiDataModel::CData::CData(const CData & src):
   pGUI(src.pGUI),
   pCurrentSBMLDocument(src.pCurrentSBMLDocument),
   mWithGUI(src.mWithGUI),
+  mpUndoStack(src.mpUndoStack),
   mSaveFileName(src.mSaveFileName),
   mFileType(src.mFileType),
   mChanged(src.mChanged),
   mAutoSaveNeeded(src.mAutoSaveNeeded),
   mSBMLFileName(src.mSBMLFileName),
+  mCopasi2SBMLMap(src.mCopasi2SBMLMap),
   mReferenceDir(src.mReferenceDir)
 #ifdef COPASI_SEDML
   , pCurrentSEDMLDocument(src.pCurrentSEDMLDocument)
+  , mCopasi2SEDMLMap(src.mCopasi2SEDMLMap)
+  , mSEDMLFileName(src.mSEDMLFileName)
 #endif
 {}
 
@@ -2424,24 +2441,32 @@ CCopasiDataModel::CData::~CData()
 
 CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs)
 {
-  pModel = rhs.pModel;
-  pTaskList = rhs.pTaskList;
-  pReportDefinitionList = rhs.pReportDefinitionList;
-  pPlotDefinitionList = rhs.pPlotDefinitionList;
-  pListOfLayouts = rhs.pListOfLayouts;
-  pGUI = rhs.pGUI;
-  pCurrentSBMLDocument = rhs.pCurrentSBMLDocument;
-  mWithGUI = rhs.mWithGUI,
-  mSaveFileName = rhs.mSaveFileName;
-  mFileType = rhs.mFileType;
-  mChanged = rhs.mChanged;
-  mAutoSaveNeeded = rhs.mAutoSaveNeeded;
-  mSBMLFileName = rhs.mSBMLFileName;
-  mReferenceDir = rhs.mReferenceDir;
-  mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
+  if (this != &rhs)
+    {
+      pModel = rhs.pModel;
+      pTaskList = rhs.pTaskList;
+      pReportDefinitionList = rhs.pReportDefinitionList;
+      pPlotDefinitionList = rhs.pPlotDefinitionList;
+      pListOfLayouts = rhs.pListOfLayouts;
+      pGUI = rhs.pGUI;
+      pCurrentSBMLDocument = rhs.pCurrentSBMLDocument;
+      mWithGUI = rhs.mWithGUI;
+      mpUndoStack = rhs.mpUndoStack;
+      mSaveFileName = rhs.mSaveFileName;
+      mFileType = rhs.mFileType;
+      mChanged = rhs.mChanged;
+      mAutoSaveNeeded = rhs.mAutoSaveNeeded;
+      mSBMLFileName = rhs.mSBMLFileName;
+      mReferenceDir = rhs.mReferenceDir;
+      mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
+
 #ifdef COPASI_SEDML
-  pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
+      pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
+      mCopasi2SEDMLMap = rhs.mCopasi2SEDMLMap;
+      mSEDMLFileName = rhs.mSEDMLFileName;
 #endif
+    }
+
   return *this;
 }
 
@@ -2524,6 +2549,11 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
       mData.pGUI = new SCopasiXMLGUI("GUI", this);
     }
 
+  if (mData.mpUndoStack == NULL)
+    {
+      mData.mpUndoStack = new CUndoStack(*this);
+    }
+
   // We have at least one task of every type
   addDefaultTasks();
   addDefaultReports();
@@ -2585,6 +2615,9 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mOldData.pCurrentSBMLDocument == mData.pCurrentSBMLDocument)
     mOldData.pCurrentSBMLDocument = NULL;
 
+  if (mOldData.mpUndoStack == mData.mpUndoStack)
+    mOldData.mpUndoStack = NULL;
+
 #ifdef COPASI_SEDML
 
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
@@ -2641,5 +2674,19 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (deleteOldData)
     {
       CCopasiDataModel::deleteOldData();
+    }
+}
+
+void CCopasiDataModel::applyData(const CUndoData & data)
+{
+  data.apply(*this);
+  recordData(data);
+}
+
+void CCopasiDataModel::recordData(const CUndoData & data)
+{
+  if (mData.mpUndoStack != NULL)
+    {
+      mData.mpUndoStack->record(data);
     }
 }

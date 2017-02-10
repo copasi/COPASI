@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,6 +32,13 @@ const char * CSlider::TypeName[] =
 
 const char * CSlider::ScaleName[] =
 {"linear", "logarithmic", "undefined", NULL};
+
+// static
+CSlider * CSlider::create(const CData & data)
+{
+  return new CSlider(data.getProperty(CData::OBJECT_NAME).toString(),
+                     NO_PARENT);
+}
 
 CSlider::CSlider(const std::string & name,
                  const CCopasiContainer * pParent):

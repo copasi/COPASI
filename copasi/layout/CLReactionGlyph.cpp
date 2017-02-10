@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -121,6 +126,13 @@ void CLGlyphWithCurve::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 //***************************
+
+// static
+CLReferenceGlyph * CLReferenceGlyph::create(const CData & data)
+{
+  return new CLReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                              NO_PARENT);
+}
 
 CLReferenceGlyph::CLReferenceGlyph(const std::string & name,
                                    const CCopasiContainer * pParent)
@@ -300,6 +312,13 @@ const std::string CLMetabReferenceGlyph::XMLRole[] =
   "inhibitor",
   ""
 };
+
+// static
+CLMetabReferenceGlyph * CLMetabReferenceGlyph::create(const CData & data)
+{
+  return new CLMetabReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                                   NO_PARENT);
+}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
     const CCopasiContainer * pParent)
@@ -482,6 +501,13 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 //*********** CLGeneralGlyph ****************************************
+
+// static
+CLGeneralGlyph * CLGeneralGlyph::create(const CData & data)
+{
+  return new CLGeneralGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                            NO_PARENT);
+}
 
 CLGeneralGlyph::CLGeneralGlyph(const std::string & name,
                                const CCopasiContainer * pParent)
@@ -802,6 +828,13 @@ void CLGeneralGlyph::print(std::ostream * ostream) const
 {*ostream << *this;}
 
 //*********** CLReactionGlyph ****************************************
+
+// static
+CLReactionGlyph * CLReactionGlyph::create(const CData & data)
+{
+  return new CLReactionGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                             NO_PARENT);
+}
 
 CLReactionGlyph::CLReactionGlyph(const std::string & name,
                                  const CCopasiContainer * pParent)

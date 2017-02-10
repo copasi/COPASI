@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,6 +30,7 @@
 #include "CCopasiTask.h"
 #include "CCopasiProblem.h"
 #include "CCopasiMethod.h"
+#include "CTaskFactory.h"
 #include "report/CReport.h"
 #include "report/CKeyFactory.h"
 #include "utilities/COutputHandler.h"
@@ -35,6 +41,19 @@
 #include "report/CCopasiTimer.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+// static
+CCopasiTask * CCopasiTask::create(const CData & data)
+{
+  CCopasiTask * pNew = CTaskFactory::createTask((CTaskEnum::Task)data.getProperty(CData::TASK_TYPE).toUint(), NO_PARENT);
+
+  if (pNew != NULL)
+    {
+      pNew->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
+    }
+
+  return pNew;
+}
 
 bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
                                 const CTaskEnum::Method * validMethods)
@@ -374,7 +393,7 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
             mpOutputHandler->output(activity);
 
           break;
-        
+
         default: //any unspecified channel is just passed through
           mpOutputHandler->output(activity);
       }

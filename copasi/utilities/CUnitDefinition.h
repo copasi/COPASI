@@ -30,7 +30,8 @@ class CUnitDefinition : public CCopasiContainer, public CUnit, public CAnnotatio
 
 public:
 
-// constructors
+  static CUnitDefinition * create(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")

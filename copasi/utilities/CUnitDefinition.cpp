@@ -10,16 +10,13 @@
 
 #include <math.h>
 #include <string.h>
-//#include <algorithm>
 
-#include "copasi/utilities/CUnitDefinition.h"
-//#include "copasi/utilities/CUnitParser.h"
-#include "copasi/report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
-//#include "copasi/model/CModel.h"
-#include "copasi/xml/CCopasiXMLInterface.h"
+#include "utilities/CUnitDefinition.h"
 
-//#include "CCopasiException.h"
+#include "../undo/CData.h"
+#include "report/CKeyFactory.h"
+#include "report/CCopasiRootContainer.h"
+#include "xml/CCopasiXMLInterface.h"
 
 // SI Name, Symbol, Definition
 struct SIUnit
@@ -121,6 +118,13 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
 
       pSIUnit++;
     }
+}
+
+// static
+CUnitDefinition * CUnitDefinition::create(const CData & data)
+{
+  return new CUnitDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
+                             NO_PARENT);
 }
 
 // constructors

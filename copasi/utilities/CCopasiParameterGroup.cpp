@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,6 +30,8 @@
 #include "copasi.h"
 
 #include "CCopasiParameterGroup.h"
+
+#include "../undo/CData.h"
 #include "CCopasiMessage.h"
 
 #include "utilities/utility.h"
@@ -225,6 +232,49 @@ CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
 CCopasiParameterGroup::~CCopasiParameterGroup()
 {
   clear();
+}
+
+// virtual
+CData CCopasiParameterGroup::data() const
+{
+  CData Data = CCopasiParameter::data();
+
+  std::vector< CData > Value;
+
+  elements::const_iterator it = static_cast< elements * >(mpValue)->begin();
+  elements::const_iterator end = static_cast< elements * >(mpValue)->end();
+
+  for (; it != end; ++it)
+    {
+      Value.push_back((*it)->data());
+    }
+
+  Data.addProperty(CData::PARAMETER_VALUE, Value);
+
+  return Data;
+}
+
+// virtual
+bool CCopasiParameterGroup::change(const CData & data)
+{
+  bool success = CCopasiParameter::change(data);
+
+  const std::vector< CData > & Value = data.getProperty(CData::PARAMETER_VALUE).toDataVector();
+
+  std::vector< CData >::const_iterator it = Value.begin();
+  std::vector< CData >::const_iterator end = Value.end();
+
+  for (; it != end; ++it)
+    {
+      CCopasiParameter * pNew = new CCopasiParameter(it->getProperty(CData::OBJECT_NAME).toString(),
+          (CCopasiParameter::Type) it->getProperty(CData::PARAMETER_TYPE).toUint());
+      success &= pNew->change(*it);
+
+      static_cast< elements * >(mpValue)->push_back(pNew);
+      CCopasiParameter::add(pNew, true);
+    }
+
+  return success;
 }
 
 // virtual
@@ -706,9 +756,48 @@ size_t CCopasiParameterGroup::getIndex(const std::string & name) const
   index_iterator end = static_cast< elements * >(mpValue)->end();
 
   for (size_t i = 0; it != end; ++it, ++i)
-    if (name == (*it)->getObjectName()) return i;;
+    if (name == (*it)->getObjectName())
+      return i;
 
   return C_INVALID_INDEX;
+}
+
+// virtual
+size_t CCopasiParameterGroup::getIndex(const CCopasiObject * pObject) const
+{
+  const std::string & Name = pObject->getObjectName();
+
+  //check if the first part of the cn matches one of the children (by name and type)
+  objectMap::range range = mObjects.equal_range(Name);
+
+  // If not found
+  if (range.first == range.second ||
+      range.first == --range.second)
+    return 0;
+
+  index_iterator it = static_cast< elements * >(mpValue)->begin();
+  index_iterator end = static_cast< elements * >(mpValue)->end();
+  size_t i = 0;
+
+  for (; it != end; ++it, ++i)
+    if (pObject == *it)
+      return i;
+
+  return i;
+}
+
+// virtual
+CCopasiObject * CCopasiParameterGroup::insert(const CData & data)
+{
+  CCopasiParameter * pNew = new CCopasiParameter(data.getProperty(CData::OBJECT_NAME).toString(),
+      (CCopasiParameter::Type) data.getProperty(CData::PARAMETER_TYPE).toUint());
+
+  elements * pElements = static_cast< elements * >(mpValue);
+  pElements->insert(pElements->begin() + data.getProperty(CData::OBJECT_INDEX).toUint(), pNew);
+
+  CCopasiParameter::add(pNew, true);
+
+  return pNew;
 }
 
 std::string CCopasiParameterGroup::getUniqueParameterName(const CCopasiParameter * pParameter) const

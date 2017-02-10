@@ -60,6 +60,8 @@ public:
 
   static const char * KineticLawUnitTypeName[];
 
+  static CReaction * create(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")

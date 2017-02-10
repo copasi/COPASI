@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -92,6 +97,8 @@ protected:
   CLReferenceGlyph(const CLReferenceGlyph & src);
 
 public:
+  static CLReferenceGlyph * create(const CData & data);
+
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
                    const CCopasiContainer * pParent = NO_PARENT);
 
@@ -204,6 +211,8 @@ protected:
   CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src);
 
 public:
+  static CLMetabReferenceGlyph * create(const CData & data);
+
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
                         const CCopasiContainer * pParent = NO_PARENT);
 
@@ -271,6 +280,8 @@ protected:
   CLGeneralGlyph(const CLGeneralGlyph & src);
 
 public:
+  static CLGeneralGlyph * create(const CData & data);
+
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
                  const CCopasiContainer * pParent = NO_PARENT);
 
@@ -345,6 +356,8 @@ protected:
   CLReactionGlyph(const CLReactionGlyph & src);
 
 public:
+  static CLReactionGlyph * create(const CData & data);
+
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
                   const CCopasiContainer * pParent = NO_PARENT);
 

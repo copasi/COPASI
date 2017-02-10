@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -142,6 +147,8 @@ protected:
   CPlotItem(const CPlotItem & src);
 
 public:
+  static CPlotItem * create(const CData & data);
+
   CPlotItem(const std::string & name = "NoName",
             const CCopasiContainer * pParent = NO_PARENT,
             const Type & type = curve2d);

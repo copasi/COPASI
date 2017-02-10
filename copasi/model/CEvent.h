@@ -38,7 +38,8 @@ class CCallbackInterface;
 class CEventAssignment : public CCopasiContainer
 {
 public:
-  // Operations
+  static CEventAssignment * create(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & targetKey (default: "")
@@ -165,6 +166,8 @@ public:
     Callback,
     Stop
   };
+
+  static CEvent * create(const CData & data);
 
   /**
    * Default constructor

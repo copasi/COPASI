@@ -61,6 +61,13 @@ const char * CReaction::KineticLawUnitTypeName[] =
   NULL
 };
 
+// static
+CReaction * CReaction::create(const CData & data)
+{
+  return new CReaction(data.getProperty(CData::OBJECT_NAME).toString(),
+                       NO_PARENT);
+}
+
 CReaction::CReaction(const std::string & name,
                      const CCopasiContainer * pParent):
   CCopasiContainer(name, pParent, "Reaction"),

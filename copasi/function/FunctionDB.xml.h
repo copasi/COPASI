@@ -1,17 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/FunctionDB.xml.h,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/11 12:28:58 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -190,13 +192,13 @@ static char FunctionDBxml[] =
   "  <MiriamAnnotation>\n"
   "   <rdf:RDF xmlns:CopasiMT=\"http://www.copasi.org/RDF/MiriamTerms#\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
   "   <rdf:Description rdf:about=\"#Function_13\">\n"
-  "   <CopasiMT:is rdf:resource=\"urn:miriam:obo.sbo:SBO:0000041\"/>\n"
+  "   <CopasiMT:is rdf:resource=\"urn:miriam:obo.sbo:SBO:0000163\"/>\n"
   "   </rdf:Description>\n"
   "   </rdf:RDF>\n"
   "  </MiriamAnnotation>\n"
   "  <Comment>\n"
   "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-  "<b>Mass action rate law for first order irreversible reactions</b>\n"
+  "<b>Mass action rate law for irreversible reactions</b>\n"
   "<p>\n"
   "Reaction scheme where the products are created from the reactants and the change of a product quantity is proportional to the product of reactant activities. The reaction scheme does not include any reverse process that creates the reactants from the products. The change of a product quantity is proportional to the quantity of one reactant.\n"
   "</p>\n"

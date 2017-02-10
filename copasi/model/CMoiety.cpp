@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,6 +37,13 @@
 
 // static
 const C_FLOAT64 CMoiety::DefaultFactor(1.0);
+
+// static
+CMoiety * CMoiety::create(const CData & data)
+{
+  return new CMoiety(data.getProperty(CData::OBJECT_NAME).toString(),
+                     NO_PARENT);
+}
 
 CMoiety::CMoiety(const std::string & name,
                  const CCopasiContainer * pParent):

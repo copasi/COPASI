@@ -34,9 +34,15 @@
 #include "function/CExpression.h"
 #include "MIRIAM/CRDFUtilities.h"
 
+// static
+CEventAssignment * CEventAssignment::create(const CData & data)
+{
+  return new CEventAssignment(data.getProperty(CData::OBJECT_NAME).toString(),
+                              NO_PARENT);
+}
+
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
-
 CEventAssignment::CEventAssignment(const std::string & targetKey,
                                    const CCopasiContainer * pParent) :
   CCopasiContainer(targetKey, pParent, "EventAssignment"),
@@ -243,6 +249,12 @@ CExpression* CEventAssignment::getExpressionPtr()
 }
 
 //****************************************************************
+// static
+CEvent * CEvent::create(const CData & data)
+{
+  return new CEvent(data.getProperty(CData::OBJECT_NAME).toString(),
+                    NO_PARENT);
+}
 
 CEvent::CEvent(const std::string & name,
                const CCopasiContainer * pParent):

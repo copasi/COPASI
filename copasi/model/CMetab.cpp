@@ -48,6 +48,13 @@ C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
     const CModel & model)
 {return number / compartment.getInitialValue() * model.getNumber2QuantityFactor();}
 
+// static
+CMetab * CMetab::create(const CData & data)
+{
+  return new CMetab(data.getProperty(CData::OBJECT_NAME).toString(),
+                    NO_PARENT);
+}
+
 CMetab::CMetab(const std::string & name,
                const CCopasiContainer * pParent):
   CModelEntity(name, pParent, "Metabolite",
@@ -946,6 +953,13 @@ const CMoiety * CMetab::getMoiety() const
 {return mpMoiety;}
 
 //******************* CMetabOld ***************************************************
+
+// static
+CMetabOld * CMetabOld::create(const CData & data)
+{
+  return new CMetabOld(data.getProperty(CData::OBJECT_NAME).toString(),
+                       NO_PARENT);
+}
 
 CMetabOld::CMetabOld(const std::string & name,
                      const CCopasiContainer * pParent):

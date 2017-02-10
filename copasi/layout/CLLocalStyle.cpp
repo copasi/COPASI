@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLocalStyle.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,6 +17,12 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
+// static
+CLLocalStyle * CLLocalStyle::create(const CData & data)
+{
+  return new CLLocalStyle(NO_PARENT);
+}
+
 /**
  * Constructor.
  */
@@ -32,8 +35,8 @@ CLLocalStyle::CLLocalStyle(CCopasiContainer* pParent): CLStyle("LocalStyle", pPa
  * Copy Constructor.
  */
 CLLocalStyle::CLLocalStyle(const CLLocalStyle& source, CCopasiContainer* pParent):
-    CLStyle(source, pParent),
-    mKeyList(source.mKeyList)
+  CLStyle(source, pParent),
+  mKeyList(source.mKeyList)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalStyle", this);
 }
@@ -42,7 +45,7 @@ CLLocalStyle::CLLocalStyle(const CLLocalStyle& source, CCopasiContainer* pParent
  * Constructor to generate object from the corresponding SBML object.
  */
 CLLocalStyle::CLLocalStyle(const LocalStyle& source, CCopasiContainer* pParent):
-    CLStyle(source, "LocalStyle", pParent)
+  CLStyle(source, "LocalStyle", pParent)
 {
   this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalStyle", this);
   CLStyle::readIntoSet(CLStyle::createStringFromSet(source.getIdList()), this->mKeyList);

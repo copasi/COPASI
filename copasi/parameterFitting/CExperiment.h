@@ -1,16 +1,21 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_CExperiment
 #define COPASI_CExperiment
@@ -30,6 +35,8 @@ class CFittingPoint: public CCopasiContainer
 {
   // Operations
 public:
+  static CFittingPoint * create(const CData & data);
+
   CFittingPoint(const std::string & name = "unknown",
                 const CCopasiContainer * pParent = NO_PARENT);
 
@@ -286,9 +293,9 @@ public:
   const CMatrix< C_FLOAT64 > & getDependentData() const;
 
   /**
-   * Retrieve the file name in case it is a relative filename 
-   * an absolute path to the file will be created. 
-   * 
+   * Retrieve the file name in case it is a relative filename
+   * an absolute path to the file will be created.
+   *
    * @return const std::string & fileName
    */
   const std::string & getFileName() const;

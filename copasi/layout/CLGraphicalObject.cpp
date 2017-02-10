@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +28,13 @@
 #include "report/CKeyFactory.h"
 #include "sbml/CSBMLExporter.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+// static
+CLGraphicalObject * CLGraphicalObject::create(const CData & data)
+{
+  return new CLGraphicalObject(data.getProperty(CData::OBJECT_NAME).toString(),
+                               NO_PARENT);
+}
 
 CLGraphicalObject::CLGraphicalObject(const std::string & name,
                                      const CCopasiContainer * pParent)

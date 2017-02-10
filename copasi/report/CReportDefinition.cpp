@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -33,6 +38,13 @@
 //class CReportDefinition
 //
 //////////////////////////////////////////////////
+// static
+CReportDefinition * CReportDefinition::create(const CData & data)
+{
+  return new CReportDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
+                               NO_PARENT);
+}
+
 CReportDefinition::CReportDefinition(const std::string & name,
                                      const CCopasiContainer * pParent):
   CCopasiObject(name, pParent, "ReportDefinition"),
@@ -190,7 +202,6 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
         {
           Title = pObject->getCN() + ",Property=DisplayName";
         }
-
     }
   else
     Title =
@@ -207,8 +218,6 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
     {
       mBodyVector.push_back(pObject->getCN());
     }
-
-
 
   return;
 }

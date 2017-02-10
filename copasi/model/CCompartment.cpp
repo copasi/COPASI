@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -32,6 +37,13 @@
 #include "CCompartment.h"
 #include "CModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+// static
+CCompartment * CCompartment::create(const CData & data)
+{
+  return new CCompartment(data.getProperty(CData::OBJECT_NAME).toString(),
+                          NO_PARENT);
+}
 
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):

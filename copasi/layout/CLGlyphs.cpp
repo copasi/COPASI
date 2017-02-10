@@ -1,22 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGlyphs.cpp,v $
-//   $Revision: 1.18 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,21 +30,28 @@
 #include "report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
+// static
+CLMetabGlyph * CLMetabGlyph::create(const CData & data)
+{
+  return new CLMetabGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                          NO_PARENT);
+}
+
 CLMetabGlyph::CLMetabGlyph(const std::string & name,
                            const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent)
+  : CLGraphicalObject(name, pParent)
 {}
 
 CLMetabGlyph::CLMetabGlyph(const CLMetabGlyph & src,
                            const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent)
+  : CLGraphicalObject(src, pParent)
 {}
 
 CLMetabGlyph::CLMetabGlyph(const SpeciesGlyph & sbml,
                            const std::map<std::string, std::string> & modelmap,
                            std::map<std::string, std::string> & layoutmap,
                            const CCopasiContainer * pParent)
-    : CLGraphicalObject(sbml, layoutmap, pParent)
+  : CLGraphicalObject(sbml, layoutmap, pParent)
 {
   //get the copasi key corresponding to the sbml id for the species
   if (sbml.getSpeciesId() != "")
@@ -105,21 +109,28 @@ void CLMetabGlyph::print(std::ostream * ostream) const
 
 //********* CLCompartmentGlyph ************************************************
 
+// static
+CLCompartmentGlyph * CLCompartmentGlyph::create(const CData & data)
+{
+  return new CLCompartmentGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                                NO_PARENT);
+}
+
 CLCompartmentGlyph::CLCompartmentGlyph(const std::string & name,
                                        const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent)
+  : CLGraphicalObject(name, pParent)
 {}
 
 CLCompartmentGlyph::CLCompartmentGlyph(const CLCompartmentGlyph & src,
                                        const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent)
+  : CLGraphicalObject(src, pParent)
 {}
 
 CLCompartmentGlyph::CLCompartmentGlyph(const CompartmentGlyph & sbml,
                                        const std::map<std::string, std::string> & modelmap,
                                        std::map<std::string, std::string> & layoutmap,
                                        const CCopasiContainer * pParent)
-    : CLGraphicalObject(sbml, layoutmap, pParent)
+  : CLGraphicalObject(sbml, layoutmap, pParent)
 {
   //get the copasi key corresponding to the sbml id for the compartment
   if (sbml.getCompartmentId() != "")
@@ -177,9 +188,16 @@ void CLCompartmentGlyph::print(std::ostream * ostream) const
 
 //********** CLTextGlyph ******************************************************
 
+// static
+CLTextGlyph * CLTextGlyph::create(const CData & data)
+{
+  return new CLTextGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
+                         NO_PARENT);
+}
+
 CLTextGlyph::CLTextGlyph(const std::string & name,
                          const CCopasiContainer * pParent)
-    : CLGraphicalObject(name, pParent),
+  : CLGraphicalObject(name, pParent),
     mIsTextSet(false),
     mText(""),
     mGraphicalObjectKey("")
@@ -187,7 +205,7 @@ CLTextGlyph::CLTextGlyph(const std::string & name,
 
 CLTextGlyph::CLTextGlyph(const CLTextGlyph & src,
                          const CCopasiContainer * pParent)
-    : CLGraphicalObject(src, pParent),
+  : CLGraphicalObject(src, pParent),
     mIsTextSet(src.mIsTextSet),
     mText(src.mText),
     mGraphicalObjectKey(src.mGraphicalObjectKey)
@@ -197,7 +215,7 @@ CLTextGlyph::CLTextGlyph(const TextGlyph & sbml,
                          const std::map<std::string, std::string> & modelmap,
                          std::map<std::string, std::string> & layoutmap,
                          const CCopasiContainer * pParent)
-    : CLGraphicalObject(sbml, layoutmap, pParent),
+  : CLGraphicalObject(sbml, layoutmap, pParent),
     mIsTextSet(sbml.isSetText()),
     mText(sbml.getText()),
     mGraphicalObjectKey("")

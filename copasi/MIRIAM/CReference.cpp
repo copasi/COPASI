@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,6 +23,13 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "model/CModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
+
+// static
+CReference * CReference::create(const CData & data)
+{
+  return new CReference(data.getProperty(CData::OBJECT_NAME).toString(),
+                        NO_PARENT);
+}
 
 CReference::CReference(const std::string & objectName,
                        const CCopasiContainer * pParent):
