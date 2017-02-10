@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -345,6 +350,49 @@ bool CEvent::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) 
     }
 
   return MustBeDeleted;
+}
+
+std::string
+CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
+{
+  if (mpTriggerExpression != NULL &&
+      mpTriggerExpression->mustBeDeleted(deletedObjects))
+    {
+      return "Trigger";
+    }
+
+  if (mpPriorityExpression != NULL &&
+      mpPriorityExpression->mustBeDeleted(deletedObjects))
+    {
+      return "Priority";
+    }
+
+  if (mpDelayExpression != NULL &&
+      mpDelayExpression->mustBeDeleted(deletedObjects))
+    {
+      return "Delay";
+    }
+
+  CCopasiVectorN< CEventAssignment >::const_iterator itAssignment = mAssignments.begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator endAssignment = mAssignments.end();
+
+  for (; itAssignment != endAssignment; ++itAssignment)
+    {
+      const CEventAssignment& assignment = *itAssignment;
+
+      if (assignment.getExpressionPtr() != NULL &&
+          assignment.getExpressionPtr()->mustBeDeleted(deletedObjects))
+        {
+          return "EventAssignment Expression";
+        }
+      else if (assignment.getTargetObject() != NULL &&
+               assignment.getTargetObject()->mustBeDeleted(deletedObjects))
+        {
+          return "EventAssignment Target";
+        }
+    }
+
+  return "Unused";
 }
 
 bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)

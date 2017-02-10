@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -704,6 +709,16 @@ public:
   bool appendDependentReactions(std::set< const CCopasiObject * > candidates,
                                 std::set< const CCopasiObject * > & dependents) const;
 
+  /**
+  * Appends a pointers to events which are dependent on the candidates to the
+  * list.
+  * @param std::set< const CCopasiObject * > candidates
+  * @param std::set< const CCopasiObject * > & dependents
+  * @return bool objectsAppended
+  */
+  bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
+                             std::set< const CCopasiObject * > & dependents) const;
+
 private:
   /**
    * Appends pointers to metabolites which are dependent on the candidates to the
@@ -734,16 +749,6 @@ private:
    */
   bool appendDependentModelValues(std::set< const CCopasiObject * > candidates,
                                   std::set< const CCopasiObject * > & dependents) const;
-
-  /**
-   * Appends a pointers to events which are dependent on the candidates to the
-   * list.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
-   * @return bool objectsAppended
-   */
-  bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
-                             std::set< const CCopasiObject * > & dependents) const;
 
 public:
   /**

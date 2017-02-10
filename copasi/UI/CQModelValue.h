@@ -70,6 +70,8 @@ private:
   void createNewGlobalQuantity();
   void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
 
+  void loadEventTable();
+
 private slots:
   void slotBtnNew();
   void slotBtnCopy();
@@ -78,6 +80,7 @@ private slots:
   void slotAddNoiseChanged(bool hasNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotUnitChanged();
+  void slotSwitchToEvent(int row, int /* column */);
 
 public:
   bool changeValue(const std::string& key,

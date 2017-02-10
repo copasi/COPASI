@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -217,6 +222,17 @@ public:
    * @return bool mustBeDeleted
    */
   virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
+
+  /**
+   * Return information where the element in the object set is being used.
+   *
+   * @param deletedObjects an object set that is used by the event
+   * @return a string representing how the object is being used, this will be
+   *   one of "Unused", "Trigger", "Priority", "Delay",
+   *   "EventAssignment Expression" or "EventAssignment Target"
+   */
+  std::string getOriginFor(const DataObjectSet & deletedObjects) const;
+
 
   /**
    * Compile the event.

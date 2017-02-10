@@ -411,6 +411,7 @@ void CQCompartment::load()
     }
 
   loadMetaboliteTable();
+  loadEventTable();
 
   mChanged = false;
   return;
@@ -803,3 +804,96 @@ bool CQCompartment::changeValue(const std::string& key,
 
   return true;
 }
+
+void
+CQCompartment::loadEventTable()
+{
+  if (mpCompartment == NULL) return;
+
+  CModel * pModel = const_cast<CModel *>(mpCompartment->getModel());
+
+  if (pModel == NULL) return;
+
+  std::set< const CCopasiObject * > deletedObjects = mpCompartment->getDeletedObjects();
+
+  //TODO: not sure what to do here when we include the value reference, then
+  //      we'd have a lot of false positives, whenever a metabolite is in an event
+  //      maybe only include a certain reference?
+  //
+  //deletedObjects.insert(mpCompartment->getValueReference());
+  //deletedObjects.insert(mpCompartment->getInitialValueReference());
+  //deletedObjects.insert(mpCompartment->getRateReference());
+
+  std::set< const CCopasiObject * > Events;
+  pModel->appendDependentEvents(deletedObjects, Events);
+
+
+  bool haveDependentEvents = !Events.empty();
+
+  mpLblEvents->setVisible(haveDependentEvents);
+  mpEventTable->setVisible(haveDependentEvents);
+
+  if (!haveDependentEvents) return;
+
+  int numDependentEvents = (int)Events.size();
+
+  mpEventTable->setRowCount(numDependentEvents);
+  mpEventTable->setSortingEnabled(false);
+
+  std::set< const CCopasiObject * >::const_iterator it = Events.begin();
+  std::set< const CCopasiObject * >::const_iterator end = Events.end();
+  int i = 0;
+  const CEvent * pEvent;
+
+  for (; it != end; ++it, ++i)
+    {
+      pEvent = static_cast<const CEvent *>(*it);
+      mpEventTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pEvent->getObjectName()) + ":"));
+
+      std::string source = pEvent->getOriginFor(deletedObjects);
+
+      mpEventTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(source)));
+    }
+
+  if (i == 0)
+    mpEventTable->setItem(i, 0, new QTableWidgetItem("none"));
+
+  mpEventTable->setSortingEnabled(true);
+
+  // Provide count of reactions, in label.
+  mpLblEvents->setText("Involved in \n" + QString::number(mpEventTable->rowCount()) + " Events");
+
+  return;
+}
+
+void
+CQCompartment::slotSwitchToEvent(int row, int /* column */)
+{
+  if (mpCompartment == NULL) return;
+
+  const CModel * pModel = mpCompartment->getModel();
+
+  if (pModel == NULL) return;
+
+  std::set< const CCopasiObject * > events;
+  pModel->appendDependentEvents(mpCompartment->getDeletedObjects(), events);
+
+  std::string s1, s2;
+  s1 = TO_UTF8(mpEventTable->item(row, 0)->text());
+  s1 = s1.substr(0, s1.length() - 1);
+
+  C_INT32 i = 0;
+  std::set< const CCopasiObject * >::const_iterator it = events.begin();
+  std::set< const CCopasiObject * >::const_iterator end = events.end();
+  const CEvent * pEvent;
+
+  for (; it != end; ++it, ++i)
+    {
+      pEvent = static_cast<const CEvent *>(*it);
+      s2 = pEvent->getObjectName();
+
+      if (s1 == s2)
+        mpListView->switchToOtherWidget(C_INVALID_INDEX, pEvent->getKey());
+    }
+}
+

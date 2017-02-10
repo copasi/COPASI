@@ -60,6 +60,7 @@ private:
   void load();
   void save();
   void loadReactionTable();
+  void loadEventTable();
 
 private slots:
   void slotBtnNew();
@@ -71,6 +72,7 @@ private slots:
   void slotInitialTypeChanged(bool useInitialExpression);
   void slotNameLostFocus();
   void slotSwitchToReaction(int row, int column);
+  void slotSwitchToEvent(int, int);
   void slotInitialValueLostFocus();
 
   //additional functions for UNDO framework
