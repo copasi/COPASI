@@ -658,6 +658,7 @@ void CopasiUI3Window::createMenuBar()
   pEditMenu->addAction(mpaUndo);
   pEditMenu->addAction(mpaRedo);
   pEditMenu->addAction(mpaUndoHistory);
+  pEditMenu->addSeparator();
   pEditMenu->addAction(mpaClearUndoHistory);
 #endif
 
@@ -3705,7 +3706,18 @@ QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
 #ifdef COPASI_UNDO
 void CopasiUI3Window::slotClearUndoHistory()
 {
-  mpUndoStack->clear();
+  if (mpUndoStack == NULL || !mpUndoStack->canUndo())
+    return;
+
+  if (QMessageBox::question(this, "Clear Undo history?",
+                            "Do you want to clear the undo history? This will prevent "
+                            "all previous operations to be undone.",
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+    {
+
+      mpUndoStack->clear();
+    }
 }
 
 void CopasiUI3Window::slotUndoHistory()
