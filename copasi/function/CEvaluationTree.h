@@ -74,6 +74,8 @@ public:
   static CEvaluationTree *
   create(CEvaluationTree::Type type);
 
+  using CCopasiObject::create;
+
   /**
    * Copy an EvaluationTree of the specified type.
    * Note: the returned object has to be released after use with delete.

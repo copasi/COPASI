@@ -647,7 +647,7 @@ public:
 
   virtual CCopasiObject * insert(const CData & data)
   {
-    CType * pNew = CType::create(data);
+    CType * pNew = static_cast<CType *>(CType::create(data));
 
     if (pNew->getObjectType() == data.getProperty(CData::OBJECT_TYPE).toString())
       {
