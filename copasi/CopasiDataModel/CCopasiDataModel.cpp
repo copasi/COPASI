@@ -1494,7 +1494,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
   CDirEntry::createDir(destinationDir);
 
   archive.extractTo(destinationDir);
-  mTempFolders.record(destinationDir);
+  mTempFolders.push_back(destinationDir);
 
   // read the master file
   const CaContent* content = archive.getMasterFile();
@@ -1534,7 +1534,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
           for (size_t i = 0; i < experiments.getExperimentCount(); ++i)
             {
               CExperiment* experiment = experiments.getExperiment(i);
-              experimentalDataFiles.record(experiment->getFileNameOnly());
+              experimentalDataFiles.push_back(experiment->getFileNameOnly());
             }
 
           CExperimentSet& crossValidation = pProblem->getCrossValidationSet();
@@ -1543,7 +1543,7 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
           for (size_t i = 0; i < crossValidation.getExperimentCount(); ++i)
             {
               CExperiment* experiment = crossValidation.getExperiment(i);
-              crossValidationFiles.record(experiment->getFileNameOnly());
+              crossValidationFiles.push_back(experiment->getFileNameOnly());
             }
 
           if (crossValidationFiles.size() + experimentalDataFiles.size() > 0)
