@@ -22,7 +22,7 @@ LIBSBML_CPP_NAMESPACE_END
 class CLGlobalStyle : public CLStyle
 {
 public:
-  static CLGlobalStyle * create(const CData & data);
+  static CLGlobalStyle * fromData(const CData & data);
 
   /**
    * Ctor.

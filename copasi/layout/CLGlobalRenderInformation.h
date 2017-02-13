@@ -30,7 +30,7 @@ protected:
   CCopasiVector<CLGlobalStyle> mListOfStyles;
 
 public:
-  static CLGlobalRenderInformation * create(const CData & data);
+  static CLGlobalRenderInformation * fromData(const CData & data);
 
   /**
    *  Constructor.

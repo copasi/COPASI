@@ -18,7 +18,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGlobalStyle * CLGlobalStyle::create(const CData & data)
+CLGlobalStyle * CLGlobalStyle::fromData(const CData & data)
 {
   return new CLGlobalStyle(NO_PARENT);
 }

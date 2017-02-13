@@ -98,7 +98,7 @@ private:
   bool mIsUsed;
 
 public:
-  static CFunctionParameter * create(const CData & data);
+  static CFunctionParameter * fromData(const CData & data);
 
   /**
    * Default constructor

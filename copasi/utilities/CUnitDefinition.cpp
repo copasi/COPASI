@@ -121,7 +121,7 @@ void CUnitDefinition::updateSIUnitDefinitions(CUnitDefinitionDB * Units)
 }
 
 // static
-CUnitDefinition * CUnitDefinition::create(const CData & data)
+CUnitDefinition * CUnitDefinition::fromData(const CData & data)
 {
   return new CUnitDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);

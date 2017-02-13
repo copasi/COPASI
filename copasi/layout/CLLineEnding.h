@@ -47,7 +47,7 @@ protected:
   std::string mId;
 
 public:
-  static CLLineEnding * create(const CData & data);
+  static CLLineEnding * fromData(const CData & data);
 
   /**
    * Constructor.

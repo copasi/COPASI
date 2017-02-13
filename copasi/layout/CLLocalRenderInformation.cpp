@@ -21,7 +21,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLLocalRenderInformation * CLLocalRenderInformation::create(const CData & data)
+CLLocalRenderInformation * CLLocalRenderInformation::fromData(const CData & data)
 {
   return new CLLocalRenderInformation(NO_PARENT);
 }

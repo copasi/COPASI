@@ -18,7 +18,7 @@
 #include "utilities/CNodeIterator.h"
 
 // static
-CModelParameterSet * CModelParameterSet::create(const CData & data)
+CModelParameterSet * CModelParameterSet::fromData(const CData & data)
 {
   return new CModelParameterSet(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);

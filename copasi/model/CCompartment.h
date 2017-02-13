@@ -47,7 +47,7 @@ private:
   CCopasiVectorNS < CMetab > mMetabolites;
 
 public:
-  static CCompartment * create(const CData & data);
+  static CCompartment * fromData(const CData & data);
 
   /**
    * Default constructor.

@@ -62,7 +62,7 @@ const char * CReaction::KineticLawUnitTypeName[] =
 };
 
 // static
-CReaction * CReaction::create(const CData & data)
+CReaction * CReaction::fromData(const CData & data)
 {
   return new CReaction(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);

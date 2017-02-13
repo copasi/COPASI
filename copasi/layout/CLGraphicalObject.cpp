@@ -30,7 +30,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CLGraphicalObject * CLGraphicalObject::create(const CData & data)
+CLGraphicalObject * CLGraphicalObject::fromData(const CData & data)
 {
   return new CLGraphicalObject(data.getProperty(CData::OBJECT_NAME).toString(),
                                NO_PARENT);

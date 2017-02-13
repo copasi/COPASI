@@ -28,7 +28,7 @@
 #include "utilities/copasimathml.h"
 
 // static
-CFunction * CFunction::create(const CData & data)
+CFunction * CFunction::fromData(const CData & data)
 {
   CFunction * pNew = NULL;
 

@@ -147,7 +147,7 @@ protected:
   CPlotItem(const CPlotItem & src);
 
 public:
-  static CPlotItem * create(const CData & data);
+  static CPlotItem * fromData(const CData & data);
 
   CPlotItem(const std::string & name = "NoName",
             const CCopasiContainer * pParent = NO_PARENT,

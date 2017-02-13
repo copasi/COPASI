@@ -171,7 +171,7 @@ private:
   CCopasiTask();
 
 public:
-  static CCopasiTask * create(const CData & data);
+  static CCopasiTask * fromData(const CData & data);
 
   /**
    * Specific constructor

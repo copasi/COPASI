@@ -54,7 +54,7 @@ protected:
   CChemEqElement(const CChemEqElement & src);
 
 public:
-  static CChemEqElement * create(const CData & data);
+  static CChemEqElement * fromData(const CData & data);
 
   /**
    * Default constructor

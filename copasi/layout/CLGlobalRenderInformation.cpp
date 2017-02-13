@@ -22,7 +22,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGlobalRenderInformation * CLGlobalRenderInformation::create(const CData & data)
+CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & data)
 {
   return new CLGlobalRenderInformation(NO_PARENT);
 }

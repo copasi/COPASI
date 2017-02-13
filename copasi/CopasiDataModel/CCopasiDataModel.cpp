@@ -141,9 +141,9 @@ CCopasiDataModel::CCopasiDataModel(const bool withGUI):
 }
 
 // static
-CCopasiDataModel * CCopasiDataModel::create(const ::CData & data)
+CCopasiDataModel * CCopasiDataModel::fromData(const CData & data)
 {
-  return new CCopasiDataModel(data.getProperty(::CData::OBJECT_NAME).toString(),
+  return new CCopasiDataModel(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
 }
 
@@ -2388,7 +2388,7 @@ const std::string& CCopasiDataModel::getReferenceDirectory() const
   return mData.mReferenceDir;
 }
 
-CCopasiDataModel::CData::CData(const bool & withGUI):
+CCopasiDataModel::CContent::CContent(const bool & withGUI):
   pModel(NULL),
   pTaskList(NULL),
   pReportDefinitionList(NULL),
@@ -2412,7 +2412,7 @@ CCopasiDataModel::CData::CData(const bool & withGUI):
 #endif
 {}
 
-CCopasiDataModel::CData::CData(const CData & src):
+CCopasiDataModel::CContent::CContent(const CContent & src):
   pModel(src.pModel),
   pTaskList(src.pTaskList),
   pReportDefinitionList(src.pReportDefinitionList),
@@ -2436,10 +2436,10 @@ CCopasiDataModel::CData::CData(const CData & src):
 #endif
 {}
 
-CCopasiDataModel::CData::~CData()
+CCopasiDataModel::CContent::~CContent()
 {}
 
-CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs)
+CCopasiDataModel::CContent & CCopasiDataModel::CContent::operator = (const CContent & rhs)
 {
   if (this != &rhs)
     {
@@ -2470,7 +2470,7 @@ CCopasiDataModel::CData & CCopasiDataModel::CData::operator = (const CData & rhs
   return *this;
 }
 
-bool CCopasiDataModel::CData::isValid() const
+bool CCopasiDataModel::CContent::isValid() const
 {
   return (pModel != NULL &&
           pTaskList != NULL &&
@@ -2497,7 +2497,7 @@ void CCopasiDataModel::pushData()
         );
 
   mOldData = mData;
-  mData = CData(mData.mWithGUI);
+  mData = CContent(mData.mWithGUI);
 }
 
 void CCopasiDataModel::popData()
@@ -2513,7 +2513,7 @@ void CCopasiDataModel::popData()
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 
   mData = mOldData;
-  mOldData = CData(mOldData.mWithGUI);
+  mOldData = CContent(mOldData.mWithGUI);
 }
 
 void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,

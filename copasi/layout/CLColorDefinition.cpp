@@ -24,7 +24,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLColorDefinition * CLColorDefinition::create(const CData & data)
+CLColorDefinition * CLColorDefinition::fromData(const CData & data)
 {
   return new CLColorDefinition(NO_PARENT);
 }

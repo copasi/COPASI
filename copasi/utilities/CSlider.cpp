@@ -34,7 +34,7 @@ const char * CSlider::ScaleName[] =
 {"linear", "logarithmic", "undefined", NULL};
 
 // static
-CSlider * CSlider::create(const CData & data)
+CSlider * CSlider::fromData(const CData & data)
 {
   return new CSlider(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);

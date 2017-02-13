@@ -44,7 +44,7 @@ CUndoData::CUndoData(const Type & type, const CCopasiObject * pObject, const siz
         break;
 
       case REMOVE:
-        mOldData = pObject->data();
+        mOldData = pObject->toData();
         break;
 
       case CHANGE:
@@ -233,7 +233,7 @@ bool CUndoData::insert(const CCopasiDataModel & dataModel, const CData & data, c
   if (pObject == NULL)
     return false;
 
-  bool success = pObject->change(data);
+  bool success = pObject->applyData(data);
 
   std::vector< CUndoData >::const_iterator it = dependentData.begin();
   std::vector< CUndoData >::const_iterator end = dependentData.end();
@@ -300,7 +300,7 @@ bool CUndoData::change(const CCopasiDataModel & dataModel, const CData & oldData
 
   success &= pObject->setObjectName(newData.getProperty("ObjectName").toString());
 
-  success &= pObject->change(newData);
+  success &= pObject->applyData(newData);
 
   return success;
 }

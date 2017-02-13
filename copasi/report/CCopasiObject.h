@@ -241,7 +241,7 @@ protected:
   CCopasiObject(const CCopasiObject & src);
 
 public:
-  static CCopasiObject * create(const CData & data);
+  static CCopasiObject * fromData(const CData & data);
 
   CCopasiObject(const CCopasiObject & src,
                 const CCopasiContainer * pParent);
@@ -451,8 +451,8 @@ public:
 
   virtual const CCopasiObject * getValueObject() const;
 
-  virtual CData data() const;
-  virtual bool change(const CData & data);
+  virtual CData toData() const;
+  virtual bool applyData(const CData & data);
 
   friend std::ostream &operator<<(std::ostream &os, const CCopasiObject & o);
 

@@ -22,7 +22,7 @@ class CModel;
 class CModelParameterSet: public CCopasiContainer, public CModelParameterGroup, public CAnnotation
 {
 public:
-  static CModelParameterSet * create(const CData & data);
+  static CModelParameterSet * fromData(const CData & data);
 
   /**
    * Constructor

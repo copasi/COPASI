@@ -23,7 +23,7 @@
 #include "report/CCopasiObjectReference.h"
 
 // static
-CPlotSpecification * CPlotSpecification::create(const CData & data)
+CPlotSpecification * CPlotSpecification::fromData(const CData & data)
 {
   return new CPlotSpecification(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT,

@@ -22,7 +22,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLLineEnding * CLLineEnding::create(const CData & data)
+CLLineEnding * CLLineEnding::fromData(const CData & data)
 {
   return new CLLineEnding(NO_PARENT);
 }

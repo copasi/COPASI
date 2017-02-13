@@ -56,7 +56,7 @@ private:
   CMIRIAMResourceObject mResource;
 
 public:
-  static CReference * create(const CData & data);
+  static CReference * fromData(const CData & data);
 
   // Operations
   /**

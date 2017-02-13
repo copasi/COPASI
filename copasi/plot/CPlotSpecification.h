@@ -47,7 +47,7 @@ protected:
   CPlotSpecification(const CPlotSpecification & src);
 
 public:
-  static CPlotSpecification * create(const CData & data);
+  static CPlotSpecification * fromData(const CData & data);
 
   CPlotSpecification(const std::string & name = "NoName",
                      const CCopasiContainer * pParent = NO_PARENT,

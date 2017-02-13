@@ -56,7 +56,7 @@ protected:
   CLayout(const CLayout & src);
 
 public:
-  static CLayout * create(const CData & data);
+  static CLayout * fromData(const CData & data);
 
   CLayout(const std::string & name = "Layout",
           const CCopasiContainer * pParent = NO_PARENT);

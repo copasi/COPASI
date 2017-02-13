@@ -26,7 +26,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CModification * CModification::create(const CData & data)
+CModification * CModification::fromData(const CData & data)
 {
   return new CModification(data.getProperty(CData::OBJECT_NAME).toString(),
                            NO_PARENT);

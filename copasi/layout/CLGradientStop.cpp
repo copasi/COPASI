@@ -20,7 +20,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGradientStop * CLGradientStop::create(const CData & data)
+CLGradientStop * CLGradientStop::fromData(const CData & data)
 {
   return new CLGradientStop(NO_PARENT);
 }

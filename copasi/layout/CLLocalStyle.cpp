@@ -18,7 +18,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLLocalStyle * CLLocalStyle::create(const CData & data)
+CLLocalStyle * CLLocalStyle::fromData(const CData & data)
 {
   return new CLLocalStyle(NO_PARENT);
 }

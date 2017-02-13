@@ -35,7 +35,7 @@ class CFittingPoint: public CCopasiContainer
 {
   // Operations
 public:
-  static CFittingPoint * create(const CData & data);
+  static CFittingPoint * fromData(const CData & data);
 
   CFittingPoint(const std::string & name = "unknown",
                 const CCopasiContainer * pParent = NO_PARENT);

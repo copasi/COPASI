@@ -104,17 +104,17 @@ class CCopasiDataModel: public CCopasiContainer, public COutputHandler
   };
 
 private:
-  class CData
+  class CContent
   {
   public:
 
-    CData(const bool & withGUI = false);
+    CContent(const bool & withGUI = false);
 
-    CData(const CData & src);
+    CContent(const CContent & src);
 
-    ~CData();
+    ~CContent();
 
-    CData & operator = (const CData & rhs);
+    CContent & operator = (const CContent & rhs);
     bool isValid() const;
 
     CModel * pModel;
@@ -173,7 +173,7 @@ private:
 
   // Operations
 public:
-  static CCopasiDataModel * create(const ::CData & data);
+  static CCopasiDataModel * fromData(const CData & data);
 
   CCopasiDataModel(const bool withGUI = false);
 
@@ -356,8 +356,8 @@ protected:
 
   // Attributes
 protected:
-  CData mData;
-  CData mOldData;
+  CContent mData;
+  CContent mOldData;
   CDataModelRenameHandler mRenameHandler;
   std::vector<std::string> mTempFolders;
   bool mNeedToSaveExperimentalData;

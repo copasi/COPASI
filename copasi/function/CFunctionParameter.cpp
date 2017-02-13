@@ -55,7 +55,7 @@ CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xm
 }
 
 // static
-CFunctionParameter * CFunctionParameter::create(const CData & data)
+CFunctionParameter * CFunctionParameter::fromData(const CData & data)
 {
   return new CFunctionParameter(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);

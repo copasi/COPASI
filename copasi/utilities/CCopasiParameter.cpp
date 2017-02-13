@@ -128,9 +128,9 @@ CCopasiParameter::~CCopasiParameter()
 }
 
 // virtual
-CData CCopasiParameter::data() const
+CData CCopasiParameter::toData() const
 {
-  CData Data = CCopasiContainer::data();
+  CData Data = CCopasiContainer::toData();
 
   Data.addProperty(CData::PARAMETER_TYPE, (unsigned C_INT32) mType);
 
@@ -170,9 +170,9 @@ CData CCopasiParameter::data() const
 }
 
 // virtual
-bool CCopasiParameter::change(const CData & data)
+bool CCopasiParameter::applyData(const CData & data)
 {
-  bool success = CCopasiContainer::change(data);
+  bool success = CCopasiContainer::applyData(data);
 
   Type DataType = (Type) data.getProperty(CData::PARAMETER_TYPE).toUint();
 

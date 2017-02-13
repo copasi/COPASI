@@ -49,7 +49,7 @@ protected:
   std::string mId;
 
 public:
-  static CLColorDefinition * create(const CData & data);
+  static CLColorDefinition * fromData(const CData & data);
 
   /**
    * Contructor which sets the ColorDefinition to completely opaque

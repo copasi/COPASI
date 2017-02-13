@@ -27,7 +27,7 @@
 #include "undo/CData.h"
 
 // static
-CBiologicalDescription * CBiologicalDescription::create(const CData & data)
+CBiologicalDescription * CBiologicalDescription::fromData(const CData & data)
 {
   return new CBiologicalDescription(data.getProperty(CData::OBJECT_NAME).toString(),
                                     NO_PARENT);

@@ -50,7 +50,7 @@ public:
 
   // Operations
 public:
-  static CSlider * create(const CData & data);
+  static CSlider * fromData(const CData & data);
 
   /**
    * Default constructor

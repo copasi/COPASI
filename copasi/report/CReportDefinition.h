@@ -66,7 +66,7 @@ protected:
   CReportDefinition(const CReportDefinition & src);
 
 public:
-  static CReportDefinition * create(const CData & data);
+  static CReportDefinition * fromData(const CData & data);
 
   /**
    *  Default constructor.

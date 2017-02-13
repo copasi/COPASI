@@ -43,7 +43,7 @@ private:
   CMIRIAMResourceObject mResource;
 
 public:
-  static CBiologicalDescription * create(const CData & data);
+  static CBiologicalDescription * fromData(const CData & data);
 
   // Operations
   /**

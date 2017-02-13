@@ -43,7 +43,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CCopasiTask * CCopasiTask::create(const CData & data)
+CCopasiTask * CCopasiTask::fromData(const CData & data)
 {
   CCopasiTask * pNew = CTaskFactory::createTask((CTaskEnum::Task)data.getProperty(CData::TASK_TYPE).toUint(), NO_PARENT);
 

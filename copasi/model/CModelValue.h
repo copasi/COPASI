@@ -518,7 +518,7 @@ TIME                    implemented
 class CModelValue : public CModelEntity
 {
 public:
-  static CModelValue * create(const CData & data);
+  static CModelValue * fromData(const CData & data);
 
   /**
    * Default constructor

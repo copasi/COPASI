@@ -39,7 +39,7 @@
 const C_FLOAT64 CMoiety::DefaultFactor(1.0);
 
 // static
-CMoiety * CMoiety::create(const CData & data)
+CMoiety * CMoiety::fromData(const CData & data)
 {
   return new CMoiety(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);

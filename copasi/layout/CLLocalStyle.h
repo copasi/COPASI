@@ -26,7 +26,7 @@ protected:
   std::set<std::string> mKeyList;
 
 public:
-  static CLLocalStyle * create(const CData & data);
+  static CLLocalStyle * fromData(const CData & data);
 
   /**
    * Constructor.

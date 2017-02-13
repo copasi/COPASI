@@ -30,7 +30,7 @@ class CUnitDefinition : public CCopasiContainer, public CUnit, public CAnnotatio
 
 public:
 
-  static CUnitDefinition * create(const CData & data);
+  static CUnitDefinition * fromData(const CData & data);
 
   /**
    * Default constructor

@@ -154,8 +154,8 @@ public:
    */
   virtual ~CCopasiParameter();
 
-  virtual CData data() const;
-  virtual bool change(const CData & data);
+  virtual CData toData() const;
+  virtual bool applyData(const CData & data);
 
   /**
    * Assignment operator

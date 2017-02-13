@@ -235,9 +235,9 @@ CCopasiParameterGroup::~CCopasiParameterGroup()
 }
 
 // virtual
-CData CCopasiParameterGroup::data() const
+CData CCopasiParameterGroup::toData() const
 {
-  CData Data = CCopasiParameter::data();
+  CData Data = CCopasiParameter::toData();
 
   std::vector< CData > Value;
 
@@ -246,7 +246,7 @@ CData CCopasiParameterGroup::data() const
 
   for (; it != end; ++it)
     {
-      Value.push_back((*it)->data());
+      Value.push_back((*it)->toData());
     }
 
   Data.addProperty(CData::PARAMETER_VALUE, Value);
@@ -255,9 +255,9 @@ CData CCopasiParameterGroup::data() const
 }
 
 // virtual
-bool CCopasiParameterGroup::change(const CData & data)
+bool CCopasiParameterGroup::applyData(const CData & data)
 {
-  bool success = CCopasiParameter::change(data);
+  bool success = CCopasiParameter::applyData(data);
 
   const std::vector< CData > & Value = data.getProperty(CData::PARAMETER_VALUE).toDataVector();
 
@@ -268,7 +268,7 @@ bool CCopasiParameterGroup::change(const CData & data)
     {
       CCopasiParameter * pNew = new CCopasiParameter(it->getProperty(CData::OBJECT_NAME).toString(),
           (CCopasiParameter::Type) it->getProperty(CData::PARAMETER_TYPE).toUint());
-      success &= pNew->change(*it);
+      success &= pNew->applyData(*it);
 
       static_cast< elements * >(mpValue)->push_back(pNew);
       CCopasiParameter::add(pNew, true);

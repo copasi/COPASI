@@ -46,7 +46,7 @@ private:
 
   // Operations
 public:
-  static CModification * create(const CData & data);
+  static CModification * fromData(const CData & data);
 
   /**
    * Default constructor

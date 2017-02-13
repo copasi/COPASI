@@ -74,7 +74,7 @@ const char* CPlotItem::XMLRecordingActivity[] =
 };
 
 // static
-CPlotItem * CPlotItem::create(const CData & data)
+CPlotItem * CPlotItem::fromData(const CData & data)
 {
   return new CPlotItem(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT,

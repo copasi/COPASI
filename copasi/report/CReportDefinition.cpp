@@ -39,7 +39,7 @@
 //
 //////////////////////////////////////////////////
 // static
-CReportDefinition * CReportDefinition::create(const CData & data)
+CReportDefinition * CReportDefinition::fromData(const CData & data)
 {
   return new CReportDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                                NO_PARENT);

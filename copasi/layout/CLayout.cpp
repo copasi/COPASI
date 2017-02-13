@@ -41,7 +41,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CLayout * CLayout::create(const CData & data)
+CLayout * CLayout::fromData(const CData & data)
 {
   return new CLayout(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);

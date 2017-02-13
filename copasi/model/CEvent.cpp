@@ -35,7 +35,7 @@
 #include "MIRIAM/CRDFUtilities.h"
 
 // static
-CEventAssignment * CEventAssignment::create(const CData & data)
+CEventAssignment * CEventAssignment::fromData(const CData & data)
 {
   return new CEventAssignment(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
@@ -250,7 +250,7 @@ CExpression* CEventAssignment::getExpressionPtr()
 
 //****************************************************************
 // static
-CEvent * CEvent::create(const CData & data)
+CEvent * CEvent::fromData(const CData & data)
 {
   return new CEvent(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);

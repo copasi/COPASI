@@ -31,7 +31,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CLMetabGlyph * CLMetabGlyph::create(const CData & data)
+CLMetabGlyph * CLMetabGlyph::fromData(const CData & data)
 {
   return new CLMetabGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                           NO_PARENT);
@@ -110,7 +110,7 @@ void CLMetabGlyph::print(std::ostream * ostream) const
 //********* CLCompartmentGlyph ************************************************
 
 // static
-CLCompartmentGlyph * CLCompartmentGlyph::create(const CData & data)
+CLCompartmentGlyph * CLCompartmentGlyph::fromData(const CData & data)
 {
   return new CLCompartmentGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);
@@ -189,7 +189,7 @@ void CLCompartmentGlyph::print(std::ostream * ostream) const
 //********** CLTextGlyph ******************************************************
 
 // static
-CLTextGlyph * CLTextGlyph::create(const CData & data)
+CLTextGlyph * CLTextGlyph::fromData(const CData & data)
 {
   return new CLTextGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);

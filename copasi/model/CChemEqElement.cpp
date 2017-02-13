@@ -35,7 +35,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CChemEqElement * CChemEqElement::create(const CData & data)
+CChemEqElement * CChemEqElement::fromData(const CData & data)
 {
   return new CChemEqElement(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);

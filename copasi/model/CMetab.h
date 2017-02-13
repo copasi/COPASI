@@ -250,7 +250,7 @@ protected:
 
   // Operations
 public:
-  static CMetab * create(const CData & data);
+  static CMetab * fromData(const CData & data);
 
   /**
    * Default constructor
@@ -525,7 +525,7 @@ private:
   // Operations
 
 public:
-  static CMetabOld * create(const CData & data);
+  static CMetabOld * fromData(const CData & data);
 
   /**
    * Default constructor

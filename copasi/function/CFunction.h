@@ -39,7 +39,7 @@ protected:
 
   // Operations
 public:
-  static CFunction * create(const CData & data);
+  static CFunction * fromData(const CData & data);
 
   /**
    * Default constructor

@@ -26,7 +26,7 @@ protected:
   CCopasiVector<CLLocalStyle> mListOfStyles;
 
 public:
-  static CLLocalRenderInformation * create(const CData & data);
+  static CLLocalRenderInformation * fromData(const CData & data);
 
   /**
    *  Constructor.

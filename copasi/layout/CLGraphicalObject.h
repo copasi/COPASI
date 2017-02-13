@@ -61,7 +61,7 @@ protected:
   CLGraphicalObject(const CLGraphicalObject & src);
 
 public:
-  static CLGraphicalObject * create(const CData & data);
+  static CLGraphicalObject * fromData(const CData & data);
 
   CLGraphicalObject(const std::string & name = "GraphicalObject",
                     const CCopasiContainer * pParent = NO_PARENT);

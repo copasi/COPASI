@@ -97,7 +97,7 @@ protected:
   CLReferenceGlyph(const CLReferenceGlyph & src);
 
 public:
-  static CLReferenceGlyph * create(const CData & data);
+  static CLReferenceGlyph * fromData(const CData & data);
 
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
                    const CCopasiContainer * pParent = NO_PARENT);
@@ -211,7 +211,7 @@ protected:
   CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src);
 
 public:
-  static CLMetabReferenceGlyph * create(const CData & data);
+  static CLMetabReferenceGlyph * fromData(const CData & data);
 
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
                         const CCopasiContainer * pParent = NO_PARENT);
@@ -280,7 +280,7 @@ protected:
   CLGeneralGlyph(const CLGeneralGlyph & src);
 
 public:
-  static CLGeneralGlyph * create(const CData & data);
+  static CLGeneralGlyph * fromData(const CData & data);
 
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
                  const CCopasiContainer * pParent = NO_PARENT);
@@ -356,7 +356,7 @@ protected:
   CLReactionGlyph(const CLReactionGlyph & src);
 
 public:
-  static CLReactionGlyph * create(const CData & data);
+  static CLReactionGlyph * fromData(const CData & data);
 
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
                   const CCopasiContainer * pParent = NO_PARENT);

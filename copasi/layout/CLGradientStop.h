@@ -39,7 +39,7 @@ protected:
   std::string mKey;
 
 public:
-  static CLGradientStop * create(const CData & data);
+  static CLGradientStop * fromData(const CData & data);
 
   /**
    * Constructor.

@@ -49,7 +49,7 @@ C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
 {return number / compartment.getInitialValue() * model.getNumber2QuantityFactor();}
 
 // static
-CMetab * CMetab::create(const CData & data)
+CMetab * CMetab::fromData(const CData & data)
 {
   return new CMetab(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);
@@ -955,7 +955,7 @@ const CMoiety * CMetab::getMoiety() const
 //******************* CMetabOld ***************************************************
 
 // static
-CMetabOld * CMetabOld::create(const CData & data)
+CMetabOld * CMetabOld::fromData(const CData & data)
 {
   return new CMetabOld(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);

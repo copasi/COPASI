@@ -50,7 +50,7 @@ private:
 
   // Operations
 public:
-  static CCreator * create(const CData & data);
+  static CCreator * fromData(const CData & data);
 
   /**
    * Default constructor

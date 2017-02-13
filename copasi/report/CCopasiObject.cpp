@@ -614,7 +614,7 @@ const CCopasiObject * CCopasiObject::getValueObject() const
 }
 
 // virtual
-CData CCopasiObject::data() const
+CData CCopasiObject::toData() const
 {
   CData Data;
 
@@ -628,7 +628,7 @@ CData CCopasiObject::data() const
 }
 
 // static
-CCopasiObject * CCopasiObject::create(const CData & data)
+CCopasiObject * CCopasiObject::fromData(const CData & data)
 {
   return new CCopasiObject(data.getProperty(CData::OBJECT_NAME).toString(),
                            NO_PARENT,
@@ -637,7 +637,7 @@ CCopasiObject * CCopasiObject::create(const CData & data)
 }
 
 // virtual
-bool CCopasiObject::change(const CData & data)
+bool CCopasiObject::applyData(const CData & data)
 {
   return false;
 }

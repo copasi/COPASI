@@ -60,7 +60,7 @@ public:
 
   static const char * KineticLawUnitTypeName[];
 
-  static CReaction * create(const CData & data);
+  static CReaction * fromData(const CData & data);
 
   /**
    * Default constructor

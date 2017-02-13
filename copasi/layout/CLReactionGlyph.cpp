@@ -128,7 +128,7 @@ void CLGlyphWithCurve::print(std::ostream * ostream) const
 //***************************
 
 // static
-CLReferenceGlyph * CLReferenceGlyph::create(const CData & data)
+CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data)
 {
   return new CLReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
@@ -314,7 +314,7 @@ const std::string CLMetabReferenceGlyph::XMLRole[] =
 };
 
 // static
-CLMetabReferenceGlyph * CLMetabReferenceGlyph::create(const CData & data)
+CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data)
 {
   return new CLMetabReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                    NO_PARENT);
@@ -503,7 +503,7 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 //*********** CLGeneralGlyph ****************************************
 
 // static
-CLGeneralGlyph * CLGeneralGlyph::create(const CData & data)
+CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data)
 {
   return new CLGeneralGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);
@@ -830,7 +830,7 @@ void CLGeneralGlyph::print(std::ostream * ostream) const
 //*********** CLReactionGlyph ****************************************
 
 // static
-CLReactionGlyph * CLReactionGlyph::create(const CData & data)
+CLReactionGlyph * CLReactionGlyph::fromData(const CData & data)
 {
   return new CLReactionGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);

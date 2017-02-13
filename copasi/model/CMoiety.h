@@ -181,7 +181,7 @@ private:
 
   // Operations
 public:
-  static CMoiety * create(const CData & data);
+  static CMoiety * fromData(const CData & data);
 
   /**
    * Default constructor

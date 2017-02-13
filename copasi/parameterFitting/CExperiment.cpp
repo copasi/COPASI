@@ -1695,7 +1695,7 @@ void CExperiment::fixBuild55()
 
 /* CFittingPoint Implementation */
 // static
-CFittingPoint * CFittingPoint::create(const CData & data)
+CFittingPoint * CFittingPoint::fromData(const CData & data)
 {
   return new CFittingPoint(data.getProperty(CData::OBJECT_NAME).toString(),
                            NO_PARENT);

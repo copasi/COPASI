@@ -38,7 +38,7 @@ class CCallbackInterface;
 class CEventAssignment : public CCopasiContainer
 {
 public:
-  static CEventAssignment * create(const CData & data);
+  static CEventAssignment * fromData(const CData & data);
 
   /**
    * Default constructor
@@ -167,7 +167,7 @@ public:
     Stop
   };
 
-  static CEvent * create(const CData & data);
+  static CEvent * fromData(const CData & data);
 
   /**
    * Default constructor
@@ -235,7 +235,6 @@ public:
    *   "EventAssignment Expression" or "EventAssignment Target"
    */
   std::string getOriginFor(const DataObjectSet & deletedObjects) const;
-
 
   /**
    * Compile the event.

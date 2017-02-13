@@ -784,7 +784,7 @@ const bool & CModelEntity::isUsed() const
 //********************************************************************+
 
 // static
-CModelValue * CModelValue::create(const CData & data)
+CModelValue * CModelValue::fromData(const CData & data)
 {
   return new CModelValue(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);

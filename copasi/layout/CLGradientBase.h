@@ -54,7 +54,7 @@ protected:
   std::string mId;
 
 public:
-  static CLGradientBase * create(const CData & data);
+  static CLGradientBase * fromData(const CData & data);
 
   /**
    * Constructor.

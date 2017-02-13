@@ -25,7 +25,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CReference * CReference::create(const CData & data)
+CReference * CReference::fromData(const CData & data)
 {
   return new CReference(data.getProperty(CData::OBJECT_NAME).toString(),
                         NO_PARENT);

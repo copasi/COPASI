@@ -21,7 +21,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGradientBase * CLGradientBase::create(const CData & data)
+CLGradientBase * CLGradientBase::fromData(const CData & data)
 {
   return new CLGradientBase(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);

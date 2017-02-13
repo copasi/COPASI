@@ -26,7 +26,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 
 // static
-CCreator * CCreator::create(const CData & data)
+CCreator * CCreator::fromData(const CData & data)
 {
   return new CCreator(data.getProperty(CData::OBJECT_NAME).toString(),
                       NO_PARENT);
