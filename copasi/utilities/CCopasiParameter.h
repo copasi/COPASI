@@ -127,6 +127,10 @@ private:
   CCopasiParameter();
 
 public:
+  static CCopasiParameter * fromData(const CData & data);
+  virtual CData toData() const;
+  virtual bool applyData(const CData & data);
+
   /**
    * Copy constructor
    * @param const CCopasiParameter & src
@@ -153,9 +157,6 @@ public:
    * Destructor
    */
   virtual ~CCopasiParameter();
-
-  virtual CData toData() const;
-  virtual bool applyData(const CData & data);
 
   /**
    * Assignment operator

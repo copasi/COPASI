@@ -57,6 +57,13 @@ CDataValue::CDataValue(const std::string & value):
   assignData(value);
 }
 
+CDataValue::CDataValue(const void * pVoidPointer):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(pVoidPointer);
+}
+
 CDataValue::CDataValue(const std::vector< CData > & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
@@ -121,6 +128,13 @@ CDataValue & CDataValue::operator = (const std::vector< CData > & value)
   return *this;
 }
 
+CDataValue & CDataValue::operator = (const void * pVoidPointer)
+{
+  assignData(pVoidPointer);
+
+  return *this;
+}
+
 const C_FLOAT64 & CDataValue::toDouble() const
 {
   static const C_FLOAT64 Invalid(std::numeric_limits< C_FLOAT64 >::quiet_NaN());
@@ -170,7 +184,7 @@ const std::string & CDataValue::toString() const
   return *static_cast< const std::string * >(mpData);
 }
 
-const std::vector< CData > CDataValue::toDataVector() const
+const std::vector< CData > & CDataValue::toDataVector() const
 {
   static const std::vector< CData > Invalid(0);
 
@@ -178,6 +192,11 @@ const std::vector< CData > CDataValue::toDataVector() const
     return Invalid;
 
   return *static_cast< const std::vector< CData > * >(mpData);
+}
+
+const void * CDataValue::toVoidPointer() const
+{
+  return (mType != VOID_POINTER) ? NULL : mpData;
 }
 
 const CDataValue::Type & CDataValue::getType() const
@@ -219,8 +238,11 @@ void CDataValue::allocateData(const CDataValue::Type & type)
         mpData = new std::vector< CData >;
         break;
 
-      default:
-        mType = INVALID;
+      case VOID_POINTER:
+        mpData = NULL;
+        break;
+
+      case INVALID:
         mpData = NULL;
         break;
     }
@@ -258,7 +280,8 @@ void CDataValue::deleteData()
         delete static_cast< std::vector< CData > * >(mpData);
         break;
 
-      default:
+      case VOID_POINTER:
+      case INVALID:
         break;
     }
 
@@ -293,7 +316,11 @@ void CDataValue::assignData(const CDataValue & rhs)
         assignData(*static_cast< std::vector< CData > * >(rhs.mpData));
         break;
 
-      default:
+      case VOID_POINTER:
+        assignData(rhs.mpData);
+        break;
+
+      case INVALID:
         break;
     }
 }
@@ -338,4 +365,11 @@ void CDataValue::assignData(const std::vector< CData > & value)
   allocateData(DATA_VECTOR);
 
   *static_cast< std::vector< CData > * >(mpData) = value;
+}
+
+void CDataValue::assignData(const void * pVoidPointer)
+{
+  allocateData(VOID_POINTER);
+
+  mpData = const_cast< void * >(pVoidPointer);
 }

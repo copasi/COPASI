@@ -25,6 +25,7 @@ public:
     BOOL,
     STRING,
     DATA_VECTOR,
+    VOID_POINTER,
     INVALID
   };
 
@@ -37,6 +38,7 @@ public:
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
   CDataValue(const std::vector< CData > & value);
+  CDataValue(const void * pVoidPointer);
 
   ~CDataValue();
 
@@ -47,13 +49,15 @@ public:
   CDataValue & operator = (const bool & value);
   CDataValue & operator = (const std::string & value);
   CDataValue & operator = (const std::vector< CData > & value);
+  CDataValue & operator = (const void * pVoidPointer);
 
   const C_FLOAT64 & toDouble() const;
   const C_INT32 & toInt() const;
   const unsigned C_INT32 & toUint() const;
   const bool & toBool() const;
   const std::string & toString() const;
-  const std::vector< CData > toDataVector() const;
+  const std::vector< CData > & toDataVector() const;
+  const void * toVoidPointer() const;
 
   const Type & getType() const;
 
@@ -69,6 +73,7 @@ private:
   void assignData(const bool & value);
   void assignData(const std::string & value);
   void assignData(const std::vector< CData > & value);
+  void assignData(const void * pVoidPointer);
 
   Type mType;
   void * mpData;

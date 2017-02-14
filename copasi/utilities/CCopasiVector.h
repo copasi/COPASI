@@ -647,19 +647,33 @@ public:
 
   virtual CCopasiObject * insert(const CData & data)
   {
-    CType * pNew = CType::fromData(data);
+    CType * pNew = NULL;
+    size_t Index = 0;
 
-    if (pNew->getObjectType() == data.getProperty(CData::OBJECT_TYPE).toString())
+    bool IsReference = data.isSetProperty(CData::OBJECT_POINTER);
+
+    if (IsReference)
       {
-        size_t Index = data.getProperty(CData::OBJECT_INDEX).toUint();
-        std::vector< CType * >::insert(std::vector< CType * >::begin() + Index, pNew);
-
-        CCopasiContainer::add(pNew, true);
+        pNew = dynamic_cast< CType * >(reinterpret_cast< CObjectInterface * >(const_cast< void * >(data.getProperty(CData::OBJECT_POINTER).toVoidPointer())));
+        Index = data.getProperty(CData::OBJECT_REFERENCE_INDEX).toUint();
       }
     else
       {
-        delete pNew;
-        pNew = NULL;
+        pNew = CType::fromData(data);
+        Index = data.getProperty(CData::OBJECT_INDEX).toUint();
+
+        if (pNew != NULL &&
+            pNew->getObjectType() != data.getProperty(CData::OBJECT_TYPE).toString())
+          {
+            delete pNew;
+            pNew = NULL;
+          }
+      }
+
+    if (pNew != NULL)
+      {
+        std::vector< CType * >::insert(std::vector< CType * >::begin() + Index, pNew);
+        CCopasiContainer::add(pNew, !IsReference);
       }
 
     return pNew;

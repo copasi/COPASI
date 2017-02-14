@@ -27,12 +27,26 @@ public:
     OBJECT_TYPE,
     OBJECT_FLAG,
     OBJECT_INDEX,
+    OBJECT_REFERENCES,
+    OBJECT_REFERENCE,
+    OBJECT_REFERENCE_CN,
+    OBJECT_REFERENCE_INDEX,
+    OBJECT_POINTER,
     EVALUATION_TREE_TYPE,
     TASK_TYPE,
     PLOT_TYPE,
     PLOT_ITEM_TYPE,
     PARAMETER_TYPE,
     PARAMETER_VALUE,
+    UNIT,
+    VOLUME_UNIT,
+    AREA_UNIT,
+    LENGTH_UNIT,
+    TIME_UNIT,
+    QUANTITY_UNIT,
+    MODEL_TYPE,
+    AVOGADRO_NUMBER,
+    DIMENSIONALITY
   };
 
   static const std::string PropertyName[];
@@ -66,6 +80,10 @@ public:
   bool removeProperty(const std::string & name);
 
   bool removeProperty(const Property & property);
+
+  bool isSetProperty(const std::string & name) const;
+
+  bool isSetProperty(const Property & property) const;
 
   bool empty() const;
 };

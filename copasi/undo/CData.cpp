@@ -22,11 +22,25 @@ const std::string CData::PropertyName[] =
   "Object Type",
   "Object Flag",
   "Object Index",
+  "Object References",
+  "Object Reference",
+  "Object Reference CN",
+  "Object Reference Index",
+  "Object Pointer",
   "Evaluation Tree Type",
   "Task Type",
   "Plot Type",
   "Plot Item Type",
   "Parameter Type",
+  "Unit",
+  "Volume Unit",
+  "Area Unit",
+  "Length Unit",
+  "Time Unit",
+  "Quantity Unit",
+  "Model Type",
+  "Avogadro's Number",
+  "Dimensionality",
   ""
 };
 
@@ -141,6 +155,16 @@ bool CData::removeProperty(const std::string & name)
 bool CData::removeProperty(const Property & property)
 {
   return removeProperty(PropertyName[property]);
+}
+
+bool CData::isSetProperty(const std::string & name) const
+{
+  return find(name) != end();
+}
+
+bool CData::isSetProperty(const Property & property) const
+{
+  return isSetProperty(PropertyName[property]);
 }
 
 bool CData::empty() const

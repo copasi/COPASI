@@ -624,6 +624,29 @@ CData CCopasiObject::toData() const
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag);
   Data.addProperty(CData::OBJECT_INDEX, (mpObjectParent != NULL) ? (unsigned C_INT32) mpObjectParent->getIndex(this) : 0);
 
+  std::vector< CData > References;
+  std::set< CCopasiContainer * >::iterator it = mReferences.begin();
+  std::set< CCopasiContainer * >::iterator end = mReferences.end();
+
+  for (; it != end; ++it)
+    if (*it != mpObjectParent)
+      {
+        std::vector< CData > ReferenceData(2);
+
+        ReferenceData[0].addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
+        ReferenceData[1].addProperty(CData::OBJECT_REFERENCE_INDEX, (unsigned C_INT32)(*it)->getIndex(this));
+
+        CData Reference;
+        Reference.addProperty(CData::OBJECT_REFERENCE, ReferenceData);
+
+        References.push_back(Reference);
+      }
+
+  if (!References.empty())
+    {
+      Data.addProperty(CData::OBJECT_REFERENCES, References);
+    }
+
   return Data;
 }
 
@@ -639,7 +662,40 @@ CCopasiObject * CCopasiObject::fromData(const CData & data)
 // virtual
 bool CCopasiObject::applyData(const CData & data)
 {
-  return false;
+  bool success = true;
+
+  if (data.isSetProperty(CData::OBJECT_NAME))
+    {
+      success &= setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
+    }
+
+  if (data.isSetProperty(CData::OBJECT_REFERENCES))
+    {
+      CCopasiDataModel * pDataModel = getObjectDataModel();
+      assert(pDataModel != NULL);
+
+      const std::vector< CData > & References = data.getProperty(CData::OBJECT_REFERENCES).toDataVector();
+
+      std::vector< CData >::const_iterator it = References.begin();
+      std::vector< CData >::const_iterator end = References.end();
+
+      CData Data;
+      Data.addProperty(CData::OBJECT_POINTER, this);
+      Data.addProperty(CData::OBJECT_REFERENCE_INDEX, (unsigned C_INT32) 0);
+
+      for (; it != end; ++it)
+        {
+          CCopasiContainer * pReference = dynamic_cast< CCopasiContainer * >(const_cast< CObjectInterface * >(pDataModel->getObject(it->getProperty(CData::OBJECT_REFERENCE_CN).toString())));
+
+          if (pReference != NULL)
+            {
+              Data.setProperty(CData::OBJECT_REFERENCE_INDEX, it->getProperty(CData::OBJECT_REFERENCE_INDEX).toUint());
+              pReference->insert(Data);
+            }
+        }
+    }
+
+  return success;
 }
 
 bool CCopasiObject::isContainer() const

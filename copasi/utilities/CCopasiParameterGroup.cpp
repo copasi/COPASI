@@ -31,7 +31,7 @@
 
 #include "CCopasiParameterGroup.h"
 
-#include "../undo/CData.h"
+#include "undo/CData.h"
 #include "CCopasiMessage.h"
 
 #include "utilities/utility.h"
@@ -259,22 +259,39 @@ bool CCopasiParameterGroup::applyData(const CData & data)
 {
   bool success = CCopasiParameter::applyData(data);
 
-  const std::vector< CData > & Value = data.getProperty(CData::PARAMETER_VALUE).toDataVector();
-
-  std::vector< CData >::const_iterator it = Value.begin();
-  std::vector< CData >::const_iterator end = Value.end();
-
-  for (; it != end; ++it)
+  // This only inserts new parameters modification of existing parameters or their deletion
+  // is handled by accessing them directly.
+  if (data.isSetProperty(CData::PARAMETER_VALUE))
     {
-      CCopasiParameter * pNew = new CCopasiParameter(it->getProperty(CData::OBJECT_NAME).toString(),
-          (CCopasiParameter::Type) it->getProperty(CData::PARAMETER_TYPE).toUint());
-      success &= pNew->applyData(*it);
+      const std::vector< CData > & Value = data.getProperty(CData::PARAMETER_VALUE).toDataVector();
 
-      static_cast< elements * >(mpValue)->push_back(pNew);
-      CCopasiParameter::add(pNew, true);
+      std::vector< CData >::const_iterator it = Value.begin();
+      std::vector< CData >::const_iterator end = Value.end();
+
+      for (; it != end; ++it)
+        {
+          CCopasiParameter * pNew = CCopasiParameter::fromData(*it);
+          success &= pNew->applyData(*it);
+
+          static_cast< elements * >(mpValue)->push_back(pNew);
+          CCopasiParameter::add(pNew, true);
+        }
     }
 
   return success;
+}
+
+// virtual
+CCopasiObject * CCopasiParameterGroup::insert(const CData & data)
+{
+  CCopasiParameter * pNew = CCopasiParameter::fromData(data);
+
+  elements * pElements = static_cast< elements * >(mpValue);
+  pElements->insert(pElements->begin() + data.getProperty(CData::OBJECT_INDEX).toUint(), pNew);
+
+  CCopasiParameter::add(pNew, true);
+
+  return pNew;
 }
 
 // virtual
@@ -784,20 +801,6 @@ size_t CCopasiParameterGroup::getIndex(const CCopasiObject * pObject) const
       return i;
 
   return i;
-}
-
-// virtual
-CCopasiObject * CCopasiParameterGroup::insert(const CData & data)
-{
-  CCopasiParameter * pNew = new CCopasiParameter(data.getProperty(CData::OBJECT_NAME).toString(),
-      (CCopasiParameter::Type) data.getProperty(CData::PARAMETER_TYPE).toUint());
-
-  elements * pElements = static_cast< elements * >(mpValue);
-  pElements->insert(pElements->begin() + data.getProperty(CData::OBJECT_INDEX).toUint(), pNew);
-
-  CCopasiParameter::add(pNew, true);
-
-  return pNew;
 }
 
 std::string CCopasiParameterGroup::getUniqueParameterName(const CCopasiParameter * pParameter) const
