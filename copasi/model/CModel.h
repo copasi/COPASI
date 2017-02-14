@@ -79,6 +79,10 @@ private:
   CModel& operator=(const CModel& src);
 
 public:
+  // static CModel * fromData(const CData & data);
+  // virtual CData toData() const;
+  virtual bool applyData(const CData & data);
+
   /**
    *  constructor
    */

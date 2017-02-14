@@ -80,6 +80,9 @@ public:
    */
   static const char * XMLStatus[];
 
+  virtual CData toData() const;
+  virtual bool applyData(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
@@ -519,6 +522,8 @@ class CModelValue : public CModelEntity
 {
 public:
   static CModelValue * fromData(const CData & data);
+  virtual CData toData() const;
+  virtual bool applyData(const CData & data);
 
   /**
    * Default constructor

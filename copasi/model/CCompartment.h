@@ -48,6 +48,8 @@ private:
 
 public:
   static CCompartment * fromData(const CData & data);
+  virtual CData toData() const;
+  virtual bool applyData(const CData & data);
 
   /**
    * Default constructor.

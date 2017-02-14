@@ -45,6 +45,29 @@ CCompartment * CCompartment::fromData(const CData & data)
                           NO_PARENT);
 }
 
+// virtual
+CData CCompartment::toData() const
+{
+  CData Data = CModelEntity::toData();
+
+  Data.addProperty(CData::DIMENSIONALITY, mDimensionality);
+
+  return Data;
+}
+
+// virtual
+bool CCompartment::applyData(const CData & data)
+{
+  bool success = CModelEntity::applyData(data);
+
+  if (data.isSetProperty(CData::DIMENSIONALITY))
+    {
+      success &= setDimensionality(data.getProperty(CData::DIMENSIONALITY).toUint());
+    }
+
+  return success;
+}
+
 CCompartment::CCompartment(const std::string & name,
                            const CCopasiContainer * pParent):
   CModelEntity(name, pParent, "Compartment"),

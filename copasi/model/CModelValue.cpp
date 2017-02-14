@@ -61,6 +61,59 @@ const char * CModelEntity::XMLStatus[] =
   NULL
 };
 
+// virtual
+CData CModelEntity::toData() const
+{
+  CData Data = CCopasiContainer::toData();
+
+  Data.addProperty(CData::SIMULATION_TYPE, (unsigned C_INT32) mStatus);
+  Data.addProperty(CData::INITIAL_VALUE, mIValue);
+  Data.addProperty(CData::INITIAL_EXPRESSION, getInitialExpression());
+  Data.addProperty(CData::EXPRESSION, getExpression());
+  Data.addProperty(CData::ADD_NOISE, mHasNoise);
+  Data.addProperty(CData::NOISE_EXPRESSION, getNoiseExpression());
+
+  return Data;
+}
+
+// virtual
+bool CModelEntity::applyData(const CData & data)
+{
+  bool success = CCopasiContainer::applyData(data);
+
+  if (data.isSetProperty(CData::SIMULATION_TYPE))
+    {
+      setStatus((Status) data.getProperty(CData::SIMULATION_TYPE).toUint());
+    }
+
+  if (data.isSetProperty(CData::INITIAL_VALUE))
+    {
+      mIValue = data.getProperty(CData::INITIAL_VALUE).toDouble();
+    }
+
+  if (data.isSetProperty(CData::INITIAL_EXPRESSION))
+    {
+      success &= setInitialExpression(data.getProperty(CData::INITIAL_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::EXPRESSION))
+    {
+      success &= setExpression(data.getProperty(CData::EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::ADD_NOISE))
+    {
+      setHasNoise(data.getProperty(CData::ADD_NOISE).toBool());
+    }
+
+  if (data.isSetProperty(CData::NOISE_EXPRESSION))
+    {
+      success &= setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
+    }
+
+  return false;
+}
+
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part
 // of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
 
@@ -788,6 +841,29 @@ CModelValue * CModelValue::fromData(const CData & data)
 {
   return new CModelValue(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);
+}
+
+// virtual
+CData CModelValue::toData() const
+{
+  CData Data = CModelEntity::toData();
+
+  Data.addProperty(CData::UNIT, mUnitExpression);
+
+  return Data;
+}
+
+// virtual
+bool CModelValue::applyData(const CData & data)
+{
+  bool success = CModelEntity::applyData(data);
+
+  if (data.isSetProperty(CData::UNIT))
+    {
+      success &= this->setUnitExpression(data.getProperty(CData::UNIT).toString());
+    }
+
+  return success;
 }
 
 CModelValue::CModelValue(const std::string & name,

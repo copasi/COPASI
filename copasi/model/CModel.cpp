@@ -62,6 +62,49 @@
 const char * CModel::ModelTypeNames[] =
 {"deterministic", "stochastic", NULL};
 
+// virtual
+bool CModel::applyData(const CData & data)
+{
+  bool success = CModelEntity::applyData(data);
+
+  if (data.isSetProperty(CData::VOLUME_UNIT))
+    {
+      success &= setVolumeUnit(data.getProperty(CData::VOLUME_UNIT).toString());
+    }
+
+  if (data.isSetProperty(CData::AREA_UNIT))
+    {
+      success &= setAreaUnit(data.getProperty(CData::AREA_UNIT).toString());
+    }
+
+  if (data.isSetProperty(CData::LENGTH_UNIT))
+    {
+      success &= setLengthUnit(data.getProperty(CData::LENGTH_UNIT).toString());
+    }
+
+  if (data.isSetProperty(CData::TIME_UNIT))
+    {
+      success &= setTimeUnit(data.getProperty(CData::TIME_UNIT).toString());
+    }
+
+  if (data.isSetProperty(CData::QUANTITY_UNIT))
+    {
+      success &= setQuantityUnit(data.getProperty(CData::QUANTITY_UNIT).toString(), CModelParameter::ParticleNumbers);
+    }
+
+  if (data.isSetProperty(CData::MODEL_TYPE))
+    {
+      setModelType((ModelType) data.getProperty(CData::MODEL_TYPE).toUint());
+    }
+
+  if (data.isSetProperty(CData::AVOGADRO_NUMBER))
+    {
+      setAvogadro(data.getProperty(CData::AVOGADRO_NUMBER).toDouble(), CModelParameter::ParticleNumbers);
+    }
+
+  return success;
+}
+
 CModel::CModel(CCopasiContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
@@ -2250,7 +2293,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2300,7 +2343,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
