@@ -83,6 +83,8 @@ public:
   static CEvaluationTree *
   copy(const CEvaluationTree & src);
 
+  static CEvaluationTree * fromData(const CData & data);
+
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
