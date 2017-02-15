@@ -133,8 +133,14 @@ CEvaluationTree::copy(const CEvaluationTree & src)
 
 CEvaluationTree * CEvaluationTree::fromData(const CData & data)
 {
-  return new CEvaluationTree(data.getProperty(CData::OBJECT_NAME).toString(),
-                             NO_PARENT, Function);
+  CEvaluationTree * pNew = create((CEvaluationTree::Type) data.getProperty(CData::EVALUATION_TREE_TYPE).toUint());
+
+  if (pNew != NULL)
+    {
+      pNew->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
+    }
+
+  return pNew;
 }
 
 CEvaluationTree::CEvaluationTree(const std::string & name,

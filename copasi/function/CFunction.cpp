@@ -30,24 +30,14 @@
 // static
 CFunction * CFunction::fromData(const CData & data)
 {
-  CFunction * pNew = NULL;
+  CEvaluationTree * pTree = CEvaluationTree::fromData(data);
 
-  switch (data.getProperty(CData::EVALUATION_TREE_TYPE).toUint())
+  CFunction * pNew = dynamic_cast< CFunction * >(pTree);
+
+  if (pNew == NULL)
     {
-      case Function:
-      case MassAction:
-      case PreDefined:
-      case UserDefined:
-        pNew = static_cast< CFunction * >(CEvaluationTree::create((CEvaluationTree::Type) data.getProperty(CData::EVALUATION_TREE_TYPE).toUint()));
-        break;
-
-      case Expression:
-      case MathExpression:
-        break;
+      pdelete(pTree);
     }
-
-  if (pNew != NULL)
-    pNew->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
 
   return pNew;
 }
