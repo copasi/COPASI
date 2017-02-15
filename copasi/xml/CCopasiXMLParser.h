@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -4994,13 +4999,6 @@ public:
    * @return const CCopasiParameterGroup * currentGroup
    */
   const CCopasiParameterGroup * getCurrentGroup() const;
-
-  /**
-   * Retrieve an object by its CN within the context of the parser
-   * @param const std::string & cn
-   * @return const CCopasiObject * pObject
-   */
-  const CCopasiObject * getObjectFromCN(const std::string & cn) const;
 };
 
 #endif // COPASI_CCopasiXMLParser

@@ -419,26 +419,6 @@ CUnitDefinitionDB * CCopasiXMLParser::getUnitDefinitionImportList() const
 const CCopasiParameterGroup * CCopasiXMLParser::getCurrentGroup() const
 {return dynamic_cast< const CCopasiParameterGroup * >(mCommon.pCurrentParameter);}
 
-const CCopasiObject * CCopasiXMLParser::getObjectFromCN(const std::string & cn) const
-{
-  const CObjectInterface * pObject = NULL;
-  CCopasiObjectName CN = CCopasiObjectName(cn).getRemainder();
-
-  if (mCommon.pModel &&
-      (pObject = mCommon.pModel->getObject(CN)))
-    return static_cast< const CCopasiObject * >(pObject);
-
-  if (mCommon.pTaskList &&
-      (pObject = mCommon.pTaskList->getObject(CN)))
-    return static_cast< const CCopasiObject * >(pObject);
-
-  if (mCommon.pFunctionList &&
-      (pObject = mCommon.pFunctionList->getObject(CN)))
-    return static_cast< const CCopasiObject * >(pObject);
-
-  return NULL;
-}
-
 CCopasiXMLParser::UnknownElement::UnknownElement(CCopasiXMLParser & parser,
     SCopasiXMLParserCommon & common):
   CXMLElementHandler< CCopasiXMLParser, SCopasiXMLParserCommon >(parser, common),
