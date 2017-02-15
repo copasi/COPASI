@@ -1,22 +1,19 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CCopasiObjectName.cpp,v $
-  $Revision: 1.14 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2011/03/07 19:32:38 $
-  End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -38,15 +35,15 @@
 using std::string;
 
 CCopasiObjectName::CCopasiObjectName():
-    string()
+  string()
 {}
 
 CCopasiObjectName::CCopasiObjectName(const std::string & name):
-    string(name)
+  string(name)
 {}
 
 CCopasiObjectName::CCopasiObjectName(const CCopasiObjectName & src):
-    string(src)
+  string(src)
 {}
 
 CCopasiObjectName::~CCopasiObjectName()
@@ -112,13 +109,13 @@ std::string CCopasiObjectName::getElementName(const size_t & pos,
 {
   CCopasiObjectName Primary = getPrimary();
 
-  std::string::size_type open = findEx("[");
+  std::string::size_type open = Primary.findEx("[");
   size_t i;
 
   for (i = 0; i < pos && open != std::string::npos; i++)
-    open = findEx("[", open + 1);
+    open = Primary.findEx("[", open + 1);
 
-  std::string::size_type close = findEx("]", open + 1);
+  std::string::size_type close = Primary.findEx("]", open + 1);
 
   if (open == std::string::npos || close == std::string::npos) return "";
 
@@ -187,19 +184,19 @@ CCopasiObjectName::findEx(const std::string & toFind,
 std::set<CRegisteredObjectName*> CRegisteredObjectName::mSet;
 
 CRegisteredObjectName::CRegisteredObjectName():
-    CCopasiObjectName()
+  CCopasiObjectName()
 {
   mSet.insert(this);
 }
 
 CRegisteredObjectName::CRegisteredObjectName(const std::string & name):
-    CCopasiObjectName(name)
+  CCopasiObjectName(name)
 {
   mSet.insert(this);
 }
 
 CRegisteredObjectName::CRegisteredObjectName(const CRegisteredObjectName & src):
-    CCopasiObjectName(src)
+  CCopasiObjectName(src)
 {
   mSet.insert(this);
 }

@@ -544,7 +544,7 @@ public:
           return pObject; //cn contains no "="; type cannot be checked
       }
 
-    return NULL;
+    return CCopasiContainer::getObject(name);
   }
 
   /**
@@ -968,15 +968,20 @@ public:
    */
   virtual const CObjectInterface * getObject(const CCopasiObjectName &name) const
   {
-    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(name.getElementName(0));
+    CCopasiObjectName ElementName = name.getElementName(0);
 
-    for (; Range.first != Range.second; ++Range.first)
+    if (!ElementName.empty())
       {
-        if (dynamic_cast< CType * >(*Range.first) != NULL)
-          return *Range.first;
+        CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(ElementName);
+
+        for (; Range.first != Range.second; ++Range.first)
+          {
+            if (dynamic_cast< CType * >(*Range.first) != NULL)
+              return *Range.first;
+          }
       }
 
-    return NULL;
+    return CCopasiVector < CType >::getObject(name);
   }
 
   /**

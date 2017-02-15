@@ -13,6 +13,9 @@
 class CCopasiObject;
 class CCopasiContainer;
 class CCopasiDataModel;
+class CMetab;
+
+template < class CType > class CCopasiVector;
 
 class CUndoData
 {
@@ -37,13 +40,11 @@ public:
 
   bool addProperty(const CData::Property & property, const CDataValue & value);
 
-  bool addProperty(const std::string & name, const CDataValue & value);
-
   bool addProperty(const CData::Property & property, const CDataValue & oldValue, const CDataValue & newValue);
 
-  bool addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue);
-
   bool addDependentData(const CUndoData & dependentData);
+
+  void recordDependentParticleNumberChange(const double factor, const CCopasiVector< CMetab > & species);
 
   const CData & getOldData() const;
 
@@ -64,9 +65,17 @@ public:
   const size_t getAuthorID() const;
 
 private:
-  static bool insert(const CCopasiDataModel & dataModel, const CData & data, const std::vector< CUndoData > & dependentData);
-  static bool remove(const CCopasiDataModel & dataModel, const CData & data, const std::vector< CUndoData > & dependentData);
-  static bool change(const CCopasiDataModel & dataModel, const CData & oldData, const CData & newData);
+  bool addProperty(const std::string & name, const CDataValue & value);
+
+  bool addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue);
+
+  bool insert(const CCopasiDataModel & dataModel, const bool & apply) const;
+  bool remove(const CCopasiDataModel & dataModel, const bool & apply) const;
+  bool change(const CCopasiDataModel & dataModel, const bool & apply) const;
+  bool processDependentData(const CCopasiDataModel & dataModel, const bool & apply) const;
+
+  const CData & getData(const bool & apply) const;
+
   static CCopasiContainer * getParent(const CCopasiDataModel & dataModel, const CData & data);
   static CCopasiObject * getObject(const CCopasiDataModel & dataModel, const CData & data);
 

@@ -10,6 +10,8 @@
 #include "report/CCopasiContainer.h"
 #include "report/CCopasiObjectName.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "utilities/CCopasiVector.h"
+#include "model/CMetab.h"
 
 CUndoData::CUndoData():
   mType(CUndoData::CHANGE),
@@ -141,6 +143,20 @@ bool CUndoData::addDependentData(const CUndoData & dependentData)
   return true;
 }
 
+void CUndoData::recordDependentParticleNumberChange(const double factor, const CCopasiVector< CMetab > & species)
+{
+  // We need to record the old and new values for each species where new := factor * old
+  CCopasiVector< CMetab >::const_iterator it = species.begin();
+  CCopasiVector< CMetab >::const_iterator end = species.end();
+
+  for (; it != end; ++it)
+    {
+      CUndoData Data(CHANGE, &*it, mAuthorID);
+      Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), factor * it->getInitialValue());
+      mDependentData.push_back(Data);
+    }
+}
+
 const CData & CUndoData::getOldData() const
 {
   return mOldData;
@@ -163,15 +179,15 @@ bool CUndoData::apply(const CCopasiDataModel & dataModel) const
   switch (mType)
     {
       case INSERT:
-        success &= insert(dataModel, mNewData, std::vector< CUndoData >());
+        success &= insert(dataModel, true);
         break;
 
       case REMOVE:
-        success &= remove(dataModel, mOldData, mDependentData);
+        success &= remove(dataModel, true);
         break;
 
       case CHANGE:
-        success &= change(dataModel, mOldData, mNewData);
+        success &= change(dataModel, true);
         break;
     }
 
@@ -185,15 +201,15 @@ bool CUndoData::undo(const CCopasiDataModel & dataModel) const
   switch (mType)
     {
       case INSERT:
-        success &= remove(dataModel, mNewData, std::vector< CUndoData >());
+        success &= remove(dataModel, false);
         break;
 
       case REMOVE:
-        success &= insert(dataModel, mOldData, mDependentData);
+        success &= insert(dataModel, false);
         break;
 
       case CHANGE:
-        success &= change(dataModel, mNewData, mOldData);
+        success &= change(dataModel, false);
         break;
     }
 
@@ -221,60 +237,48 @@ const size_t CUndoData::getAuthorID() const
 }
 
 // static
-bool CUndoData::insert(const CCopasiDataModel & dataModel, const CData & data, const std::vector< CUndoData > & dependentData)
+bool CUndoData::insert(const CCopasiDataModel & dataModel, const bool & apply) const
 {
-  CCopasiContainer * pParent = getParent(dataModel, data);
+  const CData & Data = getData(apply);
+
+  CCopasiContainer * pParent = getParent(dataModel, Data);
 
   if (pParent == NULL)
     return false;
 
-  CCopasiObject * pObject = pParent->insert(data);
+  CCopasiObject * pObject = pParent->insert(Data);
 
   if (pObject == NULL)
     return false;
 
-  bool success = pObject->applyData(data);
-
-  std::vector< CUndoData >::const_iterator it = dependentData.begin();
-  std::vector< CUndoData >::const_iterator end = dependentData.end();
-
-  for (; it != end; ++it)
-    {
-      // If we are here we have independent data, i.e, this is triggered as an undo of a remove
-      success &= it->undo(dataModel);
-    }
+  bool success = pObject->applyData(Data);
+  success &= processDependentData(dataModel, apply);
 
   return success;
 }
 
 // static
-bool CUndoData::remove(const CCopasiDataModel & dataModel, const CData & data, const std::vector< CUndoData > & dependentData)
+bool CUndoData::remove(const CCopasiDataModel & dataModel, const bool & apply) const
 {
-  CCopasiObject * pObject = getObject(dataModel, data);
+  const CData & Data = getData(apply);
+
+  CCopasiObject * pObject = getObject(dataModel, Data);
 
   if (pObject == NULL)
     return false;
 
   delete pObject;
 
-  bool success = true;
-
-  std::vector< CUndoData >::const_iterator it = dependentData.begin();
-  std::vector< CUndoData >::const_iterator end = dependentData.end();
-
-  for (; it != end; ++it)
-    {
-      // If we are here we have independent data, i.e, this is triggered as a redo of a remove
-      success &= it->apply(dataModel);
-    }
-
-  return success;
+  return processDependentData(dataModel, apply);
 }
 
 // static
-bool CUndoData::change(const CCopasiDataModel & dataModel, const CData & oldData, const CData & newData)
+bool CUndoData::change(const CCopasiDataModel & dataModel, const bool & apply) const
 {
-  CCopasiObject * pObject = getObject(dataModel, oldData);
+  const CData & OldData = getData(!apply);
+  const CData & NewData = getData(apply);
+
+  CCopasiObject * pObject = getObject(dataModel, OldData);
 
   // We must always have the old object;
   if (pObject == NULL)
@@ -284,7 +288,7 @@ bool CUndoData::change(const CCopasiDataModel & dataModel, const CData & oldData
 
   // A special case is that the ParentCN has changed, i.e., the object has moved
 
-  if (oldData.getProperty("ParentCN").toString() != newData.getProperty("ParentCN").toString())
+  if (OldData.getProperty(CData::OBJECT_PARENT_CN).toString() != NewData.getProperty(CData::OBJECT_PARENT_CN).toString())
     {
       // We need to move
       CCopasiContainer * pContainer = pObject->getObjectParent();
@@ -292,17 +296,51 @@ bool CUndoData::change(const CCopasiDataModel & dataModel, const CData & oldData
       if (pContainer != NULL)
         pContainer->remove(pObject);
 
-      pContainer = getParent(dataModel, newData);
+      pContainer = getParent(dataModel, NewData);
 
       if (pContainer != NULL)
         pContainer->add(pObject, true);
     }
 
-  success &= pObject->setObjectName(newData.getProperty("ObjectName").toString());
-
-  success &= pObject->applyData(newData);
+  success &= pObject->applyData(NewData);
+  success &= processDependentData(dataModel, apply);
 
   return success;
+}
+
+bool CUndoData::processDependentData(const CCopasiDataModel & dataModel, const bool & apply) const
+{
+  bool success = true;
+
+  std::vector< CUndoData >::const_iterator it = mDependentData.begin();
+  std::vector< CUndoData >::const_iterator end = mDependentData.end();
+
+  if (apply)
+    {
+      for (; it != end; ++it)
+        {
+          // If we are here we have dependent data, e.g. particle number changes
+          success &= it->apply(dataModel);
+        }
+    }
+  else
+    {
+      for (; it != end; ++it)
+        {
+          // If we are here we have dependent data, e.g. particle number changes
+          success &= it->undo(dataModel);
+        }
+    }
+
+  return success;
+}
+
+const CData & CUndoData::getData(const bool & apply) const
+{
+  if (apply)
+    return mNewData;
+
+  return mOldData;
 }
 
 // static
@@ -311,7 +349,7 @@ CCopasiContainer * CUndoData::getParent(const CCopasiDataModel & dataModel, cons
   const CCopasiContainer * pParent = NULL;
 
   if (!data.empty())
-    pParent = dynamic_cast< const CCopasiContainer * >(dataModel.getObject(data.getProperty("ParentCN").toString()));
+    pParent = dynamic_cast< const CCopasiContainer * >(dataModel.getObject(data.getProperty(CData::OBJECT_PARENT_CN).toString()));
 
   return const_cast< CCopasiContainer * >(pParent);
 }
@@ -324,7 +362,7 @@ CCopasiObject * CUndoData::getObject(const CCopasiDataModel & dataModel, const C
 
   if (pParent != NULL)
     pObject =
-      dynamic_cast< const CCopasiObject * >(pParent->getObject(data.getProperty("ObjectType").toString() + "=" + data.getProperty("ObjectName").toString()));
+      dynamic_cast< const CCopasiObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
 
   return const_cast< CCopasiObject * >(pObject);
 }

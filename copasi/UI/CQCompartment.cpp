@@ -480,6 +480,12 @@ void CQCompartment::save()
                           this
                         ));
       mChanged = true;
+
+      if (mFramework == 0) // Concentration
+        {
+          Data.recordDependentParticleNumberChange(mpEditInitialVolume->text().toDouble() / mpCompartment->getInitialValue(),
+              mpCompartment->getMetabolites());
+        }
     }
 
   // Expression
@@ -577,9 +583,9 @@ void CQCompartment::save()
 
   if (mChanged)
     {
-      mpDataModel->applyData(Data);
-
       assert(mpDataModel != NULL);
+
+      mpDataModel->applyData(Data);
       mpDataModel->changed();
       protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, mKey);
 
@@ -864,7 +870,6 @@ CQCompartment::loadEventTable()
   std::set< const CCopasiObject * > Events;
   pModel->appendDependentEvents(deletedObjects, Events);
 
-
   bool haveDependentEvents = !Events.empty();
 
   mpLblEvents->setVisible(haveDependentEvents);
@@ -933,4 +938,3 @@ CQCompartment::slotSwitchToEvent(int row, int /* column */)
         mpListView->switchToOtherWidget(C_INVALID_INDEX, pEvent->getKey());
     }
 }
-
