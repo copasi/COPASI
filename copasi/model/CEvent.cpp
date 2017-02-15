@@ -428,6 +428,13 @@ bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)
       addDirectDependency(mpDelayExpression);
     }
 
+  // Compile the delay expression
+  if (mpPriorityExpression != NULL)
+    {
+      success &= mpPriorityExpression->compile(listOfContainer);
+      addDirectDependency(mpPriorityExpression);
+    }
+
   // Compile the assignments
   CCopasiVectorN< CEventAssignment >::iterator itAssignment = mAssignments.begin();
   CCopasiVectorN< CEventAssignment >::iterator endAssignment = mAssignments.end();
