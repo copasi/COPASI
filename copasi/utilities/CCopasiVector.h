@@ -27,6 +27,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <iterator>
 #include <cstddef>
 
@@ -1003,6 +1004,21 @@ public:
            (*Target)->getObjectName() == Name)) return i;
 
     return C_INVALID_INDEX;
+  }
+
+  void createUniqueName(std::string & name) const
+  {
+    std::string Name = name;
+
+    size_t Index = 0;
+
+    while (getIndex(name) != C_INVALID_INDEX)
+      {
+        Index++;
+        std::ostringstream tmp;
+        tmp << Name << "_" << Index;
+        name = tmp.str();
+      }
   }
 
 private:
