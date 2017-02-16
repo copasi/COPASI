@@ -34,5 +34,5 @@ include(../../../CMakeConsoleApp.cmake)
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 add_dependencies(${PROJECT_NAME} ${SE_DEPENDENCIES}) 
-target_link_libraries(${PROJECT_NAME} ${SE_EXTERNAL_LIBS} ${SE_LIBS})
+target_link_libraries(${PROJECT_NAME} ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
