@@ -42,6 +42,10 @@ public:
 
   bool addProperty(const CData::Property & property, const CDataValue & oldValue, const CDataValue & newValue);
 
+  bool appendData(const CData & data);
+
+  bool appendData(const CData & oldData, const CData & newData);
+
   bool addDependentData(const CUndoData & dependentData);
 
   void recordDependentParticleNumberChange(const double factor, const CCopasiVector< CMetab > & species);

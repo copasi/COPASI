@@ -77,6 +77,8 @@ public:
 
   bool addProperty(const Property & property, const CDataValue & value);
 
+  bool appendData(const CData & data);
+
   bool removeProperty(const std::string & name);
 
   bool removeProperty(const Property & property);

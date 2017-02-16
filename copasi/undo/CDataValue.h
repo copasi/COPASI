@@ -13,9 +13,6 @@ class CData;
 
 class CDataValue
 {
-private:
-  CDataValue();
-
 public:
   enum Type
   {
@@ -29,7 +26,7 @@ public:
     INVALID
   };
 
-  CDataValue(const Type & type);
+  CDataValue(const Type & type = INVALID);
   CDataValue(const CDataValue & src);
 
   CDataValue(const C_FLOAT64 & value);

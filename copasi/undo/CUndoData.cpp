@@ -136,6 +136,51 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
   return success;
 }
 
+bool CUndoData::appendData(const CData & data)
+{
+  bool success = true;
+
+  switch (mType)
+    {
+      case INSERT:
+        success &= mNewData.appendData(data);
+        break;
+
+      case REMOVE:
+        success &= mOldData.appendData(data);
+        break;
+
+      case CHANGE:
+        success = false;
+        break;
+    }
+
+  return success;
+}
+
+bool CUndoData::appendData(const CData & oldData, const CData & newData)
+{
+  bool success = true;
+
+  switch (mType)
+    {
+      case INSERT:
+        success = false;
+        break;
+
+      case REMOVE:
+        success = false;
+        break;
+
+      case CHANGE:
+        success &= mOldData.appendData(oldData);
+        success &= mNewData.appendData(newData);
+        break;
+    }
+
+  return success;
+}
+
 bool CUndoData::addDependentData(const CUndoData & dependentData)
 {
   mDependentData.push_back(dependentData);

@@ -139,6 +139,21 @@ bool CData::addProperty(const Property & property, const CDataValue & value)
   return addProperty(PropertyName[property], value);
 }
 
+bool CData::appendData(const CData & data)
+{
+  bool success = true;
+
+  const_iterator it = data.begin();
+  const_iterator end = data.end();
+
+  for (; it != end; ++it)
+    {
+      operator[](it->first) = it->second;
+    }
+
+  return success;
+}
+
 bool CData::removeProperty(const std::string & name)
 {
   std::map< std::string, CDataValue >::iterator found = find(name);
