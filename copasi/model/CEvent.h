@@ -76,6 +76,14 @@ public:
   bool compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
+   * Check whether an object must be deleted because its prerequisites can
+   * no longer be fulfilled due to the given deleted objects
+   * @param const DataObjectSet & deletedObjects
+   * @return bool mustBeDeleted
+   */
+  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
+
+  /**
    * Retrieve the key
    * @return const std::string & key
    */
@@ -225,6 +233,16 @@ public:
    * @return bool mustBeDeleted
    */
   virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
+
+  /**
+   * Appends pointers to assignments which are dependent on the candidates to the
+   * list.
+   * @param std::set< const CCopasiObject * > candidates
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
+   */
+  bool appendDependentAssignments(std::set< const CCopasiObject * > candidates,
+                                  std::set< const CCopasiObject * > & dependents) const;
 
   /**
    * Return information where the element in the object set is being used.

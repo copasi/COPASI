@@ -694,6 +694,7 @@ public:
    * @param std::set< const CCopasiObject * > & dependentCompartments
    * @param std::set< const CCopasiObject * > & dependentModelValues
    * @param std::set< const CCopasiObject * > & dependentEvents
+   * @param std::set< const CCopasiObject * > & dependentEventAssignments
    * @return bool objectsAppended
    */
   bool appendDependentModelObjects(const std::set< const CCopasiObject * > & candidates,
@@ -701,7 +702,8 @@ public:
                                    std::set< const CCopasiObject * > & dependentMetabolites,
                                    std::set< const CCopasiObject * > & dependentCompartments,
                                    std::set< const CCopasiObject * > & dependentModelValues,
-                                   std::set< const CCopasiObject * > & dependentEvents) const;
+                                   std::set< const CCopasiObject * > & dependentEvents,
+                                   std::set< const CCopasiObject * > & dependentEventAssignments) const;
 
   /**
    * Appends pointers to reactions which are dependent on the candidates to the
@@ -722,6 +724,16 @@ public:
   */
   bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
                              std::set< const CCopasiObject * > & dependents) const;
+
+  /**
+  * Appends a pointers to event assignments which are dependent on the candidates to the
+  * list.
+  * @param std::set< const CCopasiObject * > candidates
+  * @param std::set< const CCopasiObject * > & dependents
+  * @return bool objectsAppended
+  */
+  bool appendDependentEventAssignments(std::set< const CCopasiObject * > candidates,
+                                       std::set< const CCopasiObject * > & dependents) const;
 
 private:
   /**

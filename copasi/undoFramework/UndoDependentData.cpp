@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -496,8 +501,9 @@ UndoDependentData::initializeFrom(
       std::set< const CCopasiObject * > Values;
       std::set< const CCopasiObject * > Compartments;
       std::set< const CCopasiObject * > Events;
+      std::set< const CCopasiObject * > EventAssignments;
 
-      pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events);
+      pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
@@ -581,6 +587,26 @@ UndoDependentData::initializeFrom(
 
               UndoEventData *data = new UndoEventData(pEvent);
               mEventData.append(data);
+            }
+        }
+
+      if (EventAssignments.size() > 0)
+        {
+          std::set< const CCopasiObject * >::const_iterator it = EventAssignments.begin();
+          std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
+
+          for (; it != end; ++it)
+            {
+              //store the Event data
+              const CEvent * pEvent = dynamic_cast<const CEvent*>((*it)->getObjectAncestor("Event"));
+
+              if (Events.find(pEvent) == Events.end())
+                {
+                  UndoEventData *data = new UndoEventData(pEvent);
+                  mEventData.append(data);
+
+                  Events.insert(pEvent);
+                }
             }
         }
     }

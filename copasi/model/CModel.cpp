@@ -1631,7 +1631,8 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
     std::set< const CCopasiObject * > & dependentMetabolites,
     std::set< const CCopasiObject * > & dependentCompartments,
     std::set< const CCopasiObject * > & dependentModelValues,
-    std::set< const CCopasiObject * > & dependentEvents) const
+    std::set< const CCopasiObject * > & dependentEvents,
+    std::set< const CCopasiObject * > & dependentEventAssignments) const
 {
   // We need a local copy since we recursively add deleted objects.
   std::set< const CCopasiObject * > DeletedObjects = deletedObjects;
@@ -1878,6 +1879,24 @@ bool CModel::appendDependentEvents(std::set< const CCopasiObject * > candidates,
             dependents.insert(it);
           }
       }
+
+  return Size < dependents.size();
+}
+
+bool CModel::appendDependentEventAssignments(std::set< const CCopasiObject * > candidates,
+    std::set< const CCopasiObject * > & dependents) const
+{
+  const_cast< CModel * >(this)->compileIfNecessary(NULL);
+
+  size_t Size = dependents.size();
+
+  CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
+  CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
+
+  for (; it != end; ++it)
+    {
+      it->appendDependentAssignments(candidates, dependents);
+    }
 
   return Size < dependents.size();
 }
@@ -2136,8 +2155,9 @@ void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & 
   std::set<const CCopasiObject*> Values;
   std::set<const CCopasiObject*> Compartments;
   std::set<const CCopasiObject*> Events;
+  std::set<const CCopasiObject*> EventAssignments;
 
-  appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events);
+  appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
 
   std::set<const CCopasiObject*>::const_iterator it, end;
 
@@ -2152,6 +2172,10 @@ void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & 
 
   for (it = Values.begin(), end = Values.end(); it != end; ++it)
     removeModelValue((*it)->getKey(), false);
+
+  // Event Assignments mut be deleted before events as else we may have an invalid pointer
+  for (it = EventAssignments.begin(), end = EventAssignments.end(); it != end; ++it)
+    if (*it) delete *it;
 
   for (it = Events.begin(), end = Events.end(); it != end; ++it)
     removeEvent((*it)->getKey(), false);
