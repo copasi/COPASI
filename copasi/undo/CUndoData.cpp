@@ -212,7 +212,12 @@ const CData & CUndoData::getNewData() const
   return mNewData;
 }
 
-const std::vector< CUndoData > CUndoData::getDependentData() const
+const std::vector< CUndoData > & CUndoData::getDependentData() const
+{
+  return mDependentData;
+}
+
+std::vector< CUndoData > & CUndoData::getDependentData()
 {
   return mDependentData;
 }

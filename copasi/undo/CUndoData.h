@@ -54,7 +54,9 @@ public:
 
   const CData & getNewData() const;
 
-  const std::vector< CUndoData > getDependentData() const;
+  const std::vector< CUndoData > & getDependentData() const;
+
+  std::vector< CUndoData > & getDependentData();
 
   bool apply(const CCopasiDataModel & dataModel) const;
 
