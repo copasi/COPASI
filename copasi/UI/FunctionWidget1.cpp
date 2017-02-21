@@ -968,17 +968,23 @@ bool FunctionWidget1::leave()
           std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
 
           for (; it != end; ++it)
-            if (Events.find((*it)->getObjectAncestor("Event")) == Events.end())
-              {
-                if (first)
-                  {
-                    msg.append("Following event assignment(s) reference above and will be deleted:\n  ");
-                    first = false;
-                  }
+            {
+              const CCopasiObject * pEvent = (*it)->getObjectAncestor("Event");
 
-                msg.append(FROM_UTF8((*it)->getObjectName()));
-                msg.append("\n  ");
-              }
+              if (Events.find(pEvent) == Events.end())
+                {
+                  if (first)
+                    {
+                      msg.append("Following event assignment(s) reference above and will be deleted:\n  ");
+                      first = false;
+                    }
+
+                  const CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get((*it)->getObjectName());
+                  std::string ObjectName = (pObject != NULL) ? pObject->getObjectName() : (*it)->getObjectName();
+                  msg.append(FROM_UTF8(pEvent->getObjectName() + ": " + ObjectName));
+                  msg.append("\n  ");
+                }
+            }
 
           msg.remove(msg.length() - 2, 2);
         }
