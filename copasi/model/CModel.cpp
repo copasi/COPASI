@@ -1698,6 +1698,7 @@ bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * >
         }
 
       DeleteObjects |= appendDependentEvents(DeletedObjects, dependentEvents);
+      DeleteObjects |= appendDependentEventAssignments(DeletedObjects, dependentEventAssignments);
 
       ObjectsAppended |= DeleteObjects;
     }
