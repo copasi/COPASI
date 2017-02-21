@@ -393,6 +393,7 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
     CRDFPredicate::bqbiol_occursIn,
     CRDFPredicate::bqmodel_is,
     CRDFPredicate::bqmodel_isDerivedFrom,
+    CRDFPredicate::unknown,
     CRDFPredicate::end
   };
 
