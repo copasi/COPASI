@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -126,7 +131,12 @@ char * CRDFWriter::write(const CRDFGraph * pGraph)
 
       // Set the predicate of the triplet
       Triplet.predicate_type = RAPTOR_IDENTIFIER_TYPE_RESOURCE;
-      pPredicateURI = raptor_new_uri((const unsigned char *) it->Predicate.getURI().c_str());
+
+      if (it->Predicate.getURI() != "")
+        pPredicateURI = raptor_new_uri((const unsigned char *) it->Predicate.getURI().c_str());
+      else
+        pPredicateURI = NULL;
+
       Triplet.predicate = pPredicateURI;
 
       // Set the object of the triplet

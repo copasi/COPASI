@@ -71,7 +71,7 @@ const std::string CRDFPredicate::PredicateURI[] =
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject", //rdf_subject
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate", //rdf_predicate
   "http://www.w3.org/1999/02/22-rdf-syntax-ns#object", //rdf_object
-  "", // unknown
+  "http://www.copasi.org/RDF/MiriamTerms#unknown", // unknown
   // For internal use
   "about", // about
   "any", // any
@@ -150,7 +150,7 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
   "subject", // rdf_subject,
   "predicate", // rdf_predicate,
   "object", // rdf_object
-  "", // unknown
+  "-- select --", // unknown
   // For internal use
   "about", // about
   "any", // any

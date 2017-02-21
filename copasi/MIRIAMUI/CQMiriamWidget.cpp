@@ -75,7 +75,7 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mWidgets.push_back(mpTblModified); mDMs.push_back(mpModifiedDM); mProxyDMs.push_back(mpModifiedPDM);
 
   // Build the list of supported predicates
-  mPredicates.push_back("-- select --");
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::unknown)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_encodes)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasPart)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasVersion)));
