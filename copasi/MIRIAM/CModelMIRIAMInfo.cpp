@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -387,6 +392,7 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
     CRDFPredicate::bqbiol_isVersionOf,
     CRDFPredicate::bqbiol_occursIn,
     CRDFPredicate::bqmodel_is,
+    CRDFPredicate::bqmodel_isDerivedFrom,
     CRDFPredicate::end
   };
 
