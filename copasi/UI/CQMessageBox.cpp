@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -183,6 +188,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   std::set< const CCopasiObject * > Values;
   std::set< const CCopasiObject * > Compartments;
   std::set< const CCopasiObject * > Events;
+  std::set< const CCopasiObject * > EventAssignments;
   std::set< const CCopasiObject * > Tasks;
 
   bool Used = false;
@@ -238,7 +244,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   if (pModel != NULL)
     {
       Used |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
-              Compartments, Values, Events);
+              Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
@@ -316,6 +322,29 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
               msg.append(FROM_UTF8((*it)->getObjectName()));
               msg.append("\n  ");
             }
+
+          msg.remove(msg.length() - 2, 2);
+        }
+
+      if (EventAssignments.size() > 0)
+        {
+          bool first = true;
+
+          std::set< const CCopasiObject * >::const_iterator it = EventAssignments.begin();
+          std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
+
+          for (; it != end; ++it)
+            if (Events.find((*it)->getObjectAncestor("Event")) == Events.end())
+              {
+                if (first)
+                  {
+                    msg.append("Following event assignment(s) reference above and will be deleted:\n  ");
+                    first = false;
+                  }
+
+                msg.append(FROM_UTF8((*it)->getObjectName()));
+                msg.append("\n  ");
+              }
 
           msg.remove(msg.length() - 2, 2);
         }

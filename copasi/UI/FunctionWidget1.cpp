@@ -791,6 +791,7 @@ bool FunctionWidget1::leave()
       std::set< const CCopasiObject * > Values;
       std::set< const CCopasiObject * > Compartments;
       std::set< const CCopasiObject * > Events;
+      std::set< const CCopasiObject * > EventAssignments;
 
       std::set< const CCopasiObject * > DeletedObjects = pFunction->getDeletedObjects();
 
@@ -813,7 +814,7 @@ bool FunctionWidget1::leave()
         }
 
       Used |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
-              Compartments, Values, Events);
+              Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
@@ -891,6 +892,29 @@ bool FunctionWidget1::leave()
               msg.append(FROM_UTF8((*it)->getObjectName()));
               msg.append("\n  ");
             }
+
+          msg.remove(msg.length() - 2, 2);
+        }
+
+      if (EventAssignments.size() > 0)
+        {
+          bool first = true;
+
+          std::set< const CCopasiObject * >::const_iterator it = EventAssignments.begin();
+          std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
+
+          for (; it != end; ++it)
+            if (Events.find((*it)->getObjectAncestor("Event")) == Events.end())
+              {
+                if (first)
+                  {
+                    msg.append("Following event assignment(s) reference above and will be deleted:\n  ");
+                    first = false;
+                  }
+
+                msg.append(FROM_UTF8((*it)->getObjectName()));
+                msg.append("\n  ");
+              }
 
           msg.remove(msg.length() - 2, 2);
         }

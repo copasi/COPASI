@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -453,9 +458,10 @@ std::vector< const CFunction * > CFunctionDB::getUsedFunctions(const CModel* pMo
       std::set< const CCopasiObject * > Values;
       std::set< const CCopasiObject * > Compartments;
       std::set< const CCopasiObject * > Events;
+      std::set< const CCopasiObject * > EventAssignments;
 
       if (pModel->appendDependentModelObjects(Function,
-                                              Reactions, Metabolites, Compartments, Values, Events))
+                                              Reactions, Metabolites, Compartments, Values, Events, EventAssignments))
         {
           UsedFunctions.push_back(it);
           continue;

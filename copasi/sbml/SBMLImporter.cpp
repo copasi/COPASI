@@ -1584,10 +1584,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
               std::set< const CCopasiObject * > Values;
               std::set< const CCopasiObject * > Compartments;
               std::set< const CCopasiObject * > Events;
+              std::set< const CCopasiObject * > EventAssignments;
               std::set< const CCopasiObject * > Tasks;
 
               if (!mpCopasiModel->appendDependentModelObjects(itMV->getDeletedObjects(), Reactions, Metabolites,
-                  Compartments, Values, Events))
+                  Compartments, Values, Events, EventAssignments))
                 {
                   mpCopasiModel->removeModelValue(itMV, false);
 
@@ -2597,8 +2598,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               singleCompartment = false;
             }
         }
-
-
 
       // we need to store the id of the species reference if it is set because SBML Level 3 allows
       // references to species references and if we want to support his, we need the id to import

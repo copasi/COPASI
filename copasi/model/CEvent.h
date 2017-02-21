@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -68,6 +73,14 @@ public:
    * @return bool success
    */
   bool compile(CObjectInterface::ContainerList listOfContainer);
+
+  /**
+   * Check whether an object must be deleted because its prerequisites can
+   * no longer be fulfilled due to the given deleted objects
+   * @param const DataObjectSet & deletedObjects
+   * @return bool mustBeDeleted
+   */
+  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
 
   /**
    * Retrieve the key
@@ -217,6 +230,16 @@ public:
    * @return bool mustBeDeleted
    */
   virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
+
+  /**
+   * Appends pointers to assignments which are dependent on the candidates to the
+   * list.
+   * @param std::set< const CCopasiObject * > candidates
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
+   */
+  bool appendDependentAssignments(std::set< const CCopasiObject * > candidates,
+                                  std::set< const CCopasiObject * > & dependents) const;
 
   /**
    * Compile the event.

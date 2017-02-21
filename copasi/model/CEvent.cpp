@@ -143,6 +143,15 @@ bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
   return success;
 }
 
+// virtual
+bool CEventAssignment::mustBeDeleted(const DataObjectSet & deletedObjects) const
+{
+  return ((mpTarget != NULL &&
+           mpTarget->mustBeDeleted(deletedObjects)) ||
+          (mpExpression != NULL &&
+           mpExpression->mustBeDeleted(deletedObjects)));
+}
+
 const std::string & CEventAssignment::getKey() const
 {
   return mKey;
@@ -301,55 +310,38 @@ const std::string & CEvent::getKey() const
 // virtual
 bool CEvent::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
 {
-  bool MustBeDeleted = false;
+  return ((mpTriggerExpression != NULL &&
+           mpTriggerExpression->mustBeDeleted(deletedObjects)) ||
+          (mpDelayExpression != NULL &&
+           mpDelayExpression->mustBeDeleted(deletedObjects)) ||
+          (mpPriorityExpression != NULL &&
+           mpPriorityExpression->mustBeDeleted(deletedObjects)));
+}
 
-  CCopasiObject::DataObjectSet ChildObjects;
+bool CEvent::appendDependentAssignments(std::set< const CCopasiObject * > candidates,
+                                        std::set< const CCopasiObject * > & dependents) const
+{
+  size_t Size = dependents.size();
 
-  if (mpTriggerExpression != NULL)
-    {
-      ChildObjects.insert(mpTriggerExpression);
-    }
+  CCopasiVectorN< CEventAssignment >::const_iterator it = mAssignments.begin();
+  CCopasiVectorN< CEventAssignment >::const_iterator end = mAssignments.end();
 
-  if (mpDelayExpression != NULL)
-    {
-      ChildObjects.insert(mpDelayExpression);
-    }
-
-  if (mpPriorityExpression != NULL)
-    {
-      ChildObjects.insert(mpPriorityExpression);
-    }
-
-  // We need to add all assignment targets and expressions
-  CCopasiVector< CEventAssignment >::const_iterator itAssignment = mAssignments.begin();
-  CCopasiVector< CEventAssignment >::const_iterator endAssignment = mAssignments.end();
-
-  for (; itAssignment != endAssignment; ++itAssignment)
-    {
-      if (itAssignment->getTargetObject() != NULL)
-        {
-          ChildObjects.insert(itAssignment->getTargetObject());
-        }
-
-      if (itAssignment->getExpressionPtr() != NULL)
-        {
-          ChildObjects.insert(itAssignment->getExpressionPtr());
-        }
-    }
-
-  DataObjectSet::const_iterator it = ChildObjects.begin();
-  DataObjectSet::const_iterator end = ChildObjects.end();
+  std::set< const CCopasiObject * >::const_iterator itSet;
+  std::set< const CCopasiObject * >::const_iterator endSet;
 
   for (; it != end; ++it)
     {
-      if ((*it)->mustBeDeleted(deletedObjects))
+      // Check whether the compartment is already in the list of deleted objects
+      if (candidates.find(it) == candidates.end())
         {
-          MustBeDeleted = true;
-          break;
+          if (it->mustBeDeleted(candidates))
+            {
+              dependents.insert(it);
+            }
         }
     }
 
-  return MustBeDeleted;
+  return Size < dependents.size();
 }
 
 bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)

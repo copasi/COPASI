@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -159,8 +164,8 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
 
   //ask the model for the dependencies
 
-  std::set< const CCopasiObject * > reacs, metabs, comps, values, events;
-  pModel->appendDependentModelObjects(combinedSet, reacs, metabs, comps, values, events);
+  std::set< const CCopasiObject * > reacs, metabs, comps, values, events, eventAssignments;
+  pModel->appendDependentModelObjects(combinedSet, reacs, metabs, comps, values, events, eventAssignments);
 
   //incorporate the results into the local sets
   std::set< const CCopasiObject * >::const_iterator it;
@@ -179,6 +184,16 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
 
   for (it = events.begin(); it != events.end(); ++it)
     addEvent(dynamic_cast<const CEvent*>(*it));
+
+  for (it = eventAssignments.begin(); it != eventAssignments.end(); ++it)
+    {
+      const CEvent * pEvent = dynamic_cast<const CEvent*>((*it)->getObjectAncestor("Event"));
+
+      if (pEvent != NULL)
+        {
+          addEvent(pEvent);
+        }
+    }
 }
 
 void CModelExpansion::SetOfModelElements::fillComplete(const CModel* pModel)
