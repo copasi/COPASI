@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFPredicate.cpp,v $
-//   $Revision: 1.10 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:30:19 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -49,6 +46,7 @@ const std::string CRDFPredicate::PredicateURI[] =
   "http://biomodels.net/biology-qualifiers/isVersionOf", // bqbiol_isVersionOf
   "http://biomodels.net/biology-qualifiers/occursIn", // copasi_occursIn
   "http://biomodels.net/model-qualifiers/is", // bqmodel_is
+  "http://biomodels.net/model-qualifiers/isDerivedFrom", // bqmodel_isDerivedFrom
   "http://biomodels.net/model-qualifiers/isDescribedBy", // bqmodel_isDescribedBy
   "http://purl.org/dc/elements/1.1/creator", // dc_creator
   "http://purl.org/dc/terms/creator", // dcterms_creator
@@ -127,6 +125,7 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
   "is version of", // bqbiol_isVersionOf
   "occurs in", // bqbiol_occursIn
   "is", // bqmodel_is
+  "is derived from", // bqmodel_isDerivedFrom
   "is described by", // bqmodel_isDescribedBy
   "creator", // dc_creator
   "creator", // dcterms_creator
@@ -275,6 +274,9 @@ void CRDFPredicate::createAllowedLocationsRelative()
 
   // bqmodel_is:
   Predicate2AllowedLocationsRelative[bqmodel_is] = AboutUnboundedResource;
+
+  // bqmodel_isDerivedFrom:
+  Predicate2AllowedLocationsRelative[bqmodel_isDerivedFrom] = AboutUnboundedResource;
 
   // bqmodel_isDescribedBy:
   Predicate2AllowedLocationsRelative[bqmodel_isDescribedBy] = AboutUnboundedResource;
@@ -553,16 +555,16 @@ void CRDFPredicate::initialize()
 
 // Methods
 CRDFPredicate::CRDFPredicate(const ePredicateType & type):
-    mType(type),
-    mURI()
+  mType(type),
+  mURI()
 {
   initialize();
   mURI = CRDFPredicate::PredicateURI[mType];
 }
 
 CRDFPredicate::CRDFPredicate(const std::string & uri):
-    mType(),
-    mURI(uri)
+  mType(),
+  mURI(uri)
 {
   initialize();
   mType = CRDFPredicate::getPredicateFromURI(mURI);
@@ -572,8 +574,8 @@ CRDFPredicate::CRDFPredicate(const std::string & uri):
 }
 
 CRDFPredicate::CRDFPredicate(const CRDFPredicate & src):
-    mType(src.mType),
-    mURI(src.mURI)
+  mType(src.mType),
+  mURI(src.mURI)
 {}
 
 CRDFPredicate::~CRDFPredicate()

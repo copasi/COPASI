@@ -6981,6 +6981,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
             break;
 
+          case CRDFPredicate::bqmodel_isDerivedFrom:
+            cvTerm.setQualifierType(MODEL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setModelQualifierType(BQM_IS_DERIVED_FROM);
+            cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+            break;
+
             // IS DESCRIBED BY is handled in the references below
             //case bqbiol_isDescribedBy:
             //    break;

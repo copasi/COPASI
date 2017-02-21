@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -79,8 +84,10 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_occursIn)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isDerivedFrom))),
 
-  mpPredicateDelegate->setItems(-1, mPredicates);
+                        mpPredicateDelegate->setItems(-1, mPredicates);
 
   std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView*>::const_iterator end = mWidgets.end();
@@ -345,7 +352,6 @@ bool CQMiriamWidget::enterProtected()
           pAnnotation = CAnnotation::castObject(mpObject);
 
           pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
-
         }
 
       mKeyToCopy = "";
