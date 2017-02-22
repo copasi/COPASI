@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:37 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,7 +20,7 @@
 #include "CRDFWriter.h"
 #include "CRDFGraph.h"
 #include "CRDFUtilities.h"
-
+#include "CMIRIAMResource.h"
 #include "utilities/CCopasiMessage.h"
 
 // static
@@ -33,73 +30,99 @@ CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
     CRDFPredicate::bqbiol_encodes,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_encodes, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_hasPart,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_hasPart, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_hasVersion,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_hasVersion, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_is,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_is, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_isDescribedBy,
     {
       CRDFPredicate::about, CRDFPredicate::dcterms_bibliographicCitation, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
-    }
+    },
+    new CStaticCallback(& CMIRIAMResources::isCitation)
+  },
+  {
+    CRDFPredicate::bqbiol_isDescribedBy,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_isEncodedBy,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_isEncodedBy, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_isHomologTo,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_isHomologTo, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_isPartOf,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_isPartOf, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_isVersionOf,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_isVersionOf, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqbiol_occursIn,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_occursIn, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqmodel_is,
     {
       CRDFPredicate::about, CRDFPredicate::copasi_is, CRDFPredicate::end
-    }
+    },
+    NULL
   },
   {
     CRDFPredicate::bqmodel_isDescribedBy,
     {
       CRDFPredicate::about, CRDFPredicate::dcterms_bibliographicCitation, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
-    }
+    },
+    new CStaticCallback(& CMIRIAMResources::isCitation)
+  },
+  {
+    CRDFPredicate::bqmodel_isDescribedBy,
+    {
+      CRDFPredicate::about, CRDFPredicate::copasi_isDescribedBy, CRDFPredicate::end
+    },
+    NULL
   },
   {
     CRDFPredicate::dc_creator,
@@ -111,7 +134,8 @@ CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
     CRDFPredicate::end,
     {
       CRDFPredicate::end
-    }
+    },
+    NULL
   }
 };
 
@@ -197,6 +221,19 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
           for (it = Triplets.begin(), end = Triplets.end(); it != end; ++it)
             if (Failed.find(*it) == Failed.end())
               break;
+
+          if (pChange->pCheckTriplet != NULL)
+            {
+              for (; it != end; ++it)
+                {
+                  std::pair< const CRDFTriplet *, bool > Data(&*it, false);
+                  (*pChange->pCheckTriplet)(&Data, NULL);
+
+                  if (Data.second) break; // We found a Triplet passing the check,
+                }
+
+              if (it == end) break;
+            }
 
           if (!convert(pGraph, *it, NewPath))
             {

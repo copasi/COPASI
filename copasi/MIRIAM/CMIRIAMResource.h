@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -175,6 +180,9 @@ class CMIRIAMResources : public CCopasiParameterGroup
 {
   //Operations
 public:
+  static void isCitation(void * pData, void * pCallee);
+  static bool isCitation(const std::string & uri);
+
   /**
    * Default constructor
    * @param const std::string & name (default: MIRIAM Resources)
