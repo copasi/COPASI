@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRDFGraphConverter.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2010/07/16 19:00:07 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -22,6 +19,7 @@
 #include <string>
 
 #include "copasi/MIRIAM/CRDFPredicate.h"
+#include "copasi/utilities/CCallback.h"
 
 class CRDFGraph;
 class CRDFTriplet;
@@ -36,6 +34,7 @@ private:
   {
     CRDFPredicate::ePredicateType Source;
     CRDFPredicate::ePredicateType Target[4];
+    CCallbackInterface * pCheckTriplet;
   };
 
   static sChange SBML2CopasiChanges[];

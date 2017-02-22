@@ -377,6 +377,7 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
     CRDFPredicate::copasi_hasPart,
     CRDFPredicate::copasi_hasVersion,
     CRDFPredicate::copasi_is,
+    CRDFPredicate::copasi_isDescribedBy,
     CRDFPredicate::copasi_isEncodedBy,
     CRDFPredicate::copasi_isHomologTo,
     CRDFPredicate::copasi_isPartOf,
@@ -411,7 +412,12 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
       end = Triples.end();
 
       for (; it != end; ++it)
-        mBiologicalDescriptions.add(new CBiologicalDescription(*it), true);
+        {
+          if (!CMIRIAMResources::isCitation(it->pObject->getObject().getResource()))
+            {
+              mBiologicalDescriptions.add(new CBiologicalDescription(*it), true);
+            }
+        }
     }
 }
 

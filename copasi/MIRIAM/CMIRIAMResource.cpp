@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,6 +14,7 @@
 // All rights reserved.
 
 // These are treated as external includes and must appear first
+
 #include "WebServicesIssues/soapH.h"
 #include "WebServicesIssues/soapMiriamWebServicesSoapBindingProxy.h"
 #include "WebServicesIssues/MiriamWebServicesSoapBinding.nsmap"
@@ -17,14 +23,55 @@
 
 #include "CMIRIAMResource.h"
 #include "CConstants.h"
+#include "CRDFTriplet.h"
+#include "CRDFNode.h"
 
 #include "utilities/CCopasiException.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CConfigurationFile.h"
 
 #include <sbml/xml/XMLNode.h>
 #include <sbml/xml/XMLAttributes.h>
 #include <sbml/xml/XMLToken.h>
 #include <sbml/xml/XMLInputStream.h>
+
+// static
+void CMIRIAMResources::isCitation(void * pData, void * /* pCallee */)
+{
+  std::pair< const CRDFTriplet *, bool > & Data = * reinterpret_cast< std::pair< const CRDFTriplet *, bool > * >(pData);
+  std::set< CRDFTriplet > Triplets;
+
+  if (Data.first->pObject->isBagNode())
+    {
+      Triplets = Data.first->pObject->getDescendantsWithPredicate(CRDFPredicate::rdf_li);
+    }
+  else
+    {
+      Triplets.insert(*Data.first);
+    }
+
+  std::set< CRDFTriplet >::const_iterator it = Triplets.begin();
+  std::set< CRDFTriplet >::const_iterator end = Triplets.end();
+
+  for (Data.second = false; it != end && !Data.second; ++it)
+    {
+      Data.second = isCitation(it->pObject->getObject().getResource());
+    }
+}
+
+// static
+bool CMIRIAMResources::isCitation(const std::string & uri)
+{
+  size_t Index = CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResourceIndex(uri);
+
+  if (Index != C_INVALID_INDEX &&
+      CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResource(Index).getMIRIAMCitation())
+    {
+      return true;
+    }
+
+  return false;
+}
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CCopasiContainer * pParent) :
