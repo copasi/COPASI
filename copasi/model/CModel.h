@@ -735,7 +735,6 @@ public:
   bool appendDependentEventAssignments(std::set< const CCopasiObject * > candidates,
                                        std::set< const CCopasiObject * > & dependents) const;
 
-private:
   /**
    * Appends pointers to metabolites which are dependent on the candidates to the
    * list.
