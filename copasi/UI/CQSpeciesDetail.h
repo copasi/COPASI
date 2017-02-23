@@ -25,6 +25,8 @@ class UndoSpeciesData;
 class CMetab;
 class CCompartment;
 
+class CQDependenciesWidget;
+
 class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 {
   Q_OBJECT
@@ -56,11 +58,11 @@ private:
   std::vector< int > mItemToType;
   double mInitialNumber;
   double mInitialConcentration;
+  CQDependenciesWidget* mpDependencies;
 
   void load();
   void save();
   void loadReactionTable();
-  void loadEventTable();
 
 private slots:
   void slotBtnNew();
@@ -72,7 +74,6 @@ private slots:
   void slotInitialTypeChanged(bool useInitialExpression);
   void slotNameLostFocus();
   void slotSwitchToReaction(int row, int column);
-  void slotSwitchToEvent(int, int);
   void slotInitialValueLostFocus();
 
   //additional functions for UNDO framework

@@ -50,6 +50,7 @@ class SBWListener;
 class ListViews;
 class DataModelGUI;
 class SliderDialog;
+class CQDependencyDialog;
 class QAction;
 class ObjectBrowserDialog;
 class QComboBox;
@@ -164,6 +165,7 @@ protected:
 
 public slots:
   void slotShowSliders(bool flag);
+  void slotShowDependencies(bool flag);
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -307,6 +309,7 @@ private:
   QAction* mpaQuit;
   QAction* mpaObjectBrowser;
   QAction* mpaSliders;
+  QAction* mpaDependencies;
   QAction* mpaCheckModel;
   QAction* mpaApplyInitialState;
   QAction* mpaUpdateInitialState;
@@ -328,6 +331,7 @@ private:
   QAction* mpaMergeModels;
 #endif
   SliderDialog* mpSliders;
+  CQDependencyDialog* mpDependencies;
   ObjectBrowserDialog * mpObjectBrowser;
 
   bool mSaveAsRequired;

@@ -1523,24 +1523,40 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   // Before we set anything we compile the model.
   if (createProgressStepOrStop(13,
-                               1,
+                               4,
                                "Setting initial values..."
                               ))
     return NULL;
 
   mpCopasiModel->compileIfNecessary(mpProgressHandler);
+  ++mCurrentStepCounter;
+
+  if (reportCurrentProgressOrStop())
+    return NULL;
 
   // All initial values must be properly set so that we can compute the
   // stoichiometric expressions.
   setInitialValues(this->mpCopasiModel, copasi2sbmlmap);
+  ++mCurrentStepCounter;
+
+  if (reportCurrentProgressOrStop())
+    return NULL;
 
   // evaluate and apply the initial expressions
   this->applyStoichiometricExpressions(copasi2sbmlmap, sbmlModel);
+  ++mCurrentStepCounter;
+
+  if (reportCurrentProgressOrStop())
+    return NULL;
 
   // now we apply the conversion factors
   if (this->mLevel > 2)
     {
       this->applyConversionFactors();
+      ++mCurrentStepCounter;
+
+      if (reportCurrentProgressOrStop())
+        return NULL;
     }
 
   if (createProgressStepOrStop(14,

@@ -112,6 +112,8 @@
 #include "CEntityProvenanceDialog.h"
 #endif
 
+#include <copasi/UI/CQDependencyDialog.h>
+
 // static
 CopasiUI3Window * CopasiUI3Window::pMainWindow = NULL;
 
@@ -183,6 +185,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpListView(NULL),
   mpBoxSelectFramework(NULL),
   mpSliders(NULL),
+  mpDependencies(NULL),
   mpObjectBrowser(NULL),
   mSaveAsRequired(true),
   mpAutoSaveTimer(NULL),
@@ -307,6 +310,10 @@ CopasiUI3Window::CopasiUI3Window():
   mpSliders->setChanged(false);
   mSliderDialogEnabled = mpSliders->isEnabled();
 
+  mpDependencies = new CQDependencyDialog(mpListView);
+  mpDependencies->setParentWindow(this);
+  mpDependencies->hide();
+
   setApplicationFont();
 
   // drop acceptance
@@ -333,6 +340,7 @@ CopasiUI3Window::~CopasiUI3Window()
     }
 
   pdelete(mpSliders);
+  pdelete(mpDependencies);
   mpDataModelGUI->deregisterListView(mpListView);
   pdelete(mpDataModelGUI);
   pdelete(mpListView);
@@ -394,6 +402,10 @@ void CopasiUI3Window::createActions()
   mpaSliders = new QAction(CQIconResource::icon(CQIconResource::slider), "Show sliders", this);
   mpaSliders->setCheckable(true);
   connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
+
+  mpaDependencies = new QAction("Show dependencies", this);
+  mpaDependencies->setCheckable(true);
+  connect(mpaDependencies, SIGNAL(toggled(bool)), this, SLOT(slotShowDependencies(bool)));
 
   mpaObjectBrowser = new QAction("Object &Browser", this);
   mpaObjectBrowser->setCheckable(true);
@@ -676,6 +688,7 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction(mpaApplyInitialState);
   mpTools->addAction(mpaUpdateInitialState);
   mpTools->addAction(mpaSliders);
+  mpTools->addAction(mpaDependencies);
   mpTools->addAction(mpaCapture);
 #ifdef WITH_MERGEMODEL
   mpTools->addAction(mpaMergeModels);
@@ -2008,6 +2021,22 @@ void CopasiUI3Window::slotShowSliders(bool flag)
     removeWindow(this->mpSliders);
 }
 
+void CopasiUI3Window::slotShowDependencies(bool flag)
+{
+  mpaDependencies->setChecked(flag);
+  this->mpDependencies->setHidden(!flag);
+
+  if (flag)
+    {
+      addWindow(this->mpDependencies);
+
+      if (mpDependencies->getCurrentKey() != mpListView->getCurrentItemKey())
+        mpDependencies->loadFrom(mpListView->getCurrentItemKey());
+    }
+  else
+    removeWindow(this->mpDependencies);
+}
+
 DataModelGUI* CopasiUI3Window::getDataModel()
 {return mpDataModelGUI;}
 
@@ -2015,6 +2044,10 @@ void CopasiUI3Window::listViewsFolderChanged(const QModelIndex &)
 {
   size_t id = mpListView->getCurrentItemId();
   this->mpSliders->setCurrentFolderId(id);
+
+  if (mpDependencies->isVisible())
+    mpDependencies->loadFrom(mpListView->getCurrentItemKey());
+
   refreshWindowsMenu();
 }
 

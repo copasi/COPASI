@@ -25,6 +25,7 @@ class UndoGlobalQuantityData;
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 
 class CQExpressionWidget;
+class CQDependenciesWidget;
 class CModelValue;
 class CExpression;
 
@@ -56,6 +57,7 @@ protected slots:
 private:
   std::vector< int > mItemToType;
   CModelValue * mpModelValue;
+  CQDependenciesWidget* mpDependencies;
   bool mChanged;
 
   void init();
@@ -70,8 +72,6 @@ private:
   void createNewGlobalQuantity();
   void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
 
-  void loadEventTable();
-
 private slots:
   void slotBtnNew();
   void slotBtnCopy();
@@ -80,7 +80,6 @@ private slots:
   void slotAddNoiseChanged(bool hasNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotUnitChanged();
-  void slotSwitchToEvent(int row, int /* column */);
 
 public:
   bool changeValue(const std::string& key,

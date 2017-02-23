@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -989,13 +994,14 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   if (!newWidget)
     {newWidget = defaultWidget;}
 
+  mCurrentItemKey = itemKey;
+
   // we emit the signal after the old widget has saved
   // the changes
   emit signalFolderChanged(index);
 
   mpCurrentWidget = newWidget;
   mpStackedWidget->setCurrentWidget(mpCurrentWidget);
-  mCurrentItemKey = itemKey;
 
   mpTreeView->scrollTo(index);
 }
