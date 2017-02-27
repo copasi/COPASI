@@ -324,9 +324,23 @@ std::string CSEDMLExporter::createTimeCourseTask(CCopasiDataModel& dataModel, co
   CCopasiTask* pTask = &dataModel.getTaskList()->operator[]("Time-Course");
   CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
   mpTimecourse->setInitialTime(0.0);
-  mpTimecourse->setOutputStartTime(tProblem->getOutputStartTime());
-  mpTimecourse->setOutputEndTime(tProblem->getStepNumber()*tProblem->getStepSize());
-  mpTimecourse->setNumberOfPoints(tProblem->getStepNumber());
+  double outputStartTime = tProblem->getOutputStartTime();
+  double stepSize = tProblem->getStepSize();
+  int stepNumber = (int)tProblem->getStepNumber();
+  mpTimecourse->setOutputStartTime(outputStartTime);
+  mpTimecourse->setOutputEndTime(stepNumber * stepSize);
+
+  if (outputStartTime > 0)
+    {
+      // adjust number of points, as the definition in COPASI includes the
+      // interval (0, timeEnd), while in SED-ML it is (timeStart, timeEnd)
+      int initialSteps = (int)floor(outputStartTime / stepSize);
+      mpTimecourse->setNumberOfPoints(stepNumber - initialSteps);
+    }
+  else
+    {
+      mpTimecourse->setNumberOfPoints(stepNumber);
+    }
 
   // set the correct KISAO Term
   SedAlgorithm* alg = mpTimecourse->createAlgorithm();
