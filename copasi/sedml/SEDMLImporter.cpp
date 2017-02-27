@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -104,9 +109,25 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
 
         CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(tTask->getProblem());
         SedUniformTimeCourse* tc = static_cast<SedUniformTimeCourse*>(sedmlsim);
-        tProblem->setOutputStartTime(tc->getOutputStartTime());
-        tProblem->setDuration(tc->getOutputEndTime() - tc->getOutputStartTime());
-        tProblem->setStepNumber(tc->getNumberOfPoints());
+        double outputStartTime = tc->getOutputStartTime();
+        double outputEndTime = tc->getOutputEndTime();
+        int numberOfPoints = tc->getNumberOfPoints();
+        tProblem->setOutputStartTime(outputStartTime);
+
+        if (tc->getInitialTime() != outputStartTime)
+          {
+            // calculate number of steps between (timeStart, timeEnd)
+            //
+            double stepSize = (outputEndTime - outputStartTime) / numberOfPoints;
+            int additionalSteps = (int)ceil((outputStartTime - tc->getInitialTime()) / stepSize);
+            tProblem->setStepNumber(numberOfPoints + additionalSteps);
+            tProblem->setDuration(outputEndTime);
+          }
+        else
+          {
+            tProblem->setDuration(outputEndTime - outputStartTime);
+            tProblem->setStepNumber(numberOfPoints);
+          }
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())
