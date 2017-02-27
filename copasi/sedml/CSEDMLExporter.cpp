@@ -48,6 +48,13 @@
 #include "model/CModelValue.h"
 #include "commandline/CLocaleString.h"
 
+
+#define SEDML_SET_ID(element, arguments) \
+  {\
+    std::ostringstream idStream; idStream << arguments;\
+    element->setId(idStream.str());\
+  }
+
 const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& dataModel,
     const std::string &modelLocation,
     unsigned int sedmlLevel,
@@ -183,14 +190,17 @@ void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel, std::strin
 /**
  * Creates the simulations for SEDML.
  */
-std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const std::string & modelId)
+std::string
+CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const std::string & modelId)
 {
   // need L1V2 to export repeated tasks
-  if (mpSEDMLDocument->getVersion() != 2) return "";
+  if (mpSEDMLDocument->getVersion() != 2)
+    return "";
 
   CScanTask* pTask =  dynamic_cast<CScanTask*>(&dataModel.getTaskList()->operator[]("Scan"));
 
-  if (pTask == NULL) return "";
+  if (pTask == NULL)
+    return "";
 
   CScanProblem* pProblem = dynamic_cast<CScanProblem*>(pTask->getProblem());
   size_t numItems = pProblem->getNumberOfScanItems();
@@ -221,7 +231,7 @@ std::string CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const st
   task->setId(taskId);
   task->setResetModel(!pProblem->getContinueFromCurrentState());
 
-  // craete ranges / changes
+  // create ranges / changes
   for (size_t i = 0; i < numItems; ++i)
     {
       CCopasiParameterGroup* current = pProblem->getScanItem(i);
@@ -420,21 +430,12 @@ SedDataGenerator * createDataGenerator(
   size_t j)
 {
   SedDataGenerator *pPDGen = mpSEDMLDocument->createDataGenerator();
-  std::ostringstream idStrStream;
-  idStrStream << sbmlId;
-  idStrStream << "_";
-  idStrStream << j + 1;
-  pPDGen->setId(idStrStream.str());
+  SEDML_SET_ID(pPDGen, sbmlId << "_" << j + 1 << "_" << taskId);
 
   pPDGen->setName(sbmlId);
 
   SedVariable * pPVar = pPDGen->createVariable();
-  std::ostringstream idVarStrStream;
-  idVarStrStream << "p";
-  idVarStrStream << i + 1;
-  idVarStrStream << "_";
-  idVarStrStream << pPDGen->getName();
-  pPVar->setId(idVarStrStream.str());
+  SEDML_SET_ID(pPVar, "p" << i + 1 << "_" << pPDGen->getName() << "_" << taskId);
   pPVar->setTaskReference(taskId);
   pPVar->setName(pPDGen->getName());
 
@@ -465,16 +466,13 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
   if (pModel == NULL)
     CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
 
-  SedPlot2D* pPSedPlot;
-  SedCurve* pCurve; // = pPSedPlot->createCurve();
-
-  //create generator for special varibale time
+  //create generator for special variable time
   const CCopasiObject* pTime = static_cast<const CCopasiObject *>(dataModel.getModel()->getObject(CCopasiObjectName("Reference=Time")));
   SedDataGenerator *pTimeDGenp = this->mpSEDMLDocument->createDataGenerator();
-  pTimeDGenp->setId("time");
+  SEDML_SET_ID(pTimeDGenp, "time_" << taskId);
   pTimeDGenp->setName(pTime->getObjectName());
   SedVariable *pTimeVar = pTimeDGenp->createVariable();
-  pTimeVar->setId("var_time");
+  SEDML_SET_ID(pTimeVar, "var_time_" << taskId);
   pTimeVar->setTaskReference(taskId);
   pTimeVar->setSymbol(SEDML_TIME_URN);
   pTimeDGenp->setMath(SBML_parseFormula(pTimeVar->getId().c_str()));
@@ -496,7 +494,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
           std::string name = def->getObjectName();
           SEDMLUtils::removeCharactersFromString(name, "[]");
           //
-          pReport->setId(SEDMLUtils::getNextId("report", mpSEDMLDocument->getNumOutputs()));
+          SEDML_SET_ID(pReport, "report" << "_" << taskId);
           pReport->setName(name);
 
           std::vector<CRegisteredObjectName> header = *def->getHeaderAddr();
@@ -535,7 +533,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
                          );
 
               SedDataSet* pDS = pReport->createDataSet();
-              pDS->setId(SEDMLUtils::getNextId("ds", ++dsCount));
+              SEDML_SET_ID(pDS, "ds_" << ++dsCount << "_" << taskId);
 
               if (def->isTable())
                 {
@@ -560,6 +558,9 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
     }
 
   // export plots
+  SedPlot2D* pPSedPlot;
+  SedCurve* pCurve; // = pPSedPlot->createCurve();
+
   for (i = 0; i < imax; i++)
     {
       pPSedPlot = this->mpSEDMLDocument->createPlot2D();
@@ -568,7 +569,8 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
       SEDMLUtils::removeCharactersFromString(plotName, "[]");
 
-      pPSedPlot->setId(SEDMLUtils::getNextId("plot", mpSEDMLDocument->getNumOutputs()));
+      SEDML_SET_ID(pPSedPlot, "plot_" << mpSEDMLDocument->getNumOutputs()
+                   << "_" << taskId);
       pPSedPlot->setName(plotName);
 
       size_t j, jmax = pPlot->getItems().size();
@@ -640,12 +642,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
           pPDGen->setName(yAxis);
 
           pCurve = pPSedPlot->createCurve();
-          std::ostringstream idCurveStrStream;
-          idCurveStrStream << "p";
-          idCurveStrStream << i + 1;
-          idCurveStrStream << "_curve_";
-          idCurveStrStream << j + 1;
-          pCurve->setId(idCurveStrStream.str());
+          SEDML_SET_ID(pCurve, "p" << i + 1 << "_curve_" << j + 1 << "_" << taskId);
           pCurve->setLogX(pPlot->isLogX());
           pCurve->setLogY(pPlot->isLogY());
           pCurve->setName(yAxis);
