@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +25,7 @@
 #ifndef AboutDialog_H__
 #define AboutDialog_H__
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 class QTextEdit;
 class QPushButton;
@@ -32,20 +37,20 @@ class AboutDialog: public QDialog
   Q_OBJECT
 
 public:
-  AboutDialog(QWidget* parent,
-              const QString & text,
-              const int & width,
-              const int & heigth);
+  AboutDialog(QWidget *parent,
+              const QString &text,
+              const int &width,
+              const int &heigth);
   virtual ~AboutDialog();
 
-  static const char* text;
+  static const char *text;
 
 protected slots:
   void closeButton_clicked();
 
 protected:
-  QTextEdit* textEdit;
-  QVBoxLayout* mainLayout;
+  QTextEdit *textEdit;
+  QVBoxLayout *mainLayout;
 };
 
 #endif

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QLayout>
+#include <QLayout>
 
 #include "copasi.h"
 
@@ -29,7 +34,7 @@
  *  Constructs a CMCAResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CMCAResultWidget::CMCAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+CMCAResultWidget::CMCAResultWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl)
 {
   if (!name)

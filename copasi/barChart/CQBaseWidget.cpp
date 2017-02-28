@@ -1,16 +1,21 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <QtCore/QVariant>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
-#include <QtGui/QSlider>
-#include <QtGui/QLayout>
-#include <QtGui/QToolTip>
-#include <QtGui/QAction>
-#include <QtGui/QMenuBar>
+#include <QPushButton>
+#include <QLabel>
+#include <QSlider>
+#include <QLayout>
+#include <QToolTip>
+#include <QAction>
+#include <QMenuBar>
 
 //Added by qt3to4:
 #include <iostream>
@@ -26,15 +31,13 @@
  *  name 'name' and widget flags set to 'f'.
  *
  */
-CQBaseWidget::CQBaseWidget(QWidget* parent, const char* /* name */, Qt::WFlags fl)
+CQBaseWidget::CQBaseWidget(QWidget* parent, const char* /* name */, Qt::WindowFlags fl)
   : QWidget(parent, fl),
     mSliderActive(false),
     mScaleFactor(1000)
 {
   setupUi(this);
-
   setSliderActive(mSliderActive);
-
   connect(mpSliderRow, SIGNAL(valueChanged(int)), this, SLOT(setSlider()));
   connect(mpSliderColumn, SIGNAL(valueChanged(int)), this, SLOT(setSlider()));
 }
@@ -45,7 +48,7 @@ CQBaseWidget::CQBaseWidget(QWidget* parent, const char* /* name */, Qt::WFlags f
 CQBaseWidget::~CQBaseWidget()
 {}
 
-void CQBaseWidget::setSliderActive(const bool & active)
+void CQBaseWidget::setSliderActive(const bool &active)
 {
   mSliderActive = active;
 
@@ -76,20 +79,15 @@ void CQBaseWidget::setSlider()
 
   int row = mpSliderRow->value();
   int col = mpSliderColumn->value();
-
 #ifdef DEBUG_UI
   qDebug() << "A CQBaseWidget::setSlider -> col = " << col << " - row = " << row;
 #endif
-
   sliderMoved(mpSliderColumn->value() / mScaleFactor, mpSliderRow->value() / mScaleFactor);
-
 #ifdef DEBUG_UI
   qDebug() << "B CQBaseWidget::setSlider -> col = " << col << " - row = " << row;
 #endif
-
   mpSliderRow->setValue(row);
   mpSliderColumn->setValue(col);
-
 #ifdef DEBUG_UI
   qDebug() << "C CQBaseWidget::setSlider -> col = " << mSliderActiveColumn->value() << " - row = " << mSliderActiveRow->value();
 #endif

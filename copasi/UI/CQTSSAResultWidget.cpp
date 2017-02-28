@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QGridLayout>
+#include <QGridLayout>
 #include "copasi.h"
 
 #include "CQTSSAResultWidget.h"
@@ -35,7 +40,7 @@ CTSSAMethod* pTSSILDM;
  *  Constructs a CQTSSAResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl)
 {
   if (!name)

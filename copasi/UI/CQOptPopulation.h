@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -6,8 +11,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <QtGui/QToolButton>
-#include <QtGui/QGraphicsScene>
+#include <QToolButton>
+#include <QGraphicsScene>
 
 #include "copasi/copasi.h"
 #include "copasi/UI/CopasiFileDialog.h"
@@ -56,15 +61,15 @@ private:
 
   QGraphicsScene * mpGS;
   QGraphicsView * mpGV;
-  
+
   //list of list of graphics items. The outer list allows for several projections simultaniously
   //the inner list enumerates graphical representations of the individual parameter sets in the population
   std::vector< std::vector<QGraphicsItem *> > mGraphicItems;
-  
+
   //These are coordinate shifts that specify where on the plane the different projections are located
   std::vector<double> mShiftX;
   std::vector<double> mShiftY;
-  
+
   std::vector<C_INT32> mXIndex;
   std::vector<C_INT32> mYIndex;
 

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -37,7 +42,7 @@
  *  Constructs a SteadyStateWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+SteadyStateWidget::SteadyStateWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : TaskWidget(parent, name, fl)
 {
   setupUi(this);

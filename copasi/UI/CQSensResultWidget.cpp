@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,7 +21,7 @@
 
 #include "CQSensResultWidget.h"
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 #include "qtUtilities.h"
 #include "sensitivities/CSensTask.h"
@@ -34,7 +39,7 @@
  *  Constructs a CQSensResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+CQSensResultWidget::CQSensResultWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl),
     mpResult(NULL)
 {

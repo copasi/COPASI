@@ -12,7 +12,7 @@
 #define COPASI_CQIconResource
 
 #include <QtCore/QVector>
-#include <QtGui/QIcon>
+#include <QIcon>
 
 class CQIconResource
 {

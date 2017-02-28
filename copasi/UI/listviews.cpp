@@ -30,9 +30,9 @@
  ** model about the tree
  **********************************************************************/
 #include <QtCore/QObject>
-#include <QtGui/QImage>
+#include <QImage>
 #include <QtCore/QMap>
-#include <QtGui/QSortFilterProxyModel>
+#include <QSortFilterProxyModel>
 
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"

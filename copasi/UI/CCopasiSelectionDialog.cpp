@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,14 +17,14 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QPushButton>
-#include <QtGui/QCheckBox>
-#include <QtGui/QLayout>
-#include <QtGui/QComboBox>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QLayout>
+#include <QComboBox>
 //Added by qt3to4:
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QDialogButtonBox>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 
 #include "CCopasiSelectionDialog.h"
 #include "CCopasiSelectionWidget.h"

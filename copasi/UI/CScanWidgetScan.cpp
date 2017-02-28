@@ -21,7 +21,7 @@
 
 #include "CScanWidgetScan.h"
 
-#include <QtGui/QValidator>
+#include <QValidator>
 
 #include "listviews.h"
 #include "qtUtilities.h"

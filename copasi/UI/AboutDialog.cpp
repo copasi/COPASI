@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,20 +24,20 @@
 
 #include "AboutDialog.h"
 
-#include <QtGui/QPushButton>
-#include <QtGui/QPixmap>
-#include <QtGui/QTextEdit>
-#include <QtGui/QLayout>
-#include <QtGui/QSizePolicy>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QBrush>
-#include <QtGui/QDialogButtonBox>
+#include <QPushButton>
+#include <QPixmap>
+#include <QTextEdit>
+#include <QLayout>
+#include <QSizePolicy>
+#include <QVBoxLayout>
+#include <QBrush>
+#include <QDialogButtonBox>
 
 #include "icons/copasi_beta_background.xpm"
 
 #include "copasi.h"
 
-const char* AboutDialog::text =
+const char *AboutDialog::text =
   "<h2>COPASI %1</h2>"
   "<p>"
   "COPASI is a simulator for biochemical networks. It is a joint project "
@@ -73,10 +78,10 @@ const char* AboutDialog::text =
   "</p>"
   ;
 
-AboutDialog::AboutDialog(QWidget* parent,
-                         const QString & text,
-                         const int & width,
-                         const int & heigth):
+AboutDialog::AboutDialog(QWidget *parent,
+                         const QString &text,
+                         const int &width,
+                         const int &heigth):
   QDialog(parent),
   textEdit(NULL),
   mainLayout(NULL)
@@ -85,12 +90,9 @@ AboutDialog::AboutDialog(QWidget* parent,
   this->mainLayout = new QVBoxLayout(this);
   this->mainLayout->setSizeConstraint(QLayout::SetFixedSize);
   this->textEdit = new QTextEdit(this);
-
   QPalette Palette;
-  Palette.setBrush(QPalette::Base, QBrush(QPixmap((const char**)copasi_beta_background_xpm)));
-
+  Palette.setBrush(QPalette::Base, QBrush(QPixmap((const char **)copasi_beta_background_xpm)));
   textEdit->setPalette(Palette);
-
   QFontMetrics FontMetrics = this->fontMetrics();
   int w = width * (FontMetrics.width('W') + FontMetrics.width('I')) / 2;
   int h = heigth * FontMetrics.lineSpacing();
@@ -99,9 +101,8 @@ AboutDialog::AboutDialog(QWidget* parent,
   this->textEdit->setText(text);
   //  this->textEdit->setText(QString(text).arg();
   this->mainLayout->addWidget(this->textEdit);
-  QDialogButtonBox* box = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
+  QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
   this->mainLayout->addWidget(box);
-
   connect(box, SIGNAL(rejected()), this, SLOT(closeButton_clicked()));
 }
 

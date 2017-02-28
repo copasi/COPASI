@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,8 +17,8 @@
 #define CQUPDATESWIDGET_H
 
 //Added by qt3to4:
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
+#include <QGridLayout>
+#include <QLabel>
 
 #include <map>
 #include <vector>
@@ -37,7 +42,7 @@ class CQUpdatesWidget : public CopasiWidget
   Q_OBJECT
 
 public:
-  CQUpdatesWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  CQUpdatesWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQUpdatesWidget();
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);

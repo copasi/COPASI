@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,17 +20,17 @@
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
 
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QLayout>
-#include <QtGui/QToolTip>
-#include <QtGui/QWhatsThis>
-#include <QtGui/QComboBox>
-#include <QtGui/QLineEdit>
-#include <QtGui/QGridLayout>
-#include <QtGui/QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QLayout>
+#include <QToolTip>
+#include <QWhatsThis>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QGridLayout>
+#include <QHBoxLayout>
 
-#include <QtGui/QInputDialog>
+#include <QInputDialog>
 
 #include "copasi.h"
 
@@ -53,7 +58,7 @@
 #include "CScanWidgetScan.h"
 #include "CScanWidgetTask.h"
 
-ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WFlags f)
+ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WindowFlags f)
   : TaskWidget(parent, name, f)
 {
   if (!name)

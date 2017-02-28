@@ -1,17 +1,22 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <QtGui/QApplication>
-#include <QtGui/QWheelEvent>
-#include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
+#include <QApplication>
+#include <QWheelEvent>
+#include <QAction>
+#include <QMenu>
+#include <QToolBar>
 #include <QtCore/QFileInfo>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QComboBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QComboBox>
 
 #include <qlayout/CQLayoutScene.h>
 #include <qlayout/CQLayoutView.h>

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,7 +20,7 @@
 #ifndef COPASI_CQReportListItem
 #define COPASI_CQReportListItem
 
-#include <QtGui/QListWidgetItem>
+#include <QListWidgetItem>
 #include "report/CCopasiObjectName.h"
 
 class CCopasiObject;

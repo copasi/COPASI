@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,10 +19,10 @@
 
 #include <iostream>
 
-#include <QtGui/QLabel>
-#include <QtGui/QComboBox>
+#include <QLabel>
+#include <QComboBox>
 //Added by qt3to4:
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
@@ -41,19 +46,18 @@
 #define DEBUG_UI
 
 #ifdef DEBUG_UI
-std::ostream &operator<<(std::ostream &os, const QTextCursor & d)
+std::ostream &operator<<(std::ostream &os, const QTextCursor &d)
 {
   os << "Position:        " << d.position() << std::endl;
   os << "Selection Start: " << d.selectionStart() << std::endl;
   os << "Selection End:   " << d.selectionEnd() << std::endl;
   os << "Anchor:          " << d.anchor() << std::endl;
   os << "Selected Text:   " << TO_UTF8(d.selectedText()) << std::endl;
-
   return os;
 }
 #endif // DEBUG_UI
 
-CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget* ew)
+CQExpressionHighlighter::CQExpressionHighlighter(CQExpressionWidget *ew)
   : QSyntaxHighlighter(ew),
     mObjectDisplayPattern(CQExpressionWidget::DisplayPattern)
 {
@@ -78,13 +82,12 @@ void CQExpressionHighlighter::highlightBlock(const QString &text)
 
 //***********************************************************************
 
-CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * name, bool isBoolean):
+CQValidatorExpression::CQValidatorExpression(QTextEdit *parent, const char *name, bool isBoolean):
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mExpression()
 {
-  CCopasiDataModel* pDataModel = ListViews::dataModel(parent);
+  CCopasiDataModel *pDataModel = ListViews::dataModel(parent);
   assert(pDataModel != NULL);
-
   mExpression.setObjectParent(pDataModel);
   mExpression.setIsBoolean(isBoolean);
 }
@@ -93,12 +96,11 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit * parent, const char * na
   *  This function ensures that any characters on Expression Widget are validated
   *  to go to further processes.
   */
-QValidator::State CQValidatorExpression::validate(QString & input, int & pos) const
+QValidator::State CQValidatorExpression::validate(QString &input, int &pos) const
 {
   // The input is the display version of the infix string.
   // We must first convert the display string to infix.
-
-  CQExpressionWidget * pExpressionWidget =
+  CQExpressionWidget *pExpressionWidget =
     static_cast< CQExpressionWidget * >(parent());
 
   if (pExpressionWidget != NULL)
@@ -129,13 +131,12 @@ void CQValidatorExpression::setBooleanRequired(bool booleanRequired)
 
 //***********************************************************************
 
-CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
+CQValidatorFunction::CQValidatorFunction(QTextEdit *parent, const char *name):
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mFunction()
 {
-  CCopasiDataModel* pDataModel = ListViews::dataModel(parent);
+  CCopasiDataModel *pDataModel = ListViews::dataModel(parent);
   assert(pDataModel != NULL);
-
   mFunction.setObjectParent(pDataModel);
 }
 
@@ -143,14 +144,12 @@ CQValidatorFunction::CQValidatorFunction(QTextEdit * parent, const char * name):
   *  This function ensures that any characters on Expression Widget are validated
   *  to go to further processes.
   */
-QValidator::State CQValidatorFunction::validate(QString & input, int & pos) const
+QValidator::State CQValidatorFunction::validate(QString &input, int &pos) const
 {
   // The input is the display version of the infix string.
   // We must first convert the display string to infix.
-
   State CurrentState = Invalid;
-
-  CQExpressionWidget * pExpressionWidget =
+  CQExpressionWidget *pExpressionWidget =
     static_cast< CQExpressionWidget * >(parent());
 
   if (pExpressionWidget != NULL)
@@ -174,11 +173,10 @@ QValidator::State CQValidatorFunction::validate(QString & input, int & pos) cons
     }
 
   emit stateChanged(CurrentState == Acceptable);
-
   return CurrentState;
 }
 
-CFunction * CQValidatorFunction::getFunction()
+CFunction *CQValidatorFunction::getFunction()
 {
   return &mFunction;
 }
@@ -191,7 +189,7 @@ const char CQExpressionWidget::InfixPattern[] = "<(CN=([^\\\\>]|\\\\.)*)>";
 // static
 const char CQExpressionWidget::DisplayPattern[] = "\\{(([^\\\\\\}]|\\\\.)*)\\}";
 
-CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
+CQExpressionWidget::CQExpressionWidget(QWidget *parent, const char *name)
   : QTextEdit(parent),
     mpValidatorExpression(NULL),
     mpValidatorFunction(NULL),
@@ -200,18 +198,14 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
 {
   setObjectName(QString::fromUtf8(name));
   setTabChangesFocus(true);
-
   mpExpressionHighlighter = new CQExpressionHighlighter(this);
-
   int h, s, v;
-
   mSavedColor = palette().color(backgroundRole());
   mSavedColor.getHsv(&h, &s, &v);
 
   if (s < 20) s = 20;
 
   mChangedColor.setHsv(240, s, v);
-
   connect(this, SIGNAL(textChanged()),
           this, SLOT(slotTextChanged()));
 }
@@ -219,7 +213,7 @@ CQExpressionWidget::CQExpressionWidget(QWidget * parent, const char * name)
 CQExpressionWidget::~CQExpressionWidget()
 {}
 
-CQValidator< QTextEdit > * CQExpressionWidget::getValidator()
+CQValidator< QTextEdit > *CQExpressionWidget::getValidator()
 {
   if (mpValidatorExpression != NULL)
     {
@@ -229,7 +223,7 @@ CQValidator< QTextEdit > * CQExpressionWidget::getValidator()
   return mpValidatorFunction;
 }
 
-void CQExpressionWidget::writeMathML(std::ostream & out) const
+void CQExpressionWidget::writeMathML(std::ostream &out) const
 {
   if (mpValidatorExpression != NULL)
     mpValidatorExpression->getExpression()->writeMathML(out, false, 0);
@@ -241,7 +235,6 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
         {
           CMassAction Function(TriTrue, NULL);
           std::vector<std::vector<std::string> > params;
-
           Function.createListOfParametersForMathML(params);
           out << Function.writeMathML(params, true, false);
         }
@@ -249,7 +242,6 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
         {
           CMassAction Function(TriFalse, NULL);
           std::vector<std::vector<std::string> > params;
-
           Function.createListOfParametersForMathML(params);
           out << Function.writeMathML(params, true, false);
         }
@@ -264,12 +256,10 @@ void CQExpressionWidget::writeMathML(std::ostream & out) const
   return;
 }
 
-void CQExpressionWidget::mouseReleaseEvent(QMouseEvent * e)
+void CQExpressionWidget::mouseReleaseEvent(QMouseEvent *e)
 {
   QTextEdit::mouseReleaseEvent(e);
-
   mCursor = textCursor();
-
   int Left;
   int Right;
 
@@ -278,7 +268,6 @@ void CQExpressionWidget::mouseReleaseEvent(QMouseEvent * e)
       // Move the selection start out of the object.
       mCursor.setPosition(mCursor.selectionEnd());
       mCursor.setPosition(Left, QTextCursor::KeepAnchor);
-
       setTextCursor(mCursor);
     }
 
@@ -287,30 +276,24 @@ void CQExpressionWidget::mouseReleaseEvent(QMouseEvent * e)
       // Move the selection end out of the object.
       mCursor.setPosition(mCursor.selectionStart());
       mCursor.setPosition(Right, QTextCursor::KeepAnchor);
-
       setTextCursor(mCursor);
     }
 }
 
-void CQExpressionWidget::dropEvent(QDropEvent * e)
+void CQExpressionWidget::dropEvent(QDropEvent *e)
 {
   QString SelectedText = textCursor().selectedText();
-
   QTextEdit::dropEvent(e);
-
   int Left;
   int Right;
 
   if (objectBoundaries(textCursor().position() - SelectedText.length(), Left, Right))
     {
       mCursor = textCursor();
-
       // Remove the inserted text.
       mCursor.setPosition(mCursor.position() - SelectedText.length(), QTextCursor::KeepAnchor);
       mCursor.removeSelectedText();
-
       int CurrentPosition = mCursor.position();
-
       // Determine the insertion point
       objectBoundaries(mCursor.position(), Left, Right);
 
@@ -328,7 +311,7 @@ void CQExpressionWidget::dropEvent(QDropEvent * e)
     }
 }
 
-void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
+void CQExpressionWidget::keyPressEvent(QKeyEvent *e)
 {
   int Left;
   int Right;
@@ -346,7 +329,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         }
 
       QTextEdit::keyPressEvent(e);
-
       return;
     }
 
@@ -362,14 +344,12 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
         }
 
       QTextEdit::keyPressEvent(e);
-
       return;
     }
 
   switch (e->key())
     {
       case Qt::Key_Backspace:
-
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
@@ -388,12 +368,10 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
         // delete the selected object or just the character
         QTextEdit::keyPressEvent(e);
-
         return;
         break;
 
       case Qt::Key_Delete:
-
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
@@ -412,16 +390,13 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
         // delete the selected object or just the character
         QTextEdit::keyPressEvent(e);
-
         return;
         break;
 
       case Qt::Key_Left:
-
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
-
         // We check whether the new position is in an object.
         mCursor.movePosition(QTextCursor::PreviousCharacter);
 
@@ -432,16 +407,13 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
           }
 
         QTextEdit::keyPressEvent(e);
-
         return;
         break;
 
       case Qt::Key_Right:
-
         if (isAdvancedEditing) break;
 
         mCursor = textCursor();
-
         // We check whether the new position is in an object.
         mCursor.movePosition(QTextCursor::NextCharacter);
 
@@ -452,13 +424,11 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
           }
 
         QTextEdit::keyPressEvent(e);
-
         return;
         break;
 
       case Qt::Key_BraceLeft:
       case Qt::Key_BraceRight:
-
         if (isAdvancedEditing) break;
 
         e->ignore();
@@ -471,10 +441,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
       // set format original
       QTextCharFormat f;
       f.setForeground(QColor(0, 0, 0));
-
       setCurrentCharFormat(f);
       QTextEdit::keyPressEvent(e);
-
       return;
     }
 
@@ -486,7 +454,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
   */
 void CQExpressionWidget::slotTextChanged()
 {
-  CQValidator< QTextEdit > * pValidator = NULL;
+  CQValidator< QTextEdit > *pValidator = NULL;
 
   if (mpValidatorExpression != NULL)
     pValidator = mpValidatorExpression;
@@ -497,14 +465,12 @@ void CQExpressionWidget::slotTextChanged()
 
   int pos = 0;
   QString Input = toPlainText();
-
   emit valid(pValidator->validate(Input, pos) == QValidator::Acceptable);
 }
 
-bool CQExpressionWidget::objectBoundaries(const int & position, int & left, int & right) const
+bool CQExpressionWidget::objectBoundaries(const int &position, int &left, int &right) const
 {
   static QRegExp ObjectDisplayPattern(CQExpressionWidget::DisplayPattern);
-
   int Index = ObjectDisplayPattern.indexIn(toPlainText());
 
   while (0 <= Index && Index <= position)
@@ -523,11 +489,10 @@ bool CQExpressionWidget::objectBoundaries(const int & position, int & left, int 
 
   left = -1;
   right = -1;
-
   return false;
 }
 
-void CQExpressionWidget::setFunction(const std::string & function)
+void CQExpressionWidget::setFunction(const std::string &function)
 {
   if (mpValidatorFunction == NULL)
     {
@@ -537,12 +502,9 @@ void CQExpressionWidget::setFunction(const std::string & function)
 
   // clear the text edit
   clear();
-
   mCursor = textCursor();
-
   QTextCharFormat f1;
   f1.setForeground(QColor(0, 0, 0));
-
   setCurrentCharFormat(f1);
   insertPlainText(FROM_UTF8(function));
 }
@@ -552,7 +514,7 @@ std::string CQExpressionWidget::getFunction() const
   return TO_UTF8(toPlainText());
 }
 
-void CQExpressionWidget::setExpression(const std::string & expression)
+void CQExpressionWidget::setExpression(const std::string &expression)
 {
   if (mpValidatorExpression == NULL)
     {
@@ -562,21 +524,16 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
   // Reset the parse list.
   mParseList.clear();
-
   mCursor = textCursor();
-
-  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
-  CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
+  CFunctionDB *pFunDB = CCopasiRootContainer::getFunctionList();
+  CCopasiDataModel *pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
   CObjectInterface::ContainerList containers;
   containers.push_back(pDataModel);
   containers.push_back(pFunDB);
-
   const QString Infix(FROM_UTF8(expression));
   QString Display;
-
   QRegExp InfixObjectPattern(CQExpressionWidget::InfixPattern);
-
   int Index = 0;
   QString::const_iterator it = Infix.begin();
   QString::const_iterator end;
@@ -605,14 +562,12 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
       Index += InfixObjectPattern.matchedLength();
       it += InfixObjectPattern.matchedLength();
-
       CCopasiObjectName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
-      const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, InfixName));
+      const CCopasiObject *pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, InfixName));
 
       if (pObject != NULL)
         {
           std::string DisplayName = pObject->getObjectDisplayName();
-
           // We need to escape '\' and '}'
           std::string::size_type pos = DisplayName.find_first_of("\\}");
 
@@ -624,13 +579,11 @@ void CQExpressionWidget::setExpression(const std::string & expression)
             }
 
           mParseList[DisplayName] = pObject;
-
           Display += '{' + FROM_UTF8(DisplayName) + '}';
         }
       else
         {
           std::string DisplayName = InfixName;
-
           // We need to escape '\' and '}'
           std::string::size_type pos = DisplayName.find_first_of("\\}");
 
@@ -647,27 +600,26 @@ void CQExpressionWidget::setExpression(const std::string & expression)
 
   setText(Display);
   mpValidatorExpression->saved();
-
   return;
 }
 
-const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, const std::string displayString)
+const CCopasiObject *findObjectByDisplayName(const CCopasiDataModel *dataModel, const std::string displayString)
 {
   if (dataModel == NULL || displayString.empty()) return NULL;
 
-  const CModel* model = dataModel->getModel();
+  const CModel *model = dataModel->getModel();
 
   if (displayString == "Time") return model;
 
-  if (displayString == "Avogadro Constant") return dynamic_cast<const CCopasiObject* >(model->getObject("Reference=" + displayString));
+  if (displayString == "Avogadro Constant") return dynamic_cast<const CCopasiObject * >(model->getObject("Reference=" + displayString));
 
-  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CCopasiObject* >(model->getObject("Reference=" + displayString));
+  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CCopasiObject * >(model->getObject("Reference=" + displayString));
 
   size_t pos = displayString.find("Compartments[");
 
   if (pos != std::string::npos)
     {
-      const CCopasiVectorN< CCompartment > & compartments = model->getCompartments();
+      const CCopasiVectorN< CCompartment > &compartments = model->getCompartments();
 
       for (CCopasiVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
         {
@@ -699,7 +651,7 @@ const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, 
 
   if (pos != std::string::npos)
     {
-      const CCopasiVectorN< CModelValue > & values = model->getModelValues();
+      const CCopasiVectorN< CModelValue > &values = model->getModelValues();
 
       for (CCopasiVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
         {
@@ -729,7 +681,7 @@ const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, 
 
   // no reasonable check for metabolites, so lets just go through them
   {
-    const CCopasiVector< CMetab > & metabs = model->getMetabolites();
+    const CCopasiVector< CMetab > &metabs = model->getMetabolites();
 
     for (CCopasiVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
       {
@@ -771,7 +723,6 @@ const CCopasiObject* findObjectByDisplayName(const CCopasiDataModel* dataModel, 
           }
       }
   }
-
   return NULL;
 }
 
@@ -779,9 +730,7 @@ std::string CQExpressionWidget::getExpression() const
 {
   QString Infix;
   const QString Display(toPlainText());
-
   QRegExp DisplayObjectPattern(CQExpressionWidget::DisplayPattern);
-
   int Index = 0;
   QString::const_iterator it = Display.begin();
   QString::const_iterator end;
@@ -810,13 +759,11 @@ std::string CQExpressionWidget::getExpression() const
 
       Index += DisplayObjectPattern.matchedLength();
       it += DisplayObjectPattern.matchedLength();
-
       std::string DisplayName(TO_UTF8(DisplayObjectPattern.cap(1)));
       std::map< std::string, const CCopasiObject *>::const_iterator itObject = mParseList.find(DisplayName);
 
       if (itObject == mParseList.end() && CCopasiRootContainer::getConfiguration()->useAdvancedEditing())
         {
-
           // the object pattern does not match the species name if
           // the species is in a different compartment, in that case we
           // have to remove the backslash in the displayname.
@@ -826,15 +773,15 @@ std::string CQExpressionWidget::getExpression() const
             DisplayName.erase(bsPos, 1);
 
           // here we don't have an object recognized, what we ought to do is to find it in the model
-          CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
+          CCopasiDataModel *pDataModel = ListViews::dataModel(parent());
           assert(pDataModel != NULL);
-          const CCopasiObject* object = findObjectByDisplayName(
+          const CCopasiObject *object = findObjectByDisplayName(
                                           mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : pDataModel,
                                           DisplayName);
 
           if (object != NULL)
             {
-              const_cast<CQExpressionWidget*>(this)->mParseList[DisplayName] = object;
+              const_cast<CQExpressionWidget *>(this)->mParseList[DisplayName] = object;
               itObject = mParseList.find(DisplayName);
             }
         }
@@ -844,7 +791,6 @@ std::string CQExpressionWidget::getExpression() const
       else
         {
           Infix += "<";
-
           // We need to escape '\'
           std::string CN = TO_UTF8(DisplayObjectPattern.cap(1));
           std::string::const_iterator it = CN.begin();
@@ -867,7 +813,7 @@ std::string CQExpressionWidget::getExpression() const
   return TO_UTF8(Infix);
 }
 
-void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType & expressionType)
+void CQExpressionWidget::setExpressionType(const CQExpressionWidget::ExpressionType &expressionType)
 {
   mObjectClasses = expressionType;
 }
@@ -895,7 +841,7 @@ bool CQExpressionWidget::isValid()
 
 void CQExpressionWidget::slotSelectObject()
 {
-  const CCopasiObject * pObject =
+  const CCopasiObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this, mObjectClasses);
 
   if (pObject)
@@ -909,7 +855,6 @@ void CQExpressionWidget::slotSelectObject()
         }
 
       std::string Insert = pObject->getObjectDisplayName();
-
       // We need to escape >
       std::string::size_type pos = Insert.find_first_of("}");
 
@@ -921,13 +866,10 @@ void CQExpressionWidget::slotSelectObject()
         }
 
       mParseList[Insert] = pObject;
-
       QTextCharFormat f1;
       f1.setForeground(QColor(0, 0, 0));
-
       QTextCharFormat f = mpExpressionHighlighter->mObjectDisplayFormat;
       //QColor color2 = f.foreground().color();
-
       setCurrentCharFormat(f);
       insertPlainText(FROM_UTF8("{" + Insert + "}"));
       setCurrentCharFormat(f1);

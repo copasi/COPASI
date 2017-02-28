@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -8,7 +13,7 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QtGui/QFrame>
+#include <QFrame>
 
 class CQGLNetworkPainter;
 class QScrollBar;
@@ -24,24 +29,24 @@ class CQGLViewport : public QFrame
   Q_OBJECT
 
 protected:
-  QScrollBar* mpVerticalScrollbar;
-  QScrollBar* mpHorizontalScrollbar;
-  CQGLNetworkPainter* mpNetworkPainter;
+  QScrollBar *mpVerticalScrollbar;
+  QScrollBar *mpHorizontalScrollbar;
+  CQGLNetworkPainter *mpNetworkPainter;
 
 public:
   /**
    * Constructor.
    */
-  CQGLViewport(QWidget* pParent = 0, Qt::WFlags f = 0);
+  CQGLViewport(QWidget* pParent = 0, Qt::WindowFlags f = 0);
 
   /**
    * Destructor.
    */
   virtual ~CQGLViewport();
 
-  const CQGLNetworkPainter* getPainter() const;
+  const CQGLNetworkPainter *getPainter() const;
 
-  CQGLNetworkPainter* getPainter();
+  CQGLNetworkPainter *getPainter();
 
   /**
    * Pass the layout on to the network painters createGraph and set the
@@ -71,7 +76,7 @@ public:
   bool isCircleMode() const;
 
 protected:
-  virtual void resizeEvent(QResizeEvent* e);
+  virtual void resizeEvent(QResizeEvent *e);
 
   void updateScrollbars();
 

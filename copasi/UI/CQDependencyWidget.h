@@ -35,7 +35,7 @@ class CQDependencyWidget : public CopasiWidget
 
 public:
 
-  explicit CQDependencyWidget(QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0);
+  explicit CQDependencyWidget(QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
   virtual ~CQDependencyWidget();
 
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,9 +15,9 @@
 
 #include "CQCompartmentsWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
 
 #include "qtUtilities.h"
 #include "copasi.h"
@@ -28,37 +33,35 @@
  *  Constructs a CQCompartmentsWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQCompartmentsWidget::CQCompartmentsWidget(QWidget* parent, const char* name)
+CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
-
   //Create Source Data Model.
   mpCompartmentDM = new CQCompartmentDM(this);
   mpCompartmentDM->setDataModel(mpDataModel);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
-
   //Setting values for Types comboBox
   mpTypeDelegate = new CQIndexComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
-
+#if QT_VERSION >= 0x050000
+  mpTblCompartments->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblCompartments->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblCompartments->verticalHeader()->hide();
   mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
   // Connect the table widget
   connect(mpCompartmentDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpCompartmentDM->setUndoStack(pWindow->getUndoStack());
 }
 
@@ -89,8 +92,7 @@ void CQCompartmentsWidget::slotBtnDeleteClicked()
 
 void CQCompartmentsWidget::deleteSelectedCompartments()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblCompartments->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblCompartments->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpCompartmentDM->rowCount();
 
@@ -121,7 +123,7 @@ void CQCompartmentsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQCompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQCompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
 {
   if (!mIgnoreUpdates &&
       objectType == ListViews::MODEL)
@@ -141,8 +143,8 @@ bool CQCompartmentsWidget::enterProtected()
 {
   if (mpTblCompartments->selectionModel() != NULL)
     {
-      disconnect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   mpCompartmentDM->setDataModel(mpDataModel);
@@ -150,19 +152,15 @@ bool CQCompartmentsWidget::enterProtected()
   mpTblCompartments->setModel(NULL);
   mpTblCompartments->setModel(mpProxyModel);
   mpTblCompartments->resizeColumnsToContents();
-
-  connect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
-
+  connect(mpTblCompartments->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
-
   return true;
 }
 
 void CQCompartmentsWidget::updateDeleteBtns()
 {
   bool selected = false;
-
   QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows();
 
   if (selRows.size() == 0)
@@ -188,14 +186,14 @@ void CQCompartmentsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQCompartmentsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
-    const QItemSelection& C_UNUSED(deselected))
+void CQCompartmentsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
+    const QItemSelection &C_UNUSED(deselected))
 {
   updateDeleteBtns();
 }
 
-void CQCompartmentsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
-                                       const QModelIndex& C_UNUSED(bottomRight))
+void CQCompartmentsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
+                                       const QModelIndex &C_UNUSED(bottomRight))
 {
   mpTblCompartments->resizeColumnsToContents();
   updateDeleteBtns();
@@ -214,7 +212,7 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(mpDataModel != NULL); // Is this necessary?
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;
@@ -225,7 +223,7 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQCompartmentsWidget::keyPressEvent(QKeyEvent* ev)
+void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -69,13 +74,11 @@ QVariant CQTimeSeriesDM::headerData(int section, Qt::Orientation orientation,
   switch (orientation)
     {
       case Qt::Horizontal:
-
         if (section < 0 || columnCount() <= section) return QVariant();
 
         return QString(FROM_UTF8(mpTimeSeries->getTitle(section)));
 
       case Qt::Vertical:
-
         if (section < 0 || rowCount() <= section) return QVariant();
 
         return QString("%1").arg(section + 1);
@@ -84,10 +87,12 @@ QVariant CQTimeSeriesDM::headerData(int section, Qt::Orientation orientation,
   return QVariant();
 }
 
-void CQTimeSeriesDM::setTimeSeries(const CTimeSeries * pTimeSeries)
+void CQTimeSeriesDM::setTimeSeries(const CTimeSeries *pTimeSeries)
 {
+  beginResetModel();
   mpTimeSeries = pTimeSeries;
-  reset();
+  endResetModel();
+  //reset();
 }
 
 void CQTimeSeriesDM::setFramework(int framework)
@@ -116,7 +121,7 @@ bool CQTimeSeriesDM::removeRows(int /* position */, int /* rows */)
 }
 
 // virtual
-bool CQTimeSeriesDM::isDefaultRow(const QModelIndex& /* i */) const
+bool CQTimeSeriesDM::isDefaultRow(const QModelIndex & /* i */) const
 {
   return false;
 }

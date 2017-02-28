@@ -48,7 +48,7 @@ class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
   friend class CreateNewReactionCommand;
 
 public:
-  ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~ReactionsWidget1();
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);

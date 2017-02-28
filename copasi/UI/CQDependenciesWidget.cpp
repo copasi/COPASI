@@ -10,7 +10,7 @@
 #include <copasi/CopasiDataModel/CCopasiDataModel.h>
 #include <copasi/report/CCopasiObject.h>
 
-CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt::WFlags f)
+CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
   , ui(new Ui::CQDependenciesWidget)
   , mVisibleModes(UNKNOWN)

@@ -20,8 +20,8 @@
 #include "CQDifferentialEquations.h"
 
 #include <QtCore/QVariant>
-#include <QtGui/QPainter>
-#include <QtGui/QPrinter>
+#include <QPainter>
+#include <QPrinter>
 
 #include "CQDifferentialEquations.h"
 
@@ -29,7 +29,7 @@
 #include <set>
 #include <vector>
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 #include <QtCore/QRegExp>
 
 #ifdef HAVE_MML

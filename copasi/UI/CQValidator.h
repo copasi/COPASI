@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,9 +20,9 @@
 #ifndef COPASI_CQValidator
 #define COPASI_CQValidator
 
-#include <QtGui/QValidator>
-#include <QtGui/QColor>
-#include <QtGui/QLineEdit>
+#include <QValidator>
+#include <QColor>
+#include <QLineEdit>
 
 #include <QtCore/QtDebug>
 

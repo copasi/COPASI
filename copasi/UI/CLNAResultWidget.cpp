@@ -1,9 +1,14 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <QtGui/QGridLayout>
+#include <QGridLayout>
 #include "copasi.h"
 
 #include "CLNAResultWidget.h"
@@ -19,17 +24,15 @@
  *  Constructs a CLNAResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CLNAResultWidget::CLNAResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+CLNAResultWidget::CLNAResultWidget(QWidget *parent, const char *name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl)
 {
   if (!name)
     setObjectName("CLNAResultWidget");
 
   setWindowTitle(trUtf8("CLNAResultWidget"));
-
   mWidgetLayout = new QGridLayout(this);
   mWidgetLayout->setObjectName("Layout");
-
   mCentralWidget = new CLNAResultSubwidget(this, "CLNAResultSubwidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
 }
@@ -45,12 +48,12 @@ CLNAResultWidget::~CLNAResultWidget()
 bool CLNAResultWidget::loadFromBackend()
 {
   assert(mpDataModel != NULL);
-  CLNATask * pTask =
+  CLNATask *pTask =
     dynamic_cast<CLNATask *>(&mpDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
 
   if (!pTask) return false;
 
-  mCentralWidget->loadAll(dynamic_cast<CLNAMethod*>(pTask->getMethod()));
+  mCentralWidget->loadAll(dynamic_cast<CLNAMethod *>(pTask->getMethod()));
   return true;
 }
 
@@ -61,7 +64,7 @@ bool CLNAResultWidget::saveToBackend()
 
 bool CLNAResultWidget::update(ListViews::ObjectType objectType,
                               ListViews::Action action,
-                              const std::string & C_UNUSED(key))
+                              const std::string &C_UNUSED(key))
 {
   if (objectType == ListViews::MODEL && action == ListViews::ADD)
     mCentralWidget->loadAll(NULL);

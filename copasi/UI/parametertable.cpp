@@ -17,9 +17,9 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QTableWidgetItem>
+#include <QTableWidgetItem>
 #include <QtCore/QStringList>
-#include <QtGui/QLineEdit>
+#include <QLineEdit>
 
 #include "parametertable.h"
 #include "CQComboDelegate.h"

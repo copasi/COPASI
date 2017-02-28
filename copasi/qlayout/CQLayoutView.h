@@ -1,4 +1,9 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,7 +11,7 @@
 #ifndef QLAYOUT_VIEW_H
 #define QLAYOUT_VIEW_H
 
-#include <QtGui/QGraphicsView>
+#include <QGraphicsView>
 
 class CQLayoutScene;
 class QAction;

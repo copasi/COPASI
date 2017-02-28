@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -41,34 +46,32 @@
 
 #include <sstream>
 
-CQLayoutsWidget::CQLayoutsWidget(QWidget* parent)
+CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   : CopasiWidget(parent)
 {
   setupUi(this);
-
   // Create Source Data Model.
   mpLayoutsDM = new CQLayoutsDM(this);
-
   // Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpLayoutsDM);
-
+#if QT_VERSION >= 0x050000
+  mpTblLayouts->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblLayouts->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblLayouts->verticalHeader()->hide();
   mpTblLayouts->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   mpTblLayouts->setModel(mpProxyModel);
-
   mpPushButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::unknown), QString(), CQPushButtonDelegate::PushButton, this);
-
   mpTblLayouts->setItemDelegateForColumn(COL_SHOW, mpPushButtonDelegate);
-
   // Connect the table widget
   connect(mpLayoutsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
@@ -112,8 +115,7 @@ void CQLayoutsWidget::deleteLayoutWindows()
 
 void CQLayoutsWidget::deleteSelectedLayouts()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblLayouts->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblLayouts->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpLayoutsDM->rowCount();
 
@@ -130,9 +132,8 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   // We need to make sure that we remove the window mapped for each layout
   QModelIndexList::const_iterator it = mappedSelRows.begin();
   QModelIndexList::const_iterator end = mappedSelRows.end();
-
   assert(mpDataModel != NULL);
-  CListOfLayouts * pListOfLayouts = mpDataModel->getListOfLayouts();
+  CListOfLayouts *pListOfLayouts = mpDataModel->getListOfLayouts();
 
   for (; it != end; ++it)
     {
@@ -159,12 +160,12 @@ bool CQLayoutsWidget::enterProtected()
 {
   if (mpTblLayouts->selectionModel() != NULL)
     {
-      disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   assert(mpDataModel != NULL);
-  CListOfLayouts * pListOfLayouts = mpDataModel->getListOfLayouts();
+  CListOfLayouts *pListOfLayouts = mpDataModel->getListOfLayouts();
   mpLayoutsDM->setListOfLayouts(pListOfLayouts);
 
   // check if we have at least a compartment
@@ -192,15 +193,13 @@ bool CQLayoutsWidget::enterProtected()
       // if this layout does not have an entry in the layout window map, add one
       if (pos == mLayoutWindowMap.end())
         {
-          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow*>(it->getKey(), (LayoutWindow*)NULL));
+          mLayoutWindowMap.insert(std::pair<std::string, LayoutWindow *>(it->getKey(), (LayoutWindow *)NULL));
         }
     }
 
-  connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
-
+  connect(mpTblLayouts->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   dataChanged(QModelIndex(), QModelIndex());
-
   return true;
 }
 
@@ -214,9 +213,8 @@ void CQLayoutsWidget::showButtons()
     }
 }
 
-bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
+bool hasLayout(const CListOfLayouts &layouts, const std::string &name)
 {
-
   for (size_t i = 0; i < layouts.size(); ++i)
     {
       const CLayout *layout = &layouts[i];
@@ -232,9 +230,8 @@ bool hasLayout(const CListOfLayouts& layouts, const std::string &name)
 // virtual
 void CQLayoutsWidget::slotBtnNewClicked()
 {
-  const CModel* pModel = mpDataModel->getModel();
+  const CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
-
   std::string name = "COPASI autolayout";
   int ncount = 1;
 
@@ -252,30 +249,24 @@ void CQLayoutsWidget::slotBtnNewClicked()
 
   // add the layout to the datamodel
   std::map<std::string, std::string> m;
-
-  CListOfLayouts * pListOfLayouts = mpDataModel->getListOfLayouts();
-
+  CListOfLayouts *pListOfLayouts = mpDataModel->getListOfLayouts();
   // create the random layout
   CCopasiSpringLayout::Parameters p;
-  CLayout* pLayout = CCopasiSpringLayout::createLayout(
+  CLayout *pLayout = CCopasiSpringLayout::createLayout(
                        mpDataModel, pWizard.getSelectedCompartments(),
                        pWizard.getSelectedReactions(),
                        pWizard.getSelectedMetabolites(),
                        pWizard.getSideMetabolites(),
                        &p);
-
   pLayout->setObjectName(name);
   pListOfLayouts->addLayout(pLayout, m);
-
   // update the table
   mpLayoutsDM->insertRows(mpLayoutsDM->rowCount() - 1, 1, mpLayoutsDM->index(mpLayoutsDM->rowCount() - 1, 0));
   dataChanged(QModelIndex(), QModelIndex());
-
   LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
-  CQNewMainWindow* pWin = dynamic_cast<CQNewMainWindow*>(window);
-
+  CQNewMainWindow *pWin = dynamic_cast<CQNewMainWindow *>(window);
 #ifndef DISABLE_QT_LAYOUT_RENDERING
-  CQAnimationWindow* pAnim = dynamic_cast<CQAnimationWindow*>(window);
+  CQAnimationWindow *pAnim = dynamic_cast<CQAnimationWindow *>(window);
 
   if (pAnim != NULL)
     {
@@ -285,7 +276,6 @@ void CQLayoutsWidget::slotBtnNewClicked()
     }
   else
 #endif //DISABLE_QT_LAYOUT_RENDERING
-
     if (pWin != NULL)
       {
         pWin->updateRenderer();
@@ -296,7 +286,6 @@ void CQLayoutsWidget::slotBtnNewClicked()
         // now we create the spring layout
         pWin->slotRunSpringLayout();
       }
-
     else
       {
         delete pLayout;
@@ -334,7 +323,6 @@ void CQLayoutsWidget::slotSelectionChanged(const QItemSelection & /* selected */
 void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 {
   QModelIndex index = mpProxyModel->mapToSource(proxyIndex);
-
   int row = index.row();
 
   if (row >= mpLayoutsDM->rowCount() || row < 0) return;
@@ -362,18 +350,17 @@ void CQLayoutsWidget::slotFilterChanged()
  * This creates a new layout window and return a pointer to it.
  * In case of an error, NULL is returned.
  */
-CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLayout* pLayout)
+CQLayoutsWidget::LayoutWindow *CQLayoutsWidget::createLayoutWindow(int row, CLayout *pLayout)
 {
   if (pLayout == NULL || row < 0) return NULL;
 
-  LayoutWindow * pWin = NULL;
-
+  LayoutWindow *pWin = NULL;
 #ifndef DISABLE_QT_LAYOUT_RENDERING
 
   if (CCopasiRootContainer::getConfiguration()->useOpenGL())
     {
       pWin = new CQNewMainWindow(mpDataModel);
-      (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
+      (static_cast<CQNewMainWindow *>(pWin))->slotLayoutChanged(row);
     }
   else
     {
@@ -382,34 +369,29 @@ CQLayoutsWidget::LayoutWindow * CQLayoutsWidget::createLayoutWindow(int row, CLa
 
 #else
   pWin = new CQNewMainWindow(mpDataModel);
-  (static_cast<CQNewMainWindow*>(pWin))->slotLayoutChanged(row);
+  (static_cast<CQNewMainWindow *>(pWin))->slotLayoutChanged(row);
 #endif //DISABLE_QT_LAYOUT_RENDERING
-
   std::string title = "COPASI Diagram: "  + pLayout->getObjectName();
   pWin->setWindowTitle(title.c_str());
   pWin->addToMainWindow();
   pWin->resize(900, 600);
   mLayoutWindowMap[pLayout->getKey()] = pWin;
-
   return pWin;
 }
 
-void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
+void CQLayoutsWidget::slotShowLayout(const QModelIndex &index)
 {
   int row = index.row();
-
   assert(mpDataModel != NULL);
-  CListOfLayouts* pListOfLayouts = mpDataModel->getListOfLayouts();
-
-  CLayout* pLayout = &pListOfLayouts->operator[](row);
+  CListOfLayouts *pListOfLayouts = mpDataModel->getListOfLayouts();
+  CLayout *pLayout = &pListOfLayouts->operator[](row);
   std::string Key = pLayout->getKey();
 
   if (pLayout != NULL)
     {
       // check if we already have a widget for the layout
       // if yes, open it, else create one and add it to the map
-      LayoutWindow * pLayoutWindow = NULL;
-
+      LayoutWindow *pLayoutWindow = NULL;
       LayoutWindowMap::iterator pos = mLayoutWindowMap.find(Key);
 
       if (pos != mLayoutWindowMap.end())
@@ -420,14 +402,13 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex & index)
       if (pLayoutWindow == NULL)
         {
           pLayoutWindow = createLayoutWindow(row, pLayout);
-
           // need to add it to the list, so the window can be deleted later
           mLayoutWindowMap[pLayout->getKey()] = pLayoutWindow;
         }
 
       if (pLayoutWindow != NULL)
         {
-          CQNewMainWindow* cqWin = dynamic_cast<CQNewMainWindow*>(pLayoutWindow);
+          CQNewMainWindow *cqWin = dynamic_cast<CQNewMainWindow *>(pLayoutWindow);
 
           if (cqWin != NULL)
             {

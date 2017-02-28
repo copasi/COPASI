@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,11 +20,11 @@
 #ifndef CQEXPRESSION
 #define CQEXPRESSION
 
-#include <QtGui/QTextEdit>
-#include <QtGui/QSyntaxHighlighter>
-#include <QtGui/QKeyEvent>
+#include <QTextEdit>
+#include <QSyntaxHighlighter>
+#include <QKeyEvent>
 
-#include <QtGui/QKeySequence>
+#include <QKeySequence>
 
 #include <vector>
 
@@ -38,7 +43,7 @@ class CCopasiObject;
 class CQExpressionHighlighter: public QSyntaxHighlighter
 {
 public:
-  CQExpressionHighlighter(CQExpressionWidget* ew);
+  CQExpressionHighlighter(CQExpressionWidget *ew);
   virtual ~CQExpressionHighlighter();
 
 protected:
@@ -55,12 +60,12 @@ public:
 class CQValidatorExpression: public CQValidator< QTextEdit >
 {
 public:
-  CQValidatorExpression(QTextEdit * parent, const char * name = 0, bool isBoolean = false);
+  CQValidatorExpression(QTextEdit *parent, const char *name = 0, bool isBoolean = false);
 
   /**
    * Function to validate a string input
    */
-  virtual State validate(QString & input, int & pos) const;
+  virtual State validate(QString &input, int &pos) const;
 
   /**
    * Function to get CExpression object
@@ -88,7 +93,7 @@ public:
    * @param QTextEdit * parent
    * @param const char * name (Default: NULL)
    */
-  CQValidatorFunction(QTextEdit * parent, const char * name = 0);
+  CQValidatorFunction(QTextEdit *parent, const char *name = 0);
 
   /**
    * Function to validate a string input
@@ -96,13 +101,13 @@ public:
    * @param int & pos
    * @return State
    */
-  virtual State validate(QString & input, int & pos) const;
+  virtual State validate(QString &input, int &pos) const;
 
   /**
    * Retrieve a pointer to the function object
    * @return CFunction * pFunction
    */
-  virtual CFunction * getFunction();
+  virtual CFunction *getFunction();
 
 protected:
   CFunction mFunction;
@@ -121,21 +126,21 @@ public:
   static const char InfixPattern[];
   static const char DisplayPattern[];
 
-  CQExpressionWidget(QWidget * parent = 0, const char * name = 0);
+  CQExpressionWidget(QWidget *parent = 0, const char *name = 0);
 
   ~CQExpressionWidget();
 
   /**
    * Write display mathml of the expression into the ostream "out"
    */
-  void writeMathML(std::ostream & out) const;
+  void writeMathML(std::ostream &out) const;
 
-  CQValidator< QTextEdit > * getValidator();
+  CQValidator< QTextEdit > *getValidator();
 
 private:
-  CQValidatorExpression * mpValidatorExpression;
+  CQValidatorExpression *mpValidatorExpression;
 
-  CQValidatorFunction * mpValidatorFunction;
+  CQValidatorFunction *mpValidatorFunction;
 
 protected:
   /**
@@ -144,24 +149,24 @@ protected:
   CQSimpleSelectionTree::ObjectClasses mObjectClasses;
 
   std::map< std::string, const CCopasiObject * > mParseList;
-  const CCopasiObject * mpCurrentObject;
+  const CCopasiObject *mpCurrentObject;
   QColor mSavedColor;
   QColor mChangedColor;
 
   /**
    * Function to handle key press events.
    */
-  virtual void keyPressEvent(QKeyEvent * e);
+  virtual void keyPressEvent(QKeyEvent *e);
 
   /**
    * Function to handle mouse release events.
    */
-  virtual void mouseReleaseEvent(QMouseEvent * e);
+  virtual void mouseReleaseEvent(QMouseEvent *e);
 
   /**
    * Function to handle drag leave events.
    */
-  virtual void dropEvent(QDropEvent * e);
+  virtual void dropEvent(QDropEvent *e);
 
   /**
    * Function to check whether the given cursor position is in an object.
@@ -171,7 +176,7 @@ protected:
    * @param int & right
    * @return bool isInObject
    */
-  bool objectBoundaries(const int & position, int & left, int & right) const;
+  bool objectBoundaries(const int &position, int &left, int &right) const;
 
 public:
   /**
@@ -180,28 +185,28 @@ public:
   enum ExpressionType
   {
     InitialExpression = CQSimpleSelectionTree::InitialTime |
-    CQSimpleSelectionTree::Parameters |
-    CQSimpleSelectionTree::ObservedConstants,
+                        CQSimpleSelectionTree::Parameters |
+                        CQSimpleSelectionTree::ObservedConstants,
     TransientExpression = CQSimpleSelectionTree::InitialTime |
-    CQSimpleSelectionTree::Parameters |
-    CQSimpleSelectionTree::ObservedConstants |
-    CQSimpleSelectionTree::Time |
-    CQSimpleSelectionTree::Variables |
-    CQSimpleSelectionTree::ObservedValues,
+                          CQSimpleSelectionTree::Parameters |
+                          CQSimpleSelectionTree::ObservedConstants |
+                          CQSimpleSelectionTree::Time |
+                          CQSimpleSelectionTree::Variables |
+                          CQSimpleSelectionTree::ObservedValues,
     ObjectiveFunctions = CQSimpleSelectionTree::InitialTime |
-    CQSimpleSelectionTree::Parameters |
-    CQSimpleSelectionTree::ObservedConstants |
-    CQSimpleSelectionTree::Time |
-    CQSimpleSelectionTree::Variables |
-    CQSimpleSelectionTree::ObservedValues |
-    CQSimpleSelectionTree::Results
+                         CQSimpleSelectionTree::Parameters |
+                         CQSimpleSelectionTree::ObservedConstants |
+                         CQSimpleSelectionTree::Time |
+                         CQSimpleSelectionTree::Variables |
+                         CQSimpleSelectionTree::ObservedValues |
+                         CQSimpleSelectionTree::Results
   };
 
   /**
    * Set the function for the widget
    * @param const std::string & function
    */
-  void setFunction(const std::string & function);
+  void setFunction(const std::string &function);
 
   /**
    * Retrieve the function from the widget in string format
@@ -213,7 +218,7 @@ public:
    * Set the expression for the widget
    * @param const std::string & expression
    */
-  void setExpression(const std::string & expression);
+  void setExpression(const std::string &expression);
 
   /**
    * Retrieve the expression from the widget in string format
@@ -225,7 +230,7 @@ public:
    * Set the type of the current expression
    * @param const ExpressionType & expressionType
    */
-  void setExpressionType(const ExpressionType & expressionType);
+  void setExpressionType(const ExpressionType &expressionType);
 
   /**
    * Set the boolean

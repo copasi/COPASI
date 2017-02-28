@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,9 +15,9 @@
 
 #include "CQPlotsWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
 
 #include "copasi.h"
 
@@ -29,30 +34,29 @@
  *  Constructs a CQPlotsWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQPlotsWidget::CQPlotsWidget(QWidget* parent, const char* name)
+CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
-
   //Create Source Data Model.
   mpPlotDM = new CQPlotDM(this, mpDataModel);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
-
+#if QT_VERSION >= 0x050000
+  mpTblPlots->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblPlots->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblPlots->verticalHeader()->hide();
   mpTblPlots->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
   setFramework(mFramework);
-
   // Connect the table widget
   connect(mpPlotDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpPlotDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpPlotDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpBtnActivateAll, SIGNAL(pressed()), this, SLOT(slotBtnActivateAllClicked()));
@@ -117,8 +121,7 @@ void CQPlotsWidget::slotBtnDeleteClicked()
 
 void CQPlotsWidget::deleteSelectedPlots()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblPlots->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblPlots->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpPlotDM->rowCount();
 
@@ -138,7 +141,6 @@ void CQPlotsWidget::deleteSelectedPlots()
 
 void CQPlotsWidget::slotBtnClearClicked()
 {
-
   int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Plots?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
@@ -150,7 +152,7 @@ void CQPlotsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQPlotsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQPlotsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
 {
   if (!mIgnoreUpdates && isVisible())
     {
@@ -169,27 +171,25 @@ bool CQPlotsWidget::enterProtected()
 {
   if (mpTblPlots->selectionModel() != NULL)
     {
-      disconnect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   mpProxyModel->setSourceModel(mpPlotDM);
   //Set Model for the TableView
   mpTblPlots->setModel(NULL);
   mpTblPlots->setModel(mpProxyModel);
-  connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
   mpTblPlots->resizeColumnsToContents();
   setFramework(mFramework);
-
   return true;
 }
 
 void CQPlotsWidget::updateDeleteBtns()
 {
   bool selected = false;
-
   QModelIndexList selRows = mpTblPlots->selectionModel()->selectedRows();
 
   if (selRows.size() == 0)
@@ -215,14 +215,14 @@ void CQPlotsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQPlotsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
-    const QItemSelection& C_UNUSED(deselected))
+void CQPlotsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
+    const QItemSelection &C_UNUSED(deselected))
 {
   updateDeleteBtns();
 }
 
-void CQPlotsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
-                                const QModelIndex& C_UNUSED(bottomRight))
+void CQPlotsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
+                                const QModelIndex &C_UNUSED(bottomRight))
 {
   mpTblPlots->resizeColumnsToContents();
   setFramework(mFramework);
@@ -253,7 +253,7 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQPlotsWidget::keyPressEvent(QKeyEvent* ev)
+void CQPlotsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();

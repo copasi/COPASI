@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,22 +19,22 @@
 
 #include "CQLayoutMainWindow.h"
 
-#include <QtGui/QAction>
-#include <QtGui/QComboBox>
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
-#include <QtGui/QLayout>
-#include <QtGui/QMenuBar>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenu>
-#include <QtGui/QPushButton>
-#include <QtGui/QSplitter>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QToolBar>
-#include <QtGui/QSlider>
-#include <QtGui/QGridLayout>
-#include <QtGui/QPixmap>
-#include <QtGui/QCloseEvent>
+#include <QAction>
+#include <QComboBox>
+#include <QFrame>
+#include <QLabel>
+#include <QLayout>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QMenu>
+#include <QPushButton>
+#include <QSplitter>
+#include <QVBoxLayout>
+#include <QToolBar>
+#include <QSlider>
+#include <QGridLayout>
+#include <QPixmap>
+#include <QCloseEvent>
 
 #include <iostream>
 #include <cmath>
@@ -58,10 +63,10 @@
 
 using namespace std;
 
-const char* const CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
+const char *const CQLayoutMainWindow::ZOOM_FACTOR_STRINGS[] = {"1%", "2%", "3%", "4%", "5%", "10%", "20%", "25%", "30%", "40%", "50%", "75%", "100%", "150%", "200%", "300%", "400%", "500%", "1000%"};
 const double CQLayoutMainWindow::ZOOM_FACTORS[] = {0.01, 0.02, 0.03, 0.04, 0.05, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 10.0};
 
-CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
+CQLayoutMainWindow::CQLayoutMainWindow(QWidget *pParent):
   QFrame(pParent)
   , mpVisParameters(new CVisParameters)
   , mpParaPanel(new CQParaPanel)
@@ -78,22 +83,17 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   , mpZoomActionGroup(new QActionGroup(this))
   , mpLayout(NULL)
 {
-
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
-
-  QVBoxLayout* mainLayout = new QVBoxLayout(mpMainBox);
-  QVBoxLayout* infoLayout = new QVBoxLayout(mpInfoBox);
+  QVBoxLayout *mainLayout = new QVBoxLayout(mpMainBox);
+  QVBoxLayout *infoLayout = new QVBoxLayout(mpInfoBox);
   mpSplitter->addWidget(this->mpInfoBox);
-
   // create split window with parameter panel and graph panel
   mainLayout->addWidget(this->mpSplitter);
-
   infoLayout->addWidget(this->mpParaPanel);
   infoLayout->addWidget(this->mpValTable);
   this->mpInfoBox->setLayout(infoLayout);
-
   // Create OpenGL widget
   // we initialize it here because the parent has to be present
   this->mpGLViewport = new CQGLViewport(this->mpSplitter);
@@ -107,7 +107,6 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
 
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpInfoBox), 0);
   this->mpSplitter->setStretchFactor(this->mpSplitter->indexOf(this->mpGLViewport), 1);
-
   connect(this->mpControlWidget, SIGNAL(play()), this, SLOT(startAnimation()));
   connect(this->mpControlWidget, SIGNAL(pause()), this, SLOT(pauseAnimation()));
   connect(this->mpControlWidget, SIGNAL(stop()), this, SLOT(stopAnimation()));
@@ -115,29 +114,21 @@ CQLayoutMainWindow::CQLayoutMainWindow(QWidget* pParent):
   connect(this->mpControlWidget, SIGNAL(backward()), this, SLOT(backwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_backward()), this, SLOT(stepBackwardAnimation()));
   connect(this->mpControlWidget, SIGNAL(step_forward()), this, SLOT(stepForwardAnimation()));
-
   this->mpTimeSlider->setRange(0, 100);
   this->mpTimeSlider->setValue(0);
   this->mpTimeSlider->setEnabled(false);
-
   this->mpTimeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   connect(this->mpTimeSlider, SIGNAL(valueChanged(int)), this, SLOT(showStep(int)));
-
-  QHBoxLayout* pGridLayout = new QHBoxLayout(mpFrame);
+  QHBoxLayout *pGridLayout = new QHBoxLayout(mpFrame);
   pGridLayout->addWidget(this->mpControlWidget);
   pGridLayout->addWidget(this->mpTimeSlider);
   this->mpFrame->setLayout(pGridLayout);
-
   mainLayout->addWidget(this->mpFrame);
-
   this->mpMainBox->setLayout(mainLayout);
-
   this->QFrame::setLayout(new QVBoxLayout);
   this->layout()->addWidget(this->mpMainBox);
-
-  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
+  connect(this->mpValTable, SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
   this->mLooping = false;
-
   this->setTabOrder(this->mpGLViewport, this->mpToolbar);
   this->setTabOrder(this->mpParaPanel, this->mpValTable);
   this->setTabOrder(this->mpValTable, this->mpControlWidget);
@@ -188,7 +179,6 @@ C_FLOAT64 CQLayoutMainWindow::getMinNodeSize()
 
   if (mpVisParameters != NULL)
     {
-
       minNodeSize = mpVisParameters->mMinNodeSize;
     }
 
@@ -270,8 +260,7 @@ CVisParameters::MAPPING_MODE CQLayoutMainWindow::getMappingMode()
 void CQLayoutMainWindow::loadSBMLFile()
 {
   CListOfLayouts *pLayoutList;
-
-  CCopasiDataModel * pDataModel = CQNewMainWindow::dataModel(parent());
+  CCopasiDataModel *pDataModel = CQNewMainWindow::dataModel(parent());
 
   if (pDataModel != NULL)
     {
@@ -284,7 +273,7 @@ void CQLayoutMainWindow::loadSBMLFile()
 
   if (pLayoutList != NULL)
     {
-      CLayout * pLayout;
+      CLayout *pLayout;
 
       if (pLayoutList->size() > 0)
         {
@@ -343,7 +332,7 @@ void CQLayoutMainWindow::loadData()
       this->mpTimeSlider->setRange(0, maxVal - 1);
       this->mpControlWidget->setNumSteps(maxVal);
       mpGLViewport->getPainter()->updateGL();
-      CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
+      CQGLNetworkPainter *pPainter = this->mpGLViewport->getPainter();
 
       if (pPainter->getNumberOfSteps() > 1)
         {
@@ -372,7 +361,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
   C_FLOAT64 val;
   mpValTable->setNumRows((int) dataSet.getNumberOfElements());
   mpValTable->setNumCols(2);
-  disconnect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
+  disconnect(this->mpValTable, SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
@@ -382,7 +371,7 @@ void CQLayoutMainWindow::insertValueTable(CDataEntity dataSet)
       i++;
     }
 
-  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
+  connect(this->mpValTable, SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 }
 
 void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
@@ -390,7 +379,7 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
   int i = 0;
   std::string key, name;
   C_FLOAT64 val;
-  disconnect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
+  disconnect(this->mpValTable, SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 
   while ((key = mpGLViewport->getPainter()->getNodeNameEntry(i)) != "")
     {
@@ -405,7 +394,7 @@ void CQLayoutMainWindow::updateValueTable(CDataEntity dataSet)
       i++;
     }
 
-  connect(this->mpValTable , SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
+  connect(this->mpValTable, SIGNAL(valueChanged(int)), this, SLOT(parameterTableValueChanged(int)));
 }
 
 // adds the item given by s to the list of items to animate (no change, if it is already present)
@@ -451,11 +440,10 @@ void CQLayoutMainWindow::startAnimation()
 void CQLayoutMainWindow::saveImage()
 {
 #ifdef DEBUG_UI
-//  qDebug() << "mCurrentPlace = " << mCurrentPlace;
+  //  qDebug() << "mCurrentPlace = " << mCurrentPlace;
 #endif
-
   // get the parameters
-  CQGLNetworkPainter* pPainter = this->mpGLViewport->getPainter();
+  CQGLNetworkPainter *pPainter = this->mpGLViewport->getPainter();
   assert(pPainter != NULL);
 
   if (pPainter != NULL)
@@ -474,8 +462,8 @@ void CQLayoutMainWindow::saveImage()
       double width = (double)imageWidth / zoomFactor;
       double height = (double)imageHeight / zoomFactor;
       // use more sophisticated dialog
-      CQScreenshotOptionsDialog* pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
-          x, y, width, height, pPainter->width() , pPainter->height(), lastFrame, this);
+      CQScreenshotOptionsDialog *pDialog = new CQScreenshotOptionsDialog(layoutX, layoutY, layoutWidth, layoutHeight,
+          x, y, width, height, pPainter->width(), pPainter->height(), lastFrame, this);
 
       if (pDialog->exec() == QDialog::Accepted)
         {
@@ -569,7 +557,7 @@ void CQLayoutMainWindow::showStep(int i)
   mpGLViewport->getPainter()->showStep(static_cast<int>(i));
   mpGLViewport->getPainter()->updateGL();
   mpParaPanel->setStepNumber(static_cast<int>(i));
-  CDataEntity* srcData = mpGLViewport->getPainter()->getDataSetAt(static_cast<int>(i));
+  CDataEntity *srcData = mpGLViewport->getPainter()->getDataSetAt(static_cast<int>(i));
 
   if (srcData)
     {
@@ -651,7 +639,9 @@ QIcon CQLayoutMainWindow::createStartIcon()
   C_INT32 w = 19;
   C_INT32 h = 19;
   QImage img = QImage(w, h, QImage::Format_Indexed8);
+#if QT_VERSION < 0x050000
   img.setNumColors(2);
+#endif
   img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
@@ -689,7 +679,9 @@ QIcon CQLayoutMainWindow::createStopIcon()
   C_INT32 w = 20;
   C_INT32 h = 20;
   QImage img = QImage(w, h, QImage::Format_Indexed8);
+#if QT_VERSION < 0x050000
   img.setNumColors(2);
+#endif
   img.setColor(0, qRgb(0, 0, 200));
   C_INT16 x, y;
 
@@ -733,7 +725,6 @@ bool CQLayoutMainWindow::maybeSave()
   //    return true;
   //  else if (ret == QMessageBox::Cancel)
   //    return false;
-
   return true;
 }
 
@@ -766,7 +757,7 @@ void CQLayoutMainWindow::setZoomFactor(QString s)
   this->setZoomFactor(n);
 }
 
-void CQLayoutMainWindow::setLayout(CLayout* pLayout)
+void CQLayoutMainWindow::setLayout(CLayout *pLayout)
 {
   if (this->mpLayout == pLayout) return;
 
@@ -781,7 +772,7 @@ void CQLayoutMainWindow::setLayout(CLayout* pLayout)
   this->update();
 }
 
-CQPlayerControlWidget* CQLayoutMainWindow::getControlWidget()
+CQPlayerControlWidget *CQLayoutMainWindow::getControlWidget()
 {
   return this->mpControlWidget;
 }

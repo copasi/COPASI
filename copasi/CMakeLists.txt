@@ -242,8 +242,6 @@ endif(BUILD_SE)
 
 if(BUILD_GUI)
 
-  include(${QT_USE_FILE})
-
   set(COPASI_RCC_SOURCES)
   set(COPASI_UI_SOURCES)
   set(COPASI_UI_HEADERS)
@@ -261,7 +259,8 @@ if(BUILD_GUI)
 if(ENABLE_VERSIONING)
  include(versioning/CMakeLists.txt)
 endif()
-  set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
+
+set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
 
 if(ENABLE_PROVENANCE)
  include(Provenance/CMakeLists.txt)
@@ -309,6 +308,42 @@ endif(EXTRA_MOC_OPTIONS)
 set(HEADERS_UI_MOC)
 set(HEADERS_UI_FORMS)
 
+if (Qt5_FOUND)
+include(CMakeParseArguments)
+
+
+# qt5_wrap_ui(outfiles inputfile ... )
+
+MACRO(COPASI_QT5_WRAP_UI outfiles)
+    set(options)
+    set(oneValueArgs SUBDIR)
+    set(multiValueArgs OPTIONS)    
+
+    cmake_parse_arguments(_WRAP_UI "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    #get_cmake_property(_vars VARIABLES)
+    #foreach(_name ${_vars})
+    #  message("${_name}: ${${_name}})")
+    #endforeach()
+
+    set(ui_files ${_WRAP_UI_UNPARSED_ARGUMENTS})
+    set(ui_options ${_WRAP_UI_OPTIONS})
+    set(ui_subdir ${_WRAP_UI_SUBDIR})
+
+    foreach(it ${ui_files})
+        get_filename_component(outfile ${it} NAME_WE)
+        get_filename_component(infile ${it} ABSOLUTE)
+        set(outfile ${CMAKE_CURRENT_BINARY_DIR}/${ui_subdir}/ui_${outfile}.h)
+        add_custom_command(OUTPUT ${outfile}
+          COMMAND ${Qt5Widgets_UIC_EXECUTABLE}
+          ARGS ${ui_options} -o ${outfile} ${infile}
+          MAIN_DEPENDENCY ${infile} VERBATIM)
+        list(APPEND ${outfiles} ${outfile})
+    endforeach()
+    set(${outfiles} ${${outfiles}} PARENT_SCOPE)
+ENDMACRO()
+endif()
+
 MACRO (COPASI_QT4_WRAP_UI outfiles subdir )
 
   if (${CMAKE_VERSION} VERSION_LESS  "2.8.12")
@@ -338,21 +373,34 @@ foreach (dir
   #message(STATUS "Mocing files for subdir: ${dir}")
 
   set(TEMP_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -p${dir})
+  if (Qt5_FOUND)
+    if (TEMP_UI_MOC_OPTIONS)
+      qt5_wrap_cpp(TEMP_UI_MOC ${HEADERS_${suffix}} OPTIONS ${TEMP_UI_MOC_OPTIONS})
+    else()
+      qt5_wrap_cpp(TEMP_UI_MOC ${dir} ${HEADERS_${suffix}})
+    endif(TEMP_UI_MOC_OPTIONS)
+    set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
+    if(FORMS_${suffix})
+      #message(STATUS "uic'ing files for subdir: ${dir}")
+      COPASI_QT5_WRAP_UI(TEMP_UI_FORMS SUBDIR "${dir}" ${FORMS_${suffix}})
+    endif()
+    set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
+  else (Qt5_FOUND)
+    if (TEMP_UI_MOC_OPTIONS)
+      qt4_wrap_cpp(TEMP_UI_MOC ${HEADERS_${suffix}} OPTIONS ${TEMP_UI_MOC_OPTIONS})
+    else()
+      qt4_wrap_cpp(TEMP_UI_MOC ${dir} ${HEADERS_${suffix}})
+    endif(TEMP_UI_MOC_OPTIONS)
 
-  if (TEMP_UI_MOC_OPTIONS)
-    qt4_wrap_cpp(TEMP_UI_MOC ${HEADERS_${suffix}} OPTIONS ${TEMP_UI_MOC_OPTIONS})
-  else()
-    qt4_wrap_cpp(TEMP_UI_MOC ${dir} ${HEADERS_${suffix}})
-  endif(TEMP_UI_MOC_OPTIONS)
+    set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
 
-  set(HEADERS_UI_MOC ${HEADERS_UI_MOC} ${TEMP_UI_MOC})
+    if(FORMS_${suffix})
+      #message(STATUS "uic'ing files for subdir: ${dir}")
+      COPASI_QT4_WRAP_UI(TEMP_UI_FORMS "${dir}" ${FORMS_${suffix}})
+    endif()
+    set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
+  endif (Qt5_FOUND)
 
-  if(FORMS_${suffix})
-    #message(STATUS "uic'ing files for subdir: ${dir}")
-  COPASI_QT4_WRAP_UI(TEMP_UI_FORMS "${dir}" ${FORMS_${suffix}})
-  endif()
-
-  set(HEADERS_UI_FORMS ${HEADERS_UI_FORMS} ${TEMP_UI_FORMS})
   include_directories(${CMAKE_CURRENT_BINARY_DIR}/${dir})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${dir})
 endforeach()
@@ -372,6 +420,7 @@ include_directories(${LIBSEDML_INCLUDE_DIR})
 endif()
 
 add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
+QT_BIND_TO_TARGET(libCOPASIUI)
 target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
 set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 

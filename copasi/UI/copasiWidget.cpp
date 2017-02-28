@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,7 +20,7 @@
 // copasiWidget.cpp: implementation of the CopasiWidget class.
 //
 //////////////////////////////////////////////////////////////////////
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #include <QUndoStack>
 
@@ -26,7 +31,7 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CCopasiRootContainer.h"
 
-CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
+CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : QWidget(parent, f),
     mpListView(NULL),
     mKey(),
@@ -45,11 +50,10 @@ CopasiWidget::CopasiWidget(QWidget * parent, const char * name, Qt::WFlags f)
     }
 
   assert(mpListView != NULL);
-
   mpDataModel = mpListView->getDataModel();
 }
 
-bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
 {return true;}
 
 bool CopasiWidget::leave()
@@ -62,7 +66,7 @@ void CopasiWidget::refresh()
   enterProtected();
 }
 
-bool CopasiWidget::enter(const std::string & key)
+bool CopasiWidget::enter(const std::string &key)
 {
   mKey = key;
   mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
@@ -88,7 +92,7 @@ bool CopasiWidget::enterProtected()
 void CopasiWidget::setFramework(int framework)
 {mFramework = framework;}
 
-bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key)
 {
   bool notifyRun = false;
 
@@ -100,7 +104,6 @@ bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::
     }
 
   mIgnoreUpdates = false;
-
   return notifyRun;
 }
 
@@ -114,17 +117,17 @@ void CopasiWidget::setIgnoreUpdates(bool v)
   mIgnoreUpdates = v;
 }
 
-CCopasiDataModel * CopasiWidget::getDataModel() const
+CCopasiDataModel *CopasiWidget::getDataModel() const
 {
   return mpDataModel;
 }
 
-void CopasiWidget::setUndoStack(QUndoStack* undoStack)
+void CopasiWidget::setUndoStack(QUndoStack *undoStack)
 {
   mpUndoStack = undoStack;
 }
 
-QUndoStack* CopasiWidget::getUndoStack()
+QUndoStack *CopasiWidget::getUndoStack()
 {
   return mpUndoStack;
 }

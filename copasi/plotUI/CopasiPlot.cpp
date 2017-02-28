@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,8 +18,8 @@
 // All rights reserved.
 
 #include <QtCore/QString>
-#include <QtGui/QColor>   //might need to go to the header file
-#include <QtGui/QCursor>
+#include <QColor>   //might need to go to the header file
+#include <QCursor>
 #include <QtCore/QMutexLocker>
 
 #include <qwt_symbol.h>
@@ -265,10 +270,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);

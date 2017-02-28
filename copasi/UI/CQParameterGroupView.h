@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -7,7 +12,7 @@
 #define COPASI_CQParameterGroupView
 
 #include <QtCore/QVariant>
-#include <QtGui/QTreeView>
+#include <QTreeView>
 
 #include "copasi/utilities/CCopasiParameterGroup.h"
 

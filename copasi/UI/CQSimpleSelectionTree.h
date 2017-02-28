@@ -11,7 +11,7 @@
 #ifndef SimpleSelectionTree_H__
 #define SimpleSelectionTree_H__
 
-#include <QtGui/QTreeWidget>
+#include <QTreeWidget>
 #include <vector>
 #include <map>
 #include <string>

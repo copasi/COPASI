@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -40,11 +45,11 @@
 
 class CheckPointModel : public QAbstractTableModel
 {
-  QVector<CheckPoint*> mData;
+  QVector<CheckPoint *> mData;
   std::vector<QString> mHeaders;
 public:
 
-  CheckPointModel(QObject * parent, ResultData* data)
+  CheckPointModel(QObject *parent, ResultData *data)
     : QAbstractTableModel(parent)
     , mData()
     , mHeaders()
@@ -53,7 +58,7 @@ public:
     mHeaders.push_back("Best Value");
 
     if (data != NULL)
-      for (std::vector<FittingItem*>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
+      for (std::vector<FittingItem *>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
         {
           mHeaders.push_back((*it)->mName.c_str());
         }
@@ -67,7 +72,7 @@ public:
   {
     if (role != Qt::DisplayRole && role != Qt::EditRole) return QVariant();
 
-    const CheckPoint * checkPoint = mData[index.row()];
+    const CheckPoint *checkPoint = mData[index.row()];
 
     if (index.column() == 0)
       {
@@ -101,15 +106,17 @@ public:
 
   void removeAllRows()
   {
+    beginResetModel();
     mData.clear();
-    reset();
+    endResetModel();
+    //reset();
   }
 
-  void append(std::vector<CheckPoint*> & checkPoints)
+  void append(std::vector<CheckPoint *> &checkPoints)
   {
     beginInsertRows(QModelIndex(), mData.count(), mData.count() + checkPoints.size() - 1);
 
-    for (std::vector<CheckPoint*>::iterator it1 = checkPoints.begin();
+    for (std::vector<CheckPoint *>::iterator it1 = checkPoints.begin();
          it1 != checkPoints.end(); ++it1)
       {
         mData.append(*it1);
@@ -118,7 +125,7 @@ public:
     endInsertRows();
   }
 
-  void append(CheckPoint* checkPoint)
+  void append(CheckPoint *checkPoint)
   {
     beginInsertRows(QModelIndex(), mData.count(), mData.count());
     mData.append(checkPoint);
@@ -127,7 +134,7 @@ public:
 };
 
 CQParameterEstimationResult::CQParameterEstimationResult(QWidget *parent,
-    CCopasiDataModel* dataModel)
+    CCopasiDataModel *dataModel)
   : QDialog(parent)
   , ui(new Ui::CQParameterEstimationResult)
   , mResultData()
@@ -137,14 +144,12 @@ CQParameterEstimationResult::CQParameterEstimationResult(QWidget *parent,
   , mInitializing(true)
 {
   ui->setupUi(this);
-
-  QCompleter* completer = new QCompleter(this);
+  QCompleter *completer = new QCompleter(this);
   completer->setCompletionMode(QCompleter::PopupCompletion);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
-  QFileSystemModel* model = new QFileSystemModel(completer);
+  QFileSystemModel *model = new QFileSystemModel(completer);
   completer->setModel(model);
   ui->txtProtocol->setCompleter(completer);
-
   QObject::connect(ui->txtProtocol, SIGNAL(textChanged(QString)), completer, SLOT(complete()));
 }
 
@@ -158,14 +163,12 @@ void
 CQParameterEstimationResult::updateUI()
 {
   mInitializing = true;
-
   ui->lstDataSets->clear();
 
-  for (std::vector<ResultData*>::iterator it = mResultData.begin(); it != mResultData.end(); ++it)
+  for (std::vector<ResultData *>::iterator it = mResultData.begin(); it != mResultData.end(); ++it)
     ui->lstDataSets->addItem(QString("DataSet_%1").arg(ui->lstDataSets->count() + 1));
 
-  ResultData* data = getResult(0);
-
+  ResultData *data = getResult(0);
   ui->tblResults->setModel(NULL);
 
   if (mpCheckPointModel != NULL)
@@ -180,7 +183,6 @@ CQParameterEstimationResult::updateUI()
   mpCheckPointModel = new CheckPointModel(this, data);
   mpProxy->setSourceModel(mpCheckPointModel);
   ui->tblResults->setModel(mpProxy);
-
   mInitializing = false;
 
   if (ui->lstDataSets->count() > 0)
@@ -193,7 +195,7 @@ CQParameterEstimationResult::updateUI()
 void
 CQParameterEstimationResult::deleteData()
 {
-  std::vector<ResultData*>::iterator it = mResultData.begin();
+  std::vector<ResultData *>::iterator it = mResultData.begin();
 
   while (it != mResultData.end())
     {
@@ -205,7 +207,7 @@ CQParameterEstimationResult::deleteData()
 }
 
 void
-CQParameterEstimationResult::loadProtocol(const QString& fileName)
+CQParameterEstimationResult::loadProtocol(const QString &fileName)
 {
   deleteData();
   ui->txtProtocol->setText(fileName);
@@ -222,19 +224,18 @@ CQParameterEstimationResult::loadProtocol()
 void
 CQParameterEstimationResult::updateFitItems()
 {
-  ResultData* data = getResult(ui->lstDataSets->currentIndex());
+  ResultData *data = getResult(ui->lstDataSets->currentIndex());
 
   if (data == NULL) return;
 
   data->updateFitItems();
-
   dataSetChanged();
 }
 
 void
 CQParameterEstimationResult::setTaskStartValues()
 {
-  ResultData* data = getResult(ui->lstDataSets->currentIndex());
+  ResultData *data = getResult(ui->lstDataSets->currentIndex());
 
   if (data == NULL) return;
 
@@ -254,7 +255,7 @@ CQParameterEstimationResult::setTaskStartValues()
 void
 CQParameterEstimationResult::applyToModelState()
 {
-  ResultData* data = getResult(ui->lstDataSets->currentIndex());
+  ResultData *data = getResult(ui->lstDataSets->currentIndex());
 
   if (data == NULL) return;
 
@@ -274,19 +275,19 @@ CQParameterEstimationResult::applyToModelState()
     {
       // let the user sort the experiments
       QDialog *dialog = new QDialog(this);
-      QVBoxLayout* verticalLayout = new QVBoxLayout(dialog);
-      QLabel* label = new QLabel(dialog);
+      QVBoxLayout *verticalLayout = new QVBoxLayout(dialog);
+      QLabel *label = new QLabel(dialog);
       verticalLayout->addWidget(label);
       label->setText("Please drag and drop the experiments into the order in which to apply the values.");
-      QListView* listView = new QListView(dialog);
+      QListView *listView = new QListView(dialog);
       verticalLayout->addWidget(listView);
-      QStandardItemModel* model = new QStandardItemModel(this);
+      QStandardItemModel *model = new QStandardItemModel(this);
 
       for (std::vector<std::string>::iterator it = experiments.begin();
            it != experiments.end(); ++it)
         {
           int current = model->rowCount();
-          QStandardItem* item = new QStandardItem((*it).c_str());
+          QStandardItem *item = new QStandardItem((*it).c_str());
           item->setFlags(item->flags() ^ Qt::ItemIsDropEnabled);
           model->appendRow(item);
         }
@@ -296,8 +297,7 @@ CQParameterEstimationResult::applyToModelState()
       listView->setAcceptDrops(true);
       listView->setDragDropMode(QAbstractItemView::InternalMove);
       listView->showDropIndicator();
-
-      QDialogButtonBox* group = new QDialogButtonBox(dialog);
+      QDialogButtonBox *group = new QDialogButtonBox(dialog);
       group->setOrientation(Qt::Horizontal);
       group->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
       QObject::connect(group, SIGNAL(accepted()), dialog, SLOT(accept()));
@@ -321,7 +321,7 @@ CQParameterEstimationResult::applyToModelState()
 }
 
 void
-CQParameterEstimationResult::protocolFileChanged(const QString& fileName)
+CQParameterEstimationResult::protocolFileChanged(const QString &fileName)
 {
   QFileInfo info(fileName);
 
@@ -345,7 +345,7 @@ CQParameterEstimationResult::toggleFitItems()
   ui->tblFitItems->setVisible(!ui->chkHideFitItems->isChecked());
 }
 
-ResultData*
+ResultData *
 CQParameterEstimationResult::getResult(int index)
 {
   if (mResultData.empty()) return NULL;
@@ -366,7 +366,7 @@ CQParameterEstimationResult::dataSetChanged()
   if (mInitializing) return;
 
   int currentIndex = ui->lstDataSets->currentIndex();
-  ResultData* data = getResult(currentIndex);
+  ResultData *data = getResult(currentIndex);
 
   if (data == NULL) return;
 
@@ -380,9 +380,9 @@ CQParameterEstimationResult::dataSetChanged()
   while (ui->tblFitItems->rowCount() > 0)
     ui->tblFitItems->removeRow(0);
 
-  for (std::vector<FittingItem*>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
+  for (std::vector<FittingItem *>::iterator it = data->mFittingItems.begin(); it != data->mFittingItems.end(); ++it)
     {
-      FittingItem* item = *it;
+      FittingItem *item = *it;
       int row = ui->tblFitItems->rowCount();
       ui->tblFitItems->insertRow(row);
       ui->tblFitItems->setItem(row, 0, new QTableWidgetItem(item->mName.c_str()));

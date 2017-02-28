@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,7 +29,7 @@ Contact: Please contact lixu1@vt.edu.
 #ifndef OBJECTBROWSERWIDGET_H
 #define OBJECTBROWSERWIDGET_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <vector>
 
 template <class CType> class CCopasiVector;
@@ -52,52 +57,52 @@ class ObjectBrowserWidget : public QWidget
   Q_OBJECT
 
 public:
-  ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0, int state = 0);
+  ObjectBrowserWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0, int state = 0);
   virtual ~ObjectBrowserWidget();
 
-  ObjectList* objectItemList;
-  ObjectList* refreshList;
+  ObjectList *objectItemList;
+  ObjectList *refreshList;
 
-  QGridLayout* ObjectBrowserLayout;
-  QPushButton* clearButton;
-  QPushButton* toggleViewButton;
-  QPushButton* commitButton;
-  QTreeWidget* ObjectListView;
-  QFrame* Line1;
-  QSpacerItem* spacer;
-  QTextEdit* ObjectItemText;
+  QGridLayout *ObjectBrowserLayout;
+  QPushButton *clearButton;
+  QPushButton *toggleViewButton;
+  QPushButton *commitButton;
+  QTreeWidget *ObjectListView;
+  QFrame *Line1;
+  QSpacerItem *spacer;
+  QTextEdit *ObjectItemText;
 
-  void eXport(ObjectBrowserItem* pCurrent, std::vector< const CCopasiObject * > * outputVector);
-  void removeDuplicate(ObjectList* objectItemList);
-  void setCheck(ObjectBrowserItem* pCurrent);
-  void setUncheck(ObjectBrowserItem* pCurrent);
-  void clickToReverseCheck(ObjectBrowserItem* pCurrent);
-  void setCheckMark(ObjectBrowserItem* pCurrent);
+  void eXport(ObjectBrowserItem *pCurrent, std::vector< const CCopasiObject * > *outputVector);
+  void removeDuplicate(ObjectList *objectItemList);
+  void setCheck(ObjectBrowserItem *pCurrent);
+  void setUncheck(ObjectBrowserItem *pCurrent);
+  void clickToReverseCheck(ObjectBrowserItem *pCurrent);
+  void setCheckMark(ObjectBrowserItem *pCurrent);
 
   void loadData();
-  void loadChild(ObjectBrowserItem* parent, const CCopasiContainer * copaParent, bool nField);
-  void loadField(ObjectBrowserItem* parent, CCopasiVector<CCopasiObject>* copaParent);
+  void loadChild(ObjectBrowserItem *parent, const CCopasiContainer *copaParent, bool nField);
+  void loadField(ObjectBrowserItem *parent, CCopasiVector<CCopasiObject> *copaParent);
 
-  CCopasiObject* getFieldCopasiObject(CCopasiContainer * pCurrent, const char* name);
-  void setOutputVector(std::vector< const CCopasiObject * > * pObjectVector);
-  void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
+  CCopasiObject *getFieldCopasiObject(CCopasiContainer *pCurrent, const char *name);
+  void setOutputVector(std::vector< const CCopasiObject * > *pObjectVector);
+  void selectObjects(std::vector< const CCopasiObject * > *pObjectVector);
   void updateUI();
   void loadUI();
 
-  void swap(int, int, ObjectBrowserItem**);
-  int partition(int, int, int, ObjectBrowserItem**);
-  void quick_sort(int, int, ObjectBrowserItem**);
+  void swap(int, int, ObjectBrowserItem **);
+  int partition(int, int, int, ObjectBrowserItem **);
+  void quick_sort(int, int, ObjectBrowserItem **);
 
 public slots:
   virtual void clearClicked();
   virtual void toggleViewClicked();
   virtual void commitClicked();
-  virtual void listviewChecked(QTreeWidgetItem*, int);
+  virtual void listviewChecked(QTreeWidgetItem *, int);
 
 private:
-  std::vector< const CCopasiObject * > * mOutputObjectVector;
+  std::vector< const CCopasiObject * > *mOutputObjectVector;
   pageIndex currentPage;
-  void selectObjects(ObjectBrowserItem* browserItem, const CCopasiObject * selectObject);
+  void selectObjects(ObjectBrowserItem *browserItem, const CCopasiObject *selectObject);
   void updateSelectedItemsView();
   void cleanup();
 };

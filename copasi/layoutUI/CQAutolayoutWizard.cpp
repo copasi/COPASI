@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,17 +10,17 @@
 
 #include "CQAutolayoutWizard.h"
 
-#include <QtGui/QCheckBox>
-#include <QtGui/QFrame>
-#include <QtGui/QLabel>
+#include <QCheckBox>
+#include <QFrame>
+#include <QLabel>
 #include <QtCore/QList>
-#include <QtGui/QListWidget>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
+#include <QListWidget>
+#include <QMessageBox>
+#include <QPushButton>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QVBoxLayout>
+#include <QTreeWidget>
+#include <QVBoxLayout>
 
 #include <assert.h>
 #include <map>

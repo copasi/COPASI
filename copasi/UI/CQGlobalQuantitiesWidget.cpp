@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,9 +15,9 @@
 
 #include "CQGlobalQuantitiesWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
 
 #include "copasi.h"
 
@@ -29,36 +34,34 @@
  *  Constructs a CQGlobalQuantitiesWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget* parent, const char* name)
+CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
-
   //Create Source Data Model.
   mpGlobalQuantityDM = new CQGlobalQuantityDM(this);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
-
   //Setting values for Types comboBox
   mpTypeDelegate = new CQIndexComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
-
+#if QT_VERSION >= 0x050000
+  mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblGlobalQuantities->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblGlobalQuantities->verticalHeader()->hide();
   mpTblGlobalQuantities->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
   // Connect the table widget
   connect(mpGlobalQuantityDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpGlobalQuantityDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpGlobalQuantityDM->setUndoStack(pWindow->getUndoStack());
 }
 
@@ -89,8 +92,7 @@ void CQGlobalQuantitiesWidget::slotBtnDeleteClicked()
 
 void CQGlobalQuantitiesWidget::deleteSelectedGlobalQuantities()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblGlobalQuantities->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblGlobalQuantities->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpGlobalQuantityDM->rowCount();
 
@@ -110,7 +112,6 @@ void CQGlobalQuantitiesWidget::deleteSelectedGlobalQuantities()
 
 void CQGlobalQuantitiesWidget::slotBtnClearClicked()
 {
-
   int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Quantities?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
@@ -122,7 +123,7 @@ void CQGlobalQuantitiesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQGlobalQuantitiesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
 {
   if (!mIgnoreUpdates &&
       objectType == ListViews::MODEL)
@@ -142,8 +143,8 @@ bool CQGlobalQuantitiesWidget::enterProtected()
 {
   if (mpTblGlobalQuantities->selectionModel() != NULL)
     {
-      disconnect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   mpGlobalQuantityDM->setDataModel(mpDataModel);
@@ -151,18 +152,16 @@ bool CQGlobalQuantitiesWidget::enterProtected()
   //Set Model for the TableView
   mpTblGlobalQuantities->setModel(NULL);
   mpTblGlobalQuantities->setModel(mpProxyModel);
-  connect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(mpTblGlobalQuantities->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
   mpTblGlobalQuantities->resizeColumnsToContents();
-
   return true;
 }
 
 void CQGlobalQuantitiesWidget::updateDeleteBtns()
 {
   bool selected = false;
-
   QModelIndexList selRows = mpTblGlobalQuantities->selectionModel()->selectedRows();
 
   if (selRows.size() == 0)
@@ -188,14 +187,14 @@ void CQGlobalQuantitiesWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQGlobalQuantitiesWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
-    const QItemSelection& C_UNUSED(deselected))
+void CQGlobalQuantitiesWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
+    const QItemSelection &C_UNUSED(deselected))
 {
   updateDeleteBtns();
 }
 
-void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
-    const QModelIndex& C_UNUSED(bottomRight))
+void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
+    const QModelIndex &C_UNUSED(bottomRight))
 {
   mpTblGlobalQuantities->resizeColumnsToContents();
   updateDeleteBtns();
@@ -214,7 +213,7 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;
@@ -225,7 +224,7 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQGlobalQuantitiesWidget::keyPressEvent(QKeyEvent* ev)
+void CQGlobalQuantitiesWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();

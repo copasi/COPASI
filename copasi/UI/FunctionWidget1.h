@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +36,7 @@ class FunctionWidget1 : public CopasiWidget, public Ui::FunctionWidget1
   Q_OBJECT
 
 public:
-  FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WFlags f = 0);
+  FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WindowFlags f = 0);
   virtual ~FunctionWidget1();
 
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);

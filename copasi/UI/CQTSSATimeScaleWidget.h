@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,20 +16,20 @@
 #ifndef CQTSSATIMESCALEWIDGET_H
 #define CQTSSATIMESCALEWIDGET_H
 
-#include <QtGui/QWidget>
-#include <QtGui/QLayout>
-#include <QtGui/QPaintEvent>
-#include <QtGui/QVBoxLayout>
+#include <QWidget>
+#include <QLayout>
+#include <QPaintEvent>
+#include <QVBoxLayout>
 #include "utilities/CVector.h"
-#include <QtGui/QSlider>
-#include <QtGui/QPainter>
+#include <QSlider>
+#include <QPainter>
 
 class PaintWidget : public QWidget
 {
   Q_OBJECT
 
 public:
-  PaintWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  PaintWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~PaintWidget();
 
   void paintTimeScale(int select);
@@ -44,7 +49,7 @@ class CQTSSATimeScaleWidget : public QWidget
   Q_OBJECT
 
 public:
-  CQTSSATimeScaleWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  CQTSSATimeScaleWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQTSSATimeScaleWidget();
 
   void paintTimeScale(CVector< C_FLOAT64> vector);

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,17 +16,17 @@
 #include "CQTSSATimeScaleWidget.h"
 
 #include <cmath>
-#include <QtGui/QBitmap>
-#include <QtGui/QColor>
-#include <QtGui/QToolTip>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QPaintEvent>
+#include <QBitmap>
+#include <QColor>
+#include <QToolTip>
+#include <QVBoxLayout>
+#include <QPaintEvent>
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+CQTSSATimeScaleWidget::CQTSSATimeScaleWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : QWidget(parent, fl)
 {
   setObjectName(QString::fromUtf8(name));
@@ -97,7 +102,7 @@ void CQTSSATimeScaleWidget::clearWidget()
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+PaintWidget::PaintWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : QWidget(parent, fl),
     mSelection(0)
 {

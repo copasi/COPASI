@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,14 +19,14 @@
 
 #include <cmath>
 
-#include <QtGui/QLabel>
+#include <QLabel>
 #include <QtCore/QString>
-#include <QtGui/QSlider>
-#include <QtGui/QPixmap>
-#include <QtGui/QToolButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QToolTip>
+#include <QSlider>
+#include <QPixmap>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QToolTip>
 
 #include "copasi.h"
 

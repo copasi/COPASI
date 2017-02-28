@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,12 +19,14 @@
 
 // the window containing the plot and buttons for supported operations
 
-#include <QtSvg/QtSvg>
 
-#include <QtGui/QToolBar>
-#include <QtGui/QPrinter>
-#include <QtGui/QPixmap>
-#include <QtGui/QPicture>
+#include <QToolBar>
+#include <QPrinter>
+#include <QPixmap>
+#include <QPicture>
+#include <QPrintDialog>
+
+#include <QtSvg/QtSvg>
 #include <QtSvg/QSvgGenerator>
 
 #include "plotwindow.h"
@@ -60,7 +67,7 @@ public:
 #endif
 
 //-----------------------------------------------------------------------------
-PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* ptrSpec, CopasiUI3Window * pMainWindow):
+PlotWindow::PlotWindow(COutputHandlerPlot *pHandler, const CPlotSpecification *ptrSpec, CopasiUI3Window *pMainWindow):
   CWindowInterface(),
   mpPlot(NULL),
   mpHandler(pHandler),
@@ -80,24 +87,19 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
 {
   this->resize(640, 480);
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
-
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
-
   // set up the GUI - the toolbar
   createActions();
   createMenus();
   createToolBar();
-
   mpPlot = new CopasiPlot(ptrSpec, this);
   setCentralWidget(mpPlot);
-
   initializing  = true;
   mpaToggleLogX->setChecked(ptrSpec->isLogX());
   mpaToggleLogY->setChecked(ptrSpec->isLogY());
   initializing = false;
-
   addToMainWindow(mpMainWindow);
 }
 
@@ -109,7 +111,6 @@ void PlotWindow::createMenus()
   fileMenu->addAction(mpaPrint);
   fileMenu->addSeparator();
   fileMenu->addAction(mpaCloseWindow);
-
   QMenu *viewMenu = menuBar()->addMenu("&View");
   viewMenu->addAction(mpaShowAll);
   viewMenu->addAction(mpaHideAll);
@@ -118,7 +119,6 @@ void PlotWindow::createMenus()
   viewMenu->addAction(mpaToggleLogY);
   viewMenu->addSeparator();
   viewMenu->addAction(mpaZoomOut);
-
   // add a place holder menu, to be filled by the main window
   mpWindowMenu = menuBar()->addMenu("&Window");
 }
@@ -133,42 +133,34 @@ void PlotWindow::createActions()
   mpaToggleLogX->setCheckable(true);
   mpaToggleLogX->setToolTip("Toggle x-axis logscale.");
   connect(mpaToggleLogX, SIGNAL(toggled(bool)), this, SLOT(toggleLogX(bool)));
-
   mpaToggleLogY = new QAction("Log &Y", this);
   mpaToggleLogY->setCheckable(true);
   mpaToggleLogY->setToolTip("Toggle y-axis logscale.");
   connect(mpaToggleLogY, SIGNAL(toggled(bool)), this, SLOT(toggleLogY(bool)));
-
   mpaPrint = new QAction("Print", this);
   mpaPrint ->setToolTip("Print Plot");
   mpaPrint -> setShortcut(Qt::CTRL + Qt::Key_P);
   connect(mpaPrint, SIGNAL(triggered()), this, SLOT(printPlot()));
-
   mpaSaveImage = new QAction("Save Image", this);
   mpaSaveImage ->setShortcut(Qt::CTRL + Qt::Key_S);
   mpaSaveImage ->setToolTip("Save Plot as Image");
   connect(mpaSaveImage, SIGNAL(triggered()), this, SLOT(printAsImage()));
-
   mpaSaveData = new QAction("Save Data", this);
   mpaSaveData ->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_S);
   mpaSaveData ->setToolTip("Save Data");
   connect(mpaSaveData, SIGNAL(triggered()), this, SLOT(slotSaveData()));
-
   mpaZoomOut = new QAction("Zoom out", this);
   mpaZoomOut ->setShortcut(Qt::CTRL + Qt::Key_0);
   mpaZoomOut ->setToolTip("Zoom out");
   connect(mpaZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
-
   mpaShowAll = new QAction("Show All", this);
   mpaShowAll ->setShortcut(Qt::CTRL + Qt::Key_A);
   mpaShowAll ->setToolTip("Show all curves");
   connect(mpaShowAll, SIGNAL(triggered()), this, SLOT(slotSelectAll()));
-
   mpaHideAll = new QAction("Hide All", this);
   mpaHideAll ->setShortcut(Qt::CTRL + Qt::Key_D);
   mpaHideAll ->setToolTip("Hide all curves");
   connect(mpaHideAll, SIGNAL(triggered()), this, SLOT(slotDeselectAll()));
-
   mpaCloseWindow = new QAction("Close", this);
   mpaCloseWindow->setObjectName("close");
   mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
@@ -178,32 +170,24 @@ void PlotWindow::createActions()
 void PlotWindow::createToolBar()
 {
   mpToolBar = addToolBar("plot operations");
-
   mpToolBar->addAction(mpaPrint);
   mpToolBar->addAction(mpaSaveImage);
   mpToolBar->addAction(mpaSaveData);
   mpToolBar->addAction(mpaZoomOut);
-
   mpToolBar->addSeparator();
   mpToolBar->addAction(mpaToggleLogX);
   mpToolBar->addAction(mpaToggleLogY);
-
   mpToolBar->addSeparator();
-
   mpToolBar->addAction(mpaShowAll);
   mpToolBar->addAction(mpaHideAll);
-
   mpToolBar->addSeparator();
-
   mpToolBar->addAction(mpaCloseWindow);
-
   //TODO button icons...
-
   setUnifiedTitleAndToolBarOnMac(true);
-//  plotTools->setStretchableWidget(new QWidget(plotTools));
+  //  plotTools->setStretchableWidget(new QWidget(plotTools));
 }
 
-bool PlotWindow::initFromSpec(const CPlotSpecification* ptrSpec)
+bool PlotWindow::initFromSpec(const CPlotSpecification *ptrSpec)
 {
   this->setWindowTitle(("COPASI Plot: " + ptrSpec->getTitle()).c_str());
   bool result = mpPlot->initFromSpec(ptrSpec);
@@ -286,7 +270,7 @@ void PlotWindow::toggleLogY(bool logY)
 }*/
 
 //-----------------------------------------------------------------------------
-void PlotWindow::saveToFile(const QString& fileName) const
+void PlotWindow::saveToFile(const QString &fileName) const
 {
   QRect rect;
   rect.setSize(this->size());
@@ -300,12 +284,10 @@ void PlotWindow::saveToFile(const QString& fileName) const
 #if QWT_VERSION > 0x060000
       QwtPlotRenderer renderer;
       renderer.render(mpPlot, &painter, rect);
-
 #else
       mpPlot->print(&painter, rect, PrintFilter());
 #endif
       painter.end();
-
       pixmap.save(fileName, "PNG");
     }
   else if (fileName.endsWith(".svg"))
@@ -317,7 +299,6 @@ void PlotWindow::saveToFile(const QString& fileName) const
 #if QWT_VERSION > 0x060000
       QwtPlotRenderer renderer;
       renderer.render(mpPlot, &painter, rect);
-
 #else
       mpPlot->print(&painter, rect, PrintFilter());
 #endif
@@ -333,7 +314,6 @@ void PlotWindow::saveToFile(const QString& fileName) const
 #if QWT_VERSION > 0x060000
       QwtPlotRenderer renderer;
       renderer.render(mpPlot, &painter, rect);
-
 #else
       mpPlot->print(&painter, rect, PrintFilter());
 #endif
@@ -344,14 +324,12 @@ void PlotWindow::saveToFile(const QString& fileName) const
 void PlotWindow::printAsImage()
 {
   // take a name from QFileDialog
-
   C_INT32 Answer = QMessageBox::No;
   QString fileName, extensionName;
 
   while (Answer == QMessageBox::No)
     {
-
-//      QString userFilter = new QString;
+      //      QString userFilter = new QString;
       /*
             fileName = CopasiFileDialog::getSaveFileNameAndFilter(filter, this, "Save File Dialog",
                        QString::null, "PNG Files (*.png);;SVG Files (*.svg)", "Save to");
@@ -366,9 +344,8 @@ void PlotWindow::printAsImage()
             extensionName = fileInfo.extension();
       */
 #ifdef DEBUG_UI
-//      qDebug() << "extensionName = " << extensionName;
+      //      qDebug() << "extensionName = " << extensionName;
 #endif
-
       // check whether the file exists
       Answer = checkSelection(fileName);
 
@@ -382,7 +359,6 @@ void PlotWindow::printAsImage()
 void PlotWindow::printPlot()
 {
   QPrinter printer;
-
   QString docName = mpPlot->title().text();
 
   if (docName.isEmpty())
@@ -394,7 +370,6 @@ void PlotWindow::printPlot()
 
   printer.setCreator("COPASI");
   printer.setOrientation(QPrinter::Landscape);
-
   QPrintDialog dialog(&printer);
 
   if (dialog.exec())
@@ -402,7 +377,6 @@ void PlotWindow::printPlot()
 #if QWT_VERSION > 0x060000
       QwtPlotRenderer renderer;
       renderer.renderTo(mpPlot, printer);
-
 #else
       mpPlot->print(printer, PrintFilter());
 #endif
@@ -477,16 +451,16 @@ bool PlotWindow::compile(CObjectInterface::ContainerList listOfContainer)
   return success;
 };
 
-void PlotWindow::output(const Activity & activity)
+void PlotWindow::output(const Activity &activity)
 {if (mpPlot) mpPlot->output(activity);}
 
-void PlotWindow::separate(const Activity & activity)
+void PlotWindow::separate(const Activity &activity)
 {if (mpPlot) mpPlot->separate(activity);};
 
 void PlotWindow::finish()
 {if (mpPlot) mpPlot->finish();};
 
-const CObjectInterface::ObjectSet & PlotWindow::getObjects() const
+const CObjectInterface::ObjectSet &PlotWindow::getObjects() const
 {
   if (mpPlot)
     return mpPlot->getObjects();
@@ -517,7 +491,7 @@ void PlotWindow::closeEvent(QCloseEvent *closeEvent)
   mpHandler->removeInterface(this);
 }
 
-CopasiPlot* PlotWindow::getPlot() const
+CopasiPlot *PlotWindow::getPlot() const
 {
   return mpPlot;
 }

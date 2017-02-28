@@ -1,16 +1,21 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <QtGui/QGraphicsItem>
+#include <QGraphicsItem>
 #include <QtCore/QSharedPointer>
-#include <QtGui/QPen>
-#include <QtGui/QFont>
-#include <QtGui/QFontMetrics>
-#include <QtGui/QPixmap>
+#include <QPen>
+#include <QFont>
+#include <QFontMetrics>
+#include <QPixmap>
 #include <QtCore/QFile>
-#include <QtGui/QGraphicsScene>
+#include <QGraphicsScene>
 
 #include <qlayout/CQRenderConverter.h>
 #include <qlayout/CQRoundedRect.h>

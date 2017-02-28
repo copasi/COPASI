@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -32,38 +37,38 @@ private:
   Curve2DWidget *mpCurveWidget;
   HistoWidget *mpHistoWidget;
 #ifdef COPASI_BANDED_GRAPH
-  BandedGraphWidget* mpBandedGraphWidget;
+  BandedGraphWidget *mpBandedGraphWidget;
 #endif
-  CQSpectogramWidget* mpSpectogramWidget;
+  CQSpectogramWidget *mpSpectogramWidget;
 
-  CQPlotEditWidget* selectControl(CPlotItem::Type type);
+  CQPlotEditWidget *selectControl(CPlotItem::Type type);
 
-  void addPlotItem(CPlotItem* item);
-  void selectPlotItem(CPlotItem* item);
+  void addPlotItem(CPlotItem *item);
+  void selectPlotItem(CPlotItem *item);
 
   int getCurrentIndex();
   void setCurrentIndex(int index);
   void deleteCurve(int index);
-  void deleteCurve(QListWidgetItem* item);
-  int getRow(QListWidgetItem* item);
+  void deleteCurve(QListWidgetItem *item);
+  int getRow(QListWidgetItem *item);
   void deleteCurves();
 
-  QMap<QString, CPlotItem*> mList;
+  QMap<QString, CPlotItem *> mList;
   CPlotItem *mLastItem;
-  QList<QListWidgetItem*> mLastSelection;
+  QList<QListWidgetItem *> mLastSelection;
 
-  bool areOfSameType(QList<QListWidgetItem*>& items);
+  bool areOfSameType(QList<QListWidgetItem *> &items);
 
   void storeChanges();
 
-  CPlotItem* updateItem(CPlotItem* item);
+  CPlotItem *updateItem(CPlotItem *item);
 
 public:
-  CQPlotSubwidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  CQPlotSubwidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQPlotSubwidget();
 
   virtual bool update(ListViews::ObjectType objectType,
-                      ListViews::Action action, const std::string & key);
+                      ListViews::Action action, const std::string &key);
   virtual bool leave();
 
   /**
@@ -74,7 +79,7 @@ public:
    * objects from the object selection widget several histograms can be generated
    * accordingly.
    */
-  void createHistograms(std::vector<const CCopasiObject* >objects, const C_FLOAT64 & incr);
+  void createHistograms(std::vector<const CCopasiObject * >objects, const C_FLOAT64 &incr);
 
 protected:
   virtual bool enterProtected();
@@ -84,34 +89,34 @@ protected:
   /**
    * creates curve widget and adds it to the tab bar
    */
-  void addCurveTab(const std::string & title,
-                   const CPlotDataChannelSpec & x,
-                   const CPlotDataChannelSpec & y);
+  void addCurveTab(const std::string &title,
+                   const CPlotDataChannelSpec &x,
+                   const CPlotDataChannelSpec &y);
 
 #ifdef COPASI_BANDED_GRAPH
   /**
    * creates banded graph widget and adds it to the tab bar
    */
-  void addBandedGraphTab(const std::string & title,
-                         const CPlotDataChannelSpec & x,
-                         const CPlotDataChannelSpec & yone,
-                         const CPlotDataChannelSpec & ytwo = CPlotDataChannelSpec());
+  void addBandedGraphTab(const std::string &title,
+                         const CPlotDataChannelSpec &x,
+                         const CPlotDataChannelSpec &yone,
+                         const CPlotDataChannelSpec &ytwo = CPlotDataChannelSpec());
 #endif // COPASI_BANDED_GRAPH
 
   /**
   * creates banded graph widget and adds it to the tab bar
   */
-  void addSpectrumTab(const std::string & title,
-                      const CPlotDataChannelSpec & x,
-                      const CPlotDataChannelSpec & yone,
-                      const CPlotDataChannelSpec & ytwo = CPlotDataChannelSpec());
+  void addSpectrumTab(const std::string &title,
+                      const CPlotDataChannelSpec &x,
+                      const CPlotDataChannelSpec &yone,
+                      const CPlotDataChannelSpec &ytwo = CPlotDataChannelSpec());
 
   /**
    * creates histogram widget and adds it to the tab bar
    */
-  void addHisto1DTab(const std::string & title,
-                     const CPlotDataChannelSpec & x,
-                     const C_FLOAT64 & incr);
+  void addHisto1DTab(const std::string &title,
+                     const CPlotDataChannelSpec &x,
+                     const C_FLOAT64 &incr);
 
   CPlotItem::Type mType;
 

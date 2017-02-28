@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,7 +17,7 @@
 #define CCOLORSCALE_H
 
 #include <vector>
-#include <QtGui/QColor>
+#include <QColor>
 
 #ifdef SunOS
 # include <ieeefp.h>
@@ -218,11 +223,11 @@ protected:
 class CColorScaleAuto : public CColorScaleAdvanced
 {
 public:
-  
+
   CColorScaleAuto();
-  
+
   //virtual QColor getColor(const C_FLOAT64 & number) const;
-  
+
   //void setColorMin(QColor col);
   //void setColorMax(QColor col);
 
@@ -230,10 +235,10 @@ public:
   virtual void passValue(const C_FLOAT64 & number);
   virtual void finishAutomaticParameterCalculation();
 
-  
+
 protected:
   std::vector<C_FLOAT64> mData;
-  
+
 };
 
 

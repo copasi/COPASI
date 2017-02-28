@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -9,21 +14,21 @@
 // All rights reserved.
 
 #include <QtCore/QVariant>
-#include <QtGui/QCheckBox>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QRadioButton>
-#include <QtGui/QLayout>
-#include <QtGui/QToolTip>
-#include <QtGui/QWhatsThis>
-#include <QtGui/QMessageBox>
-#include <QtGui/QToolButton>
-#include <QtGui/QImage>
+#include <QCheckBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QLayout>
+#include <QToolTip>
+#include <QWhatsThis>
+#include <QMessageBox>
+#include <QToolButton>
+#include <QImage>
 
-#include <QtGui/QFrame>
-#include <QtGui/QFileDialog>
-#include <QtGui/QTableWidget>
+#include <QFrame>
+#include <QFileDialog>
+#include <QTableWidget>
 
 #include <algorithm>
 

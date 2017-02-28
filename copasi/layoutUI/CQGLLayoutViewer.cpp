@@ -1,14 +1,19 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CQGLLayoutViewer.h"
 
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLayout>
-#include <QtGui/QScrollBar>
-#include <QtGui/QFrame>
+#include <QHBoxLayout>
+#include <QLayout>
+#include <QScrollBar>
+#include <QFrame>
 #include <QtOpenGL/QGLFormat>
 #include "CQGLLayoutPainter.h"
 
@@ -17,17 +22,17 @@
  */
 CQGLLayoutViewer::CQGLLayoutViewer(QWidget* pParent, Qt::WindowFlags f): QFrame(pParent, f)
 {
-  QVBoxLayout* pVBoxLayout = new QVBoxLayout(this);
+  QVBoxLayout *pVBoxLayout = new QVBoxLayout(this);
   this->setLayout(pVBoxLayout);
   pVBoxLayout->setContentsMargins(0, 0, 0, 0);
-  QFrame* pHBox = new QFrame(this);
-  QHBoxLayout* pHBoxLayout = new QHBoxLayout(pHBox);
+  QFrame *pHBox = new QFrame(this);
+  QHBoxLayout *pHBoxLayout = new QHBoxLayout(pHBox);
   pHBox->setLayout(pHBoxLayout);
   pHBoxLayout->setContentsMargins(0, 0, 0, 0);
   // the QGLformat needs to enable sample buffers, otherwise
   // there is no anti aliasing
   QGLFormat format(QGL::SampleBuffers);
-  format.setDoubleBuffer(TRUE);
+  format.setDoubleBuffer(true);
   this->mpLayoutPainter = new CQGLLayoutPainter(format, pHBox);
   pHBoxLayout->addWidget(this->mpLayoutPainter);
   this->mpVerticalScrollbar = new QScrollBar(Qt::Vertical, pHBox);
@@ -49,7 +54,7 @@ CQGLLayoutViewer::CQGLLayoutViewer(QWidget* pParent, Qt::WindowFlags f): QFrame(
 CQGLLayoutViewer::~CQGLLayoutViewer()
 {}
 
-void CQGLLayoutViewer::resizeEvent(QResizeEvent* e)
+void CQGLLayoutViewer::resizeEvent(QResizeEvent *e)
 {
   this->updateScrollbars();
   QFrame::resizeEvent(e);
@@ -172,7 +177,7 @@ void CQGLLayoutViewer::updateWidget()
   this->mpLayoutPainter->update();
 }
 
-void CQGLLayoutViewer::update(const CCopasiDataModel* pDatamodel, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir)
+void CQGLLayoutViewer::update(const CCopasiDataModel *pDatamodel, CLayout *pLayout, const CLRenderInformationBase *pRenderInfo, const QString &baseDir)
 {
   // pass the options on to the layout painter
   if (pRenderInfo)
@@ -182,7 +187,7 @@ void CQGLLayoutViewer::update(const CCopasiDataModel* pDatamodel, CLayout* pLayo
     }
 }
 
-void CQGLLayoutViewer::change_style(const CLRenderInformationBase* pRenderInfo, bool defaultStyle)
+void CQGLLayoutViewer::change_style(const CLRenderInformationBase *pRenderInfo, bool defaultStyle)
 {
   this->mpLayoutPainter->change_style(pRenderInfo, defaultStyle);
 }
@@ -217,7 +222,7 @@ void CQGLLayoutViewer::slotRevertCurve()
 /**
  * Returns a pointer to the OpenGL painter.
  */
-CQGLLayoutPainter* CQGLLayoutViewer::getPainter()
+CQGLLayoutPainter *CQGLLayoutViewer::getPainter()
 {
   return this->mpLayoutPainter;
 }
@@ -225,7 +230,7 @@ CQGLLayoutPainter* CQGLLayoutViewer::getPainter()
 /**
  * Returns a const pointer to the OpenGL painter.
  */
-const CQGLLayoutPainter* CQGLLayoutViewer::getPainter() const
+const CQGLLayoutPainter *CQGLLayoutViewer::getPainter() const
 {
   return this->mpLayoutPainter;
 }

@@ -21,8 +21,8 @@
 #define CQDIFFERENTIALEQUATIONS_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QPixmap>
-#include <QtGui/QLabel>
+#include <QPixmap>
+#include <QLabel>
 
 class QtMmlWidget;
 

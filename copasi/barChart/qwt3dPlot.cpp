@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,11 +17,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QGridLayout>
-#include <QtGui/QSlider>
-#include <QtGui/QMenu>
-#include <QtGui/QFrame>
+#include <QContextMenuEvent>
+#include <QGridLayout>
+#include <QSlider>
+#include <QMenu>
+#include <QFrame>
 
 #ifdef DEBUG_UI
 #include <QtCore/QtDebug>

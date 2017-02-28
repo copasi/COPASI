@@ -1,12 +1,17 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <qlayout/CQCopasiEffect.h>
 
-#include <QtGui/QPainter>
-#include <QtGui/QGraphicsEffect>
+#include <QPainter>
+#include <QGraphicsEffect>
 
 CQCopasiEffect::CQCopasiEffect()
   : mScale(1.0)

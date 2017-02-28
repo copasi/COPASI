@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -119,7 +124,7 @@ QVariant CQLayoutsDM::headerData(int section, Qt::Orientation orientation,
   return QString("%1").arg(section + 1);
 }
 
-bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant & value, int role)
+bool CQLayoutsDM::setData(const QModelIndex &index, const QVariant &value, int role)
 {
   if (mpListOfLayouts == NULL) return false;
 
@@ -158,7 +163,7 @@ bool CQLayoutsDM::isDefaultRow(const QModelIndex & /* index */) const
   return false;
 }
 
-bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & source)
+bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex &source)
 {
   if (mpListOfLayouts == NULL) return false;
 
@@ -174,7 +179,6 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & source)
     }
 
   endInsertRows();
-
   return true;
 }
 
@@ -185,13 +189,10 @@ bool CQLayoutsDM::removeRows(int position, int rows)
   if (mpListOfLayouts == NULL) return false;
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
-
   std::vector< CLayout * > DeletedLayouts;
   DeletedLayouts.resize(rows);
-
   std::vector< CLayout * >::iterator itDeletedLayout;
   std::vector< CLayout * >::iterator endDeletedLayout = DeletedLayouts.end();
-
   CListOfLayouts::iterator itRow = mpListOfLayouts->begin() + position;
 
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout, ++itRow)
@@ -202,14 +203,11 @@ bool CQLayoutsDM::removeRows(int position, int rows)
   for (itDeletedLayout = DeletedLayouts.begin(); itDeletedLayout != endDeletedLayout; ++itDeletedLayout)
     {
       std::string Key = (*itDeletedLayout)->getKey();
-
       pdelete(*itDeletedLayout);
-
       emit notifyGUI(ListViews::LAYOUT, ListViews::DELETE, Key);
     }
 
   endRemoveRows();
-
   return true;
 }
 
@@ -233,8 +231,7 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
 
   for (j = Layouts.begin(); j != Layouts.end(); ++j)
     {
-      CLayout * pLayout = *j;
-
+      CLayout *pLayout = *j;
       size_t delRow = mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
 
       if (delRow != C_INVALID_INDEX)
@@ -252,11 +249,13 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
   return true;
 }
 
-void CQLayoutsDM::setListOfLayouts(CListOfLayouts * pListOfLayouts)
+void CQLayoutsDM::setListOfLayouts(CListOfLayouts *pListOfLayouts)
 {
   if (mpListOfLayouts != pListOfLayouts)
     {
+      beginResetModel();
       mpListOfLayouts = pListOfLayouts;
-      reset();
+      endResetModel();
+      //reset();
     }
 }

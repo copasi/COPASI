@@ -40,8 +40,8 @@
 
 #include "CopasiFileDialog.h"
 
-#include <QtGui/QComboBox>
-#include <QtGui/QToolTip>
+#include <QComboBox>
+#include <QToolTip>
 
 #define COL_NAME 0
 #define COL_USAGE 1

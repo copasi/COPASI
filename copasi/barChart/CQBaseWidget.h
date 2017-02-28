@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,10 +20,10 @@ class CQBaseWidget : public QWidget, public Ui::CQBaseWidget
   Q_OBJECT
 
 public:
-  CQBaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  CQBaseWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   virtual ~CQBaseWidget();
 
-  void setSliderActive(const bool & active);
+  void setSliderActive(const bool &active);
 
   bool isSliderActive() const;
 

@@ -11,7 +11,7 @@
 #include <copasi/report/CCopasiRootContainer.h>
 #include <copasi/report/CKeyFactory.h>
 
-CQDependencyDialog::CQDependencyDialog(QWidget *parent, const char *name, bool modal, Qt::WFlags fl)
+CQDependencyDialog::CQDependencyDialog(QWidget *parent, const char *name, bool modal, Qt::WindowFlags fl)
   : CWindowInterface(parent, fl)
   , ui(new Ui::CQDependencyDialog)
   , mpParentWindow(NULL)

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,9 +21,9 @@
 #include <sstream>
 
 //Added by qt3to4:
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QMouseEvent>
+#include <QContextMenuEvent>
+#include <QCloseEvent>
+#include <QMouseEvent>
 #include <QtCore/QEvent>
 
 #include "copasi/UI/SliderDialog.h"
@@ -73,7 +78,7 @@ size_t SliderDialog::folderMappings[][2] =
 //size_t SliderDialog::[] = {21, 23, 24, 31};
 //const char* SliderDialog::knownTaskNames[] = {"Steady State", "Time Course", "MCA" , "Scan"};
 
-SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl):
+SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags fl):
   CWindowInterface(parent, fl),
   mpParentWindow(NULL),
   mpContextMenu(NULL),

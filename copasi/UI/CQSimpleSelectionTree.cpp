@@ -32,7 +32,7 @@
 #include "tssanalysis/CCSPMethod.h"
 #include "tssanalysis/CTSSATask.h"
 
-CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
+CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   QTreeWidget(parent), mpOutputVector(NULL)
 {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -42,21 +42,16 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
   setRootIsDecorated(true);
   setSizePolicy(QSizePolicy((QSizePolicy::Policy)7, (QSizePolicy::Policy)7));
   mpExpertSubtree = new QTreeWidgetItem(this, QStringList("Expert"));
-
   mpResultMatrixSubtree = new QTreeWidgetItem(this, QStringList("Results"));
   mpResultSteadyStateSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Steady State"));
-
 #ifdef WITH_ANALYTICS
   mpResultAnalyticsSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Analytics"));
 #endif // WITH_ANALYTICS
-
   mpResultSensitivitySubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Sensitivity"));
   mpResultMCASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Metabolic Control Analysis"));
   mpResultTSSASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Time Scale Separation Analysis"));
   mpResultLNASubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Linear Noise Approximation"));
-
   mpModelMatrixSubtree = new QTreeWidgetItem(this, QStringList("Matrices"));
-
   mpModelQuantitySubtree = new QTreeWidgetItem(this, QStringList("Global Quantities"));
   mpModelQuantityRateSubtree =
     new QTreeWidgetItem(mpModelQuantitySubtree, QStringList("Rates"));
@@ -64,7 +59,6 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
     new QTreeWidgetItem(mpModelQuantitySubtree, QStringList("Transient Values"));
   mpModelQuantityInitialValueSubtree =
     new QTreeWidgetItem(mpModelQuantitySubtree, QStringList("Initial Values"));
-
   mpReactionSubtree = new QTreeWidgetItem(this, QStringList("Reactions"));
   mpReactionFluxNumberSubtree =
     new QTreeWidgetItem(mpReactionSubtree, QStringList("Fluxes (Particle Numbers)"));
@@ -72,7 +66,6 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
     new QTreeWidgetItem(mpReactionSubtree, QStringList("Fluxes (Amount)"));
   mpReactionParameterSubtree =
     new QTreeWidgetItem(mpReactionSubtree, QStringList("Reaction Parameters"));
-
   mpMetaboliteSubtree = new QTreeWidgetItem(this, QStringList("Species"));
   mpMetaboliteRateNumberSubtree =
     new QTreeWidgetItem(mpMetaboliteSubtree, QStringList("Rates (Particle Numbers)"));
@@ -86,7 +79,6 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
     new QTreeWidgetItem(mpMetaboliteSubtree, QStringList("Initial Particle Numbers"));
   mpMetaboliteInitialConcentrationSubtree =
     new QTreeWidgetItem(mpMetaboliteSubtree, QStringList("Initial Concentrations"));
-
   mpCompartmentSubtree = new QTreeWidgetItem(this, QStringList("Compartments"));
   mpCompartmentRateSubtree =
     new QTreeWidgetItem(mpCompartmentSubtree, QStringList("Rates"));
@@ -94,7 +86,6 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget* parent):
     new QTreeWidgetItem(mpCompartmentSubtree, QStringList("Transient Volumes"));
   mpCompartmentInitialVolumeSubtree =
     new QTreeWidgetItem(mpCompartmentSubtree, QStringList("Initial Volumes"));
-
   mpTimeSubtree = new QTreeWidgetItem(this, QStringList("Time"));
 }
 
@@ -105,14 +96,13 @@ CQSimpleSelectionTree::~CQSimpleSelectionTree()
 /*
  * build the population tree
  */
-void CQSimpleSelectionTree::populateTree(const CModel * pModel,
-    const ObjectClasses & classes)
+void CQSimpleSelectionTree::populateTree(const CModel *pModel,
+    const ObjectClasses &classes)
 {
   if (!pModel) return;
 
-  const CCopasiObject * pObject;
-  QTreeWidgetItem * pItem;
-
+  const CCopasiObject *pObject;
+  QTreeWidgetItem *pItem;
   // find all kinds of time
   pObject = pModel->getValueReference();
 
@@ -147,19 +137,19 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     }
 
   // find all species (aka metabolites) and create items in the metabolite subtree
-  const CCopasiVector<CMetab>& metabolites = pModel->getMetabolites();
+  const CCopasiVector<CMetab> &metabolites = pModel->getMetabolites();
   size_t counter;
   size_t maxCount = metabolites.size();
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CMetab* metab = &metabolites[counter - 1];
+      const CMetab *metab = &metabolites[counter - 1];
       std::string name = metab->getObjectName();
       bool unique = isMetaboliteNameUnique(name, metabolites);
 
       if (!unique)
         {
-          const CCompartment* comp = metab->getCompartment();
+          const CCompartment *comp = metab->getCompartment();
 
           if (comp)
             {
@@ -224,14 +214,13 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     }
 
   // find all reactions and create items in the reaction subtree
-  const CCopasiVectorNS<CReaction>& reactions = pModel->getReactions();
+  const CCopasiVectorNS<CReaction> &reactions = pModel->getReactions();
   maxCount = reactions.size();
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CReaction* react = &reactions[counter - 1];
+      const CReaction *react = &reactions[counter - 1];
       std::string name = "flux(" + react->getObjectName() + ")";
-
       pObject = static_cast< const CCopasiObject * >(react->getObject(CCopasiObjectName("Reference=Flux")));
 
       if (filter(classes, pObject))
@@ -249,16 +238,15 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
         }
 
       // create items for the reaction parameters
-
       pItem = new QTreeWidgetItem(mpReactionParameterSubtree,
                                   QStringList(FROM_UTF8(react->getObjectName())));
-      const CCopasiParameterGroup & Parameters = react->getParameters();
+      const CCopasiParameterGroup &Parameters = react->getParameters();
       size_t j;
       size_t numParameters = Parameters.size();
 
       for (j = numParameters; j != 0; --j)
         {
-          const CCopasiParameter * pParameter = Parameters.getParameter(j - 1);
+          const CCopasiParameter *pParameter = Parameters.getParameter(j - 1);
 
           // We skip local parameters which ar covered by global parameters
           if (!react->isLocalParameter(pParameter->getObjectName()))
@@ -268,7 +256,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
           if (filter(classes, pObject))
             {
-              QTreeWidgetItem * pParameterItem =
+              QTreeWidgetItem *pParameterItem =
                 new QTreeWidgetItem(pItem, QStringList(FROM_UTF8(pParameter->getObjectName())));
               treeItems[pParameterItem] = pObject;
             }
@@ -278,14 +266,13 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     }
 
   // find all global parameters (aka model values) variables
-  const CCopasiVector<CModelValue>& objects = pModel->getModelValues();
+  const CCopasiVector<CModelValue> &objects = pModel->getModelValues();
   maxCount = objects.size();
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CModelEntity* object = &objects[counter - 1];
+      const CModelEntity *object = &objects[counter - 1];
       std::string name = object->getObjectName();
-
       pObject = object->getInitialValueReference();
 
       if (filter(classes, pObject))
@@ -315,14 +302,13 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     }
 
   // find all compartments
-  const CCopasiVector<CCompartment>& objects2 = pModel->getCompartments();
+  const CCopasiVector<CCompartment> &objects2 = pModel->getCompartments();
   maxCount = objects2.size();
 
   for (counter = maxCount; counter != 0; --counter)
     {
-      const CModelEntity* object = &objects2[counter - 1];
+      const CModelEntity *object = &objects2[counter - 1];
       std::string name = object->getObjectName();
-
       pObject = object->getInitialValueReference();
 
       if (filter(classes, pObject))
@@ -413,25 +399,24 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   // find all result matrices
   // Metabolic Control Analysis
   CCopasiTask *task;
-  CCopasiDataModel* pDataModel = pModel->getObjectDataModel();
+  CCopasiDataModel *pDataModel = pModel->getObjectDataModel();
   assert(pDataModel != NULL);
   // MCA
-  task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
 
   try
     {
       if (task && task->updateMatrices())
         {
           //for mca the result is in the method
-          CMCAMethod* pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
-
-          const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
+          CMCAMethod *pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
+          const CCopasiContainer::objectMap *pObjects = & pMethod->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(*its);
+              ann = dynamic_cast<CArrayAnnotation *>(*its);
 
               if (!ann) continue;
 
@@ -446,25 +431,24 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
   catch (...)
     {}
 
-// TSSA
-  task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
+  // TSSA
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
 
   try
     {
       if (task && task->updateMatrices())
         {
-
-          CTSSAMethod* pMethod = dynamic_cast<CTSSAMethod *>(task->getMethod());
+          CTSSAMethod *pMethod = dynamic_cast<CTSSAMethod *>(task->getMethod());
 
           if (pMethod->getSubType() == CTaskEnum::tssCSP)
             {
-              const CCopasiContainer::objectMap * pObjects = & pMethod->getObjects();
+              const CCopasiContainer::objectMap *pObjects = & pMethod->getObjects();
               CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
               CArrayAnnotation *ann;
 
               for (; its != pObjects->end(); ++its)
                 {
-                  ann = dynamic_cast<CArrayAnnotation*>(*its);
+                  ann = dynamic_cast<CArrayAnnotation *>(*its);
 
                   if (!ann) continue;
 
@@ -497,16 +481,16 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
 
 #ifdef WITH_ANALYTICS
   // ANALYTICS
-  task = dynamic_cast<CCopasiTask*>(&pDataModel->getTaskList()->operator[]("Analytics"));
+  task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Analytics"));
 
   try
     {
-      const CCopasiContainer::objectMap * pObjects = & task->getObjects();
+      const CCopasiContainer::objectMap *pObjects = & task->getObjects();
       CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
 
       for (; its != pObjects->end(); ++its)
         {
-          CCopasiObject *pObject = (CCopasiObject*)(its->second);
+          const CCopasiObject *pObject = (const CCopasiObject *)(*its);
           std::string name = pObject->getObjectName();
           //std::cout << name << "   " << (name.find("Statistics") != std::string::npos) << std::endl;
 
@@ -525,7 +509,6 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {}
 
 #endif //WITH_ANALYTICS
-
   // Steady State
   task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
 
@@ -534,13 +517,13 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
       if (task && task->updateMatrices())
         {
           //for steady state the results are in the task
-          const CCopasiContainer::objectMap * pObjects = & task->getObjects();
+          const CCopasiContainer::objectMap *pObjects = & task->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(*its);
+              ann = dynamic_cast<CArrayAnnotation *>(*its);
 
               if (!ann) continue;
 
@@ -564,14 +547,13 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
         {
           //for sensitivities the result is in the problem
           CSensProblem *sens = dynamic_cast<CSensProblem *>(task->getProblem());
-
-          const CCopasiContainer::objectMap * pObjects = & sens->getObjects();
+          const CCopasiContainer::objectMap *pObjects = & sens->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(*its);
+              ann = dynamic_cast<CArrayAnnotation *>(*its);
 
               if (!ann) continue;
 
@@ -593,13 +575,13 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
     {
       if (task && task->updateMatrices())
         {
-          const CCopasiContainer::objectMap * pObjects = & task->getMethod()->getObjects();
+          const CCopasiContainer::objectMap *pObjects = & task->getMethod()->getObjects();
           CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation*>(*its);
+              ann = dynamic_cast<CArrayAnnotation *>(*its);
 
               if (!ann) continue;
 
@@ -626,7 +608,7 @@ void CQSimpleSelectionTree::populateTree(const CModel * pModel,
               setSelectionMode(QAbstractItemView::SingleSelection);
               setCurrentItem(*it);
               (*it)->setSelected(true);
-              QTreeWidgetItem* parent = (*it)->parent();
+              QTreeWidgetItem *parent = (*it)->parent();
 
               while (parent)
                 {
@@ -663,19 +645,17 @@ bool CQSimpleSelectionTree::treeHasSelection()
   return hasSelection;
 }
 
-void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject * > & objectList)
+void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject * > &objectList)
 {
-  QTreeWidgetItem * pItem;
-
+  QTreeWidgetItem *pItem;
   // We add all objects to the appropriate subtree;
   std::vector< const CCopasiObject * >::const_iterator it = objectList.begin();
   std::vector< const CCopasiObject * >::const_iterator end = objectList.end();
-
-  const CReaction * pReaction = NULL;
-  const CMetab * pMetab = NULL;
-  const CCompartment * pCompartment = NULL;
-  const CModelValue * pModelValue = NULL;
-  const CModel * pModel = NULL;
+  const CReaction *pReaction = NULL;
+  const CMetab *pMetab = NULL;
+  const CCompartment *pCompartment = NULL;
+  const CModelValue *pModelValue = NULL;
+  const CModel *pModel = NULL;
   std::map< const CCopasiObject *, QTreeWidgetItem * > Object2Subtree;
 
   // We currently only deal with descendants of the Model.
@@ -852,9 +832,9 @@ void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject 
   removeAllEmptySubTrees();
 }
 
-std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
+std::vector<const CCopasiObject * > *CQSimpleSelectionTree::getTreeSelection()
 {
-  std::vector<const CCopasiObject * > * selection = new std::vector<const CCopasiObject * >();
+  std::vector<const CCopasiObject * > *selection = new std::vector<const CCopasiObject * >();
   std::map< std::string, const CCopasiObject * > SelectionMap;
 
   if (selectedItems().isEmpty())
@@ -871,7 +851,7 @@ std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
       // and are connected to an object.
       // If the item is a leave and is connected to an object, add it directly
       QTreeWidgetItemIterator it(this);
-      QTreeWidgetItem* currentItem = *it;
+      QTreeWidgetItem *currentItem = *it;
 
       while (currentItem)
         {
@@ -885,8 +865,8 @@ std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
               else
                 {
                   QTreeWidgetItemIterator it2(currentItem);
-                  QTreeWidgetItem* tmpItem = *it2;
-                  QTreeWidgetItem* Ancestor;
+                  QTreeWidgetItem *tmpItem = *it2;
+                  QTreeWidgetItem *Ancestor;
 
                   while (tmpItem)
                     {
@@ -928,7 +908,7 @@ std::vector<const CCopasiObject * > * CQSimpleSelectionTree::getTreeSelection()
   return selection;
 }
 
-bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites)
+bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string &name, const CCopasiVector<CMetab> &metabolites)
 {
   bool unique = true;
   bool found = false;
@@ -936,7 +916,7 @@ bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name, con
 
   for (counter = 0; counter < metabolites.size(); ++counter)
     {
-      const std::string& thisName = metabolites[counter].getObjectName();
+      const std::string &thisName = metabolites[counter].getObjectName();
 
       if (name == thisName)
         {
@@ -953,9 +933,9 @@ bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string & name, con
   return unique;
 }
 
-QTreeWidgetItem * CQSimpleSelectionTree::findListViewItem(const CCopasiObject * object)
+QTreeWidgetItem *CQSimpleSelectionTree::findListViewItem(const CCopasiObject *object)
 {
-  QTreeWidgetItem* item = NULL;
+  QTreeWidgetItem *item = NULL;
   std::map< QTreeWidgetItem *, const CCopasiObject * >::iterator it = treeItems.begin();
   std::map< QTreeWidgetItem *, const CCopasiObject * >::iterator endPos = treeItems.end();
 
@@ -973,11 +953,10 @@ QTreeWidgetItem * CQSimpleSelectionTree::findListViewItem(const CCopasiObject * 
   return item;
 }
 
-void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > * objects)
+void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *objects)
 {
   // clear selection on tree and select new objects
   clearSelection();
-
   size_t i;
   size_t iMax = objects->size();
 
@@ -988,8 +967,8 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *
 
   for (i = 0; i < iMax; ++i)
     {
-      const CCopasiObject * object = objects->at(i);
-      QTreeWidgetItem* item = findListViewItem(object);
+      const CCopasiObject *object = objects->at(i);
+      QTreeWidgetItem *item = findListViewItem(object);
 
       if (!item && mpExpertSubtree)
         {
@@ -1000,7 +979,7 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *
         }
 
       // open the whole branch that contains item.
-      QTreeWidgetItem* parent = item->parent();
+      QTreeWidgetItem *parent = item->parent();
 
       if (parent && !(parent->isExpanded()))
         {
@@ -1021,7 +1000,7 @@ void CQSimpleSelectionTree::commitClicked()
 {
   if (mpOutputVector)
     {
-      std::vector< const CCopasiObject * >* treeSelection = getTreeSelection();
+      std::vector< const CCopasiObject * > *treeSelection = getTreeSelection();
       mpOutputVector->assign(treeSelection->begin(), treeSelection->end());
       std::vector< const CCopasiObject * >::iterator it = mpOutputVector->begin();
 
@@ -1041,7 +1020,7 @@ void CQSimpleSelectionTree::commitClicked()
     }
 }
 
-void CQSimpleSelectionTree::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
+void CQSimpleSelectionTree::setOutputVector(std::vector< const CCopasiObject * > *outputVector)
 {
   mpOutputVector = outputVector;
 
@@ -1052,7 +1031,7 @@ void CQSimpleSelectionTree::setOutputVector(std::vector< const CCopasiObject * >
 }
 
 // static
-bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiObject * pObject)
+bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CCopasiObject *pObject)
 {
   if (pObject == NULL)
     return false;
@@ -1068,16 +1047,15 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
        pObject->isArray()))
     return true;
 
-  const CCopasiObject * pCheckedObject = pObject;
+  const CCopasiObject *pCheckedObject = pObject;
 
   // Elements of an array are checked as the array itself.
   if (pObject->getObjectParent()->isArray())
     pCheckedObject = pObject->getObjectParent();
 
   const std::string ObjectName = pObject->getObjectName();
-
   // CModelEntity needs to be check more thoroughly
-  const CModelEntity * pEntity =
+  const CModelEntity *pEntity =
     dynamic_cast< const CModelEntity * >(pCheckedObject->getObjectParent());
 
   if (pEntity)
@@ -1148,7 +1126,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
     }
 
   // Descendants of CReaction need to be check more thoroughly
-  const CReaction * pReaction =
+  const CReaction *pReaction =
     dynamic_cast< const CReaction * >(pCheckedObject->getObjectAncestor("Reaction"));
 
   if (pReaction)
@@ -1162,7 +1140,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
         return true;
     }
 
-  const CCopasiTask * pTask =
+  const CCopasiTask *pTask =
     dynamic_cast<const CCopasiTask *>(pCheckedObject->getObjectAncestor("Task"));
 
   if (pTask)
@@ -1183,7 +1161,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses & classes, const CCopasiO
 /*
  * remove all empty subtree
  */
-void CQSimpleSelectionTree::removeEmptySubTree(QTreeWidgetItem ** ppSubTree)
+void CQSimpleSelectionTree::removeEmptySubTree(QTreeWidgetItem **ppSubTree)
 {
   if (ppSubTree != NULL &&
       *ppSubTree != NULL &&
@@ -1194,7 +1172,6 @@ void CQSimpleSelectionTree::removeEmptySubTree(QTreeWidgetItem ** ppSubTree)
 void CQSimpleSelectionTree::removeAllEmptySubTrees()
 {
   removeEmptySubTree(&mpTimeSubtree);
-
   removeEmptySubTree(&mpMetaboliteInitialNumberSubtree);
   removeEmptySubTree(&mpMetaboliteTransientNumberSubtree);
   removeEmptySubTree(&mpMetaboliteRateNumberSubtree);
@@ -1202,36 +1179,27 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
   removeEmptySubTree(&mpMetaboliteTransientConcentrationSubtree);
   removeEmptySubTree(&mpMetaboliteRateConcentrationSubtree);
   removeEmptySubTree(&mpMetaboliteSubtree);
-
   removeEmptySubTree(&mpReactionFluxNumberSubtree);
   removeEmptySubTree(&mpReactionFluxConcentrationSubtree);
   removeEmptySubTree(&mpReactionParameterSubtree);
   removeEmptySubTree(&mpReactionSubtree);
-
   removeEmptySubTree(&mpModelQuantityRateSubtree);
   removeEmptySubTree(&mpModelQuantityInitialValueSubtree);
   removeEmptySubTree(&mpModelQuantityTransientValueSubtree);
   removeEmptySubTree(&mpModelQuantitySubtree);
-
   removeEmptySubTree(&mpCompartmentRateSubtree);
   removeEmptySubTree(&mpCompartmentInitialVolumeSubtree);
   removeEmptySubTree(&mpCompartmentTransientVolumeSubtree);
   removeEmptySubTree(&mpCompartmentSubtree);
-
   removeEmptySubTree(&mpModelMatrixSubtree);
-
   removeEmptySubTree(&mpResultMCASubtree);
   removeEmptySubTree(&mpResultTSSASubtree);
   removeEmptySubTree(&mpResultLNASubtree);
-
   removeEmptySubTree(&mpResultSensitivitySubtree);
   removeEmptySubTree(&mpResultSteadyStateSubtree);
-
 #ifdef WITH_ANALYTICS
   removeEmptySubTree(&mpResultAnalyticsSubtree);
 #endif // WITH_ANALYTICS
-
   removeEmptySubTree(&mpResultMatrixSubtree);
-
   removeEmptySubTree(&mpTimeSubtree);
 }

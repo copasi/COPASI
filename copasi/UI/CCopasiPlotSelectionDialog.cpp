@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,15 +17,15 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QLayout>
-#include <QtGui/QWidget>
-#include <QtGui/QPushButton>
-#include <QtGui/QCheckBox>
-#include <QtGui/QLabel>
-#include <QtGui/QSplitter>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QDialogButtonBox>
+#include <QLayout>
+#include <QWidget>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QLabel>
+#include <QSplitter>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 
 #include "copasi.h"
 
@@ -31,7 +36,7 @@
 #include "model/CModel.h"
 #include "report/CCopasiObject.h"
 
-CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags f):
+CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags f):
   QDialog(parent, f)
   , mpExpertCheckBox(NULL)
   , mpXAxisSelectionWidget(NULL)
@@ -49,54 +54,42 @@ CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const ch
   setObjectName(QString::fromUtf8(name));
   setModal(modal);
   mpMainLayout = new QVBoxLayout(this);
-
   mpSplitter = new QSplitter(this);
   mpSplitter->setOrientation(Qt::Horizontal);
   mpMainLayout->addWidget(mpSplitter);
-
   mpButtonBox = new QHBoxLayout(this);
   mpMainLayout->addLayout(mpButtonBox);
-
-  QDialogButtonBox* box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+  QDialogButtonBox *box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
   mpButtonBox->addWidget(box);
-
   mpExpertCheckBox = new QCheckBox(this);
   mpExpertCheckBox->setText("Expert Mode");
   mpExpertCheckBox->setChecked(false);
   mpButtonBox->addWidget(mpExpertCheckBox);
-
   mpXAxisSelectionBox = new QWidget(mpSplitter);
   QVBoxLayout *vBox1 = new QVBoxLayout(mpXAxisSelectionBox);
   mpXAxisSelectionBox->setLayout(vBox1);
   mpXAxisSelectionBox->layout()->setContentsMargins(5, 5, 5, 5);
-
   mpYAxisSelectionBox = new QWidget(mpSplitter);
   QVBoxLayout *vBox2 = new QVBoxLayout(mpYAxisSelectionBox);
   mpYAxisSelectionBox->setLayout(vBox2);
   mpYAxisSelectionBox->layout()->setContentsMargins(5, 5, 5, 5);
-
   mpXAxisLabel = new QLabel("X-Axis:", mpXAxisSelectionBox);
   mpXAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   mpXAxisSelectionBox->layout()->addWidget(mpXAxisLabel);
-
   mpYAxisLabel = new QLabel("Y-Axis:", mpYAxisSelectionBox);
   mpYAxisLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   mpYAxisSelectionBox->layout()->addWidget(mpYAxisLabel);
-
   mpXAxisSelectionWidget = new CCopasiSelectionWidget(mpXAxisSelectionBox);
   mpXAxisSelectionWidget->setSingleSelection(true);
   mpXAxisSelectionWidget->setOutputVector(mpXAxisOutputVector);
   mpXAxisSelectionBox->layout()->addWidget(mpXAxisSelectionWidget);
-
   mpYAxisSelectionWidget = new CCopasiSelectionWidget(mpYAxisSelectionBox);
   mpYAxisSelectionWidget->setSingleSelection(false);
   mpYAxisSelectionWidget->setOutputVector(mpYAxisOutputVector);
   mpYAxisSelectionBox->layout()->addWidget(mpYAxisSelectionWidget);
-
   connect(box, SIGNAL(accepted()), this, SLOT(slotOKButtonClicked()));
   connect(box, SIGNAL(rejected()), this, SLOT(slotCancelButtonClicked()));
   connect(mpExpertCheckBox, SIGNAL(toggled(bool)), this, SLOT(slotExpertCheckBoxToggled(bool)));
-
   setTabOrder();
 }
 
@@ -159,8 +152,8 @@ void CCopasiPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
   this->mpYAxisSelectionWidget->setExpertMode(checked);
 }
 
-void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObject * > * outputVector1,
-    std::vector< const CCopasiObject * > * outputVector2)
+void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObject * > *outputVector1,
+    std::vector< const CCopasiObject * > *outputVector2)
 {
   this->mpXAxisOutputVector = outputVector1;
   this->mpXAxisSelectionWidget->setOutputVector(this->mpXAxisOutputVector);
@@ -168,8 +161,8 @@ void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObje
   this->mpYAxisSelectionWidget->setOutputVector(this->mpYAxisOutputVector);
 }
 
-void CCopasiPlotSelectionDialog::setModel(CModel* pModel,
-    const CQSimpleSelectionTree::ObjectClasses & classes)
+void CCopasiPlotSelectionDialog::setModel(CModel *pModel,
+    const CQSimpleSelectionTree::ObjectClasses &classes)
 {
   this->mpXAxisSelectionWidget->populateTree(pModel, classes);
   this->mpYAxisSelectionWidget->populateTree(pModel, classes);

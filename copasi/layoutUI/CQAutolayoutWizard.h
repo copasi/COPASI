@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,10 +12,10 @@
 #define CQAutolayoutWizard_h__
 
 // Qt includes
-#include <QtGui/QListWidgetItem>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QWizard>
-#include <QtGui/QWizardPage>
+#include <QListWidgetItem>
+#include <QTreeWidgetItem>
+#include <QWizard>
+#include <QWizardPage>
 
 #include <set>
 #include <string>

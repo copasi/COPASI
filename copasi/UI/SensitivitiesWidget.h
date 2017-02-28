@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,13 +25,13 @@
 #include "ui_SensitivitiesWidget.h"
 
 //#include <QtCore/QVariant>
-//#include <QtGui/QWidget>
+//#include <QWidget>
 #include "UI/TaskWidget.h"
 #include "sensitivities/CSensProblem.h"
 
 #include "UI/SensWidgetComboBox.h"
 
-#include <QtGui/QComboBox>
+#include <QComboBox>
 
 class SensitivitiesWidget : public TaskWidget, public Ui::SensitivitiesWidget
 {
@@ -34,7 +39,7 @@ class SensitivitiesWidget : public TaskWidget, public Ui::SensitivitiesWidget
 
 public:
 
-  explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
+  explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~SensitivitiesWidget();
 
   virtual bool runTask();

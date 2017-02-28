@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,7 +26,7 @@
 #include "utilities/utility.h"
 #include "commandline/CLocaleString.h"
 
-CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
+CQEFMResultWidget::CQEFMResultWidget(QWidget *parent, const char *name) :
   CopasiWidget(parent, name),
   mpTask(NULL),
   mpProxyModelReactions(NULL),
@@ -32,59 +37,56 @@ CQEFMResultWidget::CQEFMResultWidget(QWidget* parent, const char* name) :
   mpNetReactionDM(NULL)
 {
   setupUi(this);
-
   mpReactionMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+#if QT_VERSION >= 0x050000
+  mpReactionMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpReactionMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpReactionMatrix->verticalHeader()->hide();
-
   //Create Source Data Model.
   mpReactionDM = new CQEFMReactionDM(this);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelReactions = new CQSortFilterProxyModel();
   mpProxyModelReactions->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModelReactions->setFilterKeyColumn(COL_REACTION_NAME);
-
   mpProxyModelReactions->setSourceModel(mpReactionDM);
-
   //Set Model for the TableView
   mpReactionMatrix->setModel(NULL);
   mpReactionMatrix->setModel(mpProxyModelReactions);
   mpReactionMatrix->resizeColumnsToContents();
-
   mpSpeciesMatrix->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+#if QT_VERSION >= 0x050000
+  mpSpeciesMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpSpeciesMatrix->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpSpeciesMatrix->verticalHeader()->hide();
-
   //Create Source Data Model.
   mpSpeciesDM = new CQEFMSpeciesDM(this);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelSpecies = new CQSortFilterProxyModel();
   mpProxyModelSpecies->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModelSpecies->setFilterKeyColumn(COL_REACTION_NAME);
-
   mpProxyModelSpecies->setSourceModel(mpSpeciesDM);
-
   //Set Model for the TableView
   mpSpeciesMatrix->setModel(NULL);
   mpSpeciesMatrix->setModel(mpProxyModelSpecies);
   mpSpeciesMatrix->resizeColumnsToContents();
-
   mpNetReactions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+#if QT_VERSION >= 0x050000
+  mpNetReactions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpNetReactions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpNetReactions->verticalHeader()->hide();
-
   //Create Source Data Model.
   mpNetReactionDM = new CQEFMNetReactionDM(this);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModelNetReactions = new CQSortFilterProxyModel();
   mpProxyModelNetReactions->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModelNetReactions->setFilterKeyColumn(COL_REACTION_NAME);
-
   mpProxyModelNetReactions->setSourceModel(mpNetReactionDM);
-
   //Set Model for the TableView
   mpNetReactions->setModel(NULL);
   mpNetReactions->setModel(mpProxyModelNetReactions);
@@ -142,7 +144,7 @@ bool CQEFMResultWidget::enterProtected()
 }
 
 // virtual
-bool CQEFMResultWidget::loadResult(const CCopasiTask * pTask)
+bool CQEFMResultWidget::loadResult(const CCopasiTask *pTask)
 {
   mpTask = dynamic_cast<const CEFMTask *>(pTask);
 
@@ -157,34 +159,24 @@ bool CQEFMResultWidget::loadResult(const CCopasiTask * pTask)
 
   bool success = true;
   success &= mpEFMListWidget->loadResult(mpTask);
-
   mpReactionDM->setTask(mpTask);
-
   mpProxyModelReactions->setSourceModel(mpReactionDM);
-
   //Set Model for the TableView
   mpReactionMatrix->setModel(NULL);
   mpReactionMatrix->setModel(mpProxyModelReactions);
   mpReactionMatrix->resizeColumnsToContents();
-
   mpSpeciesDM->setTask(mpTask);
-
   mpProxyModelSpecies->setSourceModel(mpSpeciesDM);
-
   //Set Model for the TableView
   mpSpeciesMatrix->setModel(NULL);
   mpSpeciesMatrix->setModel(mpProxyModelSpecies);
   mpSpeciesMatrix->resizeColumnsToContents();
-
   mpNetReactionDM->setTask(mpTask);
-
   mpProxyModelNetReactions->setSourceModel(mpNetReactionDM);
-
   //Set Model for the TableView
   mpNetReactions->setModel(NULL);
   mpNetReactions->setModel(mpProxyModelNetReactions);
   mpNetReactions->resizeColumnsToContents();
-
   return success;
 }
 

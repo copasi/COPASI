@@ -17,13 +17,13 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QTabWidget>
-#include <QtGui/QTextEdit>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QStyle>
-#include <QtGui/QApplication>
+#include <QTabWidget>
+#include <QTextEdit>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QStyle>
+#include <QApplication>
 
 #include "copasiui3window.h"
 #include "CQMessageBox.h"

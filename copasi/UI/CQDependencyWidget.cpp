@@ -14,7 +14,7 @@
 
 #include <copasi/UI/qtUtilities.h>
 
-CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::WFlags f)
+CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
   , ui(new Ui::CQDependencyWidget)
   , mType(UNKNOWN)
@@ -48,62 +48,49 @@ getNameForType(CDependencyType type)
   return "";
 }
 
-void CQDependencyWidget::updateFromDependencies(std::set< const CCopasiObject * >& elements, std::set<const CCopasiObject*>& dependencies, const CModel * pModel)
+void CQDependencyWidget::updateFromDependencies(std::set< const CCopasiObject * > &elements, std::set<const CCopasiObject *> &dependencies, const CModel *pModel)
 {
   mpModel = pModel;
-
   bool haveDependentElements = !dependencies.empty();
-
   setVisible(haveDependentElements);
-
   ui->mpTable->clearContents();
-
-
   int numDependentElements = (int)dependencies.size();
-
   ui->mpTable->setRowCount(numDependentElements);
 
   if (!haveDependentElements) return;
 
   ui->mpTable->setSortingEnabled(false);
-
   std::set< const CCopasiObject * >::const_iterator it = dependencies.begin();
   std::set< const CCopasiObject * >::const_iterator end = dependencies.end();
-
   int i = 0;
 
   for (; it != end; ++it, ++i)
     {
-      const CCopasiObject * pObject = *it;
-      QTableWidgetItem* item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
+      const CCopasiObject *pObject = *it;
+      QTableWidgetItem *item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
       item->setData(Qt::UserRole, FROM_UTF8(pObject->getKey()));
       ui->mpTable->setItem(i, 0, item);
       ui->mpTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(getDetailsFor(pObject, elements))));
     }
 
   ui->mpTable->setSortingEnabled(true);
-
   // resize table to contents
   resizeTable();
-
   // Provide count of reactions, in label.
   ui->mpLbl->setText(QString("Involved in \n%1 %2").arg(numDependentElements).arg(getNameForType(mType)));
-
 }
 
 void
 CQDependencyWidget::appendDependencies(
-  std::set< const CCopasiObject * >& dependencies,
-  const std::set<const CCopasiObject *>& elements)
+  std::set< const CCopasiObject * > &dependencies,
+  const std::set<const CCopasiObject *> &elements)
 {
-
   std::set< const CCopasiObject * > dependentReactions;
   std::set< const CCopasiObject * > dependentMetabolites;
   std::set< const CCopasiObject * > dependentCompartments;
   std::set< const CCopasiObject * > dependentModelValues;
   std::set< const CCopasiObject * > dependentEvents;
   std::set< const CCopasiObject * > dependentEventAssignments;
-
   mpModel->appendDependentModelObjects(elements,
                                        dependentReactions,
                                        dependentMetabolites,
@@ -150,27 +137,22 @@ CQDependencyWidget::appendDependencies(
         dependentEvents.begin(),
         dependentEvents.end()
       );
-
       std::set< const CCopasiObject * >::iterator it = dependentEventAssignments.begin();
       std::set< const CCopasiObject * >::iterator end = dependentEventAssignments.end();
 
       for (; it != end; ++it)
         {
-          const CCopasiObject * pObject = *it;
+          const CCopasiObject *pObject = *it;
           dependencies.insert(pObject->getObjectParent()->getObjectParent());
-
         }
-
-
     }
 }
 
 void
 CQDependencyWidget::appendDependenciesIndividual(
-  std::set< const CCopasiObject * >& dependencies,
-  const std::set<const CCopasiObject *>& elements)
+  std::set< const CCopasiObject * > &dependencies,
+  const std::set<const CCopasiObject *> &elements)
 {
-
   if ((mType & COMPARTMENT) == COMPARTMENT)
     {
       mpModel->appendDependentCompartments(elements, dependencies);
@@ -199,17 +181,17 @@ CQDependencyWidget::appendDependenciesIndividual(
 
 
 std::string
-CQDependencyWidget::getDetailsFor(const CCopasiObject * pObject, std::set< const CCopasiObject * >& elements)
+CQDependencyWidget::getDetailsFor(const CCopasiObject *pObject, std::set< const CCopasiObject * > &elements)
 {
-  const CEvent* pEvent = dynamic_cast<const CEvent*>(pObject);
+  const CEvent *pEvent = dynamic_cast<const CEvent *>(pObject);
 
   if (pEvent != NULL) return pEvent->getOriginFor(elements);
 
-  const CReaction* pReaction = dynamic_cast<const CReaction*>(pObject);
+  const CReaction *pReaction = dynamic_cast<const CReaction *>(pObject);
 
   if (pReaction != NULL) return CChemEqInterface::getChemEqString(mpModel, *pReaction, false);
 
-  const CModelEntity* pEntity = dynamic_cast<const CModelEntity*>(pObject);
+  const CModelEntity *pEntity = dynamic_cast<const CModelEntity *>(pObject);
 
   if (pEntity != NULL)
     {
@@ -228,17 +210,15 @@ CQDependencyWidget::getDetailsFor(const CCopasiObject * pObject, std::set< const
         {
           return "Initial Expression";
         }
-
     }
 
   return pObject->getObjectDisplayName();
 }
 
 void
-CQDependencyWidget::resizeEvent(QResizeEvent * pEvent)
+CQDependencyWidget::resizeEvent(QResizeEvent *pEvent)
 {
   resizeTable();
-
 }
 
 void CQDependencyWidget::resizeTable()
@@ -247,7 +227,6 @@ void CQDependencyWidget::resizeTable()
   if (mResizeTableToRows)
     {
       int  height = ui->mpTable->verticalHeader()->length() + ui->mpTable->horizontalHeader()->height();
-
       ui->mpTable->resizeRowsToContents();
 
       if (mType == REACTION)
@@ -264,17 +243,12 @@ void CQDependencyWidget::resizeTable()
 }
 
 void
-CQDependencyWidget::updateFromCandidates(std::set<const CCopasiObject*>& elements, const CModel * pModel)
+CQDependencyWidget::updateFromCandidates(std::set<const CCopasiObject *> &elements, const CModel *pModel)
 {
   mpModel = pModel;
-
   std::set< const CCopasiObject * > dependencies;
-
   appendDependencies(dependencies, elements);
-
   updateFromDependencies(elements, dependencies, pModel);
-
-
 }
 
 void
@@ -294,12 +268,15 @@ void
 CQDependencyWidget::setDependencyType(CDependencyType type)
 {
   mType = type;
-
+#if QT_VERSION >= 0x050000
+  ui->mpTable->verticalHeader()->setSectionResizeMode(mType == REACTION ?
+      QHeaderView::ResizeToContents : QHeaderView::Fixed);
+#else
   ui->mpTable->verticalHeader()->setResizeMode(mType == REACTION ?
       QHeaderView::ResizeToContents : QHeaderView::Fixed);
+#endif
   ui->mpTable->setSizePolicy(QSizePolicy::Expanding,
                              mType == REACTION ? QSizePolicy::Expanding : QSizePolicy::MinimumExpanding);
-
 }
 
 CDependencyType

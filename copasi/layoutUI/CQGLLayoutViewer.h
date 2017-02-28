@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,7 +11,7 @@
 #ifndef CQLAYOUTVIEWER_H__
 #define CQLAYOUTVIEWER_H__
 
-#include <QtGui/QFrame>
+#include <QFrame>
 
 class QScrollBar;
 class CQGLLayoutPainter;
@@ -22,9 +27,9 @@ class CQGLLayoutViewer : public QFrame
   Q_OBJECT
 
 protected:
-  QScrollBar* mpVerticalScrollbar;
-  QScrollBar* mpHorizontalScrollbar;
-  CQGLLayoutPainter* mpLayoutPainter;
+  QScrollBar *mpVerticalScrollbar;
+  QScrollBar *mpHorizontalScrollbar;
+  CQGLLayoutPainter *mpLayoutPainter;
 
 public:
   /**
@@ -43,14 +48,14 @@ public:
    */
   void setZoomFactor(double zoom);
 
-  void update(const CCopasiDataModel* pDataModel, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir);
+  void update(const CCopasiDataModel *pDataModel, CLayout *pLayout, const CLRenderInformationBase *pRenderInfo, const QString &baseDir);
 
   /**
    * The default style indicates that the passed in render information is a default style.
    * The renderer uses this information to determine whether roles for species reference glyphs
    * need to be deduced.
    */
-  void change_style(const CLRenderInformationBase* pRenderInfo, bool defaultStyle = false);
+  void change_style(const CLRenderInformationBase *pRenderInfo, bool defaultStyle = false);
 
   /**
    * This method tells the painter to temporarily revert the deduced
@@ -69,12 +74,12 @@ public:
   /**
    * Returns a pointer to the OpenGL painter.
    */
-  CQGLLayoutPainter* getPainter();
+  CQGLLayoutPainter *getPainter();
 
   /**
    * Returns a const pointer to the OpenGL painter.
    */
-  const CQGLLayoutPainter* getPainter() const;
+  const CQGLLayoutPainter *getPainter() const;
 
   /**
    * Calculates the ratio that is needed to fit the diagram on the current viewport
@@ -84,7 +89,7 @@ public:
   double fitToScreen();
 
 protected:
-  virtual void resizeEvent(QResizeEvent* e);
+  virtual void resizeEvent(QResizeEvent *e);
 
   void updateScrollbars();
 

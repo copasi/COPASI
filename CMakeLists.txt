@@ -407,8 +407,16 @@ if(BUILD_GUI)
 
   find_package(OpenGL REQUIRED)
 
+  include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
+
+  QT_FIND_MODULES(Core Gui OpenGL Xml WebKit Network Svg)
+  if (Qt5_FOUND)
+    QT_FIND_MODULES(Core Gui Xml WebKit Network Svg PrintSupport Concurrent WebKitWidgets OpenGL )
+    set(QTVERSION 5)
+  endif()
+
   # find Qt4
-  find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
+  #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
   # check for qwt, TODO check if the version is OK
   find_package(QwtQt4 REQUIRED)
   # check for qwtplot3d

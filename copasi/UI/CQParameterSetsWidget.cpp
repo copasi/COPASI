@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,9 +10,9 @@
 
 #include "CQParameterSetsWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
 
 #include "copasi.h"
 
@@ -23,30 +28,29 @@
  *  Constructs a CQParameterSetsWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQParameterSetsWidget::CQParameterSetsWidget(QWidget* parent, const char* name)
+CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
-
   //Create Source Data Model.
   mpParameterSetsDM = new CQParameterSetsDM(this);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
-
+#if QT_VERSION >= 0x050000
+  mpTblParameterSets->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblParameterSets->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblParameterSets->verticalHeader()->hide();
   mpTblParameterSets->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
   setFramework(mFramework);
-
   // Connect the table widget
   connect(mpParameterSetsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpParameterSetsDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpParameterSetsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -77,8 +81,7 @@ void CQParameterSetsWidget::slotBtnDeleteClicked()
 
 void CQParameterSetsWidget::deleteSelected()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblParameterSets->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblParameterSets->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpParameterSetsDM->rowCount();
 
@@ -98,7 +101,6 @@ void CQParameterSetsWidget::deleteSelected()
 
 void CQParameterSetsWidget::slotBtnClearClicked()
 {
-
   int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Parameter Sets?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
@@ -110,7 +112,7 @@ void CQParameterSetsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & C_UNUSED(key))
+bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &C_UNUSED(key))
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -143,31 +145,27 @@ bool CQParameterSetsWidget::enterProtected()
 
   if (mpTblParameterSets->selectionModel() != NULL)
     {
-      disconnect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   mpParameterSetsDM->setListOfModelParameterSets(&static_cast< CModel * >(mpObject)->getModelParameterSets());
   mpProxyModel->setSourceModel(mpParameterSetsDM);
-
   //Set Model for the TableView
   mpTblParameterSets->setModel(NULL);
   mpTblParameterSets->setModel(mpProxyModel);
-  connect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
   mpTblParameterSets->resizeColumnsToContents();
   setFramework(mFramework);
-
   mpBtnNew->hide();
-
   return true;
 }
 
 void CQParameterSetsWidget::updateDeleteBtns()
 {
   bool selected = false;
-
   QModelIndexList selRows = mpTblParameterSets->selectionModel()->selectedRows();
 
   if (selRows.size() == 0)
@@ -193,14 +191,14 @@ void CQParameterSetsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQParameterSetsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
-    const QItemSelection& C_UNUSED(deselected))
+void CQParameterSetsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
+    const QItemSelection &C_UNUSED(deselected))
 {
   updateDeleteBtns();
 }
 
-void CQParameterSetsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
-                                        const QModelIndex& C_UNUSED(bottomRight))
+void CQParameterSetsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
+                                        const QModelIndex &C_UNUSED(bottomRight))
 {
   mpTblParameterSets->resizeColumnsToContents();
   setFramework(mFramework);
@@ -230,7 +228,7 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQParameterSetsWidget::keyPressEvent(QKeyEvent* ev)
+void CQParameterSetsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();

@@ -22,13 +22,13 @@
 
 #include <string>
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QtCore/QModelIndex>
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
 
 #ifdef COPASI_SBW_INTEGRATION
-# include <QtGui/QApplication>
+# include <QApplication>
 # include <QtCore/QEvent>
 # include <QtCore/QMutex>
 # include <QtCore/QWaitCondition>

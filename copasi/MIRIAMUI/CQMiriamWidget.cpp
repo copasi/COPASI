@@ -15,10 +15,10 @@
 
 #include "CQMiriamWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QDesktopServices>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
+#include <QDesktopServices>
 #include <QtCore/QUrl>
 
 #include "copasi.h"
@@ -36,44 +36,36 @@
  *  Constructs a CQMiriamWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
+CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name),
     mKeyToCopy(""),
     mMessage(""),
     mMessageType(-1)
 {
   setupUi(this);
-
   // Create the MIRIAM Info
   mpMIRIAMInfo = new CMIRIAMInfo();
-
   //Create Data Models for the 4 tables
   mpCreatorDM = new CQCreatorDM(mpMIRIAMInfo, this);
   mpReferenceDM = new CQReferenceDM(mpMIRIAMInfo, this);
   mpBiologicalDescriptionDM = new CQBiologicalDescriptionDM(mpMIRIAMInfo, this);
   mpModifiedDM = new CQModifiedDM(mpMIRIAMInfo, this);
-
   //Create Proxy Data Models for the 4 tables
   mpCreatorPDM = new CQSortFilterProxyModel();
   mpReferencePDM = new CQSortFilterProxyModel();
   mpBiologicalDescriptionPDM = new CQSortFilterProxyModel();
   mpModifiedPDM = new CQSortFilterProxyModel();
-
   //Create Required Delegates
   mpResourceDelegate1 = new CQComboDelegate(this, mReferences, false);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
-
   mpResourceDelegate2 = new CQComboDelegate(this, mResources, false);
   mpTblDescription->setItemDelegateForColumn(COL_RESOURCE_BD, mpResourceDelegate2);
-
   mpPredicateDelegate = new CQComboDelegate(this, mPredicates, false);
   mpTblDescription->setItemDelegateForColumn(COL_RELATIONSHIP, mpPredicateDelegate);
-
   mWidgets.push_back(mpTblAuthors); mDMs.push_back(mpCreatorDM); mProxyDMs.push_back(mpCreatorPDM);
   mWidgets.push_back(mpTblReferences); mDMs.push_back(mpReferenceDM); mProxyDMs.push_back(mpReferencePDM);
   mWidgets.push_back(mpTblDescription); mDMs.push_back(mpBiologicalDescriptionDM); mProxyDMs.push_back(mpBiologicalDescriptionPDM);
   mWidgets.push_back(mpTblModified); mDMs.push_back(mpModifiedDM); mProxyDMs.push_back(mpModifiedPDM);
-
   // Build the list of supported predicates
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::unknown)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_encodes)));
@@ -86,37 +78,34 @@ CQMiriamWidget::CQMiriamWidget(QWidget* parent, const char* name)
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_occursIn)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isDerivedFrom))),
-
                         mpPredicateDelegate->setItems(-1, mPredicates);
-
-  std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<CQTableView*>::const_iterator end = mWidgets.end();
-
-  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
-
-  std::vector<CQSortFilterProxyModel*>::const_iterator itPDM = mProxyDMs.begin();
-  std::vector<CQSortFilterProxyModel*>::const_iterator endPDM = mProxyDMs.end();
+  std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
+  std::vector<CQTableView *>::const_iterator end = mWidgets.end();
+  std::vector<CQBaseDataModel *>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel *>::const_iterator endDM = mDMs.end();
+  std::vector<CQSortFilterProxyModel *>::const_iterator itPDM = mProxyDMs.begin();
+  std::vector<CQSortFilterProxyModel *>::const_iterator endPDM = mProxyDMs.end();
 
   for (; it != end && itDM != endDM && itPDM != endPDM; it++, itDM++, itPDM++)
     {
       //Set Proxy Data Model properties
       (*itPDM)->setDynamicSortFilter(true);
       (*itPDM)->setSortCaseSensitivity(Qt::CaseInsensitive);
-
+#if QT_VERSION >= 0x050000
+      (*it)->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
       (*it)->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
       (*it)->verticalHeader()->hide();
       (*it)->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
       connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
               this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-      connect((*itDM), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-              this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+      connect((*itDM), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+              this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
     }
 
-  connect(mpTblDescription, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(slotBtnBrowseDescription(const QModelIndex&)));
-  connect(mpTblReferences, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(slotBtnBrowseReference(const QModelIndex&)));
-
+  connect(mpTblDescription, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(slotBtnBrowseDescription(const QModelIndex &)));
+  connect(mpTblReferences, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(slotBtnBrowseReference(const QModelIndex &)));
   // Build the list of known resources
   updateResourcesList();
 }
@@ -180,7 +169,6 @@ void CQMiriamWidget::deleteSelectedReferences()
 
 void CQMiriamWidget::deleteSelectedBiologicalDescriptions()
 {
-
   QModelIndexList selRows = mpTblDescription->selectionModel()->selectedRows(0);
 
   if (selRows.empty())
@@ -197,7 +185,6 @@ void CQMiriamWidget::deleteSelectedBiologicalDescriptions()
 
 void CQMiriamWidget::deleteSelectedModifieds()
 {
-
   QModelIndexList selRows = mpTblModified->selectionModel()->selectedRows(0);
 
   if (selRows.empty())
@@ -220,7 +207,7 @@ void openMiriamReference(const std::string &reference)
   QDesktopServices::openUrl(QUrl(reference.c_str()));
 }
 
-void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
+void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex &index)
 {
   if (mpMIRIAMInfo == NULL ||
       index.column() > 1 ||
@@ -229,11 +216,10 @@ void CQMiriamWidget::slotBtnBrowseReference(const QModelIndex& index)
     return;
 
   const CReference *pRef = &mpMIRIAMInfo->getReferences()[index.row()];
-
   openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }
 
-void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
+void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex &index)
 {
   if (mpMIRIAMInfo == NULL ||
       index.column() > 1 ||
@@ -242,7 +228,6 @@ void CQMiriamWidget::slotBtnBrowseDescription(const QModelIndex& index)
     return;
 
   const CBiologicalDescription *pRef = &mpMIRIAMInfo->getBiologicalDescriptions()[index.row()];
-
   openMiriamReference(pRef->getMIRIAMResourceObject().getIdentifiersOrgURL() + "?profile=most_reliable");
 }
 
@@ -296,7 +281,7 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
 }
 
-bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & key)
+bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &key)
 {
   if (getIgnoreUpdates())
     return true;
@@ -343,14 +328,12 @@ bool CQMiriamWidget::enterProtected()
 
   if (mKeyToCopy != "")
     {
-      CAnnotation * pAnnotation = CAnnotation::castObject(dynamic_cast<CCopasiObject *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
+      CAnnotation *pAnnotation = CAnnotation::castObject(dynamic_cast<CCopasiObject *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
 
       if (pAnnotation != NULL)
         {
           std::string pMiriamAnnotation = pAnnotation->getMiriamAnnotation();
-
           pAnnotation = CAnnotation::castObject(mpObject);
-
           pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
         }
 
@@ -358,16 +341,13 @@ bool CQMiriamWidget::enterProtected()
     }
 
   mpMIRIAMInfo->load(mKey);
-
   //Set Models for the 4 TableViews
-  std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<CQTableView*>::const_iterator end = mWidgets.end();
-
-  std::vector<CQBaseDataModel*>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel*>::const_iterator endDM = mDMs.end();
-
-  std::vector<CQSortFilterProxyModel*>::const_iterator itPDM = mProxyDMs.begin();
-  std::vector<CQSortFilterProxyModel*>::const_iterator endPDM = mProxyDMs.end();
+  std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
+  std::vector<CQTableView *>::const_iterator end = mWidgets.end();
+  std::vector<CQBaseDataModel *>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel *>::const_iterator endDM = mDMs.end();
+  std::vector<CQSortFilterProxyModel *>::const_iterator itPDM = mProxyDMs.begin();
+  std::vector<CQSortFilterProxyModel *>::const_iterator endPDM = mProxyDMs.end();
 
   for (; it != end && itDM != endDM && itPDM != endPDM; it++, itDM++, itPDM++)
     {
@@ -394,7 +374,6 @@ bool CQMiriamWidget::enterProtected()
       mMessageType = CCopasiMessage::getHighestSeverity();
       mMessage = CCopasiMessage::getAllMessageText();
       CCopasiMessage::clearDeque();
-
       showEvent(NULL);
     }
   else
@@ -413,7 +392,7 @@ bool CQMiriamWidget::leave()
 }
 
 // virtual
-void CQMiriamWidget::showEvent(QShowEvent * event)
+void CQMiriamWidget::showEvent(QShowEvent *event)
 {
   if (!isVisible()) return;
 
@@ -432,17 +411,16 @@ void CQMiriamWidget::showEvent(QShowEvent * event)
   mMessage = "";
 }
 
-const CMIRIAMInfo & CQMiriamWidget::getMIRIAMInfo() const
+const CMIRIAMInfo &CQMiriamWidget::getMIRIAMInfo() const
 {return *mpMIRIAMInfo;}
 
 void CQMiriamWidget::updateResourcesList()
 {
   // Build the list of known resources
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CMIRIAMResources * pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
+  const CMIRIAMResources *pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
   QMap< QString, QString > ResourceMap;
   QMap< QString, QString > ReferenceMap;
-
   size_t i, imax = pResource->getResourceList().size();
 
   for (i = 0; i < imax; i++)
@@ -459,7 +437,6 @@ void CQMiriamWidget::updateResourcesList()
 
   mResources.clear();
   mResources.push_back("-- select --");
-
   QMap< QString, QString >::const_iterator it = ResourceMap.begin();
   QMap< QString, QString >::const_iterator end = ResourceMap.end();
 
@@ -470,7 +447,6 @@ void CQMiriamWidget::updateResourcesList()
 
   mReferences.clear();
   mReferences.push_back("-- select --");
-
   it = ReferenceMap.begin();
   end = ReferenceMap.end();
 
@@ -483,7 +459,7 @@ void CQMiriamWidget::updateResourcesList()
   mpResourceDelegate2->setItems(-1, mResources);
 }
 
-void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
+void CQMiriamWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
@@ -492,10 +468,10 @@ void CQMiriamWidget::keyPressEvent(QKeyEvent* ev)
     slotCopyEvent();
 }
 
-void CQMiriamWidget::dataChanged(const QModelIndex& topLeft, const QModelIndex& C_UNUSED(bottomRight))
+void CQMiriamWidget::dataChanged(const QModelIndex &topLeft, const QModelIndex &C_UNUSED(bottomRight))
 {
-  std::vector<CQTableView*>::const_iterator it = mWidgets.begin();
-  std::vector<CQTableView*>::const_iterator end = mWidgets.end();
+  std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
+  std::vector<CQTableView *>::const_iterator end = mWidgets.end();
 
   for (; it != end; it++)
     (*it)->resizeColumnsToContents();
@@ -506,9 +482,9 @@ void CQMiriamWidget::dataChanged(const QModelIndex& topLeft, const QModelIndex& 
 
 void CQMiriamWidget::slotCopyEvent()
 {
-  CQSortFilterProxyModel* pProxyModel = NULL;
-  CQBaseDataModel* pBaseDM = NULL;
-  CQTableView* pTbl = NULL;
+  CQSortFilterProxyModel *pProxyModel = NULL;
+  CQBaseDataModel *pBaseDM = NULL;
+  CQTableView *pTbl = NULL;
 
   if (mpTblAuthors->hasFocus())
     {

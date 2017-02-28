@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,7 +21,7 @@
 #include "UI/qtUtilities.h"
 
 #include <QtCore/QString>
-#include <QtGui/QIntValidator>
+#include <QIntValidator>
 #include "CQExpandModelData.h"
 
 CQExpandModelData::CQExpandModelData(QWidget* parent, Qt::WindowFlags fl)

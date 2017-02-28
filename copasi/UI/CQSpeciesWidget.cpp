@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,9 +15,9 @@
 
 #include "CQSpeciesWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
 
 #include "copasi.h"
 
@@ -29,44 +34,40 @@
  *  Constructs a CQSpeciesWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQSpeciesWidget::CQSpeciesWidget(QWidget* parent, const char* name)
+CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
-
   //Create Source Data Model.
   mpSpecieDM = new CQSpecieDM(this);
   mpSpecieDM->setDataModel(mpDataModel);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   mpProxyModel->setSourceModel(mpSpecieDM);
-
   mpTblSpecies->setModel(mpProxyModel);
-
   //Setting values for Compartment comboBox
   mpCompartmentDelegate = new CQComboDelegate(this, mCompartments);
   mpTblSpecies->setItemDelegateForColumn(COL_COMPARTMENT, mpCompartmentDelegate);
-
   //Setting values for Types comboBox
   mpTypeDelegate = new CQIndexComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
-
+#if QT_VERSION >= 0x050000
+  mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblSpecies->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblSpecies->verticalHeader()->hide();
   mpTblSpecies->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
   // Connect the table widget
   connect(mpSpecieDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpSpecieDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpSpecieDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   mpSpecieDM->setUndoStack(pWindow->getUndoStack());
 }
 
@@ -98,8 +99,7 @@ void CQSpeciesWidget::slotBtnDeleteClicked()
 
 void CQSpeciesWidget::deleteSelectedSpecies()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblSpecies->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblSpecies->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpSpecieDM->rowCount();
 
@@ -119,7 +119,6 @@ void CQSpeciesWidget::deleteSelectedSpecies()
 
 void CQSpeciesWidget::slotBtnClearClicked()
 {
-
   int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all Species?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
@@ -131,7 +130,7 @@ void CQSpeciesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
 {
   if (!mIgnoreUpdates &&
       objectType == ListViews::MODEL)
@@ -151,8 +150,8 @@ bool CQSpeciesWidget::enterProtected()
 {
   if (mpTblSpecies->selectionModel() != NULL)
     {
-      disconnect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   mpSpecieDM->setDataModel(mpDataModel);
@@ -160,21 +159,18 @@ bool CQSpeciesWidget::enterProtected()
   //Set Model for the TableView
   mpTblSpecies->setModel(NULL);
   mpTblSpecies->setModel(mpProxyModel);
-
-  connect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(mpTblSpecies->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
   mpTblSpecies->resizeColumnsToContents();
   setFramework(mFramework);
   refreshCompartments();
-
   return true;
 }
 
 void CQSpeciesWidget::updateDeleteBtns()
 {
   bool selected = false;
-
   QModelIndexList selRows = mpTblSpecies->selectionModel()->selectedRows();
 
   if (selRows.size() == 0)
@@ -200,14 +196,14 @@ void CQSpeciesWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQSpeciesWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
-    const QItemSelection& C_UNUSED(deselected))
+void CQSpeciesWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
+    const QItemSelection &C_UNUSED(deselected))
 {
   updateDeleteBtns();
 }
 
-void CQSpeciesWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
-                                  const QModelIndex& C_UNUSED(bottomRight))
+void CQSpeciesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
+                                  const QModelIndex &C_UNUSED(bottomRight))
 {
   mpTblSpecies->resizeColumnsToContents();
   setFramework(mFramework);
@@ -228,7 +224,7 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     }
 
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
 
   if (pModel == NULL)
     return;
@@ -239,7 +235,7 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQSpeciesWidget::keyPressEvent(QKeyEvent* ev)
+void CQSpeciesWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();
@@ -289,11 +285,9 @@ void CQSpeciesWidget::setFramework(int framework)
         mpTblSpecies->showColumn(COL_ICONCENTRATION);
         mpTblSpecies->showColumn(COL_CONCENTRATION);
         mpTblSpecies->showColumn(COL_CRATE);
-
         mpTblSpecies->hideColumn(COL_INUMBER);
         mpTblSpecies->hideColumn(COL_NUMBER);
         mpTblSpecies->hideColumn(COL_NRATE);
-
         mpSpecieDM->setFlagConc(true);
         break;
 
@@ -301,11 +295,9 @@ void CQSpeciesWidget::setFramework(int framework)
         mpTblSpecies->hideColumn(COL_ICONCENTRATION);
         mpTblSpecies->hideColumn(COL_CONCENTRATION);
         mpTblSpecies->hideColumn(COL_CRATE);
-
         mpTblSpecies->showColumn(COL_INUMBER);
         mpTblSpecies->showColumn(COL_NUMBER);
         mpTblSpecies->showColumn(COL_NRATE);
-
         mpSpecieDM->setFlagConc(false);
         break;
     }
@@ -313,7 +305,7 @@ void CQSpeciesWidget::setFramework(int framework)
 
 void CQSpeciesWidget::refreshCompartments()
 {
-  const CCopasiVector < CCompartment > & compartments =
+  const CCopasiVector < CCompartment > &compartments =
     mpDataModel->getModel()->getCompartments();
   mCompartments.clear();
 

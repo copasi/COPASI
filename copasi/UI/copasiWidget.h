@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,7 +29,7 @@
 #ifndef COPASI_WIDGET_H
 #define COPASI_WIDGET_H
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 #include "copasi/UI/listviews.h"
 
@@ -40,8 +45,8 @@ class CopasiWidget : public QWidget
   Q_OBJECT
 
 public:
-  CopasiWidget(QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0);
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  CopasiWidget(QWidget *parent = 0, const char *name = 0, Qt::WindowFlags = 0);
+  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key);
   virtual bool leave();
 
   /**
@@ -49,30 +54,30 @@ public:
    */
   virtual void refresh();
 
-  bool enter(const std::string & key);
+  bool enter(const std::string &key);
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
-  CCopasiDataModel * getDataModel() const;
+  CCopasiDataModel *getDataModel() const;
 
-  void setUndoStack(QUndoStack* undoStack);
-  QUndoStack* getUndoStack();
+  void setUndoStack(QUndoStack *undoStack);
+  QUndoStack *getUndoStack();
 
 protected:
   virtual bool enterProtected();
 
   QUndoStack *mpUndoStack;
 
-  ListViews * mpListView;
+  ListViews *mpListView;
   std::string mKey;
-  CCopasiObject * mpObject;
-  CCopasiDataModel * mpDataModel;
+  CCopasiObject *mpObject;
+  CCopasiDataModel *mpDataModel;
 
   bool mIgnoreUpdates;
   int mFramework;
 
 protected slots:
-  virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key = "");
 };
 
 #endif // !defined(COPASI_WIDGET_H)

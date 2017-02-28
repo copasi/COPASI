@@ -43,7 +43,7 @@
  *  Constructs a CQSpeciesDetail which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
+CQSpeciesDetail::CQSpeciesDetail(QWidget *parent, const char *name) :
   CopasiWidget(parent, name),
   mChanged(false),
   mpMetab(NULL),
@@ -54,37 +54,34 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget* parent, const char* name) :
   mpDependencies(new CQDependenciesWidget(parent))
 {
   setupUi(this);
-
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
-
   mItemToType.push_back(CModelEntity::REACTIONS);
   mItemToType.push_back(CModelEntity::FIXED);
   mItemToType.push_back(CModelEntity::ASSIGNMENT);
   mItemToType.push_back(CModelEntity::ODE);
-
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
   mpNoiseExpressionWidget->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
-
   mpReactionTable->verticalHeader()->hide();
-  mpReactionTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpReactionTable->horizontalHeader()->hide();
+#if QT_VERSION >= 0x050000
+  mpReactionTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+  mpReactionTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
+  mpReactionTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpReactionTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
+#endif
+  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-
   // temporarily hide the reaction label / table
   mpLblReactions->setVisible(false);
   mpReactionTable->setVisible(false);
-
   // display dependency widget instead
   mpDependencies->setVisibleDependencies(REACTION | EVENT | SPECIES | PARAMETERS | COMPARTMENT);
   mpDependencies->setLabelWidth(mpLblValue->width() + 14);
-
   gridLayout->addWidget(mpDependencies, gridLayout->rowCount(), 0, 1, -1);
 }
 
@@ -108,13 +105,12 @@ bool CQSpeciesDetail::leave()
     }
 
   save();
-
   return true;
 }
 
 bool CQSpeciesDetail::update(ListViews::ObjectType objectType,
                              ListViews::Action action,
-                             const std::string & key)
+                             const std::string &key)
 {
   switch (objectType)
     {
@@ -163,11 +159,9 @@ void CQSpeciesDetail::setFramework(int framework)
 
   if (mpMetab == NULL) return;
 
-  const CModel * pModel = mpMetab->getModel();
-
+  const CModel *pModel = mpMetab->getModel();
   QString ParticleNumberUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getValueReference()->getUnits())) + "]";
   QString ParticleNumberRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getRateReference()->getUnits())) + "]";
-
   // These depend on the current selected compartment's unit (which depends on it's dimentionality)
   std::string concUnitStdStr = "(" + pModel->getQuantityUnit() + ")/(" + mpCurrentCompartment->getUnits() + ")";
   QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(concUnitStdStr)) + "]";
@@ -187,13 +181,10 @@ void CQSpeciesDetail::setFramework(int framework)
 
         mpLblValue->setText("Concentration " + ConcentrationUnits);
         mpLblRate->setText("Rate " + ConcentrationRateUnits);
-
         mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
         mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
-
         mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
         mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
-
         break;
 
       case 1:
@@ -207,13 +198,10 @@ void CQSpeciesDetail::setFramework(int framework)
 
         mpLblValue->setText("Particle Number " + ParticleNumberUnits);
         mpLblRate->setText("Rate " + ParticleNumberRateUnits);
-
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
         mpEditInitialValue->setReadOnly(false);
-
         mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
         mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
-
         break;
     }
 }
@@ -224,13 +212,11 @@ bool CQSpeciesDetail::enterProtected()
 
   if (!mpMetab)
     {
-
       mpListView->switchToOtherWidget(112, "");
       return false;
     }
 
   load();
-
   return true;
 }
 
@@ -238,22 +224,19 @@ void CQSpeciesDetail::load()
 {
   if (mpMetab == NULL) return;
 
-  const CModel * pModel = NULL;
+  const CModel *pModel = NULL;
 
   if (mpMetab)
     pModel = mpMetab->getModel();
 
   std::string TimeUnit = (pModel != NULL) ? CUnit::prettyPrint(pModel->getTimeUnit()) : "?";
   QString TimeUnits = " [" + FROM_UTF8(TimeUnit) + "]";
-
   // Update the labels to reflect the model units
   mpLblTransitionTime->setText("Transition Time " + TimeUnits);
-
   // Compartment
-  const CCopasiVectorNS< CCompartment > & Compartments = pModel->getCompartments();
-  const CCompartment * pCompartment;
+  const CCopasiVectorNS< CCompartment > &Compartments = pModel->getCompartments();
+  const CCompartment *pCompartment;
   mpComboBoxCompartment->clear();
-
   mpComboBoxCompartment->setDuplicatesEnabled(false);
   size_t m;
 
@@ -265,32 +248,24 @@ void CQSpeciesDetail::load()
 
   mpCurrentCompartment = mpMetab->getCompartment();
   mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(mpCurrentCompartment->getObjectName())));
-
   // Simulation Type
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpMetab->getStatus()])));
-
   // Initial Concentration handled in slotTypeChanged
   mInitialConcentration = mpMetab->getInitialConcentration();
-
   // Initial Number handled in slotTypeChanged
   mInitialNumber = mpMetab->getInitialValue();
-
   // Transition Time
   mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime(), 'g', 10));
-
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getExpression());
   mpExpressionEMW->updateWidget();
-
   // Initial Expression
   mpInitialExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getInitialExpression());
   mpInitialExpressionEMW->updateWidget();
-
   // Noise Expression
   mpNoiseExpressionWidget->mpExpressionWidget->setExpression(mpMetab->getNoiseExpression());
   mpNoiseExpressionWidget->updateWidget();
   mpBoxAddNoise->setChecked(mpMetab->hasNoise());
-
   // Type dependent display of values
   slotTypeChanged(mpComboBoxType->currentIndex());
 
@@ -308,12 +283,9 @@ void CQSpeciesDetail::load()
     }
 
   loadReactionTable();
-
   mpDependencies->loadFrom(mpObject);
-
   // Update the units and values accordingly
   setFramework(mFramework);
-
   mChanged = false;
   return;
 }
@@ -322,7 +294,7 @@ void CQSpeciesDetail::save()
 {
   if (mpMetab == NULL) return;
 
-  CModel * pModel = const_cast< CModel * >(mpMetab->getModel());
+  CModel *pModel = const_cast< CModel * >(mpMetab->getModel());
 
   if (pModel == NULL) return;
 
@@ -338,15 +310,12 @@ void CQSpeciesDetail::save()
           msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
                 + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
                 + "since a species with that name already exist in the target compartment.";
-
           CQMessageBox::information(this,
                                     "Unable to move Species",
                                     msg,
                                     QMessageBox::Ok, QMessageBox::Ok);
-
           // Revert the changes
           mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(CompartmentToRemove)));
-
           slotCompartmentChanged(mpComboBoxCompartment->currentIndex());
         }
       else
@@ -370,7 +339,6 @@ void CQSpeciesDetail::save()
   switch (mFramework)
     {
       case 0:
-
         if (mpMetab->getInitialConcentration() != mInitialConcentration)
           {
             mpMetab->setInitialConcentration(mInitialConcentration);
@@ -380,7 +348,6 @@ void CQSpeciesDetail::save()
         break;
 
       case 1:
-
         if (mpMetab->getInitialValue() != mInitialNumber)
           {
             mpMetab->setInitialValue(mInitialNumber);
@@ -443,20 +410,18 @@ void CQSpeciesDetail::loadReactionTable()
 {
   if (mpMetab == NULL) return;
 
-  CModel * pModel = const_cast< CModel * >(mpMetab->getModel());
+  CModel *pModel = const_cast< CModel * >(mpMetab->getModel());
 
   if (pModel == NULL) return;
 
   std::set< const CCopasiObject * > Reactions;
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
-
   mpReactionTable->setRowCount((int) Reactions.size());
   mpReactionTable->setSortingEnabled(false);
-
   std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
   std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
   int i = 0;
-  const CReaction * pReaction;
+  const CReaction *pReaction;
 
   for (; it != end; ++it, ++i)
     {
@@ -469,10 +434,8 @@ void CQSpeciesDetail::loadReactionTable()
     mpReactionTable->setItem(i, 0, new QTableWidgetItem("none"));
 
   mpReactionTable->setSortingEnabled(true);
-
   // Provide count of reactions, in label.
   mpLblReactions->setText("Involved in \n" + QString::number(mpReactionTable->rowCount()) + " Reactions");
-
   return;
 }
 
@@ -485,28 +448,25 @@ void CQSpeciesDetail::copy()
 {
   if (mpMetab == NULL) return;
 
-  CModel * pModel = NULL;
+  CModel *pModel = NULL;
 
   if (mpMetab) pModel = mpDataModel->getModel();
 
   if (pModel == NULL) return; // for getting compartments and initializing cModelExpObj
 
   // Create and customize compartment choices dialog
-  CQNameSelectionDialog * pDialog = new CQNameSelectionDialog(this);
+  CQNameSelectionDialog *pDialog = new CQNameSelectionDialog(this);
   pDialog->setWindowTitle("Choose a compartment");
   pDialog->mpLblName->setText("compartment");
   pDialog->mpSelectionBox->clear();
   pDialog->mpSelectionBox->setDuplicatesEnabled(false);
   pDialog->mpSelectionBox->setEditable(false); // at least for now, unless we want to add new compartment creation here.
-
   // Use CModelExpansion for duplication
   CModelExpansion cModelExpObj = CModelExpansion(pModel);
   CModelExpansion::SetOfModelElements sourceObjects;
   CModelExpansion::ElementsMap origToCopyMapping;
-
   // for comboBox compartment list and setting compartment
-  CCopasiVectorNS< CCompartment > & Compartments = pModel->getCompartments();
-
+  CCopasiVectorNS< CCompartment > &Compartments = pModel->getCompartments();
   CCopasiVectorN< CCompartment >::const_iterator it = Compartments.begin();
   CCopasiVectorN< CCompartment >::const_iterator end = Compartments.end();
   QStringList SelectionList;
@@ -518,13 +478,11 @@ void CQSpeciesDetail::copy()
     }
 
   pDialog->setSelectionList(SelectionList);
-
   //Set the current compartment as the default
   mpCurrentCompartment = mpMetab->getCompartment();
   // to use here, and for testing if compartment changed after executing the dialog
   int origCompartmentIndex = pDialog->mpSelectionBox->findText(FROM_UTF8(mpCurrentCompartment->getObjectName()));
   pDialog->mpSelectionBox->setCurrentIndex(origCompartmentIndex);
-
   it = Compartments.begin(); // Reuse Compartments iterator to set compartment choice
 
   if (pDialog->exec() != QDialog::Rejected)
@@ -539,7 +497,6 @@ void CQSpeciesDetail::copy()
 
       sourceObjects.addMetab(mpMetab);
       cModelExpObj.duplicateMetab(mpMetab, "_copy", sourceObjects, origToCopyMapping);
-
       protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all
       protectedNotify(ListViews::METABOLITE, ListViews::DELETE, ""); //Refresh all
       protectedNotify(ListViews::REACTION, ListViews::DELETE, "");   //Refresh all
@@ -560,13 +517,13 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
 {
   if (!mpMetab || !mpCurrentCompartment) return;
 
-  const CModel * pModel = mpMetab->getModel();
+  const CModel *pModel = mpMetab->getModel();
 
   if (pModel == NULL)
     return;
 
   QString Compartment = mpComboBoxCompartment->itemText(compartment);
-  const CCompartment * pNewCompartment =
+  const CCompartment *pNewCompartment =
     &pModel->getCompartments()[TO_UTF8(Compartment)];
 
   if (pNewCompartment == mpCurrentCompartment ||
@@ -578,7 +535,6 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
     mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
 
   mpCurrentCompartment = pNewCompartment;
-
   // Update the units and values accordingly
   setFramework(mFramework);
 }
@@ -589,7 +545,6 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
     {
       mpLblInitialExpression->show();
       mpInitialExpressionEMW->show();
-
       mpEditInitialValue->setEnabled(false);
       mpInitialExpressionEMW->updateWidget();
     }
@@ -597,7 +552,6 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
     {
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
-
       mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
     }
 }
@@ -635,21 +589,19 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 {
   if (mpMetab == NULL) return;
 
-  const CModel * pModel = mpMetab->getModel();
+  const CModel *pModel = mpMetab->getModel();
 
   if (pModel == NULL) return;
 
   std::set< const CCopasiObject * > Reactions;
   pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
-
   std::string s1, s2;
   s1 = TO_UTF8(mpReactionTable->item(row, 0)->text());
   s1 = s1.substr(0, s1.length() - 1);
-
   C_INT32 i = 0;
   std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
   std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
-  const CReaction * pReaction;
+  const CReaction *pReaction;
 
   for (; it != end; ++it, ++i)
     {
@@ -677,9 +629,8 @@ void CQSpeciesDetail::slotTypeChanged(int type)
 void CQSpeciesDetail::createNewSpecies()
 {
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
-
   leave();
 
   if (pModel->getCompartments().size() == 0)
@@ -715,7 +666,7 @@ void CQSpeciesDetail::deleteSpecies()
 {
   if (mpMetab == NULL) return;
 
-  CModel * pModel = const_cast< CModel *>(mpMetab->getModel());
+  CModel *pModel = const_cast< CModel *>(mpMetab->getModel());
 
   if (pModel == NULL) return;
 
@@ -729,7 +680,6 @@ void CQSpeciesDetail::deleteSpecies()
       case QMessageBox::Ok:
       {
         pModel->removeMetabolite(mKey);
-
 #undef DELETE
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
         protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
@@ -747,18 +697,15 @@ void CQSpeciesDetail::deleteSpecies()
 void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 {
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
-
   switchToWidget(CCopasiUndoCommand::SPECIES);
-
-  CMetab * pSpecies = dynamic_cast< CMetab * >(pSData->getObject(pModel));
+  CMetab *pSpecies = dynamic_cast< CMetab * >(pSData->getObject(pModel));
 
   if (pSpecies == NULL) return;
 
   std::string key = pSpecies->getKey();
   pModel->removeMetabolite(key);
-
 #undef DELETE
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
@@ -767,9 +714,8 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
 {
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
-
   //reinsert the species
   CMetab *pSpecies =  pSData->restoreObjectIn(pModel);
 
@@ -777,9 +723,7 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
     return;
 
   std::string key = pSpecies->getKey();
-
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
-
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
@@ -790,10 +734,8 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
       case CModelEntity::FIXED:
         mpLblExpression->hide();
         mpExpressionEMW->hide();
-
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
         mpBoxAddNoise->hide();
         slotAddNoiseChanged(false);
         break;
@@ -801,12 +743,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
       case CModelEntity::ASSIGNMENT:
         mpLblExpression->show();
         mpExpressionEMW->show();
-
         mpBoxUseInitialExpression->setEnabled(false);
         slotInitialTypeChanged(false);
-
         mpExpressionEMW->updateWidget();
-
         mpBoxAddNoise->hide();
         slotAddNoiseChanged(false);
         break;
@@ -814,12 +753,9 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
       case CModelEntity::ODE:
         mpLblExpression->show();
         mpExpressionEMW->show();
-
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
         mpExpressionEMW->updateWidget();
-
 #ifdef WITH_SDE_SUPPORT
         mpBoxAddNoise->show();
         slotAddNoiseChanged(mpBoxAddNoise->isChecked());
@@ -827,16 +763,13 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
         mpBoxAddNoise->hide();
         slotAddNoiseChanged(false);
 #endif
-
         break;
 
       case CModelEntity::REACTIONS:
         mpLblExpression->hide();
         mpExpressionEMW->hide();
-
         mpBoxUseInitialExpression->setEnabled(true);
         slotInitialTypeChanged(mpBoxUseInitialExpression->isChecked());
-
         mpBoxAddNoise->hide();
         slotAddNoiseChanged(false);
         break;
@@ -852,9 +785,8 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 void CQSpeciesDetail::speciesTypeChanged(UndoSpeciesData *pSData, int type)
 {
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
-
   //find the species of interest and switch to its widget
   CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
 
@@ -874,7 +806,7 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
 {
   if (!mpMetab || !mpCurrentCompartment) return;
 
-  const CModel * pModel = mpMetab->getModel();
+  const CModel *pModel = mpMetab->getModel();
 
   if (pModel == NULL)
     return;
@@ -882,7 +814,6 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
   switch (mFramework)
     {
       case 0:
-
         if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
           return;
 
@@ -893,7 +824,6 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
         break;
 
       case 1:
-
         if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
           return;
 
@@ -908,9 +838,8 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
 void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
 {
   assert(mpDataModel != NULL);
-  CModel * pModel = mpDataModel->getModel();
+  CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
-
   //find the species of interest and switch to its widget
   CMetab *pSpecie = pModel->findMetabByName(pSData->getName());
 

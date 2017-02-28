@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,10 +19,10 @@
 #include "CLNAResultSubwidget.h"
 
 #include <QtCore/QFileInfo>
-#include <QtGui/QLineEdit>
-#include <QtGui/QCheckBox>
-#include <QtGui/QPainter>
-#include <QtGui/QMessageBox>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QPainter>
+#include <QMessageBox>
 
 #include "copasi.h"
 
@@ -35,11 +40,10 @@
  *  Constructs a CLNAResultSubwidget as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CLNAResultSubwidget::CLNAResultSubwidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
+CLNAResultSubwidget::CLNAResultSubwidget(QWidget *parent, const char *name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl)
 {
   setupUi(this);
-
   init();
 }
 
@@ -58,11 +62,10 @@ void CLNAResultSubwidget::init()
     mSaveButton->hide();
   */
   mLNAMethod = NULL;
-
   clear();
 }
 
-void CLNAResultSubwidget::loadAll(const CLNAMethod * lnaMethod)
+void CLNAResultSubwidget::loadAll(const CLNAMethod *lnaMethod)
 {
   mLNAMethod = lnaMethod;
 
@@ -108,7 +111,6 @@ void CLNAResultSubwidget::loadAll(const CLNAMethod * lnaMethod)
                 this->loadCovarianceMatrixReduced(lnaMethod);
                 this->loadBMatrixReduced(lnaMethod);
           */
-
           mpArrayCovarianceMatrix->setArrayAnnotation(NULL);
           mpArrayCovarianceMatrixReduced->setArrayAnnotation(NULL);
           mpArrayBMatrixReduced->setArrayAnnotation(NULL);
@@ -121,23 +123,21 @@ void CLNAResultSubwidget::loadAll(const CLNAMethod * lnaMethod)
     }
 }
 
-void CLNAResultSubwidget::loadCovarianceMatrix(const CLNAMethod * lnaMethod)
+void CLNAResultSubwidget::loadCovarianceMatrix(const CLNAMethod *lnaMethod)
 {
-  const CArrayAnnotation * covarianceMatrixAnn;
+  const CArrayAnnotation *covarianceMatrixAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
       covarianceMatrixAnn = lnaMethod->getScaledCovarianceMatrixAnn();
-
-      CColorScaleBiLog * tcs = new CColorScaleBiLog();
+      CColorScaleBiLog *tcs = new CColorScaleBiLog();
       mpArrayCovarianceMatrix->setColorCoding(tcs);
       mpArrayCovarianceMatrix->setColorScalingAutomatic(true);
     }
   else
     {
       covarianceMatrixAnn = lnaMethod->getUnscaledCovarianceMatrixAnn();
-
-      CColorScaleBiLog * tcs = new CColorScaleBiLog();
+      CColorScaleBiLog *tcs = new CColorScaleBiLog();
       mpArrayCovarianceMatrix->setColorCoding(tcs);
       mpArrayCovarianceMatrix->setColorScalingAutomatic(true);
     }
@@ -145,23 +145,21 @@ void CLNAResultSubwidget::loadCovarianceMatrix(const CLNAMethod * lnaMethod)
   mpArrayCovarianceMatrix->setArrayAnnotation(covarianceMatrixAnn);
 }
 
-void CLNAResultSubwidget::loadCovarianceMatrixReduced(const CLNAMethod * lnaMethod)
+void CLNAResultSubwidget::loadCovarianceMatrixReduced(const CLNAMethod *lnaMethod)
 {
-  const CArrayAnnotation * covarianceMatrixReducedAnn;
+  const CArrayAnnotation *covarianceMatrixReducedAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
       covarianceMatrixReducedAnn = lnaMethod->getScaledCovarianceMatrixReducedAnn();
-
-      CColorScaleBiLog * tcs = new CColorScaleBiLog();
+      CColorScaleBiLog *tcs = new CColorScaleBiLog();
       mpArrayCovarianceMatrixReduced->setColorCoding(tcs);
       mpArrayCovarianceMatrixReduced->setColorScalingAutomatic(true);
     }
   else
     {
       covarianceMatrixReducedAnn = lnaMethod->getUnscaledCovarianceMatrixReducedAnn();
-
-      CColorScaleBiLog * tcs = new CColorScaleBiLog();
+      CColorScaleBiLog *tcs = new CColorScaleBiLog();
       mpArrayCovarianceMatrixReduced->setColorCoding(tcs);
       mpArrayCovarianceMatrixReduced->setColorScalingAutomatic(true);
     }
@@ -169,23 +167,21 @@ void CLNAResultSubwidget::loadCovarianceMatrixReduced(const CLNAMethod * lnaMeth
   mpArrayCovarianceMatrixReduced->setArrayAnnotation(covarianceMatrixReducedAnn);
 }
 
-void CLNAResultSubwidget::loadBMatrixReduced(const CLNAMethod * lnaMethod)
+void CLNAResultSubwidget::loadBMatrixReduced(const CLNAMethod *lnaMethod)
 {
-  const CArrayAnnotation * bMatrixReducedAnn;
+  const CArrayAnnotation *bMatrixReducedAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
       bMatrixReducedAnn = lnaMethod->getScaledBMatrixReducedAnn();
-
-      CColorScaleBiLog * tcs = new CColorScaleBiLog();
+      CColorScaleBiLog *tcs = new CColorScaleBiLog();
       mpArrayBMatrixReduced->setColorCoding(tcs);
       mpArrayBMatrixReduced->setColorScalingAutomatic(true);
     }
   else
     {
       bMatrixReducedAnn = lnaMethod->getUnscaledBMatrixReducedAnn();
-
-      CColorScaleBiLog * tcs = new CColorScaleBiLog();
+      CColorScaleBiLog *tcs = new CColorScaleBiLog();
       mpArrayBMatrixReduced->setColorCoding(tcs);
       mpArrayBMatrixReduced->setColorScalingAutomatic(true);
     }
@@ -218,14 +214,13 @@ void CLNAResultSubwidget::slotSave()
     return;
 
   assert(mpDataModel != NULL);
-  CCopasiTask* mpTask =
+  CCopasiTask *mpTask =
     dynamic_cast<CLNATask *>(& mpDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
 
   if (mpTask != NULL)
     file << mpTask->getResult();
 
-//    mpTask->printResult(file);
-
+  //    mpTask->printResult(file);
   return;
 }
 
@@ -237,10 +232,8 @@ void CLNAResultSubwidget::slotScaled()
 void CLNAResultSubwidget::clear()
 {
   mTopLabel->setText("No result available, please execute the LNA task.");
-
   mpArrayCovarianceMatrix->setArrayAnnotation(NULL);
   mpArrayCovarianceMatrixReduced->setArrayAnnotation(NULL);
   mpArrayBMatrixReduced->setArrayAnnotation(NULL);
-
   return;
 }

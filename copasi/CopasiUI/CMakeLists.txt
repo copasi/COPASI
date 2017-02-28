@@ -75,11 +75,9 @@ if (BUILD_STATIC_COPASISE)
 endif (BUILD_STATIC_COPASISE) 
 
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
-
 target_link_libraries(CopasiUI ${SE_LIBS} ${UI_LIBS} ${SE_EXTERNAL_LIBS} ${UI_EXTERNAL_LIBS}
-                      ${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY}
-                      ${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY}
-                      ${QT_QTSVG_LIBRARY})
+                      ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+QT_BIND_TO_TARGET(CopasiUI)
 
 if (NOT USING_INTEL)
   target_link_libraries(CopasiUI ${ZLIB_LIBRARY})

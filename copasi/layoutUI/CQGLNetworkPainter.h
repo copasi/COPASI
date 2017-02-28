@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,7 +20,8 @@
 #ifndef CQGLNETWORKPAINTER_H_
 #define CQGLNETWORKPAINTER_H_
 
-#include <QtOpenGL/qgl.h>
+//#include <QtOpenGL/qgl.h>
+#include <QtOpenGL/QGLWidget>
 
 #ifdef __APPLE__
 #include "OpenGL/glu.h"
@@ -23,10 +29,10 @@
 #include "GL/glu.h"
 #endif // __APPLE__
 
-#include <QtGui/QColor>
-#include <QtGui/QDialog> // for CQSimpleProgressDialog
-#include <QtGui/QFont>
-#include <QtGui/QImage>
+#include <QColor>
+#include <QDialog> // for CQSimpleProgressDialog
+#include <QFont>
+#include <QImage>
 
 #include <vector>
 #include <string>
@@ -65,7 +71,7 @@ class CQGLNetworkPainter : public QGLWidget
   Q_OBJECT        // must include this if you use Qt signals/slots
 
 public:
-  CQGLNetworkPainter(const QGLFormat& format, QWidget *parent = 0);
+  CQGLNetworkPainter(const QGLFormat &format, QWidget *parent = 0);
   ~CQGLNetworkPainter();
 
   CSimSummaryInfo *pSummaryInfo;
@@ -79,9 +85,9 @@ public:
   C_FLOAT64 getCurrentPositionX() const;
   C_FLOAT64 getCurrentPositionY() const;
 
-  void setGraphSize(const CLPoint & min, const CLPoint & max);
-  const CLPoint& getGraphMin();
-  const CLPoint& getGraphMax();
+  void setGraphSize(const CLPoint &min, const CLPoint &max);
+  const CLPoint &getGraphMin();
+  const CLPoint &getGraphMax();
   void createGraph(CLayout *lP); // create local data structures
   void drawGraph(); // create OpenGL display list with graph objects
   void drawNode(const CCompartmentGraphNode &n); // draw comaprtment node as a green rectangle
@@ -102,7 +108,7 @@ public:
   std::string getNameForNodeKey(std::string key);
 
   size_t getNumberOfNodeEntries() {return viewerNodes.size();}
-  CDataEntity* getDataSetAt(size_t stepNumber);
+  CDataEntity *getDataSetAt(size_t stepNumber);
 
   void mapLabelsToRectangles();
   void mapLabelsToCircles();
@@ -157,7 +163,7 @@ public:
    * If a frame number is outside the range of valid frame numbers, the last frame is rendered.
    * If the rendering was successfull, true is returned, otherwise false is returned.
    */
-  bool export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, const QString& filename, const std::vector<size_t> frames);
+  bool export_bitmap(double x, double y, double width, double height, unsigned int imageWidth, unsigned int imageHeight, const QString &filename, const std::vector<size_t> frames);
 
 private slots:
   void zoomIn();
@@ -240,7 +246,7 @@ private:
   std::map< std::string, CCompartmentGraphNode * > compartmentNodeMap;
   std::map<std::string, std::string>labelNodeMap; // maps label keys to node keys
 
-  std::map<std::string, RGTextureSpec*>labelTextureMap; // maps label texts to texture info
+  std::map<std::string, RGTextureSpec *>labelTextureMap; // maps label texts to texture info
   std::multimap<std::string, CGraphCurve> nodeCurveMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph) to curves (stored in viewerCurves) that point to this node)
   std::multimap<std::string, CArrow> nodeArrowMap; // maps mKey of viewer node (CGraphNode, originally from CLMetabGlyph, to arrows (stored in viewerArrows) that point to thid node)
 
@@ -270,12 +276,12 @@ private:
   int round2powN(double d);
 
   void RG_drawStringAt(std::string s, C_INT32 x, C_INT32 y, C_INT32 w, C_INT32 h);
-  RGTextureSpec* RG_createTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize);
-  RGTextureSpec* getTextureForText(const std::string& text, const std::string& fontName, unsigned int fontSize);
+  RGTextureSpec *RG_createTextureForText(const std::string &text, const std::string &fontName, unsigned int fontSize);
+  RGTextureSpec *getTextureForText(const std::string &text, const std::string &fontName, unsigned int fontSize);
 
   void createTextureForAllLabels();
 
-  int getTextWidth(const std::string& text, const std::string& fontName, unsigned int fontSize);
+  int getTextWidth(const std::string &text, const std::string &fontName, unsigned int fontSize);
   int getLabelWindowWidth(int width);
 
   void updateGraphWithNodeSizes();
@@ -305,7 +311,7 @@ protected:
    * Calculates the angle of the given line and the positive x axis.
    * The returned value is in degrees.
    */
-  static double calculateAngle(const CLPoint& endPoint, const CLPoint& startPoint);
+  static double calculateAngle(const CLPoint &endPoint, const CLPoint &startPoint);
 
   /**
    * This method creates all display lists and sets the clear color.

@@ -16,8 +16,8 @@
 #include "CQExpressionMmlStackedWidget.h"
 
 #include <QtCore/QString>
-#include <QtGui/QPainter>
-#include <QtGui/QPrinter>
+#include <QPainter>
+#include <QPrinter>
 
 
 #include "utilities/CCopasiException.h"

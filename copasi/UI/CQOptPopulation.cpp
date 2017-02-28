@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -7,10 +12,10 @@
 
 #include <QtSvg/QtSvg>
 
-#include <QtGui/QToolBar>
-#include <QtGui/QPrinter>
-#include <QtGui/QPixmap>
-#include <QtGui/QPicture>
+#include <QToolBar>
+#include <QPrinter>
+#include <QPixmap>
+#include <QPicture>
 #include <QtSvg/QSvgGenerator>
 
 #include "CQOptPopulation.h"
@@ -458,8 +463,8 @@ void CQOptPopulation::update()
         }
     }
 
-    setUpdatesEnabled(true);
-    QWidget * viewport = mpGV->viewport();
-    viewport->update();
+  setUpdatesEnabled(true);
+  QWidget * viewport = mpGV->viewport();
+  viewport->update();
 }
 

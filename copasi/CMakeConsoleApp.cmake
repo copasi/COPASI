@@ -29,9 +29,6 @@ if(ENABLE_COPASI_SEDML)
 endif()
 
 if(ENABLE_COMBINE_ARCHIVE)
-  # this assumes that the libCombine archive uses the 
-  # Qt filesystem backend.
-  include(${QT_USE_FILE})
   set(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${COMBINE_LIBRARY_NAME})
 endif()
 
@@ -40,3 +37,4 @@ if (APPLE)
   MARK_AS_ADVANCED (COREFOUNDATION_LIBRARY)
   SET(SE_EXTERNAL_LIBS ${SE_EXTERNAL_LIBS} ${COREFOUNDATION_LIBRARY})
 endif (APPLE)
+

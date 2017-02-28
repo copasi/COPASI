@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,7 +21,7 @@
 
 #include "CQLyapResultWidget.h"
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 #include "qtUtilities.h"
 
@@ -33,7 +38,7 @@
  *  Constructs a CQLyapResultWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+CQLyapResultWidget::CQLyapResultWidget(QWidget* parent, const char* name, Qt::WindowFlags fl)
   : CopasiWidget(parent, name, fl)
 {
   setupUi(this);

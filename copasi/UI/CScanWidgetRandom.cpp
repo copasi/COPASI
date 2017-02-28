@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#include <QtGui/QValidator>
+#include <QValidator>
 
 #include "copasi.h"
 

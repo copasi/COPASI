@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -145,7 +150,7 @@ bool CQParameterSetsDM::isDefaultRow(const QModelIndex & /* index */) const
   return false;
 }
 
-bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
 {
   if (mpListOfParameterSets == NULL) return false;
 
@@ -159,7 +164,6 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex&)
     }
 
   endInsertRows();
-
   return true;
 }
 
@@ -170,13 +174,10 @@ bool CQParameterSetsDM::removeRows(int position, int rows)
   if (mpListOfParameterSets == NULL) return false;
 
   beginRemoveRows(QModelIndex(), position, position + rows - 1);
-
   std::vector< CModelParameterSet * > DeletedModelParameterSets;
   DeletedModelParameterSets.resize(rows);
-
   std::vector< CModelParameterSet * >::iterator itDeletedModelParameterSet;
   std::vector< CModelParameterSet * >::iterator endDeletedModelParameterSet = DeletedModelParameterSets.end();
-
   CCopasiVectorN< CModelParameterSet >::iterator itRow = mpListOfParameterSets->begin() + position;
 
   for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet, ++itRow)
@@ -187,14 +188,11 @@ bool CQParameterSetsDM::removeRows(int position, int rows)
   for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet)
     {
       std::string Key = (*itDeletedModelParameterSet)->getKey();
-
       pdelete(*itDeletedModelParameterSet);
-
       emit notifyGUI(ListViews::MODELPARAMETERSET, ListViews::DELETE, Key);
     }
 
   endRemoveRows();
-
   return true;
 }
 
@@ -218,8 +216,7 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
 
   for (j = ModelParameterSets.begin(); j != ModelParameterSets.end(); ++j)
     {
-      CModelParameterSet * pModelParameterSet = *j;
-
+      CModelParameterSet *pModelParameterSet = *j;
       size_t delRow = mpListOfParameterSets->CCopasiVector< CModelParameterSet >::getIndex(pModelParameterSet);
 
       if (delRow != C_INVALID_INDEX)
@@ -237,12 +234,14 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
   return true;
 }
 
-void CQParameterSetsDM::setListOfModelParameterSets(CCopasiVectorN< CModelParameterSet > * pListOfModelParameterSets)
+void CQParameterSetsDM::setListOfModelParameterSets(CCopasiVectorN< CModelParameterSet > *pListOfModelParameterSets)
 
 {
   if (mpListOfParameterSets != pListOfModelParameterSets)
     {
+      beginResetModel();
       mpListOfParameterSets = pListOfModelParameterSets;
-      reset();
+      endResetModel();
+      //reset();
     }
 }

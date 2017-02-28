@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -6,10 +11,10 @@
 #ifndef QCONNECTION_GRAPHICS_ITEM
 #define QCONNECTION_GRAPHICS_ITEM
 
-#include <QtGui/QGraphicsItemGroup>
-#include <QtGui/QPainterPath>
+#include <QGraphicsItemGroup>
+#include <QPainterPath>
 #include <QtCore/QSharedPointer>
-#include <QtGui/QStyleOptionGraphicsItem>
+#include <QStyleOptionGraphicsItem>
 #include <layout/CLCurve.h>
 #include <qlayout/CQCopasiGraphicsItem.h>
 

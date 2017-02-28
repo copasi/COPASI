@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,7 +44,6 @@ bool CStructureParser::startDocument()
 {
   indent = "";
   tex = "";
-
   indexColumns = -1;
 
   if (!sumColumns)
@@ -47,15 +51,14 @@ bool CStructureParser::startDocument()
   else
     needToWriteColumnAllignment = true;
 
-  return TRUE;
+  return true;
 }
 
-bool CStructureParser::startElement(const QString& /* str1 */, const QString& /* str2 */,
-                                    const QString& qName,
-                                    const QXmlAttributes& attr)
+bool CStructureParser::startElement(const QString & /* str1 */, const QString & /* str2 */,
+                                    const QString &qName,
+                                    const QXmlAttributes &attr)
 {
   tagName = qName;
-
   QLinkedList< QString >::iterator itL;
 
   if (qName == "mtable")
@@ -111,10 +114,8 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
               idx++;
-
               // update with incrementally index
               last = lastUncompletedTags + "_" + QString::number(idx);
-
               tex += "{";
             }
         }
@@ -143,10 +144,8 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
               idx++;
-
               // update with incrementally index
               last = lastUncompletedTags + "_" + QString::number(idx);
-
               tex += "{";
             }
 
@@ -174,10 +173,8 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
               idx++;
-
               // update with incrementally index
               last = lastUncompletedTags + "_" + QString::number(idx);
-
               tex += "{";
             }
 
@@ -205,7 +202,6 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
               idx++;
-
               // update with incrementally index
               last = lastUncompletedTags + "_" + QString::number(idx);
 
@@ -235,7 +231,6 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
               QString &idxStr = strList.last();
               int idx = idxStr.toInt();
               idx++;
-
               // update with incrementally index
               last = lastUncompletedTags + "_" + QString::number(idx);
 
@@ -254,16 +249,14 @@ bool CStructureParser::startElement(const QString& /* str1 */, const QString& /*
     }
 
   indent += "    ";
-
-  return TRUE;
+  return true;
 }
 
-bool CStructureParser::characters(const QString& str)
+bool CStructureParser::characters(const QString &str)
 {
   QRegExp rx("\\w");
   QString strAux = str.trimmed();
   int pos = rx.indexIn(strAux);
-
   std::cout << TO_UTF8(strAux) << std::endl;
 
   if (pos != -1)
@@ -329,13 +322,12 @@ bool CStructureParser::characters(const QString& str)
   else if (strAux == "-" || strAux == "+" || strAux == ">" || strAux.contains("%"))
     tex += " \\, " + strAux + " \\, ";
 
-  return TRUE;
+  return true;
 }
 
-bool CStructureParser::endElement(const QString&, const QString&, const QString& qName)
+bool CStructureParser::endElement(const QString &, const QString &, const QString &qName)
 {
   QLinkedList< QString >::iterator itL;
-
   indent.remove((uint)0, 4);
 
   if (qName == "mtable")
@@ -380,7 +372,6 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
         mListOfUncompletedTags.pop_back();
 
       tex += "\\right)";
-
       QString &last = mListOfUncompletedTags.last();  // must be not empty
 
       // </msub> direct after </mfenced>
@@ -392,7 +383,6 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
           idx++;
-
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
 
@@ -409,7 +399,6 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
           QString &idxStr = strList.last();
           int idx = idxStr.toInt();
           idx++;
-
           // update with incrementally index
           last = lastUncompletedTags + "_" + QString::number(idx);
 
@@ -443,23 +432,22 @@ bool CStructureParser::endElement(const QString&, const QString&, const QString&
         tex += " }";
     }
 
-  return TRUE;
+  return true;
 }
 
-bool CStructureParser::ignorableWhitespace(const QString& /* str */)
+bool CStructureParser::ignorableWhitespace(const QString & /* str */)
 {
-  return TRUE;
+  return true;
 }
 
-bool CStructureParser::skippedEntity(const QString& /* str */)
+bool CStructureParser::skippedEntity(const QString & /* str */)
 {
-  return TRUE;
+  return true;
 }
 
 QString CStructureParser::getTeX()
 {
   QString texIntro;
-
   texIntro = "%%% Attention: \n";
   texIntro += "%%% We provide only the LaTeX code of the Differential Equations. \n";
   texIntro += "%%% You need to include it in your TeX document. \n";

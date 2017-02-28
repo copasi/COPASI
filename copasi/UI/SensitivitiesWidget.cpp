@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,8 +17,8 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include <QtGui/QImage>
-#include <QtGui/QFrame>
+#include <QImage>
+#include <QFrame>
 #include <QtCore/QtDebug>
 
 #include <algorithm>
@@ -41,14 +46,13 @@
  *  Constructs a SensitivitiesWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-SensitivitiesWidget::SensitivitiesWidget(QWidget* parent, const char* name, Qt::WFlags fl)
+SensitivitiesWidget::SensitivitiesWidget(QWidget *parent, const char *name, Qt::WindowFlags fl)
   : TaskWidget(parent, name, fl),
     mpSingleFunction(NULL),
     mpSingleVariable(NULL),
     mpSingleVariable2(NULL)
 {
   setupUi(this);
-
   init();
   retranslateUi(this);
 }
@@ -62,20 +66,15 @@ SensitivitiesWidget::~SensitivitiesWidget()
 void SensitivitiesWidget::init()
 {
   mpHeaderWidget->setTaskName("Sensitivities");
-
   verticalLayout->insertWidget(0, mpHeaderWidget);  // header
   // verticalLayout->insertSpacing(1, 14);      // space between header and body
-
   mpMethodWidget->showMethodParameters(true);
   verticalLayout->addWidget(mpMethodWidget);
-
   verticalLayout->addWidget(mpBtnWidget);     // 'footer'
-
   // icons
   SingleFunctionChooser->setIcon(CQIconResource::icon(CQIconResource::copasi));
   SingleVariableChooser->setIcon(CQIconResource::icon(CQIconResource::copasi));
   SingleVariable2Chooser->setIcon(CQIconResource::icon(CQIconResource::copasi));
-
   // initialization
   initCombos();
 }
@@ -84,20 +83,19 @@ bool SensitivitiesWidget::saveTask()
 {
   saveCommon();
   saveMethod();
-
-  CSensTask* sensTask =
+  CSensTask *sensTask =
     dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
 
   if (sensTask == NULL)
     return false;
 
-  CSensProblem* problem =
+  CSensProblem *problem =
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
 
   if (problem == NULL)
     return false;
 
-  CSensMethod* method =
+  CSensMethod *method =
     dynamic_cast<CSensMethod *>(sensTask->getMethod());
 
   if (method == NULL)
@@ -105,7 +103,6 @@ bool SensitivitiesWidget::saveTask()
 
   // subtask
   problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentIndex());
-
   // target function
   CSensItem TargetFunctions;
 
@@ -176,7 +173,13 @@ bool SensitivitiesWidget::saveTask()
 bool SensitivitiesWidget::runTask()
 {
   if (FunctionChooser->getCurrentObjectList() != CObjectLists::SINGLE_OBJECT)
-    FunctionLineEdit->setText(QApplication::translate("SensitivitiesWidget", "[Please Choose Object.] --->", 0, QApplication::UnicodeUTF8));
+    {
+#if QT_VERSION >= 0x050000
+      FunctionLineEdit->setText("[Please Choose Object.] --->");
+#else
+      FunctionLineEdit->setText(QApplication::translate("SensitivitiesWidget", "[Please Choose Object.] --->", 0, QApplication::UnicodeUTF8));
+#endif
+    }
 
   if (!commonBeforeRunTask()) return false;
 
@@ -192,7 +195,7 @@ bool SensitivitiesWidget::taskFinishedEvent()
   bool success = true;
   //setup the result widget
   CQSensResultWidget *pResult =
-    dynamic_cast<CQSensResultWidget*>(mpListView->findWidgetFromId(341));
+    dynamic_cast<CQSensResultWidget *>(mpListView->findWidgetFromId(341));
 
   if (pResult) pResult->newResult();
 
@@ -205,23 +208,18 @@ bool SensitivitiesWidget::loadTask()
 {
   loadCommon();
   loadMethod();
-
-  CSensTask* sensTask =
+  CSensTask *sensTask =
     dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
   assert(sensTask);
-
-  CSensProblem* problem =
+  CSensProblem *problem =
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
   assert(problem);
-
   //CSensMethod* method =
   //  dynamic_cast<CSensMethod *>(sensTask->getMethod());
   //assert(method);
-
   //mSubTaskType = problem->getSubTaskType();
   SubTaskChooser->setCurrentIndex((int)problem->getSubTaskType());
   updateComboBoxes(problem->getSubTaskType());
-
   CSensItem tmp = problem->getTargetFunctions();
 
   if (tmp.isSingleObject())
@@ -283,16 +281,14 @@ bool SensitivitiesWidget::loadTask()
     }
 
   //  initCombos(problem);
-
   mChanged = false;
-
   updateAllLineditEnable();
   return true;
 }
 
 //**************************************************************************
 
-void SensitivitiesWidget::updateLineeditEnable(const SensWidgetComboBox* box, QWidget* w1, QWidget* w2)
+void SensitivitiesWidget::updateLineeditEnable(const SensWidgetComboBox *box, QWidget *w1, QWidget *w2)
 {
   if (!box) return;
 
@@ -323,7 +319,6 @@ SensitivitiesWidget::initCombos()
 {
   QStringList StringList;
   //std::vector<int> mFunctionIndexTable, mVariableIndexTable;
-
   // SubTaskChooser combo
   int i = 0;
 
@@ -353,7 +348,6 @@ SensitivitiesWidget::slotChooseSubTask(int)
 {
   CSensProblem::SubTaskType subTaskType = (CSensProblem::SubTaskType)SubTaskChooser->currentIndex();
   updateComboBoxes(subTaskType);
-
   updateAllLineditEnable();
 }
 
@@ -382,7 +376,7 @@ void
 //SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 SensitivitiesWidget::slotChooseSingleFunction()
 {
-  const CCopasiObject * pObject =
+  const CCopasiObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::Variables |
         CQSimpleSelectionTree::ObservedValues);
@@ -399,7 +393,7 @@ void
 //SensitivitiesWidget::on_SingleVariableChooser_clicked()
 SensitivitiesWidget::slotChooseSingleVariable()
 {
-  const CCopasiObject * pObject =
+  const CCopasiObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters);
@@ -416,7 +410,7 @@ void
 //SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
 SensitivitiesWidget::slotChooseSingleVariable2()
 {
-  const CCopasiObject * pObject =
+  const CCopasiObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters);

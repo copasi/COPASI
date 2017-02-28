@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,7 +18,7 @@
 #ifndef COPASI_CQModelWidget
 #define COPASI_CQModelWidget
 
-#include <QtGui/QWidget>
+#include <QWidget>
 #include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQModelWidget.h"

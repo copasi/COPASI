@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,14 +15,14 @@
 
 #include "CQCurrentValueTable.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QTableWidget>
-#include <QtGui/QTableWidgetItem>
-#include <QtGui/QPushButton>
-#include <QtGui/QLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QButtonGroup>
+#include <QHeaderView>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QPushButton>
+#include <QLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QButtonGroup>
 
 #include <iostream>
 

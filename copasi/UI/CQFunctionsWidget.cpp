@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,9 +15,9 @@
 
 #include "CQFunctionsWidget.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
+#include <QHeaderView>
+#include <QClipboard>
+#include <QKeyEvent>
 
 #include "copasi.h"
 
@@ -28,28 +33,28 @@
  *  Constructs a CQFunctionsWidget which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQFunctionsWidget::CQFunctionsWidget(QWidget* parent, const char* name)
+CQFunctionsWidget::CQFunctionsWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name)
 {
   setupUi(this);
-
   //Create Source Data Model.
   mpFunctionDM = new CQFunctionDM(this, mpDataModel);
-
   //Create the Proxy Model for sorting/filtering and set its properties.
   mpProxyModel = new CQSortFilterProxyModel();
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
-
+#if QT_VERSION >= 0x050000
+  mpTblFunctions->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+#else
   mpTblFunctions->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
   mpTblFunctions->verticalHeader()->hide();
   mpTblFunctions->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-
   // Connect the table widget
   connect(mpFunctionDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
           this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
-  connect(mpFunctionDM, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(dataChanged(const QModelIndex&, const QModelIndex&)));
+  connect(mpFunctionDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
 }
@@ -80,8 +85,7 @@ void CQFunctionsWidget::slotBtnDeleteClicked()
 
 void CQFunctionsWidget::deleteSelectedFunctions()
 {
-  const QItemSelectionModel * pSelectionModel = mpTblFunctions->selectionModel();
-
+  const QItemSelectionModel *pSelectionModel = mpTblFunctions->selectionModel();
   QModelIndexList mappedSelRows;
   size_t i, imax = mpFunctionDM->rowCount();
 
@@ -97,7 +101,6 @@ void CQFunctionsWidget::deleteSelectedFunctions()
     {return;}
 
   mpFunctionDM->removeRows(mappedSelRows);
-
   updateDeleteBtns();
 }
 
@@ -125,7 +128,7 @@ void CQFunctionsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQFunctionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQFunctionsWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
 {
   if (!mIgnoreUpdates && isVisible())
     {
@@ -144,26 +147,24 @@ bool CQFunctionsWidget::enterProtected()
 {
   if (mpTblFunctions->selectionModel() != NULL)
     {
-      disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-                 this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+      disconnect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
   mpProxyModel->setSourceModel(mpFunctionDM);
   //Set Model for the TableView
   mpTblFunctions->setModel(NULL);
   mpTblFunctions->setModel(mpProxyModel);
-  connect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
-          this, SLOT(slotSelectionChanged(const QItemSelection&, const QItemSelection&)));
+  connect(mpTblFunctions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+          this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
   updateDeleteBtns();
   mpTblFunctions->resizeColumnsToContents();
-
   return true;
 }
 
 void CQFunctionsWidget::updateDeleteBtns()
 {
   bool selected = false;
-
   QModelIndexList selRows = mpTblFunctions->selectionModel()->selectedRows();
 
   if (selRows.size() == 0)
@@ -189,14 +190,14 @@ void CQFunctionsWidget::updateDeleteBtns()
     mpBtnClear->setEnabled(false);
 }
 
-void CQFunctionsWidget::slotSelectionChanged(const QItemSelection& C_UNUSED(selected),
-    const QItemSelection& C_UNUSED(deselected))
+void CQFunctionsWidget::slotSelectionChanged(const QItemSelection &C_UNUSED(selected),
+    const QItemSelection &C_UNUSED(deselected))
 {
   updateDeleteBtns();
 }
 
-void CQFunctionsWidget::dataChanged(const QModelIndex& C_UNUSED(topLeft),
-                                    const QModelIndex& C_UNUSED(bottomRight))
+void CQFunctionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
+                                    const QModelIndex &C_UNUSED(bottomRight))
 {
   mpTblFunctions->resizeColumnsToContents();
   updateDeleteBtns();
@@ -220,7 +221,7 @@ void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQFunctionsWidget::keyPressEvent(QKeyEvent* ev)
+void CQFunctionsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
     slotBtnDeleteClicked();

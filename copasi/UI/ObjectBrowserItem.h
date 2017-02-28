@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -34,7 +39,7 @@ Contact: Please contact lixu1@vt.edu.
 #define OBJECT_BROWSER_ITEM_H
 
 #include "copasi.h"
-#include <QtGui/QTreeWidgetItem>
+#include <QTreeWidgetItem>
 
 class CCopasiObject;
 

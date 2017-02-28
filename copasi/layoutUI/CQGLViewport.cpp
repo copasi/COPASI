@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,13 +16,13 @@
 #include "CQGLViewport.h"
 
 #include <QtOpenGL/QtOpenGL>
-#include <QtGui/QScrollBar>
+#include <QScrollBar>
 #include <QtCore/QRect>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLayout>
-#include <QtGui/QResizeEvent>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QFrame>
+#include <QHBoxLayout>
+#include <QLayout>
+#include <QResizeEvent>
+#include <QVBoxLayout>
+#include <QFrame>
 
 #include <iostream>
 
@@ -28,19 +33,19 @@
 /**
  * Constructor.
  */
-CQGLViewport::CQGLViewport(QWidget* pParent, Qt::WFlags f):
+CQGLViewport::CQGLViewport(QWidget* pParent, Qt::WindowFlags f):
   QFrame(pParent, f)
   , mpVerticalScrollbar(new QScrollBar(Qt::Vertical, NULL))
   , mpHorizontalScrollbar(new QScrollBar(Qt::Horizontal, NULL))
   , mpNetworkPainter(NULL)
 {
-  QVBoxLayout* pVBoxLayout = new QVBoxLayout();
+  QVBoxLayout *pVBoxLayout = new QVBoxLayout();
   this->setLayout(pVBoxLayout);
-  QFrame* pHBox = new QFrame(this);
+  QFrame *pHBox = new QFrame(this);
   pHBox->setLayout(new QHBoxLayout());
   pVBoxLayout->addWidget(pHBox);
   QGLFormat format;
-  format.setDoubleBuffer(TRUE);
+  format.setDoubleBuffer(true);
   this->mpNetworkPainter = new CQGLNetworkPainter(format, pHBox);
   pHBox->layout()->addWidget(this->mpNetworkPainter);
   pHBox->layout()->addWidget(this->mpVerticalScrollbar);
@@ -57,23 +62,23 @@ CQGLViewport::CQGLViewport(QWidget* pParent, Qt::WFlags f):
 CQGLViewport::~CQGLViewport()
 {}
 
-void CQGLViewport::resizeEvent(QResizeEvent* e)
+void CQGLViewport::resizeEvent(QResizeEvent *e)
 {
   this->updateScrollbars();
   QFrame::resizeEvent(e);
 }
 
-const CQGLNetworkPainter* CQGLViewport::getPainter() const
+const CQGLNetworkPainter *CQGLViewport::getPainter() const
 {
   return this->mpNetworkPainter;
 }
 
-CQGLNetworkPainter* CQGLViewport::getPainter()
+CQGLNetworkPainter *CQGLViewport::getPainter()
 {
   return this->mpNetworkPainter;
 }
 
-void CQGLViewport::createGraph(CLayout* IP)
+void CQGLViewport::createGraph(CLayout *IP)
 {
   this->mpNetworkPainter->createGraph(IP);
   this->updateScrollbars();

@@ -1,9 +1,14 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include <QtGui/QFileOpenEvent>
+#include <QFileOpenEvent>
 #include <QtCore/QString>
 
 #include "CQCopasiApplication.h"
@@ -13,7 +18,7 @@
 
 #ifdef WIN32
 
-#include <QtGui/QWindowsVistaStyle>
+#include <QWindowsVistaStyle>
 
 bool IsWindows8()
 {

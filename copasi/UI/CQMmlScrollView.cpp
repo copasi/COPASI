@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +20,7 @@
 
 #include "CQMmlScrollView.h"
 
-#include <QtGui/QApplication>
+#include <QApplication>
 
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
@@ -24,7 +29,7 @@
 #include "qtUtilities.h"
 
 ///  Constructor
-CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WFlags /* fl */)
+CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WindowFlags /* fl */)
   : QScrollArea(parent)
 {
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,11 +11,11 @@
 #include "CQFontRenderer.h"
 
 #include <QtCore/QStringList>
-#include <QtGui/QFontMetrics>
-#include <QtGui/QImage>
-#include <QtGui/QPaintEngine>
+#include <QFontMetrics>
+#include <QImage>
+#include <QPaintEngine>
 #include <QtOpenGL/QGLWidget>
-#include <QtGui/QPainterPath>
+#include <QPainterPath>
 
 #include <string.h>
 #include <cmath>

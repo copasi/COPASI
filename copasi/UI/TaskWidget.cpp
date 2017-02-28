@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,11 +18,11 @@
 // All rights reserved.
 
 #include <QtCore/QtDebug>
-#include <QtGui/QFrame>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QComboBox>
-#include <QtGui/QApplication>
+#include <QFrame>
+#include <QVBoxLayout>
+#include <QHeaderView>
+#include <QComboBox>
+#include <QApplication>
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
@@ -61,7 +66,7 @@
  *  Constructs a TaskWidget which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WFlags fl):
+TaskWidget::TaskWidget(QWidget* parent, const char* name, Qt::WindowFlags fl):
   CopasiWidget(parent, name, fl),
   mProgressBar(NULL),
   mpHeaderWidget(NULL),

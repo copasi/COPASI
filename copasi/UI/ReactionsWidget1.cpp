@@ -26,7 +26,7 @@
  ** the Second level of Reactions.
  **********************************************************************/
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 #include "copasi.h"
 #include "ReactionsWidget1.h"
@@ -63,7 +63,7 @@
  *
  */
 
-ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WFlags f)
+ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f),
     mpRi(NULL)
 {

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,23 +10,23 @@
 
 // Qt includes
 #include <QtCore/QAbstractEventDispatcher>
-#include <QtGui/QAction>
-#include <QtGui/QActionGroup>
-#include <QtGui/QCloseEvent>
-#include <QtGui/QColor>
-#include <QtGui/QColorDialog>
-#include <QtGui/QComboBox>
+#include <QAction>
+#include <QActionGroup>
+#include <QCloseEvent>
+#include <QColor>
+#include <QColorDialog>
+#include <QComboBox>
 #include <QtCore/QFileInfo>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QIcon>
-#include <QtGui/QImage>
-#include <QtGui/QLabel>
-#include <QtGui/QPixmap>
-#include <QtGui/QMenuBar>
-#include <QtGui/QStackedWidget>
-#include <QtGui/QStatusBar>
-#include <QtGui/QToolBar>
-#include <QtGui/QVBoxLayout>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QImage>
+#include <QLabel>
+#include <QPixmap>
+#include <QMenuBar>
+#include <QStackedWidget>
+#include <QStatusBar>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 #include <QtCore/QTimer>
 
@@ -72,7 +77,7 @@
 #include "film_strip.xpm"
 #include "graph.xpm"
 #include "load_data.xpm"
-#include <QtGui/QDockWidget>
+#include <QDockWidget>
 #include "layout_start.xpm"
 #include "layout_stop.xpm"
 

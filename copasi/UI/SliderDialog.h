@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,11 +20,11 @@
 #ifndef SLIDER_DIALOG_H__
 #define SLIDER_DIALOG_H__
 
-#include <QtGui/QDialog>
+#include <QDialog>
 //Added by qt3to4:
 #include <QtCore/QEvent>
-#include <QtGui/QContextMenuEvent>
-#include <QtGui/QCloseEvent>
+#include <QContextMenuEvent>
+#include <QCloseEvent>
 #include "copasi/copasi.h"
 #include <vector>
 #include <map>
@@ -46,7 +51,7 @@ class SliderDialog: public CWindowInterface, public Ui::SliderDialog
   Q_OBJECT
 
 public:
-  SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+  SliderDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
   virtual ~SliderDialog();
   void addSlider(CSlider* slider);
   void setCurrentFolderId(size_t id);

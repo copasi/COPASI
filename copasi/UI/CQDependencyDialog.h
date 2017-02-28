@@ -22,7 +22,7 @@ class CQDependencyDialog : public CWindowInterface
   Q_OBJECT
 
 public:
-  explicit CQDependencyDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
+  explicit CQDependencyDialog(QWidget* parent, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
   ~CQDependencyDialog();
 
   virtual QMenu *getWindowMenu() const;
