@@ -76,11 +76,8 @@ endif(APPLE)
 
 add_executable(ViewCurrentUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
 
-target_link_libraries(ViewCurrentUI 
-	${SE_LIBS} ${UI_LIBS} ${SE_EXTERNAL_LIBS} ${UI_EXTERNAL_LIBS} 
-	${QT_LIBRARIES} ${QT_QTWEBKIT_LIBRARY} 
-	${OPENGL_gl_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${OPENGL_glu_LIBRARY} 
-	${QWTPLOT3D_LIBRARY} 
-	${QT_QTSVG_LIBRARY} ${ZLIB_LIBRARY})
+target_link_libraries(ViewCurrentUI ${SE_LIBS} ${UI_LIBS} ${SE_EXTERNAL_LIBS} ${UI_EXTERNAL_LIBS}
+                      ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+QT_BIND_TO_TARGET(ViewCurrentUI)
 
 install(TARGETS ViewCurrentUI DESTINATION bin)
