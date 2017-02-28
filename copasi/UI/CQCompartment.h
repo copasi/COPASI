@@ -67,7 +67,6 @@ private:
   void save();
   void destroy();
   void loadMetaboliteTable();
-  void loadEventTable();
 
 private slots:
   void slotBtnNew();
@@ -78,7 +77,6 @@ private slots:
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotMetaboliteTableCurrentChanged(int row, int col);
   void slotDimesionalityChanged(int);
-  void slotSwitchToEvent(int row, int /* column */);
 
   //additional functions for UNDO framework
   void deleteCompartment();
