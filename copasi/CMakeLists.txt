@@ -125,6 +125,12 @@ endif()
 
 target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
 
+if (OPENGL_glu_LIBRARY AND OPENGL_gl_LIBRARY)
+# need to specify the dependencies on the gl libraries on some linux systems
+# to ensure the order of these libraries during link is correct
+target_link_libraries(libCOPASISE-static ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+endif()
+
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   if (ICONV_LIBRARIES)
