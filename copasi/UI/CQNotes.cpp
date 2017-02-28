@@ -15,7 +15,7 @@
  *      Author: shoops
  */
 
-#include <QtWebKit/QWebFrame>
+#include <QWebFrame>
 #include <QtXml/QXmlInputSource>
 #include <QtXml/QXmlSimpleReader>
 #include <QDesktopServices>
