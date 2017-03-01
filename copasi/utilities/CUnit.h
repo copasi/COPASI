@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -134,6 +139,7 @@ private:
   CUnitComponent * mpDimensionless;
 
   static C_INT32 getExponentOfSymbol(const std::pair< std::string, CUnit > & SymbolDef, CUnit & unit);
+  static std::pair< C_INT32, C_INT32 > removeSymbolFromUnit(const CUnit & symbol, CUnit & unit);
 };
 
 #endif // CUNIT_H

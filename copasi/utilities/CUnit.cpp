@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -433,178 +438,117 @@ C_INT32 CUnit::getExponentOfSymbol(const std::pair< std::string, CUnit > & Symbo
   // We ignore base units
   if (CBaseUnit::fromSymbol(SymbolDef.first) != CBaseUnit::undefined) return 0;
 
+  CUnit MultiplyUnit = unit;
+  std::pair< C_INT32, C_INT32 > MultiplyResult = removeSymbolFromUnit(SymbolDef.second, MultiplyUnit);
+
+  CUnit DivisionUnit = unit;
+  std::pair< C_INT32, C_INT32 > DivisionResult = removeSymbolFromUnit(SymbolDef.second.exponentiate(-1.0), DivisionUnit);
+
   C_INT32 Exponent = 0;
-  int improvement = 0;
 
-  // First try multiplication
-  while (true)
+  if (MultiplyResult.first > DivisionResult.first)
     {
-      CUnit Tmp = unit * SymbolDef.second;
-
-      // Compare components to determine whether this simplified the unit
-      std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
-      std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
-      std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
-      std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
-
-      improvement = 0;
-
-      while (itOld != endOld && itNew != endNew)
-        {
-          if (itNew->getKind() > itOld->getKind())
-            {
-              improvement += (int)fabs(itOld->getExponent());
-              ++itOld;
-            }
-          else if (itNew->getKind() < itOld->getKind())
-            {
-              improvement -= (int)fabs(itNew->getExponent());
-              ++itNew;
-            }
-          else
-            {
-              // The kind is the same.
-              if (fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                  fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  improvement -= 10;
-                }
-              /*
-              else if ((itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
-                       (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
-                {
-                  improvement -= 100;
-                }
-               */
-              else if (fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                       fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  improvement += 10;
-                }
-
-              /*
-              else if ((itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
-                       (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
-                {
-                  improvement += 100;
-                }
-              */
-
-              improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
-              ++itOld;
-              ++itNew;
-            }
-        }
-
-      for (; itNew != endNew; ++itNew)
-        {
-          improvement -= (int)fabs(itNew->getExponent());
-        }
-
-      for (; itOld != endOld; ++itOld)
-        {
-          improvement += (int)fabs(itOld->getExponent());
-        }
-
-      if (improvement > 0)
-        {
-          unit = Tmp;
-          Exponent++;
-
-          continue;
-        }
-
-      break;
+      Exponent = - MultiplyResult.second;
+      unit = MultiplyUnit;
     }
-
-  if (Exponent > 0) return -Exponent;
-
-  // Now try division
-  CUnit Inverse = SymbolDef.second.exponentiate(-1.0);
-
-  while (true)
+  else if (MultiplyResult.first < DivisionResult.first)
     {
-      CUnit Tmp = unit * Inverse;
-
-      std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
-      std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
-      std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
-      std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
-
-      improvement = 0;
-
-      while (itOld != endOld && itNew != endNew)
-        {
-          if (itNew->getKind() > itOld->getKind())
-            {
-              improvement += (int)fabs(itOld->getExponent());
-              ++itOld;
-            }
-          else if (itNew->getKind() < itOld->getKind())
-            {
-              improvement -= (int)fabs(itNew->getExponent());
-              ++itNew;
-            }
-          else
-            {
-              // The kind is the same.
-              if (fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                  fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  improvement -= 10;
-                }
-              /*
-              else if ((itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
-                       (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
-                {
-                  improvement -= 100;
-                }
-              */
-              else if (fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                       fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
-                {
-                  improvement += 10;
-                }
-
-              /*
-              else if ((itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
-                       (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
-                {
-                  improvement += 100;
-                }
-              */
-
-              // The kind is the same.
-              improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
-              ++itOld;
-              ++itNew;
-            }
-        }
-
-      for (; itNew != endNew; ++itNew)
-        {
-          improvement -= (int)fabs(itNew->getExponent());
-        }
-
-      for (; itOld != endOld; ++itOld)
-        {
-          improvement += (int)fabs(itOld->getExponent());
-        }
-
-      if (improvement > 0)
-        {
-          unit = Tmp;
-          Exponent++;
-
-          continue;
-        }
-
-      break;
+      Exponent =  DivisionResult.second;
+      unit = DivisionUnit;
     }
 
   return Exponent;
 }
 
+// static
+std::pair< C_INT32, C_INT32 > CUnit::removeSymbolFromUnit(const CUnit & symbol, CUnit & unit)
+{
+  std::pair< C_INT32, C_INT32 > Result = std::make_pair(0, 0);
+
+  while (true)
+    {
+      CUnit Tmp = unit * symbol;
+
+      std::set< CUnitComponent >::const_iterator itOld = unit.getComponents().begin();
+      std::set< CUnitComponent >::const_iterator endOld = unit.getComponents().end();
+      std::set< CUnitComponent >::const_iterator itNew = Tmp.getComponents().begin();
+      std::set< CUnitComponent >::const_iterator endNew = Tmp.getComponents().end();
+
+      int improvement = 0;
+
+      while (itOld != endOld && itNew != endNew)
+        {
+          if (itNew->getKind() > itOld->getKind())
+            {
+              improvement += (int)fabs(itOld->getExponent());
+              ++itOld;
+            }
+          else if (itNew->getKind() < itOld->getKind())
+            {
+              improvement -= (int)fabs(itNew->getExponent());
+              ++itNew;
+            }
+          else
+            {
+              // The kind is the same.
+              if (fabs(1.0 - itOld->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                  fabs(1.0 - itNew->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  improvement -= 1;
+                }
+              /*
+              else if ((itOld->getMultiplier() < 1.0 && itNew->getMultiplier() < itOld->getMultiplier()) ||
+                       (itOld->getMultiplier() > 1.0 && itNew->getMultiplier() > itOld->getMultiplier()))
+                {
+                  improvement -= 100;
+                }
+              */
+              else if (fabs(1.0 - itNew->getMultiplier()) < 100 * std::numeric_limits< C_FLOAT64 >::epsilon() &&
+                       fabs(1.0 - itOld->getMultiplier()) >= 100 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  improvement += 1;
+                }
+
+              /*
+              else if ((itNew->getMultiplier() < 1.0 && itOld->getMultiplier() < itNew->getMultiplier()) ||
+                       (itNew->getMultiplier() > 1.0 && itOld->getMultiplier() > itNew->getMultiplier()))
+                {
+                  improvement += 100;
+                }
+              */
+
+              // The kind is the same.
+              improvement += (int)(fabs(itOld->getExponent()) - fabs(itNew->getExponent()));
+              ++itOld;
+              ++itNew;
+            }
+        }
+
+      for (; itNew != endNew; ++itNew)
+        {
+          improvement -= (int)fabs(itNew->getExponent());
+        }
+
+      for (; itOld != endOld; ++itOld)
+        {
+          improvement += (int)fabs(itOld->getExponent());
+        }
+
+      if (improvement >= 0)
+        {
+          unit = Tmp;
+
+          Result.first += improvement;
+          Result.second++;
+
+          continue;
+        }
+
+      break;
+    }
+
+  return Result;
+}
 std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 {
   std::vector< SymbolComponent > SymbolComponents;

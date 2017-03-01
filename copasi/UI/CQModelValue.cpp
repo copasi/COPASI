@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -473,8 +478,10 @@ void CQModelValue::slotUnitChanged()
     }
   else
     {
-      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + mpModelValue->getInitialValueReference()->getUnits()) + ")");
-      mpLblValue->setText(FROM_UTF8("Value (" + mpModelValue->getValueReference()->getUnits()) + ")");
+      std::string UnitStr = CUnit::prettyPrint(mpModelValue->getValueReference()->getUnits());
+
+      mpLblInitialValue->setText(FROM_UTF8("Initial Value (" + UnitStr) + ")");
+      mpLblValue->setText(FROM_UTF8("Value (" + UnitStr) + ")");
       mpLblRate->setText(FROM_UTF8("Rate (" + mpModelValue->getRateReference()->getUnits()) + ")");
     }
 
