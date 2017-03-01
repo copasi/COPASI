@@ -139,6 +139,7 @@ private:
   CUnitComponent * mpDimensionless;
 
   static C_INT32 getExponentOfSymbol(const std::pair< std::string, CUnit > & SymbolDef, CUnit & unit);
+  static std::pair< C_INT32, C_INT32 > removeSymbolFromUnit(const CUnit & symbol, CUnit & unit);
 };
 
 #endif // CUNIT_H
