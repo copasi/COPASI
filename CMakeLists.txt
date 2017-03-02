@@ -411,7 +411,17 @@ if(BUILD_GUI)
 
   QT_FIND_MODULES(Core Gui OpenGL Xml WebKit Network Svg)
   if (Qt5_FOUND)
-    QT_FIND_MODULES(Core Gui Xml WebKit Network Svg PrintSupport Concurrent WebKitWidgets OpenGL )
+    QT_FIND_MODULES( Concurrent 
+                     Core 
+                     Gui 
+                     Network 
+                     OpenGL
+                     PrintSupport 
+                     Svg 
+                     WebKit 
+                     WebKitWidgets 
+                     Xml 
+    )
     set(QTVERSION 5)
   endif()
 
@@ -597,7 +607,7 @@ endif ()
 
 # if using msvc or intel windows compiler allow for the use of the static runtime
 if(MSVC OR USING_INTEL)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN)
     set(BUILD_DEFINITIONS "${BUILD_DEFINITIONS} -D_CRT_SECURE_NO_WARNINGS")
     option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime." OFF)
     if(WITH_STATIC_RUNTIME)

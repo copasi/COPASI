@@ -5,7 +5,13 @@
 
 cmake_minimum_required(VERSION 2.8.9)
 
-option(PREFER_QT5 "Preferably to use qt5 if possible" OFF)
+option(PREFER_QT5 "Preferably to use Qt5 if possible" OFF)
+option(NEED_QT5 "Fail if Qt5 not found" OFF)
+set(QT5_FIND_MODE QUIET)
+if (NEED_QT5)
+  set(PREFER_QT5 ON)
+  set(QT5_FIND_MODE REQUIRED)
+endif()
  
 macro(QT_USE_MODULES _target)
     # Enable AUTOMOC
@@ -25,7 +31,7 @@ macro(QT_USE_MODULES _target)
     list(REMOVE_DUPLICATES _modules_qt5)
     # Find Qt libraries
     if (PREFER_QT5)
-    find_package(Qt5 QUIET COMPONENTS ${_modules_qt5})
+      find_package(Qt5 ${QT5_FIND_MODE} COMPONENTS ${_modules_qt5})
     endif()
 
     if(Qt5_FOUND)
@@ -57,7 +63,7 @@ macro(QT_FIND_MODULES)
     list(REMOVE_DUPLICATES _modules_qt5)
     # Find Qt libraries
     if (PREFER_QT5)
-    find_package(Qt5 QUIET COMPONENTS ${_modules_qt5})
+      find_package(Qt5 ${QT5_FIND_MODE} COMPONENTS ${_modules_qt5})
     endif()
     if( NOT Qt5_FOUND)
         find_package(Qt4 QUIET COMPONENTS ${_modules_qt4})
