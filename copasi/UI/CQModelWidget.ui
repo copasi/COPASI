@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -12,14 +17,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>428</width>
-    <height>226</height>
+    <width>347</width>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="5" column="0" colspan="4">
+    <widget class="Line" name="mpLine">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mpLblTimeUnit">
      <property name="text">
@@ -34,7 +46,17 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QComboBox" name="mpComboTimeUnit"/>
+    <widget class="QLineEdit" name="mpEditTimeUnit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="0" column="2">
     <widget class="QLabel" name="mpLblVolumeUnit">
@@ -50,7 +72,17 @@
     </widget>
    </item>
    <item row="0" column="3">
-    <widget class="QComboBox" name="mpComboVolumeUnit"/>
+    <widget class="QLineEdit" name="mpEditVolumeUnit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="mpLblQuantityUnit">
@@ -66,7 +98,17 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QComboBox" name="mpComboQuantityUnit"/>
+    <widget class="QLineEdit" name="mpEditQuantityUnit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="1" column="2">
     <widget class="QLabel" name="mpLblAreaUnit">
@@ -82,7 +124,17 @@
     </widget>
    </item>
    <item row="1" column="3">
-    <widget class="QComboBox" name="mpComboAreaUnit"/>
+    <widget class="QLineEdit" name="mpEditAreaUnit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="2" column="2">
     <widget class="QLabel" name="mpLblLengthUnit">
@@ -98,7 +150,17 @@
     </widget>
    </item>
    <item row="2" column="3">
-    <widget class="QComboBox" name="mpComboLengthUnit"/>
+    <widget class="QLineEdit" name="mpEditLengthUnit">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="3" column="1" colspan="3">
     <widget class="QCheckBox" name="mpCheckStochasticCorrection">
@@ -127,13 +189,6 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="4">
-    <widget class="Line" name="mpLine">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -190,14 +245,96 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mpComboTimeUnit</tabstop>
-  <tabstop>mpComboVolumeUnit</tabstop>
-  <tabstop>mpComboQuantityUnit</tabstop>
-  <tabstop>mpComboAreaUnit</tabstop>
-  <tabstop>mpComboLengthUnit</tabstop>
+  <tabstop>mpEditTimeUnit</tabstop>
+  <tabstop>mpEditVolumeUnit</tabstop>
+  <tabstop>mpEditQuantityUnit</tabstop>
+  <tabstop>mpEditAreaUnit</tabstop>
+  <tabstop>mpEditLengthUnit</tabstop>
+  <tabstop>mpCheckStochasticCorrection</tabstop>
   <tabstop>mpEditInitialTime</tabstop>
   <tabstop>mpEditCurrentTime</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mpEditTimeUnit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQModelWidget</receiver>
+   <slot>slotUnitChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpEditQuantityUnit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQModelWidget</receiver>
+   <slot>slotUnitChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpEditVolumeUnit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQModelWidget</receiver>
+   <slot>slotUnitChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpEditAreaUnit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQModelWidget</receiver>
+   <slot>slotUnitChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpEditLengthUnit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>CQModelWidget</receiver>
+   <slot>slotUnitChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>15</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>92</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

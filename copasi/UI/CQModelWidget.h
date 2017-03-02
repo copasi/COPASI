@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -41,6 +46,7 @@ public:
 protected slots:
   virtual void slotBtnRevertClicked();
   virtual void slotBtnOKClicked();
+  virtual void slotUnitChanged();
 
 protected:
   virtual bool enterProtected();
@@ -53,13 +59,6 @@ private:
   CModel * mpModel;
 
   QUndoStack *mpUndoStack;
-  void updateUnitComboBoxes();
-
-  std::map<std::string, int> mTimeUnitMap;
-  std::map<std::string, int> mQuantityUnitMap;
-  std::map<std::string, int> mVolumeUnitMap;
-  std::map<std::string, int> mAreaUnitMap;
-  std::map<std::string, int> mLengthUnitMap;
 };
 
 #endif // COPASI_CQModelWidget
