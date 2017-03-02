@@ -130,9 +130,9 @@ void CProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
   CCopasiParameter * pParameter;
   QString EntityType, Name, Action, Property, NewValue, Time, Author, GivenName, FamilyName;
   pParameter = configFile->getParameter("Given Name");
-  GivenName = QString::FROM_UTF8(pParameter->getValue< std::string >());
+  GivenName = FROM_UTF8(pParameter->getValue< std::string >());
   pParameter = configFile->getParameter("Famliy Name");
-  FamilyName = QString::FROM_UTF8(pParameter->getValue< std::string >());
+  FamilyName = FROM_UTF8(pParameter->getValue< std::string >());
 
   if (pParameter != NULL)
     {

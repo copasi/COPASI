@@ -31,28 +31,28 @@ CCreateModelVersionDialog::CCreateModelVersionDialog(QWidget *parent) :
 
   if (pParameter != NULL)
     {
-      mGivenName = QString::FROM_UTF8(pParameter->getValue< std::string >());
+      mGivenName = FROM_UTF8(pParameter->getValue< std::string >());
     }
 
   pParameter = configFile->getParameter("Famliy Name");
 
   if (pParameter != NULL)
     {
-      mFamilyName = QString::FROM_UTF8(pParameter->getValue< std::string >());
+      mFamilyName = FROM_UTF8(pParameter->getValue< std::string >());
     }
 
   pParameter = configFile->getParameter("Organization");
 
   if (pParameter != NULL)
     {
-      mOrganization = QString::FROM_UTF8(pParameter->getValue< std::string >());
+      mOrganization = FROM_UTF8(pParameter->getValue< std::string >());
     }
 
   pParameter = configFile->getParameter("Email");
 
   if (pParameter != NULL)
     {
-      mEmail = QString::FROM_UTF8(pParameter->getValue< std::string >());
+      mEmail = FROM_UTF8(pParameter->getValue< std::string >());
     }
 
   mDataCaptured = false;
