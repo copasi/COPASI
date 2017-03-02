@@ -15,7 +15,7 @@
 #include <QtCore/QVariant>
 #include <QtXml/QXmlDefaultHandler>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050000 && ! defined(WIN32)
 // for whatever reason this fails to compile on centos 7 with qt 5.6.1
 #ifndef QWEBKITWIDGETS_EXPORT
 #define QWEBKITWIDGETS_EXPORT Q_DECL_IMPORT

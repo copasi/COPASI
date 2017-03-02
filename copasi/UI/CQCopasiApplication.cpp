@@ -16,7 +16,7 @@
 #include "listviews.h"
 #include "utilities/CCopasiException.h"
 
-#ifdef WIN32
+#if (defined(WIN32) && QT_VERSION < 0x050000)
 
 #include <QWindowsVistaStyle>
 
@@ -47,7 +47,7 @@ CQCopasiApplication::CQCopasiApplication(int & argc, char ** argv):
   mFile(),
   mStarting(true)
 {
-#if WIN32
+#if (defined(WIN32) && QT_VERSION < 0x050000)
 
   if (IsWindows8())
     setStyle(new QWindowsVistaStyle);
