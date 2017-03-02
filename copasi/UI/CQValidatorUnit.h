@@ -12,9 +12,9 @@
 #define CQUNITVALIDATOR_H
 
 #include <QTextEdit>
-#include "copasi/UI/CQValidator.h"
-#include "copasi/utilities/CUnitParser.h"
 
+#include "copasi/UI/CQValidator.h"
+#include "copasi/utilities/CUnit.h"
 
 // The class for checking that an input string can be
 // parsed to create a CUnit.
@@ -25,6 +25,11 @@ class CQValidatorUnit: public CQValidator< QLineEdit >
 public:
   CQValidatorUnit(QLineEdit *parent, const char * name = 0);
   virtual State validate(QString & input, int & pos) const;
+
+  void setConstraint(const std::string & constraint);
+
+private:
+  CUnit mConstraint;
 };
 
 #endif

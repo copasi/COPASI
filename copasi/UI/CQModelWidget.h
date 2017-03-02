@@ -47,6 +47,7 @@ protected slots:
   virtual void slotBtnRevertClicked();
   virtual void slotBtnOKClicked();
   virtual void slotUpdateAvogadro();
+  virtual void slotUnitChanged();
 
 protected:
   virtual bool enterProtected();
@@ -59,13 +60,6 @@ private:
   CModel * mpModel;
 
   QUndoStack *mpUndoStack;
-  void updateUnitComboBoxes();
-
-  std::map<std::string, int> mTimeUnitMap;
-  std::map<std::string, int> mQuantityUnitMap;
-  std::map<std::string, int> mVolumeUnitMap;
-  std::map<std::string, int> mAreaUnitMap;
-  std::map<std::string, int> mLengthUnitMap;
 };
 
 #endif // COPASI_CQModelWidget

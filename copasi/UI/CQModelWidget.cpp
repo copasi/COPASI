@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,21 +14,22 @@
  *  Created on: Aug 13, 2010
  *      Author: shoops
  */
+#include <QUndoStack>
 
 #include "CQModelWidget.h"
 #include "CQUpdateAvogadro.h"
 #include "qtUtilities.h"
+#include "copasiui3window.h"
+#include "CQCopasiApplication.h"
+#include "CQValidatorUnit.h"
 
 #include "resourcesUI/CQIconResource.h"
 
-#include "copasi/model/CModel.h"
-#include "copasi/utilities/CUnit.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "model/CModel.h"
+#include "utilities/CUnit.h"
+#include "report/CCopasiRootContainer.h"
 
-#include <QUndoStack>
-#include <copasi/undoFramework/ModelChangeCommand.h>
-#include <copasi/UI/copasiui3window.h>
-#include <copasi/UI/CQCopasiApplication.h>
+#include "undoFramework/ModelChangeCommand.h"
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
@@ -31,7 +37,25 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 {
   setupUi(this);
 
-  updateUnitComboBoxes();
+  CQValidatorUnit * pValidator = new CQValidatorUnit(mpEditTimeUnit);
+  pValidator->setConstraint("s");
+  mpEditTimeUnit->setValidator(pValidator);
+
+  pValidator = new CQValidatorUnit(mpEditQuantityUnit);
+  pValidator->setConstraint("#");
+  mpEditQuantityUnit->setValidator(pValidator);
+
+  pValidator = new CQValidatorUnit(mpEditVolumeUnit);
+  pValidator->setConstraint("m^3");
+  mpEditVolumeUnit->setValidator(pValidator);
+
+  pValidator = new CQValidatorUnit(mpEditAreaUnit);
+  pValidator->setConstraint("m^2");
+  mpEditAreaUnit->setValidator(pValidator);
+
+  pValidator = new CQValidatorUnit(mpEditLengthUnit);
+  pValidator->setConstraint("m");
+  mpEditLengthUnit->setValidator(pValidator);
 
   mpUndoStack = NULL;
 
@@ -58,13 +82,20 @@ void CQModelWidget::load()
   if (mpModel == NULL)
     return;
 
-  updateUnitComboBoxes(); //findText, below, needs any newly loaded units to be available to match.
+  mpEditTimeUnit->setText(FROM_UTF8(mpModel->getTimeUnitName()));
+  static_cast< const CQValidatorUnit * >(mpEditTimeUnit->validator())->saved();
 
-  mpComboTimeUnit->setCurrentIndex(mTimeUnitMap[mpModel->getTimeUnitName()]);
-  mpComboVolumeUnit->setCurrentIndex(mVolumeUnitMap[mpModel->getVolumeUnitName()]);
-  mpComboQuantityUnit->setCurrentIndex(mQuantityUnitMap[mpModel->getQuantityUnitName()]);
-  mpComboAreaUnit->setCurrentIndex(mAreaUnitMap[mpModel->getAreaUnitName()]);
-  mpComboLengthUnit->setCurrentIndex(mLengthUnitMap[mpModel->getLengthUnitName()]);
+  mpEditQuantityUnit->setText(FROM_UTF8(mpModel->getQuantityUnitName()));
+  static_cast< const CQValidatorUnit * >(mpEditQuantityUnit->validator())->saved();
+
+  mpEditVolumeUnit->setText(FROM_UTF8(mpModel->getVolumeUnitName()));
+  static_cast< const CQValidatorUnit * >(mpEditVolumeUnit->validator())->saved();
+
+  mpEditAreaUnit->setText(FROM_UTF8(mpModel->getAreaUnitName()));
+  static_cast< const CQValidatorUnit * >(mpEditAreaUnit->validator())->saved();
+
+  mpEditLengthUnit->setText(FROM_UTF8(mpModel->getLengthUnitName()));
+  static_cast< const CQValidatorUnit * >(mpEditLengthUnit->validator())->saved();
 
   mpEditAvogadro->setText(QString::number(mpModel->getAvogadro(), 'g', 14));
 
@@ -81,14 +112,13 @@ void CQModelWidget::load()
 
 #endif
 
+  mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
+  mpEditInitialTime->setText(QString::number(mpModel->getInitialTime(), 'g', 10));
+  mpEditCurrentTime->setText(QString::number(mpModel->getTime(), 'g', 10));
+
   mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::deterministic);
 
-  mpLblInitialTime->setText("Initial Time [" + mpComboTimeUnit->currentText().replace(" (dimensionless)", "") + "]");
-  mpEditInitialTime->setText(QString::number(mpModel->getInitialTime(), 'g', 10));
-  mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
-
-  mpLblCurrentTime->setText("Time [" + mpComboTimeUnit->currentText().replace(" (dimensionless)", "") + "]");
-  mpEditCurrentTime->setText(QString::number(mpModel->getTime(), 'g', 10));
+  slotUnitChanged();
 
   return;
 }
@@ -108,52 +138,52 @@ void CQModelWidget::save()
                     ->getMainWindow()->getUndoStack();
     }
 
-  if (mpComboTimeUnit->currentIndex() != mTimeUnitMap[mpModel->getTimeUnitName()])
+  if (mpEditTimeUnit->text() != FROM_UTF8(mpModel->getTimeUnitName()))
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_TIME_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getTimeUnitName()),
-                               mpComboTimeUnit->currentText().replace(" (dimensionless)", ""),
+                               mpEditTimeUnit->text(),
                                this));
       changed = true;
     }
 
-  if (mpComboVolumeUnit->currentIndex() != mVolumeUnitMap[mpModel->getVolumeUnitName()])
+  if (mpEditVolumeUnit->text() != FROM_UTF8(mpModel->getVolumeUnitName()))
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_VOLUME_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getVolumeUnitName()),
-                               mpComboVolumeUnit->currentText().replace(" (dimensionless)", ""),
+                               mpEditVolumeUnit->text(),
                                this));
       changed = true;
     }
 
-  if (mpComboAreaUnit->currentIndex() != mAreaUnitMap[mpModel->getAreaUnitName()])
+  if (mpEditAreaUnit->text() != FROM_UTF8(mpModel->getAreaUnitName()))
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_AREA_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getAreaUnitName()),
-                               mpComboAreaUnit->currentText().replace(" (dimensionless)", ""),
+                               mpEditAreaUnit->text(),
                                this));
       changed = true;
     }
 
-  if (mpComboLengthUnit->currentIndex() != mLengthUnitMap[mpModel->getLengthUnitName()])
+  if (mpEditLengthUnit->text() != FROM_UTF8(mpModel->getLengthUnitName()))
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_LENGTH_UNIT_CHANGE,
                                FROM_UTF8(mpModel->getLengthUnitName()),
-                               mpComboLengthUnit->currentText().replace(" (dimensionless)", ""),
+                               mpEditLengthUnit->text(),
                                this));
       changed = true;
     }
 
-  if (mpComboQuantityUnit->currentIndex() != mQuantityUnitMap[mpModel->getQuantityUnitName()])
+  if (mpEditQuantityUnit->text() != FROM_UTF8(mpModel->getQuantityUnitName()))
     {
       QList< QVariant > OldValues, NewValues;
 
       OldValues.append(FROM_UTF8(mpModel->getQuantityUnitName()));
-      NewValues.append(mpComboQuantityUnit->currentText().replace(" (dimensionless)", ""));
+      NewValues.append(mpEditQuantityUnit->text());
       OldValues.append(mFramework);
       NewValues.append(mFramework);
 
@@ -237,10 +267,6 @@ bool CQModelWidget::update(ListViews::ObjectType objectType,
     {
       case ListViews::MODEL:
         enter(key);
-        break;
-
-      case ListViews::UNIT:
-        updateUnitComboBoxes();
         break;
 
       default:
@@ -346,89 +372,6 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   return true;
 }
 
-void CQModelWidget::updateUnitComboBoxes()
-{
-  QStringList ComboEntries;
-  std::vector< CUnit >::const_iterator it, itEnd;
-  int index;
-
-  // Take advantage of the implicit sorting in std::set
-
-  std::vector< CUnit > ValidUnitSet =  CCopasiRootContainer::getUnitList()->getAllValidUnits("s", 1);
-  mTimeUnitMap.clear();
-
-  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
-    {
-      mTimeUnitMap.insert(std::make_pair(it->getExpression(), index));
-      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
-    }
-
-  mpComboTimeUnit->blockSignals(true);
-  mpComboTimeUnit->clear();
-  mpComboTimeUnit->insertItems(0, ComboEntries);
-  mpComboTimeUnit->blockSignals(false);
-
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 3);
-  ComboEntries.clear();
-  mVolumeUnitMap.clear();
-
-  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
-    {
-      mVolumeUnitMap.insert(std::make_pair(it->getExpression(), index));
-      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
-    }
-
-  mpComboVolumeUnit->blockSignals(true);
-  mpComboVolumeUnit->clear();
-  mpComboVolumeUnit->insertItems(0, ComboEntries);
-  mpComboVolumeUnit->blockSignals(false);
-
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 2);
-  ComboEntries.clear();
-  mAreaUnitMap.clear();
-
-  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
-    {
-      mAreaUnitMap.insert(std::make_pair(it->getExpression(), index));
-      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
-    }
-
-  mpComboAreaUnit->blockSignals(true);
-  mpComboAreaUnit->clear();
-  mpComboAreaUnit->insertItems(0, ComboEntries);
-  mpComboAreaUnit->blockSignals(false);
-
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("m", 1);
-  ComboEntries.clear();
-  mLengthUnitMap.clear();
-
-  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
-    {
-      mLengthUnitMap.insert(std::make_pair(it->getExpression(), index));
-      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
-    }
-
-  mpComboLengthUnit->blockSignals(true);
-  mpComboLengthUnit->clear();
-  mpComboLengthUnit->insertItems(0, ComboEntries);
-  mpComboLengthUnit->blockSignals(false);
-
-  ValidUnitSet = CCopasiRootContainer::getUnitList()->getAllValidUnits("#", 1);
-  ComboEntries.clear();
-  mQuantityUnitMap.clear();
-
-  for (index = 0, it = ValidUnitSet.begin(), itEnd = ValidUnitSet.end(); it != itEnd; ++it, ++index)
-    {
-      mQuantityUnitMap.insert(std::make_pair(it->getExpression(), index));
-      ComboEntries.push_back(FROM_UTF8(it->getExpression() + ((it->getExpression() == "1") ? " (dimensionless)" : "")));
-    }
-
-  mpComboQuantityUnit->blockSignals(true);
-  mpComboQuantityUnit->clear();
-  mpComboQuantityUnit->insertItems(0, ComboEntries);
-  mpComboQuantityUnit->blockSignals(false);
-}
-
 // virtual
 void CQModelWidget::slotUpdateAvogadro()
 {
@@ -466,4 +409,26 @@ void CQModelWidget::slotUpdateAvogadro()
       case QDialog::Rejected:
         break;
     }
+}
+
+// virtual
+void CQModelWidget::slotUnitChanged()
+{
+  QString Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditTimeUnit->text())));
+  mpEditTimeUnit->setText(Unit);
+
+  mpLblInitialTime->setText("Initial Time [" + Unit + "]");
+  mpLblCurrentTime->setText("Time [" + Unit + "]");
+
+  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditQuantityUnit->text())));
+  mpEditQuantityUnit->setText(Unit);
+
+  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditVolumeUnit->text())));
+  mpEditVolumeUnit->setText(Unit);
+
+  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditAreaUnit->text())));
+  mpEditAreaUnit->setText(Unit);
+
+  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditLengthUnit->text())));
+  mpEditLengthUnit->setText(Unit);
 }

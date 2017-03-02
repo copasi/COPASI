@@ -180,9 +180,9 @@ scaled_unit:  SCALE unit
                  $$.pUnit->addComponent(component);
 
                  if (mpCurrentUnitDef->isReadOnly())
-                   mSymbols.insert($1.text + mpCurrentUnitDef->getSymbol());
+                   mSymbols.insert(CBaseUnit::prefixFromScale(component.getScale()) + mpCurrentUnitDef->getSymbol());
                  else
-                   mSymbols.insert($1.text + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
+                   mSymbols.insert(CBaseUnit::prefixFromScale(component.getScale()) + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
                    
                  mpCurrentUnitDef = NULL;
                }

@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,11 +11,18 @@
 #include "sstream"
 #include "qtUtilities.h"
 #include "CQValidatorUnit.h"
+
 #include "utilities/CCopasiException.h"
+#include "utilities/CUnitParser.h"
 
 CQValidatorUnit::CQValidatorUnit(QLineEdit * parent, const char * name):
-  CQValidator< QLineEdit >(parent, &QLineEdit::text, name)
+  CQValidator< QLineEdit >(parent, &QLineEdit::text, name),
+  mConstraint()
+{}
+
+void CQValidatorUnit::setConstraint(const std::string & constraint)
 {
+  mConstraint = constraint;
 }
 
 QValidator::State CQValidatorUnit::validate(QString & input, int & pos) const
@@ -25,18 +37,24 @@ QValidator::State CQValidatorUnit::validate(QString & input, int & pos) const
   CUnitParser Parser(&buffer);
 
   try
-  {
-    success = (Parser.yyparse() == 0);
-  }
+    {
+      success = (Parser.yyparse() == 0);
+    }
+
   catch (CCopasiException & /*exception*/)
-  {
-    success = false;
-  }
+    {
+      success = false;
+    }
+
+  if (success &&
+      !mConstraint.getExpression().empty())
+    {
+      CUnit Unit(TO_UTF8(input));
+      success = mConstraint.isEquivalent(Unit) || Unit.isDimensionless();
+    }
 
   if (success)
     {
-//      setColor(Acceptable);
-//      CurrentState = Acceptable;
       return CQValidator< QLineEdit >::validate(input, pos);
     }
   else

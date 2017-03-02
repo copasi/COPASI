@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -1464,9 +1469,9 @@ yyreduce:
               (yyval).pUnit->addComponent(component);
 
               if (mpCurrentUnitDef->isReadOnly())
-                mSymbols.insert((yyvsp[-1]).text + mpCurrentUnitDef->getSymbol());
+                mSymbols.insert(CBaseUnit::prefixFromScale(component.getScale()) + mpCurrentUnitDef->getSymbol());
               else
-                mSymbols.insert((yyvsp[-1]).text + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
+                mSymbols.insert(CBaseUnit::prefixFromScale(component.getScale()) + "\"" + mpCurrentUnitDef->getSymbol() + "\"");
 
               mpCurrentUnitDef = NULL;
             }
