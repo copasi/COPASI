@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -189,11 +194,12 @@ std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & sym
       return ValidUnits;
     }
 
+  std::set< CUnit > ValidUnitSet;
   CUnit Base(symbol);
   CUnit Power = Base.exponentiate(exponent);
 
   // dimensionless is always valid
-  ValidUnits.push_back(CUnit(CBaseUnit::dimensionless));
+  ValidUnitSet.insert(CUnit(CBaseUnit::dimensionless));
 
   const_iterator it = begin();
   const_iterator itEnd = end();
@@ -219,7 +225,7 @@ std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & sym
                     }
 
                   ScaledUnit.buildExpression();
-                  ValidUnits.push_back(ScaledUnit);
+                  ValidUnitSet.insert(ScaledUnit);
                 }
             }
           else
@@ -232,10 +238,12 @@ std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & sym
                 }
 
               ScaledUnit.buildExpression();
-              ValidUnits.push_back(ScaledUnit);
+              ValidUnitSet.insert(ScaledUnit);
             }
         }
     }
+
+  ValidUnits.insert(ValidUnits.begin(), ValidUnitSet.begin(), ValidUnitSet.end());
 
   return ValidUnits;
 }

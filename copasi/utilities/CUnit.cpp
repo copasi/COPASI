@@ -371,6 +371,9 @@ bool CUnit::operator<(const CUnit & rightSide) const
   if (mComponents.size() != rightSide.mComponents.size()) // RS has more components
     return mComponents.size() < rightSide.mComponents.size();
 
+  if (mUsedSymbols.size() != rightSide.mUsedSymbols.size()) // RS has more symbols
+    return mUsedSymbols.size() < rightSide.mUsedSymbols.size();
+
   // same (non-zero) number of components
   std::set< CUnitComponent >::const_iterator itLS = mComponents.begin(),
                                              itRS = rightSide.mComponents.begin();
@@ -382,14 +385,10 @@ bool CUnit::operator<(const CUnit & rightSide) const
           return itLS->getKind() < itRS->getKind();
         }
 
-      if (itLS->getMultiplier() != itRS->getMultiplier())
+      if (itLS->getMultiplier() != itRS->getMultiplier() ||
+          itLS->getScale() != itRS->getScale())
         {
-          return itLS->getMultiplier() < itRS->getMultiplier();
-        }
-
-      if (itLS->getScale() != itRS->getScale())
-        {
-          return itLS->getScale() < itRS->getScale();
+          return itLS->getMultiplier() * pow(10.0, itLS->getScale()) < itRS->getMultiplier() * pow(10.0, itRS->getScale());
         }
     }
 
