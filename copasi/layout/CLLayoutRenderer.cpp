@@ -1,10 +1,15 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #ifdef WIN32
-# define _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES 1
 #pragma comment(lib,"opengl32.lib")
 #endif
 
@@ -58,8 +63,9 @@
 
 // opengl includes
 #ifdef _WIN32
-# include "windows.h" // Needed for OpenGL
-# define _USE_MATH_DEFINES // without the following define, M_PI will not be declared under windows
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h> // Needed for OpenGL
+# define _USE_MATH_DEFINES 1 // without the following define, M_PI will not be declared under windows
 // disable warning about unsafe fopen
 # pragma warning(disable : 4996)
 #endif // _WIN32

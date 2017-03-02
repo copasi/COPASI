@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLFontRendererBase.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/03/07 17:11:02 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +16,7 @@
 
 // opengl includes
 #ifdef WIN32
-# define WIN32_LEAN_AND_MEAN 1
+# define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #endif // WIN32
 

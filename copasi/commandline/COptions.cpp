@@ -23,7 +23,9 @@
 #include "copasi.h"
 
 #ifdef WIN32
+# define WIN32_LEAN_AND_MEAN
 # include <windows.h>
+# include <Shellapi.h>
 # include <winbase.h>
 # include <direct.h>
 # ifdef ERROR
