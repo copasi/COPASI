@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -357,6 +362,36 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
   getUpdateSequence(UpdateSequence, context, changedObjects, RequestedObjects);
 
   return !UpdateSequence.empty();
+}
+
+bool CMathDependencyGraph::appendDirectDependents(const CObjectInterface::ObjectSet & changedObjects,
+    CObjectInterface::ObjectSet & dependentObjects) const
+{
+  dependentObjects.erase(NULL);
+  size_t Size = dependentObjects.size();
+
+  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
+
+  for (; it != end; ++it)
+    {
+      NodeMap::const_iterator found = mObjects2Nodes.find(*it);
+
+      if (found != mObjects2Nodes.end())
+        {
+          std::vector< CMathDependencyNode * >::const_iterator itNode = found->second->getDependents().begin();
+          std::vector< CMathDependencyNode * >::const_iterator endNode = found->second->getDependents().end();
+
+          for (; itNode != endNode; ++itNode)
+            {
+              dependentObjects.insert((*itNode)->getObject());
+            }
+        }
+    }
+
+  dependentObjects.erase(NULL);
+
+  return dependentObjects.size() > Size;
 }
 
 void CMathDependencyGraph::relocate(const CMathContainer * pContainer,

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -94,6 +99,15 @@ public:
   bool dependsOn(const CObjectInterface * pObject,
                  const CMath::SimulationContextFlag & context,
                  const CObjectInterface::ObjectSet & changedObjects) const;
+
+  /**
+   * Append all objects which directly depend on the given changed objects
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @param CObjectInterface::ObjectSet & dependentObjects
+   * @return bool objectsAppendee
+   */
+  bool appendDirectDependents(const CObjectInterface::ObjectSet & changedObjects,
+                              CObjectInterface::ObjectSet & dependentObjects) const;
 
   /**
    * Relocate the objects in the nodes of the graph.

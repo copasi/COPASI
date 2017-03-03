@@ -1902,6 +1902,48 @@ bool CModel::appendDependentEventAssignments(std::set< const CCopasiObject * > c
   return Size < dependents.size();
 }
 
+bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates,
+                                    std::set< const CCopasiObject * > & dependents) const
+{
+  dependents.erase(NULL);
+  size_t Size = dependents.size();
+
+  // Map the candidates to math objects
+  CObjectInterface::ObjectSet Candidates;
+  std::set< const CCopasiObject * >::const_iterator it = candidates.begin();
+  std::set< const CCopasiObject * >::const_iterator end = candidates.end();
+
+  for (; it != end; ++it)
+    {
+      Candidates.insert(mpMathContainer->getMathObject(*it));
+    }
+
+  Candidates.erase(NULL);
+
+  // Retrieve dependent math object
+  CObjectInterface::ObjectSet DirectDependents;
+  mpMathContainer->getInitialDependencies().appendDirectDependents(Candidates, DirectDependents);
+  mpMathContainer->getTransientDependencies().appendDirectDependents(Candidates, DirectDependents);
+
+  // Map object compartments, species, model values, reactions, events, and event assignments
+  CObjectInterface::ObjectSet::const_iterator itMath = DirectDependents.begin();
+  CObjectInterface::ObjectSet::const_iterator endMath = DirectDependents.end();
+
+  for (; itMath != endMath; ++itMath)
+    {
+      const CCopasiObject * pDataObject = (*itMath)->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          dependents.insert(pDataObject->getObjectParent());
+        }
+    }
+
+  dependents.erase(NULL);
+
+  return dependents.size() > Size;
+}
+
 //**********************************************************************
 
 CMetab* CModel::createMetabolite(const std::string & name,

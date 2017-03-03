@@ -765,6 +765,17 @@ public:
   bool appendDependentModelValues(std::set< const CCopasiObject * > candidates,
                                   std::set< const CCopasiObject * > & dependents) const;
 
+  /**
+   * Appends a pointers to compartments, species, model values, reactions, events, and event assignments
+   * which directly dependent on the candidates.
+   * list.
+   * @param std::set< const CCopasiObject * > candidates
+   * @param std::set< const CCopasiObject * > & dependents
+   * @return bool objectsAppended
+   */
+  bool appendDirectDependents(std::set< const CCopasiObject * > candidates,
+                              std::set< const CCopasiObject * > & dependents) const;
+
 public:
   /**
    * Remove all model objects which depend on the deleted objects
