@@ -29,7 +29,7 @@
 #include "copasi/report/CCopasiRootContainer.h"
 #include "utilities/CNodeIterator.h"
 
-#ifdef WIN32
+#if defined(WIN32) && _MSC_VER < 1800
 // we can't call this truncate because truncate
 // is the name of a system function under linux
 // and probably mac os x

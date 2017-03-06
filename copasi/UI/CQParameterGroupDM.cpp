@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -91,7 +96,7 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
           emit signalCreateComboBox(index);
         }
       else if (pNode->getType() == CCopasiParameter::GROUP &&
-               static_cast< CCopasiParameterGroup * >(pNode)->haveTemplate() > 0)
+               static_cast< CCopasiParameterGroup * >(pNode)->haveTemplate())
         {
           emit signalCreatePushButton(index);
         }

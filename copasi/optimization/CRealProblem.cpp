@@ -1,17 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/optimization/CRealProblem.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/04/23 21:11:21 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,35 +48,35 @@ CRealProblem::~CRealProblem()
 // calculate function for optimization
 bool CRealProblem::calculate()
 {
-  int j;
-
-  double fitness;
-  double fitness0;
-
-  // :TODO: broken
-  int parameterNum; // = getCalculateVariables().size();
-  double * parameterValues; // = getCalculateVariables().array();
-
-  //YOHE: this is the mathematics function used only for testing purpose
-  // evaluate the fitness
-
-  try
-    {
-      fitness0 = 0;
-
-      for (j = 0; j < parameterNum; j++)
-        {
-          fitness = fitness0 + pow(parameterValues[j], 4.0) - 16.0 * pow(parameterValues[j], 2.0)
-                    + 5.0 * parameterValues[j];
-          fitness0 = fitness;
-        }
-
-      fitness = fitness0 / 2.0;
-    }
-  catch (int)
-    {
-      fitness = std::numeric_limits< C_FLOAT64 >::max();
-    }
+  // int j;
+  //
+  // double fitness;
+  // double fitness0;
+  //
+  // // :TODO: broken
+  // int parameterNum; // = getCalculateVariables().size();
+  // double * parameterValues; // = getCalculateVariables().array();
+  //
+  // //YOHE: this is the mathematics function used only for testing purpose
+  // // evaluate the fitness
+  //
+  // try
+  //   {
+  //     fitness0 = 0;
+  //
+  //     for (j = 0; j < parameterNum; j++)
+  //       {
+  //         fitness = fitness0 + pow(parameterValues[j], 4.0) - 16.0 * pow(parameterValues[j], 2.0)
+  //                   + 5.0 * parameterValues[j];
+  //         fitness0 = fitness;
+  //       }
+  //
+  //     fitness = fitness0 / 2.0;
+  //   }
+  // catch (int)
+  //   {
+  //     fitness = std::numeric_limits< C_FLOAT64 >::max();
+  //   }
 
   // :TODO: we need to set the result vector return fitness;
   return true;

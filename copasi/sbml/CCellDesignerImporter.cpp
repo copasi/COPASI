@@ -1,10 +1,17 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #ifdef _WIN32
-# define _USE_MATH_DEFINES // without the following define, M_PI will not be declared under windows
+# ifndef _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
 #endif // _WIN32
 
 #include <algorithm>
@@ -80,18 +87,18 @@
     result = false;\
     CCopasiMessage(CCopasiMessage::WARNING_FILTERED, str.str().c_str());\
   }\
-
+   
 #define COULD_NOT_CREATE(result)\
   {\
     FAIL_WITH_ERROR(result, "could not create element");\
   }\
-
+   
 #define FAIL_WITH_ERROR_AND_RETURN(result, message)\
   {\
     FAIL_WITH_ERROR(result, message);\
     return result;\
   }\
-
+   
 /**
  * Constructor that takes a pointer to an
  * SBMLDocument.

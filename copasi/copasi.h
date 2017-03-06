@@ -80,7 +80,9 @@ using std::isnan;
 # define abs64 abs
 #else
 #ifdef WIN32
+# ifndef _USE_MATH_DEFINES
 # define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
 # define C_INT64 __int64
 # define LLONG_CONST(n) n ## i64
 # define C_INT32 int

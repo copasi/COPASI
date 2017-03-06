@@ -438,7 +438,7 @@ void CQOptPopulation::update()
             }
         }
 
-      for (j = 0; j < mShiftX.size(); ++j) //loop over the different projections
+      for (j = 0; j < (int)mShiftX.size(); ++j) //loop over the different projections
         {
           QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[j][i]);
 

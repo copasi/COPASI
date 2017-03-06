@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,7 +32,9 @@
 #endif
 
 #ifdef WIN32
-# define _USE_MATH_DEFINES
+# ifndef _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
 #endif
 
 #include <cmath>

@@ -19,8 +19,12 @@
 
 #include <time.h>
 #ifdef WIN32
+# ifndef _USE_MATH_DEFINES
 # define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
+# ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN
+# endif // WIN32_LEAN_AND_MEAN
 # include <windows.h>
 #else
 # include <unistd.h>

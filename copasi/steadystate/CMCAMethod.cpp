@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -218,7 +223,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   CMathObject * pParticleFluxObjectEnd = pParticleFluxObject + numReacs;
   CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
   CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
-  CMathObject * pSpeciesObject;
+  //CMathObject * pSpeciesObject;
 
   // mUnscaledElasticities.resize(numReacs, numMetabs);
   C_FLOAT64 * pElasticity;

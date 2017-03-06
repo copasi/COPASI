@@ -18,7 +18,9 @@
 // All rights reserved.
 
 #ifdef WIN32
-# define _USE_MATH_DEFINES
+# ifndef _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
 #endif
 
 #include <QtCore/QCoreApplication>

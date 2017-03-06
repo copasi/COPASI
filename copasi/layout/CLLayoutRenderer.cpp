@@ -9,7 +9,9 @@
 // All rights reserved.
 
 #ifdef WIN32
+# ifndef _USE_MATH_DEFINES
 # define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
 #pragma comment(lib,"opengl32.lib")
 #endif
 
@@ -63,9 +65,13 @@
 
 // opengl includes
 #ifdef _WIN32
+# ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN
+# endif // WIN32_LEAN_AND_MEAN
 # include <windows.h> // Needed for OpenGL
-# define _USE_MATH_DEFINES 1 // without the following define, M_PI will not be declared under windows
+# ifndef _USE_MATH_DEFINES
+# define _USE_MATH_DEFINES 1
+# endif // _USE_MATH_DEFINES
 // disable warning about unsafe fopen
 # pragma warning(disable : 4996)
 #endif // _WIN32
