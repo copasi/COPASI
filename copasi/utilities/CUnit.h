@@ -105,6 +105,12 @@ public:
    */
   CUnit(const CUnit & src);
 
+  /**
+   * Assignment operator
+   */
+  CUnit& operator=(const CUnit & rightSide);
+
+
   ~CUnit();
 
   virtual CIssue setExpression(const std::string & expression);

@@ -165,6 +165,29 @@ CUnit::CUnit(const CUnit & src):
     }
 }
 
+
+CUnit&
+CUnit::operator=(const CUnit & rightSide)
+{
+  if (&rightSide != this)
+    {
+      mExpression = rightSide.mExpression;
+      mComponents = rightSide.mComponents;
+      mUsedSymbols = rightSide.mUsedSymbols;
+
+      if (!mComponents.empty())
+        {
+          mpDimensionless = const_cast<CUnitComponent *>(&*mComponents.begin());
+        }
+      else
+        {
+          mpDimensionless = NULL;
+        }
+    }
+
+  return *this;
+}
+
 CUnit::~CUnit()
 {}
 

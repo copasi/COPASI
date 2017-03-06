@@ -27,7 +27,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (COPASI)
 
-# preferably link against the static versions 
+# preferably link against the static versions
 # as compared to the dynamic ones
 
 option(PREFER_STATIC "Preferably link against the static library versions" ON)
@@ -52,7 +52,7 @@ set(COPASI_VERSION_BUILD)
 set(COPASI_VERSION_COMMENT)
 # if override version is set, parse it and configure the header file with it
 if (COPASI_OVERRIDE_VERSION)
-  # parse the override string   
+  # parse the override string
   string(STRIP "${COPASI_OVERRIDE_VERSION}" VersionString)
   string(REPLACE "." ";" VersionString "${VersionString}" )
   string(REPLACE "-" ";" VersionString "${VersionString}" )
@@ -64,13 +64,13 @@ if (COPASI_OVERRIDE_VERSION)
   if(${versionLength} GREATER 3)
       list(GET VersionString 3 COPASI_VERSION_COMMENT )
   endif()
-  
+
   # configure file
   configure_file (
     "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h.in"
     "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h"
   )
-    
+
 endif()
 
 include (CMakeTestCCompiler)
@@ -86,7 +86,7 @@ include (CheckTypeSize)
 
 set(COPASI_VERSION)
 # the CopasiVersion file only exists when the git tools have been configured
-# and used. if that is not the case, we default to the canned version. 
+# and used. if that is not the case, we default to the canned version.
 if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
   file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
 
@@ -131,11 +131,11 @@ endif(COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 set(CMAKE_MODULE_PATH "${COPASI_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
 IF(DEFINED CMAKE_BUILD_TYPE)
-   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING 
+   SET(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING
    "Choose the type of build, options are: Debug or Release."
    FORCE)
 ELSE()
-   SET(CMAKE_BUILD_TYPE Release CACHE STRING 
+   SET(CMAKE_BUILD_TYPE Release CACHE STRING
    "Choose the type of build, options are: Debug or Release."
    FORCE)
 ENDIF()
@@ -172,7 +172,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   # COPASI_DEBUG
   add_definitions(-D_DEBUG)
   add_definitions(-DCOPASI_DEBUG)
-  set (DEFAULT_HYBRIDODE45 ON)  
+  set (DEFAULT_HYBRIDODE45 ON)
   set (DEFAULT_EXTUNIT ON)
   set (DEFAULT_NONLIN ON)
   set (DEFAULT_DEBUG_TRACING ON)
@@ -190,7 +190,7 @@ endif(ENABLE_COPASI_DEBUG_TRACE)
 mark_as_advanced(ENABLE_COPASI_DEBUG_TRACE)
 endif()
 
-# another option to create the COPASI SE library directly from the files, instead of first building an 
+# another option to create the COPASI SE library directly from the files, instead of first building an
 # object library (necessary sometimes as the object library messes up debugging on VS2013)
 option(DISABLE_CORE_OBJECT_LIBRARY "Disable creation of libCOPASISE-core object library and just create libCOPASISE-static" OFF)
 mark_as_advanced(DISABLE_CORE_OBJECT_LIBRARY)
@@ -275,7 +275,7 @@ if (ENABLE_GPROF)
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pg")
   set(CMAKE_EXE_LINKER_FLAGS "-pg")
 endif (ENABLE_GPROF)
-  
+
 if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
@@ -307,7 +307,7 @@ find_package(LIBSBML REQUIRED)
 include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 
 # TODO find libsedml, version
-# Option for the COPASI support for SEDML 
+# Option for the COPASI support for SEDML
 option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
 mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
@@ -315,7 +315,7 @@ if(ENABLE_COPASI_SEDML)
   if (WIN32)
   add_definitions(-DLIBSEDML_STATIC)
   endif()
-  
+
   find_package(LIBSEDML REQUIRED)
   include_directories(BEFORE ${LIBSEDML_INCLUDE_DIR})
 endif(ENABLE_COPASI_SEDML)
@@ -342,7 +342,7 @@ if(UNIX)
     endif()
 
     # Since we are encountering errors with the use of libc++ on OSX
-    # this option allows to override which stdlib to use (needed for R 
+    # this option allows to override which stdlib to use (needed for R
     # bindings on mavericks / yosemite ...)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
       option(CLANG_USE_STDLIB "Use libstdc++ rather than libc++" OFF)
@@ -351,7 +351,7 @@ if(UNIX)
       endif()
     endif()
 
-    
+
     set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING
       "A semicolon-separated list of build architectures to be used.")
     if(ENABLE_UNIVERSAL)
@@ -373,7 +373,7 @@ if(UNIX)
     endif(ENABLE_UNIVERSAL)
   else()
     option(ENABLE_LIBCOPASISE_SHARED "Enable building of libCOPASISE as shared object." OFF)
-  
+
     add_definitions(-DLinux)
     if(NOT CYGWIN)
       # on cygwin all code is position independent so -fPIC is not needed
@@ -409,19 +409,37 @@ if(BUILD_GUI)
 
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
 
-  QT_FIND_MODULES(Core Gui OpenGL Xml WebKit Network Svg)
+  # first try to find whether Qt5 is present
+  QT_FIND_MODULES(Core Gui OpenGL Xml)
   if (Qt5_FOUND)
-    QT_FIND_MODULES( Concurrent 
-                     Core 
-                     Gui 
-                     Network 
-                     OpenGL
-                     PrintSupport 
-                     Svg 
-                     WebKit 
-                     WebKitWidgets 
-                     Xml 
-    )
+    # then narrow down the precise modules we need
+    option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit" OFF)
+    
+    if (QT5_USE_WEBENGINE)
+      QT_FIND_MODULES( Concurrent
+                       Core
+                       Gui
+                       Network
+                       OpenGL
+                       PrintSupport
+                       Svg
+                       WebEngine
+                       WebEngineWidgets
+                       Xml
+      )
+    else(QT5_USE_WEBENGINE)
+      QT_FIND_MODULES( Concurrent
+                       Core
+                       Gui
+                       Network
+                       OpenGL
+                       PrintSupport
+                       Svg
+                       WebKit
+                       WebKitWidgets
+                       Xml
+      )
+    endif(QT5_USE_WEBENGINE)
     set(QTVERSION 5)
   endif()
 
@@ -487,14 +505,14 @@ if(ENABLE_USE_SBMLUNIT)
 add_definitions(-DUSE_SBMLUNIT)
 endif(ENABLE_USE_SBMLUNIT)
 
-#Option for the COPASI support for SEDML currently being developed by Joseph 
+#Option for the COPASI support for SEDML currently being developed by Joseph
 option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
 mark_as_advanced(ENABLE_COPASI_SEDML)
 if(ENABLE_COPASI_SEDML)
   add_definitions(-DCOPASI_SEDML)
 endif(ENABLE_COPASI_SEDML)
 
-#Option for the COPASI support for Provenance Framework currently being developed by Peyman 
+#Option for the COPASI support for Provenance Framework currently being developed by Peyman
 option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
 mark_as_advanced(ENABLE_PROVENANCE)
 
@@ -502,7 +520,7 @@ mark_as_advanced(ENABLE_PROVENANCE)
 option (ENABLE_VERSIONING "Enables Versioning support." OFF)
 mark_as_advanced(ENABLE_VERSIONING)
 
-#Option for the COPASI support for UNDO Framework currently being developed by Joseph 
+#Option for the COPASI support for UNDO Framework currently being developed by Joseph
 option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
 mark_as_advanced(ENABLE_COPASI_UNDO)
 
@@ -599,7 +617,7 @@ endif()
 # are we using the intel compiler
 set(USING_INTEL)
 if ((WIN32 OR (UNIX AND NOT APPLE))
-    AND CMAKE_C_COMPILER 
+    AND CMAKE_C_COMPILER
     AND ${CMAKE_C_COMPILER} MATCHES ".*ic[cl].*$")
   message(STATUS "Detected Intel Compiler")
   set(USING_INTEL TRUE)
@@ -623,21 +641,21 @@ if(MSVC OR USING_INTEL)
         endforeach(flag_var)
     add_definitions( -D_MT)
     endif(WITH_STATIC_RUNTIME)
-    
-    # on VS enable multiprocessor build 
+
+    # on VS enable multiprocessor build
     if (MSVC)
-        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")      
+        SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
     endif()
-    
-    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)    
+
+    option(COPASI_USE_VLD "When running debug builds with MSVC use Visual Leak Detector." OFF)
     mark_as_advanced(COPASI_USE_VLD)
-    
+
     if (COPASI_USE_VLD)
-    
-      add_definitions( -DCOPASI_USE_VLD)      
+
+      add_definitions( -DCOPASI_USE_VLD)
 
     endif (COPASI_USE_VLD)
-    
+
     # CMake no longer creates PDB files for static libraries after 2.8.11
     # so we store debug information in the object files instead
     if (${CMAKE_VERSION} VERSION_GREATER "2.8.11")
@@ -651,7 +669,7 @@ if(MSVC OR USING_INTEL)
             STRING(REPLACE "/Zi"  "/Z7" "${flag_var}" "${${flag_var}}")
                 endif(${flag_var} MATCHES "/Zi")
 
-            endforeach(flag_var)      
+            endforeach(flag_var)
     endif()
 
 endif(MSVC OR USING_INTEL)
@@ -687,13 +705,13 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         set(CPACK_SYSTEM_NAME "Linux-64bit")
     else ()
         set(CPACK_SYSTEM_NAME "Linux-32bit")
-    endif ()     
+    endif ()
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if (${COPASI_BUILD_TYPE} MATCHES "64bit")
         set(CPACK_SYSTEM_NAME "Windows-64bit")
     else ()
         set(CPACK_SYSTEM_NAME "Windows-32bit")
-    endif ()     
+    endif ()
 endif ()
 
 set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_CURRENT_BINARY_DIR};/.git/;/.svn/;/.libs/;/.deps/;/.bzr/;/.o$/;/.lo$/;/.la$/;${CPACK_SOURCE_IGNORE_FILES};/.DS_Store;/.svnignore;blib;libsbml-dist;/gps/;CopasiWS;userdocs;docs")
@@ -761,11 +779,11 @@ file(GLOB_RECURSE EXAMPLE_FILES "${PROJECT_SOURCE_DIR}/TestSuite/distribution" T
 install(FILES ${WIZARD_HELP_FILES} DESTINATION share/copasi/doc/html)
 install(FILES ${WIZARD_IMAGE_FILES} DESTINATION share/copasi/doc/html/figures)
 install(FILES ${EXAMPLE_FILES} DESTINATION share/copasi/examples)
-install(FILES  
+install(FILES
     "${PROJECT_SOURCE_DIR}/copasi/UI/icons/Copasi.ico"
     "${PROJECT_SOURCE_DIR}/copasi/UI/icons/CopasiDoc.ico"
         DESTINATION share/copasi/icons)
-install(FILES  
+install(FILES
     "${PROJECT_SOURCE_DIR}/copasi/MIRIAM/MIRIAMResources.xml"
         DESTINATION share/copasi/config)
 
@@ -785,7 +803,7 @@ message(STATUS "-----------------------------------------------------------
    Vendor            = ${BLA_VENDOR}
    LAPACK Libs       = ${CLAPACK_LIBRARIES}
    LAPACK LDFLAGS    = ${CLAPACK_LINKER_FLAGS}
-  
+
    Expat Libs        = ${EXPAT_LIBRARY}
    Expat include     = ${EXPAT_INCLUDE_DIR}
 
@@ -804,13 +822,13 @@ message(STATUS "-----------------------------------------------------------
 
    qtmml lib         = ${MML_LIBRARY}
    qtmml include     = ${MML_INCLUDE_DIR}
-   
+
    SBW lib           = ${SBW_LIBRARIES}
    SBW include       = ${SBW_INCLUDE_DIR}
-   
+
    libSEDML lib       = ${LIBSEDML_LIBRARY}
    libSEDML include   = ${LIBSEDML_INCLUDE_DIR}
-   
+
 
  Options:
 

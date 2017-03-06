@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -24,8 +29,8 @@
     <number>3</number>
    </property>
    <item row="0" column="0" rowspan="2">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
+    <layout class="QVBoxLayout" name="mpVerticalLayout">
+     <!--<item>
       <widget class="QWebView" name="mpWebView">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -39,7 +44,7 @@
         </url>
        </property>
       </widget>
-     </item>
+     </item>-->
      <item>
       <widget class="QPlainTextEdit" name="mpEdit">
        <property name="sizePolicy">
@@ -78,11 +83,11 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
+  <!--<customwidget>
    <class>QWebView</class>
    <extends>QWidget</extends>
    <header>QtWebKit/QWebView</header>
-  </customwidget>
+  </customwidget>-->
   <customwidget>
    <class>CopasiWidget</class>
    <extends>QWidget</extends>
@@ -111,7 +116,7 @@
     </hint>
    </hints>
   </connection>
-  <connection>
+   <!--<connection>
    <sender>mpWebView</sender>
    <signal>linkClicked(QUrl)</signal>
    <receiver>CQNotes</receiver>
@@ -126,7 +131,7 @@
      <y>102</y>
     </hint>
    </hints>
-  </connection>
+  </connection>-->
   <connection>
    <sender>mpEdit</sender>
    <signal>textChanged()</signal>

@@ -15,12 +15,41 @@
  *      Author: shoops
  */
 
-#include <QWebFrame>
+#include <QDesktopServices>
 #include <QtXml/QXmlInputSource>
 #include <QtXml/QXmlSimpleReader>
-#include <QDesktopServices>
 
 #include "CQNotes.h"
+
+#ifndef QT5_USE_WEBENGINE
+# include <QWebView>
+# include <QWebFrame>
+#else  // QT5_USE_WEBENGINE
+# include <QWebEngineView>
+# include <QWebEnginePage>
+
+
+CQWebEnginePage::CQWebEnginePage(QObject* parent)
+  : QWebEnginePage(parent)
+{
+}
+
+bool
+CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
+    QWebEnginePage::NavigationType type, bool isMainFrame)
+{
+  if (type == QWebEnginePage::NavigationTypeLinkClicked)
+    {
+      QDesktopServices::openUrl(url);
+      return false;
+    }
+
+  return true;
+}
+
+#endif // QT5_USE_WEBENGINE
+
+
 #include "resourcesUI/CQIconResource.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
@@ -145,20 +174,32 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mpValidatorXML(NULL),
   mValidity(QValidator::Acceptable),
   mKeyToCopy("")
+  , mpUndoStack(NULL)
+  , mpWebView(NULL)
 
 {
   setupUi(this);
 
   mpValidatorXML = new CQValidatorXML(mpEdit);
 
+#ifndef QT5_USE_WEBENGINE
+  mpWebView = new QWebView(this);
+  static_cast<QWebView*>(mpWebView)->
+  page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+  connect(mpWebView, SIGNAL(linkClicked(QUrl)), this, SLOT(slotOpenUrl(QUrl)));
+#else
+  mpWebView = new QWebEngineView(this);
+  static_cast<QWebEngineView*>(mpWebView)->setPage(new CQWebEnginePage);
+#endif
+
+  mpVerticalLayout->addWidget(mpWebView);
+
   mEditMode = false;
   mpEdit->hide();
   mpWebView->show();
   mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
 
-  mpWebView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 
-  mpUndoStack = NULL;
 }
 
 CQNotes::~CQNotes()
@@ -319,7 +360,11 @@ void CQNotes::load()
 
       // The notes are UTF8 encoded however the html does not specify an encoding
       // thus Qt uses locale settings.
-      mpWebView->setHtml(Notes);
+#ifndef QT5_USE_WEBENGINE
+      static_cast<QWebView*>(mpWebView)->setHtml(Notes);
+#else
+      static_cast<QWebEngineView*>(mpWebView)->setHtml(Notes);
+#endif
       mpEdit->setPlainText(Notes);
       mpValidatorXML->saved();
       slotValidateXML();
@@ -381,6 +426,11 @@ void CQNotes::save()
 
 void CQNotes::slotOpenUrl(const QUrl & url)
 {
+  QString scheme = url.scheme();
+
+  if (scheme == "about" || scheme == "data")
+    return;
+
   QDesktopServices::openUrl(url);
   return;
 }
