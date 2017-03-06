@@ -410,7 +410,7 @@ if(BUILD_GUI)
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
 
   # first try to find whether Qt5 is present
-  QT_FIND_MODULES(Core Gui OpenGL Xml)
+  QT_FIND_MODULES(Core Gui Network OpenGL Svg WebKit Xml)
   if (Qt5_FOUND)
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit" OFF)
