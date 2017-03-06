@@ -121,7 +121,21 @@ else()
 	endif()
 endif()
 
-target_link_libraries(binding_python_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${PYTHON_LIBRARIES})
+
+if(APPLE OR UNIX)
+  option (PYTHON_USE_DYNAMIC_LOOKUP
+  "Do not actually link against the python library, instead use the undefined lookup mechanism." OFF)
+  mark_as_advanced(PYTHON_USE_DYNAMIC_LOOKUP)
+endif(APPLE OR UNIX)
+
+if (PYTHON_USE_DYNAMIC_LOOKUP)
+  if (APPLE)
+    set_target_properties (binding_python_lib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+  endif()
+  target_link_libraries(binding_python_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+else()
+  target_link_libraries(binding_python_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${PYTHON_LIBRARIES})
+endif()
 
 # 
 # Determine the python installation directory
