@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,6 +60,17 @@ void DefaultPlotDialog::slotCreate()
 
   if (result != NULL)
     {
+
+      if (mIndex == 911 // "Plots of Parameter Estimation Results per Experiment";
+          || mIndex == 912 // "Plots of Parameter Estimation Results per Dependent Value"
+         )
+        {
+          // don't rename these outputs as multiple ones will have been created
+          this->accept();
+          return;
+        }
+
+
       QString current = lineEditTitle->text();
       int count = 0;
 
