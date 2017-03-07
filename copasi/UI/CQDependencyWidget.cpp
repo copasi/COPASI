@@ -22,6 +22,10 @@ CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::Wi
   , mResizeTableToRows(true)
 {
   ui->setupUi(this);
+
+#if QT_VERSION >= 0x050000
+  ui->mpTable->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+#endif
 }
 
 CQDependencyWidget::~CQDependencyWidget()
@@ -223,6 +227,11 @@ CQDependencyWidget::resizeEvent(QResizeEvent *pEvent)
 
 void CQDependencyWidget::resizeTable()
 {
+#if QT_VERSION >= 0x050000
+  // on qt5 we can adjust the size to the contents
+  return;
+#endif
+
   // resize table to contents
   if (mResizeTableToRows)
     {
@@ -269,14 +278,14 @@ CQDependencyWidget::setDependencyType(CDependencyType type)
 {
   mType = type;
 #if QT_VERSION >= 0x050000
-  ui->mpTable->verticalHeader()->setSectionResizeMode(mType == REACTION ?
-      QHeaderView::ResizeToContents : QHeaderView::Fixed);
+  ui->mpTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
   ui->mpTable->verticalHeader()->setResizeMode(mType == REACTION ?
       QHeaderView::ResizeToContents : QHeaderView::Fixed);
-#endif
   ui->mpTable->setSizePolicy(QSizePolicy::Expanding,
                              mType == REACTION ? QSizePolicy::Expanding : QSizePolicy::MinimumExpanding);
+#endif
+
 }
 
 CDependencyType

@@ -27,6 +27,11 @@ CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt
   //setAutoFillBackground(true);
   // sort the background of the control
   setStyleSheet("background-color:transparent;");
+
+#if QT_VERSION >= 0x050000
+  ui->scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+#endif
+
 }
 
 CQDependenciesWidget::~CQDependenciesWidget()
@@ -63,7 +68,11 @@ CQDependenciesWidget::addWidget(CDependencyType type)
   pResult->setDependencyType(type);
   pResult->setVisible(false);
   //mpLayout->addWidget(pResult);
+#if QT_VERSION >= 0x050000
+  mpLayout->addWidget(pResult);
+#else
   mpLayout->addWidget(pResult, type == REACTION || type == EVENT ? 4 : 1);
+#endif
   return pResult;
 }
 
@@ -281,7 +290,7 @@ CQDependenciesWidget::setVisibleDependencies(int types)
 
   if (mpLayout != NULL)
     {
-      mpLayout->addStretch(0);
+      mpLayout->addStretch(2);
       //mpLayout->addItem(
       //  new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding),
       //  mpLayout->rowCount(), 0);
