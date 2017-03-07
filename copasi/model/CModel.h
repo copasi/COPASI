@@ -770,11 +770,21 @@ public:
    * which directly dependent on the candidates.
    * list.
    * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
+   * @param std::set< const CCopasiObject * > & dependentReactions
+   * @param std::set< const CCopasiObject * > & dependentMetabolites
+   * @param std::set< const CCopasiObject * > & dependentCompartments
+   * @param std::set< const CCopasiObject * > & dependentModelValues
+   * @param std::set< const CCopasiObject * > & dependentEvents
+   * @param std::set< const CCopasiObject * > & dependentEventAssignments
    * @return bool objectsAppended
    */
   bool appendDirectDependents(std::set< const CCopasiObject * > candidates,
-                              std::set< const CCopasiObject * > & dependents) const;
+                              std::set< const CCopasiObject * > & dependentReactions,
+                              std::set< const CCopasiObject * > & dependentMetabolites,
+                              std::set< const CCopasiObject * > & dependentCompartments,
+                              std::set< const CCopasiObject * > & dependentModelValues,
+                              std::set< const CCopasiObject * > & dependentEvents,
+                              std::set< const CCopasiObject * > & dependentEventAssignments) const;
 
 public:
   /**

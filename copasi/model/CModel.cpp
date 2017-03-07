@@ -1903,10 +1903,14 @@ bool CModel::appendDependentEventAssignments(std::set< const CCopasiObject * > c
 }
 
 bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates,
-                                    std::set< const CCopasiObject * > & dependents) const
+                                    std::set< const CCopasiObject * > & dependentReactions,
+                                    std::set< const CCopasiObject * > & dependentMetabolites,
+                                    std::set< const CCopasiObject * > & dependentCompartments,
+                                    std::set< const CCopasiObject * > & dependentModelValues,
+                                    std::set< const CCopasiObject * > & dependentEvents,
+                                    std::set< const CCopasiObject * > & dependentEventAssignments) const
 {
-  dependents.erase(NULL);
-  size_t Size = dependents.size();
+  bool ObjectsAppended = false;
 
   // Map the candidates to math objects
   CObjectInterface::ObjectSet Candidates;
@@ -1933,15 +1937,44 @@ bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates
     {
       const CCopasiObject * pDataObject = (*itMath)->getDataObject();
 
-      if (pDataObject != NULL)
+      // We need to  map to the correct model appropriate containers:
+      // Compartments, Species, Model Values, Reactions, Event Assignments, and Events
+      if (pDataObject == NULL) continue;
+
+      const CCopasiContainer * pContainer = NULL;
+
+      if ((pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL)
         {
-          dependents.insert(pDataObject->getObjectParent());
+          ObjectsAppended |= dependentReactions.insert(pContainer).second;
+        }
+
+      if ((pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL)
+        {
+          ObjectsAppended |= dependentMetabolites.insert(pContainer).second;
+        }
+
+      if ((pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL)
+        {
+          ObjectsAppended |= dependentCompartments.insert(pContainer).second;
+        }
+
+      if ((pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL)
+        {
+          ObjectsAppended |= dependentModelValues.insert(pContainer).second;
+        }
+
+      if ((pContainer = pDataObject->getObjectAncestor("Event")) != NULL)
+        {
+          ObjectsAppended |= dependentEvents.insert(pContainer).second;
+        }
+
+      if ((pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL)
+        {
+          ObjectsAppended |= dependentEventAssignments.insert(pContainer).second;
         }
     }
 
-  dependents.erase(NULL);
-
-  return dependents.size() > Size;
+  return ObjectsAppended;
 }
 
 //**********************************************************************
