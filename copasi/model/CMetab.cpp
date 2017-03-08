@@ -167,8 +167,13 @@ void CMetab::initCompartment(const CCompartment * pCompartment)
   mpCompartment =
     dynamic_cast< const CCompartment * >(getObjectAncestor("Compartment"));
 
-  if (!mpCompartment)
+  if (mpCompartment == NULL)
     mpCompartment = pCompartment;
+
+  mPrerequisits.clear();
+
+  if (mpCompartment != NULL)
+    mPrerequisits.insert(mpCompartment);
 }
 
 const C_FLOAT64 & CMetab::getConcentration() const {return mConc;}

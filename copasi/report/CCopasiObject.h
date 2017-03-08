@@ -225,6 +225,7 @@ private:
   std::set< CCopasiContainer * > mReferences;
 
 protected:
+  ObjectSet mPrerequisits;
 
   static C_FLOAT64 DummyValue;
 

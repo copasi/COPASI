@@ -766,10 +766,10 @@ public:
                                   std::set< const CCopasiObject * > & dependents) const;
 
   /**
-   * Appends a pointers to compartments, species, model values, reactions, events, and event assignments
-   * which directly dependent on the candidates.
+   * Appends pointers to compartments, species, model values, reactions, events, and event assignments
+   * which directly dependent on the container.
    * list.
-   * @param std::set< const CCopasiObject * > candidates
+   * @param const CCopasiContainer & container
    * @param std::set< const CCopasiObject * > & dependentReactions
    * @param std::set< const CCopasiObject * > & dependentMetabolites
    * @param std::set< const CCopasiObject * > & dependentCompartments
@@ -778,7 +778,7 @@ public:
    * @param std::set< const CCopasiObject * > & dependentEventAssignments
    * @return bool objectsAppended
    */
-  bool appendDirectDependents(std::set< const CCopasiObject * > candidates,
+  bool appendDirectDependents(const CCopasiContainer & container,
                               std::set< const CCopasiObject * > & dependentReactions,
                               std::set< const CCopasiObject * > & dependentMetabolites,
                               std::set< const CCopasiObject * > & dependentCompartments,
@@ -1043,7 +1043,10 @@ private:
    */
   CStateTemplate mStateTemplate;
 
-  CMathDependencyGraph mPhysicalDependencies;
+  /**
+   * The structural dependencies
+   */
+  CMathDependencyGraph mStructuralDependencies;
 
   /**
    * The volume unit used in the Model

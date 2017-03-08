@@ -187,6 +187,13 @@ public:
 
   virtual CCopasiObject * insert(const CData & data);
 
+  /**
+   * Retrieve all descendant objects (optionally recursive)
+   * @param std::set< const CCopasiObject * > & descendants
+   * @param const bool & recursive (default: false)
+   */
+  void getDescendants(std::set< const CCopasiObject * > & descendants, const bool & recursive = false) const;
+
 protected:
   void initObjects();
 

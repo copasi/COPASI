@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -127,6 +132,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
       success &= AssignmentExpression.setInfix(pDataAssignment->getExpression());
     }
 
+  mpAssignment->setDataObject(pDataAssignment->getExpression().empty() ? NULL : pDataAssignment->getExpressionPtr());
   success &= AssignmentExpression.compile(ListOfContainer);
   success &= mpAssignment->setExpression(AssignmentExpression, container);
 
@@ -324,6 +330,11 @@ bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
   return success;
 }
 
+void CMathEvent::CTrigger::CRootProcessor::setDataObject(const CCopasiObject * pDataObject)
+{
+  mpRoot->setDataObject(pDataObject);
+}
+
 // static
 CEvaluationNode * CMathEvent::CTrigger::CRootProcessor::createTriggerExpressionNode() const
 {
@@ -500,9 +511,18 @@ bool CMathEvent::CTrigger::compile(const CEvent * pDataEvent,
 
   assert(pRoot <= mRoots.array() + mRoots.size());
 
+  CRootProcessor * itRoot = mRoots.begin();
+  CRootProcessor * endRoot = mRoots.end();
+
+  for (; itRoot != endRoot; ++itRoot)
+    {
+      itRoot->setDataObject(pDataEvent->getTriggerExpression().empty() ? NULL : pDataEvent->getTriggerExpressionPtr());
+    }
+
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
 
+  mpTrigger->setDataObject(pDataEvent->getTriggerExpression().empty() ? NULL : pDataEvent->getTriggerExpressionPtr());
   success &= mpTrigger->setExpressionPtr(pTrigger);
 
   return success;
@@ -1289,12 +1309,14 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
   CObjectInterface::ContainerList ListOfContainer;
 
   // Compile the delay object.
+  mpDelay->setDataObject(pDataEvent->getDelayExpression().empty() ? NULL : pDataEvent->getDelayExpressionPtr());
   CExpression DelayExpression("DelayExpression", &container);
   success &= DelayExpression.setInfix(pDataEvent->getDelayExpression());
   success &= DelayExpression.compile(ListOfContainer);
   success &= mpDelay->setExpression(DelayExpression, container);
 
   // Compile the priority object.
+  mpPriority->setDataObject(pDataEvent->getPriorityExpression().empty() ? NULL : pDataEvent->getPriorityExpressionPtr());
   CExpression PriorityExpression("PriorityExpression", &container);
   success &= PriorityExpression.setInfix(pDataEvent->getPriorityExpression());
   success &= PriorityExpression.compile(ListOfContainer);

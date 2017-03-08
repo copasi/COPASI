@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -111,6 +116,12 @@ public:
    * Retrieve a pointer to the value of the object
    */
   virtual void * getValuePointer() const;
+
+  /**
+   * Set the pointer to the data object
+   * @param const CCopasiObject * pDataObject
+   */
+  void setDataObject(const CCopasiObject * pDataObject);
 
   /**
    * Retrieve a pointer to the data object

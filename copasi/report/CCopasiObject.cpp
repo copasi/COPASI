@@ -164,7 +164,8 @@ CCopasiObject::CCopasiObject():
   mpObjectDisplayName(NULL),
   mObjectFlag(0),
   mDependencies(),
-  mReferences()
+  mReferences(),
+  mPrerequisits()
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
@@ -178,7 +179,8 @@ CCopasiObject::CCopasiObject(const std::string & name,
   mpObjectDisplayName(NULL),
   mObjectFlag(flag),
   mDependencies(),
-  mReferences()
+  mReferences(),
+  mPrerequisits()
 {
   if (mpObjectParent != NULL &&
       mpObjectParent->isContainer())
@@ -198,7 +200,8 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag),
   mDependencies(),
-  mReferences()
+  mReferences(),
+  mPrerequisits()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -487,7 +490,7 @@ void CCopasiObject::removeDirectDependency(const CCopasiObject * pObject)
 
 const CObjectInterface::ObjectSet & CCopasiObject::getPrerequisites() const
 {
-  return * reinterpret_cast< const CObjectInterface::ObjectSet * >(&mDependencies);
+  return mPrerequisits;
 }
 
 bool CCopasiObject::isPrerequisiteForContext(const CObjectInterface * pObject,

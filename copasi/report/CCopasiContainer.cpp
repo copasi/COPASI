@@ -551,6 +551,23 @@ size_t CCopasiContainer::getIndex(const CCopasiObject * pObject) const
   return 0;
 }
 
+void CCopasiContainer::getDescendants(std::set< const CCopasiObject * > & descendants, const bool & recursive) const
+{
+  objectMap::const_iterator it = mObjects.begin();
+  objectMap::const_iterator end = mObjects.end();
+  descendants.insert(it, end);
+
+  for (; it != end && recursive; ++it)
+    {
+      const CCopasiContainer * pContainer = dynamic_cast< const CCopasiContainer * >(*it);
+
+      if (pContainer != NULL)
+        {
+          pContainer->getDescendants(descendants, recursive);
+        }
+    }
+}
+
 void CCopasiContainer::objectRenamed(CCopasiObject * pObject, const std::string & oldName)
 {
   mObjects.objectRenamed(pObject, oldName);

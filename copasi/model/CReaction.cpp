@@ -633,6 +633,8 @@ bool CReaction::compile()
   bool success = true;
 
   clearDirectDependencies();
+  mPrerequisits.clear();
+
   std::set< const CCopasiObject * > Dependencies;
 
   CCopasiObject * pObject;
@@ -642,6 +644,7 @@ bool CReaction::compile()
       if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
         {
           addDirectDependency(mpFunction);
+          mPrerequisits.insert(mpFunction);
         }
       else
         {
@@ -735,13 +738,19 @@ bool CReaction::compile()
   CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
 
   for (; it != end; ++it)
-    addDirectDependency(it->getMetabolite());
+    {
+      addDirectDependency(it->getMetabolite());
+      mPrerequisits.insert(it->getMetabolite());
+    }
 
   it = mChemEq.getProducts().begin();
   end = mChemEq.getProducts().end();
 
   for (; it != end; ++it)
-    addDirectDependency(it->getMetabolite());
+    {
+      addDirectDependency(it->getMetabolite());
+      mPrerequisits.insert(it->getMetabolite());
+    }
 
   it = mChemEq.getModifiers().begin();
   end = mChemEq.getModifiers().end();
@@ -772,6 +781,8 @@ bool CReaction::compile()
       mpNoiseReference->clearDirectDependencies();
       mpParticleNoiseReference->clearDirectDependencies();
     }
+
+  mPrerequisits.erase(NULL);
 
   return success;
 }

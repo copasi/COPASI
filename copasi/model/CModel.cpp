@@ -108,7 +108,7 @@ bool CModel::applyData(const CData & data)
 CModel::CModel(CCopasiContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
-  mPhysicalDependencies(),
+  mStructuralDependencies(),
   mVolumeUnit("ml"),
   mAreaUnit("m\xc2\xb2"),
   mLengthUnit("m"),
@@ -544,19 +544,43 @@ finish:
 
 bool CModel::buildDependencyGraphs()
 {
-  mPhysicalDependencies.clear();
+  mStructuralDependencies.clear();
 
-  // The initial values of the model entities
-  // We need to add the time for non-autonomous models.
-  const CModelEntity *const* ppEntity = mStateTemplate.beginIndependent() - 1;
-  const CModelEntity *const* ppEntityEnd = mStateTemplate.endFixed();
+  // We need to add all species, reactions, and event assignments
+  CCopasiVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
+  CCopasiVector< CMetab >::const_iterator endMetab = mMetabolites.end();
 
-  for (; ppEntity != ppEntityEnd; ++ppEntity)
+  for (; itMetab != endMetab; ++itMetab)
     {
-      const CMetab * pSpecies = dynamic_cast< const CMetab * >(*ppEntity);
-
-      // TODO CRITICAL Create support for physical dependencies.
+      mStructuralDependencies.addObject(&*itMetab);
     }
+
+  CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
+  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+
+  for (; itReaction != endReaction; ++itReaction)
+    {
+      mStructuralDependencies.addObject(&*itReaction);
+    }
+
+  CCopasiVector< CEvent >::const_iterator itEvent = mEvents.begin();
+  CCopasiVector< CEvent >::const_iterator endEvent = mEvents.end();
+
+  for (; itEvent != endEvent; ++itEvent)
+    {
+      CCopasiVector< CEventAssignment >::const_iterator itAssignment = itEvent->getAssignments().begin();
+      CCopasiVector< CEventAssignment >::const_iterator endAssignment = itEvent->getAssignments().end();
+
+      for (; itAssignment != endAssignment; ++itAssignment)
+        {
+          mStructuralDependencies.addObject(&*itAssignment);
+        }
+    }
+
+#ifdef COPASI_DEBUG_TRACE
+  std::ofstream StructuralDependencies("StructuralDependencies.dot");
+  mStructuralDependencies.exportDOTFormat(StructuralDependencies, "StructuralDependencies");
+#endif // COPASI_DEBUG_TRACE
 
   return true;
 }
@@ -1902,7 +1926,7 @@ bool CModel::appendDependentEventAssignments(std::set< const CCopasiObject * > c
   return Size < dependents.size();
 }
 
-bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates,
+bool CModel::appendDirectDependents(const CCopasiContainer & container,
                                     std::set< const CCopasiObject * > & dependentReactions,
                                     std::set< const CCopasiObject * > & dependentMetabolites,
                                     std::set< const CCopasiObject * > & dependentCompartments,
@@ -1910,12 +1934,21 @@ bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates
                                     std::set< const CCopasiObject * > & dependentEvents,
                                     std::set< const CCopasiObject * > & dependentEventAssignments) const
 {
-  bool ObjectsAppended = false;
+  CObjectInterface::ObjectSet DirectDependents;
 
-  // Map the candidates to math objects
+  // First add the structural dependencies
   CObjectInterface::ObjectSet Candidates;
-  std::set< const CCopasiObject * >::const_iterator it = candidates.begin();
-  std::set< const CCopasiObject * >::const_iterator end = candidates.end();
+  Candidates.insert(&container);
+
+  mStructuralDependencies.appendDirectDependents(Candidates, DirectDependents);
+
+  std::set< const CCopasiObject * > Descendants;
+  container.getDescendants(Descendants);
+
+  // Map the descendants to math objects
+  Candidates.clear();
+  std::set< const CCopasiObject * >::const_iterator it = Descendants.begin();
+  std::set< const CCopasiObject * >::const_iterator end = Descendants.end();
 
   for (; it != end; ++it)
     {
@@ -1925,17 +1958,16 @@ bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates
   Candidates.erase(NULL);
 
   // Retrieve dependent math object
-  CObjectInterface::ObjectSet DirectDependents;
   mpMathContainer->getInitialDependencies().appendDirectDependents(Candidates, DirectDependents);
   mpMathContainer->getTransientDependencies().appendDirectDependents(Candidates, DirectDependents);
 
-  // Map object compartments, species, model values, reactions, events, and event assignments
-  CObjectInterface::ObjectSet::const_iterator itMath = DirectDependents.begin();
-  CObjectInterface::ObjectSet::const_iterator endMath = DirectDependents.end();
+  // Map objects to compartments, species, model values, reactions, events, and event assignments
+  CObjectInterface::ObjectSet::const_iterator itDependent = DirectDependents.begin();
+  CObjectInterface::ObjectSet::const_iterator endDependent = DirectDependents.end();
 
-  for (; itMath != endMath; ++itMath)
+  for (; itDependent != endDependent; ++itDependent)
     {
-      const CCopasiObject * pDataObject = (*itMath)->getDataObject();
+      const CCopasiObject * pDataObject = (*itDependent)->getDataObject();
 
       // We need to  map to the correct model appropriate containers:
       // Compartments, Species, Model Values, Reactions, Event Assignments, and Events
@@ -1943,38 +1975,51 @@ bool CModel::appendDirectDependents(std::set< const CCopasiObject * > candidates
 
       const CCopasiContainer * pContainer = NULL;
 
-      if ((pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL)
+      if ((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
+          (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL)
         {
-          ObjectsAppended |= dependentReactions.insert(pContainer).second;
+          dependentReactions.insert(pContainer).second;
         }
-
-      if ((pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL)
+      else if ((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
+               (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL)
         {
-          ObjectsAppended |= dependentMetabolites.insert(pContainer).second;
+          dependentMetabolites.insert(pContainer).second;
         }
-
-      if ((pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL)
+      else if ((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
+               (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL)
         {
-          ObjectsAppended |= dependentCompartments.insert(pContainer).second;
+          dependentCompartments.insert(pContainer).second;
         }
-
-      if ((pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL)
+      else if ((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
+               (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL)
         {
-          ObjectsAppended |= dependentModelValues.insert(pContainer).second;
+          dependentModelValues.insert(pContainer).second;
         }
-
-      if ((pContainer = pDataObject->getObjectAncestor("Event")) != NULL)
+      else if ((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
+               (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL)
         {
-          ObjectsAppended |= dependentEvents.insert(pContainer).second;
+          dependentEventAssignments.insert(pContainer).second;
         }
-
-      if ((pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL)
+      else if ((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
+               (pContainer = pDataObject->getObjectAncestor("Event")) != NULL)
         {
-          ObjectsAppended |= dependentEventAssignments.insert(pContainer).second;
+          dependentEvents.insert(pContainer).second;
         }
     }
 
-  return ObjectsAppended;
+  dependentReactions.erase(&container);
+  dependentMetabolites.erase(&container);
+  dependentCompartments.erase(&container);
+  dependentModelValues.erase(&container);
+  dependentEvents.erase(&container);
+  dependentEventAssignments.erase(&container);
+
+  return !(dependentReactions.empty() &&
+           dependentMetabolites.empty() &&
+           dependentCompartments.empty() &&
+           dependentModelValues.empty() &&
+           dependentEvents.empty() &&
+           dependentEventAssignments.empty());
 }
 
 //**********************************************************************

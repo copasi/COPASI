@@ -289,6 +289,11 @@ void CMathObject::print(std::ostream * ostream) const
   (*ostream) << *mpValue;
 }
 
+void CMathObject::setDataObject(const CCopasiObject * pDataObject)
+{
+  mpDataObject = pDataObject;
+}
+
 // virtual
 const CCopasiObject * CMathObject::getDataObject() const
 {

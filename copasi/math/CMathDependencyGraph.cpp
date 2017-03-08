@@ -564,5 +564,10 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
   if (pReaction != NULL && pReaction != pDataObject->getObjectParent())
     return pReaction->getObjectName() + "::" + pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 
+  CCopasiObject * pEvent = pDataObject->getObjectAncestor("Event");
+
+  if (pEvent != NULL && pEvent != pDataObject->getObjectParent())
+    return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectName();
+
   return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 }

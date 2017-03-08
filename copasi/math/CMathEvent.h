@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -160,6 +165,12 @@ public:
       bool compile(CEvaluationNode * pRootNode,
                    const bool & equality,
                    CMathContainer & container);
+
+      /**
+       * Set the pointer to the data object
+       * @param const CCopasiObject * pDataObject
+       */
+      void setDataObject(const CCopasiObject * pDataObject);
 
       CEvaluationNode * createTriggerExpressionNode() const;
 

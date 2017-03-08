@@ -31,7 +31,6 @@ CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt
 #if QT_VERSION >= 0x050000
   ui->scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 #endif
-
 }
 
 CQDependenciesWidget::~CQDependenciesWidget()
@@ -61,7 +60,6 @@ CQDependenciesWidget::addWidget(CDependencyType type)
       //mpLayout = new QGridLayout(ui->scrollAreaWidgetContents);
       mpLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
       mpLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-
     }
 
   CQDependencyWidget *pResult = new CQDependencyWidget(this);
@@ -130,13 +128,13 @@ void CQDependenciesWidget::loadFrom(CCopasiObject * pObject)
   std::set< const CCopasiObject * > dependentEvents;
   std::set< const CCopasiObject * > dependentEventAssignments;
 
-  pModel->appendDependentModelObjects(deletedObjects,
-                                      dependentReactions,
-                                      dependentMetabolites,
-                                      dependentCompartments,
-                                      dependentModelValues,
-                                      dependentEvents,
-                                      dependentEventAssignments);
+  pModel->appendDirectDependents(*static_cast< CCopasiContainer * >(pObject),
+                                 dependentReactions,
+                                 dependentMetabolites,
+                                 dependentCompartments,
+                                 dependentModelValues,
+                                 dependentEvents,
+                                 dependentEventAssignments);
 
   if (mpCompartmentWidget && (mVisibleModes & COMPARTMENT) == COMPARTMENT)
     mpCompartmentWidget->updateFromDependencies(deletedObjects, dependentCompartments, pModel);
@@ -159,7 +157,6 @@ void CQDependenciesWidget::loadFrom(CCopasiObject * pObject)
         {
           const CCopasiObject * pObject = *it;
           dependentEvents.insert(pObject->getObjectParent()->getObjectParent());
-
         }
 
       mpEventWidget->updateFromDependencies(deletedObjects, dependentEvents, pModel);
@@ -168,7 +165,6 @@ void CQDependenciesWidget::loadFrom(CCopasiObject * pObject)
 #endif
 
   ui->mpLabel->setVisible(!haveDependencies());
-
 }
 
 void
@@ -287,7 +283,6 @@ CQDependenciesWidget::setVisibleDependencies(int types)
       //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 1);
     }
 
-
   if (mpLayout != NULL)
     {
       mpLayout->addStretch(2);
@@ -296,7 +291,6 @@ CQDependenciesWidget::setVisibleDependencies(int types)
       //  mpLayout->rowCount(), 0);
       //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 0);
     }
-
 }
 
 int CQDependenciesWidget::getVisibleDependencies() const
@@ -320,7 +314,6 @@ void CQDependenciesWidget::setLabelWidth(int width)
 
   if ((mVisibleModes & EVENT) == EVENT)
     mpEventWidget->setLabelWidth(width);
-
 }
 
 int CQDependenciesWidget::getLabelWidth() const

@@ -105,6 +105,7 @@ bool CEventAssignment::setObjectParent(const CCopasiContainer * pParent)
 bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearDirectDependencies();
+  mPrerequisits.clear();
 
   bool success = true;
 
@@ -117,6 +118,8 @@ bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
   if (pEntity != NULL &&
       pEntity->getStatus() != CModelEntity::ASSIGNMENT)
     {
+      mPrerequisits.insert(pEntity);
+
       // We need use the virtual method getValueObject to retrieve the
       // target value from the model entity
       mpTarget = pEntity->getValueObject();
