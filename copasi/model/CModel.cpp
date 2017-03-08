@@ -1934,6 +1934,13 @@ bool CModel::appendDirectDependents(const CCopasiContainer & container,
                                     std::set< const CCopasiObject * > & dependentEvents,
                                     std::set< const CCopasiObject * > & dependentEventAssignments) const
 {
+  size_t Size = dependentReactions.size() +
+                dependentMetabolites.size() +
+                dependentCompartments.size() +
+                dependentModelValues.size() +
+                dependentEvents.size() +
+                dependentEventAssignments.size();
+
   CObjectInterface::ObjectSet DirectDependents;
 
   // First add the structural dependencies
@@ -2014,12 +2021,12 @@ bool CModel::appendDirectDependents(const CCopasiContainer & container,
   dependentEvents.erase(&container);
   dependentEventAssignments.erase(&container);
 
-  return !(dependentReactions.empty() &&
-           dependentMetabolites.empty() &&
-           dependentCompartments.empty() &&
-           dependentModelValues.empty() &&
-           dependentEvents.empty() &&
-           dependentEventAssignments.empty());
+  return Size < dependentReactions.size() +
+         dependentMetabolites.size() +
+         dependentCompartments.size() +
+         dependentModelValues.size() +
+         dependentEvents.size() +
+         dependentEventAssignments.size();
 }
 
 //**********************************************************************
