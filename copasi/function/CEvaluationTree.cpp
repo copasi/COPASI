@@ -360,6 +360,7 @@ void CEvaluationTree::buildCalculationSequence()
 
 CIssue CEvaluationTree::compileNodes()
 {
+  mPrerequisits.clear();
   clearDirectDependencies();
   mCalculationSequence.resize(0);
 
@@ -457,6 +458,7 @@ CIssue CEvaluationTree::compileNodes()
 
             case CEvaluationNode::T_CALL:
               addDirectDependency(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
+              mPrerequisits.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
               break;
 
             default:
