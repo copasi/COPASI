@@ -494,10 +494,12 @@ bool CMathEvent::CTrigger::compile(const CEvent * pDataEvent,
 
   CExpression DataTrigger("DataTrigger", &container);
   DataTrigger.setIsBoolean(true);
+  const CExpression * pDataExpression = NULL;
 
   if (pDataEvent != NULL)
     {
       mInfix = pDataEvent->getTriggerExpression();
+      pDataExpression = pDataEvent->getTriggerExpressionPtr();
     }
 
   DataTrigger.setInfix(mInfix);
@@ -516,13 +518,13 @@ bool CMathEvent::CTrigger::compile(const CEvent * pDataEvent,
 
   for (; itRoot != endRoot; ++itRoot)
     {
-      itRoot->setDataObject(pDataEvent->getTriggerExpression().empty() ? NULL : pDataEvent->getTriggerExpressionPtr());
+      itRoot->setDataObject(pDataExpression);
     }
 
   CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
   success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
 
-  mpTrigger->setDataObject(pDataEvent->getTriggerExpression().empty() ? NULL : pDataEvent->getTriggerExpressionPtr());
+  mpTrigger->setDataObject(pDataExpression);
   success &= mpTrigger->setExpressionPtr(pTrigger);
 
   return success;
