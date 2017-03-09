@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -489,21 +494,24 @@ bool CMathEvent::CTrigger::compile(const CEvent * pDataEvent,
       mInfix = pDataEvent->getTriggerExpression();
     }
 
-  DataTrigger.setInfix(mInfix);
+  if (mpTrigger != NULL)
+    {
+      DataTrigger.setInfix(mInfix);
 
-  success &= DataTrigger.compile();
+      success &= DataTrigger.compile();
 
-  CEvaluationNode * pTriggerRoot = NULL;
-  CRootProcessor * pRoot = mRoots.array();
+      CEvaluationNode * pTriggerRoot = NULL;
+      CRootProcessor * pRoot = mRoots.array();
 
-  pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
+      pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
 
-  assert(pRoot <= mRoots.array() + mRoots.size());
+      assert(pRoot <= mRoots.array() + mRoots.size());
 
-  CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
-  success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
+      CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
+      success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
 
-  success &= mpTrigger->setExpressionPtr(pTrigger);
+      success &= mpTrigger->setExpressionPtr(pTrigger);
+    }
 
   return success;
 }
@@ -516,9 +524,10 @@ const CVector< CMathEvent::CTrigger::CRootProcessor > & CMathEvent::CTrigger::ge
 void CMathEvent::CTrigger::setExpression(const std::string & infix,
     CMathContainer & container)
 {
-  assert(mpTrigger != NULL);
   mInfix = infix;
-  mpTrigger->setExpression(infix, true, container);
+
+  if (mpTrigger != NULL)
+    mpTrigger->setExpression(infix, true, container);
 
   compile(NULL, container);
 
