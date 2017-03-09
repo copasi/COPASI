@@ -8,6 +8,7 @@
     <file>images/editAdd.png</file>
     <file>images/editCopy.png</file>
     <file>images/editDelete.png</file>
+    <file>images/error.png</file>
     <file>images/fileAdd.png</file>
     <file>images/fileExport.png</file>
     <file>images/fileNew.png</file>
@@ -15,6 +16,7 @@
     <file>images/filePrint.png</file>
     <file>images/fileSave.png</file>
     <file>images/fileSaveas.png</file>
+    <file>images/information.png</file>
     <file>images/isToS.png</file>
     <file>images/locked.png</file>
     <file>images/miriam.png</file>

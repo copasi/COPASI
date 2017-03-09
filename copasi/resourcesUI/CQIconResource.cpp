@@ -42,6 +42,7 @@ void CQIconResource::init()
   Icons[editAdd].addFile(QString::fromUtf8(":/images/editAdd.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[editCopy].addFile(QString::fromUtf8(":/images/editCopy.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[editDelete].addFile(QString::fromUtf8(":/images/editDelete.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[error].addFile(QString::fromUtf8(":/images/error.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileAdd].addFile(QString::fromUtf8(":/images/fileAdd.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileExport].addFile(QString::fromUtf8(":/images/fileExport.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileNew].addFile(QString::fromUtf8(":/images/fileNew.png"), QSize(), QIcon::Normal, QIcon::On);
@@ -49,6 +50,7 @@ void CQIconResource::init()
   Icons[filePrint].addFile(QString::fromUtf8(":/images/filePrint.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileSave].addFile(QString::fromUtf8(":/images/fileSave.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[fileSaveas].addFile(QString::fromUtf8(":/images/fileSaveas.png"), QSize(), QIcon::Normal, QIcon::On);
+  Icons[information].addFile(QString::fromUtf8(":/images/information.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[isToS].addFile(QString::fromUtf8(":/images/isToS.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[locked].addFile(QString::fromUtf8(":/images/locked.png"), QSize(), QIcon::Normal, QIcon::On);
   Icons[miriam].addFile(QString::fromUtf8(":/images/miriam.png"), QSize(), QIcon::Normal, QIcon::On);
