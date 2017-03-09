@@ -502,30 +502,33 @@ bool CMathEvent::CTrigger::compile(const CEvent * pDataEvent,
       pDataExpression = pDataEvent->getTriggerExpressionPtr();
     }
 
-  DataTrigger.setInfix(mInfix);
-
-  success &= DataTrigger.compile();
-
-  CEvaluationNode * pTriggerRoot = NULL;
-  CRootProcessor * pRoot = mRoots.array();
-
-  pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
-
-  assert(pRoot <= mRoots.array() + mRoots.size());
-
-  CRootProcessor * itRoot = mRoots.begin();
-  CRootProcessor * endRoot = mRoots.end();
-
-  for (; itRoot != endRoot; ++itRoot)
+  if (mpTrigger != NULL)
     {
-      itRoot->setDataObject(pDataExpression);
+      DataTrigger.setInfix(mInfix);
+
+      success &= DataTrigger.compile();
+
+      CEvaluationNode * pTriggerRoot = NULL;
+      CRootProcessor * pRoot = mRoots.array();
+
+      pTriggerRoot = compile(DataTrigger.getRoot(), Variables, pRoot, container);
+
+      assert(pRoot <= mRoots.array() + mRoots.size());
+
+      CRootProcessor * itRoot = mRoots.begin();
+      CRootProcessor * endRoot = mRoots.end();
+
+      for (; itRoot != endRoot; ++itRoot)
+        {
+          itRoot->setDataObject(pDataExpression);
+        }
+
+      CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
+      success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
+
+      mpTrigger->setDataObject(pDataExpression);
+      success &= mpTrigger->setExpressionPtr(pTrigger);
     }
-
-  CMathExpression * pTrigger = new CMathExpression("EventTrigger", container);
-  success &= static_cast< CEvaluationTree * >(pTrigger)->setRoot(pTriggerRoot);
-
-  mpTrigger->setDataObject(pDataExpression);
-  success &= mpTrigger->setExpressionPtr(pTrigger);
 
   return success;
 }
@@ -538,9 +541,10 @@ const CVector< CMathEvent::CTrigger::CRootProcessor > & CMathEvent::CTrigger::ge
 void CMathEvent::CTrigger::setExpression(const std::string & infix,
     CMathContainer & container)
 {
-  assert(mpTrigger != NULL);
   mInfix = infix;
-  mpTrigger->setExpression(infix, true, container);
+
+  if (mpTrigger != NULL)
+    mpTrigger->setExpression(infix, true, container);
 
   compile(NULL, container);
 

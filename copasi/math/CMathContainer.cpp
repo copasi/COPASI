@@ -380,6 +380,7 @@ CMathContainer::CMathContainer(CModel & model):
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
+  mRootCount2Events(),
   mDelays(),
   mIsAutonomous(true),
   mSize(),
@@ -492,6 +493,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mDiscontinuityEvents("Discontinuities", this),
   mDiscontinuityInfix2Object(),
   mTriggerInfix2Event(),
+  mRootCount2Events(),
   mDelays(),
   mIsAutonomous(src.mIsAutonomous),
   mSize(),
@@ -1399,6 +1401,7 @@ void CMathContainer::compile()
   mDiscontinuityEvents.clear();
   mDiscontinuityInfix2Object.clear();
   mTriggerInfix2Event.clear();
+  mRootCount2Events.clear();
 
   // Create eventual delays
   createDelays();
