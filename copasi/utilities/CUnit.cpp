@@ -460,10 +460,10 @@ C_INT32 CUnit::getExponentOfSymbol(const std::pair< std::string, CUnit > & Symbo
   // We ignore base units
   if (CBaseUnit::fromSymbol(SymbolDef.first) != CBaseUnit::undefined) return 0;
 
-  CUnit MultiplyUnit = unit;
+  CUnit MultiplyUnit(unit);
   std::pair< C_INT32, C_INT32 > MultiplyResult = removeSymbolFromUnit(SymbolDef.second, MultiplyUnit);
 
-  CUnit DivisionUnit = unit;
+  CUnit DivisionUnit(unit);
   std::pair< C_INT32, C_INT32 > DivisionResult = removeSymbolFromUnit(SymbolDef.second.exponentiate(-1.0), DivisionUnit);
 
   C_INT32 Exponent = 0;
