@@ -25,6 +25,7 @@
 
 #include <QUndoStack>
 #include <QMimeData>
+#include <QSettings>
 
 #ifdef COPASI_UNDO
 #include "CQUndoHistoryDialog.h"
@@ -268,7 +269,12 @@ CopasiUI3Window::CopasiUI3Window():
   mpListView->show();
   this->setCentralWidget(mpListView);
   size_t id = mpListView->getCurrentItemId();
-  resize(800, 600);
+
+  QSettings settings(FROM_UTF8(COptions::getConfigDir() + "/" + "ui_settings.ini"), QSettings::IniFormat, this);
+
+  QSize mainWindowSize = settings.value("mainwindow/size", QSize(800, 600)).toSize();
+
+  resize(mainWindowSize);
   show();
   mpListView->switchToOtherWidget(0, "");
   // Assure that the changed flag is still false;
@@ -283,7 +289,8 @@ CopasiUI3Window::CopasiUI3Window():
   mpSliders = new SliderDialog(mpListView);
   mpSliders->setParentWindow(this);
   mpSliders->setCurrentFolderId(id);
-  mpSliders->resize(320, 350);
+  QSize sliderSize = settings.value("slider/size", QSize(320, 350)).toSize();
+  mpSliders->resize(sliderSize);
   mpSliders->hide();
   mpSliders->setChanged(false);
   mSliderDialogEnabled = mpSliders->isEnabled();
@@ -1323,6 +1330,16 @@ void CopasiUI3Window::CleanUp()
   COptions::getValue("Tmp", tempDir);
   CDirEntry::removeFiles("*.cps", tempDir);
   CDirEntry::remove(tempDir);
+
+  // store window sizes
+  QSettings settings(FROM_UTF8(COptions::getConfigDir() + "/" + "ui_settings.ini"), QSettings::IniFormat, this);
+  settings.setValue("mainwindow/size", size());
+
+  if (mpSliders != NULL)
+    settings.setValue("slider/size", mpSliders->size());
+
+  settings.sync();
+
 }
 
 void CopasiUI3Window::slotFilePrint()

@@ -146,6 +146,8 @@ public:
 
   static std::string getPWD(void);
 
+  static std::string getConfigDir(void);
+
 private:
   template< class CType > static void setValue(const std::string & name,
       const CType & value)
@@ -163,7 +165,6 @@ private:
   static std::string getHome(void);
   static std::string getTemp(void);
 
-  static std::string getConfigDir(void);
   static std::string getConfigFile(void);
 };
 
