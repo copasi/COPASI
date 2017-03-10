@@ -126,11 +126,11 @@ Reaction scheme where the products are created from the reactants and the change
 
     </MiriamAnnotation>
     <Comment>
-      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:DejaVu Sans">
+      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-family:DejaVu Sans">
 <p><span style="font-weight:600">MAPK cascade model</span> from Huang and Ferrell (1996) Ultrasensitivity in the mitogen-activated protein kinase cascade. <span style="font-style:italic">Proc. Natl. Acad. Sci. USA 93</span>, 10078-83 </p>
 <p>This COPASI file simulates a time course and includes a network diagram that can be used to visualize the results (under Model/Biochemical/Diagrams). </p>
-<p style="margin-top:14px"><span style="font-size:7pt">This model was altered trivially from the original in Biomodels (BIOMD0000000009), by renaming the species &quot;MAPKKK activator&quot; to E1 and &quot;MAPKKK inactivator&quot; to E2, to conform with the notation of the original paper. The diagram was constructed with SBW&apos;s Network Layout tool.</span></p>
-<p style="margin-top:14px"><span style="font-size:7pt">This model originated from BioModels Database: A Database of Annotated Published Models. It is copyright (c) 2005-2008 The BioModels Team. For more information see the </span><a href="http://www.ebi.ac.uk/biomodels/legal.html"><span style="font-size:7pt">terms of use</span></a><span style="font-size:7pt">.</span>      </p>
+<p style="margin-top:14px">This model was altered trivially from the original in Biomodels (BIOMD0000000009), by renaming the species &quot;MAPKKK activator&quot; to E1 and &quot;MAPKKK inactivator&quot; to E2, to conform with the notation of the original paper. The diagram was constructed with SBW&apos;s Network Layout tool.</p>
+<p style="margin-top:14px">This model originated from BioModels Database: A Database of Annotated Published Models. It is copyright (c) 2005-2008 The BioModels Team. For more information see the <a href="http://www.ebi.ac.uk/biomodels/legal.html">terms of use</a>. </p>
 <p>      </p>
 </body></html>
     </Comment>

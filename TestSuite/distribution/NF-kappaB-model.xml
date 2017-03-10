@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and University of -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -13,7 +18,7 @@
           <title xmlns="http://www.w3.org/1999/xhtml"/>
           <meta name="qrichtext" content="1"/>
         </head>
-        <body style="font-size:8pt;font-family:MS Shell Dlg">
+        <body style="font-family:MS Shell Dlg">
           <p style="margin-top:18px">
             <span style="font-size:16pt;font-weight:600">Model of oscillating NF-kappaB signaling </span>
           </p>

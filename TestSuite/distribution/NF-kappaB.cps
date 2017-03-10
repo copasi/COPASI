@@ -19,7 +19,7 @@
   </ListOfFunctions>
   <Model key="Model_1" name="NF-kB signaling" timeUnit="s" volumeUnit="ml" quantityUnit="µmol" type="deterministic">
     <Comment>
-      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
+      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-family:MS Shell Dlg">
 <p style="margin-top:18px"><span style="font-size:16pt;font-weight:600">Model of oscillating NF-kappaB signaling </span></p>
 <p>This is a model of the NF-kappaB signaling pathway oscillations, as published by Nelson <span style="font-style:italic">et al.</span> (2004), following the one of Hoffman <span style="font-style:italic">et al.</span> (2002).</p>
 <p style="margin-top:16px"><span style="font-size:12pt;font-weight:600">References</span></p>

@@ -44,7 +44,7 @@ Reaction scheme where the products are created from the reactants and the change
 
     </MiriamAnnotation>
     <Comment>
-      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
+      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-family:MS Shell Dlg">
 <p style="margin-top:18px"><span style="font-size:16pt;font-weight:600">Example of very stiff biochemical model</span></p>
 <p>This is a model of an allosteric enzyme following the MWC dimeric model, in which the substrate S interacts only with the enzyme species in the R-state. The system of ODEs of this model is very stiff, and correct results can only be obtained with a stiff ODE solver.</p>
 <p>This example comes from Hayashi, K. and Sakamoto, N. (1986) <span style="font-style:italic">Dynamic Analysis of Enzyme Systems</span>, Japan Scientific Societies Press, Tokyo.</p>

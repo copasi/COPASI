@@ -154,7 +154,7 @@
   </ListOfFunctions>
   <Model key="Model_1" name="Olsen2003_peroxidase" timeUnit="s" volumeUnit="l" quantityUnit="µmol" type="deterministic">
     <Comment>
-      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-size:8pt;font-family:MS Shell Dlg">
+      <html xmlns="http://www.w3.org/1999/xhtml"><head><meta name="qrichtext" content="1" /></head><body style="font-family:MS Shell Dlg">
 <p style="margin-top:18px"><span style="font-size:16pt;font-weight:600">Model of peroxidase oscillations</span></p>
 <p>Model from Olsen LF, Hauser MJ, Kummer U. (2003) &quot;Mechanism of protection of peroxidase activity by oscillatory dynamics.&quot;<span style="font-style:italic">Eur. J. Biochem.</span> <span style="font-weight:600">270</span>, 2796-804. It was first deposited in <span style="font-style:italic">JWS</span> and then in <span style="font-style:italic">BioModels</span>, finally it was imported into COPASI using the SBML import facility.</p>
 <p><span style="font-weight:600">Notes of the BioModels curators:</span> </p>
