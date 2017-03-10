@@ -555,7 +555,11 @@ void CCopasiContainer::getDescendants(std::set< const CCopasiObject * > & descen
 {
   objectMap::const_iterator it = mObjects.begin();
   objectMap::const_iterator end = mObjects.end();
-  descendants.insert(it, end);
+
+  for (; it != end; ++it)
+    descendants.insert(*it);
+
+  it = mObjects.begin();
 
   for (; it != end && recursive; ++it)
     {
