@@ -1191,9 +1191,9 @@ void CMathContainer::pushAllTransientValues()
     {
       const CCopasiObject * pDataObject = pObject->getDataObject();
 
-      if (pDataObject != NULL)
+      if (pDataObject != NULL && pDataObject->getValuePointer() != NULL)
         {
-          *(C_FLOAT64 *)pDataObject->getValuePointer() = *pValue;
+          *(C_FLOAT64 *)pDataObject->getValuePointer()  = *pValue;
         }
     }
 
