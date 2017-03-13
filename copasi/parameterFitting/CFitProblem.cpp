@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -591,14 +596,10 @@ bool CFitProblem::initialize()
   end = mpConstraintItems->end();
 
   CFitConstraint * pConstraint;
-  std::set< const CCopasiObject * >::const_iterator itDepend;
-  std::set< const CCopasiObject * >::const_iterator endDepend;
 
   for (j = 0; it != end; ++it, j++)
     {
       pConstraint = static_cast<CFitConstraint *>(*it);
-      itDepend = pConstraint->getDirectDependencies().begin();
-      endDepend = pConstraint->getDirectDependencies().end();
       imax = pConstraint->getExperimentCount();
 
       if (imax == 0)
@@ -606,7 +607,7 @@ bool CFitProblem::initialize()
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
               mExperimentConstraints(i, j) = pConstraint;
-              ObjectSet[i].insert(itDepend, endDepend);
+              ObjectSet[i].insert(pConstraint->getObject());
             }
         }
       else
@@ -617,7 +618,7 @@ bool CFitProblem::initialize()
                 return false;
 
               mExperimentConstraints(Index, j) = pConstraint;
-              ObjectSet[Index].insert(itDepend, endDepend);
+              ObjectSet[Index].insert(pConstraint->getObject());
             };
         }
     }
