@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,6 +24,8 @@
 #endif
 
 #include <QUndoStack>
+#include <QMimeData>
+#include <QSettings>
 
 #ifdef COPASI_UNDO
 #include "CQUndoHistoryDialog.h"
@@ -248,15 +255,13 @@ CopasiUI3Window::CopasiUI3Window():
   mpListView->show();
   this->setCentralWidget(mpListView);
 
-  //create sliders window
-  this->mpSliders = new SliderDialog(NULL);
-  this->mpSliders->setParentWindow(this);
   size_t id = mpListView->getCurrentItemId();
-  this->mpSliders->setCurrentFolderId(id);
-  this->mpSliders->resize(320, 350);
-  this->mSliderDialogEnabled = this->mpSliders->isEnabled();
 
-  resize(800, 600);
+  QSettings settings(FROM_UTF8(COptions::getConfigDir() + "/" + "ui_settings.ini"), QSettings::IniFormat, this);
+
+  QSize mainWindowSize = settings.value("mainwindow/size", QSize(800, 600)).toSize();
+
+  resize(mainWindowSize);
   show();
 
   mpListView->switchToOtherWidget(0, "");
@@ -272,7 +277,14 @@ CopasiUI3Window::CopasiUI3Window():
   // TODO CRITICAL We need to disable autosave to avoid race conditions.
   // connect(mpAutoSaveTimer, SIGNAL(timeout()), this, SLOT(autoSave()));
   // mpDataModelGUI->notify(ListViews::FUNCTION, ListViews::ADD, "");
-
+  //create sliders window
+  mpSliders = new SliderDialog(mpListView);
+  mpSliders->setParentWindow(this);
+  mpSliders->setCurrentFolderId(id);
+  QSize sliderSize = settings.value("slider/size", QSize(320, 350)).toSize();
+  mpSliders->resize(sliderSize);
+  mpSliders->hide();
+  mpSliders->setChanged(false);
   setApplicationFont();
 
   // drop acceptance
@@ -942,7 +954,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   unsetCursor();
   mCommitRequired = true;
 
-
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
 
   if (msg.getNumber() == MCXML + 3 &&
@@ -1012,7 +1023,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
       CQMessageBox::warning(this, QString("File Warning"), Message,
                             QMessageBox::Ok, QMessageBox::Ok);
     }
-
 
   if (strcasecmp(CDirEntry::suffix(TO_UTF8(mNewFile)).c_str(), ".cps") == 0 &&
       CDirEntry::isWritable(TO_UTF8(mNewFile)))
@@ -1293,6 +1303,15 @@ void CopasiUI3Window::CleanUp()
 
   CDirEntry::removeFiles("*.cps", tempDir);
   CDirEntry::remove(tempDir);
+
+  // store window sizes
+  QSettings settings(FROM_UTF8(COptions::getConfigDir() + "/" + "ui_settings.ini"), QSettings::IniFormat, this);
+  settings.setValue("mainwindow/size", size());
+
+  if (mpSliders != NULL)
+    settings.setValue("slider/size", mpSliders->size());
+
+  settings.sync();
 }
 
 void CopasiUI3Window::slotFilePrint()
