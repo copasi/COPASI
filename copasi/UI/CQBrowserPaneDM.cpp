@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,6 +16,8 @@
 #include "DataModel.txt.h"
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
+#include <QMessageBox>
+#include <QCommonStyle>
 
 #include "utilities/CCopasiTree.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -20,8 +27,10 @@
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CCopasiRootContainer.h"
+#include "commandline/CConfigurationFile.h"
 #include "function/CFunctionDB.h"
 #include "model/CMetabNameInterface.h"
+#include "resourcesUI/CQIconResource.h"
 
 CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   QAbstractItemModel(pParent),
@@ -54,8 +63,52 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
+  bool ShowItemIssues = CCopasiRootContainer::getConfiguration()->showItemIssues();
+
+  CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(pNode->getKey());
+
+  CValidity validity;
+
+  if (pObject != NULL)
+    validity = pObject->getValidity();
+
+  CValidity::eSeverity highestSeverity = validity.getHighestSeverity();
+
+  QCommonStyle * tmpStyle = new QCommonStyle;
+  QIcon issueIcon;
+
+  switch (highestSeverity)
+    {
+      case CValidity::Error:
+        issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
+        break;
+
+      case CValidity::Warning:
+        issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
+        break;
+
+      case CValidity::Information:
+        issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
+        break;
+
+      default:
+        break;
+    }
+
   switch (role)
     {
+      case Qt::DecorationRole:
+        if (ShowItemIssues)
+          return issueIcon;
+
+        break;
+
+      case Qt::ToolTipRole:
+        if (ShowItemIssues)
+          return QVariant(QString(FROM_UTF8(validity.getIssueMessages())));
+
+        break;
+
       case Qt::DisplayRole:
 
         // We need to add the number of children to some nodes.

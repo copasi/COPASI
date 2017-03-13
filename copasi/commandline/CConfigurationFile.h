@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -181,6 +186,18 @@ public:
    * @param bool validateUnits
    */
   void setValidateUnits(bool validateUnits);
+
+  /**
+   * Show item issues
+   * @return a flag indicating whether an icon and tooltip should be
+   * displayed for items.
+   */
+  bool showItemIssues() const;
+
+  /**
+   * Set whether an icon and tooltip should be displayed for items.
+   */
+  void setShowItemIssues(bool showItemIssues);
 
   /**
    * @return a flag on whether to use the open GL based rendering, or the Qt based one
@@ -424,6 +441,12 @@ private:
    * A pointer to the application font
    */
   std::string * mpApplicationFont;
+
+  /**
+   * A pointer indicating whether items will display a warning
+   * or error icon, and tooltip description, for any item issues.
+   */
+  bool * mpShowItemIssues;
 
   /**
    * A pointer indicating whether units will always be validated

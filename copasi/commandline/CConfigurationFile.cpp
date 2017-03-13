@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -114,6 +119,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
+  mpShowItemIssues(NULL),
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
@@ -139,6 +145,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
+  mpShowItemIssues(NULL),
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
@@ -198,6 +205,7 @@ void CConfigurationFile::initializeParameter()
   assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::basic);
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
+  mpShowItemIssues = assertParameter("Show Item Issues", CCopasiParameter::BOOL, true);
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
@@ -360,6 +368,11 @@ bool CConfigurationFile::validateUnits() const
   return *mpValidateUnits;
 }
 
+bool CConfigurationFile::showItemIssues() const
+{
+  return *mpShowItemIssues;
+}
+
 void CConfigurationFile::setDisplayPopulations(bool flag)
 {
   *mpDisplayPopulations = flag;
@@ -418,6 +431,11 @@ void CConfigurationFile::setProxyPassword(const std::string &proxyPassword)
 void CConfigurationFile::setValidateUnits(bool validateUnits)
 {
   *mpValidateUnits = validateUnits;
+}
+
+void CConfigurationFile::setShowItemIssues(bool showItemIssues)
+{
+  *mpShowItemIssues = showItemIssues;
 }
 
 CConfigurationFile::CXML::CXML():

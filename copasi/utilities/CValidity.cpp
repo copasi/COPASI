@@ -79,11 +79,11 @@ void CValidity::add(const CIssue & issue)
 
 void CValidity::remove(const CIssue & issue)
 {
-  if (issue.mSeverity & Error) mErrors & ~issue.mKind;
+  if (issue.mSeverity & Error) mErrors = mErrors & ~issue.mKind;
 
-  if (issue.mSeverity & Warning) mWarnings & ~issue.mKind;
+  if (issue.mSeverity & Warning) mWarnings = mWarnings & ~issue.mKind;
 
-  if (issue.mSeverity & Information) mInformation & ~issue.mKind;
+  if (issue.mSeverity & Information) mInformation = mInformation & ~issue.mKind;
 }
 
 CValidity::eSeverity CValidity::getHighestSeverity() const
@@ -119,4 +119,112 @@ const CValidity::Kind & CValidity::get(const CValidity::eSeverity & severity) co
         return OK;
         break;
     }
+}
+
+const std::string CValidity::getIssueMessages() const
+{
+  std::string messages = "";
+
+  messages += generateIssueMessages(Error);
+  messages += generateIssueMessages(Warning);
+  messages += generateIssueMessages(Information);
+
+  // Remove last newline
+  if (!messages.empty())
+    messages = messages.substr(0, messages.size() - 1);
+
+  return messages;
+}
+
+const std::string CValidity::generateIssueMessages(const CValidity::eSeverity & severity) const
+{
+  std::string severityString = "";
+  std::string messages = "";
+  Kind tmpKind;
+
+  switch (severity)
+    {
+      case Error:
+        severityString = "Error: ";
+        tmpKind = mErrors;
+        break;
+
+      case Warning:
+        severityString = "Warning: ";
+        tmpKind = mWarnings;
+        break;
+
+      case Information:
+        severityString = "Information: ";
+        tmpKind = mInformation;
+        break;
+
+      default:
+        break;
+    }
+
+  if (tmpKind & ExpressionInvalid)
+    messages += severityString + "Invalid expression.\n";
+
+  if (tmpKind & ExpressionEmpty)
+    messages += severityString + "Empty expression.\n";
+
+  if (tmpKind & MissingInitialValue)
+    messages += severityString + "Missing initial value.\n";
+
+  if (tmpKind & CalculationIssue)
+    messages += severityString + "Problem with calculation.\n";
+
+  if (tmpKind & EventMissingAssignment)
+    messages += severityString + "Missing event assignment.\n";
+
+  if (tmpKind & EventMissingTriggerExpression)
+    messages += severityString + "Missing event trigger expression.\n";
+
+  if (tmpKind & UnitUndefined)
+    messages += severityString + "Unit is undefined.\n";
+
+  if (tmpKind & UnitConflict)
+    messages += severityString + "Unit conflict.\n";
+
+  if (tmpKind & UnitInvalid)
+    messages += severityString + "Invalid unit.\n";
+
+  if (tmpKind & NaNissue)
+    messages += severityString + "Value is undefined or unrepresentable.\n";
+
+  if (tmpKind & ObjectNotFound)
+    messages += severityString + "Object not found.\n";
+
+  if (tmpKind & ValueNotFound)
+    messages += severityString + "Value not found.\n";
+
+  if (tmpKind & VariableNotfound)
+    messages += severityString + "Variable not found.\n";
+
+  if (tmpKind & StructureInvalid)
+    messages += severityString + "Invalid structure.\n";
+
+  if (tmpKind & TooManyArguments)
+    messages += severityString + "Too many arguments.\n";
+
+  if (tmpKind & HasCircularDependency)
+    messages += severityString + "Has circular dependency.\n";
+
+  if (tmpKind & ExpressionDataTypeInvalid)
+    messages += severityString + "Invalid expression data type.\n";
+
+  if (tmpKind & VariableInExpression)
+    messages += severityString + "Expression contains a variable.\n";
+
+  if (tmpKind & CExpressionNotFound)
+    messages += severityString + "CExpression not found.\n";
+
+  if (tmpKind & CFunctionNotFound)
+    messages += severityString + "CFunction not found.\n";
+
+  if (tmpKind & VariablesMismatch)
+    messages += severityString + "Variables are mismatched.\n";
+
+  return messages;
 }

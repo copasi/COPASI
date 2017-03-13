@@ -13,6 +13,8 @@
 
 #include "copasi/utilities/CFlags.h"
 
+#include <string>
+
 class CObjectInterface;
 
 // An object can return an object of this class
@@ -76,10 +78,14 @@ public:
 
   const Kind & get(const eSeverity & severity) const;
 
+  const std::string getIssueMessages() const;
+
 private:
   Kind mErrors;
   Kind mWarnings;
   Kind mInformation;
+
+  const std::string generateIssueMessages(const eSeverity & severity) const;
 };
 
 class CIssue
