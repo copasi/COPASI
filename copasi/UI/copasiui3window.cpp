@@ -269,7 +269,6 @@ CopasiUI3Window::CopasiUI3Window():
   // Assure that the changed flag is still false;
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
   CCopasiRootContainer::getDatamodelList()->operator[](0).changed(false);
-  this->mpSliders->setChanged(false);
 
   mpAutoSaveTimer = new QTimer(this);
   mpAutoSaveTimer->start(AutoSaveInterval); // every 10 minutes
