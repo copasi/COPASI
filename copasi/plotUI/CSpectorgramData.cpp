@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -472,7 +477,9 @@ CSpectorgramData::initializeMatrix()
   std::vector<double>::const_iterator curX;
   std::vector<double>::const_iterator curY;
 
-  for (; xIt != end; ++xIt, ++yIt, ++zIt)
+  size_t count = 0;
+
+  for (; count < mSize; ++count, ++xIt, ++yIt, ++zIt)
     {
       curX = std::find(mValuesX.begin(), mEndX, *xIt);
 
