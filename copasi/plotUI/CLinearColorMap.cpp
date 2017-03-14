@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,6 +16,8 @@ CLinearColorMap::CLinearColorMap(const QColor &from, const QColor &to, QwtColorM
   , mMissingColor(Qt::white)
   , mAbsoluteStop(std::numeric_limits<double>::quiet_NaN())
   , mAbsoluteStopColor(Qt::white)
+  , mFrom(from)
+  , mTo(to)
   , mpLower(NULL)
   , mpUpper(NULL)
 {
@@ -19,13 +26,15 @@ CLinearColorMap::CLinearColorMap(const QColor &from, const QColor &to, QwtColorM
 
 CLinearColorMap::CLinearColorMap(const CLinearColorMap &other)
 #if QWT_VERSION > 0x060000
-  : QwtLinearColorMap(other.color1(), other.color2(), other.format())
+  : QwtLinearColorMap(other.mFrom, other.mTo, other.format())
 #else
   : QwtLinearColorMap(other)
 #endif
   , mMissingColor(other.mMissingColor)
   , mAbsoluteStop(other.mAbsoluteStop)
   , mAbsoluteStopColor(other.mAbsoluteStopColor)
+  , mFrom(other.mFrom)
+  , mTo(other.mTo)
   , mpLower(NULL)
   , mpUpper(NULL)
 {
@@ -34,6 +43,20 @@ CLinearColorMap::CLinearColorMap(const CLinearColorMap &other)
 
   if (other.mpUpper != NULL)
     mpUpper = new CLinearColorMap(*other.mpUpper);
+
+  QVector<double> stops = other.colorStops();
+  QVectorIterator<double> iter(stops);
+
+  while (iter.hasNext())
+    {
+      double value = iter.next();
+
+      if (value == 0.0 || value == 1.0)
+        continue;
+
+      addColorStop(value, other.color(QwtDoubleInterval(0, 1), value));
+    }
+
 }
 
 CLinearColorMap::~CLinearColorMap()
@@ -47,18 +70,33 @@ CLinearColorMap &CLinearColorMap::operator=(const CLinearColorMap &rhs)
   if (&rhs == this) return *this;
 
 #if QWT_VERSION > 0x060000
-  
+
 #else
   QwtLinearColorMap::operator =(rhs);
 #endif
+  mFrom = rhs.mFrom;
+  mTo = rhs.mTo;
   mMissingColor = rhs.mMissingColor;
   mAbsoluteStop = rhs.mAbsoluteStop;
-  
+
   if (rhs.mpLower != NULL)
     mpLower = new CLinearColorMap(*rhs.mpLower);
 
   if (rhs.mpUpper != NULL)
     mpUpper = new CLinearColorMap(*rhs.mpUpper);
+
+  QVector<double> stops = rhs.colorStops();
+  QVectorIterator<double> iter(stops);
+
+  while (iter.hasNext())
+    {
+      double value = iter.next();
+
+      if (value == 0.0 || value == 1.0)
+        continue;
+
+      addColorStop(value, rhs.color(QwtDoubleInterval(0, 1), value));
+    }
 
   return *this;
 }

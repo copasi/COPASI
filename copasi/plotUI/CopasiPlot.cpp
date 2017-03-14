@@ -911,8 +911,15 @@ void CopasiPlot::updateCurves(const size_t & activity)
           QwtScaleWidget *topAxis = axisWidget(QwtPlot::xTop);
           const QwtInterval zInterval = (*itSpectograms)->data()->interval(Qt::ZAxis);
           topAxis->setColorBarEnabled(true);
-          topAxis->setColorMap(zInterval,
-                               const_cast<QwtColorMap*>((*itSpectograms)->colorMap()));
+
+          const QwtColorMap* currentMap = (*itSpectograms)->colorMap();
+          const CLinearColorMap* linearColormap = dynamic_cast<const CLinearColorMap*>(currentMap);
+
+          if (linearColormap != NULL)
+            topAxis->setColorMap(zInterval, new CLinearColorMap(*linearColormap));
+          else
+            topAxis->setColorMap(zInterval, const_cast<QwtColorMap*>(currentMap));
+
           setAxisScale(QwtPlot::xTop, zInterval.minValue(), zInterval.maxValue());
 #else
 
