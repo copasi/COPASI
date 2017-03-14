@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.16.117+ (Source) (http://www.copasi.org) at 2016-08-24 17:40:51 UTC -->
+<!-- generated with COPASI 4.17.135+ (Source) (http://www.copasi.org) at 2017-03-14 10:03:58 UTC -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="16" versionDevel="117" copasiSourcesModified="1">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="17" versionDevel="135" copasiSourcesModified="1">
   <Model key="Model_4" name="New Model" simulationType="time" timeUnit="s" volumeUnit="ml" areaUnit="m²" lengthUnit="m" quantityUnit="mmol" type="deterministic" avogadroConstant="6.02214179e+23">
     <MiriamAnnotation>
 <rdf:RDF
@@ -18,7 +18,7 @@
 
     </MiriamAnnotation>
     <ListOfModelValues>
-      <ModelValue key="ModelValue_0" name="x" simulationType="fixed">
+      <ModelValue key="ModelValue_0" name="x" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#ModelValue_0">
@@ -31,7 +31,7 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_1" name="y" simulationType="fixed">
+      <ModelValue key="ModelValue_1" name="y" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#ModelValue_1">
@@ -44,11 +44,9 @@
 </rdf:RDF>
         </MiriamAnnotation>
       </ModelValue>
-      <ModelValue key="ModelValue_2" name="f" simulationType="assignment">
+      <ModelValue key="ModelValue_2" name="f" simulationType="assignment" addNoise="false">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#ModelValue_2">
     <dcterms:created>
       <rdf:Description>
@@ -57,7 +55,6 @@
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
         <Expression>
           -0.0001*(abs(sin(&lt;CN=Root,Model=New Model,Vector=Values[x],Reference=InitialValue>)*sin(&lt;CN=Root,Model=New Model,Vector=Values[y],Reference=InitialValue>)*exp(abs(100-sqrt(&lt;CN=Root,Model=New Model,Vector=Values[x],Reference=InitialValue>^2+&lt;CN=Root,Model=New Model,Vector=Values[y],Reference=InitialValue>^2)/pi)))+1)^0.1
@@ -114,20 +111,21 @@
     <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
-        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
-        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="1"/>
+        <Parameter name="StepSize" type="float" value="1"/>
         <Parameter name="Duration" type="float" value="1"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
-        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
     <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
@@ -135,19 +133,19 @@
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
           <ParameterGroup name="ScanItem">
-            <Parameter name="Number of steps" type="unsignedInteger" value="40"/>
-            <Parameter name="Type" type="unsignedInteger" value="1"/>
-            <Parameter name="Object" type="cn" value="CN=Root,Model=New Model,Vector=Values[x],Reference=InitialValue"/>
-            <Parameter name="Minimum" type="float" value="-10"/>
             <Parameter name="Maximum" type="float" value="10"/>
+            <Parameter name="Minimum" type="float" value="-10"/>
+            <Parameter name="Number of steps" type="unsignedInteger" value="40"/>
+            <Parameter name="Object" type="cn" value="CN=Root,Model=New Model,Vector=Values[x],Reference=InitialValue"/>
+            <Parameter name="Type" type="unsignedInteger" value="1"/>
             <Parameter name="log" type="bool" value="0"/>
           </ParameterGroup>
           <ParameterGroup name="ScanItem">
-            <Parameter name="Number of steps" type="unsignedInteger" value="40"/>
-            <Parameter name="Type" type="unsignedInteger" value="1"/>
-            <Parameter name="Object" type="cn" value="CN=Root,Model=New Model,Vector=Values[y],Reference=InitialValue"/>
-            <Parameter name="Minimum" type="float" value="-10"/>
             <Parameter name="Maximum" type="float" value="10"/>
+            <Parameter name="Minimum" type="float" value="-10"/>
+            <Parameter name="Number of steps" type="unsignedInteger" value="40"/>
+            <Parameter name="Object" type="cn" value="CN=Root,Model=New Model,Vector=Values[y],Reference=InitialValue"/>
+            <Parameter name="Type" type="unsignedInteger" value="1"/>
             <Parameter name="log" type="bool" value="0"/>
           </ParameterGroup>
         </ParameterGroup>
@@ -310,7 +308,6 @@
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
-        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
@@ -327,6 +324,7 @@
           
         </ParameterText>
         <Parameter name="SingleVariable" type="cn" value=""/>
+        <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
         <Parameter name="LimitTime" type="bool" value="1"/>
         <Parameter name="TimeLimit" type="float" value="100"/>
       </Problem>
@@ -335,6 +333,7 @@
         <Parameter name="Relative Tolerance" type="unsignedFloat" value="1e-06"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="1e-12"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
   </ListOfTasks>
@@ -515,6 +514,26 @@
     <UnitDefinition key="Unit_2" name="second" symbol="s">
       <Expression>
         s
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_6" name="Avogadro" symbol="Avogadro">
+      <Expression>
+        Avogadro
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_8" name="item" symbol="#">
+      <Expression>
+        #
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_17" name="liter" symbol="l">
+      <Expression>
+        0.001*m^3
+      </Expression>
+    </UnitDefinition>
+    <UnitDefinition key="Unit_20" name="mole" symbol="mol">
+      <Expression>
+        Avogadro*#
       </Expression>
     </UnitDefinition>
   </ListOfUnitDefinitions>
