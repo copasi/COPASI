@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,6 +28,8 @@
 
 #include "commandline/COptions.h"
 
+#include "resourcesUI/CQIconResource.h"
+
 #include <iostream>
 
 /*
@@ -38,6 +45,11 @@ WizardDialog::WizardDialog(QWidget* parent, const char* /* name */, bool /* moda
   buttonGroup(NULL)
 {
   setupUi(this);
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
 
   std::string WizardDir;
   COptions::getValue("WizardDir", WizardDir);
