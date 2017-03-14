@@ -554,6 +554,12 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
   return true; //TODO really check!
 }
 
+const CPlotSpecification *
+CopasiPlot::getPlotSpecification() const
+{
+  return mpPlotSpecification;
+}
+
 bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
 {
   clearBuffers();

@@ -87,6 +87,12 @@ public:
   bool initFromSpec(const CPlotSpecification* plotspec);
 
   /**
+   * @return the current plot specification
+   */
+  const CPlotSpecification* getPlotSpecification() const;
+
+
+  /**
    * Destructor
    */
   virtual ~CopasiPlot();

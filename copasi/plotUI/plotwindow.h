@@ -58,6 +58,7 @@ private:
   QAction *mpaZoomOut;
   QAction *mpaToggleLogX;
   QAction *mpaToggleLogY;
+  QAction *mpaDeactivatePlot;
 
   bool initializing;
 
@@ -155,6 +156,11 @@ private slots:
    * Close current window
    */
   void slotCloseWindow();
+
+  /**
+   * Deactivate the plot
+   */
+  void slotDeactivatePlot();
 
 protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
