@@ -76,6 +76,7 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   mpaZoomOut(NULL),
   mpaToggleLogX(NULL),
   mpaToggleLogY(NULL),
+  mpaDeactivatePlot(NULL),
   initializing(false)
 {
   this->resize(640, 480);
@@ -99,6 +100,16 @@ PlotWindow::PlotWindow(COutputHandlerPlot * pHandler, const CPlotSpecification* 
   initializing = false;
 
   addToMainWindow(mpMainWindow);
+
+  if (ptrSpec->isActive())
+    {
+      mpaDeactivatePlot->setText("Deactivate");
+    }
+  else
+    {
+      mpaDeactivatePlot->setText("Activate");
+    }
+
 }
 
 void PlotWindow::createMenus()
@@ -173,6 +184,9 @@ void PlotWindow::createActions()
   mpaCloseWindow->setObjectName("close");
   mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
   connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
+  mpaDeactivatePlot = new QAction("Deactivate", this);
+  mpaDeactivatePlot->setObjectName("deactivate");
+  connect(mpaDeactivatePlot, SIGNAL(triggered()), this, SLOT(slotDeactivatePlot()));
 }
 
 void PlotWindow::createToolBar()
@@ -192,7 +206,7 @@ void PlotWindow::createToolBar()
 
   mpToolBar->addAction(mpaShowAll);
   mpToolBar->addAction(mpaHideAll);
-
+  mpToolBar->addAction(mpaDeactivatePlot);
   mpToolBar->addSeparator();
 
   mpToolBar->addAction(mpaCloseWindow);
@@ -509,6 +523,26 @@ void PlotWindow::slotDeselectAll()
 void PlotWindow::slotCloseWindow()
 {
   QWidget::close();
+}
+
+void PlotWindow::slotDeactivatePlot()
+{
+  if (mpPlot == NULL) return;
+
+  CPlotSpecification* spec = const_cast<CPlotSpecification*>(mpPlot->getPlotSpecification());
+
+  if (spec == NULL) return;
+
+  spec->setActive(!spec->isActive());
+
+  if (spec->isActive())
+    {
+      mpaDeactivatePlot->setText("Deactivate");
+    }
+  else
+    {
+      mpaDeactivatePlot->setText("Activate");
+    }
 }
 
 void PlotWindow::closeEvent(QCloseEvent *closeEvent)
