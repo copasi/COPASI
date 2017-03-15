@@ -60,10 +60,10 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
 
 #ifndef COPASI_EXTUNIT
   mpLblAreaUnit->hide();
-  mpComboAreaUnit->hide();
+  mpEditAreaUnit->hide();
 
   mpLblLengthUnit->hide();
-  mpComboLengthUnit->hide();
+  mpEditLengthUnit->hide();
 #endif
 }
 
