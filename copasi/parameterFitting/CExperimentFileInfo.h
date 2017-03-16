@@ -1,17 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:32:04 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -95,7 +97,12 @@ public:
   bool setFileName(const std::string & fileName);
 
   /**
-   *
+   * counts the lines in the file and initializes the empty lines
+   */
+  size_t countLines();
+
+  /**
+   * @return the filename
    */
   const std::string & getFileName() const;
 
@@ -108,6 +115,17 @@ public:
    *
    */
   bool validate() const;
+
+  /**
+   * go through the experiments and remove all that don't match
+   */
+  void removeInvalidExperiments();
+
+  /**
+   * Removes the last experiments
+   * @param start the start from where on all experiments will be deleted
+   */
+  void removeLastExperiments(size_t start);
 
   /**
    *
@@ -128,12 +146,13 @@ public:
                       const size_t & value);
 
   /**
-   *
+   * @return object names of all experiments
    */
   std::vector< std::string > getExperimentNames() const;
 
   /**
-   *
+   * @param name the object name of an experiment
+   * @return the experiment if found or NULL
    */
   CExperiment * getExperiment(const std::string & name);
 
@@ -155,25 +174,30 @@ public:
   bool adjustForEmptyLines(size_t & First,
                            size_t & Last);
 
+  /**
+   * @return the first empty line within the given interval.
+   */
+  size_t getInterruption(size_t first, size_t last) const;
+
   // Attributes
 private:
   /**
-   *
+   * the experiment set
    */
   CExperimentSet * mpSet;
 
   /**
-   *
+   * the filename
    */
   std::string mFileName;
 
   /**
-   *
+   * vector of experiment info for each experiment
    */
   std::vector< CExperimentInfo * > mList;
 
   /**
-   *
+   * number of lines in the file
    */
   size_t mLines;
 
@@ -183,7 +207,7 @@ private:
   size_t mUsedEnd;
 
   /**
-   *
+   * vector of empty lines
    */
   std::vector< size_t > mEmptyLines;
 };

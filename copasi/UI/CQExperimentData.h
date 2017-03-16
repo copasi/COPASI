@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,6 +44,8 @@ public:
   friend class CQExperimentDataValidator;
 
   virtual bool load(CExperimentSet * pExperimentSet , CCopasiDataModel * pDataModel);
+
+  void loadFromCopy();
 
 public slots:
   virtual void loadTable(CExperiment * pExperiment, const bool & guess);
@@ -89,6 +96,7 @@ protected slots:
   void slotExperimentDelete();
   void slotFileAdd();
   void slotFileChanged(QListWidgetItem * pCurrentItem, QListWidgetItem * pPreviousItem);
+  void slotFileEdit();
   void slotFileDelete();
   void slotCancel();
   void slotOK();

@@ -599,6 +599,69 @@ void CQExperimentData::slotFileChanged(QListWidgetItem * pCurrentItem, QListWidg
   mpBtnExperimentAdd->setEnabled(mpFileInfo->getFirstUnusedSection(First, Last));
 }
 
+void CQExperimentData::slotFileEdit()
+{
+  // Get info from current selection
+  size_t index = mpBoxFile->currentRow();
+
+  if (index == C_INVALID_INDEX) return;
+
+  std::string oldFileName = mFileMap[TO_UTF8(mpBoxFile->item((int)index)->text())];
+
+  QString newFile =
+    CopasiFileDialog::getOpenFileName(this,
+                                      "Replace File Dialog",
+                                      FROM_UTF8(oldFileName),
+                                      "Data Files (*.txt *.csv);;All Files (*)",
+                                      "Replace Data File");
+
+  if (newFile.isNull()) return;
+
+  size_t i = mpExperimentSetCopy->getExperimentCount() - 1;
+  bool changedExperimentSets = false;
+
+  for (size_t i = 0; i < mpExperimentSetCopy->getExperimentCount(); ++i)
+    {
+      CExperiment * experiment = mpExperimentSetCopy->getExperiment(i);
+
+      if (experiment->getFileName() != oldFileName)
+        continue;
+
+      experiment->setFileName(TO_UTF8(newFile));
+      changedExperimentSets = true;
+    }
+
+  if (!changedExperimentSets) return;
+
+  // try and set the filename
+  if (!mpFileInfo->setFileName(TO_UTF8(newFile)))
+    {
+      // the new file is not valid, lets assume that the file is
+      // just truncated
+      mpFileInfo->removeInvalidExperiments();
+    }
+
+  // in case there are additional experiments in the file add them
+  // without mapping
+  size_t First, Last;
+
+  if (mpFileInfo->getFirstUnusedSection(First, Last))
+    {
+      do
+        {
+          slotExperimentAdd();
+        }
+      while (mpBtnExperimentAdd->isEnabled());
+
+      mpBoxExperiment->setCurrentRow(0);
+    }
+
+  // then display the changes
+  loadFromCopy();
+
+
+}
+
 void CQExperimentData::slotFileDelete()
 {
   // Get info from current selection
@@ -716,9 +779,6 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
 
   if (!pExperimentSet) return false;
 
-  mpExperiment = NULL;
-  mShown =  -1;
-
   mpExperimentSet = pExperimentSet;
 
   pdelete(mpExperimentSetCopy);
@@ -736,10 +796,23 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
   mKeyMap.clear();
   size_t i, imax = mpExperimentSet->getExperimentCount();
 
-  for (i = 0; i < imax; i++)
-    mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
-      mpExperimentSetCopy->getExperiment(i)->CCopasiParameter::getKey();
+  for (i = 0; i < imax; ++i)
+    {
+      mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()] =
+        mpExperimentSetCopy->getExperiment(i)->CCopasiParameter::getKey();
+    }
 
+  loadFromCopy();
+
+  return true;
+}
+
+void CQExperimentData::loadFromCopy()
+{
+  mpExperiment = NULL;
+  mShown = -1;
+
+  bool wasBlocked = mpBoxFile->blockSignals(true);
   // fill file list box
   mpBoxFile->clear();
 
@@ -748,7 +821,7 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
   std::vector< std::string >::const_iterator end = FileNames.end();
 
   std::string FileName;
-  i = 0;
+  size_t i = 0;
 
   mFileMap.clear();
 
@@ -757,18 +830,18 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * 
       FileName = CDirEntry::fileName(*it);
 
       while (mFileMap.find(FileName) != mFileMap.end())
-        FileName = StringPrint("%s_%d", CDirEntry::fileName(*it).c_str(), i++);
+        FileName = StringPrint("%s_%d", CDirEntry::fileName(*it).c_str(), ++i);
 
       mFileMap[FileName] = *it;
       mpBoxFile->addItem(FROM_UTF8(FileName));
     }
 
+  mpBoxFile->blockSignals(wasBlocked);
+
   if (mpBoxFile->count())
     mpBoxFile->setCurrentRow(0); // This triggers the rest of the update :)
   else
     slotFileChanged(NULL, NULL);
-
-  return true;
 }
 
 void CQExperimentData::init()
