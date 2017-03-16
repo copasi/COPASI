@@ -293,6 +293,7 @@ bool TaskWidget::commonBeforeRunTask()
 
           if (pMethod != NULL)
             {
+              pPopWidget->addToMainWindow(pWindow);
               pPopWidget->show();
               mpDataModel->addInterface(pPopWidget);
             }

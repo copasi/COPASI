@@ -2096,6 +2096,12 @@ void CopasiUI3Window::setPopulationDisplay(CQOptPopulation *display)
 
 void CopasiUI3Window::addWindow(QMainWindow *pWindow)
 {
+  int index = mWindows.indexOf(pWindow);
+
+  // ensure that window has not been added yet
+  if (index != -1)
+    return;
+
   mWindows.append(pWindow);
   refreshWindowsMenu();
 }
