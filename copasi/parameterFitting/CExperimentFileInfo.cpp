@@ -179,7 +179,7 @@ CExperimentFileInfo::removeInvalidExperiments()
         {
           // adjust this experiment to end before the empty line
           mList[i]->Last = line - 1;
-          mList[i]->pExperiment->setLastRow(line - 1);
+          mList[i]->pExperiment->setLastRow((int)line - 1);
 
           // remove the remaining ones
           removeLastExperiments(i + 1);
@@ -189,7 +189,7 @@ CExperimentFileInfo::removeInvalidExperiments()
         {
           // adjust this experiment
           mList[i]->Last = mLines - 1;
-          mList[i]->pExperiment->setLastRow(mLines - 1);
+          mList[i]->pExperiment->setLastRow((int)mLines - 1);
 
           // remove the remaining ones
           removeLastExperiments(i + 1);
