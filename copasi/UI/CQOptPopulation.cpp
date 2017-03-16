@@ -200,6 +200,7 @@ CQOptPopulation::~CQOptPopulation()
 bool CQOptPopulation::compile(CObjectInterface::ContainerList listOfContainer)
 {
   mObjects.clear();
+  mGraphInitialized = false;
   bool success = true;
 
   return success;
@@ -298,7 +299,7 @@ void CQOptPopulation::update()
     {
       mpGS->clear();
 
-      QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1);
+      QGraphicsRectItem* rect = mpGS->addRect(-0, -0, 1, 1, QPen(Qt::black, 0));
       rect->setBrush(QColor(220, 220, 220));
 
 
@@ -312,7 +313,7 @@ void CQOptPopulation::update()
       //if there's more than 2 parameters, create the combined view
       if (mNumParameters > 2)
         {
-          QGraphicsRectItem* rect = mpGS->addRect(-2.2, 0, 2.1, 2.1);
+          QGraphicsRectItem* rect = mpGS->addRect(-2.2, 0, 2.1, 2.1, QPen(Qt::black, 0));
           rect->setBrush(QColor(230, 230, 250));
 
           mGraphicItems[numProjections].resize(mPopulation.size());
@@ -320,10 +321,10 @@ void CQOptPopulation::update()
 
           for (i = 0; i < mPopulation.size(); ++i)
             {
-              QGraphicsEllipseItem* ei = mpGS->addEllipse(-2.2, 0, 0.05, 0.05);
+              QGraphicsEllipseItem* ei = mpGS->addEllipse(-2.2, 0, 0.05, 0.05, QPen(Qt::black, 0));
               mGraphicItems[numProjections][i] = ei;
               ei->setBrush(QColor(10, 100, 10));
-              ei->setPen(QPen(QColor(0, 0, 0)));
+              ei->setPen(QPen(QColor(0, 0, 0), 0));
             }
 
         }
@@ -336,7 +337,7 @@ void CQOptPopulation::update()
           mShiftY[j] = (j % 2) * 1.1 ;
           mXIndex[j] = j * 2;
           mYIndex[j] = (j * 2 + 1) % mNumParameters;
-          QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1);
+          QGraphicsRectItem* rect = mpGS->addRect(mShiftX[j], mShiftY[j], 1, 1, QPen(Qt::black, 0));
           rect->setBrush(QColor(240, 240, 240));
 
           mGraphicItems[j].resize(mPopulation.size());
@@ -346,10 +347,10 @@ void CQOptPopulation::update()
           for (i = 0; i < mPopulation.size(); ++i)
             {
 
-              QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05);
+              QGraphicsEllipseItem* ei = mpGS->addEllipse(mShiftX[j], mShiftY[j], 0.05, 0.05, QPen(Qt::black, 0));
               mGraphicItems[j][i] = ei;
               ei->setBrush(QColor(10, 100, 10));
-              ei->setPen(QPen(QColor(0, 0, 0)));
+              ei->setPen(QPen(QColor(0, 0, 0), 0));
             }
         }
 
@@ -432,7 +433,7 @@ void CQOptPopulation::update()
                 }
               else
                 {
-                  gie->setPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40));
+                  gie->setPen(QPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40), 0));
                   gie->setZValue(0.0);
                 }
             }
@@ -456,7 +457,7 @@ void CQOptPopulation::update()
                 }
               else
                 {
-                  gie->setPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40));
+                  gie->setPen(QPen(isOnBorder ? QColor(200, 0, 0, 200) : QColor(0, 0, 0, 40), 0));
                   gie->setZValue(0.0);
                 }
             }
