@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -13,14 +18,6 @@
 <comment> Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
-
-
-
-
-
-
-
-
 
  <comment> All rights reserved. </comment>
  <class>CQExperimentData</class>
@@ -141,6 +138,22 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mpBtnFileEdit">
+       <property name="maximumSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Replaces the selected file with another while keeping the current mapping.</string>
+       </property>
+       <property name="text">
+        <string>...</string>
        </property>
       </widget>
      </item>
@@ -334,106 +347,93 @@
      </property>
     </widget>
    </item>
-
-    <item row="5" column="0">
-      <widget class="QLabel" name="mpLblHeader">
-        <property name="text">
-          <string>Header</string>
-        </property>
-        <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-    </item>
-    <item row="5" column="1" >
-      <widget class="QLineEdit" name="mpEditHeader">
-        <property name="enabled">
-          <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-          </sizepolicy>
-        </property>
-      </widget>
-    </item>
-    <item row="5" column="2">
-      <widget class="QCheckBox" name="mpCheckHeader">
-        <property name="text">
-          <string/>
-        </property>
-        <property name="toolTip">
-          <string>Check to indicate that the experiment contains headers.</string>
-        </property>
-      </widget>
-    </item>
-
-    <item row="5" column="3">
-      <widget class="QLabel" name="mpLblSeparator">
-        <property name="minimumSize">
-          <size>
-            <width>0</width>
-            <height>0</height>
-          </size>
-        </property>
-        <property name="text">
-          <string>Separator</string>
-        </property>
-        <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="wordWrap">
-          <bool>false</bool>
-        </property>
-      </widget>
-    </item>
-    <item row="5" column="4">
-      <widget class="QLineEdit" name="mpEditSeparator">
-        <property name="enabled">
-          <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-          </sizepolicy>
-        </property>
-      </widget>
-    </item>
-    <item row="5" column="5">
-      <widget class="QCheckBox" name="mpCheckTab">
-        <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-          </sizepolicy>
-        </property>
-        <property name="text">
-          <string>&lt;tab&gt;</string>
-        </property>
-        <property name="checked">
-          <bool>true</bool>
-        </property>
-        <property name="toolTip">
-          <string>Check to indicate that entries are separated by tab.</string>
-        </property>
-      </widget>
-    </item>
-    
-    <!--<item row="5" column="0" colspan="7">
-    <widget class="Line" name="mpLine">
-     <property name="frameShape">
-      <enum>QFrame::HLine</enum>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mpLblHeader">
+     <property name="text">
+      <string>Header</string>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
-   </item>-->
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="mpEditHeader">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
+    <widget class="QCheckBox" name="mpCheckHeader">
+     <property name="toolTip">
+      <string>Check to indicate that the experiment contains headers.</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QLabel" name="mpLblSeparator">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Separator</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4">
+    <widget class="QLineEdit" name="mpEditSeparator">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="5">
+    <widget class="QCheckBox" name="mpCheckTab">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Check to indicate that entries are separated by tab.</string>
+     </property>
+     <property name="text">
+      <string>&lt;tab&gt;</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="6" column="0">
     <widget class="QLabel" name="mpLblCopy">
      <property name="text">
@@ -502,8 +502,7 @@
       <string>Time Course</string>
      </property>
     </widget>
-   </item>    
-    
+   </item>
    <item row="8" column="0">
     <widget class="QLabel" name="mpLblWeightMethod">
      <property name="text">
@@ -527,18 +526,16 @@
      </property>
     </widget>
    </item>
-
-    <item row="8" column="3" colspan="4">
-      <widget class="QCheckBox" name="mpCheckNormalizeWeightsPerExperiment">
-        <property name="text">
-          <string>Normalize Weights per Experiment</string>
-        </property>
-        <property name="toolTip">
-          <string>When checked the weights in this experiment will be scaled by the highest value.</string>
-        </property>
-      </widget>
-    </item>
-    
+   <item row="8" column="3" colspan="4">
+    <widget class="QCheckBox" name="mpCheckNormalizeWeightsPerExperiment">
+     <property name="toolTip">
+      <string>When checked the weights in this experiment will be scaled by the highest value.</string>
+     </property>
+     <property name="text">
+      <string>Normalize Weights per Experiment</string>
+     </property>
+    </widget>
+   </item>
    <item row="9" column="0" colspan="7">
     <widget class="QTableWidget" name="mpTable">
      <property name="editTriggers">
@@ -709,23 +706,23 @@
      <y>20</y>
     </hint>
    </hints>
-  </connection>   
-   <connection>
-     <sender>mpCheckNormalizeWeightsPerExperiment</sender>
-     <signal>toggled(bool)</signal>
-     <receiver>CQExperimentData</receiver>
-     <slot>slotCheckNormalizeWeightsPerExperiment(bool)</slot>
-     <hints>
-       <hint type="sourcelabel">
-         <x>20</x>
-         <y>20</y>
-       </hint>
-       <hint type="destinationlabel">
-         <x>20</x>
-         <y>20</y>
-       </hint>
-     </hints>
-   </connection>
+  </connection>
+  <connection>
+   <sender>mpCheckNormalizeWeightsPerExperiment</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>CQExperimentData</receiver>
+   <slot>slotCheckNormalizeWeightsPerExperiment(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>mpBtnSteadystate</sender>
    <signal>toggled(bool)</signal>
@@ -811,6 +808,22 @@
    <signal>clicked()</signal>
    <receiver>CQExperimentData</receiver>
    <slot>slotFileDelete()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpBtnFileEdit</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExperimentData</receiver>
+   <slot>slotFileEdit()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>

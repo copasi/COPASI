@@ -1,17 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/parameterFitting/CExperimentFileInfo.cpp,v $
-   $Revision: 1.14 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:32:03 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,22 +28,24 @@
 #include "commandline/CLocaleString.h"
 
 CExperimentFileInfo::CExperimentFileInfo():
-    mpSet(NULL),
-    mFileName(""),
-    mList(),
-    mLines(0),
-    mUsedEnd(C_INVALID_INDEX),
-    mEmptyLines()
-{}
+  mpSet(NULL),
+  mFileName(""),
+  mList(),
+  mLines(0),
+  mUsedEnd(C_INVALID_INDEX),
+  mEmptyLines()
+{
+}
 
 CExperimentFileInfo::CExperimentFileInfo(CExperimentSet & set):
-    mpSet(&set),
-    mFileName(""),
-    mList(),
-    mLines(0),
-    mUsedEnd(C_INVALID_INDEX),
-    mEmptyLines()
-{}
+  mpSet(&set),
+  mFileName(""),
+  mList(),
+  mLines(0),
+  mUsedEnd(C_INVALID_INDEX),
+  mEmptyLines()
+{
+}
 
 CExperimentFileInfo::~CExperimentFileInfo()
 {
@@ -53,9 +57,17 @@ CExperimentFileInfo::~CExperimentFileInfo()
   mList.clear();
 }
 
-bool CExperimentFileInfo::setFileName(const std::string & fileName)
+bool
+CExperimentFileInfo::setFileName(const std::string & fileName)
 {
   mFileName = fileName;
+  countLines();
+  return sync();
+}
+
+size_t
+CExperimentFileInfo::countLines()
+{
   mLines = 0;
   mEmptyLines.clear();
 
@@ -64,13 +76,12 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
 
   if (in.fail())  // File can not be opened.
     {
-      mLines = 0;
-      return sync();
+      return mLines;
     }
 
   bool isEmpty;
 
-  // forwind to count lines in file
+  // count lines in file
   while (!in.eof())
     {
       isEmpty = true;
@@ -105,13 +116,17 @@ bool CExperimentFileInfo::setFileName(const std::string & fileName)
         mEmptyLines.push_back(mLines);
     }
 
-  return sync();
+  return mLines;
 }
 
-const std::string & CExperimentFileInfo::getFileName() const
-{return mFileName;}
+const std::string &
+CExperimentFileInfo::getFileName() const
+{
+  return mFileName;
+}
 
-bool CExperimentFileInfo::sync()
+bool
+CExperimentFileInfo::sync()
 {
   mpSet->sort();
 
@@ -139,7 +154,63 @@ bool CExperimentFileInfo::sync()
   return validate();
 }
 
-bool CExperimentFileInfo::validate() const
+void
+CExperimentFileInfo::removeInvalidExperiments()
+{
+  size_t Last = 0;
+  size_t i, imax;
+
+  for (i = 0, imax = mList.size(); i < imax; i++)
+    {
+      if (Last >= mList[i]->First)
+        {
+          // this experiment and all following are invalid
+          // remove them
+          removeLastExperiments(i);
+          return;
+        }
+
+      Last = mList[i]->Last;
+
+      // ensure there are no empty lines between first and last
+      size_t line = getInterruption(mList[i]->First, mList[i]->Last);
+
+      if (line != C_INVALID_INDEX)
+        {
+          // adjust this experiment to end before the empty line
+          mList[i]->Last = line - 1;
+          mList[i]->pExperiment->setLastRow(line - 1);
+
+          // remove the remaining ones
+          removeLastExperiments(i + 1);
+          return;
+        }
+      else if (Last > mLines)
+        {
+          // adjust this experiment
+          mList[i]->Last = mLines - 1;
+          mList[i]->pExperiment->setLastRow(mLines - 1);
+
+          // remove the remaining ones
+          removeLastExperiments(i + 1);
+          return;
+
+        }
+    }
+}
+
+void CExperimentFileInfo::removeLastExperiments(size_t start)
+{
+  for (size_t j = mList.size() - 1; j >= start; --j)
+    {
+      pdelete(mList[j]);
+      mpSet->removeExperiment(j);
+      mList.erase(mList.begin() + j);
+    }
+}
+
+bool
+CExperimentFileInfo::validate() const
 {
   size_t Last = 0;
   size_t i, imax;
@@ -156,8 +227,9 @@ bool CExperimentFileInfo::validate() const
   return true;
 }
 
-bool CExperimentFileInfo::validateFirst(const size_t & index,
-                                        const size_t & value)
+bool
+CExperimentFileInfo::validateFirst(const size_t & index,
+                                   const size_t & value)
 {
   if (mLines < value ||
       mList[index]->Last < value ||
@@ -173,8 +245,9 @@ bool CExperimentFileInfo::validateFirst(const size_t & index,
   return Result;
 }
 
-bool CExperimentFileInfo::validateLast(const size_t & index,
-                                       const size_t & value)
+bool
+CExperimentFileInfo::validateLast(const size_t & index,
+                                  const size_t & value)
 {
   if (mLines < value ||
       value < mList[index]->First ||
@@ -190,8 +263,9 @@ bool CExperimentFileInfo::validateLast(const size_t & index,
   return Result;
 }
 
-bool CExperimentFileInfo::validateHeader(const size_t & index,
-    const size_t & value)
+bool
+CExperimentFileInfo::validateHeader(const size_t & index,
+                                    const size_t & value)
 {
   return (value <= mLines &&
           (mList[index]->First < mList[index]->Last ||
@@ -199,7 +273,8 @@ bool CExperimentFileInfo::validateHeader(const size_t & index,
            mList[index]->Last < value));
 }
 
-std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
+std::vector< std::string >
+CExperimentFileInfo::getExperimentNames() const
 {
   std::vector< std::string > List;
 
@@ -211,7 +286,8 @@ std::vector< std::string > CExperimentFileInfo::getExperimentNames() const
   return List;
 }
 
-CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
+CExperiment*
+CExperimentFileInfo::getExperiment(const std::string & name)
 {
   size_t i, imax;
 
@@ -222,7 +298,8 @@ CExperiment * CExperimentFileInfo::getExperiment(const std::string & name)
   return NULL;
 }
 
-bool CExperimentFileInfo::getFirstUnusedSection(size_t & First,
+bool
+CExperimentFileInfo::getFirstUnusedSection(size_t & First,
     size_t & Last)
 {
   mUsedEnd = 0;
@@ -230,7 +307,8 @@ bool CExperimentFileInfo::getFirstUnusedSection(size_t & First,
   return getNextUnusedSection(First, Last);
 }
 
-bool CExperimentFileInfo::getNextUnusedSection(size_t & First,
+bool
+CExperimentFileInfo::getNextUnusedSection(size_t & First,
     size_t & Last)
 {
   First = mUsedEnd + 1;
@@ -267,7 +345,8 @@ bool CExperimentFileInfo::getNextUnusedSection(size_t & First,
   return false;
 }
 
-bool CExperimentFileInfo::adjustForEmptyLines(size_t & First,
+bool
+CExperimentFileInfo::adjustForEmptyLines(size_t & First,
     size_t & Last)
 {
   std::vector<size_t>::const_iterator it = mEmptyLines.begin();
@@ -296,16 +375,30 @@ bool CExperimentFileInfo::adjustForEmptyLines(size_t & First,
   return true;
 }
 
+size_t
+CExperimentFileInfo::getInterruption(size_t first, size_t last) const
+{
+  std::vector< size_t >::const_iterator it = mEmptyLines.begin();
+
+  for (; it != mEmptyLines.end(); ++it)
+    {
+      if (*it > first && *it < last)
+        return *it;
+    }
+
+  return C_INVALID_INDEX;
+}
+
 CExperimentFileInfo::CExperimentInfo::CExperimentInfo():
-    pExperiment(NULL),
-    First(C_INVALID_INDEX),
-    Last(C_INVALID_INDEX)
+  pExperiment(NULL),
+  First(C_INVALID_INDEX),
+  Last(C_INVALID_INDEX)
 {}
 
 CExperimentFileInfo::CExperimentInfo::CExperimentInfo(CExperiment & Experiment):
-    pExperiment(&Experiment),
-    First(pExperiment->getFirstRow()),
-    Last(pExperiment->getLastRow())
+  pExperiment(&Experiment),
+  First(pExperiment->getFirstRow()),
+  Last(pExperiment->getLastRow())
 {}
 
 CExperimentFileInfo::CExperimentInfo::~CExperimentInfo() {}
