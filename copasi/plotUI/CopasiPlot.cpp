@@ -138,8 +138,10 @@ CopasiPlot::CopasiPlot(const CPlotSpecification* plotspec, QWidget* parent):
 
   //  setTitle(FROM_UTF8(plotspec->getTitle()));
 
+#if QWT_VERSION < 0x060000
   connect(this, SIGNAL(legendChecked(QwtPlotItem *, bool)),
           SLOT(showCurve(QwtPlotItem *, bool)));
+#endif
 
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -270,10 +272,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
