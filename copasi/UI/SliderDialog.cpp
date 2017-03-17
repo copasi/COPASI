@@ -1316,7 +1316,7 @@ void SliderDialog::deleteInvalidSliders()
 
   for (; it != invalidSliders.end(); ++it)
     {
-      this->removeSlider(pCopasiSlider);
+      this->removeSlider(*it);
       sliderDeleted = true;
     }
 
