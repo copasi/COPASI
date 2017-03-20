@@ -29,6 +29,7 @@ include(FindPythonLibs)
 include(FindPythonInterp)
 find_package(Octave REQUIRED)
 
+include(../../CMakeConsoleApp.cmake)
 ####################################################################
 #
 # ensure that LAPACK variables are there for swig
@@ -126,7 +127,7 @@ else()
 	endif()
 endif()
 
-target_link_libraries(binding_octave_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${OCTAVE_OCTAVE_LIBRARY})
+target_link_libraries(binding_octave_lib libCOPASISE-static ${SE_LIBS} ${SE_EXTERNAL_LIBS}  ${OCTAVE_OCTAVE_LIBRARY})
 
 # 
 # Determine the python installation directory
@@ -140,4 +141,8 @@ endif()
 
 INSTALL(TARGETS binding_octave_lib DESTINATION ${OCTAVE_PACKAGE_INSTALL_DIR} )
 
+add_test(NAME octave_test
+         COMMAND octave --eval "COPASI;display(COPASI.CVersion.VERSION.getVersion())"
+)
+set_tests_properties(octave_test PROPERTIES PASS_REGULAR_EXPRESSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 

@@ -121,6 +121,9 @@ set_target_properties (libCOPASISE-static PROPERTIES OUTPUT_NAME "COPASISE")
 
 if(ENABLE_COPASI_SEDML)
   target_link_libraries(libCOPASISE-static ${LIBSEDML_LIBRARY})
+  if (${LIBNUML_LIBRARY})
+  target_link_libraries(libCOPASISE-static ${LIBNUML_LIBRARY})
+  endif()
 endif()
 
 target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
