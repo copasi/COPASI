@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -11,21 +16,6 @@
 // Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -46,6 +36,7 @@
 %ignore CReaction::getPropensityReference() const;
 %ignore CReaction::getParticleFluxReference() const;
 %ignore CReaction::getFluxReference() const;
+%ignore CReaction::getNoiseExpressionPtr() const;
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // remove some const methods to get rid of warnings

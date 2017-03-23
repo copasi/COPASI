@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -67,10 +72,9 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
 %ignore CModel::removeDependentModelObjects;
 %ignore CModel::getUptoDateObjects;
 
-%ignore CMathContainer::relocateValue(double const *&,std::vector< CMath::sRelocate > const &);
-%ignore CMathContainer::relocateObject(CObjectInterface const *&,std::vector< CMath::sRelocate > const &);
-%ignore CMathContainer::relocateObject(CObjectInterface *&,std::vector< CMath::sRelocate > const &);
-%ignore CMathContainer::relocateObject(CMathObject const *&,std::vector< CMath::sRelocate > const &);
+
+%ignore CMathContainer::relocateValue;
+%ignore CMathContainer::relocateObject;
 %ignore CMathHistoryCore::array() const;
 // issue 2225: C_INT is either int or long depending on
 // architecture, but we need it to be the same for universal
@@ -136,6 +140,8 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
                  bool isMultiplierAvogadro = false);
 %ignore CUnitComponent::getKind;
 %ignore CUnitComponent::setKind;
+%ignore operator=; 
+
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
 %include "copasi/math/CMathObject.h"
