@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -113,8 +118,8 @@ public class example7
      // now we create the formula for the function and set it on the function
      String formula = "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate";
 
-     boolean result = function.setInfix(formula);
-     assert result == true;
+     CIssue result = function.setInfix(formula);
+     assert result.isSuccess();
      // make the function irreversible
      function.setReversible(COPASI.TriFalse);
      // the formula string should have been parsed now

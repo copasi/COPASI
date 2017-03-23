@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -112,7 +117,8 @@ def main():
      formula = "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate"
 
      result = function.setInfix(formula)
-     assert result == True
+     assert result.isSuccess()
+     
      # make the function irreversible
      function.setReversible(TriFalse)
      # the formula string should have been parsed now

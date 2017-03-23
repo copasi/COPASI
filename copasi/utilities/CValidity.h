@@ -105,6 +105,12 @@ public:
 
   operator bool();
 
+  /**
+   * @return whether this issue represents an error or not
+   */
+  bool isSuccess() const;
+  bool isError() const;
+
   CValidity::Severity mSeverity;
   CValidity::Kind mKind;
 };

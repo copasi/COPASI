@@ -93,7 +93,7 @@ rateLaw = funDB.findFunction("My Rate Law");
 formula = "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate";
 
 result = fun.setInfix(formula);
-%!assert( result == true);
+
 % make the function irreversible
 fun.setReversible(TriFalse)
 % the formula string should have been parsed now

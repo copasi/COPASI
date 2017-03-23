@@ -97,7 +97,7 @@ unless(defined($rateLaw)){warn "Assertion failed.\n";die;}
 my $formula = "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate";
 
 my $result = $function->setInfix($formula);
-unless($result == 1){warn "Assertion failed.\n";die;}
+
 # make the function irreversible
 $function->setReversible($COPASI::TriFalse);
 # the formula string should have been parsed now

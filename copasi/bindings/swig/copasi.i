@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -92,6 +97,7 @@ size_t INVALID_INDEX();
 %include std_string.i
 %include std_vector.i
 
+%include <copasi/utilities/CValidity.h>
 
 %include "CObjectLists.i"
 %include "CVector.i"

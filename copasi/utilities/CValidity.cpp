@@ -37,6 +37,16 @@ CIssue::operator bool()
   return (mSeverity != CValidity::Error);
 }
 
+bool CIssue::isError() const
+{
+  return !isSuccess();
+}
+
+bool CIssue::isSuccess() const
+{
+  return (mSeverity != CValidity::Error);
+}
+
 CValidity::CValidity():
   mErrors(NoKind),
   mWarnings(NoKind),

@@ -103,7 +103,7 @@ stopifnot(!is.null(rateLaw))
 formula <- "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate"
 
 result <- CExpression_setInfix(func,formula)
-stopifnot(result == TRUE)
+stopifnot(result.isSuccess())
 # make the function irreversible
 invisible(CFunction_setReversible(func,"TriFalse"))
 # the formula string should have been parsed now

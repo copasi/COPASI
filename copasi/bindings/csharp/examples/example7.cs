@@ -98,8 +98,8 @@ class example7
      // now we create the formula for the function and set it on the function
      string formula = "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate";
 
-     bool result = function.setInfix(formula);
-     Debug.Assert(result == true);
+     var result = function.setInfix(formula);
+     Debug.Assert(result.isSuccess());
      // make the function irreversible
      function.setReversible(COPASI.TriFalse);
      // the formula string should have been parsed now
