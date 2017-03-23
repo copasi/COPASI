@@ -141,8 +141,46 @@ endif()
 
 INSTALL(TARGETS binding_octave_lib DESTINATION ${OCTAVE_PACKAGE_INSTALL_DIR} )
 
-add_test(NAME octave_test
-         COMMAND octave --eval "COPASI;display(COPASI.CVersion.VERSION.getVersion())"
+add_test(NAME octave_test_version
+         COMMAND octave --no-gui --eval "COPASI;display(COPASI.CVersion.VERSION.getVersion())"
 )
-set_tests_properties(octave_test PROPERTIES PASS_REGULAR_EXPRESSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
+set_tests_properties(octave_test_version PROPERTIES PASS_REGULAR_EXPRESSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
+
+add_test(NAME test_octave_example1
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example1.oct
+)
+
+add_test(NAME test_octave_example2
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example2.oct
+                                 ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator.cps
+)
+
+add_test(NAME test_octave_example3
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example3.oct
+                                 ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
+)
+
+add_test(NAME test_octave_example4
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example4.oct
+)
+
+add_test(NAME test_octave_example5
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example5.oct
+)
+
+add_test(NAME test_octave_example6
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example6.oct
+)
+
+add_test(NAME test_octave_example7
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example7.oct
+)
+
+add_test(NAME test_octave_example8
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example8.oct
+)
+
+add_test(NAME test_octave_example9
+         COMMAND octave --no-gui ${CMAKE_SOURCE_DIR}/copasi/bindings/octave/examples/example9.oct
+)
 

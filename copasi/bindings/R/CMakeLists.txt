@@ -326,4 +326,41 @@ add_custom_command(
 endif(APPLE AND ENABLE_UNIVERSAL)
 add_custom_target(binding_r_package ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/COPASI_${PACKAGE_VERSION}.zip binding_r_lib)
 
+add_test(NAME test_r_example1
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example1.R
+)
+
+add_test(NAME test_r_example2
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example2.R
+                                  --args      ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator.cps
+)
+
+add_test(NAME test_r_example3
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example3.R
+                                  --args      ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
+)
+
+add_test(NAME test_r_example4
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example4.R
+)
+
+add_test(NAME test_r_example5
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example5.R
+)
+
+add_test(NAME test_r_example6
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example6.R
+)
+
+add_test(NAME test_r_example7
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example7.R
+)
+
+add_test(NAME test_r_example8
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example8.R
+)
+
+add_test(NAME test_r_example9
+         COMMAND ${R_INTERPRETER} --slave -f  ${CMAKE_SOURCE_DIR}/copasi/bindings/R/examples/example9.R
+)
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -167,7 +172,8 @@ int main()
   assert(pTimeSeries->getRecordedSteps() == 4001);
   size_t i, iMax = pTimeSeries->getNumVariables();
   // there should be four variables, the three metabolites and time
-  assert(iMax == 5);
+  assert(iMax == 4);
+
   size_t lastIndex = pTimeSeries->getRecordedSteps() - 1;
   // open the file
   // we need to remember in which order the variables are written to file

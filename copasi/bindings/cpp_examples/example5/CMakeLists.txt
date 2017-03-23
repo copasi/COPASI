@@ -36,3 +36,7 @@ add_executable(example5 ${SOURCES} ${HEADERS})
 add_dependencies(example5 ${SE_DEPENDENCIES}) 
 target_link_libraries(example5 ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
+add_test(NAME test_cxx_example5
+         COMMAND "$<TARGET_FILE:example5>"
+)
+

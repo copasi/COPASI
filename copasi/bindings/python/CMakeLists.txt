@@ -156,3 +156,51 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/copasi.pth  DESTINATION ${PYTHON_PACKA
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/COPASI.py  DESTINATION ${PYTHON_PACKAGE_INSTALL_DIR}/copasi )
 file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.py)
 INSTALL(FILES ${examples} DESTINATION ${MISC_PREFIX}bindings/python) 
+
+add_test(NAME test_python_example1
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example1.py         
+)
+set_tests_properties(test_python_example1 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example2
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example2.py 
+                                      ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator.cps
+)
+set_tests_properties(test_python_example2 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example3
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example3.py
+                                      ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
+)
+set_tests_properties(test_python_example3 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example4
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example4.py
+)
+set_tests_properties(test_python_example4 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example5
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example5.py
+)
+set_tests_properties(test_python_example5 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example6
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example6.py
+)
+set_tests_properties(test_python_example6 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example7
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example7.py
+)
+set_tests_properties(test_python_example7 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example8
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example8.py
+)
+set_tests_properties(test_python_example8 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+
+add_test(NAME test_python_example9
+         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example9.py
+)
+set_tests_properties(test_python_example9 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+

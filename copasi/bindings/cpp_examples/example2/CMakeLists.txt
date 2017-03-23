@@ -36,3 +36,8 @@ add_executable(example2 ${SOURCES} ${HEADERS})
 add_dependencies(example2 ${SE_DEPENDENCIES}) 
 target_link_libraries(example2 ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
+add_test(NAME test_cxx_example2
+         COMMAND "$<TARGET_FILE:example2>" ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator.cps
+)
+
+

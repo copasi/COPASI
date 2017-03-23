@@ -36,3 +36,8 @@ add_executable(example3 ${SOURCES} ${HEADERS})
 add_dependencies(example3 ${SE_DEPENDENCIES}) 
 target_link_libraries(example3 ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
+add_test(NAME test_cxx_example3
+         COMMAND "$<TARGET_FILE:example3>" ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
+)
+
+

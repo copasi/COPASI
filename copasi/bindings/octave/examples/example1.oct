@@ -26,7 +26,7 @@ changedObjects=ObjectStdVector();
 % create a compartment with the name cell and an initial volume of 5.0
 % microliter
 compartment = model.createCompartment("cell", 5.0);
-object = compartment.getObject(CCopasiObjectName("Reference=InitialVolume"));
+object = compartment.getInitialValueReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(swig_this(compartment) != 0);
@@ -37,7 +37,7 @@ changedObjects.push_back(object);
 % fixed
 glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
 %! assert(swig_this(glucose) != 0);
-object = glucose.getObject(CCopasiObjectName("Reference=InitialConcentration"));
+object = glucose.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 1);
@@ -45,21 +45,21 @@ changedObjects.push_back(object);
 % concentration of 0. This metabolite is to be changed by reactions
 g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
 %! assert(swig_this(g6p) != 0);
-object = g6p.getObject(CCopasiObjectName("Reference=InitialConcentration"));
+object = g6p.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 2);
 % another metabolite for ATP, also fixed
 atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
 %! assert(swig_this(atp) != 0);
-object = atp.getObject(CCopasiObjectName("Reference=InitialConcentration"));
+object = atp.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 3);
 % and one for ADP
 adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
 %! assert(swig_this(adp) != 0);
-object = adp.getObject(CCopasiObjectName("Reference=InitialConcentration"));
+object = adp.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 4);
@@ -94,11 +94,11 @@ funDB = CCopasiRootContainer.getFunctionList();
 suitableFunctions = funDB.suitableFunctions(2, 2, TriFalse);
 %! assert(len(suitableFunctions) > 0);
 func=0;
-iMax = length(suitableFunctions);
-for i = 1:iMax
+iMax = suitableFunctions.size();
+for i = 0:iMax
   % we just assume that the only suitable function with Constant in
   % it's name is the one we want
-  f=suitableFunctions{i};
+  f=suitableFunctions(i);
   if index(f.getObjectName(),"Constant") != 0
     func=f;
     break
@@ -121,7 +121,7 @@ if (isstruct(func))
 %!assert(reaction.isLocalParameter(parameter.getObjectName()));
   % now we set the value of the parameter to 0.5
   parameter.setDblValue(0.5);
-  object = parameter.getObject(CCopasiObjectName("Reference=Value"));
+  object = parameter.getValueReference();
 %!assert(swig_this(object) != 0);
   changedObjects.push_back(object);
 else
@@ -168,7 +168,7 @@ reaction.setFunction(massAction);
 % it gets the name rateConstant and an initial value of 1.56
 modelValue = model.createModelValue("rateConstant", 1.56);
 %! assert(swig_this(modelValue) != 0);
-object = modelValue.getObject(CCopasiObjectName("Reference=InitialValue"));
+object = modelValue.getInitialValueReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getModelValues().size() == 1);
@@ -190,11 +190,11 @@ reaction.addParameterMapping("substrate", adp.getKey());
 % finally compile the model
 % compile needs to be done before updating all initial values for
 % the model with the refresh sequence
-model.compileIfNecessary();
+%model.compileIfNecessary();
 
 % now that we are done building the model, we have to make sure all
 % initial values are updated according to their dependencies
-model.updateInitialValues(changedObjects);
+%model.updateInitialValues(changedObjects);
 
 % save the model to a COPASI file
 % we save to a file named example1.cps, we don't want a progress report
