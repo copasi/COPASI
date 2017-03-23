@@ -87,6 +87,14 @@ elseif(LAPACK_FOUND)
   set(SWIG_EXTRA_ARGS ${SWIG_EXTRA_ARGS} -DUSE_LAPACK)
 endif()
 
+file(GLOB SWIG_DEPENDENCIES 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.i 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.h 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/../swig/*.i
+	${CMAKE_CURRENT_SOURCE_DIR}/../swig/*.h
+)
+
 make_directory(${CMAKE_CURRENT_BINARY_DIR}/csharp-files)
 add_custom_command(	
     OUTPUT 	${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
@@ -118,8 +126,7 @@ add_custom_command(
          ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i 
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../swig/copasi.i
-            ${CMAKE_CURRENT_SOURCE_DIR}/local.cpp
+    DEPENDS ${SWIG_DEPENDENCIES}
     COMMENT "Swig C# source") 
 
 add_custom_target(binding_csharp_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i

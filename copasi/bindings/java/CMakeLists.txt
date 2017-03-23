@@ -109,8 +109,7 @@ add_custom_command(
          -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
          ${CMAKE_CURRENT_SOURCE_DIR}/java.i
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/java.i
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-         ${SWIG_DEPENDENCIES}
+    DEPENDS ${SWIG_DEPENDENCIES}
     COMMENT "Swig Java source") 
 	
 add_custom_target(binding_java_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/java.i)
