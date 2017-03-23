@@ -163,50 +163,63 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/COPASI.py  DESTINATION ${PYTHON_PACKAG
 file(GLOB examples ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.py)
 INSTALL(FILES ${examples} DESTINATION ${MISC_PREFIX}bindings/python) 
 
+macro(ADJUST_PYTHONPATH target)
+
+if (UNIX)
+set_tests_properties(${target} PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$<TARGET_FILE_DIR:binding_python_lib>:$ENV{PYTHONPATH})
+else()
+# need to creatively replace the semicolons
+SET (NEW_PYTHON_PATH "${CMAKE_CURRENT_BINARY_DIR}\\;$<TARGET_FILE_DIR:binding_python_lib>\\;$ENV{PYTHONPATH}")
+STRING(REPLACE "\\;" ";" NEW_PYTHON_PATH "${NEW_PYTHON_PATH}")
+STRING(REPLACE ";" "\\;" NEW_PYTHON_PATH "${NEW_PYTHON_PATH}")
+set_tests_properties(${target} PROPERTIES ENVIRONMENT PYTHONPATH=${NEW_PYTHON_PATH})
+endif()
+
+endmacro()
+
 add_test(NAME test_python_example1
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example1.py         
 )
-set_tests_properties(test_python_example1 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example1)
 
 add_test(NAME test_python_example2
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example2.py 
                                       ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator.cps
 )
-set_tests_properties(test_python_example2 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example2)
 
 add_test(NAME test_python_example3
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example3.py
                                       ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
 )
-set_tests_properties(test_python_example3 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example3)
 
 add_test(NAME test_python_example4
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example4.py
 )
-set_tests_properties(test_python_example4 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example4)
 
 add_test(NAME test_python_example5
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example5.py
 )
-set_tests_properties(test_python_example5 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example5)
 
 add_test(NAME test_python_example6
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example6.py
 )
-set_tests_properties(test_python_example6 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example6)
 
 add_test(NAME test_python_example7
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example7.py
 )
-set_tests_properties(test_python_example7 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example7)
 
 add_test(NAME test_python_example8
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example8.py
 )
-set_tests_properties(test_python_example8 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
+ADJUST_PYTHONPATH(test_python_example8)
 
 add_test(NAME test_python_example9
          COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/copasi/bindings/python/examples/example9.py
 )
-set_tests_properties(test_python_example9 PROPERTIES ENVIRONMENT PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH})
-
+ADJUST_PYTHONPATH(test_python_example9)
