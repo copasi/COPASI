@@ -1,4 +1,9 @@
-# Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -190,16 +195,22 @@ if (NOT CLAPACK_INCLUDE_DIR)
   set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
 endif (NOT CLAPACK_INCLUDE_DIR)
 
+
+if (NOT CLAPACK_LIBRARIES)
 set(CLAPACK_LIBRARIES ${LAPACK_LIBRARIES})
+endif(NOT CLAPACK_LIBRARIES)
+
+if (NOT CLAPACK_LINKER_FLAGS)
 set(CLAPACK_LINKER_FLAGS ${LAPACK_LINKER_FLAGS})
+endif(NOT CLAPACK_LINKER_FLAGS)
 
 # find_library(CLAPACK_LIBRARIES NAMES clapack libclapack lapack liblapapack)
 
 # handle the QUIETLY and REQUIRED arguments and set CLAPACK_FOUND to TRUE if
 # all listed variables are TRUE
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(CLAPACK DEFAULT_MSG CLAPACK_LIBRARIES CLAPACK_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(CLAPACK DEFAULT_MSG CLAPACK_LIBRARIES CLAPACK_INCLUDE_DIR BLA_VENDOR)
 
-mark_as_advanced(CLAPACK_INCLUDE_DIR CLAPACK_LIBRARIES)
+mark_as_advanced(CLAPACK_INCLUDE_DIR CLAPACK_LIBRARIES BLA_VENDOR)
 
 

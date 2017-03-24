@@ -289,6 +289,15 @@ IF(DEFINED F2C_LOGICAL)
   add_definitions(-DF2C_LOGICAL=${F2C_LOGICAL})
 ENDIF()
 
+option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be added" OFF)
+if (CLAPACK_NO_BLASWRAP)
+  add_definitions(-DNO_BLAS_WRAP)
+endif(CLAPACK_NO_BLASWRAP)
+
+if(DEFINED F2C_HAVE_H)
+  add_definitions(-DHAVE_F2C_H)
+endif()
+
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 

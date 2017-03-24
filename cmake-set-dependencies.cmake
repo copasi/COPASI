@@ -1,4 +1,9 @@
-# Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -58,6 +63,7 @@ if (NOT EXISTS ${RAPTOR_LIBRARY})
 set (RAPTOR_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/raptor.lib CACHE FILEPATH "raptor library" FORCE)
 endif()
 
+if (NOT BLA_VENDOR OR "${BLA_VENDOR}" STREQUAL "COPASI Dependencies")
   # clapack
   set (CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
   
@@ -89,6 +95,8 @@ endif()
   set (BLA_VENDOR "COPASI Dependencies")
   set (CLAPACK_FOUND TRUE)
   mark_as_advanced(CLAPACK_INCLUDE_DIR CLAPACK_LIBRARIES)
+
+endif()
 
 # cpp unit
 if (NOT EXISTS ${CPPUNIT_INCLUDE_DIR})
@@ -176,7 +184,8 @@ if (NOT EXISTS ${RAPTOR_LIBRARY})
 set (RAPTOR_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/libraptor.a CACHE FILEPATH "raptor library" FORCE)
 endif()
 
-if (NOT APPLE)
+if (NOT APPLE AND (NOT BLA_VENDOR OR "${BLA_VENDOR}" STREQUAL "COPASI Dependencies"))
+
   # clapack
   set (CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
 
