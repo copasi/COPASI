@@ -1,4 +1,9 @@
-# Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -91,6 +96,13 @@ execute_process(
 	
 	WORKING_DIRECTORY "${BIN_DIRECTORY}"
 )
+
+if (EXISTS ${BIN_DIRECTORY}/copasicsP.dll)
+  if (EXISTS ${BIN_DIRECTORY}/examples/copasicsP.dll)
+	  file(REMOVE ${BIN_DIRECTORY}/examples/copasicsP.dll)	
+  endif()
+	file(COPY ${BIN_DIRECTORY}/copasicsP.dll DESTINATION ${BIN_DIRECTORY}/examples/)
+endif()
 
 # # print variables for debug purposes
 # message("BIN_DIRECTORY     : ${BIN_DIRECTORY}")

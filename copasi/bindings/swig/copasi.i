@@ -97,6 +97,12 @@ size_t INVALID_INDEX();
 %include std_string.i
 %include std_vector.i
 
+%ignore CIssue::operator bool;
+#if defined(SWIGCSHARP)
+%ignore CValidity::eKind;
+%ignore CValidity::eSeverity;
+#endif // SWIGCSHARP
+
 %include <copasi/utilities/CValidity.h>
 
 %include "CObjectLists.i"
