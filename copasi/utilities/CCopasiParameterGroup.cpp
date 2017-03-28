@@ -737,7 +737,7 @@ bool CCopasiParameterGroup::swap(index_iterator & from,
 
 size_t CCopasiParameterGroup::size(const CCopasiParameter::UserInterfaceFlag & flag) const
 {
-  if (flag == all)
+  if (flag == CCopasiParameter::UserInterfaceFlag::All)
     {
       return static_cast< elements * >(mpValue)->size();
     }

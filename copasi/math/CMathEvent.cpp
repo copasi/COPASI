@@ -572,7 +572,7 @@ size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
 
   // We only need to count in boolean functions see compile for details.
   CNodeContextIterator< const CEvaluationNode, std::vector< size_t > > itNode(pNode);
-  itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
+  itNode.setProcessingModes(CNodeIteratorMode::Flag(CNodeIteratorMode::Before) | CNodeIteratorMode::After);
 
   while (itNode.next() != itNode.end())
     {
@@ -752,7 +752,7 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
   CEvaluationNode * pNode = NULL;
 
   CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(pTriggerNode);
-  itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
+  itNode.setProcessingModes(CNodeIteratorMode::Flag(CNodeIteratorMode::Before) | CNodeIteratorMode::After);
 
   while (itNode.next() != itNode.end())
     {
@@ -1102,7 +1102,7 @@ CMathEvent::CMathEvent():
   mpCallback(NULL),
   mTargetValues(),
   mTargetPointers(),
-  mEffectsSimulation(CMath::NoChange),
+  mEffectsSimulation(CMath::eStateChange::NoChange),
   mDelaySequence(),
   mTargetValuesSequence(),
   mPostAssignmentSequence(),
@@ -1388,14 +1388,14 @@ bool CMathEvent::compile(CMathContainer & container)
 
 void CMathEvent::createUpdateSequences()
 {
-  mEffectsSimulation = CMath::NoChange;
+  mEffectsSimulation = CMath::eStateChange::NoChange;
 
   const CObjectInterface::ObjectSet & StateValues = mpContainer->getStateObjects();
   const CObjectInterface::ObjectSet & SimulationValues = mpContainer->getSimulationUpToDateObjects();
 
   CObjectInterface::ObjectSet Requested;
   Requested.insert(mpDelay);
-  mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CMath::Default, StateValues, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CMath::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   Requested.clear();
   CObjectInterface::ObjectSet EventTargets;
@@ -1411,11 +1411,11 @@ void CMathEvent::createUpdateSequences()
 
       if (StateValues.find(pTarget) != StateValues.end())
         {
-          mEffectsSimulation |= CMath::State;
+          mEffectsSimulation |= CMath::eStateChange::State;
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CMath::Default, StateValues, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CMath::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   // We need to add the total mass of the moieties to the state values.
   CObjectInterface::ObjectSet ExtendedStateValues = StateValues;
@@ -1427,7 +1427,7 @@ void CMathEvent::createUpdateSequences()
       ExtendedStateValues.insert(pTotalMass);
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CMath::UpdateMoieties, EventTargets, ExtendedStateValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CMath::SimulationContext::UpdateMoieties, EventTargets, ExtendedStateValues);
 
   // We need to remove the event roots from the simulation values
   CObjectInterface::ObjectSet ContinuousSimulationValues;
@@ -1448,27 +1448,27 @@ void CMathEvent::createUpdateSequences()
     }
 
   CObjectInterface::UpdateSequence StateEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CMath::Default, EventTargets, ExtendedStateValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CMath::SimulationContext::Default, EventTargets, ExtendedStateValues);
 
   if (!StateEffects.empty())
     {
-      mEffectsSimulation |= CMath::State;
+      mEffectsSimulation |= CMath::eStateChange::State;
     }
 
   CObjectInterface::UpdateSequence ContiousSimulationEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CMath::Default, EventTargets, ContinuousSimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CMath::SimulationContext::Default, EventTargets, ContinuousSimulationValues);
 
   if (!ContiousSimulationEffects.empty())
     {
-      mEffectsSimulation |=  CMath::ContinuousSimulation;
+      mEffectsSimulation |=  CMath::eStateChange::ContinuousSimulation;
     }
 
   CObjectInterface::UpdateSequence DiscreteSimulationEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CMath::Default, EventTargets, DiscreteSimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CMath::SimulationContext::Default, EventTargets, DiscreteSimulationValues);
 
   if (!DiscreteSimulationEffects.empty())
     {
-      mEffectsSimulation |=  CMath::EventSimulation;
+      mEffectsSimulation |=  CMath::eStateChange::EventSimulation;
     }
 }
 
@@ -1519,7 +1519,7 @@ const CVectorCore< C_FLOAT64 > & CMathEvent::getTargetValues()
 CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & values)
 {
   bool ValuesChanged = false;
-  CMath::StateChange StateChange = CMath::NoChange;
+  CMath::StateChange StateChange(CMath::eStateChange::NoChange);
 
   const C_FLOAT64 * pValue = values.array();
   const C_FLOAT64 * pValueEnd = pValue + values.size();

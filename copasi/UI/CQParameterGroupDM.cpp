@@ -230,7 +230,7 @@ QModelIndex CQParameterGroupDM::parent(const QModelIndex & index) const
 // virtual
 int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 {
-  CCopasiParameter::UserInterfaceFlag Flag(mAdvanced ? CCopasiParameter::all : CCopasiParameter::basic);
+  CCopasiParameter::UserInterfaceFlag Flag(mAdvanced ? CCopasiParameter::UserInterfaceFlag::All : CCopasiParameter::eUserInterfaceFlag::basic);
 
   if (!parent.isValid())
     {

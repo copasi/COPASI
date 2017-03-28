@@ -165,7 +165,6 @@ CUnit::CUnit(const CUnit & src):
     }
 }
 
-
 CUnit&
 CUnit::operator=(const CUnit & rightSide)
 {
@@ -197,7 +196,7 @@ CIssue CUnit::setExpression(const std::string & expression)
   if (expression.empty())
     {
       *this = CBaseUnit::undefined;
-      return CIssue(CValidity::Warning, CValidity::UnitUndefined);
+      return CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
     }
 
   mExpression = expression;
@@ -221,7 +220,7 @@ CIssue CUnit::compile()
   catch (CCopasiException & /*exception*/)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCUnit + 3, mExpression.c_str());
-      return CIssue(CValidity::Error, CValidity::UnitInvalid);
+      return CIssue(CIssue::eSeverity::Error, CIssue::eKind::UnitInvalid);
     }
 
   mComponents = Parser.getComponents();

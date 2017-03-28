@@ -14,9 +14,10 @@
 const CIssue CIssue::Success;
 
 //static
-const CIssue CIssue::Error = CIssue(CValidity::Error, CValidity::NoKind);
+const CIssue CIssue::Error(CIssue::eSeverity::Error, CIssue::eKind::NoKind);
 
-CIssue::CIssue(CValidity::Severity severity, CValidity::Kind kind):
+CIssue::CIssue(const CIssue::eSeverity & severity,
+               const CIssue::eKind & kind):
   mSeverity(severity),
   mKind(kind)
 {}
@@ -34,7 +35,7 @@ CIssue::operator bool()
   // If this type is implicity cast to a bool, in a conditional
   // evaluation, it will evaluate to "true" that there IS NOT a
   // significant "issue", if it is not at "Error" severity.
-  return (mSeverity != CValidity::Error);
+  return (mSeverity != CIssue::eSeverity::Error);
 }
 
 bool CIssue::isError() const
@@ -44,13 +45,13 @@ bool CIssue::isError() const
 
 bool CIssue::isSuccess() const
 {
-  return (mSeverity != CValidity::Error);
+  return (mSeverity != CIssue::eSeverity::Error);
 }
 
 CValidity::CValidity():
-  mErrors(NoKind),
-  mWarnings(NoKind),
-  mInformation(NoKind)
+  mErrors(),
+  mWarnings(),
+  mInformation()
 {}
 
 CValidity::CValidity(const CValidity & src):
@@ -61,24 +62,24 @@ CValidity::CValidity(const CValidity & src):
 
 void CValidity::clear()
 {
-  mErrors = NoKind;
-  mWarnings = NoKind;
-  mInformation = NoKind;
+  mErrors.clear();
+  mWarnings.clear();
+  mInformation.clear();
 }
 
 void CValidity::add(const CIssue & issue)
 {
   switch (issue.mSeverity)
     {
-      case Error:
+      case CIssue::eSeverity::Error:
         mErrors |= issue.mKind;
         break;
 
-      case Warning:
+      case CIssue::eSeverity::Warning:
         mWarnings |= issue.mKind;
         break;
 
-      case Information:
+      case CIssue::eSeverity::Information:
         mInformation |= issue.mKind;
         break;
 
@@ -89,39 +90,61 @@ void CValidity::add(const CIssue & issue)
 
 void CValidity::remove(const CIssue & issue)
 {
-  if (issue.mSeverity & Error) mErrors = mErrors & ~issue.mKind;
+  switch (issue.mSeverity)
+    {
+      case CIssue::eSeverity::Error:
+        mErrors &= ~Kind(issue.mKind);
+        break;
 
-  if (issue.mSeverity & Warning) mWarnings = mWarnings & ~issue.mKind;
+      case CIssue::eSeverity::Warning:
+        mWarnings &= ~Kind(issue.mKind);
+        break;
 
-  if (issue.mSeverity & Information) mInformation = mInformation & ~issue.mKind;
+      case CIssue::eSeverity::Information:
+        mInformation &= ~Kind(issue.mKind);
+        break;
+    }
 }
 
-CValidity::eSeverity CValidity::getHighestSeverity() const
+void CValidity::remove(const CValidity::Severity & severity,
+                       const CValidity::Kind & kind)
 {
-  if (mErrors > 0) return Error;
+  if (severity.isSet(CIssue::eSeverity::Error))
+    mErrors &= ~kind;
 
-  if (mWarnings > 0) return Warning;
+  if (severity.isSet(CIssue::eSeverity::Warning))
+    mWarnings &= ~kind;
 
-  if (mInformation > 0) return Information;
-
-  return OK;
+  if (severity.isSet(CIssue::eSeverity::Information))
+    mInformation &= ~kind;
 }
 
-const CValidity::Kind & CValidity::get(const CValidity::eSeverity & severity) const
+CIssue::eSeverity CValidity::getHighestSeverity() const
 {
-  static Kind OK;
+  if (mErrors) return CIssue::eSeverity::Error;
+
+  if (mWarnings) return CIssue::eSeverity::Warning;
+
+  if (mInformation) return CIssue::eSeverity::Information;
+
+  return CIssue::eSeverity::OK;
+}
+
+const CValidity::Kind & CValidity::get(const CIssue::eSeverity & severity) const
+{
+  static const Kind OK;
 
   switch (severity)
     {
-      case Error:
+      case CIssue::eSeverity::Error:
         return mErrors;
         break;
 
-      case Warning:
+      case CIssue::eSeverity::Warning:
         return mWarnings;
         break;
 
-      case Information:
+      case CIssue::eSeverity::Information:
         return mInformation;
         break;
 
@@ -135,9 +158,9 @@ const std::string CValidity::getIssueMessages() const
 {
   std::string messages = "";
 
-  messages += generateIssueMessages(Error);
-  messages += generateIssueMessages(Warning);
-  messages += generateIssueMessages(Information);
+  messages += generateIssueMessages(CIssue::eSeverity::Error);
+  messages += generateIssueMessages(CIssue::eSeverity::Warning);
+  messages += generateIssueMessages(CIssue::eSeverity::Information);
 
   // Remove last newline
   if (!messages.empty())
@@ -146,7 +169,7 @@ const std::string CValidity::getIssueMessages() const
   return messages;
 }
 
-const std::string CValidity::generateIssueMessages(const CValidity::eSeverity & severity) const
+const std::string CValidity::generateIssueMessages(const CIssue::eSeverity & severity) const
 {
   std::string severityString = "";
   std::string messages = "";
@@ -154,17 +177,17 @@ const std::string CValidity::generateIssueMessages(const CValidity::eSeverity & 
 
   switch (severity)
     {
-      case Error:
+      case CIssue::eSeverity::Error:
         severityString = "Error: ";
         tmpKind = mErrors;
         break;
 
-      case Warning:
+      case CIssue::eSeverity::Warning:
         severityString = "Warning: ";
         tmpKind = mWarnings;
         break;
 
-      case Information:
+      case CIssue::eSeverity::Information:
         severityString = "Information: ";
         tmpKind = mInformation;
         break;
@@ -173,67 +196,67 @@ const std::string CValidity::generateIssueMessages(const CValidity::eSeverity & 
         break;
     }
 
-  if (tmpKind & ExpressionInvalid)
+  if (tmpKind.isSet(CIssue::eKind::ExpressionInvalid))
     messages += severityString + "Invalid expression.\n";
 
-  if (tmpKind & ExpressionEmpty)
+  if (tmpKind.isSet(CIssue::eKind::ExpressionEmpty))
     messages += severityString + "Empty expression.\n";
 
-  if (tmpKind & MissingInitialValue)
+  if (tmpKind.isSet(CIssue::eKind::MissingInitialValue))
     messages += severityString + "Missing initial value.\n";
 
-  if (tmpKind & CalculationIssue)
+  if (tmpKind.isSet(CIssue::eKind::CalculationIssue))
     messages += severityString + "Problem with calculation.\n";
 
-  if (tmpKind & EventMissingAssignment)
+  if (tmpKind.isSet(CIssue::eKind::EventMissingAssignment))
     messages += severityString + "Missing event assignment.\n";
 
-  if (tmpKind & EventMissingTriggerExpression)
+  if (tmpKind.isSet(CIssue::eKind::EventMissingTriggerExpression))
     messages += severityString + "Missing event trigger expression.\n";
 
-  if (tmpKind & UnitUndefined)
+  if (tmpKind.isSet(CIssue::eKind::UnitUndefined))
     messages += severityString + "Unit is undefined.\n";
 
-  if (tmpKind & UnitConflict)
+  if (tmpKind.isSet(CIssue::eKind::UnitConflict))
     messages += severityString + "Unit conflict.\n";
 
-  if (tmpKind & UnitInvalid)
+  if (tmpKind.isSet(CIssue::eKind::UnitInvalid))
     messages += severityString + "Invalid unit.\n";
 
-  if (tmpKind & NaNissue)
+  if (tmpKind.isSet(CIssue::eKind::NaNissue))
     messages += severityString + "Value is undefined or unrepresentable.\n";
 
-  if (tmpKind & ObjectNotFound)
+  if (tmpKind.isSet(CIssue::eKind::ObjectNotFound))
     messages += severityString + "Object not found.\n";
 
-  if (tmpKind & ValueNotFound)
+  if (tmpKind.isSet(CIssue::eKind::ValueNotFound))
     messages += severityString + "Value not found.\n";
 
-  if (tmpKind & VariableNotfound)
+  if (tmpKind.isSet(CIssue::eKind::VariableNotfound))
     messages += severityString + "Variable not found.\n";
 
-  if (tmpKind & StructureInvalid)
+  if (tmpKind.isSet(CIssue::eKind::StructureInvalid))
     messages += severityString + "Invalid structure.\n";
 
-  if (tmpKind & TooManyArguments)
+  if (tmpKind.isSet(CIssue::eKind::TooManyArguments))
     messages += severityString + "Too many arguments.\n";
 
-  if (tmpKind & HasCircularDependency)
+  if (tmpKind.isSet(CIssue::eKind::HasCircularDependency))
     messages += severityString + "Has circular dependency.\n";
 
-  if (tmpKind & ExpressionDataTypeInvalid)
+  if (tmpKind.isSet(CIssue::eKind::ExpressionDataTypeInvalid))
     messages += severityString + "Invalid expression data type.\n";
 
-  if (tmpKind & VariableInExpression)
+  if (tmpKind.isSet(CIssue::eKind::VariableInExpression))
     messages += severityString + "Expression contains a variable.\n";
 
-  if (tmpKind & CExpressionNotFound)
+  if (tmpKind.isSet(CIssue::eKind::CExpressionNotFound))
     messages += severityString + "CExpression not found.\n";
 
-  if (tmpKind & CFunctionNotFound)
+  if (tmpKind.isSet(CIssue::eKind::CFunctionNotFound))
     messages += severityString + "CFunction not found.\n";
 
-  if (tmpKind & VariablesMismatch)
+  if (tmpKind.isSet(CIssue::eKind::VariablesMismatch))
     messages += severityString + "Variables are mismatched.\n";
 
   return messages;

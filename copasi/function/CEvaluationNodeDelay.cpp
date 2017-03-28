@@ -68,25 +68,25 @@ CIssue CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
       case S_DELAY:
         mpDelayValueNode = static_cast<CEvaluationNode *>(getChild());
 
-        if (mpDelayValueNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);;
+        if (mpDelayValueNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);;
 
         mpDelayValueValue = mpDelayValueNode->getValuePointer();
 
         mpDelayLagNode = static_cast<CEvaluationNode *>(mpDelayValueNode->getSibling());
 
-        if (mpDelayLagNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
+        if (mpDelayLagNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
         mpDelayLagValue = mpDelayLagNode->getValuePointer();
 
         if (mpDelayLagNode->getSibling() == NULL) // We must have exactly 2 children
           return CIssue::Success;
         else
-          return CIssue(CValidity::Error, CValidity::TooManyArguments);
+          return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 
         break;
 
       default:
-        return CIssue(CValidity::Error, CValidity::StructureInvalid);
+        return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
         break;
     }
 

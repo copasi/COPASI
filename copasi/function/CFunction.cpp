@@ -107,7 +107,7 @@ CIssue CFunction::setInfix(const std::string & infix)
         {
           case CEvaluationNode::T_OBJECT:
           case CEvaluationNode::T_DELAY:
-            mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+            mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
             mValidity.add(mIssue);
             return mIssue;
             break;
@@ -116,7 +116,7 @@ CIssue CFunction::setInfix(const std::string & infix)
 
             if ((*it)->subType() == CEvaluationNode::S_EXPRESSION)
               {
-                mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+                mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
                 mValidity.add(mIssue);
                 return mIssue;
               }
@@ -257,7 +257,7 @@ void CFunction::load(CReadConfig & configBuffer,
 
 CIssue CFunction::initVariables()
 {
-  if (mpNodeList == NULL && mInfix != "") return CIssue(CValidity::Error, CValidity::StructureInvalid);
+  if (mpNodeList == NULL && mInfix != "") return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
   CFunctionParameters NewVariables;
 

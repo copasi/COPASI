@@ -802,7 +802,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   CObjectInterface::UpdateSequence UpdateSequence;
 
-  mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Requested);
+  mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Requested);
 
   if (UpdateSequence.size() > 0)
     {

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -408,11 +413,11 @@ bool CScanMethod::init()
 
   if (mContinueFromCurrentState)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CMath::UpdateMoieties, ObjectSet, mpContainer->getSimulationUpToDateObjects());
+      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CMath::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getSimulationUpToDateObjects());
     }
   else
     {
-      mpContainer->getInitialDependencies().getUpdateSequence(mInitialUpdates, CMath::UpdateMoieties, ObjectSet, mpContainer->getInitialStateObjects());
+      mpContainer->getInitialDependencies().getUpdateSequence(mInitialUpdates, CMath::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getInitialStateObjects());
     }
 
   //set mLastNestingItem

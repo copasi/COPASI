@@ -537,18 +537,19 @@ CIssue CModelEntity::setUnitExpression(std::string unitExpression)
   if (mUnitExpression != unitExpression)
     {
       mUnitExpression = unitExpression;
-      mValidity.remove(CIssue(CValidity::Error | CValidity::Warning | CValidity::Information, CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid));
+      mValidity.remove(CValidity::Severity::All,
+                       CValidity::Kind(CIssue::eKind::UnitUndefined) | CIssue::eKind::UnitConflict | CIssue::eKind::UnitInvalid);
 
       CUnit Unit;
 
       if (!Unit.setExpression(mUnitExpression))
         {
-          Issue = CIssue(CValidity::Error, CValidity::UnitInvalid);
+          Issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::UnitInvalid);
           mValidity.add(Issue);
         }
       else if (Unit.isUndefined())
         {
-          Issue = CIssue(CValidity::Warning, CValidity::UnitUndefined);
+          Issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
           mValidity.add(Issue);
         }
     }

@@ -141,13 +141,13 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
               dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
           }
 
-        if (!mpFunction) return CIssue(CValidity::Error, CValidity::CFunctionNotFound);
+        if (!mpFunction) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
 
         mRegisteredFunctionCN = mpFunction->getCN();
 
         // We need to check whether the provided arguments match the on needed by the
         // function;
-        if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return CIssue(CValidity::Error, CValidity::VariablesMismatch);
+        if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
 
         mpCallParameters = buildParameters(mCallNodes);
         break;
@@ -178,7 +178,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
                   dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
               }
 
-            if (!mpFunction) return CIssue(CValidity::Error, CValidity::CFunctionNotFound);
+            if (!mpFunction) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
 
             mRegisteredFunctionCN = mpFunction->getCN();
 

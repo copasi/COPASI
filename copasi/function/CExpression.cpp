@@ -76,7 +76,7 @@ CIssue CExpression::setInfix(const std::string & infix)
     {
       if (mIsBoolean && !mpRootNode->isBoolean())
         {
-          mIssue = CIssue(CValidity::Error, CValidity::ExpressionDataTypeInvalid);
+          mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionDataTypeInvalid);
           mValidity.add(mIssue);
           return mIssue;
         }
@@ -98,7 +98,7 @@ CIssue CExpression::setInfix(const std::string & infix)
   for (; it != end; ++it)
     if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
       {
-        mIssue = CIssue(CValidity::Error, CValidity::VariableInExpression);
+        mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableInExpression);
         mValidity.add(mIssue);
         return mIssue;
       }
@@ -113,10 +113,8 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
 
   mpListOfContainer = & listOfContainer;
 
-  mValidity.remove(CIssue(CValidity::AllSeverity, ~(CValidity::ExpressionInvalid |
-                          CValidity::ExpressionEmpty |
-                          CValidity::HasCircularDependency |
-                          CValidity::ExpressionDataTypeInvalid)));
+  mValidity.remove(CValidity::Severity::All,
+                   ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency | CIssue::eKind::ExpressionDataTypeInvalid));
   mIssue = compileNodes();
 
   if (mpRootNode)
@@ -166,17 +164,15 @@ bool CExpression::updateInfix()
 
   if (mpNodeList == NULL)
     {
-      mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
       mValidity.add(mIssue);
       return mIssue;
     }
 
   // Clear any infix-determined flags, assuming
   // buildInfix does/uses the right things.
-  mValidity.remove(CIssue(CValidity::AllSeverity, (CValidity::ExpressionInvalid |
-                          CValidity::ExpressionEmpty |
-                          CValidity::HasCircularDependency |
-                          CValidity::ExpressionDataTypeInvalid)));
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency | CIssue::eKind::ExpressionDataTypeInvalid);
 
   mInfix = mpRootNode->buildInfix();
 

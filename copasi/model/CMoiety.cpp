@@ -308,7 +308,7 @@ bool CTotalNumberReference::isPrerequisiteForContext(const CObjectInterface * /*
     const CMath::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & /* changedObjects */) const
 {
-  return ((context & CMath::UpdateMoieties) == CMath::UpdateMoieties);
+  return context.isSet(CMath::SimulationContext::UpdateMoieties);
 }
 
 CDependentNumberReference::CDependentNumberReference(const std::string & name,
@@ -330,5 +330,5 @@ bool CDependentNumberReference::isPrerequisiteForContext(const CObjectInterface 
     const CMath::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & /* changedObjects */) const
 {
-  return ((context & CMath::UseMoieties) == CMath::UseMoieties);
+  return context.isSet(CMath::SimulationContext::UpdateMoieties);
 }

@@ -3553,7 +3553,7 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
 
   CObjectInterface::UpdateSequence UpdateSequence;
   mpMathContainer->getInitialDependencies().getUpdateSequence(UpdateSequence,
-      CMath::UpdateMoieties,
+      CMath::SimulationContext::UpdateMoieties,
       ChangedObjects,
       mpMathContainer->getInitialStateObjects());
 

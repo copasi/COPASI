@@ -848,8 +848,8 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   mColumnValidValueCount.resize(numCols);
   mColumnValidValueCount = std::numeric_limits<size_t>::quiet_NaN();
 
-  mpContainer->getInitialDependencies().getUpdateSequence(mIndependentUpdateSequence, CMath::UpdateMoieties, mIndependentObjects, mpContainer->getInitialStateObjects());
-  mpContainer->getTransientDependencies().getUpdateSequence(mDependentUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), DependentObjects, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getInitialDependencies().getUpdateSequence(mIndependentUpdateSequence, CMath::SimulationContext::UpdateMoieties, mIndependentObjects, mpContainer->getInitialStateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mDependentUpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), DependentObjects, mpContainer->getSimulationUpToDateObjects());
 
   initializeScalingMatrix();
 

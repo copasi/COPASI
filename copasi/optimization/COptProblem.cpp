@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -392,7 +397,7 @@ bool COptProblem::initialize()
     }
 
   changedObjects.erase(NULL);
-  mpContainer->getInitialDependencies().getUpdateSequence(mInitialRefreshSequence, CMath::UpdateMoieties, changedObjects, mpContainer->getInitialStateObjects());
+  mpContainer->getInitialDependencies().getUpdateSequence(mInitialRefreshSequence, CMath::SimulationContext::UpdateMoieties, changedObjects, mpContainer->getInitialStateObjects());
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
@@ -410,7 +415,7 @@ bool COptProblem::initialize()
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   mCPUTime.start();
 
@@ -428,7 +433,7 @@ bool COptProblem::initialize()
 
   mpMathObjectiveExpression = new CMathExpression(*mpObjectiveExpression, *mpContainer, false);
   Objects = mpMathObjectiveExpression->getPrerequisites();
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CMath::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   return success;
 }

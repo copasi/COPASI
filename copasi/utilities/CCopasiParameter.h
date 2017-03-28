@@ -61,9 +61,9 @@ public:
 
   enum eUserInterfaceFlag
   {
-    editable = 0x1,
-    basic = 0x2,
-    all = editable | basic
+    editable,
+    basic,
+    __SIZE
   };
 
   typedef CFlags< eUserInterfaceFlag > UserInterfaceFlag;

@@ -1180,7 +1180,7 @@ bool CParticleReference::isPrerequisiteForContext(const CObjectInterface * pObje
 {
   const CMetab * pSpecies = static_cast< const CMetab * >(getObjectParent());
 
-  if ((context & CMath::UseMoieties) &&
+  if (context.isSet(CMath::SimulationContext::UseMoieties) &&
       pSpecies->isDependent())
     {
       return true;

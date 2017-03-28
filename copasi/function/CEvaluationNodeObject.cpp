@@ -98,7 +98,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       {
         const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
 
-        if (!pExpression) return CIssue(CValidity::Error, CValidity::CExpressionNotFound);
+        if (!pExpression) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CExpressionNotFound);
 
         mpObject =
           pExpression->getNodeObject(mRegisteredObjectCN);
@@ -112,7 +112,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             const CObjectInterface * pObject = pDataObject->getValueObject();
 
             if (!pObject)
-              return CIssue(CValidity::Error, CValidity::ObjectNotFound);
+              return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
 
             if (mpObject != pObject && pObject != NULL)
               {
@@ -135,7 +135,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           {
             mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
             mpValue = &mValue;
-            return CIssue(CValidity::Error, CValidity::ValueNotFound);
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
 
         mData = "<" + mRegisteredObjectCN + ">";
@@ -160,7 +160,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           {
             mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
             mpValue = &mValue;
-            return CIssue(CValidity::Error, CValidity::ValueNotFound);
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
 
         break;
@@ -172,7 +172,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
   if (getChild() == NULL) // We must not have any children.
     return CIssue::Success;
   else
-    return CIssue(CValidity::Error, CValidity::TooManyArguments);
+    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 }
 
 const CEvaluationNode::Data & CEvaluationNodeObject::getData() const

@@ -214,7 +214,8 @@ bool CStochasticRungeKuttaRI5::elevateChildren()
 // virtual
 void CStochasticRungeKuttaRI5::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
+      change.isSet(CMath::eStateChange::State))
     {
       mLastCalculatedTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       mH10 = mContainerVariables;
@@ -345,7 +346,7 @@ void CStochasticRungeKuttaRI5::start()
       ObjectSet Objects;
       Objects.insert(*itNoiseInputObject);
 
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, mpContainer->getStateObjects(false), Objects);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Objects);
 
       if (pUpdateSequence->empty())
         {
@@ -353,7 +354,7 @@ void CStochasticRungeKuttaRI5::start()
         }
 
       UpdateSequence Sequence;
-      mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CMath::Default, Objects, NoiseObjects);
+      mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CMath::SimulationContext::Default, Objects, NoiseObjects);
       pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
     }
 

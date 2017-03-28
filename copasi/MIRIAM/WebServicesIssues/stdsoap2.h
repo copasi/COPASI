@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/WebServicesIssues/stdsoap2.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:17:18 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -667,7 +669,7 @@ extern "C"
 {
 #endif
 
-  /* Portability: define SOAP_SOCKLEN_T */
+/* Portability: define SOAP_SOCKLEN_T */
 #if defined(_AIX)
 # if defined(_AIX43)
 #  define SOAP_SOCKLEN_T socklen_t
@@ -872,14 +874,14 @@ extern "C"
 # define SOAP_INDEX_TEST  (2)
 #endif
 
-  /* Max iterations in soap_serve() to keep server connection alive */
+/* Max iterations in soap_serve() to keep server connection alive */
 #ifndef SOAP_MAXKEEPALIVE
 # define SOAP_MAXKEEPALIVE (100)
 #endif
 
-  /* Trusted max size of inbound SOAP array for compound array allocation.
-     Increase if necessary to allow larger arrays.
-  */
+/* Trusted max size of inbound SOAP array for compound array allocation.
+   Increase if necessary to allow larger arrays.
+ */
 #ifndef SOAP_MAXARRAYSIZE
 # define SOAP_MAXARRAYSIZE (1000000)
 #endif
@@ -920,7 +922,7 @@ extern "C"
 #endif
 
   extern const struct soap_double_nan {unsigned int n1, n2;}
-  soap_double_nan;
+soap_double_nan;
 
 #ifdef VXWORKS
 # ifndef FLT_MAX
@@ -988,7 +990,7 @@ extern "C"
 #define soap_isninfd(n) ((n) <= DBL_NINFTY)
 #define soap_isninff(n) ((n) <= FLT_NINFTY)
 
-  /* gSOAP error codes */
+/* gSOAP error codes */
 
 #define SOAP_EOF   EOF
 #define SOAP_ERR   EOF
@@ -1047,23 +1049,23 @@ extern "C"
 #define soap_zlib_error_check(e) ((e) == SOAP_ZLIB_ERROR)
 #define soap_http_error_check(e) ((e) == SOAP_HTTP_ERROR || ((e) >= SOAP_GET_METHOD && (e) <= SOAP_HTTP_METHOD)|| (e) == SOAP_NO_DATA || ((e) >= 100 && (e) < 600))
 
-  /* gSOAP HTTP response status codes 100 to 599 are reserved */
+/* gSOAP HTTP response status codes 100 to 599 are reserved */
 
-  /* Codes 600 to 999 are user definable */
+/* Codes 600 to 999 are user definable */
 
-  /* Exceptional gSOAP HTTP response status codes >= 1000 */
+/* Exceptional gSOAP HTTP response status codes >= 1000 */
 
 #define SOAP_STOP  1000 /* No HTTP response */
 #define SOAP_FORM  1001 /* Form request/response */
 #define SOAP_HTML  1002 /* Custom HTML response */
 #define SOAP_FILE  1003 /* Custom file-based response */
 
-  /* gSOAP HTTP method codes */
+/* gSOAP HTTP method codes */
 
 #define SOAP_POST  2000
 #define SOAP_GET  2001
 
-  /* gSOAP DIME */
+/* gSOAP DIME */
 
 #define SOAP_DIME_CF  0x01
 #define SOAP_DIME_ME  0x02
@@ -1072,16 +1074,16 @@ extern "C"
 #define SOAP_DIME_MEDIA  0x10
 #define SOAP_DIME_ABSURI 0x20
 
-  /* gSOAP ZLIB */
+/* gSOAP ZLIB */
 
 #define SOAP_ZLIB_NONE  0x00
 #define SOAP_ZLIB_DEFLATE 0x01
 #define SOAP_ZLIB_INFLATE 0x02
 #define SOAP_ZLIB_GZIP  0x02
 
-  /* gSOAP transport, connection, and content encoding modes */
+/* gSOAP transport, connection, and content encoding modes */
 
-  typedef soap_int32 soap_mode;
+typedef soap_int32 soap_mode;
 
 #define SOAP_IO   0x00000003 /* IO mask */
 #define SOAP_IO_FLUSH  0x00000000 /* flush output immediately, no buffering */
@@ -1126,7 +1128,7 @@ extern "C"
 
 #define SOAP_IO_DEFAULT  SOAP_IO_FLUSH
 
-  /* SSL client/server authentication settings */
+/* SSL client/server authentication settings */
 
 #define SOAP_SSL_NO_AUTHENTICATION  0x00 /* for testing purposes */
 #define SOAP_SSL_REQUIRE_SERVER_AUTHENTICATION 0x01 /* client requires server to authenticate */
@@ -1141,7 +1143,7 @@ extern "C"
 
 #define SOAP_SSL_DEFAULT   (SOAP_SSL_REQUIRE_SERVER_AUTHENTICATION | SOAP_SSLv3_TLSv1)
 
-  /* state */
+/* state */
 
 #define SOAP_NONE 0
 #define SOAP_INIT 1
@@ -1149,7 +1151,7 @@ extern "C"
 
 #define soap_check_state(soap) (!(soap) || ((soap)->state != SOAP_INIT && (soap)->state != SOAP_COPY))
 
-  /* part */
+/* part */
 
 #define SOAP_BEGIN  0
 #define SOAP_IN_ENVELOPE 2
@@ -1164,7 +1166,7 @@ extern "C"
 #define SOAP_IN_SECURITY 11
 #define SOAP_END_SECURITY 12
 
-  /* DEBUG macros */
+/* DEBUG macros */
 
 #ifndef WITH_LEAN
 # ifdef DEBUG
@@ -1225,9 +1227,9 @@ extern "C"
 # endif
 # ifndef DBGFUN
 #  define DBGFUN(FNAME) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s()\n", __FILE__, __LINE__, FNAME))
-#  define DBGFUN1(FNAME, FMT, ARG) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s("FMT")\n", __FILE__, __LINE__, FNAME, (ARG)))
-#  define DBGFUN2(FNAME, FMT1, ARG1, FMT2, ARG2) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s("FMT1", "FMT2")\n", __FILE__, __LINE__, FNAME, (ARG1), (ARG2)))
-#  define DBGFUN3(FNAME, FMT1, ARG1, FMT2, ARG2, FMT3, ARG3) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s("FMT1", "FMT2", "FMT3")\n", __FILE__, __LINE__, FNAME, (ARG1), (ARG2), (ARG3)))
+#  define DBGFUN1(FNAME, FMT, ARG) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s(" FMT")\n", __FILE__, __LINE__, FNAME, (ARG)))
+#  define DBGFUN2(FNAME, FMT1, ARG1, FMT2, ARG2) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s(" FMT1", " FMT2")\n", __FILE__, __LINE__, FNAME, (ARG1), (ARG2)))
+#  define DBGFUN3(FNAME, FMT1, ARG1, FMT2, ARG2, FMT3, ARG3) DBGLOG(TEST, SOAP_MESSAGE(fdebug, "%s(%d): %s(" FMT1", " FMT2", " FMT3")\n", __FILE__, __LINE__, FNAME, (ARG1), (ARG2), (ARG3)))
 # endif
 # ifndef DBGHEX
 #  define DBGHEX(DBGFILE, MSG, LEN) \
@@ -1253,111 +1255,111 @@ extern "C"
 # define DBGHEX(DBGFILE, MSG, LEN)
 #endif
 
-  /* UCS-4 requires 32 bits (0-7FFFFFFF, the sign bit is used by gSOAP to distinguish XML entities) */
-  typedef soap_int32 soap_wchar;
+/* UCS-4 requires 32 bits (0-7FFFFFFF, the sign bit is used by gSOAP to distinguish XML entities) */
+typedef soap_int32 soap_wchar;
 
-  /* namespace table row */
-  struct Namespace
-  {
-    const char *id;
-    const char *ns;
-    const char *in;
-    char *out;
-  };
+/* namespace table row */
+struct Namespace
+{
+  const char *id;
+  const char *ns;
+  const char *in;
+  char *out;
+};
 
-  /* namespace stack */
-  struct soap_nlist
-  {
-    struct soap_nlist *next;
-    unsigned int level; /* nesting depth level */
-    short index; /* corresponding entry in ns mapping table */
-    char *ns; /* only set when parsed ns URI is not in the ns mapping table */
-    char id[1]; /* the actual string value flows into the allocated region below this struct */
-  };
+/* namespace stack */
+struct soap_nlist
+{
+  struct soap_nlist *next;
+  unsigned int level; /* nesting depth level */
+  short index; /* corresponding entry in ns mapping table */
+  char *ns; /* only set when parsed ns URI is not in the ns mapping table */
+  char id[1]; /* the actual string value flows into the allocated region below this struct */
+};
 
-  /* block stack for nested block allocations */
-  struct soap_blist
-  {
-    struct soap_blist *next;
-    char *ptr;
-    size_t size;
-  };
+/* block stack for nested block allocations */
+struct soap_blist
+{
+  struct soap_blist *next;
+  char *ptr;
+  size_t size;
+};
 
-  /* array layout */
-  struct soap_array
-  {
-    void *__ptr;
-    int __size;
-  };
+/* array layout */
+struct soap_array
+{
+  void *__ptr;
+  int __size;
+};
 
-  /* pointer serialization management */
-  struct soap_plist
-  {
-    struct soap_plist *next;
-    const void *ptr;
-    const struct soap_array *array;
-    int type;
-    int id;
-    char mark1;
-    char mark2;
-  };
+/* pointer serialization management */
+struct soap_plist
+{
+  struct soap_plist *next;
+  const void *ptr;
+  const struct soap_array *array;
+  int type;
+  int id;
+  char mark1;
+  char mark2;
+};
 
-  /* block allocation for pointer serialization management */
-  struct soap_pblk
-  {
-    struct soap_pblk *next;
-    struct soap_plist plist[SOAP_PTRBLK];
-  };
+/* block allocation for pointer serialization management */
+struct soap_pblk
+{
+  struct soap_pblk *next;
+  struct soap_plist plist[SOAP_PTRBLK];
+};
 
 #ifdef SOAP_MEM_DEBUG
-  /* malloc/free tracking for debugging */
-  struct soap_mlist
-  {
-    struct soap_mlist *next;
-    const void *ptr;
-    const char *file;
-    int line;
-    short live;
-  };
+/* malloc/free tracking for debugging */
+struct soap_mlist
+{
+  struct soap_mlist *next;
+  const void *ptr;
+  const char *file;
+  int line;
+  short live;
+};
 #endif
 
-  /* class allocation list */
-  struct soap_clist
-  {
-    struct soap_clist *next;
-    void *ptr;
-    int type;
-    int size;
-    int (*fdelete)(struct soap_clist*);
-  };
+/* class allocation list */
+struct soap_clist
+{
+  struct soap_clist *next;
+  void *ptr;
+  int type;
+  int size;
+  int (*fdelete)(struct soap_clist*);
+};
 
-  /* attributes */
-  struct soap_attribute
-  {
-    struct soap_attribute *next;
-    char *value;
-    size_t size;
-    char *ns;
-    short visible;
-    char name[1]; /* the actual name string flows into the allocated region below this struct */
-  };
+/* attributes */
+struct soap_attribute
+{
+  struct soap_attribute *next;
+  char *value;
+  size_t size;
+  char *ns;
+  short visible;
+  char name[1]; /* the actual name string flows into the allocated region below this struct */
+};
 
 #ifndef WITH_LEAN
-  struct soap_cookie
-  {
-    struct soap_cookie *next;
-    char *name;
-    char *value;
-    char *domain;
-    char *path;
-    time_t expire; /* client-side: local time to expire */
-    long maxage;  /* server-side: seconds to expire */
-    unsigned int version;
-    short secure;
-    short session; /* server-side */
-    short env;  /* server-side: got cookie from client and should not be (re)send */
-    short modified; /* server-side: client cookie was modified and should be send */
-  };
+struct soap_cookie
+{
+  struct soap_cookie *next;
+  char *name;
+  char *value;
+  char *domain;
+  char *path;
+  time_t expire; /* client-side: local time to expire */
+  long maxage;  /* server-side: seconds to expire */
+  unsigned int version;
+  short secure;
+  short session; /* server-side */
+  short env;  /* server-side: got cookie from client and should not be (re)send */
+  short modified; /* server-side: client cookie was modified and should be send */
+};
 #endif
 
 #ifdef __cplusplus
@@ -1378,7 +1380,8 @@ extern "C"
     soap_multipart_iterator() : content(NULL)
     {}
     soap_multipart_iterator(struct soap_multipart *p) : content(p)
-    {}};
+    {}
+  };
 #endif
 
 #ifndef WITH_LEANER
@@ -1423,14 +1426,15 @@ extern "C"
 #ifndef WITH_LEANER
   /* RFC2045 MIME content transfer encodings */
   enum soap_mime_encoding
-  {SOAP_MIME_NONE,
-   SOAP_MIME_7BIT,
-   SOAP_MIME_8BIT,
-   SOAP_MIME_BINARY,
-   SOAP_MIME_QUOTED_PRINTABLE,
-   SOAP_MIME_BASE64,
-   SOAP_MIME_IETF_TOKEN,
-   SOAP_MIME_X_TOKEN
+  {
+    SOAP_MIME_NONE,
+    SOAP_MIME_7BIT,
+    SOAP_MIME_8BIT,
+    SOAP_MIME_BINARY,
+    SOAP_MIME_QUOTED_PRINTABLE,
+    SOAP_MIME_BASE64,
+    SOAP_MIME_IETF_TOKEN,
+    SOAP_MIME_X_TOKEN
   };
 #endif
 
@@ -1582,7 +1586,7 @@ extern "C"
 {
 #endif
 
-  /******************************************************************************/
+/******************************************************************************/
 
 #ifdef WIN32
 # ifdef SOAP_STD_EXPORTS
@@ -1594,94 +1598,94 @@ extern "C"
 # define SOAP_STD_API
 #endif
 
-  struct SOAP_STD_API soap
-  {
-    short state;   /* 0 = uninitialized, 1 = initialized, 2 = copy of another soap struct */
-    short version;  /* 1 = SOAP1.1 and 2 = SOAP1.2 (set automatically from namespace URI in nsmap table) */
-    soap_mode mode;
-    soap_mode imode;
-    soap_mode omode;
-    const char *float_format; /* user-definable format string for floats (<1024 chars) */
-    const char *double_format; /* user-definable format string for doubles (<1024 chars) */
-    const char *dime_id_format; /* user-definable format string for integer DIME id (<SOAP_TAGLEN chars) */
-    const char *http_version; /* HTTP version used "1.0" or "1.1" */
-    const char *http_content; /* optional custom response content type (with SOAP_FILE) */
-    const char *encodingStyle; /* default = NULL which means that SOAP encoding is used */
-    const char *actor;  /* SOAP-ENV:actor or role attribute value */
-    const char *lang;  /* xml:lang attribute value of SOAP-ENV:Text */
-    int recv_timeout;  /* when > 0, gives socket recv timeout in seconds, < 0 in usec */
-    int send_timeout;  /* when > 0, gives socket send timeout in seconds, < 0 in usec */
-    int connect_timeout;  /* when > 0, gives socket connect() timeout in seconds, < 0 in usec */
-    int accept_timeout;  /* when > 0, gives socket accept() timeout in seconds, < 0 in usec */
-    int socket_flags;  /* socket recv() and send() flags, e.g. set to MSG_NOSIGNAL to disable sigpipe */
-    int connect_flags;  /* connect() SOL_SOCKET sockopt flags, e.g. set to SO_DEBUG to debug socket */
-    int bind_flags;  /* bind() SOL_SOCKET sockopt flags, e.g. set to SO_REUSEADDR to enable reuse */
-    int accept_flags;  /* accept() SOL_SOCKET sockopt flags */
-    unsigned short linger_time; /* linger time for SO_LINGER option */
-    const struct Namespace *namespaces; /* Pointer to global namespace mapping table */
-    struct Namespace *local_namespaces; /* Local namespace mapping table */
-    struct soap_nlist *nlist; /* namespace stack */
-    struct soap_blist *blist; /* block allocation stack */
-    struct soap_clist *clist; /* class instance allocation list */
-    void *alist;   /* memory allocation (malloc) list */
-    struct soap_ilist *iht[SOAP_IDHASH];
-    struct soap_plist *pht[SOAP_PTRHASH];
-    struct soap_pblk *pblk; /* plist block allocation */
-    short pidx;   /* plist block allocation */
-    struct SOAP_ENV__Header *header;
-    struct SOAP_ENV__Fault *fault;
-    int idnum;
-    void *user;   /* to pass user-defined data */
-    struct soap_plugin *plugins; /* linked list of plug-in data */
-    char *userid;   /* HTTP Basic authorization userid */
-    char *passwd;   /* HTTP Basic authorization passwd */
-    int (*fpost)(struct soap*, const char*, const char*, int, const char*, const char*, size_t);
-    int (*fget)(struct soap*);
-    int (*fput)(struct soap*);
-    int (*fdel)(struct soap*);
-    int (*fhead)(struct soap*);
-    int (*fform)(struct soap*);
-    int (*fposthdr)(struct soap*, const char*, const char*);
-    int (*fresponse)(struct soap*, int, size_t);
-    int (*fparse)(struct soap*);
-    int (*fparsehdr)(struct soap*, const char*, const char*);
-    int (*fheader)(struct soap*);
-    int (*fresolve)(struct soap*, const char*, struct in_addr* inaddr);
-    int (*fconnect)(struct soap*, const char*, const char*, int);
-    int (*fdisconnect)(struct soap*);
-    int (*fclosesocket)(struct soap*, SOAP_SOCKET);
-    int (*fshutdownsocket)(struct soap*, SOAP_SOCKET, int);
-    SOAP_SOCKET(*fopen)(struct soap*, const char*, const char*, int);
-    SOAP_SOCKET(*faccept)(struct soap*, SOAP_SOCKET, struct sockaddr*, int *n);
-    int (*fclose)(struct soap*);
-    int (*fsend)(struct soap*, const char*, size_t);
-    size_t (*frecv)(struct soap*, char*, size_t);
-    int (*fpoll)(struct soap*);
-    void (*fseterror)(struct soap*, const char **c, const char **s);
-    int (*fignore)(struct soap*, const char*);
-    int (*fserveloop)(struct soap*);
-    void *(*fplugin)(struct soap*, const char*);
-    void *(*fmalloc)(struct soap*, size_t);
+struct SOAP_STD_API soap
+{
+  short state;   /* 0 = uninitialized, 1 = initialized, 2 = copy of another soap struct */
+  short version;  /* 1 = SOAP1.1 and 2 = SOAP1.2 (set automatically from namespace URI in nsmap table) */
+  soap_mode mode;
+  soap_mode imode;
+  soap_mode omode;
+  const char *float_format; /* user-definable format string for floats (<1024 chars) */
+  const char *double_format; /* user-definable format string for doubles (<1024 chars) */
+  const char *dime_id_format; /* user-definable format string for integer DIME id (<SOAP_TAGLEN chars) */
+  const char *http_version; /* HTTP version used "1.0" or "1.1" */
+  const char *http_content; /* optional custom response content type (with SOAP_FILE) */
+  const char *encodingStyle; /* default = NULL which means that SOAP encoding is used */
+  const char *actor;  /* SOAP-ENV:actor or role attribute value */
+  const char *lang;  /* xml:lang attribute value of SOAP-ENV:Text */
+  int recv_timeout;  /* when > 0, gives socket recv timeout in seconds, < 0 in usec */
+  int send_timeout;  /* when > 0, gives socket send timeout in seconds, < 0 in usec */
+  int connect_timeout;  /* when > 0, gives socket connect() timeout in seconds, < 0 in usec */
+  int accept_timeout;  /* when > 0, gives socket accept() timeout in seconds, < 0 in usec */
+  int socket_flags;  /* socket recv() and send() flags, e.g. set to MSG_NOSIGNAL to disable sigpipe */
+  int connect_flags;  /* connect() SOL_SOCKET sockopt flags, e.g. set to SO_DEBUG to debug socket */
+  int bind_flags;  /* bind() SOL_SOCKET sockopt flags, e.g. set to SO_REUSEADDR to enable reuse */
+  int accept_flags;  /* accept() SOL_SOCKET sockopt flags */
+  unsigned short linger_time; /* linger time for SO_LINGER option */
+  const struct Namespace *namespaces; /* Pointer to global namespace mapping table */
+  struct Namespace *local_namespaces; /* Local namespace mapping table */
+  struct soap_nlist *nlist; /* namespace stack */
+  struct soap_blist *blist; /* block allocation stack */
+  struct soap_clist *clist; /* class instance allocation list */
+  void *alist;   /* memory allocation (malloc) list */
+  struct soap_ilist *iht[SOAP_IDHASH];
+  struct soap_plist *pht[SOAP_PTRHASH];
+  struct soap_pblk *pblk; /* plist block allocation */
+  short pidx;   /* plist block allocation */
+  struct SOAP_ENV__Header *header;
+  struct SOAP_ENV__Fault *fault;
+  int idnum;
+  void *user;   /* to pass user-defined data */
+  struct soap_plugin *plugins; /* linked list of plug-in data */
+  char *userid;   /* HTTP Basic authorization userid */
+  char *passwd;   /* HTTP Basic authorization passwd */
+  int (*fpost)(struct soap*, const char*, const char*, int, const char*, const char*, size_t);
+  int (*fget)(struct soap*);
+  int (*fput)(struct soap*);
+  int (*fdel)(struct soap*);
+  int (*fhead)(struct soap*);
+  int (*fform)(struct soap*);
+  int (*fposthdr)(struct soap*, const char*, const char*);
+  int (*fresponse)(struct soap*, int, size_t);
+  int (*fparse)(struct soap*);
+  int (*fparsehdr)(struct soap*, const char*, const char*);
+  int (*fheader)(struct soap*);
+  int (*fresolve)(struct soap*, const char*, struct in_addr* inaddr);
+  int (*fconnect)(struct soap*, const char*, const char*, int);
+  int (*fdisconnect)(struct soap*);
+  int (*fclosesocket)(struct soap*, SOAP_SOCKET);
+  int (*fshutdownsocket)(struct soap*, SOAP_SOCKET, int);
+  SOAP_SOCKET(*fopen)(struct soap*, const char*, const char*, int);
+  SOAP_SOCKET(*faccept)(struct soap*, SOAP_SOCKET, struct sockaddr*, int *n);
+  int (*fclose)(struct soap*);
+  int (*fsend)(struct soap*, const char*, size_t);
+  size_t (*frecv)(struct soap*, char*, size_t);
+  int (*fpoll)(struct soap*);
+  void (*fseterror)(struct soap*, const char **c, const char **s);
+  int (*fignore)(struct soap*, const char*);
+  int (*fserveloop)(struct soap*);
+  void *(*fplugin)(struct soap*, const char*);
+  void *(*fmalloc)(struct soap*, size_t);
 #ifndef WITH_LEANER
-    int (*fprepareinit)(struct soap*);
-    int (*fpreparesend)(struct soap*, const char*, size_t);
-    int (*fpreparerecv)(struct soap*, const char*, size_t);
-    int (*fpreparefinal)(struct soap*);
-    void *(*fdimereadopen)(struct soap*, void*, const char*, const char*, const char*);
-    void *(*fdimewriteopen)(struct soap*, const char*, const char*, const char*);
-    void (*fdimereadclose)(struct soap*, void*);
-    void (*fdimewriteclose)(struct soap*, void*);
-    size_t (*fdimeread)(struct soap*, void*, char*, size_t);
-    int (*fdimewrite)(struct soap*, void*, const char*, size_t);
-    void *(*fmimereadopen)(struct soap*, void*, const char*, const char*, const char*);
-    void *(*fmimewriteopen)(struct soap*, void*, const char*, const char*, const char*, enum soap_mime_encoding);
-    void (*fmimereadclose)(struct soap*, void*);
-    void (*fmimewriteclose)(struct soap*, void*);
-    size_t (*fmimeread)(struct soap*, void*, char*, size_t);
-    int (*fmimewrite)(struct soap*, void*, const char*, size_t);
+  int (*fprepareinit)(struct soap*);
+  int (*fpreparesend)(struct soap*, const char*, size_t);
+  int (*fpreparerecv)(struct soap*, const char*, size_t);
+  int (*fpreparefinal)(struct soap*);
+  void *(*fdimereadopen)(struct soap*, void*, const char*, const char*, const char*);
+  void *(*fdimewriteopen)(struct soap*, const char*, const char*, const char*);
+  void (*fdimereadclose)(struct soap*, void*);
+  void (*fdimewriteclose)(struct soap*, void*);
+  size_t (*fdimeread)(struct soap*, void*, char*, size_t);
+  int (*fdimewrite)(struct soap*, void*, const char*, size_t);
+  void *(*fmimereadopen)(struct soap*, void*, const char*, const char*, const char*);
+  void *(*fmimewriteopen)(struct soap*, void*, const char*, const char*, const char*, enum soap_mime_encoding);
+  void (*fmimereadclose)(struct soap*, void*);
+  void (*fmimewriteclose)(struct soap*, void*);
+  size_t (*fmimeread)(struct soap*, void*, char*, size_t);
+  int (*fmimewrite)(struct soap*, void*, const char*, size_t);
 #endif
-    SOAP_SOCKET master;
-    SOAP_SOCKET socket;
+  SOAP_SOCKET master;
+  SOAP_SOCKET socket;
 #if defined(__cplusplus) && !defined(WITH_LEAN) && !defined(WITH_COMPAT)
     std::ostream *os;
     std::istream *is;
@@ -2068,7 +2072,7 @@ extern "C"
   SOAP_FMAC1 void* SOAP_FMAC2 soap_id_lookup(struct soap*, const char *id, void **p, int t, size_t n, unsigned int k);
   SOAP_FMAC1 void* SOAP_FMAC2 soap_id_forward(struct soap*, const char *id, void *p, size_t len, int st, int tt, size_t n, unsigned int k, void(*fcopy)(struct soap*, int, int, void*, size_t, const void*, size_t));
 #endif
-  SOAP_FMAC1 void* SOAP_FMAC2 soap_id_enter(struct soap*, const char *id, void *p, int t, size_t n, unsigned int k, const char *type, const char *arrayType, void *(*finstantiate)(struct soap*, int, const char*, const char*, size_t*));
+  SOAP_FMAC1 void* SOAP_FMAC2 soap_id_enter(struct soap*, const char *id, void *p, int t, size_t n, unsigned int k, const char *type, const char *arrayType, void * (*finstantiate)(struct soap*, int, const char*, const char*, size_t*));
   SOAP_FMAC1 void SOAP_FMAC2 soap_fcopy(struct soap *soap, int st, int tt, void *p, size_t, const void *q, size_t n);
 
   SOAP_FMAC1 int SOAP_FMAC2 soap_size(const int *, int);

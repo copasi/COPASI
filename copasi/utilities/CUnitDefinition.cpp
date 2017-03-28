@@ -221,16 +221,17 @@ CIssue CUnitDefinition::setExpression(const std::string & expression)
 {
   CIssue Issue;
 
-  mValidity.remove(CIssue(CValidity::Error | CValidity::Warning | CValidity::Information, CValidity::UnitUndefined | CValidity::UnitConflict | CValidity::UnitInvalid));
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::UnitUndefined) | CIssue::eKind::UnitConflict | CIssue::eKind::UnitInvalid);
 
   if (!CUnit::setExpression(expression))
     {
-      Issue = CIssue(CValidity::Error, CValidity::UnitInvalid);
+      Issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::UnitInvalid);
       mValidity.add(Issue);
     }
   else if (isUndefined())
     {
-      Issue = CIssue(CValidity::Warning, CValidity::UnitUndefined);
+      Issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
       mValidity.add(Issue);
     }
 

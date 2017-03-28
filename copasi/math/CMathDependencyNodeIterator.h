@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -42,12 +47,13 @@ public:
    */
   enum State
   {
-    Start = 0x00,
-    Before = 0x01,
-    After = 0x02,
-    Intermediate = 0x04,
-    End = 0x08,
-    Recursive = 0x10
+    Start,
+    Before,
+    After,
+    Intermediate,
+    End,
+    Recursive,
+    __SIZE
   };
 
   /**

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -352,7 +357,7 @@ void ResultData::applyToModelStateFromOptTask(int row, COptTask *task, const std
     }
 
   CObjectInterface::UpdateSequence UpdateSequence;
-  pContainer->getInitialDependencies().getUpdateSequence(UpdateSequence, CMath::UpdateMoieties, ChangedObjects, pContainer->getInitialStateObjects());
+  pContainer->getInitialDependencies().getUpdateSequence(UpdateSequence, CMath::SimulationContext::UpdateMoieties, ChangedObjects, pContainer->getInitialStateObjects());
   pContainer->applyUpdateSequence(UpdateSequence);
   pContainer->pushInitialState();
 }

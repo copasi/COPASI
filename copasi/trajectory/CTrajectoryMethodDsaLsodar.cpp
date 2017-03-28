@@ -427,7 +427,7 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
         {
           if (mPartition.rePartition(mContainerState))
             {
-              stateChange(CMath::ContinuousSimulation);
+              stateChange(CMath::eStateChange::ContinuousSimulation);
             }
 
           mStepsAfterPartitionSystem = 0;
@@ -511,7 +511,7 @@ void CTrajectoryMethodDsaLsodar::start()
         }
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, Changed, Requested);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, Changed, Requested);
     }
 
   mPartition.intialize(mpContainer, *mpLowerLimit, *mpUpperLimit);
@@ -604,7 +604,7 @@ void CTrajectoryMethodDsaLsodar::fireReaction(const size_t & index)
   mNextReactionTime = std::numeric_limits< C_FLOAT64 >::infinity();
   mNextReactionIndex = C_INVALID_INDEX;
 
-  CLsodaMethod::stateChange(CMath::ContinuousSimulation);
+  CLsodaMethod::stateChange(CMath::eStateChange::ContinuousSimulation);
 
   return;
 }

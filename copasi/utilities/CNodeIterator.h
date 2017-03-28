@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,11 +32,12 @@ class CNodeIteratorMode
 public:
   enum State
   {
-    Start = 0x00,
-    Before = 0x01,
-    After = 0x02,
-    Intermediate = 0x04,
-    End = 0x08
+    Start,
+    Before,
+    After,
+    Intermediate,
+    End,
+    __SIZE
   };
 
   typedef CFlags< State > Flag;
@@ -126,7 +132,7 @@ public:
   CNodeContextIterator():
     mStack(),
     mCurrentMode(CNodeIteratorMode::End),
-    mProcessingModes((CNodeIteratorMode::State)(CNodeIteratorMode::After | CNodeIteratorMode::End))
+    mProcessingModes(CNodeIteratorMode::Flag(CNodeIteratorMode::After) | CNodeIteratorMode::End)
   {}
 
   /**
@@ -147,7 +153,7 @@ public:
   CNodeContextIterator(Node * pNode, Context * pParentContext = NULL):
     mStack(),
     mCurrentMode(CNodeIteratorMode::Start),
-    mProcessingModes((CNodeIteratorMode::State)(CNodeIteratorMode::After | CNodeIteratorMode::End))
+    mProcessingModes(CNodeIteratorMode::Flag(CNodeIteratorMode::After) | CNodeIteratorMode::End)
   {
     mStack.push(CStackElement(pNode, pParentContext));
   }
@@ -241,7 +247,7 @@ public:
         mCurrentMode = CNodeIteratorMode::Before;
       }
 
-    while (!(mProcessingModes & mCurrentMode))
+    while (!mProcessingModes.isSet(mCurrentMode))
       {
         increment();
       }
@@ -314,7 +320,7 @@ public:
    * Retrieve the processing modes to which the method next will advance the iterator.
    * @return CNodeIteratorMode::Flag processingModes
    */
-  CNodeIteratorMode::Flag getProcessingModes() const {return (mProcessingModes & ~CNodeIteratorMode::End);}
+  CNodeIteratorMode::Flag getProcessingModes() const {return (mProcessingModes & ~CNodeIteratorMode::Flag(CNodeIteratorMode::End));}
 
 private:
   /**

@@ -311,7 +311,7 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
   mpArgNode1 = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpArgNode1 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
+  if (mpArgNode1 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue1 = mpArgNode1->getValuePointer();
 
@@ -320,12 +320,12 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
       if (mpArgNode1->getSibling() == NULL)
         return CIssue::Success;
       else
-        return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have only one child
+        return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);// We must have only one child
     }
 
   mpArgNode2 = static_cast<CEvaluationNode *>(mpArgNode1->getSibling());
 
-  if (mpArgNode2 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
+  if (mpArgNode2 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue2 = mpArgNode2->getValuePointer();
 
@@ -334,26 +334,26 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
       if (mpArgNode2->getSibling() == NULL)
         return CIssue::Success;
       else
-        return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have only 2 children
+        return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);// We must have only 2 children
     }
 
   // equality
   mpArgNode3 = static_cast<CEvaluationNode *>(mpArgNode2->getSibling());
 
-  if (mpArgNode3 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
+  if (mpArgNode3 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue3 = mpArgNode3->getValuePointer();
 
   mpArgNode4 = static_cast<CEvaluationNode *>(mpArgNode3->getSibling());
 
-  if (mpArgNode4 == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
+  if (mpArgNode4 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue4 = mpArgNode4->getValuePointer();
 
   if (mpArgNode4->getSibling() == NULL)
     return CIssue::Success;
   else
-    return CIssue(CValidity::Error, CValidity::TooManyArguments);// We must have exactly 4 children
+    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);// We must have exactly 4 children
 }
 
 // virtual

@@ -63,7 +63,7 @@ void CRecentFiles::initializeParameter()
   mpMaxFiles =
     assertParameter("MaxFiles", CCopasiParameter::UINT, (unsigned C_INT32) 5);
   mpRecentFiles = assertGroup("Recent Files");
-  mpRecentFiles->setUserInterfaceFlag(~CCopasiParameter::basic);
+  mpRecentFiles->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::basic));
 }
 
 void CRecentFiles::addFile(const std::string & file)
@@ -200,9 +200,9 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent SEDML Files");
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
-  getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::editable);
+  getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
 
-  assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::basic);
+  assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::basic));
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
   mpShowItemIssues = assertParameter("Show Item Issues", CCopasiParameter::BOOL, true);
@@ -212,7 +212,7 @@ void CConfigurationFile::initializeParameter()
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
   mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""));
-  getParameter("Working Directory")->setUserInterfaceFlag(~CCopasiParameter::editable);
+  getParameter("Working Directory")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
 
   mpProxyServer = assertParameter("Proxy Server", CCopasiParameter::STRING, std::string(""));
   mpProxyPort = assertParameter("Proxy Port", CCopasiParameter::INT, 0);

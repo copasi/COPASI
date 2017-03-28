@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -173,7 +178,7 @@ bool CMathDependencyNodeIterator::next()
       mCurrentState = Before;
     }
 
-  while (!(mProcessingModes & mCurrentState))
+  while (!mProcessingModes.isSet(mCurrentState))
     {
       increment();
     }
@@ -222,5 +227,5 @@ void CMathDependencyNodeIterator::setProcessingModes(const CMathDependencyNodeIt
 
 CMathDependencyNodeIterator::Flag CMathDependencyNodeIterator::getProcessingModes() const
 {
-  return (mProcessingModes & ~(End | Recursive));
+  return (mProcessingModes & ~(CMathDependencyNodeIterator::Flag(End) | Recursive));
 }

@@ -585,7 +585,7 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getInitialDependencies().getUpdateSequence(mExperimentInitialUpdates[i], CMath::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
+      mpContainer->getInitialDependencies().getUpdateSequence(mExperimentInitialUpdates[i], CMath::SimulationContext::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
     }
 
   // Build a matrix of experiment and constraint items;
@@ -629,7 +629,7 @@ bool CFitProblem::initialize()
 
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mExperimentConstraintUpdates[i], CMath::Default,
+      mpContainer->getTransientDependencies().getUpdateSequence(mExperimentConstraintUpdates[i], CMath::SimulationContext::Default,
           mpContainer->getStateObjects(false), ObjectSet[i],
           mpContainer->getSimulationUpToDateObjects());
     }
@@ -688,7 +688,7 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getInitialDependencies().getUpdateSequence(mCrossValidationInitialUpdates[i], CMath::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
+      mpContainer->getInitialDependencies().getUpdateSequence(mCrossValidationInitialUpdates[i], CMath::SimulationContext::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
     }
 
   // Build a matrix of cross validation experiments and constraint items;
@@ -731,7 +731,7 @@ bool CFitProblem::initialize()
 
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mCrossValidationConstraintUpdates[i], CMath::Default,
+      mpContainer->getTransientDependencies().getUpdateSequence(mCrossValidationConstraintUpdates[i], CMath::SimulationContext::Default,
           mpContainer->getStateObjects(false), ObjectSet[i],
           mpContainer->getSimulationUpToDateObjects());
     }

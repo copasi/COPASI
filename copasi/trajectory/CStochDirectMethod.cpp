@@ -213,7 +213,7 @@ void CStochDirectMethod::start()
   CMathObject * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
   Changed.insert(pTimeObject);
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateTimeDependentRoots, CMath::Default, Changed, Requested);
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateTimeDependentRoots, CMath::SimulationContext::Default, Changed, Requested);
   mHaveTimeDependentRoots = (mUpdateTimeDependentRoots.size() > 0);
 
   // Build the reaction dependencies
@@ -244,7 +244,7 @@ void CStochDirectMethod::start()
       Changed.insert(pTimeObject);
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::Default, Changed, Requested);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, Changed, Requested);
     }
 
   mMaxStepsReached = false;
@@ -253,7 +253,7 @@ void CStochDirectMethod::start()
   mNextReactionTime = *mpContainerStateTime;
   mNextReactionIndex = C_INVALID_INDEX;
 
-  stateChange(CMath::State);
+  stateChange(CMath::eStateChange::State);
 
   return;
 }
@@ -475,7 +475,8 @@ bool CStochDirectMethod::checkRoots()
  */
 void CStochDirectMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
+      change.isSet(CMath::eStateChange::State))
     {
       // Create a local copy of the state where the particle number species determined
       // by reactions are rounded to integers.

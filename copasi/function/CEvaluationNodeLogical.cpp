@@ -94,20 +94,20 @@ CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 {
   mpLeftNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpLeftNode == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
+  if (mpLeftNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpLeftValue = mpLeftNode->getValuePointer();
 
   mpRightNode = static_cast<CEvaluationNode *>(mpLeftNode->getSibling());
 
-  if (mpRightNode == NULL) return CIssue(CValidity::Error, CValidity::VariableNotfound);
+  if (mpRightNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpRightValue = mpRightNode->getValuePointer();
 
   if (mpRightNode->getSibling() == NULL) // We must have exactly two children
     return CIssue::Success;
   else
-    return CIssue(CValidity::Error, CValidity::TooManyArguments);
+    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 }
 
 // virtual

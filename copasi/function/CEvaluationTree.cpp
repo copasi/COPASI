@@ -263,7 +263,7 @@ CIssue CEvaluationTree::parse()
       mValue = *mpRootValue;
       mpNodeList->push_back(mpRootNode);
 
-      mIssue = CIssue(CValidity::Warning, CValidity::ExpressionEmpty);
+      mIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
       mValidity.add(mIssue);
       return mIssue;
     }
@@ -276,7 +276,7 @@ CIssue CEvaluationTree::parse()
     mIssue = CIssue::Success;
   else
     {
-      mIssue = CIssue(CValidity::Error, CValidity::ExpressionInvalid);
+      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionInvalid);
       mValidity.add(mIssue);
     }
 
@@ -303,7 +303,7 @@ CIssue CEvaluationTree::parse()
 
   if (mIssue && hasCircularDependency())
     {
-      mIssue = CIssue(CValidity::Error, CValidity::HasCircularDependency);
+      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::HasCircularDependency);
       mValidity.add(mIssue);
       CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 4, mErrorPosition);
     }
@@ -365,21 +365,20 @@ CIssue CEvaluationTree::compileNodes()
   mCalculationSequence.resize(0);
 
   // Clear all mValidity flags, except those only set via setInfix
-  mValidity.remove(CIssue(CValidity::AllSeverity, ~(CValidity::ExpressionInvalid |
-                          CValidity::ExpressionEmpty |
-                          CValidity::HasCircularDependency)));
+  mValidity.remove(CValidity::Severity::All,
+                   ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency));
   mIssue = CIssue::Success;
 
   if (mInfix == "")
     {
-      mIssue = CIssue(CValidity::Warning, CValidity::NaNissue);
+      mIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::NaNissue);
       mValidity.add(mIssue);
       return mIssue;
     }
 
   if (mpNodeList == NULL)
     {
-      mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
       mValidity.add(mIssue);
       return mIssue;
     }
@@ -545,7 +544,7 @@ CIssue CEvaluationTree::updateTree()
   if (mpRootNode == NULL)
     {
       clearNodes();
-      mIssue = CIssue(CValidity::Error, CValidity::StructureInvalid);
+      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
       mValidity.add(mIssue);
       return mIssue;
     }
@@ -571,13 +570,12 @@ CIssue CEvaluationTree::updateTree()
 
   // Clear any infix-determined flags, assuming
   // buildInfix does the right things.
-  mValidity.remove(CIssue(CValidity::AllSeverity, (CValidity::ExpressionInvalid |
-                          CValidity::ExpressionEmpty |
-                          CValidity::HasCircularDependency)));
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency);
 
   if (mInfix == "")
     {
-      mIssue = CIssue(CValidity::Warning, CValidity::ExpressionEmpty);
+      mIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
       mValidity.add(mIssue);
       return mIssue;
     }

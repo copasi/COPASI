@@ -478,7 +478,7 @@ public:
    * The size of the parameter group
    * @ return size_t size
    */
-  size_t size(const UserInterfaceFlag & flag = all) const;
+  size_t size(const UserInterfaceFlag & flag = UserInterfaceFlag::All) const;
 
   /**
    * Clear all parameters and subgroups

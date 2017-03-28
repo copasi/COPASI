@@ -570,7 +570,7 @@ CEvaluationNode* CEvaluationNode::splitBranch(const CEvaluationNode* splitnode, 
 const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctionAnalyzer::CValue> & callParameters) const
 {
   CNodeContextIterator< const CEvaluationNode, std::vector< const CEvaluationNode * > > itNode(this);
-  itNode.setProcessingModes(CNodeIteratorMode::Before | CNodeIteratorMode::After);
+  itNode.setProcessingModes(CNodeIteratorMode::Flag(CNodeIteratorMode::Before) | CNodeIteratorMode::After);
   const CEvaluationNode * pMinus = NULL;
 
   while (itNode.next() != itNode.end())

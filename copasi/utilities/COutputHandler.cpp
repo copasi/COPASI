@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -183,7 +188,7 @@ void COutputHandler::applyUpdateSequence()
 bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList & listOfContainer)
 {
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CMath::Default, mpContainer->getStateObjects(), mObjects,
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(), mObjects,
       mpContainer->getSimulationUpToDateObjects());
 
   CObjectInterface::ObjectSet::const_iterator it = mObjects.begin();

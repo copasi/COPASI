@@ -166,13 +166,13 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
     {
       case CMath::Moiety:
 
-        if ((context & CMath::UpdateMoieties) &&
+        if (context.isSet(CMath::SimulationContext::UpdateMoieties) &&
             mValueType == CMath::TotalMass)
           {
             return true;
           }
 
-        if ((context & CMath::UseMoieties) &&
+        if (context.isSet(CMath::SimulationContext::UseMoieties) &&
             mValueType == CMath::DependentMass)
           {
             return true;
@@ -187,7 +187,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         if (mValueType != CMath::Value)
           return true;
 
-        if ((context & CMath::UseMoieties) &&
+        if (context.isSet(CMath::SimulationContext::UseMoieties) &&
             mSimulationType == CMath::Dependent &&
             !mIsIntensiveProperty)
           {
@@ -229,7 +229,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
       case CMath::Event:
 
-        if ((context & CMath::EventHandling) &&
+        if (context.isSet(CMath::SimulationContext::EventHandling) &&
             mValueType == CMath::Discontinuous)
           {
             switch (mpExpression->getRoot()->mainType() | mpExpression->getRoot()->subType())
@@ -266,7 +266,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
       case CMath::Delay:
 
-        if (context & CMath::EventHandling)
+        if (context.isSet(CMath::SimulationContext::EventHandling))
           {
             return true;
           }

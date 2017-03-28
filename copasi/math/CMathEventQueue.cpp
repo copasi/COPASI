@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -112,7 +117,7 @@ CMathEventQueue::CAction::~CAction()
 CMath::StateChange CMathEventQueue::CAction::process()
 {
   // Assume that nothing is changed
-  CMath::StateChange StateChange = CMath::NoChange;
+  CMath::StateChange StateChange(CMath::eStateChange::NoChange);
 
   switch (mType)
     {
@@ -266,14 +271,14 @@ void CMathEventQueue::start()
 CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 {
   if (mpTime == NULL || getProcessQueueExecutionTime() > *mpTime)
-    return CMath::NoChange;
+    return CMath::eStateChange::NoChange;
 
   mEquality = priorToOutput;
   mExecutionCounter = 0;
   mCascadingLevel = 0;
 
   bool success = true;
-  CMath::StateChange StateChange = CMath::NoChange;
+  CMath::StateChange StateChange(CMath::eStateChange::NoChange);
 
   *mpRootValuesBefore = mpContainer->getRoots();
   mpContainer->updatePriorityValues();
@@ -294,7 +299,7 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
       CMath::StateChange ActionStateChange = executeAction(itAction);
       StateChange |= ActionStateChange;
 
-      if (ActionStateChange != CMath::NoChange)
+      if (!ActionStateChange.isSet(CMath::eStateChange::NoChange))
         {
           mpContainer->updatePriorityValues();
         }

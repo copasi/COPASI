@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -223,7 +228,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
     return true;
 
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
-  itNode.setProcessingModes(CMathDependencyNodeIterator::Before | CMathDependencyNodeIterator::After);
+  itNode.setProcessingModes(CMathDependencyNodeIterator::Flag(CMathDependencyNodeIterator::Before) | CMathDependencyNodeIterator::After);
 
   while (itNode.next())
     {
@@ -257,7 +262,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                 // with the dependency graph omitting the value in the update sequence if the context
                 // is CMath::UseMoieties.
 
-                if (!(context & CMath::UseMoieties) ||
+                if (!context.isSet(CMath::SimulationContext::UseMoieties) ||
                     (pMathObject == NULL &&
                      (pParticleNumber = dynamic_cast< const CParticleReference *>(pObject)) == NULL) ||
                     (pMathObject != NULL &&

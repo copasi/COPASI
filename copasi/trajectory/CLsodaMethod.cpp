@@ -211,7 +211,8 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
+      change.isSet(CMath::eStateChange::State))
     {
       // We need to restart the integrator
       mLsodaStatus = 1;
@@ -355,7 +356,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
               mTime = *mpContainerStateTime;
               mTask += 3;
               mDWork[0] = EndTime;
-              stateChange(CMath::State);
+              stateChange(CMath::eStateChange::State);
 
 #ifdef DEBUG_FLOW
               std::cout << "Attempting to prevent over shooting." << std::endl;
@@ -536,7 +537,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
           mTime = *mpContainerStateTime;
           mTask += 3;
           mDWork[0] = EndTime;
-          stateChange(CMath::State);
+          stateChange(CMath::eStateChange::State);
 
           Status = step(deltaT);
           mTask -= 3;

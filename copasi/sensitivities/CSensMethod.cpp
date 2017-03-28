@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -547,7 +552,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
         }
 
       mpContainer->getInitialDependencies().getUpdateSequence(mLocalData[i].mInitialSequences,
-          CMath::UpdateMoieties,
+          CMath::SimulationContext::UpdateMoieties,
           Changed,
           mpContainer->getInitialStateObjects());
     }
@@ -578,7 +583,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
     }
 
   mpContainer->getTransientDependencies().getUpdateSequence(mTargetValueSequence,
-      CMath::Default,
+      CMath::SimulationContext::Default,
       mpContainer->getStateObjects(false),
       Requested);
 

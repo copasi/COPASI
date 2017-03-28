@@ -462,10 +462,10 @@ void CHybridMethodODE45::partitionSystem()
     }
 
   // Create the sequence which updates the species rates discarding the contribution of the slow reactions.
-  mpContainer->getTransientDependencies().getUpdateSequence(mSpeciesRateUpdateSequence, CMath::Default, Fluxes, SpeciesRates);
+  mpContainer->getTransientDependencies().getUpdateSequence(mSpeciesRateUpdateSequence, CMath::SimulationContext::Default, Fluxes, SpeciesRates);
 
   // Create the sequence which updates the propensities of the slow reactions.
-  mpContainer->getTransientDependencies().getUpdateSequence(mPropensitiesUpdateSequence, CMath::Default, Fluxes, Propensities);
+  mpContainer->getTransientDependencies().getUpdateSequence(mPropensitiesUpdateSequence, CMath::SimulationContext::Default, Fluxes, Propensities);
 
   return;
 }
@@ -585,7 +585,8 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
 
 void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
+      change.isSet(CMath::eStateChange::State))
     {
       mRKMethodStatus = CRungeKutta::RESTART;
       destroyRootMask();

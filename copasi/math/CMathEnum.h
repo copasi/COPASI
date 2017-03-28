@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -126,22 +131,23 @@ public:
     {}
   };
 
-  enum SimulationContext
+  enum struct SimulationContext
   {
-    Default = 0x0,
+    Default,
     // This is used to indicate deterministic simulation
     // Deterministic = 0x1,
     // This must be set when using the reduced model
-    UseMoieties = 0x2,
+    UseMoieties,
     // This updates the total mass of a moiety and must be set
     // at the beginning of the simulation or after events
-    UpdateMoieties = 0x4,
+    UpdateMoieties,
     // This is used to indicate stochastic simulation
     // Stochastic = 0x8,
     // Event handling
-    EventHandling = 0x10,
+    EventHandling,
     // This is used to detect whether a delay value depends on other delay values.
-    DelayValues = 0x20
+    DelayValues,
+    __SIZE
   };
 
   typedef CFlags< SimulationContext > SimulationContextFlag;
@@ -199,12 +205,13 @@ public:
     Delay
   };
 
-  enum eStateChange
+  enum struct eStateChange
   {
-    NoChange = 0x0,
-    State = 0x1,
-    EventSimulation = 0x2,
-    ContinuousSimulation = 0x4
+    NoChange,
+    State,
+    EventSimulation,
+    ContinuousSimulation,
+    __SIZE
   };
 
   enum RootToggleType

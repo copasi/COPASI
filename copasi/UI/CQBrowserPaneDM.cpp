@@ -72,22 +72,22 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   if (pObject != NULL)
     validity = pObject->getValidity();
 
-  CValidity::eSeverity highestSeverity = validity.getHighestSeverity();
+  CIssue::eSeverity highestSeverity = validity.getHighestSeverity();
 
   QCommonStyle * tmpStyle = new QCommonStyle;
   QIcon issueIcon;
 
   switch (highestSeverity)
     {
-      case CValidity::Error:
+      case CIssue::eSeverity::Error:
         issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
         break;
 
-      case CValidity::Warning:
+      case CIssue::eSeverity::Warning:
         issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
         break;
 
-      case CValidity::Information:
+      case CIssue::eSeverity::Information:
         issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
         break;
 

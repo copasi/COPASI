@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -250,7 +255,7 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
 
           mReactions[rIndex].fire();
           *mpContainerStateTime = ds;
-          stateChange(CMath::State);
+          stateChange(CMath::eStateChange::State);
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
@@ -529,11 +534,11 @@ void CHybridMethod::setupDependencyGraph()
           ChangedObjects.insert(itBalance->first);
         }
 
-      mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequences[i], CMath::Default, ChangedObjects, PropensityObjects);
+      mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequences[i], CMath::SimulationContext::Default, ChangedObjects, PropensityObjects);
 
       for (j = 0; j < numReactions; j++)
         {
-          if (mpContainer->getTransientDependencies().dependsOn(mReactions[j].getPropensityObject(), CMath::Default, ChangedObjects))
+          if (mpContainer->getTransientDependencies().dependsOn(mReactions[j].getPropensityObject(), CMath::SimulationContext::Default, ChangedObjects))
             {
               mDG.addDependent(i, j);
             }
@@ -732,7 +737,7 @@ void CHybridMethod::partitionSystem()
 
   if (StateChange)
     {
-      stateChange(CMath::State);
+      stateChange(CMath::eStateChange::State);
     }
 
   return;

@@ -78,26 +78,26 @@ CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
 {
   mpIfNode = static_cast<CEvaluationNode *>(getChild());
 
-  if (mpIfNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
+  if (mpIfNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
   mpIfValue = mpIfNode->getValuePointer();
 
   mpTrueNode = static_cast<CEvaluationNode *>(mpIfNode->getSibling());
 
-  if (mpTrueNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
+  if (mpTrueNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
   mpTrueValue = mpTrueNode->getValuePointer();
 
   mpFalseNode = static_cast<CEvaluationNode *>(mpTrueNode->getSibling());
 
-  if (mpFalseNode == NULL) return CIssue(CValidity::Error, CValidity::StructureInvalid);
+  if (mpFalseNode == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
   mpFalseValue = mpFalseNode->getValuePointer();
 
   if (mpFalseNode->getSibling() == NULL) // We must have exactly three children
     return CIssue::Success;
   else
-    return CIssue(CValidity::Error, CValidity::TooManyArguments);
+    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 }
 
 // virtual

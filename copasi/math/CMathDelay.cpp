@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -99,9 +104,9 @@ void CMathDelay::createUpdateSequences()
         Requested.insert(*pObject);
       }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequence, CMath::DelayValues,
+  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequence, CMath::SimulationContext::DelayValues,
       mpContainer->getStateObjects(false), Requested);
-  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequenceReduced, CMath::UseMoieties | CMath::DelayValues,
+  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequenceReduced, CMath::SimulationContextFlag(CMath::SimulationContext::UseMoieties) | CMath::SimulationContext::DelayValues,
       mpContainer->getStateObjects(true), Requested);
 }
 

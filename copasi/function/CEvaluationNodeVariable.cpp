@@ -49,16 +49,16 @@ CIssue CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
 {
   mpTree = pTree;
 
-  if (!pTree) return CIssue(CValidity::Error, CValidity::StructureInvalid);
+  if (!pTree) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
 
   mIndex = pTree->getVariableIndex(mData);
 
-  if (mIndex == C_INVALID_INDEX) return CIssue(CValidity::Error, CValidity::ValueNotFound);
+  if (mIndex == C_INVALID_INDEX) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
 
   if (getChild() == NULL) // We must not have any children.
     return CIssue::Success;
   else
-    return CIssue(CValidity::Error, CValidity::TooManyArguments);
+    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 }
 
 void CEvaluationNodeVariable::calculate()

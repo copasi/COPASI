@@ -697,7 +697,7 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
 
   CObjectInterface::UpdateSequence UpdateSequence;
 
-  mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::UpdateMoieties | CMath::EventHandling, mStateValues, objects);
+  mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::SimulationContextFlag(CMath::SimulationContext::UpdateMoieties) | CMath::SimulationContext::EventHandling, mStateValues, objects);
 
   return UpdateSequence.empty();
 }
@@ -1450,7 +1450,7 @@ void CMathContainer::compile()
       }
 
     CObjectInterface::UpdateSequence Sequence;
-    mTransientDependencies.getUpdateSequence(Sequence, CMath::DelayValues, Changed, Changed);
+    mTransientDependencies.getUpdateSequence(Sequence, CMath::SimulationContext::DelayValues, Changed, Changed);
 
     if (!Sequence.empty())
       {
@@ -2391,11 +2391,11 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
   // Build the update sequence
   mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceExtensive,
-                                         CMath::UpdateMoieties,
+                                         CMath::SimulationContext::UpdateMoieties,
                                          mInitialStateValueExtensive,
                                          RequestedExtensive);
   mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceIntensive,
-                                         CMath::UpdateMoieties,
+                                         CMath::SimulationContext::UpdateMoieties,
                                          mInitialStateValueIntensive,
                                          RequestedIntensive);
 }
@@ -2477,7 +2477,7 @@ void CMathContainer::createApplyInitialValuesSequence()
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::Default, Changed, Requested, Calculated);
+  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::SimulationContext::Default, Changed, Requested, Calculated);
 
   // It is possible that discontinuities only depend on constant values. Since discontinuities do not exist in the initial values
   // these are never calculate. It is save to prepend all discontinuities which are not already in the sequence
@@ -2595,8 +2595,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
-  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::SimulationContext::Default, mStateValues, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::SimulationContext::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
   // Create the update sequences for the transient noise;
   pObject = mObjects.array() + (mExtensiveNoise.array() - mValues.array());
@@ -2615,8 +2615,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
       Noise.insert(pObject);
     }
 
-  mTransientDependencies.getUpdateSequence(mNoiseSequence, CMath::Default, mStateValues, Noise);
-  mTransientDependencies.getUpdateSequence(mNoiseSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedNoise);
+  mTransientDependencies.getUpdateSequence(mNoiseSequence, CMath::SimulationContext::Default, mStateValues, Noise);
+  mTransientDependencies.getUpdateSequence(mNoiseSequenceReduced, CMath::SimulationContext::UseMoieties, mReducedStateValues, ReducedNoise);
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
   // We need to additionally add the event assignments to the simulation required values as they may time dependent
@@ -2632,7 +2632,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   CObjectInterface::ObjectSet TimeObject;
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
   CObjectInterface::UpdateSequence TimeChange;
-  mTransientDependencies.getUpdateSequence(TimeChange, CMath::Default, TimeObject, TimeDependentValues);
+  mTransientDependencies.getUpdateSequence(TimeChange, CMath::SimulationContext::Default, TimeObject, TimeDependentValues);
   mIsAutonomous = TimeChange.empty();
 
   // Build the update sequence used to calculate the priorities in the event process queue.
@@ -2645,7 +2645,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
       PriorityRequiredValues.insert(pObject);
     }
 
-  mTransientDependencies.getUpdateSequence(mPrioritySequence, CMath::Default, mStateValues, PriorityRequiredValues);
+  mTransientDependencies.getUpdateSequence(mPrioritySequence, CMath::SimulationContext::Default, mStateValues, PriorityRequiredValues);
 }
 
 void CMathContainer::createUpdateAllTransientDataValuesSequence()
@@ -2664,7 +2664,7 @@ void CMathContainer::createUpdateAllTransientDataValuesSequence()
         }
     }
 
-  mTransientDependencies.getUpdateSequence(mTransientDataObjectSequence, CMath::Default, mStateValues, TransientDataObjects, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mTransientDataObjectSequence, CMath::SimulationContext::Default, mStateValues, TransientDataObjects, mSimulationRequiredValues);
 }
 
 void CMathContainer::analyzeRoots()
@@ -2699,10 +2699,10 @@ void CMathContainer::analyzeRoots()
       Requested.insert(pRoot);
       CObjectInterface::UpdateSequence UpdateSequence;
 
-      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, ContinousStateValues, Requested);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::SimulationContext::Default, ContinousStateValues, Requested);
       *pIsDiscrete = UpdateSequence.empty();
 
-      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::Default, TimeValue, Requested);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::SimulationContext::Default, TimeValue, Requested);
       *pIsTimeDependent = !UpdateSequence.empty();
     }
 
@@ -2953,7 +2953,7 @@ void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobian
 
       Changed.insert(pVariable);
 
-      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::UseMoieties : CMath::Default, Changed, Requested);
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::SimulationContext::UseMoieties : CMath::SimulationContext::Default, Changed, Requested);
 
       UpdateSequence::const_iterator it = Sequence.begin();
       UpdateSequence::const_iterator end = Sequence.end();
@@ -3004,7 +3004,7 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
 
       Changed.insert(pVariable);
 
-      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::UseMoieties : CMath::Default, Changed, Requested);
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::SimulationContext::UseMoieties : CMath::SimulationContext::Default, Changed, Requested);
 
       UpdateSequence::const_iterator it = Sequence.begin();
       UpdateSequence::const_iterator end = Sequence.end();
