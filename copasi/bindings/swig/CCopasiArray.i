@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -84,6 +89,16 @@
    {
       return (*($self))[MY_FUNNY_INDEX];
    }
+
+   /** overload for easy access of 2d arrays */
+   virtual CCopasiAbstractArray::data_type get(int index1, int index2)
+   {  
+      CCopasiAbstractArray::index_type MY_FUNNY_INDEX(2);
+      MY_FUNNY_INDEX[0] = index1;
+      MY_FUNNY_INDEX[1] = index2;
+      return (*($self))[MY_FUNNY_INDEX];
+   }
+
 };
 
 %template(AnnotatedFloatMatrix) CCopasiMatrixInterface<CMatrix<C_FLOAT64> >;

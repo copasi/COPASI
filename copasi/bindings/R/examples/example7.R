@@ -94,6 +94,7 @@ funDB <- CCopasiRootContainer_getFunctionList()
 stopifnot(!is.null(funDB))
 
 func <- CFunctionDB_createFunction(funDB,"My Rate Law","UserDefined")
+func <- as(func, '_p_CFunction')
 
 rateLaw <- CFunctionDB_findFunction(funDB,"My Rate Law")
 
@@ -103,7 +104,7 @@ stopifnot(!is.null(rateLaw))
 formula <- "(1-0.4/(EXPONENTIALE^(temp-37)))*0.00001448471257*1.4^(temp-37)*substrate"
 
 result <- CExpression_setInfix(func,formula)
-stopifnot(result.isSuccess())
+stopifnot(result$isSuccess())
 # make the function irreversible
 invisible(CFunction_setReversible(func,"TriFalse"))
 # the formula string should have been parsed now
@@ -128,7 +129,7 @@ stopifnot(!is.null(CReaction_getFunction(reaction)))
 # In our case we need to tell COPASI that substrate is to be replaced by the substrate of the reaction
 # and temp is to be replaced by the global parameter K
 invisible(CReaction_setParameterMapping(reaction,"substrate", CModelEntity_getKey(S)))
-invisible(CReaction_setParameterMapping(reaction,"temp", CModelENtity_getKey(MV)))
+invisible(CReaction_setParameterMapping(reaction,"temp", CModelEntity_getKey(MV)))
 
 # finally compile the model
 # compile needs to be done before updating all initial values for

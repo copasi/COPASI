@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,6 +22,7 @@
 
 #include "optimization/COptProblem.h"
 #include "utilities/CMatrix.h"
+#include <copasi/parameterFitting/CFitItem.h>
 
 class CExperimentSet;
 class CCrossValidationSet;
@@ -227,6 +233,13 @@ public:
    * @return const CCrossValidationSet & crossValidationSet
    */
   CCrossValidationSet & getCrossValidationSet();
+
+  /**
+   * Add an optimization item to the problem.
+   * @param const CCopasiObjectName & objectCN
+   * @return COptItem optItemAdded
+   */
+  CFitItem & addFitItem(const CCopasiObjectName & objectCN);
 
   /**
    * Set the solution.

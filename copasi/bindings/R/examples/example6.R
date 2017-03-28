@@ -100,7 +100,7 @@ timeSeries <- CTrajectoryTask_getTimeSeries(trajectoryTask)
 stopifnot(CTimeSeries_getRecordedSteps(timeSeries) == 4001)
 iMax <- CTimeSeries_getNumVariables(timeSeries)
 # there should be four variables, the three metabolites and time
-stopifnot(iMax == 5)
+stopifnot(iMax == 4)
 lastIndex <- CTimeSeries_getRecordedSteps(timeSeries) - 1
 # open the file
 # we need to remember in which order the variables are written to file
@@ -191,9 +191,11 @@ stopifnot(!is.null(fitMethod))
 # the object must be an instance of COptMethod or a subclass thereof
 # (CFitMethod)
 fitProblem <- CCopasiTask_getProblem(fitTask)
+invisible(as(fitProblem, '_p_CFitProblem'))
 stopifnot(!is.null(fitProblem))
 
 experimentSet <- CCopasiParameterGroup_getParameter(fitProblem,"Experiment Set")
+invisible(experimentSet <- as(experimentSet, '_p_CExperimentSet'))
 stopifnot(!is.null(experimentSet))
 
 # first experiment (we only have one here)
@@ -225,7 +227,7 @@ stopifnot(result == TRUE)
 stopifnot(CExperimentObjectMap_getRole(objectMap,0) == "time")
 
 stopifnot(!is.null(model))
-timeReference <- CCopasiContainer_getObject(model,CCopasiObjectName("Reference=Time"))
+timeReference <- CObjectInterface_getObject(model,CCopasiObjectName("Reference=Time"))
 stopifnot(!is.null(timeReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,0,CCopasiObjectName_getString(CCopasiObject_getCN(timeReference))))
 
@@ -234,7 +236,7 @@ invisible(CExperimentObjectMap_setObjectCN(objectMap,0,CCopasiObjectName_getStri
 invisible(CExperimentObjectMap_setRole(objectMap,1,"dependent"))
 metab <- metabVector[[1]]
 stopifnot(!is.null(metab))
-particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CObjectInterface_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,1,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
 
@@ -242,7 +244,7 @@ invisible(CExperimentObjectMap_setRole(objectMap,2,"dependent"))
 
 metab <- metabVector[[2]]
 stopifnot(!is.null(metab))
-particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CObjectInterface_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,2,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
 
@@ -250,7 +252,7 @@ invisible(CExperimentObjectMap_setRole(objectMap,3,"dependent"))
 
 metab <- metabVector[[3]]
 stopifnot(!is.null(metab))
-particleReference <- CCopasiContainer_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CObjectInterface_getObject(metab,CCopasiObjectName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(CExperimentObjectMap_setObjectCN(objectMap,3,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
 
@@ -270,18 +272,17 @@ parameter <- CCopasiParameterGroup_getParameter(CReaction_getParameters(reaction
 stopifnot(!is.null(parameter))
 
 # define a CFitItem
-parameterReference <- CCopasiParameter_getObject(parameter,CCopasiObjectName("Reference=Value"))
+parameterReference <- CObjectInterface_getObject(parameter,CCopasiObjectName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
-fitItem1 <- CFitItem(dataModel)
+fitItem1 <- CFitProblem_addFitItem(fitProblem, parameterReference$getCN())
 stopifnot(!is.null(fitItem1))
-invisible(CFitItem_setObjectCN(fitItem1,parameterReference.getCN()))
-invisible(CFitItem_setStartValue(fitItem1,4.0))
-invisible(CFitItem_setLowerBound(fitItem1,CCopasiObjectName("0.00001")))
-invisible(CFitItem_setUpperBound(fitItem1,CCopasiObjectName("10")))
+#invisible(COptItem_setObjectCN(fitItem1,parameterReference$getCN()))
+invisible(COptItem_setStartValue(fitItem1,4.0))
+invisible(COptItem_setLowerBound(fitItem1,CCopasiObjectName("0.00001")))
+invisible(COptItem_setUpperBound(fitItem1,CCopasiObjectName("10")))
 # add the fit item to the correct parameter group
-optimizationItemGroup <- CFitProblem_getParameter(fitProblem,"OptimizationItemList")
+optimizationItemGroup <- CCopasiParameterGroup_getParameter(fitProblem,"OptimizationItemList")
 stopifnot(!is.null(optimizationItemGroup))
-invisible(CCopasiParameterGroup_addParameter(optimizationItemGroup,fitItem1))
 
 reaction <- CModel_getReaction(model,1)
 stopifnot(!is.null(reaction))
@@ -290,16 +291,13 @@ parameter <- CCopasiParameterGroup_getParameter(CReaction_getParameters(reaction
 stopifnot(!is.null(parameter))
 
 # define a CFitItem
-parameterReference <- CCopasiContainer_getObject(parameter,CCopasiObjectName("Reference=Value"))
+parameterReference <- CObjectInterface_getObject(parameter,CCopasiObjectName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
-fitItem2 <- CFitItem(dataModel)
+fitItem2 <- CFitProblem_addFitItem(fitProblem, parameterReference$getCN())
 stopifnot(!is.null(fitItem2))
-invisible(CFitItem_setObjectCN(fitItem2,parameterReference.getCN()))
-invisible(CFitItem_setStartValue(fitItem2,4.0))
-invisible(CFitItem_setLowerBound(fitItem2,CCopasiObjectName("0.00001")))
-invisible(CFitItem_setUpperBound(fitItem2,CCopasiObjectName("10")))
-# add the fit item to the correct parameter group
-invisible(CCopasiParameterGroup_addParameter(optimizationItemGroup,fitItem2))
+invisible(COptItem_setStartValue(fitItem2,4.0))
+invisible(COptItem_setLowerBound(fitItem2,CCopasiObjectName("0.00001")))
+invisible(COptItem_setUpperBound(fitItem2,CCopasiObjectName("10")))
 
 result <- TRUE
 # running the task for this example will probably take some time
@@ -312,17 +310,19 @@ tryCatch(result <- CCopasiTask_process(fitTask,TRUE), error = function(e) {
   
 stopifnot(result == TRUE)
 # stopifnot(that there are two optimization items)
-stopifnot(len(fitProblem_getOptItemList(fitProblem)) == 2)
+optItemList <- COptProblem_getOptItemList(fitProblem);
+stopifnot(optItemList$size() == 2)
 # the order should be the order in whih we added the items above
-optItem1 <- CFitProblem_getOptItemList(fitProblem)[1]
-optItem2 <- CFitProblem_getOptItemList(fitProblem)[2]
+optItem1 <- COptProblem_getOptItem(fitProblem, 0)
+optItem2 <- COptProblem_getOptItem(fitProblem, 1)
 # the actual results are stored in the fit problem
-stopifnot(FloatVectorCore_size(CFitProblem_getSolutionVariables(fitProblem)) == 2)
+solutionVariables <- COptProblem_getSolutionVariables(fitProblem);
+stopifnot(FloatVectorCore_size(solutionVariables) == 2)
 
-cat("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem1))) , ": " , FloatVectorCore_get(CFitProblem_getSolutionVariables(),0), "\n" sep = "")
-cat("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem2))) , ": " , FloatVectorCore_get(CFitProblem_getSolutionVariables(),1), "\n", sep = "")
+cat("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem1))) , ": " , FloatVectorCore_get(solutionVariables,0), "\n", sep = "")
+cat("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem2))) , ": " , FloatVectorCore_get(solutionVariables,1), "\n", sep = "")
 # depending on the noise, the fit can be quite bad, so we are a litle
 # relaxed here (we should be within 3% of the original values)
-stopifnot((abs(FloatVectorCore(CFitProblem_getSolutionVariables(fitProblem),0) - 0.03) / 0.03) < 3e-2)
-stopifnot((abs(FloatVectorCore(CFitProblem_getSolutionVariables(fitProblem),1) - 0.004) / 0.004) < 3e-2)
+stopifnot((abs(FloatVectorCore_get(solutionVariables,0) - 0.03) / 0.03) < 3e-2)
+stopifnot((abs(FloatVectorCore_get(solutionVariables,1) - 0.004) / 0.004) < 3e-2)
 

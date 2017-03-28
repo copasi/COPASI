@@ -158,6 +158,7 @@ invisible(CScanProblem_setSubtask(scanProblem,"timeCourse"))
 
 # we just want to run the timecourse task a number of times, so we
 # create a repeat item with 100 repeats
+invisible(scanProblem <- as(scanProblem, '_p_CScanProblem'))
 invisible(CScanProblem_addScanItem(scanProblem,"SCAN_REPEAT", 100))
 
 # we want the output from the trajectory task
@@ -165,9 +166,9 @@ invisible(CScanProblem_setOutputInSubtask(scanProblem,TRUE))
 
 # we don't want to set the initial conditions of the model to the end
 # state of the last run
-invisible(CScanProblem_setAdjustInitialConditions(scanProblem,FALSE))
+invisible(CScanProblem_setContinueFromCurrentState(scanProblem,FALSE))
 
-tryCatch(CScanTask_process(scanTask,TRUE), error = function(e) {
+tryCatch(CCopasiTask_process(scanTask,TRUE), error = function(e) {
   write("Error. Running the scan failed.", stderr())
   # check if there are additional error messages
   if (CCopasiMessage_size() > 0) {

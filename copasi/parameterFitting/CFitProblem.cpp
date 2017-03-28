@@ -530,7 +530,11 @@ bool CFitProblem::initialize()
 
   for (j = 0; it != end; ++it, j++)
     {
-      pItem = static_cast<CFitItem *>(*it);
+      pItem = dynamic_cast<CFitItem *>(*it);
+
+      if (pItem == NULL)
+        fatalError();
+
       pItem->updateBounds(mpOptItems->begin());
 
       // We cannot directly change the container values as multiple parameters
@@ -757,6 +761,19 @@ bool CFitProblem::checkFunctionalConstraints()
       }
 
   return true;
+}
+
+CFitItem & CFitProblem::addFitItem(const CCopasiObjectName & objectCN)
+{
+  CCopasiDataModel* pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+
+  CFitItem * pItem = new CFitItem(pDataModel);
+  pItem->setObjectCN(objectCN);
+
+  mpGrpItems->addParameter(pItem);
+
+  return *pItem;
 }
 
 /**

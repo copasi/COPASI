@@ -75,7 +75,10 @@ if (!is.null(model)) {
     # it basically represents a relative delta value for the calculation of the derivatives
     # the third parameter termed resolution in the C++ API is currently ignores
     # so it does not matter what value you give here.
-    invisible(CModel_calculateJacobian(model,jacobian, 1e-12, 1.0))
+    
+    container <- model$getMathContainer()
+    invisible(container$calculateJacobian(jacobian, 1e-12, FALSE))
+   
     # now we print the result
     # the jacobian stores the values in the order they are
     # given in the user order in the state template so it is not really straight
@@ -103,6 +106,7 @@ if (!is.null(model)) {
         }
         i <- i + 1
     }
+
 
     stopifnot(length(nameVector) == FloatMatrix_numRows(jacobian))
     # now we print the matrix, for this we assume that no
@@ -135,7 +139,7 @@ if (!is.null(model)) {
 
     # we can also calculate the jacobian of the reduced system
     # in a similar way
-    invisible(CModel_calculateJacobianX(model,jacobian, 1e-12, 1.0))
+    invisible(CMathContainer_calculateJacobian(container,jacobian, 1e-12, TRUE))
     # this time generating the output is actually simpler because the rows
     # and columns are ordered in the same way as the independent variables of the state temple
     cat("\n")

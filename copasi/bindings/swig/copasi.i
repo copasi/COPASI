@@ -59,9 +59,11 @@
 
 
 #if SWIGR
-
+%include "rtype.swg"
+%include "copasi_rtype.swg"
 %include "typemaps.i"
 %typemap("rtype") size_t, size_t *, size_t &, const size_t&      "integer";
+%typemap("rtype") bool, bool *, bool &, const bool&      "logical";
 #endif 
 
 %{

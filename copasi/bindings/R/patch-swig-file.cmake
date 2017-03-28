@@ -1,4 +1,9 @@
-# Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -24,6 +29,6 @@ string(REPLACE "\${enumTo" "enumTo" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "\${enumFrom" "enumFrom" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "if ( &&" "if (" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "if ()" "if(TRUE)" SOURCECODE "${SOURCECODE}" )
-
+string(REPLACE "ans <- new(\"_p_size_t\", ref=ans) ;" "" SOURCECODE "${SOURCECODE}" )
 file(WRITE "${FILENAME}" "${SOURCECODE}")
 message (STATUS "Patched COPASI.R")
