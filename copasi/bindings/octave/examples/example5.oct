@@ -24,15 +24,15 @@ variableModelValue=model.createModelValue("V");
 variableModelValue.setStatus(CModelEntity_ASSIGNMENT);
 % we create a very simple assignment that is easy on the optimization
 % a parabole with the minimum at x=6 should do just fine
-s=fixedModelValue.getObject(CCopasiObjectName("Reference=Value")).getCN().getString();
+s=fixedModelValue.getValueReference().getCN().getString();
 s=strcat("(<",s,"> - 6.0)^2");
 variableModelValue.setExpression(s);
 % now we compile the model and tell COPASI which values have changed so
 % that COPASI can update the values that depend on those
 model.compileIfNecessary();
 changedObjects=ObjectStdVector();
-changedObjects.push_back(fixedModelValue.getObject(CCopasiObjectName("Reference=InitialValue")));
-changedObjects.push_back(variableModelValue.getObject(CCopasiObjectName("Reference=InitialValue")));
+changedObjects.push_back(fixedModelValue.getInitialValueReference());
+changedObjects.push_back(variableModelValue.getInitialValueReference());
 model.updateInitialValues(changedObjects);
 
 % now we set up the optimization
@@ -44,7 +44,7 @@ timeCourseTask = dataModel.getTask("Time-Course");
 % since for this example it really doesn't matter how long we run the time course 
 % we run for 1 second and calculate 10 steps
 % run a deterministic time course
-timeCourseTask.setMethodType(CCopasiMethod_deterministic);
+timeCourseTask.setMethodType(CTaskEnum_deterministic);
 
 % pass a pointer of the model to the problem
 timeCourseTask.getProblem().setModel(dataModel.getModel());
@@ -66,18 +66,18 @@ problem.setTimeSeriesRequested(true);
 optTask=dataModel.getTask("Optimization");
 %!assert( swig_this(optTask) != 0);
 % we want to use Levenberg-Marquardt as the optimization method
-optTask.setMethodType(CCopasiMethod_LevenbergMarquardt);
+optTask.setMethodType(CTaskEnum_LevenbergMarquardt);
 
 % next we need to set subtask type on the problem
 optProblem=optTask.getProblem();
 %!assert( swig_this(optProblem) != 0);
-optProblem.setSubtaskType(CCopasiTask_timeCourse);
+optProblem.setSubtaskType(CTaskEnum_timeCourse);
 
 % we create the objective function
 % we want to minimize the value of the variable model value at the end of
 % the simulation
 % the objective function is normally minimized
-objectiveFunction=variableModelValue.getObject(CCopasiObjectName("Reference=Value")).getCN().getString();
+objectiveFunction=variableModelValue.getValueReference().getCN().getString();
 % we need to put the angled brackets around the common name of the object
 objectiveFunction=strcat("<",objectiveFunction,">");
 % now we set the objective function in the problem
@@ -86,7 +86,7 @@ optProblem.setObjectiveFunction(objectiveFunction);
 % now we create the optimization items
 % i.e. the model elements that have to be changed during the optimization
 % in order to get to the optimal solution
-optItem=optProblem.addOptItem(CCopasiObjectName(fixedModelValue.getObject(CCopasiObjectName("Reference=InitialValue")).getCN()));
+optItem=optProblem.addOptItem(CCopasiObjectName(fixedModelValue.getInitialValueReference().getCN()));
 % we want to change the fixed model value from -100 to +100 with a start
 % value of 50
 optItem.setStartValue(50.0);
@@ -115,7 +115,7 @@ reports = dataModel.getReportDefinitionList();
 % create a report definition object
 report = reports.createReportDefinition("Report", "Output for optimization");
 % set the task type for the report definition to timecourse
-report.setTaskType(CCopasiTask_optimization);
+report.setTaskType(CTaskEnum_optimization);
 % we don't want a table
 report.setIsTable(false);
 % the entries in the output should be seperated by a ", "
@@ -136,7 +136,7 @@ header.push_back(CRegisteredObjectName(CCopasiStaticString("initial value of F")
 % the initial value of the fixed parameter separated by a komma
 body.push_back(CRegisteredObjectName(optProblem.getObject(CCopasiObjectName("Reference=Best Value")).getCN().getString()));
 body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
-body.push_back(CRegisteredObjectName(fixedModelValue.getObject(CCopasiObjectName("Reference=InitialValue")).getCN().getString()));
+body.push_back(CRegisteredObjectName(fixedModelValue.getInitialValueReference().getCN().getString()));
 
 
 % set the report for the task

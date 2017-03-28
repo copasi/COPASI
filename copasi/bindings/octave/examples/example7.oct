@@ -27,7 +27,7 @@ changedObjects=ObjectStdVector();
 % create a compartment with the name cell and an initial volume of 5.0
 % microliter
 compartment = model.createCompartment("cell", 5.0);
-object = compartment.getObject(CCopasiObjectName("Reference=InitialVolume"));
+object = compartment.getInitialValueReference();
 %!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
 %!assert( swig_this(compartment) != 0);
@@ -37,7 +37,7 @@ changedObjects.push_back(object);
 % the metabolite belongs to the compartment we created and is is to be
 % fixed
 S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
-object = S.getObject(CCopasiObjectName("Reference=InitialConcentration"));
+object = S.getInitialConcentrationReference();;
 %!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
 %!assert( swig_this(compartment) != 0);
@@ -47,7 +47,7 @@ changedObjects.push_back(object);
 % concentration of 0. This metabolite is to be changed by reactions
 P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
 %!assert( swig_this(P) != 0);
-object = P.getObject(CCopasiObjectName("Reference=InitialConcentration"));
+object = P.getInitialConcentrationReference();;
 %!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
 %!assert( model.getMetabolites().size() == 2);
@@ -73,7 +73,7 @@ MV = model.createModelValue("K", 42.0);
 % set the status to FIXED
 MV.setStatus(CModelEntity_FIXED);
 %!assert( swig_this(MV) != 0);
-object = MV.getObject(CCopasiObjectName("Reference=InitialValue"));
+object = MV.getInitialValueReference();
 %!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
 %!assert( model.getModelValues().size() == 1);

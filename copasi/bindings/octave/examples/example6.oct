@@ -9,7 +9,7 @@ COPASI
 
 MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
 <!-- Created by COPASI version 4.5.30 (Debug) on 2009-03-30 08:01 with libSBML version 3.3.2. -->\
-<sbml xmlns=\"http:#www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">\
+<sbml xmlns=\"http://www.sbml.org/sbml/level2\" level=\"2\" version=\"1\">\
   <model metaid=\"COPASI1\" id=\"Model_1\" name=\"Model\">\
     <listOfUnitDefinitions>\
       <unitDefinition id=\"volume\">\
@@ -40,7 +40,7 @@ MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
           <speciesReference species=\"species_2\"/>\
         </listOfProducts>\
         <kineticLaw>\
-          <math xmlns=\"http:#www.w3.org/1998/Math/MathML\">\
+          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\
             <apply>\
               <times/>\
               <ci> compartment_1 </ci>\
@@ -61,7 +61,7 @@ MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
           <speciesReference species=\"species_3\"/>\
         </listOfProducts>\
         <kineticLaw>\
-          <math xmlns=\"http:#www.w3.org/1998/Math/MathML\">\
+          <math xmlns=\"http://www.w3.org/1998/Math/MathML\">\
             <apply>\
               <times/>\
               <ci> compartment_1 </ci>\
@@ -83,13 +83,11 @@ MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
 dataModel = CCopasiRootContainer.addDatamodel();
 %!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
 % first we load a simple model
-try
-  % load the model 
-  dataModel.importSBMLFromString(MODEL_STRING);
-catch
+% load the model 
+if (dataModel.importSBMLFromString(MODEL_STRING) == false)
   error("Error while importing the model.\n");
   quit(1)
-end_try_catch
+endif
 % now we need to run some time course simulation to get data to fit
 % against
 
@@ -108,7 +106,7 @@ if (swig_this(trajectoryTask) == 0)
 endif
 
 % run a deterministic time course
-trajectoryTask.setMethodType(CCopasiMethod_deterministic);
+trajectoryTask.setMethodType(CTaskEnum_deterministic);
 
 % pass a pointer of the model to the problem
 trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -137,21 +135,19 @@ try
     % now we run the actual trajectory
     result=trajectoryTask.process(true);
 catch
-    error("Error. Running the time course simulation failed.\n");
     % check if there are additional error messages
-    if (CCopasiMessage.size() > 0)
-        % printf(the messages in chronological order);
-        error("%s\n",CCopasiMessage.getAllMessageText(true));
-    endif
+    printf("%s\n",trajectoryTask.getProcessWarning());
+    printf("%s\n",trajectoryTask.getProcessError());
+    error("Error. Running the time course simulation failed.\n");
     quit(1)
 end_try_catch
+
 if(result == false)
-    error("An error occured while running the time course simulation.\n");
     % check if there are additional error messages
-    if (CCopasiMessage.size() > 0)
-        % print the messages in chronological order
-        error("%s\n",CCopasiMessage.getAllMessageText(true));
-    endif
+    dataModel.saveModel('example6.cps', true);
+    printf("%s\n",trajectoryTask.getProcessWarning());
+    printf("%s\n",trajectoryTask.getProcessError());
+    error("An error occured while running the time course simulation.\n");
     quit(1)
 endif
 
@@ -246,7 +242,7 @@ reaction=dataModel.getModel().getReaction(1);
 %!assert( reaction.isLocalParameter(0) == true);
 reaction.setParameterValue("k1",r);
 
-fitTask=dataModel.addTask(CCopasiTask_parameterFitting);
+fitTask=dataModel.addTask(CTaskEnum_parameterFitting);
 %!assert( swig_this(fitTask) != 0);
 % the method in a fit task is an instance of COptMethod or a subclass of
 % it.
@@ -276,7 +272,7 @@ experiment.setLastRow(4001);
 %!assert( experiment.getLastRow()==4001);
 experiment.setHeaderRow(1);
 %!assert( experiment.getHeaderRow()==1);
-experiment.setExperimentType(CCopasiTask_timeCourse);
+experiment.setExperimentType(CTaskEnum_timeCourse);
 %!assert( experiment.getExperimentType() == CCopasiTask_timeCourse);
 experiment.setNumColumns(4);
 %!assert( experiment.getNumColumns()==4);
@@ -290,7 +286,7 @@ result=objectMap.setRole(0,CExperiment_time);
 
 model=dataModel.getModel();
 %!assert( swig_this(model) != 0);
-timeReference=model.getObject(CCopasiObjectName("Reference=Time"));
+timeReference=model.getValueReference();
 %!assert( swig_this(timeReference) != 0);
 objectMap.setObjectCN(0,timeReference.getCN().getString());
 
@@ -299,21 +295,21 @@ objectMap.setObjectCN(0,timeReference.getCN().getString());
 objectMap.setRole(1,CExperiment_dependent);
 metab=metabVector{1};
 %!assert( swig_this(metab) != 0);
-particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"));
+particleReference=metab.getConcentrationReference();
 %!assert( swig_this(particleReference) != 0);
 objectMap.setObjectCN(1,particleReference.getCN().getString());
 
 objectMap.setRole(2,CExperiment_dependent);
 metab=metabVector{2};
 %!assert( swig_this(metab) != 0);
-particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"));
+particleReference=metab.getConcentrationReference();
 %!assert( swig_this(particleReference) != 0);
 objectMap.setObjectCN(2,particleReference.getCN().getString());
 
 objectMap.setRole(3,CExperiment_dependent);
 metab=metabVector{3};
 %!assert( swig_this(metab) != 0);
-particleReference=metab.getObject(CCopasiObjectName("Reference=Concentration"));
+particleReference=metab.getConcentrationReference();
 %!assert( swig_this(particleReference) != 0);
 objectMap.setObjectCN(3,particleReference.getCN().getString());
 
@@ -333,7 +329,7 @@ parameter=reaction.getParameters().getParameter(0);
 %!assert( swig_this(parameter) != 0);
 
 % define a CFitItem
-parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"));
+parameterReference=parameter.getValueReference();
 %!assert( swig_this(parameterReference) != 0);
 fitItem1=CFitItem(dataModel);
 %!assert( swig_this(fitItem1) !=0);
@@ -353,7 +349,7 @@ parameter=reaction.getParameters().getParameter(0);
 %!assert( swig_this(parameter) != 0);
 
 % define a CFitItem
-parameterReference=parameter.getObject(CCopasiObjectName("Reference=Value"));
+parameterReference=parameter.getValueReference();
 %!assert( swig_this(parameterReference) != 0);
 fitItem2=CFitItem(dataModel);
 %!assert( swig_this(fitItem2) != 0);

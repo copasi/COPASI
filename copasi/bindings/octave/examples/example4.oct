@@ -102,7 +102,7 @@ reports = dataModel.getReportDefinitionList();
 % create a report definition object
 report = reports.createReportDefinition("Report", "Output for timecourse");
 % set the task type for the report definition to timecourse
-report.setTaskType(CCopasiTask_timeCourse);
+report.setTaskType(CTaskEnum_timeCourse);
 % we don't want a table
 report.setIsTable(false);
 % the entries in the output should be seperated by a ", "
@@ -155,7 +155,7 @@ if(swig_this(trajectoryTask) == 0)
 endif
 
 % run a stochastic time course
-trajectoryTask.setMethodType(CCopasiMethod_stochastic);
+trajectoryTask.setMethodType(CTaskEnum_stochastic);
 
 % pass a pointer of the model to the problem
 trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -207,7 +207,7 @@ scanTask.getReport().setTarget("example4.txt");
 scanTask.getReport().setAppend(false);
 
 % tell the scan that we want to make a scan over a trajectory task
-scanProblem.setSubtask(CCopasiTask_timeCourse);
+scanProblem.setSubtask(CTaskEnum_timeCourse);
 
 % we just want to run the timecourse task a number of times, so we
 % create a repeat item with 100 repeats
@@ -218,7 +218,7 @@ scanProblem.setOutputInSubtask(true);
 
 % we don't want to set the initial conditions of the model to the end
 % state of the last run
-scanProblem.setAdjustInitialConditions(false);
+scanProblem.setContinueFromCurrentState(false);
 
 try
   % now we run the actual trajectory

@@ -30,7 +30,7 @@ if (length(argv()) == 1)
   % create a report definition object
   report = reports.createReportDefinition("Report", "Output for timecourse");
   % set the task type for the report definition to timecourse
-  report.setTaskType(CCopasiTask_timeCourse);
+  report.setTaskType(CTaskEnum_timeCourse);
   % we don't want a table
   report.setIsTable(false);
   % the entries in the output should be seperated by a ", "
@@ -80,7 +80,7 @@ if (length(argv()) == 1)
   endif
 
   % run a deterministic time course
-  trajectoryTask.setMethodType(CCopasiMethod_deterministic);
+  trajectoryTask.setMethodType(CTaskEnum_deterministic);
 
   % pass a pointer of the model to the problem
   trajectoryTask.getProblem().setModel(dataModel.getModel());
