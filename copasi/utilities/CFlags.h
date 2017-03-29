@@ -16,8 +16,8 @@
 template < class Enum > class CFlags
 {
 public:
-  static CFlags All;
-  static CFlags None;
+  static const CFlags None;
+  static const CFlags All;
 
   CFlags():
     mFlags()
@@ -115,9 +115,9 @@ private:
 };
 
 // static
-template< class Enum > CFlags< Enum > CFlags< Enum >::All(~ typename CFlags< Enum >::CFlags());
+template< class Enum > const CFlags< Enum > CFlags< Enum >::None;
 
 // static
-template< class Enum > CFlags< Enum > CFlags< Enum >::None;
+template< class Enum > const CFlags< Enum > CFlags< Enum >::All(~None);
 
 #endif // COPASI_CFlags

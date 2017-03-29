@@ -11,10 +11,16 @@
 #include "CValidity.h"
 
 // static
-const CIssue CIssue::Success;
+const CIssue CIssue::Success(CIssue::eSeverity::Success);
 
-//static
-const CIssue CIssue::Error(CIssue::eSeverity::Error, CIssue::eKind::NoKind);
+// static
+const CIssue CIssue::Information(CIssue::eSeverity::Information);
+
+// static
+const CIssue CIssue::Warning(CIssue::eSeverity::Warning);
+
+// static
+const CIssue CIssue::Error(CIssue::eSeverity::Error);
 
 CIssue::CIssue(const CIssue::eSeverity & severity,
                const CIssue::eKind & kind):
@@ -38,14 +44,14 @@ CIssue::operator bool()
   return (mSeverity != CIssue::eSeverity::Error);
 }
 
-bool CIssue::isError() const
+const CIssue::eSeverity & CIssue::getSeverity() const
 {
-  return !isSuccess();
+  return mSeverity;
 }
 
-bool CIssue::isSuccess() const
+const CIssue::eKind & CIssue::getKind() const
 {
-  return (mSeverity != CIssue::eSeverity::Error);
+  return mKind;
 }
 
 CValidity::CValidity():
@@ -69,18 +75,18 @@ void CValidity::clear()
 
 void CValidity::add(const CIssue & issue)
 {
-  switch (issue.mSeverity)
+  switch (issue.getSeverity())
     {
       case CIssue::eSeverity::Error:
-        mErrors |= issue.mKind;
+        mErrors |= issue.getKind();
         break;
 
       case CIssue::eSeverity::Warning:
-        mWarnings |= issue.mKind;
+        mWarnings |= issue.getKind();
         break;
 
       case CIssue::eSeverity::Information:
-        mInformation |= issue.mKind;
+        mInformation |= issue.getKind();
         break;
 
       default:
@@ -90,18 +96,18 @@ void CValidity::add(const CIssue & issue)
 
 void CValidity::remove(const CIssue & issue)
 {
-  switch (issue.mSeverity)
+  switch (issue.getSeverity())
     {
       case CIssue::eSeverity::Error:
-        mErrors &= ~Kind(issue.mKind);
+        mErrors &= ~Kind(issue.getKind());
         break;
 
       case CIssue::eSeverity::Warning:
-        mWarnings &= ~Kind(issue.mKind);
+        mWarnings &= ~Kind(issue.getKind());
         break;
 
       case CIssue::eSeverity::Information:
-        mInformation &= ~Kind(issue.mKind);
+        mInformation &= ~Kind(issue.getKind());
         break;
     }
 }
@@ -127,7 +133,7 @@ CIssue::eSeverity CValidity::getHighestSeverity() const
 
   if (mInformation) return CIssue::eSeverity::Information;
 
-  return CIssue::eSeverity::OK;
+  return CIssue::eSeverity::Success;
 }
 
 const CValidity::Kind & CValidity::get(const CIssue::eSeverity & severity) const

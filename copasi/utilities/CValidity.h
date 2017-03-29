@@ -24,7 +24,7 @@ class CIssue
 public:
   enum struct eKind
   {
-    NoKind,
+    Unknown,
     ExpressionInvalid,
     ExpressionEmpty,
     MissingInitialValue,
@@ -51,7 +51,7 @@ public:
 
   enum struct eSeverity
   {
-    OK,
+    Success,
     Information,
     Warning,
     Error,
@@ -59,13 +59,12 @@ public:
   };
 
   static const CIssue Success;
-
-  // Use this to initialize a CIssue to "false"
-  // ("not acceptable"), until it is found to be otherwise.
+  static const CIssue Information;
+  static const CIssue Warning;
   static const CIssue Error;
 
-  CIssue(const eSeverity & severity = eSeverity::OK,
-         const eKind & kind = eKind::NoKind);
+  CIssue(const eSeverity & severity = eSeverity::Success,
+         const eKind & kind = eKind::Unknown);
 
   CIssue(const CIssue & src);
 
@@ -73,12 +72,11 @@ public:
 
   operator bool();
 
-  /**
-   * @return whether this issue represents an error or not
-   */
-  bool isSuccess() const;
-  bool isError() const;
+  const eSeverity & getSeverity() const;
 
+  const eKind & getKind() const;
+
+private:
   eSeverity mSeverity;
   eKind mKind;
 };
