@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -279,6 +284,21 @@ void CQEventWidget1::saveToEvent()
           CCopasiUndoCommand::EVENT_PRIORITY_EXPRESSION_CHANGE,
           FROM_UTF8(mpEvent->getPriorityExpression()),
           FROM_UTF8(mpExpressionPriority->mpExpressionWidget->getExpression()),
+          mpEvent,
+          this
+        )
+      );
+
+      mChanged = true;
+    }
+
+  if (mpEvent->getDelayExpression() != mpExpressionDelay->mpExpressionWidget->getExpression())
+    {
+      mpUndoStack->push(
+        new EventChangeCommand(
+          CCopasiUndoCommand::EVENT_DELAY_EXPRESSION_CHANGE,
+          FROM_UTF8(mpEvent->getDelayExpression()),
+          FROM_UTF8(mpExpressionDelay->mpExpressionWidget->getExpression()),
           mpEvent,
           this
         )
