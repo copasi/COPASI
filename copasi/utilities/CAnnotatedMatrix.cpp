@@ -192,7 +192,7 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
 
   for (; it != end; ++it, ++to, ++itCN)
     {
-      *to = itCN->operator [](*it);
+      *to = *it < itCN->size() ? itCN->operator [](*it) : CRegisteredObjectName("");
 
       if (to->empty())
         {
