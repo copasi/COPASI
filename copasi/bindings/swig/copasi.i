@@ -100,9 +100,10 @@ size_t INVALID_INDEX();
 %include std_vector.i
 
 %ignore CIssue::operator bool;
-#if defined(SWIGCSHARP)
-%ignore CValidity::eKind;
-%ignore CValidity::eSeverity;
+
+#if defined(SWIGCSHARP) || defined(SWIGJAVA)
+%ignore CIssue::eKind;
+%ignore CIssue::eSeverity;
 #endif // SWIGCSHARP
 
 %include <copasi/utilities/CValidity.h>
