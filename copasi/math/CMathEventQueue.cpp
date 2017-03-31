@@ -117,7 +117,7 @@ CMathEventQueue::CAction::~CAction()
 CMath::StateChange CMathEventQueue::CAction::process()
 {
   // Assume that nothing is changed
-  CMath::StateChange StateChange(CMath::eStateChange::NoChange);
+  CMath::StateChange StateChange(CMath::StateChange::None);
 
   switch (mType)
     {
@@ -271,14 +271,14 @@ void CMathEventQueue::start()
 CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 {
   if (mpTime == NULL || getProcessQueueExecutionTime() > *mpTime)
-    return CMath::eStateChange::NoChange;
+    return CMath::StateChange::None;
 
   mEquality = priorToOutput;
   mExecutionCounter = 0;
   mCascadingLevel = 0;
 
   bool success = true;
-  CMath::StateChange StateChange(CMath::eStateChange::NoChange);
+  CMath::StateChange StateChange(CMath::StateChange::None);
 
   *mpRootValuesBefore = mpContainer->getRoots();
   mpContainer->updatePriorityValues();
@@ -299,7 +299,7 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
       CMath::StateChange ActionStateChange = executeAction(itAction);
       StateChange |= ActionStateChange;
 
-      if (!ActionStateChange.isSet(CMath::eStateChange::NoChange))
+      if (ActionStateChange)
         {
           mpContainer->updatePriorityValues();
         }

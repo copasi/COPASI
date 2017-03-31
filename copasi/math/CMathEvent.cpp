@@ -1102,7 +1102,7 @@ CMathEvent::CMathEvent():
   mpCallback(NULL),
   mTargetValues(),
   mTargetPointers(),
-  mEffectsSimulation(CMath::eStateChange::NoChange),
+  mEffectsSimulation(CMath::StateChange::None),
   mDelaySequence(),
   mTargetValuesSequence(),
   mPostAssignmentSequence(),
@@ -1388,7 +1388,13 @@ bool CMathEvent::compile(CMathContainer & container)
 
 void CMathEvent::createUpdateSequences()
 {
-  mEffectsSimulation = CMath::eStateChange::NoChange;
+  if (mType == CEvent::Discontinuity)
+    {
+      mEffectsSimulation |= CMath::eStateChange::Discontinuity;
+      return;
+    }
+
+  mEffectsSimulation = CMath::StateChange::None;
 
   const CObjectInterface::ObjectSet & StateValues = mpContainer->getStateObjects();
   const CObjectInterface::ObjectSet & SimulationValues = mpContainer->getSimulationUpToDateObjects();
@@ -1407,9 +1413,22 @@ void CMathEvent::createUpdateSequences()
       Requested.insert(pAssignment->getAssignment());
 
       const CMathObject * pTarget = pAssignment->getTarget();
+
+      if (pTarget == NULL) continue;
+
       EventTargets.insert(pTarget);
 
-      if (StateValues.find(pTarget) != StateValues.end())
+      // We need to distinguish between Fixed Event Targets, Discontinuities, and State Values
+
+      if (!mEffectsSimulation.isSet(CMath::eStateChange::FixedEventTarget) &&
+          (pTarget->getSimulationType() == CMath::EventTarget ||
+           (pTarget->getSimulationType() == CMath::Conversion &&
+            dynamic_cast< CModelEntity * >(pTarget->getDataObject()->getObjectParent())->getStatus() == CModelEntity::FIXED)))
+        {
+          mEffectsSimulation |= CMath::eStateChange::FixedEventTarget;
+        }
+      else if (!mEffectsSimulation.isSet(CMath::eStateChange::State) &&
+               StateValues.find(pTarget) != StateValues.end())
         {
           mEffectsSimulation |= CMath::eStateChange::State;
         }
@@ -1519,7 +1538,7 @@ const CVectorCore< C_FLOAT64 > & CMathEvent::getTargetValues()
 CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & values)
 {
   bool ValuesChanged = false;
-  CMath::StateChange StateChange(CMath::eStateChange::NoChange);
+  CMath::StateChange StateChange(CMath::StateChange::None);
 
   const C_FLOAT64 * pValue = values.array();
   const C_FLOAT64 * pValueEnd = pValue + values.size();

@@ -207,7 +207,8 @@ public:
 
   enum struct eStateChange
   {
-    NoChange,
+    FixedEventTarget,
+    Discontinuity,
     State,
     EventSimulation,
     ContinuousSimulation,

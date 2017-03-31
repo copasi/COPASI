@@ -211,8 +211,13 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
-      change.isSet(CMath::eStateChange::State))
+  if (change == CMath::eStateChange::FixedEventTarget)
+    {
+      // The only thing which changed are fixed event targets which do not effect the simulation
+      // thus we can continue from the saved state after updating the fixed event targets;
+      memcpy(mSavedState.ContainerState.array(), mContainerState.array(), mpContainer->getCountFixedEventTargets() * sizeof(C_FLOAT64));
+    }
+  else if (change & (CMath::StateChange(CMath::eStateChange::State) | CMath::eStateChange::ContinuousSimulation | CMath::eStateChange::EventSimulation))
     {
       // We need to restart the integrator
       mLsodaStatus = 1;

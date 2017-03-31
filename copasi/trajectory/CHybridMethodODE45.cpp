@@ -585,8 +585,8 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
 
 void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
 {
-  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
-      change.isSet(CMath::eStateChange::State))
+  if ((change & (CMath::StateChange(CMath::eStateChange::State) | CMath::eStateChange::ContinuousSimulation | CMath::eStateChange::EventSimulation)) &&
+      mRKMethodStatus != CRungeKutta::INITIALIZE)
     {
       mRKMethodStatus = CRungeKutta::RESTART;
       destroyRootMask();

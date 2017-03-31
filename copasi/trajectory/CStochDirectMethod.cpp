@@ -475,8 +475,7 @@ bool CStochDirectMethod::checkRoots()
  */
 void CStochDirectMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change.isSet(CMath::eStateChange::ContinuousSimulation) ||
-      change.isSet(CMath::eStateChange::State))
+  if (change & (CMath::StateChange(CMath::eStateChange::FixedEventTarget) | CMath::eStateChange::State | CMath::eStateChange::ContinuousSimulation | CMath::eStateChange::EventSimulation))
     {
       // Create a local copy of the state where the particle number species determined
       // by reactions are rounded to integers.
