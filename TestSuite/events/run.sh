@@ -15,7 +15,8 @@ function runTest () {
   echo Test: ${1}
   rm ${1}.1.txt > /dev/null 3>&1 2>&1 
   ${CopasiSE} --nologo ${1}.cps > /dev/null
-  ndiff -sbml -abserr 1e-5 ${1}.1.txt ${1}.1.txt.tgt > ${1}.1.csv || echo ${1} failed
+  head -n 1 ${1}.1.txt.tgt > ${1}.1.csv
+  ndiff -sbml -abserr 1e-5 ${1}.1.txt ${1}.1.txt.tgt >> ${1}.1.csv || echo ${1} failed
 }
 
 runTest EventTest1
@@ -46,3 +47,4 @@ runTest EventTest25
 runTest EventTest26
 runTest EventTest27
 runTest EventTest28
+runTest EventTest29
