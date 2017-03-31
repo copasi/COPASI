@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,6 +32,7 @@ protected:
   CCopasiObject *mpObject;
   CQTabWidget* mpTabWidget;
   std::string mKey;
+  CRegisteredObjectName mName;
 };
 
 #endif // COPASI_ENTITY_RENAME_COMMAND_H
