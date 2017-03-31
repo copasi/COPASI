@@ -2445,7 +2445,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2495,7 +2495,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
@@ -3233,7 +3233,7 @@ void CModel::initObjects()
 {
   mpModel = this;
 
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
+  //mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since
   // CModel is created before mStateTemplate :(

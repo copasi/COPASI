@@ -68,7 +68,7 @@ CMetab::CMetab(const std::string & name,
   mpMoiety(NULL),
   mIsInitialConcentrationChangeAllowed(true)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
+  //mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
 
   setStatus(REACTIONS);
@@ -96,7 +96,7 @@ CMetab::CMetab(const CMetab & src,
   mpMoiety(src.mpMoiety),
   mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
+  //mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
 
   initObjects();
 

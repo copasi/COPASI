@@ -1105,6 +1105,9 @@ std::string CReactionInterface::getUnit(size_t index) const
 void
 CReactionInterface::setLocalValue(size_t index, double value)
 {
+  if (index >= mValues.size() || index >= mIsLocal.size())
+    return;
+
   mValues[index] = value;
   mIsLocal[index] = true;
 }
@@ -1112,18 +1115,30 @@ CReactionInterface::setLocalValue(size_t index, double value)
 void
 CReactionInterface::setLocal(size_t index)
 {
+  if (index >= mIsLocal.size())
+    return;
+
   mIsLocal[index] = true;
 }
 
 const double &
 CReactionInterface::getLocalValue(size_t index) const
 {
+  if (index >= mValues.size())
+    {
+      static double invalidValue = std::numeric_limits<double>::quiet_NaN();
+      return invalidValue;
+    }
+
   return mValues[index];
 }
 
 bool
 CReactionInterface::isLocalValue(size_t index) const
 {
+  if (index >= mIsLocal.size())
+    return false;
+
   return mIsLocal[index];
 }
 
