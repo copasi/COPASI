@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -9,10 +14,6 @@
 // All rights reserved.
 
 // Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -31,7 +32,7 @@
 #include "copasi.h"
 #include "qlayout.h"
 
-CPlotSelectionDialog::CPlotSelectionDialog(QWidget* parent, const char* name, bool modal, WFlags f):
+CPlotSelectionDialog::CPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags f):
   QDialog(parent, name, modal, f)
   , mpOKButton(NULL)
   , mpCancelButton(NULL)

@@ -29,6 +29,10 @@ class QtMmlWidget;
 #include <sstream>
 #include "copasiWidget.h"
 
+#ifdef fatalError
+#undef fatalError
+#endif // fatalError
+
 #include "copasi/UI/ui_CQDifferentialEquations.h"
 
 class CQDifferentialEquations : public CopasiWidget, public Ui::CQDifferentialEquations

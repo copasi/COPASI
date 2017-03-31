@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,7 +41,7 @@ class CPlotSelectionDialog: public QDialog
   Q_OBJECT
 
 public:
-  CPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, WFlags f = 0);
+  CPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WindowFlags f = 0);
   virtual ~CPlotSelectionDialog();
   void setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2);
   void setModel(CModel* model);
