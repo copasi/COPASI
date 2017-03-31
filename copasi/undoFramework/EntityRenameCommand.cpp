@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,6 +18,7 @@
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CEvent.h>
 #include <copasi/model/CModelValue.h>
+#include <copasi/CopasiDataModel/CCopasiDataModel.h>
 
 EntityRenameCommand::EntityRenameCommand(CCopasiObject *pObject,
     const std::string &oldName,
@@ -22,6 +28,7 @@ EntityRenameCommand::EntityRenameCommand(CCopasiObject *pObject,
   , mpObject(pObject)
   , mpTabWidget(pWidget)
   , mKey(pObject->getKey())
+  , mName(pObject->getCN())
 {
   if (dynamic_cast<CModel*>(pObject))
     {
@@ -68,10 +75,30 @@ EntityRenameCommand::~EntityRenameCommand()
 
 void EntityRenameCommand::redo()
 {
+  if (mpTabWidget->getDataModel() != NULL)
+    {
+      const CCopasiObject* pObject =
+        dynamic_cast<const CCopasiObject*>(mpTabWidget->getDataModel()->getObject(mName));
+
+      if (pObject != NULL)
+        mpTabWidget->renameEntity(pObject->getKey(), mNewValue);
+    }
+
   mpTabWidget->renameEntity(mKey, mNewValue);
+
 }
 
 void EntityRenameCommand::undo()
 {
+  if (mpTabWidget->getDataModel() != NULL)
+    {
+      const CCopasiObject* pObject =
+        dynamic_cast<const CCopasiObject*>(mpTabWidget->getDataModel()->getObject(mName));
+
+      if (pObject != NULL)
+        mpTabWidget->renameEntity(pObject->getKey(), mOldValue);
+    }
+
   mpTabWidget->renameEntity(mKey, mOldValue);
+
 }
