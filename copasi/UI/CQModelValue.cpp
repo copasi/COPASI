@@ -562,11 +562,12 @@ void CQModelValue::createNewGlobalQuantity()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void CQModelValue::deleteGlobalQuantity()
+bool CQModelValue::deleteGlobalQuantity()
 {
+  bool didDelete = false;
 
   if (mpModelValue == NULL)
-    return;
+    return didDelete;
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "quantity",
@@ -582,6 +583,7 @@ void CQModelValue::deleteGlobalQuantity()
         assert(pModel != NULL);
         pModel->removeModelValue(mKey);
         mpModelValue = NULL;
+        didDelete = true;
 
 #undef DELETE
         protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
@@ -594,6 +596,7 @@ void CQModelValue::deleteGlobalQuantity()
     }
 
   mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
+  return didDelete;
 }
 
 void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
