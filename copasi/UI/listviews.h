@@ -157,6 +157,7 @@ public:
 
   size_t getCurrentItemId();
   CopasiWidget* findWidgetFromId(const size_t & id) const;
+  CopasiWidget* findTabWidgetFromId(size_t id) const;
 
   // return current widget - added 02.07.08
   CopasiWidget* getCurrentWidget();
@@ -189,6 +190,8 @@ signals:
 
 private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
+
+
 
   void ConstructNodeWidgets();
 

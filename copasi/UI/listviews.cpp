@@ -675,25 +675,8 @@ void ListViews::ConstructNodeWidgets()
     }
 }
 
-/**
- * tries to find the right hand side widget that belongs to an item of the tree view
- */
-CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
+CopasiWidget* ListViews::findTabWidgetFromId(size_t id) const
 {
-  if (!index.isValid()) return NULL;
-
-  // first try ID
-  size_t id = mpTreeDM->getIdFromIndex(index);
-
-  if (id != C_INVALID_INDEX)
-    {
-
-      return findWidgetFromId(id);
-    }
-
-  // then try parent id:
-  id = mpTreeDM->getIdFromIndex(mpTreeDM->parent(index));
-
   switch (id)
     {
       case 111:
@@ -739,6 +722,28 @@ CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
 
   //give up
   return NULL;
+}
+
+/**
+ * tries to find the right hand side widget that belongs to an item of the tree view
+ */
+CopasiWidget* ListViews::findWidgetFromIndex(const QModelIndex & index) const
+{
+  if (!index.isValid()) return NULL;
+
+  // first try ID
+  size_t id = mpTreeDM->getIdFromIndex(index);
+
+  if (id != C_INVALID_INDEX)
+    {
+
+      return findWidgetFromId(id);
+    }
+
+  // then try parent id:
+  id = mpTreeDM->getIdFromIndex(mpTreeDM->parent(index));
+
+  return findTabWidgetFromId(id);
 }
 
 CopasiWidget* ListViews::findWidgetFromId(const size_t & id) const
