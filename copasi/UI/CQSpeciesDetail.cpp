@@ -506,6 +506,11 @@ void CQSpeciesDetail::copy()
   pdelete(pDialog);
 }
 
+CMetab * CQSpeciesDetail::getCurrentMetab()
+{
+  return mpMetab;
+}
+
 void CQSpeciesDetail::slotBtnNew()
 {
   mpUndoStack->push(new CreateNewSpeciesCommand(this));

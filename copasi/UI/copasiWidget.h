@@ -63,6 +63,16 @@ public:
   void setUndoStack(QUndoStack *undoStack);
   QUndoStack *getUndoStack();
 
+  /**
+   * @return the current key of the widget
+   */
+  const std::string& getKey() const;
+
+  /**
+   * @return the pointer to the current object
+   */
+  const CCopasiObject* getObject() const;
+
 protected:
   virtual bool enterProtected();
 

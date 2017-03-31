@@ -84,6 +84,11 @@ bool CopasiWidget::enter(const std::string &key)
   return enterProtected();
 }
 
+const CCopasiObject * CopasiWidget::getObject() const
+{
+  return mpObject;
+}
+
 bool CopasiWidget::enterProtected()
 {
   return true;
@@ -130,4 +135,9 @@ void CopasiWidget::setUndoStack(QUndoStack *undoStack)
 QUndoStack *CopasiWidget::getUndoStack()
 {
   return mpUndoStack;
+}
+
+const std::string& CopasiWidget::getKey() const
+{
+  return mKey;
 }

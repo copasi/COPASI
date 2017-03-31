@@ -46,6 +46,8 @@ public:
 
   void copy();
 
+  CMetab* getCurrentMetab();
+
 protected:
   virtual bool enterProtected();
 
