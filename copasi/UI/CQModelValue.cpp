@@ -521,7 +521,7 @@ bool CQModelValue::deleteGlobalQuantity()
   if (mpModelValue == NULL)
     return didDelete;
 
-  GET_MODEL_OR_RETURN(pModel);
+  GET_MODEL_OR(pModel, return didDelete;);
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "quantity",

@@ -23,6 +23,7 @@
 #include "undoFramework/DeleteSpeciesCommand.h"
 #include "undoFramework/CreateNewSpeciesCommand.h"
 #include "undoFramework/SpeciesTypeChangeCommand.h"
+#include "undoFramework/SpeciesChangeCommand.h"
 #include "undoFramework/SpeciesInitialValueLostFocusCommand.h"
 #include "undoFramework/UndoSpeciesData.h"
 #include "undoFramework/UndoReactionData.h"
@@ -354,43 +355,36 @@ void CQSpeciesDetail::save()
 
   if (pModel == NULL) return;
 
+  mIgnoreUpdates = true;
+
   // Compartment
   if (mpCurrentCompartment != mpMetab->getCompartment())
     {
-      QString Compartment = mpComboBoxCompartment->currentText();
+      QString Compartment = mpComboBoxCompartment->currentText();;
       std::string CompartmentToRemove = mpMetab->getCompartment()->getObjectName();
+      // SpeciesChangeCommand  -> compartment
+      mpUndoStack->push(new SpeciesChangeCommand(
+                          CCopasiUndoCommand::SPECIES_COMPARTMENT_CHANGE,
+                          FROM_UTF8(CompartmentToRemove),
+                          Compartment,
+                          mpMetab,
+                          this
+                        ));
 
-      if (!pModel->getCompartments()[TO_UTF8(Compartment)].addMetabolite(mpMetab))
-        {
-          QString msg;
-          msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
-                + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
-                + "since a species with that name already exist in the target compartment.";
-
-          CQMessageBox::information(this,
-                                    "Unable to move Species",
-                                    msg,
-                                    QMessageBox::Ok, QMessageBox::Ok);
-
-          // Revert the changes
-          mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(CompartmentToRemove)));
-
-          slotCompartmentChanged(mpComboBoxCompartment->currentIndex());
-        }
-      else
-        {
-          pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(mpMetab->getObjectName());
-          pModel->setCompileFlag();
-          pModel->initializeMetabolites();
-          protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
-          mChanged = true;
-        }
+      mChanged = true;
     }
 
   // Type
   if (mpMetab->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
-      mpMetab->setStatus((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()]);
+      // SpeciesChangeCommand  -> simulation type
+      mpUndoStack->push(new SpeciesChangeCommand(
+                          CCopasiUndoCommand::SPECIES_SIMULATION_TYPE_CHANGE,
+                          (int)mpMetab->getStatus(),
+                          mItemToType[mpComboBoxType->currentIndex()],
+                          mpMetab,
+                          this
+                        ));
       mChanged = true;
     }
 
@@ -401,7 +395,14 @@ void CQSpeciesDetail::save()
 
         if (mpMetab->getInitialConcentration() != mInitialConcentration)
           {
-            mpMetab->setInitialConcentration(mInitialConcentration);
+            // SpeciesChangeCommand  -> initial concentration
+            mpUndoStack->push(new SpeciesChangeCommand(
+                                CCopasiUndoCommand::SPECIES_INITAL_CONCENTRATION_CHANGE,
+                                mpMetab->getInitialConcentration(),
+                                mInitialConcentration,
+                                mpMetab,
+                                this
+                              ));
             mChanged = true;
           }
 
@@ -411,7 +412,14 @@ void CQSpeciesDetail::save()
 
         if (mpMetab->getInitialValue() != mInitialNumber)
           {
-            mpMetab->setInitialValue(mInitialNumber);
+            // SpeciesChangeCommand  -> initial particle number
+            mpUndoStack->push(new SpeciesChangeCommand(
+                                CCopasiUndoCommand::SPECIES_INITAL_PARTICLENUMBER_CHANGE,
+                                mpMetab->getInitialValue(),
+                                mInitialNumber,
+                                mpMetab,
+                                this
+                              ));
             mChanged = true;
           }
 
@@ -421,7 +429,14 @@ void CQSpeciesDetail::save()
   // Expression
   if (mpMetab->getExpression() != mpExpressionEMW->mpExpressionWidget->getExpression())
     {
-      mpMetab->setExpression(mpExpressionEMW->mpExpressionWidget->getExpression());
+      // SpeciesChangeCommand  -> expression
+      mpUndoStack->push(new SpeciesChangeCommand(
+                          CCopasiUndoCommand::SPECIES_EXPRESSION_CHANGE,
+                          FROM_UTF8(mpMetab->getExpression()),
+                          FROM_UTF8(mpExpressionEMW->mpExpressionWidget->getExpression()),
+                          mpMetab,
+                          this
+                        ));
       mChanged = true;
     }
 
@@ -431,16 +446,34 @@ void CQSpeciesDetail::save()
       if (mpBoxUseInitialExpression->isChecked() &&
           mpMetab->getInitialExpression() != (mpInitialExpressionEMW->mpExpressionWidget->getExpression()))
         {
-          mpMetab->setInitialExpression(mpInitialExpressionEMW->mpExpressionWidget->getExpression());
+          // SpeciesChangeCommand  -> initial expression
+          mpUndoStack->push(new SpeciesChangeCommand(
+                              CCopasiUndoCommand::SPECIES_INITIAL_EXPRESSION_CHANGE,
+                              FROM_UTF8(mpMetab->getInitialExpression()),
+                              FROM_UTF8(mpInitialExpressionEMW->mpExpressionWidget->getExpression()),
+                              mpMetab,
+                              this,
+                              mpMetab->getInitialValue()
+                            ));
           mChanged = true;
         }
       else if (!mpBoxUseInitialExpression->isChecked() &&
                mpMetab->getInitialExpression() != "")
         {
-          mpMetab->setInitialExpression("");
+          // SpeciesChangeCommand  -> initial expression
+          mpUndoStack->push(new SpeciesChangeCommand(
+                              CCopasiUndoCommand::SPECIES_INITIAL_EXPRESSION_CHANGE,
+                              FROM_UTF8(mpMetab->getInitialExpression()),
+                              QString(""),
+                              mpMetab,
+                              this,
+                              mpMetab->getInitialValue()
+                            ));
           mChanged = true;
         }
     }
+
+  mIgnoreUpdates = false;
 
   if (mChanged)
     {
@@ -630,7 +663,10 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
 
 void CQSpeciesDetail::slotInitialValueLostFocus()
 {
-  mpUndoStack->push(new SpeciesInitialValueLostFocusCommand(this));
+  // no need to track this for undo this is for display
+  // purposes only
+  speciesInitialValueLostFocus();
+  //mpUndoStack->push(new SpeciesInitialValueLostFocusCommand(this));
 }
 
 void CQSpeciesDetail::slotNameLostFocus()
@@ -911,4 +947,93 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
         break;
     }
+}
+
+
+bool CQSpeciesDetail::changeValue(
+  const std::string & key,
+  CCopasiUndoCommand::Type type,
+  const QVariant & newValue,
+  double iValue)
+{
+  if (!mIgnoreUpdates)
+    {
+      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpMetab = dynamic_cast<CMetab*>(mpObject);
+      load();
+    }
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+
+  CModel* pModel = const_cast< CModel * >(mpMetab->getModel());
+
+  switch (type)
+    {
+      case CCopasiUndoCommand::SPECIES_COMPARTMENT_CHANGE:
+      {
+        QString Compartment = newValue.toString();
+        std::string CompartmentToRemove = mpMetab->getCompartment()->getObjectName();
+
+        if (!pModel->getCompartments()[TO_UTF8(Compartment)].addMetabolite(mpMetab))
+          {
+            QString msg;
+            msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
+                  + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
+                  + "since a species with that name already exist in the target compartment.";
+            CQMessageBox::information(this,
+                                      "Unable to move Species",
+                                      msg,
+                                      QMessageBox::Ok, QMessageBox::Ok);
+            // Revert the changes
+            mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(CompartmentToRemove)));
+            slotCompartmentChanged(mpComboBoxCompartment->currentIndex());
+          }
+        else
+          {
+            pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(mpMetab->getObjectName());
+            pModel->setCompileFlag();
+            pModel->initializeMetabolites();
+            protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
+          }
+
+        break;
+      }
+
+      case CCopasiUndoCommand::SPECIES_EXPRESSION_CHANGE:
+        mpMetab->setExpression(TO_UTF8(newValue.toString()));
+        break;
+
+      case CCopasiUndoCommand::SPECIES_INITAL_PARTICLENUMBER_CHANGE:
+        mpMetab->setInitialValue(newValue.toDouble());
+        break;
+
+      case CCopasiUndoCommand::SPECIES_INITAL_CONCENTRATION_CHANGE:
+        mpMetab->setInitialConcentration(newValue.toDouble());
+        break;
+
+      case CCopasiUndoCommand::SPECIES_INITIAL_EXPRESSION_CHANGE:
+        mpMetab->setInitialExpression(TO_UTF8(newValue.toString()));
+
+        if (newValue.toString().isEmpty())
+          mpMetab->setInitialValue(iValue);
+
+        break;
+
+      case CCopasiUndoCommand::SPECIES_SIMULATION_TYPE_CHANGE:
+        mpMetab->setStatus((CModelEntity::Status) newValue.toInt());
+        break;
+
+      default:
+        return false;
+    }
+
+  if (mIgnoreUpdates) return true;
+
+  assert(mpDataModel != NULL);
+  mpDataModel->changed();
+  protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, mKey);
+
+  load();
+
+  return true;
 }
