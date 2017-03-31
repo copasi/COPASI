@@ -60,6 +60,7 @@ Time	Values[A]	Values[Piecewise]	Values[B]
 2.9	0	4	0
 2.95	0	4	0
 3	0	4	0
+3	0	4	0
 3	2	4	0
 3.05	2	4	0
 3.1	2	4	0
@@ -80,6 +81,7 @@ Time	Values[A]	Values[Piecewise]	Values[B]
 3.85	2	4	0
 3.9	2	4	0
 3.95	2	4	0
+4	2	1	0
 4	2	1	0
 4	2	1	2
 4.05	2	1	2
