@@ -20,6 +20,8 @@
 
 #include "ui_CQSpeciesDetail.h"
 
+#include <copasi/undoFramework/CCopasiUndoCommand.h>
+
 class UndoSpeciesData;
 
 class CMetab;
@@ -45,6 +47,11 @@ public:
   virtual void setFramework(int framework);
 
   void copy();
+
+  bool changeValue(const std::string& key,
+                   CCopasiUndoCommand::Type type,
+                   const QVariant& newValue,
+                   double iValue = std::numeric_limits<double>::quiet_NaN());
 
   CMetab* getCurrentMetab();
 

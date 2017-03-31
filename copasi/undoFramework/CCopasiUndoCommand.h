@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -136,6 +141,14 @@ public:
     COMPARTMENT_SPATIAL_DIMENSION_CHANGE, // change of compartment spatial dimensions
     COMPARTMENT_ADD_NOISE_CHANGE, // change the compartment add noise setting
     COMPARTMENT_NOISE_EXPRESSION_CHANGE, // change the compartment noise expression
+    SPECIES_INITAL_PARTICLENUMBER_CHANGE, // change of species initial particle number
+    SPECIES_INITAL_CONCENTRATION_CHANGE, // change of species initial concentration
+    SPECIES_INITIAL_EXPRESSION_CHANGE, // change of species initial expression
+    SPECIES_COMPARTMENT_CHANGE, // change of the species compartment
+    SPECIES_SIMULATION_TYPE_CHANGE, // change of species simulation type
+    SPECIES_EXPRESSION_CHANGE, // change of species assignment / ode expression
+    SPECIES_ADD_NOISE_CHANGE, // change the species noise setting
+    SPECIES_NOISE_EXPRESSION_CHANGE, // change the species noise expression
     GLOBALQUANTITY_INITAL_VALUE_CHANGE, // change of parameter initial value
     GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
     GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
