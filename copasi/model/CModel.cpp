@@ -185,10 +185,6 @@ CModel::~CModel()
   pdelete(mpLinkMatrixAnnotation);
 
   pdelete(mpMathContainer);
-
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
-
-  DESTRUCTOR_TRACE;
 }
 
 // virtual
@@ -3075,8 +3071,6 @@ bool CModel::convert2NonReversible()
 void CModel::initObjects()
 {
   mpModel = this;
-
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since
   // CModel is created before mStateTemplate :(

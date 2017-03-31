@@ -41,13 +41,9 @@ CCompartment::CCompartment(const std::string & name,
 {
   initObjects();
 
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
-
   setStatus(FIXED);
 
   mIValue = 1.0;
-
-  CONSTRUCTOR_TRACE;
 }
 
 CCompartment::CCompartment(const CCompartment & src,
@@ -56,8 +52,6 @@ CCompartment::CCompartment(const CCompartment & src,
   mMetabolites(src.mMetabolites, this),
   mDimensionality(src.mDimensionality)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
-  CONSTRUCTOR_TRACE;
   initObjects();
 }
 

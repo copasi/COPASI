@@ -55,7 +55,6 @@ CMetab::CMetab(const std::string & name,
   mpMoiety(NULL),
   mIsInitialConcentrationChangeAllowed(true)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
 
   setStatus(REACTIONS);
@@ -67,8 +66,6 @@ CMetab::CMetab(const std::string & name,
       setInitialConcentration(1.0);
       setConcentration(1.0);
     }
-
-  CONSTRUCTOR_TRACE;
 }
 
 CMetab::CMetab(const CMetab & src,
@@ -82,12 +79,9 @@ CMetab::CMetab(const CMetab & src,
   mpMoiety(src.mpMoiety),
   mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
-
   initObjects();
 
   initCompartment(src.mpCompartment);
-  CONSTRUCTOR_TRACE;
 }
 
 CMetab &CMetab::operator=(const CMetabOld & RHS)
@@ -109,10 +103,7 @@ CMetab &CMetab::operator=(const CMetabOld & RHS)
 }
 
 CMetab::~CMetab()
-{
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
-  DESTRUCTOR_TRACE;
-}
+{}
 
 // virtual
 std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const

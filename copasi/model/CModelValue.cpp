@@ -109,15 +109,7 @@ CModelEntity::~CModelEntity()
   if (mpModel)
     mpModel->removeModelEntity(this);
 
-  // After the above call we definitely own the data and
-  // therefore must destroy them.
-
-  // since the expressions now have the model entity as parent, they should
-  // automatically be destroyed be the destructor of CCopasiContainer
-  //pdelete(mpExpression);
-  //pdelete(mpInitialExpression);
-
-  DESTRUCTOR_TRACE;
+  CCopasiRootContainer::getKeyFactory()->remove(mKey);
 }
 
 // virtual
