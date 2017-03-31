@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -459,7 +464,7 @@ bool CStochDirectMethod::checkRoots()
  */
 void CStochDirectMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change & (CMath::FixedEventTarget | CMath::State | CMath::ContinuousSimulation | CMath::EventSimulation))
     {
       // Create a local copy of the state where the particle number species determined
       // by reactions are rounded to integers.

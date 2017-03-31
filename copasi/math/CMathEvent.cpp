@@ -1369,6 +1369,12 @@ bool CMathEvent::compile(CMathContainer & container)
 
 void CMathEvent::createUpdateSequences()
 {
+  if (mType == CEvent::Discontinuity)
+    {
+      mEffectsSimulation |= CMath::Discontinuity;
+      return;
+    }
+
   mEffectsSimulation = CMath::NoChange;
 
   const CObjectInterface::ObjectSet & StateValues = mpContainer->getStateObjects();
@@ -1388,9 +1394,22 @@ void CMathEvent::createUpdateSequences()
       Requested.insert(pAssignment->getAssignment());
 
       const CMathObject * pTarget = pAssignment->getTarget();
+
+      if (pTarget == NULL) continue;
+
       EventTargets.insert(pTarget);
 
-      if (StateValues.find(pTarget) != StateValues.end())
+      // We need to distinguish between Fixed Event Targets, Discontinuities, and State Values
+
+      if (!(mEffectsSimulation & CMath::FixedEventTarget) &&
+          (pTarget->getSimulationType() == CMath::EventTarget ||
+           (pTarget->getSimulationType() == CMath::Conversion &&
+            dynamic_cast< CModelEntity * >(pTarget->getDataObject()->getObjectParent())->getStatus() == CModelEntity::FIXED)))
+        {
+          mEffectsSimulation |= CMath::FixedEventTarget;
+        }
+      else if (!(mEffectsSimulation & CMath::State) &&
+               mEffectsSimulation == CMath::NoChange)
         {
           mEffectsSimulation |= CMath::State;
         }

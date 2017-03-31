@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -579,7 +584,7 @@ C_FLOAT64 CHybridMethodODE45::doSingleStep(C_FLOAT64 endTime)
 
 void CHybridMethodODE45::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change & (CMath::State | CMath::ContinuousSimulation | CMath::EventSimulation))
     {
       mRKMethodStatus = CRungeKutta::RESTART;
       destroyRootMask();

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -257,9 +262,11 @@ public:
   enum eStateChange
   {
     NoChange = 0x0,
-    State = 0x1,
-    EventSimulation = 0x2,
-    ContinuousSimulation = 0x4
+    FixedEventTarget = 0x1,
+    Discontinuity = 0x2,
+    State = 0x4,
+    EventSimulation = 0x8,
+    ContinuousSimulation = 0x10
   };
 
   enum RootToggleType

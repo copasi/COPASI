@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -203,7 +208,13 @@ bool CLsodaMethod::elevateChildren()
 // virtual
 void CLsodaMethod::stateChange(const CMath::StateChange & change)
 {
-  if (change & (CMath::ContinuousSimulation | CMath::State))
+  if (change == CMath::FixedEventTarget)
+    {
+      // The only thing which changed are fixed event targets which do not effect the simulation
+      // thus we can continue from the saved state after updating the fixed event targets;
+      memcpy(mSavedState.ContainerState.array(), mContainerState.array(), mpContainer->getCountFixedEventTargets() * sizeof(C_FLOAT64));
+    }
+  else if (change & (CMath::State | CMath::ContinuousSimulation | CMath::EventSimulation))
     {
       // We need to restart the integrator
       mLsodaStatus = 1;
