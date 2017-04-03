@@ -1401,15 +1401,14 @@ void CMathEvent::createUpdateSequences()
 
       // We need to distinguish between Fixed Event Targets, Discontinuities, and State Values
 
-      if (!(mEffectsSimulation & CMath::FixedEventTarget) &&
-          (pTarget->getSimulationType() == CMath::EventTarget ||
+      if ((pTarget->getSimulationType() == CMath::EventTarget ||
            (pTarget->getSimulationType() == CMath::Conversion &&
             dynamic_cast< CModelEntity * >(pTarget->getDataObject()->getObjectParent())->getStatus() == CModelEntity::FIXED)))
         {
           mEffectsSimulation |= CMath::FixedEventTarget;
         }
       else if (!(mEffectsSimulation & CMath::State) &&
-               mEffectsSimulation == CMath::NoChange)
+               StateValues.find(pTarget) != StateValues.end())
         {
           mEffectsSimulation |= CMath::State;
         }
