@@ -17,7 +17,10 @@
  * three methods below.
  */
 FunctionHandler::FunctionHandler(CXMLParser & parser, CXMLParserData & data):
-  CXMLHandler(parser, data, CXMLHandler::Function)
+  CXMLHandler(parser, data, CXMLHandler::Function),
+  mKey(),
+  mInfix(),
+  mExistingFunctionIndex()
 {
   init();
 }
@@ -296,24 +299,7 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
 
       case Expression:
       case MathML:
-      {
-        size_t Size = CCopasiMessage::size();
-
-        if (mpData->pFunction != NULL &&
-            !mpData->mPredefinedFunction)
-          {
-            mpData->pFunction->setInfix(mpData->CharacterData);
-          }
-        else if (mpData->mpExpression != NULL)
-          {
-            mpData->mpExpression->setInfix(mpData->CharacterData);
-          }
-
-        // Remove error messages created by setInfix as this may fail
-        // due to incomplete model specification at this time.
-        while (CCopasiMessage::size() > Size)
-          CCopasiMessage::getLastMessage();
-      }
+        mInfix = mpData->CharacterData;
 
       break;
 
@@ -330,6 +316,23 @@ bool FunctionHandler::processEnd(const XML_Char * pszName)
             for (; i != C_INVALID_INDEX && Variables[i]->getUsage() == CFunctionParameter::TEMPORARY; i--)
               Variables.remove(Variables[i]->getObjectName());
           }
+
+        size_t Size = CCopasiMessage::size();
+
+        if (mpData->pFunction != NULL &&
+            !mpData->mPredefinedFunction)
+          {
+            mpData->pFunction->setInfix(mInfix);
+          }
+        else if (mpData->mpExpression != NULL)
+          {
+            mpData->mpExpression->setInfix(mInfix);
+          }
+
+        // Remove error messages created by setInfix as this may fail
+        // due to incomplete model specification at this time.
+        while (CCopasiMessage::size() > Size)
+          CCopasiMessage::getLastMessage();
       }
 
       break;

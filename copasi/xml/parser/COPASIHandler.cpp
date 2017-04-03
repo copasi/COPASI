@@ -184,6 +184,29 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
         break;
 
       case ListOfFunctions:
+        if (mpData->pFunctionList != NULL)
+          {
+            size_t Size = CCopasiMessage::size();
+
+            // We need to re-compile all functions which did not successfully compile.
+            CCopasiVectorN< CFunction >::iterator itFunction = mpData->pFunctionList->begin();
+            CCopasiVectorN< CFunction >::iterator endFunction = mpData->pFunctionList->end();
+
+            for (; itFunction != endFunction; ++itFunction)
+              {
+                if (itFunction->getValidity().getHighestSeverity() != CIssue::eSeverity::Success)
+                  {
+                    itFunction->compile();
+                  }
+              }
+
+            // Remove error messages created by compile as this may fail
+            // due to incomplete model specification at this time.
+            while (CCopasiMessage::size() > Size)
+              CCopasiMessage::getLastMessage();
+          }
+        break;
+
       case Model:
       case ListOfTasks:
         break;

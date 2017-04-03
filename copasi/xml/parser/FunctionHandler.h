@@ -57,6 +57,11 @@ private:
   std::string mKey;
 
   /**
+   * The infix expression of the function
+   */
+  std::string mInfix;
+
+  /**
    * The index of a function with the same name
    */
   std::set< size_t > mExistingFunctionIndex;
