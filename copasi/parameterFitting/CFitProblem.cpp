@@ -1228,7 +1228,6 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
     os << "No Subtask specified.";
 
   os << std::endl;
-
   os << "List of Fitting Items:" << std::endl;
 
   std::vector< COptItem * >::const_iterator itItem =
@@ -1238,6 +1237,9 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 
   for (; itItem != endItem; ++itItem)
     os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
+
+  os << std::endl;
+  os << "List of Constraint Items:" << std::endl;
 
   itItem = o.mpConstraintItems->begin();
   endItem = o.mpConstraintItems->end();
