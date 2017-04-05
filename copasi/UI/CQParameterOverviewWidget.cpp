@@ -164,6 +164,7 @@ bool CQParameterOverviewWidget::leave()
 void CQParameterOverviewWidget::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
+  mpParameterSetDM->setFramework(framework);
 
   if (mpParameterSet == NULL)
     {
@@ -175,7 +176,6 @@ void CQParameterOverviewWidget::setFramework(int framework)
       mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
     }
 
-  mpParameterSetDM->setFramework(framework);
   mpTreeView->expandAll();
   mpTreeView->resizeColumnToContents(3);
 }

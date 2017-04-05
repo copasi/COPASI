@@ -238,22 +238,17 @@ void CQParameterOverviewDM::setModelParameterSet(CModelParameterSet * pModelPara
     {
       beginResetModel();
       mpModelParameterSet = pModelParameterSet;
-      endResetModel();
-      // clear unit map
       mUnitCache.clear();
+      endResetModel();
     }
 }
 
 void CQParameterOverviewDM::setFramework(const int & framework)
 {
-  if (mpModelParameterSet != NULL)
-    {
-      beginResetModel();
-      mFramework = framework;
-      endResetModel();
-      // clear unit map
-      mUnitCache.clear();
-    }
+  beginResetModel();
+  mFramework = framework;
+  mUnitCache.clear();
+  endResetModel();
 }
 
 QModelIndex CQParameterOverviewDM::index(CModelParameter * pNode) const
