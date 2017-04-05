@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -481,6 +486,10 @@ void CQSpeciesDetail::save()
         mpDataModel->changed();
 
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, mKey);
+
+      // Reload the initial value.
+      mInitialConcentration = mpMetab->getInitialConcentration();
+      mInitialNumber = mpMetab->getInitialValue();
     }
 
   mChanged = false;
@@ -948,7 +957,6 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
         break;
     }
 }
-
 
 bool CQSpeciesDetail::changeValue(
   const std::string & key,
