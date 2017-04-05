@@ -923,6 +923,9 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
   for (; itItem != endItem; ++itItem)
     os << "    " << **itItem << std::endl;
 
+  os << std::endl;
+  os << "List of Constraint Items:" << std::endl;
+
   itItem = o.mpConstraintItems->begin();
   endItem = o.mpConstraintItems->end();
 
