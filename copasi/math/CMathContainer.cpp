@@ -2184,12 +2184,32 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
                 case CMath::ODE:
                 case CMath::Independent:
                 case CMath::Dependent:
-                case CMath::Conversion:
 
                   if (pObject->getEntityType() != CMath::Species)
                     {
                       mInitialStateValueExtensive.insert(pObject);
                       mInitialStateValueIntensive.insert(pObject);
+                    }
+                  else if (pObject->isIntensiveProperty())
+                    {
+                      mInitialStateValueIntensive.insert(pObject);
+                      RequestedExtensive.insert(pObject);
+                    }
+                  else
+                    {
+                      mInitialStateValueExtensive.insert(pObject);
+                      RequestedIntensive.insert(pObject);
+                    }
+
+                  break;
+
+                case CMath::Conversion:
+
+                  // If the species has an initial assignment the intensive values has to be calculated.
+                  if (pObject->getCorrespondingProperty()->getSimulationType() == CMath::Assignment)
+                    {
+                      RequestedExtensive.insert(pObject);
+                      RequestedIntensive.insert(pObject);
                     }
                   else if (pObject->isIntensiveProperty())
                     {
