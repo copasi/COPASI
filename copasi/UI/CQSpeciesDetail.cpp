@@ -451,6 +451,10 @@ void CQSpeciesDetail::save()
         mpDataModel->changed();
 
       protectedNotify(ListViews::METABOLITE, ListViews::CHANGE, mKey);
+
+      // Reload the initial value.
+      mInitialConcentration = mpMetab->getInitialConcentration();
+      mInitialNumber = mpMetab->getInitialValue();
     }
 
   mChanged = false;
@@ -922,7 +926,6 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
         break;
     }
 }
-
 
 bool CQSpeciesDetail::changeValue(
   const std::string & key,
