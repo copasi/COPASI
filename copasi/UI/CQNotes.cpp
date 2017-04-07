@@ -21,7 +21,9 @@
 
 #include "CQNotes.h"
 
-#ifndef QT5_USE_WEBENGINE
+#if defined(QT_USE_TEXTBROSWSER)
+# include <QTextBrowser>
+#elif !defined(QT5_USE_WEBENGINE)
 # include <QWebView>
 # include <QWebFrame>
 #else  // QT5_USE_WEBENGINE
@@ -47,7 +49,7 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
   return true;
 }
 
-#endif // QT5_USE_WEBENGINE
+#endif // QT_USE_TEXTBROSWSER
 
 
 #include "resourcesUI/CQIconResource.h"
@@ -182,7 +184,10 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 
   mpValidatorXML = new CQValidatorXML(mpEdit);
 
-#ifndef QT5_USE_WEBENGINE
+#if defined(QT_USE_TEXTBROSWSER)
+  mpWebView = new QTextBrowser(this);
+  static_cast<QTextBrowser*>(mpWebView)->setOpenExternalLinks(true);
+#elif !defined(QT5_USE_WEBENGINE)
   mpWebView = new QWebView(this);
   static_cast<QWebView*>(mpWebView)->
   page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
@@ -360,7 +365,9 @@ void CQNotes::load()
 
       // The notes are UTF8 encoded however the html does not specify an encoding
       // thus Qt uses locale settings.
-#ifndef QT5_USE_WEBENGINE
+#if defined(QT_USE_TEXTBROSWSER)
+      static_cast<QTextBrowser*>(mpWebView)->setHtml(Notes);
+#elif !defined(QT5_USE_WEBENGINE)
       static_cast<QWebView*>(mpWebView)->setHtml(Notes);
 #else
       static_cast<QWebEngineView*>(mpWebView)->setHtml(Notes);

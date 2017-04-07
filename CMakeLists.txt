@@ -251,7 +251,7 @@ if (ENABLE_COMBINE_ARCHIVE)
   include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
 endif(ENABLE_COMBINE_ARCHIVE)
 
-option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equationa" OFF)
+option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" OFF)
 if (ENABLE_SDE_SUPPORT)
   add_definitions(-DWITH_SDE_SUPPORT)
 endif(ENABLE_SDE_SUPPORT)
@@ -424,12 +424,23 @@ if(BUILD_GUI)
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
 
   # first try to find whether Qt5 is present
+  option(QT_USE_TEXTBROSWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" OFF)
   QT_FIND_MODULES(Core Gui Network OpenGL Svg WebKit Xml)
   if (Qt5_FOUND)
     # then narrow down the precise modules we need
-    option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit" OFF)
+    option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     
-    if (QT5_USE_WEBENGINE)
+    if (QT_USE_TEXTBROSWSER)
+      QT_FIND_MODULES( Concurrent
+                       Core
+                       Gui
+                       Network
+                       OpenGL
+                       PrintSupport
+                       Svg
+                       Xml
+      )
+    elseif (QT5_USE_WEBENGINE)
       QT_FIND_MODULES( Concurrent
                        Core
                        Gui
@@ -441,7 +452,7 @@ if(BUILD_GUI)
                        WebEngineWidgets
                        Xml
       )
-    else(QT5_USE_WEBENGINE)
+    else()
       QT_FIND_MODULES( Concurrent
                        Core
                        Gui
@@ -453,9 +464,16 @@ if(BUILD_GUI)
                        WebKitWidgets
                        Xml
       )
-    endif(QT5_USE_WEBENGINE)
+    endif()
     set(QTVERSION 5)
-  endif()
+  else(Qt5_FOUND)
+    # using qt 4.8
+    if (QT_USE_TEXTBROSWSER)
+      QT_FIND_MODULES(Core Gui Network OpenGL Svg Xml)
+    else(QT_USE_TEXTBROSWSER)
+      QT_FIND_MODULES(Core Gui Network OpenGL Svg WebKit Xml)
+    endif(QT_USE_TEXTBROSWSER)
+  endif(Qt5_FOUND)
 
   # find Qt4
   #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)

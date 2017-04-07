@@ -15,7 +15,7 @@
 #include <QtCore/QVariant>
 #include <QtXml/QXmlDefaultHandler>
 
-#ifdef QT5_USE_WEBENGINE
+#if defined(QT5_USE_WEBENGINE) && !defined(QT_USE_TEXTBROWSER)
 # include <QWebEnginePage>
 
 class CQWebEnginePage : public QWebEnginePage
@@ -32,7 +32,7 @@ protected:
 };
 #else
 
-#if QT_VERSION >= 0x050000 && ! defined(WIN32)
+#if QT_VERSION >= 0x050000 && !defined(WIN32) && !defined(QT_USE_TEXTBROWSER)
 // for whatever reason this fails to compile on centos 7 with qt 5.6.1
 #ifndef QWEBKITWIDGETS_EXPORT
 #define QWEBKITWIDGETS_EXPORT Q_DECL_IMPORT
