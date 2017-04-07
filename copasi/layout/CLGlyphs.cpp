@@ -25,6 +25,8 @@
 #include <sbml/packages/layout/sbml/CompartmentGlyph.h>
 #include <sbml/packages/layout/sbml/TextGlyph.h>
 
+#include "copasi/copasi.h"
+
 #include "CLGlyphs.h"
 
 #include "report/CKeyFactory.h"

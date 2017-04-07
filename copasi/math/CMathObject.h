@@ -16,6 +16,7 @@
 
 #include "copasi/report/CCopasiObject.h"
 #include "copasi/math/CMathEnum.h"
+#include "copasi/utilities/CValidity.h"
 
 class CMathExpression;
 class CMathContainer;
@@ -128,6 +129,18 @@ public:
    * @return const CCopasiObject * dataObject
    */
   virtual const CCopasiObject * getDataObject() const;
+
+  /**
+   * Get the aggregation of any issues associated with this object
+   * @return CValidity & validity
+   */
+  virtual CValidity & getValidity();
+
+  /**
+   * Get the aggregation of any issues associated with this object
+   * @return const CValidity & validity
+   */
+  virtual const CValidity & getValidity() const;
 
   /**
    * Calculate the objects value
@@ -475,6 +488,8 @@ private:
    * A pointer to the data object
    */
   const CCopasiObject * mpDataObject;
+
+  CValidity mValidity;
 };
 
 std::ostream &operator<<(std::ostream &os, const CMathObject & o);

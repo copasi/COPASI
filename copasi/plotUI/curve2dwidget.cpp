@@ -11,16 +11,17 @@
 #include <QPainter>
 #include "curve2dwidget.h"
 #include "CQPlotEditWidget.h"
+#include "CQPlotColors.h"
 
 #include "UI/CCopasiSelectionDialog.h"
-#include "UI/qtUtilities.h"
-
 #include "copasi.h"
+
+#include "UI/qtUtilities.h"
 
 #include "report/CCopasiRootContainer.h"
 #include "plot/CPlotItem.h"
-#include "CQPlotColors.h"
 #include "resourcesUI/CQIconResource.h"
+#include "model/CModel.h"
 
 /*
  *  Constructs a Curve2DWidget as a child of 'parent', with the

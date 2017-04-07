@@ -15,6 +15,7 @@
 
 #include "copasi/report/CCopasiContainer.h"
 
+#include "copasi/math/CMathEnum.h"
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"

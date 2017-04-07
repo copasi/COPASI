@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,7 +20,6 @@
 
 #include <string>
 
-#include "qtUtilities.h"
 #include "UndoData.h"
 
 #include <copasi/model/CModelValue.h>
@@ -29,9 +33,9 @@ public:
 
   virtual ~UndoSpeciesData();
 
-  virtual CMetab* createObjectIn(CModel* pModel);
+  virtual CCopasiObject* createObjectIn(CModel* pModel);
 
-  virtual CMetab* restoreObjectIn(CModel* pModel);
+  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
 
   virtual void fillObject(CModel* pModel);
 

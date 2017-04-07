@@ -23,6 +23,9 @@
  */
 
 #include <sstream>
+
+#include "copasi.h"
+
 #include "CAnnotatedMatrix.h"
 #include "CCopasiVector.h"
 

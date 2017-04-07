@@ -9,8 +9,10 @@
 // All rights reserved.
 
 #include "sstream"
-#include "qtUtilities.h"
 #include "CQValidatorUnit.h"
+
+#include "copasi.h"
+#include "qtUtilities.h"
 
 #include "utilities/CCopasiException.h"
 #include "utilities/CUnitParser.h"

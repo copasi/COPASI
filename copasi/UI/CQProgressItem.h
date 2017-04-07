@@ -31,8 +31,8 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QWidget>
-#include "utilities/CProcessReport.h"
-#include "utilities/CVector.h"
+
+class CProcessReportItem;
 
 class CQProgressItem : public QWidget, public Ui::CQProgressItem
 {

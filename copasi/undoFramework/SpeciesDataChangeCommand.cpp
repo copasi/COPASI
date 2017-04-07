@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,14 +15,16 @@
  *      Author: dada
  */
 
+#include "CQSpecieDM.h"
+#include "SpeciesDataChangeCommand.h"
+
+#include "copasi.h"
+#include "UI/qtUtilities.h"
+#include "UndoSpeciesData.h"
+
 #include "report/CCopasiRootContainer.h"
 #include "model/CMetab.h"
 #include "model/CModel.h"
-#include "CQSpecieDM.h"
-
-#include <copasi/undoFramework/UndoSpeciesData.h>
-
-#include "SpeciesDataChangeCommand.h"
 
 SpecieDataChangeCommand::SpecieDataChangeCommand(
   const CMetab* pMetab,

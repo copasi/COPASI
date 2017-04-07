@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,15 +15,15 @@
  *      Author: dada
  */
 
+#include "SpeciesInitialValueLostFocusCommand.h"
+
+#include "copasi.h"
+#include "UndoSpeciesData.h"
 #include "qtUtilities.h"
 
 #include "model/CMetab.h"
 #include "UI/CQSpeciesDetail.h"
 #include "model/CCompartment.h"
-
-#include "UndoSpeciesData.h"
-
-#include "SpeciesInitialValueLostFocusCommand.h"
 
 SpeciesInitialValueLostFocusCommand::SpeciesInitialValueLostFocusCommand(
   CQSpeciesDetail *pSpecieDetail)

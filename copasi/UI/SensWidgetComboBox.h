@@ -19,9 +19,7 @@
 #include <QComboBox>
 
 #include <vector>
-
-#include "copasi/copasi.h"
-#include "copasi/sensitivities/CSensProblem.h"
+#include "copasi/model/CObjectLists.h"
 
 /**
   * This class handles a combobox to choose from lists of object lists
@@ -39,7 +37,7 @@ public:
    * old current value is still allowed in the new list, it is set.
    * Otherwise the box shows the first item.
    */
-  void fillFromList(const std::vector<CObjectLists::ListType> & list);
+  void fillFromList(const std::vector< CObjectLists::ListType > & list);
 
   CObjectLists::ListType getCurrentObjectList() const;
 

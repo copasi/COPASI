@@ -18,8 +18,8 @@
 #include "copasi/report/CCopasiObject.h"
 #include "copasi/math/CMathEnum.h"
 
-class CMathDependencyNode;
 class CMathContainer;
+class CMathDependencyNode;
 
 class CMathDependencyGraph
 {

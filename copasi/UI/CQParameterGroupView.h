@@ -14,11 +14,10 @@
 #include <QtCore/QVariant>
 #include <QTreeView>
 
-#include "copasi/utilities/CCopasiParameterGroup.h"
-
 class CQParameterGroupDM;
 class CQComboDelegate;
 class CQPushButtonDelegate;
+class CCopasiParameter;
 class CCopasiParameterGroup;
 
 class CQParameterGroupView: public QTreeView

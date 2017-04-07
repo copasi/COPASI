@@ -22,8 +22,6 @@
 
 #include <set>
 
-#include "copasi/UI/qtUtilities.h"
-
 typedef QPair<int, int> PathItem;
 typedef QList<PathItem> Path;
 

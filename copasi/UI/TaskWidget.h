@@ -26,10 +26,8 @@
 #include <QTableWidget>
 #include <QLabel>
 
-#include "copasi/copasi.h"
-
-#include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/UI/copasiWidget.h"
+#include "copasi/utilities/CTaskEnum.h"
 
 class CQTaskThread;
 class QCheckBox;
@@ -44,6 +42,7 @@ class CQTaskMethodWidget;
 class CQTaskBtnWidget;
 
 class CCopasiTask;
+class CCopasiMethod;
 
 //class CModel;
 class CProgressBar;

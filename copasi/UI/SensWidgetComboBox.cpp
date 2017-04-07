@@ -33,7 +33,11 @@
 #include <algorithm>
 
 #include "SensWidgetComboBox.h"
+
+#include "copasi/copasi.h"
+
 #include "qtUtilities.h"
+#include "copasi/sensitivities/CSensProblem.h"
 
 SensWidgetComboBox::SensWidgetComboBox(QWidget * parent, const char * name)
   : QComboBox(parent)

@@ -29,6 +29,7 @@
 #include <algorithm>
 
 #include "copasi.h"
+
 #include "CCopasiObjectName.h"
 #include "CCopasiObject.h"
 
@@ -49,113 +50,6 @@ C_FLOAT64 CCopasiObject::DummyValue = 0.0;
 //static
 CRenameHandler * CCopasiObject::smpRenameHandler = NULL;
 
-// static
-const CCopasiObject * CObjectInterface::DataObject(const CObjectInterface * pInterface)
-{
-  if (pInterface != NULL)
-    {
-      return pInterface->getDataObject();
-    }
-
-  return NULL;
-}
-
-// static
-CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-    const CCopasiObjectName & objName)
-{
-  CCopasiObjectName Primary = objName.getPrimary();
-  std::string Type = Primary.getObjectType();
-
-  // Check that we have a fully qualified CN
-  if (objName.getPrimary() != "CN=Root" &&
-      Type != "Separator" &&
-      Type != "String")
-    {
-      return NULL;
-    }
-
-  const CObjectInterface * pObject = NULL;
-
-  const CCopasiDataModel * pDataModel = NULL;
-
-  CObjectInterface::ContainerList::const_iterator it = listOfContainer.begin();
-
-  CObjectInterface::ContainerList::const_iterator end = listOfContainer.end();
-
-  CCopasiObjectName ContainerName;
-
-  std::string::size_type pos;
-
-  bool CheckDataModel = true;
-
-  //favor to search the list of container first
-  for (; it != end && pObject == NULL; ++it)
-    {
-      if (*it == NULL)
-        {
-          continue;
-        }
-
-      if (pDataModel == NULL)
-        {
-          pDataModel = (*it)->getObjectDataModel();
-        }
-
-      CheckDataModel &= (pDataModel != *it);
-
-      ContainerName = (*it)->getCN();
-
-      while (ContainerName.getRemainder() != "")
-        {
-          ContainerName = ContainerName.getRemainder();
-        }
-
-      if ((pos = objName.find(ContainerName)) == std::string::npos)
-        continue;
-
-      if (pos + ContainerName.length() == objName.length())
-        pObject = *it;
-      else
-        pObject = (*it)->getObject(objName.substr(pos + ContainerName.length() + 1));
-    }
-
-  // if still not found search the function database in the root container
-  if (pObject == NULL)
-    pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
-
-  // last resort check the whole data model if we know it.
-  // We need make sure that we do not  have infinite recursion
-  if (pObject == NULL && pDataModel != NULL && CheckDataModel)
-    {
-      pObject = pDataModel->getObjectFromCN(objName);
-    }
-
-  return const_cast< CObjectInterface * >(pObject);
-}
-
-CValidity & CObjectInterface::getValidity()
-{
-  return mValidity;
-}
-
-const CValidity & CObjectInterface::getValidity() const
-{
-  return mValidity;
-}
-
-CObjectInterface::CObjectInterface():
-  mValidity()
-{}
-
-CObjectInterface::CObjectInterface(const CObjectInterface & src):
-  mValidity(src.mValidity)
-{}
-
-// virtual
-CObjectInterface::~CObjectInterface()
-{};
-
 CCopasiObject::CCopasiObject():
   CObjectInterface(),
   mObjectName("No Name"),
@@ -165,7 +59,8 @@ CCopasiObject::CCopasiObject():
   mObjectFlag(0),
   mDependencies(),
   mReferences(),
-  mPrerequisits()
+  mPrerequisits(),
+  mValidity()
 {}
 
 CCopasiObject::CCopasiObject(const std::string & name,
@@ -180,7 +75,8 @@ CCopasiObject::CCopasiObject(const std::string & name,
   mObjectFlag(flag),
   mDependencies(),
   mReferences(),
-  mPrerequisits()
+  mPrerequisits(),
+  mValidity()
 {
   if (mpObjectParent != NULL &&
       mpObjectParent->isContainer())
@@ -201,7 +97,8 @@ CCopasiObject::CCopasiObject(const CCopasiObject & src,
   mObjectFlag(src.mObjectFlag),
   mDependencies(),
   mReferences(),
-  mPrerequisits()
+  mPrerequisits(),
+  mValidity(src.mValidity)
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -799,4 +696,14 @@ CCopasiDataModel* CCopasiObject::getObjectDataModel() const
     }
 
   return NULL;
+}
+
+CValidity & CCopasiObject::getValidity()
+{
+  return mValidity;
+}
+
+const CValidity & CCopasiObject::getValidity() const
+{
+  return mValidity;
 }

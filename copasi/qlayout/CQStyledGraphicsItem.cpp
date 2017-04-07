@@ -8,14 +8,17 @@
 // of Manchester.
 // All rights reserved.
 
+#include <QPen>
+#include <QBrush>
+
 #include <qlayout/CQStyledGraphicsItem.h>
 #include <qlayout/CQRenderConverter.h>
 #include <qlayout/CQLayoutScene.h>
+
+#include "copasi.h"
+
 #include <layout/CLGlyphs.h>
 #include <layout/CLRenderResolver.h>
-
-#include <QPen>
-#include <QBrush>
 
 CQStyledGraphicsItem::CQStyledGraphicsItem(const CLGraphicalObject* go, const CLRenderResolver* resolver)
   : CQCopasiGraphicsItem(resolver, resolver != NULL ? resolver->resolveStyle(go) : NULL)

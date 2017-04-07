@@ -677,7 +677,7 @@ void CQEventWidget1::addEvent(UndoEventData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CEvent* pEvent = pData->restoreObjectIn(pModel);
+  CCopasiObject* pEvent = pData->restoreObjectIn(pModel);
 
   if (pEvent == NULL)
     return;

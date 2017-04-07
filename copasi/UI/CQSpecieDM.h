@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,12 +16,13 @@
 #ifndef CQSpecieDM_H
 #define CQSpecieDM_H
 
-#include "model/CModel.h"
 #include "listviews.h"
 #include "CQBaseDataModel.h"
 
 class UndoSpeciesData;
 class UndoReactionData;
+class CMetab;
+template < class CType > class CCopasiVector;
 
 #define COL_NAME_SPECIES          1
 #define COL_COMPARTMENT           2

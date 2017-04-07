@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include "copasi/copasi.h"
+
 #include "CModelParameterSet.h"
 
 #include "model/CModel.h"

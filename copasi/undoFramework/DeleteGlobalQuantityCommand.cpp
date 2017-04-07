@@ -15,6 +15,8 @@
  *      Author: dada
  */
 
+#include "copasi.h"
+
 #include "report/CCopasiRootContainer.h"
 #include "model/CModelValue.h"
 #include "model/CReactionInterface.h"

@@ -11,10 +11,11 @@
 #include "copasi/UI/CQCheckModelWindow.h"
 #include "copasi/resourcesUI/CQIconResource.h"
 #include "copasi/UI/CopasiFileDialog.h"
+
+#include "copasi.h"
 #include "copasi/UI/qtUtilities.h"
 
 #include "copasi/model/CModelAnalyzer.h"
-
 
 #include <iostream>
 #include <sstream>
@@ -96,7 +97,6 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow)
   mpFindBox = new QLineEdit(this);
   connect(mpFindBox, SIGNAL(textChanged(QString)), this, SLOT(findText(QString)));
 
-
   QFrame* pFrame2 = new QFrame(this);
   QHBoxLayout* pLayout2 = new QHBoxLayout(pFrame2);
   pLayout2->setSpacing(3);
@@ -108,7 +108,6 @@ CQCheckModelWindow::CQCheckModelWindow(CopasiUI3Window * pMainWindow)
 
   toolBar->addWidget(pFrame1);
   toolBar->addWidget(pFrame2);
-
 }
 
 CQCheckModelWindow::~CQCheckModelWindow()
@@ -128,10 +127,8 @@ void CQCheckModelWindow::displayResult()
 
   if (mpAnalyzer == NULL || mbInitializing) return;
 
-
   int index = mpSelection->currentIndex();
   bool verbose = mpActVerbose->isChecked();
-
 
   std::ostringstream ss;
 
@@ -155,8 +152,6 @@ void CQCheckModelWindow::displayResult()
     }
 
   textEdit->setText(FROM_UTF8(ss.str()));
-
-
 }
 
 void CQCheckModelWindow::findNext()
@@ -196,6 +191,4 @@ void CQCheckModelWindow::slotSaveAs()
   QTextStream out(&file);
   out << textEdit->document()->toHtml();
   file.close();
-
 }
-

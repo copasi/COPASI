@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,6 +19,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "function/CExpression.h"
+#include "model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQEventDM.h"
@@ -352,7 +358,7 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
 
   beginInsertRows(QModelIndex(), 1, 1);
 
-  CEvent *pEvent = pEventData->restoreObjectIn(pModel);
+  CCopasiObject *pEvent = pEventData->restoreObjectIn(pModel);
 
   if (pEvent == NULL) return;
 
@@ -425,7 +431,7 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
     {
       beginInsertRows(QModelIndex(), 1, 1);
       UndoEventData * data = *i;
-      CEvent* pEvent = data->restoreObjectIn(pModel);
+      CCopasiObject * pEvent = data->restoreObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 

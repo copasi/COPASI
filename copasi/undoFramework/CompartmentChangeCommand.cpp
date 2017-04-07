@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include "copasi.h"
+
 #include "CompartmentChangeCommand.h"
 
 #include <copasi/UI/CQCompartment.h>

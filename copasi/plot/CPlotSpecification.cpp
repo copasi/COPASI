@@ -17,9 +17,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "model/CModel.h"
+#include "copasi/copasi.h"
 
 #include "CPlotSpecification.h"
+
+#include "model/CModel.h"
 #include "report/CCopasiObjectReference.h"
 
 // static

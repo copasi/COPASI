@@ -12,8 +12,8 @@
 #define CQ_PLOT_EDIT_WIDGET_H
 
 #include <QWidget>
-#include "copasi/model/CModel.h"
 
+class CModel;
 class CPlotItem;
 
 class CQPlotEditWidget : public QWidget

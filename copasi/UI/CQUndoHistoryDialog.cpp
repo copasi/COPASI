@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,16 +22,19 @@
 #include <QPushButton>
 #include <QDialogButtonBox>
 
+#include "CQUndoHistoryDialog.h"
 #include "CQMessageBox.h"
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
 
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
-#include "copasi/undoFramework/CreateNewCompartmentCommand.h"
-#include "copasi/undoFramework/CreateNewEventCommand.h"
-#include "copasi/undoFramework/UndoData.h"
-#include "copasi/undoFramework/UndoCompartmentData.h"
-#include "copasi/undoFramework/UndoEventData.h"
-#include "CQUndoHistoryDialog.h"
+#include "undoFramework/CCopasiUndoCommand.h"
+#include "undoFramework/CreateNewCompartmentCommand.h"
+#include "undoFramework/CreateNewEventCommand.h"
+#include "undoFramework/UndoData.h"
+#include "undoFramework/UndoCompartmentData.h"
+#include "undoFramework/UndoEventData.h"
 
 /*
  *  Constructs a CQUndoHistoryDialog as a child of 'parent', with the

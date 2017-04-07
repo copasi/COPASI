@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,6 +16,8 @@
  */
 
 #include <QtCore/QList>
+
+#include "copasi.h"
 
 #include "model/CModelValue.h"
 #include "model/CModel.h"
@@ -55,7 +62,7 @@ UndoGlobalQuantityData::~UndoGlobalQuantityData()
 {
 }
 
-CModelValue *
+CCopasiObject *
 UndoGlobalQuantityData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
@@ -75,10 +82,10 @@ UndoGlobalQuantityData::createObjectIn(CModel *pModel)
   return pGlobalQuantity;
 }
 
-CModelValue *
+CCopasiObject *
 UndoGlobalQuantityData::restoreObjectIn(CModel *pModel)
 {
-  CModelValue *pGlobalQuantity =  createObjectIn(pModel);
+  CCopasiObject *pGlobalQuantity =  createObjectIn(pModel);
 
   if (pGlobalQuantity == NULL)
     return NULL;

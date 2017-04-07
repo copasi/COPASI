@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQExpandModelData.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:42 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -25,7 +22,9 @@
 
 class QTreeWidgetItem;
 
-#include "model/CModel.h"
+class CModel;
+class CCompartment;
+class CMetab;
 
 #include "ui_CQExpandModelData.h"
 
@@ -38,7 +37,7 @@ public:
   ~CQExpandModelData();
 
 protected:
-  
+
   std::map<QTreeWidgetItem*, const CCompartment*> mItemCompartmentMap;
   std::map<QTreeWidgetItem*, const CMetab*> mItemMetabMap;
   CModel* pModel;
@@ -47,7 +46,7 @@ protected slots:
 
   /// handles activation or deactivation of a compartment
   void slotCompartmentActivated(QTreeWidgetItem* pItem, int col);
-  
+
   /// handles change of linear/rectangular mode
   void slotMode();
 

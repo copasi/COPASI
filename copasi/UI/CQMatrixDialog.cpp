@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -8,11 +13,14 @@
 // and The University of Manchester.
 // All rights reserved.
 
+#include <QtCore/QVariant>
+
 #include "CQMatrixDialog.h"
 
-#include <QtCore/QVariant>
-#include "utilities/CAnnotatedMatrix.h"
+#include "copasi.h"
 #include "qtUtilities.h"
+
+#include "utilities/CAnnotatedMatrix.h"
 
 /*
  *  Constructs a CQMatrixDialog as a child of 'parent', with the

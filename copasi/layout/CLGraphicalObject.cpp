@@ -23,6 +23,8 @@
 #include <sbml/packages/render/extension/RenderGraphicalObjectPlugin.h>
 #include <sbml/packages/layout/sbml/GraphicalObject.h>
 
+#include "copasi/copasi.h"
+
 #include "CLGraphicalObject.h"
 
 #include "report/CKeyFactory.h"

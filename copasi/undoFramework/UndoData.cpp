@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,6 +16,8 @@
  */
 
 #include "UndoData.h"
+
+#include "copasi.h"
 
 #include <copasi/undoFramework/UndoCompartmentData.h>
 #include <copasi/undoFramework/UndoSpeciesData.h>

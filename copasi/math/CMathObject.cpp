@@ -57,7 +57,8 @@ CMathObject::CMathObject():
   mIsIntensiveProperty(false),
   mIsInitialValue(false),
   mpCorrespondingProperty(NULL),
-  mpDataObject(NULL)
+  mpDataObject(NULL),
+  mValidity()
 {}
 
 CMathObject::CMathObject(const CMathObject & src):
@@ -71,7 +72,8 @@ CMathObject::CMathObject(const CMathObject & src):
   mIsIntensiveProperty(src.mIsIntensiveProperty),
   mIsInitialValue(src.mIsInitialValue),
   mpCorrespondingProperty(src.mpCorrespondingProperty),
-  mpDataObject(src.mpDataObject)
+  mpDataObject(src.mpDataObject),
+  mValidity(src.mValidity)
 {}
 
 // virtual
@@ -2078,4 +2080,14 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
   // CObjectInterface::ObjectSet mPrerequisites;
 
   return os;
+}
+
+CValidity & CMathObject::getValidity()
+{
+  return mValidity;
+}
+
+const CValidity & CMathObject::getValidity() const
+{
+  return mValidity;
 }

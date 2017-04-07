@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -30,9 +35,9 @@ public:
 
   UndoGlobalQuantityData(const CModelValue* pModelValue, bool trackDependencies = true);
 
-  virtual CModelValue* createObjectIn(CModel* pModel);
+  virtual CCopasiObject* createObjectIn(CModel* pModel);
 
-  virtual CModelValue* restoreObjectIn(CModel* pModel);
+  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
 
   virtual void fillObject(CModel* pModel);
 
@@ -71,7 +76,6 @@ private:
    * The initial expression for non fixed value of quantity
    */
   std::string mInitialExpression;
-
 };
 
 #endif /* UNDOGLOBALQUANTITYDATA_H_ */

@@ -12,6 +12,8 @@
 
 #include <copasi/UI/CQTabWidget.h>
 
+#include "copasi.h"
+
 #include <copasi/model/CModel.h>
 #include <copasi/model/CMetab.h>
 #include <copasi/model/CCompartment.h>
@@ -70,7 +72,6 @@ EntityRenameCommand::EntityRenameCommand(CCopasiObject *pObject,
 
 EntityRenameCommand::~EntityRenameCommand()
 {
-
 }
 
 void EntityRenameCommand::redo()
@@ -85,7 +86,6 @@ void EntityRenameCommand::redo()
     }
 
   mpTabWidget->renameEntity(mKey, mNewValue);
-
 }
 
 void EntityRenameCommand::undo()
@@ -100,5 +100,4 @@ void EntityRenameCommand::undo()
     }
 
   mpTabWidget->renameEntity(mKey, mOldValue);
-
 }

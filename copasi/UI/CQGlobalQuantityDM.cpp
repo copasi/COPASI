@@ -19,6 +19,7 @@
 #include "report/CCopasiRootContainer.h"
 #include "model/CModelValue.h"
 #include "function/CExpression.h"
+#include "model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQGlobalQuantityDM.h"
@@ -444,7 +445,7 @@ void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQua
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CModelValue *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(mpDataModel->getModel());
+  CCopasiObject *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(mpDataModel->getModel());
 
   if (pGlobalQuantity != NULL)
     emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -507,7 +508,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
         continue;
 
       beginInsertRows(QModelIndex(), 1, 1);
-      CModelValue *pGlobalQuantity = data->restoreObjectIn(mpDataModel->getModel());
+      CCopasiObject *pGlobalQuantity = data->restoreObjectIn(mpDataModel->getModel());
 
       if (pGlobalQuantity != NULL)
         emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());

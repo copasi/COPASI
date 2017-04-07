@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -6,15 +11,17 @@
 #include "CQSpectogramWidget.h"
 
 #include "UI/CCopasiSelectionDialog.h"
-#include "UI/qtUtilities.h"
 #include "CQPlotEditWidget.h"
 
 #include "copasi.h"
+
+#include "UI/qtUtilities.h"
 
 #include "report/CCopasiRootContainer.h"
 #include "utilities/CCopasiException.h"
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
+#include "model/CModel.h"
 
 /**
  * In multiple edit mode, we don't want to edit name & channels

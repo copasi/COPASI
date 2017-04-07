@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,9 +17,12 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
+#include "copasi.h"
+
 #include "CQProgressItemBar.h"
-#include "CQProgressItem.h"
+
 #include "qtUtilities.h"
+#include "utilities/CProcessReport.h"
 
 /*
  *  Constructs a CQProgressItemBar which is a child of 'parent', with the

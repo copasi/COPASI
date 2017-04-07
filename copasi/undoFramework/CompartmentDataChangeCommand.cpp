@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,6 +14,9 @@
  *  Created on: 15 Sep 2014
  *      Author: dada
  */
+
+#include "copasi.h"
+#include "UI/qtUtilities.h"
 
 #include "report/CCopasiRootContainer.h"
 #include "model/CCompartment.h"

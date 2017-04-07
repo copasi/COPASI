@@ -22,11 +22,9 @@
 
 #include <QtCore/QVariant>
 #include <QLabel>
+
 #include "CQProgressItem.h"
 #include "ui_CQProgressItemBar.h"
-
-#include "utilities/CProcessReport.h"
-#include "utilities/CVector.h"
 
 class CQProgressItemBar : public CQProgressItem, public Ui::CQProgressItemBar
 {
@@ -42,12 +40,12 @@ public:
 
 private:
   void (CQProgressItemBar::*mpSetValue)();
-  C_FLOAT64 mFactor;
+  double mFactor;
   void * mpEnd;
   void * mpStart;
   void * mpValue;
-  C_INT32 mLastSet;
-  C_INT32 mCurrentValue;
+  int mLastSet;
+  int mCurrentValue;
 
   virtual void setValueFromDOUBLE();
   virtual void setValueFromINT();

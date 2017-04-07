@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,8 +16,7 @@
 #ifndef CQPlotDM_H
 #define CQPlotDM_H
 
-#include "model/CModel.h"
-#include "CQBaseDataModel.h"
+#include "copasi/UI/CQBaseDataModel.h"
 
 #define COL_NAME_PLOTS   1
 #define COL_CURVES_PLOTS 2

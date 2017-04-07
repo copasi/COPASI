@@ -22,7 +22,7 @@
 
 #include "ui_CQLyapResultWidget.h"
 
-#include "lyap/CLyapTask.h"
+class CLyapTask;
 
 class CQLyapResultWidget : public CopasiWidget, public Ui::CQLyapResultWidget
 {

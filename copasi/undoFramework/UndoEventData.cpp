@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,6 +16,8 @@
  */
 
 #include <QtCore/QList>
+
+#include "copasi.h"
 
 #include "model/CModel.h"
 #include <copasi/model/CEvent.h>
@@ -62,7 +69,7 @@ UndoEventData::~UndoEventData()
   pdelete(mEventAssignmentData);
 }
 
-CEvent *
+CCopasiObject *
 UndoEventData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
@@ -81,10 +88,10 @@ UndoEventData::createObjectIn(CModel *pModel)
   return pEvent;
 }
 
-CEvent *
+CCopasiObject *
 UndoEventData::restoreObjectIn(CModel *pModel)
 {
-  CEvent *pEvent = createObjectIn(pModel);
+  CCopasiObject *pEvent = createObjectIn(pModel);
 
   if (pEvent == NULL)
     return NULL;

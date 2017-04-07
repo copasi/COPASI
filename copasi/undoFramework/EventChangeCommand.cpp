@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,6 +11,8 @@
 #include "EventChangeCommand.h"
 
 #include <copasi/UI/CQEventWidget1.h>
+
+#include "copasi.h"
 
 #include <copasi/model/CModel.h>
 #include <copasi/model/CMetab.h>
@@ -85,7 +92,6 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
 
 EventChangeCommand::~EventChangeCommand()
 {
-
 }
 
 void EventChangeCommand::redo()

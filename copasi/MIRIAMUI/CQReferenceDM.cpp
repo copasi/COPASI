@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -8,15 +13,16 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
 #include "CQReferenceDM.h"
+#include "UI/CQMessageBox.h"
 
+#include "copasi.h"
+
+#include "UI/qtUtilities.h"
 #include "MIRIAM/CModelMIRIAMInfo.h"
 
 CQReferenceDM::CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
   : CQBaseDataModel(parent, NULL)
-
 {
   mpMIRIAMInfo = MIRIAMInfo;
 }

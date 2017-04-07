@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,6 +16,8 @@
  */
 
 #include <QtCore/QList>
+
+#include "copasi.h"
 
 #include <copasi/model/CModel.h>
 #include <copasi/model/CMetab.h>
@@ -54,7 +61,7 @@ UndoReactionData::~UndoReactionData()
 {
 }
 
-CReaction *
+CCopasiObject *
 UndoReactionData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
@@ -70,10 +77,10 @@ UndoReactionData::createObjectIn(CModel *pModel)
   return pRea;
 }
 
-CReaction *
+CCopasiObject *
 UndoReactionData::restoreObjectIn(CModel *pModel)
 {
-  CReaction* pRea = createObjectIn(pModel);
+  CCopasiObject* pRea = createObjectIn(pModel);
 
   if (pRea == NULL) return NULL;
 

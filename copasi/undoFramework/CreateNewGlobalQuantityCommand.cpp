@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,6 +15,7 @@
  *      Author: dada
  */
 
+#include "copasi.h"
 #include "model/CModelValue.h"
 #include "UI/CQModelValue.h"
 #include "UndoGlobalQuantityData.h"
@@ -41,7 +47,6 @@ void CreateNewGlobalQuantityCommand::redo()
 
   setUndoState(true);
   setAction("Create");
-
 }
 
 void CreateNewGlobalQuantityCommand::undo()
@@ -50,7 +55,6 @@ void CreateNewGlobalQuantityCommand::undo()
   setUndoState(false);
   setAction("Delete");
 }
-
 
 CreateNewGlobalQuantityCommand::~CreateNewGlobalQuantityCommand()
 {

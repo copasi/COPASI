@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQProgressItemBar.ui,v $ </comment>
-<comment>   $Revision: 1.6 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: aekamal $ </comment>
-<comment>   $Date: 2011/05/16 15:57:45 $ </comment>
-<comment> End CVS Header </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
 
-<comment> Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
 <comment> All rights reserved. </comment>
 
  <class>CQProgressItemBar</class>
@@ -110,9 +116,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <includes>
-  <include location="local">CQProgressItem.h</include>
-  <include location="local">utilities/CVector.h</include>
-  <include location="local">utilities/CProcessReport.h</include>
   <include location="local">CQProgressItem.h</include>
  </includes>
  <resources/>

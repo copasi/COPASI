@@ -1,20 +1,25 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAMUI/CQRDFTreeViewItem.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/08/13 01:40:02 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-#include "UI/qtUtilities.h"
-
 #include "CQRDFTreeViewItem.h"
 #include "CQRDFTreeView.h"
+
+#include "copasi.h"
+
+#include "UI/qtUtilities.h"
+
 #include "MIRIAM/CRDFGraph.h"
 #include "MIRIAM/CRDFObject.h"
 #include "MIRIAM/CRDFLiteral.h"
@@ -24,16 +29,16 @@
 #define COL_OBJECT     2
 
 CQRDFTreeViewItem::CQRDFTreeViewItem(QTreeWidget * pParent, CQRDFTreeViewItem * pAfter):
-    QTreeWidgetItem(pParent, pAfter),
-    mTriplet()
+  QTreeWidgetItem(pParent, pAfter),
+  mTriplet()
 {
   assert(pParent != NULL);
   setExpanded(true);
 }
 
 CQRDFTreeViewItem::CQRDFTreeViewItem(CQRDFTreeViewItem * pParent, CQRDFTreeViewItem * pAfter):
-    QTreeWidgetItem(pParent, pAfter),
-    mTriplet()
+  QTreeWidgetItem(pParent, pAfter),
+  mTriplet()
 {
   assert(pParent != NULL);
   setExpanded(true);

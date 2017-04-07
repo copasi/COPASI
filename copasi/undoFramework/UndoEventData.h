@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +31,6 @@ class UndoEventData: public UndoData
 {
 public:
 
-
   UndoEventData(const std::string &key = "",
                 const std::string &name = "",
                 const std::string &type = "");
@@ -43,9 +47,9 @@ public:
    * @return the newly created event
    */
 
-  virtual CEvent* createObjectIn(CModel* pModel);
+  virtual CCopasiObject* createObjectIn(CModel* pModel);
 
-  virtual CEvent* restoreObjectIn(CModel* pModel);
+  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
 
   virtual void fillObject(CModel* pModel);
 

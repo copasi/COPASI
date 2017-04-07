@@ -15,6 +15,8 @@
  *      Author: dada
  */
 
+#include "copasi.h"
+
 #include "model/CReaction.h"
 #include "model/CModel.h"
 

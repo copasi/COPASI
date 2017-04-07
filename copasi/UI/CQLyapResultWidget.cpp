@@ -30,6 +30,7 @@
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "lyap/CLyapProblem.h"
+#include "lyap/CLyapTask.h"
 #include "commandline/CLocaleString.h"
 
 #include "UI/CopasiFileDialog.h"

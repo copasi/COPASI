@@ -25,6 +25,7 @@
 #include <QtCore/QMutex>
 #include <QtCore/QWaitCondition>
 
+#include "copasi.h"
 #include "utilities/CProcessReport.h"
 #include "CQProgressDialog.h"
 
@@ -116,7 +117,6 @@ protected:
                          const CCopasiParameter::Type & type,
                          const void * pValue,
                          const void * pEndValue = NULL);
-
 
   virtual void closeEvent(QCloseEvent *e);
 

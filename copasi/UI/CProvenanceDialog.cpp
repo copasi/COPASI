@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -8,11 +13,15 @@
 #include <QDir>
 #include <sbml/xml/XMLInputStream.h>
 #include <sbml/xml/XMLErrorLog.h>
+
+#include "CProvenanceDialog.h"
+
+#include "copasi.h"
+#include "qtUtilities.h"
+
 #include "report/CCopasiRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
-#include "CProvenanceDialog.h"
-#include "ui_CProvenanceDialog.h"
 
 //CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel,  QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel)
 CProvenanceDialog::CProvenanceDialog(QWidget* parent, QUndoStack *undoStack, QString PathFile ,  QList<QString> VersionsPathToCurrentModel)

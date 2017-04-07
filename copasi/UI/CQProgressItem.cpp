@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,8 +19,11 @@
 
 #include "CQProgressItem.h"
 
-//#include <QtCore/QVariant>
-//#include "CQProgressItem.ui.h"
+#include "copasi.h"
+
+#include "utilities/CProcessReport.h"
+#include "utilities/CVector.h"
+
 /*
  *  Constructs a CQProgressItem as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.

@@ -33,9 +33,10 @@
 
 #include "copasi/UI/CQMessageBox.h"
 #include "copasi/UI/CopasiFileDialog.h"
-#include "copasi/UI/qtUtilities.h"
 
 #include "copasi.h"
+
+#include "copasi/UI/qtUtilities.h"
 
 CQBarChart::CQBarChart(QWidget* parent, const char* name) :
   CQBaseWidget(parent, name),

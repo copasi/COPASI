@@ -22,11 +22,10 @@
 
 #include <QTableWidget>
 
-#include "copasi.h"
-#include "model/CReaction.h"
-
 class CReactionInterface;
 class CQComboDelegate;
+class CModel;
+class CReaction;
 
 //class ColorTableItem : public Q3TableItem
 //{

@@ -24,10 +24,14 @@
 #include "parametertable.h"
 #include "CQComboDelegate.h"
 #include "resourcesUI/CQIconResource.h"
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
 
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
+#include "model/CReaction.h"
 #include "model/CMetabNameInterface.h"
 #include "utilities/CUnitValidator.h"
 #include "report/CCopasiRootContainer.h"

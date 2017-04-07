@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,17 +15,19 @@
  *      Author: dada
  */
 
+#include "RemoveCompartmentRowsCommand.h"
+
+#include "copasi.h"
+
+#include "UndoCompartmentData.h"
+#include "UndoReactionData.h"
+
 #include "report/CCopasiRootContainer.h"
 #include "model/CMetab.h"
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"
 #include "CQCompartmentDM.h"
 #include "function/CFunctionDB.h"
-
-#include "UndoCompartmentData.h"
-#include "UndoReactionData.h"
-
-#include "RemoveCompartmentRowsCommand.h"
 
 RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   const QModelIndexList& rows,
@@ -75,10 +82,10 @@ void RemoveCompartmentRowsCommand::undo()
 
 RemoveCompartmentRowsCommand::~RemoveCompartmentRowsCommand()
 {
-  foreach (UndoCompartmentData * data, mpCompartmentData)
-    {
-      pdelete(data);
-    }
+  foreach(UndoCompartmentData * data, mpCompartmentData)
+  {
+    pdelete(data);
+  }
 
   mpCompartmentData.clear();
 }

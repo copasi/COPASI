@@ -18,13 +18,15 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include <QPixmap>
 #include <QDialog>
 
-#include "model/CModel.h"
-
 #include "ui_CQMergingData.h"
+
+class CModel;
+class CCopasiObject;
 
 class CQMergingData : public QDialog, public Ui::CQMergingData
 {

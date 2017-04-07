@@ -3,6 +3,9 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
+#include "copasi.h"
+#include "UI/qtUtilities.h"
+
 #include <copasi/undoFramework/SpeciesChangeCommand.h>
 
 #include <copasi/UI/CQSpeciesDetail.h>

@@ -51,7 +51,7 @@ protected slots:
   virtual void reject();
 
 private:
-  unsigned C_INT32 mItemCount;
+  unsigned int mItemCount;
 
   void init();
 };

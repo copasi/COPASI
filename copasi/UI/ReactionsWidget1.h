@@ -32,8 +32,8 @@
 #include "copasi/UI/ui_ReactionsWidget1.h"
 
 #include "copasi/UI/copasiWidget.h"
-#include "copasi/model/CReactionInterface.h"
 
+class CReactionInterface;
 class ParameterTable;
 class MyLineEdit;
 

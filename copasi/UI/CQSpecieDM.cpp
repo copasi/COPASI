@@ -18,6 +18,7 @@
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "model/CChemEqInterface.h"
+#include "model/CModel.h"
 #include "function/CExpression.h"
 
 #include "CQMessageBox.h"
@@ -683,7 +684,7 @@ void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  CMetab *species =  pSpecieData->restoreObjectIn(pModel);
+  CCopasiObject *species =  pSpecieData->restoreObjectIn(pModel);
 
   if (species == NULL)
     return;
@@ -751,7 +752,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoSpeciesData * data = *i;
-      CMetab *pSpecies = data->restoreObjectIn(pModel);
+      CCopasiObject *pSpecies = data->restoreObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;

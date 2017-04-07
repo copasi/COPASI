@@ -13,6 +13,8 @@
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 
+#include "report/CCopasiObjectName.h"
+
 class CCopasiObject;
 class CQTabWidget;
 

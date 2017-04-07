@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include "copasi/copasi.h"
+
 #include "CMathDelay.h"
 #include "CMathExpression.h"
 #include "CMathContainer.h"

@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,6 +15,7 @@
  *      Author: dada
  */
 
+#include "copasi.h"
 #include "UndoEventAssignmentData.h"
 
 #include <copasi/model/CModel.h>
@@ -22,7 +28,6 @@ UndoEventAssignmentData::UndoEventAssignmentData(const std::string &key  /*= ""*
   : UndoData(key, name, type)
   , mExpression()
 {
-
 }
 
 UndoEventAssignmentData::UndoEventAssignmentData(const CModelEntity *pEntity,

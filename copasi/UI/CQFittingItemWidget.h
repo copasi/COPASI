@@ -42,6 +42,7 @@ class QColor;
 class CExperimentSet;
 class CCopasiParameterGroup;
 class CCrossValidationSet;
+class CObjectInterface;
 
 class CQFittingItemWidget : public QWidget, public Ui::CQFittingItemWidget
 {

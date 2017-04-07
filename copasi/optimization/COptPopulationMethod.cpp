@@ -1,17 +1,24 @@
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-#include <copasi/optimization/COptPopulationMethod.h>
-#include <copasi/randomGenerator/CRandom.h>
-#include <copasi/utilities/CProcessReport.h>
-#include <copasi/report/CCopasiObject.h>
-#include <copasi/report/CCopasiObjectReference.h>
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#include "copasi/copasi.h"
+
+#include "optimization/COptPopulationMethod.h"
+#include "randomGenerator/CRandom.h"
+#include "utilities/CProcessReport.h"
+#include "report/CCopasiObject.h"
+#include "report/CCopasiObjectReference.h"
 
 COptPopulationMethod::COptPopulationMethod(const CCopasiContainer * pParent,
-  const CTaskEnum::Method & methodType,
-  const CTaskEnum::Task & taskType /*= CTaskEnum::optimization*/)
+    const CTaskEnum::Method & methodType,
+    const CTaskEnum::Task & taskType /*= CTaskEnum::optimization*/)
   : COptMethod(pParent, methodType, taskType)
   , mPopulationSize(0)
   , mGenerations(0)
@@ -26,7 +33,7 @@ COptPopulationMethod::COptPopulationMethod(const CCopasiContainer * pParent,
 }
 
 COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
-  const CCopasiContainer * pParent) 
+    const CCopasiContainer * pParent)
   : COptMethod(src, pParent)
   , mPopulationSize(0)
   , mGenerations(0)
@@ -48,12 +55,12 @@ COptPopulationMethod::~COptPopulationMethod()
 void COptPopulationMethod::initObjects()
 {
   if (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch)
-  addObjectReference("Current Generation", mCurrentGeneration, CCopasiObject::ValueInt);
+    addObjectReference("Current Generation", mCurrentGeneration, CCopasiObject::ValueInt);
 }
 
 #include <iostream>
 
-bool 
+bool
 COptPopulationMethod::initialize()
 {
   cleanup();
@@ -67,32 +74,30 @@ COptPopulationMethod::initialize()
     mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
   if (mpCallBack
-    && (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch))
-  {
-    mhGenerations =
-    mpCallBack->addItem("Current Generation",
-      mCurrentGeneration,
-      &mGenerations);
-  }
+      && (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch))
+    {
+      mhGenerations =
+        mpCallBack->addItem("Current Generation",
+                            mCurrentGeneration,
+                            &mGenerations);
+    }
 
   mCurrentGeneration++;
 
-
-
   if (getParameter("Population Size") != NULL)
-  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+    mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
   else mPopulationSize = 0;
 
   if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
     mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-      getValue< unsigned C_INT32 >("Seed"));
-    
+                                        getValue< unsigned C_INT32 >("Seed"));
+
   mVariableSize = mpOptItem->size();
 
   return true;
 }
 
-bool 
+bool
 COptPopulationMethod::cleanup()
 {
   size_t i;
@@ -101,6 +106,7 @@ COptPopulationMethod::cleanup()
 
   for (i = 0; i < mIndividuals.size(); i++)
     pdelete(mIndividuals[i]);
+
   mIndividuals.clear();
   return true;
 }
@@ -130,16 +136,12 @@ const CVector< C_FLOAT64 >& COptPopulationMethod::getObjectiveValues()
   return mValues;
 }
 
-
-
-
 void COptPopulationMethod::print(std::ostream * ostream) const
 {
   COptMethod::print(ostream);
 
   *ostream << std::endl << *this;
 }
-
 
 std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o)
 {
@@ -149,12 +151,13 @@ std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o)
   os << "Current Generation / Iteration: " << o.mCurrentGeneration << std::endl;
   os << "Population Values: " << std::endl << "   " << o.mValues << std::endl << std::endl;
   os << "Population:" << std::endl;
-  
+
   std::vector< CVector < C_FLOAT64 > * >::const_iterator it = o.mIndividuals.begin();
+
   for (; it != o.mIndividuals.end(); ++it)
-  {
-    os << "   " << **it << std::endl;
-  }
+    {
+      os << "   " << **it << std::endl;
+    }
 
   return os;
 }

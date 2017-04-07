@@ -46,8 +46,6 @@ using namespace SystemsBiologyWorkbench;
 class SBWListener;
 #endif  // COPASI_SBW_INTEGRATION
 
-#include "copasi/MIRIAM/CMIRIAMResource.h"
-
 //class QToolButton;
 class ListViews;
 class DataModelGUI;
@@ -67,6 +65,7 @@ class CModelVersion;
 #endif
 
 class CQOptPopulation;
+class CCopasiDataModel;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -132,9 +131,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();

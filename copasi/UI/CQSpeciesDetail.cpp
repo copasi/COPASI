@@ -779,7 +779,7 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
   CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
   //reinsert the species
-  CMetab *pSpecies =  pSData->restoreObjectIn(pModel);
+  CCopasiObject *pSpecies =  pSData->restoreObjectIn(pModel);
 
   if (pSpecies == NULL)
     return;

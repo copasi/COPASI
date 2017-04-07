@@ -12,6 +12,8 @@
 #include <string.h>
 #include <algorithm>
 
+#include "copasi/copasi.h"
+
 #include "copasi/report/CCopasiRootContainer.h"
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnit.h"

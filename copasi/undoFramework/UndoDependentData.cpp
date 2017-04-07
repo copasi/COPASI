@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include "copasi.h"
+
 #include <copasi/undoFramework/UndoDependentData.h>
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
@@ -95,7 +97,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel,
   for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
     {
       UndoGlobalQuantityData* data = *g;
-      CModelValue *pGlobalQuantity = data->createObjectIn(pModel);
+      CCopasiObject *pGlobalQuantity = data->createObjectIn(pModel);
 
       if (pGlobalQuantity == NULL) continue;
 
@@ -119,7 +121,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoReactio
       if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
         continue;
 
-      CReaction *pRea = rData->createObjectIn(pModel);
+      CCopasiObject *pRea = rData->createObjectIn(pModel);
 
       if (pRea == NULL) continue;
 
@@ -138,7 +140,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoEventDa
   for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
     {
       UndoEventData* data = *ev;
-      CEvent* pEvent = data->createObjectIn(pModel);
+      CCopasiObject* pEvent = data->createObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 
@@ -158,7 +160,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoSpecies
     {
       UndoSpeciesData * data = *rs;
 
-      CMetab* pSpecies = data->createObjectIn(pModel);
+      CCopasiObject* pSpecies = data->createObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;
@@ -179,7 +181,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoCompart
     {
       UndoCompartmentData * data = *rs;
 
-      CCompartment* pCompartment = data->createObjectIn(pModel);
+      CCopasiObject* pCompartment = data->createObjectIn(pModel);
 
       if (pCompartment == NULL)
         continue;
@@ -200,7 +202,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel,
   for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
     {
       UndoGlobalQuantityData* data = *g;
-      CModelValue *pGlobalQuantity = data->restoreObjectIn(pModel);
+      CCopasiObject *pGlobalQuantity = data->restoreObjectIn(pModel);
 
       if (pGlobalQuantity == NULL) continue;
 
@@ -226,7 +228,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoReacti
       if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
         continue;
 
-      CReaction *pRea = rData->restoreObjectIn(pModel);
+      CCopasiObject *pRea = rData->restoreObjectIn(pModel);
 
       rData->restoreDependentObjects(pModel);
 
@@ -245,7 +247,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoEventD
   for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
     {
       UndoEventData* data = *ev;
-      CEvent* pEvent = data->restoreObjectIn(pModel);
+      CCopasiObject* pEvent = data->restoreObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 
@@ -267,7 +269,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoSpecie
     {
       UndoSpeciesData * data = *rs;
 
-      CMetab* pSpecies = data->restoreObjectIn(pModel);
+      CCopasiObject * pSpecies = data->restoreObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;
@@ -290,7 +292,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoCompar
     {
       UndoCompartmentData * data = *rs;
 
-      CCompartment* pCompartment = data->restoreObjectIn(pModel);
+      CCopasiObject* pCompartment = data->restoreObjectIn(pModel);
 
       if (pCompartment == NULL)
         continue;

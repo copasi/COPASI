@@ -16,12 +16,15 @@
 #include <QCheckBox>
 #include <QtCore/QVariant>
 
-#include "copasi/UI/CQTaskBtnWidget.h"
-#include "copasi/UI/CQTaskHeaderWidget.h"
-
-#include "copasi/moieties/CMoietiesMethod.h"
-#include "copasi/moieties/CMoietiesTask.h"
 #include "CQMoietiesTaskWidget.h"
+
+#include "UI/CQTaskBtnWidget.h"
+#include "UI/CQTaskHeaderWidget.h"
+
+#include "copasi.h"
+
+#include "moieties/CMoietiesMethod.h"
+#include "moieties/CMoietiesTask.h"
 
 /*
  *  Constructs a CQMoietiesTaskWidget which is a child of 'parent', with the

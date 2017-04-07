@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,13 +16,17 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
+#include "CQMessageBox.h"
+#include "CQFunctionDM.h"
+
+#include "copasi.h"
+
+#include "qtUtilities.h"
+
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "function/CFunctionDB.h"
-
-#include "CQMessageBox.h"
-#include "CQFunctionDM.h"
-#include "qtUtilities.h"
+#include "model/CModel.h"
 
 CQFunctionDM::CQFunctionDM(QObject *parent, CCopasiDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)

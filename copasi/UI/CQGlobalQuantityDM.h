@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,8 +16,10 @@
 #ifndef CQGlobalQuantityDM_H
 #define CQGlobalQuantityDM_H
 
-#include "model/CModel.h"
 #include "CQBaseDataModel.h"
+
+class CModelValue;
+template < class CType > class CCopasiVectorN;
 
 class UndoGlobalQuantityData;
 class UndoSpeciesData;

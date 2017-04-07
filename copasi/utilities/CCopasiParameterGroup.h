@@ -332,7 +332,7 @@ public:
     const CCopasiParameter * pParameter = getParameter(name);
 
     if (!pParameter)
-      fatalError();
+      __FatalError();
 
     return pParameter->getValue<CType>();
   }
@@ -347,7 +347,7 @@ public:
     CCopasiParameter * pParameter = getParameter(name);
 
     if (!pParameter)
-      fatalError();
+      __FatalError();
 
     return pParameter->getValue<CType>();
   }
@@ -362,7 +362,7 @@ public:
     const CCopasiParameter * pParameter = getParameter(index);
 
     if (!pParameter)
-      fatalError();
+      __FatalError();
 
     return pParameter->getValue<CType>();
   }
@@ -377,7 +377,7 @@ public:
     CCopasiParameter * pParameter = getParameter(index);
 
     if (!pParameter)
-      fatalError();
+      __FatalError();
 
     return pParameter->getValue<CType>();
   }

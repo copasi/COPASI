@@ -22,6 +22,9 @@
 #include "CQExpressionWidget.h"
 
 #include "UI/CQMessageBox.h"
+
+#include "copasi.h"
+
 #include "UI/qtUtilities.h"
 
 #include "model/CModel.h"
@@ -353,9 +356,7 @@ void CQModelValue::load()
       //      slotInitialTypeChanged(true);
     }
 
-
   mpDependencies->loadFrom(mpObject);
-
 
   mChanged = false;
 }
@@ -622,7 +623,7 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CModelValue *pGlobalQuantity =  pData->restoreObjectIn(pModel);
+  CCopasiObject *pGlobalQuantity =  pData->restoreObjectIn(pModel);
 
   if (pGlobalQuantity == NULL)
     return;

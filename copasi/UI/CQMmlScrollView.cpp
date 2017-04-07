@@ -18,14 +18,15 @@
  \brief Implementation file of class CQMmlScrollView
  */
 
-#include "CQMmlScrollView.h"
-
 #include <QApplication>
 
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
 #endif // HAVE_MML
 
+#include "CQMmlScrollView.h"
+
+#include "copasi.h"
 #include "qtUtilities.h"
 
 ///  Constructor

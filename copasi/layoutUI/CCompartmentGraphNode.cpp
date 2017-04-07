@@ -1,20 +1,25 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CCompartmentGraphNode.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/09/15 15:03:13 $
-// End CVS Header
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
+
+#include "copasi.h"
 
 #include "CCompartmentGraphNode.h"
 
 CCompartmentGraphNode::CCompartmentGraphNode(const std::string & name,
     const CCopasiContainer * pParent)
-    : CLCompartmentGlyph(name, pParent)
+  : CLCompartmentGlyph(name, pParent)
 {
   mOrigNodeKey = "";
   mObjectKey = "";
@@ -22,7 +27,7 @@ CCompartmentGraphNode::CCompartmentGraphNode(const std::string & name,
 
 CCompartmentGraphNode::CCompartmentGraphNode(const CLCompartmentGlyph & src,
     const CCopasiContainer * pParent)
-    : CLCompartmentGlyph(src, pParent)
+  : CLCompartmentGlyph(src, pParent)
 {
   mOrigNodeKey = src.getKey();
   mObjectKey = src.getModelObjectKey();
@@ -30,7 +35,7 @@ CCompartmentGraphNode::CCompartmentGraphNode(const CLCompartmentGlyph & src,
 
 CCompartmentGraphNode::CCompartmentGraphNode(const CCompartmentGraphNode & src,
     const CCopasiContainer * pParent)
-    : CLCompartmentGlyph(src, pParent)
+  : CLCompartmentGlyph(src, pParent)
 {
   mOrigNodeKey = src.mOrigNodeKey;
   mObjectKey = src.mObjectKey;

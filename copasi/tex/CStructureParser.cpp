@@ -20,12 +20,14 @@
  * of some elements. These elements are mfrac, msub, and msup.
  */
 
-#include "CStructureParser.h"
+#include <iostream>
 
 #include <QtCore/QString>
 #include <QtCore/QRegExp>
 
-#include <iostream>
+#include "CStructureParser.h"
+
+#include "copasi.h"
 #include "UI/qtUtilities.h"
 
 CStructureParser::CStructureParser(int n):

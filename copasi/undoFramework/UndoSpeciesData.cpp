@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,6 +16,8 @@
  */
 
 #include <QtCore/QList>
+
+#include "copasi.h"
 
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
@@ -51,7 +58,7 @@ UndoSpeciesData::~UndoSpeciesData()
 {
 }
 
-CMetab *
+CCopasiObject *
 UndoSpeciesData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL)
@@ -80,10 +87,10 @@ UndoSpeciesData::createObjectIn(CModel *pModel)
   return pSpecies;
 }
 
-CMetab *
+CCopasiObject *
 UndoSpeciesData::restoreObjectIn(CModel *pModel)
 {
-  CMetab *pSpecies = createObjectIn(pModel);
+  CCopasiObject *pSpecies = createObjectIn(pModel);
 
   if (pSpecies == NULL)
     return NULL;

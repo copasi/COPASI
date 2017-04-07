@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,6 +21,7 @@
 #include "model/CChemEqInterface.h"
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
+#include "model/CModel.h"
 
 #include "CQMessageBox.h"
 #include "CQReactionDM.h"
@@ -554,7 +560,7 @@ void CQReactionDM::addReactionRow(UndoReactionData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CReaction *pReaction = pData->restoreObjectIn(pModel);
+  CCopasiObject *pReaction = pData->restoreObjectIn(pModel);
 
   if (pReaction == NULL)
     return;

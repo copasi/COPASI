@@ -13,16 +13,18 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "model/CModelExpansion.h"
-#include "report/CCopasiRootContainer.h"
-#include "listviews.h"
-
-#include "UI/qtUtilities.h"
-
 #include <QtCore/QString>
 #include <QIntValidator>
 #include "CQExpandModelData.h"
+#include "listviews.h"
+
+#include "copasi.h"
+#include "CopasiDataModel/CCopasiDataModel.h"
+#include "model/CModelExpansion.h"
+#include "report/CCopasiRootContainer.h"
+
+#include "UI/qtUtilities.h"
+#include "model/CModel.h"
 
 CQExpandModelData::CQExpandModelData(QWidget* parent, Qt::WindowFlags fl)
   : QDialog(parent, fl)

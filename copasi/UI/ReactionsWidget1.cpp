@@ -40,6 +40,7 @@
 #include "CQNameSelectionDialog.h"  // for Copy button compartment options
 
 #include "resourcesUI/CQIconResource.h"
+#include "model/CReactionInterface.h"
 
 #include "utilities/CCopasiVector.h"
 #include "CopasiDataModel/CCopasiDataModel.h"
@@ -1083,7 +1084,7 @@ void ReactionsWidget1::addReaction(UndoReactionData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CReaction *pReaction = pData->restoreObjectIn(pModel);
+  CCopasiObject *pReaction = pData->restoreObjectIn(pModel);
 
   if (pReaction == NULL)
     return;

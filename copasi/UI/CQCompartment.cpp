@@ -22,6 +22,9 @@
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
 #include "CQCompartmentCopyOptions.h"
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"

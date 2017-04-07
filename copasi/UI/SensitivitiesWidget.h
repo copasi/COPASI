@@ -20,18 +20,15 @@
 #ifndef SENSWIDGET_H
 #define SENSWIDGET_H
 
-#include "copasi.h"
+#include <QComboBox>
 
 #include "ui_SensitivitiesWidget.h"
 
-//#include <QtCore/QVariant>
-//#include <QWidget>
 #include "UI/TaskWidget.h"
-#include "sensitivities/CSensProblem.h"
-
 #include "UI/SensWidgetComboBox.h"
 
-#include <QComboBox>
+#include "copasi.h"
+#include "sensitivities/CSensProblem.h"
 
 class SensitivitiesWidget : public TaskWidget, public Ui::SensitivitiesWidget
 {

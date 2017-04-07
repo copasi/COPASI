@@ -27,8 +27,11 @@
 
 #include "copasiui3window.h"
 #include "CQMessageBox.h"
-#include "qtUtilities.h"
 #include "listviews.h"
+
+#include "copasi.h"
+
+#include "qtUtilities.h"
 
 #include "report/CCopasiRootContainer.h"
 #include "model/CModel.h"

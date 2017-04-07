@@ -19,6 +19,8 @@
 
 #include <QPalette>
 #include "CQTaskHeaderWidget.h"
+
+#include "copasi.h"
 #include "qtUtilities.h"
 
 CQTaskHeaderWidget::CQTaskHeaderWidget(QWidget* parent, Qt::WindowFlags f):

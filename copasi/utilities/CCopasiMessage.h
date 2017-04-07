@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -77,6 +82,10 @@ Message;
 #define fatalError() {CCopasiMessage(CCopasiMessage::EXCEPTION, \
                                        "%s (%d) compiled: %s %s", \
                                        __FILE__, __LINE__, __DATE__, __TIME__);}
+
+#define __FatalError() {CCopasiMessage(CCopasiMessage::EXCEPTION, \
+                                         "%s (%d) compiled: %s %s", \
+                                         __FILE__, __LINE__, __DATE__, __TIME__);}
 
 class CCopasiMessage
 {

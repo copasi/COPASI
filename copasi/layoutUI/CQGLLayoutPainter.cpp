@@ -15,6 +15,8 @@
 #endif
 
 // SBML includes
+#include "copasi.h"
+
 #include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CCopasiDataModel.h"
 
