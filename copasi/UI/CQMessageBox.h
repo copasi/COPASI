@@ -23,6 +23,8 @@ class QTabWidget;
 class QTextEdit;
 class QVBoxLayout;
 class CCopasiObject;
+class CFunctionDB;
+class CCopasiDataModel;
 
 class CQMessageBox: public QMessageBox
 {
@@ -54,6 +56,13 @@ public:
   static StandardButton confirmDelete(QWidget *parent,
                                       const QString &objectType, const QString &objects,
                                       const std::set< const CCopasiObject * > & deletedObjects);
+
+  static QString buildDeleteConfirmationMessage(const QString & objectType,
+      const QString & objects,
+      CFunctionDB * pFunctionDB,
+      std::set<const CCopasiObject *> &DeletedObjects,
+      const CCopasiDataModel * pDataModel,
+      bool& isUsed);
 
   void setText(const QString & text);
 
