@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -350,4 +355,17 @@ bool CQTabWidget::renameEntity(const std::string& key, const std::string& newNam
     }
 
   return true;
+}
+
+const int CQTabWidget::getNumTabs() const
+{
+  return (int)mPages.size();
+}
+
+CopasiWidget * CQTabWidget::getTab(int index)
+{
+  if (index < getNumTabs())
+    return mPages[index];
+
+  return NULL;
 }

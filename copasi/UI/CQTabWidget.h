@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -38,6 +43,16 @@ public:
   void selectTab(int index) const;
 
   bool renameEntity(const std::string& key, const std::string& newName);
+
+  /**
+   * @return the number of tabs
+   */
+  const int getNumTabs() const;
+
+  /**
+   * @return the tab widget with given index
+   */
+  CopasiWidget *getTab(int index);
 
 protected:
   virtual bool enterProtected();
