@@ -30,7 +30,6 @@
 
 DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_DELETE)
-  , mFirstTime(true)
   , mpCompartmentData(new UndoCompartmentData(pCompartment->mpCompartment))
   , mpCompartment(pCompartment)
 {
@@ -40,15 +39,7 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
 
 void DeleteCompartmentCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpCompartment->deleteCompartment();
-      mFirstTime = false;
-    }
-  else
-    {
-      mpCompartment->deleteCompartment(mpCompartmentData);
-    }
+  mpCompartment->deleteCompartment(mpCompartmentData);
 
   setUndoState(true);
   setAction("Delete");

@@ -98,7 +98,7 @@ void CQModelValue::slotBtnCopy()
 
 void CQModelValue::slotBtnDelete()
 {
-  mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
+  deleteGlobalQuantity();
 }
 
 /*!
@@ -563,12 +563,11 @@ void CQModelValue::createNewGlobalQuantity()
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-bool CQModelValue::deleteGlobalQuantity()
+void CQModelValue::deleteGlobalQuantity()
 {
-  bool didDelete = false;
 
   if (mpModelValue == NULL)
-    return didDelete;
+    return;
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "quantity",
@@ -579,16 +578,7 @@ bool CQModelValue::deleteGlobalQuantity()
     {
       case QMessageBox::Ok:
       {
-        assert(mpDataModel != NULL);
-        CModel * pModel = mpDataModel->getModel();
-        assert(pModel != NULL);
-        pModel->removeModelValue(mKey);
-        mpModelValue = NULL;
-        didDelete = true;
-
-#undef DELETE
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+        mpUndoStack->push(new DeleteGlobalQuantityCommand(this));
         break;
       }
 
@@ -597,7 +587,6 @@ bool CQModelValue::deleteGlobalQuantity()
     }
 
   mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
-  return didDelete;
 }
 
 void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)

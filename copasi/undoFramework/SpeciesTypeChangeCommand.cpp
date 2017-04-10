@@ -36,7 +36,6 @@ SpeciesTypeChangeCommand::SpeciesTypeChangeCommand(
   , mOldType(currentType)
   , mpSpeciesDetail(pSpeciesDetail)
   , mpSpeciesData(new UndoSpeciesData(mpSpeciesDetail->mpMetab))
-  , mFirstTime(true)
   , useInitialExpression(false)
 {
 
@@ -48,15 +47,7 @@ SpeciesTypeChangeCommand::SpeciesTypeChangeCommand(
 void
 SpeciesTypeChangeCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpSpeciesDetail->speciesTypeChanged(mpSpeciesDetail->mpComboBoxType->currentIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpSpeciesDetail->speciesTypeChanged(mpSpeciesData, mNewType);
-    }
+  mpSpeciesDetail->speciesTypeChanged(mpSpeciesData, mNewType);
 
   setAction("Change");
 }

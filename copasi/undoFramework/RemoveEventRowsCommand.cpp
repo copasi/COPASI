@@ -33,7 +33,6 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
   , mpEventDM(pEventDM)
   , mRows(rows)
   , mpEventData()
-  , mFirstTime(true)
 {
   CCopasiDataModel * pDataModel = pEventDM->getDataModel();
   assert(pDataModel != NULL);
@@ -57,15 +56,7 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
 
 void RemoveEventRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpEventDM->removeEventRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpEventDM->deleteEventRows(mpEventData);
-    }
+  mpEventDM->deleteEventRows(mpEventData);
 
   setUndoState(true);
   setAction("Delete set");

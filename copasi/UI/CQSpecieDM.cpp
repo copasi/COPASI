@@ -455,10 +455,9 @@ bool CQSpecieDM::removeRows(int position, int rows)
   return true;
 }
 
-bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&)
+bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex&index)
 {
-  mpUndoStack->push(new RemoveSpecieRowsCommand(rows, this, QModelIndex()));
-
+  removeSpecieRows(rows, index);
   return true;
 }
 
@@ -718,6 +717,8 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
 
   QList <CMetab *>::const_iterator j;
 
+  QModelIndexList lst;
+
   for (j = pSpecies.begin(); j != pSpecies.end(); ++j)
     {
       CMetab * pSpecie = *j;
@@ -734,7 +735,15 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
                                     pSpecie->getDeletedObjects());
 
       if (choice == QMessageBox::Ok)
-        removeRow((int) delRow);
+        {
+          lst.append(index((int)delRow, 0));
+          //removeRow((int)delRow);
+        }
+    }
+
+  if (!lst.empty())
+    {
+      mpUndoStack->push(new RemoveSpecieRowsCommand(lst, this, QModelIndex()));
     }
 
   return true;

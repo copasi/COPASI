@@ -30,7 +30,6 @@
 
 DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelValue)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_DELETE)
-  , mFirstTime(true)
   , mpGlobalQuantityData(new UndoGlobalQuantityData(pModelValue->mpModelValue))
   , mpModelValue(pModelValue)
 {
@@ -42,18 +41,8 @@ DeleteGlobalQuantityCommand::DeleteGlobalQuantityCommand(CQModelValue *pModelVal
 
 void DeleteGlobalQuantityCommand::redo()
 {
-  if (mFirstTime)
-    {
-      // the first time a question dialog might pop up
-      // if the user cancels the operation, we need to ask again
-      // on redo next time.
-      mFirstTime = !mpModelValue->deleteGlobalQuantity();
-    }
-  else
-    {
-      mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
-    }
 
+  mpModelValue->deleteGlobalQuantity(mpGlobalQuantityData);
   setUndoState(true);
   setAction("Delete");
 }

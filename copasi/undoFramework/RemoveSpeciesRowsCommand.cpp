@@ -36,7 +36,6 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
   , mpSpecieDM(pSpecieDM)
   , mRows(rows)
   , mpSpeciesData()
-  , mFirstTime(true)
 {
   CCopasiDataModel * pDataModel = pSpecieDM->getDataModel();
   assert(pDataModel != NULL);
@@ -59,16 +58,7 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
 
 void RemoveSpecieRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpSpecieDM->removeSpecieRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpSpecieDM->deleteSpecieRows(mpSpeciesData);
-    }
-
+  mpSpecieDM->deleteSpecieRows(mpSpeciesData);
   setUndoState(true);
   setAction("Delete set");
 }

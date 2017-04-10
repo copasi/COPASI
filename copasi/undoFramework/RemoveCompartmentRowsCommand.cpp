@@ -36,7 +36,6 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   , mRows(rows)
   , mpCompartmentDM(pCompartmentDM)
   , mpCompartmentData()
-  , mFirstTime(true)
 {
   CCopasiDataModel * pDataModel = mpCompartmentDM->getDataModel();
   assert(pDataModel != NULL);
@@ -57,17 +56,10 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   setText(QObject::tr(": Removed Compartments"));
 }
 
+
 void RemoveCompartmentRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpCompartmentDM->removeCompartmentRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
-    }
+  mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
 
   setUndoState(true);
   setAction("Delete set");

@@ -207,7 +207,7 @@ void CQCompartment::copy()
 
 void CQCompartment::slotBtnDelete()
 {
-  mpUndoStack->push(new DeleteCompartmentCommand(this));
+  deleteCompartment();
 }
 
 /*!
@@ -730,12 +730,7 @@ void CQCompartment::deleteCompartment()
     {
       case QMessageBox::Ok:
       {
-        CModel * pModel = mpCompartment->getModel();
-        assert(pModel != NULL);
-        pModel->removeCompartment(mKey);
-
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+        mpUndoStack->push(new DeleteCompartmentCommand(this));
         break;
       }
 

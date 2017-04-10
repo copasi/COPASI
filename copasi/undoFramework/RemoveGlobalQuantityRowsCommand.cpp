@@ -34,7 +34,6 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
   , mpGlobalQuantityDM(pGlobalQuantityDM)
   , mRows(rows)
   , mpGlobalQuantityData()
-  , mFirstTime(true)
 {
 
   CCopasiDataModel * pDataModel = pGlobalQuantityDM->getDataModel();
@@ -60,16 +59,7 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
 
 void RemoveGlobalQuantityRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpGlobalQuantityDM->removeGlobalQuantityRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
-    }
-
+  mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
   setUndoState(true);
   setAction("Delete set");
 }

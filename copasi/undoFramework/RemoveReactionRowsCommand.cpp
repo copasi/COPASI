@@ -34,7 +34,6 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
   , mpReactionDM(pReaDM)
   , mRows(rows)
   , mpReaData()
-  , mFirstTime(true)
 {
   CCopasiDataModel * pDataModel = pReaDM->getDataModel();
   assert(pDataModel != NULL);
@@ -58,16 +57,7 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
 
 void RemoveReactionRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpReactionDM->removeReactionRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpReactionDM->deleteReactionRows(mpReaData);
-    }
-
+  mpReactionDM->deleteReactionRows(mpReaData);
   setUndoState(true);
   setAction("Delete set");
 }

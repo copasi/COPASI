@@ -268,10 +268,9 @@ bool CQEventDM::removeRows(int position, int rows)
   return true;
 }
 
-bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex&)
+bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 {
-  mpUndoStack->push(new RemoveEventRowsCommand(rows, this, QModelIndex()));
-
+  removeEventRows(rows, index);
   return true;
 }
 
@@ -393,6 +392,8 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
   QList <CEvent *>::const_iterator j;
 
+  QModelIndexList lst;
+
   for (j = pEvents.begin(); j != pEvents.end(); ++j)
     {
       CEvent * pEvent = *j;
@@ -410,7 +411,15 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
                                     deletedObjects);
 
       if (choice == QMessageBox::Ok)
-        removeRow((int) delRow);
+        {
+          //removeRow((int) delRow);
+          lst.append(index((int)delRow, 0));
+        }
+    }
+
+  if (!lst.empty())
+    {
+      mpUndoStack->push(new RemoveEventRowsCommand(lst, this, QModelIndex()));
     }
 
   return true;

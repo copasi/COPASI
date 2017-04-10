@@ -67,7 +67,7 @@ private:
   std::string mKeyToCopy;
 
   //additional functions for UNDO framework
-  bool deleteGlobalQuantity();
+  void deleteGlobalQuantity();
   void addGlobalQuantity(UndoGlobalQuantityData *pSData);
   void createNewGlobalQuantity();
   void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);

@@ -29,7 +29,6 @@
 
 DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   : CCopasiUndoCommand("Event", EVENT_DELETE)
-  , mFirstTime(true)
   , mpEventData(new UndoEventData(pEVentWidget1->mpEvent))
   , mpEVentWidget1(pEVentWidget1)
 {
@@ -40,16 +39,7 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
 
 void DeleteEventCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpEVentWidget1->deleteEvent();
-      mFirstTime = false;
-    }
-  else
-    {
-      mpEVentWidget1->deleteEvent(mpEventData);
-    }
-
+  mpEVentWidget1->deleteEvent(mpEventData);
   setUndoState(true);
   setAction("Delete");
 }
