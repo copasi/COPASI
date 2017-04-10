@@ -12,6 +12,7 @@
 #include "CCopasiRootContainer.h"
 
 #include "CopasiDataModel/CCopasiDataModel.h"
+#include "function/CFunction.h"
 #include "function/CFunctionDB.h"
 
 // static

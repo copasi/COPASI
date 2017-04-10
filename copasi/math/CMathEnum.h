@@ -14,6 +14,7 @@
 #include <map>
 #include <vector>
 
+#include <copasi/copasi.h>
 #include "copasi/utilities/CFlags.h"
 
 class CCopasiObject;
