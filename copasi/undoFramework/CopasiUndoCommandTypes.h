@@ -48,6 +48,7 @@
 #include <copasi/undoFramework/SpeciesDataChangeCommand.h>
 #include <copasi/undoFramework/SpeciesInitialValueLostFocusCommand.h>
 #include <copasi/undoFramework/SpeciesTypeChangeCommand.h>
+#include <copasi/undoFramework/SpeciesChangeCommand.h>
 #include <copasi/undoFramework/UndoCompartmentData.h>
 #include <copasi/undoFramework/UndoData.h>
 #include <copasi/undoFramework/UndoDependentData.h>
