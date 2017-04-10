@@ -468,11 +468,11 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
-  QList <CCompartment *>::reverse_iterator j;
+  QList <CCompartment *>::const_iterator j;
 
   QModelIndexList lst;
 
-  for (j = pCompartments.rbegin(); j != pCompartments.rend(); ++j)
+  for (j = pCompartments.begin(); j != pCompartments.end(); ++j)
     {
       CCompartment * pCompartment = *j;
 
