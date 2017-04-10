@@ -37,6 +37,8 @@
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 
+#include <copasi/resourcesUI/CQIconResource.h>
+
 CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
                            QMessageBox::StandardButtons buttons, QWidget *parent,
                            Qt::WindowFlags f):
@@ -53,6 +55,10 @@ CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
     {
       CopasiUI3Window::getMainWindow()->setMessageShown(true);
     }
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
 
   mpTabWidget = new QTabWidget(this);
   mpTabWidget->setObjectName(QString::fromUtf8("mpTabWidget"));
@@ -185,6 +191,30 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
       pFunctionDB = CCopasiRootContainer::getFunctionList();
     }
 
+  bool isUsed = false;
+  QString msg = buildDeleteConfirmationMessage(objectType, objects,
+                pFunctionDB, DeletedObjects, pDataModel, isUsed);
+
+  StandardButton choice = QMessageBox::Ok;
+
+  if (isUsed)
+    {
+      choice = CQMessageBox::question(parent, "CONFIRM DELETE", msg,
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Cancel);
+    }
+
+  return choice;
+}
+
+QString CQMessageBox::buildDeleteConfirmationMessage(
+  const QString & objectType,
+  const QString & objects,
+  CFunctionDB * pFunctionDB,
+  std::set<const CCopasiObject *> &DeletedObjects,
+  const CCopasiDataModel * pDataModel,
+  bool &isUsed)
+{
   QString msg =
     QString("Do you want to delete the listed %1?\n  %2\n").arg(objectType, objects);
 
@@ -197,11 +227,11 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   std::set< const CCopasiObject * > EventAssignments;
   std::set< const CCopasiObject * > Tasks;
 
-  bool Used = false;
+  isUsed = false;
 
   if (pFunctionDB != NULL)
     {
-      Used |= pFunctionDB->appendDependentFunctions(DeletedObjects, Functions);
+      isUsed |= pFunctionDB->appendDependentFunctions(DeletedObjects, Functions);
 
       if (Functions.size() > 0)
         {
@@ -228,7 +258,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
       pModel = pDataModel->getModel();
 
       // We need to check the tasks
-      Used |= pDataModel->appendDependentTasks(DeletedObjects, Tasks);
+      isUsed |= pDataModel->appendDependentTasks(DeletedObjects, Tasks);
 
       if (Tasks.size() > 0)
         {
@@ -249,8 +279,8 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
 
   if (pModel != NULL)
     {
-      Used |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
-              Compartments, Values, Events, EventAssignments);
+      isUsed |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
+                Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
@@ -362,16 +392,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
         }
     }
 
-  StandardButton choice = QMessageBox::Ok;
-
-  if (Used)
-    {
-      choice = CQMessageBox::question(parent, "CONFIRM DELETE", msg,
-                                      QMessageBox::Ok | QMessageBox::Cancel,
-                                      QMessageBox::Cancel);
-    }
-
-  return choice;
+  return msg;
 }
 
 void CQMessageBox::setText(const QString & text)
