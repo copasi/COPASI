@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -263,7 +268,7 @@ size_t INVALID_INDEX();
 %include <copasi/plot/CPlotItem.h>
 %ignore COptMethodCoranaWalk(const COptMethodCoranaWalk&);
 %include <copasi/optimization/COptMethod.h>
-%include <copasi/optimization/COptPopulationMethod.h>
+ // %include <copasi/optimization/COptPopulationMethod.h>
 %include <copasi/optimization/COptMethodCoranaWalk.h>
 %include <copasi/optimization/COptMethodDE.h>
 %include <copasi/optimization/COptMethodEP.h>

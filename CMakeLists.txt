@@ -1,4 +1,4 @@
-###############################################################################
+##############################################################################
 #
 # Description       : CMake build script for COPASI
 # Original author(s): Ralph Gauges <ralph.gauges@bioquant.uni-heidelberg.de>
@@ -432,7 +432,12 @@ option (ENABLE_R "Enable language bindings for the R language." OFF)
 # build the different language bindings are enabled
 # TODO test the SWIG version
 if (ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_PERL OR ENABLE_OCTAVE OR ENABLE_R)
-  find_package(SWIG  REQUIRED)
+  if (EXISTS "$ENV{SWIG_DIR}")
+    SET (SWIG_DIR "$ENV{SWIG_DIR}")
+    SET (SWIG_EXECUTABLE "$ENV{SWIG_DIR}/bin/swig")
+  endif ()
+
+  find_package(SWIG REQUIRED)
 endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)
