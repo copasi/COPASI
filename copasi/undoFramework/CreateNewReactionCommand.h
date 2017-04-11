@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +22,6 @@
 
 class UndoReactionData;
 class ReactionsWidget1;
-class CReaction;
 
 class CreateNewReactionCommand: public CCopasiUndoCommand
 {
@@ -30,7 +34,6 @@ public:
 
 private:
   ReactionsWidget1* mpReactionWidget;
-  CReaction *mpReaction;
   UndoReactionData *mpReactionData;
 };
 

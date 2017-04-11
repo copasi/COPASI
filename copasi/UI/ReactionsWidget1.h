@@ -88,7 +88,7 @@ protected:
   void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
   void addReaction(UndoReactionData *pData);
   void createNewReaction();
-  void deleteReaction(CReaction *pReaction);
+  void deleteReaction(UndoReactionData *pData);
 public:
   bool changeReaction(const std::string& key,
                       CCopasiUndoCommand::Type type,

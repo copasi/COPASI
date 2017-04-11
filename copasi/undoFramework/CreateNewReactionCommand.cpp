@@ -29,7 +29,6 @@
 CreateNewReactionCommand::CreateNewReactionCommand(ReactionsWidget1 *pReactionWidget)
   : CCopasiUndoCommand("Reaction", REACTION_CREATE)
   , mpReactionWidget(pReactionWidget)
-  , mpReaction(NULL)
   , mpReactionData(NULL)
 {
   this->setText(QObject::tr(": Created new reaction "));
@@ -41,9 +40,9 @@ void CreateNewReactionCommand::redo()
     {
       // TODO: should only happen once
       mpReactionWidget->createNewReaction();
-      mpReaction = dynamic_cast<CReaction *>(mpReactionWidget->mpObject);
-      std::string sName = mpReaction->getObjectName();
-      mpReactionData = new UndoReactionData(mpReaction);
+      CReaction *pReaction = dynamic_cast<CReaction *>(mpReactionWidget->mpObject);
+      std::string sName = pReaction->getObjectName();
+      mpReactionData = new UndoReactionData(pReaction);
       setName(sName);
     }
   else
@@ -57,7 +56,7 @@ void CreateNewReactionCommand::redo()
 
 void CreateNewReactionCommand::undo()
 {
-  mpReactionWidget->deleteReaction(mpReaction);
+  mpReactionWidget->deleteReaction(mpReactionData);
   setUndoState(false);
   setAction("Delete");
 }
