@@ -334,13 +334,18 @@ void CQModelValue::save()
   // set status
   if (mpModelValue->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
+      QString currentTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mpModelValue->getStatus()]);
+      QString newTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mItemToType[mpComboBoxType->currentIndex()]]);
+
       mpUndoStack->push(new GlobalQuantityChangeCommand(
                           CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE,
-                          (int)mpModelValue->getStatus(),
-                          mItemToType[mpComboBoxType->currentIndex()],
+                          currentTypeName,
+                          newTypeName,
                           mpModelValue,
-                          this
+                          this,
+                          mpModelValue->getInitialValue()
                         ));
+
       mChanged = true;
     }
 
@@ -606,8 +611,19 @@ CQModelValue::changeValue(const std::string& key,
         break;
 
       case CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE:
-        mpModelValue->setStatus((CModelEntity::Status) newValue.toInt());
+      {
+        QString newTypeName = newValue.toString();
+        int index = newTypeName.length() > 1
+                    ? mItemToType[mpComboBoxType->findText(newTypeName)]
+                    : newValue.toInt();
+        mpModelValue->setStatus((CModelEntity::Status)index);
+
+        if (iValue == iValue
+            && mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+          mpModelValue->setInitialValue(iValue);
+
         break;
+      }
 
       case CCopasiUndoCommand::GLOBALQUANTITY_UNIT_CHANGE:
         mpModelValue->setUnitExpression(TO_UTF8(newValue.toString()));
