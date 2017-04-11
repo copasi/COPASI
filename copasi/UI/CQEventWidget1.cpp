@@ -48,9 +48,18 @@
  *  Constructs a CQEventWidget1 which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name):
-  CopasiWidget(parent, name),
-  mKeyToCopy("")
+CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name)
+  : CopasiWidget(parent, name)
+  , mExpressionTriggerValid(false)
+  , mExpressionDelayValid(false)
+  , mExpressionEAValid(false)
+  , mEAName("")
+  , mChanged(false)
+  , mpEvent(NULL)
+  , mAssignmentKey("")
+  , mCurrentTarget(C_INVALID_INDEX)
+  , mAssignments()
+  , mKeyToCopy("")
 {
   setupUi(this);
 
