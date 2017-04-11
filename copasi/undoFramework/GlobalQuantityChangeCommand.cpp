@@ -41,7 +41,7 @@ GlobalQuantityChangeCommand::GlobalQuantityChangeCommand(CCopasiUndoCommand::Typ
         setText(": Changed global quantity initial expression");
         break;
 
-      case GLOBALQUANTITY_INITAL_VALUE_CHANGE:
+      case GLOBALQUANTITY_INITIAL_VALUE_CHANGE:
         setProperty("Initial Value");
         setText(": Changed global quantity initial value");
         break;

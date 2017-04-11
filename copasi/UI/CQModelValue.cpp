@@ -354,7 +354,7 @@ void CQModelValue::save()
       mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
     {
       mpUndoStack->push(new GlobalQuantityChangeCommand(
-                          CCopasiUndoCommand::GLOBALQUANTITY_INITAL_VALUE_CHANGE,
+                          CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_VALUE_CHANGE,
                           mpModelValue->getInitialValue(),
                           mpEditInitialValue->text().toDouble(),
                           mpModelValue,
@@ -598,7 +598,7 @@ CQModelValue::changeValue(const std::string& key,
         mpModelValue->setExpression(TO_UTF8(newValue.toString()));
         break;
 
-      case CCopasiUndoCommand::GLOBALQUANTITY_INITAL_VALUE_CHANGE:
+      case CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_VALUE_CHANGE:
         mpModelValue->setInitialValue(newValue.toDouble());
         break;
 
