@@ -774,22 +774,47 @@ void ReactionsWidget1::slotCompartmentSelectionChanged(const QString & compartme
 }
 
 bool ReactionsWidget1::update(ListViews::ObjectType objectType,
-                              ListViews::Action C_UNUSED(action), const std::string & C_UNUSED(key))
+                              ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates) return true;
 
   switch (objectType)
     {
       case ListViews::MODEL:
+
+        // For a new model we need to remove references to no longer existing reaction
+        if (action == ListViews::ADD)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpRi = NULL;
+          }
+
+        break;
+
+      case ListViews::REACTION:
+
+        // If the currently displayed reaction is deleted we need to remove its references.
+        if (action == ListViews::DELETE && mKey == key)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpRi = NULL;
+          }
+
+        break;
+
       case ListViews::STATE:
-      case ListViews::COMPARTMENT:
       case ListViews::METABOLITE:
-        return loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+      case ListViews::COMPARTMENT:
         break;
 
       default:
+        return true;
         break;
     }
+
+  if (isVisible() && !mIgnoreUpdates)
+    loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
 
   return true;
 }

@@ -348,23 +348,47 @@ bool CQCompartment::leave()
 }
 
 bool CQCompartment::update(ListViews::ObjectType objectType,
-                           ListViews::Action /* action */,
-                           const std::string & /* key */)
+                           ListViews::Action action,
+                           const std::string & key)
 {
-  if (!isVisible() || mIgnoreUpdates) return true;
 
   switch (objectType)
     {
-      case ListViews::STATE:
       case ListViews::MODEL:
-      case ListViews::METABOLITE:
+
+        // For a new model we need to remove references to no longer existing compartment
+        if (action == ListViews::ADD)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpCompartment = NULL;
+          }
+
+        break;
+
       case ListViews::COMPARTMENT:
-        load();
+
+        // If the currently displayed compartment is deleted we need to remove its references.
+        if (action == ListViews::DELETE && mKey == key)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpCompartment = NULL;
+          }
+
+        break;
+
+      case ListViews::STATE:
+      case ListViews::METABOLITE:
         break;
 
       default:
+        return true;
         break;
     }
+
+  if (isVisible() && !mIgnoreUpdates)
+    load();
 
   return true;
 }

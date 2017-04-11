@@ -216,7 +216,7 @@ bool CQModelValue::update(ListViews::ObjectType  objectType,
     {
       case ListViews::MODEL:
 
-        // For a new model we need to remove references to no longer existing metabolites
+        // For a new model we need to remove references to no longer existing modelvalue
         if (action == ListViews::ADD)
           {
             mKey = "";
@@ -228,7 +228,7 @@ bool CQModelValue::update(ListViews::ObjectType  objectType,
 
       case ListViews::MODELVALUE:
 
-        // If the currently displayed metabolite is deleted we need to remove its references.
+        // If the currently displayed modelvalue is deleted we need to remove its references.
         if (action == ListViews::DELETE && mKey == key)
           {
             mKey = "";

@@ -473,8 +473,46 @@ void CQEventWidget1::saveToEvent()
 }
 
 /*! The slot to update the active event widget */
-bool CQEventWidget1::update(ListViews::ObjectType /* objectType */, ListViews::Action /* action */, const std::string & /* key */)
+bool CQEventWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+
+  switch (objectType)
+    {
+      case ListViews::MODEL:
+
+        // For a new model we need to remove references to no longer existing metabolites
+        if (action == ListViews::ADD)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpEvent = NULL;
+          }
+
+        break;
+
+      case ListViews::EVENT:
+
+        // If the currently displayed metabolite is deleted we need to remove its references.
+        if (action == ListViews::DELETE && mKey == key)
+          {
+            mKey = "";
+            mpObject = NULL;
+            mpEvent = NULL;
+          }
+
+        break;
+
+      case ListViews::STATE:
+        break;
+
+      default:
+        return true;
+        break;
+    }
+
+  if (isVisible() && !mIgnoreUpdates)
+    enterProtected();
+
   return true;
 }
 
