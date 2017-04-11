@@ -23,8 +23,6 @@
 #
 ###############################################################################
 
-find_package(SWIG REQUIRED)
-
 include(${SWIG_USE_FILE})
 include (CheckTypeSize)
 
@@ -37,6 +35,7 @@ configure_file (
 find_program(CSHARP_COMPILER
         NAMES gmcs csc
         PATHS $ENV{CSHARP_DIR}/bin
+              /Library/Frameworks/Mono.framework/Commands/
               C:/Windows/Microsoft.NET/Framework/v2.0.50727/ 
               /usr/bin 
               /usr/local/bin

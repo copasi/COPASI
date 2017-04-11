@@ -1,5 +1,10 @@
 #!/bin/bash
-# Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -12,7 +17,7 @@ AWK=${COPASI_AWK:-gawk}
 SORT=${COPASI_SORT:-sort}
 PACKAGE=${COPASI_PACKAGE:-Windows}
 
-COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"/Users/shoops/environment/10.6"}
+COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"${ENVIRONMENT}"}
 BUILD=${COPASI_BUILD:-"${COMMON_ENVIRONMENT}/package"}
 SOURCE=${COPASI_SOURCE:-"${COMMON_ENVIRONMENT}/COPASI"}
 SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}

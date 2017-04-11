@@ -278,7 +278,7 @@ size_t INVALID_INDEX();
 %include <copasi/plot/CPlotItem.h>
 %ignore COptMethodCoranaWalk(const COptMethodCoranaWalk&);
 %include <copasi/optimization/COptMethod.h>
-%include <copasi/optimization/COptPopulationMethod.h>
+ // %include <copasi/optimization/COptPopulationMethod.h>
 %include <copasi/optimization/COptMethodCoranaWalk.h>
 %include <copasi/optimization/COptMethodDE.h>
 %include <copasi/optimization/COptMethodEP.h>
