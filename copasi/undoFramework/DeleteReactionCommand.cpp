@@ -48,7 +48,7 @@ DeleteReactionCommand::~DeleteReactionCommand()
 
 void DeleteReactionCommand::redo()
 {
-  mpReactionWidget->deleteReaction();
+  mpReactionWidget->deleteReaction(mpReactionData);
   setUndoState(true);
   setAction("Delete");
 }

@@ -863,15 +863,20 @@ void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterfa
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
-void ReactionsWidget1::deleteReaction(CReaction *pReaction)
+void ReactionsWidget1::deleteReaction(UndoReactionData *pReactionData)
 {
   mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
 
   GET_MODEL_OR_RETURN(pModel);
 
-  std::string key = pReaction->getKey();
+  std::string key = pReactionData->getKey();
   pModel->removeReaction(key);
+
+  if (mpRi != NULL) mpRi->setFunctionWithEmptyMapping("");
+
   protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
+  protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
 }
 
 bool ReactionsWidget1::changeReaction(
@@ -1019,7 +1024,7 @@ void ReactionsWidget1::addReaction(UndoReactionData *pData)
   if (pReaction == NULL)
     return;
 
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pReaction->getKey());
+  protectedNotify(ListViews::REACTION, ListViews::ADD, pReaction->getKey());
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getKey());
 }
