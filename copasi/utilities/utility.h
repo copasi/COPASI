@@ -157,8 +157,19 @@ Enum AnnotationToEnum(const AType & annotation,
                       const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations,
                       const Enum & enumDefault = Enum::__SIZE)
 {
-  for (int i = 0; i < static_cast<size_t>(Enum::__SIZE); i++)
+  for (size_t i = 0; i < static_cast<size_t>(Enum::__SIZE); i++)
     if (annotation == enumAnnotations[i]) return static_cast< Enum >(i);
+
+  return enumDefault;
+}
+
+template <typename Enum>
+Enum AnnotationToEnum(const char * annotation,
+                      const std::array<const char *, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations,
+                      const Enum & enumDefault = Enum::__SIZE)
+{
+  for (size_t i = 0; i < static_cast<size_t>(Enum::__SIZE); i++)
+    if (strcmp(annotation, enumAnnotations[i]) == 0) return static_cast< Enum >(i);
 
   return enumDefault;
 }
@@ -179,7 +190,7 @@ AType EnumToAnnotation(const Enum & e,
       return AType();
     }
 
-  return enumAnnotations[e];
+  return enumAnnotations[static_cast<size_t>(e)];
 }
 
 /**
