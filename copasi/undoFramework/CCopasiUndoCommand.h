@@ -147,7 +147,7 @@ public:
     SPECIES_EXPRESSION_CHANGE, // change of species assignment / ode expression
     SPECIES_ADD_NOISE_CHANGE, // change the species noise setting
     SPECIES_NOISE_EXPRESSION_CHANGE, // change the species noise expression
-    GLOBALQUANTITY_INITAL_VALUE_CHANGE, // change of parameter initial value
+    GLOBALQUANTITY_INITIAL_VALUE_CHANGE, // change of parameter initial value
     GLOBALQUANTITY_INITIAL_EXPRESSION_CHANGE, // change of parameter initial expression
     GLOBALQUANTITY_SIMULATION_TYPE_CHANGE, // change of parameter simulation type
     GLOBALQUANTITY_EXPRESSION_CHANGE, // change of parameter assignment / ode expression
