@@ -534,9 +534,16 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
 
 void CQModelValue::slotUnitChanged()
 {
+  std::string editUnits = TO_UTF8(mpEditUnits->text());
+
+  if (editUnits.empty())
+    {
+      return;
+    }
+
   // Update the labels to reflect the model units
-  QString ValueUnits = " [" + FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditUnits->text()))) + "]";
-  QString RateUnits = " [" + FROM_UTF8(CUnit::prettyPrint(std::string(TO_UTF8(mpEditUnits->text())) + "/(" + mpDataModel->getModel()->getTimeUnit() + ")")) + "]";
+  QString ValueUnits = " [" + FROM_UTF8(CUnit::prettyPrint(editUnits)) + "]";
+  QString RateUnits = " [" + FROM_UTF8(CUnit::prettyPrint(editUnits + "/(" + mpDataModel->getModel()->getTimeUnit() + ")")) + "]";
 
   mpLblInitialValue->setText("Initial Value" + ValueUnits);
   mpLblValue->setText("Value" + ValueUnits);
