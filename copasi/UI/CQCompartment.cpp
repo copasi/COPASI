@@ -457,13 +457,19 @@ void CQCompartment::save()
                        (unsigned C_INT32) mpCompartment->getStatus(),
                        (unsigned C_INT32) mItemToType[mpComboBoxType->currentIndex()]);
 
+
+      QString currentTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mpCompartment->getStatus()]);
+      QString newTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mItemToType[mpComboBoxType->currentIndex()]]);
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE,
-                          (int)mpCompartment->getStatus(),
-                          mItemToType[mpComboBoxType->currentIndex()],
+                          currentTypeName,
+                          newTypeName,
                           mpCompartment,
-                          this
+                          this,
+                          mpCompartment->getInitialValue()
                         ));
+
       mChanged = true;
     }
 
@@ -819,8 +825,19 @@ bool CQCompartment::changeValue(const std::string& key,
         break;
 
       case CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE:
-        mpCompartment->setStatus((CModelEntity::Status)newValue.toInt());
+      {
+        QString newTypeName = newValue.toString();
+        int index = newTypeName.length() > 1
+                    ? mItemToType[mpComboBoxType->findText(newTypeName)]
+                    : newValue.toInt();
+        mpCompartment->setStatus((CModelEntity::Status)index);
+
+        if (iValue == iValue
+            && mpCompartment->getStatus() != CModelEntity::ASSIGNMENT)
+          mpCompartment->setInitialValue(iValue);
+
         break;
+      }
 
       case CCopasiUndoCommand::COMPARTMENT_SPATIAL_DIMENSION_CHANGE:
         mpCompartment->setDimensionality(newValue.toInt());
