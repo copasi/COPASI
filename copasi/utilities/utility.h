@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,6 +21,7 @@
 #define COPASI_utilities
 
 #include <string>
+#include <array>
 #include <string.h>
 // #include <stdio.h>
 #include <stdarg.h>
@@ -136,6 +142,40 @@ template <class CType> CType toEnum(const std::string & attribute,
     if (attribute == *enumNames) return static_cast< CType >(i);
 
   return enumDefault;
+}
+
+/**
+  * Convert an annotation to enum. If annotation is ""
+  * or no matching name is found the parameter enumDefault is returned.
+  * @param const AType & annotation
+  * @param const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations
+  * @param const Enum & enumDefault
+  * @return Enum enum
+  */
+template <typename Enum, typename AType>
+Enum AnnotationToEnum(const AType & annotation,
+                      const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations,
+                      const Enum & enumDefault = Enum::__SIZE)
+{
+  if (annotation == "") return enumDefault;
+
+  for (int i = 0; i < enumAnnotations.size(); i++)
+    if (annotation == enumAnnotations[i]) return static_cast< Enum >(i);
+
+  return enumDefault;
+}
+
+/**
+  * @param const Enum & e
+  * @param const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations
+  * @return AType
+  */
+
+template <typename Enum, typename AType>
+AType EnumToAnnotation(Enum & e,
+                       std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations)
+{
+  return enumAnnotations[e];
 }
 
 /**
