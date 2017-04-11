@@ -145,36 +145,40 @@ template <class CType> CType toEnum(const std::string & attribute,
 }
 
 /**
-  * Convert an annotation to enum. If annotation is ""
-  * or no matching name is found the parameter enumDefault is returned.
-  * @param const AType & annotation
-  * @param const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations
-  * @param const Enum & enumDefault
-  * @return Enum enum
-  */
+ * Convert an annotation to enum. If annotation is ""
+ * or no matching name is found the parameter enumDefault is returned.
+ * @param const AType & annotation
+ * @param const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations
+ * @param const Enum & enumDefault
+ * @return Enum enum
+ */
 template <typename Enum, typename AType>
 Enum AnnotationToEnum(const AType & annotation,
                       const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations,
                       const Enum & enumDefault = Enum::__SIZE)
 {
-  if (annotation == "") return enumDefault;
-
-  for (int i = 0; i < enumAnnotations.size(); i++)
+  for (int i = 0; i < static_cast<size_t>(Enum::__SIZE); i++)
     if (annotation == enumAnnotations[i]) return static_cast< Enum >(i);
 
   return enumDefault;
 }
 
 /**
-  * @param const Enum & e
-  * @param const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations
-  * @return AType
-  */
+ * Convert an enum to its annotation.
+ * @param const Enum & e
+ * @param const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations
+ * @return AType
+ */
 
 template <typename Enum, typename AType>
-AType EnumToAnnotation(Enum & e,
-                       std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations)
+AType EnumToAnnotation(const Enum & e,
+                       const std::array<AType, static_cast<size_t>(Enum::__SIZE)> & enumAnnotations)
 {
+  if (static_cast<size_t>(Enum::__SIZE) <= static_cast<size_t>(e))
+    {
+      return AType();
+    }
+
   return enumAnnotations[e];
 }
 
