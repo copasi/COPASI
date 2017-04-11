@@ -37,9 +37,10 @@ void CreateNewSpeciesCommand::redo()
   if (mpSpeciesData == NULL)
     {
       // TODO: should only happen once
-      mpSpeciesDetail->createNewSpecies();
+      bool createdCompartment = mpSpeciesDetail->createNewSpecies();
       std::string sName = mpSpeciesDetail->mpMetab->getObjectName();
       mpSpeciesData = new UndoSpeciesData(mpSpeciesDetail->mpMetab);
+      mpSpeciesData->setCreatedCompartment(createdCompartment);
       setName(sName);
     }
   else

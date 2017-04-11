@@ -88,7 +88,11 @@ private slots:
   //additional functions for UNDO framework
   void deleteSpecies();
   void addSpecies(UndoSpeciesData *pSData);
-  void createNewSpecies();
+  /**
+   * creates a new species
+   * @return boolean indicating whether a compartment was created
+   */
+  bool createNewSpecies();
   void deleteSpecies(UndoSpeciesData *pSData);
   void speciesTypeChanged(int type);
   void speciesTypeChanged(UndoSpeciesData *pSData, int type);

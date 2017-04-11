@@ -322,12 +322,16 @@ void CQSpeciesDetail::save()
   if (mpMetab->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
       // SpeciesChangeCommand  -> simulation type
+      QString currentTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mpMetab->getStatus()]);
+      QString newTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mItemToType[mpComboBoxType->currentIndex()]]);
+
       mpUndoStack->push(new SpeciesChangeCommand(
                           CCopasiUndoCommand::SPECIES_SIMULATION_TYPE_CHANGE,
-                          (int)mpMetab->getStatus(),
-                          mItemToType[mpComboBoxType->currentIndex()],
+                          currentTypeName,
+                          newTypeName,
                           mpMetab,
-                          this
+                          this,
+                          mpMetab->getInitialValue()
                         ));
       mChanged = true;
     }
@@ -336,33 +340,47 @@ void CQSpeciesDetail::save()
   switch (mFramework)
     {
       case 0:
-        if (mpMetab->getInitialConcentration() != mInitialConcentration)
+        if (mpMetab->getInitialConcentration() != mInitialConcentration
+            && mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
           {
             // SpeciesChangeCommand  -> initial concentration
-            mpUndoStack->push(new SpeciesChangeCommand(
-                                CCopasiUndoCommand::SPECIES_INITAL_CONCENTRATION_CHANGE,
-                                mpMetab->getInitialConcentration(),
-                                mInitialConcentration,
-                                mpMetab,
-                                this
-                              ));
-            mChanged = true;
+            bool wasNaN = mpMetab->getInitialConcentration() != mpMetab->getInitialConcentration();
+            bool isNaN = mInitialConcentration != mInitialConcentration;
+
+            if (wasNaN != isNaN)
+              {
+                mpUndoStack->push(new SpeciesChangeCommand(
+                                    CCopasiUndoCommand::SPECIES_INITAL_CONCENTRATION_CHANGE,
+                                    mpMetab->getInitialConcentration(),
+                                    mInitialConcentration,
+                                    mpMetab,
+                                    this
+                                  ));
+                mChanged = true;
+              }
           }
 
         break;
 
       case 1:
-        if (mpMetab->getInitialValue() != mInitialNumber)
+        if (mpMetab->getInitialValue() != mInitialNumber
+            && mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
           {
             // SpeciesChangeCommand  -> initial particle number
-            mpUndoStack->push(new SpeciesChangeCommand(
-                                CCopasiUndoCommand::SPECIES_INITAL_PARTICLENUMBER_CHANGE,
-                                mpMetab->getInitialValue(),
-                                mInitialNumber,
-                                mpMetab,
-                                this
-                              ));
-            mChanged = true;
+            bool wasNaN = mpMetab->getInitialValue() != mpMetab->getInitialValue();
+            bool isNaN = mInitialNumber != mInitialNumber;
+
+            if (wasNaN != isNaN)
+              {
+                mpUndoStack->push(new SpeciesChangeCommand(
+                                    CCopasiUndoCommand::SPECIES_INITAL_PARTICLENUMBER_CHANGE,
+                                    mpMetab->getInitialValue(),
+                                    mInitialNumber,
+                                    mpMetab,
+                                    this
+                                  ));
+                mChanged = true;
+              }
           }
 
         break;
@@ -641,7 +659,6 @@ void CQSpeciesDetail::slotInitialValueLostFocus()
   // no need to track this for undo this is for display
   // purposes only
   speciesInitialValueLostFocus();
-  //mpUndoStack->push(new SpeciesInitialValueLostFocusCommand(this));
 }
 
 void CQSpeciesDetail::slotNameLostFocus()
@@ -677,26 +694,24 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 
 void CQSpeciesDetail::slotTypeChanged(int type)
 {
-  if (mItemToType[type] == mpMetab->getStatus())
-    {
-      speciesTypeChanged(type);
-    }
-  else
-    {
-      mpUndoStack->push(new SpeciesTypeChangeCommand(mItemToType[type], mpMetab->getStatus(), this));
-    }
+  speciesTypeChanged(type);
 }
 
 //Undo methods
-void CQSpeciesDetail::createNewSpecies()
+bool CQSpeciesDetail::createNewSpecies()
 {
+  bool createdCompartment = false;
   assert(mpDataModel != NULL);
   CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
   leave();
 
   if (pModel->getCompartments().size() == 0)
-    pModel->createCompartment("compartment");
+    {
+      CCompartment* pComp = pModel->createCompartment("compartment");
+      protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
+      createdCompartment = true;
+    }
 
   std::string name = "species_1";
   int i = 1;
@@ -722,6 +737,8 @@ void CQSpeciesDetail::createNewSpecies()
   std::string key = mpMetab->getKey();
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+
+  return createdCompartment;
 }
 
 void CQSpeciesDetail::deleteSpecies()
@@ -763,11 +780,20 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
   if (pSpecies == NULL) return;
 
   std::string key = pSpecies->getKey();
+
+  assert(pSpecies->getCompartment() != NULL);
+  std::string compKey = pSpecies->getCompartment()->getKey();
+
   pModel->removeMetabolite(key);
   mpMetab = NULL;
 #undef DELETE
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+
+  if (!pSData->getCreatedCompartment()) return;
+
+  pModel->removeCompartment(compKey);
+  protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, compKey);
 }
 
 void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
@@ -781,9 +807,16 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
   if (pSpecies == NULL)
     return;
 
+  if (pSData->getCreatedCompartment())
+    {
+      protectedNotify(ListViews::COMPARTMENT, ListViews::ADD,
+                      static_cast<CMetab*>(pSpecies)->getCompartment()->getKey());
+    }
+
   std::string key = pSpecies->getKey();
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+
 }
 
 void CQSpeciesDetail::speciesTypeChanged(int type)
@@ -994,8 +1027,19 @@ bool CQSpeciesDetail::changeValue(
         break;
 
       case CCopasiUndoCommand::SPECIES_SIMULATION_TYPE_CHANGE:
-        mpMetab->setStatus((CModelEntity::Status) newValue.toInt());
+      {
+        QString newTypeName = newValue.toString();
+        int index = newTypeName.length() > 1
+                    ? mItemToType[mpComboBoxType->findText(newTypeName)]
+                    : newValue.toInt();
+        mpMetab->setStatus((CModelEntity::Status)index);
+
+        if (iValue == iValue
+            && mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+          mpMetab->setInitialValue(iValue);
+
         break;
+      }
 
       case CCopasiUndoCommand::SPECIES_ADD_NOISE_CHANGE:
         mpMetab->setHasNoise(newValue.toBool());
