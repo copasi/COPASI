@@ -482,10 +482,6 @@ void CQCompartment::save()
   // Type
   if (mpCompartment->getStatus() != (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()])
     {
-      Data.addProperty(CData::SIMULATION_TYPE,
-                       (unsigned C_INT32) mpCompartment->getStatus(),
-                       (unsigned C_INT32) mItemToType[mpComboBoxType->currentIndex()]);
-
       QString currentTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mpCompartment->getStatus()]);
       QString newTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mItemToType[mpComboBoxType->currentIndex()]]);
 
@@ -674,12 +670,9 @@ void CQCompartment::deleteCompartment()
 
 void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
-  CModel * pModel = mpCompartment != NULL ? mpCompartment->getModel()
-                    : mpDataModel->getModel();
+  CModel * pModel = mpDataModel->getModel();
 
   assert(pModel != NULL);
 
@@ -698,11 +691,8 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 
 void CQCompartment::addCompartment(UndoCompartmentData *pData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
   //reinsert all the Compartments
-  CModel * pModel = mpCompartment != NULL ? mpCompartment->getModel()
-                    : mpDataModel->getModel();
+  CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
   pData->restoreObjectIn(pModel);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pData->getKey());
