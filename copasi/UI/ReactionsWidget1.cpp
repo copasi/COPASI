@@ -946,13 +946,13 @@ void ReactionsWidget1::addReaction(std::string & reaObjectName, CReactionInterfa
 
 void ReactionsWidget1::deleteReaction(UndoReactionData *pReactionData)
 {
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
 
   assert(mpDataModel != NULL);
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
   std::string key = pReactionData->getKey();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
   pModel->removeReaction(key);
 
   if (mpRi != NULL) mpRi->setFunctionWithEmptyMapping("");

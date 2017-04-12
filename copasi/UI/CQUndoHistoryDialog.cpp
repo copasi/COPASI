@@ -22,18 +22,19 @@
 #include <QPushButton>
 #include <QDialogButtonBox>
 
+#include "CQUndoHistoryDialog.h"
 #include "CQMessageBox.h"
+
+#include "copasi.h"
+
 #include "qtUtilities.h"
 
-#include <copasi/UI/CopasiFileDialog.h>
-
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
-#include "copasi/undoFramework/CreateNewCompartmentCommand.h"
-#include "copasi/undoFramework/CreateNewEventCommand.h"
-#include "copasi/undoFramework/UndoData.h"
-#include "copasi/undoFramework/UndoCompartmentData.h"
-#include "copasi/undoFramework/UndoEventData.h"
-#include "CQUndoHistoryDialog.h"
+#include "undoFramework/CCopasiUndoCommand.h"
+#include "undoFramework/CreateNewCompartmentCommand.h"
+#include "undoFramework/CreateNewEventCommand.h"
+#include "undoFramework/UndoData.h"
+#include "undoFramework/UndoCompartmentData.h"
+#include "undoFramework/UndoEventData.h"
 
 /*
  *  Constructs a CQUndoHistoryDialog as a child of 'parent', with the
@@ -53,11 +54,6 @@ CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack,
   setupUi(this);
 
   connect(buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked(bool)), this, SLOT(slotUndo()));
-  connect(buttonBox->button(QDialogButtonBox::Open), SIGNAL(clicked(bool)), this, SLOT(slotLoad()));
-  connect(buttonBox->button(QDialogButtonBox::Save), SIGNAL(clicked(bool)), this, SLOT(slotSave()));
-
-  //buttonBox->button(QDialogButtonBox::Open)->setVisible(false);
-  buttonBox->button(QDialogButtonBox::Save)->setVisible(false);
 
   // attach the model to the view
   mpUndoHistoryView->setModel(mpModel);
@@ -69,33 +65,6 @@ CQUndoHistoryDialog::CQUndoHistoryDialog(QWidget* parent, QUndoStack *undoStack,
 CQUndoHistoryDialog::~CQUndoHistoryDialog()
 {
   pdelete(mpModel);
-}
-
-#include "CQUndoTester.h"
-
-void CQUndoHistoryDialog::slotLoad()
-{
-  // QString fileName = CopasiFileDialog::getOpenFileName(this, "openHistory", QString::null, "XML files (*.xml);;All files (*.*)", "Load History");
-  // if (fileName.isNull()) return;
-  //
-  CQUndoTester t(qApp, NULL, mpUndoStack);
-  t.test();
-
-
-  close();
-
-
-
-}
-
-void CQUndoHistoryDialog::slotSave()
-{
-  QString fileName = CopasiFileDialog::getSaveFileName(this, "saveHistory", QString::null, "XML files (*.xml);;All files (*.*)", "Save History");
-
-  if (fileName.isNull()) return;
-
-
-
 }
 
 void

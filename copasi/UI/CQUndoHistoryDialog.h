@@ -34,7 +34,7 @@ class CQUndoHistoryDialog : public QDialog, public Ui::CQUndoHistoryDialog
 public:
   CQUndoHistoryDialog(QWidget* parent = 0, QUndoStack *undoStack = NULL, const char* name = 0, bool modal = false, Qt::WindowFlags fl = 0);
   /*
-   *  Generate undo history data and attach it to model
+   *  Generate undo history data and attache it to model
    */
   void generateUndoData(QUndoStack *undoStack, int commandCount, int nCol);
 
@@ -45,8 +45,6 @@ public:
 
 public slots:
   void slotUndo();
-  void slotLoad();
-  void slotSave();
 
 private:
   QUndoStack *mpUndoStack;
