@@ -70,9 +70,9 @@ void InsertCompartmentRowsCommand::redo()
 
       mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, mIndex, mValue);
 
-      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
-
-      CCompartment *pCompartment = &pModel->getCompartments()[Index];
+      // the new compartment has to be the last compartment ... as create compartment
+      // adds it at the end
+      CCompartment *pCompartment = &pModel->getCompartments()[pModel->getCompartments().size() - 1];
       mpCompartmentData = new UndoCompartmentData(pCompartment);
     }
   else
