@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -316,9 +321,9 @@ bool CQCompartmentDM::removeRows(int position, int rows)
   return true;
 }
 
-bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex&)
+bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 {
-  mpUndoStack->push(new RemoveCompartmentRowsCommand(rows, this));
+  removeCompartmentRows(rows, index);
 
   return true;
 }
@@ -449,9 +454,11 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
-  QList <CCompartment *>::const_iterator j;
+  QList <CCompartment *>::reverse_iterator j;
 
-  for (j = pCompartments.begin(); j != pCompartments.end(); ++j)
+  QModelIndexList lst;
+
+  for (j = pCompartments.rbegin(); j != pCompartments.rend(); ++j)
     {
       CCompartment * pCompartment = *j;
 
@@ -467,7 +474,17 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
                                     pCompartment->getDeletedObjects());
 
       if (choice == QMessageBox::Ok)
-        removeRow((int) delRow);
+        {
+          //
+          lst.append(index((int) delRow, 0));
+          //removeRow((int)delRow);
+        }
+    }
+
+  //
+  if (!lst.empty())
+    {
+      mpUndoStack->push(new RemoveCompartmentRowsCommand(lst, this));
     }
 
   return true;
@@ -516,15 +533,7 @@ void CQCompartmentDM::deleteCompartmentRows(QList <UndoCompartmentData *>& pData
       if (index == C_INVALID_INDEX)
         continue;
 
-      CCompartment* pCompartment = &pModel->getCompartments()[index];
-
-      QMessageBox::StandardButton choice =
-        CQMessageBox::confirmDelete(NULL, "compartment",
-                                    FROM_UTF8(pCompartment->getObjectName()),
-                                    pCompartment->getDeletedObjects());
-
-      if (choice == QMessageBox::Ok)
-        removeRow((int) index);
+      removeRow((int) index);
     }
 }
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,7 +34,6 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
   , mpSpecieDM(pSpecieDM)
   , mRows(rows)
   , mpSpeciesData()
-  , mFirstTime(true)
 {
   GET_MODEL_OR_RETURN(pModel);
 
@@ -49,16 +53,7 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
 
 void RemoveSpecieRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpSpecieDM->removeSpecieRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpSpecieDM->deleteSpecieRows(mpSpeciesData);
-    }
-
+  mpSpecieDM->deleteSpecieRows(mpSpeciesData);
   setUndoState(true);
   setAction("Delete set");
 }

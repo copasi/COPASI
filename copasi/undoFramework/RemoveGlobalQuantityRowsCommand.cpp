@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,7 +32,6 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
   , mpGlobalQuantityDM(pGlobalQuantityDM)
   , mRows(rows)
   , mpGlobalQuantityData()
-  , mFirstTime(true)
 {
 
   GET_MODEL_OR_RETURN(pModel);
@@ -50,16 +54,7 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
 
 void RemoveGlobalQuantityRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpGlobalQuantityDM->removeGlobalQuantityRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
-    }
-
+  mpGlobalQuantityDM->deleteGlobalQuantityRows(mpGlobalQuantityData);
   setUndoState(true);
   setAction("Delete set");
 }

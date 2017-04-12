@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +28,6 @@
 
 DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_DELETE)
-  , mFirstTime(true)
   , mpCompartmentData(new UndoCompartmentData(pCompartment->mpCompartment))
   , mpCompartment(pCompartment)
 {
@@ -33,15 +37,7 @@ DeleteCompartmentCommand::DeleteCompartmentCommand(CQCompartment *pCompartment)
 
 void DeleteCompartmentCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpCompartment->deleteCompartment();
-      mFirstTime = false;
-    }
-  else
-    {
-      mpCompartment->deleteCompartment(mpCompartmentData);
-    }
+  mpCompartment->deleteCompartment(mpCompartmentData);
 
   setUndoState(true);
   setAction("Delete");

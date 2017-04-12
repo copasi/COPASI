@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,7 +27,6 @@
 
 DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
   : CCopasiUndoCommand("Event", EVENT_DELETE)
-  , mFirstTime(true)
   , mpEventData(new UndoEventData(pEVentWidget1->mpEvent))
   , mpEVentWidget1(pEVentWidget1)
 {
@@ -33,16 +37,7 @@ DeleteEventCommand::DeleteEventCommand(CQEventWidget1 *pEVentWidget1)
 
 void DeleteEventCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpEVentWidget1->deleteEvent();
-      mFirstTime = false;
-    }
-  else
-    {
-      mpEVentWidget1->deleteEvent(mpEventData);
-    }
-
+  mpEVentWidget1->deleteEvent(mpEventData);
   setUndoState(true);
   setAction("Delete");
 }

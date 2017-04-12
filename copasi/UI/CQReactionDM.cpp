@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -350,9 +355,9 @@ bool CQReactionDM::removeRows(int position, int rows)
   return true;
 }
 
-bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex&)
+bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 {
-  mpUndoStack->push(new RemoveReactionRowsCommand(rows, this, QModelIndex()));
+  removeReactionRows(rows, index);
   return true;
 }
 
@@ -500,6 +505,8 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
   QList <CReaction *>::const_iterator j;
 
+  QModelIndexList lst;
+
   for (j = pReactions.begin(); j != pReactions.end(); ++j)
     {
       CReaction * pReaction = *j;
@@ -516,7 +523,15 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
                                     pReaction->getDeletedObjects());
 
       if (choice == QMessageBox::Ok)
-        removeRow((int) delRow);
+        {
+          lst.append(index((int)delRow, 0));
+          //removeRow((int)delRow);
+        }
+    }
+
+  if (!lst.empty())
+    {
+      mpUndoStack->push(new RemoveReactionRowsCommand(lst, this, QModelIndex()));
     }
 
   return true;

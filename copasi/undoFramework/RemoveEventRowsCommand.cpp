@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -26,7 +31,6 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
   , mpEventDM(pEventDM)
   , mRows(rows)
   , mpEventData()
-  , mFirstTime(true)
 {
   GET_MODEL_OR_RETURN(pModel);
 
@@ -47,15 +51,7 @@ RemoveEventRowsCommand::RemoveEventRowsCommand(
 
 void RemoveEventRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpEventDM->removeEventRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpEventDM->deleteEventRows(mpEventData);
-    }
+  mpEventDM->deleteEventRows(mpEventData);
 
   setUndoState(true);
   setAction("Delete set");

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -194,7 +199,7 @@ void CQCompartment::copy()
 
 void CQCompartment::slotBtnDelete()
 {
-  mpUndoStack->push(new DeleteCompartmentCommand(this));
+  deleteCompartment();
 }
 
 /*!
@@ -623,10 +628,7 @@ void CQCompartment::deleteCompartment()
     {
       case QMessageBox::Ok:
       {
-        pDataModel->getModel()->removeCompartment(mKey);
-
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+        mpUndoStack->push(new DeleteCompartmentCommand(this));
         break;
       }
 
@@ -680,7 +682,6 @@ bool CQCompartment::changeValue(const std::string& key,
       load();
       switchToWidget(C_INVALID_INDEX, mKey);
     }
-
 
   switch (type)
     {

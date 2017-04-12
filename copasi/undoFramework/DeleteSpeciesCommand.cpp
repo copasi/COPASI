@@ -31,7 +31,6 @@
 
 DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
   : CCopasiUndoCommand("Species", SPECIES_DELETE)
-  , mFirstTime(true)
   , mpSpeciesData(new UndoSpeciesData(pSpecieDetail->mpMetab))
   , mpSpecieDetail(pSpecieDetail)
 {
@@ -42,16 +41,7 @@ DeleteSpeciesCommand::DeleteSpeciesCommand(CQSpeciesDetail *pSpecieDetail)
 
 void DeleteSpeciesCommand::redo()
 {
-  if (mFirstTime && !mpSpecieDetail->getKey().empty())
-    {
-      mpSpecieDetail->deleteSpecies();
-      mFirstTime = false;
-    }
-  else
-    {
-      mpSpecieDetail->deleteSpecies(mpSpeciesData);
-    }
-
+  mpSpecieDetail->deleteSpecies(mpSpeciesData);
   setUndoState(true);
   setAction("Delete");
 }

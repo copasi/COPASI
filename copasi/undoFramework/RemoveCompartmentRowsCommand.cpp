@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,7 +34,6 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   , mRows(rows)
   , mpCompartmentDM(pCompartmentDM)
   , mpCompartmentData()
-  , mFirstTime(true)
 {
   GET_MODEL_OR_RETURN(pModel);
 
@@ -49,15 +53,7 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
 
 void RemoveCompartmentRowsCommand::redo()
 {
-  if (mFirstTime)
-    {
-      mpCompartmentDM->removeCompartmentRows(mRows, QModelIndex());
-      mFirstTime = false;
-    }
-  else
-    {
-      mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
-    }
+  mpCompartmentDM->deleteCompartmentRows(mpCompartmentData);
 
   setUndoState(true);
   setAction("Delete set");

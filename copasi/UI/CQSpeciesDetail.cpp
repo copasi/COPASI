@@ -534,7 +534,7 @@ void CQSpeciesDetail::loadReactionTable()
 
 void CQSpeciesDetail::slotBtnDelete()
 {
-  mpUndoStack->push(new DeleteSpeciesCommand(this));
+  deleteSpecies();
 }
 
 void CQSpeciesDetail::copy()
@@ -776,12 +776,7 @@ void CQSpeciesDetail::deleteSpecies()
     {
       case QMessageBox::Ok:
       {
-        pModel->removeMetabolite(mKey);
-
-#undef DELETE
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, mKey);
-        protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-        //TODO notify about reactions
+        mpUndoStack->push(new DeleteSpeciesCommand(this));
         break;
       }
 
@@ -804,7 +799,7 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
   std::string key = pSpecies->getKey();
   pModel->removeMetabolite(key);
-
+  mpMetab = NULL;
 #undef DELETE
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, key); //mKey);
   protectedNotify(ListViews::METABOLITE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
