@@ -645,6 +645,12 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
+
+  CModel * pModel = mpCompartment != NULL ? mpCompartment->getModel()
+                    : mpDataModel->getModel();
+
+  assert(pModel != NULL);
+
   CCompartment* pComp = &pModel->getCompartments()[pCompartmentData->getName()];
 
   if (pComp == NULL) return;
@@ -663,6 +669,9 @@ void CQCompartment::addCompartment(UndoCompartmentData *pData)
   GET_MODEL_OR_RETURN(pModel);
 
   //reinsert all the Compartments
+  CModel * pModel = mpCompartment != NULL ? mpCompartment->getModel()
+                    : mpDataModel->getModel();
+  assert(pModel != NULL);
   pData->restoreObjectIn(pModel);
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, pData->getKey());
   switchToWidget(C_INVALID_INDEX, pData->getKey());
