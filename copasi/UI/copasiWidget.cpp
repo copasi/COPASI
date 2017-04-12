@@ -89,6 +89,11 @@ const CCopasiObject * CopasiWidget::getObject() const
   return mpObject;
 }
 
+CQBaseDataModel * CopasiWidget::getCqDataModel()
+{
+  return NULL;
+}
+
 bool CopasiWidget::enterProtected()
 {
   return true;

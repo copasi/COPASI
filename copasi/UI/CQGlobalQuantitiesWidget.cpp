@@ -139,6 +139,11 @@ bool CQGlobalQuantitiesWidget::leave()
   return true;
 }
 
+CQBaseDataModel * CQGlobalQuantitiesWidget::getCqDataModel()
+{
+  return mpGlobalQuantityDM;
+}
+
 bool CQGlobalQuantitiesWidget::enterProtected()
 {
   if (mpTblGlobalQuantities->selectionModel() != NULL)

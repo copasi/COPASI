@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -65,9 +70,11 @@ void InsertCompartmentRowsCommand::redo()
 
       mpCompartmentDM->insertNewCompartmentRow(mPosition, mRows, mIndex, mValue);
 
-      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
-
-      CCompartment *pCompartment = &pModel->getCompartments()[Index];
+      //int Index = mIndex.isValid() ? mIndex.row() : mPosition;
+      //CCompartment *pCompartment = &pModel->getCompartments()[Index];
+      // has to be the last compartment ... as create compartment
+      // adds it at the end
+      CCompartment *pCompartment = &pModel->getCompartments()[pModel->getCompartments().size() - 1];
       mpCompartmentData = new UndoCompartmentData(pCompartment);
     }
   else

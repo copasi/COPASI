@@ -303,6 +303,11 @@ void CQSpeciesWidget::setFramework(int framework)
     }
 }
 
+CQBaseDataModel * CQSpeciesWidget::getCqDataModel()
+{
+  return mpSpecieDM;
+}
+
 void CQSpeciesWidget::refreshCompartments()
 {
   const CCopasiVector < CCompartment > &compartments =

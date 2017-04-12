@@ -138,6 +138,11 @@ bool CQEventsWidget::leave()
   return true;
 }
 
+CQBaseDataModel * CQEventsWidget::getCqDataModel()
+{
+  return mpEventDM;
+}
+
 bool CQEventsWidget::enterProtected()
 {
   if (mpTblEvents->selectionModel() != NULL)

@@ -260,6 +260,11 @@ void CQReactionsWidget::setFramework(int framework)
     }
 }
 
+CQBaseDataModel * CQReactionsWidget::getCqDataModel()
+{
+  return mpReactionDM;
+}
+
 //UNDO section
 void CQReactionsWidget::deleteSelectedReactions()
 {

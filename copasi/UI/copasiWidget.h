@@ -37,6 +37,7 @@ class DataModelGUI;
 class QResizeEvent;
 class ListViews;
 class CCopasiDataModel;
+class CQBaseDataModel;
 class CCopasiObject;
 class QUndoStack;
 
@@ -72,6 +73,12 @@ public:
    * @return the pointer to the current object
    */
   const CCopasiObject* getObject() const;
+
+  /**
+   * This method returns the data model from all the overview widgets.
+   * @return data model of this widget (or NULL if it does not have one)
+   */
+  virtual CQBaseDataModel* getCqDataModel();
 
 protected:
   virtual bool enterProtected();

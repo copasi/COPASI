@@ -139,6 +139,11 @@ bool CQCompartmentsWidget::leave()
   return true;
 }
 
+CQBaseDataModel * CQCompartmentsWidget::getCqDataModel()
+{
+  return mpCompartmentDM;
+}
+
 bool CQCompartmentsWidget::enterProtected()
 {
   if (mpTblCompartments->selectionModel() != NULL)
