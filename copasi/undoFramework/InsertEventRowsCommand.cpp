@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -54,9 +59,8 @@ void InsertEventRowsCommand::redo()
       CModel * pModel = mpEventDM->getDataModel()->getModel();
       assert(pModel != NULL);
 
-      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
-
-      CEvent *pEvent = &pModel->getEvents()[Index];
+      // create always adds element at the end
+      CEvent *pEvent = &pModel->getEvents()[pModel->getEvents().size() - 1];
       mpEventData = new UndoEventData(pEvent);
     }
   else

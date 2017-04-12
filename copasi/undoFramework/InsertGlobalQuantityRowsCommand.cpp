@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,8 +60,8 @@ void InsertGlobalQuantityRowsCommand::redo()
       CModel * pModel = mpGlobalQuantityDM->getDataModel()->getModel();
       assert(pModel != NULL);
 
-      int Index = mIndex.isValid() ? mIndex.row() : mPosition;
-      CModelValue *pGlobalQuantity = &pModel->getModelValues()[Index];
+      //create always adds element at the end
+      CModelValue *pGlobalQuantity = &pModel->getModelValues()[pModel->getModelValues().size() - 1];
       mpGlobalQuantityData = new UndoGlobalQuantityData(pGlobalQuantity);
     }
   else
