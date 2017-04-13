@@ -12,6 +12,9 @@
 #define COPASI_CFlags
 
 #include <bitset>
+#include <vector>
+#include <array>
+#include "copasi/utilities/utility.h"
 
 template < class Enum > class CFlags
 {
@@ -108,6 +111,20 @@ public:
   void clear()
   {
     mFlags.reset();
+  }
+
+  // takes an array of all possible annotations and
+  // returns a vector with annotations for only the
+  // flags which are set
+  template< typename AType >
+  std::vector< AType > getAnnotations(const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations) const
+  {
+    std::vector< AType > setFlagAnnotations(mFlags.size()); // should never be bigger than the total number of flags
+
+    for (size_t i = 0; i < mFlags.size(); i++)
+      if (mFlags[i]) setFlagAnnotations.push_back(annotations[i]);
+
+    return setFlagAnnotations;
   }
 
 private:
