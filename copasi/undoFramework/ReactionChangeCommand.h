@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -37,7 +42,17 @@ public:
   void redo();
   void undo();
 
-  static void removeCreatedObjects(const std::vector<std::string>& createdObjects);
+  /**
+   * removes the given created objects
+   *
+   * @param createdObjects the objects to be deleted
+   * @param recursive indication whether objects ought to
+   *        be deleted recursively
+   *
+   * @returns true, in case Compartments or Species have been deleted.
+   */
+  static bool removeCreatedObjects(const std::vector<std::string>& createdObjects,
+                                   bool recursive);
 
   const std::vector< std::string >& getCreatedObjects() const;
   void setCreatedObjects(const std::vector<std::string>& createdObjects);

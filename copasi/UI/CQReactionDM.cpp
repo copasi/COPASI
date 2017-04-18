@@ -391,7 +391,7 @@ bool CQReactionDM::reactionDataChange(const std::string & key,
           pRea->cleanup();
           pRea->compile();
 
-          ReactionChangeCommand::removeCreatedObjects(createdObjects);
+          ReactionChangeCommand::removeCreatedObjects(createdObjects, false);
           refreshAll = true;
         }
 
@@ -580,7 +580,7 @@ void CQReactionDM::deleteReactionRow(UndoReactionData * pData)
 
   beginRemoveRows(QModelIndex(), 1, 1);
   pModel->removeReaction(pReaction);
-  ReactionChangeCommand::removeCreatedObjects(pData->getAdditionalKeys());
+  ReactionChangeCommand::removeCreatedObjects(pData->getAdditionalKeys(), false);
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, key);
   emit notifyGUI(ListViews::REACTION, ListViews::DELETE, "");  //Refresh all as there may be dependencies.
   endRemoveRows();
