@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -315,9 +320,18 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 
   for (i = 0; i < imax; ++i)
     {
-      mSubstrateNames[i] = (*elements)[i].getMetabolite()->getObjectName();
+      const CMetab* pMetab = (*elements)[i].getMetabolite();
+
+      if (pMetab == NULL)
+        {
+          // invalid / outdated equation object
+          clearAll();
+          return false;
+        }
+
+      mSubstrateNames[i] = pMetab->getObjectName();
       mSubstrateMult[i] = (*elements)[i].getMultiplicity();
-      mSubstrateCompartments[i] = (*elements)[i].getMetabolite()->getCompartment()->getObjectName();
+      mSubstrateCompartments[i] = pMetab->getCompartment()->getObjectName();
     }
 
   elements = &ce.getProducts();
@@ -328,9 +342,18 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 
   for (i = 0; i < imax; ++i)
     {
-      mProductNames[i] = (*elements)[i].getMetabolite()->getObjectName();
+      const CMetab* pMetab = (*elements)[i].getMetabolite();
+
+      if (pMetab == NULL)
+        {
+          // invalid / outdated equation object
+          clearAll();
+          return false;
+        }
+
+      mProductNames[i] = pMetab->getObjectName();
       mProductMult[i] = (*elements)[i].getMultiplicity();
-      mProductCompartments[i] = (*elements)[i].getMetabolite()->getCompartment()->getObjectName();
+      mProductCompartments[i] = pMetab->getCompartment()->getObjectName();
     }
 
   elements = &ce.getModifiers();
@@ -341,9 +364,18 @@ bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 
   for (i = 0; i < imax; ++i)
     {
-      mModifierNames[i] = (*elements)[i].getMetabolite()->getObjectName();
+      const CMetab* pMetab = (*elements)[i].getMetabolite();
+
+      if (pMetab == NULL)
+        {
+          // invalid / outdated equation object
+          clearAll();
+          return false;
+        }
+
+      mModifierNames[i] = pMetab->getObjectName();
       mModifierMult[i] = (*elements)[i].getMultiplicity();
-      mModifierCompartments[i] = (*elements)[i].getMetabolite()->getCompartment()->getObjectName();
+      mModifierCompartments[i] = pMetab->getCompartment()->getObjectName();
     }
 
   mReversibility = ce.getReversibility();
