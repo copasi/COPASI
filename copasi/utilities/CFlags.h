@@ -119,7 +119,7 @@ public:
   template< typename AType >
   std::vector< AType > getAnnotations(const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations) const
   {
-    std::vector< AType > setFlagAnnotations(mFlags.size()); // should never be bigger than the total number of flags
+    std::vector< AType > setFlagAnnotations;
 
     for (size_t i = 0; i < mFlags.size(); i++)
       if (mFlags[i]) setFlagAnnotations.push_back(annotations[i]);
