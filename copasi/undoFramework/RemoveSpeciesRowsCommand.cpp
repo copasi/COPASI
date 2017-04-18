@@ -34,7 +34,6 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
   QModelIndexList rows, CQSpecieDM * pSpecieDM)
   : CCopasiUndoCommand("Species", SPECIES_REMOVE)
   , mpSpecieDM(pSpecieDM)
-  , mRows(rows)
   , mpSpeciesData()
 {
   CCopasiDataModel * pDataModel = pSpecieDM->getDataModel();

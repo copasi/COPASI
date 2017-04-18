@@ -29,22 +29,17 @@
 GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
   const QModelIndex& index,
   const QVariant& value,
-  int role,
   CQGlobalQuantityDM *pGlobalQuantityDM)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)
   , mpGlobalQuantityDM(pGlobalQuantityDM)
-  , mRole(role)
-  , mPathIndex()
 {
   // stores the data
 
   if (index.column() == COL_TYPE_GQ)
     mOld = pGlobalQuantityDM->statusToIndex(mOld.toString());
-
-  //mPathIndex = pathFromIndex(index);
 
   //set the data for UNDO history
   setOldValue(TO_UTF8(mOld.toString()));
@@ -90,7 +85,7 @@ GlobalQuantityDataChangeCommand::GlobalQuantityDataChangeCommand(
 
 void GlobalQuantityDataChangeCommand::redo()
 {
-  mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mNew, mRole);
+  mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mNew);
 
   assert(mpGlobalQuantityDM->getDataModel() != NULL);
   CModel * pModel = mpGlobalQuantityDM->getDataModel()->getModel();
@@ -103,7 +98,7 @@ void GlobalQuantityDataChangeCommand::redo()
 
 void GlobalQuantityDataChangeCommand::undo()
 {
-  mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mOld, mRole);
+  mpGlobalQuantityDM->globalQuantityDataChange(mIndex, mOld);
   setAction("Undone change");
 }
 

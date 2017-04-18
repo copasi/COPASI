@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,7 +28,6 @@ class CompartmentDataChangeCommand: public CCopasiUndoCommand
 public:
   CompartmentDataChangeCommand(const QModelIndex& index,
                                const QVariant& value,
-                               int role,
                                CQCompartmentDM *pCompartmentDM);
   virtual ~CompartmentDataChangeCommand();
 
@@ -34,8 +38,6 @@ private:
   QVariant mNew, mOld;
   QModelIndex mIndex;
   CQCompartmentDM *mpCompartmentDM;
-  int mRole;
-  Path mPathIndex;
   UndoCompartmentData* mpCompartmentUndoData;
 };
 

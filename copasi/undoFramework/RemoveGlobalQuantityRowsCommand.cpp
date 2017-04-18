@@ -32,7 +32,6 @@ RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
   QModelIndexList rows, CQGlobalQuantityDM * pGlobalQuantityDM)
   : CCopasiUndoCommand("Global Quantity", GLOBALQUANTITY_REMOVE)
   , mpGlobalQuantityDM(pGlobalQuantityDM)
-  , mRows(rows)
   , mpGlobalQuantityData()
 {
 

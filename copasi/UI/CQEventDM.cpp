@@ -220,9 +220,9 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
     {
       mpUndoStack->push(new InsertEventRowsCommand(rowCount(), 1, this, index, value));
     }
-  else
+  else if (role == Qt::EditRole)
     {
-      mpUndoStack->push(new EventDataChangeCommand(index, value, role, this));
+      mpUndoStack->push(new EventDataChangeCommand(index, value, this));
     }
 
   return true;
@@ -274,10 +274,9 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
   return true;
 }
 
-bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value,
-                                int role)
+bool CQEventDM::eventDataChange(const QModelIndex &index, const QVariant &value)
 {
-  if (!index.isValid() || role != Qt::EditRole)
+  if (!index.isValid())
     return false;
 
   bool defaultRow = isDefaultRow(index);
@@ -419,7 +418,7 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
 
   if (!lst.empty())
     {
-      mpUndoStack->push(new RemoveEventRowsCommand(lst, this, QModelIndex()));
+      mpUndoStack->push(new RemoveEventRowsCommand(lst, this));
     }
 
   return true;
@@ -433,7 +432,7 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 
-  //reinsert all the GlobalQuantities
+  //reinsert all the events
   QList <UndoEventData *>::const_iterator i;
 
   for (i = pData.begin(); i != pData.end(); ++i)

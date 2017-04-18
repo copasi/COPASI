@@ -37,7 +37,6 @@ public:
 
 private:
   CQSpecieDM *mpSpecieDM;
-  QModelIndexList mRows;
   QList <UndoSpeciesData *> mpSpeciesData;
 };
 

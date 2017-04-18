@@ -26,7 +26,7 @@ class CQReactionDM;
 class RemoveReactionRowsCommand: public CCopasiUndoCommand
 {
 public:
-  RemoveReactionRowsCommand(QModelIndexList rows, CQReactionDM * pReaDM, const QModelIndex&);
+  RemoveReactionRowsCommand(QModelIndexList rows, CQReactionDM * pReaDM);
   virtual ~RemoveReactionRowsCommand();
 
   void redo();
@@ -34,7 +34,6 @@ public:
 
 private:
   CQReactionDM *mpReactionDM;
-  QModelIndexList mRows;
   QList <UndoReactionData *> mpReaData;
 };
 

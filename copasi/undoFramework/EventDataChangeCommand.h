@@ -25,7 +25,7 @@ class CQEventDM;
 class EventDataChangeCommand: public CCopasiUndoCommand
 {
 public:
-  EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM);
+  EventDataChangeCommand(QModelIndex index, const QVariant value, CQEventDM *pEventDM);
   virtual ~EventDataChangeCommand();
 
   void redo();
@@ -35,8 +35,6 @@ private:
   QVariant mNew, mOld;
   QModelIndex mIndex;
   CQEventDM *mpEventDM;
-  int mRole;
-  Path mPathIndex;
 };
 
 #endif /* EVENTDATACHANGECOMMAND_H_ */

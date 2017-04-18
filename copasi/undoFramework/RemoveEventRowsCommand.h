@@ -25,7 +25,7 @@ class CQEventDM;
 class RemoveEventRowsCommand: public CCopasiUndoCommand
 {
 public:
-  RemoveEventRowsCommand(QModelIndexList rows, CQEventDM * pEventDM, const QModelIndex&);
+  RemoveEventRowsCommand(QModelIndexList rows, CQEventDM * pEventDM);
   virtual ~RemoveEventRowsCommand();
 
   void redo();
@@ -33,7 +33,6 @@ public:
 
 private:
   CQEventDM *mpEventDM;
-  QModelIndexList mRows;
   QList <UndoEventData *> mpEventData;
 
 };

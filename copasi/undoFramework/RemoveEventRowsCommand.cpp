@@ -28,10 +28,9 @@
 #include "RemoveEventRowsCommand.h"
 
 RemoveEventRowsCommand::RemoveEventRowsCommand(
-  QModelIndexList rows, CQEventDM * pEventDM, const QModelIndex&)
+  QModelIndexList rows, CQEventDM * pEventDM)
   : CCopasiUndoCommand("Event", EVENT_REMOVE)
   , mpEventDM(pEventDM)
-  , mRows(rows)
   , mpEventData()
 {
   CCopasiDataModel * pDataModel = pEventDM->getDataModel();

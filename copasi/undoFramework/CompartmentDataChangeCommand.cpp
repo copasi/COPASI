@@ -29,15 +29,12 @@
 CompartmentDataChangeCommand::CompartmentDataChangeCommand(
   const QModelIndex& index,
   const QVariant& value,
-  int role,
   CQCompartmentDM *pCompartmentDM)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)
   , mpCompartmentDM(pCompartmentDM)
-  , mRole(role)
-  , mPathIndex()
   , mpCompartmentUndoData(NULL)
 
 {
@@ -90,7 +87,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
       case 3:
         setProperty("Initial Volume");
         // need to store additional undo data to be able to restore
-        // species initial concentrations / patricle numbers
+        // species initial concentrations / particle numbers
         mpCompartmentUndoData = new UndoCompartmentData(pCompartment);
         break;
     }

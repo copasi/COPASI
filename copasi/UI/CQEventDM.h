@@ -48,7 +48,7 @@ public:
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
   //TODO Undo
-  bool eventDataChange(const QModelIndex &index, const QVariant &value, int role);
+  bool eventDataChange(const QModelIndex &index, const QVariant &value);
   void insertNewEventRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addEventRow(UndoEventData *pEventData);
   void deleteEventRow(UndoEventData *pEventData);

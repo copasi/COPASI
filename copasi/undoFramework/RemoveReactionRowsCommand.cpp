@@ -29,10 +29,9 @@
 #include "UndoReactionData.h"
 
 RemoveReactionRowsCommand::RemoveReactionRowsCommand(
-  QModelIndexList rows, CQReactionDM * pReaDM, const QModelIndex&)
+  QModelIndexList rows, CQReactionDM * pReaDM)
   : CCopasiUndoCommand("Reaction", REACTION_REMOVE)
   , mpReactionDM(pReaDM)
-  , mRows(rows)
   , mpReaData()
 {
   CCopasiDataModel * pDataModel = pReaDM->getDataModel();

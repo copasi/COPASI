@@ -33,7 +33,6 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   const QModelIndexList& rows,
   CQCompartmentDM * pCompartmentDM)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_REMOVE, "Remove")
-  , mRows(rows)
   , mpCompartmentDM(pCompartmentDM)
   , mpCompartmentData()
 {

@@ -38,7 +38,6 @@ public:
   void undo();
 
 private:
-  QModelIndexList mRows;
   CQCompartmentDM *mpCompartmentDM;
   QList <UndoCompartmentData *> mpCompartmentData;
 

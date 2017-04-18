@@ -281,9 +281,9 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
     {
       mpUndoStack->push(new InsertCompartmentRowsCommand(rowCount(), 1, this, index, value));
     }
-  else
+  else if (role == Qt::EditRole)
     {
-      mpUndoStack->push(new CompartmentDataChangeCommand(index, value, role, this));
+      mpUndoStack->push(new CompartmentDataChangeCommand(index, value, this));
     }
 
   return true;

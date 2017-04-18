@@ -34,7 +34,6 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
   , mOld(index.data(Qt::DisplayRole))
   , mpReactionDM(pReactionDM)
   , mColumn(index.column())
-  , mPathIndex()
   , mOldFunctionName()
   , mNewFunctionName("")
   , mCreatedObjects()
@@ -54,8 +53,6 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
 
   CReaction *pRea = &reactions[index.row()];
   mOldFunctionName = FROM_UTF8(pRea->getFunction()->getObjectName());
-
-  //mPathIndex = pathFromIndex(index);
 
   //set the data for UNDO history
   setName(pRea->getObjectName());
@@ -93,7 +90,6 @@ void ReactionDataChangeCommand::redo()
 
 void ReactionDataChangeCommand::undo()
 {
-  //mIndex = pathToIndex(mPathIndex, mpReactionDM);
   mpReactionDM->reactionDataChange(getKey(), mOld, mColumn, mOldFunctionName, mCreatedObjects);
   setAction("Undone change");
 }

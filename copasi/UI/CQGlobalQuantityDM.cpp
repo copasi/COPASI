@@ -292,9 +292,9 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
     {
       mpUndoStack->push(new InsertGlobalQuantityRowsCommand(rowCount(), 1, this, index, value));
     }
-  else
+  else if (role == Qt::EditRole)
     {
-      mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, role, this));
+      mpUndoStack->push(new GlobalQuantityDataChangeCommand(index, value, this));
     }
 
   return true;
@@ -357,11 +357,11 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
   return true;
 }
 
-bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role)
+bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, const QVariant &value)
 {
   assert((size_t)index.row() < mpGlobalQuantities->size());
 
-  if (!index.isValid() || role != Qt::EditRole)
+  if (!index.isValid())
     return false;
 
   bool defaultRow = isDefaultRow(index);

@@ -545,7 +545,7 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
 
   if (!lst.empty())
     {
-      mpUndoStack->push(new RemoveReactionRowsCommand(lst, this, QModelIndex()));
+      mpUndoStack->push(new RemoveReactionRowsCommand(lst, this));
     }
 
 

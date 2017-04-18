@@ -31,9 +31,7 @@ public:
 
 private:
   CQGlobalQuantityDM *mpGlobalQuantityDM;
-  QModelIndexList mRows;
   QList <UndoGlobalQuantityData *> mpGlobalQuantityData;
-  bool mFirstTime;
 };
 
 #endif /* REMOVEGLOBALQUANTITYROWSCOMMAND_H_ */

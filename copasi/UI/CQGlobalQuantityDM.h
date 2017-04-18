@@ -66,7 +66,7 @@ public:
   int statusToIndex(const QString& status) const;
 
   //TODO Undo
-  bool globalQuantityDataChange(const QModelIndex &index, const QVariant &value, int role);
+  bool globalQuantityDataChange(const QModelIndex &index, const QVariant &value);
   void insertNewGlobalQuantityRow(int position, int rows, const QModelIndex& index, const QVariant& value);
   void addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);
   void deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData);

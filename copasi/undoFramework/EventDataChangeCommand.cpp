@@ -26,14 +26,12 @@
 
 #include "EventDataChangeCommand.h"
 
-EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant value, int role, CQEventDM *pEventDM)
+EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant value, CQEventDM *pEventDM)
   : CCopasiUndoCommand("Event", EVENT_DATA_CHANGE, "Change")
   , mNew(value)
   , mOld(index.data(Qt::DisplayRole))
   , mIndex(index)
   , mpEventDM(pEventDM)
-  , mRole(role)
-  , mPathIndex()
 {
   //set the data for UNDO history
   assert(pEventDM->mpDataModel != NULL);
@@ -66,13 +64,13 @@ EventDataChangeCommand::EventDataChangeCommand(QModelIndex index, const QVariant
 
 void EventDataChangeCommand::redo()
 {
-  mpEventDM->eventDataChange(mIndex, mNew, mRole);
+  mpEventDM->eventDataChange(mIndex, mNew);
   setAction("Change");
 }
 
 void EventDataChangeCommand::undo()
 {
-  mpEventDM->eventDataChange(mIndex, mOld, mRole);
+  mpEventDM->eventDataChange(mIndex, mOld);
   setAction("Undone change");
 }
 
