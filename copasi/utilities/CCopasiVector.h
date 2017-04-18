@@ -619,6 +619,8 @@ public:
             CCopasiContainer::remove(*Target);
         }
 
+    mValidity.clear();
+
     std::vector< CType * >::resize(0);
   }
 
