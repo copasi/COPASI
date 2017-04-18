@@ -178,6 +178,8 @@ void CReaction::cleanup()
   mChemEq.cleanup();
   mMetabKeyMap.clear();
   setFunction(CCopasiRootContainer::getUndefinedFunction());
+  mpScalingCompartment = NULL;
+  mScalingCompartmentCN = CRegisteredObjectName("");
   // TODO: mMap.cleanup();
   //mParameterDescription.cleanup();
 }
