@@ -108,6 +108,8 @@ public:
 
   const std::string getIssueMessages() const;
 
+  CValidity operator | (const CValidity & rhs) const;
+
 private:
   Kind mErrors;
   Kind mWarnings;

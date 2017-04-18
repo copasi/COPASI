@@ -44,6 +44,17 @@ CIssue::operator bool()
   return (mSeverity != CIssue::eSeverity::Error);
 }
 
+CValidity CValidity::operator | (const CValidity & rhs) const
+{
+  CValidity result;
+
+  result.mErrors |= rhs.mErrors;
+  result.mWarnings |= rhs.mWarnings;
+  result.mInformation |= rhs.mInformation;
+
+  return result;
+}
+
 const CIssue::eSeverity & CIssue::getSeverity() const
 {
   return mSeverity;
