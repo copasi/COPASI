@@ -498,7 +498,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
 
   if (!lst.empty())
     {
-      mpUndoStack->push(new RemoveGlobalQuantityRowsCommand(lst, this, QModelIndex()));
+      mpUndoStack->push(new RemoveGlobalQuantityRowsCommand(lst, this));
     }
 
   return true;

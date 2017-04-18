@@ -743,7 +743,7 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
 
   if (!lst.empty())
     {
-      mpUndoStack->push(new RemoveSpecieRowsCommand(lst, this, QModelIndex()));
+      mpUndoStack->push(new RemoveSpecieRowsCommand(lst, this));
     }
 
   return true;

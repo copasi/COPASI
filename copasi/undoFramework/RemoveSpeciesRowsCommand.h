@@ -29,7 +29,7 @@ class CQSpecieDM;
 class RemoveSpecieRowsCommand: public CCopasiUndoCommand
 {
 public:
-  RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&);
+  RemoveSpecieRowsCommand(QModelIndexList rows, CQSpecieDM * pSpecieDM);
   virtual ~RemoveSpecieRowsCommand();
 
   void redo();

@@ -31,7 +31,7 @@
 #include "RemoveSpeciesRowsCommand.h"
 
 RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
-  QModelIndexList rows, CQSpecieDM * pSpecieDM, const QModelIndex&)
+  QModelIndexList rows, CQSpecieDM * pSpecieDM)
   : CCopasiUndoCommand("Species", SPECIES_REMOVE)
   , mpSpecieDM(pSpecieDM)
   , mRows(rows)
