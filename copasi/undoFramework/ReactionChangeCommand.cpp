@@ -120,9 +120,11 @@ ReactionChangeCommand::undo()
   mpReactionWidget->changeReaction(mKey, mType, mOldValue, mOldSecondValue, this);
 }
 
-void
-ReactionChangeCommand::removeCreatedObjects(const std::vector< std::string > & createdObjects)
+bool
+ReactionChangeCommand::removeCreatedObjects(const std::vector< std::string > & createdObjects,
+    bool recursive)
 {
+  bool result = false;
   std::vector<std::string>::const_iterator it = createdObjects.begin();
 
   for (; it != createdObjects.end(); ++it)
@@ -136,17 +138,22 @@ ReactionChangeCommand::removeCreatedObjects(const std::vector< std::string > & c
 
       if (objectType == "Compartment")
         {
-          static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeCompartment(key, true);
+          static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeCompartment(key, recursive);
+          result = true;
+
         }
       else if (objectType == "Metabolite")
         {
-          static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeMetabolite(key, true);
+          static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeMetabolite(key, recursive);
+          result = true;
         }
       else
         {
           pObject->getObjectParent()->remove(pObject);
         }
     }
+
+  return result;
 }
 
 void
