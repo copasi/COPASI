@@ -308,7 +308,7 @@ public:
     pHeaderAddr->push_back(pReport->getSeparator().getCN());
     pBodyAddr->push_back(pReport->getSeparator().getCN());
     // create a map of all possible variables
-    std::map<std::string, const CModelEntity*> variableMap;
+    std::map<std::string, const CCopasiObject*> variableMap;
     const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
     unsigned int i, iMax = metabolites.size();
 
@@ -323,7 +323,7 @@ public:
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CModelEntity*>(compartments[i].getSBMLId(), &compartments[i]));
+        variableMap.insert(std::pair<std::string, const CCopasiObject*>(compartments[i].getSBMLId(), &compartments[i]));
       }
 
     const CCopasiVector<CModelValue>& modelValues = pDataModel->getModel()->getModelValues();
@@ -332,13 +332,20 @@ public:
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CModelEntity*>(modelValues[i].getSBMLId(), &modelValues[i]));
+        variableMap.insert(std::pair<std::string, const CCopasiObject*>(modelValues[i].getSBMLId(), &modelValues[i]));
+      }
+
+    const CCopasiVector<CReaction>& reactions = pDataModel->getModel()->getReactions();
+    iMax = reactions.size();
+
+    for (i = 0; i < iMax; ++i)
+      {
+        variableMap.insert(std::pair<std::string, const CCopasiObject*>(reactions[i].getSBMLId(), &reactions[i]));
       }
 
     std::list<std::string>::const_iterator it = variables.begin(), endit = variables.end();
-    std::map<std::string, const CModelEntity*>::const_iterator pos;
+    std::map<std::string, const CCopasiObject*>::const_iterator pos;
     unsigned int dummyCount = 1;
-    std::ostringstream os;
 
     while (it != endit)
       {
@@ -349,12 +356,16 @@ public:
             THROW_COPASI_EXCEPTION("Could not find a model entity for the SBML id " << *it << std::endl);
           }
 
-        os.str("");
-        os << pos->second->getSBMLId();
-        pHeaderAddr->push_back(CCopasiStaticString(os.str()).getCN());
 
-        if (dynamic_cast<const CMetab*>(pos->second) != NULL)
+        const CMetab* pMetab = dynamic_cast<const CMetab*>(pos->second);
+        const CCompartment* pComp = dynamic_cast<const CCompartment*>(pos->second);
+        const CModelValue* pMV = dynamic_cast<const CModelValue*>(pos->second);
+        const CReaction* pReaction = dynamic_cast<const CReaction*>(pos->second);
+
+        if (pMetab != NULL)
           {
+            pHeaderAddr->push_back(CCopasiStaticString(pMetab->getSBMLId()).getCN());
+
             if (amounts.find(*it) != amounts.end())
               {
                 // create a new global value with an assignment
@@ -366,7 +377,7 @@ public:
                 assert(pTmpMV);
                 // create an assignment that takes the concentration of the
                 // metabolite and multiplies it by the compartment
-                ss << "<" << dynamic_cast<const CMetab*>(pos->second)->getConcentrationReference()->getCN() << "> * <" << dynamic_cast<const CMetab*>(pos->second)->getCompartment()->getValueReference()->getCN() << ">";
+                ss << "<" << pMetab->getConcentrationReference()->getCN() << "> * <" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
                 pTmpMV->setStatus(CModelEntity::ASSIGNMENT);
                 bool tmpRes = pTmpMV->setExpression(ss.str());
                 assert(tmpRes == true);
@@ -374,20 +385,30 @@ public:
               }
             else if (concentrations.find(*it) != concentrations.end())
               {
-                pBodyAddr->push_back(dynamic_cast<const CMetab*>(pos->second)->getConcentrationReference()->getCN());
+                pBodyAddr->push_back(pMetab->getConcentrationReference()->getCN());
               }
             else
               {
                 THROW_COPASI_EXCEPTION("Species \"" << *it << "\" neither given in the amounts or the concentration section." << std::endl);
               }
           }
-        else if (dynamic_cast<const CCompartment*>(pos->second) != NULL)
+
+        if (pComp != NULL)
           {
-            pBodyAddr->push_back(pos->second->getValueReference()->getCN());
+            pHeaderAddr->push_back(CCopasiStaticString(pComp->getSBMLId()).getCN());
+            pBodyAddr->push_back(pComp->getValueReference()->getCN());
           }
-        else if (dynamic_cast<const CModelValue*>(pos->second) != NULL)
+
+        if (pMV != NULL)
           {
-            pBodyAddr->push_back(pos->second->getValueReference()->getCN());
+            pHeaderAddr->push_back(CCopasiStaticString(pMV->getSBMLId()).getCN());
+            pBodyAddr->push_back(pMV->getValueReference()->getCN());
+          }
+
+        if (pReaction != NULL)
+          {
+            pHeaderAddr->push_back(CCopasiStaticString(pReaction->getSBMLId()).getCN());
+            pBodyAddr->push_back(pReaction->getFluxReference()->getCN());
           }
 
         ++it;
