@@ -2225,6 +2225,7 @@ CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* fun
  * Creates and returns a COPASI CReaction object from the given SBML
  * Reaction object.
  */
+
 CReaction*
 SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
@@ -2317,17 +2318,11 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       else
         {
           // We may not use Mass Action kinetics if we do not know the actual stoichiometry.
-          if (sr->isSetId() &&
-              (pSBMLModel->getInitialAssignment(sr->getId()) ||
-               pSBMLModel->getRule(sr->getId())))
-            {
-              ignoreMassAction = true;
-            }
+          ignoreMassAction = pSBMLModel->getRule(sr->getId()) != NULL;
 
           if (sr->isSetStoichiometry())
-            {
-              stoi = sr->getStoichiometry();
-            }
+            stoi = sr->getStoichiometry();
+
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2428,7 +2423,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   for (counter = 0; counter < num; counter++)
     {
-      const SpeciesReference* sr = sbmlReaction->getProduct(counter);
+      SpeciesReference* sr = sbmlReaction->getProduct(counter);
 
       if (sr == NULL)
         {
@@ -2452,17 +2447,10 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       else
         {
           // We may not use Mass Action kinetics if we do not know the actual stoichiometry.
-          if (sr->isSetId() &&
-              (pSBMLModel->getInitialAssignment(sr->getId()) ||
-               pSBMLModel->getRule(sr->getId())))
-            {
-              ignoreMassAction = true;
-            }
+          ignoreMassAction = pSBMLModel->getRule(sr->getId()) != NULL;
 
           if (sr->isSetStoichiometry())
-            {
-              stoi = sr->getStoichiometry();
-            }
+            stoi = sr->getStoichiometry();
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -9146,6 +9134,10 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CC
               continue;
             }
 
+          // species reference ids already handled
+          if (mSBMLSpeciesReferenceIds.find(symbol) != mSBMLSpeciesReferenceIds.end())
+            continue;
+
           std::map<std::string, const CCopasiObject*>::iterator pos = id2copasiMap.find(symbol);
 
           if (pos != id2copasiMap.end())
@@ -9158,14 +9150,6 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CC
                 {
                   const ASTNode* pMath = pInitialAssignment->getMath();
                   assert(pMath != NULL);
-
-                  // check for references to species references in the expression because we don't support them yet
-                  if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
-                    {
-                      finishCurrentStep();
-
-                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 95);
-                    }
 
                   try
                     {
@@ -10869,7 +10853,7 @@ void SBMLImporter::applyConversionFactors()
 /**
  * Goes through all SBML reactions and collects the ids of all species references.
  */
-void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<std::string, double>& ids)
+void SBMLImporter::updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::string, double>& ids)
 {
   ids.clear();
 
@@ -10877,8 +10861,8 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
 
   unsigned int i, iMax = pModel->getNumReactions();
   unsigned int j, jMax;
-  const Reaction* pReaction = NULL;
-  const SpeciesReference* pSpeciesReference = NULL;
+  Reaction* pReaction = NULL;
+  SpeciesReference* pSpeciesReference = NULL;
 
   SBMLTransforms::mapComponentValues(pModel);
 
@@ -10900,13 +10884,17 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
               pSpeciesReference = pReaction->getReactant(j);
               assert(pSpeciesReference != NULL);
 
-              if (pSpeciesReference != NULL && pSpeciesReference->isSetId())
-                {
-                  // make sure all ids are unique
-                  assert(ids.find(pSpeciesReference->getId()) == ids.end());
-                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
-                             SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
-                }
+              if (pSpeciesReference == NULL || !pSpeciesReference->isSetId())
+                continue;
+
+              // make sure all ids are unique
+              assert(ids.find(pSpeciesReference->getId()) == ids.end());
+
+              double stoichiometry = SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel);
+              ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
+                         stoichiometry));
+              // update stoichiometry
+              pSpeciesReference->setStoichiometry(stoichiometry);
             }
 
           // same for the products
@@ -10917,13 +10905,18 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<s
               pSpeciesReference = pReaction->getProduct(j);
               assert(pSpeciesReference != NULL);
 
-              if (pSpeciesReference != NULL && pSpeciesReference->isSetId())
-                {
-                  // make sure all ids are unique
-                  assert(ids.find(pSpeciesReference->getId()) == ids.end());
-                  ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
-                             SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel)));
-                }
+              if (pSpeciesReference == NULL || !pSpeciesReference->isSetId())
+                continue;
+
+              // make sure all ids are unique
+              assert(ids.find(pSpeciesReference->getId()) == ids.end());
+
+              double stoichiometry = SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel);
+              ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
+                         stoichiometry));
+              // update stoichiometry
+              pSpeciesReference->setStoichiometry(stoichiometry);
+
             }
         }
     }

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -804,7 +809,7 @@ public:
   /**
    * Goes through all SBML reactions and collects the ids of all species references.
    */
-  static void updateSBMLSpeciesReferenceIds(const Model* pModel, std::map<std::string, double>& ids);
+  static void updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::string, double>& ids);
 
 #endif // LIBSBML_VERSION
 };
