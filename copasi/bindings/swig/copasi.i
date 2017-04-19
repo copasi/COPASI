@@ -106,6 +106,7 @@ size_t INVALID_INDEX();
 %ignore CIssue::eSeverity;
 #endif // SWIGCSHARP
 
+%include <copasi/report/CObjectInterface.h>
 %include <copasi/utilities/CValidity.h>
 
 %include "CObjectLists.i"

@@ -72,6 +72,24 @@ public:
 
   operator bool();
 
+  /**
+   * Utility method for language bindings where the bool operator is not
+   * available. This method returns a flag indicating whether this issue
+   * represents a success
+   *
+   * @return whether this issue represents a success or not
+   */
+  bool isSuccess() const;
+
+  /**
+   * Utility method for language bindings where the bool operator is not
+   * available. This method returns a flag indicating whether this issue
+   * represents an error
+   *
+   * @return whether this issue represents an error or not
+   */
+  bool isError() const;
+
   const eSeverity & getSeverity() const;
 
   const eKind & getKind() const;
