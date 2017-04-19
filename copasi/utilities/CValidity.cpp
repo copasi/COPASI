@@ -22,6 +22,33 @@ const CIssue CIssue::Warning(CIssue::eSeverity::Warning);
 // static
 const CIssue CIssue::Error(CIssue::eSeverity::Error);
 
+// static
+const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindDescriptions =
+{
+  "Unknown.\n",
+  "Invalid expression.\n",
+  "Empty expression.\n",
+  "Missing initial value.\n",
+  "Problem with calculation.\n",
+  "Missing event assignment.\n",
+  "Missing event trigger expression.\n",
+  "Unit is undefined.\n",
+  "Unit conflict.\n",
+  "Invalid unit.\n",
+  "Value is undefined or unrepresentable.\n",
+  "Object not found.\n",
+  "Value not found.\n",
+  "Variable not found.\n",
+  "Invalid structure.\n",
+  "Too many arguments.\n",
+  "Has circular dependency.\n",
+  "Invalid expression data type.\n",
+  "Expression contains a variable.\n",
+  "CExpression not found.\n",
+  "CFunction not found.\n",
+  "Variables are mismatched.\n"
+};
+
 CIssue::CIssue(const CIssue::eSeverity & severity,
                const CIssue::eKind & kind):
   mSeverity(severity),
@@ -200,91 +227,36 @@ const std::string CValidity::generateIssueMessages(const CIssue::eSeverity & sev
 {
   std::string severityString = "";
   std::string messages = "";
-  Kind tmpKind;
+  std::vector< const char * > descriptions;
 
   switch (severity)
     {
       case CIssue::eSeverity::Error:
         severityString = "Error: ";
-        tmpKind = mErrors;
+        descriptions = mErrors.getAnnotations(CIssue::kindDescriptions);
         break;
 
       case CIssue::eSeverity::Warning:
         severityString = "Warning: ";
-        tmpKind = mWarnings;
+        descriptions = mWarnings.getAnnotations(CIssue::kindDescriptions);
         break;
 
       case CIssue::eSeverity::Information:
         severityString = "Information: ";
-        tmpKind = mInformation;
+        descriptions = mInformation.getAnnotations(CIssue::kindDescriptions);
         break;
 
       default:
         break;
     }
 
-  if (tmpKind.isSet(CIssue::eKind::ExpressionInvalid))
-    messages += severityString + "Invalid expression.\n";
+  std::vector< const char * >::const_iterator it = descriptions.begin();
+  std::vector< const char * >::const_iterator end = descriptions.end();
 
-  if (tmpKind.isSet(CIssue::eKind::ExpressionEmpty))
-    messages += severityString + "Empty expression.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::MissingInitialValue))
-    messages += severityString + "Missing initial value.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::CalculationIssue))
-    messages += severityString + "Problem with calculation.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::EventMissingAssignment))
-    messages += severityString + "Missing event assignment.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::EventMissingTriggerExpression))
-    messages += severityString + "Missing event trigger expression.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::UnitUndefined))
-    messages += severityString + "Unit is undefined.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::UnitConflict))
-    messages += severityString + "Unit conflict.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::UnitInvalid))
-    messages += severityString + "Invalid unit.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::NaNissue))
-    messages += severityString + "Value is undefined or unrepresentable.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::ObjectNotFound))
-    messages += severityString + "Object not found.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::ValueNotFound))
-    messages += severityString + "Value not found.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::VariableNotfound))
-    messages += severityString + "Variable not found.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::StructureInvalid))
-    messages += severityString + "Invalid structure.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::TooManyArguments))
-    messages += severityString + "Too many arguments.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::HasCircularDependency))
-    messages += severityString + "Has circular dependency.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::ExpressionDataTypeInvalid))
-    messages += severityString + "Invalid expression data type.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::VariableInExpression))
-    messages += severityString + "Expression contains a variable.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::CExpressionNotFound))
-    messages += severityString + "CExpression not found.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::CFunctionNotFound))
-    messages += severityString + "CFunction not found.\n";
-
-  if (tmpKind.isSet(CIssue::eKind::VariablesMismatch))
-    messages += severityString + "Variables are mismatched.\n";
+  for (; it != end; ++it)
+    {
+      messages += severityString + *it;
+    }
 
   return messages;
 }
