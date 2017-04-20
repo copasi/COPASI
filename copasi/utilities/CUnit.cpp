@@ -557,7 +557,7 @@ std::pair< C_INT32, C_INT32 > CUnit::removeSymbolFromUnit(const CUnit & symbol, 
           improvement += (int)fabs(itOld->getExponent());
         }
 
-      if (improvement >= 0)
+      if (improvement > 0)
         {
           unit = Tmp;
 
