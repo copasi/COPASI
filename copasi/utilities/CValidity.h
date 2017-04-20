@@ -58,6 +58,7 @@ public:
     __SIZE
   };
 
+  static const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > kindNames;
   static const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > kindDescriptions;
 
   static const CIssue Success;

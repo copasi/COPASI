@@ -23,9 +23,36 @@ const CIssue CIssue::Warning(CIssue::eSeverity::Warning);
 const CIssue CIssue::Error(CIssue::eSeverity::Error);
 
 // static
+const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindNames =
+{
+  "unknown issue\n",
+  "invalid expression\n",
+  "empty expression\n",
+  "missing initial value\n",
+  "calculation problem\n",
+  "missing event assignment\n",
+  "missing event trigger expression\n",
+  "undefined unit\n",
+  "unit conflict\n",
+  "invalid unit\n",
+  "undefined or unrepresentable value\n",
+  "unfound object\n",
+  "unfound value\n",
+  "unfound variable\n",
+  "Invalid structure\n",
+  "excess arguments\n",
+  "circular dependency\n",
+  "invalid expression data type\n",
+  "variable in expression\n",
+  "unfound CExpression\n",
+  "unfound CFunction\n",
+  "mismatched variables\n"
+};
+
+// static
 const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindDescriptions =
 {
-  "Unknown.\n",
+  "Unknown issue.\n",
   "Invalid expression.\n",
   "Empty expression.\n",
   "Missing initial value.\n",
@@ -33,7 +60,7 @@ const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CI
   "Missing event assignment.\n",
   "Missing event trigger expression.\n",
   "Unit is undefined.\n",
-  "Unit conflict.\n",
+  "Conflicting units.\n",
   "Invalid unit.\n",
   "Value is undefined or unrepresentable.\n",
   "Object not found.\n",
