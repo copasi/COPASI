@@ -48,6 +48,7 @@ protected slots:
   virtual void slotBtnOKClicked();
   virtual void slotUpdateAvogadro();
   virtual void slotUnitChanged();
+  virtual void slotShowCompleter();
 
 protected:
   virtual bool enterProtected();
