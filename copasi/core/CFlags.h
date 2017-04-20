@@ -120,12 +120,13 @@ public:
   // returns a vector with annotations for only the
   // flags which are set
   template< typename AType >
-  std::vector< AType > getAnnotations(const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations) const
+  std::vector< AType > getAnnotations(const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations,
+                                      const CFlags & filter = All) const
   {
     std::vector< AType > setFlagAnnotations;
 
     for (size_t i = 0; i < mFlags.size(); i++)
-      if (mFlags[i]) setFlagAnnotations.push_back(annotations[i]);
+      if (mFlags[i] && filter.mFlags[i]) setFlagAnnotations.push_back(annotations[i]);
 
     return setFlagAnnotations;
   }
