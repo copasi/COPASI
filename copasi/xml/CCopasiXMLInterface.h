@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -28,10 +33,10 @@
 #include <sstream>
 
 #include "copasi.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
-template <class CType> class CCopasiVector;
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVector;
+template <class CType> class CDataVectorN;
 class CXMLAttributeList;
 class CSlider;
 class CCopasiParameter;
@@ -46,7 +51,7 @@ class CCopasiParameter;
  * Note: the responsibility to free allocated memory during load is handed to the
  *       user.
  */
-class SCopasiXMLGUI: public CCopasiContainer
+class SCopasiXMLGUI: public CDataContainer
 {
   // Operations
 public:
@@ -54,9 +59,9 @@ public:
    * Constructor
    */
   SCopasiXMLGUI(const std::string & name,
-                const CCopasiContainer * pParent,
+                const CDataContainer * pParent,
                 const std::string & type = "CN",
-                const unsigned C_INT32 & flag = CCopasiObject::Container);
+                const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   /**
    * Constructor
@@ -66,12 +71,12 @@ public:
   /**
    * Returns a pointer to the slider list.
    */
-  CCopasiVector<CSlider>* getSliderList();
+  CDataVector<CSlider>* getSliderList();
 
   /**
    * Returns a const pointer to the slider list.
    */
-  const CCopasiVector<CSlider>* getSliderList() const;
+  const CDataVector<CSlider>* getSliderList() const;
 
   // Attributes
 protected:
@@ -79,7 +84,7 @@ protected:
    * Pointer to a vector of sliders which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVector< CSlider > * mpSliderList;
+  CDataVector< CSlider > * mpSliderList;
 };
 
 class CCopasiXMLInterface

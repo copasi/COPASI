@@ -1,19 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000092.cpp,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:37:14 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CCompartment.h"
 #include "copasi/MIRIAM/CRDFGraphConverter.h"
@@ -29,28 +26,28 @@
 #include <sbml/xml/XMLInputStream.h>
 #include <sbml/xml/XMLNamespaces.h>
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "test000092.h"
 
-CCopasiDataModel* test000092::pCOPASIDATAMODEL = NULL;
+CDataModel* test000092::pCOPASIDATAMODEL = NULL;
 
 void test000092::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000092::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000092::test_miriam_export_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000092::MODEL_STRING1);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -231,7 +228,7 @@ void test000092::test_miriam_export_1()
 
 void test000092::test_miriam_export_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000092::MODEL_STRING2);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -425,7 +422,7 @@ void test000092::test_miriam_export_2()
 
 void test000092::test_miriam_export_3()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000092::MODEL_STRING3);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -477,10 +474,9 @@ void test000092::test_miriam_export_3()
   CPPUNIT_ASSERT(result == true);
 }
 
-
 void test000092::test_miriam_export_4()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000092::MODEL_STRING4);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -666,7 +662,7 @@ void test000092::test_miriam_export_4()
 
 void test000092::test_miriam_export_5()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000092::MODEL_STRING5);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -861,7 +857,7 @@ void test000092::test_miriam_export_5()
 
 void test000092::test_miriam_export_6()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000092::MODEL_STRING6);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -915,7 +911,7 @@ void test000092::test_miriam_export_6()
 
 void test000092::test_miriam_export_7()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   bool result = pDataModel->importSBMLFromString(test000092::MODEL_STRING7);
   CPPUNIT_ASSERT(result == true);
   CModel *pModel = pDataModel->getModel();
@@ -1147,7 +1143,7 @@ void test000092::test_miriam_export_7()
 
 void test000092::test_miriam_export_8()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   bool result = pDataModel->importSBMLFromString(test000092::MODEL_STRING8);
   CPPUNIT_ASSERT(result == true);
   CModel* pModel = pDataModel->getModel();
@@ -1159,7 +1155,7 @@ void test000092::test_miriam_export_8()
   CMIRIAMInfo miriamInfo;
   miriamInfo.load(pModel->getKey());
   // check the modified date
-  const CCopasiVector<CModification>* pModifications = &miriamInfo.getModifications();
+  const CDataVector<CModification>* pModifications = &miriamInfo.getModifications();
   CPPUNIT_ASSERT(pModifications != NULL);
   // there should be only one modification date
   CPPUNIT_ASSERT(pModifications->size() == 1);
@@ -1179,7 +1175,7 @@ void test000092::test_miriam_export_8()
   CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
   miriamInfo.load(pCompartment->getKey());
-  const CCopasiVector<CBiologicalDescription>* pDescriptions = &miriamInfo.getBiologicalDescriptions();
+  const CDataVector<CBiologicalDescription>* pDescriptions = &miriamInfo.getBiologicalDescriptions();
   CPPUNIT_ASSERT(pDescriptions != NULL);
   CPPUNIT_ASSERT(pDescriptions->size() == 1);
   CBiologicalDescription* pDescription = (*pDescriptions)[0];
@@ -1457,10 +1453,9 @@ void test000092::test_miriam_export_8()
   CPPUNIT_ASSERT(result == true);
 }
 
-
 void test000092::test_miriam_export_9()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   bool result = pDataModel->importSBMLFromString(test000092::MODEL_STRING9);
   CPPUNIT_ASSERT(result == true);
   CModel* pModel = pDataModel->getModel();
@@ -1472,7 +1467,7 @@ void test000092::test_miriam_export_9()
   CMIRIAMInfo miriamInfo;
   miriamInfo.load(pModel->getKey());
   // check the modified date
-  const CCopasiVector<CModification>* pModifications = &miriamInfo.getModifications();
+  const CDataVector<CModification>* pModifications = &miriamInfo.getModifications();
   CPPUNIT_ASSERT(pModifications != NULL);
   // there should be only one modification date
   CPPUNIT_ASSERT(pModifications->size() == 1);
@@ -1492,7 +1487,7 @@ void test000092::test_miriam_export_9()
   CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
   miriamInfo.load(pCompartment->getKey());
-  const CCopasiVector<CBiologicalDescription>* pDescriptions = &miriamInfo.getBiologicalDescriptions();
+  const CDataVector<CBiologicalDescription>* pDescriptions = &miriamInfo.getBiologicalDescriptions();
   CPPUNIT_ASSERT(pDescriptions != NULL);
   CPPUNIT_ASSERT(pDescriptions->size() == 1);
   CBiologicalDescription* pDescription = (*pDescriptions)[0];
@@ -1769,13 +1764,12 @@ void test000092::test_miriam_export_9()
   CPPUNIT_ASSERT(result == true);
 }
 
-
 /**
  * This test will most likely fail until we have a workaround for the SBML one modification limit.
  */
 void test000092::test_miriam_import_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   bool result = pDataModel->importSBMLFromString(test000092::MODEL_STRING10);
   CPPUNIT_ASSERT(result == true);
   CModel* pModel = pDataModel->getModel();
@@ -1787,7 +1781,7 @@ void test000092::test_miriam_import_1()
   CMIRIAMInfo miriamInfo;
   miriamInfo.load(pModel->getKey());
   // check the modified date
-  const CCopasiVector<CModification>* pModifications = &miriamInfo.getModifications();
+  const CDataVector<CModification>* pModifications = &miriamInfo.getModifications();
   CPPUNIT_ASSERT(pModifications != NULL);
   // there should be only one modification date
   CPPUNIT_ASSERT_MESSAGE("This test will fail until we have a workaround for the one modification date limit in SBML.", pModifications->size() == 2);
@@ -1802,9 +1796,6 @@ void test000092::test_miriam_import_1()
   // make sure both dates are not the same
   CPPUNIT_ASSERT(dateTime != dateTime2);
 }
-
-
-
 
 /**
  * This model has complete MIRIAM compliant annotation, so of of it should be exported
@@ -1887,7 +1878,6 @@ const char* test000092::MODEL_STRING1 = \
                                         "  </Model>\n"
                                         "</COPASI>\n";
 
-
 /**
  * In this model the Model history is incomplete because there is no creator
  * and no modified date so libsbml 4 will no longer write the model history. Nevertheless
@@ -1955,7 +1945,6 @@ const char* test000092::MODEL_STRING2 = \
                                         "  </Model>\n"
                                         "</COPASI>\n";
 
-
 /**
  * In this model the Model there is no MIRIAM annotation.
  * There should be no annotation in the exported SBML model.
@@ -1978,7 +1967,6 @@ const char* test000092::MODEL_STRING3 = \
                                         "    </InitialState>\n"
                                         "  </Model>\n"
                                         "</COPASI>\n";
-
 
 /**
  * This model has complete MIRIAM compliant annotation, so of of it should be exported
@@ -2075,7 +2063,6 @@ const char* test000092::MODEL_STRING4 = \
                                         "    </Layout>\n"
                                         "  </ListOfLayouts>\n"
                                         "</COPASI>\n";
-
 
 /**
  * In this model the Model history is incomplete because there is no creator
@@ -2379,7 +2366,6 @@ const char* test000092::MODEL_STRING9 = \
                                         "  </model>\n"
                                         "</sbml>\n";
 
-
 const char* test000092::MODEL_STRING10 = \
     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
     "<sbml xmlns=\"http://www.sbml.org/sbml/level2/version4\" level=\"2\" version=\"4\">\n"
@@ -2446,4 +2432,3 @@ const char* test000092::MODEL_STRING10 = \
     "    </listOfCompartments>\n"
     "  </model>\n"
     "</sbml>\n";
-

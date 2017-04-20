@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,12 +19,12 @@
 
 #include "COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 COutputDefinitionVector::COutputDefinitionVector(const std::string & name,
-    const CCopasiContainer * pParent):
-  CCopasiVectorN< CPlotSpecification >(name, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("COutputDefinitionVector", this))
+    const CDataContainer * pParent):
+  CDataVectorN< CPlotSpecification >(name, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("COutputDefinitionVector", this))
 {}
 
 COutputDefinitionVector::~COutputDefinitionVector()
@@ -29,7 +34,7 @@ COutputDefinitionVector::~COutputDefinitionVector()
 
 void COutputDefinitionVector::cleanup()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string& COutputDefinitionVector::getKey() const
@@ -56,13 +61,13 @@ CPlotSpecification* COutputDefinitionVector::createPlotSpec(const std::string & 
 bool COutputDefinitionVector::removePlotSpec(const std::string & key)
 {
   CPlotSpecification* pPl =
-    dynamic_cast<CPlotSpecification*>(CCopasiRootContainer::getKeyFactory()->get(key));
-  size_t index = this->CCopasiVector<CPlotSpecification>::getIndex(pPl);
+    dynamic_cast<CPlotSpecification*>(CRootContainer::getKeyFactory()->get(key));
+  size_t index = this->CDataVector<CPlotSpecification>::getIndex(pPl);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  this->CCopasiVector<CPlotSpecification>::remove(index);
+  this->CDataVector<CPlotSpecification>::remove(index);
 
   return true;
 }

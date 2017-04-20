@@ -31,8 +31,8 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiTask.h"
@@ -62,7 +62,7 @@ int exportCurrentModel();
 int runScheduledTasks(CProcessReport * pProcessReport);
 int saveCurrentModel();
 
-CCopasiDataModel* pDataModel = NULL;
+CDataModel* pDataModel = NULL;
 bool Validate = false;
 
 int main(int argc, char *argv[])
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(argc, argv);
+      CRootContainer::init(argc, argv);
     }
 
   catch (copasi::autoexcept &e)
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 
   if (License)
     {
-      std::cout << CCopasiRootContainer::getLicenseTxt() << std::endl;
+      std::cout << CRootContainer::getLicenseTxt() << std::endl;
 
       retcode = 0;
       goto finish;
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      pDataModel = CCopasiRootContainer::addDatamodel();
+      pDataModel = CRootContainer::addDatamodel();
       assert(pDataModel != NULL);
 
 #ifdef XXXX
@@ -157,12 +157,12 @@ int main(int argc, char *argv[])
         }
 
       CCopasiTimer * pCPU =
-        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::getObject((std::string)"CN=Root,Timer=CPU Time")));
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CRootContainer::getObject((std::string)"CN=Root,Timer=CPU Time")));
       CCopasiTimer * pWall =
-        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CCopasiRootContainer::getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
+        const_cast<CCopasiTimer *>(static_cast<const CCopasiTimer *>(CRootContainer::getObject((std::string)"CN=Root,Timer=Wall Clock Time")));
 
-      CCopasiVectorN< CEvaluationTree > & Functions =
-        CCopasiRootContainer::getFnctionList()->loadedFunctions();
+      CDataVectorN< CEvaluationTree > & Functions =
+        CRootContainer::getFnctionList()->loadedFunctions();
       CFunction * pFunction;
 
       for (i = 0, imax = Functions.size(); i < imax; i++)
@@ -273,7 +273,6 @@ int main(int argc, char *argv[])
               retcode = runScheduledTasks(pProcessReport);
             }
 
-
           // If no export file was given, we write to the save file or
           // the default file.
           if (COptions::compareValue("ExportSBML", std::string("")))
@@ -342,12 +341,11 @@ int main(int argc, char *argv[])
     }
 
 finish:
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
   pdelete(pProcessReport);
 
   return retcode;
 }
-
 
 int printUsage(const std::string& name)
 {
@@ -386,7 +384,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
   if (pDataModel == NULL)
     return 0;
 
-  CCopasiVectorN< CCopasiTask > & TaskList = *pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = *pDataModel->getTaskList();
   size_t i, imax = TaskList.size();
 
   for (i = 0; i < imax; i++)
@@ -551,8 +549,6 @@ int exportCurrentModel()
 
 #endif //WITH_COMBINE_ARCHIVE
 
-
-
   return NO_EXPORT_REQUESTED;
 }
 
@@ -594,7 +590,7 @@ int validate()
 
   // We are already sure that the COPASI model compiled. That means
   // we only need to test the active tasks
-  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
   size_t i, imax = TaskList.size();
 
   for (i = 0; i < imax; i++)

@@ -18,7 +18,7 @@
 #define CUNIT_H
 
 #include "copasi/utilities/CUnitComponent.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 class CUnitDefinition;
 
@@ -109,7 +109,6 @@ public:
    * Assignment operator
    */
   CUnit& operator=(const CUnit & rightSide);
-
 
   ~CUnit();
 

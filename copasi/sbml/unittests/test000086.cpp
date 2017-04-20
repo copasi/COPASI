@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000086.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:55:16 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,8 +17,8 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
 
 #include "sbml/SBMLDocument.h"
@@ -31,24 +28,24 @@
 #include "sbml/Unit.h"
 #include "sbml/UnitKind.h"
 
-CCopasiDataModel* test000086::pCOPASIDATAMODEL = NULL;
+CDataModel* test000086::pCOPASIDATAMODEL = NULL;
 
 void test000086::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000086::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000086::test_import_compartment_units_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -99,7 +96,7 @@ void test000086::test_import_compartment_units_1()
 
 void test000086::test_import_compartment_units_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -150,7 +147,7 @@ void test000086::test_import_compartment_units_2()
 
 void test000086::test_import_compartment_units_3()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -201,7 +198,7 @@ void test000086::test_import_compartment_units_3()
 
 void test000086::test_import_compartment_units_4()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING4));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -252,7 +249,7 @@ void test000086::test_import_compartment_units_4()
 
 void test000086::test_import_compartment_units_5()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -303,7 +300,7 @@ void test000086::test_import_compartment_units_5()
 
 void test000086::test_import_compartment_units_6()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -326,7 +323,7 @@ void test000086::test_import_compartment_units_6()
 
 void test000086::test_import_compartment_units_7()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING7));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -377,7 +374,7 @@ void test000086::test_import_compartment_units_7()
 
 void test000086::test_import_compartment_units_8()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING8));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -428,7 +425,7 @@ void test000086::test_import_compartment_units_8()
 
 void test000086::test_import_compartment_units_9()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING9));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -479,7 +476,7 @@ void test000086::test_import_compartment_units_9()
 
 void test000086::test_import_compartment_units_10()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING10));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
@@ -530,7 +527,7 @@ void test000086::test_import_compartment_units_10()
 
 void test000086::test_import_compartment_units_11()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING11));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 2);

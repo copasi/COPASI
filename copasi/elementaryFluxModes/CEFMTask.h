@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -41,9 +46,9 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    */
-  CEFMTask(const CCopasiContainer * pParent,
+  CEFMTask(const CDataContainer * pParent,
            const CTaskEnum::Task & type = CTaskEnum::fluxMode);
 
   /**
@@ -52,7 +57,7 @@ public:
    */
   //-COptTask(const CEFMTask & src);
   CEFMTask(const CEFMTask & src,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Destructor

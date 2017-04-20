@@ -17,23 +17,20 @@
 
 #include <QtCore/QList>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "model/CMetab.h"
-#include "model/CCompartment.h"
-
-#include <copasi/model/CModel.h>
-#include <copasi/function/CExpression.h>
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
-
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-#include <copasi/undoFramework/UndoDependentData.h>
-
-#include <copasi/report/CCopasiRootContainer.h>
+#include "CCopasiUndoCommand.h"
+#include "UndoDependentData.h"
 
 UndoSpeciesData::UndoSpeciesData(const CMetab *metab
                                  , bool trackDependencies /*= true*/)
@@ -58,7 +55,7 @@ UndoSpeciesData::~UndoSpeciesData()
 {
 }
 
-CCopasiObject *
+CDataObject *
 UndoSpeciesData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL)
@@ -87,10 +84,10 @@ UndoSpeciesData::createObjectIn(CModel *pModel)
   return pSpecies;
 }
 
-CCopasiObject *
+CDataObject *
 UndoSpeciesData::restoreObjectIn(CModel *pModel)
 {
-  CCopasiObject *pSpecies = createObjectIn(pModel);
+  CDataObject *pSpecies = createObjectIn(pModel);
 
   if (pSpecies == NULL)
     return NULL;
@@ -105,7 +102,7 @@ void
 UndoSpeciesData::fillObject(CModel *)
 {
   CMetab * pSpecies =
-    dynamic_cast<CMetab*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CMetab*>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pSpecies == NULL) return;
 
@@ -220,9 +217,9 @@ void UndoSpeciesData::setCreatedCompartment(bool createdCompartment)
   mCreatedCompartment = createdCompartment;
 }
 
-CCopasiObject *UndoSpeciesData::getObject(CModel *pModel)
+CDataObject *UndoSpeciesData::getObject(CModel *pModel)
 {
-  CCopasiObject *result = UndoData::getObject(pModel);
+  CDataObject *result = UndoData::getObject(pModel);
 
   if (result == NULL && mIndex < pModel->getNumMetabs())
     return &pModel->getMetabolites()[mIndex];

@@ -19,8 +19,8 @@
 #include "MIRIAMUI/CQMiriamWidget.h"
 #include "MIRIAMUI/CQRDFTreeView.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "function/CFunction.h"
 #include "UI/CQCompartment.h"
 #include "UI/CQSpeciesDetail.h"
@@ -174,7 +174,7 @@ void CQTabWidget::selectTab(int index) const
 void CQTabWidget::load()
 {
   // mpObject can not be trusted
-  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+  mpObject = CRootContainer::getKeyFactory()->get(mKey);
 
   if (mpObject != NULL)
     {
@@ -217,7 +217,7 @@ void CQTabWidget::load()
       if (pWindow) //Probably could just assume the Main Window exists
         {
           QList<QString> VersioningPath = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
-          mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory()), VersioningPath);
+          mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), VersioningPath);
         }
     }
 
@@ -227,7 +227,7 @@ void CQTabWidget::load()
 bool CQTabWidget::save()
 {
   // mpObject can not be trusted
-  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+  mpObject = CRootContainer::getKeyFactory()->get(mKey);
 
   if (mpObject == NULL) return false;
 

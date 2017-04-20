@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +22,7 @@
 
 #include "CODEExporter.h"
 
-class CCopasiDataModel;
+class CDataModel;
 
 class CODEExporterXPPAUT: public CODEExporter
 {
@@ -30,7 +35,7 @@ public:
    */
   CODEExporterXPPAUT();
 
-  virtual bool exportTitleData(const CCopasiDataModel* pDataModel, std::ostream & os);
+  virtual bool exportTitleData(const CDataModel* pDataModel, std::ostream & os);
 
   virtual void setReservedNames();
 

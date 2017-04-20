@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -7,8 +12,8 @@
 
 #include <string>
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/report/CRootContainer.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/model/CModel.h>
 
 // in earlier version of COPASI, setting the SBML id on a model prior to exporting it
@@ -17,13 +22,13 @@
 void test000103::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
-  pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL, false);
+  pDataModel = CRootContainer::addDatamodel();
 }
 
 void test000103::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000103::test_bug1743_l2()

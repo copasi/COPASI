@@ -20,7 +20,7 @@
 # include <inttypes.h>
 #endif
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -33,9 +33,9 @@ CLColorDefinition * CLColorDefinition::fromData(const CData & data)
  * Contructor which sets the CLColorDefinition to completely opaque
  * black.
  */
-CLColorDefinition::CLColorDefinition(CCopasiContainer* pParent)
+CLColorDefinition::CLColorDefinition(CDataContainer* pParent)
   : CLBase(),
-    CCopasiObject("ColorDefinition", pParent),
+    CDataObject("ColorDefinition", pParent),
     mRed(0),
     mGreen(0),
     mBlue(0),
@@ -43,15 +43,15 @@ CLColorDefinition::CLColorDefinition(CCopasiContainer* pParent)
     mKey(""),
     mId("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("ColorDefinition", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("ColorDefinition", this);
 }
 
 /**
  * Constructor which sets the CLColorDefinition to the given RGBA values.
  */
-CLColorDefinition::CLColorDefinition(unsigned char r, unsigned char g, unsigned char b, unsigned char a, CCopasiContainer* pParent)
+CLColorDefinition::CLColorDefinition(unsigned char r, unsigned char g, unsigned char b, unsigned char a, CDataContainer* pParent)
   : CLBase(),
-    CCopasiObject("ColorDefinition", pParent),
+    CDataObject("ColorDefinition", pParent),
     mRed(r),
     mGreen(g),
     mBlue(b),
@@ -59,15 +59,15 @@ CLColorDefinition::CLColorDefinition(unsigned char r, unsigned char g, unsigned 
     mKey(""),
     mId("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("ColorDefinition", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("ColorDefinition", this);
 }
 
 /**
  * Copy Contructor
  */
-CLColorDefinition::CLColorDefinition(const CLColorDefinition& source, CCopasiContainer* pParent):
+CLColorDefinition::CLColorDefinition(const CLColorDefinition& source, CDataContainer* pParent):
   CLBase(source),
-  CCopasiObject(source, pParent),
+  CDataObject(source, pParent),
   mRed(source.mRed),
   mGreen(source.mGreen),
   mBlue(source.mBlue),
@@ -75,15 +75,15 @@ CLColorDefinition::CLColorDefinition(const CLColorDefinition& source, CCopasiCon
   mKey(""),
   mId(source.mId)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("ColorDefinition", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("ColorDefinition", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CCopasiContainer* pParent):
+CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CDataContainer* pParent):
   CLBase(),
-  CCopasiObject("ColorDefinition", pParent),
+  CDataObject("ColorDefinition", pParent),
   mRed(source.getRed()),
   mGreen(source.getGreen()),
   mBlue(source.getBlue()),
@@ -91,7 +91,7 @@ CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CCopasiConta
   mKey(""),
   mId(source.getId())
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("ColorDefinition", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("ColorDefinition", this);
 }
 
 /**
@@ -99,7 +99,7 @@ CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CCopasiConta
  */
 CLColorDefinition::~CLColorDefinition()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**

@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000020.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:33:09 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,7 +17,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
@@ -29,21 +26,21 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
-CCopasiDataModel* test000020::pCOPASIDATAMODEL = NULL;
+CDataModel* test000020::pCOPASIDATAMODEL = NULL;
 
 void test000020::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000020::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000020::test_references_to_species()
@@ -51,7 +48,7 @@ void test000020::test_references_to_species()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000020::MODEL_STRING);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->exportSBMLToString(NULL, 2, 3).empty() == false);

@@ -62,9 +62,9 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "layout/CListOfLayouts.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "copasi/layout/CLGradientStop.h"
 #include "copasi/layout/CLGradientBase.h"
@@ -389,7 +389,7 @@ void CCopasiXMLParser::pushElementHandler(CXMLElementHandler< CCopasiXMLParser, 
 void CCopasiXMLParser::popElementHandler()
 {mElementHandlerStack.pop();}
 
-void CCopasiXMLParser::setFunctionList(CCopasiVectorN< CFunction > * pFunctionList)
+void CCopasiXMLParser::setFunctionList(CDataVectorN< CFunction > * pFunctionList)
 {mCommon.pFunctionList = pFunctionList;}
 
 CModel * CCopasiXMLParser::getModel() const
@@ -398,7 +398,7 @@ CModel * CCopasiXMLParser::getModel() const
 CReportDefinitionVector * CCopasiXMLParser::getReportList() const
 {return mCommon.pReportList;}
 
-CCopasiVectorN< CCopasiTask > * CCopasiXMLParser::getTaskList() const
+CDataVectorN< CCopasiTask > * CCopasiXMLParser::getTaskList() const
 {return mCommon.pTaskList;}
 
 COutputDefinitionVector * CCopasiXMLParser::getPlotList() const
@@ -616,12 +616,12 @@ void CCopasiXMLParser::COPASIElement::end(const XML_Char * pszName)
       for (; it != end; ++it)
         {
           CCopasiParameter * pParameter =
-            dynamic_cast< CCopasiParameter * >(CCopasiRootContainer::getKeyFactory()->get(*it));
+            dynamic_cast< CCopasiParameter * >(CRootContainer::getKeyFactory()->get(*it));
 
           if (pParameter != NULL &&
               pParameter->getType() == CCopasiParameter::KEY)
             {
-              CCopasiObject * pObject =
+              CDataObject * pObject =
                 mCommon.KeyMap.get(pParameter->getValue< std::string >());
 
               if (pObject != NULL)
@@ -683,7 +683,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::start(const XML_Char *pszName,
         mLastKnownElement = mCurrentElement;
 
         if (!mCommon.pFunctionList)
-          mCommon.pFunctionList = new CCopasiVectorN< CFunction >;
+          mCommon.pFunctionList = new CDataVectorN< CFunction >;
 
         break;
 
@@ -740,7 +740,7 @@ void CCopasiXMLParser::ListOfFunctionsElement::end(const XML_Char *pszName)
                                  pFunction->getObjectName().c_str(),
                                  mParser.getCurrentLineNumber());
                   // We can keep the function as the compile is later checked again.
-                  // mCommon.pFunctionList->CCopasiVector< CEvaluationTree >::remove(i);
+                  // mCommon.pFunctionList->CDataVector< CEvaluationTree >::remove(i);
                 }
             }
         }
@@ -1688,7 +1688,7 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         if (!mCommon.pModel) mCommon.pModel = new CModel(mCommon.pDataModel);
 
         // We remove the default parameter set:
-        mCommon.pModel->getModelParameterSets().CCopasiVector< CModelParameterSet >::remove((size_t) 0);
+        mCommon.pModel->getModelParameterSets().CDataVector< CModelParameterSet >::remove((size_t) 0);
 
         addFix(mKey, mCommon.pModel);
         mCommon.pModel->setObjectName(Name);
@@ -4918,7 +4918,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
             CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
                            mCommon.pReaction->getObjectName().c_str(),
                            mParser.getCurrentLineNumber());
-            mCommon.pFunction = CCopasiRootContainer::getUndefinedFunction();
+            mCommon.pFunction = CRootContainer::getUndefinedFunction();
           }
 
         mCommon.pReaction->setKineticLawUnitType(KineticLawUnitType);
@@ -4935,7 +4935,7 @@ void CCopasiXMLParser::KineticLawElement::start(const XML_Char *pszName,
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 10,
                          pszName, "ListOfCallParameters", mParser.getCurrentLineNumber());
 
-        if (mCommon.pFunction == CCopasiRootContainer::getUndefinedFunction())
+        if (mCommon.pFunction == CRootContainer::getUndefinedFunction())
           mParser.onStartElement(pszName, papszAttrs);
 
         /* If we do not have a etc element handler we create one. */
@@ -5000,7 +5000,7 @@ void CCopasiXMLParser::KineticLawElement::end(const XML_Char *pszName)
 
       case UNKNOWN_ELEMENT:
 
-        if (mCommon.pReaction->getFunction() == CCopasiRootContainer::getUndefinedFunction())
+        if (mCommon.pReaction->getFunction() == CRootContainer::getUndefinedFunction())
           mCurrentElement = KineticLaw;
         else
           mCurrentElement = mLastKnownElement;
@@ -5225,7 +5225,7 @@ void CCopasiXMLParser::SourceParameterElement::start(const XML_Char *pszName,
   mCurrentElement++; /* We should always be on the next element */
 
   const char * Reference;
-  CCopasiObject * pObject;
+  CDataObject * pObject;
   CCopasiParameter * pParameter;
   CModelEntity * pME;
 
@@ -6122,7 +6122,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
 
                     case CCopasiParameter::KEY:
                     {
-                      CCopasiObject * pObject =
+                      CDataObject * pObject =
                         mCommon.KeyMap.get(mCommon.pCurrentParameter->getValue< std::string >());
 
                       if (pObject)
@@ -6365,7 +6365,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
 
                     case CCopasiParameter::KEY:
                     {
-                      CCopasiObject * pObject =
+                      CDataObject * pObject =
                         mCommon.KeyMap.get(mCommon.pCurrentParameter->getValue< std::string >());
 
                       if (pObject)
@@ -7786,7 +7786,7 @@ void CCopasiXMLParser::TextGlyphElement::start(const XML_Char *pszName, const XM
             mCommon.pTextGlyph->setText(text);
           else if (originOfText && originOfText[0])
             {
-              CCopasiObject * pObj = mCommon.KeyMap.get(originOfText);
+              CDataObject * pObj = mCommon.KeyMap.get(originOfText);
               CModelEntity * pME = dynamic_cast<CModelEntity *>(pObj);
               CReaction * pR = dynamic_cast<CReaction *>(pObj);
 
@@ -8621,7 +8621,7 @@ void CCopasiXMLParser::ListOfTasksElement::start(const XML_Char * pszName,
 
         if (!mCommon.pTaskList)
           {
-            mCommon.pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
+            mCommon.pTaskList = new CDataVectorN<CCopasiTask>("TaskList");
           }
 
         break;
@@ -9322,7 +9322,7 @@ void CCopasiXMLParser::ParameterElement::start(const XML_Char *pszName,
               if (sValue != "" &&
                   CKeyFactory::isValidKey(sValue))
                 {
-                  CCopasiObject * pObject = mCommon.KeyMap.get(sValue);
+                  CDataObject * pObject = mCommon.KeyMap.get(sValue);
 
                   if (pObject)
                     {
@@ -11135,7 +11135,7 @@ void CCopasiXMLParser::SBMLMapElement::start(const XML_Char *pszName,
 {
   const char * SBMLid;
   const char * COPASIkey;
-  CCopasiObject * pObject;
+  CDataObject * pObject;
 
   mCurrentElement++; /* We should always be on the next element */
 
@@ -11213,7 +11213,7 @@ void CCopasiXMLParser::SBMLMapElement::end(const XML_Char *pszName)
   return;
 }
 
-void CCopasiXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
+void CCopasiXMLParser::setDatamodel(CDataModel* pDataModel)
 {
   this->mCommon.pDataModel = pDataModel;
 }
@@ -13114,8 +13114,8 @@ void CCopasiXMLParser::GroupElement::end(const XML_Char * pszName)
         // to that group, otherwise, we have to set it to NULL
         // a group is part of another group, if its grandFather is a group
         // (as group elements are stored in a separate vector)
-        CCopasiContainer* parent = mCommon.pGroup->getObjectParent();
-        CCopasiContainer* grandFather = (parent == NULL ? NULL : parent->getObjectParent());
+        CDataContainer* parent = mCommon.pGroup->getObjectParent();
+        CDataContainer* grandFather = (parent == NULL ? NULL : parent->getObjectParent());
 
         if (grandFather != NULL && dynamic_cast<CLGroup*>(grandFather) != NULL)
           {

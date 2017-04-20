@@ -1,16 +1,21 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * COptMethodGA class
@@ -20,8 +25,8 @@
 #define COPASI_COptMethodGA
 #include <limits>
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
-#include "utilities/CVector.h"
 
 class CRandom;
 class CPermutation;
@@ -32,21 +37,21 @@ class COptMethodGA : public COptPopulationMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: GeneticAlgorithm)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodGA(const CCopasiContainer * pParent,
+  COptMethodGA(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::GeneticAlgorithm,
                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodGA & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodGA(const COptMethodGA & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor

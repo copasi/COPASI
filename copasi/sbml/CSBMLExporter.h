@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,7 +34,7 @@
 class CAnnotation;
 class CChemEqElement;
 class CCompartment;
-class CCopasiDataModel;
+class CDataModel;
 class CCopasiParameter;
 class CEvaluationNode;
 class CEvent;
@@ -64,7 +69,7 @@ protected:
   std::vector<const CModelEntity*> mAssignmentVector;
   std::vector<const CModelEntity*> mODEVector;
   std::vector<const CModelEntity*> mInitialAssignmentVector;
-  std::map<const CCopasiObject*, SBase*> mCOPASI2SBMLMap;
+  std::map<const CDataObject*, SBase*> mCOPASI2SBMLMap;
   std::set<SBase*> mHandledSBMLObjects;
   std::set<CFunction*> mUsedFunctions;
   std::map<std::string, const SBase*> mIdMap;
@@ -81,7 +86,7 @@ protected:
   std::map<std::string, Parameter*> mParameterReplacementMap;
   std::set<std::string> mSpatialSizeUnitsSpecies;
   ListOfFunctionDefinitions mExportedFunctions;
-  std::map<const FunctionDefinition*, const CCopasiObject*> mFunctionMap;
+  std::map<const FunctionDefinition*, const CDataObject*> mFunctionMap;
   std::map<const std::string, Parameter*> mInitialValueMap;
   bool mHaveModelHistoryAuthorWarning;
   bool mHaveModelHistoryCreationDateWarning;
@@ -174,7 +179,7 @@ public:
    * The SBML model is returned as a string. In case of an error, an
    * empty string is returned.
    */
-  const std::string exportModelToString(CCopasiDataModel& dataModel,
+  const std::string exportModelToString(CDataModel& dataModel,
                                         unsigned int sbmlLevel,
                                         unsigned int sbmlVersion);
 
@@ -183,7 +188,7 @@ public:
    * The model is written to the file given by filename.
    * If the export fails, false is returned.
    */
-  bool exportModel(CCopasiDataModel& dataModel,
+  bool exportModel(CDataModel& dataModel,
                    const std::string& filename,
                    unsigned int sbmlLevel = 2,
                    unsigned int sbmlVersion = 1,
@@ -195,7 +200,7 @@ public:
    * contain a number of messages that specify why it can't be exported.
    */
   static const std::vector<SBMLIncompatibility> isModelSBMLCompatible(
-    const CCopasiDataModel& pDataModel,
+    const CDataModel& pDataModel,
     int sbmlLevel,
     int sbmlVersion,
     std::map<std::string, const SBase*>& idMap);
@@ -209,7 +214,7 @@ public:
   /**
    * Returns a const pointer to the COPASI2SBMLMap.
    */
-  const std::map<const CCopasiObject*, SBase*>& getCOPASI2SBMLMap() const;
+  const std::map<const CDataObject*, SBase*>& getCOPASI2SBMLMap() const;
 
   /**
    * Returns whether the exporter is supposed to export COPASIs MIRIAM
@@ -242,43 +247,43 @@ public:
   static XMLNode* createSBMLNotes(const std::string& notes_string);
 #endif // LIBSBML_VERSION
 
-  bool exportLayout(unsigned int sbmlLevel, CCopasiDataModel& dataModel);
+  bool exportLayout(unsigned int sbmlLevel, CDataModel& dataModel);
 protected:
 
   /**
    * Creates the units for the SBML model.
    */
-  void createUnits(const CCopasiDataModel& dataModel);
+  void createUnits(const CDataModel& dataModel);
 
   /**
    * Creates the time unit for the SBML model.
    */
-  void createTimeUnit(const CCopasiDataModel& dataModel);
+  void createTimeUnit(const CDataModel& dataModel);
 
   /**
    * Creates the volume unit for the SBML model.
    */
-  void createLengthUnit(const CCopasiDataModel& dataModel);
+  void createLengthUnit(const CDataModel& dataModel);
 
   /**
    * Creates the volume unit for the SBML model.
    */
-  void createAreaUnit(const CCopasiDataModel& dataModel);
+  void createAreaUnit(const CDataModel& dataModel);
 
   /**
    * Creates the volume unit for the SBML model.
    */
-  void createVolumeUnit(const CCopasiDataModel& dataModel);
+  void createVolumeUnit(const CDataModel& dataModel);
 
   /**
    * Creates the substance unit for the SBML model.
    */
-  void createSubstanceUnit(const CCopasiDataModel& dataModel);
+  void createSubstanceUnit(const CDataModel& dataModel);
 
   /**
    * Creates the compartments for the model.
    */
-  bool createCompartments(CCopasiDataModel& dataModel);
+  bool createCompartments(CDataModel& dataModel);
 
   /**
    * Creates the compartment for the given COPASI compartment.
@@ -288,7 +293,7 @@ protected:
   /**
    * Creates the compartments for the model.
    */
-  bool createMetabolites(CCopasiDataModel& dataModel);
+  bool createMetabolites(CDataModel& dataModel);
 
   /**
    * Creates the species for the given COPASI metabolite.
@@ -298,7 +303,7 @@ protected:
   /**
    * Creates the parameters for the model.
    */
-  bool createParameters(CCopasiDataModel& dataModel);
+  bool createParameters(CDataModel& dataModel);
 
   /**
    * Creates the parameter for the given COPASI parameter.
@@ -308,42 +313,42 @@ protected:
   /**
    * Creates the reactions for the model.
    */
-  bool createReactions(CCopasiDataModel& dataModel);
+  bool createReactions(CDataModel& dataModel);
 
   /**
    * Creates the reaction for the given COPASI reaction.
    */
-  void createReaction(const CReaction& reaction, CCopasiDataModel& dataModel);
+  void createReaction(const CReaction& reaction, CDataModel& dataModel);
 
   /**
    * Creates the initial assignments for the model.
    */
-  bool createInitialAssignments(CCopasiDataModel& dataModel);
+  bool createInitialAssignments(CDataModel& dataModel);
 
   /**
    * Creates the initial assignment for the given COPASI model entity.
    */
-  void createInitialAssignment(const CModelEntity& modelEntity, CCopasiDataModel& dataModel);
+  void createInitialAssignment(const CModelEntity& modelEntity, CDataModel& dataModel);
 
   /**
    * Creates the rules for the model.
    */
-  bool createRules(CCopasiDataModel& dataModel);
+  bool createRules(CDataModel& dataModel);
 
   /**
    * Creates the rule for the given COPASI model entity.
    */
-  void createRule(const CModelEntity& modelEntity, CCopasiDataModel& dataModel, Rule* pOldRule);
+  void createRule(const CModelEntity& modelEntity, CDataModel& dataModel, Rule* pOldRule);
 
   /**
    * Create all function definitions.
    */
-  bool createFunctionDefinitions(CCopasiDataModel& dataModel);
+  bool createFunctionDefinitions(CDataModel& dataModel);
 
   /**
    * Create the SBML function definition from the given COPASI function.
    */
-  void createFunctionDefinition(CFunction& function, CCopasiDataModel& dataModel);
+  void createFunctionDefinition(CFunction& function, CDataModel& dataModel);
 
   /**
    * @brief creates and SBML UnitDefinition for the given unit
@@ -363,7 +368,7 @@ protected:
    * Checks all assignments (initial and transient) for references to objects
    * that can not be exported to SBML.
    */
-  void checkForUnsupportedObjectReferences(const CCopasiDataModel& dataModel,
+  void checkForUnsupportedObjectReferences(const CDataModel& dataModel,
       unsigned int sbmlLevel,
       unsigned int sbmlVersion,
       std::vector<SBMLIncompatibility>& result);
@@ -372,7 +377,7 @@ protected:
    * that can not be exported to SBML.
    */
   static void checkForUnsupportedObjectReferences(const CEvaluationTree& expression,
-      const CCopasiDataModel& dataModel,
+      const CDataModel& dataModel,
       unsigned int sbmlLevel,
       unsigned int sbmlVersion,
       std::vector<SBMLIncompatibility>& result,
@@ -384,7 +389,7 @@ protected:
    * Checks all expressions in the given datamodel for piecewise defined
    * functions.
    */
-  static void checkForPiecewiseFunctions(const CCopasiDataModel& dataModel,
+  static void checkForPiecewiseFunctions(const CDataModel& dataModel,
                                          std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -401,7 +406,7 @@ protected:
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isModelSBMLL1Compatible(const CCopasiDataModel& dataModel,
+  static void isModelSBMLL1Compatible(const CDataModel& dataModel,
                                       std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -409,7 +414,7 @@ protected:
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isModelSBMLL2V1Compatible(const CCopasiDataModel& dataModel,
+  static void isModelSBMLL2V1Compatible(const CDataModel& dataModel,
                                         std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -417,7 +422,7 @@ protected:
    * If it can be exported, the result vector will be empty, otherwise it will
    * contain a number of messages that specify why it can't be exported.
    */
-  static void isModelSBMLL2V3Compatible(const CCopasiDataModel& dataModel,
+  static void isModelSBMLL2V3Compatible(const CDataModel& dataModel,
                                         std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -430,7 +435,7 @@ protected:
    * delete it without changing the model, otherwise we have to give a
    * corresponding warning.
    */
-  static void check_for_spatial_size_units(const CCopasiDataModel& dataModel,
+  static void check_for_spatial_size_units(const CDataModel& dataModel,
       std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -439,7 +444,7 @@ protected:
    * interprets the expression differntly from SBML, we can not correctly
    * export this yet. See Bug 903.
    */
-  static void checkForODESpeciesInNonfixedCompartment(const CCopasiDataModel& dataModel,
+  static void checkForODESpeciesInNonfixedCompartment(const CDataModel& dataModel,
       std::vector<SBMLIncompatibility> result);
 
   /**
@@ -449,7 +454,7 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isExpressionSBMLCompatible(const CEvaluationTree& expr,
-                                         const CCopasiDataModel& dataModel,
+                                         const CDataModel& dataModel,
                                          int sbmlLevel,
                                          int sbmlVersion,
                                          std::vector<SBMLIncompatibility>& result,
@@ -464,7 +469,7 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isExpressionSBMLL1Compatible(const CEvaluationTree& expr,
-      const CCopasiDataModel& dataModel,
+      const CDataModel& dataModel,
       std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -473,7 +478,7 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isExpressionSBMLL2V1Compatible(const CEvaluationTree& expr,
-      const CCopasiDataModel& dataModel,
+      const CDataModel& dataModel,
       std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -482,7 +487,7 @@ protected:
    * contain a number of messages that specify why it can't be exported.
    */
   static void isExpressionSBMLL2V3Compatible(const CEvaluationTree& expression,
-      const CCopasiDataModel& pDataModel,
+      const CDataModel& pDataModel,
       std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -490,7 +495,7 @@ protected:
    * that can not be expressed in SBML like the random distribution
    * functions.
    */
-  void checkForUnsupportedFunctionCalls(const CCopasiDataModel& dataModel,
+  void checkForUnsupportedFunctionCalls(const CDataModel& dataModel,
                                         unsigned int sbmlLEvel,
                                         unsigned int sbmlVersion,
                                         std::vector<SBMLIncompatibility>& result);
@@ -508,7 +513,7 @@ protected:
   /**
    * This method checks wether the given model contains any initial assignments.
    */
-  static void checkForInitialAssignments(const CCopasiDataModel& dataModel,
+  static void checkForInitialAssignments(const CDataModel& dataModel,
                                          std::vector<SBMLIncompatibility>& result);
 
   /**
@@ -521,7 +526,7 @@ protected:
    * Create the kinetic law for the given reaction.
    * On failure NULL is returned.
    */
-  KineticLaw* createKineticLaw(const CReaction& reaction, CCopasiDataModel& dataModel,
+  KineticLaw* createKineticLaw(const CReaction& reaction, CDataModel& dataModel,
                                unsigned int level, unsigned int version);
 
   /**
@@ -543,7 +548,7 @@ protected:
    * replacing the function arguments with the parameters.
   static CEvaluationNode* createExpressionTree(const CEvaluationNode* const pNode,
       const std::map<std::string, std::string>& parameterMap,
-      const CCopasiDataModel& dataModel);
+      const CDataModel& dataModel);
    */
 
   /**
@@ -551,7 +556,7 @@ protected:
    * replacing the function arguments with the parameters.
   static CEvaluationNode* createExpressionTree(const CFunction* const pFun,
       const std::vector<std::vector<std::string> >& arguments,
-      const CCopasiDataModel& dataModel);
+      const CDataModel& dataModel);
    */
 
   /**
@@ -566,11 +571,11 @@ protected:
    * Checks if the given datamodel contains events.
    * This is called if SBML Level 1 is to be exported.
    */
-  static void checkForEvents(const CCopasiDataModel& dataModel,
+  static void checkForEvents(const CDataModel& dataModel,
                              std::vector<SBMLIncompatibility>& result);
 
   /**
-   * Creates an SBMLDocument from the given CCopasiDataModelObject.
+   * Creates an SBMLDocument from the given CDataModelObject.
    * It checks if an SBMLDocument already exists from an import and if
    * this is the case, the old document is copied.
    * If none exists a new one is created.
@@ -579,34 +584,34 @@ protected:
    *
    * @return true, if exporting should continue, false otherwise
    */
-  bool createSBMLDocument(CCopasiDataModel& dataModel);
+  bool createSBMLDocument(CDataModel& dataModel);
 
   /**
    * Sorts the rules.
    */
-  std::vector<const CModelEntity*> orderRules(const CCopasiDataModel& dataModel);
+  std::vector<const CModelEntity*> orderRules(const CDataModel& dataModel);
 
   /**
    * Creates a new COPASI2SBMLMap baed on the old map and the copied
    * SBMLDocument.
    */
-  void updateCOPASI2SBMLMap(const CCopasiDataModel& dataModel);
+  void updateCOPASI2SBMLMap(const CDataModel& dataModel);
 
   /**
    * Creates the events for the given data model.
    */
-  bool createEvents(CCopasiDataModel& dataModel);
+  bool createEvents(CDataModel& dataModel);
 
   /**
    * Creates an SBML Event for the given COPASI event.
    */
-  void createEvent(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
+  void createEvent(const CEvent& event, Event* pSBMLEvent, CDataModel& dataModel);
 
   /**
    * This method creates the individual event assignments for the given
    * event.
    */
-  void exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CCopasiDataModel& dataModel);
+  void exportEventAssignments(const CEvent& event, Event* pSBMLEvent, CDataModel& dataModel);
 
   /**
    * This method checks if the given event assignment object is SBML
@@ -614,7 +619,7 @@ protected:
    */
   static void isEventAssignmentSBMLCompatible(std::string& key,
       const CExpression* pExpression,
-      const CCopasiDataModel& dataModel,
+      const CDataModel& dataModel,
       unsigned int sbmlLevel,
       unsigned int sbmlVersion,
       const std::string& eventName,
@@ -626,7 +631,7 @@ protected:
    * compatible.
    */
   static void isEventSBMLCompatible(const CEvent* pEvent,
-                                    const CCopasiDataModel& dataModel,
+                                    const CDataModel& dataModel,
                                     unsigned int sbmlLevel,
                                     unsigned int sbmlVersion,
                                     std::vector<SBMLIncompatibility>& result,
@@ -638,7 +643,7 @@ protected:
    * the given vector are multiplied. This is used to create the mass action
    * kinetic law.
    */
-  static ASTNode* createTimesTree(const CCopasiVector<CChemEqElement >& vect,
+  static ASTNode* createTimesTree(const CDataVector<CChemEqElement >& vect,
                                   unsigned int pos = 0);
 
   /**
@@ -676,7 +681,7 @@ protected:
    * references.
    */
   static void findModelEntityDependencies(const CEvaluationNode* pNode,
-                                          const CCopasiDataModel& dataModel,
+                                          const CDataModel& dataModel,
                                           std::set<const CModelEntity*>& dependencies);
 
   /**
@@ -732,18 +737,18 @@ protected:
    * model.
    */
   CEvaluationNode* replaceSpeciesReferences(const CEvaluationNode* pOrigNode,
-      const CCopasiDataModel& dataModel);
+      const CDataModel& dataModel);
 
   /**
    * Try to find a global parameter that represents avogadros number.
    */
-  void findAvogadro(const CCopasiDataModel& dataModel);
+  void findAvogadro(const CDataModel& dataModel);
 
   /**
    * This method gets the MIRIAM annotation from the given COPASI object and
    * sets it on the given SBML object.
    */
-  bool updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject,
+  bool updateMIRIAMAnnotation(const CDataObject* pCOPASIObject,
                               SBase* pSBMLObject,
                               std::map<std::string, const SBase*>& metaIds);
 
@@ -764,20 +769,20 @@ protected:
   /**
    * This method goes through the given datamodel and collects all SBML ids.
    */
-  void collectIds(const CCopasiDataModel& dataModel, std::map<std::string, const SBase*>& idMap);
+  void collectIds(const CDataModel& dataModel, std::map<std::string, const SBase*>& idMap);
 
   /**
     * This converts an CEvaluationNode based tree to an ASTNode tree.
     * It makes sure that all functions used in function calls already have a
     * unique SBML id.
     */
-  ASTNode* convertToASTNode(const CEvaluationNode* pOrig, CCopasiDataModel& dataModel);
+  ASTNode* convertToASTNode(const CEvaluationNode* pOrig, CDataModel& dataModel);
 
   /**
    * This method traverse a CEvaluationTree and set the SBML id on all
    * functions that are used in function calls in the tree.
    */
-  void setFunctionSBMLIds(const CEvaluationNode* pNode, CCopasiDataModel& dataModel);
+  void setFunctionSBMLIds(const CEvaluationNode* pNode, CDataModel& dataModel);
 
   /**
    * Creates error messages from the list of incompatibilities and thows an
@@ -790,7 +795,7 @@ protected:
    * parameters. If one is found, a global parameter is created and all
    * references to the local parameters are substituted.
    */
-  void replace_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel);
+  void replace_local_parameters(ASTNode* pOrigNode, const CDataModel& dataModel);
 
   /**
    * This method goes through the expression tree and tries to find node
@@ -799,7 +804,7 @@ protected:
    * to be set to the id of the corresponding global parameter, otherwise the name
    * has to be set to the object name of the parameter.
    */
-  void restore_local_parameters(ASTNode* pOrigNode, const CCopasiDataModel& dataModel);
+  void restore_local_parameters(ASTNode* pOrigNode, const CDataModel& dataModel);
 
   /**
    * Since we want to replace local reaction parameters by global parameters if they
@@ -816,14 +821,14 @@ protected:
    * This method goes through all compartments and events and checks if
    * there is an assignment to a volume.
    */
-  bool hasVolumeAssignment(const CCopasiDataModel& dataModel);
+  bool hasVolumeAssignment(const CDataModel& dataModel);
 
   /**
    * This method multiplies a given expression by the given object.
    * The caller is responsible for freeing the memory for the new expression.
    */
   static CEvaluationNode* multiplyByObject(const CEvaluationNode* pOrigNode,
-      const CCopasiObject* pObject);
+      const CDataObject* pObject);
 
   /**
    * Converts the SBML model given in SBML Level 1 Version 2 format to SBML Level 1 Version 1.

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQTrajectoryWidget.h"
 
@@ -25,12 +30,13 @@
 #include "qtUtilities.h"
 #include "CQTimeSeriesWidget.h"
 
-#include "trajectory/CTrajectoryTask.h"
-#include "trajectory/CTrajectoryProblem.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/trajectory/CTrajectoryTask.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQTrajectoryWidget which is a child of 'parent', with the

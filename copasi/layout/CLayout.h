@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 #include "CLBase.h"
 #include "CLGlyphs.h"
@@ -38,7 +38,7 @@ LIBSBML_CPP_NAMESPACE_END
  * This class describes a reaction network layout. Its structure
  * is exactly corresponding to the sbml layout extension
  */
-class CLayout : public CLBase, public CCopasiContainer
+class CLayout : public CLBase, public CDataContainer
 {
 protected:
 
@@ -46,12 +46,12 @@ protected:
 
   CLDimensions mDimensions;
 
-  CCopasiVector<CLCompartmentGlyph> mvCompartments;
-  CCopasiVector<CLMetabGlyph> mvMetabs;
-  CCopasiVector<CLReactionGlyph> mvReactions;
-  CCopasiVector<CLTextGlyph> mvLabels;
-  CCopasiVector<CLGeneralGlyph> mvGraphicalObjects;
-  CCopasiVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
+  CDataVector<CLCompartmentGlyph> mvCompartments;
+  CDataVector<CLMetabGlyph> mvMetabs;
+  CDataVector<CLReactionGlyph> mvReactions;
+  CDataVector<CLTextGlyph> mvLabels;
+  CDataVector<CLGeneralGlyph> mvGraphicalObjects;
+  CDataVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
 
   CLayout(const CLayout & src);
 
@@ -59,10 +59,10 @@ public:
   static CLayout * fromData(const CData & data);
 
   CLayout(const std::string & name = "Layout",
-          const CCopasiContainer * pParent = NO_PARENT);
+          const CDataContainer * pParent = NO_PARENT);
 
   CLayout(const CLayout & src,
-          const CCopasiContainer * pParent);
+          const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object.
@@ -71,7 +71,7 @@ public:
    */
   CLayout(const Layout & sbml,
           std::map<std::string, std::string> & layoutmap,
-          const CCopasiContainer * pParent = NO_PARENT);
+          const CDataContainer * pParent = NO_PARENT);
 
   ~CLayout();
 
@@ -88,10 +88,10 @@ public:
 
   //*******************
 
-  const CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs() const
+  const CDataVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs() const
   {return mvCompartments;};
 
-  CCopasiVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs()
+  CDataVector<CLCompartmentGlyph> & getListOfCompartmentGlyphs()
   {return mvCompartments;};
 
   /**
@@ -101,10 +101,10 @@ public:
 
   //*******************
 
-  const CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs() const
+  const CDataVector<CLMetabGlyph> & getListOfMetaboliteGlyphs() const
   {return mvMetabs;};
 
-  CCopasiVector<CLMetabGlyph> & getListOfMetaboliteGlyphs()
+  CDataVector<CLMetabGlyph> & getListOfMetaboliteGlyphs()
   {return mvMetabs;};
 
   /**
@@ -114,10 +114,10 @@ public:
 
   //*******************
 
-  const CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs() const
+  const CDataVector<CLReactionGlyph> & getListOfReactionGlyphs() const
   {return mvReactions;};
 
-  CCopasiVector<CLReactionGlyph> & getListOfReactionGlyphs()
+  CDataVector<CLReactionGlyph> & getListOfReactionGlyphs()
   {return mvReactions;};
 
   /**
@@ -127,10 +127,10 @@ public:
 
   //*******************
 
-  const CCopasiVector<CLTextGlyph> & getListOfTextGlyphs() const
+  const CDataVector<CLTextGlyph> & getListOfTextGlyphs() const
   {return mvLabels;};
 
-  CCopasiVector<CLTextGlyph> & getListOfTextGlyphs()
+  CDataVector<CLTextGlyph> & getListOfTextGlyphs()
   {return mvLabels;};
 
   /**
@@ -140,10 +140,10 @@ public:
 
   //*******************
 
-  const CCopasiVector<CLGeneralGlyph> & getListOfGeneralGlyphs() const
+  const CDataVector<CLGeneralGlyph> & getListOfGeneralGlyphs() const
   {return mvGraphicalObjects;};
 
-  CCopasiVector<CLGeneralGlyph> & getListOfGeneralGlyphs()
+  CDataVector<CLGeneralGlyph> & getListOfGeneralGlyphs()
   {return mvGraphicalObjects;};
 
   /**
@@ -156,13 +156,13 @@ public:
   /**
    * Returns a const reference to the list of local render information objects.
    */
-  const CCopasiVector<CLLocalRenderInformation> & getListOfLocalRenderInformationObjects() const
+  const CDataVector<CLLocalRenderInformation> & getListOfLocalRenderInformationObjects() const
   {return this->mvLocalRenderInformationObjects;};
 
   /**
    * Returns a reference to the list of local render information objects.
    */
-  CCopasiVector<CLLocalRenderInformation> & getListOfLocalRenderInformationObjects()
+  CDataVector<CLLocalRenderInformation> & getListOfLocalRenderInformationObjects()
   {return this->mvLocalRenderInformationObjects;};
 
   /**
@@ -210,7 +210,7 @@ public:
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object
    */
-  void exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+  void exportToSBML(Layout * layout, const std::map<const CDataObject*, SBase*> & copasimodelmap,
                     std::map<std::string, const SBase*>& sbmlIDs
                     , const std::map<std::string, std::string>& globalKeyToIdMap
                    ) const;

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,29 +19,29 @@
 #include "CLRenderPoint.h"
 #include "CLRenderCubicBezier.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLPolygon::CLPolygon(CCopasiContainer* pParent):
+CLPolygon::CLPolygon(CDataContainer* pParent):
   CLGraphicalPrimitive2D(),
-  CCopasiObject("Polygon", pParent),
+  CDataObject("Polygon", pParent),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Polygon", this);
 }
 
 /**
  * Copy constructor
  */
-CLPolygon::CLPolygon(const CLPolygon& source, CCopasiContainer* pParent):
+CLPolygon::CLPolygon(const CLPolygon& source, CDataContainer* pParent):
   CLGraphicalPrimitive2D(source),
-  CCopasiObject(source, pParent),
+  CDataObject(source, pParent),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Polygon", this);
   size_t i, iMax = source.mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)
@@ -55,12 +60,12 @@ CLPolygon::CLPolygon(const CLPolygon& source, CCopasiContainer* pParent):
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLPolygon::CLPolygon(const Polygon& source, CCopasiContainer* pParent):
+CLPolygon::CLPolygon(const Polygon& source, CDataContainer* pParent):
   CLGraphicalPrimitive2D(source),
-  CCopasiObject("Polygon", pParent),
+  CDataObject("Polygon", pParent),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Polygon", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Polygon", this);
   size_t i, iMax = source.getNumElements();
 
   for (i = 0; i < iMax; ++i)
@@ -85,7 +90,7 @@ CLPolygon::CLPolygon(const Polygon& source, CCopasiContainer* pParent):
  */
 CLPolygon::~CLPolygon()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
   size_t i, iMax = this->mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)

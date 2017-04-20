@@ -41,11 +41,11 @@
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CChemEq.h>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
-CQLayoutScene::CQLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+CQLayoutScene::CQLayoutScene(CLayout* layout, CDataModel* model, CLRenderInformationBase* renderInformation)
   : QGraphicsScene()
   , mpLayout(layout)
   , mpRender(renderInformation)
@@ -55,13 +55,13 @@ CQLayoutScene::CQLayoutScene(CLayout* layout, CCopasiDataModel* model, CLRenderI
   connect(this, SIGNAL(recreateNeeded()), this, SLOT(recreate()), Qt::QueuedConnection);
 }
 
-void CQLayoutScene::setLayout(CLayout *layout, CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+void CQLayoutScene::setLayout(CLayout *layout, CDataModel* model, CLRenderInformationBase* renderInformation)
 {
   mpLayout = layout;
   setRenderInformation(model, renderInformation);
 }
 
-void CQLayoutScene::setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+void CQLayoutScene::setRenderInformation(CDataModel* model, CLRenderInformationBase* renderInformation)
 {
   initializeResolver(model, renderInformation);
 }
@@ -107,7 +107,7 @@ void CQLayoutScene::saveToFile(const std::string& fileName, const std::string& f
     }
 }
 
-void CQLayoutScene::initializeResolver(CCopasiDataModel* model, CLRenderInformationBase* renderInformation)
+void CQLayoutScene::initializeResolver(CDataModel* model, CLRenderInformationBase* renderInformation)
 {
   if (model == NULL)
     return;
@@ -182,7 +182,7 @@ void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
 
   if (item != NULL)
     {
-      CCopasiObject* obj = go->getModelObject();
+      CDataObject* obj = go->getModelObject();
 
       if (obj != NULL && text == NULL)
         {
@@ -195,8 +195,8 @@ void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
 
   if (general != NULL)
     {
-      const CCopasiVector<CLGraphicalObject> & subGlyphs = general->getListOfSubglyphs();
-      CCopasiVector<CLGraphicalObject>::const_iterator it = subGlyphs.begin();
+      const CDataVector<CLGraphicalObject> & subGlyphs = general->getListOfSubglyphs();
+      CDataVector<CLGraphicalObject>::const_iterator it = subGlyphs.begin();
 
       while (it != subGlyphs.end())
         {
@@ -223,9 +223,9 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       CQRenderConverter::setBackground(this, mpRender->getBackgroundColor(), mpResolver.data());
     }
 
-  const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
+  const CDataVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
 
-  CCopasiVector<CLCompartmentGlyph>::const_iterator itComp = comps.begin();
+  CDataVector<CLCompartmentGlyph>::const_iterator itComp = comps.begin();
 
   while (itComp != comps.end())
     {
@@ -233,9 +233,9 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       ++itComp;
     }
 
-  const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+  const CDataVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
 
-  CCopasiVector<CLReactionGlyph>::const_iterator itReactions = reactions.begin();
+  CDataVector<CLReactionGlyph>::const_iterator itReactions = reactions.begin();
 
   while (itReactions != reactions.end())
     {
@@ -243,9 +243,9 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       ++itReactions;
     }
 
-  const CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
+  const CDataVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
 
-  CCopasiVector<CLMetabGlyph>::const_iterator itSpecies = species.begin();
+  CDataVector<CLMetabGlyph>::const_iterator itSpecies = species.begin();
 
   while (itSpecies != species.end())
     {
@@ -253,9 +253,9 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       ++itSpecies;
     }
 
-  const CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+  const CDataVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
 
-  CCopasiVector<CLTextGlyph>::const_iterator itTexts = texts.begin();
+  CDataVector<CLTextGlyph>::const_iterator itTexts = texts.begin();
 
   while (itTexts != texts.end())
     {
@@ -263,9 +263,9 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
       ++itTexts;
     }
 
-  const CCopasiVector<CLGeneralGlyph> & list = layout->getListOfGeneralGlyphs();
+  const CDataVector<CLGeneralGlyph> & list = layout->getListOfGeneralGlyphs();
 
-  CCopasiVector<CLGeneralGlyph>::const_iterator itList = list.begin();
+  CDataVector<CLGeneralGlyph>::const_iterator itList = list.begin();
 
   while (itList != list.end())
     {
@@ -276,8 +276,8 @@ void CQLayoutScene::fillFromLayout(const CLayout* layout)
 
 CLGraphicalObject* getTextForItem(const CLayout* layout, const CLGraphicalObject* obj)
 {
-  const CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
-  CCopasiVector<CLTextGlyph>::const_iterator it = texts.begin();
+  const CDataVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+  CDataVector<CLTextGlyph>::const_iterator it = texts.begin();
 
   while (it != texts.end())
     {
@@ -292,8 +292,8 @@ CLGraphicalObject* getTextForItem(const CLayout* layout, const CLGraphicalObject
 
 CLGraphicalObject* getReactionGlyphForKey(const CLayout* layout, const std::string& key)
 {
-  const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
-  CCopasiVector<CLReactionGlyph>::const_iterator it = reactions.begin();
+  const CDataVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+  CDataVector<CLReactionGlyph>::const_iterator it = reactions.begin();
 
   while (it != reactions.end())
     {
@@ -308,8 +308,8 @@ CLGraphicalObject* getReactionGlyphForKey(const CLayout* layout, const std::stri
 
 CLGraphicalObject* getMetabGlyphForKey(const CLayout* layout, const CMetab* metab)
 {
-  const CCopasiVector<CLMetabGlyph> & metabs = layout->getListOfMetaboliteGlyphs();
-  CCopasiVector<CLMetabGlyph>::const_iterator it = metabs.begin();
+  const CDataVector<CLMetabGlyph> & metabs = layout->getListOfMetaboliteGlyphs();
+  CDataVector<CLMetabGlyph>::const_iterator it = metabs.begin();
 
   while (it != metabs.end())
     {
@@ -362,8 +362,8 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
   if (comp == NULL)
     return;
 
-  CCopasiVectorNS < CMetab > & metabs = comp->getMetabolites();
-  CCopasiVectorNS < CMetab >::const_iterator it = metabs.begin();
+  CDataVectorNS < CMetab > & metabs = comp->getMetabolites();
+  CDataVectorNS < CMetab >::const_iterator it = metabs.begin();
 
   std::set<std::string> reactionKeys;
 
@@ -371,8 +371,8 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
     {
       moveObject(getMetabGlyphForKey(layout, it), delta, layout);
 
-      CCopasiVectorNS < CReaction > &  reactions = comp->getObjectDataModel()->getModel()->getReactions();
-      CCopasiVectorNS < CReaction >::const_iterator rit = reactions.begin();
+      CDataVectorNS < CReaction > &  reactions = comp->getObjectDataModel()->getModel()->getReactions();
+      CDataVectorNS < CReaction >::const_iterator rit = reactions.begin();
 
       for (; rit != reactions.end(); ++rit)
         {
@@ -402,7 +402,7 @@ void moveObject(CLGraphicalObject* obj, const CLPoint& delta, CLayout* layout)
 
 void CQLayoutScene::updatePosition(const QString& key, const QPointF& newPos)
 {
-  CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();
+  CKeyFactory* kf = CRootContainer::getKeyFactory();
 
   if (kf == NULL) return;
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,7 +14,7 @@
 #include <set>
 #include <vector>
 
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "copasi/math/CMathEnum.h"
 
 class CMathContainer;
@@ -81,38 +86,38 @@ public:
 
   /**
    * Update the state of all dependents (and dependents thereof) to changed,
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool success
    */
-  bool updateDependentState(const CMath::SimulationContextFlag & context,
+  bool updateDependentState(const CCore::SimulationContextFlag & context,
                             const CObjectInterface::ObjectSet & changedObjects);
 
   /**
    * Update the state of all prerequisites (and prerequisites thereof) to requested.
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool success
    */
-  bool updatePrerequisiteState(const CMath::SimulationContextFlag & context,
+  bool updatePrerequisiteState(const CCore::SimulationContextFlag & context,
                                const CObjectInterface::ObjectSet & changedObjects);
 
   /**
    * Update the state of all prerequisites (and prerequisites thereof) to calculate.
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool success
    */
-  bool updateCalculatedState(const CMath::SimulationContextFlag & context,
+  bool updateCalculatedState(const CCore::SimulationContextFlag & context,
                              const CObjectInterface::ObjectSet & changedObjects);
 
   /**
    * Build the sequence of objects which need to be updated to calculate the object value.
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param std::vector < CObjectInterface * > & updateSequence
    * @return bool success
    */
-  bool buildUpdateSequence(const CMath::SimulationContextFlag & context,
+  bool buildUpdateSequence(const CCore::SimulationContextFlag & context,
                            std::vector < CObjectInterface * > & updateSequence);
 
   /**

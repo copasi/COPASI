@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,8 +30,8 @@
 
 #include <string>
 
+#include "copasi/core/CVector.h"
 #include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CVector.h"
 #include "utilities/CCopasiTask.h"
 //#include "model/CState.h"
 
@@ -47,10 +52,10 @@ protected:
   /**
    * Specific constructor
    * @param const CTaskEnum::Task & type
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiProblem(const CTaskEnum::Task & type,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   CCopasiProblem(const CCopasiProblem & src);
 
@@ -58,10 +63,10 @@ public:
   /**
    * Copy constructor
    * @param const CCopasiProblemr & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiProblem(const CCopasiProblem & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -132,7 +137,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * re-implement the virtual print function.
    * @param std::ostream * ostream

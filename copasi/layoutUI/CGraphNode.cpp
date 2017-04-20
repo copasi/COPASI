@@ -1,22 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CGraphNode.cpp,v $
-//   $Revision: 1.12 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:17 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,32 +26,32 @@
 #include "layout/CLBase.h"
 
 CGraphNode::CGraphNode(const std::string & name,
-                       const CCopasiContainer * pParent)
-    : CLMetabGlyph(name, pParent)
-    , msize(CVisParameters::DEFAULT_NODE_SIZE)
-    , morigNodeKey("")
-    , mObjectKey("")
-    , mLabelText("")
+                       const CDataContainer * pParent)
+  : CLMetabGlyph(name, pParent)
+  , msize(CVisParameters::DEFAULT_NODE_SIZE)
+  , morigNodeKey("")
+  , mObjectKey("")
+  , mLabelText("")
 {
 }
 
 CGraphNode::CGraphNode(const CLMetabGlyph & src,
-                       const CCopasiContainer * pParent)
-    : CLMetabGlyph(src, pParent)
-    , msize(CVisParameters::DEFAULT_NODE_SIZE)
-    , morigNodeKey(src.getKey())
-    , mObjectKey(src.getModelObjectKey())
-    , mLabelText("")
+                       const CDataContainer * pParent)
+  : CLMetabGlyph(src, pParent)
+  , msize(CVisParameters::DEFAULT_NODE_SIZE)
+  , morigNodeKey(src.getKey())
+  , mObjectKey(src.getModelObjectKey())
+  , mLabelText("")
 {
 }
 
 CGraphNode::CGraphNode(const CGraphNode & src,
-                       const CCopasiContainer * pParent)
-    : CLMetabGlyph(src, pParent)
-    , msize(src.msize)
-    , morigNodeKey(src.morigNodeKey)
-    , mObjectKey(src.mObjectKey)
-    , mLabelText(src.mLabelText)
+                       const CDataContainer * pParent)
+  : CLMetabGlyph(src, pParent)
+  , msize(src.msize)
+  , morigNodeKey(src.morigNodeKey)
+  , mObjectKey(src.mObjectKey)
+  , mLabelText(src.mLabelText)
 {
 }
 

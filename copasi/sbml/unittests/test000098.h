@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000098.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:32 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +20,7 @@
  * Tests for dealing with notes on different  model elements
  */
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000098 : public CppUnit::TestFixture
 {
@@ -38,7 +35,7 @@ protected:
   // COPASI model with notes
   static const char* CPS_MODEL_1;
 
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
 
 public:
   void setUp();
@@ -50,7 +47,6 @@ public:
 
   // check if we can export notes on all elements
   void test_export_notes();
-
 };
 
 #endif /* TEST000098_H__ */

@@ -22,7 +22,7 @@
 #include "CPlotSpecification.h"
 
 #include "model/CModel.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
 // static
 CPlotSpecification * CPlotSpecification::fromData(const CData & data)
@@ -33,7 +33,7 @@ CPlotSpecification * CPlotSpecification::fromData(const CData & data)
 }
 
 CPlotSpecification::CPlotSpecification(const std::string & name,
-                                       const CCopasiContainer * pParent,
+                                       const CDataContainer * pParent,
                                        const CPlotSpecification::Type & type):
   CPlotItem(name, pParent, type),
   items("Curves", this),
@@ -41,7 +41,7 @@ CPlotSpecification::CPlotSpecification(const std::string & name,
 {initObjects();}
 
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CPlotItem(src, pParent),
   items(src.getItems(), this),
   mActive(src.mActive)
@@ -57,7 +57,7 @@ void CPlotSpecification::cleanup()
 
 void CPlotSpecification::initObjects()
 {
-  //  CCopasiContainer::addObjectReference("Active", mActive, CCopasiObject::ValueBool);
+  //  CDataContainer::addObjectReference("Active", mActive, CDataObject::ValueBool);
 }
 
 //*************************************
@@ -113,7 +113,7 @@ bool CPlotSpecification::createDefaultPlot(const CModel* model)
   CPlotItem * plItem;
   std::string itemTitle;
   CPlotDataChannelSpec name2;
-  const CCopasiObject * tmp;
+  const CDataObject * tmp;
 
   CPlotDataChannelSpec name1 = model->getValueReference()->getCN();
 

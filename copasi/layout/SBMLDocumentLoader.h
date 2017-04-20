@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,14 +23,14 @@
 #include <string>
 #include <map>
 
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "CLLocalStyle.h"
 #include "CLGradientBase.h"
 
 #include <sbml/ListOf.h>
 
-class CCopasiObject;
-class CCopasiContainer;
+class CDataObject;
+class CDataContainer;
 class CListOfLayouts;
 class CLayout;
 
@@ -49,14 +54,14 @@ public:
 
   static void readListOfLayouts(CListOfLayouts & lol,
                                 const ListOf & sbmlList,
-                                const std::map<const CCopasiObject*, SBase*> & copasimodelmap);
+                                const std::map<const CDataObject*, SBase*> & copasimodelmap);
 
   // createLayout is now needed by the code for the CellDesigner import
   static CLayout * createLayout(const Layout & sbmlLayout,
                                 const std::map<std::string, std::string> & modelmap,
                                 std::map<std::string, std::string> & layoutmap
                                 , const std::map<std::string, std::string>& globalIdToKeyMap
-                                , const CCopasiContainer * pParent = NO_PARENT
+                                , const CDataContainer * pParent = NO_PARENT
                                );
 
 protected:
@@ -74,7 +79,7 @@ public:
    * This is used for the import from SBML.
    */
   template<typename RENDER_INFORMATION>
-  static void convertRenderInformationReferencesIds(CCopasiVector<RENDER_INFORMATION>& list,
+  static void convertRenderInformationReferencesIds(CDataVector<RENDER_INFORMATION>& list,
       const std::map<std::string, std::string> & idToKeyMap)
   {
     size_t i, iMax = list.size();
@@ -188,7 +193,7 @@ public:
    * to the key used in the COPASI model.
   template<typename RENDER_INFORMATION>
   static void expandIdToKeyMaps(const CLRenderInformationBase* pRenderInfo,
-          CCopasiVector<RENDER_INFORMATION>& renderInformationVector,
+          CDataVector<RENDER_INFORMATION>& renderInformationVector,
           std::map<std::string,std::map<std::string,std::string> >& colorIdToKeyMapMap,
           std::map<std::string,std::map<std::string,std::string> >& gradientIdToKeyMapMap,
           std::map<std::string,std::map<std::string,std::string> >& lineEndingIdToKeyMapMap,

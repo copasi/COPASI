@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/stresstest/stress_test.cpp,v $
-//   $Revision: 1.16 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/05/04 17:35:52 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -40,8 +37,8 @@
 #include "sbml/math/ASTNode.h"
 #include "sbml/math/MathML.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/compareExpressions/CNormalFraction.h"
 #include "copasi/compareExpressions/CNormalTranslation.h"
 
@@ -55,28 +52,28 @@
  * Constructor.
  */
 stress_test::stress_test(): mNumFunctionDefinitions(0),
-    mNumExceededFunctions(0),
-    mNumFailedFunctions(0),
-    mNumExpressions(0),
-    mNumExceeded(0),
-    mNumFailed(0),
-    mNumCOPASIFunctions(0),
-    mNumExceededCOPASIFunctions(0),
-    mNumFailedCOPASIFunctions(0),
-    mNumFiles(0),
-    mNumKineticFunctions(0),
-    mNumMassActionsKinetics(0),
-    mNumConstantFluxKinetics(0),
-    mNumMappedKineticExpressions(0),
-    mNumUnmappedKineticExpressions(0),
-    mDifferentNormalform(0),
-    mNumSBO(0),
-    mpDataModel(NULL)
+  mNumExceededFunctions(0),
+  mNumFailedFunctions(0),
+  mNumExpressions(0),
+  mNumExceeded(0),
+  mNumFailed(0),
+  mNumCOPASIFunctions(0),
+  mNumExceededCOPASIFunctions(0),
+  mNumFailedCOPASIFunctions(0),
+  mNumFiles(0),
+  mNumKineticFunctions(0),
+  mNumMassActionsKinetics(0),
+  mNumConstantFluxKinetics(0),
+  mNumMappedKineticExpressions(0),
+  mNumUnmappedKineticExpressions(0),
+  mDifferentNormalform(0),
+  mNumSBO(0),
+  mpDataModel(NULL)
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
   // Create the global data model.
-  this->mpDataModel = CCopasiRootContainer::addDatamodel();
+  this->mpDataModel = CRootContainer::addDatamodel();
 }
 
 /**
@@ -111,7 +108,7 @@ stress_test::~stress_test()
       ++it5;
     }
 
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 /**
@@ -1247,9 +1244,9 @@ void stress_test::normalizeFunctionDefinitions(const Model* pModel)
  */
 void stress_test::normalizeFunctionDB()
 {
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
   assert(pFunctionDB != NULL);
-  CCopasiVectorN< CFunction > & loadedFunctions = pFunctionDB->loadedFunctions();
+  CDataVectorN< CFunction > & loadedFunctions = pFunctionDB->loadedFunctions();
   unsigned int i = 0, iMax = loadedFunctions.size();
 
   while (i < iMax)
@@ -1307,7 +1304,6 @@ bool stress_test::normalize_names(ASTNode* pNode, const Reaction* pReaction, con
   bool result = true;
   std::vector<std::pair<ASTNode*, unsigned int> > nodeStack;
   std::map<std::string, std::string> replacementMap;
-
 
   unsigned int compartment_index = 1;
   unsigned int species_index = 1;
@@ -1374,7 +1370,6 @@ bool stress_test::normalize_names(ASTNode* pNode, const Reaction* pReaction, con
                           replacementMap.insert(std::pair<std::string, std::string>(id, os.str()));
                           pCurrent->setName(os.str().c_str());
                           ++parameter_index;
-
                         }
                       else if (pModel->getSpecies(id) != NULL)
                         {
@@ -1416,12 +1411,10 @@ bool stress_test::normalize_names(ASTNode* pNode, const Reaction* pReaction, con
               pCurrent = nodeStack.back().first;
             }
         }
-
     }
 
   return result;
 }
-
 
 int main(int argc, char** argv)
 {
@@ -1444,6 +1437,3 @@ int main(int argc, char** argv)
       std::cerr << "Usage: stresstest SBMLFILE1 [SBMLFILE2 ...]" << std::endl;
     }
 }
-
-
-

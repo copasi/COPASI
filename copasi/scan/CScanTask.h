@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,9 +28,9 @@
 #ifndef COPASI_CScanTask
 #define COPASI_CScanTask
 
+#include "copasi/core/CVector.h"
 #include "utilities/CReadConfig.h"
 #include "scan/CScanMethod.h"
-#include "utilities/CVector.h"
 #include "scan/CScanProblem.h"
 
 class CScanMethod;
@@ -69,10 +74,10 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: scan)
    */
-  CScanTask(const CCopasiContainer * pParent,
+  CScanTask(const CDataContainer * pParent,
             const CTaskEnum::Task & type = CTaskEnum::scan);
 
   /**
@@ -81,7 +86,7 @@ public:
    */
   //-CScanTask(const CScanTask & src);
   CScanTask(const CScanTask & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
   /**
    * Destructor

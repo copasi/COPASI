@@ -11,7 +11,6 @@
 #ifndef C2DPLOTCURVE_H
 #define C2DPLOTCURVE_H
 
-
 #include <string>
 #include <vector>
 #include <fstream>
@@ -38,11 +37,11 @@
 
 #include "plot/CPlotItem.h"
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CopasiTime.h"
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CVector.h"
+#include "copasi/core/CMatrix.h"
 
 // NaN in data splits curve
 class C2DPlotCurve : public QwtPlotCurve

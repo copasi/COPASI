@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -38,7 +43,7 @@ public:
    * Update sequences to synchronize the initial state
    * after changing an initial value.
    */
-  CObjectInterface::UpdateSequence mInitialSequences;
+  CCore::CUpdateSequence mInitialSequences;
 
   /**
    * holds the index in the index array corresponding to the given level.
@@ -59,21 +64,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType (default: scan)
    */
-  CSensMethod(const CCopasiContainer * pParent,
+  CSensMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType,
               const CTaskEnum::Task & taskType = CTaskEnum::sens);
 
   /**
   * Copy constructor.
   * @param "const CTSSMethod &" src
-  * @param const CCopasiContainer * pParent (default: NULL)
+  * @param const CDataContainer * pParent (default: NULL)
   */
   CSensMethod(const CSensMethod & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -164,7 +169,7 @@ protected:
   /**
    * The sequence need to calculate all target functions
    */
-  CObjectInterface::UpdateSequence mTargetValueSequence;
+  CCore::CUpdateSequence mTargetValueSequence;
 
   C_FLOAT64 * mpDeltaFactor;
   C_FLOAT64 * mpMinDelta;

@@ -21,9 +21,9 @@
 #include "copasi/MIRIAM/CRDFTriplet.h"
 #include "copasi/MIRIAM/CConstants.h"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
-class CBiologicalDescription : public CCopasiContainer
+class CBiologicalDescription : public CDataContainer
 {
   // Attributes
 private:
@@ -49,28 +49,28 @@ public:
   /**
    * Default constructor
    * @param const std::string & objectName
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CBiologicalDescription(const std::string & objectName,
-                         const CCopasiContainer * pParent = NO_PARENT);
+                         const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Specific constructor
    * @param const CRDFTriplet & triplet
    * @param const std::string & objectName (default: "")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CBiologicalDescription(const CRDFTriplet & triplet,
                          const std::string & objectName = "",
-                         const CCopasiContainer * pParent = NO_PARENT);
+                         const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CBiologicalDescription &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CBiologicalDescription(const CBiologicalDescription & src,
-                         const CCopasiContainer * pParent);
+                         const CDataContainer * pParent);
 
   /**
    * Destructor

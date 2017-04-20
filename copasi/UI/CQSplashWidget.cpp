@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +23,7 @@
 #include "AboutDialog.h"
 
 #include "utilities/CVersion.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 /*
  *  Constructs a CQSplashWidget which is a child of 'parent', with the
@@ -55,7 +60,7 @@ void CQSplashWidget::slotViewLicense()
   QString FixedTitle = "COPASI ";
   FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
 
-  AboutDialog* aboutDialog = new AboutDialog(this, CCopasiRootContainer::getLicenseHTML(), 76, 30);
+  AboutDialog* aboutDialog = new AboutDialog(this, CRootContainer::getLicenseHTML(), 76, 30);
   aboutDialog->setWindowTitle(FixedTitle);
   aboutDialog->exec();
 }

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,7 +17,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/function/CFunctionDB.h"
@@ -24,21 +29,21 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
-CCopasiDataModel* test000059::pCOPASIDATAMODEL = NULL;
+CDataModel* test000059::pCOPASIDATAMODEL = NULL;
 
 void test000059::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000059::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
@@ -544,7 +549,7 @@ bool test000059::checkIfIdsUnique(const Model* pSBMLModel)
 
 void test000059::test_unique_id_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING1));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -562,8 +567,8 @@ void test000059::test_unique_id_1()
   CCompartment* pCompartment = pModel->createCompartment("compartment_2");
   CPPUNIT_ASSERT(pCompartment != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pCompartment->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -589,7 +594,7 @@ void test000059::test_unique_id_1()
 
 void test000059::test_unique_id_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING2));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -607,8 +612,8 @@ void test000059::test_unique_id_2()
   CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pMetabolite->getInitialConcentrationReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pMetabolite->getInitialConcentrationReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -634,7 +639,7 @@ void test000059::test_unique_id_2()
 
 void test000059::test_unique_id_3()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING3));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -652,8 +657,8 @@ void test000059::test_unique_id_3()
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -679,7 +684,7 @@ void test000059::test_unique_id_3()
 
 void test000059::test_unique_id_4()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING4));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -700,7 +705,7 @@ void test000059::test_unique_id_4()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -725,7 +730,7 @@ void test000059::test_unique_id_4()
 
 void test000059::test_unique_id_5()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING5));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -743,8 +748,8 @@ void test000059::test_unique_id_5()
   CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pMetabolite->getInitialConcentrationReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pMetabolite->getInitialConcentrationReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -770,7 +775,7 @@ void test000059::test_unique_id_5()
 
 void test000059::test_unique_id_6()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING6));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -788,8 +793,8 @@ void test000059::test_unique_id_6()
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -815,7 +820,7 @@ void test000059::test_unique_id_6()
 
 void test000059::test_unique_id_7()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING7));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -836,7 +841,7 @@ void test000059::test_unique_id_7()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -861,7 +866,7 @@ void test000059::test_unique_id_7()
 
 void test000059::test_unique_id_8()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING8));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -879,8 +884,8 @@ void test000059::test_unique_id_8()
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -906,7 +911,7 @@ void test000059::test_unique_id_8()
 
 void test000059::test_unique_id_9()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING9));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -927,7 +932,7 @@ void test000059::test_unique_id_9()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -952,7 +957,7 @@ void test000059::test_unique_id_9()
 
 void test000059::test_unique_id_10()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING10));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -973,7 +978,7 @@ void test000059::test_unique_id_10()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -998,7 +1003,7 @@ void test000059::test_unique_id_10()
 
 void test000059::test_unique_id_11()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING11);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1010,8 +1015,8 @@ void test000059::test_unique_id_11()
   CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pMetabolite->getInitialConcentrationReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pMetabolite->getInitialConcentrationReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1037,7 +1042,7 @@ void test000059::test_unique_id_11()
 
 void test000059::test_unique_id_12()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING12);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1049,8 +1054,8 @@ void test000059::test_unique_id_12()
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1076,7 +1081,7 @@ void test000059::test_unique_id_12()
 
 void test000059::test_unique_id_13()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING13);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1091,7 +1096,7 @@ void test000059::test_unique_id_13()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -1116,7 +1121,7 @@ void test000059::test_unique_id_13()
 
 void test000059::test_unique_id_14()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING14);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1128,8 +1133,8 @@ void test000059::test_unique_id_14()
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1155,7 +1160,7 @@ void test000059::test_unique_id_14()
 
 void test000059::test_unique_id_15()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING15);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1170,7 +1175,7 @@ void test000059::test_unique_id_15()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -1195,7 +1200,7 @@ void test000059::test_unique_id_15()
 
 void test000059::test_unique_id_16()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING16);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1210,7 +1215,7 @@ void test000059::test_unique_id_16()
   pReaction->setFunction("Constant flux (irreversible)");
   pReaction->setParameterValue("v", 1.0, true);
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pReaction->getParameters().getParameter(0)->getValueReference());
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
   std::vector<Refresh*>::iterator refreshIt = refreshes.begin(), refreshEndit = refreshes.end();
@@ -1235,7 +1240,7 @@ void test000059::test_unique_id_16()
 
 void test000059::test_unique_id_17()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING17));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -1256,15 +1261,15 @@ void test000059::test_unique_id_17()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  CCopasiRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1290,7 +1295,7 @@ void test000059::test_unique_id_17()
 
 void test000059::test_unique_id_18()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING18));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -1311,15 +1316,15 @@ void test000059::test_unique_id_18()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  CCopasiRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1345,7 +1350,7 @@ void test000059::test_unique_id_18()
 
 void test000059::test_unique_id_19()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING19));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -1366,15 +1371,15 @@ void test000059::test_unique_id_19()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  CCopasiRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1400,7 +1405,7 @@ void test000059::test_unique_id_19()
 
 void test000059::test_unique_id_20()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000059::MODEL_STRING20));
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
@@ -1421,15 +1426,15 @@ void test000059::test_unique_id_20()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  CCopasiRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1458,7 +1463,7 @@ void test000059::test_unique_id_20()
  */
 void test000059::test_unique_id_21()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING21);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1471,15 +1476,15 @@ void test000059::test_unique_id_21()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  CCopasiRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string("\"" + pFunctionDefinition->getObjectName() + "\"()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1509,7 +1514,7 @@ void test000059::test_unique_id_21()
  */
 void test000059::test_unique_id_21_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING21);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -1522,15 +1527,15 @@ void test000059::test_unique_id_21_2()
   CPPUNIT_ASSERT(pFunctionDefinition->setInfix("3 * 5") == true);
   pFunctionDefinition->compile();
   // add the function definition to the function database
-  CCopasiRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
+  CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
   pModelValue->setStatus(CModelEntity::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
-  std::set<const CCopasiObject*> changedObjects;
-  const CCopasiObject* pObject = pModelValue->getInitialValueReference();
+  std::set<const CDataObject*> changedObjects;
+  const CDataObject* pObject = pModelValue->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
   std::vector<Refresh*> refreshes = pModel->buildInitialRefreshSequence(changedObjects);
@@ -1556,7 +1561,7 @@ void test000059::test_unique_id_21_2()
 
 void test000059::test_unique_id_22()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000059::MODEL_STRING22);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);

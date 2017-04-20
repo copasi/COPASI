@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -34,7 +39,7 @@
 
 #include "copasi/trajectory/CLsodaMethod.h"
 
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/model/CState.h"
 
 class CReaction;
@@ -151,21 +156,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: DsaLsodar)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CTrajectoryMethodDsaLsodar(const CCopasiContainer * pParent,
+  CTrajectoryMethodDsaLsodar(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType = CTaskEnum::DsaLsodar,
                              const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor
    * @param const CTrajectoryMethodDsaLsodar & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CTrajectoryMethodDsaLsodar(const CTrajectoryMethodDsaLsodar & src,
-                             const CCopasiContainer * pParent);
+                             const CDataContainer * pParent);
 
   /**
    *   Destructor.
@@ -350,7 +355,7 @@ protected:
   /**
    * A vector containing the update sequence required to update all propensity values.
    */
-  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
+  CVector< CCore::CUpdateSequence > mUpdateSequences;
 
   /**
    * Total propensity (sum over mAmu[i])

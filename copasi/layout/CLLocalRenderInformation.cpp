@@ -17,7 +17,7 @@
 
 #include "CLLocalRenderInformation.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -29,20 +29,20 @@ CLLocalRenderInformation * CLLocalRenderInformation::fromData(const CData & data
 /**
  *  Constructor.
  */
-CLLocalRenderInformation::CLLocalRenderInformation(CCopasiContainer* pParent):
+CLLocalRenderInformation::CLLocalRenderInformation(CDataContainer* pParent):
   CLRenderInformationBase("LocalRenderInformation", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
 }
 
 /**
  * Copy constructor
  */
-CLLocalRenderInformation::CLLocalRenderInformation(const CLLocalRenderInformation& source, CCopasiContainer* pParent):
+CLLocalRenderInformation::CLLocalRenderInformation(const CLLocalRenderInformation& source, CDataContainer* pParent):
   CLRenderInformationBase(source, pParent),
   mListOfStyles(source.mListOfStyles, this)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
 }
 
 /**
@@ -54,11 +54,11 @@ CLLocalRenderInformation::CLLocalRenderInformation(const LocalRenderInformation&
             std::map<std::string,std::string>& gradientIdToKeyMap,
             std::map<std::string,std::string>& lineEndingIdToKeyMap,
         */
-    CCopasiContainer* pParent):
+    CDataContainer* pParent):
   //CLRenderInformationBase(source,"LocalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
   CLRenderInformationBase(source, "LocalRenderInformation", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LocalRenderInformation", this);
   size_t i, iMax = source.getNumStyles();
 
   for (i = 0; i < iMax; ++i)
@@ -78,7 +78,7 @@ size_t CLLocalRenderInformation::getNumStyles() const
 /**
  * Returns a pointer to the LitOfStyles object.
  */
-CCopasiVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles()
+CDataVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles()
 {
   return &(this->mListOfStyles);
 }
@@ -86,7 +86,7 @@ CCopasiVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles()
 /**
  * Returns a pointer to the LitOfStyles object.
  */
-const CCopasiVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles() const
+const CDataVector<CLLocalStyle>* CLLocalRenderInformation::getListOfStyles() const
 {
   return &(this->mListOfStyles);
 }

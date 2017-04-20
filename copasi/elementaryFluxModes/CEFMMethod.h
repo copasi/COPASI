@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,7 +26,7 @@
 #include "copasi/elementaryFluxModes/CFluxMode.h"
 
 #include "copasi/utilities/CCopasiMethod.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 class CEFMMethod : public CCopasiMethod
 {
@@ -35,21 +40,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
-  CEFMMethod(const CCopasiContainer * pParent,
+  CEFMMethod(const CDataContainer * pParent,
              const CTaskEnum::Method & methodType,
              const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
 
   /**
    * Copy constructor
    * @param const CEFMMethod & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CEFMMethod(const CEFMMethod & src,
-             const CCopasiContainer * pParent);
+             const CDataContainer * pParent);
 
   /**
    * Destructor

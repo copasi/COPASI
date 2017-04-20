@@ -13,10 +13,10 @@
 #include "optimization/COptPopulationMethod.h"
 #include "randomGenerator/CRandom.h"
 #include "utilities/CProcessReport.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptPopulationMethod::COptPopulationMethod(const CCopasiContainer * pParent,
+COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType /*= CTaskEnum::optimization*/)
   : COptMethod(pParent, methodType, taskType)
@@ -33,7 +33,7 @@ COptPopulationMethod::COptPopulationMethod(const CCopasiContainer * pParent,
 }
 
 COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : COptMethod(src, pParent)
   , mPopulationSize(0)
   , mGenerations(0)
@@ -55,7 +55,7 @@ COptPopulationMethod::~COptPopulationMethod()
 void COptPopulationMethod::initObjects()
 {
   if (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch)
-    addObjectReference("Current Generation", mCurrentGeneration, CCopasiObject::ValueInt);
+    addObjectReference("Current Generation", mCurrentGeneration, CDataObject::ValueInt);
 }
 
 #include <iostream>

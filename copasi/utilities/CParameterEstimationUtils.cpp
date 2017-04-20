@@ -13,7 +13,7 @@
 
 #include <cctype>
 
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 
 #include <copasi/model/CModel.h>
 #include <copasi/math/CMathContainer.h>
@@ -129,7 +129,7 @@ ResultData::~ResultData()
 
 ResultData::ResultData(const std::vector<FittingItem *> & fittingItems,
                        const std::vector<CheckPoint *> & checkPoints,
-                       CCopasiDataModel * dataModel,
+                       CDataModel * dataModel,
                        bool isOptimization)
   : mIsOptimization(isOptimization)
   , mpDataModel(dataModel)
@@ -137,7 +137,7 @@ ResultData::ResultData(const std::vector<FittingItem *> & fittingItems,
   , mCheckPoints(checkPoints.begin(), checkPoints.end())
 {}
 
-bool ResultData::appliesTo(CCopasiDataModel * /* dataModel */)
+bool ResultData::appliesTo(CDataModel * /* dataModel */)
 {
   COptTask* task = NULL;
 
@@ -183,7 +183,7 @@ CFitTask *ResultData::getFitTask()
 {
   if (mpDataModel == NULL) return NULL;
 
-  CCopasiVectorN<CCopasiTask>& taskList = *mpDataModel->getTaskList();
+  CDataVectorN<CCopasiTask>& taskList = *mpDataModel->getTaskList();
 
   for (size_t i = 0; i < taskList.size(); i++)
     {
@@ -200,7 +200,7 @@ COptTask *ResultData::getOptTask()
 {
   if (mpDataModel == NULL) return NULL;
 
-  CCopasiVectorN<CCopasiTask>& taskList = *mpDataModel->getTaskList();
+  CDataVectorN<CCopasiTask>& taskList = *mpDataModel->getTaskList();
 
   COptTask* optTask = dynamic_cast<COptTask*>(&taskList["Optimization"]);
 
@@ -356,8 +356,8 @@ void ResultData::applyToModelStateFromOptTask(int row, COptTask *task, const std
       ChangedObjects.insert(pObjectInterface);
     }
 
-  CObjectInterface::UpdateSequence UpdateSequence;
-  pContainer->getInitialDependencies().getUpdateSequence(UpdateSequence, CMath::SimulationContext::UpdateMoieties, ChangedObjects, pContainer->getInitialStateObjects());
+  CCore::CUpdateSequence UpdateSequence;
+  pContainer->getInitialDependencies().getUpdateSequence(UpdateSequence, CCore::SimulationContext::UpdateMoieties, ChangedObjects, pContainer->getInitialStateObjects());
   pContainer->applyUpdateSequence(UpdateSequence);
   pContainer->pushInitialState();
 }
@@ -672,7 +672,7 @@ std::vector<CheckPoint *> ResultParser::readValues(std::istream &reader)
   return result;
 }
 
-std::vector<ResultData *> ResultParser::parseStream(std::istream &reader, CCopasiDataModel *dataModel)
+std::vector<ResultData *> ResultParser::parseStream(std::istream &reader, CDataModel *dataModel)
 {
   std::vector<ResultData*> list;
 
@@ -692,14 +692,14 @@ std::vector<ResultData *> ResultParser::parseStream(std::istream &reader, CCopas
   return list;
 }
 
-std::vector<ResultData *> ResultParser::parseFile(const std::string &fileName, CCopasiDataModel *dataModel)
+std::vector<ResultData *> ResultParser::parseFile(const std::string &fileName, CDataModel *dataModel)
 {
   std::ifstream ifs(fileName.c_str(), std::ios_base::in);
 
   return parseStream(ifs, dataModel);
 }
 
-std::vector<ResultData *> ResultParser::fromFile(const std::string &fileName, CCopasiDataModel *dataModel)
+std::vector<ResultData *> ResultParser::fromFile(const std::string &fileName, CDataModel *dataModel)
 {
   return parseFile(fileName, dataModel);
 }

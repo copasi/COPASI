@@ -15,7 +15,7 @@
 #include "CUndoStack.h"
 #include "CUndoData.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 CUndoStack::CUndoStack():
   std::vector< CUndoData * >(),
@@ -23,9 +23,9 @@ CUndoStack::CUndoStack():
   mCurrent(C_INVALID_INDEX)
 {}
 
-CUndoStack::CUndoStack(const CCopasiDataModel & dataModel):
+CUndoStack::CUndoStack(const CDataModel & dataModel):
   std::vector< CUndoData * >(),
-  mpDataModel(const_cast< CCopasiDataModel * >(&dataModel)),
+  mpDataModel(const_cast< CDataModel * >(&dataModel)),
   mCurrent(C_INVALID_INDEX)
 {}
 

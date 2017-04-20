@@ -224,7 +224,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeChoice::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeChoice::toAST(const CDataModel* pDataModel) const
 {
   ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
   const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());

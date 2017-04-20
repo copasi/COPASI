@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,9 +30,9 @@
 #include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodPS::COptMethodPS(const CCopasiContainer * pParent,
+COptMethodPS::COptMethodPS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -53,7 +58,7 @@ COptMethodPS::COptMethodPS(const CCopasiContainer * pParent,
 }
 
 COptMethodPS::COptMethodPS(const COptMethodPS & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
   mVariance(0.0),
   mVelocities(),
@@ -307,7 +312,7 @@ bool COptMethodPS::create(const size_t & index)
 
 void COptMethodPS::initObjects()
 {
-  addObjectReference("Current Iteration", mCurrentGeneration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentGeneration, CDataObject::ValueInt);
 }
 
 bool COptMethodPS::initialize()

@@ -232,7 +232,7 @@ CIssue CMathExpression::compile()
             }
           else
             {
-              CCopasiObject * pDataObject = pMathContainer->getDataObject((C_FLOAT64 *) pValue);
+              CDataObject * pDataObject = pMathContainer->getDataObject((C_FLOAT64 *) pValue);
 
               if (pDataObject != NULL)
                 {

@@ -37,16 +37,16 @@
 
 #include "CLReactionGlyph.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CLGlyphWithCurve::CLGlyphWithCurve(const std::string & name,
-                                   const CCopasiContainer * pParent)
+                                   const CDataContainer * pParent)
   : CLGraphicalObject(name, pParent),
     mCurve()
 {}
 
 CLGlyphWithCurve::CLGlyphWithCurve(const CLGlyphWithCurve & src,
-                                   const CCopasiContainer * pParent)
+                                   const CDataContainer * pParent)
   : CLGraphicalObject(src, pParent),
     mCurve(src.mCurve)
 {}
@@ -54,7 +54,7 @@ CLGlyphWithCurve::CLGlyphWithCurve(const CLGlyphWithCurve & src,
 CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml,
                                    const std::map<std::string, std::string> & modelmap,
                                    std::map<std::string, std::string> & layoutmap,
-                                   const CCopasiContainer * pParent)
+                                   const CDataContainer * pParent)
   : CLGraphicalObject(sbml, layoutmap, pParent),
     mCurve() //initialized in the body below
 {
@@ -135,14 +135,14 @@ CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data)
 }
 
 CLReferenceGlyph::CLReferenceGlyph(const std::string & name,
-                                   const CCopasiContainer * pParent)
+                                   const CDataContainer * pParent)
   : CLGlyphWithCurve(name, pParent)
   , mGlyphKey()
   , mRole()
 {}
 
 CLReferenceGlyph::CLReferenceGlyph(const CLReferenceGlyph & src,
-                                   const CCopasiContainer * pParent)
+                                   const CDataContainer * pParent)
   : CLGlyphWithCurve(src, pParent)
   , mGlyphKey(src.mGlyphKey)
   , mRole(src.mRole)
@@ -152,7 +152,7 @@ CLReferenceGlyph::CLReferenceGlyph(const CLReferenceGlyph & src,
 CLReferenceGlyph::CLReferenceGlyph(const ReferenceGlyph & sbml,
                                    const std::map<std::string, std::string> & modelmap,
                                    std::map<std::string, std::string> & layoutmap,
-                                   const CCopasiContainer * pParent)
+                                   const CDataContainer * pParent)
   : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent)
   , mGlyphKey() //initialized in the body below
   , mRole() //initialized in the body below
@@ -214,7 +214,7 @@ CLReferenceGlyph::getTargetGlyphKey() const
 
 CLGraphicalObject* CLReferenceGlyph::getTargetGlyph() const
 {
-  CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(mGlyphKey);
+  CDataObject* tmp = CRootContainer::getKeyFactory()->get(mGlyphKey);
   return dynamic_cast<CLMetabGlyph*>(tmp);
 }
 
@@ -231,7 +231,7 @@ CLReferenceGlyph::clone() const
 }
 
 void CLReferenceGlyph::exportToSBML(ReferenceGlyph * g, //TODO
-                                    const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                                    const std::map<const CDataObject*, SBase*> & copasimodelmap,
                                     std::map<std::string, const SBase*>& sbmlIDs,
                                     const std::map<const CLBase*, const SBase*> & layoutmap) const
 {
@@ -321,7 +321,7 @@ CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data)
 }
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : CLGlyphWithCurve(name, pParent),
     mMetabGlyphKey(),
     mRole(UNDEFINED),
@@ -329,7 +329,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
 {}
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : CLGlyphWithCurve(src, pParent),
     mMetabGlyphKey(src.mMetabGlyphKey),
     mRole(src.mRole),
@@ -339,7 +339,7 @@ CLMetabReferenceGlyph::CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
     const std::map<std::string, std::string> & modelmap,
     std::map<std::string, std::string> & layoutmap,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent),
     mMetabGlyphKey(), //initialized in the body below
     mRole((Role)sbml.getRole()),
@@ -392,7 +392,7 @@ CLMetabReferenceGlyph::getMetabGlyphKey() const
 
 CLMetabGlyph* CLMetabReferenceGlyph::getMetabGlyph() const
 {
-  CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(mMetabGlyphKey);
+  CDataObject* tmp = CRootContainer::getKeyFactory()->get(mMetabGlyphKey);
   return dynamic_cast<CLMetabGlyph*>(tmp);
 }
 
@@ -442,7 +442,7 @@ CLMetabReferenceGlyph::clone() const
 }
 
 void CLMetabReferenceGlyph::exportToSBML(SpeciesReferenceGlyph * g,
-    const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+    const std::map<const CDataObject*, SBase*> & copasimodelmap,
     std::map<std::string, const SBase*>& sbmlIDs,
     const std::map<const CLBase*, const SBase*> & layoutmap) const
 {
@@ -510,14 +510,14 @@ CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data)
 }
 
 CLGeneralGlyph::CLGeneralGlyph(const std::string & name,
-                               const CCopasiContainer * pParent)
+                               const CDataContainer * pParent)
   : CLGlyphWithCurve(name, pParent)
   , mvReferences("ListOfReferenceGlyphs", this)
   , mvSubglyphs("ListOfSubglyphs", this)
 {}
 
 CLGeneralGlyph::CLGeneralGlyph(const CLGeneralGlyph & src,
-                               const CCopasiContainer * pParent)
+                               const CDataContainer * pParent)
   : CLGlyphWithCurve(src, pParent)
   , mvReferences(src.mvReferences, this)
   , mvSubglyphs("ListOfSubglyphs", this)
@@ -532,7 +532,7 @@ CLGeneralGlyph::CLGeneralGlyph(const CLGeneralGlyph & src,
 CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
                                const std::map<std::string, std::string> & modelmap,
                                std::map<std::string, std::string> & layoutmap,
-                               const CCopasiContainer * pParent)
+                               const CDataContainer * pParent)
   : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent)
   , mvReferences("ListOfReferenceGlyphs", this)
   , mvSubglyphs("ListOfSubglyphs", this)
@@ -616,25 +616,25 @@ CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
   return *this;
 }
 
-const CCopasiVector<CLReferenceGlyph> &
+const CDataVector<CLReferenceGlyph> &
 CLGeneralGlyph::getListOfReferenceGlyphs() const
 {
   return mvReferences;
 }
 
-CCopasiVector<CLReferenceGlyph> &
+CDataVector<CLReferenceGlyph> &
 CLGeneralGlyph::getListOfReferenceGlyphs()
 {
   return mvReferences;
 }
 
-const CCopasiVector<CLGraphicalObject> &
+const CDataVector<CLGraphicalObject> &
 CLGeneralGlyph::getListOfSubglyphs() const
 {
   return mvSubglyphs;
 }
 
-CCopasiVector<CLGraphicalObject> &
+CDataVector<CLGraphicalObject> &
 CLGeneralGlyph::getListOfSubglyphs()
 {
   return mvSubglyphs;
@@ -674,7 +674,7 @@ CLGeneralGlyph::clone() const
 }
 
 void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
-                                  const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                                  const std::map<const CDataObject*, SBase*> & copasimodelmap,
                                   std::map<std::string, const SBase*>& sbmlIDs,
                                   std::map<const CLBase*, const SBase*> & layoutmap) const
 {
@@ -690,11 +690,11 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
   if (!general) return;
 
   //reference to model objects
-  CCopasiObject* tmp = getModelObject();
+  CDataObject* tmp = getModelObject();
 
   if (tmp)
     {
-      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+      std::map<const CDataObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
 
       if (it != copasimodelmap.end())
         {
@@ -727,7 +727,7 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
       const CLReferenceGlyph * tmp = &mvReferences[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       ReferenceGlyph * pG;
@@ -756,7 +756,7 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
       CLTextGlyph* text =  dynamic_cast<CLTextGlyph*>(tmp);
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       GraphicalObject * pG;
@@ -837,13 +837,13 @@ CLReactionGlyph * CLReactionGlyph::fromData(const CData & data)
 }
 
 CLReactionGlyph::CLReactionGlyph(const std::string & name,
-                                 const CCopasiContainer * pParent)
+                                 const CDataContainer * pParent)
   : CLGlyphWithCurve(name, pParent),
     mvMetabReferences("ListOfMetabReferenceGlyphs", this)
 {}
 
 CLReactionGlyph::CLReactionGlyph(const CLReactionGlyph & src,
-                                 const CCopasiContainer * pParent)
+                                 const CDataContainer * pParent)
   : CLGlyphWithCurve(src, pParent),
     mvMetabReferences(src.mvMetabReferences, this)
 {
@@ -853,7 +853,7 @@ CLReactionGlyph::CLReactionGlyph(const CLReactionGlyph & src,
 CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & sbml,
                                  const std::map<std::string, std::string> & modelmap,
                                  std::map<std::string, std::string> & layoutmap,
-                                 const CCopasiContainer * pParent)
+                                 const CDataContainer * pParent)
   : CLGlyphWithCurve(sbml, modelmap, layoutmap, pParent),
     mvMetabReferences("ListOfMetabReferenceGlyphs", this)
 {
@@ -901,13 +901,13 @@ CLReactionGlyph & CLReactionGlyph::operator= (const CLReactionGlyph & rhs)
   return *this;
 }
 
-const CCopasiVector<CLMetabReferenceGlyph> &
+const CDataVector<CLMetabReferenceGlyph> &
 CLReactionGlyph::getListOfMetabReferenceGlyphs() const
 {
   return mvMetabReferences;
 }
 
-CCopasiVector<CLMetabReferenceGlyph> &
+CDataVector<CLMetabReferenceGlyph> &
 CLReactionGlyph::getListOfMetabReferenceGlyphs()
 {
   return mvMetabReferences;
@@ -950,7 +950,7 @@ CLReactionGlyph::clone() const
 }
 
 void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
-                                   const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                                   const std::map<const CDataObject*, SBase*> & copasimodelmap,
                                    std::map<std::string, const SBase*>& sbmlIDs,
                                    std::map<const CLBase*, const SBase*> & layoutmap) const
 {
@@ -960,11 +960,11 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
   CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
 
   //reference to model objects
-  CCopasiObject* tmp = getModelObject();
+  CDataObject* tmp = getModelObject();
 
   if (tmp)
     {
-      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
+      std::map<const CDataObject*, SBase*>::const_iterator it = copasimodelmap.find(tmp);
 
       if (it != copasimodelmap.end())
         {
@@ -984,7 +984,7 @@ void CLReactionGlyph::exportToSBML(ReactionGlyph * g,
       const CLMetabReferenceGlyph * tmp = &mvMetabReferences[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       SpeciesReferenceGlyph * pG;

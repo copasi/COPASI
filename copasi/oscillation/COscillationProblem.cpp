@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,11 +17,11 @@
 
 #include "COscillationProblem.h"
 
-//#include "CopasiDataModel/CCopasiDataModel.h"
+//#include "CopasiDataModel/CDataModel.h"
 
 #include "model/CModel.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 
 #include "utilities/CProcessReport.h"
@@ -24,7 +29,7 @@
 
 //  Default constructor
 COscillationProblem::COscillationProblem(const CTaskEnum::Task & type,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiProblem(type, pParent)
 {
   initializeParameter();
@@ -33,7 +38,7 @@ COscillationProblem::COscillationProblem(const CTaskEnum::Task & type,
 
 // copy constructor
 COscillationProblem::COscillationProblem(const COscillationProblem& src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiProblem(src, pParent)
 {
   initializeParameter();
@@ -71,7 +76,7 @@ bool COscillationProblem::setCallBack(CProcessReport * pCallBack)
 
 void COscillationProblem::initObjects()
 {
-  //  addObjectReference("Function Evaluations", mCounter, CCopasiObject::ValueInt);
+  //  addObjectReference("Function Evaluations", mCounter, CDataObject::ValueInt);
 }
 
 bool COscillationProblem::initialize()

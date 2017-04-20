@@ -48,7 +48,6 @@ changeTaskIfScheduled(COptTask* pTask)
   pFitProblem->setRandomizeStartValues(false);
 
   pTask->setMethodType(CTaskEnum::Statistics);
-
 }
 
 /**
@@ -56,7 +55,7 @@ changeTaskIfScheduled(COptTask* pTask)
  * whether a plot with a given name is already present
  */
 bool
-havePlotWithName(CCopasiDataModel* pDataModel, const std::string& name)
+havePlotWithName(CDataModel* pDataModel, const std::string& name)
 {
   if (pDataModel == NULL || name.empty())
     return false;
@@ -75,7 +74,6 @@ havePlotWithName(CCopasiDataModel* pDataModel, const std::string& name)
 
       havePlot = true;
       break;
-
     }
 
   return havePlot;
@@ -90,7 +88,7 @@ void addParameterEstimationPlotIfNotPresent(CFitTask* pFitTask)
   if (pFitTask == NULL || pFitTask->getObjectDataModel() == NULL)
     return;
 
-  CCopasiDataModel* pDataModel = pFitTask->getObjectDataModel();
+  CDataModel* pDataModel = pFitTask->getObjectDataModel();
 
   // check if we have a result plot already, if so do nothing
   if (havePlotWithName(pDataModel, "Parameter Estimation Result"))
@@ -104,16 +102,15 @@ void addParameterEstimationPlotIfNotPresent(CFitTask* pFitTask)
   COutputAssistant::getListOfDefaultOutputDescriptions();
   cout << " ... added parameter estimation result plot" << endl;
   COutputAssistant::createDefaultOutput(910, pFitTask, pDataModel);
-
 }
 
 int main(int argc, char** argv)
 {
   // initialize COPASI
-  CCopasiRootContainer::init(0, NULL);
+  CRootContainer::init(0, NULL);
 
   // create a new data model
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
 
   // The function takes two arguments, an input and an output copasi file
   // if the COPASI file has not been given, then the input file will be
@@ -121,13 +118,12 @@ int main(int argc, char** argv)
   if (argc < 2)
     {
       std::cerr << "Usage: calculateSolutionStatistic <copasi file> [<output file>]" << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
   std::string filename = argv[1];
   std::string outputFile = argc > 2 ? argv[2] : argv[1];
-
 
   bool result = false;
   // load model
@@ -142,14 +138,13 @@ int main(int argc, char** argv)
     {
       cerr << "could not load the model. Error was: " << endl;
       cerr << CCopasiMessage::getAllMessageText();
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 2;
     }
 
   // get the optimization task
   COptTask* pOptTask = dynamic_cast<COptTask*>(&(*pDataModel->getTaskList())[CTaskEnum::optimization]);
   changeTaskIfScheduled(pOptTask);
-
 
   // get the fitTask
   CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[CTaskEnum::parameterFitting]);
@@ -165,5 +160,5 @@ int main(int argc, char** argv)
   pDataModel->saveModel(outputFile, NULL, true);
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

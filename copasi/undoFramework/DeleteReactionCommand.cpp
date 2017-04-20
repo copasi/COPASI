@@ -15,17 +15,18 @@
  *      Author: dada
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
-#include "UI/ReactionsWidget1.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/ReactionsWidget1.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+
 #include "UndoReactionData.h"
-
 #include "DeleteReactionCommand.h"
 
 DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
@@ -36,9 +37,9 @@ DeleteReactionCommand::DeleteReactionCommand(ReactionsWidget1 *pReactionWidget)
   , mpReactionData(NULL)
   , mpReactionWidget(pReactionWidget)
 {
-  mpReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mpReactionWidget->mKey));
+  mpReaction = dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(mpReactionWidget->mKey));
   mReaObjectName = mpReaction->getObjectName();
-  CCopasiDataModel* pDataModel = pReactionWidget->getDataModel();
+  CDataModel* pDataModel = pReactionWidget->getDataModel();
   assert(pDataModel != NULL);
   mpRi = new CReactionInterface(pDataModel->getModel());
   mpRi->initFromReaction(mpReaction);

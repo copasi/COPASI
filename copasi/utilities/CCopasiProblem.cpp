@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,11 +28,12 @@
 #include "copasi.h"
 
 #include "CCopasiProblem.h"
-#include "model/CMetab.h"
-#include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "CCopasiVector.h"
-#include "math/CMathContainer.h"
+
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/math/CMathContainer.h"
 
 CCopasiProblem::CCopasiProblem():
   CCopasiParameterGroup("NoName", NULL, "Problem"),
@@ -38,7 +44,7 @@ CCopasiProblem::CCopasiProblem():
 {}
 
 CCopasiProblem::CCopasiProblem(const CTaskEnum::Task & type,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   CCopasiParameterGroup(CTaskEnum::TaskName[type], pParent, "Problem"),
   mType(type),
   mpContainer(NULL),
@@ -54,7 +60,7 @@ CCopasiProblem::CCopasiProblem(const CTaskEnum::Task & type,
 }
 
 CCopasiProblem::CCopasiProblem(const CCopasiProblem & src,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mType(src.mType),
   mpContainer(src.mpContainer),

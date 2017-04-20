@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,13 +23,13 @@
 
 //  Default constructor
 CMoietiesProblem::CMoietiesProblem(const CTaskEnum::Task & type,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiProblem(type, pParent)
 {}
 
 // copy constructor
 CMoietiesProblem::CMoietiesProblem(const CMoietiesProblem & src,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiProblem(src, pParent)
 {}
 
@@ -41,8 +46,8 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
   *pOstream << "Total Amount" << "\t";
   *pOstream << "Expression" << std::endl;
 
-  CCopasiVector< CMoiety >::const_iterator it = Model.getMoieties().begin();
-  CCopasiVector< CMoiety >::const_iterator end = Model.getMoieties().end();
+  CDataVector< CMoiety >::const_iterator it = Model.getMoieties().begin();
+  CDataVector< CMoiety >::const_iterator end = Model.getMoieties().end();
 
   for (; it != end; ++it)
     {

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,7 +28,7 @@
 /**
  * Default constructor
  */
-CLNAMethod::CLNAMethod(const CCopasiContainer * pParent,
+CLNAMethod::CLNAMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -35,7 +40,7 @@ CLNAMethod::CLNAMethod(const CCopasiContainer * pParent,
 }
 
 CLNAMethod::CLNAMethod(const CLNAMethod & src,
-                       const CCopasiContainer * pParent):
+                       const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mSteadyStateResolution(src.mSteadyStateResolution),
   mSSStatus(CSteadyStateMethod::notFound)
@@ -670,8 +675,8 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   //}
 
   // Check if the model has a compartment with an assignment or ODE
-  CCopasiVector< CCompartment >::const_iterator it = Model.getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator end = Model.getCompartments().end();
+  CDataVector< CCompartment >::const_iterator it = Model.getCompartments().begin();
+  CDataVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
     if (it->getStatus() != CModelEntity::FIXED)
@@ -680,7 +685,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
         return false;
       }
 
-  const CCopasiVector< CReaction > & reacs = Model.getReactions();
+  const CDataVector< CReaction > & reacs = Model.getReactions();
 
   size_t numReacs = reacs.size();
 

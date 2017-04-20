@@ -36,7 +36,7 @@ class QScrollArea;
 class QCheckBox;
 class QPushButton;
 class QSlider;
-class CCopasiObject;
+class CDataObject;
 class QMenu;
 class QAction;
 class QFrame;
@@ -121,7 +121,7 @@ protected:
   virtual void closeEvent(QCloseEvent* e);
 
   virtual CCopasiTask* getTaskForFolderId(size_t folderId);
-  std::vector<CSlider*>* getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const;
+  std::vector<CSlider*>* getCSlidersForObject(CDataObject* pObject, std::vector<CSlider*>* pVector) const;
   CopasiSlider* findCopasiSliderForCSlider(CSlider* pCSlider);
   CSlider* equivalentSliderExists(CSlider* pCSlider);
   void clearSliderBox();
@@ -138,7 +138,7 @@ protected:
   // This method check if the given object is a reference to the initial amount or the initial concentration
   // of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
   // is actually allowed and if it isn't, it will return the correct object
-  const CCopasiObject* determineCorrectObjectForSlider(const CCopasiObject* pObject);
+  const CDataObject* determineCorrectObjectForSlider(const CDataObject* pObject);
 
   /**
    * Takes a CopasiSlider object and checks if the associated model object

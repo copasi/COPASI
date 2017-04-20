@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,7 +25,6 @@
 #include "DataModel.txt.h"
 #include "CQThread.h"
 #include "qtUtilities.h"
-#include "utilities/CVector.h"
 #include "CProgressBar.h"
 #include "listviews.h"
 #include "CQMessageBox.h"
@@ -42,8 +46,9 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "tssanalysis/CTSSATask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CCopasiException.h"
 #include "commandline/CConfigurationFile.h"
 #include "utilities/CCopasiTree.h"
@@ -82,7 +87,7 @@
 
 //*****************************************************************************
 
-DataModelGUI::DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel):
+DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   QObject(parent),
   mpOutputHandlerPlot(NULL),
   mpDataModel(pDataModel),
@@ -158,8 +163,8 @@ void DataModelGUI::addModelRun()
 {
   try
     {
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-      mSuccess = CCopasiRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
+      assert(CRootContainer::getDatamodelList()->size() > 0);
+      mSuccess = CRootContainer::addDatamodel()->loadModel(mFileName, mpProgressBar, false);
     }
 
   catch (...)
@@ -167,7 +172,7 @@ void DataModelGUI::addModelRun()
       mSuccess = false;
     }
 
-  C_INT32 numDatamodels = CCopasiRootContainer::getDatamodelList()->size();
+  C_INT32 numDatamodels = CRootContainer::getDatamodelList()->size();
   CModel *pModel = NULL;
   CModel *pMergeModel = NULL;
 
@@ -176,7 +181,7 @@ void DataModelGUI::addModelRun()
       //the base model is assumed to be the first one
       pModel = mpDataModel->getModel();
       //the model to be merged is the last one
-      pMergeModel = (*CCopasiRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
+      pMergeModel = (*CRootContainer::getDatamodelList())[numDatamodels - 1].getModel();
     }
 
   if (mSuccess && pModel && pMergeModel)
@@ -186,7 +191,7 @@ void DataModelGUI::addModelRun()
     }
 
   if (pMergeModel)
-    CCopasiRootContainer::removeDatamodel(numDatamodels - 1);
+    CRootContainer::removeDatamodel(numDatamodels - 1);
 }
 
 void DataModelGUI::addModelFinished()
@@ -195,7 +200,7 @@ void DataModelGUI::addModelFinished()
     {
       //notify(ListViews::MODEL, ListViews::CHANGE, "");
 
-      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
       //linkDataModelToGUI();
     }
 
@@ -248,7 +253,7 @@ void DataModelGUI::loadModelFinished()
 {
   if (mSuccess)
     {
-      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -289,7 +294,7 @@ void DataModelGUI::saveModelRun()
 void DataModelGUI::saveModelFinished()
 {
   if (mSuccess)
-    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+    CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
 
@@ -343,7 +348,7 @@ void DataModelGUI::importSBMLFromStringFinished()
 
 void  DataModelGUI::saveFunctionDB(const std::string & fileName)
 {
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL) return;
 
@@ -352,7 +357,7 @@ void  DataModelGUI::saveFunctionDB(const std::string & fileName)
 
 void  DataModelGUI::loadFunctionDB(const std::string & fileName)
 {
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL) return;
 
@@ -390,7 +395,7 @@ void DataModelGUI::importSBMLFinished()
   if (mSuccess)
     {
       this->importCellDesigner();
-      CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -486,7 +491,7 @@ void DataModelGUI::exportSBMLRun()
 void DataModelGUI::exportSBMLFinished()
 {
   if (mSuccess)
-    CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+    CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
 
@@ -594,14 +599,14 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 
-  QString server = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getProxyServer());
+  QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
 
   // if we have a proxy server use it
   if (!server.isEmpty())
     {
-      int port = CCopasiRootContainer::getConfiguration()->getProxyPort();
-      QString user = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getProxyUser());
-      QString pass = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getProxyPassword());
+      int port = CRootContainer::getConfiguration()->getProxyPort();
+      QString user = FROM_UTF8(CRootContainer::getConfiguration()->getProxyUser());
+      QString pass = FROM_UTF8(CRootContainer::getConfiguration()->getProxyPassword());
 
       // if we have a username, but no password stored (which would be in clear text), then
       // ask for password.
@@ -788,8 +793,8 @@ void DataModelGUI::importCellDesigner()
                               // create the model map
                               std::string s1, s2;
                               std::map<std::string, std::string> modelmap;
-                              std::map<const CCopasiObject*, SBase*>::const_iterator it;
-                              std::map<const CCopasiObject*, SBase*>::const_iterator itEnd = mpDataModel->getCopasi2SBMLMap().end();
+                              std::map<const CDataObject*, SBase*>::const_iterator it;
+                              std::map<const CDataObject*, SBase*>::const_iterator itEnd = mpDataModel->getCopasi2SBMLMap().end();
 
                               for (it = mpDataModel->getCopasi2SBMLMap().begin(); it != itEnd; ++it)
                                 {
@@ -996,7 +1001,7 @@ void DataModelGUI::importSEDMLFinished()
 {
   if (mSuccess)
     {
-      CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -1027,7 +1032,7 @@ void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile,
 void DataModelGUI::exportSEDMLFinished()
 {
   if (mSuccess)
-    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+    CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
 

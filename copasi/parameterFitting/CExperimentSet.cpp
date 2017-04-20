@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,14 +26,14 @@
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "math/CMathContainer.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
 #include "commandline/CLocaleString.h"
 
-CExperimentSet::CExperimentSet(const CCopasiContainer * pParent,
+CExperimentSet::CExperimentSet(const CDataContainer * pParent,
                                const std::string & name):
   CCopasiParameterGroup(name, pParent, "CExperimentSet"),
   mpExperiments(NULL),
@@ -43,8 +48,8 @@ CExperimentSet::CExperimentSet(const CCopasiContainer * pParent,
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CExperimentSet & src,
-                               const CCopasiContainer * pParent):
-  CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+                               const CDataContainer * pParent):
+  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
   mpExperiments(NULL),
   mNonExperiments(0),
   mDependentObjects(0),
@@ -57,8 +62,8 @@ CExperimentSet::CExperimentSet(const CExperimentSet & src,
 {initializeParameter();}
 
 CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
-                               const CCopasiContainer * pParent):
-  CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
+                               const CDataContainer * pParent):
+  CCopasiParameterGroup(group, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
   mpExperiments(NULL),
   mNonExperiments(0),
   mDependentObjects(0),
@@ -394,7 +399,7 @@ const CMatrix< C_FLOAT64 > & CExperimentSet::getDependentData(const size_t & ind
 
 size_t CExperimentSet::keyToIndex(const std::string & key) const
 {
-  const CExperiment * pExp = dynamic_cast<const CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(key));
+  const CExperiment * pExp = dynamic_cast<const CExperiment *>(CRootContainer::getKeyFactory()->get(key));
 
   if (!pExp) return C_INVALID_INDEX;
 
@@ -482,7 +487,7 @@ void CExperimentSet::fixBuild55()
   return;
 }
 
-CCrossValidationSet::CCrossValidationSet(const CCopasiContainer * pParent,
+CCrossValidationSet::CCrossValidationSet(const CDataContainer * pParent,
     const std::string & name):
   CExperimentSet(name, pParent),
   mpWeight(NULL),
@@ -490,14 +495,14 @@ CCrossValidationSet::CCrossValidationSet(const CCopasiContainer * pParent,
 {initializeParameter();}
 
 CCrossValidationSet::CCrossValidationSet(const CCrossValidationSet & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CExperimentSet(src, pParent),
   mpWeight(NULL),
   mpThreshold(NULL)
 {initializeParameter();}
 
 CCrossValidationSet::CCrossValidationSet(const CCopasiParameterGroup & group,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CExperimentSet(group, pParent),
   mpWeight(NULL),
   mpThreshold(NULL)

@@ -33,7 +33,7 @@ class QHBox;
 class QVBox;
 class QVBoxLayout;
 class QLabel;
-class CCopasiObject;
+class CDataObject;
 class CModel;
 
 class CPlotSelectionDialog: public QDialog
@@ -43,7 +43,7 @@ class CPlotSelectionDialog: public QDialog
 public:
   CPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WindowFlags f = 0);
   virtual ~CPlotSelectionDialog();
-  void setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2);
+  void setOutputVectors(std::vector<CDataObject*>* outputVector1, std::vector<CDataObject*>* outputVector2);
   void setModel(CModel* model);
 
 protected slots:
@@ -71,10 +71,10 @@ protected:
   QLabel* mpYAxisLabel;
   QVBox* mpXAxisSelectionBox;
   QVBox* mpYAxisSelectionBox;
-  std::vector<CCopasiObject*>* mpXAxisOutputVector;
-  std::vector<CCopasiObject*>* mpYAxisOutputVector;
-  std::vector<CCopasiObject*>* mpXAxisTmpVector;
-  std::vector<CCopasiObject*>* mpYAxisTmpVector;
+  std::vector<CDataObject*>* mpXAxisOutputVector;
+  std::vector<CDataObject*>* mpYAxisOutputVector;
+  std::vector<CDataObject*>* mpXAxisTmpVector;
+  std::vector<CDataObject*>* mpYAxisTmpVector;
 };
 
 #endif // CPlotSelectionDialog_H__

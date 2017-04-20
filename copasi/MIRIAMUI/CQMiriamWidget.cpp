@@ -29,7 +29,7 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 /*
@@ -328,7 +328,7 @@ bool CQMiriamWidget::enterProtected()
 
   if (mKeyToCopy != "")
     {
-      CAnnotation *pAnnotation = CAnnotation::castObject(dynamic_cast<CCopasiObject *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy)));
+      CAnnotation *pAnnotation = CAnnotation::castObject(dynamic_cast<CDataObject *>(CRootContainer::getKeyFactory()->get(mKeyToCopy)));
 
       if (pAnnotation != NULL)
         {
@@ -417,8 +417,8 @@ const CMIRIAMInfo &CQMiriamWidget::getMIRIAMInfo() const
 void CQMiriamWidget::updateResourcesList()
 {
   // Build the list of known resources
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  const CMIRIAMResources *pResource = &CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources();
+  assert(CRootContainer::getDatamodelList()->size() > 0);
+  const CMIRIAMResources *pResource = &CRootContainer::getConfiguration()->getRecentMIRIAMResources();
   QMap< QString, QString > ResourceMap;
   QMap< QString, QString > ReferenceMap;
   size_t i, imax = pResource->getResourceList().size();

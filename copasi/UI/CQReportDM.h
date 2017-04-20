@@ -26,7 +26,7 @@ class CQReportDM : public CQBaseDataModel
   Q_OBJECT
 
 public:
-  CQReportDM(QObject *parent, CCopasiDataModel * pDataModel);
+  CQReportDM(QObject *parent, CDataModel * pDataModel);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;

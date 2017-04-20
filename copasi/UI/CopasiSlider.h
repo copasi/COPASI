@@ -30,7 +30,7 @@
 
 class QSlider;
 class QWidget;
-class CCopasiObject;
+class CDataObject;
 class QLabel;
 class CCopasiParameterGroup;
 class QToolButton;
@@ -60,8 +60,8 @@ public:
   C_FLOAT64 maxValue() const;
   C_FLOAT64 originalValue() const;
   void updateValue(bool modifyRange, bool updateDependencies);
-  const CCopasiObject* object() const;
-  void setObject(const CCopasiObject * object);
+  const CDataObject* object() const;
+  void setObject(const CDataObject * object);
   CSlider* getCSlider() const;
   void updateLabel();
   void updateSliderData();

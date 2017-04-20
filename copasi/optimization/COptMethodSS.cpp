@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,9 +30,9 @@
 #include "randomGenerator/CRandom.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodSS::COptMethodSS(const CCopasiContainer * pParent,
+COptMethodSS::COptMethodSS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -52,7 +57,7 @@ COptMethodSS::COptMethodSS(const CCopasiContainer * pParent,
 }
 
 COptMethodSS::COptMethodSS(const COptMethodSS & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
   mPool(0),
   mPoolVal(0),
@@ -82,7 +87,7 @@ bool COptMethodSS::elevateChildren()
 
 void COptMethodSS::initObjects()
 {
-  addObjectReference("Current Iteration", mCurrentGeneration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentGeneration, CDataObject::ValueInt);
 }
 
 bool COptMethodSS::initialize()
@@ -1191,7 +1196,6 @@ bool COptMethodSS::optimise()
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
-
     }
 
   // end of loop for iterations

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,7 +60,7 @@ CEvaluationNodeStructure::CEvaluationNodeStructure(const CEvaluationNodeStructur
 
 CEvaluationNodeStructure::~CEvaluationNodeStructure() {}
 
-ASTNode* CEvaluationNodeStructure::toAST(const CCopasiDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeStructure::toAST(const CDataModel* /*pDataModel*/) const
 {
   fatalError();
   return NULL;

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,8 +29,8 @@
 
 class CPlotSpecification;
 class CReportDefinition;
-class CCopasiObject;
-class CCopasiDataModel;
+class CDataObject;
+class CDataModel;
 
 class CDefaultOutputDescription
 {
@@ -94,7 +99,7 @@ public:
    *  the current report for the task (possibly replacing an already set report)
    */
   static
-  CCopasiObject* createDefaultOutput(C_INT32 id, CCopasiTask * task, CCopasiDataModel* pDataModel, bool activate = true);
+  CDataObject* createDefaultOutput(C_INT32 id, CCopasiTask * task, CDataModel* pDataModel, bool activate = true);
 
 private:           //************************************
 
@@ -109,20 +114,20 @@ private:           //************************************
 
   static
   CPlotSpecification* createPlot(const std::string & name,
-                                 const CCopasiObject* x,
+                                 const CDataObject* x,
                                  bool logX,
-                                 const std::vector<const CCopasiObject*> & y,
+                                 const std::vector<const CDataObject*> & y,
                                  bool logY,
                                  const CTaskEnum::Task & taskType,
-                                 CCopasiDataModel* pDataModel,
+                                 CDataModel* pDataModel,
                                  CCopasiTask *task = NULL);
 
   static
   CReportDefinition* createTable(const std::string & name,
-                                 const std::vector<const CCopasiObject*> & d,
+                                 const std::vector<const CDataObject*> & d,
                                  const std::string & comment,
                                  const CTaskEnum::Task & taskType,
-                                 CCopasiDataModel* pDataModel);
+                                 CDataModel* pDataModel);
 
   static const std::string emptyString;
   static const CDefaultOutputDescription emptyItem;

@@ -37,14 +37,14 @@
 #include "CModelValue.h"
 #include "CObjectLists.h"
 #include "function/CFunctionDB.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiMessage.h"
-#include "utilities/CCopasiVector.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CVector.h"
+#include "copasi/core/CDataVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CluX.h"
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
@@ -105,7 +105,7 @@ bool CModel::applyData(const CData & data)
   return success;
 }
 
-CModel::CModel(CCopasiContainer* pParent):
+CModel::CModel(CDataContainer* pParent):
   CModelEntity("New Model", pParent, "Model"),
   mStateTemplate(*this),
   mStructuralDependencies(),
@@ -139,9 +139,9 @@ CModel::CModel(CCopasiContainer* pParent):
   mpLinkMatrixAnnotation(NULL),
   mLView(mL),
   mAvogadro(CUnit::Avogadro),
-  mpAvogadroReference(new CCopasiObjectReference< C_FLOAT64 >("Avogadro Constant", this, mAvogadro, CCopasiObject::ValueDbl)),
+  mpAvogadroReference(new CDataObjectReference< C_FLOAT64 >("Avogadro Constant", this, mAvogadro, CDataObject::ValueDbl)),
   mQuantity2NumberFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
-  mpQuantity2NumberFactorReference(new CCopasiObjectReference< C_FLOAT64 >("Quantity Conversion Factor", this, mQuantity2NumberFactor, CCopasiObject::ValueDbl)),
+  mpQuantity2NumberFactorReference(new CDataObjectReference< C_FLOAT64 >("Quantity Conversion Factor", this, mQuantity2NumberFactor, CDataObject::ValueDbl)),
   mNumber2QuantityFactor(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpCompileHandler(NULL),
   mReorderNeeded(false),
@@ -228,19 +228,19 @@ CModel::~CModel()
 
   pdelete(mpMathContainer);
 
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 
   DESTRUCTOR_TRACE;
 }
 
 // virtual
-bool CModel::setObjectParent(const CCopasiContainer * pParent)
+bool CModel::setObjectParent(const CDataContainer * pParent)
 {
-  return CCopasiContainer::setObjectParent(pParent);
+  return CDataContainer::setObjectParent(pParent);
 }
 
 // virtual
-std::string CModel::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CModel::getChildObjectUnits(const CDataObject * pObject) const
 {
   if (pObject == mpAvogadroReference)
     {
@@ -268,7 +268,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
     return Fail;
 
   // :TODO: Remove OldMetabolites as part of the data model.
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   pDataModel->pOldMetabolites->load(configBuffer, Size);
 
@@ -376,7 +376,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
   initializeMetabolites();
 
-  if ((Fail = CCopasiRootContainer::getFunctionList()->load(configBuffer))) // slow
+  if ((Fail = CRootContainer::getFunctionList()->load(configBuffer))) // slow
     return Fail;
 
   if ((Fail = configBuffer.getVariable("TotalSteps", "C_INT32", &Size,
@@ -397,15 +397,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 bool CModel::compile()
 {
   bool success = true;
-  bool RenameHandlerEnabled = false;
+  bool RenameHandlerEnabled = CRegisteredObjectName::isEnabled();
 
-  if (CCopasiObject::smpRenameHandler != NULL)
-    {
-      RenameHandlerEnabled = CCopasiObject::smpRenameHandler->isEnabled();
-      CCopasiObject::smpRenameHandler->setEnabled(false);
-    }
-
-  mpValueReference->addDirectDependency(this);
+  CRegisteredObjectName::setEnabled(false);
 
   unsigned C_INT32 CompileStep = 0;
   size_t hCompileStep;
@@ -485,12 +479,12 @@ bool CModel::compile()
   if (mpCompileHandler) mpCompileHandler->finishItem(hCompileStep);
 
   {
-    CCopasiVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
-    CCopasiVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
+    CDataVector< CMetab >::iterator itSpecies = mMetabolitesX.begin();
+    CDataVector< CMetab >::iterator endSpecies = mMetabolitesX.end();
 
     for (; itSpecies != endSpecies; ++itSpecies)
       {
-        itSpecies->compileIsInitialConcentrationChangeAllowed();
+        itSpecies->compileIsInitialValueChangeAllowed();
       }
   }
 
@@ -534,7 +528,7 @@ finish:
 
   if (RenameHandlerEnabled)
     {
-      CCopasiObject::smpRenameHandler->setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
     }
 
   mCompileIsNecessary = !success;
@@ -547,29 +541,29 @@ bool CModel::buildDependencyGraphs()
   mStructuralDependencies.clear();
 
   // We need to add all species, reactions, and event assignments
-  CCopasiVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::const_iterator endMetab = mMetabolites.end();
+  CDataVector< CMetab >::const_iterator itMetab = mMetabolites.begin();
+  CDataVector< CMetab >::const_iterator endMetab = mMetabolites.end();
 
   for (; itMetab != endMetab; ++itMetab)
     {
       mStructuralDependencies.addObject(&*itMetab);
     }
 
-  CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+  CDataVector< CReaction >::const_iterator itReaction = mSteps.begin();
+  CDataVector< CReaction >::const_iterator endReaction = mSteps.end();
 
   for (; itReaction != endReaction; ++itReaction)
     {
       mStructuralDependencies.addObject(&*itReaction);
     }
 
-  CCopasiVector< CEvent >::const_iterator itEvent = mEvents.begin();
-  CCopasiVector< CEvent >::const_iterator endEvent = mEvents.end();
+  CDataVector< CEvent >::const_iterator itEvent = mEvents.begin();
+  CDataVector< CEvent >::const_iterator endEvent = mEvents.end();
 
   for (; itEvent != endEvent; ++itEvent)
     {
-      CCopasiVector< CEventAssignment >::const_iterator itAssignment = itEvent->getAssignments().begin();
-      CCopasiVector< CEventAssignment >::const_iterator endAssignment = itEvent->getAssignments().end();
+      CDataVector< CEventAssignment >::const_iterator itAssignment = itEvent->getAssignments().begin();
+      CDataVector< CEventAssignment >::const_iterator endAssignment = itEvent->getAssignments().end();
 
       for (; itAssignment != endAssignment; ++itAssignment)
         {
@@ -654,8 +648,8 @@ void CModel::buildStoi()
   C_FLOAT64 * pRow, *pRowEnd;
   pRowEnd = mStoi.array() + numRows * numCols;
 
-  CCopasiVector< CReaction >::iterator itStep = mSteps.begin();
-  CCopasiVector< CMetab >::const_iterator itMetab;
+  CDataVector< CReaction >::iterator itStep = mSteps.begin();
+  CDataVector< CMetab >::const_iterator itMetab;
 
   for (; pCol < pColEnd; ++pCol, ++itStep)
     {
@@ -668,15 +662,15 @@ void CModel::buildStoi()
                        itStep->getObjectName().c_str(),
                        itStep->getFunction()->getObjectName().c_str());
 
-      const CCopasiVector< CChemEqElement > & Balance = itStep->getChemEq().getBalances();
-      CCopasiVector< CChemEqElement >::const_iterator itBalance = Balance.begin();
-      CCopasiVector< CChemEqElement >::const_iterator endBalance = Balance.end();
+      const CDataVector< CChemEqElement > & Balance = itStep->getChemEq().getBalances();
+      CDataVector< CChemEqElement >::const_iterator itBalance = Balance.begin();
+      CDataVector< CChemEqElement >::const_iterator endBalance = Balance.end();
 
       for (; itBalance != endBalance; ++itBalance)
         {
           const std::string & key = itBalance->getMetaboliteKey();
 
-          for (pRow = pCol, itMetab = CCopasiVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
+          for (pRow = pCol, itMetab = CDataVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
                pRow < pRowEnd;
                pRow += numCols, ++itMetab)
             if (itMetab->getKey() == key)
@@ -745,8 +739,8 @@ bool CModel::handleUnusedMetabolites()
   std::vector< size_t >::const_iterator itUnused = Unused.begin();
   std::vector< size_t >::const_iterator endUnused = Unused.end();
 
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
-  CCopasiVector< CMetab >::iterator endMetab = itMetab + mNumMetabolitesReaction;
+  CDataVector< CMetab >::iterator itMetab = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CDataVector< CMetab >::iterator endMetab = itMetab + mNumMetabolitesReaction;
 
   // Build new stoichiometry Matrix
   pStoi = mStoi.array();
@@ -821,7 +815,7 @@ void CModel::buildRedStoi()
   CVector< CMetab * > ReactionMetabolites(mNumMetabolitesReaction);
   CMetab ** ppMetab = ReactionMetabolites.array();
   CMetab ** ppMetabEnd = ppMetab + mNumMetabolitesReaction;
-  CCopasiVector< CMetab >::iterator itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CDataVector< CMetab >::iterator itMetabX = mMetabolitesX.begin() + mNumMetabolitesODE;
 
   for (; ppMetab != ppMetabEnd; ++ppMetab, ++itMetabX)
     {
@@ -849,8 +843,8 @@ void CModel::updateMatrixAnnotations()
   mpStoiAnnotation->resize();
   mpRedStoiAnnotation->resize();
 
-  CCopasiVector< CMetab >::const_iterator it = CCopasiVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
-  CCopasiVector< CMetab >::const_iterator end = it + mNumMetabolitesReactionIndependent;
+  CDataVector< CMetab >::const_iterator it = CDataVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
+  CDataVector< CMetab >::const_iterator end = it + mNumMetabolitesReactionIndependent;
 
   CCopasiObjectName CN;
   size_t j;
@@ -881,8 +875,8 @@ void CModel::updateMatrixAnnotations()
 
 void CModel::updateMoietyValues()
 {
-  CCopasiVector< CMoiety >::iterator it = mMoieties.begin();
-  CCopasiVector< CMoiety >::iterator end = mMoieties.end();
+  CDataVector< CMoiety >::iterator it = mMoieties.begin();
+  CDataVector< CMoiety >::iterator end = mMoieties.end();
 
   for (; it != end; ++it)
     it->refreshInitialValue();
@@ -891,12 +885,12 @@ void CModel::updateMoietyValues()
 void CModel::buildMoieties()
 {
   // Independent metabs
-  CCopasiVector< CMetab >::iterator itIndependent = mMetabolitesX.begin() + mNumMetabolitesODE;
-  CCopasiVector< CMetab >::iterator endIndependent = itIndependent + mNumMetabolitesReactionIndependent;
+  CDataVector< CMetab >::iterator itIndependent = mMetabolitesX.begin() + mNumMetabolitesODE;
+  CDataVector< CMetab >::iterator endIndependent = itIndependent + mNumMetabolitesReactionIndependent;
 
   // Dependent metabs
-  CCopasiVector< CMetab >::iterator itDependent = endIndependent;
-  CCopasiVector< CMetab >::iterator endDependent = itDependent + MNumMetabolitesReactionDependent;
+  CDataVector< CMetab >::iterator itDependent = endIndependent;
+  CDataVector< CMetab >::iterator endDependent = itDependent + MNumMetabolitesReactionDependent;
 
   C_FLOAT64 * pFactor = mL.array();
 
@@ -931,10 +925,10 @@ void CModel::initializeMetabolites()
   // Note, the metabolites physically exist in the compartments.
   mMetabolitesX.clear();
 
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
-  CCopasiVector< CMetab >::iterator itMetab;
-  CCopasiVector< CMetab >::iterator endMetab;
+  CDataVector< CCompartment >::iterator itCompartment = mCompartments.begin();
+  CDataVector< CCompartment >::iterator endCompartment = mCompartments.end();
+  CDataVector< CMetab >::iterator itMetab;
+  CDataVector< CMetab >::iterator endMetab;
 
   std::vector< CMetab * > ODEMetabs;
   std::vector< CMetab * > ReactionMetabs;
@@ -1022,37 +1016,37 @@ void CModel::initializeMetabolites()
 
 //**********************************************************************
 
-CCopasiVectorNS < CReaction > & CModel::getReactions()
+CDataVectorNS < CReaction > & CModel::getReactions()
 {return mSteps;}
 
-const CCopasiVectorNS < CReaction > & CModel::getReactions() const
+const CDataVectorNS < CReaction > & CModel::getReactions() const
 {return mSteps;}
 
 const CVector< C_FLOAT64 > & CModel::getParticleFlux() const
 {return mParticleFluxes;}
 
-CCopasiVector< CMetab > & CModel::getMetabolites()
+CDataVector< CMetab > & CModel::getMetabolites()
 {return mMetabolites;}
 
-const CCopasiVector< CMetab > & CModel::getMetabolites() const
+const CDataVector< CMetab > & CModel::getMetabolites() const
 {return mMetabolites;}
 
-CCopasiVector< CMetab > & CModel::getMetabolitesX()
+CDataVector< CMetab > & CModel::getMetabolitesX()
 {return mMetabolitesX;}
 
-const CCopasiVector< CMetab > & CModel::getMetabolitesX() const
+const CDataVector< CMetab > & CModel::getMetabolitesX() const
 {return mMetabolitesX;}
 
-const CCopasiVectorN< CModelValue > & CModel::getModelValues() const
+const CDataVectorN< CModelValue > & CModel::getModelValues() const
 {return mValues;}
 
-CCopasiVectorN< CModelValue > & CModel::getModelValues()
+CDataVectorN< CModelValue > & CModel::getModelValues()
 {return mValues;}
 
-const CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets() const
+const CDataVectorN< CModelParameterSet > & CModel::getModelParameterSets() const
 {return mParameterSets;}
 
-CCopasiVectorN< CModelParameterSet > & CModel::getModelParameterSets()
+CDataVectorN< CModelParameterSet > & CModel::getModelParameterSets()
 {return mParameterSets;}
 
 const CModelParameterSet & CModel::getActiveModelParameterSet() const
@@ -1068,7 +1062,7 @@ CModelParameterSet & CModel::getActiveModelParameterSet()
 void CModel::applyActiveParameterSet()
 {
   CModelParameterSet * pParameterSet =
-    dynamic_cast< CModelParameterSet * >(CCopasiRootContainer::getKeyFactory()->get(mActiveParameterSetKey));
+    dynamic_cast< CModelParameterSet * >(CRootContainer::getKeyFactory()->get(mActiveParameterSetKey));
 
   if (pParameterSet != NULL)
     {
@@ -1093,10 +1087,10 @@ void CModel::refreshActiveParameterSet()
   mParameterSet.refreshFromModel(false);
 }
 
-CCopasiVectorN < CEvent > & CModel::getEvents()
+CDataVectorN < CEvent > & CModel::getEvents()
 {return mEvents;}
 
-const CCopasiVectorN < CEvent > & CModel::getEvents() const
+const CDataVectorN < CEvent > & CModel::getEvents() const
 {return mEvents;}
 
 //********
@@ -1128,10 +1122,10 @@ size_t CModel::getNumModelValues() const
 const std::string & CModel::getKey() const
 {return mKey;}
 
-CCopasiVectorNS < CCompartment > & CModel::getCompartments()
+CDataVectorNS < CCompartment > & CModel::getCompartments()
 {return mCompartments;}
 
-const CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
+const CDataVectorNS < CCompartment > & CModel::getCompartments() const
 {return mCompartments;}
 
 /**
@@ -1152,7 +1146,7 @@ CModel::getStoiAnnotation() const
   return mpStoiAnnotation;
 }
 
-const CCopasiVector < CMoiety > & CModel::getMoieties() const
+const CDataVector < CMoiety > & CModel::getMoieties() const
 {return mMoieties;}
 
 const CLinkMatrixView & CModel::getL() const
@@ -1256,8 +1250,8 @@ bool CModel::buildStateTemplate()
   CVector< CModelEntity * > Entities(mMetabolitesX.size() + mCompartments.size() + mValues.size());
   CModelEntity ** ppEntity = Entities.array();
 
-  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+  CDataVector< CModelValue >::iterator itValue = mValues.begin();
+  CDataVector< CModelValue >::iterator endValue = mValues.end();
 
   for (; itValue != endValue; ++itValue)
     if (itValue->getStatus() == ODE)
@@ -1266,8 +1260,8 @@ bool CModel::buildStateTemplate()
         *ppEntity++ = itValue;
       }
 
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
+  CDataVector< CCompartment >::iterator itCompartment = mCompartments.begin();
+  CDataVector< CCompartment >::iterator endCompartment = mCompartments.end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
     if (itCompartment->getStatus() == ODE)
@@ -1276,8 +1270,8 @@ bool CModel::buildStateTemplate()
         *ppEntity++ = itCompartment;
       }
 
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
-  CCopasiVector< CMetab >::iterator endMetab = mMetabolitesX.end();
+  CDataVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
+  CDataVector< CMetab >::iterator endMetab = mMetabolitesX.end();
 
   for (; itMetab != endMetab; ++itMetab)
     {
@@ -1329,8 +1323,8 @@ bool CModel::buildStateTemplate()
   for (; ppEntity != ppEntityEnd; ++ppEntity)
     (*ppEntity)->compile();
 
-  CCopasiVector< CReaction >::iterator itReaction = mSteps.begin();
-  CCopasiVector< CReaction >::iterator endReaction = mSteps.end();
+  CDataVector< CReaction >::iterator itReaction = mSteps.begin();
+  CDataVector< CReaction >::iterator endReaction = mSteps.end();
 
   for (; itReaction != endReaction; ++itReaction)
     itReaction->compile();
@@ -1345,20 +1339,20 @@ bool CModel::buildUserOrder()
   CVector< const CModelEntity * > UserEntities(mMetabolites.size() + mCompartments.size() + mValues.size());
   const CModelEntity ** ppEntity = UserEntities.array();
 
-  CCopasiVector< CMetab >::iterator itMetab = mMetabolites.begin();
-  CCopasiVector< CMetab >::iterator endMetab = mMetabolites.end();
+  CDataVector< CMetab >::iterator itMetab = mMetabolites.begin();
+  CDataVector< CMetab >::iterator endMetab = mMetabolites.end();
 
   for (; itMetab != endMetab; ++itMetab)
     *ppEntity++ = itMetab;;
 
-  CCopasiVector< CCompartment >::iterator itCompartment = mCompartments.begin();
-  CCopasiVector< CCompartment >::iterator endCompartment = mCompartments.end();
+  CDataVector< CCompartment >::iterator itCompartment = mCompartments.begin();
+  CDataVector< CCompartment >::iterator endCompartment = mCompartments.end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
     *ppEntity++ = itCompartment;
 
-  CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-  CCopasiVector< CModelValue >::iterator endValue = mValues.end();
+  CDataVector< CModelValue >::iterator itValue = mValues.begin();
+  CDataVector< CModelValue >::iterator endValue = mValues.end();
 
   for (; itValue != endValue; ++itValue)
     *ppEntity++ = itValue;
@@ -1564,33 +1558,7 @@ bool CModel::setQuantityUnit(const std::string & name,
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
-  //adapt particle numbers
-  size_t i, imax = mMetabolitesX.size();
-
-  switch (frameWork)
-    {
-      case CModelParameter::Concentration:
-        for (i = 0; i < imax; ++i)
-          {
-            //update particle numbers
-            mMetabolitesX[i].refreshInitialValue();
-            mMetabolitesX[i].refreshNumber();
-          }
-
-        break;
-
-      case CModelParameter::ParticleNumbers:
-        for (i = 0; i < imax; ++i)
-          {
-            //update particle numbers
-            mMetabolitesX[i].refreshInitialConcentration();
-            mMetabolitesX[i].refreshConcentration();
-          }
-
-        break;
-    }
-
-  mpMathContainer->quantityConversionChanged();
+  mpMathContainer->quantityConversionChanged(frameWork);
 
   return true;
 }
@@ -1648,291 +1616,27 @@ const C_FLOAT64 & CModel::getNumber2QuantityFactor() const
 
 //*****
 
-//**********************************************************************
-
-bool CModel::appendDependentModelObjects(const std::set< const CCopasiObject * > & deletedObjects,
-    std::set< const CCopasiObject * > & dependentReactions,
-    std::set< const CCopasiObject * > & dependentMetabolites,
-    std::set< const CCopasiObject * > & dependentCompartments,
-    std::set< const CCopasiObject * > & dependentModelValues,
-    std::set< const CCopasiObject * > & dependentEvents,
-    std::set< const CCopasiObject * > & dependentEventAssignments) const
+bool CModel::appendDirectDependents(const CDataContainer & container,
+                                    CDataObject::DataObjectSet & dependentReactions,
+                                    CDataObject::DataObjectSet & dependentMetabolites,
+                                    CDataObject::DataObjectSet & dependentCompartments,
+                                    CDataObject::DataObjectSet & dependentModelValues,
+                                    CDataObject::DataObjectSet & dependentEvents,
+                                    CDataObject::DataObjectSet & dependentEventAssignments) const
 {
-  // We need a local copy since we recursively add deleted objects.
-  std::set< const CCopasiObject * > DeletedObjects = deletedObjects;
+  ObjectSet Objects;
+  Objects.insert(&container);
 
-  bool ObjectsAppended = false;
-  bool DeleteObjects = DeletedObjects.size() > 0;
-
-  // This is this implemented recursively. Since deleting a container may result
-  // in the deletion of objects not dependent on the original set of deleted objects.
-
-  while (DeleteObjects)
-    {
-      DeleteObjects = false;
-
-      DeleteObjects |= appendDependentReactions(DeletedObjects, dependentReactions);
-
-      if (dependentReactions.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentReactions.end();
-
-          for (it = dependentReactions.begin(); it != itEnd; ++it)
-            if (DeletedObjects.find(*it) == DeletedObjects.end())
-              {
-                CCopasiObject::DataObjectSet AdditionalObjects =
-                  static_cast< const CReaction * >(*it)->getDeletedObjects();
-
-                std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
-                std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
-
-                for (; itDeleted != endDeleted; ++itDeleted)
-                  DeletedObjects.insert(*itDeleted);
-              }
-        }
-
-      DeleteObjects |= appendDependentMetabolites(DeletedObjects, dependentMetabolites);
-
-      if (dependentMetabolites.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentMetabolites.end();
-
-          for (it = dependentMetabolites.begin(); it != itEnd; ++it)
-            if (DeletedObjects.find(*it) == DeletedObjects.end())
-              {
-                CCopasiObject::DataObjectSet AdditionalObjects =
-                  static_cast< const CMetab * >(*it)->getDeletedObjects();
-
-                std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
-                std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
-
-                for (; itDeleted != endDeleted; ++itDeleted)
-                  DeletedObjects.insert(*itDeleted);
-              }
-        }
-
-      DeleteObjects |= appendDependentModelValues(DeletedObjects, dependentModelValues);
-
-      if (dependentModelValues.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentModelValues.end();
-
-          for (it = dependentModelValues.begin(); it != itEnd; ++it)
-            if (DeletedObjects.find(*it) == DeletedObjects.end())
-              {
-                CCopasiObject::DataObjectSet AdditionalObjects =
-                  static_cast< const CModelValue * >(*it)->getDeletedObjects();
-
-                std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
-                std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
-
-                for (; itDeleted != endDeleted; ++itDeleted)
-                  DeletedObjects.insert(*itDeleted);
-              }
-        }
-
-      DeleteObjects |= appendDependentCompartments(DeletedObjects, dependentCompartments);
-
-      if (dependentCompartments.size() > 0)
-        {
-          std::set< const CCopasiObject * >::const_iterator it, itEnd = dependentCompartments.end();
-
-          for (it = dependentCompartments.begin(); it != itEnd; ++it)
-            if (DeletedObjects.find(*it) == DeletedObjects.end())
-              {
-                CCopasiObject::DataObjectSet AdditionalObjects =
-                  static_cast< const CCompartment * >(*it)->getDeletedObjects();
-
-                std::set< const CCopasiObject * >::const_iterator itDeleted = AdditionalObjects.begin();
-                std::set< const CCopasiObject * >::const_iterator endDeleted = AdditionalObjects.end();
-
-                for (; itDeleted != endDeleted; ++itDeleted)
-                  DeletedObjects.insert(*itDeleted);
-              }
-        }
-
-      DeleteObjects |= appendDependentEvents(DeletedObjects, dependentEvents);
-      DeleteObjects |= appendDependentEventAssignments(DeletedObjects, dependentEventAssignments);
-
-      ObjectsAppended |= DeleteObjects;
-    }
-
-  return ObjectsAppended;
+  return appendDirectDependents(Objects, dependentReactions, dependentMetabolites, dependentCompartments, dependentModelValues, dependentEvents, dependentEventAssignments);
 }
 
-bool CModel::appendDependentReactions(std::set< const CCopasiObject * > candidates,
-                                      std::set< const CCopasiObject * > & dependents) const
-{
-  const_cast< CModel * >(this)->compileIfNecessary(NULL);
-
-  size_t Size = dependents.size();
-
-  CCopasiVectorN< CReaction >::const_iterator it = mSteps.begin();
-  CCopasiVectorN< CReaction >::const_iterator end = mSteps.end();
-
-  CCopasiObject::DataObjectSet::const_iterator itSet;
-  CCopasiObject::DataObjectSet::const_iterator endSet;
-
-  for (; it != end; ++it)
-    if (candidates.find(it) == candidates.end())
-      {
-        // Check whether the reaction is already in the list of deleted objects
-        if (candidates.find(it) == candidates.end())
-          {
-            if (it->mustBeDeleted(candidates))
-              {
-                dependents.insert(it);
-              }
-          }
-      }
-
-  return Size < dependents.size();
-}
-
-bool CModel::appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
-                                        std::set< const CCopasiObject * > & dependents) const
-{
-  const_cast< CModel * >(this)->compileIfNecessary(NULL);
-
-  size_t Size = dependents.size();
-
-  CCopasiVectorN< CCompartment >::const_iterator itComp = mCompartments.begin();
-  CCopasiVectorN< CCompartment >::const_iterator endComp = mCompartments.end();
-
-  CCopasiVectorN< CMetab >::const_iterator it;
-  CCopasiVectorN< CMetab >::const_iterator end;
-
-  CCopasiObject::DataObjectSet::const_iterator itSet;
-  CCopasiObject::DataObjectSet::const_iterator endSet;
-
-  for (; itComp != endComp; ++itComp)
-    {
-      it = itComp->getMetabolites().begin();
-      end = itComp->getMetabolites().end();
-
-      for (; it != end; ++it)
-        {
-          // Check whether the species is already in the list of deleted objects
-          if (candidates.find(it) == candidates.end())
-            {
-              if (it->mustBeDeleted(candidates))
-                {
-                  dependents.insert(it);
-                }
-            }
-        }
-    }
-
-  return Size < dependents.size();
-}
-
-bool CModel::appendDependentCompartments(std::set< const CCopasiObject * > candidates,
-    std::set< const CCopasiObject * > & dependents) const
-{
-  const_cast< CModel * >(this)->compileIfNecessary(NULL);
-
-  size_t Size = dependents.size();
-
-  CCopasiVectorN< CCompartment >::const_iterator it = mCompartments.begin();
-  CCopasiVectorN< CCompartment >::const_iterator end = mCompartments.end();
-
-  std::set< const CCopasiObject * >::const_iterator itSet;
-  std::set< const CCopasiObject * >::const_iterator endSet;
-
-  for (; it != end; ++it)
-    {
-      // Check whether the compartment is already in the list of deleted objects
-      if (candidates.find(it) == candidates.end())
-        {
-          if (it->mustBeDeleted(candidates))
-            {
-              dependents.insert(it);
-            }
-        }
-    }
-
-  return Size < dependents.size();
-}
-
-bool CModel::appendDependentModelValues(std::set< const CCopasiObject * > candidates,
-                                        std::set< const CCopasiObject * > & dependents) const
-{
-  const_cast< CModel * >(this)->compileIfNecessary(NULL);
-
-  size_t Size = dependents.size();
-
-  CCopasiVectorN< CModelValue >::const_iterator it = mValues.begin();
-  CCopasiVectorN< CModelValue >::const_iterator end = mValues.end();
-
-  std::set< const CCopasiObject * >::const_iterator itSet;
-  std::set< const CCopasiObject * >::const_iterator endSet;
-
-  for (; it != end; ++it)
-
-    // Check whether the model value is already in the list of deleted objects
-    if (candidates.find(it) == candidates.end())
-      {
-        if (it->mustBeDeleted(candidates))
-          {
-            dependents.insert(it);
-          }
-      }
-
-  return Size < dependents.size();
-}
-
-bool CModel::appendDependentEvents(std::set< const CCopasiObject * > candidates,
-                                   std::set< const CCopasiObject * > & dependents) const
-{
-  const_cast< CModel * >(this)->compileIfNecessary(NULL);
-
-  size_t Size = dependents.size();
-
-  CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
-  CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
-
-  std::set< const CCopasiObject * >::const_iterator itSet;
-  std::set< const CCopasiObject * >::const_iterator endSet;
-
-  for (; it != end; ++it)
-
-    // Check whether the model value is already in the list of deleted objects
-    if (candidates.find(it) == candidates.end())
-      {
-        if (it->mustBeDeleted(candidates))
-          {
-            dependents.insert(it);
-          }
-      }
-
-  return Size < dependents.size();
-}
-
-bool CModel::appendDependentEventAssignments(std::set< const CCopasiObject * > candidates,
-    std::set< const CCopasiObject * > & dependents) const
-{
-  const_cast< CModel * >(this)->compileIfNecessary(NULL);
-
-  size_t Size = dependents.size();
-
-  CCopasiVectorN< CEvent >::const_iterator it = mEvents.begin();
-  CCopasiVectorN< CEvent >::const_iterator end = mEvents.end();
-
-  for (; it != end; ++it)
-    {
-      it->appendDependentAssignments(candidates, dependents);
-    }
-
-  return Size < dependents.size();
-}
-
-bool CModel::appendDirectDependents(const CCopasiContainer & container,
-                                    std::set< const CCopasiObject * > & dependentReactions,
-                                    std::set< const CCopasiObject * > & dependentMetabolites,
-                                    std::set< const CCopasiObject * > & dependentCompartments,
-                                    std::set< const CCopasiObject * > & dependentModelValues,
-                                    std::set< const CCopasiObject * > & dependentEvents,
-                                    std::set< const CCopasiObject * > & dependentEventAssignments) const
+bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
+                                    CDataObject::DataObjectSet & dependentReactions,
+                                    CDataObject::DataObjectSet & dependentMetabolites,
+                                    CDataObject::DataObjectSet & dependentCompartments,
+                                    CDataObject::DataObjectSet & dependentModelValues,
+                                    CDataObject::DataObjectSet & dependentEvents,
+                                    CDataObject::DataObjectSet & dependentEventAssignments) const
 {
   size_t Size = dependentReactions.size() +
                 dependentMetabolites.size() +
@@ -1941,85 +1645,210 @@ bool CModel::appendDirectDependents(const CCopasiContainer & container,
                 dependentEvents.size() +
                 dependentEventAssignments.size();
 
-  CObjectInterface::ObjectSet DirectDependents;
+  ObjectSet Dependents;
 
-  // First add the structural dependencies
-  CObjectInterface::ObjectSet Candidates;
-  Candidates.insert(&container);
+  mStructuralDependencies.appendDirectDependents(objects, Dependents);
 
-  mStructuralDependencies.appendDirectDependents(Candidates, DirectDependents);
-
-  std::set< const CCopasiObject * > Descendants;
-  container.getDescendants(Descendants);
+  ObjectSet::const_iterator itObject = objects.begin();
+  ObjectSet::const_iterator endObject = objects.end();
 
   // Map the descendants to math objects
-  Candidates.clear();
-  std::set< const CCopasiObject * >::const_iterator it = Descendants.begin();
-  std::set< const CCopasiObject * >::const_iterator end = Descendants.end();
+  ObjectSet Candidates;
+  DataObjectSet Descendants;
+
+  for (; itObject != endObject; ++itObject)
+    if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
+      {
+        static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
+      }
+
+  std::set< const CDataObject * >::const_iterator it = Descendants.begin();
+  std::set< const CDataObject * >::const_iterator end = Descendants.end();
 
   for (; it != end; ++it)
     {
       Candidates.insert(mpMathContainer->getMathObject(*it));
+      Dependents.insert(*it);
     }
 
   Candidates.erase(NULL);
 
   // Retrieve dependent math object
-  mpMathContainer->getInitialDependencies().appendDirectDependents(Candidates, DirectDependents);
-  mpMathContainer->getTransientDependencies().appendDirectDependents(Candidates, DirectDependents);
+  mpMathContainer->getInitialDependencies().appendDirectDependents(Candidates, Dependents);
+  mpMathContainer->getTransientDependencies().appendDirectDependents(Candidates, Dependents);
 
   // Map objects to compartments, species, model values, reactions, events, and event assignments
-  CObjectInterface::ObjectSet::const_iterator itDependent = DirectDependents.begin();
-  CObjectInterface::ObjectSet::const_iterator endDependent = DirectDependents.end();
+  CObjectInterface::ObjectSet::const_iterator itDependent = Dependents.begin();
+  CObjectInterface::ObjectSet::const_iterator endDependent = Dependents.end();
 
   for (; itDependent != endDependent; ++itDependent)
     {
-      const CCopasiObject * pDataObject = (*itDependent)->getDataObject();
+      const CDataObject * pDataObject = (*itDependent)->getDataObject();
 
       // We need to  map to the correct model appropriate containers:
       // Compartments, Species, Model Values, Reactions, Event Assignments, and Events
       if (pDataObject == NULL) continue;
 
-      const CCopasiContainer * pContainer = NULL;
+      const CDataContainer * pContainer = NULL;
 
-      if ((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
-          (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL)
+      if (((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
+           (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL) &&
+          objects.find(pContainer) == objects.end())
         {
           dependentReactions.insert(pContainer).second;
         }
-      else if ((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
-               (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL)
+      else if (((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL) &&
+               objects.find(pContainer) == objects.end())
         {
           dependentMetabolites.insert(pContainer).second;
         }
-      else if ((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
-               (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL)
+      else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL) &&
+               objects.find(pContainer) == objects.end())
         {
           dependentCompartments.insert(pContainer).second;
         }
-      else if ((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
-               (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL)
+      else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL) &&
+               objects.find(pContainer) == objects.end())
         {
           dependentModelValues.insert(pContainer).second;
         }
-      else if ((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
-               (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL)
+      else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL) &&
+               objects.find(pContainer) == objects.end())
         {
           dependentEventAssignments.insert(pContainer).second;
         }
-      else if ((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
-               (pContainer = pDataObject->getObjectAncestor("Event")) != NULL)
+      else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("Event")) != NULL) &&
+               objects.find(pContainer) == objects.end())
         {
           dependentEvents.insert(pContainer).second;
         }
     }
 
-  dependentReactions.erase(&container);
-  dependentMetabolites.erase(&container);
-  dependentCompartments.erase(&container);
-  dependentModelValues.erase(&container);
-  dependentEvents.erase(&container);
-  dependentEventAssignments.erase(&container);
+  return Size < dependentReactions.size() +
+         dependentMetabolites.size() +
+         dependentCompartments.size() +
+         dependentModelValues.size() +
+         dependentEvents.size() +
+         dependentEventAssignments.size();
+}
+
+bool CModel::appendAllDependents(const CDataContainer & container,
+                                 DataObjectSet & dependentReactions,
+                                 DataObjectSet & dependentMetabolites,
+                                 DataObjectSet & dependentCompartments,
+                                 DataObjectSet & dependentModelValues,
+                                 DataObjectSet & dependentEvents,
+                                 DataObjectSet & dependentEventAssignments) const
+{
+  ObjectSet Objects;
+  Objects.insert(&container);
+
+  return appendAllDependents(Objects, dependentReactions, dependentMetabolites, dependentCompartments, dependentModelValues, dependentEvents, dependentEventAssignments);
+}
+
+bool CModel::appendAllDependents(const ObjectSet & objects,
+                                 DataObjectSet & dependentReactions,
+                                 DataObjectSet & dependentMetabolites,
+                                 DataObjectSet & dependentCompartments,
+                                 DataObjectSet & dependentModelValues,
+                                 DataObjectSet & dependentEvents,
+                                 DataObjectSet & dependentEventAssignments) const
+{
+  size_t Size = dependentReactions.size() +
+                dependentMetabolites.size() +
+                dependentCompartments.size() +
+                dependentModelValues.size() +
+                dependentEvents.size() +
+                dependentEventAssignments.size();
+
+  ObjectSet Dependents;
+
+  mStructuralDependencies.appendAllDependents(objects, Dependents);
+
+  ObjectSet::const_iterator itObject = objects.begin();
+  ObjectSet::const_iterator endObject = objects.end();
+
+  // Map the descendants to math objects
+  ObjectSet Candidates;
+  DataObjectSet Descendants;
+
+  for (; itObject != endObject; ++itObject)
+    if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
+      {
+        static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
+      }
+
+  std::set< const CDataObject * >::const_iterator it = Descendants.begin();
+  std::set< const CDataObject * >::const_iterator end = Descendants.end();
+
+  for (; it != end; ++it)
+    {
+      Candidates.insert(mpMathContainer->getMathObject(*it));
+      Dependents.insert(*it);
+    }
+
+  Candidates.erase(NULL);
+
+  // Retrieve dependent math object
+  mpMathContainer->getInitialDependencies().appendAllDependents(Candidates, Dependents);
+  mpMathContainer->getTransientDependencies().appendAllDependents(Candidates, Dependents);
+
+  // Map objects to compartments, species, model values, reactions, events, and event assignments
+  CObjectInterface::ObjectSet::const_iterator itDependent = Dependents.begin();
+  CObjectInterface::ObjectSet::const_iterator endDependent = Dependents.end();
+
+  for (; itDependent != endDependent; ++itDependent)
+    {
+      const CDataObject * pDataObject = (*itDependent)->getDataObject();
+
+      // We need to  map to the correct model appropriate containers:
+      // Compartments, Species, Model Values, Reactions, Event Assignments, and Events
+      if (pDataObject == NULL) continue;
+
+      const CDataContainer * pContainer = NULL;
+
+      if (((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
+           (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL) &&
+          objects.find(pContainer) == objects.end())
+        {
+          dependentReactions.insert(pContainer).second;
+        }
+      else if (((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL) &&
+               objects.find(pContainer) == objects.end())
+        {
+          dependentMetabolites.insert(pContainer).second;
+        }
+      else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL) &&
+               objects.find(pContainer) == objects.end())
+        {
+          dependentCompartments.insert(pContainer).second;
+        }
+      else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL) &&
+               objects.find(pContainer) == objects.end())
+        {
+          dependentModelValues.insert(pContainer).second;
+        }
+      else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL) &&
+               objects.find(pContainer) == objects.end())
+        {
+          dependentEventAssignments.insert(pContainer).second;
+        }
+      else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
+                (pContainer = pDataObject->getObjectAncestor("Event")) != NULL) &&
+               objects.find(pContainer) == objects.end())
+        {
+          dependentEvents.insert(pContainer).second;
+        }
+    }
 
   return Size < dependentReactions.size() +
          dependentMetabolites.size() +
@@ -2080,7 +1909,7 @@ bool CModel::removeMetabolite(const std::string & key,
                               const bool & recursive)
 {
   CMetab* pMetabolite =
-    dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(key));
   return removeMetabolite(pMetabolite, recursive);
 }
 
@@ -2093,11 +1922,14 @@ bool CModel::removeMetabolite(const CMetab* pMetabolite,
   if (recursive)
     {
       std::string key = pMetabolite->getKey();
-      removeDependentModelObjects(pMetabolite->getDeletedObjects());
+
+      ObjectSet Deleted;
+      Deleted.insert(pMetabolite);
+      removeDependentModelObjects(Deleted);
 
       // the metabolite might have been deleted above, need to reaquire the pointer
       pMetabolite =
-        dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+        dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(key));
     }
 
   if (pMetabolite != NULL)
@@ -2148,7 +1980,7 @@ bool CModel::removeCompartment(const std::string & key,
                                const bool & recursive)
 {
   CCompartment *pCompartment =
-    dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CCompartment * >(CRootContainer::getKeyFactory()->get(key));
   return removeCompartment(pCompartment, recursive);
 }
 
@@ -2160,17 +1992,19 @@ bool CModel::removeCompartment(const CCompartment * pCompartment,
 
   if (recursive)
     {
-      removeDependentModelObjects(pCompartment->getDeletedObjects());
+      ObjectSet Deleted;
+      Deleted.insert(pCompartment);
+      removeDependentModelObjects(Deleted);
     }
 
   //Check if Compartment with that name exists
   size_t index =
-    mCompartments.CCopasiVector< CCompartment >::getIndex(pCompartment);
+    mCompartments.CDataVector< CCompartment >::getIndex(pCompartment);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mCompartments.CCopasiVector< CCompartment >::remove(index);
+  mCompartments.CDataVector< CCompartment >::remove(index);
 
   mCompileIsNecessary = true;
 
@@ -2198,7 +2032,7 @@ bool CModel::removeReaction(const std::string & key,
                             const bool & recursive)
 {
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(key));
   return removeReaction(pReaction, recursive);
 }
 
@@ -2217,17 +2051,19 @@ bool CModel::removeReaction(const CReaction * pReaction,
 
   if (recursive)
     {
-      removeDependentModelObjects(pReaction->getDeletedObjects());
+      ObjectSet Deleted;
+      Deleted.insert(pReaction);
+      removeDependentModelObjects(Deleted);
     }
 
   //Check if Reaction exists
   size_t index =
-    mSteps.CCopasiVector< CReaction >::getIndex(pReaction);
+    mSteps.CDataVector< CReaction >::getIndex(pReaction);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mSteps.CCopasiVector< CReaction >::remove(index);
+  mSteps.CDataVector< CReaction >::remove(index);
 
   clearMoieties();
   mCompileIsNecessary = true;
@@ -2239,17 +2075,16 @@ bool CModel::removeLocalReactionParameter(const std::string & key,
     const bool & recursive)
 {
   CCopasiParameter * pParameter =
-    dynamic_cast< CCopasiParameter * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CCopasiParameter * >(CRootContainer::getKeyFactory()->get(key));
 
   if (pParameter == NULL)
     return false;
 
   if (recursive)
     {
-      std::set< const CCopasiObject * > DeletedObjects;
-      DeletedObjects.insert(pParameter->getValueReference());
-
-      removeDependentModelObjects(DeletedObjects);
+      ObjectSet Deleted;
+      Deleted.insert(pParameter);
+      removeDependentModelObjects(Deleted);
     }
 
   return true;
@@ -2276,18 +2111,18 @@ CModelValue* CModel::createModelValue(const std::string & name,
   return cmv;
 }
 
-void CModel::removeDependentModelObjects(const std::set<const CCopasiObject*> & deletedObjects)
+void CModel::removeDependentModelObjects(const CDataObject::ObjectSet & deletedObjects)
 {
-  std::set<const CCopasiObject*> Reactions;
-  std::set<const CCopasiObject*> Metabolites;
-  std::set<const CCopasiObject*> Values;
-  std::set<const CCopasiObject*> Compartments;
-  std::set<const CCopasiObject*> Events;
-  std::set<const CCopasiObject*> EventAssignments;
+  DataObjectSet Reactions;
+  DataObjectSet Metabolites;
+  DataObjectSet Values;
+  DataObjectSet Compartments;
+  DataObjectSet Events;
+  DataObjectSet EventAssignments;
 
-  appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
+  appendAllDependents(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
 
-  std::set<const CCopasiObject*>::const_iterator it, end;
+  std::set<const CDataObject*>::const_iterator it, end;
 
   for (it = Reactions.begin(), end = Reactions.end(); it != end; ++it)
     removeReaction((*it)->getKey(), false);
@@ -2321,7 +2156,7 @@ bool CModel::removeModelValue(const std::string & key,
                               const bool & recursive)
 {
   CModelValue *pModelValue =
-    dynamic_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(key));
   return removeModelValue(pModelValue, recursive);
 }
 
@@ -2333,17 +2168,18 @@ bool CModel::removeModelValue(const CModelValue * pModelValue,
 
   if (recursive)
     {
-      removeDependentModelObjects(pModelValue->getDeletedObjects());
+      ObjectSet Deleted;
+      Deleted.insert(pModelValue);
     }
 
   //Check if Value with that name exists
   size_t index =
-    mValues.CCopasiVector< CModelValue >::getIndex(pModelValue);
+    mValues.CDataVector< CModelValue >::getIndex(pModelValue);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mValues.CCopasiVector< CModelValue >::remove(index);
+  mValues.CDataVector< CModelValue >::remove(index);
 
   mCompileIsNecessary = true;
 
@@ -2378,7 +2214,7 @@ bool CModel::removeEvent(const size_t index,
 bool CModel::removeEvent(const std::string & key,
                          const bool & recursive)
 {
-  CEvent * pEvent = dynamic_cast< CEvent * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CEvent * pEvent = dynamic_cast< CEvent * >(CRootContainer::getKeyFactory()->get(key));
 
   return removeEvent(pEvent, recursive);
 }
@@ -2391,12 +2227,12 @@ bool CModel::removeEvent(const CEvent * pEvent,
 
   //Check if Event exists
   size_t index =
-    mEvents.CCopasiVector< CEvent >::getIndex(pEvent);
+    mEvents.CDataVector< CEvent >::getIndex(pEvent);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mEvents.CCopasiVector< CEvent >::remove(index);
+  mEvents.CDataVector< CEvent >::remove(index);
 
   clearMoieties();
 
@@ -2445,14 +2281,14 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
       // find experiment and invoke with it
       const CExperiment* theExperiment = NULL;
 
-      const CCopasiDataModel* dataModel = getObjectDataModel();
+      const CDataModel* dataModel = getObjectDataModel();
       const CFitTask* task = dynamic_cast<const CFitTask*>(&dataModel->getTaskList()->operator[]("Parameter Estimation"));
 
       if (task == NULL)
@@ -2495,7 +2331,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::timeCourse)
     {
@@ -2617,17 +2453,17 @@ bool CModel::convert2NonReversible()
   CReaction *reac0, *reac1, *reac2;
   std::string fn, rn1, rn2;
 
-  //CModel* model = dynamic_cast< CModel * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  //CModel* model = dynamic_cast< CModel * >(CRootContainer::getKeyFactory()->get(objKey));
   //if (!model) return false;
 
-  CCopasiVectorN< CReaction > & steps = this->getReactions();
+  CDataVectorN< CReaction > & steps = this->getReactions();
 
   size_t i, imax = steps.size();
 
   for (i = 0; i < imax; ++i)
     if (steps[i].isReversible())
       {
-        std::vector< std::pair< const CCopasiObject * , const CCopasiObject * > > ParameterMap;
+        std::vector< std::pair< const CDataObject * , const CDataObject * > > ParameterMap;
 
         reac0 = &steps[i];
         rn1 = reac0->getObjectName() + " (forward)";
@@ -2645,7 +2481,7 @@ bool CModel::convert2NonReversible()
           {
             //set functions to mass action (irrev)
             tmp.first = dynamic_cast<CFunction*>
-                        (CCopasiRootContainer::getFunctionList()-> findFunction("Mass action (irreversible)"));
+                        (CRootContainer::getFunctionList()-> findFunction("Mass action (irreversible)"));
             assert(tmp.first);
             tmp.second = tmp.first;
           }
@@ -2667,9 +2503,9 @@ bool CModel::convert2NonReversible()
                 continue;
               }
 
-            tmp.first = CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
+            tmp.first = CRootContainer::getFunctionList()->addAndAdaptName(tmp.first);
 
-            tmp.second = CCopasiRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
+            tmp.second = CRootContainer::getFunctionList()->addAndAdaptName(tmp.second);
           }
 
         size_t i, imax;
@@ -2851,174 +2687,15 @@ bool CModel::convert2NonReversible()
 
         // Bug 2143: We need to replace any occurrence of the reaction parameter of the
         // reversible reaction with its replacement in the forward or backwards reaction
-        std::vector< std::pair< const CCopasiObject *, const CCopasiObject * > >::const_iterator itParameter = ParameterMap.begin();
-        std::vector< std::pair< const CCopasiObject *, const CCopasiObject * > >::const_iterator endParameter = ParameterMap.end();
+
+        std::vector< std::pair< const CDataObject *, const CDataObject * > >::const_iterator itParameter = ParameterMap.begin();
+        std::vector< std::pair< const CDataObject *, const CDataObject * > >::const_iterator endParameter = ParameterMap.end();
 
         for (; itParameter != endParameter; ++itParameter)
           {
             Old = "<" + itParameter->first->getCN() + ">";
             New = "<" + itParameter->second->getCN() + ">";
-
-            // We need to find all expressions which reference the old parameter (first value of the itParameter)
-            // Compartments (expression, initial expression)
-            CCopasiVector< CCompartment >::iterator itComp = mCompartments.begin();
-            CCopasiVector< CCompartment >::iterator endComp = mCompartments.end();
-
-            for (; itComp != endComp; ++itComp)
-              {
-                const CExpression * pExpression = itComp->getExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itComp->getExpression();
-                        stringReplace(Infix, Old, New);
-                        itComp->setExpression(Infix);
-                      }
-                  }
-
-                pExpression = itComp->getInitialExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itComp->getInitialExpression();
-                        stringReplace(Infix, Old, New);
-                        itComp->setInitialExpression(Infix);
-                      }
-                  }
-              }
-
-            // Species (expression, initial expression)
-            CCopasiVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
-            CCopasiVector< CMetab >::iterator endMetab = mMetabolitesX.end();
-
-            for (; itMetab != endMetab; ++itMetab)
-              {
-                const CExpression * pExpression = itMetab->getExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itMetab->getExpression();
-                        stringReplace(Infix, Old, New);
-                        itMetab->setExpression(Infix);
-                      }
-                  }
-
-                pExpression = itMetab->getInitialExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itMetab->getInitialExpression();
-                        stringReplace(Infix, Old, New);
-                        itMetab->setInitialExpression(Infix);
-                      }
-                  }
-              }
-
-            // Model Quantities (expression, initial expression)
-            CCopasiVector< CModelValue >::iterator itValue = mValues.begin();
-            CCopasiVector< CModelValue >::iterator endValue = mValues.end();
-
-            for (; itValue != endValue; ++itValue)
-              {
-                const CExpression * pExpression = itValue->getExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itValue->getExpression();
-                        stringReplace(Infix, Old, New);
-                        itValue->setExpression(Infix);
-                      }
-                  }
-
-                pExpression = itValue->getInitialExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itValue->getInitialExpression();
-                        stringReplace(Infix, Old, New);
-                        itValue->setInitialExpression(Infix);
-                      }
-                  }
-              }
-
-            // Events (trigger, delay, assignments)
-            CCopasiVector< CEvent >::iterator itEvent = mEvents.begin();
-            CCopasiVector< CEvent >::iterator endEvent = mEvents.end();
-
-            for (; itEvent != endEvent; ++itEvent)
-              {
-                const CExpression * pExpression = itEvent->getTriggerExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itEvent->getTriggerExpression();
-                        stringReplace(Infix, Old, New);
-                        itEvent->setTriggerExpression(Infix);
-                      }
-                  }
-
-                pExpression = itEvent->getDelayExpressionPtr();
-
-                if (pExpression != NULL)
-                  {
-                    const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                    if (Dependencies.find(itParameter->first) != Dependencies.end())
-                      {
-                        Infix = itEvent->getDelayExpression();
-                        stringReplace(Infix, Old, New);
-                        itEvent->setDelayExpression(Infix);
-                      }
-                  }
-
-                CCopasiVector< CEventAssignment >::iterator itAssignment = itEvent->getAssignments().begin();
-                CCopasiVector< CEventAssignment >::iterator endAssignment = itEvent->getAssignments().end();
-
-                for (; itAssignment != endAssignment; ++itAssignment)
-                  {
-                    pExpression = itAssignment->getExpressionPtr();
-
-                    if (pExpression != NULL)
-                      {
-                        const CCopasiObject::DataObjectSet & Dependencies = pExpression->getDirectDependencies();
-
-                        if (Dependencies.find(itParameter->first) != Dependencies.end())
-                          {
-                            Infix = itAssignment->getExpression();
-                            stringReplace(Infix, Old, New);
-                            itAssignment->setExpression(Infix);
-                          }
-                      }
-                  }
-              }
+            replaceInExpressions(Old, New);
           }
 
         // BUG 1848. We need to replace all references to the flux and particle flux
@@ -3027,186 +2704,12 @@ bool CModel::convert2NonReversible()
 
         Old = "<" + reac0->getFluxReference()->getCN() + ">";
         New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
-
-        // Find all objects which directly depend on the flux or particle flux.
-        std::set< const CCopasiObject * > Flux;
-        Flux.insert(reac0->getFluxReference());
-        std::set< const CCopasiObject * > FluxDependents;
-
-        // Initial Expression and Expression
-        appendDependentCompartments(Flux, FluxDependents);
-        appendDependentModelValues(Flux, FluxDependents);
-        appendDependentMetabolites(Flux, FluxDependents);
-
-        std::set< const CCopasiObject * >::iterator it = FluxDependents.begin();
-        std::set< const CCopasiObject * >::iterator end = FluxDependents.end();
-
-        for (; it != end; ++it)
-          {
-            CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
-
-            // Expression
-            Infix = pEntity->getExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEntity->setExpression(Infix);
-              }
-
-            // Initial Expression
-            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
-              {
-                Infix = pEntity->getInitialExpression();
-
-                if (stringReplace(Infix, Old, New))
-                  {
-                    pEntity->setInitialExpression(Infix);
-                  }
-              }
-          }
-
-        FluxDependents.clear();
-
-        // Trigger and Assignments
-        appendDependentEvents(Flux, FluxDependents);
-
-        it = FluxDependents.begin();
-        end = FluxDependents.end();
-
-        for (; it != end; ++it)
-          {
-            CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
-
-            // Trigger Expression
-            Infix = pEvent->getTriggerExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEvent->setTriggerExpression(Infix);
-              }
-
-            // Delay Expression
-            Infix = pEvent->getDelayExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEvent->setDelayExpression(Infix);
-              }
-
-            // Priority Expression
-            Infix = pEvent->getPriorityExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEvent->setPriorityExpression(Infix);
-              }
-
-            // Assignments
-            CCopasiVector< CEventAssignment >::iterator itAssignment = pEvent->getAssignments().begin();
-            CCopasiVector< CEventAssignment >::iterator endAssignment = pEvent->getAssignments().end();
-
-            for (; itAssignment != endAssignment; ++itAssignment)
-              {
-                Infix = itAssignment->getExpression();
-
-                if (stringReplace(Infix, Old, New))
-                  {
-                    itAssignment->setExpression(Infix);
-                  }
-              }
-          }
-
-        FluxDependents.clear();
-        Flux.clear();
+        replaceInExpressions(Old, New);
 
         // particleFlux = forward.particleFlux - backward.particleFlux
         Old = "<" + reac0->getParticleFluxReference()->getCN() + ">";
         New = "(<" + reac1->getParticleFluxReference()->getCN() + "> - <" + reac2->getParticleFluxReference()->getCN() + ">)";
-
-        Flux.insert(reac0->getParticleFluxReference());
-
-        // Initial Expression and Expression
-        appendDependentCompartments(Flux, FluxDependents);
-        appendDependentModelValues(Flux, FluxDependents);
-        appendDependentMetabolites(Flux, FluxDependents);
-
-        it = FluxDependents.begin();
-        end = FluxDependents.end();
-
-        for (; it != end; ++it)
-          {
-            CModelEntity * pEntity = static_cast< CModelEntity * >(const_cast< CCopasiObject * >(*it));
-
-            // Expression
-            Infix = pEntity->getExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEntity->setExpression(Infix);
-              }
-
-            // Initial Expression
-            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
-              {
-                Infix = pEntity->getInitialExpression();
-
-                if (stringReplace(Infix, Old, New))
-                  {
-                    pEntity->setInitialExpression(Infix);
-                  }
-              }
-          }
-
-        FluxDependents.clear();
-
-        // Trigger and Assignments
-        appendDependentEvents(Flux, FluxDependents);
-
-        it = FluxDependents.begin();
-        end = FluxDependents.end();
-
-        for (; it != end; ++it)
-          {
-            CEvent * pEvent = static_cast< CEvent * >(const_cast< CCopasiObject * >(*it));
-
-            // Trigger Expression
-            Infix = pEvent->getTriggerExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEvent->setTriggerExpression(Infix);
-              }
-
-            // Delay Expression
-            Infix = pEvent->getDelayExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEvent->setDelayExpression(Infix);
-              }
-
-            // Priority Expression
-            Infix = pEvent->getPriorityExpression();
-
-            if (stringReplace(Infix, Old, New))
-              {
-                pEvent->setPriorityExpression(Infix);
-              }
-
-            // Assignments
-            CCopasiVector< CEventAssignment >::iterator itAssignment = pEvent->getAssignments().begin();
-            CCopasiVector< CEventAssignment >::iterator endAssignment = pEvent->getAssignments().end();
-
-            for (; itAssignment != endAssignment; ++itAssignment)
-              {
-                Infix = itAssignment->getExpression();
-
-                if (stringReplace(Infix, Old, New))
-                  {
-                    itAssignment->setExpression(Infix);
-                  }
-              }
-          }
+        replaceInExpressions(Old, New);
 
         // Schedule the old reaction for removal.
         reactionsToDelete.push_back(reac0);
@@ -3227,13 +2730,105 @@ bool CModel::convert2NonReversible()
   return success;
 }
 
+void CModel::replaceInExpressions(const std::string & oldStr,
+                                  const std::string & New)
+{
+  std::string Infix;
+
+  // We need to find all expressions which reference the old parameter (first value of the itParameter)
+  // Compartments (expression, initial expression)
+  CDataVector< CCompartment >::iterator itComp = mCompartments.begin();
+  CDataVector< CCompartment >::iterator endComp = mCompartments.end();
+
+  for (; itComp != endComp; ++itComp)
+    {
+      Infix = itComp->getExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itComp->setExpression(Infix);
+
+      Infix = itComp->getInitialExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itComp->setInitialExpression(Infix);
+
+      Infix = itComp->getNoiseExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itComp->setNoiseExpression(Infix);
+    }
+
+  // Species (expression, initial expression)
+  CDataVector< CMetab >::iterator itMetab = mMetabolitesX.begin();
+  CDataVector< CMetab >::iterator endMetab = mMetabolitesX.end();
+
+  for (; itMetab != endMetab; ++itMetab)
+    {
+      Infix = itMetab->getExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itMetab->setExpression(Infix);
+
+      Infix = itMetab->getInitialExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itMetab->setInitialExpression(Infix);
+
+      Infix = itMetab->getNoiseExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itMetab->setNoiseExpression(Infix);
+    }
+
+  // Model Quantities (expression, initial expression)
+  CDataVector< CModelValue >::iterator itValue = mValues.begin();
+  CDataVector< CModelValue >::iterator endValue = mValues.end();
+
+  for (; itValue != endValue; ++itValue)
+    {
+      Infix = itValue->getExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itValue->setExpression(Infix);
+
+      Infix = itValue->getInitialExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itValue->setInitialExpression(Infix);
+
+      Infix = itValue->getNoiseExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itValue->setNoiseExpression(Infix);
+    }
+
+  // Events (trigger, delay, assignments)
+  CDataVector< CEvent >::iterator itEvent = mEvents.begin();
+  CDataVector< CEvent >::iterator endEvent = mEvents.end();
+
+  for (; itEvent != endEvent; ++itEvent)
+    {
+      Infix = itEvent->getTriggerExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itEvent->setTriggerExpression(Infix);
+
+      Infix = itEvent->getDelayExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itEvent->setDelayExpression(Infix);
+
+      Infix = itEvent->getPriorityExpression();
+
+      if (stringReplace(Infix, oldStr, New)) itEvent->setPriorityExpression(Infix);
+
+      CDataVector< CEventAssignment >::iterator itAssignment = itEvent->getAssignments().begin();
+      CDataVector< CEventAssignment >::iterator endAssignment = itEvent->getAssignments().end();
+
+      for (; itAssignment != endAssignment; ++itAssignment)
+        {
+          Infix = itAssignment->getExpression();
+
+          if (stringReplace(Infix, oldStr, New)) itAssignment->setExpression(Infix);
+        }
+    }
+}
 //**********************************************************************
 
 void CModel::initObjects()
 {
   mpModel = this;
 
-  //mKey = CCopasiRootContainer::getKeyFactory()->add("Model", this);
+  //mKey = CRootContainer::getKeyFactory()->add("Model", this);
 
   // The regular CModelEntity mechanism does not work since
   // CModel is created before mStateTemplate :(
@@ -3249,12 +2844,12 @@ void CModel::initObjects()
   addObjectReference("Comments", *const_cast<std::string *>(&getNotes()));
 
   // These are broken since they contain pointers to values :(
-  //  addVectorReference("Fluxes", mFluxes, CCopasiObject::ValueDbl);
-  //  addVectorReference("Particle Fluxes", mParticleFluxes, CCopasiObject::ValueDbl);
+  //  addVectorReference("Fluxes", mFluxes, CDataObject::ValueDbl);
+  //  addVectorReference("Particle Fluxes", mParticleFluxes, CDataObject::ValueDbl);
 
-  addMatrixReference("Stoichiometry", mStoi, CCopasiObject::ValueDbl);
-  addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CCopasiObject::ValueDbl);
-  addMatrixReference("Link Matrix"   , mLView, CCopasiObject::ValueDbl);
+  addMatrixReference("Stoichiometry", mStoi, CDataObject::ValueDbl);
+  addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CDataObject::ValueDbl);
+  addMatrixReference("Link Matrix"   , mLView, CDataObject::ValueDbl);
 
   mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
@@ -3343,7 +2938,7 @@ void CModel::buildLinkZero()
 const bool & CModel::isAutonomous() const
 {return mIsAutonomous;}
 
-bool CModel::isStateVariable(const CCopasiObject * pObject) const
+bool CModel::isStateVariable(const CDataObject * pObject) const
 {
   if (pObject == NULL)
     {
@@ -3392,7 +2987,7 @@ bool CModel::isStateVariable(const CCopasiObject * pObject) const
   return false;
 }
 
-CCopasiObject * CModel::getCorrespondingTransientObject(const CCopasiObject * pObject) const
+CDataObject * CModel::getCorrespondingTransientObject(const CDataObject * pObject) const
 {
   // CModelEntities and derived classes are the only object which have initial and transient values
   // Note, for species we have distinguish between particle number and concentration.
@@ -3406,7 +3001,7 @@ CCopasiObject * CModel::getCorrespondingTransientObject(const CCopasiObject * pO
 
   if (pEntity == NULL)
     {
-      return const_cast< CCopasiObject * >(pObject);
+      return const_cast< CDataObject * >(pObject);
     }
 
   const CMetab * pMetab = dynamic_cast< const CMetab * >(pEntity);
@@ -3457,8 +3052,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
     }
 
   // Check all kinetic functions.
-  CCopasiVector< CReaction >::const_iterator itReaction = mSteps.begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mSteps.end();
+  CDataVector< CReaction >::const_iterator itReaction = mSteps.begin();
+  CDataVector< CReaction >::const_iterator endReaction = mSteps.end();
 
   for (; itReaction != endReaction; ++itReaction)
     {
@@ -3476,8 +3071,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
     }
 
   // Check all event triggers
-  CCopasiVector< CEvent >::const_iterator itEvent = mEvents.begin();
-  CCopasiVector< CEvent >::const_iterator endEvent = mEvents.end();
+  CDataVector< CEvent >::const_iterator itEvent = mEvents.begin();
+  CDataVector< CEvent >::const_iterator endEvent = mEvents.end();
 
   for (; itEvent != endEvent; ++itEvent)
     {
@@ -3497,8 +3092,8 @@ bool CModel::compileEvents()
 
   CObjectInterface::ContainerList ListOfContainer;
 
-  CCopasiVectorN< CEvent >::iterator it = mEvents.begin();
-  CCopasiVectorN< CEvent >::iterator end = mEvents.end();
+  CDataVectorN< CEvent >::iterator it = mEvents.begin();
+  CDataVectorN< CEvent >::iterator end = mEvents.end();
 
   for (; it != end; ++ it)
     {
@@ -3508,9 +3103,9 @@ bool CModel::compileEvents()
   return success;
 }
 
-void CModel::updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
+void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects)
 {
-  CObjectInterface::UpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
+  CCore::CUpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->applyUpdateSequence(UpdateSequence);
@@ -3519,19 +3114,19 @@ void CModel::updateInitialValues(std::set< const CCopasiObject * > & changedObje
   refreshActiveParameterSet();
 }
 
-void CModel::updateInitialValues(const CCopasiObject* changedObject)
+void CModel::updateInitialValues(const CDataObject* changedObject)
 {
-  std::set< const CCopasiObject * > changedObjects;
+  std::set< const CDataObject * > changedObjects;
   changedObjects.insert(changedObject);
   updateInitialValues(changedObjects);
 }
 
-CObjectInterface::UpdateSequence
-CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)
+CCore::CUpdateSequence
+CModel::buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects)
 {
   // Map the changed objects to their math equivalents;
-  std::set< const CCopasiObject * >::const_iterator it = changedObjects.begin();
-  std::set< const CCopasiObject * >::const_iterator end = changedObjects.end();
+  std::set< const CDataObject * >::const_iterator it = changedObjects.begin();
+  std::set< const CDataObject * >::const_iterator end = changedObjects.end();
 
   CObjectInterface::ObjectSet ChangedObjects;
 
@@ -3551,9 +3146,9 @@ CModel::buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedO
         }
     }
 
-  CObjectInterface::UpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence;
   mpMathContainer->getInitialDependencies().getUpdateSequence(UpdateSequence,
-      CMath::SimulationContext::UpdateMoieties,
+      CCore::SimulationContext::UpdateMoieties,
       ChangedObjects,
       mpMathContainer->getInitialStateObjects());
 
@@ -3615,8 +3210,8 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
   //it should not be an entity with an assignment.
 
   //here we select the actual derivation variable: concentration, or value, or volume, etc. TODO
-  const CCopasiObject * pVarObj = pVar->CModelEntity::getValueObject();
-  //const CCopasiObject * pVarObj = pVar->getValueObject();
+  const CDataObject * pVarObj = pVar->CModelEntity::getValueObject();
+  //const CDataObject * pVarObj = pVar->getValueObject();
 
   CEvaluationNode* tmp;
   CExpression * derivExp = new CExpression("derivative expression", this);
@@ -3630,7 +3225,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
       CEvaluationNode* tmp_ma;
 
       //forward part
-      std::vector<const CCopasiObject*> prod;
+      std::vector<const CDataObject*> prod;
       size_t j;
 
       for (j = 0; j < pReaction->getMap().getObjects()[1].vector->size(); ++j)
@@ -3704,7 +3299,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
 
       for (i = 0; i < imax; ++i)
         {
-          const CCopasiObject* tmpObj = pReaction->getMap().getObjects()[i].value;
+          const CDataObject* tmpObj = pReaction->getMap().getObjects()[i].value;
           //if we have a metab, its always the concentration
           const CMetab* tmpMetab = dynamic_cast<const CMetab*>(tmpObj);
 
@@ -3742,13 +3337,13 @@ size_t getUsedSymbolCount(const std::string& unit, const std::string& symbol)
 }
 
 // Return a set of any COPASI object using this symbol.
-CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) const
+CDataObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) const
 {
   DataObjectSet usages;
 
   //Is it used in the Model Values?
-  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator end = getModelValues().end();
+  CDataVector< CModelValue >::const_iterator it = getModelValues().begin();
+  CDataVector< CModelValue >::const_iterator end = getModelValues().end();
   CUnit unit;
 
   for (; it != end; ++it)
@@ -3774,8 +3369,8 @@ CCopasiObject::DataObjectSet CModel::getUnitSymbolUsage(std::string symbol) cons
 void CModel::changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol)
 {
   //Model Values
-  CCopasiVector< CModelValue >::iterator it = getModelValues().begin();
-  CCopasiVector< CModelValue >::iterator end = getModelValues().end();
+  CDataVector< CModelValue >::iterator it = getModelValues().begin();
+  CDataVector< CModelValue >::iterator end = getModelValues().end();
 
   for (; it != end; ++it)
     {
@@ -3796,8 +3391,8 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
   std::map< std::string, CUnit > UsedUnits;
 
   //Model Values
-  CCopasiVector< CModelValue >::const_iterator it = getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator end = getModelValues().end();
+  CDataVector< CModelValue >::const_iterator it = getModelValues().begin();
+  CDataVector< CModelValue >::const_iterator end = getModelValues().end();
 
   for (; it != end; ++it)
     {

@@ -15,14 +15,15 @@
  *      Author: dada
  */
 
-#include "CQEventDM.h"
+#include "copasi/UI/CQEventDM.h"
 
-#include "copasi.h"
-#include "UI/qtUtilities.h"
+#include "copasi/copasi.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CEvent.h"
-#include "model/CModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "EventDataChangeCommand.h"
 

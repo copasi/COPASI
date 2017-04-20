@@ -1,4 +1,9 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -53,43 +58,43 @@
 %ignore CLLocalStyle::mKeyList;
 %ignore CLLocalStyle::getKeyList;
 %ignore CLLocalStyle::setKeyList;
-%ignore CLRectangle::CLRectangle(const sbmlRectangle& source, CCopasiContainer* pParent = NULL);
+%ignore CLRectangle::CLRectangle(const sbmlRectangle& source, CDataContainer* pParent = NULL);
 %ignore CLRectangle::toSBML;
-%ignore CLEllipse::CLEllipse(const sbmlEllipse& source, CCopasiContainer* pParent = NULL);
+%ignore CLEllipse::CLEllipse(const sbmlEllipse& source, CDataContainer* pParent = NULL);
 %ignore CLEllipse::getCX() const;
 %ignore CLEllipse::getCY() const;
 %ignore CLEllipse::getCZ() const;
 %ignore CLEllipse::getRX() const;
 %ignore CLEllipse::getRY() const;
 %ignore CLEllipse::toSBML;
-%ignore CLPolygon::CLPolygon(const sbmlPolygon& source, CCopasiContainer* pParent = NULL);
+%ignore CLPolygon::CLPolygon(const sbmlPolygon& source, CDataContainer* pParent = NULL);
 %ignore CLPolygon::toSBML;
 %ignore CLPolygon::getListOfElements() const;
 %ignore CLPolygon::getElement(size_t) const;
 %ignore CLLocalRenderInformation::toSBML;
 %ignore CLLocalRenderInformation::  CLLocalRenderInformation(const LocalRenderInformation& source,
-                           CCopasiContainer* pParent = NULL);
+                           CDataContainer* pParent = NULL);
 %ignore CLGlobalRenderInformation::CLGlobalRenderInformation(const GlobalRenderInformation& source,
-                            CCopasiContainer* pParent = NULL);
+                            CDataContainer* pParent = NULL);
 %ignore CLGlobalRenderInformation::toSBML;
 %ignore CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml, //TODO preliminary
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
-                   const CCopasiContainer * pParent = NULL);
+                   const CDataContainer * pParent = NULL);
 %ignore CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
                  const std::map<std::string, std::string> & modelmap,
                  std::map<std::string, std::string> & layoutmap,
-                 const CCopasiContainer * pParent = NULL);
+                 const CDataContainer * pParent = NULL);
 %ignore CLColorDefinition::toSBML;
-%ignore CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CCopasiContainer* pParent = NULL);
-%ignore CLGlobalStyle::CLGlobalStyle(const GlobalStyle& source, CCopasiContainer* pParent = NULL);
+%ignore CLColorDefinition::CLColorDefinition(const ColorDefinition& source, CDataContainer* pParent = NULL);
+%ignore CLGlobalStyle::CLGlobalStyle(const GlobalStyle& source, CDataContainer* pParent = NULL);
 %ignore CLGlobalStyle::toSBML;
-%ignore CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& name, CCopasiContainer* pParent = NULL);
+%ignore CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& name, CDataContainer* pParent = NULL);
 %ignore CLGradientBase::addSBMLAttributes;
 %ignore CLGradientBase::getListOfGradientStops() const;
 %ignore CLGradientBase::getGradientStop(size_t) const;
 %ignore CLGradientStop::toSBML;
-%ignore CLGradientStop::CLGradientStop(const GradientStop& source, CCopasiContainer* pParent = NULL);
+%ignore CLGradientStop::CLGradientStop(const GradientStop& source, CDataContainer* pParent = NULL);
 %ignore CLGraphicalPrimitive1D::CLGraphicalPrimitive1D(const GraphicalPrimitive1D& source);
 %ignore CLGraphicalPrimitive1D::addSBMLAttributes;
 %ignore CLGraphicalPrimitive2D::CLGraphicalPrimitive2D(const GraphicalPrimitive2D& source);
@@ -98,16 +103,16 @@
 %ignore CLGroup::toSBML;
 %ignore CLGroup::getListOfElements() const;
 %ignore CLGroup::getElement(size_t) const;
-%ignore CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent = NULL);
+%ignore CLGroup::CLGroup(const RenderGroup& source, CDataContainer* pParent = NULL);
 %ignore CLImage::getX() const;
 %ignore CLImage::getY() const;
 %ignore CLImage::getZ() const;
 %ignore CLImage::toSBML;
-%ignore CLImage::CLImage(const Image& source, CCopasiContainer* pParent = NULL);
+%ignore CLImage::CLImage(const Image& source, CDataContainer* pParent = NULL);
 %ignore CLLineEnding::toSBML;
 %ignore CLLineEnding::getBoundingBox() const;
 %ignore CLLineEnding::getGroup() const;
-%ignore CLLineEnding::CLLineEnding(const LineEnding& source, CCopasiContainer* pParent = NULL);
+%ignore CLLineEnding::CLLineEnding(const LineEnding& source, CDataContainer* pParent = NULL);
 %ignore CLLinearGradient::toSBML;
 %ignore CLLinearGradient::getXPoint1() const;
 %ignore CLLinearGradient::getYPoint1() const;
@@ -122,11 +127,11 @@
 %ignore CLRadialGradient::getFocalPointY() const;
 %ignore CLRadialGradient::getFocalPointZ() const;
 %ignore CLRadialGradient::getRadius() const;
-%ignore CLLinearGradient::CLLinearGradient(const LinearGradient& source, CCopasiContainer* pParent = NULL);
+%ignore CLLinearGradient::CLLinearGradient(const LinearGradient& source, CDataContainer* pParent = NULL);
 %ignore CLLocalStyle::toSBML;
-%ignore CLLocalStyle::CLLocalStyle(const LocalStyle& source, CCopasiContainer* pParent = NULL);
+%ignore CLLocalStyle::CLLocalStyle(const LocalStyle& source, CDataContainer* pParent = NULL);
 %ignore CLRadialGradient::toSBML;
-%ignore CLRadialGradient::CLRadialGradient(const RadialGradient& source, CCopasiContainer* pParent = NULL);
+%ignore CLRadialGradient::CLRadialGradient(const RadialGradient& source, CDataContainer* pParent = NULL);
 %ignore CLRectangle::getX() const;
 %ignore CLRectangle::getWidth() const;
 %ignore CLRectangle::getHeight() const;
@@ -138,7 +143,7 @@
 %ignore CLRelAbsVector::CLRelAbsVector(const RelAbsVector& source);
 %ignore CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& source,
                           const std::string& name,
-                          CCopasiContainer* pParent = NULL);
+                          CDataContainer* pParent = NULL);
 %ignore CLRenderInformationBase::addSBMLAttributes;
 %ignore CLRenderInformationBase::getListOfColorDefinitions() const;
 %ignore CLRenderInformationBase::getColorDefinition(size_t) const;
@@ -161,7 +166,7 @@
 %ignore CLRenderCurve::toSBML;
 %ignore CLRenderCurve::getCurveElement(size_t) const;
 %ignore CLRenderCurve::getListOfCurveElements() const;
-%ignore CLRenderCurve::CLRenderCurve(const RenderCurve& source, CCopasiContainer* pParent = NULL);
+%ignore CLRenderCurve::CLRenderCurve(const RenderCurve& source, CDataContainer* pParent = NULL);
 %ignore CLRenderPoint::addSBMLAttributes;
 %ignore CLRenderPoint::toSBML;
 %ignore CLRenderPoint::x() const;
@@ -171,7 +176,7 @@
 %ignore CLRenderPoint::getYOffset() const;
 %ignore CLRenderPoint::getZOffset() const;
 %ignore CLRenderPoint::CLRenderPoint(const RenderPoint& source);
-%ignore CLStyle::CLStyle(const Style& source, const std::string& name, CCopasiContainer* pParent = NULL);
+%ignore CLStyle::CLStyle(const Style& source, const std::string& name, CDataContainer* pParent = NULL);
 %ignore CLStyle::addSBMLAttributes;
 %ignore CLStyle::setRoleList;
 %ignore CLStyle::setTypeList;
@@ -185,7 +190,7 @@
 %ignore CLText::getY() const;
 %ignore CLText::getZ() const;
 %ignore CLText::getFontSize() const;
-%ignore CLText::CLText(const Text& source, CCopasiContainer* pParent = NULL);
+%ignore CLText::CLText(const Text& source, CDataContainer* pParent = NULL);
 %ignore CLTransformation::IDENTITY3D;
 %ignore CLTransformation::getIdentityMatrix;
 %ignore CLTransformation::CLTransformation(const double matrix[12]);
@@ -263,22 +268,22 @@
 
 
 
-%template(ColorDefinitionVector) CCopasiVector<CLColorDefinition>;
-%template(GlobalRenderInformationVector) CCopasiVector<CLGlobalRenderInformation>;
-%template(GlobalStyleVector) CCopasiVector<CLGlobalStyle>;
-%template(LocalStyleVector) CCopasiVector<CLLocalStyle>;
-%template(GradientBaseVector) CCopasiVector<CLGradientBase>;
-%template(CCopasiObjectVector) CCopasiVector<CCopasiObject>;
-%template(GradientStopVector) CCopasiVector<CLGradientStop>;
-%template(LineEndingVector) CCopasiVector<CLLineEnding>;
-typedef CCopasiVector<CLColorDefinition> ColorDefinitionVector;
-typedef CCopasiVector<CLGlobalRenderInformation> GlobalRenderInformationVector;
-typedef CCopasiVector<CLGlobalStyle> GlobalStyleVector;
-typedef CCopasiVector<CLLocalStyle> LocalStyleVector;
-typedef CCopasiVector<CLGradientBase> GradientBaseVector;
-typedef CCopasiVector<CCopasiObject> CCopasiObjectVector;
-typedef CCopasiVector<CLGradientStop> GradientStopVector;
-typedef CCopasiVector<CLLineEnding> LineEndingVector;
+%template(ColorDefinitionVector) CDataVector<CLColorDefinition>;
+%template(GlobalRenderInformationVector) CDataVector<CLGlobalRenderInformation>;
+%template(GlobalStyleVector) CDataVector<CLGlobalStyle>;
+%template(LocalStyleVector) CDataVector<CLLocalStyle>;
+%template(GradientBaseVector) CDataVector<CLGradientBase>;
+%template(CCopasiObjectVector) CDataVector<CDataObject>;
+%template(GradientStopVector) CDataVector<CLGradientStop>;
+%template(LineEndingVector) CDataVector<CLLineEnding>;
+typedef CDataVector<CLColorDefinition> ColorDefinitionVector;
+typedef CDataVector<CLGlobalRenderInformation> GlobalRenderInformationVector;
+typedef CDataVector<CLGlobalStyle> GlobalStyleVector;
+typedef CDataVector<CLLocalStyle> LocalStyleVector;
+typedef CDataVector<CLGradientBase> GradientBaseVector;
+typedef CDataVector<CDataObject> CCopasiObjectVector;
+typedef CDataVector<CLGradientStop> GradientStopVector;
+typedef CDataVector<CLLineEnding> LineEndingVector;
 
 %template(RenderPointStdVector) std::vector<CLRenderPoint*>;
 typedef std::vector<CLRenderPoint*> RenderPointStdVector;

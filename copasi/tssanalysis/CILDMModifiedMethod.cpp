@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,8 +19,8 @@
 #include "CTSSAProblem.h"
 #include "CTSSATask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "math/CMathContainer.h"
@@ -23,7 +28,7 @@
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS
 
-CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent,
+CILDMModifiedMethod::CILDMModifiedMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CTSSAMethod(pParent, methodType, taskType)
@@ -32,7 +37,7 @@ CILDMModifiedMethod::CILDMModifiedMethod(const CCopasiContainer * pParent,
 }
 
 CILDMModifiedMethod::CILDMModifiedMethod(const CILDMModifiedMethod & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CTSSAMethod(src, pParent)
 {
   initializeParameter();
@@ -45,8 +50,8 @@ void CILDMModifiedMethod::initializeParameter()
 {
   CTSSAMethod::initializeParameter();
 
-  addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
-  addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
+  addObjectReference("Number of slow variables", mSlow, CDataObject::ValueInt);
+  addMatrixReference("Contribution of Species to Slow Space", mVslow, CDataObject::ValueDbl);
 
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
 

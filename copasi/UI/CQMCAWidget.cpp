@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,14 +26,15 @@
 #include "CProgressBar.h"
 #include "qtUtilities.h"
 
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CMCATask.h"
-#include "steadystate/CMCAProblem.h"
-#include "steadystate/CMCAMethod.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/steadystate/CMCAProblem.h"
+#include "copasi/steadystate/CMCAMethod.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQMCAWidget which is a child of 'parent', with the
@@ -77,7 +83,7 @@ void CQMCAWidget::slotSteadyStateChecked()
 bool CQMCAWidget::runTask()
 {
   CMCATask * pTask =
-    dynamic_cast< CMCATask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CMCATask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

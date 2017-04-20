@@ -25,8 +25,8 @@
 #include "CQMessageBox.h"
 
 #include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "copasiui3window.h"
 
@@ -198,7 +198,7 @@ void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 
   std::string key = pModel->getReactions()[index.row()].getKey();
 
-  if (CCopasiRootContainer::getKeyFactory()->get(key))
+  if (CRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 

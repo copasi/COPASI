@@ -26,9 +26,7 @@
 
 #include "TaskWidget.h"
 #include "qtUtilities.h"
-
-#include <copasi/UI/copasiui3window.h>
-
+#include "copasiui3window.h"
 #include "listviews.h"
 #include "DataModelGUI.h"
 #include "CQMessageBox.h"
@@ -40,27 +38,26 @@
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
 #include "CQTaskBtnWidget.h"
-#include "utilities/CCopasiTask.h"
-#include "utilities/CCopasiMethod.h"
-#include "utilities/CCopasiException.h"
-#include "utilities/COutputHandler.h"
-#include "utilities/CDirEntry.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
-#include "report/CKeyFactory.h"
-#include "UI/CQTaskThread.h"
-#include "plotUI/CopasiPlot.h"
-#include "plotUI/plotwindow.h"
+#include "CQTaskThread.h"
+#include "CQOptPopulation.h"
 
-#include "UI/CQOptPopulation.h"
-#include <copasi/optimization/COptTask.h>
-#include <copasi/optimization/COptPopulationMethod.h>
-#include <copasi/parameterFitting/CFitTask.h>
-
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/commandline/CConfigurationFile.h>
+#include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiMethod.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/COutputHandler.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/plotUI/CopasiPlot.h"
+#include "copasi/plotUI/plotwindow.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/optimization/COptPopulationMethod.h"
+#include "copasi/parameterFitting/CFitTask.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -281,7 +278,7 @@ bool TaskWidget::commonBeforeRunTask()
   CCopasiMessage::clearDeque();
 
   // create population display if needed
-  if (CCopasiRootContainer::getConfiguration()->displayPopulations())
+  if (CRootContainer::getConfiguration()->displayPopulations())
     {
 
       if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
@@ -298,7 +295,6 @@ bool TaskWidget::commonBeforeRunTask()
               mpDataModel->addInterface(pPopWidget);
             }
         }
-
     }
 
   return true;
@@ -308,7 +304,7 @@ bool TaskWidget::commonAfterRunTask()
 {
   if (!mpTask) return false;
 
-  if (CCopasiRootContainer::getConfiguration()->displayPopulations())
+  if (CRootContainer::getConfiguration()->displayPopulations())
     {
 
       if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)

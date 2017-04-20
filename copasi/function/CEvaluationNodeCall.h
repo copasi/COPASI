@@ -27,7 +27,7 @@
 class CFunction;
 class CExpression;
 class CFunctionParameters;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is the class for nodes presenting operators used in an evaluation trees.
@@ -160,7 +160,7 @@ public:
    * Create a new ASTNode corresponding to this choice node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Add a child to a node.

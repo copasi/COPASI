@@ -31,10 +31,10 @@
 #include <iostream>
 
 #include "utilities/CReadConfig.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 /** @dia:pos 15.1888,24.6765 */
-class CFunctionParameter : public CCopasiContainer
+class CFunctionParameter : public CDataContainer
 {
 public:
   /**
@@ -103,30 +103,30 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunctionParameter(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CFunctionParameter" & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunctionParameter(const CFunctionParameter & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
 
   /**
    * Specified constuctor, sets all member values at once
    * @param "const string &" name
    * @param "const CFunctionParameter::DataType &" type
    * @param "const string &" usage
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunctionParameter(const std::string & name,
                      const DataType & type,
                      Role usage,
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   /**
    *  Destructor

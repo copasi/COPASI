@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -6,7 +11,7 @@
 #ifndef COPASI_CXMLHandlerFactory
 #define COPASI_CXMLHandlerFactory
 
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 #include "copasi/xml/parser/CXMLHandler.h"
 
 class CXMLParser;

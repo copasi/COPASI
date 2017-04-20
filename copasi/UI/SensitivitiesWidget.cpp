@@ -32,8 +32,8 @@
 #include "CCopasiSelectionDialog.h"
 #include "resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "sensitivities/CSensTask.h"
 #include "sensitivities/CSensProblem.h"
 #include "sensitivities/CSensMethod.h"
@@ -84,7 +84,7 @@ bool SensitivitiesWidget::saveTask()
   saveCommon();
   saveMethod();
   CSensTask *sensTask =
-    dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSensTask *>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (sensTask == NULL)
     return false;
@@ -209,7 +209,7 @@ bool SensitivitiesWidget::loadTask()
   loadCommon();
   loadMethod();
   CSensTask *sensTask =
-    dynamic_cast<CSensTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSensTask *>(CRootContainer::getKeyFactory()->get(mKey));
   assert(sensTask);
   CSensProblem *problem =
     dynamic_cast<CSensProblem *>(sensTask->getProblem());
@@ -376,7 +376,7 @@ void
 //SensitivitiesWidget::on_SingleFunctionChooser_clicked()
 SensitivitiesWidget::slotChooseSingleFunction()
 {
-  const CCopasiObject *pObject =
+  const CDataObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::Variables |
         CQSimpleSelectionTree::ObservedValues);
@@ -393,7 +393,7 @@ void
 //SensitivitiesWidget::on_SingleVariableChooser_clicked()
 SensitivitiesWidget::slotChooseSingleVariable()
 {
-  const CCopasiObject *pObject =
+  const CDataObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters);
@@ -410,7 +410,7 @@ void
 //SensitivitiesWidget::on_SingleVariable2Chooser_clicked()
 SensitivitiesWidget::slotChooseSingleVariable2()
 {
-  const CCopasiObject *pObject =
+  const CDataObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters);

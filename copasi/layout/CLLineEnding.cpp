@@ -18,7 +18,7 @@
 
 #include "CLLineEnding.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -30,30 +30,30 @@ CLLineEnding * CLLineEnding::fromData(const CData & data)
 /**
  * Constructor.
  */
-CLLineEnding::CLLineEnding(CCopasiContainer* pParent):
+CLLineEnding::CLLineEnding(CDataContainer* pParent):
   CLGraphicalPrimitive2D(),
-  CCopasiContainer("LineEnding", pParent),
+  CDataContainer("LineEnding", pParent),
   mEnableRotationalMapping(false),
   mpGroup(NULL),
   mKey(""),
   mId("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LineEnding", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LineEnding", this);
 }
 
 /**
  * Copy Constructor.
  */
-CLLineEnding::CLLineEnding(const CLLineEnding& source, CCopasiContainer* pParent):
+CLLineEnding::CLLineEnding(const CLLineEnding& source, CDataContainer* pParent):
   CLGraphicalPrimitive2D(source),
-  CCopasiContainer(source, pParent),
+  CDataContainer(source, pParent),
   mEnableRotationalMapping(source.mEnableRotationalMapping),
   mBoundingBox(source.mBoundingBox),
   mpGroup(NULL),
   mKey(""),
   mId(source.mId)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LineEnding", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LineEnding", this);
 
   if (source.mpGroup != NULL)
     {
@@ -64,16 +64,16 @@ CLLineEnding::CLLineEnding(const CLLineEnding& source, CCopasiContainer* pParent
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLLineEnding::CLLineEnding(const LineEnding& source, CCopasiContainer* pParent):
+CLLineEnding::CLLineEnding(const LineEnding& source, CDataContainer* pParent):
   CLGraphicalPrimitive2D(source),
-  CCopasiContainer("LineEnding", pParent),
+  CDataContainer("LineEnding", pParent),
   mEnableRotationalMapping(source.getIsEnabledRotationalMapping()),
   mBoundingBox(*source.getBoundingBox()),
   mpGroup(new CLGroup(*source.getGroup(), this)),
   mKey(""),
   mId(source.getId())
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LineEnding", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LineEnding", this);
 }
 
 /**

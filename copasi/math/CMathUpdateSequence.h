@@ -15,7 +15,7 @@
 #include <set>
 #include <cstddef>
 
-#include <copasi/utilities/CVector.h>
+#include "copasi/core/CVector.h"
 
 class CMathContainer;
 class CObjectInterface;

@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000104.cpp,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2011/12/24 11:14:48 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,8 +13,8 @@
 #include <string>
 #include <iostream>
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/report/CRootContainer.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 
 #include "sbml/xml/XMLNode.h"
 #include "sbml/xml/XMLAttributes.h"
@@ -31,16 +28,14 @@
 void test000104::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
-  pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL, false);
+  pDataModel = CRootContainer::addDatamodel();
 }
 
 void test000104::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
-
-
 
 void test000104::test_bug1744()
 {

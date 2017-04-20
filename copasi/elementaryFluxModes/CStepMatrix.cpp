@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CStepMatrix.cpp,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: heilmand $
-//   $Date: 2010/08/02 15:12:41 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -19,22 +16,22 @@
 #include "copasi.h"
 
 #include "CStepMatrix.h"
+
+#include "copasi/core/CMatrix.h"
 #include "CStepMatrixColumn.h"
 
-#include "utilities/CMatrix.h"
-
 CStepMatrix::CStepMatrix():
-    CVector< CStepMatrixColumn * >(0),
-    mRows(0),
-    mPivot(0),
-    mFirstUnconvertedRow(0)
+  CVector< CStepMatrixColumn * >(0),
+  mRows(0),
+  mPivot(0),
+  mFirstUnconvertedRow(0)
 {}
 
 CStepMatrix::CStepMatrix(size_t rows):
-    CVector< CStepMatrixColumn * >(0),
-    mRows(rows),
-    mPivot(rows),
-    mFirstUnconvertedRow(0)
+  CVector< CStepMatrixColumn * >(0),
+  mRows(rows),
+  mPivot(rows),
+  mFirstUnconvertedRow(0)
 {
   size_t * pPivot = mPivot.array();
 
@@ -45,10 +42,10 @@ CStepMatrix::CStepMatrix(size_t rows):
 }
 
 CStepMatrix::CStepMatrix(CMatrix< C_INT64 > & nullspaceMatrix):
-    CVector< CStepMatrixColumn * >(0),
-    mRows(nullspaceMatrix.numRows()),
-    mPivot(nullspaceMatrix.numRows()),
-    mFirstUnconvertedRow(0)
+  CVector< CStepMatrixColumn * >(0),
+  mRows(nullspaceMatrix.numRows()),
+  mPivot(nullspaceMatrix.numRows()),
+  mFirstUnconvertedRow(0)
 {
   size_t Cols = nullspaceMatrix.numCols();
 
@@ -164,9 +161,8 @@ void CStepMatrix::convertRow()
 
 /*
 void CStepMatrix::convertMatrix() {
-
 }
-*/
+ */
 
 size_t CStepMatrix::getFirstUnconvertedRow() const
 {

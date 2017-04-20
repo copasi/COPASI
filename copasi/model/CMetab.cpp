@@ -22,17 +22,18 @@
 #include <vector>
 #include <limits>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "utilities/utility.h"
-#include "report/CKeyFactory.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/report/CKeyFactory.h"
 #include "CCompartment.h"
 #include "CModel.h"
 #include "CMetab.h"
 #include "CMetabNameInterface.h"
-#include "function/CExpression.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/math/CMathContainer.h"
 
 #define METAB_MOIETY 7
 
@@ -56,9 +57,9 @@ CMetab * CMetab::fromData(const CData & data)
 }
 
 CMetab::CMetab(const std::string & name,
-               const CCopasiContainer * pParent):
+               const CDataContainer * pParent):
   CModelEntity(name, pParent, "Metabolite",
-               CCopasiObject::NonUniqueName),
+               CDataObject::NonUniqueName),
   mConc(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mIConc(0.0),
   mConcRate(0.0),
@@ -68,7 +69,7 @@ CMetab::CMetab(const std::string & name,
   mpMoiety(NULL),
   mIsInitialConcentrationChangeAllowed(true)
 {
-  //mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
+  //mKey = CRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
 
   setStatus(REACTIONS);
@@ -85,7 +86,7 @@ CMetab::CMetab(const std::string & name,
 }
 
 CMetab::CMetab(const CMetab & src,
-               const CCopasiContainer * pParent):
+               const CDataContainer * pParent):
   CModelEntity(src, pParent),
   mConc(src.mConc),
   mIConc(src.mIConc),
@@ -96,7 +97,7 @@ CMetab::CMetab(const CMetab & src,
   mpMoiety(src.mpMoiety),
   mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed)
 {
-  //mKey = CCopasiRootContainer::getKeyFactory()->add("Metabolite", this);
+  //mKey = CRootContainer::getKeyFactory()->add("Metabolite", this);
 
   initObjects();
 
@@ -124,7 +125,7 @@ CMetab &CMetab::operator=(const CMetabOld & RHS)
 
 CMetab::~CMetab()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 
@@ -135,7 +136,7 @@ const std::string CMetab::getUnits() const
 }
 
 // virtual
-std::string CMetab::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CMetab::getChildObjectUnits(const CDataObject * pObject) const
 {
   if (pObject == mpTTReference)
     {
@@ -187,9 +188,9 @@ void CMetab::setTransitionTime(const C_FLOAT64 & transitionTime)
 
 const C_FLOAT64 & CMetab::getTransitionTime() const {return mTT;}
 
-CCopasiObject * CMetab::getTransitionTimeReference() const {return mpTTReference;}
+CDataObject * CMetab::getTransitionTimeReference() const {return mpTTReference;}
 
-bool CMetab::setObjectParent(const CCopasiContainer * pParent)
+bool CMetab::setObjectParent(const CDataContainer * pParent)
 {
   CModelEntity::setObjectParent(pParent);
   initCompartment(NULL);
@@ -222,170 +223,20 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
   return;
 }
 
-void CMetab::refreshInitialValue()
-{
-  mIValue = mIConc * mpCompartment->getInitialValue() * mpModel->getQuantity2NumberFactor();
-}
-
-void CMetab::refreshInitialConcentration()
-{
-  if (mpInitialExpression != NULL &&
-      mpInitialExpression->getInfix() != "")
-    mIConc = mpInitialExpression->calcValue();
-  else
-    mIConc =
-      mIValue / mpCompartment->getInitialValue() * mpModel->getNumber2QuantityFactor();
-
-  if (isFixed()) mConc = mIConc;
-}
-
-void CMetab::refreshConcentration()
-{
-  mConc = mValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
-}
-
-void CMetab::refreshNumber()
-{
-  mValue = mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
-}
-
-void CMetab::setStatus(const CModelEntity::Status & status)
-{
-  Status OldStatus = getStatus();
-
-  CModelEntity::setStatus(status);
-
-  if (status == OldStatus) return;
-
-  CCopasiObject::DataObjectSet Dependencies;
-
-  const CCopasiObject * pVolumeReference = NULL;
-
-  if (mpCompartment)
-    pVolumeReference = mpCompartment->getValueReference();
-
-  switch (getStatus())
-    {
-      case FIXED:
-        break;
-
-      case ASSIGNMENT:
-        Dependencies.insert(mpConcReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpValueReference->setDirectDependencies(Dependencies);
-        mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
-
-        // The dependencies and refresh of the rate are correct (see CModelEntity::setStatus).
-        mpConcRateReference->setDirectDependencies(mpRateReference->getDirectDependencies());
-        break;
-
-      case ODE:
-        mpValueReference->setDirectDependencies(Dependencies);
-
-        Dependencies.insert(mpValueReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpConcReference->setDirectDependencies(Dependencies);
-
-        Dependencies.clear();
-        Dependencies.insert(mpConcRateReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpRateReference->setDirectDependencies(Dependencies);
-        mpConcRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
-        break;
-
-      case REACTIONS:
-        mpValueReference->setDirectDependencies(Dependencies);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        Dependencies.insert(mpValueReference);
-        mpConcReference->setDirectDependencies(Dependencies);
-
-        Dependencies.clear();
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        Dependencies.insert(mpRateReference);
-        mpConcRateReference->setDirectDependencies(Dependencies);
-        break;
-
-      default:
-        break;
-    }
-
-  if (mpModel && mpCompartment) refreshConcentration();
-}
-
 bool CMetab::compile()
 {
   bool success = true;
 
-  // We first clear all dependencies and refreshes
-  // Particle Number
-  mpValueReference->clearDirectDependencies();
-
-  // Rate (particle number rate)
-  mRateVector.clear();
-  mpRateReference->clearDirectDependencies();
-
-  // Concentration
-  mpConcReference->clearDirectDependencies();
-
-  // Concentration Rate
-  mpConcRateReference->clearDirectDependencies();
-
-  // Noise
-  mpNoiseReference->clearDirectDependencies();
-  mpIntensiveNoiseReference->clearDirectDependencies();
-
-  // Transition Time
-  mpTTReference->clearDirectDependencies();
-
   // Prepare the compilation
-  std::set<const CCopasiObject *> Dependencies;
   CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(getObjectAncestor("Model"));
 
-  CCopasiDataModel* pDataModel = NULL;
-  const CCopasiObject * pVolumeReference = NULL;
-
-  if (mpCompartment)
-    pVolumeReference = mpCompartment->getValueReference();
-
-  // Compile the value (particle number)
-  Dependencies.insert(mpConcReference);
-
-  if (pVolumeReference)
-    Dependencies.insert(pVolumeReference);
-
-  // We no longer need to distinguish the cases since the reference are now context sensitive
-  mpValueReference->setDirectDependencies(Dependencies);
-
-  Dependencies.clear();
+  CDataModel* pDataModel = getObjectDataModel();
 
   // Compiling of the rest.
   switch (getStatus())
     {
       case FIXED:
-        // Concentration
-        Dependencies.insert(mpValueReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpConcReference->setDirectDependencies(Dependencies);
-
         // Fixed values
         mRate = 0.0;
         mConcRate = 0.0;
@@ -396,7 +247,6 @@ bool CMetab::compile()
       case ASSIGNMENT:
         // Concentration
         success = mpExpression->compile(listOfContainer);
-        mpConcReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
         // Implicit initial expression
         pdelete(mpInitialExpression);
@@ -413,134 +263,20 @@ bool CMetab::compile()
 
       case ODE:
         // Concentration
-        Dependencies.insert(mpValueReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpConcReference->setDirectDependencies(Dependencies);
 
         // Rate (particle number rate)
         success = mpExpression->compile(listOfContainer);
-        Dependencies = mpExpression->getDirectDependencies();
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpRateReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
-
-        // Concentration Rate
-        Dependencies.insert(mpRateReference);
-        Dependencies.insert(mpConcReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        if (mpCompartment)
-          Dependencies.insert(mpCompartment->getRateReference());
-
-        mpConcRateReference->setDirectDependencies(Dependencies);
 
         if (mpNoiseExpression != NULL)
           {
             // Noise (particle number rate)
             success = mpNoiseExpression->compile(listOfContainer);
-            Dependencies = mpNoiseExpression->getDirectDependencies();
-
-            if (pVolumeReference)
-              Dependencies.insert(pVolumeReference);
-
-            mpNoiseReference->setDirectDependencies(Dependencies);
-            Dependencies.clear();
-
-            // Intensive Noise
-            Dependencies.insert(mpNoiseReference);
-
-            if (pVolumeReference)
-              Dependencies.insert(pVolumeReference);
-
-            mpIntensiveNoiseReference->setDirectDependencies(Dependencies);
-            Dependencies.clear();
           }
 
-        // Transition Time
-        Dependencies.insert(mpValueReference);
-        Dependencies.insert(mpRateReference);
-        mpTTReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
         break;
 
       case REACTIONS:
-      {
-        // Concentration
-        Dependencies.insert(mpValueReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        mpConcReference->setDirectDependencies(Dependencies);
-
-        Dependencies.clear();
-        std::set<const CCopasiObject *> NoiseDependencies;
-
-        // Create the rate vector
-        CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
-        CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
-
-        for (; it != end; ++it)
-          {
-            const CCopasiVector< CChemEqElement > &Balances =
-              it->getChemEq().getBalances();
-            CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-            CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
-
-            for (; itChem != endChem; ++itChem)
-              if (itChem->getMetaboliteKey() == mKey)
-                break;
-
-            if (itChem != endChem)
-              {
-                Dependencies.insert(it->getParticleFluxReference());
-                NoiseDependencies.insert(it->getParticleNoiseReference());
-
-                std::pair< C_FLOAT64, const C_FLOAT64 * > Insert;
-                Insert.first = itChem->getMultiplicity();
-                Insert.second = &it->getParticleFlux();
-
-                mRateVector.push_back(Insert);
-              }
-          }
-
-        // Rate (particle number rate)
-        mpRateReference->setDirectDependencies(Dependencies);
-
-        // Transition Time
-        mpTTReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
-
-        // Concentration Rate
-        Dependencies.insert(mpRateReference);
-        Dependencies.insert(mpConcReference);
-
-        if (pVolumeReference)
-          Dependencies.insert(pVolumeReference);
-
-        if (mpCompartment)
-          Dependencies.insert(mpCompartment->getRateReference());
-
-        mpConcRateReference->setDirectDependencies(Dependencies);
-        Dependencies.clear();
-
-        mpNoiseReference->setDirectDependencies(NoiseDependencies);
-
-        if (pVolumeReference)
-          NoiseDependencies.insert(pVolumeReference);
-
-        mpIntensiveNoiseReference->setDirectDependencies(NoiseDependencies);
-      }
-
-      break;
+        break;
 
       default:
         break;
@@ -555,7 +291,7 @@ bool CMetab::compile()
 bool CMetab::compileInitialValueDependencies()
 {
   bool success = true;
-  std::set<const CCopasiObject *> Dependencies;
+
   CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(getObjectAncestor("Model"));
 
@@ -566,69 +302,45 @@ bool CMetab::compileInitialValueDependencies()
     {
       // Initial concentration
       success &= mpInitialExpression->compile(listOfContainer);
-      mpIConcReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
-
-      // Initial particle number
-      Dependencies.insert(mpIConcReference);
-
-      if (mpCompartment)
-        Dependencies.insert(mpCompartment->getInitialValueReference());
-
-      mpIValueReference->setDirectDependencies(Dependencies);
-      Dependencies.clear();
-
-      // If we have a valid initial expression, we update the initial value.
-      // In case the expression is constant this suffices others are updated lated again.
-      if (mpInitialExpression->getIssue())
-        mIConc = mpInitialExpression->calcValue();
 
       return success;
     }
 
-  // The context sensitivity is handle in the virtual method getDirectDependencies();
-
-  // Initial particle number
-  Dependencies.insert(mpIConcReference);
-
-  if (mpCompartment)
-    Dependencies.insert(mpCompartment->getInitialValueReference());
-
-  mpIValueReference->setDirectDependencies(Dependencies);
-  Dependencies.clear();
-
-  // Initial concentration
-  Dependencies.insert(mpIValueReference);
-
-  if (mpCompartment)
-    Dependencies.insert(mpCompartment->getInitialValueReference());
-
-  mpIConcReference->setDirectDependencies(Dependencies);
   return success;
 }
 
-void CMetab::compileIsInitialConcentrationChangeAllowed()
+void CMetab::compileIsInitialValueChangeAllowed()
 {
-  // We check whether changing the initial concentration will lead to circular
-  // dependencies in the system.
+  mIsInitialConcentrationChangeAllowed = true;
+  mIsInitialParticleNumberChangeAllowed = true;
 
-  // These circular dependencies must always involve the initial particle number, i.e.,
-  // it suffices to check whether the initial particle number has circular dependencies when the
-  // concentration is changes.
+  if (mpModel == NULL || mpCompartment == NULL) return;
 
-  CCopasiObject::DataObjectSet Candidates;
-  CCopasiObject::DataObjectSet Verified;
-  CCopasiObject::DataObjectSet Context;
+  const CMathContainer & Container = mpModel->getMathContainer();
 
-  Context.insert(this->mpIConcReference);
+  CMathObject * pInitialSize = Container.getMathObject(mpCompartment->getInitialValueReference());
 
-  mIsInitialConcentrationChangeAllowed = !mpIValueReference->hasCircularDependencies(Candidates, Verified, Context);
+  // If the compartment size depends on the initial particle number than the initial concentration may not be changed
+  // since [] = # / S = # / f(#).
+  mIsInitialConcentrationChangeAllowed =
+    Container.getInitialDependencies().dependsOn(pInitialSize, CCore::SimulationContext::Default,
+        Container.getMathObject(mpIValueReference));
+
+  // If the compartment size depends on the initial concentration than initial the particle number may not be changed
+  // since # = [] * S = [] * f([]).
+  mIsInitialParticleNumberChangeAllowed =
+    Container.getInitialDependencies().dependsOn(pInitialSize, CCore::SimulationContext::Default,
+        Container.getMathObject(mpIConcReference));
 
   return;
 }
 
-const bool & CMetab::isInitialConcentrationChangeAllowed() const
+const bool & CMetab::isInitialValueChangeAllowed(CModelParameter::Framework framework) const
 {
-  return mIsInitialConcentrationChangeAllowed;
+  if (framework == CModelParameter::Concentration)
+    return mIsInitialConcentrationChangeAllowed;
+
+  return mIsInitialParticleNumberChangeAllowed;
 }
 
 void CMetab::calculate()
@@ -658,200 +370,44 @@ void CMetab::calculate()
     }
 }
 
-void CMetab::refreshRate()
-{
-  switch (getStatus())
-    {
-      case FIXED:
-        break;
-
-      case ASSIGNMENT:
-        break;
-
-      case ODE:
-        break;
-
-      case REACTIONS:
-      {
-        mRate = 0.0;
-
-        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator it =
-          mRateVector.begin();
-        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator end =
-          mRateVector.end();
-
-        for (; it != end; ++it)
-          mRate += it->first **it->second;
-      }
-      break;
-
-      default:
-        break;
-    }
-}
-
-void CMetab::refreshTransitionTime()
-{
-  switch (getStatus())
-    {
-      case FIXED:
-        break;
-
-      case ASSIGNMENT:
-        break;
-
-      case ODE:
-        mTT = mValue / fabs(mRate);
-        break;
-
-      case REACTIONS:
-      {
-        C_FLOAT64 PositiveFlux = 0;
-        C_FLOAT64 NegativeFlux = 0;
-        C_FLOAT64 Flux;
-
-        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator it =
-          mRateVector.begin();
-        std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > >::const_iterator end =
-          mRateVector.end();
-
-        for (; it != end; ++it)
-          {
-            Flux = it->first **it->second;
-
-            if (Flux > 0.0)
-              PositiveFlux += Flux;
-            else
-              NegativeFlux -= Flux;
-          }
-
-        Flux = std::min(PositiveFlux, NegativeFlux);
-
-        if (Flux == 0.0)
-          mTT = std::numeric_limits<C_FLOAT64>::infinity();
-        else
-          mTT = mValue / Flux;
-      }
-      break;
-
-      default:
-        break;
-    }
-}
-
 void CMetab::initObjects()
 {
-  // We need to have mpIValueRefernce point to a CParticleReference object.
-  pdelete(mpIValueReference);
-  mpIValueReference = new CParticleReference("InitialParticleNumber", this, mIValue);
-
-  // We need to have mpValueRefernce point to a CParticleReference object.
-  pdelete(mpValueReference);
-  mpValueReference = new CParticleReference("ParticleNumber", this, mValue);
-
+  mpIValueReference->setObjectName("InitialParticleNumber");
+  mpValueReference->setObjectName("ParticleNumber");
   mpRateReference->setObjectName("ParticleNumberRate");
 
-  mpIConcReference = new CConcentrationReference("InitialConcentration", this, mIConc);
-
-  mpConcReference = new CConcentrationReference("Concentration", this, mConc);
+  mpIConcReference = addObjectReference("InitialConcentration", mIConc);
+  mpConcReference = addObjectReference("Concentration", mConc);
 
   mpConcRateReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mConcRate, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mConcRate, CDataObject::ValueDbl));
 
   mpIntensiveNoiseReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("IntensiveNoise", mIntensiveNoise, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("IntensiveNoise", mIntensiveNoise, CDataObject::ValueDbl));
 
   mpTTReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("TransitionTime", mTT, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("TransitionTime", mTT, CDataObject::ValueDbl));
 }
 
-CCopasiObject::DataObjectSet CMetab::getDeletedObjects() const
-{
-  CCopasiObject::DataObjectSet Deleted = CModelEntity::getDeletedObjects();
-
-  Deleted.insert(mpIConcReference);
-  Deleted.insert(mpConcReference);
-  Deleted.insert(mpConcRateReference);
-  Deleted.insert(mpTTReference);
-
-  return Deleted;
-}
-
-// virtual
-bool CMetab::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
-{
-  bool MustBeDeleted = false;
-
-  DataObjectSet ChildObjects = getDeletedObjects();
-
-  DataObjectSet::const_iterator it = ChildObjects.begin();
-  DataObjectSet::const_iterator end = ChildObjects.end();
-
-  for (; it != end; ++it)
-    {
-      if (*it == this)
-        {
-          if ((*it)->CCopasiObject::mustBeDeleted(deletedObjects))
-            {
-              MustBeDeleted = true;
-              break;
-            }
-
-          continue;
-        }
-
-      // The following objects are automatically corrected, i.e., they
-      // are no reasons for being deleted.
-      if (getStatus() == REACTIONS &&
-          (*it == this->mpConcRateReference ||
-           *it == this->mpRateReference ||
-           *it == this->mpTTReference))
-        {
-          continue;
-        }
-
-      if ((*it)->mustBeDeleted(deletedObjects))
-        {
-          MustBeDeleted = true;
-          break;
-        }
-    }
-
-  return MustBeDeleted;
-}
-
-CConcentrationReference * CMetab::getInitialConcentrationReference() const
+CDataObject * CMetab::getInitialConcentrationReference() const
 {return mpIConcReference;}
 
-CConcentrationReference * CMetab::getConcentrationReference() const
+CDataObject * CMetab::getConcentrationReference() const
 {return mpConcReference;}
 
-CCopasiObject * CMetab::getConcentrationRateReference() const
+CDataObject * CMetab::getConcentrationRateReference() const
 {return mpConcRateReference;}
 
-CCopasiObject * CMetab::getIntensiveNoiseReference() const
+CDataObject * CMetab::getIntensiveNoiseReference() const
 {return mpIntensiveNoiseReference;}
 
 C_FLOAT64 CMetab::getConcentrationRate() const
 {
-  const_cast<CMetab *>(this)->refreshConcentrationRate();
   return mConcRate;
 }
 
-void CMetab::refreshConcentrationRate()
-{
-  // d(Particle Number*conversion/Volume)/dt
-  // = (Rate / Volume - Particle Number / Volume^2 * Volume Rate) * conversion
-  // = (Rate - Particle Number / Volume * Volume Rate) / Volume * conversion
-  // = (Rate  * conversion - Concentration * Volume Rate) / Volume
-
-  mConcRate =
-    (mRate * mpModel->getNumber2QuantityFactor() - mConc * mpCompartment->getRate())
-    / mpCompartment->getValue();
-}
-
 // virtual
-const CCopasiObject * CMetab::getValueObject() const
+const CDataObject * CMetab::getValueObject() const
 {
   return mpConcReference;
 }
@@ -945,7 +501,7 @@ std::string CMetab::getObjectDisplayName() const
       return CMetabNameInterface::getDisplayName(tmp, *this, false);
     }
 
-  return CCopasiObject::getObjectDisplayName();
+  return CDataObject::getObjectDisplayName();
 }
 
 void CMetab::setDependsOnMoiety(const CMoiety * pMoiety)
@@ -967,16 +523,16 @@ CMetabOld * CMetabOld::fromData(const CData & data)
 }
 
 CMetabOld::CMetabOld(const std::string & name,
-                     const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Old Metabolite"),
+                     const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Old Metabolite"),
   mIConc(1.0),
   mStatus(CModelEntity::REACTIONS),
   mCompartment()
 {CONSTRUCTOR_TRACE;}
 
 CMetabOld::CMetabOld(const CMetabOld & src,
-                     const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                     const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mIConc(src.mIConc),
   mStatus(src.mStatus),
   mCompartment(src.mCompartment)
@@ -1045,169 +601,3 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
 }
 
 C_INT32 CMetabOld::getIndex() const {return mCompartment;}
-
-// static
-CCopasiObject::DataObjectSet CConcentrationReference::EmptyDependencies;
-
-CConcentrationReference::CConcentrationReference(const std::string & name,
-    const CCopasiContainer * pParent,
-    C_FLOAT64 & reference) :
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
-{
-  const CMetab * pMetab = static_cast< const CMetab * >(pParent);
-}
-
-CConcentrationReference::CConcentrationReference(const CConcentrationReference & src,
-    const CCopasiContainer * pParent) :
-  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
-{
-  const CMetab * pMetab = static_cast< const CMetab * >(pParent);
-}
-
-CConcentrationReference::~CConcentrationReference()
-{
-}
-
-// virtual
-const CCopasiObject::DataObjectSet &
-CConcentrationReference::getDirectDependencies(const CCopasiObject::DataObjectSet & context) const
-{
-  // If the concentration was changed in the context it has no further dependencies
-  if (context.count(this) > 0)
-    {
-      return EmptyDependencies;
-    }
-
-  return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
-}
-
-// virtual
-bool CConcentrationReference::isPrerequisiteForContext(const CObjectInterface * pObject,
-    const CMath::SimulationContextFlag & /* context */,
-    const CObjectInterface::ObjectSet & changedObjects) const
-{
-  // If the value is in the context, it does not depend on the object.
-  if (changedObjects.find(this) != changedObjects.end())
-    return false;
-
-  // Densities which are not in the context have to be recalculated.
-  return true;
-}
-
-// static
-CCopasiObject::DataObjectSet CParticleReference::EmptyDependencies;
-
-CParticleReference::CParticleReference(const std::string & name,
-                                       const CCopasiContainer * pParent,
-                                       C_FLOAT64 & reference) :
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference),
-  mPrerequisites()
-{}
-
-CParticleReference::CParticleReference(const CParticleReference & src,
-                                       const CCopasiContainer * pParent) :
-  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
-{}
-
-CParticleReference::~CParticleReference()
-{}
-
-// virtual
-const CCopasiObject::DataObjectSet &
-CParticleReference::getDirectDependencies(const CCopasiObject::DataObjectSet & context) const
-{
-  // If the particle number was changed in the context it has no further dependencies
-  if (context.count(this) > 0)
-    {
-      return EmptyDependencies;
-    }
-
-  const CMetab * pSpecies = static_cast< const CMetab * >(getObjectParent());
-
-  // In an assignment the particles (initial or transient) have always dependencies
-  if (pSpecies == NULL ||
-      pSpecies->getStatus() == CModelEntity::ASSIGNMENT)
-    {
-      return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
-    }
-
-  // We need to distinguish between initial and transient value.
-  const CCopasiObject * pConcentrationReference = NULL;
-
-  if (getObjectName() == "InitialParticleNumber")
-    {
-      // If we have an initial expression the initial particle number has dependencies.
-      if (pSpecies->getInitialExpression() != "")
-        return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
-
-      pConcentrationReference = pSpecies->getInitialConcentrationReference();
-    }
-  else
-    {
-      pConcentrationReference = pSpecies->getConcentrationReference();
-    }
-
-  // In other cases we need to find out whether the concentration was changed in
-  // the context.
-
-  if (pConcentrationReference != NULL &&
-      context.count(pConcentrationReference) > 0)
-    {
-      return CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies();
-    }
-
-  return EmptyDependencies;
-}
-
-// virtual
-const CObjectInterface::ObjectSet & CParticleReference::getPrerequisites() const
-{
-  mPrerequisites = * reinterpret_cast< const CObjectInterface::ObjectSet * >(&CCopasiObjectReference< C_FLOAT64 >::getDirectDependencies());
-  const CMoiety * pMoiety = static_cast< const CMetab * >(getObjectParent())->getMoiety();
-
-  if (pMoiety != NULL)
-    {
-      mPrerequisites.insert(pMoiety->getDependentNumberReference());
-    }
-
-  return mPrerequisites;
-}
-
-// virtual
-bool CParticleReference::isPrerequisiteForContext(const CObjectInterface * pObject,
-    const CMath::SimulationContextFlag & context ,
-    const CObjectInterface::ObjectSet & changedObjects) const
-{
-  const CMetab * pSpecies = static_cast< const CMetab * >(getObjectParent());
-
-  if (context.isSet(CMath::SimulationContext::UseMoieties) &&
-      pSpecies->isDependent())
-    {
-      return true;
-    }
-
-  // If the value is changed it must not be recalculated, i.e., it does not depend on the object.
-  if (changedObjects.find(this) != changedObjects.end())
-    return false;
-
-  // Amounts which are determine by assignment need to be recalculated.
-  if (pSpecies->getStatus() == CModelEntity::ASSIGNMENT)
-    return true;
-
-  const CConcentrationReference * pConcentrationReference = NULL;
-
-  if (getObjectName() != "ParticleNumber")
-    {
-      pConcentrationReference = pSpecies->getInitialConcentrationReference();
-    }
-  else
-    {
-      pConcentrationReference = pSpecies->getConcentrationReference();
-    }
-
-  // If the concentration was changed in the context we need to recalculate.
-  if (changedObjects.find(pConcentrationReference) != changedObjects.end())
-    return true;
-
-  return false;
-}

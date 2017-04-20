@@ -34,7 +34,7 @@ class QCheckBox;
 class QHBoxLayout;
 class QVBoxLayout;
 class QLabel;
-class CCopasiObject;
+class CDataObject;
 class CModel;
 class CCopasiSelectionWidget;
 
@@ -45,8 +45,8 @@ class CCopasiPlotSelectionDialog: public QDialog
 public:
   CCopasiPlotSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WindowFlags f = 0);
   ~CCopasiPlotSelectionDialog();
-  void setOutputVectors(std::vector< const CCopasiObject * > *outputVector1,
-                        std::vector< const CCopasiObject * > *outputVector2);
+  void setOutputVectors(std::vector< const CDataObject * > *outputVector1,
+                        std::vector< const CDataObject * > *outputVector2);
   void setModel(CModel *model,
                 const CQSimpleSelectionTree::ObjectClasses &classes);
 
@@ -69,8 +69,8 @@ protected:
   QLabel *mpYAxisLabel;
   QWidget *mpXAxisSelectionBox;
   QWidget *mpYAxisSelectionBox;
-  std::vector< const CCopasiObject * > *mpXAxisOutputVector;
-  std::vector< const CCopasiObject * > *mpYAxisOutputVector;
+  std::vector< const CDataObject * > *mpXAxisOutputVector;
+  std::vector< const CDataObject * > *mpYAxisOutputVector;
 };
 
 #endif // CPlotSelectionDialog_H__

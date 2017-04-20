@@ -23,7 +23,7 @@
 #include "report/CCopasiObjectName.h"
 
 class CRegisteredObjectName;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -137,7 +137,7 @@ public:
    * Converts this node to an ASTNode.
    * @return ASTNode the resulting ASTNode.
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Retrieve the CN of the referred object.

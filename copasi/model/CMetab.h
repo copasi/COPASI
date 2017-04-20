@@ -30,144 +30,16 @@
 #include <iostream>
 #include <set>
 
-#include "copasi/report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/model/CMoiety.h"
+#include "copasi/model/CModelParameter.h"
 
 class CCompartment;
 class CReadConfig;
 class CMetabOld;
 class CModel;
 class CUnit;
-
-class CConcentrationReference : public CCopasiObjectReference< C_FLOAT64 >
-{
-private:
-  /**
-   * Hidden default constructor
-   */
-  CConcentrationReference();
-
-public:
-  /**
-   * Specific constructor
-   * @param const std::string & name
-   * @param const CCopasiContainer * pParent,
-   * @param C_FLOAT64 & reference,
-   */
-  CConcentrationReference(const std::string & name,
-                          const CCopasiContainer * pParent,
-                          C_FLOAT64 & reference);
-
-  /**
-   * Copy constructor
-   * @param const CConcentrationReference & src
-   * @param const CCopasiContainer * pParent,
-   */
-  CConcentrationReference(const CConcentrationReference & src,
-                          const CCopasiContainer * pParent);
-
-  /**
-   * Destructor
-   */
-  ~CConcentrationReference();
-
-  /**
-   * Retrieve the list of direct dependencies
-   * @param const CCopasiObject::DataObjectSet & context (default empty set)
-   * @return const CCopasiObject::DataObjectSet & directDependencies
-   */
-  virtual const DataObjectSet & getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
-
-  /**
-   * Check whether a given object is a prerequisite for a context.
-   * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
-   * @param const CObjectInterface::ObjectSet & changedObjects
-   * @return bool isPrerequisiteForContext
-   */
-  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CMath::SimulationContextFlag & context,
-                                        const CObjectInterface::ObjectSet & changedObjects) const;
-
-  // Attributes
-private:
-  /**
-   * The list of direct dependencies when the values is in the changed context,
-   * i.e., it is always empty
-   */
-  static DataObjectSet EmptyDependencies;
-};
-
-class CParticleReference : public CCopasiObjectReference< C_FLOAT64 >
-{
-  /**
-   * Hidden default constructor
-   */
-  CParticleReference();
-
-public:
-  /**
-   * Specific constructor
-   * @param const std::string & name
-   * @param const CCopasiContainer * pParent,
-   * @param C_FLOAT64 & reference,
-   */
-  CParticleReference(const std::string & name,
-                     const CCopasiContainer * pParent,
-                     C_FLOAT64 & reference);
-
-  /**
-   * Copy constructor
-   * @param const CParticleReference & src
-   * @param const CCopasiContainer * pParent,
-   */
-  CParticleReference(const CParticleReference & src,
-                     const CCopasiContainer * pParent);
-
-  /**
-   * Destructor
-   */
-  ~CParticleReference();
-
-  /**
-   * Retrieve the list of direct dependencies
-   * @param const CCopasiObject::DataObjectSet & context (default empty set)
-   * @return const CCopasiObject::DataObjectSet & directDependencies
-   */
-  virtual const DataObjectSet & getDirectDependencies(const DataObjectSet & context = DataObjectSet()) const;
-
-  /**
-   * Retrieve the prerequisites, i.e., the objects which need to be evaluated
-   * before this.
-   * @return const CObjectInterface::ObjectSet & prerequisites
-   */
-  virtual const CObjectInterface::ObjectSet & getPrerequisites() const;
-
-  /**
-   * Check whether a given object is a prerequisite for a context.
-   * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
-   * @param const CObjectInterface::ObjectSet & changedObjects
-   * @return bool isPrerequisiteForContext
-   */
-  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CMath::SimulationContextFlag & context,
-                                        const CObjectInterface::ObjectSet & changedObjects) const;
-
-  // Attributes
-private:
-  /**
-   * The list of direct dependencies when the values is in the changed context,
-   * i.e., it is always empty
-   */
-  static DataObjectSet EmptyDependencies;
-
-  /**
-   * The prerequisites for building the math dependency graph.
-   */
-  mutable ObjectSet mPrerequisites;
-};
 
 class CMetab : public CModelEntity
 {
@@ -235,16 +107,15 @@ private:
    */
   const CMoiety * mpMoiety;
 
-  std::vector< std::pair< C_FLOAT64, const C_FLOAT64 * > > mRateVector;
-
   bool mIsInitialConcentrationChangeAllowed;
+  bool mIsInitialParticleNumberChangeAllowed;
 
 protected:
-  CConcentrationReference *mpIConcReference;
-  CConcentrationReference *mpConcReference;
-  CCopasiObjectReference< C_FLOAT64 > *mpConcRateReference;
-  CCopasiObjectReference< C_FLOAT64 > *mpIntensiveNoiseReference;
-  CCopasiObjectReference< C_FLOAT64 > *mpTTReference;
+  CDataObjectReference< C_FLOAT64 > *mpIConcReference;
+  CDataObjectReference< C_FLOAT64 > *mpConcReference;
+  CDataObjectReference< C_FLOAT64 > *mpConcRateReference;
+  CDataObjectReference< C_FLOAT64 > *mpIntensiveNoiseReference;
+  CDataObjectReference< C_FLOAT64 > *mpTTReference;
 
   CMetab(const CMetab & src);
 
@@ -255,18 +126,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMetab(const std::string & name = "NoName",
-         const CCopasiContainer * pParent = NO_PARENT);
+         const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CMetab & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMetab(const CMetab & src,
-         const CCopasiContainer * pParent);
+         const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -283,12 +154,12 @@ public:
    * Retrieve the units of the child object.
    * @return const & CUnit units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
 
   /**
    * Retrieve the object representing the value;
    */
-  virtual const CCopasiObject * getValueObject() const;
+  virtual const CDataObject * getValueObject() const;
 
   /**
    * Retrieve a pointer to the value;
@@ -318,15 +189,10 @@ public:
 
   /**
    * Sets the parent of the metabolite;
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-  /**
-   *
-   */
-  virtual void setStatus(const CModelEntity::Status & status);
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Compile the model value.
@@ -343,32 +209,18 @@ public:
   /**
    * Determine whether changing the initial concentration is allowed
    */
-  void compileIsInitialConcentrationChangeAllowed();
+  void compileIsInitialValueChangeAllowed();
 
   /**
    * Check whether changing the initial concentration is allowed
    * @return const bool & allowed
    */
-  const bool & isInitialConcentrationChangeAllowed() const;
+  const bool & isInitialValueChangeAllowed(CModelParameter::Framework framework) const;
 
   /**
    * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
    */
   virtual void calculate();
-
-  /**
-   * Retrieve the list of deleted numeric child objects;
-   * @return CCopasiObject::DataObjectSet deletedObjects
-   */
-  virtual DataObjectSet getDeletedObjects() const;
-
-  /**
-   * Check whether an object must be deleted because its prerequisites can
-   * no longer be fulfilled due to the given deleted objects
-   * @param const DataObjectSet & deletedObjects
-   * @return bool mustBeDeleted
-   */
-  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
 
   /**
    *
@@ -394,36 +246,25 @@ public:
    * Retrieve object referencing the initial concentration
    * @return CConcentrationReference * initialConcentrationReference
    */
-  CConcentrationReference * getInitialConcentrationReference() const;
+  CDataObject * getInitialConcentrationReference() const;
 
   /**
    * Retrieve object referencing the concentration
    * @return CConcentrationReference * concentrationReference
    */
-  CConcentrationReference * getConcentrationReference() const;
+  CDataObject * getConcentrationReference() const;
 
   /**
    * Retrieve object referencing the concentration
-   * @return CCopasiObject * concentrationRateReference
+   * @return CDataObject * concentrationRateReference
    */
-  CCopasiObject * getConcentrationRateReference() const;
+  CDataObject * getConcentrationRateReference() const;
 
   /**
    * Retrieve object referencing the concentration
-   * @return CCopasiObject * concentrationRateReference
+   * @return CDataObject * concentrationRateReference
    */
-  CCopasiObject * getIntensiveNoiseReference() const;
-
-  /**
-   * Refresh the initial value
-   */
-  virtual void refreshInitialValue();
-
-  void refreshInitialConcentration();
-
-  void refreshConcentration();
-
-  void refreshNumber();
+  CDataObject * getIntensiveNoiseReference() const;
 
   /**
    *
@@ -444,29 +285,14 @@ public:
 
   /**
    * Retrieve object referencing the Transition Time
-   * @return CCopasiObject * transitionTimeReference
+   * @return CDataObject * transitionTimeReference
    */
-  CCopasiObject * getTransitionTimeReference() const;
+  CDataObject * getTransitionTimeReference() const;
 
   /**
    * Return rate of production of this metaboLite
    */
   C_FLOAT64 getConcentrationRate() const;
-
-  /**
-   * Calculate the concentration rate.
-   */
-  void refreshConcentrationRate();
-
-  /**
-   * Calculate the particle rate.
-   */
-  void refreshRate();
-
-  /**
-   * Calculate the transition time.
-   */
-  void refreshTransitionTime();
 
   /**
    * Set whether the metabolite is dependent, i.e., calculated
@@ -499,7 +325,7 @@ private:
   void initObjects();
 };
 
-class CMetabOld : public CCopasiContainer
+class CMetabOld : public CDataContainer
 {
   friend class CMetab;
 
@@ -530,18 +356,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMetabOld(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NO_PARENT);
+            const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CMetabOld & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMetabOld(const CMetabOld & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
   /**
    *  Destructor.

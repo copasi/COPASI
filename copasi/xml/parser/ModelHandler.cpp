@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,7 +15,7 @@
 #include "utilities/CCopasiMessage.h"
 
 #include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 /**
  * Replace Model with the name type of the handler and implement the
@@ -81,7 +86,7 @@ CXMLHandler * ModelHandler::processStart(const XML_Char * pszName,
         if (!mpData->pModel) mpData->pModel = new CModel(mpData->pDataModel);
 
         // We remove the default parameter set:
-        mpData->pModel->getModelParameterSets().CCopasiVector< CModelParameterSet >::remove((size_t) 0);
+        mpData->pModel->getModelParameterSets().CDataVector< CModelParameterSet >::remove((size_t) 0);
 
         addFix(mKey, mpData->pModel);
         mpData->pModel->setObjectName(Name);

@@ -3,46 +3,33 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 /*!
-    \file CCopasiContainer.cpp
-    \brief Implementation file of class CCopasiContainer
+    \file CDataContainer.cpp
+    \brief Implementation file of class CDataContainer
  */
 
 /**
- * Class CCopasiContainer
+ * Class CDataContainer
  *
- * This class is the is used to group CCopasiObjects logically. It inself is
+ * This class is the is used to group CDataObjects logically. It inself is
  * an object. Contained objects are still globally accessible.
  *
  * Copyright Stefan Hoops 2002
  */
 
 #include "copasi/copasi.h"
+
+#include "CDataContainer.h"
+#include "CDataVector.h"
+#include "CRootContainer.h"
+
 #include "copasi/report/CCopasiObjectName.h"
-#include "copasi/report/CCopasiContainer.h"
-#include "copasi/report/CCopasiObjectReference.h"
-#include "copasi/report/CCopasiStaticString.h"
 #include "copasi/report/CCopasiTimer.h"
+#include "copasi/report/CCopasiStaticString.h"
 
-#include "copasi/utilities/CCopasiVector.h"
 #include "copasi/utilities/CUnit.h"
-#include "copasi/report/CCopasiRootContainer.h"
 
-CCopasiContainer::CObjectMap::iterator::iterator():
+CDataContainer::CObjectMap::iterator::iterator():
   mpMap(NULL),
   mNameEnd(true),
   mName(),
@@ -50,7 +37,7 @@ CCopasiContainer::CObjectMap::iterator::iterator():
   mObject()
 {}
 
-CCopasiContainer::CObjectMap::iterator::iterator(const CObjectMap & map,
+CDataContainer::CObjectMap::iterator::iterator(const CObjectMap & map,
     const bool & begin):
   mpMap(&map),
   mNameEnd(true),
@@ -64,7 +51,7 @@ CCopasiContainer::CObjectMap::iterator::iterator(const CObjectMap & map,
       if (begin)
         {
           mNameEnd = false;
-          mName = const_cast< std::map< std::string, std::set< CCopasiObject * > > * >(mpMap)->begin();
+          mName = const_cast< std::map< std::string, std::set< CDataObject * > > * >(mpMap)->begin();
 
           if (!mName->second.empty())
             {
@@ -75,7 +62,7 @@ CCopasiContainer::CObjectMap::iterator::iterator(const CObjectMap & map,
     }
 }
 
-CCopasiContainer::CObjectMap::iterator::iterator(const CCopasiContainer::CObjectMap::iterator & src):
+CDataContainer::CObjectMap::iterator::iterator(const CDataContainer::CObjectMap::iterator & src):
   mpMap(src.mpMap),
   mNameEnd(src.mNameEnd),
   mName(src.mName),
@@ -83,10 +70,10 @@ CCopasiContainer::CObjectMap::iterator::iterator(const CCopasiContainer::CObject
   mObject(src.mObject)
 {}
 
-CCopasiContainer::CObjectMap::iterator::~iterator()
+CDataContainer::CObjectMap::iterator::~iterator()
 {}
 
-CCopasiObject * CCopasiContainer::CObjectMap::iterator::operator*() const
+CDataObject * CDataContainer::CObjectMap::iterator::operator*() const
 {
   if (!mObjectEnd)
     return *mObject;
@@ -94,7 +81,7 @@ CCopasiObject * CCopasiContainer::CObjectMap::iterator::operator*() const
   return NULL;
 }
 
-CCopasiObject * CCopasiContainer::CObjectMap::iterator::operator->() const
+CDataObject * CDataContainer::CObjectMap::iterator::operator->() const
 {
   if (!mObjectEnd)
     return *mObject;
@@ -102,7 +89,7 @@ CCopasiObject * CCopasiContainer::CObjectMap::iterator::operator->() const
   return NULL;
 }
 
-CCopasiContainer::CObjectMap::iterator & CCopasiContainer::CObjectMap::iterator::operator++()
+CDataContainer::CObjectMap::iterator & CDataContainer::CObjectMap::iterator::operator++()
 {
   mObject++;
 
@@ -128,7 +115,7 @@ CCopasiContainer::CObjectMap::iterator & CCopasiContainer::CObjectMap::iterator:
   return *this;
 }
 
-CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::iterator::operator++(int)
+CDataContainer::CObjectMap::iterator CDataContainer::CObjectMap::iterator::operator++(int)
 {
   iterator Current(*this);
   operator++();
@@ -136,7 +123,7 @@ CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::iterator::o
   return Current;
 }
 
-bool CCopasiContainer::CObjectMap::iterator::operator != (const iterator & rhs) const
+bool CDataContainer::CObjectMap::iterator::operator != (const iterator & rhs) const
 {
   return (mpMap != rhs.mpMap ||
           mNameEnd != rhs.mNameEnd ||
@@ -145,7 +132,7 @@ bool CCopasiContainer::CObjectMap::iterator::operator != (const iterator & rhs) 
           (!mObjectEnd && mObject != rhs.mObject));
 }
 
-CCopasiContainer::CObjectMap::const_iterator::const_iterator():
+CDataContainer::CObjectMap::const_iterator::const_iterator():
   mpMap(NULL),
   mNameEnd(true),
   mName(),
@@ -153,7 +140,7 @@ CCopasiContainer::CObjectMap::const_iterator::const_iterator():
   mObject()
 {}
 
-CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CObjectMap & map,
+CDataContainer::CObjectMap::const_iterator::const_iterator(const CObjectMap & map,
     const bool & begin):
   mpMap(&map),
   mNameEnd(true),
@@ -167,7 +154,7 @@ CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CObjectMap & 
       if (begin)
         {
           mNameEnd = false;
-          mName = const_cast< std::map< std::string, std::set< CCopasiObject * > > * >(mpMap)->begin();
+          mName = const_cast< std::map< std::string, std::set< CDataObject * > > * >(mpMap)->begin();
 
           if (!mName->second.empty())
             {
@@ -178,7 +165,7 @@ CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CObjectMap & 
     }
 }
 
-CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CCopasiContainer::CObjectMap::const_iterator & src):
+CDataContainer::CObjectMap::const_iterator::const_iterator(const CDataContainer::CObjectMap::const_iterator & src):
   mpMap(src.mpMap),
   mNameEnd(src.mNameEnd),
   mName(src.mName),
@@ -186,20 +173,20 @@ CCopasiContainer::CObjectMap::const_iterator::const_iterator(const CCopasiContai
   mObject(src.mObject)
 {}
 
-CCopasiContainer::CObjectMap::const_iterator::~const_iterator()
+CDataContainer::CObjectMap::const_iterator::~const_iterator()
 {}
 
-CCopasiObject * CCopasiContainer::CObjectMap::const_iterator::operator*() const
+CDataObject * CDataContainer::CObjectMap::const_iterator::operator*() const
 {
   return *mObject;
 }
 
-CCopasiObject * CCopasiContainer::CObjectMap::const_iterator::operator->() const
+CDataObject * CDataContainer::CObjectMap::const_iterator::operator->() const
 {
   return *mObject;
 }
 
-CCopasiContainer::CObjectMap::const_iterator & CCopasiContainer::CObjectMap::const_iterator::operator++()
+CDataContainer::CObjectMap::const_iterator & CDataContainer::CObjectMap::const_iterator::operator++()
 {
   mObject++;
 
@@ -225,7 +212,7 @@ CCopasiContainer::CObjectMap::const_iterator & CCopasiContainer::CObjectMap::con
   return *this;
 }
 
-CCopasiContainer::CObjectMap::const_iterator CCopasiContainer::CObjectMap::const_iterator::operator++(int)
+CDataContainer::CObjectMap::const_iterator CDataContainer::CObjectMap::const_iterator::operator++(int)
 {
   const_iterator Current(*this);
   operator++();
@@ -233,7 +220,7 @@ CCopasiContainer::CObjectMap::const_iterator CCopasiContainer::CObjectMap::const
   return Current;
 }
 
-bool CCopasiContainer::CObjectMap::const_iterator::operator != (const const_iterator & rhs) const
+bool CDataContainer::CObjectMap::const_iterator::operator != (const const_iterator & rhs) const
 {
   return (mpMap != rhs.mpMap ||
           mNameEnd != rhs.mNameEnd ||
@@ -242,39 +229,39 @@ bool CCopasiContainer::CObjectMap::const_iterator::operator != (const const_iter
           (!mObjectEnd && mObject != rhs.mObject));
 }
 
-CCopasiContainer::CObjectMap::CObjectMap():
-  CCopasiContainer::CObjectMap::data()
+CDataContainer::CObjectMap::CObjectMap():
+  CDataContainer::CObjectMap::data()
 {}
 
-CCopasiContainer::CObjectMap::CObjectMap(const CCopasiContainer::CObjectMap & src):
-  CCopasiContainer::CObjectMap::data(src)
+CDataContainer::CObjectMap::CObjectMap(const CDataContainer::CObjectMap & src):
+  CDataContainer::CObjectMap::data(src)
 {}
 
-CCopasiContainer::CObjectMap::~CObjectMap()
+CDataContainer::CObjectMap::~CObjectMap()
 {}
 
-std::pair< std::set< CCopasiObject * >::iterator, bool > CCopasiContainer::CObjectMap::insert(CCopasiObject * pObject)
+std::pair< std::set< CDataObject * >::iterator, bool > CDataContainer::CObjectMap::insert(CDataObject * pObject)
 {
   if (pObject == NULL)
     {
-      return std::make_pair(std::set< CCopasiObject * >::iterator(), false);
+      return std::make_pair(std::set< CDataObject * >::iterator(), false);
     }
 
-  std::map< std::string, std::set< CCopasiObject * > >::iterator itMap = data::find(pObject->getObjectName());
+  std::map< std::string, std::set< CDataObject * > >::iterator itMap = data::find(pObject->getObjectName());
 
   if (itMap == data::end())
     {
-      itMap = data::insert(std::make_pair(pObject->getObjectName(), std::set< CCopasiObject * >())).first;
+      itMap = data::insert(std::make_pair(pObject->getObjectName(), std::set< CDataObject * >())).first;
     }
 
   return itMap->second.insert(pObject);
 }
 
-bool CCopasiContainer::CObjectMap::erase(CCopasiObject * pObject)
+bool CDataContainer::CObjectMap::erase(CDataObject * pObject)
 {
   if (pObject == NULL) return false;
 
-  std::map< std::string, std::set< CCopasiObject * > >::iterator itMap = data::find(pObject->getObjectName());
+  std::map< std::string, std::set< CDataObject * > >::iterator itMap = data::find(pObject->getObjectName());
 
   if (itMap != data::end())
     {
@@ -291,16 +278,16 @@ bool CCopasiContainer::CObjectMap::erase(CCopasiObject * pObject)
   return false;
 }
 
-void CCopasiContainer::CObjectMap::clear()
+void CDataContainer::CObjectMap::clear()
 {
   data::clear();
 }
 
-bool CCopasiContainer::CObjectMap::contains(CCopasiObject * pObject) const
+bool CDataContainer::CObjectMap::contains(CDataObject * pObject) const
 {
   if (pObject == NULL) return false;
 
-  std::map< std::string, std::set< CCopasiObject * > >::const_iterator itMap = data::find(pObject->getObjectName());
+  std::map< std::string, std::set< CDataObject * > >::const_iterator itMap = data::find(pObject->getObjectName());
 
   if (itMap != data::end())
     {
@@ -310,12 +297,12 @@ bool CCopasiContainer::CObjectMap::contains(CCopasiObject * pObject) const
   return false;
 }
 
-void CCopasiContainer::CObjectMap::objectRenamed(CCopasiObject * pObject, const std::string & oldName)
+void CDataContainer::CObjectMap::objectRenamed(CDataObject * pObject, const std::string & oldName)
 {
   if (pObject != NULL)
     {
       // We cannot use erase since the object has already been renamed.
-      std::map< std::string, std::set< CCopasiObject * > >::iterator itMap = data::find(oldName);
+      std::map< std::string, std::set< CDataObject * > >::iterator itMap = data::find(oldName);
 
       if (itMap != data::end())
         {
@@ -331,61 +318,61 @@ void CCopasiContainer::CObjectMap::objectRenamed(CCopasiObject * pObject, const 
     }
 }
 
-std::pair< std::set< CCopasiObject * >::const_iterator, std::set< CCopasiObject * >::const_iterator > CCopasiContainer::CObjectMap::equal_range(const std::string & name) const
+std::pair< std::set< CDataObject * >::const_iterator, std::set< CDataObject * >::const_iterator > CDataContainer::CObjectMap::equal_range(const std::string & name) const
 {
-  std::map< std::string, std::set< CCopasiObject * > >::const_iterator itMap = data::find(name);
+  std::map< std::string, std::set< CDataObject * > >::const_iterator itMap = data::find(name);
 
   if (itMap != data::end())
     {
       return std::make_pair(itMap->second.begin(), itMap->second.end());
     }
 
-  static std::set< CCopasiObject * > Set;
+  static std::set< CDataObject * > Set;
   return std::make_pair(Set.begin(), Set.end());
 }
 
-CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::begin()
+CDataContainer::CObjectMap::iterator CDataContainer::CObjectMap::begin()
 {
   return iterator(*this, true);
 }
 
-CCopasiContainer::CObjectMap::iterator CCopasiContainer::CObjectMap::end()
+CDataContainer::CObjectMap::iterator CDataContainer::CObjectMap::end()
 {
   return iterator(*this, false);
 }
 
-CCopasiContainer::CObjectMap::const_iterator CCopasiContainer::CObjectMap::begin() const
+CDataContainer::CObjectMap::const_iterator CDataContainer::CObjectMap::begin() const
 {
   return const_iterator(*this, true);
 }
 
-CCopasiContainer::CObjectMap::const_iterator CCopasiContainer::CObjectMap::end() const
+CDataContainer::CObjectMap::const_iterator CDataContainer::CObjectMap::end() const
 {
   return const_iterator(*this, false);
 }
 
-const CObjectInterface::ContainerList CCopasiContainer::EmptyList;
+const CObjectInterface::ContainerList CDataContainer::EmptyList;
 
-CCopasiContainer::CCopasiContainer() :
-  CCopasiObject(),
+CDataContainer::CDataContainer() :
+  CDataObject(),
   mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
-CCopasiContainer::CCopasiContainer(const std::string & name,
-                                   const CCopasiContainer * pParent,
-                                   const std::string & type,
-                                   const unsigned C_INT32 & flag):
-  CCopasiObject(name, pParent, type, flag | CCopasiObject::Container),
+CDataContainer::CDataContainer(const std::string & name,
+                               const CDataContainer * pParent,
+                               const std::string & type,
+                               const CFlags< Flag > & flag):
+  CDataObject(name, pParent, type, flag | CDataObject::Container),
   mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
-CCopasiContainer::CCopasiContainer(const CCopasiContainer & src,
-                                   const CCopasiContainer * pParent):
-  CCopasiObject(src, pParent),
+CDataContainer::CDataContainer(const CDataContainer & src,
+                               const CDataContainer * pParent):
+  CDataObject(src, pParent),
   mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
-CCopasiContainer::~CCopasiContainer()
+CDataContainer::~CDataContainer()
 {
   objectMap::iterator it = mObjects.begin();
   objectMap::iterator end = mObjects.end();
@@ -400,11 +387,11 @@ CCopasiContainer::~CCopasiContainer()
       }
 }
 
-const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CDataContainer::getObject(const CCopasiObjectName & cn) const
 {
   if (cn == "")
     {
-      if (isRoot())
+      if (hasFlag(Root))
         return NULL;
       else
         return this;
@@ -412,7 +399,7 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
 
   if (cn == "Property=DisplayName")
     {
-      return CCopasiObject::getObject(cn);
+      return CDataObject::getObject(cn);
     }
 
   std::string Name = cn.getObjectName();
@@ -438,7 +425,7 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
 
   const CObjectInterface * pObject = NULL;
 
-  if ((*range.first)->isNameVector() || (*range.first)->isVector())
+  if ((*range.first)->hasFlag(NameVector) || (*range.first)->hasFlag(Vector))
     {
       if (cn.getElementName(0, false) == "")
         return *range.first;
@@ -456,7 +443,7 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
   //handle objects where the array flag is set. Currently this applies to the
   //CArrayAnnotation object. Since this is also a container, we have to do this
   //before handling general containers.
-  if ((*range.first)->isArray())
+  if ((*range.first)->hasFlag(Array))
     {
       //we need to call the getObject() method of the child array with the
       //remainder of the cn, with the indices in square brackets, or with an empty string
@@ -470,10 +457,10 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
     }
 
   //handle generic containers.
-  if ((*range.first)->isContainer())
+  if ((*range.first)->hasFlag(Container))
     return (*range.first)->getObject(cn.getRemainder());
 
-  if ((*range.first)->isMatrix())
+  if ((*range.first)->hasFlag(Matrix))
     {
       if (cn.getElementName(0, false) == "")
         return *range.first;
@@ -490,10 +477,10 @@ const CObjectInterface * CCopasiContainer::getObject(const CCopasiObjectName & c
   return (*range.first)->getObject(cn.getRemainder());
 }
 
-const CCopasiContainer::objectMap & CCopasiContainer::getObjects() const
+const CDataContainer::objectMap & CDataContainer::getObjects() const
 {return mObjects;}
 
-const CCopasiObject * CCopasiContainer::getValueObject() const
+const CDataObject * CDataContainer::getValueObject() const
 {
   void * ptr = getValuePointer();
 
@@ -508,11 +495,11 @@ const CCopasiObject * CCopasiContainer::getValueObject() const
   return NULL;
 }
 
-void CCopasiContainer::initObjects() {}
+void CDataContainer::initObjects() {}
 
 // virtual
-bool CCopasiContainer::add(CCopasiObject * pObject,
-                           const bool & adopt)
+bool CDataContainer::add(CDataObject * pObject,
+                         const bool & adopt)
 {
   if (pObject == NULL)
     {
@@ -535,7 +522,7 @@ bool CCopasiContainer::add(CCopasiObject * pObject,
 }
 
 // virtual
-bool CCopasiContainer::remove(CCopasiObject * pObject)
+bool CDataContainer::remove(CDataObject * pObject)
 {
   if (pObject != NULL)
     {
@@ -546,47 +533,45 @@ bool CCopasiContainer::remove(CCopasiObject * pObject)
 }
 
 // virtual
-size_t CCopasiContainer::getIndex(const CCopasiObject * pObject) const
+size_t CDataContainer::getIndex(const CDataObject * pObject) const
 {
   return 0;
 }
 
-void CCopasiContainer::getDescendants(std::set< const CCopasiObject * > & descendants, const bool & recursive) const
+void CDataContainer::getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive) const
 {
+  const CDataContainer * pContainer;
   objectMap::const_iterator it = mObjects.begin();
   objectMap::const_iterator end = mObjects.end();
 
   for (; it != end; ++it)
-    descendants.insert(*it);
+    if ((*it)->getObjectParent() == this)
+      {
+        descendants.insert(*it);
 
-  it = mObjects.begin();
-
-  for (; it != end && recursive; ++it)
-    {
-      const CCopasiContainer * pContainer = dynamic_cast< const CCopasiContainer * >(*it);
-
-      if (pContainer != NULL)
-        {
-          pContainer->getDescendants(descendants, recursive);
-        }
-    }
+        if (recursive &&
+            (pContainer = dynamic_cast< const CDataContainer * >(*it)) != NULL)
+          {
+            pContainer->getDescendants(descendants, recursive);
+          }
+      }
 }
 
-void CCopasiContainer::objectRenamed(CCopasiObject * pObject, const std::string & oldName)
+void CDataContainer::objectRenamed(CDataObject * pObject, const std::string & oldName)
 {
   mObjects.objectRenamed(pObject, oldName);
 }
 
 // virtual
-const std::string CCopasiContainer::getUnits() const
+const std::string CDataContainer::getUnits() const
 {return "?";}
 
 // virtual
-std::string CCopasiContainer::getChildObjectUnits(const CCopasiObject * /* pObject */) const
+std::string CDataContainer::getChildObjectUnits(const CDataObject * /* pObject */) const
 {return "?";}
 
 // virtual
-CCopasiObject * CCopasiContainer::insert(const CData & data)
+CDataObject * CDataContainer::insert(const CData & data)
 {
   return NULL;
 }

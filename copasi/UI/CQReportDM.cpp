@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,8 +16,8 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CReportDefinition.h"
 #include "report/CReportDefinitionVector.h"
 
@@ -20,7 +25,7 @@
 #include "CQReportDM.h"
 #include "qtUtilities.h"
 
-CQReportDM::CQReportDM(QObject *parent, CCopasiDataModel * pDataModel)
+CQReportDM::CQReportDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
   , mNewName("report")
 {
@@ -171,7 +176,7 @@ bool CQReportDM::removeRows(int position, int rows)
   if (mpDataModel == NULL)
     return false;
 
-  CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
+  CDataVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
 
   if (pReportList == NULL)
     return false;
@@ -185,14 +190,14 @@ bool CQReportDM::removeRows(int position, int rows)
       if (pReport == NULL)
         continue;
 
-      std::set< const CCopasiObject * > Tasks;
-      std::set< const CCopasiObject * > DeletedObjects;
+      std::set< const CDataObject * > Tasks;
+      CDataObject::ObjectSet DeletedObjects;
       DeletedObjects.insert(pReport);
 
       if (mpDataModel->appendDependentTasks(DeletedObjects, Tasks))
         {
-          std::set< const CCopasiObject * >::iterator it = Tasks.begin();
-          std::set< const CCopasiObject * >::iterator end = Tasks.end();
+          std::set< const CDataObject * >::iterator it = Tasks.begin();
+          std::set< const CDataObject * >::iterator end = Tasks.end();
 
           for (; it != end; ++it)
             {
@@ -218,7 +223,7 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
   assert(mpDataModel != NULL);
 
-  CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
+  CDataVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
 
   if (pReportList == NULL)
     return false;
@@ -243,13 +248,13 @@ bool CQReportDM::removeRows(QModelIndexList rows, const QModelIndex&)
 
       if (delRow != C_INVALID_INDEX)
         {
-          std::set< const CCopasiObject * > DeletedObjects;
+          std::set< const CDataObject * > DeletedObjects;
           DeletedObjects.insert(pReport);
 
           QMessageBox::StandardButton choice =
             CQMessageBox::confirmDelete(NULL, "report",
                                         FROM_UTF8(pReport->getObjectName()),
-                                        DeletedObjects);
+                                        NULL);
 
           if (choice == QMessageBox::Ok)
             {

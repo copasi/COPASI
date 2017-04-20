@@ -19,9 +19,9 @@
 #include "listviews.h"
 
 #include "copasi.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModelExpansion.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "UI/qtUtilities.h"
 #include "model/CModel.h"
@@ -44,7 +44,7 @@ CQExpandModelData::~CQExpandModelData()
 
 void CQExpandModelData::load()
 {
-  CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
+  CDataModel* pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
 
   pModel = pDataModel->getModel();

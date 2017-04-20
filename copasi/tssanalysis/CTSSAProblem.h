@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -68,17 +73,17 @@ public:
 
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  CTSSAProblem(const CCopasiContainer * pParent = NO_PARENT);
+  CTSSAProblem(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
    * @param const CTSSAProblem & src
-   * @paramconst CCopasiContainer * pParent (default: NULL)
+   * @paramconst CDataContainer * pParent (default: NULL)
    */
   CTSSAProblem(const CTSSAProblem & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    *  Destructor.

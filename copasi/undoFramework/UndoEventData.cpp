@@ -17,11 +17,11 @@
 
 #include <QtCore/QList>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "model/CModel.h"
-#include <copasi/model/CEvent.h>
-#include <copasi/report/CCopasiRootContainer.h>
+#include "copasi/model/CModel.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "UndoEventData.h"
 
@@ -53,12 +53,12 @@ UndoEventData::UndoEventData(const CEvent *pEvent)
   , mPersistentTrigger(pEvent->getPersistentTrigger())
   , mEventAssignmentData(new QList <UndoEventAssignmentData*>())
 {
-  CCopasiVector< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
-  CCopasiVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
+  CDataVector< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
+  CDataVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
 
   for (; it != end; ++it)
     {
-      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
+      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
       mEventAssignmentData->append(
         new UndoEventAssignmentData(pEntity, it->getExpression()));
     }
@@ -69,7 +69,7 @@ UndoEventData::~UndoEventData()
   pdelete(mEventAssignmentData);
 }
 
-CCopasiObject *
+CDataObject *
 UndoEventData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
@@ -88,10 +88,10 @@ UndoEventData::createObjectIn(CModel *pModel)
   return pEvent;
 }
 
-CCopasiObject *
+CDataObject *
 UndoEventData::restoreObjectIn(CModel *pModel)
 {
-  CCopasiObject *pEvent = createObjectIn(pModel);
+  CDataObject *pEvent = createObjectIn(pModel);
 
   if (pEvent == NULL)
     return NULL;
@@ -104,7 +104,7 @@ UndoEventData::restoreObjectIn(CModel *pModel)
 
 void UndoEventData::fillObject(CModel *)
 {
-  CEvent* pEvent = dynamic_cast<CEvent*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CEvent* pEvent = dynamic_cast<CEvent*>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pEvent == NULL) return;
 

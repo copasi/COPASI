@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +24,7 @@
 #include <vector>
 
 class CEvaluationNode;
-class CCopasiObject;
+class CDataObject;
 class CEvaluationTree;
 class CModel;
 
@@ -66,9 +71,9 @@ public:
    * @param pTree, the tree to differentiate
    * @param simplify if true the expression will be simplified
    */
-  static CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CCopasiObject * pObject,
+  static CEvaluationNode* deriveBranch(const CEvaluationNode* node, const CDataObject * pObject,
                                        std::vector<const CEvaluationNode*>& env,
-                                       //std::vector<const CCopasiObject*>& objenv,
+                                       //std::vector<const CDataObject*>& objenv,
                                        const CEvaluationTree* pTree,
                                        bool simplify);
 

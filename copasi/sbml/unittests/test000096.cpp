@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000096.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/05/24 16:32:32 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,7 +14,7 @@
 #include "sbml/Model.h"
 #include "sbml/xml/XMLNode.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/sbml/CSBMLExporter.h"
 
 #include <string>
@@ -25,12 +22,12 @@
 void test000096::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
 }
 
 void test000096::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000096::test_export_model_notes_1()
@@ -208,7 +205,6 @@ void test000096::test_export_model_notes_5()
   CPPUNIT_ASSERT(pChild->isText());
   CPPUNIT_ASSERT(pChild->getCharacters().find("set ") != std::string::npos);
 
-
   SBMLDocument *pDocument = new SBMLDocument(2, 4);
   CPPUNIT_ASSERT(pDocument != NULL);
   Model* pModel = pDocument->createModel("test_model");
@@ -254,7 +250,6 @@ void test000096::test_export_model_notes_6()
   CPPUNIT_ASSERT(pChild != NULL);
   CPPUNIT_ASSERT(pChild->isText());
   CPPUNIT_ASSERT(pChild->getCharacters().find("set ") != std::string::npos);
-
 
   SBMLDocument *pDocument = new SBMLDocument(2, 4);
   CPPUNIT_ASSERT(pDocument != NULL);
@@ -308,5 +303,3 @@ const char* test000096::NOTES_STRING_6 =
   "<p>set correctly.</p>\n"
   "</body>\n"
   ;
-
-

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -36,20 +41,20 @@ public:
 
   void setSingleObjectCN(const CCopasiObjectName & cn);
   const CCopasiObjectName & getSingleObjectCN() const;
-  std::string getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const;
+  std::string getSingleObjectDisplayName(const CDataModel* pDataModel) const;
 
   void setListType(CObjectLists::ListType lt);
   const CObjectLists::ListType & getListType() const;
   std::string getListTypeDisplayName() const;
 
-  std::vector<CCopasiObject*> getVariablesPointerList(CCopasiDataModel* pDataModel);
+  std::vector<CDataObject*> getVariablesPointerList(CDataModel* pDataModel);
 
   //size_t dimensionality() const;
 
   bool operator==(const CSensItem & rhs) const;
   bool operator!=(const CSensItem & rhs) const;
 
-  std::string print(const CCopasiDataModel* pDataModel) const;
+  std::string print(const CDataModel* pDataModel) const;
 
 private:
   CCopasiObjectName mSingleObjectCN;
@@ -90,17 +95,17 @@ public:
 
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  CSensProblem(const CCopasiContainer * pParent = NO_PARENT);
+  CSensProblem(const CDataContainer * pParent = NO_PARENT);
 
   /**
    *  Copy constructor.
    *  @param "const CSensProblem &" src
-   * @paramconst CCopasiContainer * pParent (default: NULL)
+   * @paramconst CDataContainer * pParent (default: NULL)
    */
   CSensProblem(const CSensProblem & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    *  Destructor.

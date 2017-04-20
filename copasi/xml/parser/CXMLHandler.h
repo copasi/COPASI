@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,7 +27,7 @@
 
 #include "expat.h"
 
-class CCopasiObject;
+class CDataObject;
 class CXMLParser;
 class CXMLParserData;
 
@@ -236,7 +241,7 @@ protected:
 
   CXMLHandler * getHandler(const Type & type);
 
-  void addFix(const std::string & key, CCopasiObject * pObject);
+  void addFix(const std::string & key, CDataObject * pObject);
 
   void init();
 

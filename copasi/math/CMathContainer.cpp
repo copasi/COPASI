@@ -20,7 +20,7 @@
 #include "model/CMetab.h"
 #include "model/CModelValue.h"
 #include "model/CObjectLists.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "utilities/CNodeIterator.h"
 #include "randomGenerator/CRandom.h"
 #include "lapack/blaswrap.h"
@@ -75,11 +75,11 @@ void CMathContainer::createRelocation(const size_t & newSize, const size_t & old
     }
 }
 
-void CMathContainer::relocateUpdateSequence(CObjectInterface::UpdateSequence & sequence,
+void CMathContainer::relocateUpdateSequence(CCore::CUpdateSequence & sequence,
     const std::vector< CMath::sRelocate > & relocations) const
 {
-  CObjectInterface::UpdateSequence::iterator it = sequence.begin();
-  CObjectInterface::UpdateSequence::iterator end = sequence.end();
+  CCore::CUpdateSequence::iterator it = sequence.begin();
+  CCore::CUpdateSequence::iterator end = sequence.end();
 
   for (; it != end; ++it)
     {
@@ -205,7 +205,7 @@ void CMathContainer::relocateObject(const CMathObject *& pObject, const std::vec
 }
 
 CMathContainer::CMathContainer():
-  CCopasiContainer("Math Container", NULL, "CMathContainer"),
+  CDataContainer("Math Container", NULL, "CMathContainer"),
   mpModel(NULL),
   mAvogadroValue(),
   mAvogadroObject(),
@@ -298,7 +298,7 @@ CMathContainer::CMathContainer():
 }
 
 CMathContainer::CMathContainer(CModel & model):
-  CCopasiContainer("Math Container", NULL, "CMathContainer"),
+  CDataContainer("Math Container", NULL, "CMathContainer"),
   mpModel(&model),
   mAvogadroValue(),
   mAvogadroObject(),
@@ -392,17 +392,17 @@ CMathContainer::CMathContainer(CModel & model):
   memset(&mSize, 0, sizeof(mSize));
 
   // We do not want the model to know about the math container therefore we
-  // do not use &model in the constructor of CCopasiContainer
+  // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
-  const CCopasiObject * pAvogadro = mpModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getDataObject();
+  const CDataObject * pAvogadro = mpModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getDataObject();
   mAvogadroValue = *(C_FLOAT64 *)pAvogadro->getValuePointer();
   CMathObject::initialize(&mAvogadroObject, &mAvogadroValue,
                           CMath::Value, CMath::EntityTypeUndefined, CMath::Fixed, false, true,
                           pAvogadro);
   map(pAvogadro, &mAvogadroObject);
 
-  const CCopasiObject * pQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"))->getDataObject();
+  const CDataObject * pQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"))->getDataObject();
   mQuantity2NumberFactorValue = *(C_FLOAT64 *)pQuantity2NumberFactor->getValuePointer();
 
   CMathObject::initialize(&mQuantity2NumberFactorObject, &mQuantity2NumberFactorValue,
@@ -412,7 +412,7 @@ CMathContainer::CMathContainer(CModel & model):
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src):
-  CCopasiContainer(src, NULL),
+  CDataContainer(src, NULL),
   mpModel(src.mpModel),
   mAvogadroValue(src.mAvogadroValue),
   mAvogadroObject(src.mAvogadroObject),
@@ -503,7 +503,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mUpdateSequences()
 {
   // We do not want the model to know about the math container therefore we
-  // do not use &model in the constructor of CCopasiContainer
+  // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
   memset(&mSize, 0, sizeof(mSize));
@@ -697,17 +697,19 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
         }
     }
 
-  CObjectInterface::UpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence;
 
-  mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::SimulationContextFlag(CMath::SimulationContext::UpdateMoieties) | CMath::SimulationContext::EventHandling, mStateValues, objects);
+  mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContextFlag(CCore::SimulationContext::UpdateMoieties) | CCore::SimulationContext::EventHandling, mStateValues, objects);
 
   return UpdateSequence.empty();
 }
 
-void CMathContainer::quantityConversionChanged()
+void CMathContainer::quantityConversionChanged(const CModelParameter::Framework & framework)
 {
   mAvogadroValue = *(C_FLOAT64 *)mAvogadroObject.getDataObject()->getValuePointer();
   mQuantity2NumberFactorValue = *(C_FLOAT64 *)mQuantity2NumberFactorObject.getDataObject()->getValuePointer();
+
+  updateInitialValues(framework);
 }
 
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
@@ -769,7 +771,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
           case CMath::Species:
           {
             const CMetab * pMetab = static_cast< const CMetab * >(pObject->getDataObject()->getObjectParent());
-            std::map< const CCopasiObject *, CMathObject * >::const_iterator itFound
+            std::map< const CDataObject *, CMathObject * >::const_iterator itFound
               = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
 
             C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer()) * mQuantity2NumberFactorValue;
@@ -1019,7 +1021,7 @@ void CMathContainer::updateTransientDataValues()
   applyUpdateSequence(mTransientDataObjectSequence);
 }
 
-const CObjectInterface::UpdateSequence & CMathContainer::getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const
+const CCore::CUpdateSequence & CMathContainer::getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const
 {
   switch (framework)
     {
@@ -1035,12 +1037,12 @@ const CObjectInterface::UpdateSequence & CMathContainer::getSynchronizeInitialVa
   return mSynchronizeInitialValuesSequenceExtensive;
 }
 
-const CObjectInterface::UpdateSequence & CMathContainer::getApplyInitialValuesSequence() const
+const CCore::CUpdateSequence & CMathContainer::getApplyInitialValuesSequence() const
 {
   return mApplyInitialValuesSequence;
 }
 
-const CObjectInterface::UpdateSequence & CMathContainer::getSimulationValuesSequence(const bool & useMoieties) const
+const CCore::CUpdateSequence & CMathContainer::getSimulationValuesSequence(const bool & useMoieties) const
 {
   if (useMoieties)
     {
@@ -1052,7 +1054,7 @@ const CObjectInterface::UpdateSequence & CMathContainer::getSimulationValuesSequ
     }
 }
 
-const CObjectInterface::UpdateSequence & CMathContainer::getNoiseSequence(const bool & useMoieties) const
+const CCore::CUpdateSequence & CMathContainer::getNoiseSequence(const bool & useMoieties) const
 {
   if (useMoieties)
     {
@@ -1064,7 +1066,7 @@ const CObjectInterface::UpdateSequence & CMathContainer::getNoiseSequence(const 
     }
 }
 
-const CObjectInterface::UpdateSequence & CMathContainer::getTransientDataValueSequence() const
+const CCore::CUpdateSequence & CMathContainer::getTransientDataValueSequence() const
 {
   return mTransientDataObjectSequence;
 }
@@ -1088,10 +1090,10 @@ void CMathContainer::updatePriorityValues()
   applyUpdateSequence(mPrioritySequence);
 }
 
-void CMathContainer::applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence)
+void CMathContainer::applyUpdateSequence(const CCore::CUpdateSequence & updateSequence)
 {
-  UpdateSequence::const_iterator it = updateSequence.begin();
-  UpdateSequence::const_iterator end = updateSequence.end();
+  CCore::CUpdateSequence::const_iterator it = updateSequence.begin();
+  CCore::CUpdateSequence::const_iterator end = updateSequence.end();
 
   for (; it != end; ++it)
     {
@@ -1107,7 +1109,7 @@ void CMathContainer::fetchInitialState()
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
-      const CCopasiObject * pDataObject = pObject->getDataObject();
+      const CDataObject * pDataObject = pObject->getDataObject();
 
       if (pDataObject != NULL)
         {
@@ -1130,7 +1132,7 @@ void CMathContainer::pushInitialState()
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
-      const CCopasiObject * pDataObject = pObject->getDataObject();
+      const CDataObject * pDataObject = pObject->getDataObject();
 
       if (pDataObject != NULL)
         {
@@ -1149,7 +1151,7 @@ void CMathContainer::fetchState()
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
-      const CCopasiObject * pDataObject = pObject->getDataObject();
+      const CDataObject * pDataObject = pObject->getDataObject();
 
       if (pDataObject != NULL)
         {
@@ -1172,7 +1174,7 @@ void CMathContainer::pushState()
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
-      const CCopasiObject * pDataObject = pObject->getDataObject();
+      const CDataObject * pDataObject = pObject->getDataObject();
 
       if (pDataObject != NULL)
         {
@@ -1191,7 +1193,7 @@ void CMathContainer::pushAllTransientValues()
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
-      const CCopasiObject * pDataObject = pObject->getDataObject();
+      const CDataObject * pDataObject = pObject->getDataObject();
 
       if (pDataObject != NULL && pDataObject->getValuePointer() != NULL)
         {
@@ -1265,8 +1267,8 @@ CMathObject * CMathContainer::getMathObject(const CObjectInterface * pObject) co
   if (pObject == NULL)
     return NULL;
 
-  std::map< const CCopasiObject *, CMathObject * >::const_iterator found =
-    mDataObject2MathObject.find(const_cast<CCopasiObject*>(static_cast< const CCopasiObject * >(pObject)));
+  std::map< const CDataObject *, CMathObject * >::const_iterator found =
+    mDataObject2MathObject.find(const_cast<CDataObject*>(static_cast< const CDataObject * >(pObject)));
 
   if (found != mDataObject2MathObject.end())
     {
@@ -1316,9 +1318,9 @@ CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
   return getMathObject(mpModel->getObject(cn));
 }
 
-CCopasiObject * CMathContainer::getDataObject(const C_FLOAT64 * pDataValue) const
+CDataObject * CMathContainer::getDataObject(const C_FLOAT64 * pDataValue) const
 {
-  std::map< C_FLOAT64 *, CCopasiObject * >::const_iterator found =
+  std::map< C_FLOAT64 *, CDataObject * >::const_iterator found =
     mDataValue2DataObject.find(const_cast< C_FLOAT64 * >(pDataValue));
 
   if (found != mDataValue2DataObject.end())
@@ -1414,8 +1416,8 @@ void CMathContainer::compile()
   updateInitialValues(CModelParameter::ParticleNumbers);
 
   CMathReaction * pReaction = mReactions.array();
-  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+  CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+  CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
   for (; itReaction != endReaction; ++itReaction)
     {
@@ -1451,8 +1453,8 @@ void CMathContainer::compile()
         Changed.insert(pObject);
       }
 
-    CObjectInterface::UpdateSequence Sequence;
-    mTransientDependencies.getUpdateSequence(Sequence, CMath::SimulationContext::DelayValues, Changed, Changed);
+    CCore::CUpdateSequence Sequence;
+    mTransientDependencies.getUpdateSequence(Sequence, CCore::SimulationContext::DelayValues, Changed, Changed);
 
     if (!Sequence.empty())
       {
@@ -1896,8 +1898,8 @@ void CMathContainer::allocate()
   Size.nIntensiveValues = mpModel->getNumMetabs();
 
   Size.nReactions = 0;
-  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+  CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+  CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
   for (; itReaction != endReaction; ++itReaction)
     {
@@ -1923,9 +1925,9 @@ void CMathContainer::allocate()
   Size.nEvents += Size.nDiscontinuities;
 
   // User defined events
-  const CCopasiVector< CEvent > & Events = mpModel->getEvents();
-  CCopasiVector< CEvent >::const_iterator itEvent = Events.begin();
-  CCopasiVector< CEvent >::const_iterator endEvent = Events.end();
+  const CDataVector< CEvent > & Events = mpModel->getEvents();
+  CDataVector< CEvent >::const_iterator itEvent = Events.begin();
+  CDataVector< CEvent >::const_iterator endEvent = Events.end();
 
   Size.nEvents += Events.size();
 
@@ -2000,7 +2002,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   initializeMathObjects(FixedEntities, CMath::Fixed, p);
 
   // Process local reaction parameters
-  std::vector<const CCopasiObject*> LocalReactionParameter =
+  std::vector<const CDataObject*> LocalReactionParameter =
     CObjectLists::getListOfConstObjects(CObjectLists::ALL_LOCAL_PARAMETER_VALUES, mpModel);
   initializeMathObjects(LocalReactionParameter, p);
   assert(mSize.nFixed == FixedEntities.size() + LocalReactionParameter.size());
@@ -2116,9 +2118,9 @@ void CMathContainer::initializeEvents(CMath::sPointers & p)
   CMathEvent * pEvent = mEvents.array();
 
   // User defined events
-  const CCopasiVector< CEvent > & Events = mpModel->getEvents();
-  CCopasiVector< CEvent >::const_iterator itEvent = Events.begin();
-  CCopasiVector< CEvent >::const_iterator endEvent = Events.end();
+  const CDataVector< CEvent > & Events = mpModel->getEvents();
+  CDataVector< CEvent >::const_iterator itEvent = Events.begin();
+  CDataVector< CEvent >::const_iterator endEvent = Events.end();
 
   for (; itEvent != endEvent; ++itEvent, ++pEvent)
     {
@@ -2145,7 +2147,7 @@ bool CMathContainer::compileObjects()
   mNoiseInputObjects.clear();
 
   // Assure that Avogadro's number and the quantity conversion are up to date.
-  quantityConversionChanged();
+  quantityConversionChanged(CModelParameter::ParticleNumbers);
 
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
@@ -2164,8 +2166,8 @@ bool CMathContainer::compileEvents()
 
   CMathEvent * pItEvent = mEvents.array();
 
-  CCopasiVector< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
-  CCopasiVector< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
+  CDataVector< CEvent >::const_iterator itEvent = mpModel->getEvents().begin();
+  CDataVector< CEvent >::const_iterator endEvent = mpModel->getEvents().end();
 
   for (; itEvent != endEvent; ++pItEvent, ++itEvent)
     {
@@ -2218,7 +2220,7 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
       if (pObject == pObject->getDataObject())
         {
           mDataValue2DataObject[(C_FLOAT64 *) pObject->getValuePointer()]
-            = static_cast< CCopasiObject * >(const_cast< CObjectInterface * >(pObject));
+            = static_cast< CDataObject * >(const_cast< CObjectInterface * >(pObject));
         }
     }
 
@@ -2402,8 +2404,8 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
   // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
   // and link matrices.
-  std::map< C_FLOAT64 *, CCopasiObject * >::const_iterator itDataObject = mDataValue2DataObject.begin();
-  std::map< C_FLOAT64 *, CCopasiObject * >::const_iterator endDataObject = mDataValue2DataObject.end();
+  std::map< C_FLOAT64 *, CDataObject * >::const_iterator itDataObject = mDataValue2DataObject.begin();
+  std::map< C_FLOAT64 *, CDataObject * >::const_iterator endDataObject = mDataValue2DataObject.end();
 
   for (; itDataObject != endDataObject; ++itDataObject)
     {
@@ -2413,11 +2415,11 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
   // Build the update sequence
   mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceExtensive,
-                                         CMath::SimulationContext::UpdateMoieties,
+                                         CCore::SimulationContext::UpdateMoieties,
                                          mInitialStateValueExtensive,
                                          RequestedExtensive);
   mInitialDependencies.getUpdateSequence(mSynchronizeInitialValuesSequenceIntensive,
-                                         CMath::SimulationContext::UpdateMoieties,
+                                         CCore::SimulationContext::UpdateMoieties,
                                          mInitialStateValueIntensive,
                                          RequestedIntensive);
 }
@@ -2499,15 +2501,15 @@ void CMathContainer::createApplyInitialValuesSequence()
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CMath::SimulationContext::Default, Changed, Requested, Calculated);
+  mTransientDependencies.getUpdateSequence(mApplyInitialValuesSequence, CCore::SimulationContext::Default, Changed, Requested, Calculated);
 
   // It is possible that discontinuities only depend on constant values. Since discontinuities do not exist in the initial values
   // these are never calculate. It is save to prepend all discontinuities which are not already in the sequence
   if (mDiscontinuous.size() > 0)
     {
       // Find all discontinuities which are updated
-      UpdateSequence::const_iterator it = mApplyInitialValuesSequence.begin();
-      UpdateSequence::const_iterator end = mApplyInitialValuesSequence.end();
+      CCore::CUpdateSequence::const_iterator it = mApplyInitialValuesSequence.begin();
+      CCore::CUpdateSequence::const_iterator end = mApplyInitialValuesSequence.end();
 
       CObjectInterface::ObjectSet UpdatedDiscontinuities;
 
@@ -2617,8 +2619,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     }
 
   // Build the update sequence
-  mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::SimulationContext::Default, mStateValues, mSimulationRequiredValues);
-  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::SimulationContext::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CCore::SimulationContext::Default, mStateValues, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CCore::SimulationContext::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
   // Create the update sequences for the transient noise;
   pObject = mObjects.array() + (mExtensiveNoise.array() - mValues.array());
@@ -2637,8 +2639,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
       Noise.insert(pObject);
     }
 
-  mTransientDependencies.getUpdateSequence(mNoiseSequence, CMath::SimulationContext::Default, mStateValues, Noise);
-  mTransientDependencies.getUpdateSequence(mNoiseSequenceReduced, CMath::SimulationContext::UseMoieties, mReducedStateValues, ReducedNoise);
+  mTransientDependencies.getUpdateSequence(mNoiseSequence, CCore::SimulationContext::Default, mStateValues, Noise);
+  mTransientDependencies.getUpdateSequence(mNoiseSequenceReduced, CCore::SimulationContext::UseMoieties, mReducedStateValues, ReducedNoise);
 
   // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
   // We need to additionally add the event assignments to the simulation required values as they may time dependent
@@ -2653,8 +2655,8 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
   CObjectInterface::ObjectSet TimeObject;
   TimeObject.insert(getMathObject(mState.array() + mSize.nFixedEventTargets));
-  CObjectInterface::UpdateSequence TimeChange;
-  mTransientDependencies.getUpdateSequence(TimeChange, CMath::SimulationContext::Default, TimeObject, TimeDependentValues);
+  CCore::CUpdateSequence TimeChange;
+  mTransientDependencies.getUpdateSequence(TimeChange, CCore::SimulationContext::Default, TimeObject, TimeDependentValues);
   mIsAutonomous = TimeChange.empty();
 
   // Build the update sequence used to calculate the priorities in the event process queue.
@@ -2667,7 +2669,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
       PriorityRequiredValues.insert(pObject);
     }
 
-  mTransientDependencies.getUpdateSequence(mPrioritySequence, CMath::SimulationContext::Default, mStateValues, PriorityRequiredValues);
+  mTransientDependencies.getUpdateSequence(mPrioritySequence, CCore::SimulationContext::Default, mStateValues, PriorityRequiredValues);
 }
 
 void CMathContainer::createUpdateAllTransientDataValuesSequence()
@@ -2686,7 +2688,7 @@ void CMathContainer::createUpdateAllTransientDataValuesSequence()
         }
     }
 
-  mTransientDependencies.getUpdateSequence(mTransientDataObjectSequence, CMath::SimulationContext::Default, mStateValues, TransientDataObjects, mSimulationRequiredValues);
+  mTransientDependencies.getUpdateSequence(mTransientDataObjectSequence, CCore::SimulationContext::Default, mStateValues, TransientDataObjects, mSimulationRequiredValues);
 }
 
 void CMathContainer::analyzeRoots()
@@ -2719,12 +2721,12 @@ void CMathContainer::analyzeRoots()
 
       CObjectInterface::ObjectSet Requested;
       Requested.insert(pRoot);
-      CObjectInterface::UpdateSequence UpdateSequence;
+      CCore::CUpdateSequence UpdateSequence;
 
-      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::SimulationContext::Default, ContinousStateValues, Requested);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, ContinousStateValues, Requested);
       *pIsDiscrete = UpdateSequence.empty();
 
-      mTransientDependencies.getUpdateSequence(UpdateSequence, CMath::SimulationContext::Default, TimeValue, Requested);
+      mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, TimeValue, Requested);
       *pIsTimeDependent = !UpdateSequence.empty();
     }
 
@@ -2970,15 +2972,15 @@ void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobian
 
   for (; pVariable != pVariableEnd; ++pVariable, ++col)
     {
-      UpdateSequence Sequence;
+      CCore::CUpdateSequence Sequence;
       ObjectSet Changed;
 
       Changed.insert(pVariable);
 
-      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::SimulationContext::UseMoieties : CMath::SimulationContext::Default, Changed, Requested);
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CCore::SimulationContext::UseMoieties : CCore::SimulationContext::Default, Changed, Requested);
 
-      UpdateSequence::const_iterator it = Sequence.begin();
-      UpdateSequence::const_iterator end = Sequence.end();
+      CCore::CUpdateSequence::const_iterator it = Sequence.begin();
+      CCore::CUpdateSequence::const_iterator end = Sequence.end();
 
       for (; it != end; ++it)
         if (pRateObject <= *it && *it < pRateObjectEnd)
@@ -3021,15 +3023,15 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
 
   for (; pVariable != pVariableEnd; ++pVariable, ++col)
     {
-      UpdateSequence Sequence;
+      CCore::CUpdateSequence Sequence;
       ObjectSet Changed;
 
       Changed.insert(pVariable);
 
-      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CMath::SimulationContext::UseMoieties : CMath::SimulationContext::Default, Changed, Requested);
+      mTransientDependencies.getUpdateSequence(Sequence, reduced ? CCore::SimulationContext::UseMoieties : CCore::SimulationContext::Default, Changed, Requested);
 
-      UpdateSequence::const_iterator it = Sequence.begin();
-      UpdateSequence::const_iterator end = Sequence.end();
+      CCore::CUpdateSequence::const_iterator it = Sequence.begin();
+      CCore::CUpdateSequence::const_iterator end = Sequence.end();
 
       for (; it != end; ++it)
         {
@@ -3397,7 +3399,7 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
       // dependencies or not. In case of species it always possible that is must be calculated.
 
       CMath::SimulationType SimulationType = CMath::Fixed;
-      CCopasiObject * pObject = (*it)->getInitialValueReference();
+      CDataObject * pObject = (*it)->getInitialValueReference();
 
       if (EntityType == CMath::Species)
         {
@@ -3523,17 +3525,17 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
     }
 }
 
-void CMathContainer::initializeMathObjects(const std::vector<const CCopasiObject *> & parameters,
+void CMathContainer::initializeMathObjects(const std::vector<const CDataObject *> & parameters,
     CMath::sPointers & p)
 {
   // Process parameters.
-  std::vector<const CCopasiObject *>::const_iterator it = parameters.begin();
-  std::vector<const CCopasiObject *>::const_iterator end = parameters.end();
+  std::vector<const CDataObject *>::const_iterator it = parameters.begin();
+  std::vector<const CDataObject *>::const_iterator end = parameters.end();
 
   for (; it != end; ++it)
     {
       // Extensive Initial Value
-      map(const_cast< CCopasiObject * >(*it), p.pInitialExtensiveValuesObject);
+      map(const_cast< CDataObject * >(*it), p.pInitialExtensiveValuesObject);
       CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
                               CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, true,
                               *it);
@@ -3555,12 +3557,12 @@ void CMathContainer::initializeMathObjects(const std::vector<const CCopasiObject
     }
 }
 
-void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & reactions,
+void CMathContainer::initializeMathObjects(const CDataVector< CReaction > & reactions,
     CMath::sPointers & p)
 {
   // Process reactions.
-  CCopasiVector< CReaction >::const_iterator it = reactions.begin();
-  CCopasiVector< CReaction >::const_iterator end = reactions.end();
+  CDataVector< CReaction >::const_iterator it = reactions.begin();
+  CDataVector< CReaction >::const_iterator end = reactions.end();
 
   for (; it != end; ++it)
     {
@@ -3612,12 +3614,12 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
     }
 }
 
-void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moieties,
+void CMathContainer::initializeMathObjects(const CDataVector< CMoiety > & moieties,
     CMath::sPointers & p)
 {
   // Process reactions.
-  CCopasiVector< CMoiety >::const_iterator it = moieties.begin();
-  CCopasiVector< CMoiety >::const_iterator end = moieties.end();
+  CDataVector< CMoiety >::const_iterator it = moieties.begin();
+  CDataVector< CMoiety >::const_iterator end = moieties.end();
 
   for (; it != end; ++it)
     {
@@ -3641,9 +3643,10 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moie
 }
 
 // static
-bool CMathContainer::hasDependencies(const CCopasiObject * pObject)
+/*
+bool CMathContainer::hasDependencies(const CDataObject * pObject)
 {
-  const CCopasiObject::DataObjectSet & Dependencies = pObject->getDirectDependencies();
+  const CDataObject::DataObjectSet & Dependencies = pObject->getDirectDependencies();
 
   if (Dependencies.find(pObject->getObjectParent()) != Dependencies.end())
     {
@@ -3652,8 +3655,9 @@ bool CMathContainer::hasDependencies(const CCopasiObject * pObject)
 
   return Dependencies.size() > 0;
 }
+ */
 
-void CMathContainer::map(const CCopasiObject * pDataObject, CMathObject * pMathObject)
+void CMathContainer::map(const CDataObject * pDataObject, CMathObject * pMathObject)
 {
   if (pDataObject != NULL)
     {
@@ -3679,7 +3683,7 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
   return const_cast< C_FLOAT64 * >(pInitialValue);
 }
 
-CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Entity< CCopasiObject > & entity,
+CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Entity< CDataObject > & entity,
     const CMath::SimulationType & simulationType,
     const std::string & infix)
 {
@@ -4911,8 +4915,8 @@ void CMathContainer::relocate(const sSize & size,
   relocateObjectSet(mSimulationRequiredValues, Relocations);
   relocateObjectSet(mNoiseInputObjects, Relocations);
 
-  std::map< const CCopasiObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
-  std::map< const CCopasiObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();
+  std::map< const CDataObject *, CMathObject * >::iterator itDataObject2MathObject = mDataObject2MathObject.begin();
+  std::map< const CDataObject *, CMathObject * >::iterator endDataObject2MathObject = mDataObject2MathObject.end();
 
   for (; itDataObject2MathObject != endDataObject2MathObject; ++itDataObject2MathObject)
     {

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -195,7 +200,7 @@ bool CQBiologicalDescriptionDM::removeRows(QModelIndexList rows, const QModelInd
       CBiologicalDescription * pBiologicalDescription = *j;
 
       size_t delRow =
-        mpMIRIAMInfo->getBiologicalDescriptions().CCopasiVector< CBiologicalDescription >::getIndex(pBiologicalDescription);
+        mpMIRIAMInfo->getBiologicalDescriptions().CDataVector< CBiologicalDescription >::getIndex(pBiologicalDescription);
 
       if (delRow != C_INVALID_INDEX)
         {

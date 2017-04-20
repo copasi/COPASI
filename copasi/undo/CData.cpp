@@ -7,41 +7,75 @@
 
 #include "CData.h"
 
+#include "utilities/utility.h"
+
 // static
-const std::string CData::PropertyName[] =
+const std::array< const std::string, static_cast< size_t >(CData::Property::__SIZE) > CData::PropertyName =
 {
+  // EXPRESSION = 0,
   "Expression",
+  // INITIAL_EXPRESSION,
   "Initial Expression",
-  "Initial Volume",
+  // INITIAL_VALUE,
+  "Initial Value",
+  // SIMULATION_TYPE,
   "Simulation Type",
+  // SPATIAL_DIMENSION,
   "Spatial Dimensions",
+  // ADD_NOISE,
   "Add Noise",
+  // NOISE_EXPRESSION,
   "Noise Expression",
+  // OBJECT_NAME,
   "Object Name",
+  // OBJECT_PARENT_CN,
   "Object Parent CN",
+  // OBJECT_TYPE,
   "Object Type",
+  // OBJECT_FLAG,
   "Object Flag",
+  // OBJECT_INDEX,
   "Object Index",
+  // OBJECT_REFERENCES,
   "Object References",
+  // OBJECT_REFERENCE,
   "Object Reference",
+  // OBJECT_REFERENCE_CN,
   "Object Reference CN",
+  // OBJECT_REFERENCE_INDEX,
   "Object Reference Index",
+  // OBJECT_POINTER,
   "Object Pointer",
+  // EVALUATION_TREE_TYPE,
   "Evaluation Tree Type",
+  // TASK_TYPE,
   "Task Type",
+  // PLOT_TYPE,
   "Plot Type",
+  // PLOT_ITEM_TYPE,
   "Plot Item Type",
+  // PARAMETER_TYPE,
   "Parameter Type",
+  // PARAMETER_VALUE,
+  "Parameter Value",
+  // UNIT,
   "Unit",
+  // VOLUME_UNIT,
   "Volume Unit",
+  // AREA_UNIT,
   "Area Unit",
+  // LENGTH_UNIT,
   "Length Unit",
+  // TIME_UNIT,
   "Time Unit",
+  // QUANTITY_UNIT,
   "Quantity Unit",
+  // MODEL_TYPE,
   "Model Type",
+  // AVOGADRO_NUMBER,
   "Avogadro's Number",
-  "Dimensionality",
-  ""
+  // DIMENSIONALITY,
+  "Dimensionality"
 };
 
 CData::CData():
@@ -81,7 +115,7 @@ const CDataValue & CData::getProperty(const std::string & name) const
 
 const CDataValue & CData::getProperty(const Property & property) const
 {
-  return getProperty(PropertyName[property]);
+  return getProperty(EnumToAnnotation(property, PropertyName));
 }
 
 CDataValue & CData::getProperty(const std::string & name)
@@ -100,7 +134,7 @@ CDataValue & CData::getProperty(const std::string & name)
 
 CDataValue & CData::getProperty(const Property & property)
 {
-  return getProperty(PropertyName[property]);
+  return getProperty(EnumToAnnotation(property, PropertyName));
 }
 
 bool CData::setProperty(const std::string & name, const CDataValue & value)
@@ -118,7 +152,7 @@ bool CData::setProperty(const std::string & name, const CDataValue & value)
 
 bool CData::setProperty(const Property & property, const CDataValue & value)
 {
-  return setProperty(PropertyName[property], value);
+  return setProperty(EnumToAnnotation(property, PropertyName), value);
 }
 
 bool CData::addProperty(const std::string & name, const CDataValue & value)
@@ -136,7 +170,7 @@ bool CData::addProperty(const std::string & name, const CDataValue & value)
 
 bool CData::addProperty(const Property & property, const CDataValue & value)
 {
-  return addProperty(PropertyName[property], value);
+  return addProperty(EnumToAnnotation(property, PropertyName), value);
 }
 
 bool CData::appendData(const CData & data)
@@ -169,7 +203,7 @@ bool CData::removeProperty(const std::string & name)
 
 bool CData::removeProperty(const Property & property)
 {
-  return removeProperty(PropertyName[property]);
+  return removeProperty(EnumToAnnotation(property, PropertyName));
 }
 
 bool CData::isSetProperty(const std::string & name) const
@@ -179,10 +213,21 @@ bool CData::isSetProperty(const std::string & name) const
 
 bool CData::isSetProperty(const Property & property) const
 {
-  return isSetProperty(PropertyName[property]);
+  return isSetProperty(EnumToAnnotation(property, PropertyName));
 }
 
 bool CData::empty() const
 {
   return std::map< std::string, CDataValue >::empty();
+}
+
+std::ostream & operator << (std::ostream & os, const CData & o)
+{
+  std::map< std::string, CDataValue >::const_iterator it = o.begin();
+  std::map< std::string, CDataValue >::const_iterator end = o.end();
+
+  for (; it != end; ++it)
+    os << it->first << ": " << it->second << std::endl;
+
+  return os;
 }

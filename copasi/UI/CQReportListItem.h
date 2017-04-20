@@ -23,24 +23,24 @@
 #include <QListWidgetItem>
 #include "report/CCopasiObjectName.h"
 
-class CCopasiObject;
-class CCopasiDataModel;
+class CDataObject;
+class CDataModel;
 
 class CQReportListItem : public QListWidgetItem
 {
   // Operations
 public:
-  CQReportListItem(const std::string & cn, CCopasiDataModel * pDataModel);
+  CQReportListItem(const std::string & cn, CDataModel * pDataModel);
 
-  CQReportListItem(const CCopasiObject * pObject);
+  CQReportListItem(const CDataObject * pObject);
 
   ~CQReportListItem();
 
   const CCopasiObjectName & getCN() const;
 
-  void setObject(const CCopasiObject* pObject);
+  void setObject(const CDataObject* pObject);
 
-  void refreshText(CCopasiDataModel * pDataModel);
+  void refreshText(CDataModel * pDataModel);
 
   // Attributes
 private:

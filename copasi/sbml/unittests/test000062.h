@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000062.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:41:02 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,7 +22,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class Model;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This test check if a kinetic law without math element is imported
@@ -28,21 +30,21 @@ class CCopasiDataModel;
  */
 
 class test000062 : public CppUnit::TestFixture
-  {
-    CPPUNIT_TEST_SUITE(test000062);
-    CPPUNIT_TEST(test_kineticlaw_without_math);
-    CPPUNIT_TEST_SUITE_END();
+{
+  CPPUNIT_TEST_SUITE(test000062);
+  CPPUNIT_TEST(test_kineticlaw_without_math);
+  CPPUNIT_TEST_SUITE_END();
 
-  protected:
-    static const char* MODEL_STRING1;
-    static CCopasiDataModel* pCOPASIDATAMODEL;
+protected:
+  static const char* MODEL_STRING1;
+  static CDataModel* pCOPASIDATAMODEL;
 
-  public:
-    void setUp();
+public:
+  void setUp();
 
-    void tearDown();
+  void tearDown();
 
-    void test_kineticlaw_without_math();
-  };
+  void test_kineticlaw_without_math();
+};
 
 #endif /* TEST000062_H__ */

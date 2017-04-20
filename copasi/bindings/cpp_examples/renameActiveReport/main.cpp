@@ -18,23 +18,22 @@
 
 #include <copasi/CopasiTypes.h>
 
-
 using namespace std;
 
 int main(int argc, char** argv)
 {
   // initialize COPASI
-  CCopasiRootContainer::init(0, NULL);
+  CRootContainer::init(0, NULL);
 
   // create a data model
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
 
   // accept at least two arguments, the COPASI file and the new report filename
   // if a third argument is given, that will be the output file.
   if (argc < 3)
     {
       std::cerr << "Usage: renameActiveReport <copasi file> <report filename> [<output copasi file>]" << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -56,13 +55,13 @@ int main(int argc, char** argv)
   if (!result)
     {
       std::cerr << "Error while opening the file named \"" << filename << "\"." << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
-  CCopasiVectorN< CCopasiTask >& tasks = *pDataModel->getTaskList();
-  CCopasiVectorN< CCopasiTask >::iterator it = tasks.begin();
-  CCopasiVectorN< CCopasiTask >::iterator end = tasks.end();
+  CDataVectorN< CCopasiTask >& tasks = *pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask >::iterator it = tasks.begin();
+  CDataVectorN< CCopasiTask >::iterator end = tasks.end();
 
   for (; it != end; ++it)
     {
@@ -76,7 +75,6 @@ int main(int argc, char** argv)
   // save to ensure that the model is right
   pDataModel->saveModel(outputFile, NULL, true);
 
-
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

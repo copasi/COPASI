@@ -33,26 +33,26 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: Recent Files)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CRecentFiles(const std::string & name = "Recent Files",
-               const CCopasiContainer * pParent = NO_PARENT);
+               const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CRecentFiles & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CRecentFiles(const CRecentFiles & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Specific constructor
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CRecentFiles(const CCopasiParameterGroup & group,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -92,18 +92,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: Configuration)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CConfigurationFile(const std::string & name = "Configuration",
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CConfigurationFile & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CConfigurationFile(const CConfigurationFile & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
 
   /**
    * Destructor

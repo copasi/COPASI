@@ -18,7 +18,7 @@
 #include "CCompartmentGraphNode.h"
 
 CCompartmentGraphNode::CCompartmentGraphNode(const std::string & name,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : CLCompartmentGlyph(name, pParent)
 {
   mOrigNodeKey = "";
@@ -26,7 +26,7 @@ CCompartmentGraphNode::CCompartmentGraphNode(const std::string & name,
 }
 
 CCompartmentGraphNode::CCompartmentGraphNode(const CLCompartmentGlyph & src,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : CLCompartmentGlyph(src, pParent)
 {
   mOrigNodeKey = src.getKey();
@@ -34,7 +34,7 @@ CCompartmentGraphNode::CCompartmentGraphNode(const CLCompartmentGlyph & src,
 }
 
 CCompartmentGraphNode::CCompartmentGraphNode(const CCompartmentGraphNode & src,
-    const CCopasiContainer * pParent)
+    const CDataContainer * pParent)
   : CLCompartmentGlyph(src, pParent)
 {
   mOrigNodeKey = src.mOrigNodeKey;

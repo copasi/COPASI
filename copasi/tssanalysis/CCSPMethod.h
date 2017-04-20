@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,9 +21,9 @@
 #define COPASI_CCSPMethod
 
 #include <sstream>
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
 
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "tssanalysis/CTSSAMethod.h"
 
 #include "odepack++/CLSODA.h"
@@ -150,21 +155,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (defaulf: tssCSP)
    * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
    */
-  CCSPMethod(const CCopasiContainer * pParent,
+  CCSPMethod(const CDataContainer * pParent,
              const CTaskEnum::Method & methodType = CTaskEnum::tssCSP,
              const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
 
   /**
    * Copy constructor.
    * @param "const CCSPMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCSPMethod(const CCSPMethod & src,
-             const CCopasiContainer * pParent);
+             const CDataContainer * pParent);
 
   /**
    *  Destructor.

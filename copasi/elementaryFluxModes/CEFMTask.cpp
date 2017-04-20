@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -40,7 +45,7 @@
 #include "model/CChemEqInterface.h"
 #include "utilities/CCopasiProblem.h"
 
-CEFMTask::CEFMTask(const CCopasiContainer * pParent,
+CEFMTask::CEFMTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
@@ -51,7 +56,7 @@ CEFMTask::CEFMTask(const CCopasiContainer * pParent,
 }
 
 CEFMTask::CEFMTask(const CEFMTask & src,
-                   const CCopasiContainer * pParent):
+                   const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
   mpProblem = new CCopasiProblem(*static_cast< CEFMProblem * >(src.mpProblem), this);
@@ -229,8 +234,8 @@ std::pair< C_FLOAT64, C_FLOAT64 > CEFMTask::getSpeciesChanges(const CFluxMode & 
           pOut = &Out;
         }
 
-      CCopasiVector < CChemEqElement >::const_iterator it = pReaction->getChemEq().getSubstrates().begin();
-      CCopasiVector < CChemEqElement >::const_iterator end = pReaction->getChemEq().getSubstrates().end();
+      CDataVector < CChemEqElement >::const_iterator it = pReaction->getChemEq().getSubstrates().begin();
+      CDataVector < CChemEqElement >::const_iterator end = pReaction->getChemEq().getSubstrates().end();
 
       for (; it != end; ++it)
         {
@@ -358,8 +363,8 @@ std::map< const CMetab *, C_FLOAT64 > CEFMTask::getNetReactionData(const CFluxMo
     {
       const CReaction * pReaction = ReorderedReactions[itReaction->first];
 
-      CCopasiVector < CChemEqElement >::const_iterator it = pReaction->getChemEq().getSubstrates().begin();
-      CCopasiVector < CChemEqElement >::const_iterator end = pReaction->getChemEq().getSubstrates().end();
+      CDataVector < CChemEqElement >::const_iterator it = pReaction->getChemEq().getSubstrates().begin();
+      CDataVector < CChemEqElement >::const_iterator end = pReaction->getChemEq().getSubstrates().end();
 
       for (; it != end; ++it)
         {

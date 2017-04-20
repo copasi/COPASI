@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,13 +28,13 @@
 #include "copasi.h"
 #include "CChemEq.h"
 #include "utilities/CReadConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "CMetabNameInterface.h"
 #include "CCompartment.h"
 
 CChemEq::CChemEq(const std::string & name,
-                 const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Chemical Equation"),
+                 const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Chemical Equation"),
   mReversible(false),
   mSubstrates("Substrates", this),
   mProducts("Products", this),
@@ -38,8 +43,8 @@ CChemEq::CChemEq(const std::string & name,
 {CONSTRUCTOR_TRACE;}
 
 CChemEq::CChemEq(const CChemEq & src,
-                 const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                 const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mReversible(src.mReversible),
   mSubstrates(src.mSubstrates, this),
   mProducts(src.mProducts, this),
@@ -57,16 +62,16 @@ void CChemEq::cleanup()
   mBalances.cleanup();
 }
 
-const CCopasiVector < CChemEqElement > & CChemEq::getSubstrates() const
+const CDataVector < CChemEqElement > & CChemEq::getSubstrates() const
 {return mSubstrates;}
 
-const CCopasiVector < CChemEqElement > & CChemEq::getProducts() const
+const CDataVector < CChemEqElement > & CChemEq::getProducts() const
 {return mProducts;}
 
-const CCopasiVector < CChemEqElement > & CChemEq::getModifiers() const
+const CDataVector < CChemEqElement > & CChemEq::getModifiers() const
 {return mModifiers;}
 
-const CCopasiVector < CChemEqElement > & CChemEq::getBalances() const
+const CDataVector < CChemEqElement > & CChemEq::getBalances() const
 {return mBalances;}
 
 void CChemEq::setReversibility(const bool & reversible)
@@ -118,8 +123,8 @@ std::set< const CCompartment * > CChemEq::getCompartments() const
   std::set< const CCompartment * > Compartments;
 
   // We go through the substrates, products, and modifiers;
-  CCopasiVector < CChemEqElement >::const_iterator it = mSubstrates.begin();
-  CCopasiVector < CChemEqElement >::const_iterator end = mSubstrates.end();
+  CDataVector < CChemEqElement >::const_iterator it = mSubstrates.begin();
+  CDataVector < CChemEqElement >::const_iterator end = mSubstrates.end();
 
   for (; it != end; ++it)
     {
@@ -200,7 +205,7 @@ const CCompartment * CChemEq::getLargestCompartment() const
   return NULL;
 }
 
-void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
+void CChemEq::addElement(CDataVector < CChemEqElement > & structure,
                          const CChemEqElement & element,
                          CChemEq::MetaboliteRole role)
 {
@@ -232,7 +237,7 @@ void CChemEq::addElement(CCopasiVector < CChemEqElement > & structure,
 
 size_t CChemEq::getMolecularity(const MetaboliteRole role) const
 {
-  const CCopasiVector<CChemEqElement> * tmpVector = NULL;
+  const CDataVector<CChemEqElement> * tmpVector = NULL;
 
   switch (role)
     {
@@ -301,7 +306,7 @@ bool CChemEq::setMultiplicity(const CMetab* pMetab, C_FLOAT64 newMult, Metabolit
     {
       // find the corresponding chemical element
       std::string key = pMetab->getKey();
-      CCopasiVector<CChemEqElement>::iterator it, endit;
+      CDataVector<CChemEqElement>::iterator it, endit;
 
       if (role == CChemEq::SUBSTRATE)
         {

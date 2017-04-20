@@ -15,12 +15,13 @@
  *      Author: dada
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CEvent.h"
-#include "model/CModel.h"
-#include "UI/CQEventDM.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CEvent.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CQEventDM.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "UndoEventData.h"
 #include "UndoEventAssignmentData.h"
@@ -32,7 +33,7 @@ RemoveAllEventRowsCommand::RemoveAllEventRowsCommand(
   , mpEventDM(pEventDM)
   , mpEventData()
 {
-  CCopasiDataModel * pDataModel = mpEventDM->getDataModel();
+  CDataModel * pDataModel = mpEventDM->getDataModel();
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);

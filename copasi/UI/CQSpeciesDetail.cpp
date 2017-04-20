@@ -17,28 +17,28 @@
 #include "CQMessageBox.h"
 #include "CQNameSelectionDialog.h"  // for Copy button compartment options
 #include "qtUtilities.h"
+#include "copasiui3window.h"
+#include "CQDependencyWidget.h"
+#include "CQDependenciesWidget.h"
 
-#include "model/CModel.h"
-#include "model/CChemEqInterface.h"
-#include "report/CCopasiRootContainer.h"
-#include "model/CModelExpansion.h"    //for Copy button and options
+#include "copasi/model/CModel.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModelExpansion.h"    //for Copy button and options
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 //UNDO framework classes
-#include "model/CReactionInterface.h"
-#include "undoFramework/DeleteSpeciesCommand.h"
-#include "undoFramework/CreateNewSpeciesCommand.h"
-#include "undoFramework/SpeciesTypeChangeCommand.h"
-#include "undoFramework/SpeciesChangeCommand.h"
-#include "undoFramework/SpeciesInitialValueLostFocusCommand.h"
-#include "undoFramework/UndoSpeciesData.h"
-#include "undoFramework/UndoReactionData.h"
-#include "undoFramework/UndoGlobalQuantityData.h"
-#include "undoFramework/UndoEventData.h"
-#include "undoFramework/UndoEventAssignmentData.h"
-#include "copasiui3window.h"
-
-#include <copasi/UI/CQDependencyWidget.h>
-#include <copasi/UI/CQDependenciesWidget.h>
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/undoFramework/DeleteSpeciesCommand.h"
+#include "copasi/undoFramework/CreateNewSpeciesCommand.h"
+#include "copasi/undoFramework/SpeciesTypeChangeCommand.h"
+#include "copasi/undoFramework/SpeciesChangeCommand.h"
+#include "copasi/undoFramework/SpeciesInitialValueLostFocusCommand.h"
+#include "copasi/undoFramework/UndoSpeciesData.h"
+#include "copasi/undoFramework/UndoReactionData.h"
+#include "copasi/undoFramework/UndoGlobalQuantityData.h"
+#include "copasi/undoFramework/UndoEventData.h"
+#include "copasi/undoFramework/UndoEventAssignmentData.h"
 
 /*
  *  Constructs a CQSpeciesDetail which is a child of 'parent', with the
@@ -183,7 +183,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblValue->setText("Concentration " + ConcentrationUnits);
         mpLblRate->setText("Rate " + ConcentrationRateUnits);
         mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
-        mpEditInitialValue->setReadOnly(!mpMetab->isInitialConcentrationChangeAllowed());
+        mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework));
         mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
         mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
         break;
@@ -200,7 +200,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblValue->setText("Particle Number " + ParticleNumberUnits);
         mpLblRate->setText("Rate " + ParticleNumberRateUnits);
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
-        mpEditInitialValue->setReadOnly(false);
+        mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework));
         mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
         mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
         break;
@@ -235,7 +235,7 @@ void CQSpeciesDetail::load()
   // Update the labels to reflect the model units
   mpLblTransitionTime->setText("Transition Time " + TimeUnits);
   // Compartment
-  const CCopasiVectorNS< CCompartment > &Compartments = pModel->getCompartments();
+  const CDataVectorNS< CCompartment > &Compartments = pModel->getCompartments();
   const CCompartment *pCompartment;
   mpComboBoxCompartment->clear();
   mpComboBoxCompartment->setDuplicatesEnabled(false);
@@ -486,12 +486,19 @@ void CQSpeciesDetail::loadReactionTable()
 
   if (pModel == NULL) return;
 
-  std::set< const CCopasiObject * > Reactions;
-  pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
-  mpReactionTable->setRowCount((int) Reactions.size());
+  CDataObject::DataObjectSet dependentReactions;
+  CDataObject::DataObjectSet dependentMetabolites;
+  CDataObject::DataObjectSet dependentCompartments;
+  CDataObject::DataObjectSet dependentModelValues;
+  CDataObject::DataObjectSet dependentEvents;
+  CDataObject::DataObjectSet dependentEventAssignments;
+
+  pModel->appendAllDependents(*mpMetab, dependentReactions, dependentMetabolites, dependentCompartments,  dependentModelValues,  dependentEvents,  dependentEventAssignments);
+
+  mpReactionTable->setRowCount((int) dependentReactions.size());
   mpReactionTable->setSortingEnabled(false);
-  std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-  std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+  std::set< const CDataObject * >::const_iterator it = dependentReactions.begin();
+  std::set< const CDataObject * >::const_iterator end = dependentReactions.end();
   int i = 0;
   const CReaction *pReaction;
 
@@ -538,9 +545,9 @@ void CQSpeciesDetail::copy()
   CModelExpansion::SetOfModelElements sourceObjects;
   CModelExpansion::ElementsMap origToCopyMapping;
   // for comboBox compartment list and setting compartment
-  CCopasiVectorNS< CCompartment > &Compartments = pModel->getCompartments();
-  CCopasiVectorN< CCompartment >::const_iterator it = Compartments.begin();
-  CCopasiVectorN< CCompartment >::const_iterator end = Compartments.end();
+  CDataVectorNS< CCompartment > &Compartments = pModel->getCompartments();
+  CDataVectorN< CCompartment >::const_iterator it = Compartments.begin();
+  CDataVectorN< CCompartment >::const_iterator end = Compartments.end();
   QStringList SelectionList;
 
   // Collect and load list of compartment names in comboBox
@@ -672,14 +679,21 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
 
   if (pModel == NULL) return;
 
-  std::set< const CCopasiObject * > Reactions;
-  pModel->appendDependentReactions(mpMetab->getDeletedObjects(), Reactions);
+  CDataObject::DataObjectSet dependentReactions;
+  CDataObject::DataObjectSet dependentMetabolites;
+  CDataObject::DataObjectSet dependentCompartments;
+  CDataObject::DataObjectSet dependentModelValues;
+  CDataObject::DataObjectSet dependentEvents;
+  CDataObject::DataObjectSet dependentEventAssignments;
+
+  pModel->appendAllDependents(*mpMetab, dependentReactions, dependentMetabolites, dependentCompartments,  dependentModelValues,  dependentEvents,  dependentEventAssignments);
+
   std::string s1, s2;
   s1 = TO_UTF8(mpReactionTable->item(row, 0)->text());
   s1 = s1.substr(0, s1.length() - 1);
   C_INT32 i = 0;
-  std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-  std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+  std::set< const CDataObject * >::const_iterator it = dependentReactions.begin();
+  std::set< const CDataObject * >::const_iterator end = dependentReactions.end();
   const CReaction *pReaction;
 
   for (; it != end; ++it, ++i)
@@ -752,7 +766,7 @@ void CQSpeciesDetail::deleteSpecies()
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "species",
                                 FROM_UTF8(mpMetab->getObjectName()),
-                                mpMetab->getDeletedObjects());
+                                mpMetab);
 
   switch (choice)
     {
@@ -802,7 +816,7 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
   CModel *pModel = mpDataModel->getModel();
   assert(pModel != NULL);
   //reinsert the species
-  CCopasiObject *pSpecies =  pSData->restoreObjectIn(pModel);
+  CDataObject *pSpecies =  pSData->restoreObjectIn(pModel);
 
   if (pSpecies == NULL)
     return;
@@ -816,7 +830,6 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
   std::string key = pSpecies->getKey();
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-
 }
 
 void CQSpeciesDetail::speciesTypeChanged(int type)
@@ -965,7 +978,7 @@ bool CQSpeciesDetail::changeValue(
 {
   if (!mIgnoreUpdates)
     {
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpObject = CRootContainer::getKeyFactory()->get(key);
       mpMetab = dynamic_cast<CMetab*>(mpObject);
       load();
     }

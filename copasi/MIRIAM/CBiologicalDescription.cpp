@@ -21,9 +21,9 @@
 #include "CReference.h"
 
 #include "report/CKeyFactory.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "undo/CData.h"
 
 // static
@@ -34,33 +34,33 @@ CBiologicalDescription * CBiologicalDescription::fromData(const CData & data)
 }
 
 CBiologicalDescription::CBiologicalDescription(const std::string & objectName,
-    const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "BiologicalDescription"),
+    const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "BiologicalDescription"),
   mTriplet(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("BiologicalDescription", this)),
+  mKey(CRootContainer::getKeyFactory()->add("BiologicalDescription", this)),
   mResource(NULL)
 {}
 
 CBiologicalDescription::CBiologicalDescription(const CRDFTriplet & triplet,
     const std::string & objectName,
-    const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "BiologicalDescription"),
+    const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "BiologicalDescription"),
   mTriplet(triplet),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("BiologicalDescription", this)),
+  mKey(CRootContainer::getKeyFactory()->add("BiologicalDescription", this)),
   mResource(mTriplet.pObject)
 {}
 
 CBiologicalDescription::CBiologicalDescription(const CBiologicalDescription & src,
-    const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+    const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mTriplet(src.mTriplet),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Creator", this)),
   mResource(src.mResource)
 {}
 
 CBiologicalDescription::~CBiologicalDescription()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 /**

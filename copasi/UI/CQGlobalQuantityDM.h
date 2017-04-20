@@ -19,7 +19,7 @@
 #include "CQBaseDataModel.h"
 
 class CModelValue;
-template < class CType > class CCopasiVectorN;
+template < class CType > class CDataVectorN;
 
 class UndoGlobalQuantityData;
 class UndoSpeciesData;
@@ -85,7 +85,7 @@ protected:
     * A vector mapping the item index to a model valu type
     */
   std::vector< unsigned C_INT32 > mItemToType;
-  CCopasiVectorN< CModelValue > * mpGlobalQuantities;
+  CDataVectorN< CModelValue > * mpGlobalQuantities;
 
   // cache the pretty-printed unit strings
   mutable QMap< std::string, QVariant > mUnitCache;

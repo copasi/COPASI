@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,9 +20,8 @@
 #ifndef COPASI_COptMethodSteepestDescent
 #define COPASI_COptMethodSteepestDescent
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptMethod.h"
-
-#include "utilities/CVector.h"
 
 class FDescent;
 
@@ -69,11 +73,11 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: SteepestDescent)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodSteepestDescent(const CCopasiContainer * pParent,
+  COptMethodSteepestDescent(const CDataContainer * pParent,
                             const CTaskEnum::Method & methodType = CTaskEnum::SteepestDescent,
                             const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
@@ -82,7 +86,7 @@ public:
    * @param const COptMethodSteepestDescent & src
    */
   COptMethodSteepestDescent(const COptMethodSteepestDescent& src,
-                            const CCopasiContainer * pParent);
+                            const CDataContainer * pParent);
 
   /**
    * Destructor

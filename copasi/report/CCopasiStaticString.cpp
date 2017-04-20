@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,16 +24,16 @@
 #include "CCopasiObjectName.h"
 
 CCopasiStaticString::CCopasiStaticString(const std::string & name,
-    const CCopasiContainer * pParent,
+    const CDataContainer * pParent,
     const std::string & type,
-    const unsigned C_INT32 & flag):
-  CCopasiObject(name, pParent, type, flag | CCopasiObject::StaticString),
+    const CFlags< Flag > & flag):
+  CDataObject(name, pParent, type, flag | CDataObject::StaticString),
   mStaticString(name)
 {}
 
 CCopasiStaticString::CCopasiStaticString(const CCopasiStaticString & src,
-    const CCopasiContainer * pParent):
-  CCopasiObject(src, pParent),
+    const CDataContainer * pParent):
+  CDataObject(src, pParent),
   mStaticString(src.mStaticString)
 {}
 
@@ -56,12 +61,12 @@ const std::string & CCopasiStaticString::getStaticString() const
 {return mStaticString;}
 
 CCopasiReportSeparator::CCopasiReportSeparator(const std::string & name,
-    const CCopasiContainer * pParent):
-  CCopasiStaticString(name, pParent, "Separator", CCopasiObject::Separator)
+    const CDataContainer * pParent):
+  CCopasiStaticString(name, pParent, "Separator", CDataObject::Separator)
 {}
 
 CCopasiReportSeparator::CCopasiReportSeparator(const CCopasiStaticString & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiStaticString(src, pParent)
 {}
 

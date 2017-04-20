@@ -26,10 +26,10 @@
 #include "CFunction.h"
 #include "CExpression.h"
 #include "CFunctionDB.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "utilities/utility.h"
 #include "utilities/CUnitValidator.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
   CEvaluationNode(T_CALL, S_INVALID, ""),
@@ -124,7 +124,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
   if (mRegisteredFunctionCN != "")
     {
-      pObjectInterface = const_cast< CObjectInterface * >(CCopasiRootContainer::getRoot()->getObject(mRegisteredFunctionCN));
+      pObjectInterface = const_cast< CObjectInterface * >(CRootContainer::getRoot()->getObject(mRegisteredFunctionCN));
     }
 
   switch (mSubType)
@@ -138,7 +138,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         else
           {
             mpFunction =
-              dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+              dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findFunction(mData));
           }
 
         if (!mpFunction) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
@@ -161,7 +161,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         else
           {
             mpExpression =
-              dynamic_cast<CExpression *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+              dynamic_cast<CExpression *>(CRootContainer::getFunctionList()->findFunction(mData));
           }
 
         if (!mpExpression)
@@ -175,7 +175,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
             else
               {
                 mpFunction =
-                  dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findFunction(mData));
+                  dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findFunction(mData));
               }
 
             if (!mpFunction) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
@@ -209,7 +209,7 @@ bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
   if (list.count(mData)) return true;
 
   CEvaluationTree * pTree =
-    CCopasiRootContainer::getFunctionList()->findFunction(mData);
+    CRootContainer::getFunctionList()->findFunction(mData);
 
   if (pTree) return pTree->calls(list);
 
@@ -449,13 +449,13 @@ CEvaluationNode * CEvaluationNodeCall::fromAST(const ASTNode * pASTNode, const s
   return pNode;
 }
 
-ASTNode* CEvaluationNodeCall::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeCall::toAST(const CDataModel* pDataModel) const
 {
   ASTNode* pNode = NULL;
 
   pNode = new ASTNode(AST_FUNCTION);
   const std::string funName = this->getData();
-  CFunction * pFun = CCopasiRootContainer::getFunctionList()->findFunction(funName);
+  CFunction * pFun = CRootContainer::getFunctionList()->findFunction(funName);
   assert(pFun != NULL);
 
   if (pFun == NULL || pFun->getSBMLId().empty()) fatalError();
@@ -581,7 +581,7 @@ const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
     {
       case S_FUNCTION:
       case S_EXPRESSION:
-        return CCopasiRootContainer::getFunctionList()->findFunction(mData);
+        return CRootContainer::getFunctionList()->findFunction(mData);
 
       default:
         return NULL;

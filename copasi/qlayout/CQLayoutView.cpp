@@ -25,20 +25,20 @@
 #include <layout/CLayout.h>
 #include <layout/CListOfLayouts.h>
 #include <layout/CLDefaultStyles.h>
-#include <CopasiDataModel/CCopasiDataModel.h>
+#include <CopasiDataModel/CDataModel.h>
 #include <resourcesUI/CQIconResource.h>
 
 CQLayoutView::~CQLayoutView()
 {
 }
 
-void updateLayoutList(QComboBox* list, CCopasiDataModel* dataModel)
+void updateLayoutList(QComboBox* list, CDataModel* dataModel)
 {
   if (list == NULL || dataModel == NULL) return;
 
   list->clear();
-  CCopasiVector<CLayout> & layouts = *dataModel->getListOfLayouts();
-  CCopasiVector<CLayout>::iterator it = layouts.begin();
+  CDataVector<CLayout> & layouts = *dataModel->getListOfLayouts();
+  CDataVector<CLayout>::iterator it = layouts.begin();
 
   while (it != layouts.end())
     {
@@ -52,7 +52,7 @@ void updateLayoutList(QComboBox* list, CCopasiDataModel* dataModel)
 #define RENDERINFORMATION_TYPE_LOCAL 1
 #define RENDERINFORMATION_TYPE_DEFAULT 2
 
-CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDataModel* dataModel, CLayout* layout)
+CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CDataModel* dataModel, CLayout* layout)
 {
 
   if (list == NULL || dataModel == NULL) return NULL;
@@ -76,8 +76,8 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
   // add local information
   if (layout != NULL)
     {
-      CCopasiVector<CLLocalRenderInformation> & render = layout->getListOfLocalRenderInformationObjects();
-      CCopasiVector<CLLocalRenderInformation>::iterator it = render.begin();
+      CDataVector<CLLocalRenderInformation> & render = layout->getListOfLocalRenderInformationObjects();
+      CDataVector<CLLocalRenderInformation>::iterator it = render.begin();
 
       while (it != render.end())
         {
@@ -108,8 +108,8 @@ CLRenderInformationBase* updateRenderInformationList(QComboBox* list, CCopasiDat
 
   // add global ones
   {
-    CCopasiVector<CLGlobalRenderInformation> & render = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects();
-    CCopasiVector<CLGlobalRenderInformation>::const_iterator it = render.begin();
+    CDataVector<CLGlobalRenderInformation> & render = dataModel->getListOfLayouts()->getListOfGlobalRenderInformationObjects();
+    CDataVector<CLGlobalRenderInformation>::const_iterator it = render.begin();
 
     while (it != render.end())
       {
@@ -355,12 +355,12 @@ void CQLayoutView::slotZoomOut()
   scale(1.0 / mScaleFactor, 1.0 / mScaleFactor);
 }
 
-CCopasiDataModel* CQLayoutView::getDataModel()
+CDataModel* CQLayoutView::getDataModel()
 {
   return mpDataModel;
 }
 
-void CQLayoutView::setDataModel(CCopasiDataModel* dataModel, CLayout* layout)
+void CQLayoutView::setDataModel(CDataModel* dataModel, CLayout* layout)
 {
   mpDataModel = dataModel;
 

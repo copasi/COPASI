@@ -29,14 +29,14 @@
 #include "utilities/CCopasiException.h"
 
 CFunctionParameters::CFunctionParameters(const std::string & name,
-    const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Variable Description"),
+    const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Variable Description"),
   mParameters("Variables", this)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameters::CFunctionParameters(const CFunctionParameters & src,
-    const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+    const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mParameters(src.mParameters, this)
 {CONSTRUCTOR_TRACE;}
 

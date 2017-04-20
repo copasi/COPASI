@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000072.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:52:00 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,31 +17,31 @@
 
 #include <sstream>
 #include <string>
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  * Make sure exporting to Level2 after an export to Level1 does not crash COPASI.
  */
-CCopasiDataModel* test000072::pCOPASIDATAMODEL = NULL;
+CDataModel* test000072::pCOPASIDATAMODEL = NULL;
 
 void test000072::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000072::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000072::test_bug1086()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   // now try to export several times
   std::string s = pDataModel->exportSBMLToString(NULL, 1, 2);

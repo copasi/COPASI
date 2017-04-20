@@ -22,7 +22,7 @@
 class UndoSpeciesData;
 class UndoReactionData;
 class CMetab;
-template < class CType > class CCopasiVector;
+template < class CType > class CDataVector;
 
 #define COL_NAME_SPECIES          1
 #define COL_COMPARTMENT           2
@@ -105,7 +105,7 @@ protected:
    * A pointer to a vector of all metabolites in this model
    */
 
-  CCopasiVector< CMetab > * mpMetabolites;
+  CDataVector< CMetab > * mpMetabolites;
 
   bool mNotify;
 

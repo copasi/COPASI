@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,10 +22,9 @@
 
 #include <sstream>
 
+#include "copasi/core/CMatrix.h"
 #include "copasi/lyap/CLyapMethod.h"
-#include "copasi/utilities/CVector.h"
-#include "copasi/utilities/CMatrix.h"
-
+#include "copasi/core/CVector.h"
 #include "copasi/odepack++/CLSODA.h"
 
 class CModel;
@@ -145,21 +149,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: lyapWolf)
    * @param const CTaskEnum::Task & taskType (default: lyap)
    */
-  CLyapWolfMethod(const CCopasiContainer * pParent,
+  CLyapWolfMethod(const CDataContainer * pParent,
                   const CTaskEnum::Method & methodType = CTaskEnum::lyapWolf,
                   const CTaskEnum::Task & taskType = CTaskEnum::lyap);
 
   /**
    * Copy constructor.
    * @param "const CLsodaMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CLyapWolfMethod(const CLyapWolfMethod & src,
-                  const CCopasiContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    *  Destructor.

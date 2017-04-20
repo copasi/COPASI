@@ -14,15 +14,16 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-//#include "report/CReportDefinitionVector.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
 /*
  *  Constructs a CQUnitsWidget which is a child of 'parent', with the
@@ -220,9 +221,9 @@ void CQUnitsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 
   // How do I deal with this?
   //  std::string key = pDataModel->getReportDefinitionList()->operator[](index.row())->getKey();
-  std::string key = CCopasiRootContainer::getUnitList()->operator[](index.row()).getKey();
+  std::string key = CRootContainer::getUnitList()->operator[](index.row()).getKey();
 
-  if (CCopasiRootContainer::getKeyFactory()->get(key))
+  if (CRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 

@@ -22,7 +22,7 @@
 #include "UI/qtUtilities.h"
 #include "UndoSpeciesData.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CMetab.h"
 #include "model/CModel.h"
 

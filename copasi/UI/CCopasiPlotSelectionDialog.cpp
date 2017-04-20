@@ -34,7 +34,7 @@
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 #include "model/CModel.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 CCopasiPlotSelectionDialog::CCopasiPlotSelectionDialog(QWidget* parent, const char* name, bool modal, Qt::WindowFlags f):
   QDialog(parent, f)
@@ -152,8 +152,8 @@ void CCopasiPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
   this->mpYAxisSelectionWidget->setExpertMode(checked);
 }
 
-void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CCopasiObject * > *outputVector1,
-    std::vector< const CCopasiObject * > *outputVector2)
+void CCopasiPlotSelectionDialog::setOutputVectors(std::vector< const CDataObject * > *outputVector1,
+    std::vector< const CDataObject * > *outputVector2)
 {
   this->mpXAxisOutputVector = outputVector1;
   this->mpXAxisSelectionWidget->setOutputVector(this->mpXAxisOutputVector);

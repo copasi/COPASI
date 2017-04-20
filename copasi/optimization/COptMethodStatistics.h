@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,7 +30,7 @@ class COptProblem;
 class COptMethod;
 
 #include "randomGenerator/CRandom.h"
-#include "utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
@@ -77,21 +82,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: Statistics)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodStatistics(const CCopasiContainer * pParent,
+  COptMethodStatistics(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType = CTaskEnum::Statistics,
                        const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodDE & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodStatistics(const COptMethodStatistics & src,
-                       const CCopasiContainer * pParent);
+                       const CDataContainer * pParent);
 
   /**
    * Destructor

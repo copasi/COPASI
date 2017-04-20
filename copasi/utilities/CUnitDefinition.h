@@ -19,12 +19,12 @@
 #define CUNIT_DEFINITION_H
 
 #include "copasi/utilities/CUnit.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "model/CAnnotation.h"
 
 class CUnitDefinitionDB;
 
-class CUnitDefinition : public CCopasiContainer, public CUnit, public CAnnotation
+class CUnitDefinition : public CDataContainer, public CUnit, public CAnnotation
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnitDefinition & o);
 
@@ -35,18 +35,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CUnitDefinition(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NO_PARENT);
+                  const CDataContainer * pParent = NO_PARENT);
 
   /**
   * Copy constructor
   * @param const CUnitDefinition::& src
-  * @param const CCopasiContainer * pParent
+  * @param const CDataContainer * pParent
   */
   CUnitDefinition(const CUnitDefinition & src,
-                  const CCopasiContainer * pParent = NO_PARENT);
+                  const CDataContainer * pParent = NO_PARENT);
   ~CUnitDefinition();
 
   virtual const std::string & getKey() const;

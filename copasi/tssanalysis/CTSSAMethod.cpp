@@ -38,8 +38,8 @@
 #include "CTSSAProblem.h"
 #include "math/CMathContainer.h"
 #include "model/CCompartment.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "trajectory/CLsodaMethod.h"
 
@@ -49,7 +49,7 @@
 /**
  *  Default constructor.
  */
-CTSSAMethod::CTSSAMethod(const CCopasiContainer * pParent,
+CTSSAMethod::CTSSAMethod(const CDataContainer * pParent,
                          const CTaskEnum::Method & methodType,
                          const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -95,7 +95,7 @@ CTSSAMethod::CTSSAMethod(const CCopasiContainer * pParent,
  *  @param "const CTSSAMethod &" src
  */
 CTSSAMethod::CTSSAMethod(const CTSSAMethod & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpProblem(src.mpProblem),
   mDim(0),
@@ -244,8 +244,8 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
 // Check if the model has a compartment with an ODE
-  CCopasiVector< CCompartment >::const_iterator it = Model.getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator end = Model.getCompartments().end();
+  CDataVector< CCompartment >::const_iterator it = Model.getCompartments().begin();
+  CDataVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
     if (it->getStatus() == CModelEntity::ODE ||

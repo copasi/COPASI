@@ -23,9 +23,9 @@
 #include <string>
 #include <vector>
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/report/CCopasiObjectName.h"
-#include "copasi/utilities/CFlags.h"
+#include "copasi/core/CFlags.h"
 
 class CCopasiParameterGroup;
 
@@ -38,7 +38,7 @@ class CReadConfig;
  *
  *  Created for COPASI by Stefan Hoops 2002
  */
-class CCopasiParameter: public CCopasiContainer
+class CCopasiParameter: public CDataContainer
 {
 
   // Attributes
@@ -108,7 +108,7 @@ protected:
   /**
    * A pointer to the object reference for  the value
    */
-  mutable CCopasiObject * mpValueReference;
+  mutable CDataObject * mpValueReference;
 
   /**
    * A pointer to the valid values;
@@ -134,23 +134,23 @@ public:
   /**
    * Copy constructor
    * @param const CCopasiParameter & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiParameter(const CCopasiParameter & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Specific constructor
    * @param const string & name
    * @param const CCopasiParameter::Type & type
    * @param const void * pValue (default: NULL)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    * @param const std::string & objectType (default: "Parameter")
    */
   CCopasiParameter(const std::string & name,
                    const Type & type,
                    const void * pValue = NULL,
-                   const CCopasiContainer * pParent = NO_PARENT,
+                   const CDataContainer * pParent = NO_PARENT,
                    const std::string & objectType = "Parameter");
 
   /**
@@ -205,9 +205,9 @@ public:
 
   /**
    * Retrieve the object which represents the value of the parameter
-   * @return CCopasiObject * pValueReference
+   * @return CDataObject * pValueReference
    */
-  CCopasiObject * getValueReference() const;
+  CDataObject * getValueReference() const;
 
   /**
    * Retrieve the type of the parameter.
@@ -319,7 +319,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream

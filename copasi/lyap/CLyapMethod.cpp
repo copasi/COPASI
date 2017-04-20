@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -51,7 +56,7 @@ bool CLyapMethod::isValidSubType(const CTaskEnum::Method & subType)
 /**
  *  Default constructor.
  */
-CLyapMethod::CLyapMethod(const CCopasiContainer * pParent,
+CLyapMethod::CLyapMethod(const CDataContainer * pParent,
                          const CTaskEnum::Method & methodType,
                          const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -63,7 +68,7 @@ CLyapMethod::CLyapMethod(const CCopasiContainer * pParent,
  *  @param "const CLyapMethod &" src
  */
 CLyapMethod::CLyapMethod(const CLyapMethod & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   //mpCurrentState(src.mpCurrentState),
   mpProblem(src.mpProblem)

@@ -26,7 +26,7 @@ class CQUnitDM : public CQBaseDataModel
   Q_OBJECT
 
 public:
-  CQUnitDM(QObject *parent, CCopasiDataModel * pDataModel);
+  CQUnitDM(QObject *parent, CDataModel * pDataModel);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;

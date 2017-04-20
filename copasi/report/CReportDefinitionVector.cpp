@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,16 +24,16 @@
 #include "copasi.h"
 #include "CReportDefinitionVector.h"
 #include "CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 CReportDefinitionVector::CReportDefinitionVector(const std::string & name,
-    const CCopasiContainer * pParent):
-  CCopasiVectorN< CReportDefinition >(name, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("CReportDefinitionVector", this))
+    const CDataContainer * pParent):
+  CDataVectorN< CReportDefinition >(name, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("CReportDefinitionVector", this))
 {}
 
 CReportDefinitionVector::~CReportDefinitionVector()
@@ -38,7 +43,7 @@ CReportDefinitionVector::~CReportDefinitionVector()
 
 void CReportDefinitionVector::cleanup()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string & CReportDefinitionVector::getKey() const
@@ -65,13 +70,13 @@ CReportDefinition* CReportDefinitionVector::createReportDefinition(const std::st
 bool CReportDefinitionVector::removeReportDefinition(const std::string & key)
 {
   CReportDefinition* pRep =
-    dynamic_cast<CReportDefinition *>(CCopasiRootContainer::getKeyFactory()->get(key));
-  size_t index = this->CCopasiVector<CReportDefinition>::getIndex(pRep);
+    dynamic_cast<CReportDefinition *>(CRootContainer::getKeyFactory()->get(key));
+  size_t index = this->CDataVector<CReportDefinition>::getIndex(pRep);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  this->CCopasiVector<CReportDefinition>::remove(index);
+  this->CDataVector<CReportDefinition>::remove(index);
 
   //pdelete(pRep);  //TODO: propably a memory leak, may be not
 

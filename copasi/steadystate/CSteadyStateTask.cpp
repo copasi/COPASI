@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -38,7 +43,7 @@
 
 #define XXXX_Reporting
 
-CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent,
+CSteadyStateTask::CSteadyStateTask(const CDataContainer * pParent,
                                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mSteadyState(),
@@ -57,7 +62,7 @@ CSteadyStateTask::CSteadyStateTask(const CCopasiContainer * pParent,
 }
 
 CSteadyStateTask::CSteadyStateTask(const CSteadyStateTask & src,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiTask(src, pParent),
   mSteadyState(src.mSteadyState),
   mJacobian(src.mJacobian),
@@ -424,7 +429,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   CModel * pModel = const_cast< CModel * >(&A.mpContainer->getModel());
 
   // Metabolite Info: Name, Concentration, Concentration Rate, Particle Number, Particle Rate, Transition Time
-  const CCopasiVector<CMetab> & Metabolites = pModel->getMetabolites();
+  const CDataVector<CMetab> & Metabolites = pModel->getMetabolites();
   const CMetab * pMetab;
 
   size_t i, imax = Metabolites.size();
@@ -479,7 +484,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << std::endl;
 
   // Reaction Info: Name, Flux, Particle Flux
-  const CCopasiVector<CReaction>& Reactions = pModel->getReactions();
+  const CDataVector<CReaction>& Reactions = pModel->getReactions();
   const CReaction * pReaction;
 
   imax = Reactions.size();

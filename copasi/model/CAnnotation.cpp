@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -26,7 +31,7 @@
 #include "model/CModelParameterSet.h"
 #include "function/CFunction.h"
 #include "utilities/CUnitDefinition.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #ifdef WITH_NEW_PARSER
 # include "xml/parser/CXMLParser.h"
@@ -35,7 +40,7 @@
 #endif
 
 // static
-CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
+CAnnotation * CAnnotation::castObject(CDataObject * pObject)
 {
   CModelEntity * pEntity = NULL;
   CEvent * pEvent = NULL;
@@ -66,7 +71,7 @@ CAnnotation * CAnnotation::castObject(CCopasiObject * pObject)
 }
 
 // static
-const CAnnotation * CAnnotation::castObject(const CCopasiObject * pObject)
+const CAnnotation * CAnnotation::castObject(const CDataObject * pObject)
 {
   const CModelEntity * pEntity = NULL;
   const CEvent * pEvent = NULL;
@@ -114,7 +119,7 @@ CAnnotation::CAnnotation(const CAnnotation & src):
 
 CAnnotation::~CAnnotation()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 // virtual

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,9 +30,9 @@
 #include "COptTask.h"
 
 #include "parameterFitting/CFitProblem.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent,
+COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
@@ -40,7 +45,7 @@ COptMethodNelderMead::COptMethodNelderMead(const CCopasiContainer * pParent,
 }
 
 COptMethodNelderMead::COptMethodNelderMead(const COptMethodNelderMead & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   COptMethod(src, pParent)
 {initObjects();}
 
@@ -49,7 +54,7 @@ COptMethodNelderMead::~COptMethodNelderMead()
 
 void COptMethodNelderMead::initObjects()
 {
-  addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
 }
 
 /*

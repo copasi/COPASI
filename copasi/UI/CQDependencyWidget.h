@@ -26,7 +26,7 @@ enum CDependencyType
   UNKNOWN = 128
 };
 
-class CCopasiObject;
+class CDataObject;
 class CModel;
 
 class CQDependencyWidget : public CopasiWidget
@@ -38,31 +38,13 @@ public:
   explicit CQDependencyWidget(QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
   virtual ~CQDependencyWidget();
 
-
-  /**
-   * updates this widget with dependencies for the given set of copasi objects
-   *
-   * @param elements set of copasi objects to look through for dependencies
-   * @param pModel the current model
-   */
-  void updateFromCandidates(std::set< const CCopasiObject * >& elements, const CModel* pModel);
-
   /**
    * updates this widget from the given dependency objects
    * @param dependencies set of copasi objects to display
    * @param pModel the current model
    */
-  void updateFromDependencies(std::set< const CCopasiObject * >& elements,
-                              std::set< const CCopasiObject * >& dependencies, const CModel* pModel);
-
-  void appendDependencies(
-    std::set< const CCopasiObject * >& dependencies,
-    const std::set<const CCopasiObject *>& elements);
-
-  void appendDependenciesIndividual(
-    std::set< const CCopasiObject * >& dependencies,
-    const std::set<const CCopasiObject *>& elements);
-
+  void updateFromDependencies(std::set< const CDataObject * >& elements,
+                              std::set< const CDataObject * >& dependencies, const CModel* pModel);
 
   /**
    * sets the width of the label
@@ -96,13 +78,11 @@ public:
    */
   int getNumDependencies() const;
 
-
-
 protected:
   /**
    * construct a string that provides more detail on where the dependency occurs
    */
-  std::string getDetailsFor(const CCopasiObject * pObject, std::set< const CCopasiObject * >& elements);
+  std::string getDetailsFor(const CDataObject * pObject, std::set< const CDataObject * >& elements);
   virtual void resizeEvent(QResizeEvent * pEvent);
 
   void resizeTable();
@@ -116,7 +96,6 @@ private:
   CDependencyType mType;
   const CModel* mpModel;
   bool mResizeTableToRows;
-
 };
 
 #endif // CQDEPENDENCYWIDGET_H

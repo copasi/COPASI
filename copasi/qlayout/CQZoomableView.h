@@ -17,7 +17,7 @@ class QAction;
 class QMenu;
 class QToolBar;
 class QComboBox;
-class CCopasiDataModel;
+class CDataModel;
 
 class CQZoomableView: public QGraphicsView
 {
@@ -46,7 +46,6 @@ protected:
   QAction* mpActResetZoom;
   double   mScaleFactor;
   bool mIgnoreEvents;
-
 };
 
 #endif

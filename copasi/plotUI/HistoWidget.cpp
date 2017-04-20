@@ -14,16 +14,17 @@
 #include "CQPlotEditWidget.h"
 #include "CQPlotSubwidget.h"
 
-#include "UI/CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "plot/CPlotItem.h"
-#include "report/CCopasiRootContainer.h"
-#include "model/CModel.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 HistoWidget::HistoWidget(QWidget* parent, Qt::WindowFlags fl):
   CQPlotEditWidget(parent, fl),
@@ -46,12 +47,12 @@ void HistoWidget::buttonPressedX()
   //  mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::NUMERIC, mpObjectX);
   //mpObjectX = CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::PLOT_OBJECT, mpObjectX);
 
-  std::vector< const CCopasiObject * > oldSelection;
+  std::vector< const CDataObject * > oldSelection;
 
   if (mpObjectX)
     oldSelection.push_back(mpObjectX);
 
-  std::vector< const CCopasiObject * > objects =
+  std::vector< const CDataObject * > objects =
     CCopasiSelectionDialog::getObjectVector(this,
         CQSimpleSelectionTree::NumericValues,
         &oldSelection);
@@ -111,7 +112,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
 
   //variable
   mpObjectX = NULL;
-  CCopasiDataModel* pDataModel = mpModel->getObjectDataModel();
+  CDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (curve->getChannels().size() >= 1)

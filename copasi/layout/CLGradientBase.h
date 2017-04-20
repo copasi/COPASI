@@ -14,15 +14,15 @@
 #include <string>
 
 #include "copasi/layout/CLBase.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/layout/CLGradientStop.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class GradientBase;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLGradientBase : public CLBase, public CCopasiContainer
+class CLGradientBase : public CLBase, public CDataContainer
 {
 public:
   enum SPREADMETHOD
@@ -38,7 +38,7 @@ private:
 
 protected:
   SPREADMETHOD mSpreadMethod;
-  CCopasiVector<CLGradientStop> mGradientStops;
+  CDataVector<CLGradientStop> mGradientStops;
 
   /**
    * key string for the gradient.
@@ -59,17 +59,17 @@ public:
   /**
    * Constructor.
    */
-  CLGradientBase(const std::string& name, CCopasiContainer* pParent = NULL);
+  CLGradientBase(const std::string& name, CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLGradientBase(const CLGradientBase& source, CCopasiContainer* pParent = NULL);
+  CLGradientBase(const CLGradientBase& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLGradientBase(const GradientBase& source, const std::string& name, CCopasiContainer* pParent = NULL);
+  CLGradientBase(const GradientBase& source, const std::string& name, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.
@@ -94,12 +94,12 @@ public:
   /**
    * Returns a pointer to the gradient stop vector.
    */
-  CCopasiVector<CLGradientStop>* getListOfGradientStops();
+  CDataVector<CLGradientStop>* getListOfGradientStops();
 
   /**
    * Returns a const pointer to the gradient stop vector.
    */
-  const CCopasiVector<CLGradientStop>* getListOfGradientStops() const;
+  const CDataVector<CLGradientStop>* getListOfGradientStops() const;
 
   /**
    * Returns a pointer to the gradient stop with the given index or NULL

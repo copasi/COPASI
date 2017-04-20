@@ -14,7 +14,7 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnit.h"
 #include "copasi/utilities/CUnitParser.h"
@@ -772,7 +772,7 @@ void CUnit::buildExpression()
               numerator << it->multiplier << "*";
             }
 
-          numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+          numerator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
 
           if (it->exponent > 1.0)
             {
@@ -793,7 +793,7 @@ void CUnit::buildExpression()
               DenominatorCount++;
             }
 
-          denominator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+          denominator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
 
           if (it->exponent < -1.0)
             {
@@ -809,7 +809,7 @@ void CUnit::buildExpression()
               numerator << it->multiplier << "*";
             }
 
-          numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+          numerator << CBaseUnit::prefixFromScale(it->scale) << CRootContainer::quoteUnitDefSymbol(it->symbol);
           NumeratorCount++;
         }
     }

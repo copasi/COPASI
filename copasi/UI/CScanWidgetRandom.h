@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,10 +40,10 @@ public:
 
   virtual bool save(CCopasiParameterGroup * pItem) const;
 
-  void initFromObject(const CCopasiObject *obj);
+  void initFromObject(const CDataObject *obj);
 
 protected:
-  const CCopasiObject * mpObject;
+  const CDataObject * mpObject;
 
 protected slots:
 

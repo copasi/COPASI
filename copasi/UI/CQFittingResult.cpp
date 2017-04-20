@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,13 +29,13 @@
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "parameterFitting/CFitTask.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CFitItem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CLocaleString.h"
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
@@ -151,7 +156,7 @@ bool CQFittingResult::enterProtected()
   for (i = 0; i != imax; i++)
     {
       //1st column: parameter name
-      const CCopasiObject *pObject =
+      const CDataObject *pObject =
         CObjectInterface::DataObject(mpDataModel->getObjectFromCN(Items[i]->getObjectCN()));
 
       if (pObject)

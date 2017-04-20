@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -8,7 +13,9 @@
 #include "CExpat.h"
 #include "CCopasiXMLParser.h"
 #include "CCopasiXMLInterface.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
 #define START_ELEMENT   -1
 #define UNKNOWN_ELEMENT -2

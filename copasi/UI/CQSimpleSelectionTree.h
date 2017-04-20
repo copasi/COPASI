@@ -16,9 +16,9 @@
 #include <map>
 #include <string>
 
-template <class CType> class CCopasiVector;
+template <class CType> class CDataVector;
 
-class CCopasiObject;
+class CDataObject;
 class QTreeWidgetItem;
 class QWidget;
 class CModel;
@@ -49,8 +49,8 @@ public:
   ~CQSimpleSelectionTree();
 
   void populateTree(const CModel * pModel, const ObjectClasses & classes);
-  void populateTree(const std::vector< const CCopasiObject * > & objectList);
-  void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
+  void populateTree(const std::vector< const CDataObject * > & objectList);
+  void setOutputVector(std::vector< const CDataObject * > * outputVector);
 
 public slots:
   virtual void commitClicked();
@@ -90,21 +90,21 @@ protected:
   QTreeWidgetItem* mpResultTSSASubtree;
   QTreeWidgetItem* mpResultLNASubtree;
 
-  std::map< QTreeWidgetItem *, const CCopasiObject * > treeItems;
-  std::vector< const CCopasiObject * > * mpOutputVector;
+  std::map< QTreeWidgetItem *, const CDataObject * > treeItems;
+  std::vector< const CDataObject * > * mpOutputVector;
 
   bool treeHasSelection();
-  bool isMetaboliteNameUnique(const std::string & name, const CCopasiVector<CMetab> & metabolites);
-  QTreeWidgetItem * findListViewItem(const CCopasiObject * object);
-  void selectObjects(std::vector< const CCopasiObject * > * objects);
-  std::vector<const CCopasiObject * > * getTreeSelection();
+  bool isMetaboliteNameUnique(const std::string & name, const CDataVector<CMetab> & metabolites);
+  QTreeWidgetItem * findListViewItem(const CDataObject * object);
+  void selectObjects(std::vector< const CDataObject * > * objects);
+  std::vector<const CDataObject * > * getTreeSelection();
   void removeEmptySubTree(QTreeWidgetItem ** ppSubTree);
   void removeAllEmptySubTrees();
 
 protected:
 
 public:
-  static bool filter(const ObjectClasses & classes, const CCopasiObject * pObject);
+  static bool filter(const ObjectClasses & classes, const CDataObject * pObject);
 };
 
 #endif

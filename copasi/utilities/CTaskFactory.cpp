@@ -31,7 +31,7 @@
 #endif // WITH_ANALYTICS
 
 // static
-CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CCopasiContainer * pParent)
+CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CDataContainer * pParent)
 {
   CCopasiTask * pTask = NULL;
 
@@ -102,7 +102,7 @@ CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CCopa
 
   if (pTask != NULL)
     {
-      const_cast< CCopasiContainer * >(pParent)->add(pTask, true);
+      const_cast< CDataContainer * >(pParent)->add(pTask, true);
     }
 
   return pTask;

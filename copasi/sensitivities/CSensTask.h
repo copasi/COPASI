@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -35,19 +40,19 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: sens)
    */
-  CSensTask(const CCopasiContainer * pParent,
+  CSensTask(const CDataContainer * pParent,
             const CTaskEnum::Task & type = CTaskEnum::sens);
 
   /**
    * Copy constructor
    * @param const CSensTask & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CSensTask(const CSensTask & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -94,7 +99,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To overide this default behaviour one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream

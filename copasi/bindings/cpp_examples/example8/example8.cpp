@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,13 +18,13 @@
 
 #define COPASI_MAIN
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/math/CMathContainer.h"
-#include "copasi/utilities/CMatrix.h"
+#include "copasi/core/CMatrix.h"
 
 const char* MODEL_STRING = \
                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -104,12 +109,12 @@ int main()
   // since we are not interested in the arguments
   // that are passed to main, we pass 0 and NULL to
   // init
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
   assert(pDataModel != NULL);
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  assert(CRootContainer::getDatamodelList()->size() == 1);
   // next we import a simple SBML model from a string
 
   // clear the message queue so that we only have error messages from the import in the queue

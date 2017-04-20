@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,8 +36,8 @@
 #include "report/CCopasiTimer.h"
 
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CVector.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CVector.h"
 
 #include "function/CExpression.h"
 
@@ -61,18 +66,18 @@ public:
   /**
    * Default constructor
    * @param const CTaskEnum::Task & type (default: optimization)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptProblem(const CTaskEnum::Task & type = CTaskEnum::optimization,
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
    * @param const COptProblem & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptProblem(const COptProblem & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -333,7 +338,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
@@ -374,6 +379,9 @@ private:
   void initObjects();
 
   //data member
+
+  static C_FLOAT64 MissingValue;
+
 protected:
   /**
    * A static value containing Infinity.
@@ -450,19 +458,19 @@ protected:
    * A vector of refresh methods which need to be called update all initial
    * values which depend on the optimization items.
    */
-  CObjectInterface::UpdateSequence mInitialRefreshSequence;
+  CCore::CUpdateSequence mInitialRefreshSequence;
 
   /**
    * A vector of refresh methods which need to be called retrieve the value
    * of the objective function.
    */
-  CObjectInterface::UpdateSequence  mUpdateObjectiveFunction;
+  CCore::CUpdateSequence  mUpdateObjectiveFunction;
 
   /**
    * A vector of refresh methods which need to be called retrieve the values
    * of constraints.
    */
-  CObjectInterface::UpdateSequence mUpdateConstraints;
+  CCore::CUpdateSequence mUpdateConstraints;
 
   /**
    * A vector of results for calculate

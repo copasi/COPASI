@@ -29,7 +29,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/model/CModel.h>
 
 #include <copasi/parameterFitting/CFitItem.h>
@@ -39,7 +39,7 @@
 #include <copasi/optimization/COptProblem.h>
 #include <copasi/optimization/COptTask.h>
 #include <copasi/utilities/CCopasiTask.h>
-#include <copasi/utilities/CCopasiVector.h>
+#include "copasi/core/CDataVector.h"
 
 #include <copasi/utilities/CParameterEstimationUtils.h>
 
@@ -134,7 +134,7 @@ public:
 };
 
 CQParameterEstimationResult::CQParameterEstimationResult(QWidget *parent,
-    CCopasiDataModel *dataModel)
+    CDataModel *dataModel)
   : QDialog(parent)
   , ui(new Ui::CQParameterEstimationResult)
   , mResultData()

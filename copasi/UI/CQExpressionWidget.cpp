@@ -32,7 +32,7 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "function/CExpression.h"
 #include "function/CFunctionDB.h"
 #include "function/CMassAction.h"
@@ -40,7 +40,7 @@
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 #define DEBUG_UI
@@ -86,7 +86,7 @@ CQValidatorExpression::CQValidatorExpression(QTextEdit *parent, const char *name
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mExpression()
 {
-  CCopasiDataModel *pDataModel = ListViews::dataModel(parent);
+  CDataModel *pDataModel = ListViews::dataModel(parent);
   assert(pDataModel != NULL);
   mExpression.setObjectParent(pDataModel);
   mExpression.setIsBoolean(isBoolean);
@@ -135,7 +135,7 @@ CQValidatorFunction::CQValidatorFunction(QTextEdit *parent, const char *name):
   CQValidator< QTextEdit >(parent, &QTextEdit::toPlainText, name),
   mFunction()
 {
-  CCopasiDataModel *pDataModel = ListViews::dataModel(parent);
+  CDataModel *pDataModel = ListViews::dataModel(parent);
   assert(pDataModel != NULL);
   mFunction.setObjectParent(pDataModel);
 }
@@ -315,7 +315,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent *e)
 {
   int Left;
   int Right;
-  bool isAdvancedEditing = CCopasiRootContainer::getConfiguration()->useAdvancedEditing();
+  bool isAdvancedEditing = CRootContainer::getConfiguration()->useAdvancedEditing();
 
   if (e == QKeySequence::SelectNextChar && !isAdvancedEditing)
     {
@@ -525,8 +525,8 @@ void CQExpressionWidget::setExpression(const std::string &expression)
   // Reset the parse list.
   mParseList.clear();
   mCursor = textCursor();
-  CFunctionDB *pFunDB = CCopasiRootContainer::getFunctionList();
-  CCopasiDataModel *pDataModel = ListViews::dataModel(parent());
+  CFunctionDB *pFunDB = CRootContainer::getFunctionList();
+  CDataModel *pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
   CObjectInterface::ContainerList containers;
   containers.push_back(pDataModel);
@@ -563,7 +563,7 @@ void CQExpressionWidget::setExpression(const std::string &expression)
       Index += InfixObjectPattern.matchedLength();
       it += InfixObjectPattern.matchedLength();
       CCopasiObjectName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
-      const CCopasiObject *pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, InfixName));
+      const CDataObject *pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, InfixName));
 
       if (pObject != NULL)
         {
@@ -603,7 +603,7 @@ void CQExpressionWidget::setExpression(const std::string &expression)
   return;
 }
 
-const CCopasiObject *findObjectByDisplayName(const CCopasiDataModel *dataModel, const std::string displayString)
+const CDataObject *findObjectByDisplayName(const CDataModel *dataModel, const std::string displayString)
 {
   if (dataModel == NULL || displayString.empty()) return NULL;
 
@@ -611,17 +611,17 @@ const CCopasiObject *findObjectByDisplayName(const CCopasiDataModel *dataModel, 
 
   if (displayString == "Time") return model;
 
-  if (displayString == "Avogadro Constant") return dynamic_cast<const CCopasiObject * >(model->getObject("Reference=" + displayString));
+  if (displayString == "Avogadro Constant") return dynamic_cast<const CDataObject * >(model->getObject("Reference=" + displayString));
 
-  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CCopasiObject * >(model->getObject("Reference=" + displayString));
+  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CDataObject * >(model->getObject("Reference=" + displayString));
 
   size_t pos = displayString.find("Compartments[");
 
   if (pos != std::string::npos)
     {
-      const CCopasiVectorN< CCompartment > &compartments = model->getCompartments();
+      const CDataVectorN< CCompartment > &compartments = model->getCompartments();
 
-      for (CCopasiVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
+      for (CDataVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
         {
           const CCompartment *current = it;
 
@@ -651,9 +651,9 @@ const CCopasiObject *findObjectByDisplayName(const CCopasiDataModel *dataModel, 
 
   if (pos != std::string::npos)
     {
-      const CCopasiVectorN< CModelValue > &values = model->getModelValues();
+      const CDataVectorN< CModelValue > &values = model->getModelValues();
 
-      for (CCopasiVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
+      for (CDataVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
         {
           const CModelValue *current = it;
 
@@ -681,9 +681,9 @@ const CCopasiObject *findObjectByDisplayName(const CCopasiDataModel *dataModel, 
 
   // no reasonable check for metabolites, so lets just go through them
   {
-    const CCopasiVector< CMetab > &metabs = model->getMetabolites();
+    const CDataVector< CMetab > &metabs = model->getMetabolites();
 
-    for (CCopasiVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
+    for (CDataVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
       {
         const CMetab *current = it;
 
@@ -760,9 +760,9 @@ std::string CQExpressionWidget::getExpression() const
       Index += DisplayObjectPattern.matchedLength();
       it += DisplayObjectPattern.matchedLength();
       std::string DisplayName(TO_UTF8(DisplayObjectPattern.cap(1)));
-      std::map< std::string, const CCopasiObject *>::const_iterator itObject = mParseList.find(DisplayName);
+      std::map< std::string, const CDataObject *>::const_iterator itObject = mParseList.find(DisplayName);
 
-      if (itObject == mParseList.end() && CCopasiRootContainer::getConfiguration()->useAdvancedEditing())
+      if (itObject == mParseList.end() && CRootContainer::getConfiguration()->useAdvancedEditing())
         {
           // the object pattern does not match the species name if
           // the species is in a different compartment, in that case we
@@ -773,11 +773,11 @@ std::string CQExpressionWidget::getExpression() const
             DisplayName.erase(bsPos, 1);
 
           // here we don't have an object recognized, what we ought to do is to find it in the model
-          CCopasiDataModel *pDataModel = ListViews::dataModel(parent());
+          CDataModel *pDataModel = ListViews::dataModel(parent());
           assert(pDataModel != NULL);
-          const CCopasiObject *object = findObjectByDisplayName(
-                                          mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : pDataModel,
-                                          DisplayName);
+          const CDataObject *object = findObjectByDisplayName(
+                                        mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : pDataModel,
+                                        DisplayName);
 
           if (object != NULL)
             {
@@ -841,7 +841,7 @@ bool CQExpressionWidget::isValid()
 
 void CQExpressionWidget::slotSelectObject()
 {
-  const CCopasiObject *pObject =
+  const CDataObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this, mObjectClasses);
 
   if (pObject)

@@ -42,12 +42,12 @@ Contact: Please contact lixu1@vt.edu.
 #include "ObjectBrowserItem.h"
 #include "copasiui3window.h"
 #include "qtUtilities.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "report/CCopasiObjectName.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiStaticString.h"
-#include "utilities/CCopasiVector.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "./icons/objectAll.xpm"
 #include "./icons/objectParts.xpm"
@@ -276,11 +276,11 @@ void ObjectBrowserWidget::toggleViewClicked()
 
 void ObjectBrowserWidget::updateSelectedItemsView()
 {
-  std::vector< const CCopasiObject * > *outputVector;
+  std::vector< const CDataObject * > *outputVector;
   ObjectBrowserItem *rootItem;
   unsigned C_INT32 i;
   rootItem = objectItemList->getRoot()->pItem;
-  outputVector = new std::vector< const CCopasiObject * >();
+  outputVector = new std::vector< const CDataObject * >();
   eXport(rootItem, outputVector);
   //      CQMessageBox::information(this, "Output object list done!", "Selected CopasiObject list done!");
   //   ObjectListItem* pHead;
@@ -318,7 +318,7 @@ void ObjectBrowserWidget::updateSelectedItemsView()
   pdelete(outputVector);
 }
 
-void ObjectBrowserWidget::setOutputVector(std::vector< const CCopasiObject * > *pObjectVector)
+void ObjectBrowserWidget::setOutputVector(std::vector< const CDataObject * > *pObjectVector)
 {
   mOutputObjectVector = pObjectVector;
   this->clearClicked();
@@ -337,7 +337,7 @@ void ObjectBrowserWidget::commitClicked()
   return;
 }
 
-void ObjectBrowserWidget::eXport(ObjectBrowserItem *pCurrent, std::vector< const CCopasiObject * > *outputVector)
+void ObjectBrowserWidget::eXport(ObjectBrowserItem *pCurrent, std::vector< const CDataObject * > *outputVector)
 {
   if (!outputVector) return;
 
@@ -424,7 +424,7 @@ void ObjectBrowserWidget::quick_sort(int m, int n, ObjectBrowserItem **quick_sor
 
 void ObjectBrowserWidget::loadData()
 {
-  const CCopasiContainer *root = CCopasiRootContainer::getRoot();
+  const CDataContainer *root = CRootContainer::getRoot();
   ObjectBrowserItem *itemRoot = new ObjectBrowserItem(ObjectListView, NULL, root, objectItemList);
   itemRoot->attachKey();
   itemRoot->setObjectType(CONTAINERATTR);
@@ -449,7 +449,7 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList *objectItemList)
       pCurrent = pCurrent->pNext;
     }
 
-  // sort list according to CCopasiObject
+  // sort list according to CDataObject
   quick_sort(0, length - 1, bufferVector);
   int index;
   CBrowserObject *pBrowserObject = NULL;
@@ -473,51 +473,51 @@ void ObjectBrowserWidget::removeDuplicate(ObjectList *objectItemList)
 }
 
 void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
-                                    const CCopasiContainer *copaParent,
+                                    const CDataContainer *copaParent,
                                     bool nField)
 {
   unsigned int i;
   ObjectBrowserItem *last = NULL;
-  const CCopasiObject *current = NULL;
+  const CDataObject *current = NULL;
   ObjectList *childStack = new ObjectList();
-  const CCopasiContainer::objectMap *pObjectList = & copaParent->getObjects();
-  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
-  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
+  const CDataContainer::objectMap *pObjectList = & copaParent->getObjects();
+  CDataContainer::objectMap::const_iterator it = pObjectList->begin();
+  CDataContainer::objectMap::const_iterator end = pObjectList->end();
 
-  if ((copaParent->isVector()) && (nField))
+  if ((copaParent->hasFlag(CDataObject::Vector)) && (nField))
     {
-      if ((static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->size() >= 1) &&
-          (static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->operator[](0).isContainer()))
+      if ((static_cast< const CDataVector < CDataObject > * >(copaParent)->size() >= 1) &&
+          (static_cast< const CDataVector < CDataObject > * >(copaParent)->operator[](0).hasFlag(CDataObject::Container)))
         {
           //add attribute list
           ObjectBrowserItem *fieldChild = new ObjectBrowserItem(parent, NULL, NULL, objectItemList);
           fieldChild->setObjectType(FIELDATTR);
           fieldChild->setText(0, "Select by attribute");
           //fieldChild->setSelectable(false);
-          loadField(fieldChild, const_cast<CCopasiVector < CCopasiObject > *>(static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)));
+          loadField(fieldChild, const_cast<CDataVector < CDataObject > *>(static_cast< const CDataVector < CDataObject > * >(copaParent)));
           fieldChild->attachKey();
           last = fieldChild;
         }
     }
 
-  if (copaParent->isVector())
+  if (copaParent->hasFlag(CDataObject::Vector))
     {
-      for (i = 0; i < static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->size(); i++)
+      for (i = 0; i < static_cast< const CDataVector < CDataObject > * >(copaParent)->size(); i++)
         {
-          current = &static_cast< const CCopasiVector < CCopasiObject > * >(copaParent)->operator[](i);
+          current = &static_cast< const CDataVector < CDataObject > * >(copaParent)->operator[](i);
           ObjectBrowserItem *currentItem = new ObjectBrowserItem(parent, last, current, objectItemList);
           last = currentItem;
           currentItem->setText(0, FROM_UTF8(current->getObjectName()));
 
-          if (current->isContainer())
+          if (current->hasFlag(CDataObject::Container))
             {
               currentItem->setObjectType(CONTAINERATTR);
               currentItem->attachKey();
 
-              if (current->isVector())
+              if (current->hasFlag(CDataObject::Vector))
                 currentItem->setText(0, currentItem->text(0) + "[]");
 
-              loadChild(currentItem, static_cast< const CCopasiContainer * >(current), nField);
+              loadChild(currentItem, static_cast< const CDataContainer * >(current), nField);
             }
           else
             {
@@ -543,15 +543,15 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
           last = currentItem;
           currentItem->setText(0, FROM_UTF8(current->getObjectName()));
 
-          if (current->isContainer())
+          if (current->hasFlag(CDataObject::Container))
             {
               currentItem->setObjectType(CONTAINERATTR);
               currentItem->attachKey();
 
-              if (current->isVector())
+              if (current->hasFlag(CDataObject::Vector))
                 currentItem->setText(0, currentItem->text(0) + "[]");
 
-              loadChild(currentItem, static_cast< const CCopasiContainer * >(current), nField);
+              loadChild(currentItem, static_cast< const CDataContainer * >(current), nField);
             }
           else
             {
@@ -574,20 +574,20 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
   pdelete(childStack);
 }
 
-void ObjectBrowserWidget::loadField(ObjectBrowserItem *parent, CCopasiVector <CCopasiObject> *copaParent)
+void ObjectBrowserWidget::loadField(ObjectBrowserItem *parent, CDataVector <CDataObject> *copaParent)
 {
   unsigned int i;
   ObjectBrowserItem *lastFieldItem = NULL;
-  CCopasiObject *currentFieldObject = NULL;
+  CDataObject *currentFieldObject = NULL;
   ObjectBrowserItem *lastObjectItem = NULL;
-  CCopasiObject *currentObject = NULL;
+  CDataObject *currentObject = NULL;
 
-  if ((copaParent->size() < 1) || (!copaParent->operator[](0).isContainer())) return; //empty list
+  if ((copaParent->size() < 1) || (!copaParent->operator[](0).hasFlag(CDataObject::Container))) return; //empty list
 
-  const CCopasiContainer::objectMap *pFieldList =
-    &static_cast< CCopasiContainer * >(&copaParent->operator[](0))->getObjects();
-  CCopasiContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
-  CCopasiContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
+  const CDataContainer::objectMap *pFieldList =
+    &static_cast< CDataContainer * >(&copaParent->operator[](0))->getObjects();
+  CDataContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
+  CDataContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
 
   while (fieldIt != fieldEnd)
     {
@@ -601,12 +601,12 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem *parent, CCopasiVector <CC
 
       for (i = 0; i < copaParent->size(); i++)
         {
-          CCopasiObject *pSubField;
-          currentObject = &static_cast< CCopasiVector < CCopasiObject > * >(copaParent)->operator[](i);
+          CDataObject *pSubField;
+          currentObject = &static_cast< CDataVector < CDataObject > * >(copaParent)->operator[](i);
 
-          if (currentObject->isContainer())
+          if (currentObject->hasFlag(CDataObject::Container))
             pSubField =
-              getFieldCopasiObject(static_cast< CCopasiContainer * >(currentObject),
+              getFieldCopasiObject(static_cast< CDataContainer * >(currentObject),
                                    currentFieldObject->getObjectName().c_str());
           else
             {
@@ -615,15 +615,15 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem *parent, CCopasiVector <CC
 
           ObjectBrowserItem *currentItem = new ObjectBrowserItem(currentFieldItem, lastObjectItem, pSubField, objectItemList);
           currentItem->setText(0, FROM_UTF8(currentObject->getObjectName()));
-          //   if ((pSubField)&&(pSubField->isVector()))
+          //   if ((pSubField)&&(pSubField->hasFlag(CDataObject::Vector)))
           //            currentItem->setText(0, currentItem->text(0) + "[]");
           currentItem->setObjectType(FIELDATTR);
           currentItem->attachKey();
 
           if (pSubField)
-            if (pSubField->isContainer()) //container field recursively to find all possible items
+            if (pSubField->hasFlag(CDataObject::Container)) //container field recursively to find all possible items
               {
-                loadChild(currentItem, static_cast< CCopasiContainer * >(pSubField), false); // wont show the attribute and field list
+                loadChild(currentItem, static_cast< CDataContainer * >(pSubField), false); // wont show the attribute and field list
               }
 
           lastObjectItem = currentItem;
@@ -698,18 +698,18 @@ void ObjectBrowserWidget::loadUI()
     setCheckMark(pCurrent->pItem);
 }
 
-CCopasiObject *ObjectBrowserWidget::getFieldCopasiObject(CCopasiContainer *pCurrent, const char *name)
+CDataObject *ObjectBrowserWidget::getFieldCopasiObject(CDataContainer *pCurrent, const char *name)
 {
-  const CCopasiContainer::objectMap *pObjectList = & pCurrent->getObjects();
-  CCopasiContainer::objectMap::const_iterator it = pObjectList->begin();
-  CCopasiContainer::objectMap::const_iterator end = pObjectList->end();
+  const CDataContainer::objectMap *pObjectList = & pCurrent->getObjects();
+  CDataContainer::objectMap::const_iterator it = pObjectList->begin();
+  CDataContainer::objectMap::const_iterator end = pObjectList->end();
 
-  //  CCopasiObject* pResult;
+  //  CDataObject* pResult;
   while (it != end)
     {
-      //      if (it->second->isContainer())
+      //      if (it->second->hasFlag(CDataObject::Container))
       //        {
-      //          pResult = getFieldCopasiObject((CCopasiContainer *)it->second, name);
+      //          pResult = getFieldCopasiObject((CDataContainer *)it->second, name);
       //          if (pResult)
       //            return pResult;
       //}
@@ -722,7 +722,7 @@ CCopasiObject *ObjectBrowserWidget::getFieldCopasiObject(CCopasiContainer *pCurr
   return NULL;
 }
 
-void ObjectBrowserWidget::selectObjects(std::vector< const CCopasiObject * > *pObjectVector)
+void ObjectBrowserWidget::selectObjects(std::vector< const CDataObject * > *pObjectVector)
 {
   unsigned int i;
   ObjectBrowserItem *rootItem;
@@ -737,7 +737,7 @@ void ObjectBrowserWidget::selectObjects(std::vector< const CCopasiObject * > *pO
 }
 
 void ObjectBrowserWidget::selectObjects(ObjectBrowserItem *browserItem,
-                                        const CCopasiObject *selectObject)
+                                        const CDataObject *selectObject)
 {
   ObjectBrowserItem *pCurrent;
   pCurrent = browserItem;

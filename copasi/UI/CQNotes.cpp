@@ -20,6 +20,7 @@
 #include <QtXml/QXmlSimpleReader>
 
 #include "CQNotes.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #if defined(QT_USE_TEXTBROSWSER)
 # include <QTextBrowser>
@@ -29,7 +30,6 @@
 #else  // QT5_USE_WEBENGINE
 # include <QWebEngineView>
 # include <QWebEnginePage>
-
 
 CQWebEnginePage::CQWebEnginePage(QObject* parent)
   : QWebEnginePage(parent)
@@ -51,7 +51,6 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
 
 #endif // QT_USE_TEXTBROSWSER
 
-
 #include "resourcesUI/CQIconResource.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
@@ -62,7 +61,7 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
 #include "report/CReportDefinition.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 #include <copasi/UI/copasiui3window.h>
@@ -203,8 +202,6 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mpEdit->hide();
   mpWebView->show();
   mpBtnToggleEdit->setIcon(CQIconResource::icon(CQIconResource::edit));
-
-
 }
 
 CQNotes::~CQNotes()
@@ -257,7 +254,7 @@ bool CQNotes::leave()
 {
   mpBtnToggleEdit->setFocus();
 
-  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+  mpObject = CRootContainer::getKeyFactory()->get(mKey);
 
   if (mpObject != NULL)
     {
@@ -281,9 +278,9 @@ bool CQNotes::enterProtected()
     }
   else
     {
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy);
+      mpObject = CRootContainer::getKeyFactory()->get(mKeyToCopy);
       load();
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+      mpObject = CRootContainer::getKeyFactory()->get(mKey);
       save();
       mKeyToCopy = "";
     }
@@ -345,7 +342,7 @@ void CQNotes::slotValidateXML()
 
 void CQNotes::load()
 {
-  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+  mpObject = CRootContainer::getKeyFactory()->get(mKey);
 
   if (mpObject != NULL)
     {

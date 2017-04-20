@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CCompartment.h"
@@ -36,31 +41,31 @@
 #include "sbml/Delay.h"
 #include "sbml/EventAssignment.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  * These tests are supposed to make sure that assignments on a species with the
  * hasOnlySubstanceUnits flag set are exported correctly.
  * It tests rules and event assignments with and without the flag set.
  */
-CCopasiDataModel* test000064::pCOPASIDATAMODEL = NULL;
+CDataModel* test000064::pCOPASIDATAMODEL = NULL;
 
 void test000064::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000064::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -97,9 +102,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -111,7 +116,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -161,7 +166,7 @@ const char* test000064::MODEL_STRING1 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING2));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -194,9 +199,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -246,7 +251,7 @@ const char* test000064::MODEL_STRING2 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING3));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -279,9 +284,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_3()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -331,7 +336,7 @@ const char* test000064::MODEL_STRING3 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING4));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -368,9 +373,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -382,7 +387,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_4()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -432,7 +437,7 @@ const char* test000064::MODEL_STRING4 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING5));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -473,9 +478,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -506,7 +511,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -518,7 +523,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -581,7 +586,7 @@ const char* test000064::MODEL_STRING5 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING6));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -622,9 +627,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -651,7 +656,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -714,7 +719,7 @@ const char* test000064::MODEL_STRING6 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_3()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING7));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -755,9 +760,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -784,7 +789,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -847,7 +852,7 @@ const char* test000064::MODEL_STRING7 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_4()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING8));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -888,9 +893,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -921,7 +926,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -933,7 +938,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -996,7 +1001,7 @@ const char* test000064::MODEL_STRING8 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_5()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING9));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1029,9 +1034,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_5()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -1085,7 +1090,7 @@ const char* test000064::MODEL_STRING9 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING10));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1122,9 +1127,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1136,7 +1141,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_6()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -1190,7 +1195,7 @@ const char* test000064::MODEL_STRING10 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING11));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1227,9 +1232,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1241,7 +1246,7 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_7()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -1295,7 +1300,7 @@ const char* test000064::MODEL_STRING11 =
 
 void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_8()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING12));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1328,9 +1333,9 @@ void test000064::test_import_rule_expression_and_hasOnlySubstanceUnits_8()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -1384,7 +1389,7 @@ const char* test000064::MODEL_STRING12 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_5()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING13));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1425,9 +1430,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1454,7 +1459,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -1521,7 +1526,7 @@ const char* test000064::MODEL_STRING13 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_6()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING14));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1562,9 +1567,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1595,7 +1600,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1607,7 +1612,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -1674,7 +1679,7 @@ const char* test000064::MODEL_STRING14 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_7()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING15));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1715,9 +1720,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1748,7 +1753,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1760,7 +1765,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCompartment);
 }
@@ -1827,7 +1832,7 @@ const char* test000064::MODEL_STRING15 =
 
 void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUnits_8()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING16));
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -1868,9 +1873,9 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModel);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getSibling());
@@ -1897,7 +1902,7 @@ void test000064::test_import_event_assignment_expression_and_hasOnlySubstanceUni
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, objectCN));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pModelValue);
 }
@@ -1967,7 +1972,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_1()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING101);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2086,7 +2091,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_2()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING102);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2251,7 +2256,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_3()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING103);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2370,7 +2375,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_4()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING104);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2534,7 +2539,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_5()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING105);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2659,7 +2664,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_6()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING106);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2818,7 +2823,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_7()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING107);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -2943,7 +2948,7 @@ void test000064::test_export_rule_expression_and_hasOnlySubstanceUnits_8()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING108);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3102,7 +3107,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING109);
   bool result = load_cps_model_from_stream(iss, *pDataModel);
   CPPUNIT_ASSERT(result == true);
@@ -3268,7 +3273,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING110);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3467,7 +3472,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING111);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3631,7 +3636,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING112);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -3830,7 +3835,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING113);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -4002,7 +4007,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING114);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -4193,7 +4198,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING115);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -4365,7 +4370,7 @@ void test000064::test_export_event_assignment_expression_and_hasOnlySubstanceUni
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000064::MODEL_STRING116);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);

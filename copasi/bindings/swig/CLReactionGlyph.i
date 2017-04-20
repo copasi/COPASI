@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -21,7 +26,7 @@
 %ignore CLMetabReferenceGlyph::operator= (const CLMetabReferenceGlyph&);
 %ignore operator<< (std::ostream&,const CLMetabReferenceGlyph&);
 %ignore CLMetabReferenceGlyph::getCurve() const;
-%ignore CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & , const std::map<std::string, std::string> & , std::map<std::string, std::string> & , const CCopasiContainer * pParent = NULL);
+%ignore CLMetabReferenceGlyph::CLMetabReferenceGlyph(const SpeciesReferenceGlyph & , const std::map<std::string, std::string> & , std::map<std::string, std::string> & , const CDataContainer * pParent = NULL);
 %ignore CLMetabReferenceGlyph::exportToSBML;
 %ignore CLMetabReferenceGlyph::RoleName;
 %ignore CLMetabReferenceGlyph::XMLRole;
@@ -31,11 +36,11 @@
 %ignore CLReactionGlyph::operator= (const CLReactionGlyph&);
 %ignore operator<< (std::ostream&,const CLReactionGlyph&);
 %ignore CLGlyphWithCurve::getCurve() const;
-%ignore CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject &,const std::map<std::string, std::string> &,                   std::map<std::string, std::string> &,                   const CCopasiContainer * pParent = NULL);
+%ignore CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject &,const std::map<std::string, std::string> &,                   std::map<std::string, std::string> &,                   const CDataContainer * pParent = NULL);
 %ignore CLReactionGlyph::getCurve() const;
 %ignore CLReactionGlyph::print;
 %ignore CLReactionGlyph::exportToSBML;
-%ignore CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & , const std::map<std::string, std::string> & , std::map<std::string, std::string> & , const CCopasiContainer * pParent = NULL);
+%ignore CLReactionGlyph::CLReactionGlyph(const ReactionGlyph & , const std::map<std::string, std::string> & , std::map<std::string, std::string> & , const CDataContainer * pParent = NULL);
 
 %ignore operator<<;
 
@@ -45,7 +50,7 @@
 %ignore CLReferenceGlyph::CLReferenceGlyph(const ReferenceGlyph & sbml, //TODO preliminary
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
-                   const CCopasiContainer * pParent = NULL);
+                   const CDataContainer * pParent = NULL);
 %ignore CLReferenceGlyph::exportToSBML;
 %ignore CLReferenceGlyph::RoleName;
 %ignore CLReferenceGlyph::XMLRole;
@@ -63,13 +68,13 @@
 %ignore CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml, //TODO
                  const std::map<std::string, std::string> & modelmap,
                  std::map<std::string, std::string> & layoutmap,
-                 const CCopasiContainer * pParent = NULL);
+                 const CDataContainer * pParent = NULL);
 
 
 
 %include "layout/CLReactionGlyph.h"
 
-%template(MetabReferenceGlyphVector) CCopasiVector<CLMetabReferenceGlyph>;
-typedef CCopasiVector<CLMetabReferenceGlyph> MetabReferenceGlyphVector;
+%template(MetabReferenceGlyphVector) CDataVector<CLMetabReferenceGlyph>;
+typedef CDataVector<CLMetabReferenceGlyph> MetabReferenceGlyphVector;
 
 

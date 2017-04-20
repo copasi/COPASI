@@ -52,9 +52,9 @@ public:
 
     ~name_iterator();
 
-    CCopasiObject * operator*() const;
+    CDataObject * operator*() const;
 
-    CCopasiObject * operator->() const;
+    CDataObject * operator->() const;
 
     name_iterator & operator++();
 
@@ -65,9 +65,9 @@ public:
   private:
     const CCopasiParameterGroup * mpGroup;
     bool mNameEnd;
-    std::map< std::string, std::set< CCopasiObject * > >::iterator mName;
+    std::map< std::string, std::set< CDataObject * > >::iterator mName;
     bool mObjectEnd;
-    std::set< CCopasiObject * >::iterator mObject;
+    std::set< CDataObject * >::iterator mObject;
     bool mParameterEnd;
     std::vector< CCopasiParameter * >::iterator mParameter;
   };
@@ -85,19 +85,19 @@ public:
   /**
    * Copy constructor
    * @param "const CCopasiParameterGroup &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                        const CCopasiContainer * pParent);
+                        const CDataContainer * pParent);
 
   /**
    * Specific constructor
    * @param const string & name
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    * @param const std::string & objectType (default: "ParameterGroup")
    */
   CCopasiParameterGroup(const std::string & name,
-                        const CCopasiContainer * pParent = NO_PARENT,
+                        const CDataContainer * pParent = NO_PARENT,
                         const std::string & objectType = "ParameterGroup");
 
   /**
@@ -485,9 +485,9 @@ public:
    */
   void clear();
 
-  virtual size_t getIndex(const CCopasiObject * pObject) const;
+  virtual size_t getIndex(const CDataObject * pObject) const;
 
-  virtual CCopasiObject * insert(const CData & data);
+  virtual CDataObject * insert(const CData & data);
 
   /**
    * Retrieve the index of a parameter or subgroup with a given name
@@ -505,7 +505,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
@@ -595,7 +595,7 @@ ElevateTo * elevate(CCopasiParameter * pParm)
       pTo = new ElevateTo(*pFrom, NO_PARENT);
       delete pParm;
 
-      pGrp->CCopasiContainer::add(pTo, true);
+      pGrp->CDataContainer::add(pTo, true);
       *it = pTo;
     }
   else

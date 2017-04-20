@@ -114,7 +114,7 @@ const double CLLayoutRenderer::SELECTION_FRAME_WIDTH = 3.0;
 /**
  * constructor for global render information
  */
-CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInformation* pRenderInformation, const CCopasiVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir):
+CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInformation* pRenderInformation, const CDataVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir):
   mStateList(),
   mCurrentAttributes(),
   mpModel(pModel),
@@ -151,7 +151,7 @@ CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInforma
 /**
  * constructor for local render information
  */
-CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformation* pRenderInformation, const CCopasiVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir):
+CLLayoutRenderer::CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformation* pRenderInformation, const CDataVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir):
   mStateList(),
   mCurrentAttributes(),
   mpModel(pModel),
@@ -1016,7 +1016,7 @@ void CLLayoutRenderer::draw_layout()
       std::vector<const CLGraphicalObject*>::iterator it = this->mDrawables.begin(), endit = this->mDrawables.end();
       const CLGraphicalObject* pGO = NULL;
 // this is needed to highlight or fog certain elements in the diagram
-      const CCopasiObject* pModelObject = NULL;
+      const CDataObject* pModelObject = NULL;
       std::set<const CLGraphicalObject*>::const_iterator end = this->mHighlightedObjects.end();
 
       while (it != endit)
@@ -1384,7 +1384,7 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
     }
 
   // draw each element
-  const CCopasiObject* pObject = NULL;
+  const CDataObject* pObject = NULL;
   size_t i, iMax = pGroup->getNumElements();
 
   for (i = 0; i < iMax; ++i)

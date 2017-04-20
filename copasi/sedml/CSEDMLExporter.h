@@ -1,7 +1,12 @@
-// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /*
  * CSEDMLExporter.h
@@ -25,6 +30,7 @@ class CModelValue;
 class CReaction;
 class CModelEntity;
 class SBMLIncompatibility;
+class CCopasiTask;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class Event;
@@ -55,39 +61,39 @@ public:
 
   /**
    * Export the model and Task to SEDML.
-   * The SEDML document is returned as a string the model is not exported, instead the 
+   * The SEDML document is returned as a string the model is not exported, instead the
    * provided modelLocation will be referenced.
    */
-  const std::string exportModelAndTasksToString(CCopasiDataModel& dataModel, 
-        const std::string &modelLocation, 
-        unsigned int sedmlLevel, unsigned int sedmlVersion);
+  const std::string exportModelAndTasksToString(CDataModel& dataModel,
+      const std::string &modelLocation,
+      unsigned int sedmlLevel, unsigned int sedmlVersion);
 
   /**
    * Export the model and Task to SEDML.
    * The SEDML document is written to the file given by SEDMLFilename and reference SBML model is written to SBMLFilename .
    * If the export fails, false is returned.
    */
-  bool exportModelAndTasks(CCopasiDataModel& dataModel, const std::string& SEDMLFilename, const std::string& SBMLFilename, unsigned int sedmlLevel = 1, unsigned int sedmlVersion = 1, bool overwrite = false);
+  bool exportModelAndTasks(CDataModel& dataModel, const std::string& SEDMLFilename, const std::string& SBMLFilename, unsigned int sedmlLevel = 1, unsigned int sedmlVersion = 1, bool overwrite = false);
 
   /**
-   * Creates an SEDMLDocument and SBMLDocument from the given CCopasiDataModelObject.
+   * Creates an SEDMLDocument and SBMLDocument from the given CDataModelObject.
    * It checks if an SEDMLDocument and SBMLDocument already exists from an import and if
    * this is the case, the old document is copied.
    * If none exists a new one is created.
    * Copying the old one makes sure that if something goes wrong during
    * export, the original model is still consistent.
    */
-  void createSEDMLDocument(CCopasiDataModel& dataModel, std::string modelRef);
+  void createSEDMLDocument(CDataModel& dataModel, std::string modelRef);
 
   /**
    * Creates the timecourse task for the given model id and returns its id.
    */
-  std::string createTimeCourseTask(CCopasiDataModel& dataModel, const  std::string & modelId);
+  std::string createTimeCourseTask(CDataModel& dataModel, const  std::string & modelId);
 
   /**
    * Creates the steady state task for the given model id and returns its id.
    */
-  std::string createSteadyStateTask(CCopasiDataModel& dataModel, const  std::string & modelId);
+  std::string createSteadyStateTask(CDataModel& dataModel, const  std::string & modelId);
 
   /**
    * Creates a scan task for the given model id if the dataModel contains a number of scan items
@@ -95,29 +101,29 @@ public:
    *
    * @return the id of the task, if craeted, otherwise an empty string.
    */
-  std::string createScanTask(CCopasiDataModel& dataModel, const  std::string & modelId);
+  std::string createScanTask(CDataModel& dataModel, const  std::string & modelId);
 
   /**
    * Creates the models for SEDML.
    */
-  void createModels(CCopasiDataModel& dataModel, std::string &modelRef);
+  void createModels(CDataModel& dataModel, std::string &modelRef);
 
   /**
    * Creates the Tasks for SEDML.
    */
-  void createTasks(CCopasiDataModel& dataModel, std::string & modelRef);
+  void createTasks(CDataModel& dataModel, std::string & modelRef);
 
   /**
    * Creates the data generators for SEDML.
    */
-  void createDataGenerators(CCopasiDataModel & dataModel,
+  void createDataGenerators(CDataModel & dataModel,
                             std::string & taskId,
                             CCopasiTask* task = NULL);
 
   /**
    * Creates the Tasks for SEDML.
    */
-  //void createReports(CCopasiDataModel &dataModel);
+  //void createReports(CDataModel &dataModel);
 };
 
 #endif /* CSEDMLEXPORTER_H_ */

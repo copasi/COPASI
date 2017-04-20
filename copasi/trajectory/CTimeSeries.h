@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,13 +22,13 @@
 
 #include <vector>
 
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "model/CState.h"
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
 #include "utilities/COutputHandler.h"
 
 class CModel;
-class CCopasiDataModel;
+class CDataModel;
 
 class CTimeSeries : public COutputInterface, protected CMatrix< C_FLOAT64 >
 {
@@ -54,7 +59,7 @@ public:
   /**
    * compile the object list from name vector
    * @param CObjectInterface::ContainerList listOfContainer
-   * @param  const CCopasiDataModel* pDataModel
+   * @param  const CDataModel* pDataModel
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer);
@@ -157,7 +162,7 @@ public:
    * @param const size_t & variable
    * @return const std::string SBMLId
    */
-  std::string getSBMLId(const size_t & variable, const CCopasiDataModel* pDataModel) const;
+  std::string getSBMLId(const size_t & variable, const CDataModel* pDataModel) const;
 
 private:
 

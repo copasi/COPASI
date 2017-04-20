@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -48,8 +53,8 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
   mChangedSpecies.clear();
   mNumberBalance.resize(mpReaction->getChemEq().getBalances().size());
   SpeciesBalance * pStepUpdate = mNumberBalance.array();
-  CCopasiVector < CChemEqElement >::const_iterator it = mpReaction->getChemEq().getBalances().begin();
-  CCopasiVector < CChemEqElement >::const_iterator end = mpReaction->getChemEq().getBalances().end();
+  CDataVector < CChemEqElement >::const_iterator it = mpReaction->getChemEq().getBalances().begin();
+  CDataVector < CChemEqElement >::const_iterator end = mpReaction->getChemEq().getBalances().end();
 
   for (; it != end; ++it)
     {

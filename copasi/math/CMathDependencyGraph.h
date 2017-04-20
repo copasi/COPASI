@@ -15,7 +15,7 @@
 #include <set>
 #include <vector>
 
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "copasi/math/CMathEnum.h"
 
 class CMathContainer;
@@ -65,15 +65,15 @@ public:
   /**
    * Construct a update sequence for the given context. Please note the calculated objects
    * must be calculated based on the same changed values and context.
-   * @param const CMath::SimulationContextFlag & context
-   * @param CObjectInterface::UpdateSequence & updateSequence
+   * @param const CCore::SimulationContextFlag & context
+   * @param CCore::CUpdateSequence & updateSequence
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @param const CObjectInterface::ObjectSet & requestedObjects
    * @param const CObjectInterface::ObjectSet & calculatedObjects (default: none)
    * @return bool success
    */
-  bool getUpdateSequence(CObjectInterface::UpdateSequence & updateSequence,
-                         const CMath::SimulationContextFlag & context,
+  bool getUpdateSequence(CCore::CUpdateSequence & updateSequence,
+                         const CCore::SimulationContextFlag & context,
                          const CObjectInterface::ObjectSet & changedObjects,
                          const CObjectInterface::ObjectSet & requestedObjects,
                          const CObjectInterface::ObjectSet & calculatedObjects = CObjectInterface::ObjectSet()) const;
@@ -81,23 +81,23 @@ public:
   /**
    * Check whether the given object depends on the changed object in given context
    * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface * pChangedObject
    * @return bool dependsOn
    */
   bool dependsOn(const CObjectInterface * pObject,
-                 const CMath::SimulationContextFlag & context,
+                 const CCore::SimulationContextFlag & context,
                  const CObjectInterface * pChangedObject) const;
 
   /**
    * Check whether the given object depends on any of the changed objects in given context
    * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool dependsOn
    */
   bool dependsOn(const CObjectInterface * pObject,
-                 const CMath::SimulationContextFlag & context,
+                 const CCore::SimulationContextFlag & context,
                  const CObjectInterface::ObjectSet & changedObjects) const;
 
   /**
@@ -108,6 +108,15 @@ public:
    */
   bool appendDirectDependents(const CObjectInterface::ObjectSet & changedObjects,
                               CObjectInterface::ObjectSet & dependentObjects) const;
+
+  /**
+   * Append all objects which depend on the given changed objects
+   * @param const CObjectInterface::ObjectSet & changedObjects
+   * @param CObjectInterface::ObjectSet & dependentObjects
+   * @return bool objectsAppendee
+   */
+  bool appendAllDependents(const CObjectInterface::ObjectSet & changedObjects,
+                           CObjectInterface::ObjectSet & dependentObjects) const;
 
   /**
    * Relocate the objects in the nodes of the graph.

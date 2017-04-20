@@ -23,12 +23,12 @@
 #include <stdlib.h>
 
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CCopasiObjectName.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/commandline/COptionParser.h"
@@ -313,8 +313,8 @@ public:
     pHeaderAddr->push_back(pReport->getSeparator().getCN());
     pBodyAddr->push_back(pReport->getSeparator().getCN());
     // create a map of all possible variables
-    std::map<std::string, const CCopasiObject*> variableMap;
-    const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
+    std::map<std::string, const CDataObject * > variableMap;
+    const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
     unsigned int i, iMax = metabolites.size();
 
     for (i = 0; i < iMax; ++i)
@@ -322,34 +322,34 @@ public:
         variableMap.insert(std::pair<std::string, const CModelEntity*>(metabolites[i].getSBMLId(), &metabolites[i]));
       }
 
-    const CCopasiVector<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
+    const CDataVector<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
 
     iMax = compartments.size();
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CCopasiObject*>(compartments[i].getSBMLId(), &compartments[i]));
+        variableMap.insert(std::pair<std::string, const CDataObject*>(compartments[i].getSBMLId(), &compartments[i]));
       }
 
-    const CCopasiVector<CModelValue>& modelValues = pDataModel->getModel()->getModelValues();
+    const CDataVector<CModelValue>& modelValues = pDataModel->getModel()->getModelValues();
 
     iMax = modelValues.size();
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CCopasiObject*>(modelValues[i].getSBMLId(), &modelValues[i]));
+        variableMap.insert(std::pair<std::string, const CDataObject*>(modelValues[i].getSBMLId(), &modelValues[i]));
       }
 
-    const CCopasiVector<CReaction>& reactions = pDataModel->getModel()->getReactions();
+    const CDataVector<CReaction>& reactions = pDataModel->getModel()->getReactions();
     iMax = reactions.size();
 
     for (i = 0; i < iMax; ++i)
       {
-        variableMap.insert(std::pair<std::string, const CCopasiObject*>(reactions[i].getSBMLId(), &reactions[i]));
+        variableMap.insert(std::pair<std::string, const CDataObject*>(reactions[i].getSBMLId(), &reactions[i]));
       }
 
     std::list<std::string>::const_iterator it = variables.begin(), endit = variables.end();
-    std::map<std::string, const CCopasiObject*>::const_iterator pos;
+    std::map<std::string, const CDataObject*>::const_iterator pos;
     unsigned int dummyCount = 1;
 
     while (it != endit)
@@ -360,7 +360,6 @@ public:
           {
             THROW_COPASI_EXCEPTION("Could not find a model entity for the SBML id " << *it << std::endl);
           }
-
 
         const CMetab* pMetab = dynamic_cast<const CMetab*>(pos->second);
         const CCompartment* pComp = dynamic_cast<const CCompartment*>(pos->second);
@@ -464,7 +463,7 @@ public:
         pMethod->setValue("Internal Steps Size", 1.0e-4);
       }
 
-    CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+    CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
     TaskList.remove("Time-Course");
     TaskList.add(pTrajectoryTask, true);
@@ -481,7 +480,7 @@ public:
   void runTest(bool saveCopasiFile = true)
   {
     // Create the global data model.
-    pDataModel = CCopasiRootContainer::addDatamodel();
+    pDataModel = CRootContainer::addDatamodel();
 
     // Import the SBML File
     pDataModel->importSBML(sbml_filename.c_str());
@@ -535,7 +534,7 @@ private:
   double end_time;
   std::string output_filename;
   CTrajectoryTask* pTrajectoryTask;
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
   CTaskEnum::Method methodType;
 };
 
@@ -544,7 +543,7 @@ int main(int argc, char* argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(argc, argv, false);
+      CRootContainer::init(argc, argv, false);
     }
   catch (copasi::autoexcept &/*e*/)
     {}
@@ -567,7 +566,7 @@ int main(int argc, char* argv[])
       result = 1;
     }
 
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 
   return result;
 }

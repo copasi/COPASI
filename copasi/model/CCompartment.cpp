@@ -29,14 +29,13 @@
 
 #include "copasi.h"
 #include "utilities/CReadConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/utility.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
-#include "report/CRenameHandler.h"
 #include "CCompartment.h"
 #include "CModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CCompartment * CCompartment::fromData(const CData & data)
@@ -69,14 +68,14 @@ bool CCompartment::applyData(const CData & data)
 }
 
 CCompartment::CCompartment(const std::string & name,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CModelEntity(name, pParent, "Compartment"),
   mMetabolites("Metabolites", this),
   mDimensionality(3)
 {
   initObjects();
 
-  //mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
+  //mKey = CRootContainer::getKeyFactory()->add("Compartment", this);
 
   setStatus(FIXED);
 
@@ -86,19 +85,19 @@ CCompartment::CCompartment(const std::string & name,
 }
 
 CCompartment::CCompartment(const CCompartment & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CModelEntity(src, pParent),
   mMetabolites(src.mMetabolites, this),
   mDimensionality(src.mDimensionality)
 {
-  //mKey = CCopasiRootContainer::getKeyFactory()->add("Compartment", this);
+  //mKey = CRootContainer::getKeyFactory()->add("Compartment", this);
   CONSTRUCTOR_TRACE;
   initObjects();
 }
 
 CCompartment::~CCompartment()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 
@@ -132,15 +131,6 @@ const std::string CCompartment::getUnits() const
 
 void CCompartment::cleanup() {mMetabolites.cleanup();}
 
-std::set< const CCopasiObject * > CCompartment::getDeletedObjects() const
-{
-  std::set< const CCopasiObject * > Deleted = CModelEntity::getDeletedObjects();
-
-  // We must not add the metabolites as CModel::appendDependentMetabolites does that.
-
-  return Deleted;
-}
-
 C_INT32 CCompartment::load(CReadConfig & configbuffer)
 {
   C_INT32 Fail = 0;
@@ -164,10 +154,10 @@ C_INT32 CCompartment::load(CReadConfig & configbuffer)
   return Fail;
 }
 
-CCopasiVectorNS < CMetab > & CCompartment::getMetabolites()
+CDataVectorNS < CMetab > & CCompartment::getMetabolites()
 {return mMetabolites;}
 
-const CCopasiVectorNS < CMetab > & CCompartment::getMetabolites() const
+const CDataVectorNS < CMetab > & CCompartment::getMetabolites() const
 {return mMetabolites;}
 
 /* Note: the metabolite stored in mMetabolites has definitely mpCompartment set.
@@ -193,10 +183,10 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   //if a metabolite is added to a compartment successfully the CN of
   //the metabolite is changed. This needs to be handled similarly to a
   //rename.
-  if (success && smpRenameHandler && getObjectParent())
+  if (success && getObjectParent())
     {
       std::string newCN = pMetabolite->getCN();
-      smpRenameHandler->handle(oldCN, newCN);
+      CRegisteredObjectName::handle(oldCN, newCN);
     }
 
   return success;

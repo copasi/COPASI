@@ -17,17 +17,18 @@
 
 #include "RemoveCompartmentRowsCommand.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "UndoCompartmentData.h"
 #include "UndoReactionData.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CMetab.h"
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
-#include "CQCompartmentDM.h"
-#include "function/CFunctionDB.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CQCompartmentDM.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   const QModelIndexList& rows,
@@ -36,7 +37,7 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
   , mpCompartmentDM(pCompartmentDM)
   , mpCompartmentData()
 {
-  CCopasiDataModel * pDataModel = mpCompartmentDM->getDataModel();
+  CDataModel * pDataModel = mpCompartmentDM->getDataModel();
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
@@ -54,7 +55,6 @@ RemoveCompartmentRowsCommand::RemoveCompartmentRowsCommand(
 
   setText(QObject::tr(": Removed Compartments"));
 }
-
 
 void RemoveCompartmentRowsCommand::redo()
 {

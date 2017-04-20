@@ -18,7 +18,7 @@
 #include "function/CExpression.h"
 #include "randomGenerator/CRandom.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
 // Uncomment this line below to get debug print out.

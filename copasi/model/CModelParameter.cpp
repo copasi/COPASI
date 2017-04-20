@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,12 +17,12 @@
 #include "CModelParameterSet.h"
 #include "CMetabNameInterface.h"
 #include "CReaction.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "function/CExpression.h"
 #include "model/CModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "utilities/CUnitValidator.h"
 #include "utilities/CUnit.h"
 #include "math/CMathExpression.h"
@@ -311,7 +316,7 @@ bool CModelParameter::isReadOnly() const
   return false;
 }
 
-CCopasiObject * CModelParameter::getObject() const
+CDataObject * CModelParameter::getObject() const
 {
   return mpObject;
 }
@@ -374,7 +379,7 @@ void CModelParameter::compile()
   CObjectInterface::ContainerList ContainerList;
   ContainerList.push_back(getModel());
 
-  mpObject = const_cast< CCopasiObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, mCN)));
+  mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, mCN)));
 
   if (mpObject != NULL)
     {
@@ -502,7 +507,7 @@ bool CModelParameter::updateModel()
                 assert(pModel != NULL);
 
                 CCopasiObjectName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
-                CCopasiObject * pObject = const_cast< CCopasiObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(CN)));
+                CDataObject * pObject = const_cast< CDataObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(CN)));
 
                 assert(pObject != NULL);
 
@@ -611,7 +616,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
                     assert(ModelValue.size() == 1);
 
-                    CModelValue * pModelValue = static_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(ModelValue[0]));
+                    CModelValue * pModelValue = static_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(ModelValue[0]));
                     static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue->getInitialValueReference()->getCN());
                   }
               }
@@ -914,7 +919,7 @@ void CModelParameterReactionParameter::compile()
   CModel * pModel = getModel();
   ListOfContainer.push_back(pModel);
 
-  mpReaction = static_cast< CReaction * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, mpParent->getCN()))));
+  mpReaction = static_cast< CReaction * >(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, mpParent->getCN()))));
 }
 
 const CReaction * CModelParameterReactionParameter::getReaction() const

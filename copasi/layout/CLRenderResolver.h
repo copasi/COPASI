@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -107,8 +112,8 @@ public:
    * that are needed to resolve external references.
    */
   CLRenderResolver(const CLLocalRenderInformation& renderInformation,
-                   const CCopasiVector<CLLocalRenderInformation>& localList,
-                   const CCopasiVector<CLGlobalRenderInformation>& globalList);
+                   const CDataVector<CLLocalRenderInformation>& localList,
+                   const CDataVector<CLGlobalRenderInformation>& globalList);
 
   /**
    * Constructor that takes a global render information object as the argument
@@ -117,7 +122,7 @@ public:
    * means it should contain all information from referenced render information objects.
    */
   CLRenderResolver(const CLGlobalRenderInformation& renderInformation,
-                   const CCopasiVector<CLGlobalRenderInformation>& globalList);
+                   const CDataVector<CLGlobalRenderInformation>& globalList);
 
   /**
    * Destructor.
@@ -176,9 +181,9 @@ public:
 
   /**
    * Retrieve the COPASI Data Model
-   * @return CCopasiDataModel * pObjectDataModel
+   * @return CDataModel * pObjectDataModel
    */
-  CCopasiDataModel * getObjectDataModel() const;
+  CDataModel * getObjectDataModel() const;
 
 protected:
   /**

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,7 +27,7 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
 class ConverterASTNode;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is the base class for nodes used in an evaluation trees
@@ -79,7 +84,7 @@ public:
    * Create a new invalid ASTNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Build the MathML string

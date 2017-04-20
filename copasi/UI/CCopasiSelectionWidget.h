@@ -28,7 +28,7 @@
 
 class ObjectBrowserWidget;
 class CModel;
-class CCopasiObject;
+class CDataObject;
 
 class CCopasiSelectionWidget: public QStackedWidget
 {
@@ -40,8 +40,8 @@ public:
 
   void populateTree(const CModel * model,
                     const CQSimpleSelectionTree::ObjectClasses & classes);
-  void populateTree(const std::vector< const CCopasiObject * > & objectList);
-  void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
+  void populateTree(const std::vector< const CDataObject * > & objectList);
+  void setOutputVector(std::vector< const CDataObject * > * outputVector);
   void setSingleSelection(bool singleSelection);
   bool isSingleSelection() const;
   void setExpertMode(bool expertMode);
@@ -51,7 +51,7 @@ public:
 protected:
   CQSimpleSelectionTree* mpSimpleTree;
   ObjectBrowserWidget* mpObjectBrowser;
-  std::vector< const CCopasiObject * > * mpOutputVector;
+  std::vector< const CDataObject * > * mpOutputVector;
   bool mSingleSelect;
   bool mExpertMode;
 };

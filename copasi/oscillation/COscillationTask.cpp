@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,7 +31,7 @@ const unsigned int COscillationTask::ValidMethods[] =
 };
 
 COscillationTask::COscillationTask(const CTaskEnum::Task & type,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiTask(type, pParent)
 {
   mpProblem = new COscillationProblem(type, this);
@@ -36,7 +41,7 @@ COscillationTask::COscillationTask(const CTaskEnum::Task & type,
 }
 
 COscillationTask::COscillationTask(const COscillationTask & src,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
   mpProblem = new COscillationProblem(*(COscillationProblem *) src.mpProblem, this);

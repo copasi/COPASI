@@ -16,7 +16,7 @@
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
 
-#include "../copasi.h"
+#include "copasi/copasi.h"
 #include "CQSpinBoxDelegate.h"
 #include "CQBaseDataModel.h"
 

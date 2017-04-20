@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLDefaultStyles.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,16 +13,16 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/layout/CLGlobalRenderInformation.h"
 
-extern CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES;
+extern CDataVector<CLGlobalRenderInformation>* DEFAULT_STYLES;
 
 /**
  * This method returns a global render information list that contains the default styles
  * which are built into the renderer.
  */
-CCopasiVector<CLGlobalRenderInformation>* getDefaultStyles();
+CDataVector<CLGlobalRenderInformation>* getDefaultStyles();
 
 /**
  * This method returns the number of global styles.
@@ -44,6 +41,6 @@ CLGlobalRenderInformation* getDefaultStyle(size_t index);
  * The method returns a point to a ListOfGlobalRenderInformation object.
  * The caller is responsible for freeing the memory associated with the list.
  */
-CCopasiVector<CLGlobalRenderInformation>* loadDefaultStyles();
+CDataVector<CLGlobalRenderInformation>* loadDefaultStyles();
 
 #endif // CLDEFAULT_STYLES_H__

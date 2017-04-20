@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,8 +30,8 @@
  * that are needed to resolve external references.
  */
 CLRenderResolver::CLRenderResolver(const CLLocalRenderInformation& renderInformation,
-                                   const CCopasiVector<CLLocalRenderInformation>& localList,
-                                   const CCopasiVector<CLGlobalRenderInformation>& globalList)
+                                   const CDataVector<CLLocalRenderInformation>& localList,
+                                   const CDataVector<CLGlobalRenderInformation>& globalList)
   : mpRenderInformation(CLRenderFlattener::flatten_render_information(renderInformation, localList, globalList)),
     mLocal(true),
     mpBackgroundColor(NULL)
@@ -71,7 +76,7 @@ void CLRenderResolver::setBackgroundColor()
  * means it should contain all information from referenced render information objects.
  */
 CLRenderResolver::CLRenderResolver(const CLGlobalRenderInformation& renderInformation,
-                                   const CCopasiVector<CLGlobalRenderInformation>& globalList)
+                                   const CDataVector<CLGlobalRenderInformation>& globalList)
   : mpRenderInformation(CLRenderFlattener::flatten_render_information(renderInformation, globalList)),
     mLocal(false),
     mpBackgroundColor(NULL)
@@ -446,9 +451,9 @@ void  CLRenderResolver::setDeducedObjectRoles(const std::map<const CLMetabRefere
   this->mDeducedObjectRoles = deducedObjectRoles;
 }
 
-CCopasiDataModel * CLRenderResolver::getObjectDataModel() const
+CDataModel * CLRenderResolver::getObjectDataModel() const
 {
-  CCopasiDataModel * pDataModel = mpRenderInformation->getObjectDataModel();
+  CDataModel * pDataModel = mpRenderInformation->getObjectDataModel();
 
   assert(pDataModel != NULL);
 

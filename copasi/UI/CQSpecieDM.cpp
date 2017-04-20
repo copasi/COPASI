@@ -15,8 +15,8 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CChemEqInterface.h"
 #include "model/CModel.h"
 #include "function/CExpression.h"
@@ -114,7 +114,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
         {
-          if (Species.isInitialConcentrationChangeAllowed())
+          if (Species.isInitialValueChangeAllowed(CModelParameter::Concentration))
             return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
           else
             return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
@@ -122,11 +122,18 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
     }
   else if (index.column() == COL_INUMBER)
     {
+      CMetab & Species = mpMetabolites->operator[](index.row());
+
       if (this->index(index.row(), COL_TYPE_SPECIES).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
       else
-        return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+        {
+          if (Species.isInitialValueChangeAllowed(CModelParameter::ParticleNumbers))
+            return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+          else
+            return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
+        }
     }
   else
     return QAbstractItemModel::flags(index);
@@ -160,7 +167,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
 
               case COL_COMPARTMENT:
               {
-                const CCopasiVector < CCompartment > & compartments =
+                const CDataVector < CCompartment > & compartments =
                   pModel->getCompartments();
 
                 if (compartments.size())
@@ -400,7 +407,7 @@ void CQSpecieDM::resetCache()
 {
   assert(mpDataModel != NULL);
 
-  mpMetabolites = dynamic_cast< CCopasiVector < CMetab > * >(&mpDataModel->getModel()->getMetabolites());
+  mpMetabolites = dynamic_cast< CDataVector < CMetab > * >(&mpDataModel->getModel()->getMetabolites());
   assert(mpMetabolites != NULL);
 
   CModel * pModel = mpDataModel->getModel();
@@ -436,7 +443,7 @@ bool CQSpecieDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CMetab >::const_iterator itRow = mpMetabolites->begin() + position;
+  CDataVector< CMetab >::const_iterator itRow = mpMetabolites->begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -683,7 +690,7 @@ void CQSpecieDM::addSpecieRow(UndoSpeciesData *pSpecieData)
 
   switchToWidget(CCopasiUndoCommand::SPECIES);
 
-  CCopasiObject *species =  pSpecieData->restoreObjectIn(pModel);
+  CDataObject *species =  pSpecieData->restoreObjectIn(pModel);
 
   if (species == NULL)
     return;
@@ -724,7 +731,7 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
       CMetab * pSpecie = *j;
 
       size_t delRow =
-        pModel->getMetabolites().CCopasiVector< CMetab >::getIndex(pSpecie);
+        pModel->getMetabolites().CDataVector< CMetab >::getIndex(pSpecie);
 
       if (delRow == C_INVALID_INDEX)
         continue;
@@ -732,7 +739,7 @@ bool CQSpecieDM::removeSpecieRows(QModelIndexList rows, const QModelIndex&)
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "species",
                                     FROM_UTF8(pSpecie->getObjectName()),
-                                    pSpecie->getDeletedObjects());
+                                    pSpecie);
 
       if (choice == QMessageBox::Ok)
         {
@@ -761,7 +768,7 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
   for (i = pData.begin(); i != pData.end(); ++i)
     {
       UndoSpeciesData * data = *i;
-      CCopasiObject *pSpecies = data->restoreObjectIn(pModel);
+      CDataObject *pSpecies = data->restoreObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;
@@ -798,7 +805,7 @@ QModelIndex CQSpecieDM::getIndexFor(const CMetab *pMetab, int column) const
 {
   int max = rowCount();
 
-  CCopasiVector< CMetab >::const_iterator it = mpDataModel->getModel()->getMetabolites().begin();
+  CDataVector< CMetab >::const_iterator it = mpDataModel->getModel()->getMetabolites().begin();
 
   for (int i = 0; i < max; ++i, ++it)
     {

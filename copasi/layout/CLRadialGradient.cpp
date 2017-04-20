@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRadialGradient.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,14 +14,14 @@
 
 #include "CLRadialGradient.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLRadialGradient::CLRadialGradient(CCopasiContainer* pParent)
-    : CLGradientBase("RadialGradient", pParent),
+CLRadialGradient::CLRadialGradient(CDataContainer* pParent)
+  : CLGradientBase("RadialGradient", pParent),
     mCX(CLRelAbsVector(0.0, 50.0)),
     mCY(CLRelAbsVector(0.0, 50.0)),
     mCZ(CLRelAbsVector(0.0, 50.0)),
@@ -33,39 +30,39 @@ CLRadialGradient::CLRadialGradient(CCopasiContainer* pParent)
     mFY(CLRelAbsVector(0.0, 50.0)),
     mFZ(CLRelAbsVector(0.0, 50.0))
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RadialGradient", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RadialGradient", this);
 }
 
 /**
  * Copy Constructor.
  */
-CLRadialGradient::CLRadialGradient(const CLRadialGradient& source, CCopasiContainer* pParent):
-    CLGradientBase(source, pParent),
-    mCX(source.mCX),
-    mCY(source.mCY),
-    mCZ(source.mCZ),
-    mRadius(source.mRadius),
-    mFX(source.mFX),
-    mFY(source.mFY),
-    mFZ(source.mFZ)
+CLRadialGradient::CLRadialGradient(const CLRadialGradient& source, CDataContainer* pParent):
+  CLGradientBase(source, pParent),
+  mCX(source.mCX),
+  mCY(source.mCY),
+  mCZ(source.mCZ),
+  mRadius(source.mRadius),
+  mFX(source.mFX),
+  mFY(source.mFY),
+  mFZ(source.mFZ)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RadialGradient", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RadialGradient", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLRadialGradient::CLRadialGradient(const RadialGradient& source, CCopasiContainer* pParent):
-    CLGradientBase(source, "RadialGradient", pParent),
-    mCX(source.getCenterX()),
-    mCY(source.getCenterY()),
-    mCZ(source.getCenterZ()),
-    mRadius(source.getRadius()),
-    mFX(source.getFocalPointX()),
-    mFY(source.getFocalPointY()),
-    mFZ(source.getFocalPointZ())
+CLRadialGradient::CLRadialGradient(const RadialGradient& source, CDataContainer* pParent):
+  CLGradientBase(source, "RadialGradient", pParent),
+  mCX(source.getCenterX()),
+  mCY(source.getCenterY()),
+  mCZ(source.getCenterZ()),
+  mRadius(source.getRadius()),
+  mFX(source.getFocalPointX()),
+  mFY(source.getFocalPointY()),
+  mFZ(source.getFocalPointZ())
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RadialGradient", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RadialGradient", this);
 }
 
 /**

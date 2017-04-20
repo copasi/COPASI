@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,8 +19,8 @@
 #define COPASI_MAIN
 
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CReport.h"
@@ -53,7 +58,7 @@ int runTaskIfScheduled(CCopasiTask* pTask, const std::string& outdir)
           std::cerr << CCopasiMessage::getAllMessageText(true);
         }
 
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -63,17 +68,17 @@ int runTaskIfScheduled(CCopasiTask* pTask, const std::string& outdir)
 int main(int argc, char** argv)
 {
   // initialize the backend library
-  CCopasiRootContainer::init(argc, argv);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(argc, argv);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // the only argument to the main routine should be the name of an SBML file
   if (argc != 3)
     {
       std::cerr << "Usage: runSedML <SED-ML file> <outdir>" << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -88,17 +93,17 @@ int main(int argc, char** argv)
   catch (...)
     {
       std::cerr << "Error while importing the Simulation experiment from file named \"" << filename << "\"." << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
   // get the task list
-  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // run supported tasks, when scheduled
   runTaskIfScheduled(&TaskList["Time-Course"], outDir);
   runTaskIfScheduled(&TaskList["Scan"], outDir);
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

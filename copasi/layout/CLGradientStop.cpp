@@ -16,7 +16,7 @@
 
 #include "CLGradientStop.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -28,40 +28,40 @@ CLGradientStop * CLGradientStop::fromData(const CData & data)
 /**
  * Constructor.
  */
-CLGradientStop::CLGradientStop(CCopasiContainer* pParent):
+CLGradientStop::CLGradientStop(CDataContainer* pParent):
   CLBase(),
-  CCopasiObject("GradientStop", pParent),
+  CDataObject("GradientStop", pParent),
   mOffset(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
   mStopColor("#00000000"),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GradientStop", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GradientStop", this);
 }
 
 /**
  * Copy Constructor
  */
-CLGradientStop::CLGradientStop(const CLGradientStop& source, CCopasiContainer* pParent):
+CLGradientStop::CLGradientStop(const CLGradientStop& source, CDataContainer* pParent):
   CLBase(source),
-  CCopasiObject(source, pParent),
+  CDataObject(source, pParent),
   mOffset(source.mOffset),
   mStopColor(source.mStopColor),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GradientStop", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GradientStop", this);
 }
 
 /**
  * Copy Constructor
  */
-CLGradientStop::CLGradientStop(const GradientStop& source, CCopasiContainer* pParent):
+CLGradientStop::CLGradientStop(const GradientStop& source, CDataContainer* pParent):
   CLBase(),
-  CCopasiObject("GradientStop", pParent),
+  CDataObject("GradientStop", pParent),
   mOffset(source.getOffset()),
   mStopColor(source.getStopColor()),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GradientStop", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GradientStop", this);
 }
 
 /**

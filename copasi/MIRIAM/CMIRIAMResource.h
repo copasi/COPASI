@@ -42,26 +42,26 @@ public:
   /**
      * Default constructor
      * @param const std::string & name (default: MIRIAM Resource)
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CDataContainer * pParent (default: NULL)
      */
   CMIRIAMResource(const std::string & name = "MIRIAM Resource",
-                  const CCopasiContainer * pParent = NO_PARENT);
+                  const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CMIRIAMResource & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMIRIAMResource(const CMIRIAMResource & src,
-                  const CCopasiContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    * Specific constructor
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMIRIAMResource(const CCopasiParameterGroup & group,
-                  const CCopasiContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -186,25 +186,25 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: MIRIAM Resources)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMIRIAMResources(const std::string & name = "MIRIAM Resources",
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CMIRIAMResources & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMIRIAMResources(const CMIRIAMResources & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
   /**
    * Specific constructor
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMIRIAMResources(const CCopasiParameterGroup & group,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Destructor

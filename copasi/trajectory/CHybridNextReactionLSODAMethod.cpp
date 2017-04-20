@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -32,7 +37,7 @@
 #include "CHybridNextReactionLSODAMethod.h"
 #include "math/CMathContainer.h"
 
-CHybridNextReactionLSODAMethod::CHybridNextReactionLSODAMethod(const CCopasiContainer * pParent,
+CHybridNextReactionLSODAMethod::CHybridNextReactionLSODAMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CHybridMethod(pParent, methodType, taskType),
@@ -42,7 +47,7 @@ CHybridNextReactionLSODAMethod::CHybridNextReactionLSODAMethod(const CCopasiCont
 }
 
 CHybridNextReactionLSODAMethod::CHybridNextReactionLSODAMethod(const CHybridNextReactionLSODAMethod & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CHybridMethod(src, pParent),
   mLSODA(src.mLSODA, this)
 {

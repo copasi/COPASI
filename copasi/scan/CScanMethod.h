@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -173,7 +178,7 @@ protected:
 
   std::vector<CScanItem*> mScanItems;
 
-  CObjectInterface::UpdateSequence mInitialUpdates;
+  CCore::CUpdateSequence mInitialUpdates;
 
   //std::vector< Refresh * > mTransientRefreshes;
 
@@ -201,11 +206,11 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: scanMethod)
    * @param const CTaskEnum::Task & taskType (default: scan)
    */
-  CScanMethod(const CCopasiContainer * pParent,
+  CScanMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType = CTaskEnum::scanMethod,
               const CTaskEnum::Task & taskType = CTaskEnum::scan);
 

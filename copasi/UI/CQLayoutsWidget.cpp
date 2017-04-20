@@ -30,9 +30,9 @@
 #include "copasi/layout/CListOfLayouts.h"
 #include "copasi/model/CModel.h"
 #include "copasi/report/CKeyFactory.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include <copasi/commandline/CConfigurationFile.h>
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "copasi/layoutUI/CQNewMainWindow.h"
 
@@ -357,7 +357,7 @@ CQLayoutsWidget::LayoutWindow *CQLayoutsWidget::createLayoutWindow(int row, CLay
   LayoutWindow *pWin = NULL;
 #ifndef DISABLE_QT_LAYOUT_RENDERING
 
-  if (CCopasiRootContainer::getConfiguration()->useOpenGL())
+  if (CRootContainer::getConfiguration()->useOpenGL())
     {
       pWin = new CQNewMainWindow(mpDataModel);
       (static_cast<CQNewMainWindow *>(pWin))->slotLayoutChanged(row);

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,9 +33,9 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer * pParent,
+COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
@@ -43,7 +48,7 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer * pParent,
 }
 
 COptMethodHookeJeeves::COptMethodHookeJeeves(const COptMethodHookeJeeves & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   COptMethod(src, pParent)
 {
   initObjects();
@@ -221,7 +226,7 @@ bool COptMethodHookeJeeves::optimise()
 
 void COptMethodHookeJeeves::initObjects()
 {
-  addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
 }
 
 bool COptMethodHookeJeeves::initialize()

@@ -25,8 +25,8 @@
 #include "CQMessageBox.h"
 
 #include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 
@@ -249,7 +249,7 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&mpDataModel->getPlotDefinitionList()->operator[](index.row()));
   const std::string key = static_cast<CCopasiParameter *>(pPS)->getKey();
 
-  if (CCopasiRootContainer::getKeyFactory()->get(key))
+  if (CRootContainer::getKeyFactory()->get(key))
     mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 

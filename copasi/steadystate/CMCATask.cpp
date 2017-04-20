@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,14 +34,14 @@
 #include "CMCAMethod.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
 #include "math/CMathContainer.h"
 
 #define XXXX_Reporting
 
-CMCATask::CMCATask(const CCopasiContainer * pParent,
+CMCATask::CMCATask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
@@ -46,7 +51,7 @@ CMCATask::CMCATask(const CCopasiContainer * pParent,
 }
 
 CMCATask::CMCATask(const CMCATask & src,
-                   const CCopasiContainer * pParent):
+                   const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
   mpProblem =

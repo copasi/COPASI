@@ -43,11 +43,11 @@
 #include "function/CEvaluationTree.h"
 #include "function/CExpression.h"
 #include "function/CFunctionParameters.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CNodeIterator.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
 #include "compareExpressions/CEvaluationNodeNormalizer.h"
 #include "commandline/CLocaleString.h"
@@ -97,7 +97,7 @@ const std::string SEDMLImporter::getArchiveFileName()
  * given as argument.
  */
 void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
-    std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
+    std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
 
   switch (sedmlsim->getTypeCode())
@@ -252,11 +252,11 @@ bool isScan(const SedRepeatedTask* task)
 void SEDMLImporter::readListOfPlotsFromSedMLOutput(
   COutputDefinitionVector *pLotList, CModel* pModel,
   SedDocument *pSEDMLDocument,
-  std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
+  std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
   size_t i, numOutput = pSEDMLDocument->getNumOutputs();
 
-  std::map<const CCopasiObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
+  std::map<const CDataObject*, SBase*>& copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
 
   CReportDefinitionVector* pReports = mpDataModel->getReportDefinitionList();
 
@@ -294,7 +294,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
               {
                 SedDataSet* ds = r->getDataSet(i);
                 const SedDataGenerator* generator = pSEDMLDocument->getDataGenerator(ds->getDataReference());
-                const CCopasiObject * tmp = SEDMLUtils::resolveDatagenerator(pModel, generator);
+                const CDataObject * tmp = SEDMLUtils::resolveDatagenerator(pModel, generator);
 
                 if (generator == NULL || tmp == NULL) continue;
 
@@ -364,8 +364,8 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
                 const SedDataGenerator* yGenerator = pSEDMLDocument->getDataGenerator(yDataReference);
 
                 //create the curves
-                const CCopasiObject * tmpX = SEDMLUtils::resolveDatagenerator(pModel, xGenerator);
-                const CCopasiObject * tmpY = SEDMLUtils::resolveDatagenerator(pModel, yGenerator);
+                const CDataObject * tmpX = SEDMLUtils::resolveDatagenerator(pModel, xGenerator);
+                const CDataObject * tmpY = SEDMLUtils::resolveDatagenerator(pModel, yGenerator);
 
                 if (tmpX != NULL && tmpY != NULL)
                   {
@@ -407,11 +407,11 @@ CModel* SEDMLImporter::readSEDML(std::string filename,
                                  CProcessReport* pImportHandler,
                                  SBMLDocument *& pSBMLDocument,
                                  SedDocument*& pSedDocument,
-                                 std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
-                                 std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                 std::map<CDataObject*, SedBase*>& copasi2sedmlmap,
+                                 std::map<CDataObject*, SBase*>& copasi2sbmlmap,
                                  CListOfLayouts *& prLol,
                                  COutputDefinitionVector * &plotList,
-                                 CCopasiDataModel* pDataModel)
+                                 CDataModel* pDataModel)
 {
   // convert filename to the locale encoding
   std::ifstream file(CLocaleString::fromUtf8(filename).c_str());
@@ -454,11 +454,11 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
                           CProcessReport* pImportHandler,
                           SBMLDocument *& pSBMLDocument,
                           SedDocument *& pSEDMLDocument,
-                          std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
-                          std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                          std::map<CDataObject*, SedBase*>& copasi2sedmlmap,
+                          std::map<CDataObject*, SBase*>& copasi2sbmlmap,
                           CListOfLayouts *& prLol,
                           COutputDefinitionVector * & pPlotList,
-                          CCopasiDataModel* pDataModel)
+                          CDataModel* pDataModel)
 {
   mReportMap.clear();
   this->mUsedSEDMLIdsPopulated = false;
@@ -628,7 +628,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 }
 
 void
-SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
+SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 {
 
   for (unsigned int i = 0; i < mpSEDMLDocument->getNumTasks(); ++i)
@@ -682,7 +682,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
                       }
 
                     std::string target = sv->getTarget();
-                    const CCopasiObject * obj = SEDMLUtils::resolveXPath(mpCopasiModel, target, true);
+                    const CDataObject * obj = SEDMLUtils::resolveXPath(mpCopasiModel, target, true);
 
                     if (obj == NULL)
                       {
@@ -761,7 +761,7 @@ SEDMLImporter::importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap)
     }
 }
 
-bool applyValueToModelParameter(CModelParameter* modelParameter, CCopasiObject *obj, double newValue)
+bool applyValueToModelParameter(CModelParameter* modelParameter, CDataObject *obj, double newValue)
 {
   if (modelParameter == NULL || obj == NULL) return false;
 
@@ -787,7 +787,7 @@ bool applyValueToModelParameter(CModelParameter* modelParameter, CCopasiObject *
   return false;
 }
 
-bool applyValueToParameterSet(CModelParameterSet& set, CCopasiObject *obj, double newValue)
+bool applyValueToParameterSet(CModelParameterSet& set, CDataObject *obj, double newValue)
 {
   CModelParameterGroup::iterator it = set.begin();
 
@@ -804,7 +804,7 @@ bool applyValueToParameterSet(CModelParameterSet& set, CCopasiObject *obj, doubl
 
 bool applyAttributeChange(CModel* pCopasiModel, CModelParameterSet& set, const std::string& target, const std::string&  newValue)
 {
-  CCopasiObject *obj = const_cast<CCopasiObject*>(SEDMLUtils::resolveXPath(pCopasiModel, target, true));
+  CDataObject *obj = const_cast<CDataObject*>(SEDMLUtils::resolveXPath(pCopasiModel, target, true));
 
   if (obj == NULL)
     return false;
@@ -822,9 +822,9 @@ bool applyAttributeChange(CModel* pCopasiModel, CModelParameterSet& set, const s
 
 CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
     SBMLDocument *& pSBMLDocument,
-    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+    std::map<CDataObject*, SBase*>& copasi2sbmlmap,
     CListOfLayouts *& prLol,
-    CCopasiDataModel* pDataModel)
+    CDataModel* pDataModel)
 {
   std::string SBMLFileName, fileContent;
 
@@ -912,12 +912,12 @@ CModel* SEDMLImporter::importFirstSBMLModel(CProcessReport* pImportHandler,
 
   mpCopasiModel = NULL;
 
-  std::map<const CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<const CDataObject*, SBase*> Copasi2SBMLMap;
 
   try
     {
       mpCopasiModel = importer.parseSBML(sbmlStringStream.str(),
-                                         CCopasiRootContainer::getFunctionList(), pSBMLDocument,
+                                         CRootContainer::getFunctionList(), pSBMLDocument,
                                          Copasi2SBMLMap, prLol, mpDataModel);
     }
 

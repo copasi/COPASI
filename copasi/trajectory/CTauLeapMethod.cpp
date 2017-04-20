@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -43,8 +48,8 @@
 #include "model/CChemEq.h"
 #include "model/CChemEqElement.h"
 #include "model/CCompartment.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CMatrix.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
@@ -59,7 +64,7 @@
 /**
  *   Default constructor.
  */
-CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent,
+CTauLeapMethod::CTauLeapMethod(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -83,7 +88,7 @@ CTauLeapMethod::CTauLeapMethod(const CCopasiContainer * pParent,
 }
 
 CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mNumReactions(0),
   mNumReactionSpecies(0),

@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "report/CCopasiObjectName.h"
 #include "report/CCopasiStaticString.h"
 #include "utilities/CCopasiTask.h"
@@ -44,7 +44,7 @@ class CReportObject;
 class CReport;
 class CReportTable;
 
-class CReportDefinition : public CCopasiObject
+class CReportDefinition : public CDataObject
 {
   // Operations
 private:
@@ -72,13 +72,13 @@ public:
    *  Default constructor.
    */
   CReportDefinition(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = NO_PARENT);
+                    const CDataContainer * pParent = NO_PARENT);
 
   /**
    *  Copy constructor.
    */
   CReportDefinition(const CReportDefinition & src,
-                    const CCopasiContainer * pParent);
+                    const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -93,7 +93,7 @@ public:
   /**
    * Convert the table list into a header and body list.
    * @param const CObjectInterface::ContainerList & listOfContainer
-   * (default: CCopasiContainer::EmptyList)
+   * (default: CDataContainer::EmptyList)
    * @return bool success
    */
   bool preCompileTable(const CObjectInterface::ContainerList & listOfContainer);
@@ -215,9 +215,9 @@ private:
   /**
    * This adds header and body entries for one table element
    * (including separator if necessary)
-   * @param const CCopasiObject * pObject
+   * @param const CDataObject * pObject
    */
-  void addTableElement(const CCopasiObject * pObject);
+  void addTableElement(const CDataObject * pObject);
 };
 
 #endif

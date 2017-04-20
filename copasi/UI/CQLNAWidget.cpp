@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,14 +16,16 @@
 #include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 #include "qtUtilities.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "lna/CLNATask.h"
-#include "lna/CLNAProblem.h"
-#include "lna/CLNAMethod.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/lna/CLNAProblem.h"
+#include "copasi/lna/CLNAMethod.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQLNAWidget which is a child of 'parent', with the
@@ -67,7 +74,7 @@ void CQLNAWidget::slotSteadyStateChecked()
 bool CQLNAWidget::runTask()
 {
   CLNATask * pTask =
-    dynamic_cast< CLNATask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CLNATask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 
@@ -143,7 +150,7 @@ bool CQLNAWidget::saveTask()
       mChanged = true;
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
 
   if (mChanged) mpDataModel->changed();
 

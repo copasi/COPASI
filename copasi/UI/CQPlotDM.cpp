@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,15 +16,15 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
 
 #include "CQPlotDM.h"
 #include "qtUtilities.h"
 
-CQPlotDM::CQPlotDM(QObject *parent, CCopasiDataModel * pDataModel)
+CQPlotDM::CQPlotDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
   , mNewName("plot")
 {
@@ -236,7 +241,7 @@ bool CQPlotDM::removeRows(int position, int rows)
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
       std::string deletedKey = pPS->CCopasiParameter::getKey();
-      mpDataModel->getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::remove(position);
+      mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::remove(position);
       emit notifyGUI(ListViews::PLOT, ListViews::DELETE, deletedKey);
     }
 
@@ -277,7 +282,7 @@ bool CQPlotDM::removeRows(QModelIndexList rows, const QModelIndex&)
       pPS = *j;
 
       size_t delRow =
-        mpDataModel->getPlotDefinitionList()->CCopasiVector< CPlotSpecification >::getIndex(pPS);
+        mpDataModel->getPlotDefinitionList()->CDataVector< CPlotSpecification >::getIndex(pPS);
       removeRow((int) delRow);
     }
 

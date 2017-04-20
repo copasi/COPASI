@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,7 +28,7 @@ class UndoEventData;
 #include "ui_CQEventWidget1.h"
 
 #include "copasi/model/CEvent.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 class CQExpressionWidget;
 class CCompartment;
@@ -69,7 +74,7 @@ private:
   CEvent *mpEvent;
   std::string mAssignmentKey;
   size_t mCurrentTarget;
-  CCopasiVector< CEventAssignment > mAssignments;
+  CDataVector< CEventAssignment > mAssignments;
 
   void init();
   bool loadFromEvent();

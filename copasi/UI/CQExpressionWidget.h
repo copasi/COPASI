@@ -35,7 +35,7 @@
 #include "copasi/function/CFunction.h"
 
 class CQExpressionWidget;
-class CCopasiObject;
+class CDataObject;
 
 /*!
     \brief The class for highlighting the expression syntax
@@ -148,8 +148,8 @@ protected:
    */
   CQSimpleSelectionTree::ObjectClasses mObjectClasses;
 
-  std::map< std::string, const CCopasiObject * > mParseList;
-  const CCopasiObject *mpCurrentObject;
+  std::map< std::string, const CDataObject * > mParseList;
+  const CDataObject *mpCurrentObject;
   QColor mSavedColor;
   QColor mChangedColor;
 

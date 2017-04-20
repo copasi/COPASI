@@ -1,17 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000067.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/05/07 12:03:37 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,7 +17,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/function/CFunctionDB.h"
@@ -34,26 +31,26 @@
 
 #include "test000059.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
-CCopasiDataModel* test000067::pCOPASIDATAMODEL = NULL;
+CDataModel* test000067::pCOPASIDATAMODEL = NULL;
 
 void test000067::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000067::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000067::test_bug1060()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000067::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);
@@ -71,7 +68,7 @@ void test000067::test_bug1060()
   CPPUNIT_ASSERT(pSBMLModel->getNumParameters() == 0);
   CPPUNIT_ASSERT(test000059::checkIfIdsUnique(pSBMLModel) == true);
   // check if each reaction call the correct kinetic law
-  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunDB = CRootContainer::getFunctionList();
   CEvaluationTree* pModifiedMM = pFunDB->findFunction("Modified MM");
   CPPUNIT_ASSERT(pModifiedMM != NULL);
   CEvaluationTree* pModifiedCF = pFunDB->findFunction("modified constant flux");
@@ -81,8 +78,8 @@ void test000067::test_bug1060()
   unsigned int i, iMax = pSBMLModel->getListOfReactions()->size();
   const Reaction* pReaction = NULL;
   const ASTNode* pRoot = NULL;
-  const std::map<CCopasiObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
-  std::map<CCopasiObject*, SBase*>::const_iterator mappos;
+  const std::map<CDataObject*, SBase*>& copasi2sbmlmap = pDataModel->getCopasi2SBMLMap();
+  std::map<CDataObject*, SBase*>::const_iterator mappos;
 
   for (i = 0; i < iMax; ++i)
     {

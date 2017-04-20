@@ -27,7 +27,7 @@
 #include <string>
 
 #include "plot/CPlotItem.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 class CModel;
 
@@ -35,7 +35,7 @@ class CPlotSpecification : public CPlotItem
 {
 private:
 
-  CCopasiVector<CPlotItem> items;
+  CDataVector<CPlotItem> items;
   bool mActive;
 
   /**
@@ -50,11 +50,11 @@ public:
   static CPlotSpecification * fromData(const CData & data);
 
   CPlotSpecification(const std::string & name = "NoName",
-                     const CCopasiContainer * pParent = NO_PARENT,
+                     const CDataContainer * pParent = NO_PARENT,
                      const CPlotItem::Type & type = plot2d);
 
   CPlotSpecification(const CPlotSpecification & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -63,9 +63,9 @@ public:
 
   virtual void cleanup();
 
-  const CCopasiVector<CPlotItem> & getItems() const {return items;};
+  const CDataVector<CPlotItem> & getItems() const {return items;};
 
-  CCopasiVector<CPlotItem> & getItems() {return items;};
+  CDataVector<CPlotItem> & getItems() {return items;};
 
   CPlotItem* createItem(const std::string & name, CPlotItem::Type type);
 

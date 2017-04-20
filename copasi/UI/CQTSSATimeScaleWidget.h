@@ -20,9 +20,9 @@
 #include <QLayout>
 #include <QPaintEvent>
 #include <QVBoxLayout>
-#include "utilities/CVector.h"
 #include <QSlider>
 #include <QPainter>
+#include "copasi/core/CVector.h"
 
 class PaintWidget : public QWidget
 {

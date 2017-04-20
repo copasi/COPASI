@@ -1,9 +1,15 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/../core/CMatrix.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"
@@ -27,7 +33,6 @@
 #include "report/CCopasiStaticString.h"
 #include "report/CReportDefinition.h"
 #include "utilities/CAnnotatedMatrix.h"
-#include "utilities/CMatrix.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
@@ -56,44 +61,44 @@
 
 //#include <iostream>
 
-typedef CCopasiVector<CEvent> EventVector;
-typedef CCopasiVectorN<CEvent> EventVectorN;
+typedef CDataVector<CEvent> EventVector;
+typedef CDataVectorN<CEvent> EventVectorN;
 
-typedef CCopasiVector<CEventAssignment> EventAssignmentVector;
-typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
+typedef CDataVector<CEventAssignment> EventAssignmentVector;
+typedef CDataVectorN<CEventAssignment> EventAssignmentVectorN;
 
-typedef CCopasiVector<CCopasiTask> TaskVector;
-typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
+typedef CDataVector<CCopasiTask> TaskVector;
+typedef CDataVectorN<CCopasiTask> TaskVectorN;
 
-typedef CCopasiVectorN<CModelValue> ModelValueVectorN;
+typedef CDataVectorN<CModelValue> ModelValueVectorN;
 
-typedef CCopasiVector<CMoiety> MoietyVector;
+typedef CDataVector<CMoiety> MoietyVector;
 
-typedef CCopasiVector<CMetab> MetabVector;
-typedef CCopasiVectorNS<CMetab> MetabVectorNS;
+typedef CDataVector<CMetab> MetabVector;
+typedef CDataVectorNS<CMetab> MetabVectorNS;
 
-typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
+typedef CDataVectorNS<CCompartment> CompartmentVectorNS;
 
-typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
+typedef CDataVectorNS<CReaction> ReactionVectorNS;
 
 typedef std::vector<CRegisteredObjectName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
-typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
-typedef CCopasiVectorN<CCopasiDataModel> CCopasiDataModelVectorN;
+typedef CDataVectorN<CEvaluationTree> CEvaluationTreeVectorN;
+typedef CDataVectorN<CDataModel> CDataModelVectorN;
 
 typedef std::vector<CFunction> CFunctionStdVector;
 
-typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
+typedef CDataVector<CChemEqElement> CChemEqElementVector;
 
-typedef CCopasiVector<CModelValue> ModelValueVector;
-typedef CCopasiVectorN<CReportDefinition> CReportDefinitionVectorN;
-typedef CCopasiVectorN<CMetab> MetabVectorN;
-typedef CCopasiVector<CCompartment> CompartmentVector;
-typedef CCopasiVectorN<CCompartment> CompartmentVectorN;
-typedef CCopasiVectorN<CReaction> ReactionVectorN;
-typedef CCopasiVector<CReaction> ReactionVector;
-typedef CCopasiVector<CEvaluationTree> CEvaluationTreeVector;
+typedef CDataVector<CModelValue> ModelValueVector;
+typedef CDataVectorN<CReportDefinition> CReportDefinitionVectorN;
+typedef CDataVectorN<CMetab> MetabVectorN;
+typedef CDataVector<CCompartment> CompartmentVector;
+typedef CDataVectorN<CCompartment> CompartmentVectorN;
+typedef CDataVectorN<CReaction> ReactionVectorN;
+typedef CDataVector<CReaction> ReactionVector;
+typedef CDataVector<CEvaluationTree> CEvaluationTreeVector;
 
 typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 
@@ -416,19 +421,19 @@ GetDowncastSwigTypeForCModelEntity(CModelEntity* entity)
 }
 
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
+GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
 {
-  if (container == NULL) return SWIGTYPE_p_CCopasiContainer;
+  if (container == NULL) return SWIGTYPE_p_CDataContainer;
 
-  struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiContainer;
+  struct swig_type_info* pInfo = SWIGTYPE_p_CDataContainer;
 
-  if (dynamic_cast<CCopasiRootContainer*>(container))
+  if (dynamic_cast<CRootContainer*>(container))
     {
-      pInfo = SWIGTYPE_p_CCopasiRootContainer;
+      pInfo = SWIGTYPE_p_CRootContainer;
     }
-  else if (dynamic_cast<CCopasiDataModel*>(container))
+  else if (dynamic_cast<CDataModel*>(container))
     {
-      pInfo = SWIGTYPE_p_CCopasiDataModel;
+      pInfo = SWIGTYPE_p_CDataModel;
     }
   else if (dynamic_cast<CModelEntity*>(container))
     {
@@ -468,52 +473,52 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
     }
   else if (container->isNameVector())
     {
-      if (dynamic_cast<CCopasiDataModelVectorN*>(container))
+      if (dynamic_cast<CDataModelVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CCopasiDataModel_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CDataModel_t;
         }
       else if (dynamic_cast<TaskVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CCopasiTask_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CCopasiTask_t;
         }
       else if (dynamic_cast<ModelValueVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CModelValue_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CModelValue_t;
         }
       else if (dynamic_cast<MetabVectorNS*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNST_CMetab_t;
+          pInfo = SWIGTYPE_p_CDataVectorNST_CMetab_t;
         }
       else if (dynamic_cast<CompartmentVectorNS*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNST_CCompartment_t;
+          pInfo = SWIGTYPE_p_CDataVectorNST_CCompartment_t;
         }
       else if (dynamic_cast<ReactionVectorNS*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNST_CReaction_t;
+          pInfo = SWIGTYPE_p_CDataVectorNST_CReaction_t;
         }
       else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEvaluationTree_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CEvaluationTree_t;
         }
       else if (dynamic_cast<EventVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEvent_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CEvent_t;
         }
       else if (dynamic_cast<EventAssignmentVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEventAssignment_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CEventAssignment_t;
         }
     }
   else if (container->isVector())
     {
       if (dynamic_cast<MoietyVector*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CMoiety_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CMoiety_t;
         }
       else if (dynamic_cast<MetabVector*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CMetab_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CMetab_t;
         }
       else if (dynamic_cast<ReportItemVector*>(container))
         {
@@ -529,7 +534,7 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
         }
       else if (dynamic_cast<CChemEqElementVector*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CChemEqElement_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
         }
     }
   else if (dynamic_cast<CEvaluationTree*>(container))
@@ -581,15 +586,15 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
 }
 
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object)
+GetDowncastSwigTypeForCDataObject(CDataObject* object)
 {
-  if (object == NULL) return SWIGTYPE_p_CCopasiObject;
+  if (object == NULL) return SWIGTYPE_p_CDataObject;
 
-  struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiObject;
+  struct swig_type_info* pInfo = SWIGTYPE_p_CDataObject;
 
-  if (dynamic_cast<CCopasiContainer*>(object))
+  if (dynamic_cast<CDataContainer*>(object))
     {
-      pInfo = GetDowncastSwigTypeForCCopasiContainer(static_cast<CCopasiContainer*>(object));
+      pInfo = GetDowncastSwigTypeForCDataContainer(static_cast<CDataContainer*>(object));
     }
   else if (dynamic_cast<CReportDefinition*>(object))
     {

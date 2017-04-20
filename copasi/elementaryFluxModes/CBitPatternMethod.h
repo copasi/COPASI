@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,9 +14,9 @@
 #include <vector>
 #include <stack>
 
+#include "copasi/core/CMatrix.h"
 #include "CEFMMethod.h"
 #include "CStepMatrix.h"
-#include "utilities/CMatrix.h"
 
 class CStepMatrix;
 class CStepMatrixColumn;
@@ -75,11 +80,11 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: EFMBitPatternAlgorithm)
    * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
-  CBitPatternMethod(const CCopasiContainer * pParent,
+  CBitPatternMethod(const CDataContainer * pParent,
                     const CTaskEnum::Method & methodType = CTaskEnum::EFMBitPatternAlgorithm,
                     const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
 
@@ -88,7 +93,7 @@ public:
    * @param const CBitPatternMethod & src
    */
   CBitPatternMethod(const CBitPatternMethod & src,
-                    const CCopasiContainer * pParent);
+                    const CDataContainer * pParent);
 
   /**
   *  Destructor

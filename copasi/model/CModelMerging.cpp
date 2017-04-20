@@ -18,9 +18,9 @@
 #include "CModelMerging.h"
 #include "CModel.h"
 #include "function/CExpression.h"
-#include "report/CCopasiObject.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CDataObject.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CEvent.h"
 #include "model/CChemEqElement.h"
 
@@ -189,14 +189,14 @@ bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAss
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
+          const CDataObject* mObject =
+            static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
           std::string host = "";
 
-          if (mObject->isReference())
+          if (mObject->hasFlag(CDataObject::Reference))
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
@@ -205,7 +205,7 @@ bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAss
           if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+          CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(key));
 
           cn = pObject->getCN() + host;
 
@@ -245,14 +245,14 @@ bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEven
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
+          const CDataObject* mObject =
+            static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
           std::string host = "";
 
-          if (mObject->isReference())
+          if (mObject->hasFlag(CDataObject::Reference))
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
@@ -261,7 +261,7 @@ bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEven
           if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+          CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(key));
 
           cn = pObject->getCN() + host;
 
@@ -301,14 +301,14 @@ bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEv
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
+          const CDataObject* mObject =
+            static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
           std::string host = "";
 
-          if (mObject->isReference())
+          if (mObject->hasFlag(CDataObject::Reference))
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
@@ -317,7 +317,7 @@ bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEv
           if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+          CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(key));
 
           cn = pObject->getCN() + host;
 
@@ -357,14 +357,14 @@ bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity *
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
+          const CDataObject* mObject =
+            static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
           std::string host = "";
 
-          if (mObject->isReference())
+          if (mObject->hasFlag(CDataObject::Reference))
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
@@ -373,7 +373,7 @@ bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity *
           if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+          CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(key));
 
           cn = pObject->getCN() + host;
 
@@ -413,14 +413,14 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mmModel->getObjectDataModel()->getObject(cn));
+          const CDataObject* mObject =
+            static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
           std::string host = "";
 
-          if (mObject->isReference())
+          if (mObject->hasFlag(CDataObject::Reference))
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
@@ -429,7 +429,7 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
           if (mObject == NULL) return info;
 
           std::string key = keyMap[(dynamic_cast<const CModelEntity * >(mObject))->getKey()];
-          CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(key));
+          CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(key));
 
           cn = pObject->getCN() + host;
 
@@ -489,7 +489,7 @@ bool CModelAdd::addCompartmentsExpressions()
 
       std::string newKey = keyMap[sourceComp->getKey()];
 
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+      CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(newKey));
 
       CCompartment*  newComp = dynamic_cast< CCompartment * >(pObject);
 
@@ -573,7 +573,7 @@ bool CModelAdd::addMetabolitesExpressions()
 
       std::string newKey = keyMap[sourceMetab->getKey()];
 
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+      CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(newKey));
 
       CMetab*  newMetab = dynamic_cast< CMetab * >(pObject);
 
@@ -658,7 +658,7 @@ bool CModelAdd::addModelValuesExpressions()
 
       std::string newKey = keyMap[sourceModVal->getKey()];
 
-      CCopasiObject*  pObject = (CCopasiRootContainer::getKeyFactory()->get(newKey));
+      CDataObject*  pObject = (CRootContainer::getKeyFactory()->get(newKey));
 
       CModelValue*  newModVal = dynamic_cast<CModelValue * >(pObject);
 
@@ -1242,14 +1242,14 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
           CCopasiObjectName cn = pObjectNode->getObjectCN();
 
-          const CCopasiObject* mObject =
-            static_cast< const CCopasiObject * >(mpModel->getObjectDataModel()->getObject(cn));
+          const CDataObject* mObject =
+            static_cast< const CDataObject * >(mpModel->getObjectDataModel()->getObject(cn));
 
           if (mObject == NULL) return info;
 
           std::string host = "";
 
-          if (mObject->isReference())
+          if (mObject->hasFlag(CDataObject::Reference))
             {
               host = ",Reference=" + mObject->getObjectName();
               mObject = mObject->getObjectParent();
@@ -1257,13 +1257,13 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
           if (mObject == NULL) return info;
 
-          CCopasiObject* pObject;
+          CDataObject* pObject;
 
           std::string ikey = (dynamic_cast<const CModelEntity * >(mObject))->getKey();
 
           if (ikey == key)
             {
-              pObject = (CCopasiRootContainer::getKeyFactory()->get(toKey));
+              pObject = (CRootContainer::getKeyFactory()->get(toKey));
 
               cn = pObject->getCN() + host;
 

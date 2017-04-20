@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,18 +34,18 @@
 #include "copasi/MIRIAM/CRDFGraph.h"
 #include "copasi/MIRIAM/CRDFObject.h"
 
-#include "copasi/utilities/CCopasiVector.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CDataContainer.h"
 
-class CMIRIAMInfo : public CCopasiContainer
+class CMIRIAMInfo : public CDataContainer
 {
   // Attributes
 private:
   std::string mKey;
-  CCopasiVector <CCreator> mCreators;
-  CCopasiVector <CReference> mReferences;
-  CCopasiVector <CModification> mModifications;
-  CCopasiVector <CBiologicalDescription> mBiologicalDescriptions;
+  CDataVector <CCreator> mCreators;
+  CDataVector <CReference> mReferences;
+  CDataVector <CModification> mModifications;
+  CDataVector <CBiologicalDescription> mBiologicalDescriptions;
   CRDFObject mCreatedObj;
   CRDFGraph * mpRDFGraph;
   CRDFTriplet mTriplet;
@@ -54,14 +59,14 @@ public:
   bool save();
   CRDFGraph* getRDFGraph();
 
-  CCopasiVector <CCreator> & getCreators();
-  const CCopasiVector <CCreator> & getCreators() const;
+  CDataVector <CCreator> & getCreators();
+  const CDataVector <CCreator> & getCreators() const;
   CCreator* createCreator(const std::string& objectName);
   bool removeCreator(int position);
   void loadCreators();
 
-  CCopasiVector <CReference> & getReferences();
-  const CCopasiVector <CReference> & getReferences() const;
+  CDataVector <CReference> & getReferences();
+  const CDataVector <CReference> & getReferences() const;
   CReference* createReference(const std::string& objectName);
   bool removeReference(int position);
   void loadReferences();
@@ -69,14 +74,14 @@ public:
   const std::string getCreatedDT() const;
   void setCreatedDT(const std::string& dt);
 
-  CCopasiVector <CModification> & getModifications();
-  const CCopasiVector <CModification> & getModifications() const;
+  CDataVector <CModification> & getModifications();
+  const CDataVector <CModification> & getModifications() const;
   CModification* createModification(const std::string& objectName);
   bool removeModification(int position);
   void loadModifications();
 
-  CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions();
-  const CCopasiVector <CBiologicalDescription> & getBiologicalDescriptions() const;
+  CDataVector <CBiologicalDescription> & getBiologicalDescriptions();
+  const CDataVector <CBiologicalDescription> & getBiologicalDescriptions() const;
   CBiologicalDescription* createBiologicalDescription();
   bool removeBiologicalDescription(int position);
   void loadBiologicalDescriptions();

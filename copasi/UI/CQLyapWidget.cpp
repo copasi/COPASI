@@ -26,12 +26,13 @@
 #include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
 
-#include "lyap/CLyapTask.h"
-#include "lyap/CLyapProblem.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/lyap/CLyapTask.h"
+#include "copasi/lyap/CLyapProblem.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQLyapWidget which is a child of 'parent', with the
@@ -56,7 +57,7 @@ CQLyapWidget::~CQLyapWidget()
 bool CQLyapWidget::runTask()
 {
   CLyapTask * pTask =
-    dynamic_cast< CLyapTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CLyapTask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 
@@ -87,7 +88,7 @@ bool CQLyapWidget::loadTask()
 
   mpEditExponent->setText(QString::number(pProblem->getExponentNumber()));
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
   bool enabled =
     (mpDataModel->getModel()->getInitialTime() != pProblem->getTransientTime());
 

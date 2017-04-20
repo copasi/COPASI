@@ -26,7 +26,7 @@
 EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
                                        const QVariant& oldValue,
                                        const QVariant& newValue,
-                                       CCopasiObject* pObject,
+                                       CDataObject* pObject,
                                        CQEventWidget1* pWidget,
                                        const std::string& oldExpression /*= ""*/,
                                        const std::string& newExpression /*= ""*/)

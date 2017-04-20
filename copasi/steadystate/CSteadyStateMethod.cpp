@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,7 +28,7 @@
 
 #include "copasi.h"
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "CSteadyStateMethod.h"
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateTask.h"
@@ -35,7 +40,7 @@
 /**
  *  Default constructor.
  */
-CSteadyStateMethod::CSteadyStateMethod(const CCopasiContainer * pParent,
+CSteadyStateMethod::CSteadyStateMethod(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
                                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -54,7 +59,7 @@ CSteadyStateMethod::CSteadyStateMethod(const CCopasiContainer * pParent,
  *  @param "const CSteadyStateMethod &" src
  */
 CSteadyStateMethod::CSteadyStateMethod(const CSteadyStateMethod & src,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpProblem(src.mpProblem),
   mContainerState(),

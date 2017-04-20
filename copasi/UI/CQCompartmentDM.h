@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,7 +23,7 @@
 class UndoCompartmentData;
 class UndoReactionData;
 class CCompartment;
-template < class CType > class CCopasiVectorNS;
+template < class CType > class CDataVectorNS;
 
 #define COL_NAME_COMPARTMENTS         1
 #define COL_TYPE_COMPARTMENTS         2
@@ -85,7 +90,7 @@ protected:
   virtual bool removeRows(int position, int rows);
 
   QStringList mUnits;
-  CCopasiVectorNS< CCompartment > * mpCompartments;
+  CDataVectorNS< CCompartment > * mpCompartments;
 };
 
 #endif //CQCompartmentDM_H

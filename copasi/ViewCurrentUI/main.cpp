@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,8 +22,8 @@
 #include "UI/DataModelGUI.h"
 #include "UI/CQMessageBox.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "commandline/COptionParser.h"
@@ -58,7 +63,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container but don't pass in any args past the executable name
-      CCopasiRootContainer::init(1, argv, true);
+      CRootContainer::init(1, argv, true);
     }
   catch (copasi::option_error & msg)
     {
@@ -79,7 +84,7 @@ int main(int argc, char *argv[])
 #endif // Darwin
 
   // Create the global data model.
-  CCopasiRootContainer::addDatamodel();
+  CRootContainer::addDatamodel();
 
   // instantiate model and apply all changes
   args.prepareModel();
@@ -115,7 +120,7 @@ finish:
           pWorker = NULL;
         }
 
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
     }
   catch (...)
     {}

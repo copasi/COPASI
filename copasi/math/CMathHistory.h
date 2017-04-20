@@ -1,4 +1,9 @@
-// Copyright (C) 2014 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -6,7 +11,7 @@
 #ifndef COPASI_CMathHistory
 #define COPASI_CMathHistory
 
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 class CMathHistoryCore: protected CVectorCore< C_FLOAT64 >
 {

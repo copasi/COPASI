@@ -12,9 +12,9 @@
 
 #include "CCrossSectionProblem.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
-CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
+CCrossSectionProblem::CCrossSectionProblem(const CDataContainer * pParent):
   CTrajectoryProblem(pParent),
   mpFlagLimitCrossings(NULL),
   mpCrossingsLimit(NULL),
@@ -35,7 +35,7 @@ CCrossSectionProblem::CCrossSectionProblem(const CCopasiContainer * pParent):
 }
 
 CCrossSectionProblem::CCrossSectionProblem(const CCrossSectionProblem & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CTrajectoryProblem(src, pParent),
   mpFlagLimitCrossings(NULL),
   mpCrossingsLimit(NULL),
@@ -87,7 +87,7 @@ CCrossSectionProblem::~CCrossSectionProblem()
 std::ostream &operator<<(std::ostream &os, const CCrossSectionProblem & o)
 {
   os << "Cross Section Problem description: Not implemented yet." << std::endl;
-  const CCopasiDataModel* pDataModel = o.getObjectDataModel();
+  const CDataModel* pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
 
   return os;
@@ -149,7 +149,7 @@ const std::string& CCrossSectionProblem::getSingleObjectCN() const
   return *mSingleObjectCN;
 }
 
-void CCrossSectionProblem::setSingleObjectCN(const CCopasiObject* pObject)
+void CCrossSectionProblem::setSingleObjectCN(const CDataObject* pObject)
 {
   if (pObject == NULL) return;
 

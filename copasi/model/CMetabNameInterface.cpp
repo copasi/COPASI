@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,16 +36,16 @@
 #include "CModel.h"
 #include "CChemEqParser.h"
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CMetabNameInterface::~CMetabNameInterface()
 {}
 
 std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key, const bool & quoted)
 {
-  CMetab * metab = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CMetab * metab = dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(key));
 
   if (metab)
     return getDisplayName(model, *metab, quoted);
@@ -125,7 +130,7 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
 
 bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
 {
-  CCopasiContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(name);
+  CDataContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(name);
   CMetab * pSpecies = NULL;
   bool Found = false;
 
@@ -144,7 +149,7 @@ bool CMetabNameInterface::doesExist(const CModel* model,
                                     const std::string & metabolite,
                                     const std::string & compartment)
 {
-  CCopasiContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
+  CDataContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
   CMetab * pSpecies = NULL;
 
   for (; Range.first != Range.second; ++Range.first)

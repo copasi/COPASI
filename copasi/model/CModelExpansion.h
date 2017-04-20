@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -28,7 +33,7 @@ class CReaction;
 class CModelValue;
 class CExpression;
 class CEvent;
-class CCopasiObject;
+class CDataObject;
 
 class CModelExpansion
 {
@@ -48,12 +53,12 @@ public:
     void addGlobalQuantity(const CModelValue* x);
     void addEvent(const CEvent* x);
 
-    bool addObject(const CCopasiObject* x);
+    bool addObject(const CDataObject* x);
 
     /**
      * Checks whether an object is present in this set
      */
-    bool contains(const CCopasiObject* x) const;
+    bool contains(const CDataObject* x) const;
     bool contains(const std::string & key) const;
 
     /**
@@ -82,23 +87,23 @@ public:
   public:
 
     ///does a copy of the source object exist?
-    bool exists(const CCopasiObject* source) const;
+    bool exists(const CDataObject* source) const;
     bool exists(const std::string & sourceKey) const;
 
     ///add a source->duplicate mapping
-    void add(const CCopasiObject* source, const CCopasiObject* copy);
+    void add(const CDataObject* source, const CDataObject* copy);
 
     ///find the pointer of the duplicated object from the pointer to the source object (if it exists)
-    const CCopasiObject* getDuplicatePtr(const CCopasiObject* source) const;
+    const CDataObject* getDuplicatePtr(const CDataObject* source) const;
 
     ///find the key of the duplicated object from the source object (if it exists)
     std::string getDuplicateKey(const std::string & sourceKey) const;
 
-    const std::map<const CCopasiObject*, const CCopasiObject*> & getMap() const;
+    const std::map<const CDataObject*, const CDataObject*> & getMap() const;
 
   protected:
 
-    std::map<const CCopasiObject*, const CCopasiObject*> mMap;
+    std::map<const CDataObject*, const CDataObject*> mMap;
   };
 
   CModelExpansion(CModel* pModel);
@@ -124,7 +129,7 @@ public:
    * adds the contents of the source model to the current model.
    * A list of created model elements is returned
    */
-  std::set< const CCopasiObject * > copyCompleteModel(const CModel* pSourceModel);
+  std::set< const CDataObject * > copyCompleteModel(const CModel* pSourceModel);
 
   /**
    * creates one duplicate of the set of elements specified by source.
@@ -173,7 +178,7 @@ public:
   /**
    *  Tests if there are model elements that refer to the given model entity
    */
-  bool existDependentEntities(const CCopasiObject* pObj);
+  bool existDependentEntities(const CDataObject* pObj);
 
 protected:
 

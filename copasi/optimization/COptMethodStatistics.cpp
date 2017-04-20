@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,10 +26,10 @@
 
 #include "COptMethodStatistics.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
-COptMethodStatistics::COptMethodStatistics(const CCopasiContainer * pParent,
+COptMethodStatistics::COptMethodStatistics(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType),
@@ -37,7 +42,7 @@ COptMethodStatistics::COptMethodStatistics(const CCopasiContainer * pParent,
 }
 
 COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   COptMethod(src, pParent),
   mIndividual(src.mIndividual),
   mValue(src.mValue),

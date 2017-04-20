@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -29,15 +34,15 @@ enum CLASS_TYPE
   , CCompartment_Type
   , CCopasiArray_Type
   , CCopasiAbstractArray_Type
-  , CCopasiContainer_Type
-  , CCopasiDataModel_Type
+  , CDataContainer_Type
+  , CDataModel_Type
   , CCopasiMethod_Type
-  , CCopasiObject_Type
+  , CDataObject_Type
   , CCopasiParameterGroup_Type
   , CCopasiParameter_Type
   , CCopasiProblem_Type
   , CCopasiReportSeparator_Type
-  , CCopasiRootContainer_Type
+  , CRootContainer_Type
   , CCopasiStaticString_Type
   , CCopasiTask_Type
   , CCreator_Type
@@ -137,13 +142,13 @@ enum CLASS_TYPE
 class CCompartment;
 class CCopasiAbstractArray;
 class CCopasiArray;
-class CCopasiContainer;
+class CDataContainer;
 class CCopasiMethod;
-class CCopasiObject;
+class CDataObject;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 class CCopasiProblem;
-class CCopasiRootContainer;
+class CRootContainer;
 class CCopasiTask;
 class CCopasiTask;
 class CEvaluationTree;
@@ -160,14 +165,14 @@ class CTrajectoryTask;
 // Determine type CCopasiAbstractArray
 int GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer);
 
-// Determine type for CCopasiContainer
-int GetType_CCopasiContainer(CCopasiContainer* pPointer);
+// Determine type for CDataContainer
+int GetType_CDataContainer(CDataContainer* pPointer);
 
 // Determine type for CCopasiMethod
 int GetType_CCopasiMethod(CCopasiMethod* pPointer);
 
-// Determine type for CCopasiObject
-int GetType_CCopasiObject(CCopasiObject* pPointer);
+// Determine type for CDataObject
+int GetType_CDataObject(CDataObject* pPointer);
 
 // Determine type for CCopasiParameter
 int GetType_CCopasiParameter(CCopasiParameter* pPointer);
@@ -502,25 +507,25 @@ int GetType_COptTask(COptTask* pPointer);
     }
 
 
-    // Determine type for CCopasiContainer
-    public static CCopasiContainer InstantiateConcrete_CCopasiContainer(IntPtr cPtr, bool owner)
+    // Determine type for CDataContainer
+    public static CDataContainer InstantiateConcrete_CDataContainer(IntPtr cPtr, bool owner)
     {
-        CCopasiContainer ret = null;
+        CDataContainer ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            int type = $modulePINVOKE.GetType_CCopasiContainer(new HandleRef(null, cPtr));
+            int type = $modulePINVOKE.GetType_CDataContainer(new HandleRef(null, cPtr));
             switch(type)
             {
                 case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case COPASI.CCopasiRootContainer_Type:
-                    // return a CCopasiRootContainer
-                    ret = new CCopasiRootContainer(cPtr,owner);
+                case COPASI.CRootContainer_Type:
+                    // return a CRootContainer
+                    ret = new CRootContainer(cPtr,owner);
                     break;
-                case COPASI.CCopasiDataModel_Type:
-                    // return a CCopasiDataModel
-                    ret = new CCopasiDataModel(cPtr,owner);
+                case COPASI.CDataModel_Type:
+                    // return a CDataModel
+                    ret = new CDataModel(cPtr,owner);
                     break;
                 case COPASI.CChemEq_Type:
                     // return a CChemEq
@@ -698,9 +703,9 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CArrayAnnotation
                     ret = new CArrayAnnotation(cPtr,owner);
                     break;
-                case COPASI.CCopasiContainer_Type:
-                    // return a CCopasiContainer
-                    ret = new CCopasiContainer(cPtr,owner);
+                case COPASI.CDataContainer_Type:
+                    // return a CDataContainer
+                    ret = new CDataContainer(cPtr,owner);
                     break;
                 default:
                     System.Diagnostics.Debug.Assert(false,
@@ -788,20 +793,20 @@ int GetType_COptTask(COptTask* pPointer);
     }
 
 
-    // CCopasiObject
-    public static CCopasiObject InstantiateConcrete_CCopasiObject(IntPtr cPtr, bool owner)
+    // CDataObject
+    public static CDataObject InstantiateConcrete_CDataObject(IntPtr cPtr, bool owner)
     {
-        CCopasiObject ret = null;
+        CDataObject ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            int type = $modulePINVOKE.GetType_CCopasiObject(new HandleRef(null, cPtr));
+            int type = $modulePINVOKE.GetType_CDataObject(new HandleRef(null, cPtr));
             switch(type)
             {
                 case COPASI.UNDEFINED_CLASS_TYPE:
                     break;
-                case COPASI.CCopasiContainer_Type:
-                    ret = InstantiateConcrete_CCopasiContainer(cPtr, owner);
+                case COPASI.CDataContainer_Type:
+                    ret = InstantiateConcrete_CDataContainer(cPtr, owner);
                     break;
                 case COPASI.CCopasiParameter_Type:
                     ret = InstantiateConcrete_CCopasiParameter(cPtr, owner);
@@ -822,9 +827,9 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CCopasiStaticString
                     ret = new CCopasiStaticString(cPtr,owner);
                     break;
-                case COPASI.CCopasiObject_Type:
-                    // return a CCopasiObject
-                    ret = new CCopasiObject(cPtr,owner);
+                case COPASI.CDataObject_Type:
+                    // return a CDataObject
+                    ret = new CDataObject(cPtr,owner);
                     break;
                 default:
                     System.Diagnostics.Debug.Assert(false,
@@ -1026,9 +1031,9 @@ int GetType_COptTask(COptTask* pPointer);
       if (cPtr == IntPtr.Zero) return null;
     
       CObjectInterface temp = new CObjectInterface(cPtr, false);
-    CCopasiObject co = temp.toObject();
+    CDataObject co = temp.toObject();
     if (co != null)
-      return InstantiateConcrete_CCopasiObject(cPtr, owner);	
+      return InstantiateConcrete_CDataObject(cPtr, owner);	
     return new CObjectInterface(cPtr, owner);	
     }
   
@@ -1051,15 +1056,15 @@ int GetType_COptTask(COptTask* pPointer);
   return ret;
 }
 
-// CCopasiObject
+// CDataObject
 %typemap(csout, excode=SWIGEXCODE)
-  CCopasiObject *,
-  const CCopasiObject *,
-  CCopasiObject &,
-  const CCopasiObject &
+  CDataObject *,
+  const CDataObject *,
+  CDataObject &,
+  const CDataObject &
 {
     IntPtr cPtr = $imcall;
-    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiObject(cPtr, $owner);$excode
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CDataObject(cPtr, $owner);$excode
     return ret;
 }
 
@@ -1075,15 +1080,15 @@ int GetType_COptTask(COptTask* pPointer);
     return ret;
 }
 
-// CCopasiContainer
+// CDataContainer
 %typemap(csout, excode=SWIGEXCODE)
-  CCopasiContainer *,
-  const CCopasiContainer *,
-  CCopasiContainer &,
-  const CCopasiContainer &
+  CDataContainer *,
+  const CDataContainer *,
+  CDataContainer &,
+  const CDataContainer &
 {
     IntPtr cPtr = $imcall;
-    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiContainer(cPtr, $owner);$excode
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CDataContainer(cPtr, $owner);$excode
     return ret;
 }
 
@@ -1217,7 +1222,7 @@ int GetType_COptTask(COptTask* pPointer);
 %}
 
 
-%exception CCopasiDataModel::importSBML %{
+%exception CDataModel::importSBML %{
     try
     {
         $action
@@ -1235,7 +1240,7 @@ int GetType_COptTask(COptTask* pPointer);
 %}
 
 
-%exception CCopasiDataModel::newModel %{
+%exception CDataModel::newModel %{
     try
     {
         $action
@@ -1252,7 +1257,7 @@ int GetType_COptTask(COptTask* pPointer);
     }
 %}
 
-%exception CCopasiDataModel::importSBMLFromString %{
+%exception CDataModel::importSBMLFromString %{
     try
     {
         $action
@@ -1269,7 +1274,7 @@ int GetType_COptTask(COptTask* pPointer);
     }
 %}
 
-%exception CCopasiDataModel::exportSBMLToString %{
+%exception CDataModel::exportSBMLToString %{
     try
     {
         $action
@@ -1286,7 +1291,7 @@ int GetType_COptTask(COptTask* pPointer);
     }
 %}
 
-%exception CCopasiDataModel::exportSBML %{
+%exception CDataModel::exportSBML %{
     try
     {
         $action

@@ -20,12 +20,12 @@
 #ifndef COPASI_CSlider
 #define COPASI_CSlider
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiObjectName.h"
 
 #include "math/CMathUpdateSequence.h"
 
-class CSlider : public CCopasiContainer
+class CSlider : public CDataContainer
 {
 public:
   /**
@@ -55,18 +55,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CSlider(const std::string & name = "Slider",
-          const CCopasiContainer * pParent = NO_PARENT);
+          const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CSlider & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CSlider(const CSlider & src,
-          const CCopasiContainer * pParent);
+          const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -76,7 +76,7 @@ public:
   /**
    * Compile, i.e., find the objects pointed to by the CN.
    * @param const CObjectInterface::ContainerList & listOfContainer
-   *  (default: CCopasiContainer::EmptyList)
+   *  (default: CDataContainer::EmptyList)
    * @return bool success
    */
   bool compile(const CObjectInterface::ContainerList & listOfContainer);
@@ -102,10 +102,10 @@ public:
 
   /**
    * Set the slider object.
-   * @param const CCopasiObject * pObject
+   * @param const CDataObject * pObject
    * @return bool success
    */
-  bool setSliderObject(const CCopasiObject * pObject);
+  bool setSliderObject(const CDataObject * pObject);
 
   /**
    * Set the slider object.
@@ -116,9 +116,9 @@ public:
 
   /**
    * Retrieve the slider object.
-   * @return const CCopasiObject * pObject
+   * @return const CDataObject * pObject
    */
-  const CCopasiObject * getSliderObject() const;
+  const CDataObject * getSliderObject() const;
 
   /**
    * Retrieve the slider object CN.
@@ -298,7 +298,7 @@ private:
   /**
    * The slider object pointing to the slider's object after compile.
    */
-  CCopasiObject * mpSliderObject;
+  CDataObject * mpSliderObject;
 
   /**
    * The value type of the slider's object.
@@ -354,7 +354,7 @@ private:
    * The sequnece of methods to update initial values depending on this sliders
    * object.
    */
-  CObjectInterface::UpdateSequence mInitialRefreshes;
+  CCore::CUpdateSequence mInitialRefreshes;
 };
 
 #endif

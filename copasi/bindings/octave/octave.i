@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -115,24 +120,24 @@
 /**
  * Convert container objects into the most specific type possible.
  */
-%typemap(out) CCopasiContainer*
+%typemap(out) CDataContainer*
 {
-  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiContainer($1), 0);
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCDataContainer($1), 0);
 }
 
 /**
  * Convert object objects into the most specific type possible.
  */
-%typemap(out) CCopasiObject*
+%typemap(out) CDataObject*
 {
-  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiObject($1), 0);
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCDataObject($1), 0);
 }
 
 
 %include "../swig/copasi.i"
 
 %{
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/COptions.h"
 %}
 
@@ -141,7 +146,7 @@
 // Taken from CopasiSE.cpp
 
 // Create the root container
-CCopasiRootContainer::init(0,NULL,false);
+CRootContainer::init(0,NULL,false);
 
 %}
 
@@ -152,16 +157,16 @@ TriUnspecified = -1
 TriFalse = 0
 TriTrue = 1
 
-CCopasiRootContainer.init = _COPASI.CCopasiRootContainer_init
-CCopasiRootContainer.destroy = _COPASI.CCopasiRootContainer_destroy
-CCopasiRootContainer.getRoot = _COPASI.CCopasiRootContainer_getRoot
-CCopasiRootContainer.getFunctionList = _COPASI.CCopasiRootContainer_getFunctionList
-CCopasiRootContainer.getDatamodelList = _COPASI.CCopasiRootContainer_getDatamodelList
-CCopasiRootContainer.addDatamodel = _COPASI.CCopasiRootContainer_addDatamodel
-CCopasiRootContainer.getUndefinedFunction = _COPASI.CCopasiRootContainer_getUndefinedFunction
-CCopasiRootContainer.getKeyFactory = _COPASI.CCopasiRootContainer_getKeyFactory
-CCopasiRootContainer.removeDatamodel = _COPASI.CCopasiRootContainer_removeDatamodel
-CCopasiRootContainer.removeDatamodelWithIndex = _COPASI.CCopasiRootContainer_removeDatamodelWithIndex
+CRootContainer.init = _COPASI.CRootContainer_init
+CRootContainer.destroy = _COPASI.CRootContainer_destroy
+CRootContainer.getRoot = _COPASI.CRootContainer_getRoot
+CRootContainer.getFunctionList = _COPASI.CRootContainer_getFunctionList
+CRootContainer.getDatamodelList = _COPASI.CRootContainer_getDatamodelList
+CRootContainer.addDatamodel = _COPASI.CRootContainer_addDatamodel
+CRootContainer.getUndefinedFunction = _COPASI.CRootContainer_getUndefinedFunction
+CRootContainer.getKeyFactory = _COPASI.CRootContainer_getKeyFactory
+CRootContainer.removeDatamodel = _COPASI.CRootContainer_removeDatamodel
+CRootContainer.removeDatamodelWithIndex = _COPASI.CRootContainer_removeDatamodelWithIndex
 
 CCopasiObjectName.escape = _COPASI.CCopasiObjectName_escape
 CCopasiObjectName.unescape = _COPASI.CCopasiObjectName_unescape

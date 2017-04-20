@@ -1,20 +1,25 @@
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #ifndef COPASI_COptPopulationMethod_H
 #define COPASI_COptPopulationMethod_H
 
 #include <copasi/optimization/COptMethod.h>
-#include <copasi/utilities/CVector.h>
+#include "copasi/core/CVector.h"
 
 class CRandom;
 
 class COptPopulationMethod :
   public COptMethod
 {
-private: 
+private:
   /**
   * Default constructor.
   */
@@ -22,21 +27,21 @@ private:
 public:
   /**
   * Specific constructor
-  * @param const CCopasiContainer * pParent
+  * @param const CDataContainer * pParent
   * @param const CTaskEnum::Method & methodType
   * @param const CTaskEnum::Task & taskType (default: optimization)
   */
-  COptPopulationMethod(const CCopasiContainer * pParent,
-    const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+  COptPopulationMethod(const CDataContainer * pParent,
+                       const CTaskEnum::Method & methodType,
+                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
   * Copy constructor
   * @param const COptMethod & src
-  * @param const CCopasiContainer * pParent (default: NULL)
+  * @param const CDataContainer * pParent (default: NULL)
   */
   COptPopulationMethod(const COptPopulationMethod & src,
-    const CCopasiContainer * pParent);
+                       const CDataContainer * pParent);
 
   /**
   * Destructor
@@ -49,32 +54,28 @@ public:
   void initObjects();
 
   /**
-   * Initialize arrays and pointer. the population member ought to be 
+   * Initialize arrays and pointer. the population member ought to be
    * initialized in the subclasses.
    * @return bool success
    */
   virtual bool initialize();
-
-
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
   virtual bool cleanup();
-  
+
   C_INT32 getPopulationSize();
   C_INT32 getNumGenerations();
   C_INT32 getCurrentGeneration();
-  
+
   const std::vector< CVector < C_FLOAT64 > * >& getPopulation();
   const CVector< C_FLOAT64 >& getObjectiveValues();
-  
-  
-  
+
   /**
   * This is the output method for any object. The default implementation
-  * provided with CCopasiObject uses the ostream operator<< of the object
+  * provided with CDataObject uses the ostream operator<< of the object
   * to print the object. To override this default behavior one needs to
   * re implement the virtual print function.
   * @param std::ostream * ostream
@@ -129,8 +130,6 @@ protected:
    * a pointer to the random number generator.
    */
   CRandom * mpRandom;
-
-
 };
 
 #endif // COPASI_COptPopulationMethod_H

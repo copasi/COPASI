@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 #define COPASI_CArrayElementReference
 
 #include "CCopasiArray.h"
-#include "CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 #include "CCopasiObjectName.h"
 
@@ -20,11 +25,11 @@
  * Class CArrayElementReference
  *
  * This class is used to make an element of an array accessible as
- * a CCopasiObject. Usually an object from this class will be a child
+ * a CDataObject. Usually an object from this class will be a child
  * of a CArrayAnnotation and will reference a single element of the
  * array that the CArrayAnnotation points to.
  */
-class CArrayElementReference: public CCopasiObject
+class CArrayElementReference: public CDataObject
 {
 
 private:
@@ -57,7 +62,8 @@ public:
    * pParent may not be NULL.
    */
   CArrayElementReference(const std::vector< CRegisteredObjectName > & index,
-                         const CCopasiContainer * pParent);
+                         const CDataContainer * pParent,
+                         const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   virtual ~CArrayElementReference() {}
 
@@ -67,7 +73,7 @@ public:
    */
   virtual void * getValuePointer() const;
 
-  virtual const CCopasiObject * getValueObject() const {return this;}
+  virtual const CDataObject * getValueObject() const {return this;}
 
   /**
    *

@@ -14,14 +14,14 @@
 #include <set>
 #include <map>
 
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "copasi/math/CMathEnum.h"
 #include "copasi/utilities/CValidity.h"
 
 class CMathExpression;
 class CMathContainer;
 class CExpression;
-class CCopasiObject;
+class CDataObject;
 class CMetab;
 class CEvaluationNode;
 
@@ -96,17 +96,17 @@ public:
   /**
    * Check whether a given object is a prerequisite for a context.
    * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool isPrerequisiteForContext
    */
   virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CMath::SimulationContextFlag & context,
+                                        const CCore::SimulationContextFlag & context,
                                         const CObjectInterface::ObjectSet & changedObjects) const;
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
@@ -120,15 +120,15 @@ public:
 
   /**
    * Set the pointer to the data object
-   * @param const CCopasiObject * pDataObject
+   * @param const CDataObject * pDataObject
    */
-  void setDataObject(const CCopasiObject * pDataObject);
+  void setDataObject(const CDataObject * pDataObject);
 
   /**
    * Retrieve a pointer to the data object
-   * @return const CCopasiObject * dataObject
+   * @return const CDataObject * dataObject
    */
-  virtual const CCopasiObject * getDataObject() const;
+  virtual const CDataObject * getDataObject() const;
 
   /**
    * Get the aggregation of any issues associated with this object
@@ -156,7 +156,7 @@ public:
    * @param const CMath::SimulationType & simulationType
    * @param const bool & isIntensiveProperty
    * @param const bool & isInitialValue
-   * @param const CCopasiObject * pDataObject
+   * @param const CDataObject * pDataObject
    */
   static void initialize(CMathObject * pObject,
                          C_FLOAT64 * pValue,
@@ -165,7 +165,7 @@ public:
                          const CMath::SimulationType & simulationType,
                          const bool & isIntensiveProperty,
                          const bool & isInitialValue,
-                         const CCopasiObject * pDataObject);
+                         const CDataObject * pDataObject);
 
   /**
    * Compile
@@ -487,7 +487,7 @@ private:
   /**
    * A pointer to the data object
    */
-  const CCopasiObject * mpDataObject;
+  const CDataObject * mpDataObject;
 
   CValidity mValidity;
 };

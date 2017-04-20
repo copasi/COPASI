@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -14,7 +19,7 @@
 
 %{
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 %}
 
@@ -23,70 +28,70 @@
 %ignore CDataModelRenameHandler;
 %ignore CRenameHandler;
 
-%ignore CCopasiDataModel::CCopasiDataModel(const bool);
-%ignore CCopasiDataModel::autoSave();
-%ignore CCopasiDataModel::mLastAddedObjects;
-%ignore CCopasiDataModel::pOldMetabolites;
-%ignore CCopasiDataModel::print;
-%ignore CCopasiDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport,
+%ignore CDataModel::CDataModel(const bool);
+%ignore CDataModel::autoSave();
+%ignore CDataModel::mLastAddedObjects;
+%ignore CDataModel::pOldMetabolites;
+%ignore CDataModel::print;
+%ignore CDataModel::loadModel(const std::string& fileName,CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
-%ignore CCopasiDataModel::loadModel(std::istream & in,
+%ignore CDataModel::loadModel(std::istream & in,
                  const std::string & pwd,
                  CProcessReport* pProcessReport,
                  const bool & deleteOldData = true);
 
-//%ignore CCopasiDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
-//%ignore CCopasiDataModel::newModel;
-//%ignore CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler,
+//%ignore CDataModel::saveModel(const std::string& fileName,CProcessReport* pProcessReport, bool overwriteFile=false , const bool& autoSave=false);
+//%ignore CDataModel::newModel;
+//%ignore CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler,
 //                 const bool & deleteOldData = true);
-//%ignore CCopasiDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler,
+//%ignore CDataModel::importSBML(const std::string& fileName,CProcessReport* pImportHandler,
 //                 const bool & deleteOldData = true);
-//%ignore CCopasiDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
-//%ignore CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
-//%ignore CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = //false);
-%ignore CCopasiDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
-%ignore CCopasiDataModel::getModel() const;
-%ignore CCopasiDataModel::getTaskList() const;
-%ignore CCopasiDataModel::getListOfLayouts() const;
-%ignore CCopasiDataModel::listTaskDependentOnReport(const std::string & key);
-%ignore CCopasiDataModel::addReport(const CCopasiTask::Type & taskType);
-%ignore CCopasiDataModel::getPlotDefinitionList();
-%ignore CCopasiDataModel::getGUI();
-%ignore CCopasiDataModel::getConfiguration();
-%ignore CCopasiDataModel::isChanged() const;
-%ignore CCopasiDataModel::changed(const bool & changed = true);
-%ignore CCopasiDataModel::getCurrentSBMLDocument();
-//%ignore CCopasiDataModel::setSBMLFileName(const std::string & fileName);
-%ignore CCopasiDataModel::getCopasi2SBMLMap();
-%ignore CCopasiDataModel::isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1) const;
-%ignore CCopasiDataModel::removeSBMLIdFromFunctions();
-%ignore CCopasiDataModel::pOldMetabolites;
-%ignore CCopasiDataModel::mCopasi2SBMLMap;
-%ignore CCopasiDataModel::mSBMLFileName;
-%ignore CCopasiDataModel::mpCurrentSBMLDocument;
-%ignore CCopasiDataModel::mRenameHandler;
-%ignore CCopasiDataModel::mAutoSaveNeeded;
-%ignore CCopasiDataModel::mChanged;
-%ignore CCopasiDataModel::mSaveFileName;
-%ignore CCopasiDataModel::mpConfiguration;
-%ignore CCopasiDataModel::mpGUI;
-%ignore CCopasiDataModel::mWithGUI;
-%ignore CCopasiDataModel::mpVersion;
-%ignore CCopasiDataModel::mpFunctionList;
-%ignore CCopasiDataModel::mpModel;
-%ignore CCopasiDataModel::mpTaskList;
-%ignore CCopasiDataModel::mpReportDefinitionList;
-%ignore CCopasiDataModel::mpPlotDefinitionList;
-%ignore CCopasiDataModel::ObjectFromName(std::vector<CCopasiContainer * > const &,CCopasiObjectName const &) const;
-%ignore CCopasiDataModel::getReportDefinitionList() const;
+//%ignore CDataModel::exportSBML(const std::string& fileName,bool overwriteFile,int sbmlLevel, int sbmlVersion,bool exportIncomplete ,bool exportCOPASIMIRIAM=false,CProcessReport* pExportHandler = NULL );
+//%ignore CDataModel::exportSBMLToString(CProcessReport* pExportHandler,int sbmlLevel, int sbmlVersion);
+//%ignore CDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport, const std::string & filter, bool overwriteFile = //false);
+%ignore CDataModel::exportMathModelToString(CProcessReport* pProcessReport, const std::string & filter);
+%ignore CDataModel::getModel() const;
+%ignore CDataModel::getTaskList() const;
+%ignore CDataModel::getListOfLayouts() const;
+%ignore CDataModel::listTaskDependentOnReport(const std::string & key);
+%ignore CDataModel::addReport(const CCopasiTask::Type & taskType);
+%ignore CDataModel::getPlotDefinitionList();
+%ignore CDataModel::getGUI();
+%ignore CDataModel::getConfiguration();
+%ignore CDataModel::isChanged() const;
+%ignore CDataModel::changed(const bool & changed = true);
+%ignore CDataModel::getCurrentSBMLDocument();
+//%ignore CDataModel::setSBMLFileName(const std::string & fileName);
+%ignore CDataModel::getCopasi2SBMLMap();
+%ignore CDataModel::isSBMLCompatible(int sbmlLevel = 2, int sbmlVersion = 1) const;
+%ignore CDataModel::removeSBMLIdFromFunctions();
+%ignore CDataModel::pOldMetabolites;
+%ignore CDataModel::mCopasi2SBMLMap;
+%ignore CDataModel::mSBMLFileName;
+%ignore CDataModel::mpCurrentSBMLDocument;
+%ignore CDataModel::mRenameHandler;
+%ignore CDataModel::mAutoSaveNeeded;
+%ignore CDataModel::mChanged;
+%ignore CDataModel::mSaveFileName;
+%ignore CDataModel::mpConfiguration;
+%ignore CDataModel::mpGUI;
+%ignore CDataModel::mWithGUI;
+%ignore CDataModel::mpVersion;
+%ignore CDataModel::mpFunctionList;
+%ignore CDataModel::mpModel;
+%ignore CDataModel::mpTaskList;
+%ignore CDataModel::mpReportDefinitionList;
+%ignore CDataModel::mpPlotDefinitionList;
+%ignore CDataModel::ObjectFromName(std::vector<CDataContainer * > const &,CCopasiObjectName const &) const;
+%ignore CDataModel::getReportDefinitionList() const;
 
-%catches(CCopasiException) CCopasiDataModel::newModel();
-%catches(CCopasiException) CCopasiDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
-%catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
-%catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
-%catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException) CDataModel::newModel();
+%catches(CCopasiException) CDataModel::newModel(CProcessReport* pProcessReport,const bool& deleteOldData);
+%catches(CCopasiException) CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
+%catches(CCopasiException) CDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
+%catches(CCopasiException) CDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
+%catches(CCopasiException) CDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
+%catches(CCopasiException) CDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
 
 #if SWIGPYTHON
 %exception importSBML {
@@ -100,13 +105,13 @@
 #endif // SWIGPYTHON
 
 // suppress warnings on multiple inheritance
-%warnfilter(813) CCopasiDataModel;
+%warnfilter(813) CDataModel;
 
-%include "CopasiDataModel/CCopasiDataModel.h"
+%include "CopasiDataModel/CDataModel.h"
 
-%rename(newModel) CCopasiDataModel::newModel;
+%rename(newModel) CDataModel::newModel;
 
-%extend CCopasiDataModel
+%extend CDataModel
 {
   bool importSBMLFromString(const std::string& content)
   {
@@ -179,21 +184,21 @@
     
     bool removeReportDefinition(unsigned C_INT32 index)
     {
-      CCopasiVector< CReportDefinition > * pReportList = self->getReportDefinitionList();
+      CDataVector< CReportDefinition > * pReportList = self->getReportDefinitionList();
       CReportDefinition * pReport = &(*pReportList)[index];
 
       if (pReport == NULL)
         return false;
 
 
-      std::set< const CCopasiObject * > Tasks;
-      std::set< const CCopasiObject * > DeletedObjects;
+      std::set< const CDataObject * > Tasks;
+      std::set< const CDataObject * > DeletedObjects;
       DeletedObjects.insert(pReport);
 
       if (self->appendDependentTasks(DeletedObjects, Tasks))
         {
-          std::set< const CCopasiObject * >::iterator it = Tasks.begin();
-          std::set< const CCopasiObject * >::iterator end = Tasks.end();
+          std::set< const CDataObject * >::iterator it = Tasks.begin();
+          std::set< const CDataObject * >::iterator end = Tasks.end();
 
           for (; it != end; ++it)
             {
@@ -208,7 +213,7 @@
     
     bool removePlotSpecification(unsigned C_INT32 index)
     {
-      CCopasiVector< CPlotSpecification > * pPlotList = self->getPlotDefinitionList();
+      CDataVector< CPlotSpecification > * pPlotList = self->getPlotDefinitionList();
 
       CPlotSpecification * pPlot = &(*pPlotList)[index];
 
@@ -303,18 +308,18 @@
 
 #ifdef SWIGJAVA
     // needed for CellDesigner
-    static CCopasiDataModel* Global_get()
+    static CDataModel* Global_get()
     {
-        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API." << std::endl;
+        std::cerr << "Calling static method getGlobal on CDataModel is obsolete, please see the documentation for CRootContainer on how to handle this in newer versions of the COPASI API." << std::endl;
         // check if there is a model and if not, create one
-        CCopasiDataModel* pDatamodel=NULL;
-        if(CCopasiRootContainer::getDatamodelList()->size() != 0)
+        CDataModel* pDatamodel=NULL;
+        if(CRootContainer::getDatamodelList()->size() != 0)
         {
-            pDatamodel=&(*CCopasiRootContainer::getDatamodelList())[0];
+            pDatamodel=&(*CRootContainer::getDatamodelList())[0];
         }
         else
         {
-            pDatamodel=CCopasiRootContainer::addDatamodel();
+            pDatamodel=CRootContainer::addDatamodel();
         }
         assert(pDatamodel != NULL);
         return pDatamodel;
@@ -323,23 +328,23 @@
     // needed for CellDesigner
     const CVersion* getVersion() const
     {
-        std::cerr << "Calling static method getVersion on CCopasiDataModel is obsolete, please use static method getVERSION() from CVersion instead." << std::endl;
+        std::cerr << "Calling static method getVersion on CDataModel is obsolete, please use static method getVERSION() from CVersion instead." << std::endl;
         return &CVersion::VERSION;
     }
 
     // needed for CellDesigner
-    static CCopasiDataModel* getGlobal()
+    static CDataModel* getGlobal()
     {
-        std::cerr << "Calling static method getGlobal on CCopasiDataModel is obsolete, please see the documentation for CCopasiRootContainer on how to handle this in newer versions of the COPASI API."  << std::endl;
+        std::cerr << "Calling static method getGlobal on CDataModel is obsolete, please see the documentation for CRootContainer on how to handle this in newer versions of the COPASI API."  << std::endl;
         // check if there is a model and if not, create one
-        CCopasiDataModel* pDatamodel=NULL;
-        if(CCopasiRootContainer::getDatamodelList()->size() != 0)
+        CDataModel* pDatamodel=NULL;
+        if(CRootContainer::getDatamodelList()->size() != 0)
         {
-            pDatamodel=&(*CCopasiRootContainer::getDatamodelList())[0];
+            pDatamodel=&(*CRootContainer::getDatamodelList())[0];
         }
         else
         {
-            pDatamodel=CCopasiRootContainer::addDatamodel();
+            pDatamodel=CRootContainer::addDatamodel();
         }
         assert(pDatamodel != NULL);
         return pDatamodel;

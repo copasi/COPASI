@@ -19,24 +19,24 @@
 
 %{
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 %}
 
 
 %ignore operator++;
 %ignore operator!=;
-%ignore CCopasiContainer::CObjectMap::iterator;
-%ignore CCopasiContainer::CObjectMap::iterator::operator++;
-%ignore CCopasiContainer::CObjectMap::const_iterator::operator++;
-%ignore CCopasiContainer::CCopasiContainer(const std::string& name,
-                                           const CCopasiContainer * pParent = NULL,
+%ignore CDataContainer::CObjectMap::iterator;
+%ignore CDataContainer::CObjectMap::iterator::operator++;
+%ignore CDataContainer::CObjectMap::const_iterator::operator++;
+%ignore CDataContainer::CDataContainer(const std::string& name,
+                                           const CDataContainer * pParent = NULL,
                                            const std::string & type = "CN",
                                            const unsigned C_INT32 & flag);
 
-%ignore CCopasiContainer::add(CCopasiObject*,const bool&); // needs to be hidden since it conflicts with methods in derived classes 
-%ignore CCopasiContainer::remove(CCopasiObject*); // needs to be hidden since it conflicts with methods in derived classes 
-%ignore CCopasiContainer::getObjects;
+%ignore CDataContainer::add(CDataObject*,const bool&); // needs to be hidden since it conflicts with methods in derived classes 
+%ignore CDataContainer::remove(CDataObject*); // needs to be hidden since it conflicts with methods in derived classes 
+%ignore CDataContainer::getObjects;
 
-%include "report/CCopasiContainer.h"
+%include "report/CDataContainer.h"
 

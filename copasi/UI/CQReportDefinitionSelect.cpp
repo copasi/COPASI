@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,9 +20,9 @@
 
 #include "resourcesUI/CQIconResource.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CReportDefinitionVector.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 CQReportDefinitionSelect::CQReportDefinitionSelect(QWidget * parent, Qt::WindowFlags f) :
   QDialog(parent, f),
@@ -48,7 +53,7 @@ void CQReportDefinitionSelect::setReport(CReport * newReport)
 
 void CQReportDefinitionSelect::loadReportDefinitionVector()
 {
-  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  CDataModel* pDataModel = mpListView->getDataModel();
   assert(pDataModel != NULL);
   CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   unsigned C_INT32 i;
@@ -118,7 +123,7 @@ void CQReportDefinitionSelect::accept()
     //exception made here
     return;
 
-  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  CDataModel* pDataModel = mpListView->getDataModel();
   assert(pDataModel != NULL);
   CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;
@@ -139,7 +144,7 @@ void CQReportDefinitionSelect::reject()
 
 void CQReportDefinitionSelect::slotEdit()
 {
-  CCopasiDataModel* pDataModel = mpListView->getDataModel();
+  CDataModel* pDataModel = mpListView->getDataModel();
   assert(pDataModel != NULL);
   CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;

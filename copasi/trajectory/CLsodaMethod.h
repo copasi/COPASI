@@ -22,7 +22,7 @@
 
 #include <sstream>
 
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/odepack++/CLSODA.h"
 #include "copasi/odepack++/CLSODAR.h"
@@ -211,21 +211,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: deterministic)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CLsodaMethod(const CCopasiContainer * pParent,
+  CLsodaMethod(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::deterministic,
                const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param "const CLsodaMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CLsodaMethod(const CLsodaMethod & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    *  Destructor.

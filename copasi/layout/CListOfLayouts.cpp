@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -26,7 +31,7 @@
 
 #include "CListOfLayouts.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "SBMLDocumentLoader.h"
 
 // the following is taken from libsbml 5.5 if a lower version is used then
@@ -55,15 +60,15 @@
 #endif
 
 CListOfLayouts::CListOfLayouts(const std::string & name,
-                               const CCopasiContainer * pParent):
-  CCopasiVectorN< CLayout >(name, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this))
+                               const CDataContainer * pParent):
+  CDataVectorN< CLayout >(name, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("Layout", this))
   , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
 {}
 
 CListOfLayouts::~CListOfLayouts()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string& CListOfLayouts::getKey()
@@ -79,7 +84,7 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
   //TODO: store map
 }
 
-void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CDataObject*, SBase*> & copasimodelmap,
                                   const std::map<std::string, const SBase*>& idMap, unsigned int level, unsigned int version) const
 {
   if (!lol) return;
@@ -157,7 +162,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CCopasiObject*, S
       const CLayout * tmp = &this->operator[](i);
 
       //check if the layout exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       Layout * pLayout;

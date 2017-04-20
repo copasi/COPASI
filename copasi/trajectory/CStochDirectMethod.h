@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -48,21 +53,21 @@ protected:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: directMethod)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CStochDirectMethod(const CCopasiContainer * pParent,
+  CStochDirectMethod(const CDataContainer * pParent,
                      const CTaskEnum::Method & methodType = CTaskEnum::directMethod,
                      const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param const CStochDirectMethod & src,
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
   CStochDirectMethod(const CStochDirectMethod & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -179,12 +184,12 @@ protected:
   /**
    * A vector containing the update sequence required to update all propensity values.
    */
-  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
+  CVector< CCore::CUpdateSequence > mUpdateSequences;
 
   /**
    * The sequence required to update time dependent roots.
    */
-  CObjectInterface::UpdateSequence mUpdateTimeDependentRoots;
+  CCore::CUpdateSequence mUpdateTimeDependentRoots;
 
   /**
    * Boolean value indicating whether we have time dependent roots

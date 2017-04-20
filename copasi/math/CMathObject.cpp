@@ -32,7 +32,7 @@ void CMathObject::initialize(CMathObject * pObject,
                              const CMath::SimulationType & simulationType,
                              const bool & isIntensiveProperty,
                              const bool & isInitialValue,
-                             const CCopasiObject * pDataObject)
+                             const CDataObject * pDataObject)
 {
   pObject->mpValue = pValue;
   pObject->mValueType = valueType;
@@ -157,7 +157,7 @@ const CObjectInterface::ObjectSet & CMathObject::getPrerequisites() const
 
 // virtual
 bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
-    const CMath::SimulationContextFlag & context,
+    const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects) const
 {
   // This method should only be called for objects which are prerequisites.
@@ -168,13 +168,13 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
     {
       case CMath::Moiety:
 
-        if (context.isSet(CMath::SimulationContext::UpdateMoieties) &&
+        if (context.isSet(CCore::SimulationContext::UpdateMoieties) &&
             mValueType == CMath::TotalMass)
           {
             return true;
           }
 
-        if (context.isSet(CMath::SimulationContext::UseMoieties) &&
+        if (context.isSet(CCore::SimulationContext::UseMoieties) &&
             mValueType == CMath::DependentMass)
           {
             return true;
@@ -189,7 +189,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         if (mValueType != CMath::Value)
           return true;
 
-        if (context.isSet(CMath::SimulationContext::UseMoieties) &&
+        if (context.isSet(CCore::SimulationContext::UseMoieties) &&
             mSimulationType == CMath::Dependent &&
             !mIsIntensiveProperty)
           {
@@ -231,7 +231,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
       case CMath::Event:
 
-        if (context.isSet(CMath::SimulationContext::EventHandling) &&
+        if (context.isSet(CCore::SimulationContext::EventHandling) &&
             mValueType == CMath::Discontinuous)
           {
             switch (mpExpression->getRoot()->mainType() | mpExpression->getRoot()->subType())
@@ -268,7 +268,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
       case CMath::Delay:
 
-        if (context.isSet(CMath::SimulationContext::EventHandling))
+        if (context.isSet(CCore::SimulationContext::EventHandling))
           {
             return true;
           }
@@ -291,13 +291,13 @@ void CMathObject::print(std::ostream * ostream) const
   (*ostream) << *mpValue;
 }
 
-void CMathObject::setDataObject(const CCopasiObject * pDataObject)
+void CMathObject::setDataObject(const CDataObject * pDataObject)
 {
   mpDataObject = pDataObject;
 }
 
 // virtual
-const CCopasiObject * CMathObject::getDataObject() const
+const CDataObject * CMathObject::getDataObject() const
 {
   return mpDataObject;
 }
@@ -1144,9 +1144,9 @@ bool CMathObject::compilePropensity(CMathContainer & container)
           Divisor.imbue(std::locale::classic());
           Divisor.precision(16);
 
-          const CCopasiVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
-          CCopasiVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
-          CCopasiVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
+          const CDataVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
+          CDataVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
+          CDataVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
           bool first = true;
 
           for (; itSubstrate != endSubstrate; ++itSubstrate)
@@ -1356,15 +1356,15 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         std::string Key = pSpecies->getKey();
         bool First = true;
 
-        CCopasiVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-        CCopasiVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+        CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
+        CDataVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
 
         for (; it != end; ++it)
           {
-            const CCopasiVector< CChemEqElement > &Balances =
+            const CDataVector< CChemEqElement > &Balances =
               it->getChemEq().getBalances();
-            CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-            CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+            CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+            CDataVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
             for (; itChem != endChem; ++itChem)
               if (itChem->getMetaboliteKey() == Key)
@@ -1648,15 +1648,15 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   std::string Key = pSpecies->getKey();
   bool First = true;
 
-  CCopasiVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-  CCopasiVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+  CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
+  CDataVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
 
   for (; it != end; ++it)
     {
-      const CCopasiVector< CChemEqElement > &Balances =
+      const CDataVector< CChemEqElement > &Balances =
         it->getChemEq().getBalances();
-      CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-      CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+      CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+      CDataVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
       for (; itChem != endChem; ++itChem)
         if (itChem->getMetaboliteKey() == Key)
@@ -1792,17 +1792,17 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
   std::string Key = pSpecies->getKey();
   bool First = true;
 
-  CCopasiVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
-  CCopasiVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
+  CDataVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
+  CDataVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
 
   for (; it != end; ++it)
     {
       if (!it->hasNoise()) continue;
 
-      const CCopasiVector< CChemEqElement > &Balances =
+      const CDataVector< CChemEqElement > &Balances =
         it->getChemEq().getBalances();
-      CCopasiVector< CChemEqElement >::const_iterator itChem = Balances.begin();
-      CCopasiVector< CChemEqElement >::const_iterator endChem = Balances.end();
+      CDataVector< CChemEqElement >::const_iterator itChem = Balances.begin();
+      CDataVector< CChemEqElement >::const_iterator endChem = Balances.end();
 
       for (; itChem != endChem; ++itChem)
         if (itChem->getMetaboliteKey() == Key)

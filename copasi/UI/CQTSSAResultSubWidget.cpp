@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,13 +23,14 @@
 #include "qtUtilities.h"
 #include "CopasiFileDialog.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "tssanalysis/CTSSATask.h"
-#include "tssanalysis/CTSSAProblem.h"
-#include "utilities/CAnnotatedMatrix.h"
-#include "commandline/CLocaleString.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/tssanalysis/CTSSATask.h"
+#include "copasi/tssanalysis/CTSSAProblem.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 const CArrayAnnotation * pResult;
 
@@ -71,7 +77,7 @@ void CQTSSAResultSubWidget::saveDataToFile()
 
   if (file.fail()) return;
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
   CCopasiTask* mpTask =
     dynamic_cast<CTSSATask *>(&mpDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
 

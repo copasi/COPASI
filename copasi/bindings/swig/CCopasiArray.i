@@ -26,8 +26,8 @@
 %ignore CCopasiArray::operator[] (const index_type & index) const;
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index) const;
-%ignore CCopasiVectorInterface::operator[] (const index_type & index) ;
-%ignore CCopasiVectorInterface::operator[] (const index_type & index) const;
+%ignore CDataVectorInterface::operator[] (const index_type & index) ;
+%ignore CDataVectorInterface::operator[] (const index_type & index) const;
 %ignore CArrayAnnotation::operator=(const CArrayAnnotation&);
 %ignore CArrayAnnotation::array() const;
 %ignore operator<<(std::ostream &os, const CArrayAnnotation & o);

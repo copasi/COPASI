@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,23 +18,24 @@
 #define COPASI_MAIN
 
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataVector.h"
 
 int main(int argc, char** argv)
 {
   // initialize the backend library
-  CCopasiRootContainer::init(argc, argv);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(argc, argv);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // the only argument to the main routine should be the name of an SBML file
   if (argc != 3)
     {
       std::cerr << "Usage: exportSedML <copasi file> <sedML file>" << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -49,7 +55,7 @@ int main(int argc, char** argv)
   if (!result)
     {
       std::cerr << "Error while opening the file named \"" << filename << "\"." << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -57,5 +63,5 @@ int main(int argc, char** argv)
   pDataModel->exportSEDML(sedmlFile, true, 1, 2, true, true, NULL);
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

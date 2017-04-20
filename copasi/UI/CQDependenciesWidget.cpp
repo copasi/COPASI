@@ -6,9 +6,7 @@
 #include "CQDependenciesWidget.h"
 #include "ui_CQDependenciesWidget.h"
 
-#include <copasi/CopasiModelTypes.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
-#include <copasi/report/CCopasiObject.h>
+#include "copasi/CopasiModelTypes.h"
 
 CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
@@ -74,61 +72,54 @@ CQDependenciesWidget::addWidget(CDependencyType type)
   return pResult;
 }
 
-std::set< const CCopasiObject * >
-getDependentObjects(CCopasiObject *pObject)
+std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
 {
-  std::set< const CCopasiObject * > result;
+  std::set< const CDataObject * > result;
 
   if (pObject == NULL) return result;
 
   CModelEntity* pEntity = dynamic_cast<CModelEntity*>(pObject);
 
-  if (pEntity != NULL) return pEntity->getDeletedObjects();
+  if (pEntity != NULL)
+    {
+      pEntity->getDescendants(result, true);
+    }
+  else
+    {
+      CReaction* pReaction = dynamic_cast<CReaction*>(pObject);
 
-  CReaction* pReaction = dynamic_cast<CReaction*>(pObject);
+      if (pReaction != NULL)
+        {
+          pReaction->getDescendants(result, true);
+        }
+      else
+        {
+          CEvaluationTree* pFunction = dynamic_cast<CEvaluationTree*>(pObject);
 
-  if (pReaction != NULL) return pReaction->getDeletedObjects();
-
-  CEvaluationTree* pFunction = dynamic_cast<CEvaluationTree*>(pObject);
-
-  if (pFunction != NULL) return pFunction->getDeletedObjects();
+          if (pFunction != NULL)
+            {
+              pFunction->getDescendants(result, true);
+            }
+        }
+    }
 
   return result;
 }
 
-void CQDependenciesWidget::loadFrom(CCopasiObject * pObject)
+void CQDependenciesWidget::loadFrom(CDataObject * pObject)
 {
-  std::set< const CCopasiObject * > deletedObjects = getDependentObjects(pObject);
+  std::set< const CDataObject * > deletedObjects = getDependentObjects(pObject);
   CModel* pModel = mpDataModel->getModel();
-#if 0
 
-  // this method would cause each widget to determine dependencies
-  // likely slower
-  if (mpCompartmentWidget && (mVisibleModes & COMPARTMENT) == COMPARTMENT)
-    mpCompartmentWidget->updateFromCandidates(deletedObjects, pModel);
-
-  if (mpSpeciesWidget && (mVisibleModes & SPECIES) == SPECIES)
-    mpSpeciesWidget->updateFromCandidates(deletedObjects, pModel);
-
-  if (mpParameterWidget && (mVisibleModes & PARAMETERS) == PARAMETERS)
-    mpParameterWidget->updateFromCandidates(deletedObjects, pModel);
-
-  if (mpReactionWidget && (mVisibleModes & REACTION) == REACTION)
-    mpReactionWidget->updateFromCandidates(deletedObjects, pModel);
-
-  if (mpEventWidget && (mVisibleModes & EVENT) == EVENT)
-    mpEventWidget->updateFromCandidates(deletedObjects, pModel);
-
-#else
   // this method ought to be more performant
-  std::set< const CCopasiObject * > dependentReactions;
-  std::set< const CCopasiObject * > dependentMetabolites;
-  std::set< const CCopasiObject * > dependentCompartments;
-  std::set< const CCopasiObject * > dependentModelValues;
-  std::set< const CCopasiObject * > dependentEvents;
-  std::set< const CCopasiObject * > dependentEventAssignments;
+  CDataObject::DataObjectSet dependentReactions;
+  CDataObject::DataObjectSet dependentMetabolites;
+  CDataObject::DataObjectSet dependentCompartments;
+  CDataObject::DataObjectSet dependentModelValues;
+  CDataObject::DataObjectSet dependentEvents;
+  CDataObject::DataObjectSet dependentEventAssignments;
 
-  pModel->appendDirectDependents(*static_cast< CCopasiContainer * >(pObject),
+  pModel->appendDirectDependents(*static_cast< CDataContainer * >(pObject),
                                  dependentReactions,
                                  dependentMetabolites,
                                  dependentCompartments,
@@ -150,19 +141,17 @@ void CQDependenciesWidget::loadFrom(CCopasiObject * pObject)
 
   if (mpEventWidget && (mVisibleModes & EVENT) == EVENT)
     {
-      std::set< const CCopasiObject * >::iterator it = dependentEventAssignments.begin();
-      std::set< const CCopasiObject * >::iterator end = dependentEventAssignments.end();
+      std::set< const CDataObject * >::iterator it = dependentEventAssignments.begin();
+      std::set< const CDataObject * >::iterator end = dependentEventAssignments.end();
 
       for (; it != end; ++it)
         {
-          const CCopasiObject * pObject = *it;
+          const CDataObject * pObject = *it;
           dependentEvents.insert(pObject->getObjectParent()->getObjectParent());
         }
 
       mpEventWidget->updateFromDependencies(deletedObjects, dependentEvents, pModel);
     }
-
-#endif
 
   ui->mpLabel->setVisible(!haveDependencies());
 }

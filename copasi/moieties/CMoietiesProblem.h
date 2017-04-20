@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,18 +27,18 @@ public:
   /**
    * Default constructor
    * @param const CTaskEnum::Task & type (default: moieties)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMoietiesProblem(const CTaskEnum::Task & type = CTaskEnum::moieties,
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
    * @param const CMoietiesProblem & src
-   * @paramconst CCopasiContainer * pParent (default: NULL)
+   * @paramconst CDataContainer * pParent (default: NULL)
    */
   CMoietiesProblem(const CMoietiesProblem & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Destructor

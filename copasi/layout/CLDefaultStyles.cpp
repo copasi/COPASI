@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,7 +24,7 @@
 /**
  * A pointer to the list of default styles.
  */
-CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES = NULL;
+CDataVector<CLGlobalRenderInformation>* DEFAULT_STYLES = NULL;
 
 const char* DEFAULT_STYLES_STRING = \
                                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -787,7 +792,7 @@ const char* DEFAULT_STYLES_STRING = \
  * This method returns a global render information list that contains the default styles
  * which are built into the renderer.
  */
-CCopasiVector<CLGlobalRenderInformation>* getDefaultStyles()
+CDataVector<CLGlobalRenderInformation>* getDefaultStyles()
 {
   if (!DEFAULT_STYLES)
     {
@@ -838,7 +843,7 @@ CLGlobalRenderInformation* getDefaultStyle(size_t index)
   return pResult;
 }
 
-CCopasiVector<CLGlobalRenderInformation>* loadDefaultStyles()
+CDataVector<CLGlobalRenderInformation>* loadDefaultStyles()
 {
   // try to initialize the default styles
   if (DEFAULT_STYLES != NULL)
@@ -851,7 +856,7 @@ CCopasiVector<CLGlobalRenderInformation>* loadDefaultStyles()
   pRI->parseXML(XMLNode(stream));
   // convert the SBML objects to COPASI objects
   size_t i, iMax = pRI->size();
-  CCopasiVector<CLGlobalRenderInformation>* pResult = new CCopasiVector<CLGlobalRenderInformation>;
+  CDataVector<CLGlobalRenderInformation>* pResult = new CDataVector<CLGlobalRenderInformation>;
 
   for (i = 0; i < iMax; ++i)
     {

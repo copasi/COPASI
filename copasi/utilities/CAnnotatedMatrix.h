@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,7 +25,7 @@
 #ifndef CANNOTATEDMATRIX_H
 #define CANNOTATEDMATRIX_H
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiObjectName.h"
 
 #include "report/CCopasiArray.h"
@@ -28,14 +33,14 @@
 
 #include "copasi.h"
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 /**
  * This class contains the annotations to a n-dimensional array. Annotations can be provided
  * for the array as such, for each of the dimensions, and for each of the indices (rows,
  * columns, ...)
  */
-class CArrayAnnotation: public CCopasiContainer
+class CArrayAnnotation: public CDataContainer
 {
 public:
   typedef C_FLOAT64 data_type;
@@ -48,10 +53,10 @@ public:
    *
    * OBJECTS: The CNs for the rows, cols, ... of the array are given explicitly
    *
-   * VECTOR: A CCopasiVector is provided from which the CNs are generated at
+   * VECTOR: A CDataVector is provided from which the CNs are generated at
    * the time the vector is set
    *
-   * VECTOR_ON_THE_FLY: A CCopasiVector is provided, but the CNs are generated
+   * VECTOR_ON_THE_FLY: A CDataVector is provided, but the CNs are generated
    * every time the annotations are retrieved (so that they are always up to date).
    *
    * STRINGS: The annotations for the rows, cols, ... are given explicitly
@@ -76,7 +81,7 @@ private:
 
 public:
   CArrayAnnotation(const std::string & name,
-                   const CCopasiContainer * pParent,
+                   const CDataContainer * pParent,
                    CCopasiAbstractArray * array,
                    const bool & adopt);
 
@@ -121,13 +126,13 @@ public:
   {return mpArray->size();}
 
   /**
-   * Associates a dimension d of the array with a CCopasiVector of
+   * Associates a dimension d of the array with a CDataVector of
    * CCopasiObjects. If the mode of the dimension d is VECTOR than
    * the CNs of the objects in the vector are generated and stored immediately.
    * If the mode is VECTOR_ON_THE_FLY the CNs are generated when getAnnotationsCN()
    * or getAnnotationsString() is called.
    */
-  template < class CType > void setCopasiVector(size_t d, const CCopasiVector< CType > & v)
+  template < class CType > void setCopasiVector(size_t d, const CDataVector< CType > & v)
   {
     assert(d < dimensionality());
     assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
@@ -183,18 +188,18 @@ public:
    * most of the work will be done by getObject(). If the element already
    * exists, the existing element will be returned.
    */
-  const CCopasiObject * addElementReference(const index_type & index) const;
-  const CCopasiObject * addElementReference(const name_index_type & nameIndex) const;
+  const CDataObject * addElementReference(const index_type & index) const;
+  const CDataObject * addElementReference(const name_index_type & nameIndex) const;
 
   /**
    * a convenience function for 2-dimensional arrays.
    */
-  const CCopasiObject * addElementReference(C_INT32 u, C_INT32 v) const;
+  const CDataObject * addElementReference(C_INT32 u, C_INT32 v) const;
 
   /**
    * a convenience function for 1-dimensional arrays.
    */
-  const CCopasiObject * addElementReference(C_INT32 u) const;
+  const CDataObject * addElementReference(C_INT32 u) const;
 
   /**
    * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".

@@ -40,7 +40,7 @@ static inline double round(double value)
 #include "copasi/function/CEvaluationNode.h"
 
 class CRandom;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is the class for nodes presenting build-in functions used in an evaluation trees.
@@ -173,7 +173,7 @@ public:
    * Create a new ASTNode corresponding to this FunctionNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),

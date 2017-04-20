@@ -37,10 +37,10 @@
 #include "model/CReaction.h"
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CMIRIAMInfo::CMIRIAMInfo() :
-  CCopasiContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
+  CDataContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
   mKey(""),
   mCreators("Creators", this),
   mReferences("References", this),
@@ -58,10 +58,10 @@ CMIRIAMInfo::~CMIRIAMInfo()
 CRDFGraph * CMIRIAMInfo::getRDFGraph()
 {return mpRDFGraph;}
 
-CCopasiVector <CCreator> & CMIRIAMInfo::getCreators()
+CDataVector <CCreator> & CMIRIAMInfo::getCreators()
 {return mCreators;}
 
-const CCopasiVector <CCreator> & CMIRIAMInfo::getCreators() const
+const CDataVector <CCreator> & CMIRIAMInfo::getCreators() const
 {return mCreators;}
 
 CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
@@ -139,10 +139,10 @@ void CMIRIAMInfo::loadCreators()
   return;
 }
 
-CCopasiVector <CReference> & CMIRIAMInfo::getReferences()
+CDataVector <CReference> & CMIRIAMInfo::getReferences()
 {return mReferences;}
 
-const CCopasiVector <CReference> & CMIRIAMInfo::getReferences() const
+const CDataVector <CReference> & CMIRIAMInfo::getReferences() const
 {return mReferences;}
 
 CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
@@ -253,10 +253,10 @@ void CMIRIAMInfo::setCreatedDT(const std::string& dt)
   mCreated.pObject->setFieldValue(Date, CRDFPredicate::dcterms_W3CDTF, mCreated.pObject->getPath());
 }
 
-CCopasiVector <CModification> & CMIRIAMInfo::getModifications()
+CDataVector <CModification> & CMIRIAMInfo::getModifications()
 {return mModifications;}
 
-const CCopasiVector <CModification> & CMIRIAMInfo::getModifications() const
+const CDataVector <CModification> & CMIRIAMInfo::getModifications() const
 {return mModifications;}
 
 CModification * CMIRIAMInfo::createModification(const std::string& dateTime)
@@ -320,10 +320,10 @@ void CMIRIAMInfo::loadModifications()
   return;
 }
 
-CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions()
+CDataVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions()
 {return mBiologicalDescriptions;}
 
-const CCopasiVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions() const
+const CDataVector <CBiologicalDescription> & CMIRIAMInfo::getBiologicalDescriptions() const
 {return mBiologicalDescriptions;}
 
 CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
@@ -426,7 +426,7 @@ void CMIRIAMInfo::load(const std::string& key)
   pdelete(mpRDFGraph);
 
   mKey = key;
-  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CDataObject * pCopasiObject = dynamic_cast< CDataObject * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pCopasiObject != NULL)
     {
@@ -473,7 +473,7 @@ void CMIRIAMInfo::load(const std::string& key)
 
 bool CMIRIAMInfo::save()
 {
-  CCopasiObject * pCopasiObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CDataObject * pCopasiObject = dynamic_cast< CDataObject * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pCopasiObject && mpRDFGraph)
     {

@@ -26,8 +26,8 @@
 #include "CSteadyStateProblem.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CCompartment.h"
@@ -41,7 +41,7 @@
 #include "lapack/lapackwrap.h"
 #include "lapack/blaswrap.h"
 
-CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent,
+CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType):
   CSteadyStateMethod(pParent, methodType, taskType),
@@ -53,7 +53,7 @@ CNewtonMethod::CNewtonMethod(const CCopasiContainer * pParent,
 }
 
 CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
-                             const CCopasiContainer * pParent):
+                             const CDataContainer * pParent):
   CSteadyStateMethod(src, pParent),
   mIpiv(NULL),
   mpTrajectory(NULL),
@@ -731,7 +731,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
   if (mUseIntegration || mUseBackIntegration)
     {
       // create an appropriate trajectory task
-      CCopasiDataModel* pDataModel = getObjectDataModel();
+      CDataModel* pDataModel = getObjectDataModel();
       assert(pDataModel != NULL);
       CTrajectoryTask * pSrc =
         dynamic_cast< CTrajectoryTask * >(&pDataModel->getTaskList()->operator[]("Time-Course"));
@@ -773,7 +773,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConcentrations, CMath::SimulationContext::UseMoieties, mpContainer->getStateObjects(true), Requested, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConcentrations, CCore::SimulationContext::UseMoieties, mpContainer->getStateObjects(true), Requested, mpContainer->getSimulationUpToDateObjects());
 
   // Determine the compartment volumes for dependent species;
   pMathObjectEnd += mpContainer->getCountDependentSpecies();

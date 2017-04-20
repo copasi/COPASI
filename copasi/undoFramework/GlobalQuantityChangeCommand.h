@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,7 +16,7 @@
 #include <limits>
 
 class CQModelValue;
-class CCopasiObject;
+class CDataObject;
 
 class GlobalQuantityChangeCommand : public CCopasiUndoCommand
 {
@@ -20,7 +25,7 @@ public:
   GlobalQuantityChangeCommand(CCopasiUndoCommand::Type type,
                               const QVariant& oldValue,
                               const QVariant& newValue,
-                              CCopasiObject* pObject,
+                              CDataObject* pObject,
                               CQModelValue* pWidget,
                               double iValue = std::numeric_limits<double>::quiet_NaN());
   ~GlobalQuantityChangeCommand();
@@ -32,7 +37,7 @@ protected:
   QVariant mOld, mNew;
   std::string mKey;
   double mIValue;
-  CCopasiObject* mpObject;
+  CDataObject* mpObject;
   CQModelValue* mpWidget;
 };
 

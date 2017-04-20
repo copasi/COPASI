@@ -26,10 +26,10 @@
 #include "utilities/CAnnotatedMatrix.h"
 #include "UI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "UI/DataModelGUI.h"
 #include "copasi/UI/qtUtilities.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "UI/CCopasiSelectionDialog.h"
 #include <QListWidgetItem>
@@ -368,8 +368,8 @@ void CQPlotSubwidget::addCurveTab(const std::string &title,
 void CQPlotSubwidget::addCurve2D()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
-  std::vector< const CCopasiObject * > vector1;
-  std::vector< const CCopasiObject * > vector2;
+  std::vector< const CDataObject * > vector1;
+  std::vector< const CDataObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(mpDataModel != NULL);
   pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
@@ -403,7 +403,7 @@ void CQPlotSubwidget::addCurve2D()
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
-              const CCopasiObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
 
               if (!pObject) continue;
 
@@ -434,8 +434,8 @@ void CQPlotSubwidget::addCurve2D()
           if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
             {
               // second argument is set false for multi selection
-              std::vector<const CCopasiObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
-              std::vector<const CCopasiObject *>::const_iterator it;
+              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
+              std::vector<const CDataObject *>::const_iterator it;
 
               for (it = vvv.begin(); it != vvv.end(); ++it)
                 {
@@ -507,8 +507,8 @@ void CQPlotSubwidget::addCurve2D()
 void CQPlotSubwidget::addSpectrum()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
-  std::vector< const CCopasiObject * > vector1;
-  std::vector< const CCopasiObject * > vector2;
+  std::vector< const CDataObject * > vector1;
+  std::vector< const CDataObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(mpDataModel != NULL);
   pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
@@ -542,7 +542,7 @@ void CQPlotSubwidget::addSpectrum()
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
-              const CCopasiObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
 
               if (!pObject) continue;
 
@@ -573,8 +573,8 @@ void CQPlotSubwidget::addSpectrum()
           if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
             {
               // second argument is set false for multi selection
-              std::vector<const CCopasiObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
-              std::vector<const CCopasiObject *>::const_iterator it;
+              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
+              std::vector<const CDataObject *>::const_iterator it;
 
               for (it = vvv.begin(); it != vvv.end(); ++it)
                 {
@@ -659,8 +659,8 @@ void CQPlotSubwidget::addBandedGraphTab(const std::string &title,
 void CQPlotSubwidget::addBandedGraph()
 {
   CCopasiPlotSelectionDialog *pBrowser = new CCopasiPlotSelectionDialog();
-  std::vector< const CCopasiObject * > vector1;
-  std::vector< const CCopasiObject * > vector2;
+  std::vector< const CDataObject * > vector1;
+  std::vector< const CDataObject * > vector2;
   pBrowser->setOutputVectors(&vector1, &vector2);
   assert(mpDataModel != NULL);
   pBrowser->setModel(mpDataModel->getModel(), CQSimpleSelectionTree::NumericValues);
@@ -694,7 +694,7 @@ void CQPlotSubwidget::addBandedGraph()
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
-              const CCopasiObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
+              const CDataObject *pObject = CCopasiSelectionDialog::chooseCellMatrix(pArray, true, true, "X axis: ")[0];
 
               if (!pObject) continue;
 
@@ -725,8 +725,8 @@ void CQPlotSubwidget::addBandedGraph()
           if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
             {
               // second argument is set false for multi selection
-              std::vector<const CCopasiObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
-              std::vector<const CCopasiObject *>::const_iterator it;
+              std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
+              std::vector<const CDataObject *>::const_iterator it;
 
               for (it = vvv.begin(); it != vvv.end(); ++it)
                 {
@@ -822,7 +822,7 @@ void CQPlotSubwidget::addHisto1D()
   addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")), 1.0);
 }
 
-void CQPlotSubwidget::createHistograms(std::vector<const CCopasiObject * >objects, const C_FLOAT64 &incr)
+void CQPlotSubwidget::createHistograms(std::vector<const CDataObject * >objects, const C_FLOAT64 &incr)
 {
   C_INT32 storeTab = getCurrentIndex();
   size_t i;
@@ -864,7 +864,7 @@ void CQPlotSubwidget::removeCurve()
 void CQPlotSubwidget::commitPlot()
 {
   saveToPlotSpec();
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
 }
 
 //-----------------------------------------------------------------------------
@@ -877,12 +877,12 @@ void CQPlotSubwidget::deletePlot()
   if (!mpDataModel->getModel())
     return;
 
-  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pspec) return;
 
   Index =
-    mpDataModel->getPlotDefinitionList()->CCopasiVector<CPlotSpecification>::getIndex(pspec);
+    mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
   mpDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
   std::string deletedKey = mKey;
   Size = mpDataModel->getPlotDefinitionList()->size();
@@ -901,11 +901,11 @@ void CQPlotSubwidget::deletePlot()
 void CQPlotSubwidget::copyPlot()
 {
   leave();
-  CCopasiDataModel *pDataModel = mpObject->getObjectDataModel();
+  CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
 
-  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(CCopasiRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
+  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
   std::string baseName = pPl->getObjectName() + "_copy";
   std::string name = baseName;
   int i = 1;
@@ -929,7 +929,7 @@ void CQPlotSubwidget::copyPlot()
 void CQPlotSubwidget::addPlot()
 {
   leave();
-  CCopasiDataModel *pDataModel = mpObject->getObjectDataModel();
+  CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
 
@@ -955,7 +955,7 @@ void CQPlotSubwidget::addPlot()
 
 void CQPlotSubwidget::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
 }
 
 //-----------------------------------------------------------------------------
@@ -993,8 +993,8 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   deleteCurves();
   mpListPlotItems->clearSelection();
   //reconstruct tabWidget from curve specs
-  CCopasiVector<CPlotItem>::const_iterator it = pspec->getItems().begin();
-  CCopasiVector<CPlotItem>::const_iterator end = pspec->getItems().end();
+  CDataVector<CPlotItem>::const_iterator it = pspec->getItems().begin();
+  CDataVector<CPlotItem>::const_iterator end = pspec->getItems().end();
   QStringList PlotItems;
 
   for (; it != end; ++it)

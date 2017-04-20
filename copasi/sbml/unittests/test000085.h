@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000085.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/05/08 15:54:06 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -23,7 +25,7 @@
  * Test for 1D compartment unit import and export.
  */
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000085 : public CppUnit::TestFixture
 {
@@ -115,7 +117,7 @@ protected:
   // one uses nm, the other has no unit set
   static const char* MODEL_STRING21;
 
-  static CCopasiDataModel* pCOPASIDATAMODEL;
+  static CDataModel* pCOPASIDATAMODEL;
 
 public:
   void setUp();

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,9 +21,9 @@
 #define COPASI_CILDMMethod
 
 #include <sstream>
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
 
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "CTSSAMethod.h"
 
 //#include "odepack++/CLSODA.h"
@@ -41,21 +46,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: tssILDM)
    * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
    */
-  CILDMMethod(const CCopasiContainer * pParent,
+  CILDMMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType = CTaskEnum::tssILDM,
               const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
 
   /**
    * Copy constructor.
    * @param "const CILDMMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CILDMMethod(const CILDMMethod & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    *  Destructor.

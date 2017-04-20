@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,15 +23,15 @@
 #include "CLLinearGradient.h"
 #include "CLRadialGradient.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLRenderInformationBase::CLRenderInformationBase(const std::string& name, CCopasiContainer* pParent):
+CLRenderInformationBase::CLRenderInformationBase(const std::string& name, CDataContainer* pParent):
   CLBase(),
-  CCopasiContainer(name, pParent),
+  CDataContainer(name, pParent),
   mKey(""),
   mName("")
 {
@@ -35,9 +40,9 @@ CLRenderInformationBase::CLRenderInformationBase(const std::string& name, CCopas
 /**
  * Copy constructor.
  */
-CLRenderInformationBase::CLRenderInformationBase(const CLRenderInformationBase& source, CCopasiContainer* pParent):
+CLRenderInformationBase::CLRenderInformationBase(const CLRenderInformationBase& source, CDataContainer* pParent):
   CLBase(source),
-  CCopasiContainer(source, pParent),
+  CDataContainer(source, pParent),
   mReferenceRenderInformation(source.mReferenceRenderInformation),
   mBackgroundColor(source.mBackgroundColor),
   mListOfColorDefinitions(source.mListOfColorDefinitions, this),
@@ -58,10 +63,10 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
     std::map<std::string,std::string>& gradientIdToKeyMap,
     std::map<std::string,std::string>& lineEndingIdToKeyMap,
     */
-    CCopasiContainer* pParent):
+    CDataContainer* pParent):
 
   CLBase(),
-  CCopasiContainer(name, pParent),
+  CDataContainer(name, pParent),
   mReferenceRenderInformation(source.getReferenceRenderInformationId()),
   mBackgroundColor(source.getBackgroundColor()),
   mKey(""),
@@ -123,7 +128,7 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
  */
 CLRenderInformationBase::~CLRenderInformationBase()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**
@@ -153,7 +158,7 @@ size_t CLRenderInformationBase::getNumColorDefinitions() const
 /**
  * Returns a pointer to the list of color definitions.
  */
-CCopasiVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorDefinitions()
+CDataVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorDefinitions()
 {
   return &(this->mListOfColorDefinitions);
 }
@@ -161,7 +166,7 @@ CCopasiVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorDefinit
 /**
  * Returns a const pointer to the list of color definitions.
  */
-const CCopasiVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorDefinitions() const
+const CDataVector<CLColorDefinition>* CLRenderInformationBase::getListOfColorDefinitions() const
 {
   return &(this->mListOfColorDefinitions);
 }
@@ -225,7 +230,7 @@ size_t CLRenderInformationBase::getNumGradientDefinitions() const
 /**
  * Returns a pointer to the list of gradient definitions.
  */
-CCopasiVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientDefinitions()
+CDataVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientDefinitions()
 {
   return &(this->mListOfGradientDefinitions);
 }
@@ -233,7 +238,7 @@ CCopasiVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientDefinit
 /**
  * Returns a const pointer to the list of gradient definitions.
  */
-const CCopasiVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientDefinitions() const
+const CDataVector<CLGradientBase>* CLRenderInformationBase::getListOfGradientDefinitions() const
 {
   return &(this->mListOfGradientDefinitions);
 }
@@ -314,7 +319,7 @@ size_t CLRenderInformationBase::getNumLineEndings() const
 /**
  * Returns a pointer to the list of line endings.
  */
-CCopasiVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings()
+CDataVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings()
 {
   return &(this->mListOfLineEndings);
 }
@@ -322,7 +327,7 @@ CCopasiVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings()
 /**
  * Returns a const pointer to the list of line endings.
  */
-const CCopasiVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings() const
+const CDataVector<CLLineEnding>* CLRenderInformationBase::getListOfLineEndings() const
 {
   return &(this->mListOfLineEndings);
 }

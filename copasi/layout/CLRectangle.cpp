@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRectangle.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,92 +13,92 @@
 #define sbmlRectangle Rectangle
 #include "CLRectangle.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLRectangle::CLRectangle(CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Rectangle", pParent),
-    mKey("")
+CLRectangle::CLRectangle(CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Rectangle", pParent),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Rectangle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Rectangle", this);
 }
 
 /**
  * Copy Constructor.
  */
-CLRectangle::CLRectangle(const CLRectangle& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiObject(source, pParent),
-    mX(source.mX),
-    mY(source.mY),
-    mZ(source.mZ),
-    mWidth(source.mWidth),
-    mHeight(source.mHeight),
-    mRX(source.mRX),
-    mRY(source.mRY),
-    mKey("")
+CLRectangle::CLRectangle(const CLRectangle& source, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(source),
+  CDataObject(source, pParent),
+  mX(source.mX),
+  mY(source.mY),
+  mZ(source.mZ),
+  mWidth(source.mWidth),
+  mHeight(source.mHeight),
+  mRX(source.mRX),
+  mRY(source.mRY),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Rectangle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Rectangle", this);
 }
 
 /**
  * Constructor that takes an id, the x, y and z coordinate values, the width and the
  * height.
  */
-CLRectangle::CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, const CLRelAbsVector& w, const CLRelAbsVector& h, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Rectangle", pParent),
-    mX(x),
-    mY(y),
-    mZ(z),
-    mWidth(w),
-    mHeight(h),
-    mRX(CLRelAbsVector(0.0, 0.0)),
-    mRY(CLRelAbsVector(0.0, 0.0)),
-    mKey("")
+CLRectangle::CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, const CLRelAbsVector& w, const CLRelAbsVector& h, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Rectangle", pParent),
+  mX(x),
+  mY(y),
+  mZ(z),
+  mWidth(w),
+  mHeight(h),
+  mRX(CLRelAbsVector(0.0, 0.0)),
+  mRY(CLRelAbsVector(0.0, 0.0)),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Rectangle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Rectangle", this);
 }
 
 /**
  * Constructor that takes an id, x and y coordinate values, the width and the
  * height.
  */
-CLRectangle::CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& w, const CLRelAbsVector& h, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Rectangle", pParent),
-    mX(x),
-    mY(y),
-    mZ(CLRelAbsVector(0.0, 0.0)),
-    mWidth(w),
-    mHeight(h),
-    mRX(CLRelAbsVector(0.0, 0.0)),
-    mRY(CLRelAbsVector(0.0, 0.0)),
-    mKey("")
+CLRectangle::CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& w, const CLRelAbsVector& h, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Rectangle", pParent),
+  mX(x),
+  mY(y),
+  mZ(CLRelAbsVector(0.0, 0.0)),
+  mWidth(w),
+  mHeight(h),
+  mRX(CLRelAbsVector(0.0, 0.0)),
+  mRY(CLRelAbsVector(0.0, 0.0)),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Rectangle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Rectangle", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLRectangle::CLRectangle(const Rectangle& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiObject("Rectangle", pParent),
-    mX(source.getX()),
-    mY(source.getY()),
-    mZ(source.getZ()),
-    mWidth(source.getWidth()),
-    mHeight(source.getHeight()),
-    mRX(source.getRadiusX()),
-    mRY(source.getRadiusY()),
-    mKey("")
+CLRectangle::CLRectangle(const Rectangle& source, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(source),
+  CDataObject("Rectangle", pParent),
+  mX(source.getX()),
+  mY(source.getY()),
+  mZ(source.getZ()),
+  mWidth(source.getWidth()),
+  mHeight(source.getHeight()),
+  mRX(source.getRadiusX()),
+  mRY(source.getRadiusY()),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Rectangle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Rectangle", this);
 }
 
 /**
@@ -109,7 +106,7 @@ CLRectangle::CLRectangle(const Rectangle& source, CCopasiContainer* pParent):
  */
 CLRectangle::~CLRectangle()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**

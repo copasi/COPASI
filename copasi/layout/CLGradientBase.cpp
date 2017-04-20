@@ -17,7 +17,7 @@
 #include "CLLinearGradient.h"
 #include "CLRadialGradient.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -30,9 +30,9 @@ CLGradientBase * CLGradientBase::fromData(const CData & data)
 /**
  * Constructor.
  */
-CLGradientBase::CLGradientBase(const std::string& name, CCopasiContainer* pParent):
+CLGradientBase::CLGradientBase(const std::string& name, CDataContainer* pParent):
   CLBase(),
-  CCopasiContainer(name, pParent),
+  CDataContainer(name, pParent),
   mSpreadMethod(CLGradientBase::PAD),
   mKey(""),
   mId("")
@@ -42,9 +42,9 @@ CLGradientBase::CLGradientBase(const std::string& name, CCopasiContainer* pParen
 /**
  * Copy Constructor.
  */
-CLGradientBase::CLGradientBase(const CLGradientBase& source, CCopasiContainer* pParent):
+CLGradientBase::CLGradientBase(const CLGradientBase& source, CDataContainer* pParent):
   CLBase(source),
-  CCopasiContainer(source, pParent),
+  CDataContainer(source, pParent),
   mSpreadMethod(source.mSpreadMethod),
   mGradientStops(source.mGradientStops, this),
   mKey(""),
@@ -55,9 +55,9 @@ CLGradientBase::CLGradientBase(const CLGradientBase& source, CCopasiContainer* p
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& name, CCopasiContainer* pParent):
+CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& name, CDataContainer* pParent):
   CLBase(),
-  CCopasiContainer(name, pParent),
+  CDataContainer(name, pParent),
   mKey(""),
   mId(source.getId())
 {
@@ -91,7 +91,7 @@ CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& na
  */
 CLGradientBase::~CLGradientBase()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**
@@ -121,7 +121,7 @@ size_t CLGradientBase::getNumGradientStops() const
 /**
  * Returns a pointer to the gradient stop vector.
  */
-CCopasiVector<CLGradientStop>* CLGradientBase::getListOfGradientStops()
+CDataVector<CLGradientStop>* CLGradientBase::getListOfGradientStops()
 {
   return &(this->mGradientStops);
 }
@@ -129,7 +129,7 @@ CCopasiVector<CLGradientStop>* CLGradientBase::getListOfGradientStops()
 /**
  * Returns a const pointer to the gradient stop vector.
  */
-const CCopasiVector<CLGradientStop>* CLGradientBase::getListOfGradientStops() const
+const CDataVector<CLGradientStop>* CLGradientBase::getListOfGradientStops() const
 {
   return &(this->mGradientStops);
 }

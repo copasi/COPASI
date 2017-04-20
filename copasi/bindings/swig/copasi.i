@@ -117,9 +117,9 @@ size_t INVALID_INDEX();
 %include "CKeyFactory.i"
 %include "CCopasiException.i"
 %include "CCopasiObjectName.i"
-%include "CCopasiObject.i"
-%include "CCopasiObjectReference.i"
-%include "CCopasiContainer.i"
+%include "CDataObject.i"
+%include "CDataObjectReference.i"
+%include "CDataContainer.i"
 %include "CCopasiArray.i"
 %include "CAnnotatedMatrix.i"
 %include "CAnnotation.i"
@@ -148,7 +148,7 @@ size_t INVALID_INDEX();
 %include "CModelParameter.i"
 %include "CModelParameterGroup.i"
 %include "CModelParameterSet.i"
-%include "CCopasiVector.i"
+%include "CDataVector.i"
 %include "CVersion.i"
 %include "CCopasiMethod.i"
 %include "CCopasiProblem.i"
@@ -167,7 +167,7 @@ size_t INVALID_INDEX();
 %include "COutputDefinitionVector.i"
 %include "CReportDefinition.i"
 %include "CReportDefinitionVector.i"
-%include "CCopasiDataModel.i"
+%include "CDataModel.i"
 %include "CTimeSeries.i"
 %include "CTrajectoryProblem.i"
 %include "CTrajectoryMethod.i"
@@ -198,7 +198,7 @@ size_t INVALID_INDEX();
 %include "CMCAProblem.i"
 %include "CMCATask.i"
 %include "compare_utilities.i"
-%include "CCopasiRootContainer.i"
+%include "CRootContainer.i"
 %include "CEvent.i"
 %include "CLBase.i"
 %include "CLGraphicalObject.i"
@@ -252,28 +252,28 @@ size_t INVALID_INDEX();
 
 
 %ignore COptMethodPS::COptMethodPS(const COptMethodPS&);
-%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *);
-%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+%ignore COptMethodPS::COptMethodPS(const CDataContainer *);
+%ignore COptMethodPS::COptMethodPS(const CDataContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
 
 %ignore COptMethodEP::COptMethodEP(const COptMethodEP&);
-%ignore COptMethodEP::COptMethodEP(const CCopasiContainer *);
-%ignore COptMethodEP::COptMethodEP(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+%ignore COptMethodEP::COptMethodEP(const CDataContainer *);
+%ignore COptMethodEP::COptMethodEP(const CDataContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
 
 %ignore COptMethodGASR::COptMethodGASR(const COptMethodGASR&);
-%ignore COptMethodGASR::COptMethodGASR(const CCopasiContainer *);
-%ignore COptMethodGASR::COptMethodGASR(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+%ignore COptMethodGASR::COptMethodGASR(const CDataContainer *);
+%ignore COptMethodGASR::COptMethodGASR(const CDataContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
 
 %ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const COptMethodHookeJeeves&);
-%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer *);
-%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer *);
+%ignore COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
 
 %ignore COptMethodPS::COptMethodPS(const COptMethodPS&);
-%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *);
-%ignore COptMethodPS::COptMethodPS(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+%ignore COptMethodPS::COptMethodPS(const CDataContainer *);
+%ignore COptMethodPS::COptMethodPS(const CDataContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
 
 %ignore COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis&);
-%ignore COptMethodPraxis::COptMethodPraxis(const CCopasiContainer *);
-%ignore COptMethodPraxis::COptMethodPraxis(const CCopasiContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
+%ignore COptMethodPraxis::COptMethodPraxis(const CDataContainer *);
+%ignore COptMethodPraxis::COptMethodPraxis(const CDataContainer *,const CTaskEnum::Method &,const CTaskEnum::Task &);
 
 
 %include <copasi/plot/CPlotItem.h>

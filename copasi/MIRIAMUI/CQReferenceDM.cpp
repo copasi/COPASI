@@ -201,7 +201,7 @@ bool CQReferenceDM::removeRows(QModelIndexList rows, const QModelIndex&)
       CReference * pReference = *j;
 
       size_t delRow =
-        mpMIRIAMInfo->getReferences().CCopasiVector< CReference >::getIndex(pReference);
+        mpMIRIAMInfo->getReferences().CDataVector< CReference >::getIndex(pReference);
 
       if (delRow != C_INVALID_INDEX)
         {

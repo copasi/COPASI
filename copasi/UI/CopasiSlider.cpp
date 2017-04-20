@@ -35,7 +35,7 @@
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
 #include "resourcesUI/CQIconResource.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CopasiSlider::CopasiSlider(CSlider* pSlider, DataModelGUI * pDM, QWidget* parent):
   QFrame(parent),
@@ -158,15 +158,15 @@ void CopasiSlider::setValue(C_FLOAT64 value)
   value = mpCSlider->getSliderValue();
 
   // now we handle writing to the object ourselves
-  CCopasiObject * pObject = const_cast< CCopasiObject * >(object());
+  CDataObject * pObject = const_cast< CDataObject * >(object());
 
   if (pObject == NULL) return;
 
-  if (pObject->isValueDbl())
+  if (pObject->hasFlag(CDataObject::ValueDbl))
     *(C_FLOAT64*)pObject->getValuePointer() = value;
-  else if (pObject->isValueInt())
+  else if (pObject->hasFlag(CDataObject::ValueInt))
     *(C_INT32*)pObject->getValuePointer() = (C_INT32) floor(value + 0.5);
-  else if (pObject->isValueBool())
+  else if (pObject->hasFlag(CDataObject::ValueBool))
     *(bool*)pObject->getValuePointer() = (value != 0.0);
 
   // recalculate all other dependent values
@@ -216,12 +216,12 @@ C_FLOAT64 CopasiSlider::maxValue() const
   return mpCSlider->getMaxValue();
 }
 
-const CCopasiObject* CopasiSlider::object() const
+const CDataObject* CopasiSlider::object() const
 {
   return mpCSlider->getSliderObject();
 }
 
-void CopasiSlider::setObject(const CCopasiObject * object)
+void CopasiSlider::setObject(const CDataObject * object)
 {
   mpCSlider->setSliderObject(object);
   updateSliderData();
@@ -251,7 +251,7 @@ void CopasiSlider::updateLabel()
   minValue = mpCSlider->getMinValue();
   maxValue = mpCSlider->getMaxValue();
   currValue = mpCSlider->getSliderValue();
-  const CCopasiObject* object = mpCSlider->getSliderObject();
+  const CDataObject* object = mpCSlider->getSliderObject();
   QString labelString = "";
 
   if (object)
@@ -327,15 +327,15 @@ void CopasiSlider::updateValue(bool modifyRange, bool updateDependencies)
     }
 
   // now we handle writing to the object ourselves
-  CCopasiObject* pObject = const_cast< CCopasiObject * >(object());
+  CDataObject* pObject = const_cast< CDataObject * >(object());
 
   if (pObject == NULL) return;
 
-  if (pObject->isValueDbl())
+  if (pObject->hasFlag(CDataObject::ValueDbl))
     *(C_FLOAT64*)pObject->getValuePointer() = value;
-  else if (pObject->isValueInt())
+  else if (pObject->hasFlag(CDataObject::ValueInt))
     *(C_INT32*)pObject->getValuePointer() = (C_INT32) floor(value + 0.5);
-  else if (pObject->isValueBool())
+  else if (pObject->hasFlag(CDataObject::ValueBool))
     *(bool*)pObject->getValuePointer() = (value != 0.0);
 
   // recalculate all other dependent values

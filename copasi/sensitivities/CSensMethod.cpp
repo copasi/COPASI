@@ -25,9 +25,9 @@
 
 #include "copasi.h"
 
-//#include "utilities/CCopasiVector.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+//#include "copasi/core/CDataVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "CSensMethod.h"
 #include "CSensProblem.h"
 
@@ -37,7 +37,7 @@
 /**
  *  Default constructor.
  */
-CSensMethod::CSensMethod(const CCopasiContainer * pParent,
+CSensMethod::CSensMethod(const CDataContainer * pParent,
                          const CTaskEnum::Method & methodType,
                          const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -65,7 +65,7 @@ CSensMethod::CSensMethod(const CCopasiContainer * pParent,
  *  @param "const CSensMethod &" src
  */
 CSensMethod::CSensMethod(const CSensMethod & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpProblem(src.mpProblem),
   mLocalData(),
@@ -468,7 +468,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   //initialize the target calculation
   mpSubTask = NULL;
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   switch (mpProblem->getSubTaskType())
@@ -535,12 +535,12 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   for (i = 0; i < imax; ++i)
     {
-      std::vector< CCopasiObject * > DataObjects = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
+      std::vector< CDataObject * > DataObjects = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
       mLocalData[i].mInitialStateVariables.resize(DataObjects.size());
 
       C_FLOAT64** ppValue = mLocalData[i].mInitialStateVariables.array();
       C_FLOAT64** ppValueEnd = ppValue + mLocalData[i].mInitialStateVariables.size();
-      std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+      std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
 
       CObjectInterface::ObjectSet Changed;
 
@@ -552,18 +552,18 @@ bool CSensMethod::initialize(CSensProblem* problem)
         }
 
       mpContainer->getInitialDependencies().getUpdateSequence(mLocalData[i].mInitialSequences,
-          CMath::SimulationContext::UpdateMoieties,
+          CCore::SimulationContext::UpdateMoieties,
           Changed,
           mpContainer->getInitialStateObjects());
     }
 
   //initialize the target function pointers
-  std::vector< CCopasiObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+  std::vector< CDataObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
   mTargetValuePointers.resize(DataObjects.size());
 
   C_FLOAT64** ppValue = mTargetValuePointers.array();
   C_FLOAT64** ppValueEnd = ppValue + mTargetValuePointers.size();
-  std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+  std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
 
   CObjectInterface::ObjectSet Requested;
 
@@ -583,7 +583,7 @@ bool CSensMethod::initialize(CSensProblem* problem)
     }
 
   mpContainer->getTransientDependencies().getUpdateSequence(mTargetValueSequence,
-      CMath::SimulationContext::Default,
+      CCore::SimulationContext::Default,
       mpContainer->getStateObjects(false),
       Requested);
 
@@ -638,8 +638,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
       mpProblem->getResultAnnotated()->setDimensionDescription(dim, tmp.str());
       mpProblem->getScaledResultAnnotated()->setDimensionDescription(dim, tmp.str());
 
-      std::vector< CCopasiObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
-      std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+      std::vector< CDataObject * > DataObjects = mpProblem->getTargetFunctions().getVariablesPointerList(pDataModel);
+      std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
 
       for (j = 0; j < mTargetValuePointers.size(); ++j, ++itDataObject)
         {
@@ -665,8 +665,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
           if (mpProblem->collapsRequested())
             mpProblem->getCollapsedResultAnnotated()->setDimensionDescription(dim2, tmp.str());
 
-          std::vector< CCopasiObject * > DataObjects = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
-          std::vector< CCopasiObject * >::const_iterator itDataObject = DataObjects.begin();
+          std::vector< CDataObject * > DataObjects = mpProblem->getVariables(i).getVariablesPointerList(pDataModel);
+          std::vector< CDataObject * >::const_iterator itDataObject = DataObjects.begin();
 
           for (j = 0; j < mLocalData[i].mInitialStateVariables.size(); ++j, ++itDataObject)
             {

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/model/CMetab.h"
@@ -30,21 +35,21 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
-CCopasiDataModel* test000053::pCOPASIDATAMODEL = NULL;
+CDataModel* test000053::pCOPASIDATAMODEL = NULL;
 
 void test000053::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000053::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000053::test1_bug1000()
@@ -52,7 +57,7 @@ void test000053::test1_bug1000()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_1));
   const CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -156,7 +161,7 @@ void test000053::test2_bug1000()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_2));
   const CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -217,7 +222,7 @@ void test000053::test3_bug1000()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_3));
   const CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -312,7 +317,7 @@ void test000053::test4_bug1000()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_4));
   const CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
@@ -377,7 +382,7 @@ void test000053::test5_bug1000()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(test000053::MODEL_STRING_5));
   const CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);

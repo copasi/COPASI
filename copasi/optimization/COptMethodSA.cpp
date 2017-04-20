@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,14 +30,14 @@
 #include "COptTask.h"
 
 #include "parameterFitting/CFitProblem.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
 #define STORED 2
 #define NS 10
 #define K 1.0
 
-COptMethodSA::COptMethodSA(const CCopasiContainer * pParent,
+COptMethodSA::COptMethodSA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
@@ -47,7 +52,7 @@ COptMethodSA::COptMethodSA(const CCopasiContainer * pParent,
 }
 
 COptMethodSA::COptMethodSA(const COptMethodSA & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   COptMethod(src, pParent)
 {initObjects();}
 
@@ -56,7 +61,7 @@ COptMethodSA::~COptMethodSA()
 
 void COptMethodSA::initObjects()
 {
-  addObjectReference("Current Temperature", mTemperature, CCopasiObject::ValueDbl);
+  addObjectReference("Current Temperature", mTemperature, CDataObject::ValueDbl);
 }
 
 bool COptMethodSA::optimise()

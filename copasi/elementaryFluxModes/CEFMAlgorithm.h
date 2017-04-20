@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,10 +30,10 @@
 
 #include <vector>
 
+#include "copasi/core/CMatrix.h"
 #include "elementaryFluxModes/CEFMMethod.h"
 #include "elementaryFluxModes/CFluxMode.h"
 
-#include "utilities/CMatrix.h"
 #include "utilities/CCopasiNode.h"
 
 class CTableauMatrix;
@@ -63,11 +68,11 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: EFMAlgorithm)
    * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
-  CEFMAlgorithm(const CCopasiContainer * pParent,
+  CEFMAlgorithm(const CDataContainer * pParent,
                 const CTaskEnum::Method & methodType = CTaskEnum::EFMAlgorithm,
                 const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
 
@@ -76,7 +81,7 @@ public:
    * @param const CEFMAlgorithm & src
    */
   CEFMAlgorithm(const CEFMAlgorithm & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
   *  Destructor

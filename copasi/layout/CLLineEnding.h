@@ -16,13 +16,13 @@
 #include "copasi/layout/CLGraphicalPrimitive2D.h"
 #include "copasi/layout/CLGroup.h"
 #include "copasi/layout/CLBase.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class LineEnding;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLLineEnding : public CLGraphicalPrimitive2D, public CCopasiContainer
+class CLLineEnding : public CLGraphicalPrimitive2D, public CDataContainer
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -52,17 +52,17 @@ public:
   /**
    * Constructor.
    */
-  CLLineEnding(CCopasiContainer* pParent = NULL);
+  CLLineEnding(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLLineEnding(const CLLineEnding& source, CCopasiContainer* pParent = NULL);
+  CLLineEnding(const CLLineEnding& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLLineEnding(const LineEnding& source, CCopasiContainer* pParent = NULL);
+  CLLineEnding(const LineEnding& source, CDataContainer* pParent = NULL);
 
   /**
    * Sets whether rotational mapping is to be done or not.

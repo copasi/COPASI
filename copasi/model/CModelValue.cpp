@@ -32,12 +32,12 @@
 #include "CModel.h"
 #include "CModelValue.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "function/CExpression.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 //static
 const std::string CModelEntity::StatusName[] =
@@ -64,7 +64,7 @@ const char * CModelEntity::XMLStatus[] =
 // virtual
 CData CModelEntity::toData() const
 {
-  CData Data = CCopasiContainer::toData();
+  CData Data = CDataContainer::toData();
 
   Data.addProperty(CData::SIMULATION_TYPE, (unsigned C_INT32) mStatus);
   Data.addProperty(CData::INITIAL_VALUE, mIValue);
@@ -79,7 +79,7 @@ CData CModelEntity::toData() const
 // virtual
 bool CModelEntity::applyData(const CData & data)
 {
-  bool success = CCopasiContainer::applyData(data);
+  bool success = CDataContainer::applyData(data);
 
   if (data.isSetProperty(CData::SIMULATION_TYPE))
     {
@@ -118,10 +118,10 @@ bool CModelEntity::applyData(const CData & data)
 // of the reaction network, copasi needs to figure out if it is independent, dependent (moieties) or unused."
 
 CModelEntity::CModelEntity(const std::string & name,
-                           const CCopasiContainer * pParent,
+                           const CDataContainer * pParent,
                            const std::string & type,
-                           const unsigned C_INT32 & flag):
-  CCopasiContainer(name, pParent, type, (flag | CCopasiObject::Container | CCopasiObject::ValueDbl | CCopasiObject::ModelEntity)),
+                           const CFlags< Flag > & flag):
+  CDataContainer(name, pParent, type, (flag | CDataObject::Container | CDataObject::ValueDbl | CDataObject::ModelEntity)),
   CAnnotation(),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mIValue(1.0),
@@ -136,7 +136,7 @@ CModelEntity::CModelEntity(const std::string & name,
   mpModel(NULL),
   mUnitExpression("")
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+  mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
 
   initObjects();
 
@@ -144,8 +144,8 @@ CModelEntity::CModelEntity(const std::string & name,
 }
 
 CModelEntity::CModelEntity(const CModelEntity & src,
-                           const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                           const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   CAnnotation(src),
   mValue(src.mValue),
   mIValue(src.mIValue),
@@ -160,7 +160,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mpModel(NULL),
   mUnitExpression(src.mUnitExpression)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+  mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
 
   initObjects();
 
@@ -177,7 +177,7 @@ CModelEntity::~CModelEntity()
   // therefore must destroy them.
 
   // since the expressions now have the model entity as parent, they should
-  // automatically be destroyed be the destructor of CCopasiContainer
+  // automatically be destroyed be the destructor of CDataContainer
   //pdelete(mpExpression);
   //pdelete(mpInitialExpression);
 
@@ -201,16 +201,15 @@ bool CModelEntity::compile()
 {
   bool success = true;
 
-  std::set< const CCopasiObject * > NoDependencies;
+  std::set< const CDataObject * > NoDependencies;
   CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
-  CCopasiDataModel* pDataModel = NULL;
+  CDataModel* pDataModel = NULL;
 
   switch (mStatus)
     {
       case ASSIGNMENT:
         success &= mpExpression->compile(listOfContainer);
-        mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
         pdelete(mpInitialExpression);
         pDataModel = getObjectDataModel();
@@ -221,10 +220,7 @@ bool CModelEntity::compile()
         break;
 
       case ODE:
-        mpValueReference->addDirectDependency(this);
-
         success &= mpExpression->compile(listOfContainer);
-        mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
         if (mHasNoise && mpNoiseExpression != NULL)
           {
@@ -242,16 +238,11 @@ bool CModelEntity::compile()
       mpInitialExpression->getInfix() != "")
     {
       success &= mpInitialExpression->compile(listOfContainer);
-      mpIValueReference->setDirectDependencies(mpInitialExpression->getDirectDependencies());
 
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
       if (mpInitialExpression->getIssue())
         mIValue = mpInitialExpression->calcValue();
-    }
-  else
-    {
-      mpIValueReference->setDirectDependencies(NoDependencies);
     }
 
   return success;
@@ -564,7 +555,7 @@ const std::string & CModelEntity::getUnitExpression() const
 }
 
 // virtual
-std::string CModelEntity::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CModelEntity::getChildObjectUnits(const CDataObject * pObject) const
 {
   if (pObject == mpRateReference)
     {
@@ -591,16 +582,16 @@ const C_FLOAT64 & CModelEntity::getRate() const
   return mRate;
 }
 
-CCopasiObject * CModelEntity::getInitialValueReference() const
+CDataObject * CModelEntity::getInitialValueReference() const
 {return mpIValueReference;}
 
-CCopasiObject * CModelEntity::getValueReference() const
+CDataObject * CModelEntity::getValueReference() const
 {return mpValueReference;}
 
-CCopasiObject * CModelEntity::getRateReference() const
+CDataObject * CModelEntity::getRateReference() const
 {return mpRateReference;}
 
-CCopasiObject * CModelEntity::getNoiseReference() const
+CDataObject * CModelEntity::getNoiseReference() const
 {return mpNoiseReference;}
 
 CModel * CModelEntity::getModel() const
@@ -644,16 +635,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       if (mpModel != NULL)
         mpModel->setCompileFlag(true);
 
-      std::set< const CCopasiObject * > NoDependencies;
-
-      setDirectDependencies(NoDependencies);
-
-      mpIValueReference->setDirectDependencies(NoDependencies);
-
-      mpValueReference->setDirectDependencies(NoDependencies);
-
-      mpRateReference->setDirectDependencies(NoDependencies);
-      CCopasiDataModel* pDataModel = NULL;
+      CDataModel* pDataModel = NULL;
 
       switch (mStatus)
         {
@@ -668,8 +650,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mpInitialExpression->setObjectName("InitialExpression");
             add(mpInitialExpression, true);
 
-            mpValueReference->setDirectDependencies(mpExpression->getDirectDependencies());
-
             mRate = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
             mUsed = true;
@@ -679,8 +659,6 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
             if (mpExpression == NULL)
               mpExpression = new CExpression("Expression", this);
-
-            mpRateReference->setDirectDependencies(mpExpression->getDirectDependencies());
 
             mUsed = true;
             break;
@@ -709,7 +687,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 }
 
 // virtual
-const CCopasiObject * CModelEntity::getValueObject() const
+const CDataObject * CModelEntity::getValueObject() const
 {
   return mpValueReference;
 }
@@ -724,22 +702,22 @@ void CModelEntity::initObjects()
 {
 
   mpValueReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Value",
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Value",
         mValue,
-        CCopasiObject::ValueDbl));
+        CDataObject::ValueDbl));
 
   mpIValueReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("InitialValue",
         mIValue,
-        CCopasiObject::ValueDbl));
+        CDataObject::ValueDbl));
 
   mpRateReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Rate", mRate, CDataObject::ValueDbl));
 
   mpNoiseReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CDataObject::ValueDbl));
 
-  addObjectReference("SBMLId", mSBMLId, CCopasiObject::ValueString);
+  addObjectReference("SBMLId", mSBMLId, CDataObject::ValueString);
 
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
@@ -749,9 +727,9 @@ void CModelEntity::initObjects()
     }
 }
 
-bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
+bool CModelEntity::setObjectParent(const CDataContainer * pParent)
 {
-  CCopasiContainer::setObjectParent(pParent);
+  CDataContainer::setObjectParent(pParent);
   CModel * pNewModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
   if (mpModel == pNewModel) return true;
@@ -772,51 +750,6 @@ bool CModelEntity::setObjectParent(const CCopasiContainer * pParent)
   mpModel = pNewModel;
 
   return true;
-}
-
-std::set< const CCopasiObject * > CModelEntity::getDeletedObjects() const
-{
-  std::set< const CCopasiObject * > Deleted;
-
-  Deleted.insert(this);
-  Deleted.insert(mpIValueReference);
-  Deleted.insert(mpValueReference);
-  Deleted.insert(mpRateReference);
-
-  return Deleted;
-}
-
-// virtual
-bool CModelEntity::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
-{
-  bool MustBeDeleted = false;
-
-  DataObjectSet ChildObjects = getDeletedObjects();
-
-  DataObjectSet::const_iterator it = ChildObjects.begin();
-  DataObjectSet::const_iterator end = ChildObjects.end();
-
-  for (; it != end; ++it)
-    {
-      if (*it == this)
-        {
-          if ((*it)->CCopasiObject::mustBeDeleted(deletedObjects))
-            {
-              MustBeDeleted = true;
-              break;
-            }
-
-          continue;
-        }
-
-      if ((*it)->mustBeDeleted(deletedObjects))
-        {
-          MustBeDeleted = true;
-          break;
-        }
-    }
-
-  return MustBeDeleted;
 }
 
 void CModelEntity::setSBMLId(const std::string& id) const
@@ -868,7 +801,7 @@ bool CModelValue::applyData(const CData & data)
 }
 
 CModelValue::CModelValue(const std::string & name,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CModelEntity(name, pParent, "ModelValue")
 {
   initObjects();
@@ -877,7 +810,7 @@ CModelValue::CModelValue(const std::string & name,
 }
 
 CModelValue::CModelValue(const CModelValue & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CModelEntity(src, pParent)
 {
   initObjects();

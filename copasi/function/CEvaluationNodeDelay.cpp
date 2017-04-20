@@ -14,12 +14,12 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "utilities/utility.h"
 #include "utilities/CValidatedUnit.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CEvaluationNodeDelay::CEvaluationNodeDelay():
   CEvaluationNode(T_DELAY, S_INVALID, ""),
@@ -224,7 +224,7 @@ CEvaluationNode * CEvaluationNodeDelay::fromAST(const ASTNode * pASTNode, const 
   return pConvertedNode;
 }
 
-ASTNode* CEvaluationNodeDelay::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeDelay::toAST(const CDataModel* pDataModel) const
 {
   ASTNode* pNode = new ASTNode(AST_FUNCTION_DELAY);
   const CEvaluationNode* child = static_cast<const CEvaluationNode*>(this->getChild());

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,9 +24,9 @@
 #include <map>
 
 #include "copasi/layout/CLBase.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
-class CCopasiObject;
+class CDataObject;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class LineSegment;
@@ -96,7 +101,7 @@ public:
   // if two lines are congruent, they are supposed to be ==
   bool operator==(const CLLineSegment & rhs) const
   {
-    if (mIsBezier) return((mStart == rhs.mStart) && (mEnd == rhs.mEnd) && (mBase1 == rhs.mBase1) && (mBase2 == rhs.mBase2));
+    if (mIsBezier) return ((mStart == rhs.mStart) && (mEnd == rhs.mEnd) && (mBase1 == rhs.mBase1) && (mBase2 == rhs.mBase2));
     else return ((mStart == rhs.mStart) && (mEnd == rhs.mEnd));
   };
 
@@ -116,14 +121,14 @@ public:
    * corresponding sbml object. This is only guaranteed to work if
    * isBezier() is true.
    */
-  void exportToSBMLBezier(CubicBezier * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBMLBezier(CubicBezier * c, const std::map<const CDataObject*, SBase*> & copasimodelmap) const;
 
   /**
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object. This is only guaranteed to work if
    * isBezier() is false.
    */
-  void exportToSBMLLineSegment(LineSegment * l, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBMLLineSegment(LineSegment * l, const std::map<const CDataObject*, SBase*> & copasimodelmap) const;
 
   /**
     * insert operator
@@ -228,7 +233,7 @@ public:
    * This method writes the information of the copasi layout object into the
    * corresponding sbml object
    */
-  void exportToSBML(Curve * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const;
+  void exportToSBML(Curve * c, const std::map<const CDataObject*, SBase*> & copasimodelmap) const;
 
   /**
    * Calculates the bounding box for the curve.

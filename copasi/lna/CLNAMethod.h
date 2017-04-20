@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -7,7 +12,8 @@
 #define COPASI_CLNAMethod_H__
 
 #include <vector>
-#include "utilities/CMatrix.h"
+
+#include "copasi/core/CMatrix.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "steadystate/CSteadyStateMethod.h"
@@ -62,21 +68,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: linearNoiseApproximation)
    * @param const CTaskEnum::Task & taskType (default: lna)
    */
-  CLNAMethod(const CCopasiContainer * pParent,
+  CLNAMethod(const CDataContainer * pParent,
              const CTaskEnum::Method & methodType = CTaskEnum::linearNoiseApproximation,
              const CTaskEnum::Task & taskType = CTaskEnum::lna);
 
   /**
    * Copy constructor
    * @param const CLNAMethod & src
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
   CLNAMethod(const CLNAMethod & src,
-             const CCopasiContainer * pParent);
+             const CDataContainer * pParent);
 
   /**
    * Deconstructor

@@ -31,8 +31,8 @@
 #include "UI/DataModelGUI.h"
 #include "UI/CQMessageBox.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunction.h"
 #include "commandline/COptionParser.h"
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(argc, argv, true);
+      CRootContainer::init(argc, argv, true);
     }
   catch (copasi::option_error & msg)
     {
@@ -118,7 +118,7 @@ finish:
   try // To suppress any access violations during destruction works only under Windows
     {
       pdelete(pWindow);
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
     }
   catch (...)
     {}

@@ -27,11 +27,11 @@
 #include "CExperimentObjectMap.h"
 #include "CFitTask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "math/CMathContainer.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CTableCell.h"
 #include "utilities/CSort.h"
@@ -79,7 +79,7 @@ const char* CExperiment::WeightMethodType[] =
   NULL
 };
 
-CExperiment::CExperiment(const CCopasiContainer * pParent,
+CExperiment::CExperiment(const CDataContainer * pParent,
                          const std::string & name):
   CCopasiParameterGroup(name, pParent),
   mpFileName(NULL),
@@ -131,8 +131,8 @@ CExperiment::CExperiment(const CCopasiContainer * pParent,
 }
 
 CExperiment::CExperiment(const CExperiment & src,
-                         const CCopasiContainer * pParent):
-  CCopasiParameterGroup(src, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+                         const CDataContainer * pParent):
+  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),
@@ -183,8 +183,8 @@ CExperiment::CExperiment(const CExperiment & src,
 }
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
-                         const CCopasiContainer * pParent):
-  CCopasiParameterGroup(group, static_cast< const CCopasiContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
+                         const CDataContainer * pParent):
+  CCopasiParameterGroup(group, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),
@@ -264,8 +264,8 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
 
 void CExperiment::initializeParameter()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Experiment", this);
+  CRootContainer::getKeyFactory()->remove(mKey);
+  mKey = CRootContainer::getKeyFactory()->add("Experiment", this);
 
   *assertParameter("Key", CCopasiParameter::KEY, mKey) = mKey;
 
@@ -348,8 +348,8 @@ void CExperiment::updateFittedPoints()
 
 void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimulation)
 {
-  CCopasiVector< CFittingPoint >::iterator it = mFittingPoints.begin();
-  CCopasiVector< CFittingPoint >::iterator end = mFittingPoints.end();
+  CDataVector< CFittingPoint >::iterator it = mFittingPoints.begin();
+  CDataVector< CFittingPoint >::iterator end = mFittingPoints.end();
 
   if (index >= mNumDataRows ||
       mpDataDependentCalculated == NULL)
@@ -396,8 +396,8 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 
 void CExperiment::updateFittedPointValuesFromExtendedTimeSeries(const size_t & index)
 {
-  CCopasiVector< CFittingPoint >::iterator it = mFittingPoints.begin();
-  CCopasiVector< CFittingPoint >::iterator end = mFittingPoints.end();
+  CDataVector< CFittingPoint >::iterator it = mFittingPoints.begin();
+  CDataVector< CFittingPoint >::iterator end = mFittingPoints.end();
 
   if (index >= extendedTimeSeriesSize())
     {
@@ -728,7 +728,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
     success = false;
 
   size_t LastMappedColumn = mpObjectMap->getLastColumn();
-  const CVector< const CCopasiObject * > & Objects = mpObjectMap->getDataObjects();
+  const CVector< const CDataObject * > & Objects = mpObjectMap->getDataObjects();
 
   size_t i, imax = mpObjectMap->getLastNotIgnoredColumn();
 
@@ -764,7 +764,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
   for (i = 0; i <= imax; i++)
     {
-      const CCopasiObject *currentObject = Objects[i];
+      const CDataObject *currentObject = Objects[i];
       CMathObject * pObject = mpContainer->getMathObject(currentObject);
 
       switch (mpObjectMap->getRole(i))
@@ -774,7 +774,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
           case independent:
 
-            if (currentObject != NULL && !currentObject->isValueDbl())
+            if (currentObject != NULL && !currentObject->hasFlag(CDataObject::ValueDbl))
               {
                 CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, currentObject->getObjectDisplayName().c_str(), i + 1);
                 return false;
@@ -794,7 +794,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
 
           case dependent:
 
-            if (currentObject != NULL && !currentObject->isValueDbl())
+            if (currentObject != NULL && !currentObject->hasFlag(CDataObject::ValueDbl))
               {
                 CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 6, currentObject->getObjectDisplayName().c_str(), i + 1);
                 return false;
@@ -848,8 +848,8 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   mColumnValidValueCount.resize(numCols);
   mColumnValidValueCount = std::numeric_limits<size_t>::quiet_NaN();
 
-  mpContainer->getInitialDependencies().getUpdateSequence(mIndependentUpdateSequence, CMath::SimulationContext::UpdateMoieties, mIndependentObjects, mpContainer->getInitialStateObjects());
-  mpContainer->getTransientDependencies().getUpdateSequence(mDependentUpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), DependentObjects, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getInitialDependencies().getUpdateSequence(mIndependentUpdateSequence, CCore::SimulationContext::UpdateMoieties, mIndependentObjects, mpContainer->getInitialStateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mDependentUpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), DependentObjects, mpContainer->getSimulationUpToDateObjects());
 
   initializeScalingMatrix();
 
@@ -1284,7 +1284,7 @@ bool CExperiment::setFileName(const std::string & fileName)
 CExperimentObjectMap & CExperiment::getObjectMap()
 {return * mpObjectMap;}
 
-const CCopasiVector< CFittingPoint > & CExperiment::getFittingPoints() const
+const CDataVector< CFittingPoint > & CExperiment::getFittingPoints() const
 {return mFittingPoints;}
 
 const unsigned C_INT32 & CExperiment::getFirstRow() const
@@ -1408,7 +1408,7 @@ void CExperiment::printResult(std::ostream * ostream) const
   size_t j, jmax = mDataDependent.numCols();
   size_t k, kmax = mpObjectMap->getLastNotIgnoredColumn() + 1;
 
-  const CVector< const CCopasiObject * > & Objects =  mpObjectMap->getDataObjects();
+  const CVector< const CDataObject * > & Objects =  mpObjectMap->getDataObjects();
 
   os << "Row\t";
 
@@ -1702,8 +1702,8 @@ CFittingPoint * CFittingPoint::fromData(const CData & data)
 }
 
 CFittingPoint::CFittingPoint(const std::string & name,
-                             const CCopasiContainer * pParent):
-  CCopasiContainer("Fitting Point", pParent, "Fitted Point"),
+                             const CDataContainer * pParent):
+  CDataContainer("Fitting Point", pParent, "Fitted Point"),
   mModelObjectCN(name),
   mIndependentValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mMeasuredValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
@@ -1712,8 +1712,8 @@ CFittingPoint::CFittingPoint(const std::string & name,
 {initObjects();}
 
 CFittingPoint::CFittingPoint(const CFittingPoint & src,
-                             const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                             const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mModelObjectCN(src.mModelObjectCN),
   mIndependentValue(src.mIndependentValue),
   mMeasuredValue(src.mMeasuredValue),
@@ -1726,18 +1726,18 @@ CFittingPoint::~CFittingPoint() {}
 // virtual
 std::string CFittingPoint::getObjectDisplayName() const
 {
-  const CCopasiDataModel * pDataModel = this->getObjectDataModel();
+  const CDataModel * pDataModel = this->getObjectDataModel();
 
   if (pDataModel == NULL)
     {
-      return CCopasiContainer::getObjectDisplayName();
+      return CDataContainer::getObjectDisplayName();
     }
 
-  const CCopasiObject * pObject = dynamic_cast< const CCopasiObject * >(pDataModel->getObject(mModelObjectCN));
+  const CDataObject * pObject = dynamic_cast< const CDataObject * >(pDataModel->getObject(mModelObjectCN));
 
   if (pObject == NULL)
     {
-      return CCopasiContainer::getObjectDisplayName();
+      return CDataContainer::getObjectDisplayName();
     }
 
   return pObject->getObjectDisplayName();
@@ -1761,10 +1761,10 @@ void CFittingPoint::setValues(const C_FLOAT64 & independent,
 
 void CFittingPoint::initObjects()
 {
-  addObjectReference("Independent Value", mIndependentValue, CCopasiObject::ValueDbl);
-  addObjectReference("Measured Value", mMeasuredValue, CCopasiObject::ValueDbl);
-  addObjectReference("Fitted Value", mFittedValue, CCopasiObject::ValueDbl);
-  addObjectReference("Weighted Error", mWeightedError, CCopasiObject::ValueDbl);
+  addObjectReference("Independent Value", mIndependentValue, CDataObject::ValueDbl);
+  addObjectReference("Measured Value", mMeasuredValue, CDataObject::ValueDbl);
+  addObjectReference("Fitted Value", mFittedValue, CDataObject::ValueDbl);
+  addObjectReference("Weighted Error", mWeightedError, CDataObject::ValueDbl);
 }
 
 std::istream & skipLine(std::istream & in)

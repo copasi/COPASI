@@ -33,10 +33,10 @@
 #include "copasi/model/CMoiety.h"
 #include "copasi/model/CModelParameterSet.h"
 
-#include "copasi/utilities/CVector.h"
-#include "copasi/utilities/CMatrix.h"
+#include "copasi/core/CVector.h"
+#include "copasi/core/CMatrix.h"
 #include "copasi/utilities/CLinkMatrix.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/utilities/CUnit.h"
 
 #include "copasi/math/CMathDependencyGraph.h"
@@ -86,7 +86,7 @@ public:
   /**
    *  constructor
    */
-  CModel(CCopasiContainer* pParent);
+  CModel(CDataContainer* pParent);
 
   /**
    * Destructor
@@ -95,10 +95,10 @@ public:
 
   /**
    * Set the object parent
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Retrieve the units of the object.
@@ -110,7 +110,7 @@ public:
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
 
   /**
    * Converts the set of reactions to a set of reactions where all reactions are irreversible.
@@ -199,17 +199,17 @@ public:
 
   /**
    * Return the metabolites of this model
-   * @return CCopasiVectorN< CMetab > & metabolites
+   * @return CDataVectorN< CMetab > & metabolites
    */
-  const CCopasiVector< CMetab > & getMetabolites() const;
-  CCopasiVector< CMetab > & getMetabolites();
+  const CDataVector< CMetab > & getMetabolites() const;
+  CDataVector< CMetab > & getMetabolites();
 
   /**
    * Retrieves the vector of metabolites at it is used in the reduced model.
-   * @return const CCopasiVectorN< CMetab > &metabolites
+   * @return const CDataVectorN< CMetab > &metabolites
    */
-  const CCopasiVector< CMetab > & getMetabolitesX() const;
-  CCopasiVector< CMetab > & getMetabolitesX();
+  const CDataVector< CMetab > & getMetabolitesX() const;
+  CDataVector< CMetab > & getMetabolitesX();
 
   /**
    *  Get the number of total metabolites
@@ -251,10 +251,10 @@ public:
 
   /**
    * Return the non concentration values of this model
-   * @return CCopasiVectorN< CModelValue > & values
+   * @return CDataVectorN< CModelValue > & values
    */
-  const CCopasiVectorN< CModelValue > & getModelValues() const;
-  CCopasiVectorN< CModelValue > & getModelValues();
+  const CDataVectorN< CModelValue > & getModelValues() const;
+  CDataVectorN< CModelValue > & getModelValues();
 
   /**
    *  Get the number of non concentration values
@@ -264,10 +264,10 @@ public:
 
   /**
    * Return the non model parameter sets
-   * @return CCopasiVectorN< CModelParameterSet > & modelParameterSets
+   * @return CDataVectorN< CModelParameterSet > & modelParameterSets
    */
-  const CCopasiVectorN< CModelParameterSet > & getModelParameterSets() const;
-  CCopasiVectorN< CModelParameterSet > & getModelParameterSets();
+  const CDataVectorN< CModelParameterSet > & getModelParameterSets() const;
+  CDataVectorN< CModelParameterSet > & getModelParameterSets();
 
   /**
    * Retrieve the parameter set
@@ -293,15 +293,15 @@ public:
 
   /**
    * Return the vector of reactions
-   * @return CCopasiVectorNS <CReaction> & reactions
+   * @return CDataVectorNS <CReaction> & reactions
    */
-  CCopasiVectorNS < CReaction > & getReactions();
+  CDataVectorNS < CReaction > & getReactions();
 
   /**
    * Return the vector of reactions
-   * @return const CCopasiVectorS <CReaction> & reactions
+   * @return const CDataVectorS <CReaction> & reactions
    */
-  const CCopasiVectorNS < CReaction > & getReactions() const;
+  const CDataVectorNS < CReaction > & getReactions() const;
 
   /**
    * Get the total steps
@@ -320,12 +320,12 @@ public:
   /**
    * Return the vector of events
    */
-  CCopasiVectorN < CEvent > & getEvents();
+  CDataVectorN < CEvent > & getEvents();
 
   /**
    * Return the vector of events
    */
-  const CCopasiVectorN < CEvent > & getEvents() const;
+  const CDataVectorN < CEvent > & getEvents() const;
 
   //******************************************+
 
@@ -370,15 +370,15 @@ public:
 
   /**
    * Return the compartments of this model
-   * @return CCopasiVectorNS < CCompartment > *
+   * @return CDataVectorNS < CCompartment > *
    */
-  CCopasiVectorNS < CCompartment > & getCompartments();
+  CDataVectorNS < CCompartment > & getCompartments();
 
   /**
    * Return the compartments of this model
-   * @return const CCopasiVectorNS < CCompartment > *
+   * @return const CDataVectorNS < CCompartment > *
    */
-  const CCopasiVectorNS < CCompartment > & getCompartments() const;
+  const CDataVectorNS < CCompartment > & getCompartments() const;
 
   //***************************************************
 
@@ -399,9 +399,9 @@ public:
 
   /**
    * Return the mMoieties of this model
-   * @return CCopasiVectorN < CMoiety > &
+   * @return CDataVectorN < CMoiety > &
    */
-  const CCopasiVector < CMoiety > & getMoieties() const;
+  const CDataVector < CMoiety > & getMoieties() const;
 
   /**
    * Returns the pointer to the species with the given name
@@ -685,113 +685,179 @@ public:
   bool removeMetabolite(const CMetab* pMetabolite,
                         const bool & recursive = true);
 
+#ifdef XXXX
   /**
    * Appends pointers to all model objects, which are dependent on the candidates
    * to appropriate lists.
-   * @param const std::set< const CCopasiObject * > & candidates
-   * @param std::set< const CCopasiObject * > & dependentReactions
-   * @param std::set< const CCopasiObject * > & dependentMetabolites
-   * @param std::set< const CCopasiObject * > & dependentCompartments
-   * @param std::set< const CCopasiObject * > & dependentModelValues
-   * @param std::set< const CCopasiObject * > & dependentEvents
-   * @param std::set< const CCopasiObject * > & dependentEventAssignments
+   * @param const std::set< const CDataObject * > & candidates
+   * @param std::set< const CDataObject * > & dependentReactions
+   * @param std::set< const CDataObject * > & dependentMetabolites
+   * @param std::set< const CDataObject * > & dependentCompartments
+   * @param std::set< const CDataObject * > & dependentModelValues
+   * @param std::set< const CDataObject * > & dependentEvents
+   * @param std::set< const CDataObject * > & dependentEventAssignments
    * @return bool objectsAppended
    */
-  bool appendDependentModelObjects(const std::set< const CCopasiObject * > & candidates,
-                                   std::set< const CCopasiObject * > & dependentReactions,
-                                   std::set< const CCopasiObject * > & dependentMetabolites,
-                                   std::set< const CCopasiObject * > & dependentCompartments,
-                                   std::set< const CCopasiObject * > & dependentModelValues,
-                                   std::set< const CCopasiObject * > & dependentEvents,
-                                   std::set< const CCopasiObject * > & dependentEventAssignments) const;
+  bool appendDependentModelObjects(const std::set< const CDataObject * > & candidates,
+                                   std::set< const CDataObject * > & dependentReactions,
+                                   std::set< const CDataObject * > & dependentMetabolites,
+                                   std::set< const CDataObject * > & dependentCompartments,
+                                   std::set< const CDataObject * > & dependentModelValues,
+                                   std::set< const CDataObject * > & dependentEvents,
+                                   std::set< const CDataObject * > & dependentEventAssignments) const;
 
   /**
    * Appends pointers to reactions which are dependent on the candidates to the
    * list.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
+   * @param std::set< const CDataObject * > candidates
+   * @param std::set< const CDataObject * > & dependents
    * @return bool objectsAppended
    */
-  bool appendDependentReactions(std::set< const CCopasiObject * > candidates,
-                                std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentReactions(std::set< const CDataObject * > candidates,
+                                std::set< const CDataObject * > & dependents) const;
 
   /**
   * Appends a pointers to events which are dependent on the candidates to the
   * list.
-  * @param std::set< const CCopasiObject * > candidates
-  * @param std::set< const CCopasiObject * > & dependents
+  * @param std::set< const CDataObject * > candidates
+  * @param std::set< const CDataObject * > & dependents
   * @return bool objectsAppended
   */
-  bool appendDependentEvents(std::set< const CCopasiObject * > candidates,
-                             std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentEvents(std::set< const CDataObject * > candidates,
+                             std::set< const CDataObject * > & dependents) const;
 
   /**
   * Appends a pointers to event assignments which are dependent on the candidates to the
   * list.
-  * @param std::set< const CCopasiObject * > candidates
-  * @param std::set< const CCopasiObject * > & dependents
+  * @param std::set< const CDataObject * > candidates
+  * @param std::set< const CDataObject * > & dependents
   * @return bool objectsAppended
   */
-  bool appendDependentEventAssignments(std::set< const CCopasiObject * > candidates,
-                                       std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentEventAssignments(std::set< const CDataObject * > candidates,
+                                       std::set< const CDataObject * > & dependents) const;
 
   /**
    * Appends pointers to metabolites which are dependent on the candidates to the
    * list.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
+   * @param std::set< const CDataObject * > candidates
+   * @param std::set< const CDataObject * > & dependents
    * @return bool objectsAppended
    */
-  bool appendDependentMetabolites(std::set< const CCopasiObject * > candidates,
-                                  std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentMetabolites(std::set< const CDataObject * > candidates,
+                                  std::set< const CDataObject * > & dependents) const;
 
   /**
    * Appends pointers to compartments which are dependent on the candidates to the
    * list.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
+   * @param std::set< const CDataObject * > candidates
+   * @param std::set< const CDataObject * > & dependents
    * @return bool objectsAppended
    */
-  bool appendDependentCompartments(std::set< const CCopasiObject * > candidates,
-                                   std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentCompartments(std::set< const CDataObject * > candidates,
+                                   std::set< const CDataObject * > & dependents) const;
 
   /**
    * Appends a pointers to model values which are dependent on the candidates to the
    * list.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
+   * @param std::set< const CDataObject * > candidates
+   * @param std::set< const CDataObject * > & dependents
    * @return bool objectsAppended
    */
-  bool appendDependentModelValues(std::set< const CCopasiObject * > candidates,
-                                  std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentModelValues(std::set< const CDataObject * > candidates,
+                                  std::set< const CDataObject * > & dependents) const;
+
+#endif // XXXX
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
    * which directly dependent on the container.
    * list.
-   * @param const CCopasiContainer & container
-   * @param std::set< const CCopasiObject * > & dependentReactions
-   * @param std::set< const CCopasiObject * > & dependentMetabolites
-   * @param std::set< const CCopasiObject * > & dependentCompartments
-   * @param std::set< const CCopasiObject * > & dependentModelValues
-   * @param std::set< const CCopasiObject * > & dependentEvents
-   * @param std::set< const CCopasiObject * > & dependentEventAssignments
+   * @param const CDataContainer & container
+   * @param CDataObject::DataObjectSet & dependentReactions
+   * @param CDataObject::DataObjectSet & dependentMetabolites
+   * @param CDataObject::DataObjectSet & dependentCompartments
+   * @param CDataObject::DataObjectSet & dependentModelValues
+   * @param CDataObject::DataObjectSet & dependentEvents
+   * @param CDataObject::DataObjectSet & dependentEventAssignments
    * @return bool objectsAppended
    */
-  bool appendDirectDependents(const CCopasiContainer & container,
-                              std::set< const CCopasiObject * > & dependentReactions,
-                              std::set< const CCopasiObject * > & dependentMetabolites,
-                              std::set< const CCopasiObject * > & dependentCompartments,
-                              std::set< const CCopasiObject * > & dependentModelValues,
-                              std::set< const CCopasiObject * > & dependentEvents,
-                              std::set< const CCopasiObject * > & dependentEventAssignments) const;
+  bool appendDirectDependents(const CDataContainer & container,
+                              DataObjectSet & dependentReactions,
+                              DataObjectSet & dependentMetabolites,
+                              DataObjectSet & dependentCompartments,
+                              DataObjectSet & dependentModelValues,
+                              DataObjectSet & dependentEvents,
+                              DataObjectSet & dependentEventAssignments) const;
+
+  /**
+   * Appends pointers to compartments, species, model values, reactions, events, and event assignments
+   * which directly dependent on any of the objets.
+   * list.
+   * @param const ObjectSet & objects
+   * @param CDataObject::DataObjectSet & dependentReactions
+   * @param CDataObject::DataObjectSet & dependentMetabolites
+   * @param CDataObject::DataObjectSet & dependentCompartments
+   * @param CDataObject::DataObjectSet & dependentModelValues
+   * @param CDataObject::DataObjectSet & dependentEvents
+   * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @return bool objectsAppended
+   */
+  bool appendDirectDependents(const ObjectSet & objects,
+                              DataObjectSet & dependentReactions,
+                              DataObjectSet & dependentMetabolites,
+                              DataObjectSet & dependentCompartments,
+                              DataObjectSet & dependentModelValues,
+                              DataObjectSet & dependentEvents,
+                              DataObjectSet & dependentEventAssignments) const;
+
+  /**
+   * Appends pointers to compartments, species, model values, reactions, events, and event assignments
+   * which dependent on the container.
+   * list.
+   * @param const CDataContainer & container
+   * @param CDataObject::DataObjectSet & dependentReactions
+   * @param CDataObject::DataObjectSet & dependentMetabolites
+   * @param CDataObject::DataObjectSet & dependentCompartments
+   * @param CDataObject::DataObjectSet & dependentModelValues
+   * @param CDataObject::DataObjectSet & dependentEvents
+   * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @return bool objectsAppended
+   */
+  bool appendAllDependents(const CDataContainer & container,
+                           DataObjectSet & dependentReactions,
+                           DataObjectSet & dependentMetabolites,
+                           DataObjectSet & dependentCompartments,
+                           DataObjectSet & dependentModelValues,
+                           DataObjectSet & dependentEvents,
+                           DataObjectSet & dependentEventAssignments) const;
+
+  /**
+   * Appends pointers to compartments, species, model values, reactions, events, and event assignments
+   * which dependent on any of the objets.
+   * list.
+   * @param const ObjectSet & objects
+   * @param CDataObject::DataObjectSet & dependentReactions
+   * @param CDataObject::DataObjectSet & dependentMetabolites
+   * @param CDataObject::DataObjectSet & dependentCompartments
+   * @param CDataObject::DataObjectSet & dependentModelValues
+   * @param CDataObject::DataObjectSet & dependentEvents
+   * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @return bool objectsAppended
+   */
+  bool appendAllDependents(const ObjectSet & objects,
+                           DataObjectSet & dependentReactions,
+                           DataObjectSet & dependentMetabolites,
+                           DataObjectSet & dependentCompartments,
+                           DataObjectSet & dependentModelValues,
+                           DataObjectSet & dependentEvents,
+                           DataObjectSet & dependentEventAssignments) const;
 
 public:
   /**
    * Remove all model objects which depend on the deleted objects
-   * @param const std::set<const CCopasiObject*> & deletedObjects
+   * @param const CDataObject::ObjectSet & deletedObjects
    */
-  void removeDependentModelObjects(const std::set<const CCopasiObject*> & deletedObjects);
+  void removeDependentModelObjects(const ObjectSet & deletedObjects);
 
   /**
    * Add a compartment to the model
@@ -925,27 +991,27 @@ public:
 
   /**
    * Check whether the given object is a part of state variable
-   * @param const CCopasiObject * pObject
+   * @param const CDataObject * pObject
    * @return bool isStateVariable
    */
-  bool isStateVariable(const CCopasiObject * pObject) const;
+  bool isStateVariable(const CDataObject * pObject) const;
 
   /**
    * Retrieve the corresponding transient state object of the given object
-   * @param const CCopasiObject * pObject
-   * @return CCopasiObject * correspondingTransientObject
+   * @param const CDataObject * pObject
+   * @return CDataObject * correspondingTransientObject
    */
-  CCopasiObject * getCorrespondingTransientObject(const CCopasiObject * pObject) const;
+  CDataObject * getCorrespondingTransientObject(const CDataObject * pObject) const;
 
   /**
    * Build the update sequence used to calculate all initial values depending
    * on the changed objects. For metabolites the initial particle number is
    * updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
-   * @param std::set< const CCopasiObject * > & changedObjects
-   * @return CObjectInterface::UpdateSequence initialRefreshSequence
+   * @param std::set< const CDataObject * > & changedObjects
+   * @return CCore::CUpdateSequence initialRefreshSequence
    */
-  CObjectInterface::UpdateSequence buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects);
+  CCore::CUpdateSequence buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial
@@ -953,11 +1019,11 @@ public:
    * number is updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
    *
-   * @param std::set< const CCopasiObject * > & changedObjects
+   * @param std::set< const CDataObject * > & changedObjects
 
-   * @see buildInitialRefreshSequence(std::set< const CCopasiObject * > & changedObjects)
+   * @see buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects)
    */
-  void updateInitialValues(std::set< const CCopasiObject * > & changedObjects);
+  void updateInitialValues(std::set< const CDataObject * > & changedObjects);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial
@@ -965,11 +1031,11 @@ public:
    * number is updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
    *
-   * @param std::set< const CCopasiObject * > & changedObjects
+   * @param std::set< const CDataObject * > & changedObjects
 
-   * @see updateInitialValues(std::set< const CCopasiObject * > & changedObjects)
+   * @see updateInitialValues(std::set< const CDataObject * > & changedObjects)
    */
-  void updateInitialValues(const CCopasiObject * changedObject);
+  void updateInitialValues(const CDataObject * changedObject);
 
   /**
    * Initialize a vector of individual absolute tolerances
@@ -1036,6 +1102,14 @@ private:
    */
   bool compileEvents();
 
+  /**
+   * Replace the old string with the new string in all expressions in the model
+   * @param const std::string & oldStr
+   * @param const std::string & newStr
+   */
+  void replaceInExpressions(const std::string & oldStr,
+                            const std::string & newStr);
+
   // Attributes
 private:
   /**
@@ -1081,27 +1155,27 @@ private:
   /**
    *  for array of compartments
    */
-  CCopasiVectorNS < CCompartment > mCompartments;
+  CDataVectorNS < CCompartment > mCompartments;
 
   /**
    *  Vector of reference to metabolites
    */
-  CCopasiVector< CMetab > mMetabolites;
+  CDataVector< CMetab > mMetabolites;
 
   /**
    *  Vector of reference to metabolites in reduced model representation
    */
-  CCopasiVector< CMetab > mMetabolitesX;
+  CDataVector< CMetab > mMetabolitesX;
 
   /**
    *  for array of steps
    */
-  CCopasiVectorNS< CReaction > mSteps;
+  CDataVectorNS< CReaction > mSteps;
 
   /**
    *  for array of events
    */
-  CCopasiVectorN< CEvent > mEvents;
+  CDataVectorN< CEvent > mEvents;
 
   /**
    *  Vectors of fluxes of the reactions.
@@ -1111,7 +1185,7 @@ private:
   /**
    *  vector of non concentration values in the model
    */
-  CCopasiVectorN< CModelValue > mValues;
+  CDataVectorN< CModelValue > mValues;
 
   /**
    * The parameter set of the model itself
@@ -1121,7 +1195,7 @@ private:
   /**
    * Vector of parameter sets
    */
-  CCopasiVectorN< CModelParameterSet > mParameterSets;
+  CDataVectorN< CModelParameterSet > mParameterSets;
 
   /**
    * The key of the currently active parameter set.
@@ -1131,7 +1205,7 @@ private:
   /**
    *  for array of conserved moieties
    */
-  CCopasiVector< CMoiety > mMoieties;
+  CDataVector< CMoiety > mMoieties;
 
   /**
    * Column and Row Annotation for the reduced Stoichiometry Matrix
@@ -1214,14 +1288,14 @@ private:
    *  The Avogadro number used for this model.
    */
   C_FLOAT64 mAvogadro;
-  CCopasiObject * mpAvogadroReference;
+  CDataObject * mpAvogadroReference;
 
   /**
    *  Factor to convert from quantity to particle number
    *  taking into account the unit for substance quantities
    */
   C_FLOAT64 mQuantity2NumberFactor;
-  CCopasiObject * mpQuantity2NumberFactorReference;
+  CDataObject * mpQuantity2NumberFactorReference;
 
   /**
    *  Factor to convert from  particle number to quantity
@@ -1282,7 +1356,7 @@ public:
 
   CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
 
-  CCopasiObject::DataObjectSet getUnitSymbolUsage(std::string symbol) const;
+  CDataObject::DataObjectSet getUnitSymbolUsage(std::string symbol) const;
 
   void changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol);
 

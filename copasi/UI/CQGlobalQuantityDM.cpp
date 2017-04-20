@@ -15,8 +15,8 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModelValue.h"
 #include "function/CExpression.h"
 #include "model/CModel.h"
@@ -305,7 +305,7 @@ void CQGlobalQuantityDM::resetCache()
 {
   assert(mpDataModel != NULL);
 
-  mpGlobalQuantities = dynamic_cast< CCopasiVectorN < CModelValue > * >(&mpDataModel->getModel()->getModelValues());
+  mpGlobalQuantities = dynamic_cast< CDataVectorN < CModelValue > * >(&mpDataModel->getModel()->getModelValues());
   assert(mpGlobalQuantities != NULL);
 
   mUnitCache.clear();// data() will add to the unit cache, as needed
@@ -331,7 +331,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CModelValue >::const_iterator itRow = mpGlobalQuantities->begin() + position;
+  CDataVector< CModelValue >::const_iterator itRow = mpGlobalQuantities->begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -445,7 +445,7 @@ void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQua
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
-  CCopasiObject *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(mpDataModel->getModel());
+  CDataObject *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(mpDataModel->getModel());
 
   if (pGlobalQuantity != NULL)
     emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
@@ -479,7 +479,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
       CModelValue * pGQ = *j;
 
       size_t delRow =
-        mpGlobalQuantities->CCopasiVector< CModelValue >::getIndex(pGQ);
+        mpGlobalQuantities->CDataVector< CModelValue >::getIndex(pGQ);
 
       if (delRow == C_INVALID_INDEX)
         continue;
@@ -487,7 +487,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "quantity",
                                     FROM_UTF8(pGQ->getObjectName()),
-                                    pGQ->getDeletedObjects());
+                                    pGQ);
 
       if (choice == QMessageBox::Ok)
         {
@@ -517,7 +517,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
         continue;
 
       beginInsertRows(QModelIndex(), 1, 1);
-      CCopasiObject *pGlobalQuantity = data->restoreObjectIn(mpDataModel->getModel());
+      CDataObject *pGlobalQuantity = data->restoreObjectIn(mpDataModel->getModel());
 
       if (pGlobalQuantity != NULL)
         emit notifyGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());

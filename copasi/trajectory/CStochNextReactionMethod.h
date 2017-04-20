@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -48,21 +53,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: stochastic)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CStochNextReactionMethod(const CCopasiContainer * pParent,
+  CStochNextReactionMethod(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType = CTaskEnum::stochastic,
                            const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param const CStochMethod & src,
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
   CStochNextReactionMethod(const CStochMethod & src,
-                           const CCopasiContainer * pParent);
+                           const CDataContainer * pParent);
 
   /**
    * Do one iteration of the simulation

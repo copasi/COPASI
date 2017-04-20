@@ -31,12 +31,12 @@
 #include "CFunctionDB.h"
 
 #include "report/CKeyFactory.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "sbml/math/ASTNode.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CNodeIterator.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathObject.h"
 
 const std::string CEvaluationTree::TypeName[] =
@@ -144,9 +144,9 @@ CEvaluationTree * CEvaluationTree::fromData(const CData & data)
 }
 
 CEvaluationTree::CEvaluationTree(const std::string & name,
-                                 const CCopasiContainer * pParent,
+                                 const CDataContainer * pParent,
                                  const CEvaluationTree::Type & type):
-  CCopasiContainer(name, pParent, "Function"),
+  CDataContainer(name, pParent, "Function"),
   mType(type),
   mInfix(),
   mIssue(CIssue::Error),
@@ -163,8 +163,8 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
 }
 
 CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
-                                 const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                                 const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mType(src.mType),
   mInfix(),
   mIssue(CIssue::Error),
@@ -361,7 +361,6 @@ void CEvaluationTree::buildCalculationSequence()
 CIssue CEvaluationTree::compileNodes()
 {
   mPrerequisits.clear();
-  clearDirectDependencies();
   mCalculationSequence.resize(0);
 
   // Clear all mValidity flags, except those only set via setInfix
@@ -444,19 +443,7 @@ CIssue CEvaluationTree::compileNodes()
       for (it = mpNodeList->begin(); it != end; ++it)
         switch ((*it)->mainType())
           {
-            case CEvaluationNode::T_OBJECT:
-            {
-              if (mType == Expression &&
-                  (pObject = static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr()) != NULL)
-                {
-                  const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
-                  addDirectDependency(pDataObject);
-                }
-            }
-            break;
-
             case CEvaluationNode::T_CALL:
-              addDirectDependency(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
               mPrerequisits.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
               break;
 
@@ -733,26 +720,10 @@ CEvaluationNode* CEvaluationTree::getRoot()
 
 void CEvaluationTree::initObjects()
 {
-  std::set< const CCopasiObject * > Self;
-  Self.insert(this);
-
-  CCopasiObject * pObject =
-    addObjectReference("Value", mValue, CCopasiObject::ValueDbl);
-
-  pObject->setDirectDependencies(Self);
+  addObjectReference("Value", mValue);
 }
 
-CCopasiObject::DataObjectSet CEvaluationTree::getDeletedObjects() const
-{
-  CCopasiObject::DataObjectSet Deleted;
-
-  Deleted.insert(this);
-  Deleted.insert(static_cast< const CCopasiObject * >(getObject(CCopasiObjectName("Reference=Value"))));
-
-  return Deleted;
-}
-
-ASTNode* CEvaluationTree::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationTree::toAST(const CDataModel* pDataModel) const
 {
   return mpRootNode->toAST(pDataModel);
 }
@@ -762,21 +733,6 @@ bool CEvaluationTree::hasCircularDependency() const
   std::set< std::string > List;
 
   return calls(List);
-}
-
-bool CEvaluationTree::dependsOnTree(const std::string & name) const
-{
-  if (!mpNodeList) return false;
-
-  std::vector< CEvaluationNode * >::const_iterator it = mpNodeList->begin();
-  std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
-
-  for (; it != end; ++it)
-    if (((*it)->mainType()) == CEvaluationNode::T_CALL &&
-        (*it)->getData() == name)
-      return true;
-
-  return false;
 }
 
 bool CEvaluationTree::calls(std::set< std::string > & list) const

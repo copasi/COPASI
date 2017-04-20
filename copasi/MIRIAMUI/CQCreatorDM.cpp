@@ -211,7 +211,7 @@ bool CQCreatorDM::removeRows(QModelIndexList rows, const QModelIndex&)
       CCreator * pCreator = *j;
 
       size_t delRow =
-        mpMIRIAMInfo->getCreators().CCopasiVector< CCreator >::getIndex(pCreator);
+        mpMIRIAMInfo->getCreators().CDataVector< CCreator >::getIndex(pCreator);
 
       if (delRow != C_INVALID_INDEX)
         {

@@ -13,7 +13,7 @@
 SpeciesChangeCommand::SpeciesChangeCommand(CCopasiUndoCommand::Type type,
     const QVariant & oldValue,
     const QVariant & newValue,
-    CCopasiObject * pObject,
+    CDataObject * pObject,
     CQSpeciesDetail * pWidget,
     double iValue)
   : CCopasiUndoCommand("Species", type, "Change", "", TO_UTF8(newValue.toString()), TO_UTF8(oldValue.toString()), pObject->getObjectName())

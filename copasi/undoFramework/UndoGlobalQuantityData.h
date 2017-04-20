@@ -35,9 +35,9 @@ public:
 
   UndoGlobalQuantityData(const CModelValue* pModelValue, bool trackDependencies = true);
 
-  virtual CCopasiObject* createObjectIn(CModel* pModel);
+  virtual CDataObject* createObjectIn(CModel* pModel);
 
-  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
+  virtual CDataObject* restoreObjectIn(CModel* pModel);
 
   virtual void fillObject(CModel* pModel);
 

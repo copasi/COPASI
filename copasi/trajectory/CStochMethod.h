@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,9 +20,9 @@
 #ifndef COPASI_CStochMethod
 #define COPASI_CStochMethod
 
+#include "copasi/core/CVector.h"
 #include "trajectory/CTrajectoryMethod.h"
 #include "utilities/CDependencyGraph.h"
-#include "utilities/CVector.h"
 
 class CTrajectoryProblem;
 class CMathReaction;
@@ -79,21 +84,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: stochastic)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CStochMethod(const CCopasiContainer * pParent,
+  CStochMethod(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::stochastic,
                const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param const CStochMethod & src,
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
   CStochMethod(const CStochMethod & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -167,7 +172,7 @@ protected:
   /**
    * A vector containing the update sequence required to update all propensity values.
    */
-  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
+  CVector< CCore::CUpdateSequence > mUpdateSequences;
 
   /**
    * max number of single stochastic steps to do in one step()

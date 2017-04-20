@@ -11,12 +11,13 @@
 #include <math.h>
 #include <string.h>
 
-#include "utilities/CUnitDefinition.h"
+#include "CUnitDefinition.h"
+#include "CUnitDefinitionDB.h"
 
-#include "../undo/CData.h"
-#include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
-#include "xml/CCopasiXMLInterface.h"
+#include "copasi/undo/CData.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
 
 // SI Name, Symbol, Definition
 struct SIUnit
@@ -130,8 +131,8 @@ CUnitDefinition * CUnitDefinition::fromData(const CData & data)
 // constructors
 // default
 CUnitDefinition::CUnitDefinition(const std::string & name,
-                                 const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Unit"),
+                                 const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Unit"),
   CUnit(),
   CAnnotation(),
   mSymbol("symbol"),
@@ -142,8 +143,8 @@ CUnitDefinition::CUnitDefinition(const std::string & name,
 
 // copy
 CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
-                                 const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                                 const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   CUnit(src),
   CAnnotation(src),
   mSymbol(src.mSymbol),
@@ -154,9 +155,9 @@ CUnitDefinition::CUnitDefinition(const CUnitDefinition &src,
 
 CUnitDefinition::~CUnitDefinition()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 
-  CCopasiContainer * pParent = getObjectParent();
+  CDataContainer * pParent = getObjectParent();
 
   if (pParent != NULL)
     {
@@ -166,14 +167,14 @@ CUnitDefinition::~CUnitDefinition()
 
 void CUnitDefinition::setup()
 {
-  CCopasiContainer * pParent = getObjectParent();
+  CDataContainer * pParent = getObjectParent();
 
   if (pParent != NULL)
     {
       pParent->add(this, true);
     }
 
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Unit", this);
+  mKey = CRootContainer::getKeyFactory()->add("Unit", this);
 
   // The following ought to trigger the exception for
   // a symbol already in the CUnitDefinitionDB

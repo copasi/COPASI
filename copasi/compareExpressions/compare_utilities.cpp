@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,8 +28,10 @@
 
 #include "compare_utilities.h"
 
-#include "sbml/math/ASTNode.h"
-#include "sbml/Model.h"
+#include <sbml/math/ASTNode.h>
+#include <sbml/Model.h>
+#include <sbml/FunctionDefinition.h>
+
 #include "CNormalBase.h"
 #include "CNormalFraction.h"
 #include "CNormalFunction.h"
@@ -48,12 +55,12 @@
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CEvaluationNodeObject.h"
 #include "copasi/sbml/ConverterASTNode.h"
-#include "sbml/FunctionDefinition.h"
 #include "copasi/model/CChemEq.h"
 #include "copasi/model/CChemEqElement.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /**
  * Creates an expanded expression from the given expression.
@@ -1203,7 +1210,7 @@ bool is_mass_action(const CNormalFraction* pFrac, const CModel* pModel, const CC
   return result;
 }
 
-bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel)
+bool contains_necessary_mass_action_elements(const CDataVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel)
 {
   // check if pProducts contains a product
   // that consists of all the products of the reaction with the correct
@@ -1213,17 +1220,17 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
 
   if (pModel != NULL && pProduct != NULL && elements.size() > 0)
     {
-      const CCopasiObject* pObject = NULL;
+      const CDataObject* pObject = NULL;
       const CNormalItem* pItem = NULL;
       const CMetab* pMetab = NULL;
-      const CCopasiDataModel* pDatamodel = dynamic_cast<const CCopasiDataModel*>(pModel->getObjectParent());
+      const CDataModel* pDatamodel = dynamic_cast<const CDataModel*>(pModel->getObjectParent());
       assert(pDatamodel != NULL);
       CObjectInterface::ContainerList listOfContainers;
       listOfContainers.push_back(const_cast<CModel*>(pModel));
 
-      CCopasiVector<CChemEqElement> tmpV(elements, NO_PARENT);
+      CDataVector<CChemEqElement> tmpV(elements, NO_PARENT);
 
-      std::vector<const CCopasiObject*> tmpObjects;
+      std::vector<const CDataObject*> tmpObjects;
       const std::set<CNormalItemPower*, compareItemPowers >& itemPowers = pProduct->getItemPowers();
       std::set <CNormalItemPower*, compareItemPowers >::const_iterator iit = itemPowers.begin(), iendit = itemPowers.end();
 
@@ -1245,7 +1252,7 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
 
                   if (pObject != NULL)
                     {
-                      if (pObject->isReference())
+                      if (pObject->hasFlag(CDataObject::Reference))
                         {
                           pObject = pObject->getObjectParent();
                           assert(pObject != NULL);
@@ -1255,7 +1262,7 @@ bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>
 
                       if (pMetab != NULL)
                         {
-                          CCopasiVector<CChemEqElement>::iterator tmpVIt = tmpV.begin(), tmpVEndit = tmpV.end();
+                          CDataVector<CChemEqElement>::iterator tmpVIt = tmpV.begin(), tmpVEndit = tmpV.end();
 
                           while (tmpVIt != tmpVEndit)
                             {

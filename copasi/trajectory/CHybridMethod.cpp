@@ -50,8 +50,8 @@
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CMatrix.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
@@ -61,7 +61,7 @@
 /**
  *   Default constructor.
  */
-CHybridMethod::CHybridMethod(const CCopasiContainer * pParent,
+CHybridMethod::CHybridMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType)
@@ -70,7 +70,7 @@ CHybridMethod::CHybridMethod(const CCopasiContainer * pParent,
 }
 
 CHybridMethod::CHybridMethod(const CHybridMethod & src,
-                             const CCopasiContainer * pParent):
+                             const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent)
 {
   initializeParameter();
@@ -470,7 +470,7 @@ void CHybridMethod::updateTauMu(size_t rIndex, C_FLOAT64 time)
  */
 C_INT32 CHybridMethod::checkModel(CModel * model)
 {
-  CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
+  CDataVectorNS <CReaction> * mpReactions = &model->getReactions();
   CMatrix <C_FLOAT64> mStoi = model->getStoi();
   size_t i, numReactions = mpReactions->size();
   size_t j;
@@ -534,11 +534,11 @@ void CHybridMethod::setupDependencyGraph()
           ChangedObjects.insert(itBalance->first);
         }
 
-      mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequences[i], CMath::SimulationContext::Default, ChangedObjects, PropensityObjects);
+      mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequences[i], CCore::SimulationContext::Default, ChangedObjects, PropensityObjects);
 
       for (j = 0; j < numReactions; j++)
         {
-          if (mpContainer->getTransientDependencies().dependsOn(mReactions[j].getPropensityObject(), CMath::SimulationContext::Default, ChangedObjects))
+          if (mpContainer->getTransientDependencies().dependsOn(mReactions[j].getPropensityObject(), CCore::SimulationContext::Default, ChangedObjects))
             {
               mDG.addDependent(i, j);
             }

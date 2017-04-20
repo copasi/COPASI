@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,7 +16,7 @@
 
 #include "copasi.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
 
@@ -81,20 +86,20 @@ BandedGraphWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
 
   mpEditTitle->setText(FROM_UTF8(pCurve->getTitle()));
 
-  CCopasiDataModel* pDataModel = pCurve->getObjectDataModel();
+  CDataModel* pDataModel = pCurve->getObjectDataModel();
   assert(pDataModel != NULL);
 
   mpObjectX = mpObjectYone = mpObjectYtwo = NULL;
 
   if (pCurve->getChannels().size() >= 1)
-    mpObjectX = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[0]));
+    mpObjectX = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[0]));
 
   if (pCurve->getChannels().size() >= 2)
-    mpObjectYone = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[1]));
+    mpObjectYone = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[1]));
 
   if (pCurve->getChannels().size() >= 3)
     {
-      mpObjectYtwo = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[2]));
+      mpObjectYtwo = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[2]));
 
       if ((mpObjectYtwo->getObjectDisplayName() == "(CN)Root") && mpObjectYone)
         mpObjectYtwo = mpObjectYone;  // as long as we haven't a second Y-axis chooser, this has to suffice.

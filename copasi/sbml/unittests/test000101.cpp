@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000101.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: bergmann $
-//   $Date: 2012/04/19 15:00:10 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,8 +16,8 @@
 #endif
 #include <stdexcept>
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/report/CRootContainer.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 
 // Since this bug leads to segmentation fault
 // we need to make sure that the call to abort made by assert does not end the program.
@@ -52,14 +49,14 @@ void test000101::setUp()
 
 #endif
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
-  pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL, false);
+  pDataModel = CRootContainer::addDatamodel();
 }
 
 void test000101::tearDown()
 {
 #ifndef WIN32
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
   // restore the old action handler
   int x = sigaction(SIGSEGV, test000101::pOldAct, NULL);
 
@@ -70,8 +67,6 @@ void test000101::tearDown()
 
 #endif
 }
-
-
 
 void test000101::test_bug1740()
 {
@@ -98,4 +93,3 @@ const char* test000101::SBML_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?
                                       "    </listOfReactions>\n"
                                       "  </model>\n"
                                       "</sbml>\n";
-

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,9 +32,9 @@
 #include <string>
 #include <sstream>
 
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CCopasiMethod.h"
-#include "utilities/CMatrix.h"
-#include "utilities/CVector.h"
 
 class CSteadyStateProblem;
 class CSteadyStateTask;
@@ -101,20 +106,20 @@ private:
 protected:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType (default: steadyState)
    */
-  CSteadyStateMethod(const CCopasiContainer * pParent,
+  CSteadyStateMethod(const CDataContainer * pParent,
                      const CTaskEnum::Method & methodType,
                      const CTaskEnum::Task & taskType = CTaskEnum::steadyState);
   /**
    * Specific constructor.
    * @param CTaskEnum::Method subType
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CSteadyStateMethod(CTaskEnum::Method subType,
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   /**
    * initialize parameters and handle parameters of old COPASI files
@@ -125,10 +130,10 @@ public:
   /**
    * Copy constructor.
    * @param "const CSteadyStateMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CSteadyStateMethod(const CSteadyStateMethod & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
 
   /**
    *  Destructor.

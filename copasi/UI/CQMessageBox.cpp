@@ -29,15 +29,16 @@
 #include "CQMessageBox.h"
 #include "listviews.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CModel.h"
-#include "function/CFunctionDB.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
-#include <copasi/resourcesUI/CQIconResource.h>
+#include "copasi/resourcesUI/CQIconResource.h"
 
 CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
                            QMessageBox::StandardButtons buttons, QWidget *parent,
@@ -161,19 +162,20 @@ QMessageBox::StandardButton CQMessageBox::critical(QWidget *parent, const QStrin
 // static
 QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
     const QString &objectType, const QString &objects,
-    const std::set< const CCopasiObject * > & deletedObjects)
+    const CDataContainer * pContainer)
 {
-  if (deletedObjects.size() == 0)
+  if (pContainer == NULL)
     return QMessageBox::Ok;
 
-  std::set< const CCopasiObject * > DeletedObjects = deletedObjects;
+  CDataObject::ObjectSet DeletedObjects;
+  DeletedObjects.insert(pContainer);
 
   // Determine the affected data model
-  const CCopasiDataModel * pDataModel = (*DeletedObjects.begin())->getObjectDataModel();
+  const CDataModel * pDataModel = pContainer->getObjectDataModel();
 
   // Determine the affected function DB
   CFunctionDB * pFunctionDB =
-    dynamic_cast< CFunctionDB * >((*DeletedObjects.begin())->getObjectAncestor("FunctionDB"));
+    dynamic_cast< CFunctionDB * >(pContainer->getObjectAncestor("FunctionDB"));
 
   if (pDataModel == NULL &&
       pFunctionDB == NULL)
@@ -182,13 +184,13 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   if (pFunctionDB != NULL)
     {
       // TODO In case a function is deleted we need to loop through all data models
-      CCopasiDataModel* pDataModel = ListViews::dataModel(parent);
+      CDataModel* pDataModel = ListViews::dataModel(parent);
 
       assert(pDataModel != NULL);
     }
   else
     {
-      pFunctionDB = CCopasiRootContainer::getFunctionList();
+      pFunctionDB = CRootContainer::getFunctionList();
     }
 
   bool isUsed = false;
@@ -211,21 +213,21 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
   const QString & objectType,
   const QString & objects,
   CFunctionDB * pFunctionDB,
-  std::set<const CCopasiObject *> &DeletedObjects,
-  const CCopasiDataModel * pDataModel,
+  CDataObject::ObjectSet & DeletedObjects,
+  const CDataModel * pDataModel,
   bool &isUsed)
 {
   QString msg =
     QString("Do you want to delete the listed %1?\n  %2\n").arg(objectType, objects);
 
-  std::set< const CCopasiObject * > Functions;
-  std::set< const CCopasiObject * > Reactions;
-  std::set< const CCopasiObject * > Metabolites;
-  std::set< const CCopasiObject * > Values;
-  std::set< const CCopasiObject * > Compartments;
-  std::set< const CCopasiObject * > Events;
-  std::set< const CCopasiObject * > EventAssignments;
-  std::set< const CCopasiObject * > Tasks;
+  CDataObject::DataObjectSet Functions;
+  CDataObject::DataObjectSet Reactions;
+  CDataObject::DataObjectSet Metabolites;
+  CDataObject::DataObjectSet Values;
+  CDataObject::DataObjectSet Compartments;
+  CDataObject::DataObjectSet Events;
+  CDataObject::DataObjectSet EventAssignments;
+  CDataObject::DataObjectSet Tasks;
 
   isUsed = false;
 
@@ -237,8 +239,8 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           msg.append("Following functions(s) reference above and will be deleted:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Functions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Functions.end();
+          CDataObject::DataObjectSet::const_iterator it = Functions.begin();
+          CDataObject::DataObjectSet::const_iterator end = Functions.end();
 
           for (; it != end; ++it)
             {
@@ -264,8 +266,8 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           msg.append("Following task(s) reference above and will be modified:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Tasks.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Tasks.end();
+          CDataObject::DataObjectSet::const_iterator it = Tasks.begin();
+          CDataObject::DataObjectSet::const_iterator end = Tasks.end();
 
           for (; it != end; ++it)
             {
@@ -279,15 +281,15 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
 
   if (pModel != NULL)
     {
-      isUsed |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
-                Compartments, Values, Events, EventAssignments);
+      isUsed |= pModel->appendAllDependents(DeletedObjects, Reactions, Metabolites,
+                                            Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
           msg.append("Following reactions(s) reference above and will be deleted:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+          CDataObject::DataObjectSet::const_iterator it = Reactions.begin();
+          CDataObject::DataObjectSet::const_iterator end = Reactions.end();
 
           for (; it != end; ++it)
             {
@@ -302,8 +304,8 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           msg.append("Following species reference above and will be deleted:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
+          CDataObject::DataObjectSet::const_iterator it = Metabolites.begin();
+          CDataObject::DataObjectSet::const_iterator end = Metabolites.end();
 
           for (; it != end; ++it)
             {
@@ -318,8 +320,8 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           msg.append("Following global quantities reference above and will be deleted:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Values.end();
+          CDataObject::DataObjectSet::const_iterator it = Values.begin();
+          CDataObject::DataObjectSet::const_iterator end = Values.end();
 
           for (; it != end; ++it)
             {
@@ -334,8 +336,8 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           msg.append("Following compartment(s) reference above and will be deleted:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
+          CDataObject::DataObjectSet::const_iterator it = Compartments.begin();
+          CDataObject::DataObjectSet::const_iterator end = Compartments.end();
 
           for (; it != end; ++it)
             {
@@ -350,8 +352,8 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           msg.append("Following event(s) reference above and will be deleted:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Events.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Events.end();
+          CDataObject::DataObjectSet::const_iterator it = Events.begin();
+          CDataObject::DataObjectSet::const_iterator end = Events.end();
 
           for (; it != end; ++it)
             {
@@ -366,12 +368,12 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
         {
           bool first = true;
 
-          std::set< const CCopasiObject * >::const_iterator it = EventAssignments.begin();
-          std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
+          CDataObject::DataObjectSet::const_iterator it = EventAssignments.begin();
+          CDataObject::DataObjectSet::const_iterator end = EventAssignments.end();
 
           for (; it != end; ++it)
             {
-              const CCopasiObject * pEvent = (*it)->getObjectAncestor("Event");
+              const CDataObject * pEvent = (*it)->getObjectAncestor("Event");
 
               if (Events.find(pEvent) == Events.end())
                 {
@@ -381,7 +383,7 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
                       first = false;
                     }
 
-                  const CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get((*it)->getObjectName());
+                  const CDataObject * pObject = CRootContainer::getKeyFactory()->get((*it)->getObjectName());
                   std::string ObjectName = (pObject != NULL) ? pObject->getObjectName() : (*it)->getObjectName();
                   msg.append(FROM_UTF8(pEvent->getObjectName() + ": " + ObjectName));
                   msg.append("\n  ");

@@ -16,8 +16,8 @@
 #include <QtCore/QString>
 #include <QtCore/QList>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CChemEqInterface.h"
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
@@ -34,7 +34,7 @@
 #include "undoFramework/ReactionChangeCommand.h"
 #include "undoFramework/UndoReactionData.h"
 
-CQReactionDM::CQReactionDM(QObject *parent, CCopasiDataModel * pDataModel)
+CQReactionDM::CQReactionDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
   , mNewEquation()
   , mCreatedKeys()
@@ -248,32 +248,22 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QVariant &value)
   // which are used in any mathematical expression in the model are removed.
   // If that is the case the user must have option to cancel the changes or remove the
   // affected expressions.
-  std::set< const CCopasiObject * > DeletedParameters = ri.getDeletedParameters();
+  std::set< const CDataObject * > DeletedParameters = ri.getDeletedParameters();
+  std::set< const CDataObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
 
-  if (DeletedParameters.size() != 0)
+  for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
     {
-      QString ObjectType = "parameter(s) of reaction " + FROM_UTF8(pRea->getObjectName());
-      QString Objects;
+      QString ObjectType = "parameter of reaction";
 
-      std::set< const CCopasiObject * >::const_iterator itParameter, endParameter = DeletedParameters.end();
-      std::set< const CCopasiObject * > DeletedObjects;
-
-      for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
-        {
-          Objects.append(FROM_UTF8((*itParameter)->getObjectName()) + ", ");
-          DeletedObjects.insert(static_cast< const CCopasiObject * >((*itParameter)->getObject(CCopasiObjectName("Reference=Value"))));
-        }
-
-      Objects.remove(Objects.length() - 2, 2);
-
-      QMessageBox::StandardButton choice = CQMessageBox::confirmDelete(NULL, ObjectType, Objects, DeletedObjects);
+      QMessageBox::StandardButton choice = CQMessageBox::confirmDelete(NULL, ObjectType,
+                                           FROM_UTF8((*itParameter)->getObjectDisplayName()),
+                                           dynamic_cast< const CDataContainer * >(*itParameter));
 
       switch (choice)
         {
           case QMessageBox::Ok:
 
-            for (itParameter = DeletedParameters.begin(); itParameter != endParameter; ++itParameter) //all parameters
-              pModel->removeLocalReactionParameter((*itParameter)->getKey());
+            pModel->removeLocalReactionParameter((*itParameter)->getKey());
 
             break;
 
@@ -286,7 +276,7 @@ void CQReactionDM::setEquation(const CReaction *pRea, const QVariant &value)
 
   // We need to check whether the current reaction still exists, since it is possible that
   // removing a local reaction parameter triggers its deletion.
-  CReaction * reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(objKey));
+  CReaction * reac = dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(objKey));
 
   if (reac == NULL)
     {
@@ -339,7 +329,7 @@ bool CQReactionDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CReaction >::const_iterator itRow = pModel->getReactions().begin() + position;
+  CDataVector< CReaction >::const_iterator itRow = pModel->getReactions().begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -372,7 +362,7 @@ bool CQReactionDM::reactionDataChange(const std::string & key,
 {
   switchToWidget(CCopasiUndoCommand::REACTIONS);
 
-  CReaction * pRea = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CReaction * pRea = dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(key));
 
   if (pRea == NULL) return false;
 
@@ -525,7 +515,7 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
       CReaction * pReaction = *j;
 
       size_t delRow =
-        pModel->getReactions().CCopasiVector< CReaction >::getIndex(pReaction);
+        pModel->getReactions().CDataVector< CReaction >::getIndex(pReaction);
 
       if (delRow == C_INVALID_INDEX)
         continue;
@@ -533,21 +523,19 @@ bool CQReactionDM::removeReactionRows(QModelIndexList rows, const QModelIndex&)
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "reaction",
                                     FROM_UTF8(pReaction->getObjectName()),
-                                    pReaction->getDeletedObjects());
+                                    pReaction);
 
       if (choice == QMessageBox::Ok)
         {
           lst.append(index((int)delRow, 0));
           //removeRow((int)delRow);
         }
-
     }
 
   if (!lst.empty())
     {
       mpUndoStack->push(new RemoveReactionRowsCommand(lst, this));
     }
-
 
   return true;
 }
@@ -572,7 +560,7 @@ void CQReactionDM::addReactionRow(UndoReactionData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CCopasiObject *pReaction = pData->restoreObjectIn(pModel);
+  CDataObject *pReaction = pData->restoreObjectIn(pModel);
 
   if (pReaction == NULL)
     return;

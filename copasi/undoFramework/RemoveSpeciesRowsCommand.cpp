@@ -15,14 +15,15 @@
  *      Author: dada
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CMetab.h"
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
-#include "CQSpecieDM.h"
-#include "function/CFunctionDB.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CQSpecieDM.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "UndoSpeciesData.h"
 #include "UndoReactionData.h"
@@ -36,7 +37,7 @@ RemoveSpecieRowsCommand::RemoveSpecieRowsCommand(
   , mpSpecieDM(pSpecieDM)
   , mpSpeciesData()
 {
-  CCopasiDataModel * pDataModel = pSpecieDM->getDataModel();
+  CDataModel * pDataModel = pSpecieDM->getDataModel();
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);

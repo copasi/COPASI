@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,9 +32,9 @@
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCallback.h"
-#include  "CopasiDataModel/CCopasiDataModel.h"
+#include  "CopasiDataModel/CDataModel.h"
 
-CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent,
+CCrossSectionTask::CCrossSectionTask(const CDataContainer * pParent,
                                      const CTaskEnum::Task & type):
   CTrajectoryTask(pParent, type),
   mpCrossSectionProblem(NULL),
@@ -62,7 +67,7 @@ CCrossSectionTask::CCrossSectionTask(const CCopasiContainer * pParent,
 }
 
 CCrossSectionTask::CCrossSectionTask(const CCrossSectionTask & src,
-                                     const CCopasiContainer * pParent):
+                                     const CDataContainer * pParent):
   CTrajectoryTask(src, pParent),
   mpCrossSectionProblem(NULL),
   mStartTime(0.0),
@@ -106,13 +111,13 @@ CCrossSectionTask::~CCrossSectionTask()
 
 void CCrossSectionTask::initObjects()
 {
-  addObjectReference("Period", mPeriod, CCopasiObject::ValueDbl);
-  addObjectReference("Average Period", mAveragePeriod, CCopasiObject::ValueDbl);
-  addObjectReference("Last Period", mLastPeriod, CCopasiObject::ValueDbl);
-  addObjectReference("Periodicity", mPeriodicity, CCopasiObject::ValueInt);
-  addObjectReference("Last Frequency", mLastFreq, CCopasiObject::ValueDbl);
-  addObjectReference("Frequency", mFreq, CCopasiObject::ValueDbl);
-  addObjectReference("Average Frequency", mAverageFreq, CCopasiObject::ValueDbl);
+  addObjectReference("Period", mPeriod, CDataObject::ValueDbl);
+  addObjectReference("Average Period", mAveragePeriod, CDataObject::ValueDbl);
+  addObjectReference("Last Period", mLastPeriod, CDataObject::ValueDbl);
+  addObjectReference("Periodicity", mPeriodicity, CDataObject::ValueInt);
+  addObjectReference("Last Frequency", mLastFreq, CDataObject::ValueDbl);
+  addObjectReference("Frequency", mFreq, CDataObject::ValueDbl);
+  addObjectReference("Average Frequency", mAverageFreq, CDataObject::ValueDbl);
 }
 
 #define RING_SIZE 16

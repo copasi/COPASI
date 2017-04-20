@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,21 +15,23 @@
 
 #include "CQMoietiesTaskResult.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "resourcesUI/CQIconResource.h"
 #include "CQPushButtonDelegate.h"
 #include "CopasiFileDialog.h"
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "function/CExpression.h"
-#include "model/CModel.h"
-#include "moieties/CMoietiesTask.h"
-#include "report/CKeyFactory.h"
-#include "utilities/utility.h"
-#include "report/CCopasiRootContainer.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
+#include "copasi/moieties/CMoietiesTask.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #define COL_SPECIES  0
 #define COL_NUMBER   1
@@ -155,8 +162,8 @@ void CQMoietiesTaskResult::load()
 
   if (pModel->getMoieties().size() > 0)
     {
-      CCopasiVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
-      CCopasiVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
+      CDataVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
+      CDataVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
       mpMoieties->setRowCount(pModel->getMoieties().size());
       mpMoieties->setSortingEnabled(false);
 
@@ -262,7 +269,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
 
   if (pModel == NULL) return;
 
-  const CCopasiVector< CMoiety > & Moieties = pModel->getMoieties();
+  const CDataVector< CMoiety > & Moieties = pModel->getMoieties();
 
   if (row >= (C_INT32) Moieties.size()) return;
 

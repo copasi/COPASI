@@ -26,14 +26,14 @@
 #include "CCompartment.h"
 #include "CMetabNameInterface.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"//By G
 #include "function/CExpression.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CReadConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/utility.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 const C_FLOAT64 CMoiety::DefaultFactor(1.0);
@@ -46,9 +46,9 @@ CMoiety * CMoiety::fromData(const CData & data)
 }
 
 CMoiety::CMoiety(const std::string & name,
-                 const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Moiety"),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
+                 const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Moiety"),
+  mKey(CRootContainer::getKeyFactory()->add("Moiety", this)), //By G
   mNumber(0),
   mINumber(0),
   mIAmount(0),
@@ -63,9 +63,9 @@ CMoiety::CMoiety(const std::string & name,
 }
 
 CMoiety::CMoiety(const CMoiety & src,
-                 const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Moiety", this)), //By G
+                 const CDataContainer * pParent):
+  CDataContainer(src, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("Moiety", this)), //By G
   mNumber(src.mNumber),
   mINumber(src.mINumber),
   mIAmount(src.mIAmount),
@@ -81,7 +81,7 @@ CMoiety::CMoiety(const CMoiety & src,
 
 CMoiety::~CMoiety()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 
@@ -91,23 +91,16 @@ void CMoiety::initObjects()
   mpNumberReference = new CTotalNumberReference("Value", this, mNumber);
 
   mpDNumberReference = new CDependentNumberReference("DependentValue", this, mNumber);
-  mpDNumberReference->addDirectDependency(this);
 
-  CCopasiObject * pObject = addObjectReference("Amount", mIAmount, CCopasiObject::ValueDbl);
-  pObject->addDirectDependency(mpNumberReference);
+  CDataObject * pObject = addObjectReference("Amount", mIAmount, CDataObject::ValueDbl);
 
   return;
 }
 
 void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 {
-  if (!mEquation.size())
+  if (mEquation.empty())
     pMetabolite->setDependsOnMoiety(this);
-  else
-    addDirectDependency(pMetabolite->mpValueReference);
-
-  mpINumberReference->addDirectDependency(pMetabolite->mpIValueReference);
-  mpNumberReference->addDirectDependency(pMetabolite->mpValueReference);
 
   std::pair<C_FLOAT64, CMetab *> element;
 
@@ -119,10 +112,7 @@ void CMoiety::add(C_FLOAT64 value, CMetab * pMetabolite)
 
 void CMoiety::cleanup()
 {
-  clearDirectDependencies();
   mEquation.clear();
-  mpINumberReference->clearDirectDependencies();
-  mpNumberReference->clearDirectDependencies();
 }
 
 void CMoiety::refreshDependentNumber()
@@ -151,17 +141,17 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 const C_FLOAT64 & CMoiety::getDependentNumber() const
 {return mNumber;}
 
-CCopasiObject * CMoiety::getTotalNumberReference() const
+CDataObject * CMoiety::getTotalNumberReference() const
 {return mpNumberReference;}
 
-CCopasiObject * CMoiety::getDependentNumberReference() const
+CDataObject * CMoiety::getDependentNumberReference() const
 {return mpDNumberReference;}
 
 const std::string & CMoiety::getKey() const {return mKey;} //By G
 
-bool CMoiety::setObjectParent(const CCopasiContainer * pParent)
+bool CMoiety::setObjectParent(const CDataContainer * pParent)
 {
-  bool success = CCopasiContainer::setObjectParent(pParent);
+  bool success = CDataContainer::setObjectParent(pParent);
   initConversionFactor();
 
   return success;
@@ -209,7 +199,7 @@ void CMoiety::refreshInitialValue()
   return;
 }
 
-CCopasiObject * CMoiety::getInitialValueReference() const
+CDataObject * CMoiety::getInitialValueReference() const
 {return mpINumberReference;}
 
 C_FLOAT64 CMoiety::getNumber() const
@@ -226,7 +216,7 @@ void CMoiety::refreshValue()
     mINumber += it->first * it->second->getValue();
 }
 
-CCopasiObject * CMoiety::getValueReference() const
+CDataObject * CMoiety::getValueReference() const
 {
   return mpNumberReference;
 }
@@ -290,14 +280,14 @@ void CMoiety::initConversionFactor()
 }
 
 CTotalNumberReference::CTotalNumberReference(const std::string & name,
-    const CCopasiContainer * pParent,
+    const CDataContainer * pParent,
     C_FLOAT64 & reference):
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+  CDataObjectReference< C_FLOAT64 >(name, pParent, reference)
 {}
 
 CTotalNumberReference::CTotalNumberReference(const CTotalNumberReference & src,
-    const CCopasiContainer * pParent):
-  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
+    const CDataContainer * pParent):
+  CDataObjectReference< C_FLOAT64 >(src, pParent)
 {}
 
 CTotalNumberReference::~CTotalNumberReference()
@@ -305,21 +295,21 @@ CTotalNumberReference::~CTotalNumberReference()
 
 // virtual
 bool CTotalNumberReference::isPrerequisiteForContext(const CObjectInterface * /* pObject */,
-    const CMath::SimulationContextFlag & context,
+    const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & /* changedObjects */) const
 {
-  return context.isSet(CMath::SimulationContext::UpdateMoieties);
+  return context.isSet(CCore::SimulationContext::UpdateMoieties);
 }
 
 CDependentNumberReference::CDependentNumberReference(const std::string & name,
-    const CCopasiContainer * pParent,
+    const CDataContainer * pParent,
     C_FLOAT64 & reference):
-  CCopasiObjectReference< C_FLOAT64 >(name, pParent, reference)
+  CDataObjectReference< C_FLOAT64 >(name, pParent, reference)
 {}
 
 CDependentNumberReference::CDependentNumberReference(const CDependentNumberReference & src,
-    const CCopasiContainer * pParent):
-  CCopasiObjectReference< C_FLOAT64 >(src, pParent)
+    const CDataContainer * pParent):
+  CDataObjectReference< C_FLOAT64 >(src, pParent)
 {}
 
 CDependentNumberReference::~CDependentNumberReference()
@@ -327,8 +317,8 @@ CDependentNumberReference::~CDependentNumberReference()
 
 // virtual
 bool CDependentNumberReference::isPrerequisiteForContext(const CObjectInterface * /* pObject */,
-    const CMath::SimulationContextFlag & context,
+    const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & /* changedObjects */) const
 {
-  return context.isSet(CMath::SimulationContext::UpdateMoieties);
+  return context.isSet(CCore::SimulationContext::UpdateMoieties);
 }

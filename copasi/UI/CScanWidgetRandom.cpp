@@ -21,16 +21,18 @@
 
 #include <QValidator>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "listviews.h"
 #include "CScanWidgetRandom.h"
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+
+#include "copasi/core/CRootContainer.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CScanWidgetRandom as a child of 'parent', with the
@@ -77,7 +79,7 @@ void CScanWidgetRandom::init()
 
 void CScanWidgetRandom::slotChooseObject()
 {
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters,
@@ -87,7 +89,7 @@ void CScanWidgetRandom::slotChooseObject()
     initFromObject(pObject);
 }
 
-void CScanWidgetRandom::initFromObject(const CCopasiObject *obj)
+void CScanWidgetRandom::initFromObject(const CDataObject *obj)
 {
   mpObject = obj;
 
@@ -95,7 +97,7 @@ void CScanWidgetRandom::initFromObject(const CCopasiObject *obj)
     {
       lineEditObject->setText(FROM_UTF8(obj->getObjectDisplayName()));
 
-      if (obj->isValueDbl())
+      if (obj->hasFlag(CDataObject::ValueDbl))
         {
           C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
           C_INT32 type = comboBoxType->currentIndex();
@@ -143,7 +145,7 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
     mpObject = NULL;
   else
     {
-      CCopasiDataModel* pDataModel = ListViews::dataModel(this);
+      CDataModel* pDataModel = ListViews::dataModel(this);
       assert(pDataModel != NULL);
       mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(String));
     }

@@ -31,7 +31,7 @@ class QStringList;
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
@@ -57,13 +57,13 @@ const std::string& CQModelElementTreeWidgetItem::getKey() const
  * Returns a pointer to the COPASI object
  * represented by this item.
  */
-CCopasiObject* CQModelElementTreeWidgetItem::getObject() const
+CDataObject* CQModelElementTreeWidgetItem::getObject() const
 {
-  CCopasiObject* pObject = NULL;
+  CDataObject* pObject = NULL;
 
   if (!this->mKey.empty())
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(this->mKey);
+      pObject = CRootContainer::getKeyFactory()->get(this->mKey);
     }
 
   return pObject;
@@ -396,9 +396,9 @@ void CQSelectionWizardPage::slotCreateCompartments(int state)
 // fills the selection tree with elements from the model
 void CQSelectionWizardPage::fillTree(const CModel& model)
 {
-  const CCopasiVectorNS < CCompartment >& compartments = model.getCompartments();
-  const CCopasiVector< CMetab >& metabs = model.getMetabolites();
-  const CCopasiVectorNS < CReaction >& reactions = model.getReactions();
+  const CDataVectorNS < CCompartment >& compartments = model.getCompartments();
+  const CDataVector< CMetab >& metabs = model.getMetabolites();
+  const CDataVectorNS < CReaction >& reactions = model.getReactions();
 
   if (compartments.size() > 0 && metabs.size() > 0)
     {
@@ -418,7 +418,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
       QTreeWidgetItem *pChild1;
       const CCompartment* pCompartment = NULL;
       QTreeWidgetItem *pItem2 = NULL, *pItem3 = NULL;
-      const CCopasiVectorNS<CMetab>* pMetabs = NULL;
+      const CDataVectorNS<CMetab>* pMetabs = NULL;
       unsigned int j, jMax;
       const CMetab* pMetab = NULL;
 
@@ -605,13 +605,13 @@ const std::string& CQSideCompoundWizardPage::CQListWidgetModelItem::getKey() con
   return this->mKey;
 }
 
-CCopasiObject* CQSideCompoundWizardPage::CQListWidgetModelItem::getObject() const
+CDataObject* CQSideCompoundWizardPage::CQListWidgetModelItem::getObject() const
 {
-  CCopasiObject* pObject = NULL;
+  CDataObject* pObject = NULL;
 
   if (!this->mKey.empty())
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(this->mKey);
+      pObject = CRootContainer::getKeyFactory()->get(this->mKey);
     }
 
   return pObject;

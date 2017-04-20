@@ -17,23 +17,20 @@
 
 #include <QtCore/QList>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "model/CModelValue.h"
-#include "model/CModel.h"
-#include "function/CExpression.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
 #include "UndoEventData.h"
 #include "UndoSpeciesData.h"
-
 #include "UndoGlobalQuantityData.h"
-
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-#include <copasi/undoFramework/UndoDependentData.h>
-
-#include <copasi/report/CCopasiRootContainer.h>
+#include "CCopasiUndoCommand.h"
+#include "UndoDependentData.h"
 
 UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
     const std::string &name /*= ""*/,
@@ -62,7 +59,7 @@ UndoGlobalQuantityData::~UndoGlobalQuantityData()
 {
 }
 
-CCopasiObject *
+CDataObject *
 UndoGlobalQuantityData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
@@ -82,10 +79,10 @@ UndoGlobalQuantityData::createObjectIn(CModel *pModel)
   return pGlobalQuantity;
 }
 
-CCopasiObject *
+CDataObject *
 UndoGlobalQuantityData::restoreObjectIn(CModel *pModel)
 {
-  CCopasiObject *pGlobalQuantity =  createObjectIn(pModel);
+  CDataObject *pGlobalQuantity =  createObjectIn(pModel);
 
   if (pGlobalQuantity == NULL)
     return NULL;
@@ -100,7 +97,7 @@ void
 UndoGlobalQuantityData::fillObject(CModel *)
 {
   CModelValue * pGlobalQuantity =
-    dynamic_cast<CModelValue*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CModelValue*>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pGlobalQuantity == NULL) return;
 

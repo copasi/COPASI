@@ -16,7 +16,7 @@
 /**
  *  Default constructor.
  */
-CCrossSectionMethod::CCrossSectionMethod(const CCopasiContainer * pParent,
+CCrossSectionMethod::CCrossSectionMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType)
@@ -27,7 +27,7 @@ CCrossSectionMethod::CCrossSectionMethod(const CCopasiContainer * pParent,
  *  @param "const CCrossSectionMethod &" src
  */
 CCrossSectionMethod::CCrossSectionMethod(const CCrossSectionMethod & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiMethod(src, pParent)
   //mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}

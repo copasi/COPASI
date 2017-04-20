@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,15 +19,16 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "optimization/COptTask.h"
-#include "optimization/COptProblem.h"
-#include "optimization/COptItem.h"
-#include "report/CCopasiRootContainer.h"
-#include "commandline/CLocaleString.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the
@@ -114,7 +120,7 @@ bool CQOptimizationResult::enterProtected()
   for (i = 0; i != imax; i++)
     {
       //1st column: parameter name
-      const CCopasiObject *pObject =
+      const CDataObject *pObject =
         CObjectInterface::DataObject(mpDataModel->getObjectFromCN(Items[i]->getObjectCN()));
 
       if (pObject)

@@ -52,10 +52,10 @@ void DefaultPlotDialog::slotCreate()
 {
   if (!mpTask) return;
 
-  CCopasiDataModel* pDataModel = ListViews::dataModel(parent());
+  CDataModel* pDataModel = ListViews::dataModel(parent());
   assert(pDataModel != NULL);
 
-  CCopasiObject* result = COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel);
+  CDataObject* result = COutputAssistant::createDefaultOutput(mIndex, mpTask, pDataModel);
 
   if (result != NULL)
     {
@@ -68,7 +68,6 @@ void DefaultPlotDialog::slotCreate()
           this->accept();
           return;
         }
-
 
       QString current = lineEditTitle->text();
       int count = 0;

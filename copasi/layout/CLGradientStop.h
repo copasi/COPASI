@@ -15,15 +15,15 @@
 
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLRelAbsVector.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class GradientStop;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLGradientStop : public CLBase, public CCopasiObject
+class CLGradientStop : public CLBase, public CDataObject
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -44,17 +44,17 @@ public:
   /**
    * Constructor.
    */
-  CLGradientStop(CCopasiContainer* pParent = NULL);
+  CLGradientStop(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor
    */
-  CLGradientStop(const CLGradientStop& source, CCopasiContainer* pParent = NULL);
+  CLGradientStop(const CLGradientStop& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLGradientStop(const GradientStop& source, CCopasiContainer* pParent = NULL);
+  CLGradientStop(const GradientStop& source, CDataContainer* pParent = NULL);
 
   /**
    * Virtual destructor to satify the linker.

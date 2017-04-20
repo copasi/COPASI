@@ -55,9 +55,9 @@
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/CPlotItem.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "layout/CListOfLayouts.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "copasi/layout/CLGradientStop.h"
 #include "copasi/layout/CLGradientBase.h"
@@ -218,7 +218,7 @@ void CXMLParser::pushElementHandler(CXMLHandler * pElementHandler)
 void CXMLParser::popElementHandler()
 {mElementHandlerStack.pop();}
 
-void CXMLParser::setFunctionList(CCopasiVectorN< CFunction > * pFunctionList)
+void CXMLParser::setFunctionList(CDataVectorN< CFunction > * pFunctionList)
 {mData.pFunctionList = pFunctionList;}
 
 CModel * CXMLParser::getModel() const
@@ -227,7 +227,7 @@ CModel * CXMLParser::getModel() const
 CReportDefinitionVector * CXMLParser::getReportList() const
 {return mData.pReportList;}
 
-CCopasiVectorN< CCopasiTask > * CXMLParser::getTaskList() const
+CDataVectorN< CCopasiTask > * CXMLParser::getTaskList() const
 {return mData.pTaskList;}
 
 COutputDefinitionVector * CXMLParser::getPlotList() const
@@ -253,7 +253,7 @@ CXMLHandler * CXMLParser::getHandler(const CXMLHandler::Type & type)
   return mpFactory->getHandler(type);
 }
 
-void CXMLParser::setDatamodel(CCopasiDataModel* pDataModel)
+void CXMLParser::setDatamodel(CDataModel* pDataModel)
 {
   mData.pDataModel = pDataModel;
 }

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -85,8 +90,8 @@ typedef CVector<unsigned long> ULongVector;
 #endif
 typedef CVectorCore<size_t> SizeTVectorCore;
 typedef CVector<size_t> SizeTVector;
-typedef CVectorCore<CCopasiObject*> ObjectVectorCore;
-typedef CVector<CCopasiObject*> ObjectVector;
+typedef CVectorCore<CDataObject*> ObjectVectorCore;
+typedef CVector<CDataObject*> ObjectVector;
 
 %template(FloatVectorCore) CVectorCore<C_FLOAT64>;
 %template(FloatVector) CVector<C_FLOAT64>;
@@ -96,7 +101,7 @@ typedef CVector<CCopasiObject*> ObjectVector;
 #endif
 %template(SizeTVectorCore) CVectorCore<size_t>;
 %template(SizeTVector) CVector<size_t>;
-%template(ObjectVectorCore) CVectorCore<CCopasiObject*>;
-%template(ObjectVector) CVector<CCopasiObject*>;
+%template(ObjectVectorCore) CVectorCore<CDataObject*>;
+%template(ObjectVector) CVector<CDataObject*>;
 
 

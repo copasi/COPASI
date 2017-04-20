@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,18 +18,18 @@
 #include "function/CEvaluationNode.h"
 #include "function/CEvaluationNodeNumber.h"
 #include "function/CEvaluationNodeOperator.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "compareExpressions/CNormalTranslation.h"
 
 void test_depth_first_iterator::setUp()
 {
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
 }
 
 void test_depth_first_iterator::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test_depth_first_iterator::test_dfi()

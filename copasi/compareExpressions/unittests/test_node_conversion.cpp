@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,18 +28,18 @@
 #include "compareExpressions/CNormalProduct.h"
 #include "compareExpressions/CNormalItem.h"
 #include "compareExpressions/CNormalItemPower.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "function/CEvaluationTree.h"
 
 void test_node_conversion::setUp()
 {
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
 }
 
 void test_node_conversion::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test_node_conversion::test_0001()

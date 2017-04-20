@@ -1,14 +1,18 @@
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // These are the downcast rules for the non Java languages
 // Out of some reason, Java does it differently
 
 // here we add the declaration in alphabetic order so that we can use all function in
 // other functions below without having to worry about the order
-
 
 #include <copasi/plot/CPlotItem.h>
 #include <copasi/optimization/COptMethodCoranaWalk.h>
@@ -29,22 +33,21 @@
 #include <copasi/optimization/CRandomSearch.h>
 #include <copasi/optimization/COptMethodTruncatedNewton.h>
 
-
 // CCopasiAbstractArray
 struct swig_type_info*
 GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array);
 
-// CCopasiContainer
+// CDataContainer
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container);
+GetDowncastSwigTypeForCDataContainer(CDataContainer* container);
 
 // CCopasiMethod
 struct swig_type_info*
 GetDowncastSwigTypeForMethod(CCopasiMethod* method);
 
-// CCopasiObject
+// CDataObject
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object);
+GetDowncastSwigTypeForCDataObject(CDataObject* object);
 
 // CObjectInterface
 struct swig_type_info*
@@ -119,22 +122,22 @@ GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array)
 }
 
 /**
- * @return the most specific Swig type for the given CCopasiContainer object.
+ * @return the most specific Swig type for the given CDataContainer object.
  */
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
+GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
 {
-  if (container == NULL) return SWIGTYPE_p_CCopasiContainer;
+  if (container == NULL) return SWIGTYPE_p_CDataContainer;
 
-  struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiContainer;
+  struct swig_type_info* pInfo = SWIGTYPE_p_CDataContainer;
 
-  if (dynamic_cast<CCopasiRootContainer*>(container))
+  if (dynamic_cast<CRootContainer*>(container))
     {
-      pInfo = SWIGTYPE_p_CCopasiRootContainer;
+      pInfo = SWIGTYPE_p_CRootContainer;
     }
-  else if (dynamic_cast<CCopasiDataModel*>(container))
+  else if (dynamic_cast<CDataModel*>(container))
     {
-      pInfo = SWIGTYPE_p_CCopasiDataModel;
+      pInfo = SWIGTYPE_p_CDataModel;
     }
   else if (dynamic_cast<CModelEntity*>(container))
     {
@@ -182,52 +185,52 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
     }
   else if (container->isNameVector())
     {
-      if (dynamic_cast<CCopasiDataModelVectorN*>(container))
+      if (dynamic_cast<CDataModelVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CCopasiDataModel_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CDataModel_t;
         }
       else if (dynamic_cast<TaskVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CCopasiTask_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CCopasiTask_t;
         }
       else if (dynamic_cast<ModelValueVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CModelValue_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CModelValue_t;
         }
       else if (dynamic_cast<MetabVectorNS*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNST_CMetab_t;
+          pInfo = SWIGTYPE_p_CDataVectorNST_CMetab_t;
         }
       else if (dynamic_cast<CompartmentVectorNS*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNST_CCompartment_t;
+          pInfo = SWIGTYPE_p_CDataVectorNST_CCompartment_t;
         }
       else if (dynamic_cast<ReactionVectorNS*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNST_CReaction_t;
+          pInfo = SWIGTYPE_p_CDataVectorNST_CReaction_t;
         }
       else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEvaluationTree_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CEvaluationTree_t;
         }
       else if (dynamic_cast<EventVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEvent_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CEvent_t;
         }
       else if (dynamic_cast<EventAssignmentVectorN*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorNT_CEventAssignment_t;
+          pInfo = SWIGTYPE_p_CDataVectorNT_CEventAssignment_t;
         }
     }
   else if (container->isVector())
     {
       if (dynamic_cast<MoietyVector*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CMoiety_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CMoiety_t;
         }
       else if (dynamic_cast<MetabVector*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CMetab_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CMetab_t;
         }
       else if (dynamic_cast<ReportItemVector*>(container))
         {
@@ -255,7 +258,7 @@ GetDowncastSwigTypeForCCopasiContainer(CCopasiContainer* container)
         }
       else if (dynamic_cast<CChemEqElementVector*>(container))
         {
-          pInfo = SWIGTYPE_p_CCopasiVectorT_CChemEqElement_t;
+          pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
         }
     }
   else if (dynamic_cast<CEvaluationTree*>(container))
@@ -349,18 +352,18 @@ GetDowncastSwigTypeForMethod(CCopasiMethod* method)
 }
 
 /**
- * @return the most specific Swig type for the given CCopasiObject object.
+ * @return the most specific Swig type for the given CDataObject object.
  */
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiObject(CCopasiObject* object)
+GetDowncastSwigTypeForCDataObject(CDataObject* object)
 {
-  if (object == NULL) return SWIGTYPE_p_CCopasiObject;
+  if (object == NULL) return SWIGTYPE_p_CDataObject;
 
-  struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiObject;
+  struct swig_type_info* pInfo = SWIGTYPE_p_CDataObject;
 
-  if (dynamic_cast<CCopasiContainer*>(object))
+  if (dynamic_cast<CDataContainer*>(object))
     {
-      pInfo = GetDowncastSwigTypeForCCopasiContainer(static_cast<CCopasiContainer*>(object));
+      pInfo = GetDowncastSwigTypeForCDataContainer(static_cast<CDataContainer*>(object));
     }
   else if (dynamic_cast<CReportDefinition*>(object))
     {
@@ -389,9 +392,9 @@ GetDowncastSwigTypeForCObjectInterface(CObjectInterface* objectInterface)
 
   struct swig_type_info* pInfo = SWIGTYPE_p_CObjectInterface;
 
-  if (dynamic_cast<CCopasiObject*>(objectInterface))
+  if (dynamic_cast<CDataObject*>(objectInterface))
     {
-      pInfo = GetDowncastSwigTypeForCCopasiObject(static_cast<CCopasiObject*>(objectInterface));
+      pInfo = GetDowncastSwigTypeForCDataObject(static_cast<CDataObject*>(objectInterface));
     }
 
   return pInfo;
@@ -629,36 +632,52 @@ GetDowncastSwigTypeForCOptMethod(COptMethod* optMethod)
 {
   if (dynamic_cast<COptMethodCoranaWalk*>(optMethod))
     return SWIGTYPE_p_COptMethodCoranaWalk;
+
   if (dynamic_cast<COptMethodDE*>(optMethod))
     return SWIGTYPE_p_COptMethodDE;
+
   if (dynamic_cast<COptMethodEP*>(optMethod))
     return SWIGTYPE_p_COptMethodEP;
+
   if (dynamic_cast<COptMethodGA*>(optMethod))
     return SWIGTYPE_p_COptMethodGA;
+
   if (dynamic_cast<COptMethodGASR*>(optMethod))
     return SWIGTYPE_p_COptMethodGASR;
+
   if (dynamic_cast<COptMethodHookeJeeves*>(optMethod))
     return SWIGTYPE_p_COptMethodHookeJeeves;
+
   if (dynamic_cast<COptMethodLevenbergMarquardt*>(optMethod))
     return SWIGTYPE_p_COptMethodLevenbergMarquardt;
+
   if (dynamic_cast<COptMethodNelderMead*>(optMethod))
     return SWIGTYPE_p_COptMethodNelderMead;
+
   if (dynamic_cast<COptMethodPraxis*>(optMethod))
     return SWIGTYPE_p_COptMethodPraxis;
+
   if (dynamic_cast<COptMethodSA*>(optMethod))
     return SWIGTYPE_p_COptMethodSA;
+
   if (dynamic_cast<COptMethodSRES*>(optMethod))
     return SWIGTYPE_p_COptMethodSRES;
+
   if (dynamic_cast<COptMethodSS*>(optMethod))
     return SWIGTYPE_p_COptMethodSS;
+
   if (dynamic_cast<COptMethodStatistics*>(optMethod))
     return SWIGTYPE_p_COptMethodStatistics;
+
   if (dynamic_cast<COptMethodSteepestDescent*>(optMethod))
     return SWIGTYPE_p_COptMethodSteepestDescent;
+
   if (dynamic_cast<CRandomSearch*>(optMethod))
     return SWIGTYPE_p_CRandomSearch;
+
   if (dynamic_cast<COptMethodTruncatedNewton*>(optMethod))
     return SWIGTYPE_p_COptMethodTruncatedNewton;
+
   return SWIGTYPE_p_COptMethod;
 }
 
@@ -670,7 +689,7 @@ GetDowncastSwigTypeForCOptProblem(COptProblem* optProblem)
 {
   if (dynamic_cast<CFitProblem*>(optProblem))
     return SWIGTYPE_p_CFitProblem;
-  
+
   return SWIGTYPE_p_COptProblem;
 }
 
@@ -691,4 +710,3 @@ GetDowncastSwigTypeForCOptTask(COptTask* optTask)
 
   return pInfo;
 }
-

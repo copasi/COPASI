@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,9 +22,9 @@
 
 #include <string>
 
+#include "copasi/core/CMatrix.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CMatrix.h"
 
 class CExperiment;
 class CMathContainer;
@@ -32,27 +37,27 @@ protected:
 public:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const std::string & name (default: Experiment Set)
    */
-  CExperimentSet(const CCopasiContainer * pParent,
+  CExperimentSet(const CDataContainer * pParent,
                  const std::string & name = "Experiment Set");
 
   /**
    * Copy constructor
    * @param const CExperimentSet & src
-   * @param const CCopasiContainer * pParent (default: src data model)
+   * @param const CDataContainer * pParent (default: src data model)
    */
   CExperimentSet(const CExperimentSet & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: group data model)
+   * @param const CDataContainer * pParent (default: group data model)
    */
   CExperimentSet(const CCopasiParameterGroup & group,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -285,26 +290,26 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: Cross Validation Set)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  CCrossValidationSet(const CCopasiContainer * pParent,
+  CCrossValidationSet(const CDataContainer * pParent,
                       const std::string & name = "Validation Set");
 
   /**
    * Copy constructor
    * @param const CCrossValidationSet & src
-   * @param const CCopasiContainer * pParent (default: src data model)
+   * @param const CDataContainer * pParent (default: src data model)
    */
   CCrossValidationSet(const CCrossValidationSet & src,
-                      const CCopasiContainer * pParent);
+                      const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: group data model)
+   * @param const CDataContainer * pParent (default: group data model)
    */
   CCrossValidationSet(const CCopasiParameterGroup & group,
-                      const CCopasiContainer * pParent);
+                      const CDataContainer * pParent);
 
   /**
    * Destructor

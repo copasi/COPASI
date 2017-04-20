@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <stdio.h>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "CReaction.h"
 #include "CReactionInterface.h"
 #include "CCompartment.h"
@@ -40,13 +40,13 @@
 #include "utilities/CNodeIterator.h"
 #include "utilities/utility.h"
 #include "function/CFunctionDB.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "CMetabNameInterface.h"
 #include "CChemEqInterface.h" //only for load()
 #include "CChemEqElement.h"
 #include "function/CExpression.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "sbml/Species.h"
 #include "sbml/Parameter.h"
 #include "sbml/Compartment.h"
@@ -69,8 +69,8 @@ CReaction * CReaction::fromData(const CData & data)
 }
 
 CReaction::CReaction(const std::string & name,
-                     const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Reaction"),
+                     const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Reaction"),
   CAnnotation(),
   mChemEq("Chemical Equation", this),
   mpFunction(NULL),
@@ -95,16 +95,16 @@ CReaction::CReaction(const std::string & name,
   mScalingCompartmentCN(),
   mpScalingCompartment(NULL)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+  mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
 
   CONSTRUCTOR_TRACE;
   initObjects();
-  setFunction(CCopasiRootContainer::getUndefinedFunction());
+  setFunction(CRootContainer::getUndefinedFunction());
 }
 
 CReaction::CReaction(const CReaction & src,
-                     const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                     const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   CAnnotation(src),
   mChemEq(src.mChemEq, this),
   mpFunction(src.mpFunction),
@@ -129,7 +129,7 @@ CReaction::CReaction(const CReaction & src,
   mScalingCompartmentCN(),
   mpScalingCompartment(NULL)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add(getObjectType(), this);
+  mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
 
   CONSTRUCTOR_TRACE;
   initObjects();
@@ -145,13 +145,13 @@ CReaction::CReaction(const CReaction & src,
 
 CReaction::~CReaction()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
   cleanup();
   DESTRUCTOR_TRACE;
 }
 
 // virtual
-std::string CReaction::getChildObjectUnits(const CCopasiObject * pObject) const
+std::string CReaction::getChildObjectUnits(const CDataObject * pObject) const
 {
   const CModel * pModel =
     dynamic_cast< const CModel * >(getObjectAncestor("Model"));
@@ -177,16 +177,16 @@ void CReaction::cleanup()
 {
   mChemEq.cleanup();
   mMetabKeyMap.clear();
-  setFunction(CCopasiRootContainer::getUndefinedFunction());
+  setFunction(CRootContainer::getUndefinedFunction());
   mpScalingCompartment = NULL;
   mScalingCompartmentCN = CRegisteredObjectName("");
   // TODO: mMap.cleanup();
   //mParameterDescription.cleanup();
 }
 
-bool CReaction::setObjectParent(const CCopasiContainer * pParent)
+bool CReaction::setObjectParent(const CDataContainer * pParent)
 {
-  bool success = CCopasiContainer::setObjectParent(pParent);
+  bool success = CDataContainer::setObjectParent(pParent);
 
   return success;
 }
@@ -238,31 +238,31 @@ const std::string & CReaction::getKey() const {return CAnnotation::getKey();}
 const C_FLOAT64 & CReaction::getFlux() const
 {return mFlux;}
 
-const CCopasiObject * CReaction::getFluxReference() const
+const CDataObject * CReaction::getFluxReference() const
 {return this->mpFluxReference;}
 
-CCopasiObject * CReaction::getFluxReference()
+CDataObject * CReaction::getFluxReference()
 {return this->mpFluxReference;}
 
 const C_FLOAT64 & CReaction::getParticleFlux() const
 {return mParticleFlux;}
 
-const CCopasiObject * CReaction::getParticleFluxReference() const
+const CDataObject * CReaction::getParticleFluxReference() const
 {return mpParticleFluxReference;}
 
-CCopasiObject * CReaction::getParticleFluxReference()
+CDataObject * CReaction::getParticleFluxReference()
 {return mpParticleFluxReference;}
 
-const CCopasiObject * CReaction::getParticleNoiseReference() const
+const CDataObject * CReaction::getParticleNoiseReference() const
 {return mpParticleNoiseReference;}
 
-const CCopasiObject * CReaction::getNoiseReference() const
+const CDataObject * CReaction::getNoiseReference() const
 {return mpNoiseReference;}
 
-CCopasiObject * CReaction::getPropensityReference()
+CDataObject * CReaction::getPropensityReference()
 {return mpPropensityReference;}
 
-const CCopasiObject * CReaction::getPropensityReference() const
+const CDataObject * CReaction::getPropensityReference() const
 {return mpPropensityReference;}
 
 const CCallParameters< C_FLOAT64 > & CReaction::getCallParameters() const
@@ -307,7 +307,7 @@ const CFunction * CReaction::getFunction() const
 bool CReaction::setFunction(const std::string & functionName)
 {
   CFunction * pFunction =
-    dynamic_cast<CFunction *>(CCopasiRootContainer::getFunctionList()->findLoadFunction(functionName));
+    dynamic_cast<CFunction *>(CRootContainer::getFunctionList()->findLoadFunction(functionName));
 
   if (!pFunction)
     CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 1, functionName.c_str());
@@ -317,14 +317,14 @@ bool CReaction::setFunction(const std::string & functionName)
 
 bool CReaction::setFunction(CFunction * pFunction)
 {
-  removeDirectDependency(mpFunction);
+  mPrerequisits.erase(pFunction);
 
   if (!pFunction)
-    mpFunction = CCopasiRootContainer::getUndefinedFunction();
+    mpFunction = CRootContainer::getUndefinedFunction();
   else
     mpFunction = pFunction;
 
-  addDirectDependency(mpFunction);
+  mPrerequisits.insert(mpFunction);
 
   mMap.initializeFromFunctionParameters(mpFunction->getVariables());
   initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
@@ -528,13 +528,13 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
 // virtual
 const CObjectInterface * CReaction::getObject(const CCopasiObjectName & cn) const
 {
-  const CCopasiObject * pObject =
-    static_cast< const CCopasiObject * >(CCopasiContainer::getObject(cn));
+  const CDataObject * pObject =
+    static_cast< const CDataObject * >(CDataContainer::getObject(cn));
 
   if (pObject == NULL ||
-      pObject->isStaticString()) return pObject;
+      pObject->hasFlag(CDataObject::StaticString)) return pObject;
 
-  const CCopasiContainer * pParent = pObject->getObjectParent();
+  const CDataContainer * pParent = pObject->getObjectParent();
 
   while (pParent != this)
     {
@@ -634,18 +634,16 @@ bool CReaction::compile()
 {
   bool success = true;
 
-  clearDirectDependencies();
   mPrerequisits.clear();
 
-  std::set< const CCopasiObject * > Dependencies;
+  std::set< const CDataObject * > Dependencies;
 
-  CCopasiObject * pObject;
+  CDataObject * pObject;
 
   if (mpFunction)
     {
-      if (mpFunction != CCopasiRootContainer::getUndefinedFunction())
+      if (mpFunction != CRootContainer::getUndefinedFunction())
         {
-          addDirectDependency(mpFunction);
           mPrerequisits.insert(mpFunction);
         }
       else
@@ -670,7 +668,7 @@ bool CReaction::compile()
               jmax = mMetabKeyMap[i].size();
 
               for (j = 0; j < jmax; ++j)
-                if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
+                if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                   {
                     success &= mMap.addCallParameter(paramName, pObject);
                     Dependencies.insert(pObject->getValueObject());
@@ -681,7 +679,7 @@ bool CReaction::compile()
                     mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
                   }
             }
-          else if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
+          else if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
             {
               success = mMap.setCallParameter(paramName, pObject);
               Dependencies.insert(pObject->getValueObject());
@@ -713,7 +711,7 @@ bool CReaction::compile()
                   jmax = mMetabKeyMap[i].size();
 
                   for (j = 0; j < jmax; ++j)
-                    if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
+                    if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                       {
                         mMap.addCallParameter(paramName, pObject);
                         Dependencies.insert(pObject->getValueObject());
@@ -723,7 +721,7 @@ bool CReaction::compile()
                         mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
                       }
                 }
-              else if ((pObject = CCopasiRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
+              else if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
                 {
                   mMap.setCallParameter(paramName, pObject);
                   Dependencies.insert(pObject->getValueObject());
@@ -736,12 +734,11 @@ bool CReaction::compile()
         }
     }
 
-  CCopasiVector < CChemEqElement >::const_iterator it = mChemEq.getSubstrates().begin();
-  CCopasiVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
+  CDataVector < CChemEqElement >::const_iterator it = mChemEq.getSubstrates().begin();
+  CDataVector < CChemEqElement >::const_iterator end = mChemEq.getSubstrates().end();
 
   for (; it != end; ++it)
     {
-      addDirectDependency(it->getMetabolite());
       mPrerequisits.insert(it->getMetabolite());
     }
 
@@ -750,18 +747,11 @@ bool CReaction::compile()
 
   for (; it != end; ++it)
     {
-      addDirectDependency(it->getMetabolite());
       mPrerequisits.insert(it->getMetabolite());
     }
 
   it = mChemEq.getModifiers().begin();
   end = mChemEq.getModifiers().end();
-
-  for (; it != end; ++it)
-    addDirectDependency(it->getMetabolite());
-
-  mpFluxReference->setDirectDependencies(Dependencies);
-  mpParticleFluxReference->setDirectDependencies(Dependencies);
 
   setScalingFactor();
 
@@ -774,14 +764,6 @@ bool CReaction::compile()
         listOfContainer.push_back(pModel);
 
       success &= mpNoiseExpression->compile(listOfContainer);
-
-      mpNoiseReference->setDirectDependencies(mpNoiseExpression->getDirectDependencies());
-      mpParticleNoiseReference->setDirectDependencies(mpNoiseExpression->getDirectDependencies());
-    }
-  else
-    {
-      mpNoiseReference->clearDirectDependencies();
-      mpParticleNoiseReference->clearDirectDependencies();
     }
 
   mPrerequisits.erase(NULL);
@@ -795,7 +777,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 {
   const CModel * pModel
     = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
-  const CCopasiVector< CMetab > & Metabolites = pModel->getMetabolites();
+  const CDataVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   size_t pos;
 
@@ -803,7 +785,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
   C_INT32 index;
   std::string name, parName, metabName;
   const CFunctionParameter* pParameter;
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (mMap.getFunctionParameters().isVector(role))
@@ -978,108 +960,25 @@ void CReaction::setScalingFactor()
               mScalingCompartmentCN = mpScalingCompartment->getCN();
             }
         }
-
-      if (mpScalingCompartment != NULL)
-        {
-          std::set< const CCopasiObject * > Dependencies = mpFluxReference->getDirectDependencies();
-
-          Dependencies.insert(mpScalingCompartment->getValueReference());
-
-          mpFluxReference->setDirectDependencies(Dependencies);
-          mpParticleFluxReference->setDirectDependencies(Dependencies);
-        }
     }
 }
 
 void CReaction::initObjects()
 {
   mpFluxReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Flux", mFlux, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Flux", mFlux, CDataObject::ValueDbl));
 
   mpParticleFluxReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("ParticleFlux", mParticleFlux, CDataObject::ValueDbl));
 
   mpNoiseReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Noise", mNoise, CDataObject::ValueDbl));
 
   mpParticleNoiseReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("ParticleNoise", mParticleNoise, CCopasiObject::ValueDbl));
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("ParticleNoise", mParticleNoise, CDataObject::ValueDbl));
 
   mpPropensityReference =
-    static_cast<CCopasiObjectReference<C_FLOAT64> *>(addObjectReference("Propensity", mPropensity, CCopasiObject::ValueDbl));
-}
-
-std::set< const CCopasiObject * > CReaction::getDeletedObjects() const
-{
-  std::set< const CCopasiObject * > Deleted;
-
-  Deleted.insert(this);
-  Deleted.insert(mpFluxReference);
-  Deleted.insert(mpParticleFluxReference);
-  Deleted.insert(mpNoiseReference);
-  Deleted.insert(mpParticleNoiseReference);
-  Deleted.insert(mpPropensityReference);
-
-  // We need to add all local reaction parameters
-  CCopasiParameterGroup::index_iterator it = mParameters.beginIndex();
-  CCopasiParameterGroup::index_iterator end = mParameters.endIndex();
-
-  for (; it != end ; ++it)
-    {
-      if (isLocalParameter((*it)->getObjectName()))
-        Deleted.insert((*it)->getValueReference());
-    }
-
-  return Deleted;
-}
-
-// virtual
-bool CReaction::mustBeDeleted(const CCopasiObject::DataObjectSet & deletedObjects) const
-{
-  bool MustBeDeleted = false;
-
-  DataObjectSet DeletedObjects = deletedObjects;
-  // We need to ignore all local reaction parameters
-  CCopasiParameterGroup::index_iterator itParameter = mParameters.beginIndex();
-  CCopasiParameterGroup::index_iterator endParameter = mParameters.endIndex();
-
-  for (; itParameter != endParameter ; ++itParameter)
-    {
-      if (isLocalParameter((*itParameter)->getObjectName()))
-        {
-          DeletedObjects.erase((*itParameter)->getValueReference());
-        }
-    }
-
-  DataObjectSet ChildObjects;
-  ChildObjects.insert(this);
-  ChildObjects.insert(mpFluxReference);
-  ChildObjects.insert(mpParticleFluxReference);
-
-  DataObjectSet::const_iterator it = ChildObjects.begin();
-  DataObjectSet::const_iterator end = ChildObjects.end();
-
-  for (; it != end; ++it)
-    {
-      if (*it == this)
-        {
-          if ((*it)->CCopasiObject::mustBeDeleted(DeletedObjects))
-            {
-              MustBeDeleted = true;
-              break;
-            }
-
-          continue;
-        }
-
-      if ((*it)->mustBeDeleted(DeletedObjects))
-        {
-          MustBeDeleted = true;
-          break;
-        }
-    }
-
-  return MustBeDeleted;
+    static_cast<CDataObjectReference<C_FLOAT64> *>(addObjectReference("Propensity", mPropensity, CDataObject::ValueDbl));
 }
 
 std::string CReaction::getDefaultNoiseExpression() const
@@ -1211,24 +1110,24 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   return os;
 }
 
-CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
 
-  CCopasiObject* object = const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)))));
+  CDataObject* object = const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)))));
   std::string id;
 
   // if the object if of type reference
   if (object)
     {
-      if (dynamic_cast<CCopasiObjectReference<C_FLOAT64>*>(object))
+      if (dynamic_cast<CDataObjectReference<C_FLOAT64>*>(object))
         {
           object = object->getObjectParent();
 
           if (object)
             {
-              std::map<const CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
+              std::map<const CDataObject*, SBase*>::iterator pos = copasi2sbmlmap.find(object);
 
               //assert(pos!=copasi2sbmlmap.end());
               // check if it is a CMetab, a CModelValue or a CCompartment
@@ -1258,7 +1157,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                     {
                       // check whether it is a substrate, a product or a modifier
                       bool found = false;
-                      const CCopasiVector<CChemEqElement>* v = &this->getChemEq().getSubstrates();
+                      const CDataVector<CChemEqElement>* v = &this->getChemEq().getSubstrates();
                       unsigned int i;
                       //std::string usage;
                       CFunctionParameter::Role usage;
@@ -1417,7 +1316,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   return pVariableNode;
 }
 
-CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CNodeContextIterator< const CEvaluationNode, std::vector< CEvaluationNode * > > itNode(pNode);
 
@@ -1475,14 +1374,14 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
   return pResult;
 }
 
-CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
+CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & expression, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pFunctionDB)
 {
   // walk the tree and replace all object nodes with variable nodes.
   CFunction* pTmpFunction = NULL;
 
   const CEvaluationNode * pOrigNode = expression.getRoot();
 
-  std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CCopasiObject*, CFunctionParameter*> >();
+  std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CDataObject*, CFunctionParameter*> >();
 
   CEvaluationNode* copy = pOrigNode->copyBranch();
   CEvaluationNode* pFunctionTree = objects2variables(copy, replacementMap, copasi2sbmlmap);
@@ -1506,8 +1405,8 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
       pFunctionDB->add(pTmpFunction, true);
       // add the variables
       // and do the mapping
-      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
-      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >::iterator endIt = replacementMap.end();
+      std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >::iterator it = replacementMap.begin();
+      std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >::iterator endIt = replacementMap.end();
 
       while (it != endIt)
         {
@@ -1786,7 +1685,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 
   const std::string& key = this->getParameterMappings()[index][0];
 
-  CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+  CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
 
   if (!pObject)
     {
@@ -1850,7 +1749,7 @@ std::string CReaction::getObjectDisplayName() const
       return "(" + getObjectName() + ")";
     }
 
-  return CCopasiObject::getObjectDisplayName();
+  return CDataObject::getObjectDisplayName();
 }
 
 const CFunctionParameterMap & CReaction::getMap() const

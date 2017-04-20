@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,7 +29,7 @@
 #include "randomGenerator/CRandom.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
 #ifdef RANDOMIZE
 # undef RANDOMIZE
@@ -32,7 +37,7 @@
 
 #define childrate 7
 
-COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent,
+COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -50,7 +55,7 @@ COptMethodSRES::COptMethodSRES(const CCopasiContainer * pParent,
 }
 
 COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max())
@@ -498,7 +503,6 @@ bool COptMethodSRES::initialize()
       setValue("Pf", mPf);
     }
 
-
   mIndividuals.resize(childrate * mPopulationSize);
 
   for (i = 0; i < childrate * mPopulationSize; i++)
@@ -712,7 +716,6 @@ bool COptMethodSRES::optimise()
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
-
     }
 
   if (mpCallBack)

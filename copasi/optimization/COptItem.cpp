@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,8 +29,8 @@
 
 #include "math/CMathObject.h"
 #include "randomGenerator/CRandom.h"
-#include "report/CCopasiContainer.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CDataContainer.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiMessage.h"
@@ -33,7 +38,7 @@
 
 C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-COptItem::COptItem(const CCopasiContainer * pParent,
+COptItem::COptItem(const CDataContainer * pParent,
                    const std::string & name):
   CCopasiParameterGroup(name, pParent),
   mpParmObjectCN(NULL),
@@ -52,8 +57,8 @@ COptItem::COptItem(const CCopasiContainer * pParent,
 {initializeParameter();}
 
 COptItem::COptItem(const COptItem & src,
-                   const CCopasiContainer * pParent):
-  CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CCopasiContainer * >(src.getObjectDataModel())),
+                   const CDataContainer * pParent):
+  CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(src.getObjectDataModel())),
   mpParmObjectCN(NULL),
   mpParmLowerBound(NULL),
   mpParmUpperBound(NULL),
@@ -70,8 +75,8 @@ COptItem::COptItem(const COptItem & src,
 {initializeParameter();}
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
-                   const CCopasiContainer * pParent):
-  CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CCopasiContainer * >(group.getObjectDataModel())),
+                   const CDataContainer * pParent):
+  CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(group.getObjectDataModel())),
   mpParmObjectCN(NULL),
   mpParmLowerBound(NULL),
   mpParmUpperBound(NULL),
@@ -100,9 +105,9 @@ void COptItem::initializeParameter()
 
 bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 {
-  const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(objectCN));
+  const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(objectCN));
 
-  if (pObject == NULL || !pObject->isValueDbl())
+  if (pObject == NULL || !pObject->hasFlag(CDataObject::ValueDbl))
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 1, objectCN.c_str());
       return false;
@@ -122,7 +127,7 @@ std::string COptItem::getObjectDisplayName() const
 {
   if (mpObject == NULL)
     {
-      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*mpParmObjectCN));
+      const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*mpParmObjectCN));
 
       if (pObject != NULL &&
           pObject->getValuePointer() != NULL)
@@ -153,7 +158,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
       *mpParmLowerBound = lowerBound;
     }
 
-  return compileLowerBound(CCopasiContainer::EmptyList);
+  return compileLowerBound(CDataContainer::EmptyList);
 }
 
 const std::string COptItem::getLowerBound() const
@@ -178,7 +183,7 @@ bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
       *mpParmUpperBound = upperBound;
     }
 
-  return compileUpperBound(CCopasiContainer::EmptyList);
+  return compileUpperBound(CDataContainer::EmptyList);
 }
 
 const std::string COptItem::getUpperBound() const
@@ -198,7 +203,7 @@ const C_FLOAT64 & COptItem::getStartValue() const
 
   if (mpObjectValue == NULL)
     {
-      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*mpParmObjectCN));
+      const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*mpParmObjectCN));
 
       if (pObject != NULL &&
           pObject->getValuePointer() != NULL)
@@ -321,18 +326,18 @@ bool COptItem::isValid(CCopasiParameterGroup & group)
 bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
 {
   bool success = true;
-  clearDirectDependencies();
+  mPrerequisits.clear();
 
   std::string Bound;
 
   mpObjectValue = &NaN;
-  const CCopasiObject * pDataObject;
+  const CDataObject * pDataObject;
 
   listOfContainer.push_back(getObjectDataModel());
 
   if ((mpObject = CObjectInterface::GetObjectFromCN(listOfContainer, *mpParmObjectCN)) != NULL &&
       (pDataObject = CObjectInterface::DataObject(mpObject)) != NULL &&
-      pDataObject->isValueDbl())
+      pDataObject->hasFlag(CDataObject::ValueDbl))
     mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
 
   if (mpObjectValue == &NaN)
@@ -342,14 +347,14 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
     }
   else
     {
-      addDirectDependency(mpObject->getDataObject());
+      mPrerequisits.insert(mpObject->getDataObject());
     }
 
   if (compileLowerBound(listOfContainer))
     {
       if (mpLowerObject != NULL)
         {
-          addDirectDependency(mpLowerObject->getDataObject());
+          mPrerequisits.insert(mpLowerObject->getDataObject());
         }
     }
   else
@@ -362,7 +367,7 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
     {
       if (mpUpperObject != NULL)
         {
-          addDirectDependency(mpUpperObject->getDataObject());
+          mPrerequisits.insert(mpUpperObject->getDataObject());
         }
     }
   else
@@ -429,7 +434,7 @@ const C_FLOAT64 * COptItem::getObjectValue() const
 
 bool COptItem::compileLowerBound(const CObjectInterface::ContainerList & listOfContainer)
 {
-  const CCopasiObject * pDataObject;
+  const CDataObject * pDataObject;
 
   mpLowerObject = NULL;
   mpLowerBound = NULL;
@@ -446,7 +451,7 @@ bool COptItem::compileLowerBound(const CObjectInterface::ContainerList & listOfC
     }
   else if ((mpLowerObject = CObjectInterface::GetObjectFromCN(listOfContainer, *mpParmLowerBound)) != NULL &&
            (pDataObject = CObjectInterface::DataObject(mpLowerObject)) != NULL &&
-           pDataObject->isValueDbl())
+           pDataObject->hasFlag(CDataObject::ValueDbl))
     {
       mpLowerBound = (C_FLOAT64 *) mpLowerObject->getValuePointer();
     }
@@ -456,7 +461,7 @@ bool COptItem::compileLowerBound(const CObjectInterface::ContainerList & listOfC
 
 bool COptItem::compileUpperBound(const CObjectInterface::ContainerList & listOfContainer)
 {
-  const CCopasiObject * pDataObject;
+  const CDataObject * pDataObject;
 
   mpUpperObject = NULL;
   mpUpperBound = NULL;
@@ -473,7 +478,7 @@ bool COptItem::compileUpperBound(const CObjectInterface::ContainerList & listOfC
     }
   else if ((mpUpperObject = CObjectInterface::GetObjectFromCN(listOfContainer, *mpParmUpperBound)) != NULL &&
            (pDataObject = CObjectInterface::DataObject(mpUpperObject)) != NULL &&
-           pDataObject->isValueDbl())
+           pDataObject->hasFlag(CDataObject::ValueDbl))
     {
       mpUpperBound = (C_FLOAT64 *) mpUpperObject->getValuePointer();
     }

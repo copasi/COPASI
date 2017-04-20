@@ -1,12 +1,17 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include "CAnalyticsProblem.h"
-#include <CopasiDataModel/CCopasiDataModel.h>
+#include <CopasiDataModel/CDataModel.h>
 
-CAnalyticsProblem::CAnalyticsProblem(const CCopasiContainer * pParent):
+CAnalyticsProblem::CAnalyticsProblem(const CDataContainer * pParent):
   CTrajectoryProblem(pParent),
   mpFlagLimitCrossings(NULL),
   mpCrossingsLimit(NULL),
@@ -30,7 +35,7 @@ CAnalyticsProblem::CAnalyticsProblem(const CCopasiContainer * pParent):
 }
 
 CAnalyticsProblem::CAnalyticsProblem(const CAnalyticsProblem & src,
-                                     const CCopasiContainer * pParent):
+                                     const CDataContainer * pParent):
   CTrajectoryProblem(src, pParent),
   mpFlagLimitCrossings(NULL),
   mpCrossingsLimit(NULL),
@@ -85,7 +90,7 @@ CAnalyticsProblem::~CAnalyticsProblem()
 std::ostream &operator<<(std::ostream &os, const CAnalyticsProblem & o)
 {
   os << "Cross Section Problem description: Not implemented yet." << std::endl;
-  const CCopasiDataModel* pDataModel = o.getObjectDataModel();
+  const CDataModel* pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
 
   return os;
@@ -144,7 +149,7 @@ const std::string& CAnalyticsProblem::getSingleObjectCN() const
   return *mpSingleObjectCN;
 }
 
-void CAnalyticsProblem::setSingleObjectCN(const CCopasiObject* pObject)
+void CAnalyticsProblem::setSingleObjectCN(const CDataObject* pObject)
 {
   if (pObject == NULL) return;
 
@@ -152,12 +157,12 @@ void CAnalyticsProblem::setSingleObjectCN(const CCopasiObject* pObject)
 }
 
 //--- ETTORE start ---
-void CAnalyticsProblem::retrieveSelectedObject(const CCopasiObject* pObject)
+void CAnalyticsProblem::retrieveSelectedObject(const CDataObject* pObject)
 {
   mpObjectSelected = pObject;
 }
 
-const CCopasiObject* CAnalyticsProblem::getSelectedObject()
+const CDataObject* CAnalyticsProblem::getSelectedObject()
 {
   return mpObjectSelected;
 }

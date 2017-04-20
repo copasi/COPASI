@@ -26,10 +26,10 @@
 
 #include "CExpression.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 CExpression::CExpression(const std::string & name,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CEvaluationTree(name, pParent, CEvaluationTree::Expression),
   mpListOfContainer(NULL),
   mDisplayString(""),
@@ -39,7 +39,7 @@ CExpression::CExpression(const std::string & name,
 }
 
 CExpression::CExpression(const CExpression & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CEvaluationTree(src, pParent),
   mpListOfContainer(NULL),
   mDisplayString(src.mDisplayString),
@@ -113,9 +113,14 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
 
   mpListOfContainer = & listOfContainer;
 
+  // Reset all compile related issues
   mValidity.remove(CValidity::Severity::All,
                    ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency | CIssue::eKind::ExpressionDataTypeInvalid));
-  mIssue = compileNodes();
+
+  if ((mIssue = compileNodes()))
+    {
+      mValidity.add(mIssue);
+    }
 
   if (mpRootNode)
     {
@@ -238,7 +243,7 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) con
 }
 
 // static
-CExpression * CExpression::createInitialExpression(const CExpression & expression, const CCopasiDataModel* pDataModel)
+CExpression * CExpression::createInitialExpression(const CExpression & expression, const CDataModel* pDataModel)
 {
   size_t Size = CCopasiMessage::size();
   CExpression * pInitialExpression = new CExpression(expression, expression.getObjectParent());
@@ -249,8 +254,8 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
   std::vector< CEvaluationNode * >::iterator end = pNodeList->end();
 
   CEvaluationNodeObject * pNode;
-  const CCopasiObject * pObject;
-  const CCopasiContainer * pObjectParent;
+  const CDataObject * pObject;
+  const CDataContainer * pObjectParent;
   const CModelEntity * pEntity;
   const CMetab * pMetab;
 
@@ -260,7 +265,7 @@ CExpression * CExpression::createInitialExpression(const CExpression & expressio
         {
           assert(pDataModel != NULL);
 
-          if ((pObject = static_cast< const CCopasiObject * >(pDataModel->getObject(pNode->getObjectCN()))) != NULL &&
+          if ((pObject = static_cast< const CDataObject * >(pDataModel->getObject(pNode->getObjectCN()))) != NULL &&
               (pObjectParent = pObject->getObjectParent()) != NULL &&
               (pEntity = dynamic_cast<const CModelEntity * >(pObjectParent)) != NULL)
             {

@@ -49,7 +49,7 @@ const bool CTrajectoryMethod::ReducedModel(false);
 /**
  *  Default constructor.
  */
-CTrajectoryMethod::CTrajectoryMethod(const CCopasiContainer * pParent,
+CTrajectoryMethod::CTrajectoryMethod(const CDataContainer * pParent,
                                      const CTaskEnum::Method & methodType,
                                      const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -68,7 +68,7 @@ CTrajectoryMethod::CTrajectoryMethod(const CCopasiContainer * pParent,
  *  @param "const CTrajectoryMethod &" src
  */
 CTrajectoryMethod::CTrajectoryMethod(const CTrajectoryMethod & src,
-                                     const CCopasiContainer * pParent):
+                                     const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mContainerState(),
   mpContainerStateTime(NULL),

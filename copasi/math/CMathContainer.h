@@ -13,7 +13,8 @@
 
 #include <map>
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CMatrix.h"
 
 #include "copasi/math/CMathEnum.h"
 #include "copasi/math/CMathObject.h"
@@ -24,9 +25,7 @@
 #include "copasi/math/CMathHistory.h"
 #include "copasi/math/CMathUpdateSequence.h"
 
-#include "copasi/utilities/CVector.h"
-#include "copasi/utilities/CMatrix.h"
-
+#include "copasi/core/CVector.h"
 #include "copasi/model/CModelParameter.h"
 
 class CModelEntity;
@@ -35,9 +34,9 @@ class CMoiety;
 class CRandom;
 class CMathEventQueue;
 
-template < class CType > class CCopasiVector;
+template < class CType > class CDataVector;
 
-class CMathContainer: public CCopasiContainer
+class CMathContainer: public CDataContainer
 {
 private:
 
@@ -121,7 +120,7 @@ private:
   }
 
 public:
-  void relocateUpdateSequence(CObjectInterface::UpdateSequence & sequence, const std::vector< CMath::sRelocate > & relocations) const;
+  void relocateUpdateSequence(CCore::CUpdateSequence & sequence, const std::vector< CMath::sRelocate > & relocations) const;
   void relocateObjectSet(CObjectInterface::ObjectSet & objectSet, const std::vector< CMath::sRelocate > & relocations) const;
   void relocateValue(C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations) const;
   void relocateValue(const C_FLOAT64 *& pValue, const std::vector< CMath::sRelocate > & relocations) const;
@@ -249,8 +248,9 @@ public:
   /**
    * Notify the math container that the quantity conversion factor in
    * the corresponding model has changed
+   * @param const CModelParameter::Framework & framework
    */
-  void quantityConversionChanged();
+  void quantityConversionChanged(const CModelParameter::Framework & framework);
 
   /**
    * Retrieve the Quantity to Number conversion factor
@@ -395,9 +395,9 @@ public:
 
   /**
    * Apply the given update sequence to the mathematical objects in the container
-   * @param const CObjectInterface::UpdateSequence & updateSequence
+   * @param const CCore::CUpdateSequence & updateSequence
    */
-  void applyUpdateSequence(const CObjectInterface::UpdateSequence & updateSequence);
+  void applyUpdateSequence(const CCore::CUpdateSequence & updateSequence);
 
   /**
    * Calculate the time derivative of all roots
@@ -545,9 +545,9 @@ public:
   /**
    * Retrieve a pointer to the data object for a data value pointer
    * @param const C_FLOAT64 * pDataValue
-   * @return CCopasiObject * pDataObject
+   * @return CDataObject * pDataObject
    */
-  CCopasiObject * getDataObject(const C_FLOAT64 * pDataValue) const;
+  CDataObject * getDataObject(const C_FLOAT64 * pDataValue) const;
 
   /**
    * Retrieve a pointer to the corresponding the mathematical reaction
@@ -692,35 +692,35 @@ public:
   /**
    * Retrieve the sequence for synchronizing all transient values for the given framework.
    * @param const CModelParameter::Framework & framework
-   * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
+   * @return CCore::CUpdateSequence & synchronizeInitialValuesSequence
    */
-  const CObjectInterface::UpdateSequence & getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const;
+  const CCore::CUpdateSequence & getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const;
 
   /**
    * Retrieve the sequence for applying the initial values to the transient values.
-   * @return CObjectInterface::UpdateSequence & applyInitialValuesSequence
+   * @return CCore::CUpdateSequence & applyInitialValuesSequence
    */
-  const CObjectInterface::UpdateSequence & getApplyInitialValuesSequence() const;
+  const CCore::CUpdateSequence & getApplyInitialValuesSequence() const;
 
   /**
    * Retrieve the sequence for calculating all values needed for the simulation.
    * @param const bool & useMoieties
-   * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
+   * @return CCore::CUpdateSequence & synchronizeInitialValuesSequence
    */
-  const CObjectInterface::UpdateSequence & getSimulationValuesSequence(const bool & useMoieties) const;
+  const CCore::CUpdateSequence & getSimulationValuesSequence(const bool & useMoieties) const;
 
   /**
    * Retrieve the sequence for calculating all noise values.
    * @param const bool & useMoieties
-   * @return CObjectInterface::UpdateSequence & synchronizeInitialValuesSequence
+   * @return CCore::CUpdateSequence & synchronizeInitialValuesSequence
    */
-  const CObjectInterface::UpdateSequence & getNoiseSequence(const bool & useMoieties) const;
+  const CCore::CUpdateSequence & getNoiseSequence(const bool & useMoieties) const;
 
   /**
    * Retrieve the sequence for updating all transient values.
-   * @return CObjectInterface::UpdateSequence & transientDataValueSequence
+   * @return CCore::CUpdateSequence & transientDataValueSequence
    */
-  const CObjectInterface::UpdateSequence & getTransientDataValueSequence() const;
+  const CCore::CUpdateSequence & getTransientDataValueSequence() const;
 
   /**
    * Copy a node and all its children. Nodes are converted to suite the math container,
@@ -767,12 +767,12 @@ public:
 
   /**
    * Add an entity to the container
-   * const const CMath::Entity< CCopasiObject > & dataOjects
+   * const const CMath::Entity< CDataObject > & dataOjects
    * const const CMath::SimulationType & simulationType
    * const const std::string & infix
    * @return CMath::Entity< CMathObject > mathObjects
    */
-  CMath::Entity< CMathObject > addAnalysisObject(const CMath::Entity< CCopasiObject > & dataOjects,
+  CMath::Entity< CMathObject > addAnalysisObject(const CMath::Entity< CDataObject > & dataOjects,
       const CMath::SimulationType & simulationType,
       const std::string & infix);
 
@@ -978,41 +978,41 @@ private:
   /**
    * Initialize several mathematical objects for local reaction parameters and
    * advance relevant pointers
-   * @param const std::vector<const CCopasiObject *> & parameters
+   * @param const std::vector<const CDataObject *> & parameters
    * @param CMathContainer::sPointers & p
    */
-  void initializeMathObjects(const std::vector<const CCopasiObject *> & parameters,
+  void initializeMathObjects(const std::vector<const CDataObject *> & parameters,
                              CMath::sPointers & p);
 
   /**
    * Initialize several mathematical objects for local reaction parameters and
    * advance relevant pointers
-   * @param const CCopasiVector< CReaction > & reactions
+   * @param const CDataVector< CReaction > & reactions
    * @param CMathContainer::sPointers & p
    */
-  void initializeMathObjects(const CCopasiVector< CReaction > & reactions,
+  void initializeMathObjects(const CDataVector< CReaction > & reactions,
                              CMath::sPointers & p);
 
   /**
    * Initialize several mathematical objects for local reaction parameters and
    * advance relevant pointers
-   * @param const CCopasiVector< CMoiety > & moieties
+   * @param const CDataVector< CMoiety > & moieties
    * @param CMathContainer::sPointers & p
    */
-  void initializeMathObjects(const CCopasiVector< CMoiety > & moieties,
+  void initializeMathObjects(const CDataVector< CMoiety > & moieties,
                              CMath::sPointers & p);
 
   /**
    * Determine whether on object has calculation dependencies.
    */
-  static bool hasDependencies(const CCopasiObject * pObject);
+  // static bool hasDependencies(const CDataObject * pObject);
 
   /**
    * Map the data object to the math object
-   * @param CCopasiObject * pDataObject
+   * @param CDataObject * pDataObject
    * @param CMathObject * pMathObject
    */
-  void map(const CCopasiObject * pDataObject, CMathObject * pMathObject);
+  void map(const CDataObject * pDataObject, CMathObject * pMathObject);
 
   /**
    * Create an event of type CEvent::Discontinuity for each discontinuity in the model
@@ -1162,54 +1162,54 @@ private:
    * The sequence of updates needed to synchronize the initial values based
    * on extensive values, i.e., species amounts
    */
-  CObjectInterface::UpdateSequence mSynchronizeInitialValuesSequenceExtensive;
+  CCore::CUpdateSequence mSynchronizeInitialValuesSequenceExtensive;
 
   /**
    * The sequence of updates needed to synchronize the initial values based
    * on intensive values, i.e., species concentrations.
    */
-  CObjectInterface::UpdateSequence mSynchronizeInitialValuesSequenceIntensive;
+  CCore::CUpdateSequence mSynchronizeInitialValuesSequenceIntensive;
 
   /**
    * The sequence of updates needed to apply the initial values
    */
-  CObjectInterface::UpdateSequence mApplyInitialValuesSequence;
+  CCore::CUpdateSequence mApplyInitialValuesSequence;
 
   /**
    * The sequence of updates needed to calculate all simulation required values based
    * on the assumption that all state values may have changed
    */
-  CObjectInterface::UpdateSequence mSimulationValuesSequence;
+  CCore::CUpdateSequence mSimulationValuesSequence;
 
   /**
    * The sequence of updates needed to calculate all simulation required values based
    * on the assumption that all state values may have changed
    */
-  CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
+  CCore::CUpdateSequence mSimulationValuesSequenceReduced;
 
   /**
    * The sequence of updates needed to calculate all noise values based
    * on the assumption that all state values may have changed
    */
-  CObjectInterface::UpdateSequence mNoiseSequence;
+  CCore::CUpdateSequence mNoiseSequence;
 
   /**
    * The sequence of updates needed to calculate all noise values based
    * on the assumption that all reduced state values may have changed
    */
-  CObjectInterface::UpdateSequence mNoiseSequenceReduced;
+  CCore::CUpdateSequence mNoiseSequenceReduced;
 
   /**
    * The sequence of updates needed to calculate all priorities
    * on the assumption that all state values may have changed
    */
-  CObjectInterface::UpdateSequence mPrioritySequence;
+  CCore::CUpdateSequence mPrioritySequence;
 
   /**
    * The sequence of updates needed to calculate all objects which have data object associated
    * on the assumption that all state values may have changed
    */
-  CObjectInterface::UpdateSequence mTransientDataObjectSequence;
+  CCore::CUpdateSequence mTransientDataObjectSequence;
 
   /**
    * The set of objects which determine the initial state of the model based on extensive
@@ -1297,7 +1297,7 @@ private:
   /**
    * A map from data objects to math objects
    */
-  std::map< const CCopasiObject *, CMathObject * > mDataObject2MathObject;
+  std::map< const CDataObject *, CMathObject * > mDataObject2MathObject;
 
   /**
    * A map from data objects values to math objects
@@ -1307,12 +1307,12 @@ private:
   /**
    * A map from data objects values to math objects
    */
-  std::map< C_FLOAT64 *, CCopasiObject * > mDataValue2DataObject;
+  std::map< C_FLOAT64 *, CDataObject * > mDataValue2DataObject;
 
   /**
    * A vector of data events for discontinuities
    */
-  CCopasiVector< CEvent > mDiscontinuityEvents;
+  CDataVector< CEvent > mDiscontinuityEvents;
 
   /**
    * A map from the infix of the expression of a discontinuity to the object

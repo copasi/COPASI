@@ -26,7 +26,7 @@
 #include "copasi.h"
 
 #include "copasiui3window.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "ObjectBrowserWidget.h"
 //#include "qtUtilities.h"
 
@@ -122,7 +122,7 @@ ObjectBrowserDialog::ObjectBrowserDialog(QWidget* parent, const char* name, bool
 ObjectBrowserDialog::~ObjectBrowserDialog()
 {}
 
-void ObjectBrowserDialog::setOutputVector(std::vector< const CCopasiObject * > * pObjectVector)
+void ObjectBrowserDialog::setOutputVector(std::vector< const CDataObject * > * pObjectVector)
 {
   if (objectBrowserWidget) objectBrowserWidget->setOutputVector(pObjectVector);
 }
@@ -148,7 +148,7 @@ void ObjectBrowserDialog::toggleViewClicked()
   objectBrowserWidget->toggleViewClicked();
 }
 
-void ObjectBrowserDialog::selectObjects(std::vector< const CCopasiObject * > * pObjectVector)
+void ObjectBrowserDialog::selectObjects(std::vector< const CDataObject * > * pObjectVector)
 {
   if (objectBrowserWidget) objectBrowserWidget->selectObjects(pObjectVector);
 }

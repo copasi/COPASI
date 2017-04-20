@@ -17,7 +17,7 @@
 #include "CMathObject.h"
 #include "CMathContainer.h"
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiObjectName.h"
 #include "utilities/CCopasiMessage.h"
 
@@ -115,8 +115,8 @@ void CMathDependencyGraph::removeObject(const CObjectInterface * pObject)
   mObjects2Nodes.erase(found);
 }
 
-bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & updateSequence,
-    const CMath::SimulationContextFlag & context,
+bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequence,
+    const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects,
     const CObjectInterface::ObjectSet & requestedObjects,
     const CObjectInterface::ObjectSet & calculatedObjects) const
@@ -147,7 +147,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
         }
       else
         {
-          std::cout << *static_cast< const CCopasiObject * >(*it) << std::endl;
+          std::cout << *static_cast< const CDataObject * >(*it) << std::endl;
         }
 
 #endif // DEBUG_OUTPUT
@@ -183,7 +183,7 @@ bool CMathDependencyGraph::getUpdateSequence(CObjectInterface::UpdateSequence & 
         }
       else
         {
-          std::cout << *static_cast< const CCopasiObject * >(*it) << std::endl;
+          std::cout << *static_cast< const CDataObject * >(*it) << std::endl;
         }
 
       std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
@@ -300,8 +300,8 @@ finish:
   updateSequence = UpdateSequence;
 
 #ifdef DEBUG_OUTPUT
-  CObjectInterface::UpdateSequence::const_iterator itSeq = updateSequence.begin();
-  CObjectInterface::UpdateSequence::const_iterator endSeq = updateSequence.end();
+  CCore::CUpdateSequence::const_iterator itSeq = updateSequence.begin();
+  CCore::CUpdateSequence::const_iterator endSeq = updateSequence.end();
 
   std::cout << std::endl <<  "Start" << std::endl;
 
@@ -324,10 +324,10 @@ finish:
 }
 
 bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
-                                     const CMath::SimulationContextFlag & context,
+                                     const CCore::SimulationContextFlag & context,
                                      const CObjectInterface * pChangedObject) const
 {
-  CObjectInterface::UpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence;
   CObjectInterface::ObjectSet ChangedObjects;
 
   if (pChangedObject != NULL)
@@ -348,10 +348,10 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
 }
 
 bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
-                                     const CMath::SimulationContextFlag & context,
+                                     const CCore::SimulationContextFlag & context,
                                      const CObjectInterface::ObjectSet & changedObjects) const
 {
-  CObjectInterface::UpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence;
   CObjectInterface::ObjectSet RequestedObjects;
 
   if (pObject != NULL)
@@ -387,6 +387,70 @@ bool CMathDependencyGraph::appendDirectDependents(const CObjectInterface::Object
               dependentObjects.insert((*itNode)->getObject());
             }
         }
+    }
+
+  dependentObjects.erase(NULL);
+
+  return dependentObjects.size() > Size;
+}
+
+bool CMathDependencyGraph::appendAllDependents(const CObjectInterface::ObjectSet & changedObjects,
+    CObjectInterface::ObjectSet & dependentObjects) const
+{
+  bool success = true;
+
+  dependentObjects.erase(NULL);
+  size_t Size = dependentObjects.size();
+
+  const_iterator found;
+  const_iterator notFound = mObjects2Nodes.end();
+
+  std::vector<CObjectInterface*> UpdateSequence;
+
+  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
+
+#ifdef DEBUG_OUTPUT
+  std::cout << "Changed:" << std::endl;
+#endif // DEBUG_OUTPUT
+
+  // Mark all nodes which are changed or need to be calculated
+  for (; it != end && success; ++it)
+    {
+      // Issue 1170: We need to add elements of the stoichiometry, reduced stoichiometry,
+      // and link matrices, i.e., we have data objects which may change
+#ifdef DEBUG_OUTPUT
+      if ((*it)->getDataObject() != *it)
+        {
+          std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
+        }
+      else
+        {
+          std::cout << *static_cast< const CDataObject * >(*it) << std::endl;
+        }
+
+#endif // DEBUG_OUTPUT
+
+      found = mObjects2Nodes.find(*it);
+
+      if (found != notFound)
+        {
+          success &= found->second->updateDependentState(CCore::SimulationContext::Default, changedObjects);
+        }
+    }
+
+  const_iterator itCheck = mObjects2Nodes.begin();
+  const_iterator endCheck = mObjects2Nodes.end();
+
+  for (; itCheck != endCheck; ++itCheck)
+    {
+      if (itCheck->second->isChanged())
+        {
+          dependentObjects.insert(itCheck->first);
+        }
+
+      // Reset the dependency nodes for the next call.
+      itCheck->second->reset();
     }
 
   dependentObjects.erase(NULL);
@@ -472,7 +536,7 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
 // static
 std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject) const
 {
-  const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
+  const CDataObject * pDataObject = CObjectInterface::DataObject(pObject);
   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
   if (pDataObject == NULL && pMathObject == NULL)
@@ -559,12 +623,12 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
       return os.str();
     }
 
-  CCopasiObject * pReaction = pDataObject->getObjectAncestor("Reaction");
+  CDataObject * pReaction = pDataObject->getObjectAncestor("Reaction");
 
   if (pReaction != NULL && pReaction != pDataObject->getObjectParent())
     return pReaction->getObjectName() + "::" + pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
 
-  CCopasiObject * pEvent = pDataObject->getObjectAncestor("Event");
+  CDataObject * pEvent = pDataObject->getObjectAncestor("Event");
 
   if (pEvent != NULL && pEvent != pDataObject->getObjectParent())
     return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectName();

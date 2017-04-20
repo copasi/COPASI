@@ -1,23 +1,27 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_COptMethodEP
 #define COPASI_COptMethodEP
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
-
-#include "utilities/CVector.h"
 
 class CRandom;
 
@@ -29,7 +33,7 @@ private:
   /**
    * Default Constructor
    */
-  COptMethodEP(const CCopasiContainer * pParent = NO_PARENT);
+  COptMethodEP(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Initialize arrays and pointer.
@@ -98,11 +102,11 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: EvolutionaryProgram)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodEP(const CCopasiContainer * pParent,
+  COptMethodEP(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::EvolutionaryProgram,
                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
@@ -111,7 +115,7 @@ public:
    * @param const COptMethodEP & src
    */
   COptMethodEP(const COptMethodEP& src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -126,7 +130,7 @@ public:
   virtual bool optimise();
 
 private :
-  // variables  
+  // variables
 
   size_t mBestIndex;
 

@@ -30,7 +30,7 @@ class CExperiment;
 class CQExperimentDataValidator;
 class QSignalMapper;
 class CCrossValidationSet;
-class CCopasiDataModel;
+class CDataModel;
 class CQComboDelegate;
 
 class CQExperimentData : public QDialog, public Ui::CQExperimentData
@@ -43,7 +43,7 @@ public:
 
   friend class CQExperimentDataValidator;
 
-  virtual bool load(CExperimentSet * pExperimentSet , CCopasiDataModel * pDataModel);
+  virtual bool load(CExperimentSet * pExperimentSet , CDataModel * pDataModel);
 
   void loadFromCopy();
 
@@ -68,7 +68,7 @@ protected:
   CQExperimentDataValidator * mpValidatorName;
   bool mCrossValidation;
   bool mShowError;
-  CCopasiDataModel * mpDataModel;
+  CDataModel * mpDataModel;
   CQComboDelegate * mpComboDelegate;
   QStringList mTypeItems;
   QStringList mTypeWithoutTimeItems;

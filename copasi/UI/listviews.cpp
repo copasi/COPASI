@@ -101,8 +101,8 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plotUI/CQPlotSubwidget.h"
@@ -155,7 +155,7 @@ ListViews * ListViews::ancestor(QObject * qObject)
 }
 
 // static
-CCopasiDataModel * ListViews::dataModel(QObject * qObject)
+CDataModel * ListViews::dataModel(QObject * qObject)
 {
   ListViews * pListView = ancestor(qObject);
 
@@ -181,7 +181,7 @@ CCopasiDataModel * ListViews::dataModel(QObject * qObject)
  ************************************************************/
 ListViews::ListViews(QWidget *parent,
                      DataModelGUI * pDataModelGUI,
-                     CCopasiDataModel * pDataModel):
+                     CDataModel * pDataModel):
 
   QSplitter(Qt::Horizontal, parent),
   mpDataModelGUI(pDataModelGUI),
@@ -1133,7 +1133,7 @@ DataModelGUI * ListViews::getDataModelGUI()
   return mpDataModelGUI;
 }
 
-CCopasiDataModel * ListViews::getDataModel()
+CDataModel * ListViews::getDataModel()
 {
   return mpDataModel;
 }

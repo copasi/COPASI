@@ -20,9 +20,9 @@
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CEvent.h>
 #include <copasi/model/CModelValue.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 
-EntityRenameCommand::EntityRenameCommand(CCopasiObject *pObject,
+EntityRenameCommand::EntityRenameCommand(CDataObject *pObject,
     const std::string &oldName,
     const std::string &newName,
     CQTabWidget* pWidget)
@@ -78,8 +78,8 @@ void EntityRenameCommand::redo()
 {
   if (mpTabWidget->getDataModel() != NULL)
     {
-      const CCopasiObject* pObject =
-        dynamic_cast<const CCopasiObject*>(mpTabWidget->getDataModel()->getObject(mName));
+      const CDataObject* pObject =
+        dynamic_cast<const CDataObject*>(mpTabWidget->getDataModel()->getObject(mName));
 
       if (pObject != NULL)
         mpTabWidget->renameEntity(pObject->getKey(), mNewValue);
@@ -92,8 +92,8 @@ void EntityRenameCommand::undo()
 {
   if (mpTabWidget->getDataModel() != NULL)
     {
-      const CCopasiObject* pObject =
-        dynamic_cast<const CCopasiObject*>(mpTabWidget->getDataModel()->getObject(mName));
+      const CDataObject* pObject =
+        dynamic_cast<const CDataObject*>(mpTabWidget->getDataModel()->getObject(mName));
 
       if (pObject != NULL)
         mpTabWidget->renameEntity(pObject->getKey(), mOldValue);

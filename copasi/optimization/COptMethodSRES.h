@@ -1,22 +1,27 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_COptMethodSRES
 #define COPASI_COptMethodSRES
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
-#include "utilities/CVector.h"
 
 class CRandom;
 
@@ -30,21 +35,21 @@ class COptMethodSRES : public COptPopulationMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: SRES)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodSRES(const CCopasiContainer * pParent,
+  COptMethodSRES(const CDataContainer * pParent,
                  const CTaskEnum::Method & methodType = CTaskEnum::SRES,
                  const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodSRES & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodSRES(const COptMethodSRES & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -141,7 +146,6 @@ private:
    */
   C_FLOAT64 mPf;
 
-
   /**
    * For Stochastic Ranking.  Used for array of Phi values for the individuals
    */
@@ -161,7 +165,6 @@ private:
    * The value of the last evaluation.
    */
   C_FLOAT64 mEvaluationValue;
-
 
   C_FLOAT64 mBestValue;
 

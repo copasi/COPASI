@@ -1,7 +1,12 @@
-// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /**
  * COptMethodSS class
@@ -11,9 +16,9 @@
 #define COPASI_COptMethodSS
 #include <limits>
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
 #include "optimization/COptProblem.h"
-#include "utilities/CVector.h"
 
 class CRandom;
 
@@ -23,21 +28,21 @@ class COptMethodSS : public COptPopulationMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: ScatterSearch)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodSS(const CCopasiContainer * pParent,
+  COptMethodSS(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::ScatterSearch,
                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodSS & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodSS(const COptMethodSS & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -207,7 +212,6 @@ private:
    * True if there were children produced
    */
   bool mChildrenGenerated;
-
 
   /**
    * Array of integers to count number of iterations that

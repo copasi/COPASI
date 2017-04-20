@@ -24,13 +24,14 @@
 #include "CQCopasiApplication.h"
 #include "CQValidatorUnit.h"
 
-#include "resourcesUI/CQIconResource.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include "model/CModel.h"
-#include "utilities/CUnit.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/utilities/CUnit.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
-#include "undoFramework/ModelChangeCommand.h"
+#include "copasi/undoFramework/ModelChangeCommand.h"
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
@@ -88,7 +89,6 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   mpEditTimeUnit->setCompleter(completer);
   connect(mpEditTimeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
 
-
   unitEntries.clear();
 
   for (pUnitNames = CUnit::VolumeUnitNames; *pUnitNames != NULL; ++pUnitNames)
@@ -136,7 +136,6 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditQuantityUnit->setCompleter(completer);
   connect(mpEditQuantityUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
-
 }
 
 CQModelWidget::~CQModelWidget()
@@ -496,7 +495,6 @@ void CQModelWidget::slotUnitChanged()
 
   Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditLengthUnit->text())));
   mpEditLengthUnit->setText(Unit);
-
 }
 
 void CQModelWidget::slotShowCompleter()

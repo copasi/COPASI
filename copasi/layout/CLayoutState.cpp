@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,19 +23,19 @@ void CLayoutState::tagLayout(CLayout* layout)
 {
   if (layout == NULL) return;
 
-  CCopasiVector<CLGeneralGlyph> & general = layout->getListOfGeneralGlyphs();
-  CCopasiVector<CLGeneralGlyph>::iterator generalIt = general.begin();
+  CDataVector<CLGeneralGlyph> & general = layout->getListOfGeneralGlyphs();
+  CDataVector<CLGeneralGlyph>::iterator generalIt = general.begin();
 
   while (generalIt != general.end())
     {
       tagKey(generalIt);
 
-      CCopasiVector<CLReferenceGlyph>::iterator refIt = generalIt->getListOfReferenceGlyphs().begin();
+      CDataVector<CLReferenceGlyph>::iterator refIt = generalIt->getListOfReferenceGlyphs().begin();
 
       for (; refIt != generalIt->getListOfReferenceGlyphs().end(); ++refIt)
         tagKey(refIt);
 
-      CCopasiVector<CLGraphicalObject>::iterator subIt = generalIt->getListOfSubglyphs().begin();
+      CDataVector<CLGraphicalObject>::iterator subIt = generalIt->getListOfSubglyphs().begin();
 
       for (; subIt  != generalIt->getListOfSubglyphs().end(); ++subIt)
         tagKey(subIt);
@@ -38,8 +43,8 @@ void CLayoutState::tagLayout(CLayout* layout)
       ++generalIt;
     }
 
-  CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
-  CCopasiVector<CLCompartmentGlyph>::iterator compIt = comps.begin();
+  CDataVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
+  CDataVector<CLCompartmentGlyph>::iterator compIt = comps.begin();
 
   while (compIt != comps.end())
     {
@@ -47,14 +52,14 @@ void CLayoutState::tagLayout(CLayout* layout)
       ++compIt;
     }
 
-  CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
-  CCopasiVector<CLReactionGlyph>::iterator reactIt = reactions.begin();
+  CDataVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+  CDataVector<CLReactionGlyph>::iterator reactIt = reactions.begin();
 
   while (reactIt != reactions.end())
     {
       tagKey(reactIt);
 
-      CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
+      CDataVector<CLMetabReferenceGlyph>::iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
 
       for (; refIt != reactIt->getListOfMetabReferenceGlyphs().end(); ++refIt)
         tagKey(refIt);
@@ -62,8 +67,8 @@ void CLayoutState::tagLayout(CLayout* layout)
       ++reactIt;
     }
 
-  CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
-  CCopasiVector<CLMetabGlyph>::iterator speciesIt = species.begin();
+  CDataVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
+  CDataVector<CLMetabGlyph>::iterator speciesIt = species.begin();
 
   while (speciesIt != species.end())
     {
@@ -71,8 +76,8 @@ void CLayoutState::tagLayout(CLayout* layout)
       ++speciesIt;
     }
 
-  CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
-  CCopasiVector<CLTextGlyph>::iterator textIt = texts .begin();
+  CDataVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+  CDataVector<CLTextGlyph>::iterator textIt = texts .begin();
 
   while (textIt != texts .end())
     {
@@ -91,8 +96,8 @@ CLayoutState::CLayoutState(const CLayout* layout)
 {
   if (layout == NULL) return;
 
-  const CCopasiVector<CLGeneralGlyph> & general = layout->getListOfGeneralGlyphs();
-  CCopasiVector<CLGeneralGlyph>::const_iterator generalIt = general.begin();
+  const CDataVector<CLGeneralGlyph> & general = layout->getListOfGeneralGlyphs();
+  CDataVector<CLGeneralGlyph>::const_iterator generalIt = general.begin();
 
   while (generalIt != general.end())
     {
@@ -100,8 +105,8 @@ CLayoutState::CLayoutState(const CLayout* layout)
       ++generalIt;
     }
 
-  const CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
-  CCopasiVector<CLCompartmentGlyph>::const_iterator compIt = comps.begin();
+  const CDataVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
+  CDataVector<CLCompartmentGlyph>::const_iterator compIt = comps.begin();
 
   while (compIt != comps.end())
     {
@@ -109,8 +114,8 @@ CLayoutState::CLayoutState(const CLayout* layout)
       ++compIt;
     }
 
-  const CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
-  CCopasiVector<CLReactionGlyph>::const_iterator reactIt = reactions.begin();
+  const CDataVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+  CDataVector<CLReactionGlyph>::const_iterator reactIt = reactions.begin();
 
   while (reactIt != reactions.end())
     {
@@ -118,7 +123,7 @@ CLayoutState::CLayoutState(const CLayout* layout)
 
       mCurves[reactIt->getTag()] = new CLCurve(reactIt->getCurve());
 
-      CCopasiVector<CLMetabReferenceGlyph>::const_iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
+      CDataVector<CLMetabReferenceGlyph>::const_iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
 
       for (; refIt != reactIt->getListOfMetabReferenceGlyphs().end(); ++refIt)
         mCurves[refIt->getTag()] = new CLCurve(refIt->getCurve());
@@ -126,8 +131,8 @@ CLayoutState::CLayoutState(const CLayout* layout)
       ++reactIt;
     }
 
-  const CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
-  CCopasiVector<CLMetabGlyph>::const_iterator speciesIt = species.begin();
+  const CDataVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
+  CDataVector<CLMetabGlyph>::const_iterator speciesIt = species.begin();
 
   while (speciesIt != species.end())
     {
@@ -135,8 +140,8 @@ CLayoutState::CLayoutState(const CLayout* layout)
       ++speciesIt;
     }
 
-  const CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
-  CCopasiVector<CLTextGlyph>::const_iterator textIt = texts.begin();
+  const CDataVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+  CDataVector<CLTextGlyph>::const_iterator textIt = texts.begin();
 
   while (textIt != texts .end())
     {
@@ -201,16 +206,16 @@ void CLayoutState::applyTo(CLayout *layout) const
 
   CLayoutState current(layout);
 
-  CCopasiVector<CLGeneralGlyph> & general = layout->getListOfGeneralGlyphs();
-  CCopasiVector<CLGeneralGlyph>::iterator generalIt = general.begin();
+  CDataVector<CLGeneralGlyph> & general = layout->getListOfGeneralGlyphs();
+  CDataVector<CLGeneralGlyph>::iterator generalIt = general.begin();
   STATE_SET_POSITIONS(mAdditionalState, generalIt, general.end());
 
-  CCopasiVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
-  CCopasiVector<CLCompartmentGlyph>::iterator compIt = comps.begin();
+  CDataVector<CLCompartmentGlyph> & comps = layout->getListOfCompartmentGlyphs();
+  CDataVector<CLCompartmentGlyph>::iterator compIt = comps.begin();
   STATE_SET_POSITIONS(mCompartmentState, compIt, comps.end());
 
-  CCopasiVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
-  CCopasiVector<CLReactionGlyph>::iterator reactIt = reactions.begin();
+  CDataVector<CLReactionGlyph> & reactions = layout->getListOfReactionGlyphs();
+  CDataVector<CLReactionGlyph>::iterator reactIt = reactions.begin();
   STATE_SET_POSITIONS(mReactionState, reactIt, reactions.end());
 
   for (reactIt = reactions.begin(); reactIt != reactions.end(); ++reactIt)
@@ -224,7 +229,7 @@ void CLayoutState::applyTo(CLayout *layout) const
           reactIt->setCurve(*current);
         }
 
-      CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
+      CDataVector<CLMetabReferenceGlyph>::iterator refIt = reactIt->getListOfMetabReferenceGlyphs().begin();
 
       for (; refIt != reactIt->getListOfMetabReferenceGlyphs().end(); ++refIt)
         {
@@ -239,11 +244,11 @@ void CLayoutState::applyTo(CLayout *layout) const
         }
     }
 
-  CCopasiVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
-  CCopasiVector<CLMetabGlyph>::iterator speciesIt = species.begin();
+  CDataVector<CLMetabGlyph> & species = layout->getListOfMetaboliteGlyphs();
+  CDataVector<CLMetabGlyph>::iterator speciesIt = species.begin();
   STATE_SET_POSITIONS(mSpeciesState, speciesIt, species.end());
 
-  CCopasiVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
-  CCopasiVector<CLTextGlyph>::iterator textIt = texts .begin();
+  CDataVector<CLTextGlyph> & texts = layout->getListOfTextGlyphs();
+  CDataVector<CLTextGlyph>::iterator textIt = texts .begin();
   STATE_SET_POSITIONS(mTextState, textIt, texts.end());
 }

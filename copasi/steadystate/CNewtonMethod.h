@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,8 +28,8 @@
 #ifndef COPASI_CNewtonMethod
 #define COPASI_CNewtonMethod
 
-#include "utilities/CMatrix.h"
-#include "utilities/CVector.h"
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 
 class CTrajectoryTask;
 
@@ -67,7 +72,7 @@ private:
 
   CVector< C_FLOAT64 > mStartState;
 
-  CObjectInterface::UpdateSequence mUpdateConcentrations;
+  CCore::CUpdateSequence mUpdateConcentrations;
 
   // Operations
 private:
@@ -79,21 +84,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: Newton)
    * @param const CTaskEnum::Task & taskType (default: steadyState)
    */
-  CNewtonMethod(const CCopasiContainer * pParent,
+  CNewtonMethod(const CDataContainer * pParent,
                 const CTaskEnum::Method & methodType = CTaskEnum::Newton,
                 const CTaskEnum::Task & taskType = CTaskEnum::steadyState);
 
   /**
   * Copy constructor.
   * @param "const CNewtonMethod &" src
-  * @param const CCopasiContainer * pParent (default: NULL)
+  * @param const CDataContainer * pParent (default: NULL)
   */
   CNewtonMethod(const CNewtonMethod & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
    *  Destructor.

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,10 +26,10 @@
 
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiParameterGroup.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
-CFitItem::CFitItem(const CCopasiContainer * pParent,
+CFitItem::CFitItem(const CDataContainer * pParent,
                    const std::string & name):
   COptItem(pParent, name),
   mpGrpAffectedExperiments(NULL),
@@ -33,7 +38,7 @@ CFitItem::CFitItem(const CCopasiContainer * pParent,
 {initializeParameter();}
 
 CFitItem::CFitItem(const CFitItem & src,
-                   const CCopasiContainer * pParent):
+                   const CDataContainer * pParent):
   COptItem(src, pParent),
   mpGrpAffectedExperiments(NULL),
   mpGrpAffectedCrossValidations(NULL),
@@ -41,7 +46,7 @@ CFitItem::CFitItem(const CFitItem & src,
 {initializeParameter();}
 
 CFitItem::CFitItem(const CCopasiParameterGroup & group,
-                   const CCopasiContainer * pParent):
+                   const CDataContainer * pParent):
   COptItem(group, pParent),
   mpGrpAffectedExperiments(NULL),
   mpGrpAffectedCrossValidations(NULL),
@@ -205,11 +210,11 @@ std::string CFitItem::getExperiments() const
 {
   std::string Experiments;
   size_t i, imax = mpGrpAffectedExperiments->size();
-  const CCopasiObject * pObject;
+  const CDataObject * pObject;
 
   for (i = 0; i < imax; i++)
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(mpGrpAffectedExperiments->getValue< std::string >(i));
+      pObject = CRootContainer::getKeyFactory()->get(mpGrpAffectedExperiments->getValue< std::string >(i));
 
       if (pObject != NULL)
         {
@@ -255,11 +260,11 @@ std::string CFitItem::getCrossValidations() const
 {
   std::string CrossValidations;
   size_t i, imax = mpGrpAffectedCrossValidations->size();
-  const CCopasiObject * pObject;
+  const CDataObject * pObject;
 
   for (i = 0; i < imax; i++)
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(mpGrpAffectedCrossValidations->getValue< std::string >(i));
+      pObject = CRootContainer::getKeyFactory()->get(mpGrpAffectedCrossValidations->getValue< std::string >(i));
 
       if (i && pObject)
         CrossValidations += ", ";
@@ -286,7 +291,7 @@ bool CFitItem::updateBounds(std::vector<COptItem * >::iterator it)
   return true;
 }
 
-CFitConstraint::CFitConstraint(const CCopasiContainer * pParent,
+CFitConstraint::CFitConstraint(const CDataContainer * pParent,
                                const std::string & name):
   CFitItem(pParent, name),
   mCheckConstraint(0),
@@ -294,14 +299,14 @@ CFitConstraint::CFitConstraint(const CCopasiContainer * pParent,
 {}
 
 CFitConstraint::CFitConstraint(const CFitConstraint & src,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   CFitItem(src, pParent),
   mCheckConstraint(src.mCheckConstraint),
   mConstraintViolation(src.mConstraintViolation)
 {}
 
 CFitConstraint::CFitConstraint(const CCopasiParameterGroup & group,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   CFitItem(group, pParent),
   mCheckConstraint(0),
   mConstraintViolation(0.0)

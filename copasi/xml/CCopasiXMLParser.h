@@ -37,7 +37,7 @@
 #include "copasi/xml/CExpat.h"
 #include "copasi/xml/CXMLHandler.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/model/CAnnotation.h"
 
@@ -77,7 +77,7 @@ class CLGraphicalObject;
 class CLCurve;
 class CLLineSegment;
 class CLMetabReferenceGlyph;
-class CCopasiDataModel;
+class CDataModel;
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
@@ -125,7 +125,7 @@ public:
    * Pointer to a vector of functions which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CFunction > * pFunctionList;
+  CDataVectorN< CFunction > * pFunctionList;
 
   /**
    * Pointer to the currently processed function.
@@ -199,7 +199,7 @@ public:
    * Pointer to a vector of tasks which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CCopasiTask > * pTaskList;
+  CDataVectorN< CCopasiTask > * pTaskList;
 
   /**
    * Pointer to a vector of reports which has been loaded or is to be saved.
@@ -316,7 +316,7 @@ public:
   /**
    * A pointer to the datamodel.
    */
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
 
   CUnitDefinitionDB * pUnitDefinitionImportList;
 
@@ -4871,15 +4871,15 @@ public:
 
   /**
    * Set the datamodel.
-   * @param CCopasiDataModel* pDataModel
+   * @param CDataModel* pDataModel
    */
-  void setDatamodel(CCopasiDataModel* pDataModel);
+  void setDatamodel(CDataModel* pDataModel);
 
   /**
    * Set the list of loaded functions
-   * @param CCopasiVectorN< CFunction > * pFunctionList
+   * @param CDataVectorN< CFunction > * pFunctionList
    */
-  void setFunctionList(CCopasiVectorN< CFunction > * pFunctionList);
+  void setFunctionList(CDataVectorN< CFunction > * pFunctionList);
 
 #ifdef XXXX
   /**
@@ -4959,9 +4959,9 @@ public:
 
   /**
    * Retrieve the list of loaded functions
-   * @return CCopasiVectorN< CTask > * pTaskList
+   * @return CDataVectorN< CTask > * pTaskList
    */
-  CCopasiVectorN< CCopasiTask > * getTaskList() const;
+  CDataVectorN< CCopasiTask > * getTaskList() const;
 
   /**
    * Retrieve the list of loaded functions

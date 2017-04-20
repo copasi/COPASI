@@ -28,7 +28,7 @@
 #include "qhbox.h"
 #include "qvbox.h"
 #include "model/CModel.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "copasi.h"
 #include "qlayout.h"
 
@@ -52,8 +52,8 @@ CPlotSelectionDialog::CPlotSelectionDialog(QWidget* parent, const char* name, bo
   , mpYAxisSelectionBox(NULL)
   , mpXAxisOutputVector(NULL)
   , mpYAxisOutputVector(NULL)
-  , mpXAxisTmpVector(new std::vector<CCopasiObject*>())
-  , mpYAxisTmpVector(new std::vector<CCopasiObject*>())
+  , mpXAxisTmpVector(new std::vector<CDataObject*>())
+  , mpYAxisTmpVector(new std::vector<CDataObject*>())
 {
   this->mpMainLayout = new QVBoxLayout(this);
   this->mpMainLayout->setAutoAdd(true);
@@ -241,7 +241,7 @@ void CPlotSelectionDialog::slotExpertCheckBoxToggled(bool checked)
   this->setTabOrder();
 }
 
-void CPlotSelectionDialog::setOutputVectors(std::vector<CCopasiObject*>* outputVector1, std::vector<CCopasiObject*>* outputVector2)
+void CPlotSelectionDialog::setOutputVectors(std::vector<CDataObject*>* outputVector1, std::vector<CDataObject*>* outputVector2)
 {
   this->mpXAxisOutputVector = outputVector1;
   this->mpYAxisOutputVector = outputVector2;

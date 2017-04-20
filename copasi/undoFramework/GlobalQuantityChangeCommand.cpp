@@ -26,7 +26,7 @@
 GlobalQuantityChangeCommand::GlobalQuantityChangeCommand(CCopasiUndoCommand::Type type,
     const QVariant& oldValue,
     const QVariant& newValue,
-    CCopasiObject* pObject,
+    CDataObject* pObject,
     CQModelValue* pWidget,
     double iValue /*= std::numeric_limits<double>::quiet_NaN()*/)
   : CCopasiUndoCommand("Global Quantity", type, "Change", "", TO_UTF8(newValue.toString()), TO_UTF8(oldValue.toString()), pObject->getObjectName())

@@ -27,7 +27,7 @@
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CCompartment.h"
@@ -36,8 +36,8 @@
 #include "model/CReactionInterface.h" //for Copy button internal reactions only
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 //UNDO framework classes
 #include "model/CReactionInterface.h"
@@ -138,8 +138,8 @@ void CQCompartment::copy()
       case CQCompartmentCopyOptions::SPECIES: // include the species
       {
         compartmentObjectsToCopy.addObject(mpObject);
-        CCopasiVectorNS < CMetab > & Metabolites = mpCompartment->getMetabolites();
-        CCopasiVectorNS < CMetab >::const_iterator itMetab;
+        CDataVectorNS < CMetab > & Metabolites = mpCompartment->getMetabolites();
+        CDataVectorNS < CMetab >::const_iterator itMetab;
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
           {
@@ -155,8 +155,8 @@ void CQCompartment::copy()
         compartmentObjectsToCopy.addObject(mpObject);
 
         // Get all the compartment's species first
-        CCopasiVectorNS < CMetab > & Metabolites = mpCompartment->getMetabolites();
-        CCopasiVectorNS < CMetab >::const_iterator itMetab;
+        CDataVectorNS < CMetab > & Metabolites = mpCompartment->getMetabolites();
+        CDataVectorNS < CMetab >::const_iterator itMetab;
 
         for (itMetab = Metabolites.begin(); itMetab != Metabolites.end(); ++itMetab)
           {
@@ -164,8 +164,8 @@ void CQCompartment::copy()
           }
 
         // Now get the reactions which are not multi-compartment
-        CCopasiVectorN< CReaction >::const_iterator it = pModel->getReactions().begin();
-        CCopasiVectorN< CReaction >::const_iterator end = pModel->getReactions().end();
+        CDataVectorN< CReaction >::const_iterator it = pModel->getReactions().begin();
+        CDataVectorN< CReaction >::const_iterator end = pModel->getReactions().end();
         CReactionInterface * pRi = new CReactionInterface(pModel);
 
         for (; it != end; ++it)
@@ -481,7 +481,6 @@ void CQCompartment::save()
                        (unsigned C_INT32) mpCompartment->getStatus(),
                        (unsigned C_INT32) mItemToType[mpComboBoxType->currentIndex()]);
 
-
       QString currentTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mpCompartment->getStatus()]);
       QString newTypeName = FROM_UTF8(CModelEntity::StatusName[(int)mItemToType[mpComboBoxType->currentIndex()]]);
 
@@ -639,9 +638,9 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
   std::string s1, s2;
   s1 = TO_UTF8(pItem->text());
 
-  CCopasiContainer::objectMap::const_iterator it =
+  CDataContainer::objectMap::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
-  CCopasiContainer::objectMap::const_iterator end =
+  CDataContainer::objectMap::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
   for (; it != end; ++it)
@@ -706,9 +705,9 @@ void CQCompartment::loadMetaboliteTable()
 
   mpMetaboliteTable->setRowCount(mpCompartment->getMetabolites().size());
 
-  CCopasiContainer::objectMap::const_iterator it =
+  CDataContainer::objectMap::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
-  CCopasiContainer::objectMap::const_iterator end =
+  CDataContainer::objectMap::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
   for (int i = 0; it != end; ++it)
@@ -754,7 +753,7 @@ void CQCompartment::deleteCompartment()
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "compartment",
                                 FROM_UTF8(mpCompartment->getObjectName()),
-                                mpCompartment->getDeletedObjects());
+                                mpCompartment);
 
   switch (choice)
     {
@@ -774,7 +773,6 @@ void CQCompartment::deleteCompartment()
 void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 {
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
-
 
   CModel * pModel = mpCompartment != NULL ? mpCompartment->getModel()
                     : mpDataModel->getModel();
@@ -814,7 +812,7 @@ bool CQCompartment::changeValue(const std::string& key,
   if (!mIgnoreUpdates)
     {
       mKey = key;
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpObject = CRootContainer::getKeyFactory()->get(key);
       mpCompartment = dynamic_cast<CCompartment*>(mpObject);
       load();
       switchToWidget(C_INVALID_INDEX, mKey);

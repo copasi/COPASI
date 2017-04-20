@@ -43,10 +43,10 @@ public:
   static CLMetabGlyph * fromData(const CData & data);
 
   CLMetabGlyph(const std::string & name = "MetabGlyph",
-               const CCopasiContainer * pParent = NO_PARENT);
+               const CDataContainer * pParent = NO_PARENT);
 
   CLMetabGlyph(const CLMetabGlyph & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -54,7 +54,7 @@ public:
   CLMetabGlyph(const SpeciesGlyph & sbml,
                const std::map<std::string, std::string> & modelmap,
                std::map<std::string, std::string> & layoutmap,
-               const CCopasiContainer * pParent = NO_PARENT);
+               const CDataContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator
@@ -70,7 +70,7 @@ public:
    * corresponding sbml object
    */
   virtual void exportToSBML(SpeciesGlyph * g,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs) const;
 
   /**
@@ -92,10 +92,10 @@ public:
   static CLCompartmentGlyph * fromData(const CData & data);
 
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   CLCompartmentGlyph(const CLCompartmentGlyph & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -103,7 +103,7 @@ public:
   CLCompartmentGlyph(const CompartmentGlyph & sbml,
                      const std::map<std::string, std::string> & modelmap,
                      std::map<std::string, std::string> & layoutmap,
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 
@@ -125,7 +125,7 @@ public:
    * corresponding sbml object
    */
   virtual void exportToSBML(CompartmentGlyph * cg,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs) const;
 };
 
@@ -155,10 +155,10 @@ public:
   static CLTextGlyph * fromData(const CData & data);
 
   CLTextGlyph(const std::string & name = "TextGlyph",
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   CLTextGlyph(const CLTextGlyph & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -166,7 +166,7 @@ public:
   CLTextGlyph(const TextGlyph & sbml,
               const std::map<std::string, std::string> & modelmap,
               std::map<std::string, std::string> & layoutmap,
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -197,7 +197,7 @@ public:
    * have been created.
    */
   virtual void exportToSBML(TextGlyph * g,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs) const;
 
   /**

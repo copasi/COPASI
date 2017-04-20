@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,10 +27,10 @@
 #include "COptTask.h"
 
 #include "randomGenerator/CRandom.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "utilities/CSort.h"
 
-COptMethodEP::COptMethodEP(const CCopasiContainer * pParent,
+COptMethodEP::COptMethodEP(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -44,7 +49,7 @@ COptMethodEP::COptMethodEP(const CCopasiContainer * pParent,
 }
 
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
-                           const CCopasiContainer * pParent)
+                           const CDataContainer * pParent)
   : COptPopulationMethod(src, pParent),
     mBestIndex(C_INVALID_INDEX),
     mLosses(0),
@@ -124,7 +129,6 @@ bool COptMethodEP::optimise()
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
-
     }
 
   if (mpCallBack)

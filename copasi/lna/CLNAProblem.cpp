@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,15 +24,15 @@
 
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CLNAProblem::CLNAProblem(const CCopasiContainer * pParent):
+CLNAProblem::CLNAProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::lna, pParent)
 {
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
@@ -39,7 +44,7 @@ CLNAProblem::CLNAProblem(const CCopasiContainer * pParent):
  *  @param "const CLNAProblem &" src
  */
 CLNAProblem::CLNAProblem(const CLNAProblem & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiProblem(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
@@ -74,7 +79,7 @@ void CLNAProblem::load(CReadConfig & configBuffer,
 void CLNAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
   CSteadyStateTask * pSubTask = NULL;
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (pDataModel && pDataModel->getTaskList())
@@ -96,7 +101,7 @@ bool CLNAProblem::isSteadyStateRequested() const
 CSteadyStateTask * CLNAProblem::getSubTask() const
 {
   if (isSteadyStateRequested())
-    return dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
+    return dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
   else
     return NULL;
 }

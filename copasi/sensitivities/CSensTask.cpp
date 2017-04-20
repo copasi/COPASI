@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,7 +34,7 @@
 
 #define XXXX_Reporting
 
-CSensTask::CSensTask(const CCopasiContainer * pParent,
+CSensTask::CSensTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
@@ -39,7 +44,7 @@ CSensTask::CSensTask(const CCopasiContainer * pParent,
 }
 
 CSensTask::CSensTask(const CSensTask & src,
-                     const CCopasiContainer * pParent):
+                     const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
   mpProblem =

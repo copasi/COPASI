@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,9 +25,9 @@
 #include "COptTask.h"
 
 #include "parameterFitting/CFitProblem.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent,
+COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
                                    const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType),
@@ -34,7 +39,7 @@ COptMethodPraxis::COptMethodPraxis(const CCopasiContainer * pParent,
 }
 
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   COptMethod(src, pParent),
   mpPraxis(new FPraxisTemplate<COptMethodPraxis>(this, &COptMethodPraxis::evaluateFunction)),
   mpCPraxis(new CPraxis())
@@ -49,7 +54,7 @@ COptMethodPraxis::~COptMethodPraxis()
 
 void COptMethodPraxis::initObjects()
 {
-  addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
 }
 
 bool COptMethodPraxis::optimise()

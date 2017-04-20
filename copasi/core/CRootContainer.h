@@ -1,38 +1,34 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+#ifndef COPASI_CRootContainer
+#define COPASI_CRootContainer
 
-#ifndef COPASI_CCopasiRootContainer
-#define COPASI_CCopasiRootContainer
-
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/report/CKeyFactory.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/utilities/CCopasiVector.h"
-#include "copasi/utilities/CUnitDefinition.h"
-#include "copasi/utilities/CUnitDefinitionDB.h"
 
 class CMIRIAMResource;
+class CFunction;
 class CFunctionDB;
 class CConfigurationFile;
+class CDataModel;
+class CUnitDefinitionDB;
+class CUnitDefinition;
+template < class CType > class CDataVector;
 
 /**
  * This is the new root container class.
  * It will hold some attributes that are used by all datamodels,
  * e.g.the global function database and the configuration,
  * and it will hold a list of datamodels.
- * Currently all methods to create new instances of CCopasiRootContainer
+ * Currently all methods to create new instances of CRootContainer
  * are declared private. This ensures that there can be only one root container
  * which is initialized by the init method.
  * If this is necessary or not needs to be discussed.
  */
-class CCopasiRootContainer : public CCopasiContainer
+class CRootContainer : public CDataContainer
 {
 private:
   /**
@@ -43,22 +39,22 @@ private:
    * Maybe this restriction is not necessary. We have to discuss this
    * later.
    */
-  CCopasiRootContainer(const bool & withGUI = false);
+  CRootContainer(const bool & withGUI = false);
 
   /**
    * The copy constructor is private as well to make sure that there is only
    * one root container that can be initialized through the init call.
-   * @param const CCopasiRootContainer & src
+   * @param const CRootContainer & src
    */
-  CCopasiRootContainer(const CCopasiRootContainer & src);
+  CRootContainer(const CRootContainer & src);
 
   /**
    * The assignment operator is private as well to make sure that there is only
    * one root container that can be initialized through the init call.
-   * @param const CCopasiRootContainer & src
-   * @return CCopasiRootContainer &
+   * @param const CRootContainer & src
+   * @return CRootContainer &
    */
-  CCopasiRootContainer& operator=(const CCopasiRootContainer& src);
+  CRootContainer& operator=(const CRootContainer& src);
 
   /**
    * This method needs to be called after a new root container is
@@ -75,7 +71,7 @@ protected:
   CMIRIAMResource *mpUnknownResource;
   CFunctionDB* mpFunctionList;
   CConfigurationFile* mpConfiguration;
-  CCopasiVector<CCopasiDataModel>* mpDataModelList;
+  CDataVector< CDataModel > * mpDataModelList;
   CUnitDefinitionDB * mpUnitDefinitionList;
   // flag to store if we are running a GUI or not
   bool mWithGUI;
@@ -84,7 +80,7 @@ protected:
 
 public:
   // Destructor
-  virtual ~CCopasiRootContainer();
+  virtual ~CRootContainer();
 
   /**
    * This method creates the only root container.
@@ -96,7 +92,7 @@ public:
   /**
    * Retrieve the root container
    */
-  static const CCopasiContainer * getRoot();
+  static const CDataContainer * getRoot();
 
   /**
    * Returns the a pointer to the configuration.
@@ -111,7 +107,7 @@ public:
   /**
    * Returns a pointer to the list of data models.
    */
-  static CCopasiVector< CCopasiDataModel > * getDatamodelList();
+  static CDataVector< CDataModel > * getDatamodelList();
 
   /**
    * Returns a pointer to the list of units.
@@ -143,7 +139,7 @@ public:
    * Creates a new datamodel instance and adds it to the list.
    * The new instance is returned by the method.
    */
-  static CCopasiDataModel * addDatamodel();
+  static CDataModel * addDatamodel();
 
   /**
    * Retrieve the pointer for the function used for importing
@@ -159,7 +155,7 @@ public:
 
   static const CMIRIAMResource & getUnknownMiriamResource();
 
-  static bool removeDatamodel(const CCopasiDataModel * pDatamodel);
+  static bool removeDatamodel(const CDataModel * pDatamodel);
 
   static bool removeDatamodel(const unsigned C_INT32 index);
 
@@ -168,4 +164,4 @@ public:
   static const char * getLicenseHTML();
 };
 
-#endif /* COPASI_CCopasiRootContainer */
+#endif /* COPASI_CRootContainer */

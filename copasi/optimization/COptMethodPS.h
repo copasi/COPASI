@@ -1,16 +1,21 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * COptMethodPS class
@@ -19,9 +24,9 @@
 #ifndef COPASI_COptMethodPS
 #define COPASI_COptMethodPS
 
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
 
 class CRandom;
 class CPermutation;
@@ -32,21 +37,21 @@ class COptMethodPS : public COptPopulationMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: ParticleSwarm)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodPS(const CCopasiContainer * pParent,
+  COptMethodPS(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::ParticleSwarm,
                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodPS & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodPS(const COptMethodPS & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -64,9 +69,9 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  COptMethodPS(const CCopasiContainer * pParent = NO_PARENT);
+  COptMethodPS(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Initialize contained objects.
@@ -123,7 +128,6 @@ private:
    * The variance acceptable for the solution
    */
   C_FLOAT64 mVariance;
-
 
   /**
    * Matrix of individual velocities

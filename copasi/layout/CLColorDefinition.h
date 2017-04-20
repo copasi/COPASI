@@ -14,15 +14,15 @@
 #include <string>
 
 #include "copasi/layout/CLBase.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class ColorDefinition;
 LIBSBML_CPP_NAMESPACE_END
 
-class CCopasiContainer;
+class CDataContainer;
 
-class CLColorDefinition : public CLBase, public CCopasiObject
+class CLColorDefinition : public CLBase, public CDataObject
 {
 private:
   // preent the compiler from generating the assignment operator
@@ -55,22 +55,22 @@ public:
    * Contructor which sets the ColorDefinition to completely opaque
    * black.
    */
-  CLColorDefinition(CCopasiContainer* pParent = NULL);
+  CLColorDefinition(CDataContainer* pParent = NULL);
 
   /**
    * Constructor which sets the ColorDefinition to the given RGBA values.
    */
-  CLColorDefinition(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255, CCopasiContainer* pParent = NULL);
+  CLColorDefinition(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255, CDataContainer* pParent = NULL);
 
   /**
    * Copy Contructor
    */
-  CLColorDefinition(const CLColorDefinition& source, CCopasiContainer* pParent = NULL);
+  CLColorDefinition(const CLColorDefinition& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLColorDefinition(const ColorDefinition& source, CCopasiContainer* pParent = NULL);
+  CLColorDefinition(const ColorDefinition& source, CDataContainer* pParent = NULL);
 
   virtual ~CLColorDefinition();
 

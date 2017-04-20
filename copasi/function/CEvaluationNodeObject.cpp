@@ -22,10 +22,10 @@
 #include "CEvaluationTree.h"
 #include "CExpression.h"
 #include "report/CCopasiObjectName.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataContainer.h"
 #include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "math/CMathObject.h"
 #include "math/CMathContainer.h"
 #include "utilities/CValidatedUnit.h"
@@ -103,7 +103,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
         mpObject =
           pExpression->getNodeObject(mRegisteredObjectCN);
 
-        const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(mpObject);
+        const CDataObject * pDataObject = dynamic_cast< const CDataObject * >(mpObject);
 
         if (pDataObject != NULL)
           {
@@ -121,7 +121,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
                 mData = getData();
               }
 
-            if (pDataObject->isValueDbl())
+            if (pDataObject->hasFlag(CDataObject::ValueDbl))
               {
                 mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
               }
@@ -227,8 +227,8 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 
   if (!pExpression) return false;
 
-  const CCopasiObject * pObject =
-    CCopasiContainer::ObjectFromCN(mRegisteredObjectCN);
+  const CDataObject * pObject =
+    CDataContainer::ObjectFromCN(mRegisteredObjectCN);
 
   if (pObject == NULL) return "<" + mRegisteredObjectCN + ">";
 
@@ -239,7 +239,7 @@ std::string CEvaluationNodeObject::getDisplayString(const CEvaluationTree * pTre
 // virtual
 std::string CEvaluationNodeObject::getDisplayString(const std::vector< std::string > & /* children */) const
 {
-  const CCopasiObject* object = dynamic_cast<const CCopasiObject*>(mpObject);
+  const CDataObject* object = dynamic_cast<const CDataObject*>(mpObject);
 
   if (object != NULL)
     return object->getObjectDisplayName();
@@ -287,7 +287,7 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
 {
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);
@@ -310,7 +310,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
 
   // since I can not get the model in which this node is located, I just
   // assume that it will always be the current global model.
-  const CCopasiObject* pOrigObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(mRegisteredObjectCN));
+  const CDataObject* pOrigObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(mRegisteredObjectCN));
 
   if (pOrigObject == NULL)
     {
@@ -318,10 +318,10 @@ ASTNode* CEvaluationNodeObject::toAST(const CCopasiDataModel* pDataModel) const
       return node;
     }
 
-  const CCopasiObject* pObject = pOrigObject;
+  const CDataObject* pObject = pOrigObject;
 
   // if it is a reference, we get the parent of the reference
-  if (pObject->isReference())
+  if (pObject->hasFlag(CDataObject::Reference))
     {
       pObject = pObject->getObjectParent();
     }
@@ -439,7 +439,7 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
 {
   std::ostringstream out;
 
-  const CCopasiObject * pDataObject = CObjectInterface::DataObject(mpObject);
+  const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
 
   out << CMathMl::getMMLName(pDataObject) << std::endl;
 
@@ -451,7 +451,7 @@ CValidatedUnit CEvaluationNodeObject::getUnit(const CMathContainer & container,
     const std::vector< CValidatedUnit > & units) const
 {
   const CObjectInterface * pObject = container.getMathObject(mpValue);
-  const CCopasiObject * pDataObject = (pObject != NULL) ? pObject->getDataObject() : NULL;
+  const CDataObject * pDataObject = (pObject != NULL) ? pObject->getDataObject() : NULL;
 
   if (pDataObject != NULL)
     {

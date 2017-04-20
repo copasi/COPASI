@@ -21,12 +21,12 @@
 #include "copasi/MIRIAM/CRDFPredicate.h"
 #include "copasi/MIRIAM/CConstants.h"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 /**
  *  CReferences: Stores publication details such as PubMed Id and DOI.
  */
-class CReference : public CCopasiContainer
+class CReference : public CDataContainer
 {
   // Attributes
 private:
@@ -62,28 +62,28 @@ public:
   /**
    * Default constructor
    * @param const std::string & objectName
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CReference(const std::string & objectName,
-             const CCopasiContainer * pParent = NO_PARENT);
+             const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Specific constructor
    * @param const CRDFTriplet & triplet
    * @param const std::string & objectName (default: "")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CReference(const CRDFTriplet & triplet,
              const std::string & objectName = "",
-             const CCopasiContainer * pParent = NO_PARENT);
+             const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CReference &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CReference(const CReference & src,
-             const CCopasiContainer * pParent);
+             const CDataContainer * pParent);
 
   /**
    * Destructor

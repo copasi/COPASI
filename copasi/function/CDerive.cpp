@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -303,9 +308,9 @@ CEvaluationNode * CDerive::copyBranch_var2obj(const CEvaluationNode* node, std::
 }
 
 //TODO remove pModel
-CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopasiObject * pObject,
+CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataObject * pObject,
                                        std::vector<const CEvaluationNode*>& env,
-                                       //std::vector<const CCopasiObject*>& objenv,
+                                       //std::vector<const CDataObject*>& objenv,
                                        const CEvaluationTree* pTree,
                                        bool simplify)
 {
@@ -440,7 +445,7 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CCopas
         }
 
       //now we need to check if we know something about the object so that it needs to be expanded
-      const CCopasiObject * tmpObj = (const CCopasiObject *)pENObj->getObjectInterfacePtr();
+      const CDataObject * tmpObj = (const CDataObject *)pENObj->getObjectInterfacePtr();
 
       if (!tmpObj)
         return NULL;

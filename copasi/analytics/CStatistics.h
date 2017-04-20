@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -7,11 +12,11 @@
 #define CSTATISTICS_H
 
 #include "copasi/model/CModelValue.h"
-#include "copasi/report/CCopasiObjectReference.h"
-#include "copasi/report/CCopasiObject.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataObjectReference.h"
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataContainer.h"
 
-class CStatistics : public CCopasiContainer // CModelEntity //
+class CStatistics : public CDataContainer // CModelEntity //
 {
 
 // Operations
@@ -26,7 +31,7 @@ public:
   * Public constructor.
   **/
   CStatistics(const std::string & name,
-              const CCopasiContainer * pParent,
+              const CDataContainer * pParent,
               const std::string & type,
               const unsigned C_INT32 & flag,
               C_FLOAT64 statValue);
@@ -46,7 +51,7 @@ public:
   * Retrieve object referencing the concentration
   * @return CConcentrationReference * concentrationReference
   */
-  CCopasiObject * getStatValueReference() const;
+  CDataObject * getStatValueReference() const;
 
 // Attributes
 private:
@@ -57,7 +62,7 @@ private:
   C_FLOAT64 mStatValue;
 
 protected:
-  CCopasiObject * mpStatValueReference;
+  CDataObject * mpStatValueReference;
 
   /**
   * Initialize the contained CCopasiObjects

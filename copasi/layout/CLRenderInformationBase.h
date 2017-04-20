@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,14 +20,14 @@
 #include "copasi/layout/CLRadialGradient.h"
 #include "copasi/layout/CLLineEnding.h"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderInformationBase;
 LIBSBML_CPP_NAMESPACE_END
 class CLStyle;
 
-class CLRenderInformationBase: public CLBase, public CCopasiContainer
+class CLRenderInformationBase: public CLBase, public CDataContainer
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -32,9 +37,9 @@ protected:
   // id is inherited from SBase
   std::string mReferenceRenderInformation;
   std::string mBackgroundColor;
-  CCopasiVector<CLColorDefinition> mListOfColorDefinitions;
-  CCopasiVector<CLGradientBase> mListOfGradientDefinitions;
-  CCopasiVector<CLLineEnding> mListOfLineEndings;
+  CDataVector<CLColorDefinition> mListOfColorDefinitions;
+  CDataVector<CLGradientBase> mListOfGradientDefinitions;
+  CDataVector<CLLineEnding> mListOfLineEndings;
 
   /**
    * key string for the render information.
@@ -51,12 +56,12 @@ public:
   /**
    * Constructor.
    */
-  CLRenderInformationBase(const std::string& name, CCopasiContainer* pParent = NULL);
+  CLRenderInformationBase(const std::string& name, CDataContainer* pParent = NULL);
 
   /**
    * Copy constructor.
    */
-  CLRenderInformationBase(const CLRenderInformationBase& source, CCopasiContainer* pParent);
+  CLRenderInformationBase(const CLRenderInformationBase& source, CDataContainer* pParent);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
@@ -68,7 +73,7 @@ public:
                           std::map<std::string,std::string>& gradientIdToKeyMap,
                           std::map<std::string,std::string>& lineEndingIdToKeyMap,
                           */
-                          CCopasiContainer* pParent = NULL);
+                          CDataContainer* pParent = NULL);
 
   /**
    * Destructor
@@ -93,12 +98,12 @@ public:
   /**
    * Returns a pointer to the list of color definitions.
    */
-  CCopasiVector<CLColorDefinition>* getListOfColorDefinitions();
+  CDataVector<CLColorDefinition>* getListOfColorDefinitions();
 
   /**
    * Returns a const pointer to the list of color definitions.
    */
-  const CCopasiVector<CLColorDefinition>* getListOfColorDefinitions() const;
+  const CDataVector<CLColorDefinition>* getListOfColorDefinitions() const;
 
   /**
    * Returns a pointer to the color definition with the given index, or NULL
@@ -136,12 +141,12 @@ public:
   /**
    * Returns a pointer to the list of gradient definitions.
    */
-  CCopasiVector<CLGradientBase>* getListOfGradientDefinitions();
+  CDataVector<CLGradientBase>* getListOfGradientDefinitions();
 
   /**
    * Returns a const pointer to the list of gradient definitions.
    */
-  const CCopasiVector<CLGradientBase>* getListOfGradientDefinitions() const;
+  const CDataVector<CLGradientBase>* getListOfGradientDefinitions() const;
 
   /**
    * Returns a pointer to the gradient definition with the given index, or NULL
@@ -184,12 +189,12 @@ public:
   /**
    * Returns a pointer to the list of line endings.
    */
-  CCopasiVector<CLLineEnding>* getListOfLineEndings();
+  CDataVector<CLLineEnding>* getListOfLineEndings();
 
   /**
    * Returns a const pointer to the list of line endings.
    */
-  const CCopasiVector<CLLineEnding>* getListOfLineEndings() const;
+  const CDataVector<CLLineEnding>* getListOfLineEndings() const;
 
   /**
    * Returns a pointer to the line ending with the given index, or NULL

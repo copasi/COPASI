@@ -25,9 +25,9 @@
 #include "model/CModel.h"
 
 // static
-CCopasiObject * CFunctionParameterMap::pUnmappedObject = NULL;
+CDataObject * CFunctionParameterMap::pUnmappedObject = NULL;
 
-//TODO: modify the constructors so that CFunctionParameterMap behaves like a CCopasiObject
+//TODO: modify the constructors so that CFunctionParameterMap behaves like a CDataObject
 
 CFunctionParameterMap::CFunctionParameterMap():
   mPointers(),
@@ -54,7 +54,7 @@ CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
     if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
       {
         mPointers[i].vector = new CCallParameters<C_FLOAT64>(*src.mPointers[i].vector);
-        mObjects[i].vector = new CCallParameters<CCopasiObject>(*src.mObjects[i].vector);
+        mObjects[i].vector = new CCallParameters<CDataObject>(*src.mObjects[i].vector);
       }
 }
 
@@ -110,7 +110,7 @@ void CFunctionParameterMap::initCallParameters()
     {
       if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
         {
-          mObjects[i].vector = new CCallParameters<CCopasiObject>;
+          mObjects[i].vector = new CCallParameters<CDataObject>;
           mPointers[i].vector = new CCallParameters<C_FLOAT64>;
         }
     }
@@ -146,7 +146,7 @@ void CFunctionParameterMap::checkCallParameters() const
     }
 }
 
-bool CFunctionParameterMap::setCallParameter(const std::string paramName, const CCopasiObject* obj)
+bool CFunctionParameterMap::setCallParameter(const std::string paramName, const CDataObject* obj)
 {
   const CFunctionParameter * pFunctionParameter;
   size_t index = findParameterByName(paramName, &pFunctionParameter);
@@ -156,7 +156,7 @@ bool CFunctionParameterMap::setCallParameter(const std::string paramName, const 
       pFunctionParameter->getType() >= CFunctionParameter::VINT32) fatalError(); // is a vector
 
   assert(obj->getValuePointer());
-  assert(obj->isValueDbl());
+  assert(obj->hasFlag(CDataObject::ValueDbl));
 
   mObjects[index].value = obj;
   mPointers[index].value = (const C_FLOAT64*) obj->getValuePointer();
@@ -192,7 +192,7 @@ bool CFunctionParameterMap::setCallParameter(const std::string paramName, const 
   return success;
 }
 
-bool CFunctionParameterMap::addCallParameter(const std::string paramName, const CCopasiObject* obj)
+bool CFunctionParameterMap::addCallParameter(const std::string paramName, const CDataObject* obj)
 {
   const CFunctionParameter * pFunctionParameter;
   size_t index = findParameterByName(paramName, &pFunctionParameter);
@@ -202,7 +202,7 @@ bool CFunctionParameterMap::addCallParameter(const std::string paramName, const 
       pFunctionParameter->getType() < CFunctionParameter::VINT32) fatalError(); // is not a vector
 
   assert(obj->getValuePointer());
-  assert(obj->isValueDbl());
+  assert(obj->hasFlag(CDataObject::ValueDbl));
 
   mObjects[index].vector->push_back(obj);
   mPointers[index].vector->push_back((const C_FLOAT64*) obj->getValuePointer());
@@ -269,9 +269,9 @@ const CCallParameters<C_FLOAT64> & CFunctionParameterMap::getPointers() const
   return mPointers;
 }
 
-std::vector< const CCopasiObject * > CFunctionParameterMap::getObjects(const size_t & index) const
+std::vector< const CDataObject * > CFunctionParameterMap::getObjects(const size_t & index) const
 {
-  std::vector< const CCopasiObject * > Objects;
+  std::vector< const CDataObject * > Objects;
 
   if (index != C_INVALID_INDEX)
     {
@@ -289,9 +289,9 @@ std::vector< const CCopasiObject * > CFunctionParameterMap::getObjects(const siz
   return Objects;
 }
 
-// CCallParameters<CCopasiObject> & CFunctionParameterMap::getObjects() {return mObjects;};
+// CCallParameters<CDataObject> & CFunctionParameterMap::getObjects() {return mObjects;};
 
-const CCallParameters<CCopasiObject> & CFunctionParameterMap::getObjects() const
+const CCallParameters<CDataObject> & CFunctionParameterMap::getObjects() const
 {return mObjects;};
 
 const CFunctionParameters & CFunctionParameterMap::getFunctionParameters() const

@@ -40,16 +40,18 @@
 #include <algorithm>
 #include <cmath>
 
-#include "scrollzoomer.h"
+#include "copasi/copasi.h"
 
-#include "copasi.h"
+#include "scrollzoomer.h"
 #include "CopasiPlot.h"
 #include "CQPlotColors.h"
-#include "plot/CPlotSpecification.h"
-#include "UI/qtUtilities.h"
-#include "report/CCopasiRootContainer.h"
-#include "model/CModel.h"
-#include "commandline/CLocaleString.h"
+
+#include "copasi/plot/CPlotSpecification.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include <copasi/plotUI/C2DCurveData.h>
 #include <copasi/plotUI/CBandedGraphData.h>
@@ -272,16 +274,16 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
     }
 
-  CCopasiDataModel* dataModel = mpPlotSpecification->getObjectDataModel();
+  CDataModel* dataModel = mpPlotSpecification->getObjectDataModel();
   assert(dataModel != NULL);
 
   setAxisTitle(xBottom, FROM_UTF8(dataModel->getObject((plotItem->getChannels()[0]))->getObjectDisplayName()));
@@ -327,8 +329,8 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
 
   std::map< std::string, C2DPlotCurve * >::iterator found;
 
-  CCopasiVector< CPlotItem >::const_iterator itPlotItem = mpPlotSpecification->getItems().begin();
-  CCopasiVector< CPlotItem >::const_iterator endPlotItem = mpPlotSpecification->getItems().end();
+  CDataVector< CPlotItem >::const_iterator itPlotItem = mpPlotSpecification->getItems().begin();
+  CDataVector< CPlotItem >::const_iterator endPlotItem = mpPlotSpecification->getItems().end();
 
   CVector< bool > Visible(mpPlotSpecification->getItems().size());
   Visible = true;
@@ -651,14 +653,14 @@ bool CopasiPlot::compile(CObjectInterface::ContainerList listOfContainer)
               // and the value pointer actually exists. If not, use a dummy value.)
               void * tmp;
 
-              const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObj);
+              const CDataObject * pDataObject = CObjectInterface::DataObject(pObj);
 
               if (pDataObject != NULL &&
                   (tmp = pObj->getValuePointer()) != NULL &&
-                  (pDataObject->isValueInt() || pDataObject->isValueDbl()))
+                  (pDataObject->hasFlag(CDataObject::ValueInt) || pDataObject->hasFlag(CDataObject::ValueDbl)))
                 {
                   mObjectValues[ItemActivity].push_back((C_FLOAT64 *) tmp); //pObj->getValuePointer());
-                  mObjectInteger[ItemActivity].push_back(pDataObject->isValueInt());
+                  mObjectInteger[ItemActivity].push_back(pDataObject->hasFlag(CDataObject::ValueInt));
                 }
               else
                 {
@@ -1422,7 +1424,7 @@ void CopasiPlot::clearBuffers()
 void CopasiPlot::setAxisUnits(const C_INT32 & index,
                               const CObjectInterface * pObjectInterface)
 {
-  const CCopasiObject * pObject = CObjectInterface::DataObject(pObjectInterface);
+  const CDataObject * pObject = CObjectInterface::DataObject(pObjectInterface);
 
   if (pObject == NULL) return;
 

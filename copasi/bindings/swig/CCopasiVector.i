@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -39,11 +44,11 @@
 
 
 
-%ignore CCopasiVector::remove(const size_t & index);
+%ignore CDataVector::remove(const size_t & index);
 
 %{
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "plot/CPlotSpecification.h"
 #include <copasi/elementaryFluxModes/CFluxMode.h>
 #include <layout/CLBase.h>
@@ -58,12 +63,12 @@
 // for now we ignore the resize method since it uses the copy constructor of
 // the item, which is not implemented for most items
 // actually it is best to disable all methods that use resize as well
-%ignore CCopasiVector::resize;
-%ignore CCopasiVector::deepCopy;
-%ignore CCopasiVector::deepCopy;
-%ignore CCopasiVectorS::load;
-%ignore CCopasiVectorNS::load;
-%ignore CCopasiVector::CCopasiVector;
+%ignore CDataVector::resize;
+%ignore CDataVector::deepCopy;
+%ignore CDataVector::deepCopy;
+%ignore CDataVectorS::load;
+%ignore CDataVectorNS::load;
+%ignore CDataVector::CDataVector;
 %ignore CObjectLists::ListTypeName;
 %ignore CObjectLists::getListOfObjects;
 %ignore CObjectLists::getListOfConstObjects;
@@ -72,27 +77,27 @@
 #if (defined SWIGJAVA || defined SWIGCSHARP)
 // disable some operator for Java to get rid of the warnings
 
-%ignore CCopasiVector::operator [];
-%ignore CCopasiVector::operator =;
-%ignore CCopasiVectorN::operator =;
-%ignore CCopasiVectorN::operator [];
-%ignore CCopasiVector::begin();
-%ignore CCopasiVector::begin() const;
-%ignore CCopasiVector::end();
-%ignore CCopasiVector::end() const;
+%ignore CDataVector::operator [];
+%ignore CDataVector::operator =;
+%ignore CDataVectorN::operator =;
+%ignore CDataVectorN::operator [];
+%ignore CDataVector::begin();
+%ignore CDataVector::begin() const;
+%ignore CDataVector::end();
+%ignore CDataVector::end() const;
 #endif // SWIGJAVA || CSHARP
 
 
-%rename(addCopy) CCopasiVector::add(const CType&);
+%rename(addCopy) CDataVector::add(const CType&);
 
 
-%include "utilities/CCopasiVector.h"
+%include "utilities/CDataVector.h"
 
 // this extension makes the assumption hat only instances of classes
-// that are derived from CCopasiObject are stored in a CCopasiVector
+// that are derived from CDataObject are stored in a CDataVector
 // This is not necessarily true, but right now this is the easiest way to maybe
 // get a pointer to the correct type
-%extend CCopasiVector
+%extend CDataVector
 {
   virtual void remove(unsigned C_INT32 index)
   {
@@ -106,11 +111,11 @@
    }
   }
   
-  virtual CCopasiObject* get(unsigned C_INT32 index)
+  virtual CDataObject* get(unsigned C_INT32 index)
   {
     try
     {
-        return (CCopasiObject*)&((*self)[index]);
+        return (CDataObject*)&((*self)[index]);
     }
     catch(...)
     {
@@ -139,16 +144,16 @@
 
 
 // this extension makes the assumption hat only instances of classes
-// that are derived from CCopasiObject are stored in a CCopasiVectorN
+// that are derived from CDataObject are stored in a CDataVectorN
 // This is not necessarily true, but right now this is the easiest way to maybe
 // get a pointer to the correct type
-%extend CCopasiVectorN
+%extend CDataVectorN
 {
-  virtual CCopasiObject* getByName(const std::string& name)
+  virtual CDataObject* getByName(const std::string& name)
   {
   try
   {
-      return (CCopasiObject*)&((*self)[name]);
+      return (CDataObject*)&((*self)[name]);
     }
       catch(...)
       {
@@ -157,126 +162,126 @@
   }
 }
 
-%rename(removeObject) CCopasiVector<CEvent>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CEvent>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CEvent>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CEvent>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CEvent>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CEvent>::getIndex(const std::string& name) const;
 
 %template(EventStdVector) std::vector<CEvent*>;
-%template(EventVector) CCopasiVector<CEvent>;
-%template(EventVectorN) CCopasiVectorN<CEvent>;
+%template(EventVector) CDataVector<CEvent>;
+%template(EventVectorN) CDataVectorN<CEvent>;
 
-%rename(removeObject) CCopasiVector<CEventAssignment>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CEventAssignment>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CEventAssignment>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CEventAssignment>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CEventAssignment>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CEventAssignment>::getIndex(const std::string& name) const;
 
 %template(EventAssignmentStdVector) std::vector<CEventAssignment*>;
-%template(EventAssignmentVector) CCopasiVector<CEventAssignment>;
-%template(EventAssignmentVectorN) CCopasiVectorN<CEventAssignment>;
+%template(EventAssignmentVector) CDataVector<CEventAssignment>;
+%template(EventAssignmentVectorN) CDataVectorN<CEventAssignment>;
 
-%rename(removeObject) CCopasiVector<CCopasiTask>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CCopasiTask>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CCopasiTask>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CCopasiTask>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CCopasiTask>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CCopasiTask>::getIndex(const std::string& name) const;
 
 %template(TaskStdVector) std::vector<CCopasiTask*>;
-%template(TaskVector) CCopasiVector<CCopasiTask>;
-%template(TaskVectorN) CCopasiVectorN<CCopasiTask>;
+%template(TaskVector) CDataVector<CCopasiTask>;
+%template(TaskVectorN) CDataVectorN<CCopasiTask>;
 
-%rename(removeObject) CCopasiVector<CModelValue>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CModelValue>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CModelValue>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CModelValue>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CModelValue>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CModelValue>::getIndex(const std::string& name) const;
 
 %template(FluxModeStdVector) std::vector<CFluxMode*>;
 
 
 %template(ModelValueStdVector) std::vector<CModelValue*>;
-%template(ModelValueVector) CCopasiVector<CModelValue>;
-%template(ModelValueVectorN) CCopasiVectorN<CModelValue>;
+%template(ModelValueVector) CDataVector<CModelValue>;
+%template(ModelValueVectorN) CDataVectorN<CModelValue>;
 
-%rename(removeObject) CCopasiVector<CReportDefinition>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CReportDefinition>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CReportDefinition>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CReportDefinition>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CReportDefinition>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CReportDefinition>::getIndex(const std::string& name) const;
 
 %template(ReportDefinitionStdVector) std::vector<CReportDefinition*>;
-%template(ReportDefinitionVector) CCopasiVector<CReportDefinition>;
-%template(ReportDefinitionVectorN) CCopasiVectorN<CReportDefinition>;
+%template(ReportDefinitionVector) CDataVector<CReportDefinition>;
+%template(ReportDefinitionVectorN) CDataVectorN<CReportDefinition>;
 
-%rename(removeObject) CCopasiVector<CPlotSpecification>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CPlotSpecification>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CPlotSpecification>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CPlotSpecification>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CPlotSpecification>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CPlotSpecification>::getIndex(const std::string& name) const;
 
 %template(OutputDefinitionStdVector) std::vector<CPlotSpecification*>;
 %template(PlotDataChannelSpecStdVector) std::vector<CPlotDataChannelSpec>;
-%template(OutputDefinitionVector) CCopasiVector<CPlotSpecification>;
-%template(OutputDefinitionVectorN) CCopasiVectorN<CPlotSpecification>;
+%template(OutputDefinitionVector) CDataVector<CPlotSpecification>;
+%template(OutputDefinitionVectorN) CDataVectorN<CPlotSpecification>;
 
-%rename(removeObject) CCopasiVector<CPlotItem>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CPlotItem>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CPlotItem>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CPlotItem>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CPlotItem>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CPlotItem>::getIndex(const std::string& name) const;
 
-%template(PlotItemVector) CCopasiVector<CPlotItem>;
-%template(PlotItemVectorN) CCopasiVectorN<CPlotItem>;
+%template(PlotItemVector) CDataVector<CPlotItem>;
+%template(PlotItemVectorN) CDataVectorN<CPlotItem>;
 
 
-%rename(removeObject) CCopasiVector<CMoiety>::remove(CCopasiObject* pObject);
+%rename(removeObject) CDataVector<CMoiety>::remove(CDataObject* pObject);
 
 %template(MoietyStdVector) std::vector<CMoiety*>;
-%template(MoietyVector) CCopasiVector<CMoiety>;
+%template(MoietyVector) CDataVector<CMoiety>;
 
-%rename(removeObject) CCopasiVector<CMetab>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CMetab>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CMetab>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CMetab>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CMetab>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CMetab>::getIndex(const std::string& name) const;
 
 %template(MetabStdVector) std::vector<CMetab*>;
-%template(MetabVector) CCopasiVector<CMetab>;
-%template(MetabVectorN) CCopasiVectorN<CMetab>;
-%template(MetabVectorNS) CCopasiVectorNS<CMetab>;
+%template(MetabVector) CDataVector<CMetab>;
+%template(MetabVectorN) CDataVectorN<CMetab>;
+%template(MetabVectorNS) CDataVectorNS<CMetab>;
 
-%rename(removeObject) CCopasiVector<CCompartment>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CCompartment>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CCompartment>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CCompartment>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CCompartment>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CCompartment>::getIndex(const std::string& name) const;
 
 %template(CompartmentStdVector) std::vector<CCompartment*>;
-%template(CompartmentVector) CCopasiVector<CCompartment>;
-%template(CompartmentVectorN) CCopasiVectorN<CCompartment>;
-%template(CompartmentVectorNS) CCopasiVectorNS<CCompartment>;
+%template(CompartmentVector) CDataVector<CCompartment>;
+%template(CompartmentVectorN) CDataVectorN<CCompartment>;
+%template(CompartmentVectorNS) CDataVectorNS<CCompartment>;
 
-%rename(removeObject) CCopasiVector<CModelParameterSet>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CModelParameterSet>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CModelParameterSet>::getIndex(const std::string& name) const;
-%template(ModelParameterSetVector) CCopasiVector<CModelParameterSet>;
-%template(ModelParameterSetVectorN) CCopasiVectorN<CModelParameterSet>;
+%rename(removeObject) CDataVector<CModelParameterSet>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CModelParameterSet>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CModelParameterSet>::getIndex(const std::string& name) const;
+%template(ModelParameterSetVector) CDataVector<CModelParameterSet>;
+%template(ModelParameterSetVectorN) CDataVectorN<CModelParameterSet>;
 
 
-%rename(removeObject) CCopasiVector<CReaction>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CReaction>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CReaction>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CReaction>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CReaction>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CReaction>::getIndex(const std::string& name) const;
 
 %template(ReactionStdVector) std::vector<CReaction*>;
-%template(ReactionVector) CCopasiVector<CReaction>;
-%template(ReactionVectorN) CCopasiVectorN<CReaction>;
-%template(ReactionVectorNS) CCopasiVectorNS<CReaction>;
+%template(ReactionVector) CDataVector<CReaction>;
+%template(ReactionVectorN) CDataVectorN<CReaction>;
+%template(ReactionVectorNS) CDataVectorNS<CReaction>;
 
 %template(ReportItemVector) std::vector<CRegisteredObjectName>;
 
 %template(CFunctionStdVector) std::vector<CFunction*>;
-%template(CFunctionVector) CCopasiVector<CFunction>;
-%template(CFunctionVectorN) CCopasiVectorN<CFunction>;
-%template(CFunctionVectorNS) CCopasiVectorNS<CFunction>;
+%template(CFunctionVector) CDataVector<CFunction>;
+%template(CFunctionVectorN) CDataVectorN<CFunction>;
+%template(CFunctionVectorNS) CDataVectorNS<CFunction>;
 
-%rename(removeObject) CCopasiVector<CEvaluationTree>::remove(CCopasiObject* pObject);
-%rename(removeByName) CCopasiVectorN<CEvaluationTree>::remove(const std::string& name);
-%rename(getIndexByName) CCopasiVectorN<CEvaluationTree>::getIndex(const std::string& name) const;
+%rename(removeObject) CDataVector<CEvaluationTree>::remove(CDataObject* pObject);
+%rename(removeByName) CDataVectorN<CEvaluationTree>::remove(const std::string& name);
+%rename(getIndexByName) CDataVectorN<CEvaluationTree>::getIndex(const std::string& name) const;
 
 %template(CEvaluationTreeStdVector) std::vector<CEvaluationTree*>;
-%template(CEvaluationTreeVector) CCopasiVector<CEvaluationTree>;
-%template(CEvaluationTreeVectorN) CCopasiVectorN<CEvaluationTree>;
+%template(CEvaluationTreeVector) CDataVector<CEvaluationTree>;
+%template(CEvaluationTreeVectorN) CDataVectorN<CEvaluationTree>;
 
-%rename(removeObject) CCopasiVector<CChemEqElement>::remove(CCopasiObject* pObject);
+%rename(removeObject) CDataVector<CChemEqElement>::remove(CDataObject* pObject);
 
 %template(CChemEqElementStdVector) std::vector<CChemEqElement*>;
-%template(CChemEqElementVector) CCopasiVector<CChemEqElement>;
+%template(CChemEqElementVector) CDataVector<CChemEqElement>;
 
-%template(DataModelVector) CCopasiVector<CCopasiDataModel>;
+%template(DataModelVector) CDataVector<CDataModel>;
 
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
@@ -297,50 +302,50 @@
 
 %template(OptItemStdVector) std::vector<COptItem*>;
 
-%template(ContainerStdVector) std::vector<CCopasiContainer*>;
+%template(ContainerStdVector) std::vector<CDataContainer*>;
 
 %template(PointStdVector) std::vector<CLPoint>;
 
 %template(LineSegmentStdVector) std::vector<CLLineSegment>;
 
-%template(FittingPointVector) CCopasiVector<CFittingPoint>;
+%template(FittingPointVector) CDataVector<CFittingPoint>;
 
-%template(BiologicalDescriptionVector) CCopasiVector<CBiologicalDescription>;
-%template(CreatorVector) CCopasiVector<CCreator>;
-%template(ReferenceVector) CCopasiVector<CReference>;
-%template(ModificationVector) CCopasiVector<CModification>;
+%template(BiologicalDescriptionVector) CDataVector<CBiologicalDescription>;
+%template(CreatorVector) CDataVector<CCreator>;
+%template(ReferenceVector) CDataVector<CReference>;
+%template(ModificationVector) CDataVector<CModification>;
 
 %template(ObjectListTypeStdVector) std::vector<CObjectLists::ListType>;
 
-typedef CCopasiVectorN<CEvent> EventVectorN;
+typedef CDataVectorN<CEvent> EventVectorN;
 
-typedef CCopasiVectorN<CEventAssignment> EventAssignmentVectorN;
+typedef CDataVectorN<CEventAssignment> EventAssignmentVectorN;
 
-typedef CCopasiVectorN<CCopasiTask> TaskVectorN;
+typedef CDataVectorN<CCopasiTask> TaskVectorN;
 
-typedef CCopasiVectorN<CModelValue> ModelValueVectorN;
+typedef CDataVectorN<CModelValue> ModelValueVectorN;
 
-typedef CCopasiVector<CMoiety> MoietyVector;
+typedef CDataVector<CMoiety> MoietyVector;
 
-typedef CCopasiVector<CMetab> MetabVector;
-typedef CCopasiVectorNS<CMetab> MetabVectorNS;
+typedef CDataVector<CMetab> MetabVector;
+typedef CDataVectorNS<CMetab> MetabVectorNS;
 
-typedef CCopasiVectorNS<CCompartment> CompartmentVectorNS;
+typedef CDataVectorNS<CCompartment> CompartmentVectorNS;
 
-typedef CCopasiVectorNS<CReaction> ReactionVectorNS;
+typedef CDataVectorNS<CReaction> ReactionVectorNS;
 
 typedef std::vector<CRegisteredObjectName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
-typedef CCopasiVectorN<CEvaluationTree> CEvaluationTreeVectorN;
+typedef CDataVectorN<CEvaluationTree> CEvaluationTreeVectorN;
 
 typedef std::vector<CFunction*> CFunctionStdVector;
-typedef CCopasiVector<CFunction> CFunctionVector;
-typedef CCopasiVectorN<CFunction> CFunctionVectorN;
+typedef CDataVector<CFunction> CFunctionVector;
+typedef CDataVectorN<CFunction> CFunctionVectorN;
 
-typedef CCopasiVector<CChemEqElement> CChemEqElementVector;
+typedef CDataVector<CChemEqElement> CChemEqElementVector;
 
-typedef CCopasiVector<CCopasiDataModel> DataModelVector;
+typedef CDataVector<CDataModel> DataModelVector;
 
 #if !SWIGPYTHON && !SWIGR
 typedef std::vector<C_INT32> IntStdVector;
@@ -354,18 +359,18 @@ typedef std::vector<COptItem*> OptItemStdVector;
 typedef std::vector<std::string> StringStdVector;
 typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
 
-typedef std::vector<CCopasiContainer*> ContainerStdVector;
+typedef std::vector<CDataContainer*> ContainerStdVector;
 
 typedef std::vector<CLPoint> PointStdVector;
 
 typedef std::vector<CLLineSegment> LineSegmentStdVector;
 
-typedef CCopasiVector<CFittingPoint> FittingPointVector;
+typedef CDataVector<CFittingPoint> FittingPointVector;
 
-typedef CCopasiVector<CBiologicalDescription> BiologicalDescriptionVector;
-typedef CCopasiVector<CCreator> CreatorVector;
-typedef CCopasiVector<CReference> ReferenceVector;
-typedef CCopasiVector<CModification> ModificationVector;
+typedef CDataVector<CBiologicalDescription> BiologicalDescriptionVector;
+typedef CDataVector<CCreator> CreatorVector;
+typedef CDataVector<CReference> ReferenceVector;
+typedef CDataVector<CModification> ModificationVector;
 
 typedef std::vector<CObjectLists::ListType> ObjectListTypeStdVector;
 

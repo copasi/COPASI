@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +24,7 @@
 // #include "MIRIAM/CRDFWriter.h"
 #include "MIRIAM/CRDFSubject.h"
 
-// #include "CopasiDataModel/CCopasiDataModel.h"
+// #include "CopasiDataModel/CDataModel.h"
 // #include "report/CKeyFactory.h"
 // #include "model/CModel.h"
 #include "model/CModelValue.h"
@@ -27,7 +32,7 @@
 #include "model/CReaction.h"
 #include "function/CFunction.h"
 // #include "utilities/CCopasiMessage.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #define COL_SUBJECT    0
 #define COL_PREDICATE  1
@@ -57,7 +62,7 @@ bool CQRDFTreeView::enterProtected()
 {
   clear();
 
-  CCopasiObject *pObject = dynamic_cast< CCopasiObject * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CDataObject *pObject = dynamic_cast< CDataObject * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pObject != NULL)
     {

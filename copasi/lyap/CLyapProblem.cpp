@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,12 +29,12 @@
 #include "CLyapTask.h"
 #include "model/CModel.h"
 //#include "model/CState.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 /**
  *  Default constructor.
  */
-CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
+CLyapProblem::CLyapProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::lyap, pParent),
   mpExponentNumber(NULL),
   //mpTimeSeriesRequested(NULL),
@@ -45,7 +50,7 @@ CLyapProblem::CLyapProblem(const CCopasiContainer * pParent):
  *  @param "const CLyapProblem &" src
  */
 CLyapProblem::CLyapProblem(const CLyapProblem & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mpExponentNumber(NULL),
   //mpTimeSeriesRequested(NULL),

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -49,17 +54,17 @@ public:
 
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  CScanProblem(const CCopasiContainer * pParent = NO_PARENT);
+  CScanProblem(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
    * @param const CTrajectoryProblem & src
-   * @paramconst CCopasiContainer * pParent (default: NULL)
+   * @paramconst CDataContainer * pParent (default: NULL)
    */
   CScanProblem(const CScanProblem & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -101,11 +106,11 @@ public:
   const CCopasiParameterGroup* getScanItem(size_t index) const;
   CCopasiParameterGroup* getScanItem(size_t index);
 
-  CCopasiParameterGroup* addScanItem(CScanProblem::Type type, size_t steps = 5, const CCopasiObject* obj = NULL);
+  CCopasiParameterGroup* addScanItem(CScanProblem::Type type, size_t steps = 5, const CDataObject* obj = NULL);
 
   bool removeScanItem(const size_t & index);
 
-  static CCopasiParameterGroup* createScanItem(CScanProblem::Type type, size_t steps = 5, const CCopasiObject* obj = NULL);
+  static CCopasiParameterGroup* createScanItem(CScanProblem::Type type, size_t steps = 5, const CDataObject* obj = NULL);
 
   void clearScanItems();
 

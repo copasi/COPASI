@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,7 +21,7 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 
-CMoietiesMethod::CMoietiesMethod(const CCopasiContainer * pParent,
+CMoietiesMethod::CMoietiesMethod(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,
                                  const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -24,7 +29,7 @@ CMoietiesMethod::CMoietiesMethod(const CCopasiContainer * pParent,
 {}
 
 CMoietiesMethod::CMoietiesMethod(const CMoietiesMethod & src,
-                                 const CCopasiContainer * pParent):
+                                 const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpProblem(src.mpProblem)
 {}

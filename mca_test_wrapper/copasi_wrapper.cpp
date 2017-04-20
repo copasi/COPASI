@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,11 +15,11 @@
 #include <stdlib.h>
 
 #include "copasi/copasi.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CCopasiObjectName.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/commandline/COptionParser.h"
@@ -43,7 +48,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(0, NULL, false);
+      CRootContainer::init(0, NULL, false);
     }
 
   catch (copasi::autoexcept &e)
@@ -66,7 +71,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+      CDataModel* pDataModel = CRootContainer::addDatamodel();
 
       // Import the SBML File
       pDataModel->importSBML(pSBMLFilename);
@@ -105,7 +110,7 @@ int main(int argc, char *argv[])
       //pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
       //***** run the task *********
-      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+      CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
       TaskList.remove("Metabolic Control Analysis");
       TaskList.add(pMCATask, true);
@@ -186,7 +191,7 @@ int main(int argc, char *argv[])
   if (Text != "") std::cerr << Text << std::endl;
 
   //finish
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 
   return 0;
 }

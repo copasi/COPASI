@@ -33,16 +33,18 @@
 #include "FunctionDB.xml.h"
 
 #include "utilities/CCopasiException.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "report/CKeyFactory.h"
 #include "xml/CCopasiXML.h"
 #include "model/CModel.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
-                         const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "FunctionDB"),
+                         const CDataContainer * pParent):
+  CDataContainer(name, pParent, "FunctionDB"),
   mFilename(),
-  mLoadedFunctions("Functions", this)
+  mLoadedFunctions("Functions", this),
+  mDependencies()
 {
   initObjects();
   CONSTRUCTOR_TRACE;
@@ -54,7 +56,11 @@ CFunctionDB::~CFunctionDB()
   DESTRUCTOR_TRACE;
 }
 
-void CFunctionDB::cleanup() {mLoadedFunctions.cleanup();}
+void CFunctionDB::cleanup()
+{
+  mLoadedFunctions.cleanup();
+  mDependencies.clear();
+}
 
 void CFunctionDB::initObjects()
 {
@@ -142,8 +148,8 @@ C_INT32 CFunctionDB::load(CReadConfig &configbuffer)
           pdelete(pFunction);
 
           // We ignore:
-          // CCopasiVector (2): Object '%s' allready exists.
-          if ((MCCopasiVector + 2) != CCopasiMessage::peekLastMessage().getNumber())
+          // CDataVector (2): Object '%s' allready exists.
+          if ((MCDataVector + 2) != CCopasiMessage::peekLastMessage().getNumber())
             return Fail = 1;
 
           // Remove the ignored meesage.
@@ -206,8 +212,8 @@ CFunction * CFunctionDB::dBLoad(const std::string & functionName)
       pdelete(pFunction);
 
       // We ignore:
-      // CCopasiVector (2): Object '%s' allready exists.
-      if ((MCCopasiVector + 2) != CCopasiMessage::getLastMessage().getNumber())
+      // CDataVector (2): Object '%s' allready exists.
+      if ((MCDataVector + 2) != CCopasiMessage::getLastMessage().getNumber())
 
         pFunction = mLoadedFunctions[Function.getObjectName()];
     }
@@ -266,7 +272,7 @@ CFunction * CFunctionDB::addAndAdaptName(CFunction * pFunction)
   std::string basename = pFunction->getObjectName();
   std::string name = basename;
   //CFunction* pFunc;
-  //CCopasiVectorN<CEvaluationTree>& FunctionList
+  //CDataVectorN<CEvaluationTree>& FunctionList
   //= this->loadedFunctions();
   int i = 0;
 
@@ -296,15 +302,16 @@ bool CFunctionDB::removeFunction(size_t index)
 {
   if (index == C_INVALID_INDEX) return false;
 
-  std::set< const CCopasiObject * > DeletedObjects = mLoadedFunctions[index].getDeletedObjects();
+  CDataObject::ObjectSet DeletedObjects;
+  DeletedObjects.insert(&mLoadedFunctions[index]);
 
   // We need to remove all dependent functions.
-  std::set< const CCopasiObject * > Functions;
+  CDataObject::DataObjectSet Functions;
 
   appendDependentFunctions(DeletedObjects, Functions);
 
-  std::set< const CCopasiObject * >::const_iterator itFunction = Functions.begin();
-  std::set< const CCopasiObject * >::const_iterator endFunction = Functions.end();
+  std::set< const CDataObject * >::const_iterator itFunction = Functions.begin();
+  std::set< const CDataObject * >::const_iterator endFunction = Functions.end();
 
   for (; itFunction != endFunction; ++itFunction)
     {
@@ -312,27 +319,27 @@ bool CFunctionDB::removeFunction(size_t index)
     }
 
   // We need to delete all dependent objects in all data models.
-  CCopasiVector< CCopasiDataModel >::iterator it = CCopasiRootContainer::getDatamodelList()->begin();
-  CCopasiVector< CCopasiDataModel >::iterator end = CCopasiRootContainer::getDatamodelList()->end();
+  CDataVector< CDataModel >::iterator it = CRootContainer::getDatamodelList()->begin();
+  CDataVector< CDataModel >::iterator end = CRootContainer::getDatamodelList()->end();
 
   for (; it != end; ++it)
     {
       it->getModel()->removeDependentModelObjects(DeletedObjects);
     }
 
-  mLoadedFunctions.CCopasiVector<CFunction>::remove(index);
+  mLoadedFunctions.CDataVector<CFunction>::remove(index);
 
   return true;
 }
 
 bool CFunctionDB::removeFunction(const std::string &key)
 {
-  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CEvaluationTree* func = dynamic_cast< CEvaluationTree * >(CRootContainer::getKeyFactory()->get(key));
 
   if (!func) return false;
 
   size_t index =
-    mLoadedFunctions.CCopasiVector<CFunction>::getIndex(func);
+    mLoadedFunctions.CDataVector<CFunction>::getIndex(func);
 
   if (index == C_INVALID_INDEX) return false;
 
@@ -360,7 +367,7 @@ CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
   return NULL;
 }
 
-CCopasiVectorN < CFunction > & CFunctionDB::loadedFunctions()
+CDataVectorN < CFunction > & CFunctionDB::loadedFunctions()
 {return mLoadedFunctions;}
 
 std::vector<CFunction*>
@@ -410,58 +417,49 @@ CFunctionDB::suitableFunctions(const size_t noSubstrates,
   return ret;
 }
 
-bool CFunctionDB::appendDependentFunctions(std::set< const CCopasiObject * > candidates,
-    std::set< const CCopasiObject * > & dependentFunctions) const
+bool CFunctionDB::appendDependentFunctions(const CDataObject::ObjectSet & candidates,
+    CDataObject::DataObjectSet & dependentFunctions) const
 {
+  dependentFunctions.erase(NULL);
   size_t Size = dependentFunctions.size();
-  CCallParameters< C_FLOAT64 > CallParmeters;
 
-  CCopasiVectorN< CFunction >::const_iterator it = mLoadedFunctions.begin();
-  CCopasiVectorN< CFunction >::const_iterator end = mLoadedFunctions.end();
+  CObjectInterface::ObjectSet DependentObjects;
 
-  for (; it != end; ++it)
-    if (candidates.find(it) == candidates.end() &&
-        it->CEvaluationTree::dependsOn(candidates))
-      dependentFunctions.insert(it);
+  if (mDependencies.appendAllDependents(candidates, DependentObjects))
+    {
+      CObjectInterface::ObjectSet::const_iterator it = DependentObjects.begin();
+      CObjectInterface::ObjectSet::const_iterator end = DependentObjects.end();
+
+      for (; it != end; ++it)
+        {
+          dependentFunctions.insert((*it)->getDataObject());
+        }
+
+      dependentFunctions.erase(NULL);
+    }
 
   return Size < dependentFunctions.size();
-}
-
-std::set<std::string>
-CFunctionDB::listDependentTrees(const std::string & name) const
-{
-  std::set<std::string> List;
-
-  CCopasiVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
-  CCopasiVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
-
-  for (; it != end; ++it)
-    if (it->dependsOnTree(name))
-      List.insert(it->getObjectName());
-
-  return List;
 }
 
 std::vector< const CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
 {
   std::vector< const CFunction * > UsedFunctions;
-  CCopasiVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
-  CCopasiVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
+  CDataVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
+  CDataVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
 
   for (; it != end; ++it)
     {
-      std::set< const CCopasiObject * > Function;
+      CDataObject::ObjectSet Function;
       Function.insert(it);
 
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-      std::set< const CCopasiObject * > Events;
-      std::set< const CCopasiObject * > EventAssignments;
+      CDataObject::DataObjectSet Reactions;
+      CDataObject::DataObjectSet Metabolites;
+      CDataObject::DataObjectSet Values;
+      CDataObject::DataObjectSet Compartments;
+      CDataObject::DataObjectSet Events;
+      CDataObject::DataObjectSet EventAssignments;
 
-      if (pModel->appendDependentModelObjects(Function,
-                                              Reactions, Metabolites, Compartments, Values, Events, EventAssignments))
+      if (pModel->appendAllDependents(Function, Reactions, Metabolites, Compartments, Values, Events, EventAssignments))
         {
           UsedFunctions.push_back(it);
           continue;

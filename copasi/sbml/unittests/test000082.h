@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000082.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/05/08 15:56:28 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -24,7 +26,7 @@
  * delayAssignment flag and the corresponding flag in SBML.
  */
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000082 : public CppUnit::TestFixture
 {
@@ -77,7 +79,7 @@ protected:
   // model without delay expression
   static const char* MODEL_STRING103;
 
-  static CCopasiDataModel* pCOPASIDATAMODEL;
+  static CDataModel* pCOPASIDATAMODEL;
 
 public:
   void setUp();

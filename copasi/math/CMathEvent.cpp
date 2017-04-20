@@ -12,6 +12,7 @@
 
 #include "copasi.h"
 
+#include "CMathEnum.h"
 #include "CMathEvent.h"
 #include "CMathContainer.h"
 #include "CMathExpression.h"
@@ -23,7 +24,7 @@
 #include "model/CEvent.h"
 
 #include "function/CFunction.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CNodeIterator.h"
 #include "utilities/CCallback.h"
 
@@ -330,7 +331,7 @@ bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
   return success;
 }
 
-void CMathEvent::CTrigger::CRootProcessor::setDataObject(const CCopasiObject * pDataObject)
+void CMathEvent::CTrigger::CRootProcessor::setDataObject(const CDataObject * pDataObject)
 {
   mpRoot->setDataObject(pDataObject);
 }
@@ -1278,8 +1279,8 @@ bool CMathEvent::compile(const CEvent * pDataEvent,
 
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
-  CCopasiVector< CEventAssignment >::const_iterator itAssignment = pDataEvent->getAssignments().begin();
-  CCopasiVector< CEventAssignment >::const_iterator endAssignment = pDataEvent->getAssignments().end();
+  CDataVector< CEventAssignment >::const_iterator itAssignment = pDataEvent->getAssignments().begin();
+  CDataVector< CEventAssignment >::const_iterator endAssignment = pDataEvent->getAssignments().end();
 
   if (pAssignment != NULL)
     {
@@ -1401,7 +1402,7 @@ void CMathEvent::createUpdateSequences()
 
   CObjectInterface::ObjectSet Requested;
   Requested.insert(mpDelay);
-  mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CMath::SimulationContext::Default, StateValues, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   Requested.clear();
   CObjectInterface::ObjectSet EventTargets;
@@ -1433,7 +1434,7 @@ void CMathEvent::createUpdateSequences()
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CMath::SimulationContext::Default, StateValues, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   // We need to add the total mass of the moieties to the state values.
   CObjectInterface::ObjectSet ExtendedStateValues = StateValues;
@@ -1445,7 +1446,7 @@ void CMathEvent::createUpdateSequences()
       ExtendedStateValues.insert(pTotalMass);
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CMath::SimulationContext::UpdateMoieties, EventTargets, ExtendedStateValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CCore::SimulationContext::UpdateMoieties, EventTargets, ExtendedStateValues);
 
   // We need to remove the event roots from the simulation values
   CObjectInterface::ObjectSet ContinuousSimulationValues;
@@ -1465,24 +1466,24 @@ void CMathEvent::createUpdateSequences()
         }
     }
 
-  CObjectInterface::UpdateSequence StateEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CMath::SimulationContext::Default, EventTargets, ExtendedStateValues);
+  CCore::CUpdateSequence StateEffects;
+  mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CCore::SimulationContext::Default, EventTargets, ExtendedStateValues);
 
   if (!StateEffects.empty())
     {
       mEffectsSimulation |= CMath::eStateChange::State;
     }
 
-  CObjectInterface::UpdateSequence ContiousSimulationEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CMath::SimulationContext::Default, EventTargets, ContinuousSimulationValues);
+  CCore::CUpdateSequence ContiousSimulationEffects;
+  mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CCore::SimulationContext::Default, EventTargets, ContinuousSimulationValues);
 
   if (!ContiousSimulationEffects.empty())
     {
       mEffectsSimulation |=  CMath::eStateChange::ContinuousSimulation;
     }
 
-  CObjectInterface::UpdateSequence DiscreteSimulationEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CMath::SimulationContext::Default, EventTargets, DiscreteSimulationValues);
+  CCore::CUpdateSequence DiscreteSimulationEffects;
+  mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CCore::SimulationContext::Default, EventTargets, DiscreteSimulationValues);
 
   if (!DiscreteSimulationEffects.empty())
     {

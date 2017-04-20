@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,7 +18,7 @@
 
 class CModelParameterSet;
 class CModelParameterGroup;
-class CCopasiObject;
+class CDataObject;
 class CExpression;
 class CModel;
 class CReaction;
@@ -189,9 +194,9 @@ public:
 
   /**
    * Retrieve the pointer to the corresponding model object
-   * @return CCopasiObject * pObject
+   * @return CDataObject * pObject
    */
-  CCopasiObject * getObject() const;
+  CDataObject * getObject() const;
 
   /**
    * Retrieve a pointer to the parameter set the parameter belongs to
@@ -296,7 +301,7 @@ protected:
   /**
    * A pointer to the corresponding model object. NULL if no object exists.
    */
-  CCopasiObject * mpObject;
+  CDataObject * mpObject;
 
   /**
    * The result of the last compile of the initial expression. Note an empty or

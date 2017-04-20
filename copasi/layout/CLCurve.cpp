@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -38,7 +43,7 @@ CLLineSegment::CLLineSegment(const LineSegment & ls)
     }
 }
 
-void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const
+void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<const CDataObject*, SBase*> & copasimodelmap) const
 {
   if (!c) return;
 
@@ -51,7 +56,7 @@ void CLLineSegment::exportToSBMLBezier(CubicBezier * c, const std::map<const CCo
 }
 
 void CLLineSegment::exportToSBMLLineSegment(LineSegment * l,
-    const std::map<const CCopasiObject*, SBase*> & /* copasimodelmap */) const
+    const std::map<const CDataObject*, SBase*> & /* copasimodelmap */) const
 {
   if (!l) return;
 
@@ -145,7 +150,7 @@ std::vector <CLPoint> CLCurve::getListOfPoints() const
   return ret;
 }
 
-void CLCurve::exportToSBML(Curve * c, const std::map<const CCopasiObject*, SBase*> & copasimodelmap) const
+void CLCurve::exportToSBML(Curve * c, const std::map<const CDataObject*, SBase*> & copasimodelmap) const
 {
   if (!c) return;
 

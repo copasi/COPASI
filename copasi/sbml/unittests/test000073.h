@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000073.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/02/18 20:41:02 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,24 +23,24 @@
 
 // Bug 1087 (import of parameterRules from Level 1 models)
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000073 : public CppUnit::TestFixture
-  {
-    CPPUNIT_TEST_SUITE(test000073);
-    CPPUNIT_TEST(test_bug1087);
-    CPPUNIT_TEST_SUITE_END();
+{
+  CPPUNIT_TEST_SUITE(test000073);
+  CPPUNIT_TEST(test_bug1087);
+  CPPUNIT_TEST_SUITE_END();
 
-  protected:
-    static const char* MODEL_STRING1;
-    static CCopasiDataModel* pCOPASIDATAMODEL;
+protected:
+  static const char* MODEL_STRING1;
+  static CDataModel* pCOPASIDATAMODEL;
 
-  public:
-    void setUp();
+public:
+  void setUp();
 
-    void tearDown();
+  void tearDown();
 
-    void test_bug1087();
-  };
+  void test_bug1087();
+};
 
 #endif /* TEST000073_H__ */

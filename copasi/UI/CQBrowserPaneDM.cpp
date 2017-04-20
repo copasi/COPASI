@@ -20,13 +20,13 @@
 #include <QCommonStyle>
 
 #include "utilities/CCopasiTree.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CUnit.h"
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 #include "function/CFunctionDB.h"
 #include "model/CMetabNameInterface.h"
@@ -63,9 +63,9 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  bool ShowItemIssues = CCopasiRootContainer::getConfiguration()->showItemIssues();
+  bool ShowItemIssues = CRootContainer::getConfiguration()->showItemIssues();
 
-  CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(pNode->getKey());
+  CDataObject * pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
 
   CValidity validity;
 
@@ -331,7 +331,7 @@ void CQBrowserPaneDM::add(const size_t & id,
     }
 }
 
-void CQBrowserPaneDM::setCopasiDM(const CCopasiDataModel * pDataModel)
+void CQBrowserPaneDM::setCopasiDM(const CDataModel * pDataModel)
 {
   if (mpCopasiDM != pDataModel)
     {
@@ -416,49 +416,49 @@ void CQBrowserPaneDM::load(const size_t & id)
 {
   bool isSpecies = false;
   const CModel * pModel = mpCopasiDM->getModel();
-  const CCopasiVector< CCopasiObject > * pVector = NULL;
+  const CDataVector< CDataObject > * pVector = NULL;
 
   switch (id)
     {
       case 111: // Compartment
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getCompartments());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&pModel->getCompartments());
         break;
 
       case 112: // Species
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getMetabolites());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&pModel->getMetabolites());
         isSpecies = true;
         break;
 
       case 114: // Reactions
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getReactions());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&pModel->getReactions());
         break;
 
       case 115: // Global Quantities
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getModelValues());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&pModel->getModelValues());
         break;
 
       case 116: // Events
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getEvents());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&pModel->getEvents());
         break;
 
       case 119: // Parameter Sets
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&pModel->getModelParameterSets());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&pModel->getModelParameterSets());
         break;
 
       case 42: // Plot Specifications
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(mpCopasiDM->getPlotDefinitionList());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(mpCopasiDM->getPlotDefinitionList());
         break;
 
       case 43: // Report Specifications
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(mpCopasiDM->getReportDefinitionList());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(mpCopasiDM->getReportDefinitionList());
         break;
 
       case 5: // Functions
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(&CCopasiRootContainer::getFunctionList()->loadedFunctions());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(&CRootContainer::getFunctionList()->loadedFunctions());
         break;
 
       case 6: // Units
-        pVector = reinterpret_cast< const CCopasiVector< CCopasiObject > * >(CCopasiRootContainer::getUnitList());
+        pVector = reinterpret_cast< const CDataVector< CDataObject > * >(CRootContainer::getUnitList());
         break;
 
       default:
@@ -469,8 +469,8 @@ void CQBrowserPaneDM::load(const size_t & id)
   // We need to compare the existing nodes with the COPASI data model objects.
   CNode * pParent = findNodeFromId(id);
   CCopasiNode< CQBrowserPaneDM::SData > * pChildData = pParent->CCopasiNode< CQBrowserPaneDM::SData >::getChild();
-  CCopasiVector< CCopasiObject >::const_iterator it = pVector->begin();
-  CCopasiVector< CCopasiObject >::const_iterator end = pVector->end();
+  CDataVector< CDataObject >::const_iterator it = pVector->begin();
+  CDataVector< CDataObject >::const_iterator end = pVector->end();
 
   bool changed = false;
 
@@ -484,7 +484,7 @@ void CQBrowserPaneDM::load(const size_t & id)
 
       if (isSpecies)
         {
-          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab * >(static_cast<const CCopasiObject * >(it)), false));
+          DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab * >(static_cast<const CDataObject * >(it)), false));
         }
       else
         {
@@ -530,7 +530,7 @@ void CQBrowserPaneDM::load(const size_t & id)
 
           if (isSpecies)
             {
-              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab * >(static_cast<const CCopasiObject * >(it)), false));
+              DisplayRole = FROM_UTF8(CMetabNameInterface::getDisplayName(pModel, *static_cast<const CMetab * >(static_cast<const CDataObject * >(it)), false));
             }
           else
             {
@@ -560,7 +560,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
       return true;
     }
 
-  const CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+  const CDataObject * pObject = CRootContainer::getKeyFactory()->get(key);
 
   if (pObject == NULL &&
       action != ListViews::DELETE)

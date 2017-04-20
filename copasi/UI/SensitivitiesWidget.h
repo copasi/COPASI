@@ -70,9 +70,9 @@ private:
    */
   void updateComboBoxes(CSensProblem::SubTaskType type);
 
-  const CCopasiObject * mpSingleFunction;
-  const CCopasiObject * mpSingleVariable;
-  const CCopasiObject * mpSingleVariable2;
+  const CDataObject * mpSingleFunction;
+  const CDataObject * mpSingleVariable;
+  const CDataObject * mpSingleVariable2;
 
 private slots:
 

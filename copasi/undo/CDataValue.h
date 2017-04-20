@@ -26,6 +26,8 @@ public:
     INVALID
   };
 
+  friend std::ostream & operator << (std::ostream & os, const CDataValue & o);
+
   CDataValue(const Type & type = INVALID);
   CDataValue(const CDataValue & src);
 

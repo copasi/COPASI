@@ -22,7 +22,7 @@
 
 #include "CCopasiUndoCommand.h"
 
-class CCopasiObject;
+class CDataObject;
 class UndoReactionData;
 class CQSpecieDM;
 

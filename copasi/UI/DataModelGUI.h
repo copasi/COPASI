@@ -36,7 +36,7 @@ class CQBrowserPaneDM;
 class QNetworkReply;
 class COutputDefinitionVector;
 class COutputHandlerPlot;
-class CCopasiDataModel;
+class CDataModel;
 
 class DataModelGUI: public QObject
 {
@@ -45,7 +45,7 @@ private:
   void linkDataModelToGUI();
 
 public:
-  DataModelGUI(QObject * parent, CCopasiDataModel * pDataModel);
+  DataModelGUI(QObject * parent, CDataModel * pDataModel);
   virtual ~DataModelGUI();
 
   bool createModel();
@@ -151,7 +151,7 @@ signals:
   void finished(bool success);
 
 private:
-  CCopasiDataModel * mpDataModel;
+  CDataModel * mpDataModel;
   COutputHandlerPlot * mpOutputHandlerPlot;
   std::set< ListViews * > mListViews;
   int mFramework;

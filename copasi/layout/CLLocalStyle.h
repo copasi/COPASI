@@ -31,17 +31,17 @@ public:
   /**
    * Constructor.
    */
-  CLLocalStyle(CCopasiContainer* pParent = NULL);
+  CLLocalStyle(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLLocalStyle(const CLLocalStyle& source, CCopasiContainer* pParent = NULL);
+  CLLocalStyle(const CLLocalStyle& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLLocalStyle(const LocalStyle& source, CCopasiContainer* pParent = NULL);
+  CLLocalStyle(const LocalStyle& source, CDataContainer* pParent = NULL);
 
   /**
    * Returns the number of keys in the key set.

@@ -1,21 +1,26 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CKeyFactory class.
  * This class is used to create a unique key whithin COPASI. It also allows
- * retreival of the CCopasiObject the key is assigned to.
+ * retreival of the CDataObject the key is assigned to.
  *
  * Created for Copasi by Stefan Hoops 2003
  * Copyright Stefan Hoops
@@ -52,11 +57,11 @@ bool CKeyFactory::isValidKey(const std::string & key,
 }
 
 CKeyFactory::CDecisionVector::CDecisionVector():
-    CVector< bool >()
+  CVector< bool >()
 {}
 
 CKeyFactory::CDecisionVector::CDecisionVector(const std::string & str):
-    CVector< bool >(256)
+  CVector< bool >(256)
 {
   size_t i, imax;
 
@@ -73,22 +78,22 @@ const bool & CKeyFactory::CDecisionVector::operator()(const unsigned char & c) c
 {return (*(CVector< bool > *) this)[(size_t) c];}
 
 CKeyFactory::HashTable::HashTable():
-    mBeyond(0),
-    mSize(128),
-    mTable(128),
-    mFree()
-{memset(mTable.array(), 0, mSize * sizeof(CCopasiObject *));}
+  mBeyond(0),
+  mSize(128),
+  mTable(128),
+  mFree()
+{memset(mTable.array(), 0, mSize * sizeof(CDataObject *));}
 
 CKeyFactory::HashTable::HashTable(const CKeyFactory::HashTable & src):
-    mBeyond(src.mBeyond),
-    mSize(src.mSize),
-    mTable(src.mTable),
-    mFree(src.mFree)
+  mBeyond(src.mBeyond),
+  mSize(src.mSize),
+  mTable(src.mTable),
+  mFree(src.mFree)
 {}
 
 CKeyFactory::HashTable::~HashTable() {}
 
-size_t CKeyFactory::HashTable::add(CCopasiObject * pObject)
+size_t CKeyFactory::HashTable::add(CDataObject * pObject)
 {
   size_t index;
 
@@ -106,7 +111,7 @@ size_t CKeyFactory::HashTable::add(CCopasiObject * pObject)
       if (mBeyond > mSize)
         {
           mTable.resize(mSize * 2, true);
-          memset(mTable.array() + mSize, 0, mSize * sizeof(CCopasiObject *));
+          memset(mTable.array() + mSize, 0, mSize * sizeof(CDataObject *));
           mSize *= 2;
         }
     }
@@ -116,13 +121,13 @@ size_t CKeyFactory::HashTable::add(CCopasiObject * pObject)
 }
 
 bool CKeyFactory::HashTable::addFix(const size_t & index,
-                                    CCopasiObject * pObject)
+                                    CDataObject * pObject)
 {
   while (index >= mSize)
     {
       mTable.resize(mSize * 2, true);
       memset(mTable.array() + mSize, 0,
-             mSize * sizeof(CCopasiObject *));
+             mSize * sizeof(CDataObject *));
       mSize *= 2;
     }
 
@@ -132,7 +137,7 @@ bool CKeyFactory::HashTable::addFix(const size_t & index,
   return true;
 }
 
-CCopasiObject * CKeyFactory::HashTable::get(const size_t & index)
+CDataObject * CKeyFactory::HashTable::get(const size_t & index)
 {
   if (index < mSize) return mTable[index];
 
@@ -159,13 +164,13 @@ CKeyFactory::CDecisionVector CKeyFactory::isDigit("0123456789");
 CKeyFactory::CDecisionVector CKeyFactory::isPrefix("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
 CKeyFactory::CKeyFactory():
-    mKeyTable()
+  mKeyTable()
 {}
 
 CKeyFactory::~CKeyFactory() {}
 
 std::string CKeyFactory::add(const std::string & prefix,
-                             CCopasiObject * pObject)
+                             CDataObject * pObject)
 {
   std::map< std::string, CKeyFactory::HashTable >::iterator it =
     mKeyTable.find(prefix);
@@ -184,7 +189,7 @@ std::string CKeyFactory::add(const std::string & prefix,
   return key.str();
 }
 
-bool CKeyFactory::addFix(const std::string & key, CCopasiObject * pObject)
+bool CKeyFactory::addFix(const std::string & key, CDataObject * pObject)
 {
   size_t pos = key.length() - 1;
 
@@ -232,7 +237,7 @@ bool CKeyFactory::remove(const std::string & key)
   return it->second.remove(index);
 }
 
-CCopasiObject * CKeyFactory::get(const std::string & key)
+CDataObject * CKeyFactory::get(const std::string & key)
 {
   if (key.length() == 0) return NULL;
 

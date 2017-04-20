@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,7 +25,8 @@
 #define COPASI_COptMethodTruncatedNewton
 
 #include <vector>
-#include "utilities/CMatrix.h"
+
+#include "copasi/core/CMatrix.h"
 #include "optimization/COptMethod.h"
 
 #include "CTruncatedNewton.h"
@@ -34,21 +40,21 @@ class COptMethodTruncatedNewton: public COptMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: TruncatedNewton)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodTruncatedNewton(const CCopasiContainer * pParent,
+  COptMethodTruncatedNewton(const CDataContainer * pParent,
                             const CTaskEnum::Method & methodType = CTaskEnum::TruncatedNewton,
                             const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodTruncatedNewton & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodTruncatedNewton(const COptMethodTruncatedNewton & src,
-                            const CCopasiContainer * pParent);
+                            const CDataContainer * pParent);
 
   /**
    * Destructor

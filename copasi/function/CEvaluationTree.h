@@ -24,17 +24,17 @@
 
 #include "copasi/model/CAnnotation.h"
 #include "copasi/function/CEvaluationNode.h"
-#include "copasi/report/CCopasiContainer.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CVector.h"
 
 #include "copasi.h"
 LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVectorN;
 
 class CEvaluationTree:
-  public CCopasiContainer
+  public CDataContainer
 {
 public:
   /**
@@ -88,20 +88,20 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    * @param const CEvaluationTree::Type & type (default: Function)
    */
   CEvaluationTree(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NO_PARENT,
+                  const CDataContainer * pParent = NO_PARENT,
                   const Type & type = Function);
 
   /**
    * Copy constructor
    * @param const CEvaluationTree & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CEvaluationTree(const CEvaluationTree & src,
-                  const CCopasiContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -148,7 +148,7 @@ public:
    * Converts a CEvaluationTree to an ASTNode based tree.
    * @return ASTNode* root node of the tree.
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Set the infix description of the tree and compile it.
@@ -236,20 +236,6 @@ public:
    * @return bool hasCircularDependency
    */
   bool hasCircularDependency() const;
-
-  /**
-   * Checks whether the tree has a call node referring to the expression
-   * with the given name
-   * @param const std::string & name
-   * @return bool dependsOn
-   */
-  bool dependsOnTree(const std::string & name) const;
-
-  /**
-   * Retrieve the list of deleted objects.
-   * @return CCopasiObject::DataObjectSet deletedObjects
-   */
-  CCopasiObject::DataObjectSet getDeletedObjects() const;
 
   /**
    * Check whether the evaluation tree calls any tree in the list

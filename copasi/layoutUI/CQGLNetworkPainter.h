@@ -55,7 +55,7 @@
 #include "copasi/layoutUI/CVisParameters.h"
 #include "copasi/layoutUI/RGTextureSpec.h"
 
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 
 class CLayout;

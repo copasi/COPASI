@@ -36,7 +36,7 @@ Message;
 #define MCWriteConfig            MCopasiBase + 200
 #define MCRange                  MCopasiBase + 300
 #define MCKinFunction            MCopasiBase + 400
-#define MCCopasiVector           MCopasiBase + 500
+#define MCDataVector           MCopasiBase + 500
 #define MCFunctionParameters     MCopasiBase + 600
 #define MCMassAction             MCopasiBase + 700
 #define MCCopasiMethod           MCopasiBase + 800
@@ -216,7 +216,7 @@ public:
 
   /**
    * Set whether the messages are created from COPASI as GUI or commandline.
-   * This method is called from CCopasiRootContainer::init and there should be
+   * This method is called from CRootContainer::init and there should be
    * no need to call it otherwise.
    * @param const bool & isGUI
    */

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,10 +29,10 @@
 #ifndef COPASI_CTSSATask
 #define COPASI_CTSSATask
 
+#include "copasi/core/CVector.h"
 #include "tssanalysis/CTSSAMethod.h"
 #include "utilities/CCopasiTask.h"
 #include "trajectory/CTimeSeries.h"
-#include "utilities/CVector.h"
 
 class CTSSAProblem;
 class CTSSAMethod;
@@ -84,19 +89,19 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: tssAnalysis)
    */
-  CTSSATask(const CCopasiContainer * pParent,
+  CTSSATask(const CDataContainer * pParent,
             const CTaskEnum::Task & type = CTaskEnum::tssAnalysis);
 
   /**
    * Copy constructor
    * @param const CTSSATask & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CTSSATask(const CTSSATask & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
   /**
    * Destructor

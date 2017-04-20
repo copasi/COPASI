@@ -39,8 +39,8 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 #include "function/CExpression.h"
@@ -294,7 +294,7 @@ void CQCompartmentDM::resetCache()
 {
   assert(mpDataModel != NULL);
 
-  mpCompartments = dynamic_cast< CCopasiVectorNS < CCompartment > * >(&mpDataModel->getModel()->getCompartments());
+  mpCompartments = dynamic_cast< CDataVectorNS < CCompartment > * >(&mpDataModel->getModel()->getCompartments());
   assert(mpCompartments != NULL);
 
   CModel * pModel = mpDataModel->getModel();
@@ -326,7 +326,7 @@ bool CQCompartmentDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CCompartment >::const_iterator itRow = mpCompartments->begin() + position;
+  CDataVector< CCompartment >::const_iterator itRow = mpCompartments->begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -442,7 +442,7 @@ void CQCompartmentDM::addCompartmentRow(UndoCompartmentData *pCompartmentData)
 
   beginInsertRows(QModelIndex(), 1, 1);
 
-  CCopasiObject *pCompartment = pCompartmentData->restoreObjectIn(mpDataModel->getModel());
+  CDataObject *pCompartment = pCompartmentData->restoreObjectIn(mpDataModel->getModel());
 
   if (pCompartment != NULL)
     emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
@@ -477,7 +477,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
       CCompartment * pCompartment = *j;
 
       size_t delRow =
-        mpCompartments->CCopasiVector< CCompartment >::getIndex(pCompartment);
+        mpCompartments->CDataVector< CCompartment >::getIndex(pCompartment);
 
       if (delRow == C_INVALID_INDEX)
         continue;
@@ -485,7 +485,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "compartment",
                                     FROM_UTF8(pCompartment->getObjectName()),
-                                    pCompartment->getDeletedObjects());
+                                    pCompartment);
 
       if (choice == QMessageBox::Ok)
         {
@@ -519,7 +519,7 @@ bool CQCompartmentDM::insertCompartmentRows(QList <UndoCompartmentData *>& pData
       CModel * pModel = mpDataModel->getModel();
       assert(pModel != NULL);
 
-      CCopasiObject *pCompartment = data->restoreObjectIn(pModel);
+      CDataObject *pCompartment = data->restoreObjectIn(pModel);
 
       if (pCompartment == NULL) continue;
 

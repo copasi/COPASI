@@ -24,7 +24,7 @@
 LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is the class for nodes presenting operators used in an evaluation trees.
@@ -137,7 +137,7 @@ public:
    * Create a new ASTNode corresponding to this OperatorNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),
@@ -153,7 +153,7 @@ public:
    * @param const ASTNode* pASTNode the root node for the SBML math expression
    * @return bool which is true on sucessfull conversion.
    */
-  bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CCopasiDataModel* pDataModel) const;
+  bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CDataModel* pDataModel) const;
 
   /**
    * Build the MathML string

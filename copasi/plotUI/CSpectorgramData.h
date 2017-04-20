@@ -11,7 +11,6 @@
 #ifndef CSPECTOGRAMDATA_H
 #define CSPECTOGRAMDATA_H
 
-
 #include <string>
 #include <vector>
 #include <fstream>
@@ -38,11 +37,11 @@
 
 #include "plot/CPlotItem.h"
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CopasiTime.h"
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CVector.h"
+#include "copasi/core/CMatrix.h"
 
 class CSpectorgramData :
   public QwtRasterData
@@ -123,7 +122,6 @@ private:
 
   size_t mSizeX;
   size_t mSizeY;
-
 };
 
 #endif // CSPECTOGRAMDATA_H

@@ -44,7 +44,7 @@
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CListOfLayouts.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "CQNewMainWindow.h"
 #include "CQCurrentValueTable.h"
 #include "CQGLNetworkPainter.h"
@@ -260,7 +260,7 @@ CVisParameters::MAPPING_MODE CQLayoutMainWindow::getMappingMode()
 void CQLayoutMainWindow::loadSBMLFile()
 {
   CListOfLayouts *pLayoutList;
-  CCopasiDataModel *pDataModel = CQNewMainWindow::dataModel(parent());
+  CDataModel *pDataModel = CQNewMainWindow::dataModel(parent());
 
   if (pDataModel != NULL)
     {

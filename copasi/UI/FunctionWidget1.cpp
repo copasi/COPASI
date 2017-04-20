@@ -27,8 +27,8 @@
 
 #include "tex/CMathMLToTeX.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CMetab.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
@@ -575,7 +575,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
 
 bool FunctionWidget1::functionParametersChanged()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CFunction* func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!func) return false;
 
@@ -584,7 +584,7 @@ bool FunctionWidget1::functionParametersChanged()
 
 bool FunctionWidget1::saveToFunction()
 {
-  CFunction* func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CFunction* func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!func) return false;
 
@@ -722,8 +722,8 @@ void FunctionWidget1::slotBtnNew()
   std::string name = "function_1";
   int i = 1;
   CFunction* pFunc;
-  CCopasiVectorN<CFunction>& FunctionList
-    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+  CDataVectorN<CFunction>& FunctionList
+    = CRootContainer::getFunctionList()->loadedFunctions();
 
   while (FunctionList.getIndex(name) != C_INVALID_INDEX)
     {
@@ -732,7 +732,7 @@ void FunctionWidget1::slotBtnNew()
       name += TO_UTF8(QString::number(i));
     }
 
-  CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
+  CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
   std::string key = pFunc->getKey();
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, key);
@@ -748,12 +748,12 @@ void FunctionWidget1::slotBtnCopy()
 //! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotBtnDelete()
 {
-  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB * pFunctionDB = CRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL)
     return;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pFunction == NULL)
     return;
@@ -761,14 +761,14 @@ void FunctionWidget1::slotBtnDelete()
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(NULL, "function",
                                 FROM_UTF8(pFunction->getObjectName()),
-                                pFunction->getDeletedObjects());
+                                pFunction);
 
   /* Check if user chooses to deleted Functions */
   switch (choice)
     {
       case QMessageBox::Ok:                                                    // Yes or Enter
       {
-        CCopasiRootContainer::getFunctionList()->removeFunction(mKey);
+        CRootContainer::getFunctionList()->removeFunction(mKey);
 
         protectedNotify(ListViews::FUNCTION, ListViews::DELETE, mKey);
         protectedNotify(ListViews::FUNCTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
@@ -792,7 +792,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
   switch (objectType)
     {
       case ListViews::MODEL:
-        loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+        loadFromFunction(dynamic_cast< CFunction * >(CRootContainer::getKeyFactory()->get(mKey)));
         break;
 
       case ListViews::FUNCTION:
@@ -802,7 +802,7 @@ bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action
             switch (action)
               {
                 case ListViews::CHANGE:
-                  loadFromFunction(dynamic_cast< CFunction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+                  loadFromFunction(dynamic_cast< CFunction * >(CRootContainer::getKeyFactory()->get(mKey)));
                   break;
 
                 case ListViews::DELETE:
@@ -832,12 +832,12 @@ bool FunctionWidget1::leave()
     return true;
 
   // :TODO: We should check what changes have been done to the function //
-  CFunctionDB * pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB * pFunctionDB = CRootContainer::getFunctionList();
 
   if (pFunctionDB == NULL)
     return true;
 
-  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CEvaluationTree * pFunction = dynamic_cast<CEvaluationTree *>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pFunction == NULL)
     return true;
@@ -849,15 +849,16 @@ bool FunctionWidget1::leave()
       QString msg =
         QString("Cannot modify function: \n  %1\n").arg(FROM_UTF8(pFunction->getObjectName()));
 
-      std::set< const CCopasiObject * > Functions;
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-      std::set< const CCopasiObject * > Events;
-      std::set< const CCopasiObject * > EventAssignments;
+      CDataObject::DataObjectSet Functions;
+      CDataObject::DataObjectSet Reactions;
+      CDataObject::DataObjectSet Metabolites;
+      CDataObject::DataObjectSet Values;
+      CDataObject::DataObjectSet Compartments;
+      CDataObject::DataObjectSet Events;
+      CDataObject::DataObjectSet EventAssignments;
 
-      std::set< const CCopasiObject * > DeletedObjects = pFunction->getDeletedObjects();
+      CDataObject::ObjectSet DeletedObjects;
+      DeletedObjects.insert(pFunction);
 
       Used |= pFunctionDB->appendDependentFunctions(DeletedObjects, Functions);
 
@@ -865,8 +866,8 @@ bool FunctionWidget1::leave()
         {
           msg.append("Following functions(s) reference above:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Functions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Functions.end();
+          std::set< const CDataObject * >::const_iterator it = Functions.begin();
+          std::set< const CDataObject * >::const_iterator end = Functions.end();
 
           for (; it != end; ++it)
             {
@@ -877,15 +878,15 @@ bool FunctionWidget1::leave()
           msg.remove(msg.length() - 2, 2);
         }
 
-      Used |= pModel->appendDependentModelObjects(DeletedObjects, Reactions, Metabolites,
-              Compartments, Values, Events, EventAssignments);
+      Used |= pModel->appendAllDependents(DeletedObjects, Reactions, Metabolites,
+                                          Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
           msg.append("Following reactions(s) reference above:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+          std::set< const CDataObject * >::const_iterator it = Reactions.begin();
+          std::set< const CDataObject * >::const_iterator end = Reactions.end();
 
           for (; it != end; ++it)
             {
@@ -900,8 +901,8 @@ bool FunctionWidget1::leave()
         {
           msg.append("Following species reference above:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
+          std::set< const CDataObject * >::const_iterator it = Metabolites.begin();
+          std::set< const CDataObject * >::const_iterator end = Metabolites.end();
 
           for (; it != end; ++it)
             {
@@ -916,8 +917,8 @@ bool FunctionWidget1::leave()
         {
           msg.append("Following global quantities reference above:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Values.end();
+          std::set< const CDataObject * >::const_iterator it = Values.begin();
+          std::set< const CDataObject * >::const_iterator end = Values.end();
 
           for (; it != end; ++it)
             {
@@ -932,8 +933,8 @@ bool FunctionWidget1::leave()
         {
           msg.append("Following compartment(s) reference above:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
+          std::set< const CDataObject * >::const_iterator it = Compartments.begin();
+          std::set< const CDataObject * >::const_iterator end = Compartments.end();
 
           for (; it != end; ++it)
             {
@@ -948,8 +949,8 @@ bool FunctionWidget1::leave()
         {
           msg.append("Following event(s) reference above:\n  ");
 
-          std::set< const CCopasiObject * >::const_iterator it = Events.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Events.end();
+          std::set< const CDataObject * >::const_iterator it = Events.begin();
+          std::set< const CDataObject * >::const_iterator end = Events.end();
 
           for (; it != end; ++it)
             {
@@ -964,12 +965,12 @@ bool FunctionWidget1::leave()
         {
           bool first = true;
 
-          std::set< const CCopasiObject * >::const_iterator it = EventAssignments.begin();
-          std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
+          std::set< const CDataObject * >::const_iterator it = EventAssignments.begin();
+          std::set< const CDataObject * >::const_iterator end = EventAssignments.end();
 
           for (; it != end; ++it)
             {
-              const CCopasiObject * pEvent = (*it)->getObjectAncestor("Event");
+              const CDataObject * pEvent = (*it)->getObjectAncestor("Event");
 
               if (Events.find(pEvent) == Events.end())
                 {
@@ -979,7 +980,7 @@ bool FunctionWidget1::leave()
                       first = false;
                     }
 
-                  const CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get((*it)->getObjectName());
+                  const CDataObject * pObject = CRootContainer::getKeyFactory()->get((*it)->getObjectName());
                   std::string ObjectName = (pObject != NULL) ? pObject->getObjectName() : (*it)->getObjectName();
                   msg.append(FROM_UTF8(pEvent->getObjectName() + ": " + ObjectName));
                   msg.append("\n  ");
@@ -1028,7 +1029,7 @@ bool FunctionWidget1::enterProtected()
 
   if (mKeyToCopy != "")
     {
-      func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      func = dynamic_cast<CFunction*>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
       mKeyToCopy = "";
     }
   else

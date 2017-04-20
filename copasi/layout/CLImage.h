@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLImage.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,15 +15,15 @@
 
 #include "copasi/layout/CLTransformation2D.h"
 #include "copasi/layout/CLRelAbsVector.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class Image;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLImage : public CLTransformation2D, public CCopasiObject
+class CLImage : public CLTransformation2D, public CDataObject
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -49,17 +46,17 @@ public:
   /**
    * Constructor.
    */
-  CLImage(CCopasiContainer* pParent = NULL);
+  CLImage(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLImage(const CLImage& source, CCopasiContainer* pParent = NULL);
+  CLImage(const CLImage& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLImage(const Image& source, CCopasiContainer* pParent = NULL);
+  CLImage(const Image& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.

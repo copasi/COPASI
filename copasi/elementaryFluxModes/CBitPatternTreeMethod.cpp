@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,14 +28,14 @@
 #include "model/CModel.h"
 #include "model/CChemEqInterface.h"
 #include "utilities/CProcessReport.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
 #include "lapack/blaswrap.h"
 #include "lapack/lapackwrap.h"
 
 #define DEBUG_MATRIX
 
-CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent,
+CBitPatternTreeMethod::CBitPatternTreeMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CEFMMethod(pParent, methodType, taskType),
@@ -54,7 +59,7 @@ CBitPatternTreeMethod::CBitPatternTreeMethod(const CCopasiContainer * pParent,
 }
 
 CBitPatternTreeMethod::CBitPatternTreeMethod(const CBitPatternTreeMethod & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CEFMMethod(src, pParent),
   mpModel(src.mpModel),
   mProgressCounter(src.mProgressCounter),
@@ -82,7 +87,7 @@ CBitPatternTreeMethod::~CBitPatternTreeMethod()
 
 void CBitPatternTreeMethod::initObjects()
 {
-  addObjectReference("Current Step", mProgressCounter, CCopasiObject::ValueInt);
+  addObjectReference("Current Step", mProgressCounter, CDataObject::ValueInt);
 }
 
 bool CBitPatternTreeMethod::initialize()
@@ -366,8 +371,8 @@ void CBitPatternTreeMethod::buildKernelMatrix(CMatrix< C_INT64 > & kernelInt)
   // of the reduced stoichiometry matrix to get the kernel matrix for the:
   //   Nullspace Approach to Determine the Elementary Modes of Chemical Reaction Systems (Wagner 2004)
 
-  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+  CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+  CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
   size_t ReactionCounter = 0;
 

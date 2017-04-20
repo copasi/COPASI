@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,8 +32,8 @@
 
 #include <iostream>
 
+#include "copasi/core/CMatrix.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CMatrix.h"
 #include "utilities/CReadConfig.h"
 #include "steadystate/CSteadyStateMethod.h"
 
@@ -61,19 +66,19 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: mca)
    */
-  CMCATask(const CCopasiContainer * pParent,
+  CMCATask(const CDataContainer * pParent,
            const CTaskEnum::Task & type = CTaskEnum::mca);
 
   /**
    * Copy constructor
    * @param const CMCATask & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMCATask(const CMCATask & src,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Destructor

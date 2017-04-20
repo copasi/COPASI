@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +20,7 @@
 
 #include <copasi/layout/utility_classes.h>
 #include <copasi/layout/CLRGBAColor.h>
-#include <copasi/utilities/CCopasiVector.h>
+#include "copasi/core/CDataVector.h"
 
 class CLBoundingBox;
 class CLCurve;
@@ -83,7 +88,7 @@ protected:
   double mY;
   double mW;
   double mH;
-  const CCopasiVector<CLGlobalRenderInformation>* mpGlobalRenderInfoList;
+  const CDataVector<CLGlobalRenderInformation>* mpGlobalRenderInfoList;
 
   // callable that can create a texture for some given font settings and
   // a piece of text
@@ -209,12 +214,12 @@ public:
   /**
    * constructor for global render information
    */
-  CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInformation* pRenderInformation, const CCopasiVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir);
+  CLLayoutRenderer(CLayout* pLayout, const CLGlobalRenderInformation* pRenderInformation, const CDataVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir);
 
   /**
    * constructor for local render information
    */
-  CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformation* pRenderInformation, const CCopasiVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir);
+  CLLayoutRenderer(CLayout* pLayout, const CLLocalRenderInformation* pRenderInformation, const CDataVector<CLGlobalRenderInformation>* pGlobalRenderInformationList, const CModel* pModel, const std::string& baseDir);
 
   /**
    * destructor.

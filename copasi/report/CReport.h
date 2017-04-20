@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,7 +32,7 @@
 #include <vector>
 #include <iostream>
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiObjectName.h"
 
 #include "utilities/COutputHandler.h"
@@ -56,7 +61,7 @@ class CReport : public COutputInterface
   };
 
 private:
-  const CCopasiDataModel * mpDataModel;
+  const CDataModel * mpDataModel;
   std::ostream * mpOstream;
   bool mStreamOwner;
 
@@ -99,7 +104,7 @@ public:
   /**
    * compile the object list from name vector
    * @param CObjectInterface::ContainerList listOfContainer
-   * @param  const CCopasiDataModel* pDataModel
+   * @param  const CDataModel* pDataModel
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer);
@@ -138,11 +143,11 @@ public:
 
   /**
    * Open the defined target stream or use the given argument
-   * @param const CCopasiDataModel * pDataModel,
+   * @param const CDataModel * pDataModel,
    * @param std::ostream * pOstream (default: NULL)
    * @return std::ostream * mpOstream
    */
-  std::ostream * open(const CCopasiDataModel * pDataModel,
+  std::ostream * open(const CDataModel * pDataModel,
                       std::ostream * pOstream = NULL);
 
   /**

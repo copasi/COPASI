@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,11 +26,11 @@
 #include "CLyapProblem.h"
 #include "CLyapTask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "math/CMathContainer.h"
 #include "lapack/blaswrap.h"
 
-CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent,
+CLyapWolfMethod::CLyapWolfMethod(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,
                                  const CTaskEnum::Task & taskType):
   CLyapMethod(pParent, methodType, taskType),
@@ -38,7 +43,7 @@ CLyapWolfMethod::CLyapWolfMethod(const CCopasiContainer * pParent,
 }
 
 CLyapWolfMethod::CLyapWolfMethod(const CLyapWolfMethod & src,
-                                 const CCopasiContainer * pParent):
+                                 const CDataContainer * pParent):
   CLyapMethod(src, pParent),
   mContainerState()
 {

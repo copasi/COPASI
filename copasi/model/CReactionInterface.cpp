@@ -23,11 +23,11 @@
 #include "CReaction.h"
 #include "CModel.h"
 #include "CChemEqElement.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "function/CFunctionDB.h"
 #include "report/CKeyFactory.h"
 #include "model/CMetabNameInterface.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CReactionInterface::CReactionInterface(CModel * pModel):
   mpModel(pModel),
@@ -66,7 +66,7 @@ std::vector< std::string > CReactionInterface::getListOfPossibleFunctions() cons
     reversible = TriTrue;
 
   std::vector<CFunction*> functionVector =
-    CCopasiRootContainer::getFunctionList()->suitableFunctions(
+    CRootContainer::getFunctionList()->suitableFunctions(
       mChemEqI.getMolecularity(CFunctionParameter::SUBSTRATE),
       mChemEqI.getMolecularity(CFunctionParameter::PRODUCT),
       reversible);
@@ -112,7 +112,7 @@ std::string CReactionInterface::getParameterName(size_t index) const
 
 void CReactionInterface::initFromReaction(const std::string & key)
 {
-  const CReaction *rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(key));
+  const CReaction *rea = dynamic_cast< CReaction *>(CRootContainer::getKeyFactory()->get(key));
 
   assert(rea);
   initFromReaction(rea);
@@ -133,7 +133,7 @@ void CReactionInterface::initFromReaction(const CReaction *rea)
   //chemical equation
   mChemEqI.loadFromChemEq(rea->getChemEq());
 
-  if (rea->getFunction() && (rea->getFunction() != CCopasiRootContainer::getUndefinedFunction()))
+  if (rea->getFunction() && (rea->getFunction() != CRootContainer::getUndefinedFunction()))
     {
       //function
       mpFunction = rea->getFunction();
@@ -229,13 +229,13 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
                 break;
 
               case CFunctionParameter::VOLUME:
-                pObj = dynamic_cast<const CCompartment*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
+                pObj = dynamic_cast<const CCompartment*>(CRootContainer::getKeyFactory()->get(*(it->begin())));
                 assert(pObj);
                 SubList[0] = pObj->getObjectName();
                 break;
 
               case CFunctionParameter::TIME:
-                pObj = dynamic_cast<const CModel*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
+                pObj = dynamic_cast<const CModel*>(CRootContainer::getKeyFactory()->get(*(it->begin())));
                 assert(pObj);
                 SubList[0] = pObj->getObjectName();
                 break;
@@ -257,7 +257,7 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 
                 if (!mIsLocal[i])
                   {
-                    pObj = dynamic_cast<const CModelValue*>(CCopasiRootContainer::getKeyFactory()->get(*(it->begin())));
+                    pObj = dynamic_cast<const CModelValue*>(CRootContainer::getKeyFactory()->get(*(it->begin())));
 
                     if (pObj)
                       {
@@ -285,7 +285,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
 
   //CReaction *rea;
   if (rea == NULL)
-    rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
+    rea = dynamic_cast< CReaction *>(CRootContainer::getKeyFactory()->get(mReactionReferenceKey));
 
   if (rea == NULL) return false;
 
@@ -637,15 +637,15 @@ CReactionInterface::isLocked(CFunctionParameter::Role usage) const
   return false;
 }
 
-std::set< const CCopasiObject * >
+std::set< const CDataObject * >
 CReactionInterface::getDeletedParameters() const
 {
-  std::set< const CCopasiObject * > ToBeDeleted;
+  std::set< const CDataObject * > ToBeDeleted;
 
   // We need to compare the current visible local parameter with the one stored
   // in the reaction.
   const CReaction * pReaction
-    = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
+    = dynamic_cast< CReaction *>(CRootContainer::getKeyFactory()->get(mReactionReferenceKey));
 
   if (pReaction == NULL)
     return ToBeDeleted;
@@ -841,7 +841,7 @@ CReactionInterface::setFunctionWithEmptyMapping(const std::string & fn)
 
   //get the function
   mpFunction = dynamic_cast<CFunction *>
-               (CCopasiRootContainer::getFunctionList()->findLoadFunction(fn));
+               (CRootContainer::getFunctionList()->findLoadFunction(fn));
 
   if (!mpFunction) fatalError();
 
@@ -857,7 +857,7 @@ CReactionInterface::setFunctionAndDoMapping(const std::string & fn)
 
   //get the function
   mpFunction = dynamic_cast<CFunction *>
-               (CCopasiRootContainer::getFunctionList()->findLoadFunction(fn));
+               (CRootContainer::getFunctionList()->findLoadFunction(fn));
 
   if (!mpFunction) fatalError();
 
@@ -895,7 +895,7 @@ CReactionInterface::getFunction() const
 {
   if (mpFunction == NULL)
     {
-      return CCopasiRootContainer::getUndefinedFunction();
+      return CRootContainer::getUndefinedFunction();
     }
 
   return mpFunction;
@@ -1285,7 +1285,7 @@ void CReactionInterface::setHasNoise(const bool & hasNoise)
 
   if (!mHasNoise || !mNoiseExpression.empty()) return;
 
-  const CReaction * pReaction = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(mReactionReferenceKey));
+  const CReaction * pReaction = dynamic_cast< CReaction *>(CRootContainer::getKeyFactory()->get(mReactionReferenceKey));
 
   if (pReaction == NULL) return;
 

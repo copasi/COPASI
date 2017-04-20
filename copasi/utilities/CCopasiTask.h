@@ -32,9 +32,9 @@
 
 #include "copasi/utilities/CTaskEnum.h"
 #include "copasi/utilities/COutputHandler.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/report/CReport.h"
 
 class CCopasiProblem;
@@ -42,7 +42,7 @@ class CCopasiMethod;
 class CCopasiParameterGroup;
 class CProcessReport;
 
-class CCopasiTask : public CCopasiContainer
+class CCopasiTask : public CDataContainer
 {
 public:
   /**
@@ -80,7 +80,7 @@ public:
     ONLY_TIME_SERIES = TIME_SERIES | INITIALIZE | STREAM | FINISH
   };
 
-  class CDescription: public CCopasiObject
+  class CDescription: public CDataObject
   {
   protected:
     CDescription(const CDescription & src);
@@ -89,15 +89,15 @@ public:
     /**
      * Default constructor
      */
-    CDescription(const CCopasiContainer * pParent = NO_PARENT);
+    CDescription(const CDataContainer * pParent = NO_PARENT);
 
     /**
      * Copy constructor
      * @param const CDescription & src
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CDataContainer * pParent (default: NULL)
      */
     CDescription(const CDescription & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
     /**
      * Destructor
@@ -106,7 +106,7 @@ public:
 
     /**
      * This is the output method for any object. The default implementation
-     * provided with CCopasiObject uses the ostream operator<< of the object
+     * provided with CDataObject uses the ostream operator<< of the object
      * to print the object.To overide this default behaviour one needs to
      * reimplement the virtual print function.
      * @param std::ostream * ostream
@@ -122,7 +122,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const CDescription & o);
   };
 
-  class CResult: public CCopasiObject
+  class CResult: public CDataObject
   {
   protected:
     CResult(const CResult & src);
@@ -131,15 +131,15 @@ public:
     /**
      * Default constructor
      */
-    CResult(const CCopasiContainer * pParent = NO_PARENT);
+    CResult(const CDataContainer * pParent = NO_PARENT);
 
     /**
      * Copy constructor
      * @param const CResult & src
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CDataContainer * pParent (default: NULL)
      */
     CResult(const CResult & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
     /**
      * Destructor
@@ -148,7 +148,7 @@ public:
 
     /**
      * This is the output method for any object. The default implementation
-     * provided with CCopasiObject uses the ostream operator<< of the object
+     * provided with CDataObject uses the ostream operator<< of the object
      * to print the object.To overide this default behaviour one needs to
      * reimplement the virtual print function.
      * @param std::ostream * ostream
@@ -176,20 +176,20 @@ public:
   /**
    * Specific constructor
    * @param const Type & taskType
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const std::string & type (default: "Task")
    */
-  CCopasiTask(const CCopasiContainer * pParent,
+  CCopasiTask(const CDataContainer * pParent,
               const CTaskEnum::Task & taskType,
               const std::string & type = "Task");
 
   /**
    * Copy constructor
    * @param const CCopasiTask & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiTask(const CCopasiTask & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Destructor

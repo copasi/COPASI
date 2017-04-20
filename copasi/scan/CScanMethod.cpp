@@ -38,8 +38,8 @@
 #include "CScanTask.h"
 
 #include "math/CMathContainer.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 
 // Uncomment this line below to get debug print out.
@@ -326,7 +326,7 @@ void CScanItemRandom::step()
 
 //**************** CScanMethod class ***************************
 
-CScanMethod::CScanMethod(const CCopasiContainer * pParent,
+CScanMethod::CScanMethod(const CDataContainer * pParent,
                          const CTaskEnum::Method & methodType,
                          const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -413,11 +413,11 @@ bool CScanMethod::init()
 
   if (mContinueFromCurrentState)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CMath::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getSimulationUpToDateObjects());
+      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CCore::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getSimulationUpToDateObjects());
     }
   else
     {
-      mpContainer->getInitialDependencies().getUpdateSequence(mInitialUpdates, CMath::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getInitialStateObjects());
+      mpContainer->getInitialDependencies().getUpdateSequence(mInitialUpdates, CCore::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getInitialStateObjects());
     }
 
   //set mLastNestingItem

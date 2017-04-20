@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,34 +19,34 @@
 
 #include "copasi/sbml/unittests/utilities.hpp"
 
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/compareExpressions/compare_utilities.h"
 #include "copasi/function/CFunctionDB.h"
 
-CCopasiDataModel* test_compare_utilities::pCOPASIDATAMODEL = NULL;
+CDataModel* test_compare_utilities::pCOPASIDATAMODEL = NULL;
 
 void test_compare_utilities::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
 
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test_compare_utilities::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test_compare_utilities::test_copasi_function_expansion()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;;
   std::istringstream iss(test_compare_utilities::MODEL_STRING1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
   // function_5
   CEvaluationTree* pTree = pFunctionDB->findFunction("function_4");
   CPPUNIT_ASSERT(pTree != NULL);

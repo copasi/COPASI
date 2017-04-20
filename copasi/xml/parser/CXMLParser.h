@@ -31,7 +31,7 @@
 #include "copasi/xml/CExpat.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
 
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/model/CAnnotation.h"
 
@@ -99,15 +99,15 @@ public:
 
   /**
    * Set the datamodel.
-   * @param CCopasiDataModel* pDataModel
+   * @param CDataModel* pDataModel
    */
-  void setDatamodel(CCopasiDataModel* pDataModel);
+  void setDatamodel(CDataModel* pDataModel);
 
   /**
    * Set the list of loaded functions
-   * @param CCopasiVectorN< CFunction > * pFunctionList
+   * @param CDataVectorN< CFunction > * pFunctionList
    */
-  void setFunctionList(CCopasiVectorN< CFunction > * pFunctionList);
+  void setFunctionList(CDataVectorN< CFunction > * pFunctionList);
 
 #ifdef XXXX
   /**
@@ -187,9 +187,9 @@ public:
 
   /**
    * Retrieve the list of loaded functions
-   * @return CCopasiVectorN< CTask > * pTaskList
+   * @return CDataVectorN< CTask > * pTaskList
    */
-  CCopasiVectorN< CCopasiTask > * getTaskList() const;
+  CDataVectorN< CCopasiTask > * getTaskList() const;
 
   /**
    * Retrieve the list of loaded functions

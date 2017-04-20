@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,7 +26,7 @@ class CLReactionGlyph;
 class CLMetabReferenceGlyph;
 class CLReferenceGlyph;
 class CLGeneralGlyph;
-class CCopasiContainer;
+class CDataContainer;
 class CCompartment;
 class CReaction;
 class CMetab;
@@ -149,7 +154,7 @@ public:
    * containers.
    */
   static CLayout* createLayout(
-    CCopasiContainer* parent,
+    CDataContainer* parent,
     const std::set<const CCompartment*>& compartments,
     const std::set<const CReaction*>& reactions,
     const std::set<const CMetab*>& metabs,

@@ -21,7 +21,7 @@
 #define CLGO_H_
 
 #include <string>
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 #include "CLBase.h"
 
@@ -31,13 +31,13 @@ LIBSBML_CPP_NAMESPACE_END
 
 /**
  * This is the base class for the layout objects in copasi.
- * It is a CCopasiObject. It also has a key (which is used if one
+ * It is a CDataObject. It also has a key (which is used if one
  * layout object refers to another one)
  * It provides the mechanism for refering to a copasi model
  * object by key. This needs to be specialized in the derived
  * classes
  */
-class CLGraphicalObject : public CLBase, public CCopasiContainer
+class CLGraphicalObject : public CLBase, public CDataContainer
 {
 protected:
 
@@ -64,17 +64,17 @@ public:
   static CLGraphicalObject * fromData(const CData & data);
 
   CLGraphicalObject(const std::string & name = "GraphicalObject",
-                    const CCopasiContainer * pParent = NO_PARENT);
+                    const CDataContainer * pParent = NO_PARENT);
 
   CLGraphicalObject(const CLGraphicalObject & src,
-                    const CCopasiContainer * pParent);
+                    const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
    */
   CLGraphicalObject(const GraphicalObject & sbml,
                     std::map<std::string, std::string> & layoutmap,
-                    const CCopasiContainer * pParent = NO_PARENT);
+                    const CDataContainer * pParent = NO_PARENT);
 
   ~CLGraphicalObject();
 
@@ -119,7 +119,7 @@ public:
 
   void setModelObjectKey(const std::string & k) {mModelObjectKey = k;};
 
-  CCopasiObject * getModelObject() const;
+  CDataObject * getModelObject() const;
 
   /**
     * if the graphical object refers to a model object this method will return the
@@ -138,7 +138,7 @@ public:
    * corresponding sbml object
    */
   virtual void exportToSBML(GraphicalObject * sbmlobject,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs) const;
 
   /**

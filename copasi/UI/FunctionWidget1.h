@@ -24,7 +24,7 @@
 
 class CFunction;
 
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVectorN;
 
 /*!
   \brief A widget class for Functions branch
@@ -56,7 +56,7 @@ protected:
   virtual bool enterProtected();
   bool loadFromFunction(const CFunction* = NULL);
   bool loadParameterTable();
-  bool loadUsageTable(/*const CCopasiVectorN<CUsageRange>& usages*/);
+  bool loadUsageTable(/*const CDataVectorN<CUsageRange>& usages*/);
   bool loadReversibility(TriLogic rev);
   void updateApplication();
   bool saveToFunction();

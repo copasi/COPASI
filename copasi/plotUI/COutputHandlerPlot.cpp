@@ -27,7 +27,7 @@
 #include "COutputHandlerPlot.h"
 #include "plot/COutputDefinitionVector.h"
 #include "UI/qtUtilities.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 COutputHandlerPlot::COutputHandlerPlot():
   COutputHandler(),
@@ -79,7 +79,7 @@ bool COutputHandlerPlot::compile(CObjectInterface::ContainerList listOfContainer
         }
     }
 
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
   return COutputHandler::compile(listOfContainer);
 }
 

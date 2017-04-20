@@ -14,8 +14,8 @@
 #include "CQParameterSetsDM.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "model/CModelParameterSet.h"
 
@@ -178,7 +178,7 @@ bool CQParameterSetsDM::removeRows(int position, int rows)
   DeletedModelParameterSets.resize(rows);
   std::vector< CModelParameterSet * >::iterator itDeletedModelParameterSet;
   std::vector< CModelParameterSet * >::iterator endDeletedModelParameterSet = DeletedModelParameterSets.end();
-  CCopasiVectorN< CModelParameterSet >::iterator itRow = mpListOfParameterSets->begin() + position;
+  CDataVectorN< CModelParameterSet >::iterator itRow = mpListOfParameterSets->begin() + position;
 
   for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet, ++itRow)
     {
@@ -217,14 +217,14 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
   for (j = ModelParameterSets.begin(); j != ModelParameterSets.end(); ++j)
     {
       CModelParameterSet *pModelParameterSet = *j;
-      size_t delRow = mpListOfParameterSets->CCopasiVector< CModelParameterSet >::getIndex(pModelParameterSet);
+      size_t delRow = mpListOfParameterSets->CDataVector< CModelParameterSet >::getIndex(pModelParameterSet);
 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
             CQMessageBox::confirmDelete(NULL, "layout",
                                         FROM_UTF8(pModelParameterSet->getObjectName()),
-                                        std::set< const CCopasiObject * >());
+                                        pModelParameterSet);
 
           if (choice == QMessageBox::Ok)
             removeRow((int) delRow);
@@ -234,7 +234,7 @@ bool CQParameterSetsDM::removeRows(QModelIndexList rows, const QModelIndex & /* 
   return true;
 }
 
-void CQParameterSetsDM::setListOfModelParameterSets(CCopasiVectorN< CModelParameterSet > *pListOfModelParameterSets)
+void CQParameterSetsDM::setListOfModelParameterSets(CDataVectorN< CModelParameterSet > *pListOfModelParameterSets)
 
 {
   if (mpListOfParameterSets != pListOfModelParameterSets)

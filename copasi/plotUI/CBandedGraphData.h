@@ -37,11 +37,11 @@
 
 #include "plot/CPlotItem.h"
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CopasiTime.h"
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CVector.h"
+#include "copasi/core/CMatrix.h"
 
 class CBandedGraphData :
 #if QWT_VERSION > 0x060000

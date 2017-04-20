@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLEllipse.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,15 +15,15 @@
 
 #include "copasi/layout/CLGraphicalPrimitive2D.h"
 #include "copasi/layout/CLRelAbsVector.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class sbmlEllipse;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLEllipse : public CLGraphicalPrimitive2D, public CCopasiObject
+class CLEllipse : public CLGraphicalPrimitive2D, public CDataObject
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -48,32 +45,32 @@ public:
   /**
    * Constructor.
    */
-  CLEllipse(CCopasiContainer* pParent = NULL);
+  CLEllipse(CDataContainer* pParent = NULL);
 
   /**
    * Constructor with 2D center and radius.
    */
-  CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& r, CCopasiContainer* pParent = NULL);
+  CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& r, CDataContainer* pParent = NULL);
 
   /**
    * Constructor with 2D center and radii.
    */
-  CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CCopasiContainer* pParent = NULL);
+  CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CDataContainer* pParent = NULL);
 
   /**
    * Constructor with 3D center and radii.
    */
-  CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& cz, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CCopasiContainer* pParent = NULL);
+  CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& cz, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor
    */
-  CLEllipse(const CLEllipse& source, CCopasiContainer* pParent = NULL);
+  CLEllipse(const CLEllipse& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLEllipse(const sbmlEllipse& source, CCopasiContainer* pParent = NULL);
+  CLEllipse(const sbmlEllipse& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.

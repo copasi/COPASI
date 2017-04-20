@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,9 +29,9 @@
 #include "randomGenerator/CRandom.h"
 #include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent,
+COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -49,7 +54,7 @@ COptMethodGASR::COptMethodGASR(const CCopasiContainer * pParent,
 }
 
 COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
-                               const CCopasiContainer * pParent):
+                               const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
   mCrossOverFalse(0),
   mCrossOver(0),
@@ -390,7 +395,6 @@ bool COptMethodGASR::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-
   mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
   mPf = getValue< C_FLOAT64 >("Pf");
 
@@ -399,7 +403,6 @@ bool COptMethodGASR::initialize()
       mPf = 0.475;
       setValue("Pf", mPf);
     }
-
 
   mIndividuals.resize(2 * mPopulationSize);
   mPhi.resize(2 * mPopulationSize);
@@ -544,7 +547,6 @@ bool COptMethodGASR::optimise()
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
-
     }
 
   if (mpCallBack)

@@ -18,7 +18,7 @@
 #include "copasi/utilities/CCopasiNode.h"
 
 class DataModelGUI;
-class CCopasiDataModel;
+class CDataModel;
 
 class CQBrowserPaneDM : public QAbstractItemModel
 {
@@ -112,7 +112,7 @@ public:
            const QString & displayRole,
            const size_t & parentId = C_INVALID_INDEX);
 
-  void setCopasiDM(const CCopasiDataModel * pDataModel);
+  void setCopasiDM(const CDataModel * pDataModel);
 
   void setGuiDM(const DataModelGUI * pDataModel);
 
@@ -136,7 +136,7 @@ private:
 
   CNode * mpRoot;
 
-  const CCopasiDataModel * mpCopasiDM;
+  const CDataModel * mpCopasiDM;
 
   const DataModelGUI * mpGuiDM;
 

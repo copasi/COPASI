@@ -1,31 +1,31 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+#include "copasi/copasi.h"
 
-#include "copasi.h"
+#include "CRootContainer.h"
 
-#include "CCopasiRootContainer.h"
-#include "ArtisticLicense.h"
-#include "function/CFunctionDB.h"
-#include "commandline/CConfigurationFile.h"
-#include "commandline/COptions.h"
-#include "function/CFunction.h"
-#include "function/CEvaluationNodeOperator.h"
-#include "function/CEvaluationNodeVariable.h"
-#include "function/CEvaluationNodeConstant.h"
-#include "utilities/CUnit.h"
-#include "model/CModel.h"
-#include "layout/CLGlobalRenderInformation.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/report/ArtisticLicense.h"
 
-extern CCopasiVector<CLGlobalRenderInformation>* DEFAULT_STYLES;
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/commandline/COptions.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/CEvaluationNodeOperator.h"
+#include "copasi/function/CEvaluationNodeVariable.h"
+#include "copasi/function/CEvaluationNodeConstant.h"
+#include "copasi/utilities/CUnit.h"
+#include "copasi/model/CModel.h"
+#include "copasi/layout/CLGlobalRenderInformation.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
-extern CCopasiRootContainer * pRootContainer;
+extern CDataVector< CLGlobalRenderInformation > * DEFAULT_STYLES;
+
+extern CRootContainer * pRootContainer;
 
 /**
  * The default constructor should be private so that nobody can create
@@ -33,8 +33,8 @@ extern CCopasiRootContainer * pRootContainer;
  * The only way to create a root container is through the static init
  * method.
  */
-CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
-  CCopasiContainer("Root", NULL, "CN", CCopasiObject::Root),
+CRootContainer::CRootContainer(const bool & withGUI):
+  CDataContainer("Root", NULL, "CN", CDataObject::Root),
   mKeyFactory(),
   mpUnknownResource(NULL),
   mpFunctionList(NULL),
@@ -46,7 +46,7 @@ CCopasiRootContainer::CCopasiRootContainer(const bool & withGUI):
 {}
 
 // Destructor
-CCopasiRootContainer::~CCopasiRootContainer()
+CRootContainer::~CRootContainer()
 {
   // save and delete the configuration
   if (mpConfiguration != NULL &&
@@ -80,21 +80,21 @@ CCopasiRootContainer::~CCopasiRootContainer()
 /**
  * This method creates the only root container.
  */
-void CCopasiRootContainer::init(int argc, char *argv[], const bool & withGUI)
+void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
 {
   COptions::init(argc, argv);
 
   CCopasiMessage::setIsGUI(withGUI);
 
   if (pRootContainer == NULL)
-    pRootContainer = new CCopasiRootContainer(withGUI);
+    pRootContainer = new CRootContainer(withGUI);
 
   if (pRootContainer != NULL)
     pRootContainer->initializeChildren();
 }
 
 // static
-void CCopasiRootContainer::destroy()
+void CRootContainer::destroy()
 {
   if (pRootContainer != NULL)
     {
@@ -107,7 +107,7 @@ void CCopasiRootContainer::destroy()
   COptions::cleanup();
 }
 
-void CCopasiRootContainer::initializeChildren()
+void CRootContainer::initializeChildren()
 {
   mpUnknownResource = new CMIRIAMResource("Unknown Resource");
   mpUnknownResource->setMIRIAMDisplayName("-- select --");
@@ -116,7 +116,7 @@ void CCopasiRootContainer::initializeChildren()
   mpFunctionList = new CFunctionDB("FunctionDB", this);
   mpFunctionList->load();
 
-  mpDataModelList = new CCopasiVector<CCopasiDataModel>("ModelList", this);
+  mpDataModelList = new CDataVector<CDataModel>("ModelList", this);
 
   mpConfiguration = new CConfigurationFile;
   mpConfiguration->load();
@@ -130,37 +130,37 @@ void CCopasiRootContainer::initializeChildren()
 }
 
 // static
-const CCopasiContainer * CCopasiRootContainer::getRoot()
+const CDataContainer * CRootContainer::getRoot()
 {
   return pRootContainer;
 }
 
 // static
-CConfigurationFile * CCopasiRootContainer::getConfiguration()
+CConfigurationFile * CRootContainer::getConfiguration()
 {
   return pRootContainer->mpConfiguration;
 }
 
 // static
-CFunctionDB * CCopasiRootContainer::getFunctionList()
+CFunctionDB * CRootContainer::getFunctionList()
 {
   return pRootContainer->mpFunctionList;
 }
 
 // static
-CCopasiVector< CCopasiDataModel > * CCopasiRootContainer::getDatamodelList()
+CDataVector< CDataModel > * CRootContainer::getDatamodelList()
 {
   return pRootContainer->mpDataModelList;
 }
 
 // static
-CUnitDefinitionDB *CCopasiRootContainer::getUnitList()
+CUnitDefinitionDB *CRootContainer::getUnitList()
 {
   return pRootContainer->mpUnitDefinitionList;
 }
 
 // static
-const CUnitDefinition * CCopasiRootContainer::getUnitDefFromSymbol(const std::string symbol)
+const CUnitDefinition * CRootContainer::getUnitDefFromSymbol(const std::string symbol)
 {
   const CUnitDefinition * pUnitDefinition = pRootContainer->mpUnitDefinitionList->getUnitDefFromSymbol(symbol);
 
@@ -171,7 +171,7 @@ const CUnitDefinition * CCopasiRootContainer::getUnitDefFromSymbol(const std::st
 
       if (Index != C_INVALID_INDEX)
         {
-          pUnitDefinition = CCopasiRootContainer::getUnitList()->begin() + Index;
+          pUnitDefinition = CRootContainer::getUnitList()->begin() + Index;
         }
     }
 
@@ -179,17 +179,17 @@ const CUnitDefinition * CCopasiRootContainer::getUnitDefFromSymbol(const std::st
 }
 
 // static
-std::string CCopasiRootContainer::quoteUnitDefSymbol(const std::string & symbol)
+std::string CRootContainer::quoteUnitDefSymbol(const std::string & symbol)
 {
   return pRootContainer->mpUnitDefinitionList->quoteSymbol(symbol);
 }
 
 // static
-void CCopasiRootContainer::replaceSymbol(const std::string & oldSymbol,
-    const std::string & newSymbol)
+void CRootContainer::replaceSymbol(const std::string & oldSymbol,
+                                   const std::string & newSymbol)
 {
-  CCopasiVector< CCopasiDataModel >::iterator it = pRootContainer->mpDataModelList->begin();
-  CCopasiVector< CCopasiDataModel >::iterator end = pRootContainer->mpDataModelList->end();
+  CDataVector< CDataModel >::iterator it = pRootContainer->mpDataModelList->begin();
+  CDataVector< CDataModel >::iterator end = pRootContainer->mpDataModelList->end();
 
   for (; it != end; ++it)
     {
@@ -198,60 +198,60 @@ void CCopasiRootContainer::replaceSymbol(const std::string & oldSymbol,
 }
 
 // static
-CCopasiDataModel * CCopasiRootContainer::addDatamodel()
+CDataModel * CRootContainer::addDatamodel()
 {
-  CCopasiDataModel* pDataModel = new CCopasiDataModel(pRootContainer->mWithGUI);
+  CDataModel* pDataModel = new CDataModel(pRootContainer->mWithGUI);
   pRootContainer->mpDataModelList->add(pDataModel, true);
   return pDataModel;
 }
 
 // static
-CFunction * CCopasiRootContainer::getUndefinedFunction()
+CFunction * CRootContainer::getUndefinedFunction()
 {
   return pRootContainer->mpUndefined;
 }
 
 //static
-CKeyFactory* CCopasiRootContainer::getKeyFactory()
+CKeyFactory* CRootContainer::getKeyFactory()
 {
   return &pRootContainer->mKeyFactory;
 }
 
 // static
-const CMIRIAMResource & CCopasiRootContainer::getUnknownMiriamResource()
+const CMIRIAMResource & CRootContainer::getUnknownMiriamResource()
 {
   return *pRootContainer->mpUnknownResource;
 }
 
 // static
-bool CCopasiRootContainer::removeDatamodel(const CCopasiDataModel * pDatamodel)
+bool CRootContainer::removeDatamodel(const CDataModel * pDatamodel)
 {
   if (!pDatamodel)
     {
       return false;
     }
 
-  pRootContainer->mpDataModelList->remove((CCopasiDataModel *)pDatamodel);
+  pRootContainer->mpDataModelList->remove((CDataModel *)pDatamodel);
   pdelete(pDatamodel);
 
   return true;
 }
 
 // static
-bool CCopasiRootContainer::removeDatamodel(const unsigned C_INT32 index)
+bool CRootContainer::removeDatamodel(const unsigned C_INT32 index)
 {
-  const CCopasiDataModel* pDatamodel = &CCopasiRootContainer::getDatamodelList()->operator[](index);
-  return CCopasiRootContainer::removeDatamodel(pDatamodel);
+  const CDataModel* pDatamodel = &CRootContainer::getDatamodelList()->operator[](index);
+  return CRootContainer::removeDatamodel(pDatamodel);
 }
 
 // static
-const char * CCopasiRootContainer::getLicenseTxt()
+const char * CRootContainer::getLicenseTxt()
 {
   return CopasiLicenseTxt;
 }
 
 // static
-const char * CCopasiRootContainer::getLicenseHTML()
+const char * CRootContainer::getLicenseHTML()
 {
   return CopasiLicenseHtml;
 }

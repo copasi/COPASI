@@ -1,22 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/model/CObjectLists.h,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2011/09/16 13:56:03 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -26,7 +23,7 @@
 #include <vector>
 #include <set>
 
-class CCopasiObject;
+class CDataObject;
 class CModel;
 class CModelEntity;
 class CMetab;
@@ -92,16 +89,15 @@ public:
 
     REDUCED_JACOBIAN_EV_RE,
     REDUCED_JACOBIAN_EV_IM
-
   };
 
   static const std::string ListTypeName[];
 
   static
-  std::vector< CCopasiObject * > getListOfObjects(ListType t, const CModel* model);
+  std::vector< CDataObject * > getListOfObjects(ListType t, const CModel* model);
 
   static
-  std::vector< const CCopasiObject * > getListOfConstObjects(ListType t, const CModel* model);
+  std::vector< const CDataObject * > getListOfConstObjects(ListType t, const CModel* model);
 
   static
   bool existsFixedMetab(const CModel* model);
@@ -115,7 +111,7 @@ public:
   //TODO: display names
 
 private:
-  typedef std::vector< const CCopasiObject * > ObjectList;
+  typedef std::vector< const CDataObject * > ObjectList;
 };
 
 #endif

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,8 +32,8 @@
 
 #include <iostream>
 
+#include "copasi/core/CMatrix.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CMatrix.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CReadConfig.h"
 #include "steadystate/CSteadyStateMethod.h"
@@ -97,18 +102,18 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: steadyState)
    */
-  CSteadyStateTask(const CCopasiContainer * pParent,
+  CSteadyStateTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type = CTaskEnum::steadyState);
   /**
    * Copy constructor
    * @param const CSteadyStateTask & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CSteadyStateTask(const CSteadyStateTask & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -151,7 +156,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream

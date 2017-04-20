@@ -27,9 +27,9 @@
 #include "sensitivities/CSensTask.h"
 #include "sensitivities/CSensProblem.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataVector.h"
 
 #include "UI/CopasiFileDialog.h"
 #include "sensitivities/CSensTask.h"

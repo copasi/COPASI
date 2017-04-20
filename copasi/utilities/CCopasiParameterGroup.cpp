@@ -99,7 +99,7 @@ CCopasiParameterGroup::name_iterator::name_iterator(const CCopasiParameterGroup:
 CCopasiParameterGroup::name_iterator::~name_iterator()
 {}
 
-CCopasiObject * CCopasiParameterGroup::name_iterator::operator*() const
+CDataObject * CCopasiParameterGroup::name_iterator::operator*() const
 {
   if (!mParameterEnd)
     return *mParameter;
@@ -110,7 +110,7 @@ CCopasiObject * CCopasiParameterGroup::name_iterator::operator*() const
   return NULL;
 }
 
-CCopasiObject * CCopasiParameterGroup::name_iterator::operator->() const
+CDataObject * CCopasiParameterGroup::name_iterator::operator->() const
 {
   if (!mParameterEnd)
     return *mParameter;
@@ -215,7 +215,7 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 {}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiParameter(src, pParent),
   mpElementTemplates(src.mpElementTemplates != NULL ? new CCopasiParameterGroup(*src.mpElementTemplates, this) : NULL)
 {
@@ -223,7 +223,7 @@ CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
 }
 
 CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
-    const CCopasiContainer * pParent,
+    const CDataContainer * pParent,
     const std::string & objectType):
   CCopasiParameter(name, CCopasiParameter::GROUP, NULL, pParent, objectType),
   mpElementTemplates(NULL)
@@ -282,7 +282,7 @@ bool CCopasiParameterGroup::applyData(const CData & data)
 }
 
 // virtual
-CCopasiObject * CCopasiParameterGroup::insert(const CData & data)
+CDataObject * CCopasiParameterGroup::insert(const CData & data)
 {
   CCopasiParameter * pNew = CCopasiParameter::fromData(data);
 
@@ -297,7 +297,7 @@ CCopasiObject * CCopasiParameterGroup::insert(const CData & data)
 // virtual
 const CObjectInterface * CCopasiParameterGroup::getObject(const CCopasiObjectName & cn) const
 {
-  const CObjectInterface * pObjectInterface = CCopasiContainer::getObject(cn);
+  const CObjectInterface * pObjectInterface = CDataContainer::getObject(cn);
 
   if (pObjectInterface != NULL)
     {
@@ -498,7 +498,7 @@ void CCopasiParameterGroup::addParameter(CCopasiParameter * pParameter)
 
   pParameter->setUserInterfaceFlag(mUserInterfaceFlag & pParameter->getUserInterfaceFlag());
 
-  CCopasiContainer::add(pParameter, true);
+  CDataContainer::add(pParameter, true);
   static_cast< elements * >(mpValue)->push_back(pParameter);
 }
 
@@ -620,7 +620,7 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
 
   if (range.first == range.second) return NULL;
 
-  return dynamic_cast<CCopasiParameter *>(const_cast< CCopasiObject * >(*range.first));
+  return dynamic_cast<CCopasiParameter *>(const_cast< CDataObject * >(*range.first));
 }
 
 const CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name) const
@@ -780,7 +780,7 @@ size_t CCopasiParameterGroup::getIndex(const std::string & name) const
 }
 
 // virtual
-size_t CCopasiParameterGroup::getIndex(const CCopasiObject * pObject) const
+size_t CCopasiParameterGroup::getIndex(const CDataObject * pObject) const
 {
   const std::string & Name = pObject->getObjectName();
 

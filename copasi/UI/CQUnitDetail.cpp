@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,16 +10,16 @@
 
 #include "CQUnitDetail.h"
 
-//#include "CQExpressionWidget.h"
+#include "CQMessageBox.h"
+#include "qtUtilities.h"
 
-#include "UI/CQMessageBox.h"
-#include "UI/qtUtilities.h"
+#include "copasi/model/CModel.h"
 
-#include "model/CModel.h"
-//#include "model/CModelValue.h"
-//#include "function/CExpression.h"
-#include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 ////UNDO framework classes
 //#ifdef COPASI_UNDO
@@ -64,7 +69,7 @@ void CQUnitDetail::slotBtnNew()
   int i = 1;
   CUnitDefinition* pUnitDef;
   CUnitDefinitionDB * unitList
-    = CCopasiRootContainer::getUnitList();
+    = CRootContainer::getUnitList();
 
   while (unitList->getIndex(name) != C_INVALID_INDEX)
     {
@@ -83,7 +88,7 @@ void CQUnitDetail::slotBtnNew()
 
 void CQUnitDetail::slotBtnCopy()
 {
-  CUnitDefinitionDB * unitList = CCopasiRootContainer::getUnitList();
+  CUnitDefinitionDB * unitList = CRootContainer::getUnitList();
   std::string base_name, name;
   base_name = mpUnitDefinition->getObjectName() + "_copy";
   name = base_name;
@@ -116,24 +121,24 @@ void CQUnitDetail::slotBtnDelete()
   if (pModel == NULL)
     return;
 
-  CCopasiVectorN<CUnitDefinition>* pUnitDefs = CCopasiRootContainer::getUnitList();
+  CDataVectorN<CUnitDefinition>* pUnitDefs = CRootContainer::getUnitList();
 
   if (pUnitDefs == NULL)
     return;
 
-  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pUnitDef == NULL)
     return;
 
-  CCopasiObject::DataObjectSet uses = pModel->getUnitSymbolUsage(pUnitDef->getSymbol());
+  CDataObject::DataObjectSet uses = pModel->getUnitSymbolUsage(pUnitDef->getSymbol());
 
   if (!uses.empty())
     {
       QString text = "It is required for . . .\n";
 
-      CCopasiObject::DataObjectSet::const_iterator it = uses.begin();
-      CCopasiObject::DataObjectSet::const_iterator end = uses.end();
+      CDataObject::DataObjectSet::const_iterator it = uses.begin();
+      CDataObject::DataObjectSet::const_iterator end = uses.end();
 
       for (; it != end; ++it)
         {
@@ -476,7 +481,7 @@ void CQUnitDetail::save()
 //  // if the standard name already exists then creating the new event will fail
 //  // thus, a growing index will automatically be added to the standard name
 //  int i = 1;
-//  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+//  assert(CRootContainer::getDatamodelList()->size() > 0);
 
 //  while (!(mpModelValue = mpDataModel->getModel()->createModelValue(name)))
 //    {
@@ -678,7 +683,7 @@ void CQUnitDetail::save()
 //                    {
 //                      UndoEventAssignmentData * assignData = *i;
 
-//                      CCopasiObject * pObject = NULL;
+//                      CDataObject * pObject = NULL;
 //                      bool speciesExist = false;
 //                      size_t ci;
 

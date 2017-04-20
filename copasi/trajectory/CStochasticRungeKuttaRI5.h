@@ -13,13 +13,13 @@
 
 #include <sstream>
 
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CRootFinder.h"
 #include "copasi/odepack++/CLSODA.h"
 #include "copasi/odepack++/CLSODAR.h"
 #include "copasi/model/CState.h"
-#include "copasi/utilities/CMatrix.h"
 
 class CModel;
 class CRandom;
@@ -38,21 +38,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: deterministic)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CStochasticRungeKuttaRI5(const CCopasiContainer * pParent,
+  CStochasticRungeKuttaRI5(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType = CTaskEnum::stochasticRunkeKuttaRI5,
                            const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param "const CStochasticRungeKuttaRI5 &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CStochasticRungeKuttaRI5(const CStochasticRungeKuttaRI5 & src,
-                           const CCopasiContainer * pParent);
+                           const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -193,7 +193,7 @@ private:
   CVector< CMatrix< C_FLOAT64 > > mBB;
 
   CVector< C_FLOAT64 * > mNoiseInputValues;
-  CVector< UpdateSequence > mNoiseUpdateSequences;
+  CVector< CCore::CUpdateSequence > mNoiseUpdateSequences;
   CVector< bool > mPhysicalValues;
 
   CRootFinder mRootFinder;

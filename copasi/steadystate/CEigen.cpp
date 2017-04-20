@@ -44,7 +44,7 @@
 
 #include "CEigen.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "utilities/CReadConfig.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CSort.h"
@@ -55,9 +55,9 @@
  * Default constructor
  */
 CEigen::CEigen(const std::string & name,
-               const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Eigen Values",
-                   CCopasiObject::Container),
+               const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Eigen Values",
+                 CDataObject::Container),
   mMaxrealpart(0),
   mMaximagpart(0),
   mNposreal(0),
@@ -101,8 +101,8 @@ CEigen::CEigen(const std::string & name,
 }
 
 CEigen::CEigen(const CEigen & src,
-               const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+               const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mMaxrealpart(src.mMaxrealpart),
   mMaximagpart(src.mMaximagpart),
   mNposreal(src.mNposreal),
@@ -158,29 +158,29 @@ void CEigen::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
 void CEigen::initObjects()
 {
-  addObjectReference("Maximum real part", mMaxrealpart, CCopasiObject::ValueDbl);
-  addObjectReference("Maximum imaginary part", mMaximagpart, CCopasiObject::ValueDbl);
-  addObjectReference("# Positive eigenvalues", mNposreal, CCopasiObject::ValueInt);
-  addObjectReference("# Negative eigenvalues", mNnegreal, CCopasiObject::ValueInt);
-  addObjectReference("# Real eigenvalues", mNreal, CCopasiObject::ValueInt);
-  addObjectReference("# Imaginary eigenvalues", mNimag, CCopasiObject::ValueInt);
-  addObjectReference("# Complex conjugated eigenvalues", mNcplxconj, CCopasiObject::ValueInt);
-  addObjectReference("# Zero eigenvalues", mNzero, CCopasiObject::ValueInt);
-  addObjectReference("Stiffness", mStiffness, CCopasiObject::ValueDbl);
-  addObjectReference("Time hierachy", mHierarchy, CCopasiObject::ValueDbl);
-  addObjectReference("Resolution", mResolution, CCopasiObject::ValueDbl);
-  addVectorReference("Vector of real part of eigenvalues", mR, CCopasiObject::ValueDbl);
-  addVectorReference("Vector of imaginary part of eigenvalues", mI, CCopasiObject::ValueDbl);
+  addObjectReference("Maximum real part", mMaxrealpart, CDataObject::ValueDbl);
+  addObjectReference("Maximum imaginary part", mMaximagpart, CDataObject::ValueDbl);
+  addObjectReference("# Positive eigenvalues", mNposreal, CDataObject::ValueInt);
+  addObjectReference("# Negative eigenvalues", mNnegreal, CDataObject::ValueInt);
+  addObjectReference("# Real eigenvalues", mNreal, CDataObject::ValueInt);
+  addObjectReference("# Imaginary eigenvalues", mNimag, CDataObject::ValueInt);
+  addObjectReference("# Complex conjugated eigenvalues", mNcplxconj, CDataObject::ValueInt);
+  addObjectReference("# Zero eigenvalues", mNzero, CDataObject::ValueInt);
+  addObjectReference("Stiffness", mStiffness, CDataObject::ValueDbl);
+  addObjectReference("Time hierachy", mHierarchy, CDataObject::ValueDbl);
+  addObjectReference("Resolution", mResolution, CDataObject::ValueDbl);
+  addVectorReference("Vector of real part of eigenvalues", mR, CDataObject::ValueDbl);
+  addVectorReference("Vector of imaginary part of eigenvalues", mI, CDataObject::ValueDbl);
 
-  addObjectReference("Maximum real part of complex eigenvalue", mMaxRealOfComplex, CCopasiObject::ValueDbl);
-  addObjectReference("Imaginary part of largest complex eigenvalue", mImagOfMaxComplex, CCopasiObject::ValueDbl);
-  addObjectReference("Linear Frequency of largest complex eigenvalue", mFreqOfMaxComplex, CCopasiObject::ValueDbl);
-  addObjectReference("Oscillation indicator", mOscillationIndicator, CCopasiObject::ValueDbl);
-  addObjectReference("EV-based oscillation indicator", mOscillationIndicator_EV, CCopasiObject::ValueDbl);
-  addObjectReference("Hopf bifurcation test function", mBifurcationIndicator_Hopf, CCopasiObject::ValueDbl);
-  addObjectReference("Fold bifurcation test function", mBifurcationIndicator_Fold, CCopasiObject::ValueDbl);
-  addObjectReference("Hopf bifurcation test function (BDT)", mBifurcationIndicator_Hopf_BDT, CCopasiObject::ValueDbl);
-  addObjectReference("Fold bifurcation test function (BDT)", mBifurcationIndicator_Fold_BDT, CCopasiObject::ValueDbl);
+  addObjectReference("Maximum real part of complex eigenvalue", mMaxRealOfComplex, CDataObject::ValueDbl);
+  addObjectReference("Imaginary part of largest complex eigenvalue", mImagOfMaxComplex, CDataObject::ValueDbl);
+  addObjectReference("Linear Frequency of largest complex eigenvalue", mFreqOfMaxComplex, CDataObject::ValueDbl);
+  addObjectReference("Oscillation indicator", mOscillationIndicator, CDataObject::ValueDbl);
+  addObjectReference("EV-based oscillation indicator", mOscillationIndicator_EV, CDataObject::ValueDbl);
+  addObjectReference("Hopf bifurcation test function", mBifurcationIndicator_Hopf, CDataObject::ValueDbl);
+  addObjectReference("Fold bifurcation test function", mBifurcationIndicator_Fold, CDataObject::ValueDbl);
+  addObjectReference("Hopf bifurcation test function (BDT)", mBifurcationIndicator_Hopf_BDT, CDataObject::ValueDbl);
+  addObjectReference("Fold bifurcation test function (BDT)", mBifurcationIndicator_Fold_BDT, CDataObject::ValueDbl);
 }
 
 /**

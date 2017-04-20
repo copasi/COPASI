@@ -1,34 +1,36 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_simplify.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/07/02 17:57:53 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
 #include "test_simplify.h"
 
-#include "../CNormalFraction.h"
-#include "../CNormalSum.h"
-#include "../CNormalProduct.h"
-#include "../CNormalItemPower.h"
-#include "../CNormalGeneralPower.h"
-#include "../CNormalItem.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/CNormalFraction.h"
+#include "copasi/CNormalSum.h"
+#include "copasi/CNormalProduct.h"
+#include "copasi/CNormalItemPower.h"
+#include "copasi/CNormalGeneralPower.h"
+#include "copasi/CNormalItem.h"
+#include "copasi/core/CRootContainer.h"
 
 void test_simplify::setUp()
 {
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
 }
 
 void test_simplify::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test_simplify::test_simplify_1()

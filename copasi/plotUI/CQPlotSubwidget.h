@@ -79,7 +79,7 @@ public:
    * objects from the object selection widget several histograms can be generated
    * accordingly.
    */
-  void createHistograms(std::vector<const CCopasiObject * >objects, const C_FLOAT64 &incr);
+  void createHistograms(std::vector<const CDataObject * >objects, const C_FLOAT64 &incr);
 
 protected:
   virtual bool enterProtected();

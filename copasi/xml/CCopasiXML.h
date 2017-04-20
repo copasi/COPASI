@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -45,7 +50,7 @@ class CUnitDefinitionDB;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 class CRegisteredObjectName;
-class CCopasiDataModel;
+class CDataModel;
 
 class CLLocalRenderInformation;
 class CLGlobalRenderInformation;
@@ -135,13 +140,13 @@ public:
    * @param CopasiVectorN< CFunction > * pFunctionList
    * @return bool success
    */
-  bool setFunctionList(CCopasiVectorN< CFunction > *pFunctionList);
+  bool setFunctionList(CDataVectorN< CFunction > *pFunctionList);
 
   /**
    * Retrieve the function list.
-   * @return CCopasiVectorN< CFunction > * pFunctionList
+   * @return CDataVectorN< CFunction > * pFunctionList
    */
-  CCopasiVectorN< CFunction > * getFunctionList() const;
+  CDataVectorN< CFunction > * getFunctionList() const;
 
   /**
    * Retrieve whether the XML contains a function list.
@@ -157,23 +162,23 @@ public:
 
   /**
    * Set the task list.
-   * @param CCopasiVectorN< CCopasiTask > *pTaskList
+   * @param CDataVectorN< CCopasiTask > *pTaskList
    * @return bool success
    */
-  bool setTaskList(CCopasiVectorN< CCopasiTask > *pTaskList);
+  bool setTaskList(CDataVectorN< CCopasiTask > *pTaskList);
 
   /**
    * Set the datamodel.
-   * @param CCopasiDataModel* pDataModel
+   * @param CDataModel* pDataModel
    * @return bool success
    */
-  bool setDatamodel(CCopasiDataModel* pDataModel);
+  bool setDatamodel(CDataModel* pDataModel);
 
   /**
    * Retrieve the task list.
-   * @return CCopasiVectorN< CCopasiTask > * taskList
+   * @return CDataVectorN< CCopasiTask > * taskList
    */
-  CCopasiVectorN< CCopasiTask > * getTaskList() const;
+  CDataVectorN< CCopasiTask > * getTaskList() const;
 
   /**
    * Retrieve whether the XML contains a task list.
@@ -404,12 +409,12 @@ private:
   /**
    * Saves the list of global render information objects.
    */
-  void saveListOfGlobalRenderInformation(const CCopasiVector<CLGlobalRenderInformation>& list);
+  void saveListOfGlobalRenderInformation(const CDataVector<CLGlobalRenderInformation>& list);
 
   /**
    * Saves the list of local render information objects.
    */
-  void saveListOfLocalRenderInformation(const CCopasiVector<CLLocalRenderInformation>& list);
+  void saveListOfLocalRenderInformation(const CDataVector<CLLocalRenderInformation>& list);
 
   /**
    * Saves a single global render information object.
@@ -585,13 +590,13 @@ private:
    * Pointer to a vector of functions which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CFunction > * mpFunctionList;
+  CDataVectorN< CFunction > * mpFunctionList;
 
   /**
    * Pointer to a vector of tasks which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CCopasiTask > * mpTaskList;
+  CDataVectorN< CCopasiTask > * mpTaskList;
 
   /**
    * Pointer to a vector of reports which has been loaded or is to be saved.
@@ -625,7 +630,7 @@ private:
   /**
    * Pointer to the datamodel
    */
-  CCopasiDataModel* mpDataModel;
+  CDataModel* mpDataModel;
 
   /**
    * Remember if we already issued MCXML21

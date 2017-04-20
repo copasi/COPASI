@@ -31,14 +31,14 @@
 
 #include "resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "report/CKeyFactory.h"
 #include "parameterFitting/CFitItem.h"
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CExperiment.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "utilities/utility.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
 
@@ -224,7 +224,7 @@ void CQFittingItemWidget::slotLowerEdit()
         break;
     }
 
-  const CCopasiObject *pObject =
+  const CDataObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
@@ -278,7 +278,7 @@ void CQFittingItemWidget::slotUpperEdit()
         break;
     }
 
-  const CCopasiObject *pObject =
+  const CDataObject *pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
@@ -308,7 +308,7 @@ void CQFittingItemWidget::slotUpperEdit()
 
 void CQFittingItemWidget::slotParamEdit()
 {
-  std::vector< const CCopasiObject * > Selection;
+  std::vector< const CDataObject * > Selection;
   CQSimpleSelectionTree::ObjectClasses Classes;
 
   switch (mItemType)
@@ -333,7 +333,7 @@ void CQFittingItemWidget::slotParamEdit()
 
   if (mSelection.size() > 1)
     {
-      const CCopasiObject *pObject =
+      const CDataObject *pObject =
         CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
       if (pObject)
@@ -466,7 +466,7 @@ void CQFittingItemWidget::slotExperiments()
     }
 }
 
-bool CQFittingItemWidget::load(CCopasiDataModel *pDataModel,
+bool CQFittingItemWidget::load(CDataModel *pDataModel,
                                CCopasiParameterGroup *pItems,
                                const std::map<std::string, std::string> *pExperimentMap,
                                const std::map<std::string, std::string> *pCrossValidationMap)
@@ -823,7 +823,7 @@ void CQFittingItemWidget::slotExperimentChanged()
   for (Row = 0; it != end; ++it, ++Row)
     {
       for (i = 0, imax = static_cast<CFitItem *>(*it)->getExperimentCount(); i < imax; ++i)
-        if (!CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getExperiment(i)))
+        if (!CRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getExperiment(i)))
           static_cast<CFitItem *>(*it)->removeExperiment(i);
 
       setTableText((int) Row, *it);
@@ -1274,8 +1274,8 @@ void CQFittingItemWidget::loadSelection()
 
           for (i = 0; i < imax; i++)
             {
-              const CCopasiObject *pObject =
-                CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getExperiment(i));
+              const CDataObject *pObject =
+                CRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getExperiment(i));
 
               if (pObject)
                 mpBoxExperiments->insertItem(mpBoxExperiments->count(), FROM_UTF8(pObject->getObjectName()));
@@ -1289,8 +1289,8 @@ void CQFittingItemWidget::loadSelection()
 
           for (i = 0; i < imax; i++)
             {
-              const CCopasiObject *pObject =
-                CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
+              const CDataObject *pObject =
+                CRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(pItem)->getCrossValidation(i));
 
               if (pObject)
                 mpBoxCrossValidations->insertItem(0, FROM_UTF8(pObject->getObjectName()));
@@ -1634,7 +1634,7 @@ void CQFittingItemWidget::slotCrossValidationChanged()
   for (Row = 0; it != end; ++it, ++Row)
     {
       for (i = 0, imax = static_cast<CFitItem *>(*it)->getCrossValidationCount(); i < imax; ++i)
-        if (!CCopasiRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
+        if (!CRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
           static_cast<CFitItem *>(*it)->removeCrossValidation(i);
 
       setTableText(Row, *it);

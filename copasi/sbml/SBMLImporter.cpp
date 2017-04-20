@@ -81,12 +81,12 @@
 #include "function/CEvaluationTree.h"
 #include "function/CExpression.h"
 #include "function/CFunctionParameters.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "utilities/CCopasiTree.h"
 #include "utilities/CNodeIterator.h"
 #include "copasi/utilities/CUnit.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "MIRIAM/CRDFGraphConverter.h"
 #include "compareExpressions/CEvaluationNodeNormalizer.h"
 #include "commandline/CLocaleString.h"
@@ -220,9 +220,9 @@ std::string getOriginalSBMLId(Parameter* parameter)
   return "";
 }
 
-std::string getInitialCNForSBase(SBase* sbase, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
-  std::map<const CCopasiObject*, SBase*>::const_iterator it;
+  std::map<const CDataObject*, SBase*>::const_iterator it;
 
   for (it = copasi2sbmlmap.begin(); it != copasi2sbmlmap.end(); ++it)
     {
@@ -942,7 +942,7 @@ SBMLImporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
   return false;
 }
 
-CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   Model* sbmlModel = sbmlDocument->getModel();
 
@@ -1007,7 +1007,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   unsigned int counter;
   size_t num;
 
-  CCopasiVectorN< CFunction >* functions = &(this->functionDB->loadedFunctions());
+  CDataVectorN< CFunction >* functions = &(this->functionDB->loadedFunctions());
 
   num = (*functions).size();
 
@@ -1396,7 +1396,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (!this->mParameterFluxMap.empty())
     {
-      CCopasiVectorNS < CReaction >::iterator reactionIt = mpCopasiModel->getReactions().begin();
+      CDataVectorNS < CReaction >::iterator reactionIt = mpCopasiModel->getReactions().begin();
 
       for (; reactionIt != mpCopasiModel->getReactions().end(); ++reactionIt)
         {
@@ -1587,28 +1587,27 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           sbmlId = pParameter->getId();
         }
 
-      CCopasiVectorN< CModelValue >::const_iterator itMV = mpCopasiModel->getModelValues().begin();
-      CCopasiVectorN< CModelValue >::const_iterator endMV = mpCopasiModel->getModelValues().end();
+      CDataVectorN< CModelValue >::const_iterator itMV = mpCopasiModel->getModelValues().begin();
+      CDataVectorN< CModelValue >::const_iterator endMV = mpCopasiModel->getModelValues().end();
 
       for (; itMV != endMV; ++itMV)
         {
           if (itMV->getSBMLId() == sbmlId)
             {
-              std::set< const CCopasiObject * > Functions;
-              std::set< const CCopasiObject * > Reactions;
-              std::set< const CCopasiObject * > Metabolites;
-              std::set< const CCopasiObject * > Values;
-              std::set< const CCopasiObject * > Compartments;
-              std::set< const CCopasiObject * > Events;
-              std::set< const CCopasiObject * > EventAssignments;
-              std::set< const CCopasiObject * > Tasks;
+              CDataObject::DataObjectSet Functions;
+              CDataObject::DataObjectSet Reactions;
+              CDataObject::DataObjectSet Metabolites;
+              CDataObject::DataObjectSet Values;
+              CDataObject::DataObjectSet Compartments;
+              CDataObject::DataObjectSet Events;
+              CDataObject::DataObjectSet EventAssignments;
+              CDataObject::DataObjectSet Tasks;
 
-              if (!mpCopasiModel->appendDependentModelObjects(itMV->getDeletedObjects(), Reactions, Metabolites,
-                  Compartments, Values, Events, EventAssignments))
+              if (!mpCopasiModel->appendAllDependents(*itMV, Reactions, Metabolites, Compartments, Values, Events, EventAssignments))
                 {
                   mpCopasiModel->removeModelValue(itMV, false);
 
-                  std::map<const CCopasiObject*, SBase*>::iterator found = copasi2sbmlmap.find(itMV);
+                  std::map<const CDataObject*, SBase*>::iterator found = copasi2sbmlmap.find(itMV);
 
                   if (found != copasi2sbmlmap.end())
                     {
@@ -1821,7 +1820,7 @@ void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbm
   free(formula);
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDefinition* sbmlFunction, CFunctionDB* pTmpFunctionDB, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
 
   ensureAllArgsAreBeingUsedInFunctionDefinition(sbmlFunction);
@@ -1900,7 +1899,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
   return pTmpFunction;
 }
 
-CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction, Model* pSBMLModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinition* pSBMLFunction, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CFunction* pFun = NULL;
 
@@ -2020,10 +2019,10 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
   return pFun;
 }
 
-CFunction* getFunctionForKey(CCopasiVectorN<CFunction> &functionDb, const std::string& key)
+CFunction* getFunctionForKey(CDataVectorN<CFunction> &functionDb, const std::string& key)
 {
   CFunction* pFunc = NULL;
-  CCopasiVectorN<CFunction>::iterator it = functionDb.begin(), endit = functionDb.end();
+  CDataVectorN<CFunction>::iterator it = functionDb.begin(), endit = functionDb.end();
 
   while (it != endit)
     {
@@ -2046,7 +2045,7 @@ CFunction* getFunctionForKey(CCopasiVectorN<CFunction> &functionDb, const std::s
 CCompartment*
 SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartment,
     CModel* copasiModel,
-    std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
+    std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
     const Model* /*pSBMLModel*/)
 {
   if (sbmlCompartment->isSetUnits())
@@ -2140,14 +2139,14 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
  * Creates and returns a Copasi CMetab from the given SBML Species object.
  */
 CMetab*
-SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, const Model* /*pSBMLModel*/)
+SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasiModel, CCompartment* copasiCompartment, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, const Model* /*pSBMLModel*/)
 {
   if (sbmlSpecies->isSetSubstanceUnits())
     {
       std::string cU = sbmlSpecies->getSubstanceUnits();
     }
 
-  std::map<const CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
+  std::map<const CDataObject*, SBase*>::iterator it = copasi2sbmlmap.find(copasiCompartment);
 
   if (it == copasi2sbmlmap.end())
     {
@@ -2222,7 +2221,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
   return copasiMetabolite;
 }
 
-CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* func)
+CFunction* findFunction(CDataVectorN < CFunction > &  db, const CFunction* func)
 {
   size_t i, iMax = db.size();
 
@@ -2243,7 +2242,7 @@ CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* fun
  */
 
 CReaction*
-SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
+SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
   if (sbmlReaction == NULL)
     {
@@ -2338,7 +2337,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
           if (sr->isSetStoichiometry())
             stoi = sr->getStoichiometry();
-
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2361,7 +2359,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
-      std::map<const CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
+      std::map<const CDataObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
@@ -2386,7 +2384,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       // expressions that reference a species reference
       if (this->mLevel > 2)
         {
-          CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getSubstrates().begin(), endit = copasiReaction->getChemEq().getSubstrates().end();
+          CDataVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getSubstrates().begin(), endit = copasiReaction->getChemEq().getSubstrates().end();
           const CChemEqElement* pElement = NULL;
 
           while (it != endit)
@@ -2414,8 +2412,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       if (this->mLevel < 3 && sr->isSetStoichiometryMath())
         {
           CChemEq& chemEq = copasiReaction->getChemEq();
-          CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getSubstrates().begin();
-          CCopasiVector < CChemEqElement >::const_iterator end = chemEq.getSubstrates().end();
+          CDataVector < CChemEqElement >::const_iterator it = chemEq.getSubstrates().begin();
+          CDataVector < CChemEqElement >::const_iterator end = chemEq.getSubstrates().end();
           const CChemEqElement* pChemEqElement = NULL;
 
           while (it != end)
@@ -2488,7 +2486,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
         }
 
-      std::map<const CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
+      std::map<const CDataObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
@@ -2513,7 +2511,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       // expressions that reference a species reference
       if (this->mLevel > 2)
         {
-          CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getProducts().begin(), endit = copasiReaction->getChemEq().getProducts().end();
+          CDataVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getProducts().begin(), endit = copasiReaction->getChemEq().getProducts().end();
           const CChemEqElement* pElement = NULL;
 
           while (it != endit)
@@ -2539,8 +2537,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       if (sr->isSetStoichiometryMath())
         {
           CChemEq& chemEq = copasiReaction->getChemEq();
-          CCopasiVector < CChemEqElement >::const_iterator it = chemEq.getProducts().begin();
-          CCopasiVector < CChemEqElement >::const_iterator end = chemEq.getProducts().end();
+          CDataVector < CChemEqElement >::const_iterator it = chemEq.getProducts().begin();
+          CDataVector < CChemEqElement >::const_iterator end = chemEq.getProducts().end();
           const CChemEqElement* pChemEqElement = NULL;
 
           while (it != end)
@@ -2584,7 +2582,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           CCopasiMessage(CCopasiMessage::WARNING, os.str().c_str());
         }
 
-      std::map<const CCopasiObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
+      std::map<const CDataObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
@@ -2609,7 +2607,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       if (this->mLevel > 2)
         {
 
-          CCopasiVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getModifiers().begin(), endit = copasiReaction->getChemEq().getModifiers().end();
+          CDataVector<CChemEqElement>::const_iterator it = copasiReaction->getChemEq().getModifiers().begin(), endit = copasiReaction->getChemEq().getModifiers().end();
           const CChemEqElement* pElement = NULL;
 
           while (it != endit)
@@ -2773,7 +2771,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                           tmpNode2->setName(compartment->getSBMLId().c_str());
                           tmpNode1->addChild(tmpNode2);
                           node = tmpNode1;
-                          std::map<const CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(compartment);
+                          std::map<const CDataObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(compartment);
                           assert(pos != copasi2sbmlmap.end());
                           Compartment* pSBMLCompartment = dynamic_cast<Compartment*>(pos->second);
                           assert(pSBMLCompartment != NULL);
@@ -2816,7 +2814,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               KineticLawExpression.setRoot(pExpressionTreeRoot);
 
               // check if the expression is constant flux
-              const CCopasiObject* pParamObject = SBMLImporter::isConstantFlux(pExpressionTreeRoot, copasiModel, pTmpFunctionDB);
+              const CDataObject* pParamObject = SBMLImporter::isConstantFlux(pExpressionTreeRoot, copasiModel, pTmpFunctionDB);
 
               if (pParamObject != NULL)
                 {
@@ -2854,7 +2852,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                   if (pParamObject->getObjectType() == "Parameter")
                     {
-                      const_cast< CCopasiObject * >(pParamObject)->setObjectName("v");
+                      const_cast< CDataObject * >(pParamObject)->setObjectName("v");
                       dynamic_cast<CEvaluationNode*>(pCallNode->getChild())->setData("<" + pParamObject->getCN() + ">");
                     }
 
@@ -3316,9 +3314,9 @@ void SBMLImporter::replaceSubstanceOnlySpeciesNodes(ConverterASTNode* node, cons
 CModel* SBMLImporter::readSBML(std::string filename,
                                CFunctionDB* funDB,
                                SBMLDocument*& pSBMLDocument,
-                               std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
+                               std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                                CListOfLayouts *& prLol,
-                               CCopasiDataModel* pDataModel)
+                               CDataModel* pDataModel)
 {
   // convert filename to the locale encoding
   std::ifstream file(CLocaleString::fromUtf8(filename).c_str());
@@ -3344,7 +3342,7 @@ CModel* SBMLImporter::readSBML(std::string filename,
 
 bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 {
-  if (CCopasiRootContainer::getConfiguration()->validateUnits())
+  if (CRootContainer::getConfiguration()->validateUnits())
     sbmlDoc->setApplicableValidators(AllChecksON & SBOCheckOFF);
   else
     sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF & SBOCheckOFF);
@@ -3583,9 +3581,9 @@ CModel*
 SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
                         CFunctionDB* funDB,
                         SBMLDocument *& pSBMLDocument,
-                        std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
+                        std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                         CListOfLayouts *& prLol,
-                        CCopasiDataModel* pDataModel)
+                        CDataModel* pDataModel)
 {
   this->mUsedSBMLIdsPopulated = false;
   this->mAvogadroSet = false;
@@ -4584,7 +4582,7 @@ SBMLImporter::handleVolumeUnit(const UnitDefinition* uDef)
   return std::make_pair(vUnit, result);
 }
 
-CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlParameter, CModel* copasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
 
   std::string name = sbmlParameter->getName();
@@ -4655,7 +4653,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   return pMV;
 }
 
-bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup)
+bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup)
 {
   // TODO CRITICAL We need to use a node iterator
 
@@ -4686,8 +4684,8 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*
         }
       else
         {
-          std::map<const CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-          std::map<const CCopasiObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
+          std::map<const CDataObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
+          std::map<const CDataObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
           bool found = false;
 
           while (it != endIt)
@@ -4800,10 +4798,10 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*
 }
 
 #ifdef COPASI_DEBUG
-void SBMLImporter::printMap(const std::map<CCopasiObject*, SBase*> & copasi2sbml)
+void SBMLImporter::printMap(const std::map<CDataObject*, SBase*> & copasi2sbml)
 {
-  std::map<CCopasiObject*, SBase*>::const_iterator it = copasi2sbml.begin();
-  std::map<CCopasiObject*, SBase*>::const_iterator end = copasi2sbml.end();
+  std::map<CDataObject*, SBase*>::const_iterator it = copasi2sbml.begin();
+  std::map<CDataObject*, SBase*>::const_iterator end = copasi2sbml.end();
   std::cout << "Number of elements: " << copasi2sbml.size() << std::endl;
 
   while (it != end)
@@ -4846,7 +4844,7 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
-void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction)
+void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction)
 {
   // this function goes through the tree several times.
   // this can probably be handled more intelligently
@@ -4955,7 +4953,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
  * hasOnlySubstanceUnits flag set with the reference divided by avogadros
  * number.
  */
-void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pSBMLModel, double factor, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pSBMLModel, double factor, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
   itNode.setProcessingModes(CNodeIteratorMode::Before);
@@ -5417,7 +5415,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
           if (result)
             {
               CChemEq tmpEq;
-              const CCopasiVector<CChemEqElement>* metabolites = &chemicalEquation.getSubstrates();
+              const CDataVector<CChemEqElement>* metabolites = &chemicalEquation.getSubstrates();
               size_t i, iMax = metabolites->size();
               result = (iMax > 0);
 
@@ -5513,14 +5511,14 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                 {
                   // it can be a global or a local parameter or an metabolite
                   std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
-                  const CCopasiObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
+                  const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
                   if (!pObject)
                     {
                       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 39, objectCN.c_str());
                     }
 
-                  if (pObject->isReference())
+                  if (pObject->hasFlag(CDataObject::Reference))
                     {
                       pObject = pObject->getObjectParent();
 
@@ -5567,10 +5565,10 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
                   if (pChildNode->mainType() == CEvaluationNode::T_OBJECT)
                     {
                       std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
-                      const CCopasiObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
+                      const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
                       assert(pObject);
 
-                      if (pObject->isReference())
+                      if (pObject->hasFlag(CDataObject::Reference))
                         {
                           pObject = pObject->getObjectParent();
 
@@ -5634,7 +5632,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
       if (result)
         {
-          const CCopasiVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
+          const CDataVector<CChemEqElement>& metabolites = chemicalEquation.getSubstrates();
           size_t i, iMax = metabolites.size();
 
           // all metabolites must occur in the muliplicityMap so they have to have the same size
@@ -5769,7 +5767,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
 
   std::map<const CChemEqElement*, CChemEq::MetaboliteRole> v;
 
-  const CCopasiVector<CChemEqElement>* pV = &pChemEq.getSubstrates();
+  const CDataVector<CChemEqElement>* pV = &pChemEq.getSubstrates();
 
   size_t i, iMax = pV->size();
 
@@ -5805,7 +5803,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
           fatalError();
         }
 
-      const CCopasiObject* object = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2)));
+      const CDataObject* object = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2)));
 
       if (!object)
         {
@@ -5814,7 +5812,7 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
 
       CFunctionParameter* pFunParam = const_cast<CFunctionParameter*>(pCopasiReaction->getFunction()->getVariables()[parameterIndex]);
 
-      if (dynamic_cast<const CCopasiObjectReference<C_FLOAT64>*>(object))
+      if (dynamic_cast<const CDataObjectReference<C_FLOAT64>*>(object))
         {
           object = object->getObjectParent();
 
@@ -5885,10 +5883,10 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
     }
 }
 
-bool containsKey(const CCopasiVector < CChemEqElement >& list, const std::string& key)
+bool containsKey(const CDataVector < CChemEqElement >& list, const std::string& key)
 {
-  CCopasiVector < CChemEqElement >::const_iterator it = list.begin();
-  CCopasiVector < CChemEqElement >::const_iterator end = list.end();
+  CDataVector < CChemEqElement >::const_iterator it = list.begin();
+  CDataVector < CChemEqElement >::const_iterator end = list.end();
 
   for (; it != end; ++it)
     {
@@ -5915,14 +5913,14 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
       std::string objectCN = pChild->getData();
       objectCN = objectCN.substr(1, objectCN.length() - 2);
-      const CCopasiObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
+      const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
       if (!pObject)
         {
           fatalError();
         }
 
-      if (pObject->isReference())
+      if (pObject->hasFlag(CDataObject::Reference))
         {
           pObject = pObject->getObjectParent();
         }
@@ -5931,7 +5929,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
       pCopasiReaction->setParameterMapping("k1", objectKey);
 
-      const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
+      const CDataVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getSubstrates();
 
       size_t i, iMax = metabolites->size();
 
@@ -5946,14 +5944,14 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
-          const CCopasiObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
+          const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
           if (!pObject)
             {
               fatalError();
             }
 
-          if (pObject->isReference())
+          if (pObject->hasFlag(CDataObject::Reference))
             {
               pObject = pObject->getObjectParent();
             }
@@ -5962,7 +5960,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
           pCopasiReaction->setParameterMapping("k2", objectKey);
 
-          const CCopasiVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
+          const CDataVector<CChemEqElement>* metabolites = &pCopasiReaction->getChemEq().getProducts();
 
           iMax = metabolites->size();
 
@@ -5986,14 +5984,14 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
 
           std::string objectCN = pChild->getData();
           objectCN = objectCN.substr(1, objectCN.length() - 2);
-          const CCopasiObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
+          const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
           if (!pObject)
             {
               fatalError();
             }
 
-          if (pObject->isReference())
+          if (pObject->hasFlag(CDataObject::Reference))
             {
               pObject = pObject->getObjectParent();
             }
@@ -6196,7 +6194,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(pCallNode->getChild());
   assert(pObjectNode);
   CCopasiObjectName objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-  CCopasiObject* pObject = const_cast< CCopasiObject *>(CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectName)));
+  CDataObject* pObject = const_cast< CDataObject *>(CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectName)));
   assert(pObject);
 
   if (dynamic_cast<CCopasiParameter*>(pObject))
@@ -6210,7 +6208,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   if (pObjectNode)
     {
       objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
-      pObject = const_cast< CCopasiObject *>(CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectName)));
+      pObject = const_cast< CDataObject *>(CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectName)));
       assert(pObject);
 
       if (dynamic_cast<CCopasiParameter*>(pObject))
@@ -6249,7 +6247,7 @@ CProcessReport* SBMLImporter::getImportHandlerAddr()
   return mpProgressHandler;
 }
 
-bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   if (pTmpFunctionDB == NULL)
     return true;
@@ -6422,7 +6420,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
         }
     }
 
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
 
   if (createProgressStepOrStop(15,
                                (unsigned C_INT32) pTmpFunctionDB->loadedFunctions().size(),
@@ -6433,8 +6431,8 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
   // here we could have a dialog asking the user if unused functions should
   // be removed.
 
-  CCopasiVectorN < CFunction >::iterator it = pTmpFunctionDB->loadedFunctions().begin();
-  CCopasiVectorN < CFunction >::iterator end = pTmpFunctionDB->loadedFunctions().end();
+  CDataVectorN < CFunction >::iterator it = pTmpFunctionDB->loadedFunctions().begin();
+  CDataVectorN < CFunction >::iterator end = pTmpFunctionDB->loadedFunctions().end();
 
   for (; it != end; ++it)
     {
@@ -6455,7 +6453,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
           pFunctionDB->loadedFunctions().remove(pTree->getObjectName());
 
           // delete the entry from the copasi2sbmlmap.
-          std::map<const CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
+          std::map<const CDataObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pTree);
           assert(pos != copasi2sbmlmap.end());
           copasi2sbmlmap.erase(pos);
         }
@@ -6475,14 +6473,14 @@ void SBMLImporter::findFunctionCalls(const CEvaluationNode* pNode, std::set<std:
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+      CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
       CCopasiTree<const CEvaluationNode>::iterator treeIt = pNode;
 
       while (treeIt != NULL)
         {
           if (treeIt->mainType() == CEvaluationNode::T_CALL)
             {
-              // unQuote not necessary since getIndex in CCopasiVector takes care of this.
+              // unQuote not necessary since getIndex in CDataVector takes care of this.
               CEvaluationTree* pTree = pFunctionDB->findFunction((*treeIt).getData());
 
               if (functionNameSet.find(pTree->getObjectName()) == functionNameSet.end())
@@ -6517,7 +6515,7 @@ bool SBMLImporter::isStochasticModel(const Model* pSBMLModel)
   return stochastic;
 }
 
-void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
+void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   // so far we only support assignment rules and rate rules
   int type = sbmlRule->getTypeCode();
@@ -6554,7 +6552,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<const CCopasiOb
     }
 }
 
-void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
+void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   std::string sbmlId;
   const AssignmentRule* pARule = dynamic_cast<const AssignmentRule*>(rule);
@@ -6593,7 +6591,7 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
       // So we treat this the same way as the stoichiometryMath in SBML level 2
 
       // find the chemical equation element
-      std::map<const CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
+      std::map<const CDataObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
 
       while (it != endit)
         {
@@ -6628,9 +6626,9 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
   Compartment* pC;
   Species* pS;
   Parameter* pP;
-  const CCopasiObject* pObject = NULL;
-  std::map<const CCopasiObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-  std::map<const CCopasiObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
+  const CDataObject* pObject = NULL;
+  std::map<const CDataObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
+  std::map<const CDataObject*, SBase*>::iterator endit = copasi2sbmlmap.end();
 
   while (it != endit)
     {
@@ -6852,13 +6850,13 @@ void SBMLImporter::areRulesUnique(const Model* sbmlModel)
     }
 }
 
-void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity* pME, CModelEntity::Status status, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
+void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity* pME, CModelEntity::Status status, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   CModelEntity * pModelEntity = const_cast< CModelEntity * >(pME);
 
   if (!rule->isSetMath())
     {
-      std::map<const CCopasiObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(pModelEntity);
+      std::map<const CDataObject*, SBase*>::const_iterator pos = copasi2sbmlmap.find(pModelEntity);
       assert(pos != copasi2sbmlmap.end());
       std::string id = "@";
 
@@ -6896,7 +6894,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
 
   if (dynamic_cast<CMetab*>(pModelEntity) != NULL)
     {
-      std::map<const CCopasiObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pModelEntity);
+      std::map<const CDataObject*, SBase*>::iterator pos = copasi2sbmlmap.find(pModelEntity);
       assert(pos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(pos->second);
       assert(pSBMLSpecies != NULL);
@@ -6947,7 +6945,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
     }
 }
 
-void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   // only check if Level2 Version1
   if (this->mLevel == 2 && this->mVersion == 1)
@@ -7091,7 +7089,7 @@ void SBMLImporter::getIdsFromNode(const ASTNode* pASTNode, std::set<std::string>
     }
 }
 
-void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, bool initialExpression)
+void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CDataObject*, SBase*>& copasi2sbmlmap, bool initialExpression)
 {
   CNodeIterator< ASTNode > itNode(pNode);
 
@@ -7105,8 +7103,8 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CCopa
               bool haveData = itNode->getUserData() != NULL;
               // the id can either belong to a compartment, a species, a reaction or a
               // global parameter
-              std::map<const CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
-              std::map<const CCopasiObject*, SBase*>::const_iterator endit = copasi2sbmlmap.end();
+              std::map<const CDataObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin();
+              std::map<const CDataObject*, SBase*>::const_iterator endit = copasi2sbmlmap.end();
               const CReaction* pReaction;
               const CModelEntity* pModelEntity;
 
@@ -7130,7 +7128,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CCopa
 
               while (it != endit)
                 {
-                  const CCopasiObject* pObject = it->first;
+                  const CDataObject* pObject = it->first;
                   pReaction = dynamic_cast<const CReaction*>(pObject);
                   pModelEntity = dynamic_cast<const CModelEntity*>(pObject);
                   Species* pSpecies = dynamic_cast<Species*>(it->second);
@@ -7317,18 +7315,18 @@ void SBMLImporter::replaceTimeDependentFunctionCalls(ASTNode* pASTNode)
     }
 }
 
-bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
-  // go through the CCopasiDataModel and set the initial values on all
+  // go through the CDataModel and set the initial values on all
   // compartments, metabolites and model values if they were given in the sbml
   // model.
   // if no initial value was given for an entity, check if the value is set
   // by another means (rule, initialAssignment) and if not, create an error
   // message
-  std::map<const CCopasiObject*, SBase*>::const_iterator pos;
+  std::map<const CDataObject*, SBase*>::const_iterator pos;
   mChangedObjects.clear();
-  CCopasiVectorNS<CCompartment>::iterator compartmentIt = pModel->getCompartments().begin();
-  CCopasiVectorNS<CCompartment>::iterator compartmentEndit = pModel->getCompartments().end();
+  CDataVectorNS<CCompartment>::iterator compartmentIt = pModel->getCompartments().begin();
+  CDataVectorNS<CCompartment>::iterator compartmentEndit = pModel->getCompartments().end();
 
   while (compartmentIt != compartmentEndit)
     {
@@ -7378,8 +7376,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
       ++compartmentIt;
     }
 
-  CCopasiVectorNS<CMetab>::iterator metabIt = pModel->getMetabolites().begin();
-  CCopasiVectorNS<CMetab>::iterator metabEndit = pModel->getMetabolites().end();
+  CDataVectorNS<CMetab>::iterator metabIt = pModel->getMetabolites().begin();
+  CDataVectorNS<CMetab>::iterator metabEndit = pModel->getMetabolites().end();
 
   while (metabIt != metabEndit)
     {
@@ -7437,8 +7435,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
       ++metabIt;
     }
 
-  CCopasiVectorN<CModelValue>::iterator mvIt = pModel->getModelValues().begin();
-  CCopasiVectorN<CModelValue>::iterator mvEndit = pModel->getModelValues().end();
+  CDataVectorN<CModelValue>::iterator mvIt = pModel->getModelValues().begin();
+  CDataVectorN<CModelValue>::iterator mvEndit = pModel->getModelValues().end();
 
   while (mvIt != mvEndit)
     {
@@ -7485,8 +7483,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
       ++mvIt;
     }
 
-  //CCopasiVectorNS < CReaction >::iterator reactIt = pModel->getReactions().begin();
-  //CCopasiVectorNS < CReaction >::iterator reactEndit = pModel->getReactions().end();
+  //CDataVectorNS < CReaction >::iterator reactIt = pModel->getReactions().begin();
+  //CDataVectorNS < CReaction >::iterator reactEndit = pModel->getReactions().end();
 
   //while (reactIt != reactEndit)
   //  {
@@ -7502,7 +7500,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
 
   //        while (keyIt != keyEndit)
   //          {
-  //            pLocalParameter = dynamic_cast<CCopasiParameter*>(CCopasiRootContainer::getKeyFactory()->get(*keyIt));
+  //            pLocalParameter = dynamic_cast<CCopasiParameter*>(CRootContainer::getKeyFactory()->get(*keyIt));
 
   //            if (pLocalParameter != NULL)
   //              {
@@ -9124,11 +9122,11 @@ UnitDefinition* SBMLImporter::getSBMLUnitDefinitionForId(const std::string& unit
   return pUnitDefinition;
 }
 
-void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlMap, const CModel* pCopasiModel)
+void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlMap, const CModel* pCopasiModel)
 {
   unsigned int i, iMax = pSBMLModel->getNumInitialAssignments();
-  std::map<std::string, const CCopasiObject*> id2copasiMap;
-  std::map<const CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlMap.begin(), endit = copasi2sbmlMap.end();
+  std::map<std::string, const CDataObject*> id2copasiMap;
+  std::map<const CDataObject*, SBase*>::const_iterator it = copasi2sbmlMap.begin(), endit = copasi2sbmlMap.end();
 
   while (it != endit)
     {
@@ -9154,7 +9152,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CC
           if (mSBMLSpeciesReferenceIds.find(symbol) != mSBMLSpeciesReferenceIds.end())
             continue;
 
-          std::map<std::string, const CCopasiObject*>::iterator pos = id2copasiMap.find(symbol);
+          std::map<std::string, const CDataObject*>::iterator pos = id2copasiMap.find(symbol);
 
           if (pos != id2copasiMap.end())
             {
@@ -9199,12 +9197,12 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CC
                       // now we convert the node to a CEvaluationNode
                       CExpression* pExpression = new CExpression();
                       pExpression->setTree(tmpNode);
-                      CCopasiObject * pObject = const_cast< CCopasiObject * >(pos->second);
+                      CDataObject * pObject = const_cast< CDataObject * >(pos->second);
 
                       if (dynamic_cast<CMetab*>(pObject) != NULL)
                         {
                           CMetab* pMetab = dynamic_cast<CMetab*>(pObject);
-                          std::map<const CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlMap.find(pMetab);
+                          std::map<const CDataObject*, SBase*>::const_iterator pos2 = copasi2sbmlMap.find(pMetab);
                           assert(pos2 != copasi2sbmlMap.end());
                           Species* pSBMLSpecies = dynamic_cast<Species*>(pos2->second);
                           assert(pSBMLSpecies != NULL);
@@ -9301,7 +9299,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CC
     }
 }
 
-void SBMLImporter::applyStoichiometricExpressions(std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
+void SBMLImporter::applyStoichiometricExpressions(std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Model* pSBMLModel)
 {
   bool warningDone = false;
   std::map<const ASTNode*, const CChemEqElement* >::iterator it = this->mStoichiometricExpressionMap.begin(), end = this->mStoichiometricExpressionMap.end();
@@ -9340,7 +9338,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<const CCopasiObject*,
 
           if (pChemEq != NULL)
             {
-              CCopasiVector < CChemEqElement >::const_iterator iit = pChemEq->getSubstrates().begin(), iendit = pChemEq->getSubstrates().end();
+              CDataVector < CChemEqElement >::const_iterator iit = pChemEq->getSubstrates().begin(), iendit = pChemEq->getSubstrates().end();
 
               while (iit != iendit)
                 {
@@ -9427,7 +9425,7 @@ void SBMLImporter::findAvogadroConstant(Model* pSBMLModel, double factor)
   //}
 }
 
-void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::createHasOnlySubstanceUnitFactor(Model* pSBMLModel, double factor, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   // find an ID that is unique at least within the list of parameters
   // since we remove this created parameter after import, it does not
@@ -9551,7 +9549,7 @@ void SBMLImporter::multiplySubstanceOnlySpeciesByVolume(ConverterASTNode* pASTNo
     }
 }
 
-bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASIObject)
+bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIObject)
 {
   bool result = true;
 
@@ -9776,8 +9774,8 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
           info.load(annotation->getKey());
 
           // check whether term is already there
-          CCopasiVector <CBiologicalDescription>& descriptons = info.getBiologicalDescriptions();
-          CCopasiVector <CBiologicalDescription>::const_iterator it = descriptons.begin()
+          CDataVector <CBiologicalDescription>& descriptons = info.getBiologicalDescriptions();
+          CDataVector <CBiologicalDescription>::const_iterator it = descriptons.begin()
               , end = descriptons.end();
 
           bool found = false;
@@ -9806,9 +9804,9 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CCopasiObject* pCOPASI
   return result;
 }
 
-const CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB)
+const CDataObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB)
 {
-  const CCopasiObject* pObject = NULL;
+  const CDataObject* pObject = NULL;
   CRegisteredObjectName name;
   CEvaluationNode::MainType MainType = pRoot->mainType();
 
@@ -9861,7 +9859,7 @@ const CCopasiObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, 
   pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(name));
   assert(pObject != NULL);
 
-  if (pObject->isReference())
+  if (pObject->hasFlag(CDataObject::Reference))
     {
       pObject = pObject->getObjectParent();
     }
@@ -9911,13 +9909,13 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pASTNode, const CMode
       if (itNode->getType() == AST_NAME_TIME)
         {
           itNode->setType(AST_NAME);
-          const CCopasiObject* pReference = pCopasiModel->getInitialValueReference();
+          const CDataObject* pReference = pCopasiModel->getInitialValueReference();
           assert(pReference);
           itNode->setName(pReference->getCN().c_str());
         }
     }
 }
-void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   unsigned int i, iMax = pSBMLModel->getNumEvents();
 
@@ -9952,7 +9950,7 @@ void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::ma
     }
 }
 
-void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* pCopasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   if (pEvent == NULL) return;
 
@@ -10147,8 +10145,8 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
   // the check if the time units are correct has already been made elsewhere
 
   // import all assignments
-  std::map<std::string, const CCopasiObject*> id2copasiMap;
-  std::map<const CCopasiObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
+  std::map<std::string, const CDataObject*> id2copasiMap;
+  std::map<const CDataObject*, SBase*>::const_iterator it = copasi2sbmlmap.begin(), endit = copasi2sbmlmap.end();
 
   while (it != endit)
     {
@@ -10178,7 +10176,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           continue;
         }
 
-      std::map<std::string, const CCopasiObject*>::iterator pos = id2copasiMap.find(variable);
+      std::map<std::string, const CDataObject*>::iterator pos = id2copasiMap.find(variable);
 
       if (pos == id2copasiMap.end())
         {
@@ -10187,7 +10185,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           continue;
         }
 
-      const CCopasiObject* pObject = pos->second;
+      const CDataObject* pObject = pos->second;
 
       if (pObject->getObjectType() != "Compartment" && pObject->getObjectType() != "Metabolite" && pObject->getObjectType() != "ModelValue")
         {
@@ -10226,7 +10224,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           // if so, we have to divide the expression by the volume of the species
           // compartment
           // now we convert the node to a CEvaluationNode
-          std::map<const CCopasiObject*, SBase*>::const_iterator pos2 = copasi2sbmlmap.find(pObject);
+          std::map<const CDataObject*, SBase*>::const_iterator pos2 = copasi2sbmlmap.find(pObject);
 
           // we should always end up with an object, otherwise there is something
           // wrong
@@ -10302,7 +10300,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
  * definition that is defined somewhere further down in the file.
  * So we have to import the function definitions in the correct order.
  */
-CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+CFunctionDB* SBMLImporter::importFunctionDefinitions(Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   std::map<const FunctionDefinition*, std::set<std::string> > directFunctionDependencies;
   unsigned int i = 0, iMax = pSBMLModel->getNumFunctionDefinitions();
@@ -10468,7 +10466,7 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
  * This is necessary because all kinetic laws in COPASI are function calls and
  * function definitions should not contain a call to delay.
  */
-void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
+void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
 {
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
 
@@ -10633,7 +10631,7 @@ void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel
  * Therefore we have to convert all local parameters which occur within a
  * delay call into global parameters.
  */
-void SBMLImporter::find_local_parameters_in_delay(ASTNode* pASTNode, Reaction* pSBMLReaction, Model* pModel, std::map<std::string, std::string>& localReplacementMap, const std::set<std::string>& localIds, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap)
+void SBMLImporter::find_local_parameters_in_delay(ASTNode* pASTNode, Reaction* pSBMLReaction, Model* pModel, std::map<std::string, std::string>& localReplacementMap, const std::set<std::string>& localIds, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CNodeIterator< ASTNode > itNode(pASTNode);
 
@@ -10932,7 +10930,6 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::st
                          stoichiometry));
               // update stoichiometry
               pSpeciesReference->setStoichiometry(stoichiometry);
-
             }
         }
     }
@@ -10942,7 +10939,7 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::st
  * This method divides the given expression by the given object and returns a new expression.
  * The caller is responsible for freeing the memory for the new expression.
  */
-CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, const CCopasiObject* pObject)
+CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, const CDataObject* pObject)
 {
   bool reverse = false;
   CEvaluationNode* pResult = NULL;

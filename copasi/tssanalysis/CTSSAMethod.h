@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,12 +32,12 @@
 #include <sstream>
 
 #include "copasi/utilities/CCopasiMethod.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 #include "copasi/odepack++/CLSODA.h"
-#include "copasi/utilities/CMatrix.h"
+#include "copasi/core/CMatrix.h"
 
 #include "copasi/utilities/CAnnotatedMatrix.h"
-#include "copasi/report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
 class CTSSAProblem;
 class CLsodaMethod;
@@ -55,21 +60,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
    */
-  CTSSAMethod(const CCopasiContainer * pParent,
+  CTSSAMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType,
               const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
 
   /**
    * Copy constructor.
    * @param "const CTSSAMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CTSSAMethod(const CTSSAMethod & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    *  Destructor.

@@ -14,7 +14,7 @@
 
 #include "CLGlobalStyle.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -23,27 +23,27 @@ CLGlobalStyle * CLGlobalStyle::fromData(const CData & data)
   return new CLGlobalStyle(NO_PARENT);
 }
 
-CLGlobalStyle::CLGlobalStyle(CCopasiContainer* pParent): CLStyle("GlobalStyle", pParent)
+CLGlobalStyle::CLGlobalStyle(CDataContainer* pParent): CLStyle("GlobalStyle", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalStyle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GlobalStyle", this);
 }
 
 /**
  * Copy Constructor.
  */
-CLGlobalStyle::CLGlobalStyle(const CLGlobalStyle& source, CCopasiContainer* pParent):
+CLGlobalStyle::CLGlobalStyle(const CLGlobalStyle& source, CDataContainer* pParent):
   CLStyle(source, pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalStyle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GlobalStyle", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLGlobalStyle::CLGlobalStyle(const GlobalStyle& source, CCopasiContainer* pParent):
+CLGlobalStyle::CLGlobalStyle(const GlobalStyle& source, CDataContainer* pParent):
   CLStyle(source, "GlobalStyle", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalStyle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GlobalStyle", this);
 }
 
 /**

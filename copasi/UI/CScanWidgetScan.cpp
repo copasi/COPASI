@@ -17,7 +17,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CScanWidgetScan.h"
 
@@ -26,10 +26,12 @@
 #include "listviews.h"
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
-#include "resourcesUI/CQIconResource.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+
+#include "copasi/core/CRootContainer.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CScanWidgetScan as a child of 'parent', with the
@@ -79,7 +81,7 @@ void CScanWidgetScan::init()
 
 void CScanWidgetScan::slotChooseObject()
 {
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters,
@@ -89,7 +91,7 @@ void CScanWidgetScan::slotChooseObject()
     initFromObject(pObject);
 }
 
-void CScanWidgetScan::initFromObject(const CCopasiObject *obj)
+void CScanWidgetScan::initFromObject(const CDataObject *obj)
 {
   mpObject = obj;
 
@@ -97,7 +99,7 @@ void CScanWidgetScan::initFromObject(const CCopasiObject *obj)
     {
       lineEditObject->setText(FROM_UTF8(obj->getObjectDisplayName()));
 
-      if (obj->isValueDbl())
+      if (obj->hasFlag(CDataObject::ValueDbl))
         {
           C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
           lineEditNumber->setText("10");
@@ -133,7 +135,7 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
     mpObject = NULL;
   else
     {
-      CCopasiDataModel* pDataModel = ListViews::dataModel(this);
+      CDataModel* pDataModel = ListViews::dataModel(this);
       assert(pDataModel != NULL);
       mpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(tmpString));
     }

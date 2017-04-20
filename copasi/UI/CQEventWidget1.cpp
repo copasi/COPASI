@@ -29,12 +29,12 @@
 #include "CCopasiSelectionDialog.h"
 #include "resourcesUI/CQIconResource.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
 #include "model/CEvent.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiMessage.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 //UNDO framework classes
 #include "undoFramework/DeleteEventCommand.h"
@@ -134,7 +134,7 @@ void CQEventWidget1::slotAddTarget()
   CQSimpleSelectionTree::ObjectClasses Classes =
     CQSimpleSelectionTree::EventTarget;
 
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject == NULL) return;
@@ -216,8 +216,8 @@ CQEventWidget1::loadFromEvent()
   mpTriggerPersistent->setChecked(!mpEvent->getPersistentTrigger());
 
   // copy assignment from event
-  CCopasiVectorN< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
-  CCopasiVectorN< CEventAssignment >::const_iterator end = mpEvent->getAssignments().end();
+  CDataVectorN< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
+  CDataVectorN< CEventAssignment >::const_iterator end = mpEvent->getAssignments().end();
 
   mAssignments.clear();
   QStringList Targets;
@@ -227,7 +227,7 @@ CQEventWidget1::loadFromEvent()
   for (; it != end; ++it, ijk++)
     {
       const CModelEntity * pEntity =
-        dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
+        dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
 
       if (pEntity != NULL)
         {
@@ -259,7 +259,7 @@ CQEventWidget1::loadFromEvent()
 void CQEventWidget1::saveToEvent()
 {
   // need to update object reference
-  mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+  mpObject = CRootContainer::getKeyFactory()->get(mKey);
   mpEvent = dynamic_cast<CEvent*>(mpObject);
 
   if (mpEvent == NULL) return;
@@ -368,10 +368,10 @@ void CQEventWidget1::saveToEvent()
     }
 
   // event assignments
-  CCopasiVector< CEventAssignment >::const_iterator it = mAssignments.begin();
-  CCopasiVector< CEventAssignment >::const_iterator end = mAssignments.end();
+  CDataVector< CEventAssignment >::const_iterator it = mAssignments.begin();
+  CDataVector< CEventAssignment >::const_iterator end = mAssignments.end();
 
-  CCopasiVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
+  CDataVectorN< CEventAssignment > & OldAssignments = mpEvent->getAssignments();
   size_t Found;
 
   // We first update all assignments.
@@ -414,8 +414,8 @@ void CQEventWidget1::saveToEvent()
     }
 
   // Find the deleted assignments and mark them.
-  CCopasiVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
-  CCopasiVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
+  CDataVectorN< CEventAssignment >::const_iterator itOld = OldAssignments.begin();
+  CDataVectorN< CEventAssignment >::const_iterator endOld = OldAssignments.end();
 
   size_t DeleteCount = 0;
 
@@ -523,7 +523,7 @@ bool CQEventWidget1::enterProtected()
 
   if (mKeyToCopy != "")
     {
-      mpEvent = dynamic_cast<CEvent*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mpEvent = dynamic_cast<CEvent*>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
       mKeyToCopy = "";
     }
   else
@@ -570,7 +570,7 @@ void CQEventWidget1::slotSelectObject()
   CQSimpleSelectionTree::ObjectClasses Classes =
     CQSimpleSelectionTree::EventTarget;
 
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject == NULL) return;
@@ -724,7 +724,7 @@ void CQEventWidget1::addEvent(UndoEventData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CCopasiObject* pEvent = pData->restoreObjectIn(pModel);
+  CDataObject* pEvent = pData->restoreObjectIn(pModel);
 
   if (pEvent == NULL)
     return;
@@ -744,7 +744,7 @@ CQEventWidget1::changeValue(const std::string &key,
   if (!mIgnoreUpdates)
     {
       mKey = key;
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpObject = CRootContainer::getKeyFactory()->get(key);
       mpEvent = dynamic_cast<CEvent*>(mpObject);
       loadFromEvent();
 

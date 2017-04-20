@@ -15,13 +15,13 @@
 
 #include "report/CCopasiObjectName.h"
 
-class CCopasiObject;
+class CDataObject;
 class CQTabWidget;
 
 class EntityRenameCommand : public CCopasiUndoCommand
 {
 public:
-  EntityRenameCommand(CCopasiObject *pObject,
+  EntityRenameCommand(CDataObject *pObject,
                       const std::string& oldName,
                       const std::string& newName,
                       CQTabWidget* pTabWidget);
@@ -31,7 +31,7 @@ public:
   virtual void redo();
 
 protected:
-  CCopasiObject *mpObject;
+  CDataObject *mpObject;
   CQTabWidget* mpTabWidget;
   std::string mKey;
   CRegisteredObjectName mName;

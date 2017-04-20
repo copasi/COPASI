@@ -38,7 +38,7 @@
 
 #include "report/CKeyFactory.h"
 #include "sbml/CSBMLExporter.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CLayout * CLayout::fromData(const CData & data)
@@ -48,10 +48,10 @@ CLayout * CLayout::fromData(const CData & data)
 }
 
 CLayout::CLayout(const std::string & name,
-                 const CCopasiContainer * pParent)
+                 const CDataContainer * pParent)
   : CLBase(),
-    CCopasiContainer(name, pParent, "Layout"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
+    CDataContainer(name, pParent, "Layout"),
+    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -62,10 +62,10 @@ CLayout::CLayout(const std::string & name,
 {}
 
 CLayout::CLayout(const CLayout & src,
-                 const CCopasiContainer * pParent)
+                 const CDataContainer * pParent)
   : CLBase(src),
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
+    CDataContainer(src, pParent),
+    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(src.mDimensions),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -80,7 +80,7 @@ CLayout::CLayout(const CLayout & src,
   std::map<std::string, std::string> forward;
   std::map<std::string, std::string> reverse;
 
-  CCopasiVector<CLCompartmentGlyph>::const_iterator compIt = src.mvCompartments.begin();
+  CDataVector<CLCompartmentGlyph>::const_iterator compIt = src.mvCompartments.begin();
 
   for (; compIt != src.mvCompartments.end(); ++compIt)
     {
@@ -90,7 +90,7 @@ CLayout::CLayout(const CLayout & src,
       reverse[comp->getKey()] = compIt->getKey();
     }
 
-  CCopasiVector<CLMetabGlyph>::const_iterator metabIt = src.mvMetabs.begin();
+  CDataVector<CLMetabGlyph>::const_iterator metabIt = src.mvMetabs.begin();
 
   for (; metabIt != src.mvMetabs.end(); ++metabIt)
     {
@@ -100,7 +100,7 @@ CLayout::CLayout(const CLayout & src,
       reverse[metab->getKey()] = metabIt->getKey();
     }
 
-  CCopasiVector<CLReactionGlyph>::const_iterator reactIt = src.mvReactions.begin();
+  CDataVector<CLReactionGlyph>::const_iterator reactIt = src.mvReactions.begin();
 
   for (; reactIt != src.mvReactions.end(); ++reactIt)
     {
@@ -118,7 +118,7 @@ CLayout::CLayout(const CLayout & src,
         }
     }
 
-  CCopasiVector<CLTextGlyph>::const_iterator textIt = src.mvLabels.begin();
+  CDataVector<CLTextGlyph>::const_iterator textIt = src.mvLabels.begin();
 
   for (; textIt != src.mvLabels.end(); ++textIt)
     {
@@ -128,7 +128,7 @@ CLayout::CLayout(const CLayout & src,
       reverse[text->getKey()] = textIt->getKey();
     }
 
-  CCopasiVector<CLGeneralGlyph>::const_iterator generalIt = src.mvGraphicalObjects.begin();
+  CDataVector<CLGeneralGlyph>::const_iterator generalIt = src.mvGraphicalObjects.begin();
 
   for (; generalIt != src.mvGraphicalObjects.end(); ++generalIt)
     {
@@ -158,7 +158,7 @@ CLayout::CLayout(const CLayout & src,
 
     // by now we have collected all keys, now we need to replace them
     std::map<std::string, std::string>::const_iterator constIt;
-    CCopasiVector<CLTextGlyph>::iterator textIt = mvLabels.begin();
+    CDataVector<CLTextGlyph>::iterator textIt = mvLabels.begin();
 
     for (; textIt != mvLabels.end(); ++textIt)
       {
@@ -172,12 +172,12 @@ CLayout::CLayout(const CLayout & src,
         text->setGraphicalObjectKey(constIt->second);
       }
 
-    CCopasiVector<CLReactionGlyph>::iterator reactIt = mvReactions.begin();
+    CDataVector<CLReactionGlyph>::iterator reactIt = mvReactions.begin();
 
     for (; reactIt != mvReactions.end(); ++reactIt)
       {
         CLReactionGlyph *r = reactIt;
-        CCopasiVector<CLMetabReferenceGlyph>::iterator refIt = r->getListOfMetabReferenceGlyphs().begin();
+        CDataVector<CLMetabReferenceGlyph>::iterator refIt = r->getListOfMetabReferenceGlyphs().begin();
 
         for (; refIt != r->getListOfMetabReferenceGlyphs().end(); ++refIt)
           {
@@ -192,12 +192,12 @@ CLayout::CLayout(const CLayout & src,
           }
       }
 
-    CCopasiVector<CLGeneralGlyph>::iterator generalIt = mvGraphicalObjects.begin();
+    CDataVector<CLGeneralGlyph>::iterator generalIt = mvGraphicalObjects.begin();
 
     for (; generalIt != mvGraphicalObjects.end(); ++generalIt)
       {
         CLGeneralGlyph *g = generalIt;
-        CCopasiVector<CLReferenceGlyph>::iterator refIt = g->getListOfReferenceGlyphs().begin();
+        CDataVector<CLReferenceGlyph>::iterator refIt = g->getListOfReferenceGlyphs().begin();
 
         for (; refIt != g->getListOfReferenceGlyphs().end(); ++refIt)
           {
@@ -211,7 +211,7 @@ CLayout::CLayout(const CLayout & src,
             current->setTargetGlyphKey(constIt->second);
           }
 
-        //CCopasiVector<CLGraphicalObject>::iterator refIt = g->getListOfSubglyphs().begin();
+        //CDataVector<CLGraphicalObject>::iterator refIt = g->getListOfSubglyphs().begin();
         //for(;refIt != g->getListOfReferenceGlyphs().end(); ++refIt)
         //{
         //  CLGraphicalObject* current = *refIt;
@@ -227,10 +227,10 @@ CLayout::CLayout(const CLayout & src,
 
 CLayout::CLayout(const Layout & sbml,
                  std::map<std::string, std::string> & layoutmap,
-                 const CCopasiContainer * pParent)
+                 const CDataContainer * pParent)
   : CLBase(sbml),
-    CCopasiContainer(sbml.getId(), pParent, "Layout"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
+    CDataContainer(sbml.getId(), pParent, "Layout"),
+    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
     mDimensions(*sbml.getDimensions()),
     mvCompartments("ListOfCompartmentGlyphs", this),
     mvMetabs("ListOfMetaboliteGlyphs", this),
@@ -245,7 +245,7 @@ CLayout::CLayout(const Layout & sbml,
 
 CLayout::~CLayout()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 void CLayout::addCompartmentGlyph(CLCompartmentGlyph * glyph)
@@ -401,7 +401,7 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
   os << id1 << " -> " << id2 << tmp << "\n"; //[label=\"" << label << "\"] \n";
 }
 
-void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+void CLayout::exportToSBML(Layout * layout, const std::map<const CDataObject*, SBase*> & copasimodelmap,
                            std::map<std::string, const SBase*>& sbmlIDs
                            , const std::map<std::string, std::string>& globalKeyToIdMap
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalColorKeyToIdMapMap
@@ -442,7 +442,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       const CLCompartmentGlyph * tmp = &mvCompartments[i];
 
       //check if the compartment glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       CompartmentGlyph * pCG;
@@ -468,7 +468,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       const CLMetabGlyph * tmp = &mvMetabs[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       SpeciesGlyph * pG;
@@ -494,7 +494,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       const CLReactionGlyph * tmp = &mvReactions[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       ReactionGlyph * pG;
@@ -523,7 +523,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       const CLTextGlyph * tmp = &mvLabels[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       TextGlyph * pG;
@@ -549,7 +549,7 @@ void CLayout::exportToSBML(Layout * layout, const std::map<const CCopasiObject*,
       const CLGeneralGlyph * tmp = &mvGraphicalObjects[i];
 
       //check if the glyph exists in the libsbml data
-      std::map<const CCopasiObject*, SBase*>::const_iterator it;
+      std::map<const CDataObject*, SBase*>::const_iterator it;
       it = copasimodelmap.find(tmp);
 
       GraphicalObject * pG;

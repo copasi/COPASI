@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,14 +29,14 @@
 #include "COptTask.h"
 
 #include "parameterFitting/CFitProblem.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
 #include "lapack/lapackwrap.h"
 #include "lapack/blaswrap.h"
 
 #define LAMBDA_MAX 1e80
 
-COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContainer * pParent,
+COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType),
@@ -65,7 +70,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CCopasiContaine
 }
 
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLevenbergMarquardt & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   COptMethod(src, pParent),
   mIterationLimit(src.mIterationLimit),
   mTolerance(src.mTolerance),
@@ -92,7 +97,7 @@ COptMethodLevenbergMarquardt::~COptMethodLevenbergMarquardt()
 
 void COptMethodLevenbergMarquardt::initObjects()
 {
-  addObjectReference("Current Iteration", mIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
 
 #ifndef COPASI_DEBUG
   removeParameter("Modulation");

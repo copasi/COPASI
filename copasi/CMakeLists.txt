@@ -50,6 +50,7 @@ file(GLOB COPASI_HEADERS *.h lapack/*.h GL/*.h)
 
 include(CopasiDataModel/CMakeLists.txt)
 include(MIRIAM/CMakeLists.txt)
+include(core/CMakeLists.txt)
 include(commandline/CMakeLists.txt)
 include(compareExpressions/CMakeLists.txt)
 include(crosssection/CMakeLists.txt)

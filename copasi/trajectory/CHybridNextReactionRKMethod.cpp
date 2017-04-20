@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -34,7 +39,7 @@
 #include "math/CMathContainer.h"
 #include "math/CMathReaction.h"
 
-CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CCopasiContainer * pParent,
+CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CHybridMethod(pParent, methodType, taskType)
@@ -45,10 +50,10 @@ CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CCopasiContainer 
 /**
  * Copy constructor.
  * @param const CHybridNextReactionRKMethod & src
- * @param const CCopasiContainer * pParent
+ * @param const CDataContainer * pParent
  */
 CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CHybridMethod & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CHybridMethod(src, pParent)
 {
   initializeParameter();

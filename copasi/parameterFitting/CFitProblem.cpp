@@ -27,11 +27,11 @@
 #include "CExperimentSet.h"
 #include "CExperiment.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -45,7 +45,7 @@
 
 //  Default constructor
 CFitProblem::CFitProblem(const CTaskEnum::Task & type,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   COptProblem(type, pParent),
   mpParmSteadyStateCN(NULL),
   mpParmTimeCourseCN(NULL),
@@ -102,7 +102,7 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
 
 // copy constructor
 CFitProblem::CFitProblem(const CFitProblem& src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   COptProblem(src, pParent),
   mpParmSteadyStateCN(NULL),
   mpParmTimeCourseCN(NULL),
@@ -176,8 +176,8 @@ CFitProblem::~CFitProblem()
 
 void CFitProblem::initObjects()
 {
-  addObjectReference("Validation Solution", mCrossValidationSolutionValue, CCopasiObject::ValueDbl);
-  addObjectReference("Validation Objective", mCrossValidationObjective, CCopasiObject::ValueDbl);
+  addObjectReference("Validation Solution", mCrossValidationSolutionValue, CDataObject::ValueDbl);
+  addObjectReference("Validation Objective", mCrossValidationObjective, CDataObject::ValueDbl);
 
   mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
   mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
@@ -266,14 +266,14 @@ bool CFitProblem::elevateChildren()
   mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""));
   mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""));
 
-  CCopasiVectorN< CCopasiTask > * pTasks = NULL;
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataVectorN< CCopasiTask > * pTasks = NULL;
+  CDataModel* pDataModel = getObjectDataModel();
 
   if (pDataModel)
     pTasks = pDataModel->getTaskList();
 
   if (pTasks == NULL)
-    pTasks = dynamic_cast<CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
+    pTasks = dynamic_cast<CDataVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
   if (pTasks)
     {
@@ -429,14 +429,14 @@ bool CFitProblem::initialize()
         success = false;
     }
 
-  CCopasiDataModel * pDataModel = getObjectDataModel();
+  CDataModel * pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   // We only need to initialize the steady-state task if steady-state data is present.
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::steadyState))
     {
       mpSteadyState =
-        dynamic_cast< CSteadyStateTask * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
+        dynamic_cast< CSteadyStateTask * >(const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
 
       if (mpSteadyState == NULL)
         {
@@ -460,7 +460,7 @@ bool CFitProblem::initialize()
   if (mpExperimentSet->hasDataForTaskType(CTaskEnum::timeCourse))
     {
       mpTrajectory =
-        dynamic_cast< CTrajectoryTask * >(const_cast< CCopasiObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
+        dynamic_cast< CTrajectoryTask * >(const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
 
       if (mpTrajectory == NULL)
         {
@@ -585,7 +585,7 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getInitialDependencies().getUpdateSequence(mExperimentInitialUpdates[i], CMath::SimulationContext::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
+      mpContainer->getInitialDependencies().getUpdateSequence(mExperimentInitialUpdates[i], CCore::SimulationContext::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
     }
 
   // Build a matrix of experiment and constraint items;
@@ -629,7 +629,7 @@ bool CFitProblem::initialize()
 
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mExperimentConstraintUpdates[i], CMath::SimulationContext::Default,
+      mpContainer->getTransientDependencies().getUpdateSequence(mExperimentConstraintUpdates[i], CCore::SimulationContext::Default,
           mpContainer->getStateObjects(false), ObjectSet[i],
           mpContainer->getSimulationUpToDateObjects());
     }
@@ -688,7 +688,7 @@ bool CFitProblem::initialize()
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getInitialDependencies().getUpdateSequence(mCrossValidationInitialUpdates[i], CMath::SimulationContext::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
+      mpContainer->getInitialDependencies().getUpdateSequence(mCrossValidationInitialUpdates[i], CCore::SimulationContext::UpdateMoieties, ObjectSet[i], mpContainer->getInitialStateObjects());
     }
 
   // Build a matrix of cross validation experiments and constraint items;
@@ -731,7 +731,7 @@ bool CFitProblem::initialize()
 
   for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mCrossValidationConstraintUpdates[i], CMath::SimulationContext::Default,
+      mpContainer->getTransientDependencies().getUpdateSequence(mCrossValidationConstraintUpdates[i], CCore::SimulationContext::Default,
           mpContainer->getStateObjects(false), ObjectSet[i],
           mpContainer->getSimulationUpToDateObjects());
     }
@@ -765,7 +765,7 @@ bool CFitProblem::checkFunctionalConstraints()
 
 CFitItem & CFitProblem::addFitItem(const CCopasiObjectName & objectCN)
 {
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   CFitItem * pItem = new CFitItem(pDataModel);
@@ -1169,7 +1169,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
               if (j) os << ", ";
 
               pExperiment =
-                dynamic_cast< CExperiment * >(CCopasiRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
+                dynamic_cast< CExperiment * >(CRootContainer::getKeyFactory()->get(pFitItem->getExperiment(j)));
 
               if (pExperiment)
                 os << pExperiment->getObjectName();

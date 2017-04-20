@@ -1,22 +1,19 @@
-/* Begin CVS Header
-  $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/report/CReportDefinitionVector.h,v $
-  $Revision: 1.16 $
-  $Name:  $
-  $Author: shoops $
-  $Date: 2011/09/16 12:12:08 $
-  End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -30,17 +27,17 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "report/CReportDefinition.h"
 
-class CReportDefinitionVector: public CCopasiVectorN< CReportDefinition >
+class CReportDefinitionVector: public CDataVectorN< CReportDefinition >
 {
 private:
   std::string mKey;
 
 public:
   CReportDefinitionVector(const std::string & name = "ReportDefinitions",
-                          const CCopasiContainer* pParent = NULL);
+                          const CDataContainer* pParent = NULL);
 
   ~CReportDefinitionVector();
 

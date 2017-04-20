@@ -34,7 +34,7 @@
 #include "model/CReaction.h"
 #include "model/CMetabNameInterface.h"
 #include "utilities/CUnitValidator.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathExpression.h"
 
 ParameterTable::ParameterTable(QWidget * parent)
@@ -483,7 +483,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                   std::string Key = mapping[0];
 
                   const CModelValue * pParamObject =
-                    dynamic_cast<const CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(Key));
+                    dynamic_cast<const CModelValue *>(CRootContainer::getKeyFactory()->get(Key));
 
                   if (pParamObject != NULL &&
                       pParamObject->getStatus() == CModelEntity::FIXED)

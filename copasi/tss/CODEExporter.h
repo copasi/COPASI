@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,7 +27,7 @@
 #ifndef ODEExpoter_H__
 #define ODEExpoter_H__
 
-class CCopasiDataModel;
+class CDataModel;
 
 class CODEExporter
 {
@@ -41,7 +46,7 @@ public:
    */
   virtual ~CODEExporter();
 
-  bool exportToStream(const CCopasiDataModel* pDataModel, std::ostream & os);
+  bool exportToStream(const CDataModel* pDataModel, std::ostream & os);
 
   virtual bool preprocess(const CModel* copasiModel);
 
@@ -56,13 +61,13 @@ public:
   bool exportModelValues(const CModel* copasiModel);
 
 #if 1
-  void exportObjectNodesFromModel(const CCopasiDataModel* pDataModel);
+  void exportObjectNodesFromModel(const CDataModel* pDataModel);
 
-  // CCopasiObject* findObjectFromRefresh(const CCopasiObject * tmp, const Refresh* ref);
+  // CDataObject* findObjectFromRefresh(const CDataObject * tmp, const Refresh* ref);
 
-  void exportSimulatedObject(const CCopasiObject * obj, const CCopasiDataModel* pDataModel);
+  void exportSimulatedObject(const CDataObject * obj, const CDataModel* pDataModel);
 
-  bool exportModelEntityExpression(const CCopasiObject * obj, const CCopasiDataModel* pDataModel);
+  bool exportModelEntityExpression(const CDataObject * obj, const CDataModel* pDataModel);
 
   bool exportModelValuesExpressions(const CModel* copasiModel);
 
@@ -72,9 +77,9 @@ public:
 
   virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
 
-  std::string isModelEntityExpressionODEExporterCompatible(const CModelEntity * tmp, const CExpression* pExpression, const CCopasiDataModel* pDataModel);
+  std::string isModelEntityExpressionODEExporterCompatible(const CModelEntity * tmp, const CExpression* pExpression, const CDataModel* pDataModel);
 
-  std::string exportExpression(const CExpression* pExpression, const CCopasiDataModel* pDataModel);
+  std::string exportExpression(const CExpression* pExpression, const CDataModel* pDataModel);
 
   virtual std::string getSingleLineComment();
 

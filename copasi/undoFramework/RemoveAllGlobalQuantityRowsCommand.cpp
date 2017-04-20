@@ -15,16 +15,17 @@
  *      Author: dada
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CModelValue.h"
-#include "model/CModel.h"
-#include "UI/CQGlobalQuantityDM.h"
-#include "function/CFunctionDB.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CQGlobalQuantityDM.h"
+#include "copasi/function/CFunctionDB.h"
 
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "UndoGlobalQuantityData.h"
 #include "UndoReactionData.h"
@@ -36,7 +37,7 @@ RemoveAllGlobalQuantityRowsCommand::RemoveAllGlobalQuantityRowsCommand(
   , mpGlobalQuantityDM(pGlobalQuantityDM)
   , mpGlobalQuantityData()
 {
-  CCopasiDataModel * pDataModel = mpGlobalQuantityDM->getDataModel();
+  CDataModel * pDataModel = mpGlobalQuantityDM->getDataModel();
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);

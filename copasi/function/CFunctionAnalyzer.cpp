@@ -26,7 +26,7 @@
 #include "CFunction.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CNodeIterator.h"
 
 #if defined(WIN32) && _MSC_VER < 1800
@@ -1046,7 +1046,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
           case CFunctionParameter::VOLUME:
           case CFunctionParameter::PARAMETER:
             callParameters[i] = CValue::unknown;
-            pME = dynamic_cast<const CModelEntity*>(CCopasiRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
+            pME = dynamic_cast<const CModelEntity*>(CRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
 
             if (pME)
               {
@@ -1056,7 +1056,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
                   callParameters[i] = CValue::positive;
               }
 
-            pCP = dynamic_cast<const CCopasiParameter*>(CCopasiRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
+            pCP = dynamic_cast<const CCopasiParameter*>(CRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
 
             if (pCP)
               {

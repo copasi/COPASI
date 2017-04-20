@@ -16,14 +16,14 @@
 #include "model/CReaction.h"
 #include "utilities/CCopasiParameter.h"
 #include "utilities/CCopasiParameterGroup.h"
-#include "report/CCopasiObject.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiTimer.h"
 #include "report/CCopasiObjectName.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CAnnotatedMatrix.h"
 #include "utilities/CCopasiTask.h"
 #include "steadystate/CMCAMethod.h"
@@ -101,7 +101,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 {
   if (!pModel) return;
 
-  const CCopasiObject *pObject;
+  const CDataObject *pObject;
   QTreeWidgetItem *pItem;
   // find all kinds of time
   pObject = pModel->getValueReference();
@@ -137,7 +137,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     }
 
   // find all species (aka metabolites) and create items in the metabolite subtree
-  const CCopasiVector<CMetab> &metabolites = pModel->getMetabolites();
+  const CDataVector<CMetab> &metabolites = pModel->getMetabolites();
   size_t counter;
   size_t maxCount = metabolites.size();
 
@@ -214,14 +214,14 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     }
 
   // find all reactions and create items in the reaction subtree
-  const CCopasiVectorNS<CReaction> &reactions = pModel->getReactions();
+  const CDataVectorNS<CReaction> &reactions = pModel->getReactions();
   maxCount = reactions.size();
 
   for (counter = maxCount; counter != 0; --counter)
     {
       const CReaction *react = &reactions[counter - 1];
       std::string name = "flux(" + react->getObjectName() + ")";
-      pObject = static_cast< const CCopasiObject * >(react->getObject(CCopasiObjectName("Reference=Flux")));
+      pObject = static_cast< const CDataObject * >(react->getObject(CCopasiObjectName("Reference=Flux")));
 
       if (filter(classes, pObject))
         {
@@ -229,7 +229,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = static_cast< const CCopasiObject * >(react->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+      pObject = static_cast< const CDataObject * >(react->getObject(CCopasiObjectName("Reference=ParticleFlux")));
 
       if (filter(classes, pObject))
         {
@@ -252,7 +252,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           if (!react->isLocalParameter(pParameter->getObjectName()))
             continue;
 
-          pObject = static_cast< const CCopasiObject * >(pParameter->getObject(CCopasiObjectName("Reference=Value")));
+          pObject = static_cast< const CDataObject * >(pParameter->getObject(CCopasiObjectName("Reference=Value")));
 
           if (filter(classes, pObject))
             {
@@ -266,7 +266,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     }
 
   // find all global parameters (aka model values) variables
-  const CCopasiVector<CModelValue> &objects = pModel->getModelValues();
+  const CDataVector<CModelValue> &objects = pModel->getModelValues();
   maxCount = objects.size();
 
   for (counter = maxCount; counter != 0; --counter)
@@ -302,7 +302,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     }
 
   // find all compartments
-  const CCopasiVector<CCompartment> &objects2 = pModel->getCompartments();
+  const CDataVector<CCompartment> &objects2 = pModel->getCompartments();
   maxCount = objects2.size();
 
   for (counter = maxCount; counter != 0; --counter)
@@ -337,7 +337,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         }
     }
 
-  pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant")));
+  pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant")));
 
   if (filter(classes, pObject))
     {
@@ -345,7 +345,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor")));
+  pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor")));
 
   if (filter(classes, pObject))
     {
@@ -358,7 +358,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (StoiMatrix.array())
     {
-      pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -372,7 +372,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (RedStoiMatrix.array())
     {
-      pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -386,7 +386,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (LinkMatrix.array())
     {
-      pObject = static_cast< const CCopasiObject * >(pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -399,7 +399,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
   // find all result matrices
   // Metabolic Control Analysis
   CCopasiTask *task;
-  CCopasiDataModel *pDataModel = pModel->getObjectDataModel();
+  CDataModel *pDataModel = pModel->getObjectDataModel();
   assert(pDataModel != NULL);
   // MCA
   task = dynamic_cast<CCopasiTask *>(&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
@@ -410,8 +410,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           //for mca the result is in the method
           CMCAMethod *pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
-          const CCopasiContainer::objectMap *pObjects = & pMethod->getObjects();
-          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
+          CDataContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -442,8 +442,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
           if (pMethod->getSubType() == CTaskEnum::tssCSP)
             {
-              const CCopasiContainer::objectMap *pObjects = & pMethod->getObjects();
-              CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+              const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
+              CDataContainer::objectMap::const_iterator its = pObjects->begin();
               CArrayAnnotation *ann;
 
               for (; its != pObjects->end(); ++its)
@@ -485,12 +485,12 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   try
     {
-      const CCopasiContainer::objectMap *pObjects = & task->getObjects();
-      CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+      const CDataContainer::objectMap *pObjects = & task->getObjects();
+      CDataContainer::objectMap::const_iterator its = pObjects->begin();
 
       for (; its != pObjects->end(); ++its)
         {
-          const CCopasiObject *pObject = (const CCopasiObject *)(*its);
+          const CDataObject *pObject = (const CDataObject *)(*its);
           std::string name = pObject->getObjectName();
           //std::cout << name << "   " << (name.find("Statistics") != std::string::npos) << std::endl;
 
@@ -517,8 +517,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       if (task && task->updateMatrices())
         {
           //for steady state the results are in the task
-          const CCopasiContainer::objectMap *pObjects = & task->getObjects();
-          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::objectMap *pObjects = & task->getObjects();
+          CDataContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -547,8 +547,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           //for sensitivities the result is in the problem
           CSensProblem *sens = dynamic_cast<CSensProblem *>(task->getProblem());
-          const CCopasiContainer::objectMap *pObjects = & sens->getObjects();
-          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::objectMap *pObjects = & sens->getObjects();
+          CDataContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -560,7 +560,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
               if (!ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultSensitivitySubtree, QStringList(FROM_UTF8(ann->getObjectName())));
-                  treeItems[pItem] = (CCopasiObject *) ann;
+                  treeItems[pItem] = (CDataObject *) ann;
                 }
             }
         }
@@ -575,8 +575,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     {
       if (task && task->updateMatrices())
         {
-          const CCopasiContainer::objectMap *pObjects = & task->getMethod()->getObjects();
-          CCopasiContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::objectMap *pObjects = & task->getMethod()->getObjects();
+          CDataContainer::objectMap::const_iterator its = pObjects->begin();
           CArrayAnnotation *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -588,7 +588,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
               if (!ann->isEmpty() && filter(classes, ann))
                 {
                   pItem = new QTreeWidgetItem(this->mpResultLNASubtree, QStringList(FROM_UTF8(ann->getObjectName())));
-                  treeItems[pItem] = (CCopasiObject *) ann;
+                  treeItems[pItem] = (CDataObject *) ann;
                 }
             }
         }
@@ -645,18 +645,18 @@ bool CQSimpleSelectionTree::treeHasSelection()
   return hasSelection;
 }
 
-void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject * > &objectList)
+void CQSimpleSelectionTree::populateTree(const std::vector< const CDataObject * > &objectList)
 {
   QTreeWidgetItem *pItem;
   // We add all objects to the appropriate subtree;
-  std::vector< const CCopasiObject * >::const_iterator it = objectList.begin();
-  std::vector< const CCopasiObject * >::const_iterator end = objectList.end();
+  std::vector< const CDataObject * >::const_iterator it = objectList.begin();
+  std::vector< const CDataObject * >::const_iterator end = objectList.end();
   const CReaction *pReaction = NULL;
   const CMetab *pMetab = NULL;
   const CCompartment *pCompartment = NULL;
   const CModelValue *pModelValue = NULL;
   const CModel *pModel = NULL;
-  std::map< const CCopasiObject *, QTreeWidgetItem * > Object2Subtree;
+  std::map< const CDataObject *, QTreeWidgetItem * > Object2Subtree;
 
   // We currently only deal with descendants of the Model.
   for (; it != end; ++it)
@@ -679,7 +679,7 @@ void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject 
             {
               // We must have a reaction parameter which are in a subtree with the reaction name.
               // 1) Find or Create a subtree
-              std::map< const CCopasiObject *, QTreeWidgetItem * >::iterator Found = Object2Subtree.find(pReaction);
+              std::map< const CDataObject *, QTreeWidgetItem * >::iterator Found = Object2Subtree.find(pReaction);
 
               if (Found == Object2Subtree.end())
                 {
@@ -832,10 +832,10 @@ void CQSimpleSelectionTree::populateTree(const std::vector< const CCopasiObject 
   removeAllEmptySubTrees();
 }
 
-std::vector<const CCopasiObject * > *CQSimpleSelectionTree::getTreeSelection()
+std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
 {
-  std::vector<const CCopasiObject * > *selection = new std::vector<const CCopasiObject * >();
-  std::map< std::string, const CCopasiObject * > SelectionMap;
+  std::vector<const CDataObject * > *selection = new std::vector<const CDataObject * >();
+  std::map< std::string, const CDataObject * > SelectionMap;
 
   if (selectedItems().isEmpty())
     return selection;
@@ -897,9 +897,9 @@ std::vector<const CCopasiObject * > *CQSimpleSelectionTree::getTreeSelection()
 
       // Copy the selection set to the selection
       selection->resize(SelectionMap.size());
-      std::vector< const CCopasiObject * >::iterator itSelection = selection->begin();
-      std::map< std::string, const CCopasiObject * >::const_iterator itSet = SelectionMap.begin();
-      std::map< std::string, const CCopasiObject * >::const_iterator endSet = SelectionMap.end();
+      std::vector< const CDataObject * >::iterator itSelection = selection->begin();
+      std::map< std::string, const CDataObject * >::const_iterator itSet = SelectionMap.begin();
+      std::map< std::string, const CDataObject * >::const_iterator endSet = SelectionMap.end();
 
       for (; itSet != endSet; ++itSet, ++itSelection)
         *itSelection = itSet->second;
@@ -908,7 +908,7 @@ std::vector<const CCopasiObject * > *CQSimpleSelectionTree::getTreeSelection()
   return selection;
 }
 
-bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string &name, const CCopasiVector<CMetab> &metabolites)
+bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string &name, const CDataVector<CMetab> &metabolites)
 {
   bool unique = true;
   bool found = false;
@@ -933,11 +933,11 @@ bool CQSimpleSelectionTree::isMetaboliteNameUnique(const std::string &name, cons
   return unique;
 }
 
-QTreeWidgetItem *CQSimpleSelectionTree::findListViewItem(const CCopasiObject *object)
+QTreeWidgetItem *CQSimpleSelectionTree::findListViewItem(const CDataObject *object)
 {
   QTreeWidgetItem *item = NULL;
-  std::map< QTreeWidgetItem *, const CCopasiObject * >::iterator it = treeItems.begin();
-  std::map< QTreeWidgetItem *, const CCopasiObject * >::iterator endPos = treeItems.end();
+  std::map< QTreeWidgetItem *, const CDataObject * >::iterator it = treeItems.begin();
+  std::map< QTreeWidgetItem *, const CDataObject * >::iterator endPos = treeItems.end();
 
   while (it != endPos)
     {
@@ -953,7 +953,7 @@ QTreeWidgetItem *CQSimpleSelectionTree::findListViewItem(const CCopasiObject *ob
   return item;
 }
 
-void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *objects)
+void CQSimpleSelectionTree::selectObjects(std::vector< const CDataObject * > *objects)
 {
   // clear selection on tree and select new objects
   clearSelection();
@@ -967,7 +967,7 @@ void CQSimpleSelectionTree::selectObjects(std::vector< const CCopasiObject * > *
 
   for (i = 0; i < iMax; ++i)
     {
-      const CCopasiObject *object = objects->at(i);
+      const CDataObject *object = objects->at(i);
       QTreeWidgetItem *item = findListViewItem(object);
 
       if (!item && mpExpertSubtree)
@@ -1000,9 +1000,9 @@ void CQSimpleSelectionTree::commitClicked()
 {
   if (mpOutputVector)
     {
-      std::vector< const CCopasiObject * > *treeSelection = getTreeSelection();
+      std::vector< const CDataObject * > *treeSelection = getTreeSelection();
       mpOutputVector->assign(treeSelection->begin(), treeSelection->end());
-      std::vector< const CCopasiObject * >::iterator it = mpOutputVector->begin();
+      std::vector< const CDataObject * >::iterator it = mpOutputVector->begin();
 
       while (it != mpOutputVector->end())
         {
@@ -1020,7 +1020,7 @@ void CQSimpleSelectionTree::commitClicked()
     }
 }
 
-void CQSimpleSelectionTree::setOutputVector(std::vector< const CCopasiObject * > *outputVector)
+void CQSimpleSelectionTree::setOutputVector(std::vector< const CDataObject * > *outputVector)
 {
   mpOutputVector = outputVector;
 
@@ -1031,7 +1031,7 @@ void CQSimpleSelectionTree::setOutputVector(std::vector< const CCopasiObject * >
 }
 
 // static
-bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CCopasiObject *pObject)
+bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObject *pObject)
 {
   if (pObject == NULL)
     return false;
@@ -1041,16 +1041,16 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CCopasiOb
 
   // Check whether the value is of the desired numeric type.
   if ((classes & NumericValues) &&
-      (pObject->isValueDbl() ||
-       pObject->isValueInt() ||
-       pObject->isValueInt64() ||
-       pObject->isArray()))
+      (pObject->hasFlag(CDataObject::ValueDbl) ||
+       pObject->hasFlag(CDataObject::ValueInt) ||
+       pObject->hasFlag(CDataObject::ValueInt64) ||
+       pObject->hasFlag(CDataObject::Array)))
     return true;
 
-  const CCopasiObject *pCheckedObject = pObject;
+  const CDataObject *pCheckedObject = pObject;
 
   // Elements of an array are checked as the array itself.
-  if (pObject->getObjectParent()->isArray())
+  if (pObject->getObjectParent()->hasFlag(CDataObject::Array))
     pCheckedObject = pObject->getObjectParent();
 
   const std::string ObjectName = pObject->getObjectName();
@@ -1097,7 +1097,7 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CCopasiOb
             (ObjectName == "Avogadro Constant" ||
              ObjectName == "Quantity Conversion Factor")) ||
            // TODO Until we have not changed to named array elements we do not support matrix elements
-           //            || pCheckedObject->isArray())) ||
+           //            || pCheckedObject->hasFlag(CDataObject::Array))) ||
            (Status == CModelEntity::ASSIGNMENT &&
             ObjectName.compare(0, 7, "Initial") == 0) ||
            ((Status == CModelEntity::ODE ||
@@ -1147,10 +1147,10 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CCopasiOb
     {
       // TODO we need to filter out non results
       if ((classes & Results) &&
-          (pCheckedObject->isValueDbl() ||
-           pCheckedObject->isValueInt() ||
-           pCheckedObject->isValueInt64() ||
-           pCheckedObject->isArray()))
+          (pCheckedObject->hasFlag(CDataObject::ValueDbl) ||
+           pCheckedObject->hasFlag(CDataObject::ValueInt) ||
+           pCheckedObject->hasFlag(CDataObject::ValueInt64) ||
+           pCheckedObject->hasFlag(CDataObject::Array)))
         return true;
     }
 

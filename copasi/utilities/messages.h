@@ -42,10 +42,10 @@ const MESSAGES Messages[] =
   // CRange
   {MCRange + 1, "CRange (1): Invalid range ('%d', '%d')."},
 
-  // CCopasiVector
-  {MCCopasiVector + 1, "CCopasiVector (1): Object '%s' not found."},
-  {MCCopasiVector + 2, "CCopasiVector (2): Object '%s' already exists."},
-  {MCCopasiVector + 3, "CCopasiVector (3): Index '%d' out of range (0, '%d')."},
+  // CDataVector
+  {MCDataVector + 1, "CDataVector (1): Object '%s' not found."},
+  {MCDataVector + 2, "CDataVector (2): Object '%s' already exists."},
+  {MCDataVector + 3, "CDataVector (3): Index '%d' out of range (0, '%d')."},
 
   // CFunctionParameters
   {
@@ -387,7 +387,7 @@ const MESSAGES Messages[] =
   {MCFitting + 14, "CFitting (14): Failed to calculate the Eigen values and Eigen vectors of the Fisher Information Matrix."},
   {MCFitting + 15, "CFitting (15): Failed to calculate the Eigen values and Eigen vectors of the scaled Fisher Information Matrix."},
 
-  // CCopasiObject
+  // CDataObject
   {MCObject + 1, "CObject (1): Circular dependencies detected for object '%s'."},
 
   // Lyapunov exponents

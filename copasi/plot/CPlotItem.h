@@ -150,11 +150,11 @@ public:
   static CPlotItem * fromData(const CData & data);
 
   CPlotItem(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NO_PARENT,
+            const CDataContainer * pParent = NO_PARENT,
             const Type & type = curve2d);
 
   CPlotItem(const CPlotItem & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
   /**
    * Destructor

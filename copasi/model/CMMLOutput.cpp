@@ -20,11 +20,11 @@
 #include <sstream>
 
 #include "CMMLOutput.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
 #include "function/CExpression.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CMMLOutput::CMMLOutput()
 {}
@@ -72,7 +72,7 @@ void CMMLOutput::writeRHS(std::ostream & out,
       return;
     }
 
-  const CCopasiVector < CChemEqElement > & balances = pReac->getChemEq().getBalances();
+  const CDataVector < CChemEqElement > & balances = pReac->getChemEq().getBalances();
 
   C_FLOAT64 balance = 0;
 
@@ -164,7 +164,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
 
             if (functionParams[i]->getType() == CFunctionParameter::FLOAT64)
               {
-                CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0]);
+                CDataObject * pObject = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0]);
 
                 if (pObject != NULL)
                   {
@@ -185,7 +185,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
 
                 for (j = 0; j < jmax; ++j)
                   {
-                    name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
+                    name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][j])->getObjectDisplayName();
                     //params[i][j] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
                     params[i][j] = "<mi>[" + CMathMl::fixName(name) + "]</mi>";
                   }
@@ -206,7 +206,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
                   }
                 else
                   {
-                    name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+                    name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
                     //params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
                     params[i][0] = "<msub><mi>" + CMathMl::fixName(name) + "</mi><mi>("
                                    + CMathMl::fixName(pReac->getObjectName()) + ")</mi></msub>";
@@ -214,7 +214,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
               }
             else
               {
-                name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+                name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
                 params[i][0] = "<mi>" + CMathMl::fixName(name) + "</mi>";
                 //params[i][0] = "<mi>ggg</mi>";
               }
@@ -222,7 +222,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
             break;
 
           case CFunctionParameter::VOLUME:
-            name = CCopasiRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
+            name = CRootContainer::getKeyFactory()->get(pReac->getParameterMappings()[i][0])->getObjectName();
             params[i][0] = "<msub><mi>V</mi><mi>" + CMathMl::fixName(name)
                            + "</mi></msub>";
             break;
@@ -387,7 +387,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
               //third column (rhs)
               mml << SPC(l + 2) << "<mtd columnalign='left'>" << std::endl;
               writeRHS(mml, &model->getMetabolites()[i],
-                       dynamic_cast<CReaction*>(CCopasiRootContainer::getKeyFactory()->get(*it)) ,
+                       dynamic_cast<CReaction*>(CRootContainer::getKeyFactory()->get(*it)) ,
                        localParameterNumbers, expand, expandFull, l + 3);
               mml << SPC(l + 2) << "</mtd>" << std::endl;
 
@@ -513,12 +513,12 @@ std::set<std::string> CMMLOutput::listReactionsForMetab(const CModel* model,
     const std::string & key)
 {
   std::set<std::string> Keys;
-  const CCopasiVectorN<CReaction> & Reactions = model->getReactions();
+  const CDataVectorN<CReaction> & Reactions = model->getReactions();
   size_t j, jmax = Reactions.size();
 
   for (j = 0; j < jmax; j++)
     {
-      const CCopasiVector <CChemEqElement> &Balances = Reactions[j].getChemEq().getBalances();
+      const CDataVector <CChemEqElement> &Balances = Reactions[j].getChemEq().getBalances();
       size_t i, imax = Balances.size();
 
       for (i = 0; i < imax; i++)

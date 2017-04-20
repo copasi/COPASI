@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -32,7 +37,7 @@ public:
    * If references can not be resolved, an unresolved_reference_exception is
    * thrown.
    */
-  static CLGlobalRenderInformation* flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CCopasiVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException);
+  static CLGlobalRenderInformation* flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException);
 
   /**
    * static method that takes a const reference to a local render
@@ -42,7 +47,7 @@ public:
    * If references can not be resolved, an unresolved_reference_exception is
    * thrown.
    */
-  static CLLocalRenderInformation* flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CCopasiVector<CLLocalRenderInformation>& localList, const CCopasiVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException);
+  static CLLocalRenderInformation* flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CDataVector<CLLocalRenderInformation>& localList, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException);
 
 protected:
   /**
@@ -52,8 +57,8 @@ protected:
    * the second list is not considered.
    */
   static CLRenderInformationBase* flatten(const CLRenderInformationBase& renderInformation,
-                                          const CCopasiVector<CLGlobalRenderInformation>& globalList,
-                                          const CCopasiVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException);
+                                          const CDataVector<CLGlobalRenderInformation>& globalList,
+                                          const CDataVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException);
 
   /**
    * Method takes a global style object and converts it to a local style

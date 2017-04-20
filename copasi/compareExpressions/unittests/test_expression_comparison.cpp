@@ -1,22 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_expression_comparison.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:44 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -29,16 +26,16 @@
 #include "compareExpressions/CNormalTranslation.h"
 #include "compareExpressions/CNormalBase.h"
 #include "compareExpressions/CNormalFraction.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 void test_expression_comparison::setUp()
 {
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
 }
 
 void test_expression_comparison::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test_expression_comparison::test_substrate_activation()
@@ -227,7 +224,6 @@ void test_expression_comparison::test_reversible_hill()
       std::string infix2("((substrate*Phalve+product*Shalve)^(h-1)*Vf/Shalve*(substrate-Keq^(-1)*product))/(Phalve^(h-1)*Shalve^(h-1)+(substrate*Phalve+product*Shalve)^h/(Shalve*Phalve))");
       //std::string infix1("Vf*substrate/Shalve*(1-product/(substrate*Keq))*(substrate/Shalve+product/Phalve)^(5-1)/(1+(substrate/Shalve+product/Phalve)^5)");
       //std::string infix2("(substrate*Phalve+product*Shalve)^(5-1)*Vf/Shalve*(substrate-Keq^(-1)*product)/(Phalve^(5-1)*Shalve^(5-1)+(substrate*Phalve+product*Shalve)^5/(Shalve*Phalve))");
-
 
       // numerators
       CEvaluationTree* firstTree = new CEvaluationTree("first tree", NULL, CEvaluationTree::Function);

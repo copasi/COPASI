@@ -45,25 +45,25 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMassAction(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CFunction &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMassAction(const CFunction & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Specified constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMassAction(const TriLogic & reversible,
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    *  Destructor
@@ -77,15 +77,6 @@ public:
    */
   virtual const C_FLOAT64 &
   calcValue(const CCallParameters<C_FLOAT64> & callParameters);
-
-  /**
-   * Returns whether the function depends on the given parameter
-   * &param const void * parameter
-   * &param const CCallParameters<C_FLOAT64> & callParameters
-   * &param bool dependsOn
-   */
-  virtual bool dependsOn(const C_FLOAT64 * parameter,
-                         const CCallParameters<C_FLOAT64> & callParameters) const;
 
   /**
    * Set the infix description of the tree and compile it.

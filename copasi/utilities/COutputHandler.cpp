@@ -23,8 +23,8 @@
 #include "CCopasiTask.h"
 
 #include "report/CCopasiTimer.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"
 #include "trajectory/CTimeSeries.h"
 
@@ -188,7 +188,7 @@ void COutputHandler::applyUpdateSequence()
 bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList & listOfContainer)
 {
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(), mObjects,
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(), mObjects,
       mpContainer->getSimulationUpToDateObjects());
 
   CObjectInterface::ObjectSet::const_iterator it = mObjects.begin();

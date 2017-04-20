@@ -25,7 +25,7 @@
 typedef QPair<int, int> PathItem;
 typedef QList<PathItem> Path;
 
-class CCopasiObject;
+class CDataObject;
 class UndoData;
 class UndoSpeciesData;
 class UndoReactionData;

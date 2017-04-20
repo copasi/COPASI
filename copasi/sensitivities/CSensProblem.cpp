@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,7 +22,7 @@
 
 #include "copasi.h"
 #include "CSensProblem.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 CSensItem::CSensItem()
   : mSingleObjectCN(),
@@ -41,7 +46,7 @@ const CCopasiObjectName & CSensItem::getSingleObjectCN() const
   return mSingleObjectCN;
 }
 
-std::string CSensItem::getSingleObjectDisplayName(const CCopasiDataModel* pDataModel) const
+std::string CSensItem::getSingleObjectDisplayName(const CDataModel* pDataModel) const
 {
   const CObjectInterface * pObject = pDataModel->getObjectFromCN(mSingleObjectCN);
 
@@ -87,19 +92,19 @@ bool CSensItem::operator!=(const CSensItem & rhs) const
   return !(*this == rhs);
 }
 
-std::vector<CCopasiObject*> CSensItem::getVariablesPointerList(CCopasiDataModel* pDataModel)
+std::vector<CDataObject*> CSensItem::getVariablesPointerList(CDataModel* pDataModel)
 {
-  std::vector<CCopasiObject*> ret;
+  std::vector<CDataObject*> ret;
 
   if (isSingleObject())
     {
-      const CCopasiObject * tmpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(getSingleObjectCN()));
+      const CDataObject * tmpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(getSingleObjectCN()));
 
       if (!tmpObject) {return ret;}  //return empty list
 
-      if (!tmpObject->isValueDbl()) {return ret;}  //return empty list
+      if (!tmpObject->hasFlag(CDataObject::ValueDbl)) {return ret;}  //return empty list
 
-      ret.push_back(const_cast< CCopasiObject * >(tmpObject));
+      ret.push_back(const_cast< CDataObject * >(tmpObject));
     }
   else
     {
@@ -189,7 +194,7 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CSensProblem::CSensProblem(const CCopasiContainer * pParent):
+CSensProblem::CSensProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::sens, pParent),
   mpSubTaskType(NULL),
   mpTargetFunctions(NULL),
@@ -219,7 +224,7 @@ CSensProblem::CSensProblem(const CCopasiContainer * pParent):
  *  @param "const CSensProblem &" src
  */
 CSensProblem::CSensProblem(const CSensProblem & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mpSubTaskType(NULL),
   mpTargetFunctions(NULL),
@@ -586,7 +591,7 @@ std::ostream &operator<<(std::ostream &os, const CSensItem & si)
 }
  */
 
-std::string CSensItem::print(const CCopasiDataModel* pDataModel) const
+std::string CSensItem::print(const CDataModel* pDataModel) const
 {
   std::ostringstream os;
 
@@ -601,7 +606,7 @@ std::string CSensItem::print(const CCopasiDataModel* pDataModel) const
 std::ostream &operator<<(std::ostream &os, const CSensProblem & o)
 {
   os << "Function(s) to be derived:" << std::endl;
-  const CCopasiDataModel* pDataModel = o.getObjectDataModel();
+  const CDataModel* pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
   os << o.getTargetFunctions().print(pDataModel) << std::endl << std::endl;
 

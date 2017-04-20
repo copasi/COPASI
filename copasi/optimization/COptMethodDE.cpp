@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,9 +22,9 @@
 #include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodDE::COptMethodDE(const CCopasiContainer * pParent,
+COptMethodDE::COptMethodDE(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -39,7 +44,7 @@ COptMethodDE::COptMethodDE(const CCopasiContainer * pParent,
 }
 
 COptMethodDE::COptMethodDE(const COptMethodDE & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
   mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
@@ -307,7 +312,6 @@ bool COptMethodDE::creation(size_t first, size_t last)
 
 void COptMethodDE::initObjects()
 {
-
 }
 
 bool COptMethodDE::initialize()
@@ -323,7 +327,6 @@ bool COptMethodDE::initialize()
 
       return false;
     }
-
 
   if (mPopulationSize < 4)
     {
@@ -469,7 +472,6 @@ bool COptMethodDE::optimise()
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
-
     }
 
   if (mpCallBack)

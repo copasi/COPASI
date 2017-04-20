@@ -32,7 +32,7 @@ class QGridLayout;
 class QFrame;
 class QSpacerItem;
 class CopasiUI3Window;
-class CCopasiObject;
+class CDataObject;
 
 class ObjectBrowserDialog : public QDialog
 {
@@ -41,8 +41,8 @@ class ObjectBrowserDialog : public QDialog
 public:
   ObjectBrowserDialog(QWidget* parent = 0, const char* name = 0, bool modal = true, int state = 0);
   virtual ~ObjectBrowserDialog();
-  void setOutputVector(std::vector< const CCopasiObject * > * pObjectVector);
-  void selectObjects(std::vector< const CCopasiObject * > * pObjectVector);
+  void setOutputVector(std::vector< const CDataObject * > * pObjectVector);
+  void selectObjects(std::vector< const CDataObject * > * pObjectVector);
 
 protected:
 

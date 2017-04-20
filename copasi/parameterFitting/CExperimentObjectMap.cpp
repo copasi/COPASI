@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,24 +28,24 @@
 
 #include "math/CMathContainer.h"
 #include "utilities/utility.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiParameterGroup(name, pParent),
   mObjects(0),
   mLastColumn(0)
 {initializeParameter();}
 
 CExperimentObjectMap::CExperimentObjectMap(const CExperimentObjectMap & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mObjects(src.mObjects),
   mLastColumn(src.mLastColumn)
 {initializeParameter();}
 
 CExperimentObjectMap::CExperimentObjectMap(const CCopasiParameterGroup & group,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiParameterGroup(group, pParent),
   mObjects(0),
   mLastColumn(0)
@@ -98,7 +103,7 @@ bool CExperimentObjectMap::setNumCols(const size_t & numCols)
     return true;
 
   // We only clear the vector of parameter. We do not destroy the parameter they are still
-  // accessible through CCopasiContainer::mObjects and thus will be automatically destroyed.
+  // accessible through CDataContainer::mObjects and thus will be automatically destroyed.
   clear();
 
   bool success = true;
@@ -254,7 +259,7 @@ bool CExperimentObjectMap::compile(const CMathContainer * pMathContainer)
   mObjects.resize(mLastColumn + 1);
   mObjects = NULL;
 
-  const CCopasiObject * pObject = NULL;
+  const CDataObject * pObject = NULL;
   std::string CN;
 
   for (i = 0; i < imax; i++)
@@ -262,7 +267,7 @@ bool CExperimentObjectMap::compile(const CMathContainer * pMathContainer)
       if ((CN = getObjectCN(i)) == "") continue;
 
       if ((pObject = CObjectInterface::DataObject(pMathContainer->getObjectFromCN(CN))) != NULL &&
-          pObject->isValueDbl())
+          pObject->hasFlag(CDataObject::ValueDbl))
         {
           Column = strtoul(getName(i).c_str(), NULL, 0);
           mObjects[Column] = pObject;
@@ -274,7 +279,7 @@ bool CExperimentObjectMap::compile(const CMathContainer * pMathContainer)
   return true;
 }
 
-const CVector< const CCopasiObject * > & CExperimentObjectMap::getDataObjects() const
+const CVector< const CDataObject * > & CExperimentObjectMap::getDataObjects() const
 {return mObjects;}
 
 const size_t & CExperimentObjectMap::getLastColumn() const
@@ -297,7 +302,7 @@ void CExperimentObjectMap::fixBuild55()
 }
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
-    const CCopasiContainer * pParent) :
+    const CDataContainer * pParent) :
   CCopasiParameterGroup(name, pParent),
   mpRole(NULL),
   mpObjectCN(NULL),
@@ -307,7 +312,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
 }
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const CDataColumn & src,
-    const CCopasiContainer * pParent) :
+    const CDataContainer * pParent) :
   CCopasiParameterGroup(src, pParent),
   mpRole(NULL),
   mpObjectCN(NULL),
@@ -317,7 +322,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const CDataColumn & src,
 }
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const CCopasiParameterGroup & group,
-    const CCopasiContainer * pParent) :
+    const CDataContainer * pParent) :
   CCopasiParameterGroup(group, pParent),
   mpRole(NULL),
   mpObjectCN(NULL),
@@ -459,7 +464,7 @@ C_FLOAT64 CExperimentObjectMap::CDataColumn::getDefaultScale() const
   CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(getObjectDataModel());
 
-  const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpObjectCN));
+  const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpObjectCN));
 
   if (pObject == NULL)
     return std::numeric_limits<C_FLOAT64>::quiet_NaN();

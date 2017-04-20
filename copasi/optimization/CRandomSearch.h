@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,7 +26,7 @@
 
 #include "copasi/optimization/COptMethod.h"
 #include "copasi/randomGenerator/CRandom.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 //class CRandom;
 //*** need to be added for definition
@@ -103,21 +108,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: RandomSearch)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  CRandomSearch(const CCopasiContainer * pParent,
+  CRandomSearch(const CDataContainer * pParent,
                 const CTaskEnum::Method & methodType = CTaskEnum::RandomSearch,
                 const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const CRandomSearch & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CRandomSearch(const CRandomSearch & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
    * Destructor

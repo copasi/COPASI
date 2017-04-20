@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -8,8 +13,8 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/xml/CCopasiXML.h"
 #include "copasi/function/CFunctionDB.h"
@@ -18,12 +23,12 @@
 #include "copasi/plot/COutputDefinitionVector.h"
 #include "copasi/layout/CListOfLayouts.h"
 
-bool load_cps_model_from_stream(std::istream& is, CCopasiDataModel& dataModel)
+bool load_cps_model_from_stream(std::istream& is, CDataModel& dataModel)
 {
   return dataModel.loadModel(is, std::string(""), NULL);
 }
 
-bool save_cps_model_to_stream(std::ostream& os, CCopasiDataModel* pDataModel)
+bool save_cps_model_to_stream(std::ostream& os, CDataModel* pDataModel)
 {
   bool success = true;
 

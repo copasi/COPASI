@@ -21,7 +21,7 @@
 #include <stack>
 #include <limits>
 
-#include "copasi/utilities/CFlags.h"
+#include "copasi/core/CFlags.h"
 
 /**
  * Iterator processing modes determining to which the method

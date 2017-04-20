@@ -26,7 +26,7 @@
 
 %{
 #include "report/CRenameHandler.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 %}
 
 %ignore CObjectInterface::getValidity() const;
@@ -35,35 +35,33 @@
 %ignore SpecificUpdateMethod;
 %ignore Refresh;
 %ignore operator<<;
-%ignore CCopasiObject::setRenameHandler;
-%ignore CCopasiObject::setRenameHandler;
-%ignore CCopasiObject::getValuePointer;
-%ignore CCopasiObject::print;
-%ignore CCopasiObject::setUpdateMethod;
-%ignore CCopasiObject::getUpdateMethod;
-%ignore CCopasiObject::setRefresh;
-%ignore CCopasiObject::getRefresh;
-%ignore CCopasiObject::buildUpdateSequence;
-%ignore CCopasiObject::getDirectDependencies;
-%ignore CCopasiObject::setDirectDependencies;
-%ignore CCopasiObject::getAllDependencies;
-%ignore CCopasiObject::dependsOn;
-%ignore CCopasiObject::hasCircularDependencies;
+%ignore CDataObject::setRenameHandler;
+%ignore CDataObject::setRenameHandler;
+%ignore CDataObject::getValuePointer;
+%ignore CDataObject::print;
+%ignore CDataObject::setUpdateMethod;
+%ignore CDataObject::getUpdateMethod;
+%ignore CDataObject::setRefresh;
+%ignore CDataObject::getRefresh;
+%ignore CDataObject::buildUpdateSequence;
+%ignore CDataObject::getDirectDependencies;
+%ignore CDataObject::setDirectDependencies;
+%ignore CDataObject::getAllDependencies;
 
 %include "report/CRenameHandler.h"
-%include "report/CCopasiObject.h"
+%include "report/CDataObject.h"
 
 %extend CObjectInterface
 {
 public:
-	CCopasiObject* toObject()
+	CDataObject* toObject()
 	{
-		return dynamic_cast<CCopasiObject*>($self);
+		return dynamic_cast<CDataObject*>($self);
 	}
   
   std::string printToString()
   {
-    CCopasiObject* obj = dynamic_cast<CCopasiObject*>($self);
+    CDataObject* obj = dynamic_cast<CDataObject*>($self);
     if (obj == NULL)
       return "";
     std::stringstream str; 

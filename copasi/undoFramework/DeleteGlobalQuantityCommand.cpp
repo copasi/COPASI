@@ -17,7 +17,7 @@
 
 #include "copasi.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModelValue.h"
 #include "model/CReactionInterface.h"
 #include "model/CModel.h"

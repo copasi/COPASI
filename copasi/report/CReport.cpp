@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,19 +17,20 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CReportDefinition.h"
 #include "CReport.h"
-#include "CCopasiContainer.h"
 #include "CCopasiTimer.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/utility.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CRootContainer.h"
+
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/commandline/CLocaleString.h"
 
 //////////////////////////////////////////////////
 //
@@ -336,7 +342,7 @@ bool CReport::compile(CObjectInterface::ContainerList listOfContainer)
   return success;
 }
 
-std::ostream * CReport::open(const CCopasiDataModel * pDataModel,
+std::ostream * CReport::open(const CDataModel * pDataModel,
                              std::ostream * pOstream)
 {
   mpDataModel = pDataModel;

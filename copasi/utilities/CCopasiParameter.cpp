@@ -31,12 +31,12 @@
 
 #include "utilities/CCopasiParameter.h"
 
-#include "../undo/CData.h"
+#include "copasi/undo/CData.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiMessage.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiObjectReference.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CDataObjectReference.h"
+#include "copasi/core/CRootContainer.h"
 
 const std::string CCopasiParameter::TypeName[] =
 {
@@ -91,7 +91,7 @@ CCopasiParameter * CCopasiParameter::fromData(const CData & data)
 // virtual
 CData CCopasiParameter::toData() const
 {
-  CData Data = CCopasiContainer::toData();
+  CData Data = CDataContainer::toData();
 
   Data.addProperty(CData::PARAMETER_TYPE, (unsigned C_INT32) mType);
 
@@ -133,7 +133,7 @@ CData CCopasiParameter::toData() const
 // virtual
 bool CCopasiParameter::applyData(const CData & data)
 {
-  bool success = CCopasiContainer::applyData(data);
+  bool success = CDataContainer::applyData(data);
 
   Type DataType = mType;
 
@@ -285,8 +285,8 @@ bool CCopasiParameter::applyData(const CData & data)
 }
 
 CCopasiParameter::CCopasiParameter():
-  CCopasiContainer("NoName", NULL, "Parameter"),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Parameter", this)),
+  CDataContainer("NoName", NULL, "Parameter"),
+  mKey(CRootContainer::getKeyFactory()->add("Parameter", this)),
   mType(INVALID),
   mSize(0),
   mpValue(NULL),
@@ -296,9 +296,9 @@ CCopasiParameter::CCopasiParameter():
 {}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
-                                   const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
+                                   const CDataContainer * pParent):
+  CDataContainer(src, pParent),
+  mKey(CRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
   mType(src.mType),
   mSize(0),
   mpValue(NULL),
@@ -313,15 +313,14 @@ CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
 CCopasiParameter::CCopasiParameter(const std::string & name,
                                    const CCopasiParameter::Type & type,
                                    const void * pValue,
-                                   const CCopasiContainer * pParent,
+                                   const CDataContainer * pParent,
                                    const std::string & objectType):
-  CCopasiContainer(name, pParent, objectType,
-                   CCopasiObject::Container |
-                   ((type == DOUBLE || type == UDOUBLE) ? CCopasiObject::ValueDbl :
-                    ((type == INT || type == UINT) ? CCopasiObject::ValueInt :
-                     ((type == STRING || type == CN || type == KEY || type == FILE || type == EXPRESSION) ? CCopasiObject::ValueString :
-                      (type == BOOL) ? CCopasiObject::ValueBool : 0)))),
-  mKey(CCopasiRootContainer::getKeyFactory()->add(objectType, this)),
+  CDataContainer(name, pParent, objectType,
+                 ((type == DOUBLE || type == UDOUBLE) ? CDataObject::ValueDbl :
+                  ((type == INT || type == UINT) ? CDataObject::ValueInt :
+                   ((type == STRING || type == CN || type == KEY || type == FILE || type == EXPRESSION) ? CDataObject::ValueString :
+                    (type == BOOL) ? CDataObject::ValueBool : CDataObject::Container)))),
+  mKey(CRootContainer::getKeyFactory()->add(objectType, this)),
   mType(type),
   mSize(0),
   mpValue(NULL),
@@ -334,8 +333,8 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
 
 CCopasiParameter::~CCopasiParameter()
 {
-  if (CCopasiRootContainer::getRoot())
-    CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  if (CRootContainer::getRoot())
+    CRootContainer::getKeyFactory()->remove(mKey);
 
   deleteValue(mType, mpValue);
   deleteValidValues(mType, mpValidValues);
@@ -474,7 +473,7 @@ bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & /* val
   return false;
 }
 
-CCopasiObject * CCopasiParameter::getValueReference() const
+CDataObject * CCopasiParameter::getValueReference() const
 {
   return mpValueReference;
 }
@@ -644,7 +643,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 // virtual
 CCopasiObjectName CCopasiParameter::getCN() const
 {
-  CCopasiContainer * pObjectParent = getObjectParent();
+  CDataContainer * pObjectParent = getObjectParent();
   CCopasiParameterGroup * pGroup;
 
   if (pObjectParent != NULL &&
@@ -653,7 +652,7 @@ CCopasiObjectName CCopasiParameter::getCN() const
       return pObjectParent->getCN() + "," + CCopasiObjectName::escape(getObjectType()) + "=" + CCopasiObjectName::escape(pGroup->getUniqueParameterName(this));
     }
 
-  return CCopasiObject::getCN();
+  return CDataObject::getCN();
 }
 
 void * CCopasiParameter::getValuePointer() const
@@ -673,28 +672,28 @@ void CCopasiParameter::createValue(const void * pValue)
       case CCopasiParameter::UDOUBLE:
         mpValue = new C_FLOAT64;
         mSize = sizeof(C_FLOAT64);
-        mpValueReference = addObjectReference("Value", *static_cast< C_FLOAT64 * >(mpValue), CCopasiObject::ValueDbl);
+        mpValueReference = addObjectReference("Value", *static_cast< C_FLOAT64 * >(mpValue), CDataObject::ValueDbl);
         assignValue(pValue);
         break;
 
       case CCopasiParameter::INT:
         mpValue = new C_INT32;
         mSize = sizeof(C_INT32);
-        mpValueReference = addObjectReference("Value", *static_cast< C_INT32 * >(mpValue), CCopasiObject::ValueInt);
+        mpValueReference = addObjectReference("Value", *static_cast< C_INT32 * >(mpValue), CDataObject::ValueInt);
         assignValue(pValue);
         break;
 
       case CCopasiParameter::UINT:
         mpValue = new unsigned C_INT32;
         mSize = sizeof(unsigned C_INT32);
-        mpValueReference = addObjectReference("Value", *static_cast< unsigned C_INT32 * >(mpValue), CCopasiObject::ValueInt);
+        mpValueReference = addObjectReference("Value", *static_cast< unsigned C_INT32 * >(mpValue), CDataObject::ValueInt);
         assignValue(pValue);
         break;
 
       case CCopasiParameter::BOOL:
         mpValue = new bool;
         mSize = sizeof(bool);
-        mpValueReference = addObjectReference("Value", *static_cast< bool * >(mpValue), CCopasiObject::ValueBool);
+        mpValueReference = addObjectReference("Value", *static_cast< bool * >(mpValue), CDataObject::ValueBool);
         assignValue(pValue);
         break;
 
@@ -704,14 +703,14 @@ void CCopasiParameter::createValue(const void * pValue)
       case CCopasiParameter::EXPRESSION:
         mpValue = new std::string;
         mSize = sizeof(std::string);
-        mpValueReference = addObjectReference("Value", *static_cast< std::string * >(mpValue), CCopasiObject::ValueString);
+        mpValueReference = addObjectReference("Value", *static_cast< std::string * >(mpValue), CDataObject::ValueString);
         assignValue(pValue);
         break;
 
       case CCopasiParameter::CN:
         mpValue = new CRegisteredObjectName;
         mSize = sizeof(CRegisteredObjectName);
-        mpValueReference = addObjectReference("Value", *static_cast< CRegisteredObjectName * >(mpValue), CCopasiObject::ValueString);
+        mpValueReference = addObjectReference("Value", *static_cast< CRegisteredObjectName * >(mpValue), CDataObject::ValueString);
         assignValue(pValue);
         break;
 
@@ -972,14 +971,14 @@ std::string CCopasiParameter::getObjectDisplayName() const
   // if one of the ancestors is a reaction and the parameter is not a group
   // it is (hopefully) a kinetic parameter
 
-  CCopasiObject* tmp = this->getObjectAncestor("Reaction");
+  CDataObject* tmp = this->getObjectAncestor("Reaction");
 
   if (tmp && getType() != GROUP)
     {
       return tmp->getObjectDisplayName() + "." + getObjectName();
     }
 
-  CCopasiContainer * pObjectParent = getObjectParent();
+  CDataContainer * pObjectParent = getObjectParent();
   CCopasiParameterGroup * pGroup;
 
   if (pObjectParent != NULL &&
@@ -1010,7 +1009,7 @@ std::string CCopasiParameter::getObjectDisplayName() const
       return DisplayName;
     }
 
-  return CCopasiObject::getObjectDisplayName();
+  return CDataObject::getObjectDisplayName();
 }
 
 // virtual

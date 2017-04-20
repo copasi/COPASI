@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,11 +15,9 @@
  *      Author: dada
  */
 
-
-
 #include <QUndoCommand>
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CChemEqInterface.h"
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
@@ -37,7 +40,6 @@ InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQR
   , mValue()
 {
   setText(QObject::tr(": Inserted new reaction"));
-
 }
 
 InsertReactionRowsCommand::InsertReactionRowsCommand(int position, int rows, CQReactionDM *pReactionDM, const QModelIndex& index, const QVariant& value)
@@ -137,6 +139,4 @@ void InsertReactionRowsCommand::initializeUndoData(CReaction * reaction, const s
   pdelete(mpReactionData);
   mpReactionData = new UndoReactionData(reaction);
   mpReactionData->setAdditionalKeys(createdKeys);
-
 }
-

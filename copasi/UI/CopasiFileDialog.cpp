@@ -27,7 +27,7 @@
 
 #include "commandline/COptions.h"
 #include "utilities/CDirEntry.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 #ifdef DEBUG_UI
@@ -37,7 +37,7 @@
 // static
 QString CopasiFileDialog::StartWith(const QString & startWith)
 {
-  QString WorkingDirectory = FROM_UTF8(CCopasiRootContainer::getConfiguration()->getWorkingDirectory());
+  QString WorkingDirectory = FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory());
 
   if (startWith.isNull())
     {
@@ -58,7 +58,7 @@ void CopasiFileDialog::openExampleDir()
   COptions::getValue("ExampleDir", ExampleDir);
 
   if (CDirEntry::isDir(ExampleDir))
-    CCopasiRootContainer::getConfiguration()->setWorkingDirectory(ExampleDir);
+    CRootContainer::getConfiguration()->setWorkingDirectory(ExampleDir);
   else
     CQMessageBox::information(NULL, "Directory Not Found", FROM_UTF8(ExampleDir),
                               QMessageBox::Ok, QMessageBox::Ok);
@@ -86,7 +86,7 @@ QString CopasiFileDialog::getOpenFileName(QWidget * parent,
                     options);
 
   if (newFile != "")
-    CCopasiRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
+    CRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
 
   return newFile;
 }
@@ -119,7 +119,7 @@ QString CopasiFileDialog::getSaveFileName(QWidget * parent,
                                              QFileDialog::DontConfirmOverwrite | options);
 
       if (newFile != "")
-        CCopasiRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
+        CRootContainer::getConfiguration()->setWorkingDirectory(CDirEntry::dirName(TO_UTF8(newFile)));
       else
         return QString::null;
 

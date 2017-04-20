@@ -95,7 +95,7 @@ std::vector< CMathDependencyNode * > & CMathDependencyNode::getDependents()
   return mDependents;
 }
 
-bool CMathDependencyNode::updateDependentState(const CMath::SimulationContextFlag & context,
+bool CMathDependencyNode::updateDependentState(const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects)
 {
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Dependents);
@@ -137,7 +137,7 @@ bool CMathDependencyNode::updateDependentState(const CMath::SimulationContextFla
   return itNode.state() == CMathDependencyNodeIterator::End;
 }
 
-bool CMathDependencyNode::updatePrerequisiteState(const CMath::SimulationContextFlag & context,
+bool CMathDependencyNode::updatePrerequisiteState(const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects)
 {
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
@@ -179,7 +179,7 @@ bool CMathDependencyNode::updatePrerequisiteState(const CMath::SimulationContext
   return itNode.state() == CMathDependencyNodeIterator::End;
 }
 
-bool CMathDependencyNode::updateCalculatedState(const CMath::SimulationContextFlag & context,
+bool CMathDependencyNode::updateCalculatedState(const CCore::SimulationContextFlag & context,
     const CObjectInterface::ObjectSet & changedObjects)
 {
   CMathDependencyNodeIterator itNode(this, CMathDependencyNodeIterator::Prerequisites);
@@ -221,7 +221,7 @@ bool CMathDependencyNode::updateCalculatedState(const CMath::SimulationContextFl
   return itNode.state() == CMathDependencyNodeIterator::End;
 }
 
-bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag & context,
+bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag & context,
     std::vector < CObjectInterface * > & updateSequence)
 {
   if (!mChanged || !mRequested)
@@ -251,7 +251,6 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
               {
                 const CObjectInterface * pObject = itNode->getObject();
                 const CMathObject * pMathObject = dynamic_cast< const CMathObject *>(pObject);
-                const CParticleReference * pParticleNumber = NULL;
 
                 // For an extensive transient value of a dependent species we have 2
                 // possible assignments depending on the context.
@@ -262,15 +261,11 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                 // with the dependency graph omitting the value in the update sequence if the context
                 // is CMath::UseMoieties.
 
-                if (!context.isSet(CMath::SimulationContext::UseMoieties) ||
-                    (pMathObject == NULL &&
-                     (pParticleNumber = dynamic_cast< const CParticleReference *>(pObject)) == NULL) ||
+                if (!context.isSet(CCore::SimulationContext::UseMoieties) ||
                     (pMathObject != NULL &&
                      pMathObject->getCorrespondingProperty() != static_cast< const CMathObject *>(mpObject) &&
                      (pMathObject->getSimulationType() != CMath::Dependent ||
-                      pMathObject->getValueType() != CMath::Value)) ||
-                    (pParticleNumber != NULL &&
-                     !static_cast< const CMetab * >(pParticleNumber->getObjectParent())->isDependent()))
+                      pMathObject->getValueType() != CMath::Value)))
                   {
                     // Only Math Objects with expressions can be updated.
                     if (pMathObject != NULL &&

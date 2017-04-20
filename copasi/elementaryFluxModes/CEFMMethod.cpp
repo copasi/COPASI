@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -37,7 +42,7 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 
-CEFMMethod::CEFMMethod(const CCopasiContainer * pParent,
+CEFMMethod::CEFMMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -46,7 +51,7 @@ CEFMMethod::CEFMMethod(const CCopasiContainer * pParent,
 {CONSTRUCTOR_TRACE;}
 
 CEFMMethod::CEFMMethod(const CEFMMethod & src,
-                       const CCopasiContainer * pParent):
+                       const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpFluxModes(src.mpFluxModes),
   mpReorderedReactions(src.mpReorderedReactions)

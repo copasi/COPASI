@@ -7,16 +7,15 @@
 
 #include "CObjectInterface.h"
 
-#include "CCopasiContainer.h"
-#include "CCopasiObjectName.h"
-#include "CCopasiRootContainer.h"
+#include "CDataContainer.h"
+#include "CRootContainer.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "function/CFunction.h"
-#include "function/CFunctionDB.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/function/CFunctionDB.h"
 
 // static
-const CCopasiObject * CObjectInterface::DataObject(const CObjectInterface * pInterface)
+const CDataObject * CObjectInterface::DataObject(const CObjectInterface * pInterface)
 {
   if (pInterface != NULL)
     {
@@ -43,7 +42,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
   const CObjectInterface * pObject = NULL;
 
-  const CCopasiDataModel * pDataModel = NULL;
+  const CDataModel * pDataModel = NULL;
 
   CObjectInterface::ContainerList::const_iterator it = listOfContainer.begin();
 
@@ -88,7 +87,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
   // if still not found search the function database in the root container
   if (pObject == NULL)
-    pObject = CCopasiRootContainer::getFunctionList()->getObject(objName);
+    pObject = CRootContainer::getFunctionList()->getObject(objName);
 
   // last resort check the whole data model if we know it.
   // We need make sure that we do not  have infinite recursion

@@ -39,7 +39,7 @@
 /**
  * Default constructor
  */
-CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
+CMCAMethod::CMCAMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -58,7 +58,7 @@ CMCAMethod::CMCAMethod(const CCopasiContainer * pParent,
 }
 
 CMCAMethod::CMCAMethod(const CMCAMethod & src,
-                       const CCopasiContainer * pParent):
+                       const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpUseReder(NULL),
   mpUseSmallbone(NULL),
@@ -791,8 +791,8 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   // Check if the model has a changing compartment size
-  CCopasiVector< CCompartment >::const_iterator it = mpContainer->getModel().getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator end = mpContainer->getModel().getCompartments().end();
+  CDataVector< CCompartment >::const_iterator it = mpContainer->getModel().getCompartments().begin();
+  CDataVector< CCompartment >::const_iterator end = mpContainer->getModel().getCompartments().end();
   CObjectInterface::ObjectSet Requested;
 
   for (; it != end; ++it)
@@ -800,9 +800,9 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
       Requested.insert(mpContainer->getMathObject(it->getValueReference()));
     }
 
-  CObjectInterface::UpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence;
 
-  mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Requested);
+  mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Requested);
 
   if (UpdateSequence.size() > 0)
     {

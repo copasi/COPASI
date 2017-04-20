@@ -1,13 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000059.h,v $
-//   $Revision: 1.6 $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/04/29 11:26:01 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -21,7 +22,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 class Model;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * These tests check if all elements in an SBML model get unique ids on export,
@@ -82,7 +83,7 @@ protected:
   static const char* MODEL_STRING20;
   static const char* MODEL_STRING21;
   static const char* MODEL_STRING22;
-  static CCopasiDataModel* pCOPASIDATAMODEL;
+  static CDataModel* pCOPASIDATAMODEL;
 
 public:
   static bool checkIfIdsUnique(const Model* pSBMLModel);

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -55,7 +60,7 @@ const CTaskEnum::Method COptTask::ValidMethods[]  =
   CTaskEnum::UnsetMethod
 };
 
-COptTask::COptTask(const CCopasiContainer * pParent,
+COptTask::COptTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   CCopasiTask(pParent, type)
 {
@@ -66,7 +71,7 @@ COptTask::COptTask(const CCopasiContainer * pParent,
 }
 
 COptTask::COptTask(const COptTask & src,
-                   const CCopasiContainer * pParent):
+                   const CDataContainer * pParent):
   CCopasiTask(src, pParent)
 {
   mpProblem = new COptProblem(*(COptProblem *) src.mpProblem, this);

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,7 +18,7 @@
 #include <string>
 #include <vector>
 
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CCompartment.h"
 #include "copasi/model/CModelValue.h"
@@ -40,7 +45,7 @@
 #include "sbml/Trigger.h"
 #include "sbml/EventAssignment.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  * Test if importing function definitions which are explicitely time dependent
@@ -48,24 +53,24 @@
  * Problems related to this are also tracked in Bug 1093.
  * This test also covers the bugs described there.
  */
-CCopasiDataModel* test000075::pCOPASIDATAMODEL = NULL;
+CDataModel* test000075::pCOPASIDATAMODEL = NULL;
 
 void test000075::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000075::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000075::test_import_time_dependent_function_definition()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   CPPUNIT_ASSERT(pDataModel->importSBMLFromString(MODEL_STRING1));
   // there have to be 2 function definitions, 1 compartment, 4 species, 4
   // parameters, 1 reaction, 1 initial assignment, 5 rules (2 rate + 2
@@ -80,7 +85,7 @@ void test000075::test_import_time_dependent_function_definition()
   const CRegisteredObjectName* pCObjectName = NULL;
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pCObject = NULL;
+  const CDataObject* pCObject = NULL;
 
   CPPUNIT_ASSERT(pCModel->getMetabolites().size() == 4);
   // get species_1 and species_2 those two should have rules defined
@@ -123,7 +128,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
@@ -150,7 +155,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
@@ -206,7 +211,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
@@ -233,7 +238,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
@@ -260,7 +265,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Initial Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
@@ -288,7 +293,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Initial Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
@@ -322,7 +327,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(parameterMapping.size() == 1);
   std::string objectKey = parameterMapping[0];
   CPPUNIT_ASSERT(!objectKey.empty());
-  pCObject = CCopasiRootContainer::getKeyFactory()->get(objectKey);
+  pCObject = CRootContainer::getKeyFactory()->get(objectKey);
   CPPUNIT_ASSERT(pCObject != NULL);
   CPPUNIT_ASSERT(pCObject == pCModel);
 
@@ -358,7 +363,7 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
   //
@@ -390,12 +395,12 @@ void test000075::test_import_time_dependent_function_definition()
   pCObjectName = &pCObjectNode->getObjectCN();
   pCObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, *pCObjectName));
   CPPUNIT_ASSERT(pCObject != NULL);
-  CPPUNIT_ASSERT(pCObject->isReference() == true);
+  CPPUNIT_ASSERT(pCObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pCObject->getObjectName() == std::string("Time"));
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   // check if the function definitions are imported correctly
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
   CPPUNIT_ASSERT(pFunctionDB != NULL);
   const CEvaluationTree* pCTree = pFunctionDB->findFunction("time_dependent");
   CPPUNIT_ASSERT(pCTree != NULL);

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,7 +16,7 @@
 #include <limits>
 
 class CQCompartment;
-class CCopasiObject;
+class CDataObject;
 class UndoCompartmentData;
 
 class CompartmentChangeCommand : public CCopasiUndoCommand
@@ -21,7 +26,7 @@ public:
   CompartmentChangeCommand(CCopasiUndoCommand::Type type,
                            const QVariant& oldValue,
                            const QVariant& newValue,
-                           CCopasiObject* pObject,
+                           CDataObject* pObject,
                            CQCompartment* pWidget,
                            double iValue = std::numeric_limits<double>::quiet_NaN());
 
@@ -33,7 +38,7 @@ public:
 protected:
   QVariant mOld, mNew;
   double mIValue;
-  CCopasiObject* mpObject;
+  CDataObject* mpObject;
   CQCompartment* mpWidget;
   UndoCompartmentData* mpUndoData;
 };

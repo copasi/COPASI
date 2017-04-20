@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -33,7 +38,7 @@
 #include "report/CReport.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
-#include  "CopasiDataModel/CCopasiDataModel.h"
+#include  "CopasiDataModel/CDataModel.h"
 
 #define XXXX_Reporting
 
@@ -58,7 +63,7 @@ const CTaskEnum::Method CTSSATask::ValidMethods[] =
   CTaskEnum::UnsetMethod
 };
 
-CTSSATask::CTSSATask(const CCopasiContainer * pParent,
+CTSSATask::CTSSATask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mTimeSeriesRequested(true),
@@ -80,7 +85,7 @@ CTSSATask::CTSSATask(const CCopasiContainer * pParent,
 }
 
 CTSSATask::CTSSATask(const CTSSATask & src,
-                     const CCopasiContainer * pParent):
+                     const CDataContainer * pParent):
   CCopasiTask(src, pParent),
   mTimeSeriesRequested(src.mTimeSeriesRequested),
   mTimeSeries(),

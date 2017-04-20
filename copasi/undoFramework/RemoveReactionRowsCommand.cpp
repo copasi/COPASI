@@ -17,13 +17,14 @@
 
 #include <QtCore/QList>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CReaction.h"
-#include "model/CReactionInterface.h"
-#include "model/CModel.h"
-#include "CQReactionDM.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CQReactionDM.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "RemoveReactionRowsCommand.h"
 #include "UndoReactionData.h"
@@ -34,7 +35,7 @@ RemoveReactionRowsCommand::RemoveReactionRowsCommand(
   , mpReactionDM(pReaDM)
   , mpReaData()
 {
-  CCopasiDataModel * pDataModel = pReaDM->getDataModel();
+  CDataModel * pDataModel = pReaDM->getDataModel();
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);

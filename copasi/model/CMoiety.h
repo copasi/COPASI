@@ -31,11 +31,11 @@
 #include <vector>
 
 #include "copasi/model/CChemEqElement.h"
-#include "copasi/utilities/CCopasiVector.h"
-#include "copasi/report/CCopasiObjectReference.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CDataObjectReference.h"
 class CMetab;
 
-class CTotalNumberReference : public CCopasiObjectReference< C_FLOAT64 >
+class CTotalNumberReference : public CDataObjectReference< C_FLOAT64 >
 {
   /**
    * Hidden default constructor
@@ -46,20 +46,20 @@ public:
   /**
    * Specific constructor
    * @param const std::string & name
-   * @param const CCopasiContainer * pParent,
+   * @param const CDataContainer * pParent,
    * @param C_FLOAT64 & reference,
    */
   CTotalNumberReference(const std::string & name,
-                        const CCopasiContainer * pParent,
+                        const CDataContainer * pParent,
                         C_FLOAT64 & reference);
 
   /**
    * Copy constructor
    * @param const CTotalNumberReference & src
-   * @param const CCopasiContainer * pParent,
+   * @param const CDataContainer * pParent,
    */
   CTotalNumberReference(const CTotalNumberReference & src,
-                        const CCopasiContainer * pParent);
+                        const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -69,16 +69,16 @@ public:
   /**
    * Check whether a given object is a prerequisite for a context.
    * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool isPrerequisiteForContext
    */
   virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CMath::SimulationContextFlag & context,
+                                        const CCore::SimulationContextFlag & context,
                                         const CObjectInterface::ObjectSet & changedObjects) const;
 };
 
-class CDependentNumberReference : public CCopasiObjectReference< C_FLOAT64 >
+class CDependentNumberReference : public CDataObjectReference< C_FLOAT64 >
 {
   /**
    * Hidden default constructor
@@ -89,20 +89,20 @@ public:
   /**
    * Specific constructor
    * @param const std::string & name
-   * @param const CCopasiContainer * pParent,
+   * @param const CDataContainer * pParent,
    * @param C_FLOAT64 & reference,
    */
   CDependentNumberReference(const std::string & name,
-                            const CCopasiContainer * pParent,
+                            const CDataContainer * pParent,
                             C_FLOAT64 & reference);
 
   /**
    * Copy constructor
    * @param const CDependentNumberReference & src
-   * @param const CCopasiContainer * pParent,
+   * @param const CDataContainer * pParent,
    */
   CDependentNumberReference(const CDependentNumberReference & src,
-                            const CCopasiContainer * pParent);
+                            const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -112,16 +112,16 @@ public:
   /**
    * Check whether a given object is a prerequisite for a context.
    * @param const CObjectInterface * pObject
-   * @param const CMath::SimulationContextFlag & context
+   * @param const CCore::SimulationContextFlag & context
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool isPrerequisiteForContext
    */
   virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CMath::SimulationContextFlag & context,
+                                        const CCore::SimulationContextFlag & context,
                                         const CObjectInterface::ObjectSet & changedObjects) const;
 };
 
-class CMoiety : public CCopasiContainer
+class CMoiety : public CDataContainer
 {
   // Attributes
 private:
@@ -155,7 +155,7 @@ private:
    * @supplierCardinality 0..*
    */
   /** @dia:route 7,3; h,41.0337,110.831,46.5202,117.862,52.0066 */
-  // CCopasiVector < CChemEqElement > mEquation;
+  // CDataVector < CChemEqElement > mEquation;
   std::vector<std::pair< C_FLOAT64, CMetab * > > mEquation;
 
   /**
@@ -186,18 +186,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMoiety(const std::string & name = "NoName",
-          const CCopasiContainer * pParent = NO_PARENT);
+          const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CMoiety &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CMoiety(const CMoiety & src,
-          const CCopasiContainer * pParent);
+          const CDataContainer * pParent);
 
   /**
    *  Destructor
@@ -223,9 +223,9 @@ public:
 
   /**
    * Retrieve the object for the total particle number
-   * @return CCopasiObject * initialValueReference
+   * @return CDataObject * initialValueReference
    */
-  CCopasiObject * getInitialValueReference() const;
+  CDataObject * getInitialValueReference() const;
 
   /**
    * Refresh the total particle number
@@ -234,9 +234,9 @@ public:
 
   /**
    * Retrieve the object for the total particle number
-   * @return CCopasiObject * valueReference
+   * @return CDataObject * valueReference
    */
-  CCopasiObject * getValueReference() const;
+  CDataObject * getValueReference() const;
 
   /**
    * get the string representation of the moiety using the CMetabNameInterface
@@ -257,15 +257,15 @@ public:
 
   /**
    * Retrieve the object for the dependent particle number
-   * @return CCopasiObject * totalNumberReference
+   * @return CDataObject * totalNumberReference
    */
-  CCopasiObject * getTotalNumberReference() const;
+  CDataObject * getTotalNumberReference() const;
 
   /**
    * Retrieve the object for the dependent particle number
-   * @return CCopasiObject * dependentNumberReference
+   * @return CDataObject * dependentNumberReference
    */
-  CCopasiObject * getDependentNumberReference() const;
+  CDataObject * getDependentNumberReference() const;
 
   /**
    *
@@ -280,10 +280,10 @@ public:
 
   /**
    * Sets the parent of the moiety;
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Refreshes the value of the dependent number

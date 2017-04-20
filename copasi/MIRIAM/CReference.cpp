@@ -20,9 +20,9 @@
 #include "CReference.h"
 
 #include "report/CKeyFactory.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CReference * CReference::fromData(const CData & data)
@@ -32,22 +32,22 @@ CReference * CReference::fromData(const CData & data)
 }
 
 CReference::CReference(const std::string & objectName,
-                       const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "Reference"),
+                       const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "Reference"),
   mTriplet(),
   mNodePath(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Reference", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Reference", this)),
   mIdTriplet(),
   mResource(NULL)
 {}
 
 CReference::CReference(const CRDFTriplet & triplet,
                        const std::string & objectName,
-                       const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "Reference"),
+                       const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "Reference"),
   mTriplet(triplet),
   mNodePath(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Creator", this)),
   mIdTriplet(),
   mResource(NULL)
 {
@@ -83,18 +83,18 @@ CReference::CReference(const CRDFTriplet & triplet,
 }
 
 CReference::CReference(const CReference & src,
-                       const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                       const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mTriplet(src.mTriplet),
   mNodePath(src.mNodePath),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Creator", this)),
   mIdTriplet(src.mIdTriplet),
   mResource(src.mResource)
 {}
 
 CReference::~CReference()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const CRDFTriplet & CReference::getTriplet() const

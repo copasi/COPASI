@@ -7,6 +7,7 @@
 #define COPASI_CData
 
 #include <map>
+#include <array>
 
 #include "copasi/undo/CDataValue.h"
 
@@ -46,12 +47,15 @@ public:
     QUANTITY_UNIT,
     MODEL_TYPE,
     AVOGADRO_NUMBER,
-    DIMENSIONALITY
+    DIMENSIONALITY,
+    __SIZE
   };
 
-  static const std::string PropertyName[];
+  static const std::array< const std::string, static_cast< size_t >(Property::__SIZE) > PropertyName;
 
   typedef CDataValue::Type Type;
+
+  friend std::ostream & operator << (std::ostream & os, const CData & o);
 
   CData();
 

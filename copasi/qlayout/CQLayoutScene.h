@@ -20,7 +20,7 @@
 class CLayout;
 class CLGraphicalObject;
 class CLRenderResolver;
-class CCopasiDataModel;
+class CDataModel;
 class CLRenderInformationBase;
 class CQCopasiEffect;
 
@@ -28,13 +28,13 @@ class CQLayoutScene: public QGraphicsScene
 {
   Q_OBJECT
 public:
-  CQLayoutScene(CLayout *layout, CCopasiDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
+  CQLayoutScene(CLayout *layout, CDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
   virtual ~CQLayoutScene();
   void setResolver(CLRenderResolver* resolver);
   const CLRenderResolver* getResolver() const;
   void saveToFile(const std::string& fileName, const std::string& fileType = "pdf");
-  void setLayout(CLayout *layout, CCopasiDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
-  void setRenderInformation(CCopasiDataModel* model, CLRenderInformationBase* renderInformation);
+  void setLayout(CLayout *layout, CDataModel* model = NULL, CLRenderInformationBase* renderInformation = NULL);
+  void setRenderInformation(CDataModel* model, CLRenderInformationBase* renderInformation);
   QGraphicsItem* getItemFor(const std::string& cn);
   const CLayout* getCurrentLayout() const;
   CLayout* getCurrentLayout();
@@ -45,7 +45,7 @@ public slots:
 signals:
   void recreateNeeded();
 protected:
-  void initializeResolver(CCopasiDataModel* model, CLRenderInformationBase* renderInformation);
+  void initializeResolver(CDataModel* model, CLRenderInformationBase* renderInformation);
 private:
   void addGlyph(const CLGraphicalObject* go);
   void fillFromLayout(const CLayout* layout);

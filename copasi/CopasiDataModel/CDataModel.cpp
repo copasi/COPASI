@@ -3,20 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 #define USE_LAYOUT 1
 
 #include <sbml/SBMLDocument.h>
@@ -28,7 +14,7 @@
 #endif
 
 #include "copasi.h"
-#include "CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "copasi/report/CCopasiTimer.h"
 #include "commandline/COptions.h"
@@ -53,7 +39,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CCopasiProblem.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
 #include "undo/CUndoStack.h"
@@ -63,7 +49,7 @@
 
 #include "layout/CListOfLayouts.h"
 #include "layout/CLayoutInitializer.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #ifdef WITH_COMBINE_ARCHIVE
 # include <combine/combinearchive.h>
@@ -77,110 +63,58 @@
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperiment.h>
 
-CDataModelRenameHandler::CDataModelRenameHandler():
-  CRenameHandler(),
-  mEnabled(true)
-{}
-
-void CDataModelRenameHandler::handle(const std::string & oldCN, const std::string & newCN) const
-{
-  if (mEnabled)
-    {
-      std::set<CRegisteredObjectName*>::const_iterator it = CRegisteredObjectName::getSet().begin();
-      std::set<CRegisteredObjectName*>::const_iterator itEnd = CRegisteredObjectName::getSet().end();
-
-      size_t oldSize = oldCN.size();
-      size_t currentSize;
-
-      for (; it != itEnd; ++it)
-        {
-          // either need to take currentSize out, or need to use the variable
-          // using it uninitialized makes no sense.
-          currentSize = (*it)->size();
-
-          // We need to make sure that we not change partial names
-          if ((currentSize == oldSize ||
-               (currentSize > oldSize && (**it)[oldSize] == ',')) &&
-              oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
-            {
-              (**it).replace(0, oldSize, newCN);
-            }
-        }
-    }
-
-  return;
-}
-
-// virtual
-void CDataModelRenameHandler::setEnabled(const bool & enabled)
-{
-  mEnabled = enabled;
-}
-
-// virtual
-bool CDataModelRenameHandler::isEnabled() const
-{
-  return mEnabled;
-}
-//********************************************************************
-
-CCopasiDataModel::CCopasiDataModel(const bool withGUI):
-  CCopasiContainer("Root", NULL, "CN", CCopasiObject::DataModel),
+CDataModel::CDataModel(const bool withGUI):
+  CDataContainer("Root", NULL, "CN", CDataObject::DataModel),
   COutputHandler(),
   mData(withGUI),
   mOldData(withGUI),
-  mRenameHandler(),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
-  pOldMetabolites(new CCopasiVectorS < CMetabOld >)
+  pOldMetabolites(new CDataVectorS < CMetabOld >)
 {
   newModel(NULL, true);
-  CCopasiObject::setRenameHandler(&mRenameHandler);
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::PROCESS, this);
 }
 
 // static
-CCopasiDataModel * CCopasiDataModel::fromData(const CData & data)
+CDataModel * CDataModel::fromData(const CData & data)
 {
-  return new CCopasiDataModel(data.getProperty(CData::OBJECT_NAME).toString(),
-                              NO_PARENT);
+  return new CDataModel(data.getProperty(CData::OBJECT_NAME).toString(),
+                        NO_PARENT);
 }
 
-CCopasiDataModel::CCopasiDataModel(const std::string & name,
-                                   const CCopasiContainer * pParent,
-                                   const std::string & type,
-                                   bool withGUI):
-  CCopasiContainer(name, pParent, type, CCopasiObject::DataModel),
+CDataModel::CDataModel(const std::string & name,
+                       const CDataContainer * pParent,
+                       const std::string & type,
+                       bool withGUI):
+  CDataContainer(name, pParent, type, CDataObject::DataModel),
   COutputHandler(),
   mData(withGUI),
   mOldData(withGUI),
-  mRenameHandler(),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
-  pOldMetabolites(new CCopasiVectorS < CMetabOld >)
+  pOldMetabolites(new CDataVectorS < CMetabOld >)
 {
   newModel(NULL, true);
-  CCopasiObject::setRenameHandler(&mRenameHandler);
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::PROCESS, this);
 }
 
-CCopasiDataModel::CCopasiDataModel(const CCopasiDataModel & src,
-                                   const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+CDataModel::CDataModel(const CDataModel & src,
+                       const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   COutputHandler(src),
   mData(src.mData),
   mOldData(src.mOldData),
-  mRenameHandler(src.mRenameHandler),
   mTempFolders(),
   mNeedToSaveExperimentalData(false),
-  pOldMetabolites((src.pOldMetabolites != NULL) ? new CCopasiVectorS < CMetabOld >(*src.pOldMetabolites, NO_PARENT) : NULL)
+  pOldMetabolites((src.pOldMetabolites != NULL) ? new CDataVectorS < CMetabOld >(*src.pOldMetabolites, NO_PARENT) : NULL)
 {}
 
-CCopasiDataModel::~CCopasiDataModel()
+CDataModel::~CDataModel()
 {
-  CCopasiObject::setRenameHandler(NULL);
+  CRegisteredObjectName::setEnabled(false);
 
   // Make sure that the old data is deleted
   deleteOldData();
@@ -205,13 +139,13 @@ CCopasiDataModel::~CCopasiDataModel()
 #endif
 }
 
-bool CCopasiDataModel::loadModel(std::istream & in,
-                                 const std::string & pwd,
-                                 CProcessReport* pProcessReport,
-                                 const bool & deleteOldData)
+bool CDataModel::loadModel(std::istream & in,
+                           const std::string & pwd,
+                           CProcessReport* pProcessReport,
+                           const bool & deleteOldData)
 {
   // During load no objects will be renamed;
-  mRenameHandler.setEnabled(false);
+  CRegisteredObjectName::setEnabled(false);
 
   CCopasiMessage::clearDeque();
 
@@ -237,7 +171,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
           CCopasiMessage(CCopasiMessage::ERROR,
                          "Can't handle Gepasi Files with Version>=4.");
 
-          mRenameHandler.setEnabled(true);
+          CRegisteredObjectName::setEnabled(true);
           return false;
         }
 
@@ -248,7 +182,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
       if (mData.pModel->load(inbuf))
         {
           popData();
-          mRenameHandler.setEnabled(true);
+          CRegisteredObjectName::setEnabled(true);
           return false;
         }
 
@@ -263,7 +197,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
       mData.mReferenceDir = pwd;
 
       CCopasiXML XML;
-      XML.setFunctionList(&CCopasiRootContainer::getFunctionList()->loadedFunctions());
+      XML.setFunctionList(&CRootContainer::getFunctionList()->loadedFunctions());
       XML.setDatamodel(this);
 
       SCopasiXMLGUI *pGUI = NULL;
@@ -288,7 +222,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
               // restore the OldData
               popData();
 
-              mRenameHandler.setEnabled(true);
+              CRegisteredObjectName::setEnabled(true);
               return false;
             }
         }
@@ -306,7 +240,7 @@ bool CCopasiDataModel::loadModel(std::istream & in,
 
           // rethrow the exception so the program flow should still be
           // the same as before
-          mRenameHandler.setEnabled(true);
+          CRegisteredObjectName::setEnabled(true);
           throw;
         }
 
@@ -349,26 +283,26 @@ bool CCopasiDataModel::loadModel(std::istream & in,
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCXML + 3, "sbml", 0);
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       return false;
     }
   else
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCXML + 13);
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       return false;
     }
 
   commonAfterLoad(pProcessReport, deleteOldData);
 
-  mRenameHandler.setEnabled(true);
+  CRegisteredObjectName::setEnabled(true);
   return true;
 }
 
-bool CCopasiDataModel::loadModel(const std::string & fileName,
-                                 CProcessReport* pProcessReport,
-                                 const bool & deleteOldData)
+bool CDataModel::loadModel(const std::string & fileName,
+                           CProcessReport* pProcessReport,
+                           const bool & deleteOldData)
 {
   std::string PWD;
   COptions::getValue("PWD", PWD);
@@ -436,7 +370,7 @@ bool CCopasiDataModel::loadModel(const std::string & fileName,
 }
 
 #ifdef WITH_COMBINE_ARCHIVE
-void CCopasiDataModel::copyExperimentalDataTo(const std::string& path)
+void CDataModel::copyExperimentalDataTo(const std::string& path)
 {
   CFitProblem* problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
 
@@ -529,9 +463,9 @@ void CCopasiDataModel::copyExperimentalDataTo(const std::string& path)
 #endif // WITH_COMBINE_ARCHIVE
 
 bool
-CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
-                            bool overwriteFile,
-                            const bool & autoSave)
+CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessReport,
+                      bool overwriteFile,
+                      const bool & autoSave)
 {
   CCopasiMessage::clearDeque();
 
@@ -649,7 +583,7 @@ CCopasiDataModel::saveModel(const std::string & fileName, CProcessReport* pProce
   return true;
 }
 
-std::string CCopasiDataModel::saveModelToString(CProcessReport * pProcessReport)
+std::string CDataModel::saveModelToString(CProcessReport * pProcessReport)
 {
   CCopasiMessage::clearDeque();
 
@@ -688,7 +622,7 @@ std::string CCopasiDataModel::saveModelToString(CProcessReport * pProcessReport)
   return str.str();
 }
 
-bool CCopasiDataModel::autoSave()
+bool CDataModel::autoSave()
 {
   if (!mData.mAutoSaveNeeded) return true;
 
@@ -721,25 +655,25 @@ bool CCopasiDataModel::autoSave()
   return true;
 }
 
-bool CCopasiDataModel::newModel(CProcessReport* pProcessReport,
-                                const bool & deleteOldData)
+bool CDataModel::newModel(CProcessReport* pProcessReport,
+                          const bool & deleteOldData)
 {
   //deal with the CModel
   pushData();
 
-  mRenameHandler.setEnabled(false);
+  CRegisteredObjectName::setEnabled(false);
   commonAfterLoad(pProcessReport, deleteOldData);
-  mRenameHandler.setEnabled(true);
+  CRegisteredObjectName::setEnabled(true);
 
   return true;
 }
 
-bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
-    CProcessReport* pImportHandler,
-    const bool & deleteOldData)
+bool CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
+                                      CProcessReport* pImportHandler,
+                                      const bool & deleteOldData)
 {
   // During load no objects will be renamed;
-  mRenameHandler.setEnabled(false);
+  CRegisteredObjectName::setEnabled(false);
 
   pushData();
 
@@ -754,13 +688,13 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
-  std::map<const CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<const CDataObject*, SBase*> Copasi2SBMLMap;
 
   CListOfLayouts * pLol = NULL; //
 
   try
     {
-      pModel = importer.parseSBML(sbmlDocumentText, CCopasiRootContainer::getFunctionList(),
+      pModel = importer.parseSBML(sbmlDocumentText, CRootContainer::getFunctionList(),
                                   pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
 
@@ -770,7 +704,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       importer.deleteCopasiModel();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       throw except;
     }
 
@@ -779,7 +713,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       importer.deleteCopasiModel();
       importer.restoreFunctionDB();
       popData();
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
 
       throw;
     }
@@ -790,7 +724,7 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
       importer.deleteCopasiModel();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       return false;
     }
 
@@ -812,16 +746,16 @@ bool CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
-  mRenameHandler.setEnabled(true);
+  CRegisteredObjectName::setEnabled(true);
   return true;
 }
 
-bool CCopasiDataModel::importSBML(const std::string & fileName,
-                                  CProcessReport* pImportHandler,
-                                  const bool & deleteOldData)
+bool CDataModel::importSBML(const std::string & fileName,
+                            CProcessReport* pImportHandler,
+                            const bool & deleteOldData)
 {
   // During load no objects will be renamed;
-  mRenameHandler.setEnabled(false);
+  CRegisteredObjectName::setEnabled(false);
   CCopasiMessage::clearDeque();
 
   std::string PWD;
@@ -844,7 +778,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   CModel* pModel = NULL;
 
   SBMLDocument * pSBMLDocument = NULL;
-  std::map<const CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<const CDataObject*, SBase*> Copasi2SBMLMap;
 
   CListOfLayouts * pLol = NULL;
 
@@ -856,7 +790,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       mData.mSBMLFileName = CDirEntry::normalize(FileName);
       mData.mReferenceDir = CDirEntry::dirName(mData.mSBMLFileName);
 
-      pModel = importer.readSBML(FileName, CCopasiRootContainer::getFunctionList(),
+      pModel = importer.readSBML(FileName, CRootContainer::getFunctionList(),
                                  pSBMLDocument, Copasi2SBMLMap, pLol, this);
     }
 
@@ -866,7 +800,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       importer.restoreFunctionDB();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       throw except;
     }
   catch (...)
@@ -874,7 +808,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       importer.deleteCopasiModel();
       importer.restoreFunctionDB();
       popData();
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
 
       throw;
     }
@@ -885,7 +819,7 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
       importer.restoreFunctionDB();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       return false;
     }
 
@@ -922,11 +856,11 @@ bool CCopasiDataModel::importSBML(const std::string & fileName,
   mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
   mData.mSBMLFileName = CDirEntry::normalize(FileName);
 
-  mRenameHandler.setEnabled(true);
+  CRegisteredObjectName::setEnabled(true);
   return true;
 }
 
-std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion)
+std::string CDataModel::exportSBMLToString(CProcessReport* pExportHandler, int sbmlLevel, int sbmlVersion)
 {
   CCopasiMessage::clearDeque();
   SBMLDocument* pOrigSBMLDocument = NULL;
@@ -997,12 +931,12 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
       // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
       // since the objects
       mData.mCopasi2SBMLMap.clear();
-      std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
-      std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+      std::map<const CDataObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
+      std::map<const CDataObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
 
       while (it != endit)
         {
-          mData.mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
+          mData.mCopasi2SBMLMap.insert(std::pair<CDataObject*, SBase*>(const_cast<CDataObject*>(it->first), it->second));
           ++it;
         }
     }
@@ -1017,13 +951,13 @@ std::string CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler,
 }
 
 bool
-CCopasiDataModel::exportSBML(const std::string & fileName,
-                             bool overwriteFile,
-                             int sbmlLevel,
-                             int sbmlVersion,
-                             bool /*exportIncomplete*/,
-                             bool exportCOPASIMIRIAM,
-                             CProcessReport* pExportHandler)
+CDataModel::exportSBML(const std::string & fileName,
+                       bool overwriteFile,
+                       int sbmlLevel,
+                       int sbmlVersion,
+                       bool /*exportIncomplete*/,
+                       bool exportCOPASIMIRIAM,
+                       CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -1125,12 +1059,12 @@ CCopasiDataModel::exportSBML(const std::string & fileName,
       // we also need to get the new copasi2sbml map otherwise it contains invalid pointers
       // since the objects
       mData.mCopasi2SBMLMap.clear();
-      std::map<const CCopasiObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
-      std::map<const CCopasiObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
+      std::map<const CDataObject*, SBase*>::const_iterator it = exporter.getCOPASI2SBMLMap().begin();
+      std::map<const CDataObject*, SBase*>::const_iterator endit = exporter.getCOPASI2SBMLMap().end();
 
       while (it != endit)
         {
-          mData.mCopasi2SBMLMap.insert(std::pair<CCopasiObject*, SBase*>(const_cast<CCopasiObject*>(it->first), it->second));
+          mData.mCopasi2SBMLMap.insert(std::pair<CDataObject*, SBase*>(const_cast<CDataObject*>(it->first), it->second));
           ++it;
         }
     }
@@ -1146,7 +1080,7 @@ CCopasiDataModel::exportSBML(const std::string & fileName,
 }
 
 std::string
-CCopasiDataModel::exportMathModelToString(
+CDataModel::exportMathModelToString(
   CProcessReport* pProcessReport,
   const std::string & filter)
 {
@@ -1181,8 +1115,8 @@ CCopasiDataModel::exportMathModelToString(
       return "";
     }
 
-  CCopasiVector< CModelValue >::const_iterator it = mData.pModel->getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
+  CDataVector< CModelValue >::const_iterator it = mData.pModel->getModelValues().begin();
+  CDataVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
 
   for (; it != end; ++it)
     if (it->isUsed()) break;
@@ -1200,8 +1134,8 @@ CCopasiDataModel::exportMathModelToString(
   return os.str();
 }
 
-bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
-                                       const std::string & filter, bool overwriteFile)
+bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
+                                 const std::string & filter, bool overwriteFile)
 {
   CCopasiMessage::clearDeque();
 
@@ -1244,8 +1178,8 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
       return false;
     }
 
-  CCopasiVector< CModelValue >::const_iterator it = mData.pModel->getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
+  CDataVector< CModelValue >::const_iterator it = mData.pModel->getModelValues().begin();
+  CDataVector< CModelValue >::const_iterator end = mData.pModel->getModelValues().end();
 
   for (; it != end; ++it)
     if (it->isUsed()) break;
@@ -1289,10 +1223,10 @@ bool CCopasiDataModel::exportMathModel(const std::string & fileName, CProcessRep
 #ifdef WITH_COMBINE_ARCHIVE
 
 void
-CCopasiDataModel::addCopasiFileToArchive(CombineArchive *archive,
-    const std::string& targetName /*= "./copasi/model.cps"*/,
-    CProcessReport * pProgressReport /*= NULL*/
-                                        )
+CDataModel::addCopasiFileToArchive(CombineArchive *archive,
+                                   const std::string& targetName /*= "./copasi/model.cps"*/,
+                                   CProcessReport * pProgressReport /*= NULL*/
+                                  )
 {
   if (archive == NULL) return;
 
@@ -1306,7 +1240,7 @@ CCopasiDataModel::addCopasiFileToArchive(CombineArchive *archive,
     }
 }
 
-bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
+bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, bool includeSBML, bool includeData, bool includeSEDML, bool overwriteFile, CProcessReport * pProgressReport)
 {
   CCopasiMessage::clearDeque();
 
@@ -1471,9 +1405,9 @@ bool CCopasiDataModel::exportCombineArchive(std::string fileName, bool includeCO
   return false;
 }
 
-bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
-    CProcessReport * pProgressReport,
-    const bool & deleteOldData)
+bool CDataModel::openCombineArchive(const std::string & fileName,
+                                    CProcessReport * pProgressReport,
+                                    const bool & deleteOldData)
 {
   // TODO: figure out what to do with the archive, should we just extract all of it
   //       at a certain location? if so when should it be deleted.
@@ -1557,8 +1491,8 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
           std::string currentDir;
           CDirEntry::dirName(fileName);
 
-          CCopasiVectorN< CCopasiTask >& tasks = *getTaskList();
-          CCopasiVectorN< CCopasiTask >::iterator taskIt = tasks.begin();
+          CDataVectorN< CCopasiTask >& tasks = *getTaskList();
+          CDataVectorN< CCopasiTask >::iterator taskIt = tasks.begin();
 
           for (; taskIt != tasks.end(); ++taskIt)
             {
@@ -1610,12 +1544,12 @@ bool CCopasiDataModel::openCombineArchive(const std::string & fileName,
 
 //TODO SEDML
 #ifdef COPASI_SEDML
-bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
-    CProcessReport* pImportHandler,
-    const bool & deleteOldData)
+bool CDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
+                                       CProcessReport* pImportHandler,
+                                       const bool & deleteOldData)
 {
   // During load no objects will be renamed;
-  mRenameHandler.setEnabled(false);
+  CRegisteredObjectName::setEnabled(false);
 
   pushData();
 
@@ -1630,8 +1564,8 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
   CModel* pModel = NULL;
 
   SedDocument * pSEDMLDocument = NULL;
-  std::map<CCopasiObject*, SedBase*> Copasi2SEDMLMap;
-  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<CDataObject*, SedBase*> Copasi2SEDMLMap;
+  std::map<CDataObject*, SBase*> Copasi2SBMLMap;
 
   SBMLDocument * pSBMLDocument = NULL;
   CListOfLayouts * pLol = NULL;
@@ -1649,7 +1583,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
       importer.deleteCopasiModel();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       throw except;
     }
 
@@ -1659,7 +1593,7 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
       importer.deleteCopasiModel();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       return false;
     }
 
@@ -1681,16 +1615,16 @@ bool CCopasiDataModel::importSEDMLFromString(const std::string& sedmlDocumentTex
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
-  mRenameHandler.setEnabled(true);
+  CRegisteredObjectName::setEnabled(true);
   return true;
 }
 
-bool CCopasiDataModel::importSEDML(const std::string & fileName,
-                                   CProcessReport* pImportHandler,
-                                   const bool & deleteOldData)
+bool CDataModel::importSEDML(const std::string & fileName,
+                             CProcessReport* pImportHandler,
+                             const bool & deleteOldData)
 {
   // During load no objects will be renamed;
-  mRenameHandler.setEnabled(false);
+  CRegisteredObjectName::setEnabled(false);
 
   CCopasiMessage::clearDeque();
 
@@ -1714,8 +1648,8 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
   CModel* pModel = NULL;
 
   SedDocument * pSEDMLDocument = NULL;
-  std::map<CCopasiObject*, SedBase*> Copasi2SEDMLMap;
-  std::map<CCopasiObject*, SBase*> Copasi2SBMLMap;
+  std::map<CDataObject*, SedBase*> Copasi2SEDMLMap;
+  std::map<CDataObject*, SBase*> Copasi2SBMLMap;
 
   SBMLDocument * pSBMLDocument = NULL;
   CTrajectoryTask *trajTask = NULL;
@@ -1740,7 +1674,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
       importer.deleteCopasiModel();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       throw except;
     }
 
@@ -1750,7 +1684,7 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
       importer.deleteCopasiModel();
       popData();
 
-      mRenameHandler.setEnabled(true);
+      CRegisteredObjectName::setEnabled(true);
       return false;
     }
 
@@ -1795,16 +1729,16 @@ bool CCopasiDataModel::importSEDML(const std::string & fileName,
   mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
   mData.mSEDMLFileName = CDirEntry::normalize(FileName);
 
-  mRenameHandler.setEnabled(true);
+  CRegisteredObjectName::setEnabled(true);
   return true;
 }
 
-SedDocument* CCopasiDataModel::getCurrentSEDMLDocument()
+SedDocument* CDataModel::getCurrentSEDMLDocument()
 {
   return mData.pCurrentSEDMLDocument;
 }
 
-bool CCopasiDataModel::setSEDMLFileName(const std::string & fileName)
+bool CDataModel::setSEDMLFileName(const std::string & fileName)
 {
   mData.mSEDMLFileName = CDirEntry::normalize(fileName);
 
@@ -1815,15 +1749,15 @@ bool CCopasiDataModel::setSEDMLFileName(const std::string & fileName)
   return true;
 }
 
-const std::string & CCopasiDataModel::getSEDMLFileName() const
+const std::string & CDataModel::getSEDMLFileName() const
 {return mData.mSEDMLFileName;}
 
-std::map<CCopasiObject*, SedBase*>& CCopasiDataModel::getCopasi2SEDMLMap()
+std::map<CDataObject*, SedBase*>& CDataModel::getCopasi2SEDMLMap()
 {
   return mData.mCopasi2SEDMLMap;
 }
 
-std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler,
+std::string CDataModel::exportSEDMLToString(CProcessReport* pExportHandler,
     int sedmlLevel, int sedmlVersion,
     const std::string& modelLocation)
 {
@@ -1865,7 +1799,7 @@ std::string CCopasiDataModel::exportSEDMLToString(CProcessReport* pExportHandler
   return str;
 }
 
-bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
+bool CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool /*exportIncomplete*/, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler)
 {
   CCopasiMessage::clearDeque();
 
@@ -1943,7 +1877,7 @@ bool CCopasiDataModel::exportSEDML(const std::string & fileName, bool overwriteF
 }
 #endif
 
-void CCopasiDataModel::deleteOldData()
+void CDataModel::deleteOldData()
 {
   pdelete(mOldData.pModel);
   pdelete(mOldData.pTaskList);
@@ -1959,10 +1893,10 @@ void CCopasiDataModel::deleteOldData()
 #endif
 }
 
-const CModel * CCopasiDataModel::getModel() const
+const CModel * CDataModel::getModel() const
 {return mData.pModel;}
 
-CModel * CCopasiDataModel::getModel()
+CModel * CDataModel::getModel()
 {
   if (mData.isValid())
     return mData.pModel;
@@ -1970,7 +1904,7 @@ CModel * CCopasiDataModel::getModel()
   return mOldData.pModel;
 }
 
-CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList()
+CDataVectorN< CCopasiTask > * CDataModel::getTaskList()
 {
   if (mData.isValid())
     return mData.pTaskList;
@@ -1978,7 +1912,7 @@ CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList()
   return mOldData.pTaskList;
 }
 
-const CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList() const
+const CDataVectorN< CCopasiTask > * CDataModel::getTaskList() const
 {
   if (mData.isValid())
     return mData.pTaskList;
@@ -1986,7 +1920,7 @@ const CCopasiVectorN< CCopasiTask > * CCopasiDataModel::getTaskList() const
   return mOldData.pTaskList;
 }
 
-CCopasiTask * CCopasiDataModel::addTask(const CTaskEnum::Task & taskType)
+CCopasiTask * CDataModel::addTask(const CTaskEnum::Task & taskType)
 {
   CCopasiTask * pTask = NULL;
   pTask = CTaskFactory::createTask(taskType, mData.pTaskList);
@@ -1994,7 +1928,7 @@ CCopasiTask * CCopasiDataModel::addTask(const CTaskEnum::Task & taskType)
   return pTask;
 }
 
-bool CCopasiDataModel::addDefaultTasks()
+bool CDataModel::addDefaultTasks()
 {
   size_t i;
 
@@ -2005,16 +1939,17 @@ bool CCopasiDataModel::addDefaultTasks()
   return true;
 }
 
-bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > candidates,
-    std::set< const CCopasiObject * > & dependentTasks) const
+bool CDataModel::appendDependentTasks(CDataObject::ObjectSet candidates,
+                                      CDataObject::DataObjectSet & dependentTasks) const
 {
+  dependentTasks.erase(NULL);
   size_t Size = dependentTasks.size();
 
-  std::set< const CCopasiObject * >::const_iterator it = candidates.begin();
-  std::set< const CCopasiObject * >::const_iterator end = candidates.end();
+  CDataObject::ObjectSet::const_iterator it = candidates.begin();
+  CDataObject::ObjectSet::const_iterator end = candidates.end();
 
-  CCopasiVectorN< CCopasiTask >::iterator itTask = mData.pTaskList->begin();
-  CCopasiVectorN< CCopasiTask >::iterator endTask = mData.pTaskList->end();
+  CDataVectorN< CCopasiTask >::iterator itTask = mData.pTaskList->begin();
+  CDataVectorN< CCopasiTask >::iterator endTask = mData.pTaskList->end();
 
   for (; it != end; ++it)
     {
@@ -2034,10 +1969,11 @@ bool CCopasiDataModel::appendDependentTasks(std::set< const CCopasiObject * > ca
         }
     }
 
+  dependentTasks.erase(NULL);
   return Size < dependentTasks.size();
 }
 
-CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType)
+CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
 {
   CReportDefinition * pReport = NULL;
 
@@ -2220,7 +2156,7 @@ CReportDefinition * CCopasiDataModel::addReport(const CTaskEnum::Task & taskType
   return pReport;
 }
 
-bool CCopasiDataModel::addDefaultReports()
+bool CDataModel::addDefaultReports()
 {
   size_t i;
 
@@ -2260,7 +2196,7 @@ bool CCopasiDataModel::addDefaultReports()
   return true;
 }
 
-const CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList() const
+const CReportDefinitionVector * CDataModel::getReportDefinitionList() const
 {
   if (mData.isValid())
     return mData.pReportDefinitionList;
@@ -2268,7 +2204,7 @@ const CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList() cons
   return mOldData.pReportDefinitionList;
 }
 
-CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
+CReportDefinitionVector * CDataModel::getReportDefinitionList()
 {
   if (mData.isValid())
     return mData.pReportDefinitionList;
@@ -2276,7 +2212,7 @@ CReportDefinitionVector * CCopasiDataModel::getReportDefinitionList()
   return mOldData.pReportDefinitionList;
 }
 
-const COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList() const
+const COutputDefinitionVector * CDataModel::getPlotDefinitionList() const
 {
   if (mData.isValid())
     return mData.pPlotDefinitionList;
@@ -2284,7 +2220,7 @@ const COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList() const
   return mOldData.pPlotDefinitionList;
 }
 
-COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
+COutputDefinitionVector * CDataModel::getPlotDefinitionList()
 {
   if (mData.isValid())
     return mData.pPlotDefinitionList;
@@ -2292,7 +2228,7 @@ COutputDefinitionVector * CCopasiDataModel::getPlotDefinitionList()
   return mOldData.pPlotDefinitionList;
 }
 
-const CListOfLayouts * CCopasiDataModel::getListOfLayouts() const
+const CListOfLayouts * CDataModel::getListOfLayouts() const
 {
   if (mData.isValid())
     return mData.pListOfLayouts;
@@ -2300,7 +2236,7 @@ const CListOfLayouts * CCopasiDataModel::getListOfLayouts() const
   return mOldData.pListOfLayouts;
 }
 
-CListOfLayouts * CCopasiDataModel::getListOfLayouts()
+CListOfLayouts * CDataModel::getListOfLayouts()
 {
   if (mData.isValid())
     return mData.pListOfLayouts;
@@ -2308,7 +2244,7 @@ CListOfLayouts * CCopasiDataModel::getListOfLayouts()
   return mOldData.pListOfLayouts;
 }
 
-SCopasiXMLGUI * CCopasiDataModel::getGUI()
+SCopasiXMLGUI * CDataModel::getGUI()
 {
   if (mData.isValid())
     return mData.pGUI;
@@ -2316,24 +2252,24 @@ SCopasiXMLGUI * CCopasiDataModel::getGUI()
   return mOldData.pGUI;
 }
 
-const std::string & CCopasiDataModel::getFileName() const
+const std::string & CDataModel::getFileName() const
 {return mData.mSaveFileName;}
 
-bool CCopasiDataModel::isChanged() const
+bool CDataModel::isChanged() const
 {return mData.mChanged;}
 
-void CCopasiDataModel::changed(const bool & changed)
+void CDataModel::changed(const bool & changed)
 {
   mData.mChanged = changed;
   mData.mAutoSaveNeeded = changed;
 }
 
-SBMLDocument* CCopasiDataModel::getCurrentSBMLDocument()
+SBMLDocument* CDataModel::getCurrentSBMLDocument()
 {
   return mData.pCurrentSBMLDocument;
 }
 
-bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
+bool CDataModel::setSBMLFileName(const std::string & fileName)
 {
   mData.mSBMLFileName = CDirEntry::normalize(fileName);
 
@@ -2344,17 +2280,17 @@ bool CCopasiDataModel::setSBMLFileName(const std::string & fileName)
   return true;
 }
 
-const std::string & CCopasiDataModel::getSBMLFileName() const
+const std::string & CDataModel::getSBMLFileName() const
 {return mData.mSBMLFileName;}
 
-std::map<const CCopasiObject*, SBase*>& CCopasiDataModel::getCopasi2SBMLMap()
+std::map<const CDataObject*, SBase*>& CDataModel::getCopasi2SBMLMap()
 {
   return mData.mCopasi2SBMLMap;
 }
 
-void CCopasiDataModel::removeSBMLIdFromFunctions()
+void CDataModel::removeSBMLIdFromFunctions()
 {
-  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunDB = CRootContainer::getFunctionList();
   size_t i, iMax = pFunDB->loadedFunctions().size();
 
   for (i = 0; i < iMax; ++i)
@@ -2363,32 +2299,32 @@ void CCopasiDataModel::removeSBMLIdFromFunctions()
     }
 }
 
-bool CCopasiDataModel::removeLayout(const std::string & key)
+bool CDataModel::removeLayout(const std::string & key)
 {
   CLayout *pLayout =
-    dynamic_cast< CLayout * >(CCopasiRootContainer::getKeyFactory()->get(key));
+    dynamic_cast< CLayout * >(CRootContainer::getKeyFactory()->get(key));
 
   if (!pLayout)
     return false;
 
   //Check if Layout with that name exists
   size_t index =
-    mData.pListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
+    mData.pListOfLayouts->CDataVector< CLayout >::getIndex(pLayout);
 
   if (index == C_INVALID_INDEX)
     return false;
 
-  mData.pListOfLayouts->CCopasiVector< CLayout >::remove(index);
+  mData.pListOfLayouts->CDataVector< CLayout >::remove(index);
 
   return true;
 }
 
-const std::string& CCopasiDataModel::getReferenceDirectory() const
+const std::string& CDataModel::getReferenceDirectory() const
 {
   return mData.mReferenceDir;
 }
 
-CCopasiDataModel::CContent::CContent(const bool & withGUI):
+CDataModel::CContent::CContent(const bool & withGUI):
   pModel(NULL),
   pTaskList(NULL),
   pReportDefinitionList(NULL),
@@ -2412,7 +2348,7 @@ CCopasiDataModel::CContent::CContent(const bool & withGUI):
 #endif
 {}
 
-CCopasiDataModel::CContent::CContent(const CContent & src):
+CDataModel::CContent::CContent(const CContent & src):
   pModel(src.pModel),
   pTaskList(src.pTaskList),
   pReportDefinitionList(src.pReportDefinitionList),
@@ -2436,10 +2372,10 @@ CCopasiDataModel::CContent::CContent(const CContent & src):
 #endif
 {}
 
-CCopasiDataModel::CContent::~CContent()
+CDataModel::CContent::~CContent()
 {}
 
-CCopasiDataModel::CContent & CCopasiDataModel::CContent::operator = (const CContent & rhs)
+CDataModel::CContent & CDataModel::CContent::operator = (const CContent & rhs)
 {
   if (this != &rhs)
     {
@@ -2470,7 +2406,7 @@ CCopasiDataModel::CContent & CCopasiDataModel::CContent::operator = (const CCont
   return *this;
 }
 
-bool CCopasiDataModel::CContent::isValid() const
+bool CDataModel::CContent::isValid() const
 {
   return (pModel != NULL &&
           pTaskList != NULL &&
@@ -2480,7 +2416,7 @@ bool CCopasiDataModel::CContent::isValid() const
           (pGUI != NULL || mWithGUI == false));
 }
 
-void CCopasiDataModel::pushData()
+void CDataModel::pushData()
 {
   bool condition = true;
 #ifdef COPASI_SEDML
@@ -2500,7 +2436,7 @@ void CCopasiDataModel::pushData()
   mData = CContent(mData.mWithGUI);
 }
 
-void CCopasiDataModel::popData()
+void CDataModel::popData()
 {
   // Make sure the old data is valid
   assert(mOldData.pModel != NULL &&
@@ -2516,8 +2452,8 @@ void CCopasiDataModel::popData()
   mOldData = CContent(mOldData.mWithGUI);
 }
 
-void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
-                                       const bool & deleteOldData)
+void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
+                                 const bool & deleteOldData)
 {
   if (mData.pModel == NULL)
     {
@@ -2531,7 +2467,7 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
   if (mData.pTaskList == NULL)
     {
-      mData.pTaskList = new CCopasiVectorN< CCopasiTask >("TaskList", this);
+      mData.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", this);
     }
 
   if (mData.pReportDefinitionList == NULL)
@@ -2636,8 +2572,8 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   // We suppress all errors and warnings
   size_t Size = CCopasiMessage::size();
 
-  CCopasiVectorN< CCopasiTask >::iterator it = mData.pTaskList->begin();
-  CCopasiVectorN< CCopasiTask >::iterator end = mData.pTaskList->end();
+  CDataVectorN< CCopasiTask >::iterator it = mData.pTaskList->begin();
+  CDataVectorN< CCopasiTask >::iterator end = mData.pTaskList->end();
 
   for (; it != end; ++it)
     {
@@ -2673,17 +2609,17 @@ void CCopasiDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
   if (deleteOldData)
     {
-      CCopasiDataModel::deleteOldData();
+      CDataModel::deleteOldData();
     }
 }
 
-void CCopasiDataModel::applyData(const CUndoData & data)
+void CDataModel::applyData(const CUndoData & data)
 {
   data.apply(*this);
   recordData(data);
 }
 
-void CCopasiDataModel::recordData(const CUndoData & data)
+void CDataModel::recordData(const CUndoData & data)
 {
   if (mData.mpUndoStack != NULL)
     {

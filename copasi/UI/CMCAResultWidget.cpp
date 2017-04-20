@@ -23,12 +23,12 @@
 
 #include "CMCAResultWidget.h"
 #include "CMCAResultSubwidget.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "steadystate/CMCATask.h"
 #include "steadystate/CMCAMethod.h"
 #include "qtUtilities.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 /*
  *  Constructs a CMCAResultWidget which is a child of 'parent', with the

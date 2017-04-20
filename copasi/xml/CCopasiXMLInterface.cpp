@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,17 +36,17 @@
 #include "report/CReportDefinitionVector.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/CSlider.h"
 #include "utilities/CDirEntry.h"
 #include "commandline/CLocaleString.h"
 
 SCopasiXMLGUI::SCopasiXMLGUI(const std::string & name,
-                             const CCopasiContainer * pParent,
+                             const CDataContainer * pParent,
                              const std::string & type,
-                             const unsigned C_INT32 & flag)
-  : CCopasiContainer(name, pParent, type, flag),
-    mpSliderList(new CCopasiVector<CSlider>("SliderList", this))
+                             const CFlags< Flag > & flag)
+  : CDataContainer(name, pParent, type, flag),
+    mpSliderList(new CDataVector<CSlider>("SliderList", this))
 {}
 
 SCopasiXMLGUI::~SCopasiXMLGUI()
@@ -51,7 +56,7 @@ SCopasiXMLGUI::~SCopasiXMLGUI()
 /**
  * Returns a pointer the the slider list.
  */
-CCopasiVector<CSlider>* SCopasiXMLGUI::getSliderList()
+CDataVector<CSlider>* SCopasiXMLGUI::getSliderList()
 {
   return this->mpSliderList;
 }
@@ -59,7 +64,7 @@ CCopasiVector<CSlider>* SCopasiXMLGUI::getSliderList()
 /**
  * Returns a const pointer to the slider list.
  */
-const CCopasiVector<CSlider>* SCopasiXMLGUI::getSliderList() const
+const CDataVector<CSlider>* SCopasiXMLGUI::getSliderList() const
 {
   return this->mpSliderList;
 }

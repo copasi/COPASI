@@ -35,7 +35,7 @@
 #include "CStochMethod.h"
 #include "CStochDirectMethod.h"
 #include "CStochNextReactionMethod.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"
@@ -50,7 +50,7 @@ C_INT32 CStochMethod::checkModel(CModel * C_UNUSED(pmodel))
   return 2; // suggest next reaction method
 }
 
-CStochMethod::CStochMethod(const CCopasiContainer * pParent,
+CStochMethod::CStochMethod(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -74,7 +74,7 @@ CStochMethod::CStochMethod(const CCopasiContainer * pParent,
 }
 
 CStochMethod::CStochMethod(const CStochMethod & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mpRandomGenerator(NULL),
   mA0(0.0),
@@ -195,7 +195,7 @@ void CStochMethod::start()
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  CCore::CUpdateSequence * pUpdateSequence = mUpdateSequences.array();
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
   CObjectInterface::ObjectSet Requested;
@@ -217,7 +217,7 @@ void CStochMethod::start()
       Changed.insert(pTimeObject);
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, Changed, Requested);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CCore::SimulationContext::Default, Changed, Requested);
     }
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
@@ -294,8 +294,8 @@ void CStochMethod::setupDependencyGraph()
 
   // We build the dependency graph based on the information in mUpdateSequences which
   // includes time dependencies.
-  const CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
-  const CObjectInterface::UpdateSequence * pUpdateSequenceEnd = pUpdateSequence + mUpdateSequences.size();
+  const CCore::CUpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  const CCore::CUpdateSequence * pUpdateSequenceEnd = pUpdateSequence + mUpdateSequences.size();
 
   const CMathObject * pPropensity = mPropensityObjects.array();
   const CMathObject * pPropensityEnd = pPropensity + mPropensityObjects.size();
@@ -306,8 +306,8 @@ void CStochMethod::setupDependencyGraph()
 
       for (size_t j = 0; pPropensity != pPropensityEnd; ++pPropensity, ++j)
         {
-          CObjectInterface::UpdateSequence::const_iterator it = pUpdateSequence->begin();
-          CObjectInterface::UpdateSequence::const_iterator end = pUpdateSequence->end();
+          CCore::CUpdateSequence::const_iterator it = pUpdateSequence->begin();
+          CCore::CUpdateSequence::const_iterator end = pUpdateSequence->end();
 
           for (; it != end; ++it)
             {

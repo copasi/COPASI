@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -13,7 +18,7 @@
 #include "copasi.h"
 #include "CQBaseDataModel.h"
 
-CQBaseDataModel::CQBaseDataModel(QObject *parent, CCopasiDataModel * pDataModel)
+CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
   : QAbstractTableModel(parent)
   , mpUndoStack(NULL)
   , mpDataModel(pDataModel)
@@ -88,7 +93,7 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
   return nname;
 }
 
-void CQBaseDataModel::setDataModel(CCopasiDataModel * pDataModel)
+void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 {
   mpDataModel = pDataModel;
   resetCache();
@@ -104,7 +109,7 @@ QUndoStack* CQBaseDataModel::getUndoStack()
   return mpUndoStack;
 }
 
-CCopasiDataModel * CQBaseDataModel::getDataModel() const
+CDataModel * CQBaseDataModel::getDataModel() const
 {
   return mpDataModel;
 }

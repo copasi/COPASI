@@ -64,11 +64,11 @@ C_FLOAT64 log2(const C_FLOAT64 __x)
 #include "CQGLNetworkPainter.h"
 #include "CQLayoutMainWindow.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "CQNewMainWindow.h"
 #include "UI/qtUtilities.h"
 #include "layout/CLayout.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "layoutUI/CVisParameters.h"
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
@@ -601,7 +601,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
   curvesWithArrow.clear();
   int numberOfInvertedCurves = 0;
   // copy graph to local variables
-  const CCopasiVector<CLCompartmentGlyph> &compartmentNodes = lP->getListOfCompartmentGlyphs();
+  const CDataVector<CLCompartmentGlyph> &compartmentNodes = lP->getListOfCompartmentGlyphs();
   viewerCompartmentNodes = std::vector<std::string>();
   unsigned int i;
 
@@ -615,7 +615,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                     (oKey, nKey));
     }
 
-  CCopasiVector<CLMetabGlyph> nodes;
+  CDataVector<CLMetabGlyph> nodes;
   nodes = lP->getListOfMetaboliteGlyphs();
   viewerNodes = std::vector<std::string>();
 
@@ -631,7 +631,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
                     (oKey, nKey));
     }
 
-  CCopasiVector<CLReactionGlyph> reactions;
+  CDataVector<CLReactionGlyph> reactions;
   reactions = lP->getListOfReactionGlyphs();
   //now extract curves to draw from reaction
   viewerCurves = std::vector<CGraphCurve>();
@@ -641,7 +641,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
     {
       CGraphCurve curveR = CGraphCurve(reactions[i].getCurve());
       viewerCurves.push_back(curveR);
-      CCopasiVector<CLMetabReferenceGlyph> edgesToNodesOfReaction;
+      CDataVector<CLMetabReferenceGlyph> edgesToNodesOfReaction;
       edgesToNodesOfReaction = reactions[i].getListOfMetabReferenceGlyphs();
       unsigned int j2;
 
@@ -760,7 +760,7 @@ void CQGLNetworkPainter::createGraph(CLayout *lP)
         } // end j
     } // end i (reactions)
 
-  CCopasiVector<CLTextGlyph> labels;
+  CDataVector<CLTextGlyph> labels;
   labels = lP->getListOfTextGlyphs();
   viewerLabels = std::vector<CLabel>();
   std::map<std::string, CGraphNode>::iterator itNode;
@@ -2021,7 +2021,7 @@ bool CQGLNetworkPainter::createDataSets()
 {
   int counter = 0;
   bool loadDataSuccessful = false;
-  CCopasiDataModel *pDataModel = CQNewMainWindow::dataModel(parent());
+  CDataModel *pDataModel = CQNewMainWindow::dataModel(parent());
 
   if (pDataModel != NULL)
     {
@@ -2033,7 +2033,7 @@ bool CQGLNetworkPainter::createDataSets()
         {
           // create a dummy time series from the current state
           dummyTimeSeries.allocate(1);
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+          assert(CRootContainer::getDatamodelList()->size() > 0);
           CObjectInterface::ContainerList tmpV;
           dummyTimeSeries.compile(tmpV);
           dummyTimeSeries.output(COutputInterface::DURING);

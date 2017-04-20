@@ -15,7 +15,7 @@
 
 class QScrollBar;
 class CQGLLayoutPainter;
-class CCopasiDataModel;
+class CDataModel;
 class CLayout;
 class CLRenderInformationBase;
 /**
@@ -48,7 +48,7 @@ public:
    */
   void setZoomFactor(double zoom);
 
-  void update(const CCopasiDataModel *pDataModel, CLayout *pLayout, const CLRenderInformationBase *pRenderInfo, const QString &baseDir);
+  void update(const CDataModel *pDataModel, CLayout *pLayout, const CLRenderInformationBase *pRenderInfo, const QString &baseDir);
 
   /**
    * The default style indicates that the passed in render information is a default style.

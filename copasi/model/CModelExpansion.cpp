@@ -19,9 +19,9 @@
 
 #include "CModel.h"
 #include "function/CExpression.h"
-#include "report/CCopasiObject.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CDataObject.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 void CModelExpansion::SetOfModelElements::addCompartment(const CCompartment* x)
 {
@@ -48,7 +48,7 @@ void CModelExpansion::SetOfModelElements::addEvent(const CEvent* x)
   mEvents.insert(x);
 }
 
-bool CModelExpansion::SetOfModelElements::addObject(const CCopasiObject* x)
+bool CModelExpansion::SetOfModelElements::addObject(const CDataObject* x)
 {
   if (dynamic_cast<const CCompartment*>(x))
     {
@@ -83,7 +83,7 @@ bool CModelExpansion::SetOfModelElements::addObject(const CCopasiObject* x)
   return false;
 }
 
-bool CModelExpansion::SetOfModelElements::contains(const CCopasiObject* x) const
+bool CModelExpansion::SetOfModelElements::contains(const CDataObject* x) const
 {
   if (mCompartments.find(static_cast<const CCompartment*>(x)) != mCompartments.end())
     return true;
@@ -105,7 +105,7 @@ bool CModelExpansion::SetOfModelElements::contains(const CCopasiObject* x) const
 
 bool CModelExpansion::SetOfModelElements::contains(const std::string & key) const
 {
-  const CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(key);
+  const CDataObject* tmp = CRootContainer::getKeyFactory()->get(key);
 
   if (tmp)
     return contains(tmp);
@@ -118,76 +118,64 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
   if (!pModel) return;
 
   //create a combined set of all elements we know are to be copied
-  std::set< const CCopasiObject * > combinedSet;
+  CDataObject::DataObjectSet Descendants;
 
-  std::set<const CCompartment*>::const_iterator itComp;
+  std::set< const CCompartment * >::const_iterator itComp;
 
   for (itComp = mCompartments.begin(); itComp != mCompartments.end(); ++itComp)
     {
-      std::set< const CCopasiObject * > tmp = (*itComp)->getDeletedObjects();
-      combinedSet.insert(tmp.begin(), tmp.end());
+      (*itComp)->getDescendants(Descendants);
     }
 
-  std::set<const CMetab*>::const_iterator itMetab;
+  std::set< const CMetab * >::const_iterator itMetab;
 
   for (itMetab = mMetabs.begin(); itMetab != mMetabs.end(); ++itMetab)
     {
-      std::set< const CCopasiObject * > tmp = (*itMetab)->getDeletedObjects();
-      combinedSet.insert(tmp.begin(), tmp.end());
+      (*itMetab)->getDescendants(Descendants);
     }
 
-  std::set<const CReaction*>::const_iterator itReac;
+  std::set< const CReaction * >::const_iterator itReac;
 
   for (itReac = mReactions.begin(); itReac != mReactions.end(); ++itReac)
     {
-      std::set< const CCopasiObject * > tmp = (*itReac)->getDeletedObjects();
-      combinedSet.insert(tmp.begin(), tmp.end());
+      (*itReac)->getDescendants(Descendants);
     }
 
-  std::set<const CModelValue*>::const_iterator itQuant;
+  std::set< const CModelValue * >::const_iterator itQuant;
 
   for (itQuant = mGlobalQuantities.begin(); itQuant != mGlobalQuantities.end(); ++itQuant)
     {
-      std::set< const CCopasiObject * > tmp = (*itQuant)->getDeletedObjects();
-      combinedSet.insert(tmp.begin(), tmp.end());
+      (*itQuant)->getDescendants(Descendants);
     }
 
-  /* Events do not contain any relevant objects.
-  std::set<const CEvent*>::const_iterator itEvent;
-
-  for (itEvent = mEvents.begin(); itEvent != mEvents.end(); ++itEvent)
-    {
-      std::set< const CCopasiObject * > tmp = (*itEvent)->getDeletedObjects();
-      combinedSet.insert(tmp.begin(), tmp.end());
-    }
-  */
+  CDataObject::ObjectSet CombinedSet(Descendants.begin(), Descendants.end());
 
   //ask the model for the dependencies
 
-  std::set< const CCopasiObject * > reacs, metabs, comps, values, events, eventAssignments;
-  pModel->appendDependentModelObjects(combinedSet, reacs, metabs, comps, values, events, eventAssignments);
+  std::set< const CDataObject * > reacs, metabs, comps, values, events, eventAssignments;
+  pModel->appendAllDependents(CombinedSet, reacs, metabs, comps, values, events, eventAssignments);
 
   //incorporate the results into the local sets
-  std::set< const CCopasiObject * >::const_iterator it;
+  std::set< const CDataObject * >::const_iterator it;
 
   for (it = reacs.begin(); it != reacs.end(); ++it)
-    addReaction(dynamic_cast<const CReaction*>(*it));
+    addReaction(dynamic_cast< const CReaction * >(*it));
 
   for (it = metabs.begin(); it != metabs.end(); ++it)
-    addMetab(dynamic_cast<const CMetab*>(*it));
+    addMetab(dynamic_cast< const CMetab * >(*it));
 
   for (it = comps.begin(); it != comps.end(); ++it)
-    addCompartment(dynamic_cast<const CCompartment*>(*it));
+    addCompartment(dynamic_cast< const CCompartment * >(*it));
 
   for (it = values.begin(); it != values.end(); ++it)
     addGlobalQuantity(dynamic_cast<const CModelValue*>(*it));
 
   for (it = events.begin(); it != events.end(); ++it)
-    addEvent(dynamic_cast<const CEvent*>(*it));
+    addEvent(dynamic_cast< const CEvent * >(*it));
 
   for (it = eventAssignments.begin(); it != eventAssignments.end(); ++it)
     {
-      const CEvent * pEvent = dynamic_cast<const CEvent*>((*it)->getObjectAncestor("Event"));
+      const CEvent * pEvent = dynamic_cast< const CEvent * >((*it)->getObjectAncestor("Event"));
 
       if (pEvent != NULL)
         {
@@ -221,27 +209,27 @@ void CModelExpansion::SetOfModelElements::fillComplete(const CModel* pModel)
 
 //***************************************************************************************
 
-bool CModelExpansion::ElementsMap::exists(const CCopasiObject* source) const
+bool CModelExpansion::ElementsMap::exists(const CDataObject* source) const
 {
-  std::map< const CCopasiObject *, const CCopasiObject * >::const_iterator it;
+  std::map< const CDataObject *, const CDataObject * >::const_iterator it;
   it = mMap.find(source);
   return (it != mMap.end() && it->second != NULL);
 }
 
 bool CModelExpansion::ElementsMap::exists(const std::string & sourceKey) const
 {
-  const CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(sourceKey);
+  const CDataObject* tmp = CRootContainer::getKeyFactory()->get(sourceKey);
   return exists(tmp);
 }
 
-void CModelExpansion::ElementsMap::add(const CCopasiObject* source, const CCopasiObject* copy)
+void CModelExpansion::ElementsMap::add(const CDataObject* source, const CDataObject* copy)
 {
   mMap[source] = copy;
 }
 
-const CCopasiObject* CModelExpansion::ElementsMap::getDuplicatePtr(const CCopasiObject* source) const
+const CDataObject* CModelExpansion::ElementsMap::getDuplicatePtr(const CDataObject* source) const
 {
-  std::map<const CCopasiObject*, const CCopasiObject * >::const_iterator it;
+  std::map<const CDataObject*, const CDataObject * >::const_iterator it;
   it = mMap.find(source);
 
   if (it != mMap.end())
@@ -252,11 +240,11 @@ const CCopasiObject* CModelExpansion::ElementsMap::getDuplicatePtr(const CCopasi
 
 std::string CModelExpansion::ElementsMap::getDuplicateKey(const std::string & sourceKey) const
 {
-  const CCopasiObject* tmp = CCopasiRootContainer::getKeyFactory()->get(sourceKey);
+  const CDataObject* tmp = CRootContainer::getKeyFactory()->get(sourceKey);
 
   if (tmp)
     {
-      const CCopasiObject* retObj = getDuplicatePtr(tmp);
+      const CDataObject* retObj = getDuplicatePtr(tmp);
 
       if (retObj)
         return retObj->getKey();
@@ -267,7 +255,7 @@ std::string CModelExpansion::ElementsMap::getDuplicateKey(const std::string & so
     return "";
 }
 
-const std::map<const CCopasiObject*, const CCopasiObject*> & CModelExpansion::ElementsMap::getMap() const
+const std::map<const CDataObject*, const CDataObject*> & CModelExpansion::ElementsMap::getMap() const
 {
   return mMap;
 }
@@ -360,7 +348,7 @@ void CModelExpansion::createLinearArray(const SetOfModelElements & source, size_
     {
       //try creating the object until we find a name that is not yet used
       CModelValue* newObj;
-      const CMetab* pMetab = dynamic_cast<const CMetab*>(CCopasiRootContainer::getKeyFactory()->get(*itMetab));
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(CRootContainer::getKeyFactory()->get(*itMetab));
 
       if (!pMetab)
         continue;
@@ -421,7 +409,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
     {
       //try creating the object until we find a name that is not yet used
       CModelValue* newObj;
-      const CMetab* pMetab = dynamic_cast<const CMetab*>(CCopasiRootContainer::getKeyFactory()->get(*itMetab));
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(CRootContainer::getKeyFactory()->get(*itMetab));
 
       if (!pMetab)
         continue;
@@ -490,7 +478,7 @@ void CModelExpansion::createRectangularArray(const SetOfModelElements & source, 
   mpModel->compileIfNecessary(NULL);
 }
 
-std::set< const CCopasiObject * > CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
+std::set< const CDataObject * > CModelExpansion::copyCompleteModel(const CModel* pSourceModel)
 {
   mpSourceModel = pSourceModel;
 
@@ -500,8 +488,8 @@ std::set< const CCopasiObject * > CModelExpansion::copyCompleteModel(const CMode
   duplicate(sourceElements, "[merge]", map);
   mpModel->compileIfNecessary(NULL);
 
-  std::set< const CCopasiObject * > ret;
-  std::map< const CCopasiObject *, const CCopasiObject * >::const_iterator it;
+  std::set< const CDataObject * > ret;
+  std::map< const CDataObject *, const CDataObject * >::const_iterator it;
 
   for (it = map.getMap().begin(); it != map.getMap().end(); ++it)
     {
@@ -795,7 +783,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
                 if (!emap.exists(source->getParameterMappings()[i][0]))
                   {
                     const CCompartment* pSource = dynamic_cast<const CCompartment*>(
-                                                    (CCopasiRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
+                                                    (CRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
                     duplicateCompartment(pSource, index, sourceSet, emap);
                   }
 
@@ -822,7 +810,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
                     if (!emap.exists(source->getParameterMappings()[i][0]))
                       {
                         const CModelValue* pSource = dynamic_cast<const CModelValue*>(
-                                                       (CCopasiRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
+                                                       (CRootContainer::getKeyFactory()->get(source->getParameterMappings()[i][0])));
                         duplicateGlobalQuantity(pSource, index, sourceSet, emap);
                       }
 
@@ -937,7 +925,7 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
     {
       const CEventAssignment* pSourceAssignment = &source->getAssignments()[i];
 
-      //const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(pSourceAssignment->getTargetKey()));
+      //const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity * >(CRootContainer::getKeyFactory()->get(pSourceAssignment->getTargetKey()));
       if (sourceSet.contains(pSourceAssignment->getTargetKey()))
         {
           //we assume that the duplicate of the target object already exists.
@@ -982,7 +970,7 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
         continue;
 
       //std::cout << node->getData() << std::endl;
-      const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
+      const CDataObject * pObj = dynamic_cast<const CDataObject*>(node->getObjectInterfacePtr());
       std::string refname = "";
       std::string reftype = "";
 
@@ -998,7 +986,7 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
               cn = cn.getRemainder();
             }
 
-          pObj = dynamic_cast<const CCopasiObject*>(mpSourceModel->getObject(cn));
+          pObj = dynamic_cast<const CDataObject*>(mpSourceModel->getObject(cn));
         }
 
       if (pObj)
@@ -1030,12 +1018,12 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
             }
 
           //find the duplicate
-          const CCopasiObject* duplicate = emap.getDuplicatePtr(pObj);
+          const CDataObject* duplicate = emap.getDuplicatePtr(pObj);
 
           if (duplicate)
             {
               //get the reference object
-              const CCopasiObject* pRef = dynamic_cast<const CCopasiObject*>(duplicate->getObject(reftype + "=" + refname));
+              const CDataObject* pRef = dynamic_cast<const CDataObject*>(duplicate->getObject(reftype + "=" + refname));
 
               //update the node
               if (pRef)
@@ -1064,7 +1052,7 @@ bool CModelExpansion::expressionContainsObject(const CExpression* exp, const Set
         continue;
 
       //std::cout << node->getData() << std::endl;
-      const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
+      const CDataObject * pObj = dynamic_cast<const CDataObject*>(node->getObjectInterfacePtr());
 
       if (pObj)
         {
@@ -1136,7 +1124,7 @@ void CModelExpansion::replaceInModel(const ElementsMap & emap, bool remove)
 
   if (remove)
     {
-      std::map< const CCopasiObject *, const CCopasiObject * >::const_iterator it;
+      std::map< const CDataObject *, const CDataObject * >::const_iterator it;
 
       for (it = emap.getMap().begin(); it != emap.getMap().end(); ++it)
         {
@@ -1325,7 +1313,7 @@ void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & 
         continue;
 
       //std::cout << node->getData() << std::endl;
-      const CCopasiObject * pObj = dynamic_cast<const CCopasiObject*>(node->getObjectInterfacePtr());
+      const CDataObject * pObj = dynamic_cast<const CDataObject*>(node->getObjectInterfacePtr());
       std::string refname = "";
       std::string reftype = "";
 
@@ -1336,12 +1324,12 @@ void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & 
           pObj = pObj->getObjectParent();
         }
 
-      const CCopasiObject* duplicate = emap.getDuplicatePtr(pObj);
+      const CDataObject* duplicate = emap.getDuplicatePtr(pObj);
 
       if (duplicate)
         {
           //get the reference object
-          const CCopasiObject* pRef = dynamic_cast<const CCopasiObject*>(duplicate->getObject(reftype + "=" + refname));
+          const CDataObject* pRef = dynamic_cast<const CDataObject*>(duplicate->getObject(reftype + "=" + refname));
 
           //update the node
           if (pRef)
@@ -1352,7 +1340,7 @@ void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & 
     }
 }
 
-bool CModelExpansion::existDependentEntities(const CCopasiObject* pObj)
+bool CModelExpansion::existDependentEntities(const CDataObject* pObj)
 {
   SetOfModelElements sme;
 

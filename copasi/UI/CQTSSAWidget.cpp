@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,7 +19,7 @@
 
 #include "CQTSSAWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQTSSAResultSubWidget.h"
 #include "CQTSSAResultWidget.h"
@@ -26,15 +31,16 @@
 #include "CQMessageBox.h"
 #include "qtUtilities.h"
 
-#include "tssanalysis/CTSSATask.h"
-#include "tssanalysis/CTSSAProblem.h"
-#include "model/CModel.h"
-#include "report/CKeyFactory.h"
-#include "utilities/CCopasiException.h"
-#include "tssanalysis/CCSPMethod.h"
-#include "tssanalysis/CILDMMethod.h"
-#include "tssanalysis/CILDMModifiedMethod.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/tssanalysis/CTSSATask.h"
+#include "copasi/tssanalysis/CTSSAProblem.h"
+#include "copasi/model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/tssanalysis/CCSPMethod.h"
+#include "copasi/tssanalysis/CILDMMethod.h"
+#include "copasi/tssanalysis/CILDMModifiedMethod.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQTSSAWidget which is a child of 'parent', with the

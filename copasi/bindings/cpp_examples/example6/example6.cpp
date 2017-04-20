@@ -32,8 +32,8 @@
 
 #include "copasi/copasi.h"
 #include "copasi/commandline/COptions.h"
-#include "copasi/report/CCopasiContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
@@ -47,19 +47,19 @@
 #include "copasi/parameterFitting/CExperiment.h"
 #include "copasi/parameterFitting/CExperimentObjectMap.h"
 #include "copasi/report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 extern const char* MODEL_STRING;
 
 int main()
 {
   // initialize the backend library
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
 
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // first we load a simple model
   try
@@ -81,7 +81,7 @@ int main()
   // against
 
   // get the trajectory task object
-  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the optimization task
   CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(&TaskList["Time-Course"]);
@@ -140,7 +140,7 @@ int main()
         }
 
       // clean up the library
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       exit(1);
     }
 
@@ -156,7 +156,7 @@ int main()
         }
 
       // clean up the library
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       exit(1);
     }
 
@@ -194,7 +194,7 @@ int main()
       for (i = 1; i < iMax; ++i)
         {
           std::string key = pTimeSeries->getKey(i);
-          CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+          CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
           assert(pObject != NULL);
 
           // only write header data or metabolites
@@ -313,7 +313,7 @@ int main()
 
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
-  const CCopasiObject* pTimeReference = pModel->getValueReference();
+  const CDataObject* pTimeReference = pModel->getValueReference();
   assert(pTimeReference != NULL);
   pObjectMap->setObjectCN(0, pTimeReference->getCN());
 
@@ -322,7 +322,7 @@ int main()
   pObjectMap->setRole(1, CExperiment::dependent);
   CMetab* pMetab = metabVector[0];
   assert(pMetab != NULL);
-  const CCopasiObject* pParticleReference = pMetab->getConcentrationReference();
+  const CDataObject* pParticleReference = pMetab->getConcentrationReference();
   assert(pParticleReference != NULL);
   pObjectMap->setObjectCN(1, pParticleReference->getCN());
 
@@ -361,7 +361,7 @@ int main()
   assert(pOptimizationItemGroup != NULL);
 
   // define a CFitItem
-  const CCopasiObject* pParameterReference = pParameter->getValueReference();
+  const CDataObject* pParameterReference = pParameter->getValueReference();
   assert(pParameterReference != NULL);
   CFitItem* pFitItem1 = new CFitItem(pDataModel);
   pFitItem1->setObjectCN(pParameterReference->getCN());
@@ -410,7 +410,7 @@ int main()
       std::cerr << "Error. Parameter fitting failed." << std::endl;
 
       // clean up the library
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       exit(1);
     }
 
@@ -431,7 +431,7 @@ int main()
   assert((fabs(pFitProblem->getSolutionVariables()[1] - 0.004) / 0.004) < 3e-2);
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 const char* MODEL_STRING =

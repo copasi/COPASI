@@ -24,7 +24,7 @@
 LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is class for nodes presenting numbers used in an evaluation trees
@@ -85,7 +85,7 @@ public:
    * Converts this node to an AST Node of type AST_NAME
    * @return ASTNode* the resulting ASTNode.
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Build the MathML string

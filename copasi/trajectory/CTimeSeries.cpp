@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,8 +23,8 @@
 
 #include "CTimeSeries.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"
 #include "model/CMetabNameInterface.h"
 #include "model/CModel.h"
@@ -211,7 +216,7 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
             break;
         }
 
-      const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
+      const CDataObject * pDataObject = CObjectInterface::DataObject(pObject);
 
       if ((pMetab = dynamic_cast< const CMetab *>(pDataObject->getObjectParent())) != NULL)
         {
@@ -328,20 +333,20 @@ const std::string & CTimeSeries::getKey(const size_t & var) const
   return mDummyString;
 }
 
-std::string CTimeSeries::getSBMLId(const size_t & var, const CCopasiDataModel* pDataModel) const
+std::string CTimeSeries::getSBMLId(const size_t & var, const CDataModel* pDataModel) const
 {
   std::string key = getKey(var);
   std::string result("");
 
   if (key != mDummyString)
     {
-      const CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
 
       if (pObject != NULL)
         {
-          std::map<const CCopasiObject*, SBase*>::const_iterator pos = const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CCopasiObject*>(pObject));
+          std::map<const CDataObject*, SBase*>::const_iterator pos = const_cast<CDataModel*>(pDataModel)->getCopasi2SBMLMap().find(const_cast<CDataObject*>(pObject));
 
-          if (pos != const_cast<CCopasiDataModel*>(pDataModel)->getCopasi2SBMLMap().end())
+          if (pos != const_cast<CDataModel*>(pDataModel)->getCopasi2SBMLMap().end())
             {
               const SBase* pSBMLObject = pos->second;
               const Compartment* pSBMLCompartment = NULL;

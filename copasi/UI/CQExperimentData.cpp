@@ -28,7 +28,7 @@
 #include <QtCore/QSignalMapper>
 #include <QComboBox>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CCopasiSelectionDialog.h"
 #include "CopasiFileDialog.h"
@@ -39,18 +39,19 @@
 #include "CQPushButtonDelegate.h"
 #include "CQComboDelegate.h"
 
-#include "parameterFitting/CExperimentSet.h"
-#include "parameterFitting/CExperiment.h"
-#include "parameterFitting/CExperimentFileInfo.h"
-#include "parameterFitting/CExperimentObjectMap.h"
+#include "copasi/parameterFitting/CExperimentSet.h"
+#include "copasi/parameterFitting/CExperiment.h"
+#include "copasi/parameterFitting/CExperimentFileInfo.h"
+#include "copasi/parameterFitting/CExperimentObjectMap.h"
 
-#include "report/CKeyFactory.h"
-#include "utilities/CDirEntry.h"
-#include "utilities/utility.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "commandline/CLocaleString.h"
-#include "model/CModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/model/CModel.h"
 #include "copasi/commandline/CConfigurationFile.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #define COL_NAME 0
 #define COL_TYPE 1
@@ -402,7 +403,7 @@ void CQExperimentData::slotExperimentAdd()
   pExperiment->setHeaderRow((unsigned C_INT32) First);
   pExperiment->setFileName(mpFileInfo->getFileName());
 
-  pExperiment->setNormalizeWeightsPerExperiment(CCopasiRootContainer::getConfiguration()->normalizePerExperiment());
+  pExperiment->setNormalizeWeightsPerExperiment(CRootContainer::getConfiguration()->normalizePerExperiment());
 
   pExperiment->setNumColumns((unsigned C_INT32) pExperiment->guessColumnNumber());
   mpFileInfo->sync();
@@ -658,8 +659,6 @@ void CQExperimentData::slotFileEdit()
 
   // then display the changes
   loadFromCopy();
-
-
 }
 
 void CQExperimentData::slotFileDelete()
@@ -715,7 +714,7 @@ void CQExperimentData::slotOK()
   for (; i != C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CRootContainer::getKeyFactory()->get(mKeyMap[mpExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
 
       if (pExperiment)
         {
@@ -750,7 +749,7 @@ void CQExperimentData::slotOK()
   accept();
 }
 
-bool CQExperimentData::load(CExperimentSet * pExperimentSet, CCopasiDataModel * pDataModel)
+bool CQExperimentData::load(CExperimentSet * pExperimentSet, CDataModel * pDataModel)
 {
   mpDataModel = pDataModel;
 
@@ -1178,7 +1177,7 @@ void CQExperimentData::selectModelObject(const int & row)
       CQSimpleSelectionTree::Variables |
       CQSimpleSelectionTree::ObservedValues;
 
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this, Classes);
 
   if (pObject)
@@ -1220,7 +1219,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
   mpTable->setRowCount((int)(imax));
 
   CExperimentObjectMap & ObjectMap = pExperiment->getObjectMap();
-  const CCopasiObject *pObject;
+  const CDataObject *pObject;
   CExperiment::Type Type;
   QTableWidgetItem *pItem = NULL;
 

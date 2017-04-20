@@ -19,7 +19,7 @@
 
 #include "utilities/CCopasiParameterGroup.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "CQParameterGroupDM.h"
 #include "model/CObjectLists.h"
 #include "utilities/utility.h"
@@ -153,7 +153,7 @@ void CQParameterGroupView::slotPushButtonClicked(const QModelIndex & index)
 void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate)
 {
   // OpenSelectionDialog
-  std::vector< const CCopasiObject * > Selection;
+  std::vector< const CDataObject * > Selection;
   CObjectInterface::ContainerList ContainerList;
   ContainerList.push_back(group.getObjectDataModel());
 
@@ -163,7 +163,7 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   for (; it != end; ++it)
     {
-      const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, (*it)->getValue< CCopasiObjectName >()));
+      const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, (*it)->getValue< CCopasiObjectName >()));
 
       if (pObject != NULL)
         {
@@ -173,7 +173,7 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   CModel * pModel = group.getObjectDataModel()->getModel();
 
-  std::vector<const CCopasiObject * > ValidObjects;
+  std::vector<const CDataObject * > ValidObjects;
 
   const std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > > & ValidValues = cnTemplate.getValidValues< CCopasiObjectName >();
   std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > >::const_iterator itValidValues = ValidValues.begin();
@@ -182,18 +182,18 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
   for (; itValidValues != endValidValues; ++itValidValues)
     {
       CObjectLists::ListType ListType = toEnum(itValidValues->first, CObjectLists::ListTypeName, CObjectLists::EMPTY_LIST);
-      std::vector<const CCopasiObject * > Tmp = CObjectLists::getListOfConstObjects(ListType, pModel);
+      std::vector<const CDataObject * > Tmp = CObjectLists::getListOfConstObjects(ListType, pModel);
       ValidObjects.insert(ValidObjects.end(), Tmp.begin(), Tmp.end());
     }
 
-  std::vector< const CCopasiObject * > NewSelection = CCopasiSelectionDialog::getObjectVector(this, ValidObjects, &Selection);
+  std::vector< const CDataObject * > NewSelection = CCopasiSelectionDialog::getObjectVector(this, ValidObjects, &Selection);
 
   // Modify group parameters;
   mpParameterGroupDM->beginResetModel();
   group.clear();
 
-  std::vector< const CCopasiObject * >::const_iterator itNew = NewSelection.begin();
-  std::vector< const CCopasiObject * >::const_iterator endNew = NewSelection.end();
+  std::vector< const CDataObject * >::const_iterator itNew = NewSelection.begin();
+  std::vector< const CDataObject * >::const_iterator endNew = NewSelection.end();
 
   for (; itNew != endNew; ++itNew)
     {

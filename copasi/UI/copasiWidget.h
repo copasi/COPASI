@@ -36,9 +36,9 @@
 class DataModelGUI;
 class QResizeEvent;
 class ListViews;
-class CCopasiDataModel;
+class CDataModel;
 class CQBaseDataModel;
-class CCopasiObject;
+class CDataObject;
 class QUndoStack;
 
 class CopasiWidget : public QWidget
@@ -59,7 +59,7 @@ public:
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
-  CCopasiDataModel *getDataModel() const;
+  CDataModel *getDataModel() const;
 
   void setUndoStack(QUndoStack *undoStack);
   QUndoStack *getUndoStack();
@@ -72,7 +72,7 @@ public:
   /**
    * @return the pointer to the current object
    */
-  const CCopasiObject* getObject() const;
+  const CDataObject* getObject() const;
 
   /**
    * This method returns the data model from all the overview widgets.
@@ -87,8 +87,8 @@ protected:
 
   ListViews *mpListView;
   std::string mKey;
-  CCopasiObject *mpObject;
-  CCopasiDataModel *mpDataModel;
+  CDataObject *mpObject;
+  CDataModel *mpDataModel;
 
   bool mIgnoreUpdates;
   int mFramework;

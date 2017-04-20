@@ -15,13 +15,14 @@
  *      Author: dada
  */
 
-#include "copasi.h"
-#include "UI/qtUtilities.h"
+#include "copasi/copasi.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
-#include "CQCompartmentDM.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/UI/CQCompartmentDM.h"
 
 #include "CompartmentDataChangeCommand.h"
 #include "UndoCompartmentData.h"

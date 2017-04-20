@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,7 +36,7 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "utilities/CProcessReport.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
 CEFMAlgorithm::CSpeciesOrderNode::CSpeciesOrderNode():
   CCopasiNode< size_t >(),
@@ -71,7 +76,7 @@ void CEFMAlgorithm::CSpeciesOrderNode::update(const CTableauMatrix & matrix)
     }
 }
 
-CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent,
+CEFMAlgorithm::CEFMAlgorithm(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType):
   CEFMMethod(pParent, methodType, taskType),
@@ -84,7 +89,7 @@ CEFMAlgorithm::CEFMAlgorithm(const CCopasiContainer * pParent,
 {initObjects();}
 
 CEFMAlgorithm::CEFMAlgorithm(const CEFMAlgorithm & src,
-                             const CCopasiContainer * pParent):
+                             const CDataContainer * pParent):
   CEFMMethod(src, pParent),
   mpModel(NULL),
   mStoi(),
@@ -103,7 +108,7 @@ CEFMAlgorithm::~CEFMAlgorithm()
 
 void CEFMAlgorithm::initObjects()
 {
-  addObjectReference("Current Step", mStep, CCopasiObject::ValueInt);
+  addObjectReference("Current Step", mStep, CDataObject::ValueInt);
 }
 
 bool CEFMAlgorithm::initialize()
@@ -137,7 +142,7 @@ bool CEFMAlgorithm::initialize()
 
   /* Get the reactions from the model */
   /* Note: We have as many reactions as we have rows in ModelStoi */
-  const CCopasiVectorNS < CReaction > & Reaction = mpModel->getReactions();
+  const CDataVectorNS < CReaction > & Reaction = mpModel->getReactions();
 
   /* Vector to keep track of the rearrangements necessary to put the */
   /* reversible reactions to the top of stoichiometry matrix */

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,15 +23,15 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "CODEExporterXPPAUT.h"
 
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CMetabNameInterface.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
 #include "model/CChemEqElement.h"
@@ -54,11 +59,11 @@
 CODEExporterXPPAUT::CODEExporterXPPAUT()
 {}
 
-bool CODEExporterXPPAUT::exportTitleData(const CCopasiDataModel* pDataModel, std::ostream & os)
+bool CODEExporterXPPAUT::exportTitleData(const CDataModel* pDataModel, std::ostream & os)
 {
   os << "@ t0=0,";  //TODO
   const CTrajectoryTask * pTrajectory =
-    dynamic_cast<const CTrajectoryTask *>(&const_cast<CCopasiDataModel*>(pDataModel)->getTaskList()->operator[]("Time-Course"));
+    dynamic_cast<const CTrajectoryTask *>(&const_cast<CDataModel*>(pDataModel)->getTaskList()->operator[]("Time-Course"));
   const CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 

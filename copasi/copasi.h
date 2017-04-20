@@ -157,8 +157,8 @@ extern "C"
 #endif
 
 #ifdef COPASI_MAIN
-class CCopasiRootContainer;
-CCopasiRootContainer * pRootContainer = NULL;
+class CRootContainer;
+CRootContainer * pRootContainer = NULL;
 
 class QMutex;
 QMutex * pCopasiGuiMutex = NULL;

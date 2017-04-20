@@ -23,15 +23,17 @@
 
 #include <cmath>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/CQMessageBox.h"
-#include "resourcesUI/CQIconResource.h"
+#include "qtUtilities.h"
+#include "CCopasiSelectionDialog.h"
+#include "CQMessageBox.h"
 
-#include "utilities/CSlider.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+
+#include "copasi/utilities/CSlider.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 SliderSettingsDialog::SliderSettingsDialog(QWidget* pParent) :
   QDialog(pParent),
@@ -373,14 +375,14 @@ void SliderSettingsDialog::init()
 
 void SliderSettingsDialog::browseButtonPressed()
 {
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::InitialTime |
         CQSimpleSelectionTree::Parameters);
 
   if (pObject)
     {
-      if (!pObject->isValueDbl() && !pObject->isValueInt())
+      if (!pObject->hasFlag(CDataObject::ValueDbl) && !pObject->hasFlag(CDataObject::ValueInt))
         {
           CQMessageBox::information(this, "Invalid Object",
                                     "You chose an object that does not correspond to an integer or float value. Please choose an object that corresponds to an integet or float value.",
@@ -391,7 +393,7 @@ void SliderSettingsDialog::browseButtonPressed()
         }
 
       /* Determine the associated entity key */
-      CCopasiContainer * pAncestor = pObject->getObjectAncestor("Task");
+      CDataContainer * pAncestor = pObject->getObjectAncestor("Task");
 
       if (!pAncestor) pAncestor = pObject->getObjectAncestor("Model");
 
@@ -410,7 +412,7 @@ void SliderSettingsDialog::browseButtonPressed()
         {
           // temporarily add the slider the the first datamodel
           mpSlider = new CSlider("slider", pObject->getObjectDataModel());
-          mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
+          mpSlider->setSliderObject(const_cast< CDataObject * >(pObject));
 
           if (pAncestor)
             mpSlider->setAssociatedEntityKey(pAncestor->getKey());
@@ -439,7 +441,7 @@ void SliderSettingsDialog::browseButtonPressed()
         setSlider(mDefinedSliders[i]);
       else // We need to change the object an reinitialize the slider
         {
-          mpSlider->setSliderObject(const_cast< CCopasiObject * >(pObject));
+          mpSlider->setSliderObject(const_cast< CDataObject * >(pObject));
 
           if (pAncestor)
             mpSlider->setAssociatedEntityKey(pAncestor->getKey());

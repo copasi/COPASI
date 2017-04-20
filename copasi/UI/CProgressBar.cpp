@@ -27,8 +27,9 @@
 
 #include "copasi.h"
 #include "qtUtilities.h"
-#include "utilities/CVector.h"
 #include "CProgressBar.h"
+
+#include "copasi/core/CVector.h"
 #include "DataModelGUI.h"
 #include "CQProgressItemText.h"
 #include "CQProgressItemBar.h"

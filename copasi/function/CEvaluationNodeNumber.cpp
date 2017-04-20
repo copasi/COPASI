@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -211,7 +216,7 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeNumber::toAST(const CCopasiDataModel* /* pDataModel */) const
+ASTNode* CEvaluationNodeNumber::toAST(const CDataModel* /* pDataModel */) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();

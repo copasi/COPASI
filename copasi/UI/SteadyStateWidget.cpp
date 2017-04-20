@@ -30,8 +30,8 @@
 #include "copasi.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "model/CModel.h"
@@ -133,7 +133,7 @@ bool SteadyStateWidget::loadTask()
   loadMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (mSteadyStateTask == NULL)
     return false;
@@ -171,7 +171,7 @@ bool SteadyStateWidget::saveTask()
   saveMethod();
 
   CSteadyStateTask* mSteadyStateTask =
-    dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(mKey));
 
   if (mSteadyStateTask == NULL)
     return false;

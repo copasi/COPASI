@@ -18,7 +18,7 @@
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CObjectLists.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CCopasiMethod.h"

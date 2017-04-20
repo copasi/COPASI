@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLStyle.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,13 +17,13 @@
 #include "copasi/layout/CLBase.h"
 #include "copasi/layout/CLGroup.h"
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class Style;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLStyle : public CLBase, public CCopasiContainer
+class CLStyle : public CLBase, public CDataContainer
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -46,17 +43,17 @@ public:
   /**
    * Constructor.
    */
-  CLStyle(const std::string& name, CCopasiContainer* pParent = NULL);
+  CLStyle(const std::string& name, CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLStyle(const CLStyle& source, CCopasiContainer* pParent = NULL);
+  CLStyle(const CLStyle& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLStyle(const Style& source, const std::string& name, CCopasiContainer* pParent = NULL);
+  CLStyle(const Style& source, const std::string& name, CDataContainer* pParent = NULL);
 
   /**
    * Destructor

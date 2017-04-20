@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,9 +36,9 @@
 #include "randomGenerator/CPermutation.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CSort.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodGA::COptMethodGA(const CCopasiContainer * pParent,
+COptMethodGA::COptMethodGA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
@@ -57,7 +62,7 @@ COptMethodGA::COptMethodGA(const CCopasiContainer * pParent,
 }
 
 COptMethodGA::COptMethodGA(const COptMethodGA & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
   mCrossOverFalse(0),
   mCrossOver(0),

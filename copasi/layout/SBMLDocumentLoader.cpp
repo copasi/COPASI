@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -40,13 +45,13 @@
 #include <sbml/packages/render/extension/RenderLayoutPlugin.h>
 
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "sbml/SBMLUtils.h" //from the copasi sbml dir
 
 //static
 void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
     const ListOf & sbmlList,
-    const std::map<const CCopasiObject*, SBase*> & copasimodelmap)
+    const std::map<const CDataObject*, SBase*> & copasimodelmap)
 {
   unsigned C_INT32 i, iMax;
 
@@ -100,8 +105,8 @@ void SBMLDocumentLoader::readListOfLayouts(CListOfLayouts & lol,
   std::map<std::string, std::string> modelmap;
 
   std::string s1, s2;
-  std::map<const CCopasiObject*, SBase*>::const_iterator it;
-  std::map<const CCopasiObject*, SBase*>::const_iterator itEnd = copasimodelmap.end();
+  std::map<const CDataObject*, SBase*>::const_iterator it;
+  std::map<const CDataObject*, SBase*>::const_iterator itEnd = copasimodelmap.end();
 
   for (it = copasimodelmap.begin(); it != itEnd; ++it)
     {
@@ -143,7 +148,7 @@ CLayout * SBMLDocumentLoader::createLayout(const Layout & sbmlLayout,
     const std::map<std::string, std::string> & modelmap,
     std::map<std::string, std::string> & layoutmap
     , const std::map<std::string, std::string>& globalIdToKeyMap
-    , const CCopasiContainer * pParent
+    , const CDataContainer * pParent
                                           )
 {
   CLayout* layout = new CLayout(sbmlLayout, layoutmap, pParent);
@@ -281,7 +286,7 @@ void SBMLDocumentLoader::postprocessTextGlyph(const TextGlyph & sbml,
       std::map<std::string, std::string>::const_iterator it = layoutmap.find(sbml.getId());
 
       if (it != layoutmap.end())
-        pTg = dynamic_cast<CLTextGlyph *>(CCopasiRootContainer::getKeyFactory()->get(it->second));
+        pTg = dynamic_cast<CLTextGlyph *>(CRootContainer::getKeyFactory()->get(it->second));
 
       if (!pTg)
         {
@@ -653,7 +658,7 @@ void SBMLDocumentLoader::convertPropertyKeys(RENDER_INFORMATION* pObject,
  * to the key used in the COPASI model.
 template<typename RENDER_INFORMATION>
 void SBMLDocumentLoader::expandIdToKeyMaps(const CLRenderInformationBase* pRenderInfo,
-            CCopasiVector<RENDER_INFORMATION>& renderInformationVector,
+            CDataVector<RENDER_INFORMATION>& renderInformationVector,
             std::map<std::string,std::map<std::string,std::string> >& colorIdToKeyMapMap,
             std::map<std::string,std::map<std::string,std::string> >& gradientIdToKeyMapMap,
             std::map<std::string,std::map<std::string,std::string> >& lineEndingIdToKeyMapMap,

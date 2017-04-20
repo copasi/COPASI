@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,8 +27,8 @@
 #define COPASI_MAIN
 #include "copasi/copasi.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
 #include "copasi/utilities/CAnnotatedMatrix.h"
@@ -39,12 +44,12 @@ int main(int argc, char** argv)
   // since we are not interested in the arguments
   // that are passed to main, we pass 0 and NULL to
   // init
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
   assert(pDataModel != NULL);
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // check if we got exactly one argument, which should be an SBML filename
   if (argc == 2)
@@ -68,7 +73,7 @@ int main(int argc, char** argv)
         {
           std::cerr << "Error while importing the model from file named \"" << filename << "\"." << std::endl;
           // final cleanup
-          CCopasiRootContainer::destroy();
+          CRootContainer::destroy();
           return 1;
         }
 
@@ -85,12 +90,12 @@ int main(int argc, char** argv)
         {
           std::cerr << "Sorry. Model could not be imported." << std::endl;
           // final cleanup
-          CCopasiRootContainer::destroy();
+          CRootContainer::destroy();
           return 1;
         }
 
       // get the task list
-      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+      CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
       // get the metabolic control analysis task object
       CMCATask* pTask = dynamic_cast<CMCATask*>(&TaskList["Metabolic Control Analysis"]);
@@ -183,7 +188,7 @@ int main(int argc, char** argv)
             }
 
           // final cleanup
-          CCopasiRootContainer::destroy();
+          CRootContainer::destroy();
           return 1;
         }
 
@@ -204,7 +209,7 @@ int main(int argc, char** argv)
             // we are also not interested in steady states with negative concentrations
           case CSteadyStateMethod::foundNegative:
             std::cerr << "Could not find a steady state with non-negative concentrations, so I can't output control coefficients." << std::endl;
-            CCopasiRootContainer::destroy();
+            CRootContainer::destroy();
             return 1;
             break;
         }
@@ -235,7 +240,7 @@ int main(int argc, char** argv)
           if (numReactions == 0)
             {
               std::cerr << "There are no reactions in the model, can't output a flux control coefficient." << std::endl;
-              CCopasiRootContainer::destroy();
+              CRootContainer::destroy();
               return 1;
             }
 
@@ -291,11 +296,11 @@ int main(int argc, char** argv)
       // give a usage message
       std::cerr << "Usage: example10 SBMLFILE" << std::endl;
       // final cleanup
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
   // final cleanup
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
   return 0;
 }

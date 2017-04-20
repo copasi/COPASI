@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,8 +29,8 @@
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
 #include "report/CKeyFactory.h"
@@ -227,7 +232,7 @@ bool CQAnalyticsWidget::loadTask()
   if (name.empty())
     setSingleObject(NULL);
   else
-    setSingleObject(static_cast<const CCopasiObject*>(pTask->getObjectDataModel()->getObject(name)));
+    setSingleObject(static_cast<const CDataObject*>(pTask->getObjectDataModel()->getObject(name)));
 
   mpDirectionPositive->setChecked(mpAnalyticsProblem->isPositiveDirection());
   mpDirectionNegative->setChecked(!mpAnalyticsProblem->isPositiveDirection());
@@ -256,14 +261,14 @@ bool CQAnalyticsWidget::loadTask()
 
 void CQAnalyticsWidget::slotChooseVariable()
 {
-  const CCopasiObject * pObject =
+  const CDataObject * pObject =
     CCopasiSelectionDialog::getObjectSingle(this,
         CQSimpleSelectionTree::Variables, mpSingleVariable);
 
   setSingleObject(pObject);
 }
 
-void CQAnalyticsWidget::setSingleObject(const CCopasiObject * pSingleVariable)
+void CQAnalyticsWidget::setSingleObject(const CDataObject * pSingleVariable)
 {
   mpSingleVariable = pSingleVariable;
 

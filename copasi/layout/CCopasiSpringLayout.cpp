@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -1044,7 +1049,7 @@ public:
 };
 
 CLayout* CCopasiSpringLayout::createLayout(
-  CCopasiContainer *parent,
+  CDataContainer *parent,
   const std::set<const CCompartment*>& compartments,
   const std::set<const CReaction*>& reactions,
   const std::set<const CMetab*>& metabs,
@@ -1119,9 +1124,9 @@ CLayout* CCopasiSpringLayout::createLayout(
       //now add the species reference glyphs.
 
       //substrates
-      const CCopasiVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
+      const CDataVector < CChemEqElement >& substrates = (*reactIt)->getChemEq().getSubstrates();
       bool substrateExists = false;
-      CCopasiVector<CChemEqElement>::const_iterator elIt;
+      CDataVector<CChemEqElement>::const_iterator elIt;
 
       for (elIt = substrates.begin(); elIt != substrates.end(); ++elIt)
         {
@@ -1218,7 +1223,7 @@ CLayout* CCopasiSpringLayout::createLayout(
         }
 
       //products
-      const CCopasiVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
+      const CDataVector < CChemEqElement >& products = (*reactIt)->getChemEq().getProducts();
       bool productExists = false;
 
       for (elIt = products.begin(); elIt != products.end(); ++elIt)
@@ -1311,7 +1316,7 @@ CLayout* CCopasiSpringLayout::createLayout(
         }
 
       //modifiers
-      const CCopasiVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
+      const CDataVector < CChemEqElement >& modifiers = (*reactIt)->getChemEq().getModifiers();
 
       for (elIt = modifiers.begin(); elIt != modifiers.end(); ++elIt)
         {

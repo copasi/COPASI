@@ -13,12 +13,12 @@
 
 #include "CLNAResultWidget.h"
 #include "CLNAResultSubwidget.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "lna/CLNATask.h"
 #include "lna/CLNAMethod.h"
 #include "qtUtilities.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 /*
  *  Constructs a CLNAResultWidget which is a child of 'parent', with the

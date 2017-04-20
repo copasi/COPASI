@@ -28,12 +28,12 @@
 #define COPASI_CFunctionParameters
 
 #include "copasi/utilities/CReadConfig.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/function/CFunctionParameter.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 /** @dia:pos 10.7176,6.51973 */
-class CFunctionParameters : public CCopasiContainer
+class CFunctionParameters : public CDataContainer
 {
   // Attributes
 
@@ -44,7 +44,7 @@ private:
    *  @associates <{CFunctionParameter}>
    */
   /** @dia:route 0,3; h,15.1888,24.6765,8.71728,7.21973,10.7176 */
-  CCopasiVectorNS < CFunctionParameter > mParameters;
+  CDataVectorNS < CFunctionParameter > mParameters;
 
 protected:
   CFunctionParameters(const CFunctionParameters & src);
@@ -53,18 +53,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunctionParameters(const std::string & name = "NoName",
-                      const CCopasiContainer * pParent = NO_PARENT);
+                      const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CFunctionParameters &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunctionParameters(const CFunctionParameters & src,
-                      const CCopasiContainer * pParent);
+                      const CDataContainer * pParent);
 
   /**
    *  Destructor

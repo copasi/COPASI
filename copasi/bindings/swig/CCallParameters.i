@@ -35,8 +35,8 @@
 
 %template(PointerCallParameters) CCallParameters<C_FLOAT64>;
 typedef CCallParameters<C_FLOAT64> PointerCallParameters;
-%template(ObjectCallParameters) CCallParameters<CCopasiObject>;
-typedef CCallParameters<CCopasiObject> ObjectCallParameters;
+%template(ObjectCallParameters) CCallParameters<CDataObject>;
+typedef CCallParameters<CDataObject> ObjectCallParameters;
 
 // unignore findParameterByName
 // %rename(findParameterByName) CFunctionParameterMap::findParameterByName;

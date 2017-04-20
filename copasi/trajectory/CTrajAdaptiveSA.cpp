@@ -29,14 +29,14 @@
 #include "CTrajAdaptiveSA.h"
 #include "CTrajectoryProblem.h"
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
 #include "math/CMathContainer.h"
 #include "math/CMathReaction.h"
 #include "model/CModel.h"
 
-CTrajAdaptiveSA::CTrajAdaptiveSA(const CCopasiContainer * pParent,
+CTrajAdaptiveSA::CTrajAdaptiveSA(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,
                                  const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -63,7 +63,7 @@ CTrajAdaptiveSA::CTrajAdaptiveSA(const CCopasiContainer * pParent,
 }
 
 CTrajAdaptiveSA::CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
-                                 const CCopasiContainer * pParent):
+                                 const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mMaxReactionFiring(src.mMaxReactionFiring),
   mReactionFiring(src.mReactionFiring),
@@ -167,7 +167,7 @@ void CTrajAdaptiveSA::start()
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  CCore::CUpdateSequence * pUpdateSequence = mUpdateSequences.array();
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
   CObjectInterface::ObjectSet Requested;
@@ -189,7 +189,7 @@ void CTrajAdaptiveSA::start()
       Changed.insert(pTimeObject);
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, Changed, Requested);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CCore::SimulationContext::Default, Changed, Requested);
     }
 
   mNumReactionSpecies = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();

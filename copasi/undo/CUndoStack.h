@@ -9,7 +9,7 @@
 #include <vector>
 
 class CUndoData;
-class CCopasiDataModel;
+class CDataModel;
 
 class CUndoStack : private std::vector< CUndoData * >
 {
@@ -20,7 +20,7 @@ public:
   typedef std::vector< CUndoData * >::iterator iterator;
   typedef std::vector< CUndoData * >::const_iterator const_iterator;
 
-  CUndoStack(const CCopasiDataModel & dataModel);
+  CUndoStack(const CDataModel & dataModel);
 
   ~CUndoStack();
 
@@ -35,7 +35,7 @@ public:
   const_iterator current() const;
 
 private:
-  CCopasiDataModel * mpDataModel;
+  CDataModel * mpDataModel;
 
   /**
    * The index of the last applied data, i.e., itself and all

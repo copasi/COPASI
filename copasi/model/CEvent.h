@@ -29,13 +29,13 @@
 #include <set>
 
 #include "copasi/model/CAnnotation.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 class CExpression;
 class CModel;
 class CCallbackInterface;
 
-class CEventAssignment : public CCopasiContainer
+class CEventAssignment : public CDataContainer
 {
 public:
   static CEventAssignment * fromData(const CData & data);
@@ -43,18 +43,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & targetKey (default: "")
-   * @param "const CCopasiContainer * pParent (default: NULL)
+   * @param "const CDataContainer * pParent (default: NULL)
    */
   CEventAssignment(const std::string & targetKey = "",
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CEventAssignment &" src
-   * @param "const CCopasiContainer * pParent (default: NULL)
+   * @param "const CDataContainer * pParent (default: NULL)
    */
   CEventAssignment(const CEventAssignment & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -63,10 +63,10 @@ public:
 
   /**
    * Set the object parent
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Compile the event assignment.
@@ -74,14 +74,6 @@ public:
    * @return bool success
    */
   bool compile(CObjectInterface::ContainerList listOfContainer);
-
-  /**
-   * Check whether an object must be deleted because its prerequisites can
-   * no longer be fulfilled due to the given deleted objects
-   * @param const DataObjectSet & deletedObjects
-   * @return bool mustBeDeleted
-   */
-  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
 
   /**
    * Retrieve the key
@@ -104,9 +96,9 @@ public:
 
   /**
    * Retrieve a pointer to the target object.
-   * @return const CCopasiObject * targetObject
+   * @return const CDataObject * targetObject
    */
-  const CCopasiObject * getTargetObject() const;
+  const CDataObject * getTargetObject() const;
 
   /**
    * Set the expression from an infix string. The return value indicates if
@@ -156,7 +148,7 @@ private:
   /**
    * The target object
    */
-  const CCopasiObject * mpTarget;
+  const CDataObject * mpTarget;
 
   /**
    * The expression to calculate the new value
@@ -164,7 +156,7 @@ private:
   CExpression * mpExpression;
 };
 
-class CEvent : public CCopasiContainer, public CAnnotation
+class CEvent : public CDataContainer, public CAnnotation
 {
 public:
   enum Type
@@ -180,18 +172,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CEvent(const std::string & name = "NoName",
-         const CCopasiContainer * pParent = NO_PARENT);
+         const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CEvent &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CEvent(const CEvent & src,
-         const CCopasiContainer * pParent);
+         const CDataContainer * pParent);
 
 private:
   CEvent & operator= (const CEvent &);
@@ -209,10 +201,10 @@ public:
 
   /**
    * Set the object parent
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Retrieve display name. Special treatment for reaction to
@@ -227,22 +219,14 @@ public:
   virtual const std::string & getKey() const;
 
   /**
-   * Check whether an object must be deleted because its prerequisites can
-   * no longer be fulfilled due to the given deleted objects
-   * @param const DataObjectSet & deletedObjects
-   * @return bool mustBeDeleted
-   */
-  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
-
-  /**
    * Appends pointers to assignments which are dependent on the candidates to the
    * list.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependents
+   * @param std::set< const CDataObject * > candidates
+   * @param std::set< const CDataObject * > & dependents
    * @return bool objectsAppended
    */
-  bool appendDependentAssignments(std::set< const CCopasiObject * > candidates,
-                                  std::set< const CCopasiObject * > & dependents) const;
+  bool appendDependentAssignments(std::set< const CDataObject * > candidates,
+                                  std::set< const CDataObject * > & dependents) const;
 
   /**
    * Return information where the element in the object set is being used.
@@ -409,15 +393,15 @@ public:
 
   /**
    * Retrieve the assignments
-   * @return const CCopasiVectorN< CEventAssignment > & assignments
+   * @return const CDataVectorN< CEventAssignment > & assignments
    */
-  const CCopasiVectorN< CEventAssignment > & getAssignments() const;
+  const CDataVectorN< CEventAssignment > & getAssignments() const;
 
   /**
    * Retrieve the assignments
-   * @return CCopasiVectorN< CEventAssignment > & assignments
+   * @return CDataVectorN< CEventAssignment > & assignments
    */
-  CCopasiVectorN< CEventAssignment > & getAssignments();
+  CDataVectorN< CEventAssignment > & getAssignments();
 
   /**
    * Delete assignment with the given key. Please note this is not the target key.
@@ -452,7 +436,7 @@ private:
   /**
    * A vector assignments expressions which specify the changes made by the event.
    */
-  CCopasiVectorN < CEventAssignment > mAssignments;
+  CDataVectorN < CEventAssignment > mAssignments;
 
   /**
    * A Boolean flag indicating whether the calculation or the assignment should be delayed

@@ -14,10 +14,9 @@
 #include <map>
 #include <vector>
 
-#include <copasi/copasi.h>
-#include "copasi/utilities/CFlags.h"
+#include "copasi/core/CFlags.h"
 
-class CCopasiObject;
+class CDataObject;
 class CMathObject;
 class CEvaluationNode;
 class CObjectInterface;
@@ -31,39 +30,39 @@ public:
   struct sPointers
   {
   public:
-    C_FLOAT64 * pInitialExtensiveValues;
-    C_FLOAT64 * pInitialIntensiveValues;
-    C_FLOAT64 * pInitialExtensiveRates;
-    C_FLOAT64 * pInitialIntensiveRates;
-    C_FLOAT64 * pInitialParticleFluxes;
-    C_FLOAT64 * pInitialFluxes;
-    C_FLOAT64 * pInitialTotalMasses;
-    C_FLOAT64 * pInitialEventTriggers;
+    double * pInitialExtensiveValues;
+    double * pInitialIntensiveValues;
+    double * pInitialExtensiveRates;
+    double * pInitialIntensiveRates;
+    double * pInitialParticleFluxes;
+    double * pInitialFluxes;
+    double * pInitialTotalMasses;
+    double * pInitialEventTriggers;
 
-    C_FLOAT64 * pExtensiveValues;
-    C_FLOAT64 * pIntensiveValues;
-    C_FLOAT64 * pExtensiveRates;
-    C_FLOAT64 * pIntensiveRates;
-    C_FLOAT64 * pParticleFluxes;
-    C_FLOAT64 * pFluxes;
-    C_FLOAT64 * pTotalMasses;
-    C_FLOAT64 * pEventTriggers;
+    double * pExtensiveValues;
+    double * pIntensiveValues;
+    double * pExtensiveRates;
+    double * pIntensiveRates;
+    double * pParticleFluxes;
+    double * pFluxes;
+    double * pTotalMasses;
+    double * pEventTriggers;
 
-    C_FLOAT64 * pExtensiveNoise;
-    C_FLOAT64 * pIntensiveNoise;
-    C_FLOAT64 * pReactionNoise;
-    C_FLOAT64 * pReactionParticleNoise;
-    C_FLOAT64 * pEventDelays;
-    C_FLOAT64 * pEventPriorities;
-    C_FLOAT64 * pEventAssignments;
-    C_FLOAT64 * pEventRoots;
-    C_FLOAT64 * pEventRootStates;
-    C_FLOAT64 * pPropensities;
-    C_FLOAT64 * pDependentMasses;
-    C_FLOAT64 * pDiscontinuous;
-    C_FLOAT64 * pDelayValue;
-    C_FLOAT64 * pDelayLag;
-    C_FLOAT64 * pTransitionTime;
+    double * pExtensiveNoise;
+    double * pIntensiveNoise;
+    double * pReactionNoise;
+    double * pReactionParticleNoise;
+    double * pEventDelays;
+    double * pEventPriorities;
+    double * pEventAssignments;
+    double * pEventRoots;
+    double * pEventRootStates;
+    double * pPropensities;
+    double * pDependentMasses;
+    double * pDiscontinuous;
+    double * pDelayValue;
+    double * pDelayLag;
+    double * pTransitionTime;
 
     CMathObject * pInitialExtensiveValuesObject;
     CMathObject * pInitialIntensiveValuesObject;
@@ -104,10 +103,10 @@ public:
   struct sRelocate
   {
   public:
-    C_FLOAT64 * pValueStart;
-    C_FLOAT64 * pValueEnd;
-    C_FLOAT64 * pOldValue;
-    C_FLOAT64 * pNewValue;
+    double * pValueStart;
+    double * pValueEnd;
+    double * pOldValue;
+    double * pNewValue;
 
     CMathObject * pObjectStart;
     CMathObject * pObjectEnd;

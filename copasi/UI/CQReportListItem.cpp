@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,21 +19,22 @@
 
 #include <string>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "CQReportListItem.h"
 #include "qtUtilities.h"
-#include "report/CCopasiStaticString.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
-CQReportListItem::CQReportListItem(const std::string & cn, CCopasiDataModel * pDataModel):
+CQReportListItem::CQReportListItem(const std::string & cn, CDataModel * pDataModel):
   QListWidgetItem(),
   mCN(cn)
 {
   refreshText(pDataModel);
 }
 
-CQReportListItem::CQReportListItem(const CCopasiObject * pObject):
+CQReportListItem::CQReportListItem(const CDataObject * pObject):
   QListWidgetItem(),
   mCN("")
 {
@@ -52,7 +58,7 @@ CQReportListItem::getCN() const
   return mCN;
 }
 
-void CQReportListItem::setObject(const CCopasiObject * pObject)
+void CQReportListItem::setObject(const CDataObject * pObject)
 {
   if (pObject)
     {
@@ -66,9 +72,9 @@ void CQReportListItem::setObject(const CCopasiObject * pObject)
     }
 }
 
-void CQReportListItem::refreshText(CCopasiDataModel * pDataModel)
+void CQReportListItem::refreshText(CDataModel * pDataModel)
 {
-  const CCopasiObject * pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(mCN));
+  const CDataObject * pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(mCN));
 
   if (pObject)
     setText(FROM_UTF8(pObject->getObjectDisplayName()));

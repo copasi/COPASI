@@ -6,10 +6,10 @@
 #include "CQDependencyDialog.h"
 #include "ui_CQDependencyDialog.h"
 
-#include <copasi/UI/copasiui3window.h>
-#include <copasi/UI/qtUtilities.h>
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/report/CKeyFactory.h>
+#include "copasiui3window.h"
+#include "qtUtilities.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
 
 CQDependencyDialog::CQDependencyDialog(QWidget *parent, const char *name, bool modal, Qt::WindowFlags fl)
   : CWindowInterface(parent, fl)
@@ -35,7 +35,6 @@ void CQDependencyDialog::closeEvent(QCloseEvent* e)
   CWindowInterface::closeEvent(e);
 
   closeDialog();
-
 }
 
 void CQDependencyDialog::closeDialog()
@@ -68,7 +67,7 @@ void CQDependencyDialog::setParentWindow(CopasiUI3Window *pPW)
 
 void CQDependencyDialog::loadFrom(const std::string &key)
 {
-  CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+  CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
 
   if (pObject == NULL) return;
 
@@ -76,5 +75,4 @@ void CQDependencyDialog::loadFrom(const std::string &key)
                        .arg(FROM_UTF8(pObject->getObjectType()))
                        .arg(FROM_UTF8(pObject->getObjectName())));
   ui->widget->loadFrom(pObject);
-
 }

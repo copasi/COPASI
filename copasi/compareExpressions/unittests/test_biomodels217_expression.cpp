@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_biomodels217_expression.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 22:16:01 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,8 +26,7 @@
 #include "compareExpressions/CNormalChoiceLogical.h"
 #include "compareExpressions/CNormalLogical.h"
 #include "compareExpressions/CNormalLogicalItem.h"
-#include "report/CCopasiRootContainer.h"
-
+#include "copasi/core/CRootContainer.h"
 
 const char* test_biomodels217_expression::factor_num = "P*A";
 const char* test_biomodels217_expression::term_num1 = "f1*B/J";
@@ -50,18 +46,15 @@ const char* test_biomodels217_expression::term_den5 = "C^3*B*N/(E*G*I*J*M*(1+3*C
 const char* test_biomodels217_expression::term_den6 = "3*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*m1)";
 const char* test_biomodels217_expression::term_den7 = "3*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*o1)";
 
-
-
 void test_biomodels217_expression::setUp()
 {
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
 }
 
 void test_biomodels217_expression::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
-
 
 //----------- denominator ------------------
 
@@ -130,7 +123,6 @@ void test_biomodels217_expression::test_term_num1()
 
   delete pFraction;
 }
-
 
 void test_biomodels217_expression::test_term_num2()
 {
@@ -209,7 +201,6 @@ void test_biomodels217_expression::test_term_num2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "e1");
-
 
   // denominator
   // (C^3*L + D*F*H*L + 3*C^2*H*L + 3*C*F*H*L)
@@ -392,7 +383,6 @@ void test_biomodels217_expression::test_term_num2()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_num3()
 {
   // 3*h1*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))
@@ -480,7 +470,6 @@ void test_biomodels217_expression::test_term_num3()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "h1");
-
 
   // denominator
   // (C^3*J*L + D*F*H*J*L + 3*C^2*H*J*L + 3*C*F*H*J*L)
@@ -590,7 +579,6 @@ void test_biomodels217_expression::test_term_num3()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "L");
 
-
   // 3*C^2*H*J*L
   ++it;
   pProduct = *(it);
@@ -649,7 +637,6 @@ void test_biomodels217_expression::test_term_num3()
   CPPUNIT_ASSERT(pProduct->getFactor() == 3.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 5);
 
-
   // C
   it2 = pProduct->getItemPowers().begin();
   pItemPower = *(it2);
@@ -704,7 +691,6 @@ void test_biomodels217_expression::test_term_num3()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "L");
-
 
   delete pFraction;
 }
@@ -763,7 +749,6 @@ void test_biomodels217_expression::test_term_num4()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "g1");
-
 
   // denominator
   // (C^3*M + E*G*I*M + 3*C^2*I*M + 3*C*G*I*M)
@@ -899,7 +884,6 @@ void test_biomodels217_expression::test_term_num4()
   CPPUNIT_ASSERT(pProduct->getFactor() == 3.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 4);
 
-
   // C
   it2 = pProduct->getItemPowers().begin();
   pItemPower = *(it2);
@@ -1013,14 +997,12 @@ void test_biomodels217_expression::test_term_num5()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "j1");
 
-
   // denominator
   // (C^3*J*M + E*G*I*J*M + 3*C^2*I*J*M + 3*C*G*I*J*M)
   const CNormalSum* pDenominator = &pFraction->getDenominator();
   CPPUNIT_ASSERT(pDenominator->getFractions().size() == 0);
   pProducts = &pDenominator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 4);
-
 
   // C^3*J*M
   it = pProducts->begin();
@@ -1175,14 +1157,12 @@ void test_biomodels217_expression::test_term_num5()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "M");
 
-
   // 3*C*G*I*J*M
   ++it;
   pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 3.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 5);
-
 
   // C
   it2 = pProduct->getItemPowers().begin();
@@ -1241,7 +1221,6 @@ void test_biomodels217_expression::test_term_num5()
 
   delete pFraction;
 }
-
 
 void test_biomodels217_expression::test_term_num6()
 {
@@ -1330,7 +1309,6 @@ void test_biomodels217_expression::test_term_num6()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "i1");
-
 
   // denominator
   // (C^6*L*M + C^3*D*F*H*L*M + C^3*E*G*I*L*M + D*E*F*G*H*I*L*M + 3*C^5*H*L*M + 3*C^5*I*L*M + 3*C^4*F*H*L*M + 3*C^4*G*I*L*M + 3*C^2*D*F*H*I*L*M + 3*C^2*E*G*H*I*L*M + 3*C*D*F*G*H*I*L*M + 3*C*E*F*G*H*I*L*M + 9*C^4*H*I*L*M + 9*C^3*F*H*I*L*M + 9*C^3*G*H*I*L*M + 9*C^2*F*G*H*I*L*M)
@@ -1886,7 +1864,6 @@ void test_biomodels217_expression::test_term_num6()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "F");
 
-
   // H
   ++it2;
   pItemPower = *(it2);
@@ -2021,7 +1998,6 @@ void test_biomodels217_expression::test_term_num6()
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 3.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 8);
-
 
   // C
   it2 = pProduct->getItemPowers().begin();
@@ -2268,7 +2244,6 @@ void test_biomodels217_expression::test_term_num6()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "M");
 
-
   // 9*C^3*F*H*I*L*M
   ++it;
   pProduct = *(it);
@@ -2297,7 +2272,6 @@ void test_biomodels217_expression::test_term_num6()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "F");
-
 
   // H
   ++it2;
@@ -2503,7 +2477,6 @@ void test_biomodels217_expression::test_term_num6()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_num7()
 {
   // 3*k1*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I)))
@@ -2603,7 +2576,6 @@ void test_biomodels217_expression::test_term_num7()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "k1");
 
-
   // denominator
   // (C^6*J*L*M + C^3*D*F*H*J*L*M + C^3*E*G*I*J*L*M + D*E*F*G*H*I*J*L*M + 3*C^5*H*J*L*M + 3*C^5*I*J*L*M + 3*C^4*F*H*J*L*M + 3*C^4*G*I*J*L*M + 3*C^2*D*F*H*I*J*L*M + 3*C^2*E*G*H*I*J*L*M + 3*C*D*F*G*H*I*J*L*M + 3*C*E*F*G*H*I*J*L*M + 9*C^4*H*I*J*L*M + 9*C^3*F*H*I*J*L*M + 9*C^3*G*H*I*J*L*M + 9*C^2*F*G*H*I*J*L*M)
   const CNormalSum* pDenominator = &pFraction->getDenominator();
@@ -2662,14 +2634,12 @@ void test_biomodels217_expression::test_term_num7()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "M");
 
-
   // C^3*D*F*H*J*L*M
   ++it;
   pProduct = *(it);
   CPPUNIT_ASSERT(pProduct != NULL);
   CPPUNIT_ASSERT(pProduct->getFactor() == 1.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 7);
-
 
   // C^3
   it2 = pProduct->getItemPowers().begin();
@@ -2999,7 +2969,6 @@ void test_biomodels217_expression::test_term_num7()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "M");
-
 
   // 3*C^5*I*J*L*M
   ++it;
@@ -3354,7 +3323,6 @@ void test_biomodels217_expression::test_term_num7()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "H");
-
 
   // I
   ++it2;
@@ -3948,10 +3916,8 @@ void test_biomodels217_expression::test_term_num7()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "M");
 
-
   delete pFraction;
 }
-
 
 //----------- denominator ------------------
 
@@ -4027,7 +3993,6 @@ void test_biomodels217_expression::test_term_den1()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den2()
 {
   // 3*C*O/(D*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H)))
@@ -4093,7 +4058,6 @@ void test_biomodels217_expression::test_term_den2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "O");
-
 
   // denominator
   // (C^3*L + D*F*H*L + 3*C^2*H*L + 3*C*F*H*L)
@@ -4276,7 +4240,6 @@ void test_biomodels217_expression::test_term_den2()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den3()
 {
   // 3*C*B*O/(D*J*L*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*l1)
@@ -4353,7 +4316,6 @@ void test_biomodels217_expression::test_term_den3()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "O");
-
 
   // denominator
   // (C^3*J*L*l1 + D*F*H*J*L*l1 + 3*C^2*H*J*L*l1 + 3*C*F*H*J*L*l1)
@@ -4555,7 +4517,6 @@ void test_biomodels217_expression::test_term_den3()
   CPPUNIT_ASSERT(pProduct->getFactor() == 3.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 6);
 
-
   // C
   it2 = pProduct->getItemPowers().begin();
   pItemPower = *(it2);
@@ -4624,7 +4585,6 @@ void test_biomodels217_expression::test_term_den3()
 
   delete pFraction;
 }
-
 
 void test_biomodels217_expression::test_term_den4()
 {
@@ -4851,7 +4811,6 @@ void test_biomodels217_expression::test_term_den4()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den5()
 {
   // C^3*B*N/(E*G*I*J*M*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*n1)
@@ -4906,7 +4865,6 @@ void test_biomodels217_expression::test_term_den5()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "N");
-
 
   // denominator
   // (C^3*J*M*n1 + E*G*I*J*M*n1 + 3*C^2*I*J*M*n1 + 3*C*G*I*J*M*n1)
@@ -5177,7 +5135,6 @@ void test_biomodels217_expression::test_term_den5()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den6()
 {
   // 3*C^4*O*N/(D*E*G*I*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*m1)
@@ -5254,7 +5211,6 @@ void test_biomodels217_expression::test_term_den6()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "O");
-
 
   // denominator
   // (C^6*L*M*m1 + C^3*D*F*H*L*M*m1 + C^3*E*G*I*L*M*m1 + D*E*F*G*H*I*L*M*m1 + 3*C^5*H*L*M*m1 + 3*C^5*I*L*M*m1 + 3*C^4*F*H*L*M*m1 + 3*C^4*G*I*L*M*m1 + 3*C^2*D*F*H*I*L*M*m1 + 3*C^2*E*G*H*I*L*M*m1 + 3*C*D*F*G*H*I*L*M*m1 + 3*C*E*F*G*H*I*L*M*m1 + 9*C^4*H*I*L*M*m1 + 9*C^3*F*H*I*L*M*m1 + 9*C^3*G*H*I*L*M*m1 + 9*C^2*F*G*H*I*L*M*m1)
@@ -5426,7 +5382,6 @@ void test_biomodels217_expression::test_term_den6()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "E");
-
 
   // G
   ++it2;
@@ -6600,7 +6555,6 @@ void test_biomodels217_expression::test_term_den6()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den7()
 {
   // 3*C^4*B*O*N/(D*E*G*I*J*L*M*(1+3*C/D+3*C^2/(D*F)+C^3/(D*F*H))*(1+3*C/E+3*C^2/(E*G)+C^3/(E*G*I))*o1)
@@ -6689,14 +6643,12 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "O");
 
-
   // denominator
   // (C^6*J*L*M*o1 + C^3*D*F*H*J*L*M*o1 + C^3*E*G*I*J*L*M*o1 + D*E*F*G*H*I*J*L*M*o1 + 3*C^5*H*J*L*M*o1 + 3*C^5*I*J*L*M*o1 + 3*C^4*F*H*J*L*M*o1 + 3*C^4*G*I*J*L*M*o1 + 3*C^2*D*F*H*I*J*L*M*o1 + 3*C^2*E*G*H*I*J*L*M*o1 + 3*C*D*F*G*H*I*J*L*M*o1 + 3*C*E*F*G*H*I*J*L*M*o1 + 9*C^4*H*I*J*L*M*o1 + 9*C^3*F*H*I*J*L*M*o1 + 9*C^3*G*H*I*J*L*M*o1 + 9*C^2*F*G*H*I*J*L*M*o1)
   const CNormalSum* pDenominator = &pFraction->getDenominator();
   CPPUNIT_ASSERT(pDenominator->getFractions().size() == 0);
   pProducts = &pDenominator->getProducts();
   CPPUNIT_ASSERT(pProducts->size() == 16);
-
 
   // C^6*J*L*M*o1
   it = pProducts->begin();
@@ -6978,7 +6930,6 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "E");
-
 
   // F
   ++it2;
@@ -7601,7 +7552,6 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pProduct->getFactor() == 3.0);
   CPPUNIT_ASSERT(pProduct->getItemPowers().size() == 10);
 
-
   // C
   it2 = pProduct->getItemPowers().begin();
   pItemPower = *(it2);
@@ -7712,7 +7662,6 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "o1");
 
-
   // 3*C*E*F*G*H*I*J*L*M*o1
   ++it;
   pProduct = *(it);
@@ -7741,7 +7690,6 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "E");
-
 
   // F
   ++it2;
@@ -7860,7 +7808,6 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "H");
 
-
   // I
   ++it2;
   pItemPower = *(it2);
@@ -7944,7 +7891,6 @@ void test_biomodels217_expression::test_term_den7()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "F");
-
 
   // H
   ++it2;
@@ -8236,7 +8182,6 @@ void test_biomodels217_expression::test_term_den12()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den123()
 {
   std::cout << "testing numerator terms 1 to 3" << std::endl;
@@ -8277,7 +8222,6 @@ void test_biomodels217_expression::test_term_den1234()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den12345()
 {
   std::cout << "testing numerator terms 1 to 5" << std::endl;
@@ -8298,7 +8242,6 @@ void test_biomodels217_expression::test_term_den12345()
   delete pFraction;
 }
 
-
 void test_biomodels217_expression::test_term_den123456()
 {
   std::cout << "testing numerator terms 1 to 6" << std::endl;
@@ -8318,7 +8261,6 @@ void test_biomodels217_expression::test_term_den123456()
 
   delete pFraction;
 }
-
 
 void test_biomodels217_expression::test_term_den1234567()
 {
@@ -8439,7 +8381,6 @@ void test_biomodels217_expression::test_term_den356()
 
   delete pFraction;
 }
-
 
 void test_biomodels217_expression::test_term_den346()
 {

@@ -20,10 +20,10 @@
 #include "CQComboDelegate.h"
 
 #include "commandline/CLocaleString.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModelParameterSet.h"
 #include "model/CModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CCopasiStaticString.h"
 
 #include "copasiui3window.h"
@@ -321,10 +321,10 @@ void CQParameterOverviewWidget::slotBtnNew()
       // Save the parameter set to a new or existing set
       CQNameSelectionDialog Dialog(this);
 
-      CCopasiVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
+      CDataVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
 
-      CCopasiVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
-      CCopasiVectorN< CModelParameterSet >::const_iterator end = Sets.end();
+      CDataVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
+      CDataVectorN< CModelParameterSet >::const_iterator end = Sets.end();
       QStringList SelectionList;
 
       for (; it != end; ++it)
@@ -384,7 +384,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
       return;
     }
 
-  CCopasiVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
+  CDataVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
   std::string Name = "Parameter Set";
   int i = 0;
 
@@ -477,10 +477,10 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
   // Save the parameter set to a new or existing set
   CQNameSelectionDialog Dialog(this);
 
-  CCopasiVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
+  CDataVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
 
-  CCopasiVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
-  CCopasiVectorN< CModelParameterSet >::const_iterator end = Sets.end();
+  CDataVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
+  CDataVectorN< CModelParameterSet >::const_iterator end = Sets.end();
   QStringList SelectionList;
 
   for (; it != end; ++it)

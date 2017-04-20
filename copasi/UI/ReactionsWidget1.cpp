@@ -42,9 +42,9 @@
 #include "resourcesUI/CQIconResource.h"
 #include "model/CReactionInterface.h"
 
-#include "utilities/CCopasiVector.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CDataVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 #include "function/CFunctionParameters.h"
@@ -119,7 +119,7 @@ bool ReactionsWidget1::loadFromReaction(const CReaction* reaction)
 
 bool ReactionsWidget1::saveToReaction()
 {
-  CReaction* reac = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  CReaction* reac = dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (reac == NULL) return true;
 
@@ -331,10 +331,10 @@ void ReactionsWidget1::copy()
   CModelExpansion::ElementsMap origToCopyMapping;
 
   // for comboBox compartment list and setting compartment
-  CCopasiVectorNS< CCompartment > & Compartments = pModel->getCompartments();
+  CDataVectorNS< CCompartment > & Compartments = pModel->getCompartments();
 
-  CCopasiVectorN< CCompartment >::const_iterator Compartment_it = Compartments.begin();
-  CCopasiVectorN< CCompartment >::const_iterator end = Compartments.end();
+  CDataVectorN< CCompartment >::const_iterator Compartment_it = Compartments.begin();
+  CDataVectorN< CCompartment >::const_iterator end = Compartments.end();
   QStringList SelectionList;
 
   // Collect and load list of compartment names in comboBox
@@ -349,9 +349,9 @@ void ReactionsWidget1::copy()
   // to use here, and for testing if compartment changed after executing the dialog
   int origCompartmentIndex;
 
-  CCopasiVector< CChemEqElement >::const_iterator MetabIt;
+  CDataVector< CChemEqElement >::const_iterator MetabIt;
 
-  const CCopasiVector< CChemEqElement > & substratesToCopy = reac->getChemEq().getSubstrates();
+  const CDataVector< CChemEqElement > & substratesToCopy = reac->getChemEq().getSubstrates();
 
   for (MetabIt = substratesToCopy.begin(); MetabIt != substratesToCopy.end(); MetabIt++)
     {
@@ -377,7 +377,7 @@ void ReactionsWidget1::copy()
         }
     }
 
-  const CCopasiVector< CChemEqElement > & productsToCopy = reac->getChemEq().getProducts();
+  const CDataVector< CChemEqElement > & productsToCopy = reac->getChemEq().getProducts();
 
   for (MetabIt = productsToCopy.begin(); MetabIt != productsToCopy.end(); MetabIt++)
     {
@@ -401,7 +401,7 @@ void ReactionsWidget1::copy()
         }
     }
 
-  const CCopasiVector< CChemEqElement > & modifiersToCopy = reac->getChemEq().getModifiers();
+  const CDataVector< CChemEqElement > & modifiersToCopy = reac->getChemEq().getModifiers();
 
   for (MetabIt = modifiersToCopy.begin(); MetabIt != modifiersToCopy.end(); MetabIt++)
     {
@@ -472,8 +472,8 @@ void ReactionsWidget1::FillWidgetFromRI()
 
   if (pModel != NULL)
     {
-      CCopasiVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
-      CCopasiVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
+      CDataVector< CCompartment >::const_iterator it = pModel->getCompartments().begin();
+      CDataVector< CCompartment >::const_iterator end = pModel->getCompartments().end();
 
       for (; it != end; ++it)
         {
@@ -512,7 +512,7 @@ void ReactionsWidget1::FillWidgetFromRI()
       mpCmbRateLaw->setCurrentIndex(mpCmbRateLaw->findText(FROM_UTF8(mpRi->getFunctionName())));
       mpCmbRateLaw->setToolTip(FROM_UTF8(mpRi->getFunctionDescription()));
 
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      assert(CRootContainer::getDatamodelList()->size() > 0);
       mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
     }
   else
@@ -664,7 +664,7 @@ void ReactionsWidget1::slotParameterStatusChanged(int index, bool local)
 void ReactionsWidget1::slotGotoFunction()
 {
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pReaction == NULL) return;
 
@@ -684,8 +684,8 @@ void ReactionsWidget1::slotNewFunction()
   std::string name = std::string("Rate Law for ") + mpObject->getObjectName();
   std::string nname = name;
   size_t i = 0;
-  CCopasiVectorN<CFunction>& FunctionList
-    = CCopasiRootContainer::getFunctionList()->loadedFunctions();
+  CDataVectorN<CFunction>& FunctionList
+    = CRootContainer::getFunctionList()->loadedFunctions();
   CFunction* pFunc;
 
   while (FunctionList.getIndex(nname) != C_INVALID_INDEX)
@@ -695,7 +695,7 @@ void ReactionsWidget1::slotNewFunction()
       nname += TO_UTF8(QString::number(i));
     }
 
-  CCopasiRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
+  CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
   protectedNotify(ListViews::FUNCTION, ListViews::ADD, pFunc->getKey());
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pFunc->getKey());
@@ -814,7 +814,7 @@ bool ReactionsWidget1::update(ListViews::ObjectType objectType,
     }
 
   if (isVisible() && !mIgnoreUpdates)
-    loadFromReaction(dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey)));
+    loadFromReaction(dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(mKey)));
 
   return true;
 }
@@ -841,7 +841,7 @@ void ReactionsWidget1::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
 
-  const CReaction * pReaction = dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+  const CReaction * pReaction = dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(mKey));
 
   const CModel * pModel = NULL;
 
@@ -902,14 +902,14 @@ void ReactionsWidget1::deleteReaction()
   assert(pModel != NULL);
 
   CReaction * pReaction =
-    dynamic_cast< CReaction * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CReaction * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (pReaction == NULL) return;
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(NULL, "reaction",
                                 FROM_UTF8(pReaction->getObjectName()),
-                                pReaction->getDeletedObjects());
+                                pReaction);
 
   switch (choice)
     {
@@ -971,7 +971,7 @@ bool ReactionsWidget1::changeReaction(
   if (!mIgnoreUpdates)
     {
       mKey = key;
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      mpObject = CRootContainer::getKeyFactory()->get(key);
       loadFromReaction(dynamic_cast<CReaction*>(mpObject));
 
       mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
@@ -1113,7 +1113,7 @@ void ReactionsWidget1::addReaction(UndoReactionData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CCopasiObject *pReaction = pData->restoreObjectIn(pModel);
+  CDataObject *pReaction = pData->restoreObjectIn(pModel);
 
   if (pReaction == NULL)
     return;

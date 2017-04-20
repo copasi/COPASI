@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRectangle.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -16,15 +13,15 @@
 
 #include "copasi/layout/CLGraphicalPrimitive2D.h"
 #include "copasi/layout/CLRelAbsVector.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class sbmlRectangle;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLRectangle : public CLGraphicalPrimitive2D, public CCopasiObject
+class CLRectangle : public CLGraphicalPrimitive2D, public CDataObject
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -48,29 +45,29 @@ public:
   /**
    * Constructor.
    */
-  CLRectangle(CCopasiContainer* pParent = NULL);
+  CLRectangle(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLRectangle(const CLRectangle& source, CCopasiContainer* pParent = NULL);
+  CLRectangle(const CLRectangle& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor that takes x, y and z coordinate values, the width and the
    * height.
    */
-  CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, const CLRelAbsVector& w, const CLRelAbsVector& h, CCopasiContainer* pParent = NULL);
+  CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, const CLRelAbsVector& w, const CLRelAbsVector& h, CDataContainer* pParent = NULL);
 
   /**
    * Constructor that takes x and y coordinate values, the width and the
    * height.
    */
-  CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& w, const CLRelAbsVector& h, CCopasiContainer* pParent = NULL);
+  CLRectangle(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& w, const CLRelAbsVector& h, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLRectangle(const sbmlRectangle& source, CCopasiContainer* pParent = NULL);
+  CLRectangle(const sbmlRectangle& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.

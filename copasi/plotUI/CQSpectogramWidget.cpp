@@ -10,18 +10,19 @@
 
 #include "CQSpectogramWidget.h"
 
-#include "UI/CCopasiSelectionDialog.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
 #include "CQPlotEditWidget.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiException.h"
-#include "plot/CPlotItem.h"
-#include "resourcesUI/CQIconResource.h"
-#include "model/CModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /**
  * In multiple edit mode, we don't want to edit name & channels
@@ -90,19 +91,19 @@ CQSpectogramWidget::LoadFromCurveSpec(const CPlotItem * pCurve)
   mpEditTitle->setText(FROM_UTF8(pCurve->getTitle()));
 
   //TODO: check if objects exist....
-  CCopasiDataModel* pDataModel = mpModel->getObjectDataModel();
+  CDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = mpObjectZ = NULL;
 
   if (pCurve->getChannels().size() >= 1)
-    mpObjectX = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[0]));
+    mpObjectX = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[0]));
 
   if (pCurve->getChannels().size() >= 2)
-    mpObjectY = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[1]));
+    mpObjectY = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[1]));
 
   if (pCurve->getChannels().size() >= 3)
     {
-      mpObjectZ = dynamic_cast<const CCopasiObject*>(pDataModel->getObject(pCurve->getChannels()[2]));
+      mpObjectZ = dynamic_cast<const CDataObject*>(pDataModel->getObject(pCurve->getChannels()[2]));
 
       if ((mpObjectZ->getObjectDisplayName() == "(CN)Root") && mpObjectY)
         mpObjectZ = mpObjectY;  // as long as we haven't a second Y-axis chooser, this has to suffice.

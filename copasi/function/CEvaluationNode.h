@@ -37,7 +37,7 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
 class ConverterASTNode;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is the base class for nodes used in an evaluation trees
@@ -337,7 +337,7 @@ public:
    * Create a new invalid ASTNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Copy a node and assign new children child1 and child2

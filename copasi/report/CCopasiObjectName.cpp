@@ -181,7 +181,11 @@ CCopasiObjectName::findEx(const std::string & toFind,
 
 //********** CRegisteredObjectName ***************
 
+// static
 std::set<CRegisteredObjectName*> CRegisteredObjectName::mSet;
+
+// static
+bool CRegisteredObjectName::mEnabled(true);;
 
 CRegisteredObjectName::CRegisteredObjectName():
   CCopasiObjectName()
@@ -204,4 +208,56 @@ CRegisteredObjectName::CRegisteredObjectName(const CRegisteredObjectName & src):
 CRegisteredObjectName::~CRegisteredObjectName()
 {
   mSet.erase(this);
+}
+
+// static
+const std::set<CRegisteredObjectName*> & CRegisteredObjectName::getSet()
+{
+  return mSet;
+}
+
+// static
+void CRegisteredObjectName::handle(const std::string & oldCN, const std::string & newCN)
+{
+  if (mEnabled)
+    {
+      std::set< CRegisteredObjectName * >::const_iterator it = mSet.begin();
+      std::set< CRegisteredObjectName * >::const_iterator itEnd = mSet.end();
+
+      size_t oldSize = oldCN.size();
+      size_t currentSize;
+
+      for (; it != itEnd; ++it)
+        {
+          // either need to take currentSize out, or need to use the variable
+          // using it uninitialized makes no sense.
+          currentSize = (*it)->size();
+
+          // We need to make sure that we not change partial names
+          if ((currentSize == oldSize ||
+               (currentSize > oldSize && (**it)[oldSize] == ',')) &&
+              oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
+            {
+              (**it).replace(0, oldSize, newCN);
+            }
+        }
+    }
+
+  return;
+}
+
+/**
+ * Enable and disable the rename handler
+ * @param const bool & enabled
+ */
+// static
+void CRegisteredObjectName::setEnabled(const bool & enabled)
+{
+  mEnabled = enabled;
+}
+
+// static
+bool CRegisteredObjectName::isEnabled()
+{
+  return mEnabled;
 }

@@ -130,9 +130,9 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
 
   if (reaction != NULL)
     {
-      const CCopasiVector<CLMetabReferenceGlyph> & list = reaction->getListOfMetabReferenceGlyphs();
+      const CDataVector<CLMetabReferenceGlyph> & list = reaction->getListOfMetabReferenceGlyphs();
 
-      for (CCopasiVector<CLMetabReferenceGlyph>::const_iterator it = list.begin(); it != list.end(); ++it)
+      for (CDataVector<CLMetabReferenceGlyph>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
           const CLMetabReferenceGlyph* metab = it;
           const CLStyle *style = resolver->resolveStyle(metab);
@@ -157,9 +157,9 @@ CQConnectionGraphicsItem::CQConnectionGraphicsItem(const CLGlyphWithCurve* curve
 
   if (general != NULL)
     {
-      const CCopasiVector<CLReferenceGlyph> & list = general->getListOfReferenceGlyphs();
+      const CDataVector<CLReferenceGlyph> & list = general->getListOfReferenceGlyphs();
 
-      for (CCopasiVector<CLReferenceGlyph>::const_iterator it = list.begin(); it != list.end(); ++it)
+      for (CDataVector<CLReferenceGlyph>::const_iterator it = list.begin(); it != list.end(); ++it)
         {
           const CLReferenceGlyph* glyph = it;
           const CLStyle *style = resolver->resolveStyle(glyph);

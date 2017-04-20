@@ -39,9 +39,9 @@
 #include "parameterFitting/CFitProblem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include <copasi/parameterFitting/CFitTask.h>
 #include <copasi/model/CModel.h>
@@ -98,7 +98,7 @@ bool CQFittingWidget::saveTask()
   for (i = pExperimentSet->getExperimentCount() - 1; i != C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CRootContainer::getKeyFactory()->get(mExperimentKeyMap[pExperimentSet->getExperiment(i)->CCopasiParameter::getKey()]));
 
       if (pExperiment && pExperiment == mpExperimentSet->getExperiment(pExperiment->getObjectName()))
         {
@@ -158,7 +158,7 @@ bool CQFittingWidget::saveTask()
   for (i = pCrossValidationSet->getExperimentCount() - 1; i != C_INVALID_INDEX; i--)
     {
       pExperiment =
-        dynamic_cast<CExperiment *>(CCopasiRootContainer::getKeyFactory()->get(mCrossValidationKeyMap[pCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey()]));
+        dynamic_cast<CExperiment *>(CRootContainer::getKeyFactory()->get(mCrossValidationKeyMap[pCrossValidationSet->getExperiment(i)->CCopasiParameter::getKey()]));
 
       if (pExperiment && pExperiment == mpCrossValidationSet->getExperiment(pExperiment->getObjectName()))
         {
@@ -294,7 +294,7 @@ bool CQFittingWidget::loadTask()
 bool CQFittingWidget::runTask()
 {
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CFitTask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 
@@ -312,7 +312,7 @@ bool CQFittingWidget::taskFinishedEvent()
   bool result = TaskWidget::taskFinishedEvent();
 
   CFitTask * pTask =
-    dynamic_cast< CFitTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CFitTask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

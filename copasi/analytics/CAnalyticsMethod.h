@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,21 +26,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType (default: analytics)
    */
-  CAnalyticsMethod(const CCopasiContainer * pParent,
-                      const CTaskEnum::Method & methodType,
-                      const CTaskEnum::Task & taskType = CTaskEnum::analytics);
+  CAnalyticsMethod(const CDataContainer * pParent,
+                   const CTaskEnum::Method & methodType,
+                   const CTaskEnum::Task & taskType = CTaskEnum::analytics);
 
   /**Analytics
    * Copy constructor.
    * @param "const CAnalyticsMethod &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CAnalyticsMethod(const CAnalyticsMethod & src,
-                      const CCopasiContainer * pParent = NULL);
+                   const CDataContainer * pParent = NULL);
 
   /**
    *  Destructor.

@@ -373,3 +373,49 @@ void CDataValue::assignData(const void * pVoidPointer)
 
   mpData = const_cast< void * >(pVoidPointer);
 }
+
+std::ostream & operator << (std::ostream & os, const CDataValue & o)
+{
+  switch (o.mType)
+    {
+      case CDataValue::DOUBLE:
+        os << o.toDouble();
+        break;
+
+      case CDataValue::INT:
+        os << o.toInt();
+        break;
+
+      case CDataValue::UINT:
+        os << o.toUint();
+        break;
+
+      case CDataValue::BOOL:
+        os << o.toBool();
+        break;
+
+      case CDataValue::STRING:
+        os << o.toString();
+        break;
+
+      case CDataValue::DATA_VECTOR:
+      {
+        std::vector< CData >::const_iterator it = o.toDataVector().begin();
+        std::vector< CData >::const_iterator end = o.toDataVector().end();
+
+        for (; it != end; ++it)
+          os << *it << std::endl;
+      }
+      break;
+
+      case CDataValue::VOID_POINTER:
+        os << o.toVoidPointer();
+        break;
+
+      case CDataValue::INVALID:
+        os << "??? Invalid ???";
+        break;
+    }
+
+  return os;
+}

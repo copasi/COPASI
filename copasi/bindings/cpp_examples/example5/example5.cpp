@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,8 +29,8 @@
 
 #include "copasi/copasi.h"
 #include "copasi/commandline/COptions.h"
-#include "copasi/report/CCopasiContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/report/CReport.h"
@@ -38,16 +43,16 @@
 #include "copasi/optimization/COptMethod.h"
 #include "copasi/optimization/COptProblem.h"
 #include "copasi/optimization/COptItem.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 int main()
 {
   // initialize the backend library
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
   pModel->setVolumeUnit(CUnit::fl);
@@ -67,7 +72,7 @@ int main()
   pVariableModelValue->setExpression(s);
   // now we compile the model and tell COPASI which values have changed so
   // that COPASI can update the values that depend on those
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pFixedModelValue->getInitialValueReference());
   changedObjects.insert(pVariableModelValue->getInitialValueReference());
   // finally compile the model
@@ -84,7 +89,7 @@ int main()
   // we want to do an optimization for the time course
   // so we have to set up the time course task first
   // get the task list
-  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the optimization task
   COptTask* pOptTask = dynamic_cast<COptTask*>(&TaskList["Optimization"]);
@@ -212,7 +217,7 @@ int main()
         }
 
       // clean up the library
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       exit(1);
     }
 
@@ -221,7 +226,7 @@ int main()
       std::cerr << "Running the optimization failed." << std::endl;
 
       // clean up the library
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       exit(1);
     }
 
@@ -239,5 +244,5 @@ int main()
   assert(fabs((solution - 6.0) / 6.0) < 1e-3);
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

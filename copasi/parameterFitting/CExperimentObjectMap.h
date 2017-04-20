@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,10 +20,10 @@
 #ifndef COPASI_CExperimentObjectMap
 #define COPASI_CExperimentObjectMap
 
+#include "copasi/core/CVector.h"
 #include "parameterFitting/CExperiment.h"
 
 #include "utilities/CCopasiParameterGroup.h"
-#include "utilities/CVector.h"
 
 class CMathContainer;
 
@@ -32,26 +37,26 @@ public:
     /**
      * Default constructor
      * @param const std::string & name (default: Object Map)
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CDataContainer * pParent (default: NULL)
      */
     CDataColumn(const std::string & name = "Object Map",
-                const CCopasiContainer * pParent = NO_PARENT);
+                const CDataContainer * pParent = NO_PARENT);
 
     /**
      * Copy constructor
      * @param const CDataColumn & src
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CDataContainer * pParent (default: NULL)
      */
     CDataColumn(const CDataColumn & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
     /**
      * Specific constructor used for reading COPASI files
      * @param const CCopasiParameterGroup & group
-     * @param const CCopasiContainer * pParent (default: NULL)
+     * @param const CDataContainer * pParent (default: NULL)
      */
     CDataColumn(const CCopasiParameterGroup & group,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
     /**
      * Destructor
@@ -144,26 +149,26 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: Object Map)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CExperimentObjectMap(const std::string & name = "Object Map",
-                       const CCopasiContainer * pParent = NO_PARENT);
+                       const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CExperimentObjectMap & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CExperimentObjectMap(const CExperimentObjectMap & src,
-                       const CCopasiContainer * pParent);
+                       const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading copasi files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CExperimentObjectMap(const CCopasiParameterGroup & group,
-                       const CCopasiContainer * pParent);
+                       const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -278,9 +283,9 @@ public:
 
   /**
    * Retrieve the vector of mapped objects
-   * @return const CVector< const CCopasiObject * > & mappedObjects
+   * @return const CVector< const CDataObject * > & mappedObjects
    */
-  const CVector< const CCopasiObject * > & getDataObjects() const;
+  const CVector< const CDataObject * > & getDataObjects() const;
 
   /**
    * Retrieve the last mapped column number
@@ -299,7 +304,7 @@ private:
    * A vector of pointer to the  objects corresponding
    * to the data column.
    */
-  CVector< const CCopasiObject * > mObjects;
+  CVector< const CDataObject * > mObjects;
 
   /**
    * The last mapped column

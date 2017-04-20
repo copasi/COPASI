@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,10 +20,10 @@
 #include "copasi.h"
 
 #include "CObjectLists.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CAnnotatedMatrix.h"
 
 //static
@@ -84,19 +89,19 @@ const std::string CObjectLists::ListTypeName[] =
 };
 
 //static
-std::vector<CCopasiObject*>
+std::vector<CDataObject*>
 CObjectLists::getListOfObjects(ListType t, const CModel* model)
 {
-  std::vector< const CCopasiObject * > src = getListOfConstObjects(t, model);
-  std::vector< CCopasiObject * > target;
+  std::vector< const CDataObject * > src = getListOfConstObjects(t, model);
+  std::vector< CDataObject * > target;
   target.resize(src.size());
 
-  std::vector< const CCopasiObject * >::iterator itSrc = src.begin();
-  std::vector< const CCopasiObject * >::iterator endSrc = src.end();
-  std::vector< CCopasiObject * >::iterator itTarget = target.begin();
+  std::vector< const CDataObject * >::iterator itSrc = src.begin();
+  std::vector< const CDataObject * >::iterator endSrc = src.end();
+  std::vector< CDataObject * >::iterator itTarget = target.begin();
 
   for (; itSrc != endSrc; ++itSrc, ++itTarget)
-    *itTarget = const_cast< CCopasiObject * >(*itSrc);
+    *itTarget = const_cast< CDataObject * >(*itSrc);
 
   return target;
 
@@ -104,22 +109,22 @@ CObjectLists::getListOfObjects(ListType t, const CModel* model)
 }
 
 //static
-std::vector<const CCopasiObject*>
+std::vector<const CDataObject*>
 CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 {
   ObjectList ret;
 
-  CCopasiVector< CMetab >::const_iterator itMetab = pModel->getMetabolites().begin();
-  CCopasiVector< CMetab >::const_iterator endMetab = pModel->getMetabolites().end();
+  CDataVector< CMetab >::const_iterator itMetab = pModel->getMetabolites().begin();
+  CDataVector< CMetab >::const_iterator endMetab = pModel->getMetabolites().end();
 
-  CCopasiVector< CModelValue >::const_iterator itValue = pModel->getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator endValue = pModel->getModelValues().end();
+  CDataVector< CModelValue >::const_iterator itValue = pModel->getModelValues().begin();
+  CDataVector< CModelValue >::const_iterator endValue = pModel->getModelValues().end();
 
-  CCopasiVector< CCompartment >::const_iterator itComp = pModel->getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator endComp = pModel->getCompartments().end();
+  CDataVector< CCompartment >::const_iterator itComp = pModel->getCompartments().begin();
+  CDataVector< CCompartment >::const_iterator endComp = pModel->getCompartments().end();
 
-  CCopasiVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
+  CDataVector< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
+  CDataVector< CReaction >::const_iterator endReaction = pModel->getReactions().end();
 
   std::set< const CModelEntity * > EventTargets = getEventTargets(pModel);
 
@@ -272,7 +277,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         for (; itMetab != endMetab; ++itMetab)
           if (itMetab->getStatus() == CModelEntity::ODE ||
               itMetab->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back(static_cast< const CCopasiObject * >(itMetab->getObject(CCopasiObjectName("Reference=TransitionTime"))));
+            ret.push_back(static_cast< const CDataObject * >(itMetab->getObject(CCopasiObjectName("Reference=TransitionTime"))));
 
         break;
 
@@ -287,14 +292,14 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTION_CONC_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CCopasiObject * >(itReaction->getObject(CCopasiObjectName("Reference=Flux"))));
+          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCopasiObjectName("Reference=Flux"))));
 
         break;
 
       case REACTION_PART_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CCopasiObject * >(itReaction->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
+          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
 
         break;
 
@@ -451,7 +456,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
                   {
                     CCopasiParameter * par =
                       dynamic_cast<CCopasiParameter*>
-                      (CCopasiRootContainer::getKeyFactory()->get(itReaction->getParameterMappings()[j][0]));
+                      (CRootContainer::getKeyFactory()->get(itReaction->getParameterMappings()[j][0]));
 
                     if (par)
                       ret.push_back(par->getValueReference());
@@ -492,7 +497,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
       case REDUCED_JACOBIAN_EV_RE:
       {
-        CCopasiContainer * pParent = dynamic_cast<CCopasiContainer*>(pModel->getObjectParent());
+        CDataContainer * pParent = dynamic_cast<CDataContainer*>(pModel->getObjectParent());
 
         if (!pParent)
           break;
@@ -509,13 +514,13 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         size_t i;
 
         for (i = 0; i < imax; ++i)
-          ret.push_back(static_cast< const CCopasiObject * >(pEV->addElementReference(i, 0)));
+          ret.push_back(static_cast< const CDataObject * >(pEV->addElementReference(i, 0)));
       }
       break;
 
       case REDUCED_JACOBIAN_EV_IM:
       {
-        CCopasiContainer * pParent = dynamic_cast<CCopasiContainer*>(pModel->getObjectParent());
+        CDataContainer * pParent = dynamic_cast<CDataContainer*>(pModel->getObjectParent());
 
         if (!pParent)
           break;
@@ -532,7 +537,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         size_t i;
 
         for (i = 0; i < imax; ++i)
-          ret.push_back(static_cast< const CCopasiObject * >(pEV->addElementReference(i, 1)));
+          ret.push_back(static_cast< const CDataObject * >(pEV->addElementReference(i, 1)));
       }
       break;
 
@@ -547,7 +552,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 bool CObjectLists::existsFixedMetab(const CModel* pModel)
 {
   bool fixedMetab = false;
-  const CCopasiVector< CMetab > & metabs = pModel->getMetabolites();
+  const CDataVector< CMetab > & metabs = pModel->getMetabolites();
   size_t i, imax = metabs.size();
 
   for (i = 0; i < imax; ++i)
@@ -562,16 +567,16 @@ std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel* pMo
 {
   std::set< const CModelEntity * > EventTargets;
 
-  CKeyFactory * pKeyFactory = CCopasiRootContainer::getKeyFactory();
+  CKeyFactory * pKeyFactory = CRootContainer::getKeyFactory();
 
-  CCopasiVectorN< CEvent >::const_iterator itEvent = pModel->getEvents().begin();
-  CCopasiVectorN< CEvent >::const_iterator endEvent = pModel->getEvents().end();
+  CDataVectorN< CEvent >::const_iterator itEvent = pModel->getEvents().begin();
+  CDataVectorN< CEvent >::const_iterator endEvent = pModel->getEvents().end();
 
   for (; itEvent != endEvent; ++itEvent)
     {
-      CCopasiVectorN< CEventAssignment >::const_iterator itAssignment =
+      CDataVectorN< CEventAssignment >::const_iterator itAssignment =
         itEvent->getAssignments().begin();
-      CCopasiVectorN< CEventAssignment >::const_iterator endAssignment =
+      CDataVectorN< CEventAssignment >::const_iterator endAssignment =
         itEvent->getAssignments().end();
 
       for (; itAssignment != endAssignment; ++itAssignment)

@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLStyle.cpp,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,30 +14,30 @@
 
 #include "CLStyle.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLStyle::CLStyle(const std::string& name, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiContainer(name, pParent),
-    mpGroup(NULL),
-    mKey("")
+CLStyle::CLStyle(const std::string& name, CDataContainer* pParent):
+  CLBase(),
+  CDataContainer(name, pParent),
+  mpGroup(NULL),
+  mKey("")
 {
 }
 
 /**
  * Copy Constructor.
  */
-CLStyle::CLStyle(const CLStyle& source, CCopasiContainer* pParent):
-    CLBase(source),
-    CCopasiContainer(source, pParent),
-    mRoleList(source.mRoleList),
-    mTypeList(source.mTypeList),
-    mpGroup(NULL),
-    mKey("")
+CLStyle::CLStyle(const CLStyle& source, CDataContainer* pParent):
+  CLBase(source),
+  CDataContainer(source, pParent),
+  mRoleList(source.mRoleList),
+  mTypeList(source.mTypeList),
+  mpGroup(NULL),
+  mKey("")
 {
   if (source.mpGroup != NULL)
     {
@@ -51,11 +48,11 @@ CLStyle::CLStyle(const CLStyle& source, CCopasiContainer* pParent):
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLStyle::CLStyle(const Style& source, const std::string& name, CCopasiContainer* pParent):
-    CLBase(),
-    CCopasiContainer(name, pParent),
-    mpGroup(new CLGroup(*source.getGroup(), this)),
-    mKey("")
+CLStyle::CLStyle(const Style& source, const std::string& name, CDataContainer* pParent):
+  CLBase(),
+  CDataContainer(name, pParent),
+  mpGroup(new CLGroup(*source.getGroup(), this)),
+  mKey("")
 {
   CLStyle::readIntoSet(CLStyle::createStringFromSet(source.getRoleList()), this->mRoleList);
   CLStyle::readIntoSet(CLStyle::createStringFromSet(source.getTypeList()), this->mTypeList);
@@ -66,7 +63,7 @@ CLStyle::CLStyle(const Style& source, const std::string& name, CCopasiContainer*
  */
 CLStyle::~CLStyle()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**

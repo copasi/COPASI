@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000099.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/08/02 20:44:07 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +20,7 @@
  * Tests for dealing with notes on different  model elements
  */
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000099 : public CppUnit::TestFixture
 {
@@ -38,7 +35,7 @@ protected:
   // correct SBML model with same name as incorrect model
   static const char* SBML_MODEL_GOOD;
 
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
 
 public:
   void setUp();
@@ -48,8 +45,6 @@ public:
   // test for bug 1675
   // After an import failed, the model that was created during import should be gone
   void test_bug1675();
-
-
 };
 
 #endif /* TEST000099_H__ */

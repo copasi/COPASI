@@ -1,50 +1,46 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000094.cpp,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:37:14 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 
 #include <sbml/SBMLDocument.h>
 #include <sbml/Model.h>
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "test000094.h"
 
-
 // these are testcases for handling SBML models with required and non-required packages
 
-CCopasiDataModel* test000094::pCOPASIDATAMODEL = NULL;
+CDataModel* test000094::pCOPASIDATAMODEL = NULL;
 
 void test000094::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000094::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000094::test_required_package()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   bool failed = false;
 
   try
@@ -63,14 +59,13 @@ void test000094::test_required_package()
 
 void test000094::test_notrequired_package()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   bool result = pDataModel->importSBMLFromString(test000094::MODEL_STRING2);
   CPPUNIT_ASSERT(result == true);
   CModel *pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
   CPPUNIT_ASSERT(pDataModel->getCurrentSBMLDocument() != NULL);
 }
-
 
 /**
  * This model contains a required package which COPASI does not understand, so
@@ -101,4 +96,3 @@ const char* test000094::MODEL_STRING2 = \
                                         "  </ppp:element>\n"
                                         "  </model>\n"
                                         "</sbml>\n";
-

@@ -11,7 +11,7 @@
 #ifndef COPASI_CValidity
 #define COPASI_CValidity
 
-#include "copasi/utilities/CFlags.h"
+#include "copasi/core/CFlags.h"
 
 #include <string>
 

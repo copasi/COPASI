@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,12 +25,13 @@
 #include "qtUtilities.h"
 #include "CQReportListItem.h"
 
-#include "report/CKeyFactory.h"
-#include "report/CReportDefinition.h"
-#include "report/CReportDefinitionVector.h"
-#include "report/CCopasiStaticString.h"
-#include "report/CCopasiRootContainer.h"
-#include "xml/CCopasiXMLInterface.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CReportDefinition.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQReportDefinition which is a child of 'parent', with the
@@ -95,7 +101,6 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   connect(mpFooterList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), mpActEditItem, SLOT(trigger()));
   connect(mpFooterList->model(), SIGNAL(layoutChanged()), this, SLOT(setDirty()));
-
 }
 
 /*
@@ -202,7 +207,7 @@ void CQReportDefinition::btnItemClicked()
 
   if (!pModel) return;
 
-  std::vector< const CCopasiObject * > SelectedVector =
+  std::vector< const CDataObject * > SelectedVector =
     //    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::NO_RESTRICTION);
     CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::AnyObject);
 
@@ -211,8 +216,8 @@ void CQReportDefinition::btnItemClicked()
   if (SelectedVector.size() != 0)
     {
       QListWidget * pList = static_cast< QListWidget * >(mpReportSectionTab->currentWidget());
-      std::vector< const CCopasiObject * >::const_iterator it = SelectedVector.begin();
-      std::vector< const CCopasiObject * >::const_iterator end = SelectedVector.end();
+      std::vector< const CDataObject * >::const_iterator it = SelectedVector.begin();
+      std::vector< const CDataObject * >::const_iterator end = SelectedVector.end();
 
       for (; it != end; ++it)
         {
@@ -382,28 +387,28 @@ void CQReportDefinition::btnDeleteReportClicked()
   if (mpDataModel == NULL)
     return;
 
-  std::set< const CCopasiObject * > Tasks;
-  std::set< const CCopasiObject * > DeletedObjects;
+  CDataObject::DataObjectSet Tasks;
+  CDataObject::ObjectSet DeletedObjects;
   DeletedObjects.insert(mpObject);
 
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "report",
                                 FROM_UTF8(mpObject->getObjectName()),
-                                DeletedObjects);
+                                dynamic_cast< const CDataContainer * >(mpObject));
 
   switch (choice)
     {
       case QMessageBox::Ok:
       {
-        CCopasiVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
+        CDataVector< CReportDefinition > * pReportList = mpDataModel->getReportDefinitionList();
 
         if (pReportList == NULL)
           return;
 
         if (mpDataModel->appendDependentTasks(DeletedObjects, Tasks))
           {
-            std::set< const CCopasiObject * >::iterator it = Tasks.begin();
-            std::set< const CCopasiObject * >::iterator end = Tasks.end();
+            std::set< const CDataObject * >::iterator it = Tasks.begin();
+            std::set< const CDataObject * >::iterator end = Tasks.end();
 
             for (; it != end; ++it)
               {
@@ -441,7 +446,7 @@ void CQReportDefinition::btnNewReportClicked()
 
   int i = 0;
   CReportDefinition* pRep;
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
 
   while (!(pRep = mpDataModel->getReportDefinitionList()->createReportDefinition(Name, "")))
     {
@@ -460,11 +465,11 @@ void CQReportDefinition::btnCopyReportClicked()
 {
   btnCommitClicked();
 
-  CCopasiDataModel* pDataModel = mpObject->getObjectDataModel();
+  CDataModel* pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
 
-  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CCopasiRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
+  CReportDefinition * pRep = new CReportDefinition(*dynamic_cast<CReportDefinition*>(CRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
 
   std::string baseName = pRep->getObjectName() + "_copy";
   std::string name = baseName;
@@ -525,14 +530,14 @@ void CQReportDefinition::slotEditCurrentItem()
     if (name.getObjectType() == "Separator")
       continue;
 
-    const CCopasiObject* pObject = dynamic_cast<const CCopasiObject*>(mpDataModel->getObject(name));
+    const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
 
     if (pObject == NULL)
       {
         continue;
       }
 
-    const CCopasiObject* pNewObject =
+    const CDataObject* pNewObject =
       CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
 
     if (pNewObject == NULL || pNewObject == pObject) continue;
@@ -540,8 +545,6 @@ void CQReportDefinition::slotEditCurrentItem()
     current->setObject(pNewObject);
     mChanged = true;
   }
-
-
 }
 
 void CQReportDefinition::slotEditCurrentItemText()
@@ -579,8 +582,6 @@ void CQReportDefinition::slotEditCurrentItemText()
         current->setObject(&Text);
         mChanged = true;
       }
-
-
   }
 
   delete pDialog;
@@ -608,8 +609,6 @@ void CQReportDefinition::slotAddSeparator()
       current->insertItem(current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
     }
 
-
-
   mChanged = true;
 
   return;
@@ -621,7 +620,7 @@ void CQReportDefinition::slotAddItem()
 
   QList<QListWidgetItem*> selected = current->selectedItems();
 
-  std::vector< const CCopasiObject * > SelectedVector =
+  std::vector< const CDataObject * > SelectedVector =
     //    CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::NO_RESTRICTION);
     CCopasiSelectionDialog::getObjectVector(this, CQSimpleSelectionTree::AnyObject);
 
@@ -630,8 +629,8 @@ void CQReportDefinition::slotAddItem()
   if (SelectedVector.size() != 0)
     {
       QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
-      std::vector< const CCopasiObject * >::const_iterator it = SelectedVector.begin();
-      std::vector< const CCopasiObject * >::const_iterator end = SelectedVector.end();
+      std::vector< const CDataObject * >::const_iterator it = SelectedVector.begin();
+      std::vector< const CDataObject * >::const_iterator end = SelectedVector.end();
 
       for (; it != end; ++it)
         {
@@ -649,7 +648,6 @@ void CQReportDefinition::slotAddItem()
 
       mChanged = true;
     }
-
 }
 
 void CQReportDefinition::setDirty()

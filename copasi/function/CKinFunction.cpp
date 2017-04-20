@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -28,12 +33,12 @@
 
 #include "CKinFunction.h"
 #include "utilities/CCopasiException.h"
-#include "report/CCopasiContainer.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CDataObject.h"
 #include "utilities/utility.h"
 
 CKinFunction::CKinFunction(const std::string & name,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CFunction(name, pParent, CFunction::UserDefined),
   mNodes(),
   ObjList(),
@@ -44,7 +49,7 @@ CKinFunction::CKinFunction(const std::string & name,
 }
 
 CKinFunction::CKinFunction(const CFunction & src,
-                           const CCopasiContainer * pParent,
+                           const CDataContainer * pParent,
                            CReadConfig * configBuffer):
   CFunction(src, pParent),
   mNodes(),
@@ -74,7 +79,7 @@ CKinFunction::CKinFunction(const CFunction & src,
 }
 
 CKinFunction::CKinFunction(const CKinFunction & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CFunction(src, pParent),
   mNodes(src.mNodes),
   ObjList(src.ObjList),
@@ -103,11 +108,11 @@ void CKinFunction::cleanup()
 // This is only used when reading Gepasi Files
 void CKinFunction::createParameters()
 {
-  CCopasiVectorN < CFunctionParameter > Substrates;
-  CCopasiVectorN < CFunctionParameter > Products;
-  CCopasiVectorN < CFunctionParameter > Modifiers;
-  CCopasiVectorN < CFunctionParameter > Parameters;
-  CCopasiVectorN < CFunctionParameter > Volumes;
+  CDataVectorN < CFunctionParameter > Substrates;
+  CDataVectorN < CFunctionParameter > Products;
+  CDataVectorN < CFunctionParameter > Modifiers;
+  CDataVectorN < CFunctionParameter > Parameters;
+  CDataVectorN < CFunctionParameter > Volumes;
 
   size_t i, imax = mNodes.size();
 

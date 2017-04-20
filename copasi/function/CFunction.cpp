@@ -24,7 +24,7 @@
 #include "CFunction.h"
 #include "CFunctionDB.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/copasimathml.h"
 
 // static
@@ -43,7 +43,7 @@ CFunction * CFunction::fromData(const CData & data)
 }
 
 CFunction::CFunction(const std::string & name,
-                     const CCopasiContainer * pParent,
+                     const CDataContainer * pParent,
                      const CEvaluationTree::Type & type):
   CEvaluationTree(name, pParent, type),
   CAnnotation(),
@@ -52,11 +52,11 @@ CFunction::CFunction(const std::string & name,
   mCallParametersBegin(),
   mReversible(TriUnspecified)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Function", this);
+  mKey = CRootContainer::getKeyFactory()->add("Function", this);
 }
 
 CFunction::CFunction(const CFunction & src,
-                     const CCopasiContainer * pParent):
+                     const CDataContainer * pParent):
   CEvaluationTree(src, pParent),
   CAnnotation(src),
   mSBMLId(src.mSBMLId),
@@ -64,7 +64,7 @@ CFunction::CFunction(const CFunction & src,
   mCallParametersBegin(src.mCallParametersBegin),
   mReversible(src.mReversible)
 {
-  mKey = CCopasiRootContainer::getKeyFactory()->add("Function", this);
+  mKey = CRootContainer::getKeyFactory()->add("Function", this);
 
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
   compile();
@@ -72,7 +72,7 @@ CFunction::CFunction(const CFunction & src,
 
 CFunction::~CFunction()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const std::string & CFunction::getKey() const
@@ -202,20 +202,6 @@ const C_FLOAT64 & CFunction::calcValue(const CCallParameters<C_FLOAT64> & callPa
   calculate();
 
   return mValue;
-}
-
-bool CFunction::dependsOn(const C_FLOAT64 * parameter,
-                          const CCallParameters<C_FLOAT64> & callParameters) const
-{
-  CCallParameters<C_FLOAT64>::const_iterator it = callParameters.begin();
-  CCallParameters<C_FLOAT64>::const_iterator end = callParameters.end();
-
-  while (it != end && parameter != it->value) it++;
-
-  if (it != end)
-    return true;
-  else
-    return false;
 }
 
 void CFunction::load(CReadConfig & configBuffer,
@@ -350,8 +336,8 @@ bool CFunction::completeFunctionList(std::vector< const CFunction * > & list,
   std::vector< CEvaluationNode * >::const_iterator it;
   std::vector< CEvaluationNode * >::const_iterator end;
 
-  CCopasiVectorN< CFunction > & Functions =
-    CCopasiRootContainer::getFunctionList()->loadedFunctions();
+  CDataVectorN< CFunction > & Functions =
+    CRootContainer::getFunctionList()->loadedFunctions();
 
   for (i = (added) ? imax - added : 0; i < imax; i++)
     {

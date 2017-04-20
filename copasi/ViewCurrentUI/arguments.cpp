@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,12 +15,12 @@
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 
 #include "optimization/COptTask.h"
 #include "optimization/COptProblem.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/COutputAssistant.h"
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
@@ -52,7 +57,7 @@ Arguments::Arguments(int argc, char* argv[])
 
 CCopasiTask* Arguments::getFirstScheduledTask()
 {
-  CCopasiVectorN<CCopasiTask> &taskList = *CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
+  CDataVectorN<CCopasiTask> &taskList = *CRootContainer::getDatamodelList()->operator[](0).getTaskList();
 
   for (size_t i = 0; i < taskList.size(); ++i)
     {
@@ -67,7 +72,7 @@ CCopasiTask* Arguments::getFirstScheduledTask()
 
 CCopasiTask* Arguments::getTaskForName(const std::string& name) const
 {
-  CCopasiVectorN<CCopasiTask> &taskList = *CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList();
+  CDataVectorN<CCopasiTask> &taskList = *CRootContainer::getDatamodelList()->operator[](0).getTaskList();
 
   for (size_t i = 0; i < taskList.size(); ++i)
     {
@@ -118,8 +123,8 @@ bool Arguments::handleCommandLine() const
   if (!(mSaveLayout && haveFile() && haveOutputDir()))
     return false;
 
-  CCopasiRootContainer::init(0, NULL, false);
-  CCopasiDataModel& model = *CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL, false);
+  CDataModel& model = *CRootContainer::addDatamodel();
 
   try
     {
@@ -325,7 +330,7 @@ std::string Arguments::prepareModel() const
 {
   if (!isValid()) return "";
 
-  CCopasiDataModel* model = &CCopasiRootContainer::getDatamodelList()->operator[](0);
+  CDataModel* model = &CRootContainer::getDatamodelList()->operator[](0);
   model->loadModel(getFilename(), NULL);
 
   if (mDisablePlots)

@@ -20,10 +20,10 @@
 #include "CRDFLiteral.h"
 #include "CModelMIRIAMInfo.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CModification * CModification::fromData(const CData & data)
@@ -33,20 +33,20 @@ CModification * CModification::fromData(const CData & data)
 }
 
 CModification::CModification(const std::string & objectName,
-                             const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "Modification"),
+                             const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "Modification"),
   mTriplet(),
   mNodePath(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Modification", this))
+  mKey(CRootContainer::getKeyFactory()->add("Modification", this))
 {}
 
 CModification::CModification(const CRDFTriplet & triplet,
                              const std::string & objectName,
-                             const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "Modification"),
+                             const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "Modification"),
   mTriplet(triplet),
   mNodePath(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Modification", this))
+  mKey(CRootContainer::getKeyFactory()->add("Modification", this))
 {
   if (!mTriplet)
     return;
@@ -55,16 +55,16 @@ CModification::CModification(const CRDFTriplet & triplet,
 }
 
 CModification::CModification(const CModification & src,
-                             const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                             const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mTriplet(src.mTriplet),
   mNodePath(src.mNodePath),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Modification", this))
+  mKey(CRootContainer::getKeyFactory()->add("Modification", this))
 {}
 
 CModification::~CModification()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const CRDFTriplet & CModification::getTriplet() const

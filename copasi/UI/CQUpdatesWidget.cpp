@@ -22,8 +22,8 @@
 #include "CQUpdatesWidget.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
@@ -125,7 +125,7 @@ void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const CMathUpdateSeque
 
   for (int i = 0; it != end; ++it, ++i)
     {
-      const CCopasiObject * pDataObject = CObjectInterface::DataObject(*it);
+      const CDataObject * pDataObject = CObjectInterface::DataObject(*it);
       const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(*it);
 
       if (pDataObject == NULL && pMathObject == NULL) continue;

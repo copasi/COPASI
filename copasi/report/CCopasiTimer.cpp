@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,13 +20,13 @@
 #include "copasi.h"
 
 #include "CCopasiTimer.h"
-#include "CCopasiContainer.h"
-#include "CCopasiObjectReference.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CDataObjectReference.h"
 
 CCopasiTimer::CCopasiTimer(const Type & type,
-                           const CCopasiContainer * pParent):
-  CCopasiObject((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
-                pParent, "Timer", CCopasiObject::ValueDbl),
+                           const CDataContainer * pParent):
+  CDataObject((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
+              pParent, "Timer", CDataObject::ValueDbl),
   mType(type),
   mStartTime(),
   mElapsedTime(0),
@@ -44,8 +49,8 @@ CCopasiTimer::CCopasiTimer(const Type & type,
 }
 
 CCopasiTimer::CCopasiTimer(const CCopasiTimer & src,
-                           const CCopasiContainer * pParent):
-  CCopasiObject(src, pParent),
+                           const CDataContainer * pParent):
+  CDataObject(src, pParent),
   mType(src.mType),
   mStartTime(src.mStartTime),
   mElapsedTime(src.mElapsedTime),

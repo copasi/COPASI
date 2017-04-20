@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,15 +23,15 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "CODEExporterC.h"
 
 #include "model/CModel.h"
 #include "model/CMetab.h"
 #include "model/CMetabNameInterface.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
 #include "model/CChemEqElement.h"
@@ -75,7 +80,7 @@ bool startsWith(const std::string& str, const std::string& sub)
 
 void printNameForKey(std::ostringstream& stream, CKeyFactory* kf, const std::string& key, const std::string prefix = "")
 {
-  CCopasiObject* obj = kf->get(key);
+  CDataObject* obj = kf->get(key);
 
   if (obj != NULL)
     {
@@ -106,7 +111,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   size_t reacs_size = copasiModel->getReactions().size();
 
   size_t i, j, num_params, count;
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
+  const CDataVector< CReaction > & reacs = copasiModel->getReactions();
   const CReaction* reac;
 
   count = 0;
@@ -142,7 +147,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
   std::ostringstream dx_names; dx_names << "const char* dx_names[] = {";
   std::ostringstream ct_names; ct_names << "const char* ct_names[] = {";
 
-  CKeyFactory* kf = CCopasiRootContainer::getKeyFactory();
+  CKeyFactory* kf = CRootContainer::getKeyFactory();
 
   std::map< std::string, std::string >::const_iterator it = NameMap.begin();
   std::map< std::string, std::string > reverse_map;
@@ -179,7 +184,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
         }
       else if (startsWith(abbrev, "x_c["))
         {
-          CCopasiObject* obj = kf->get(key);
+          CDataObject* obj = kf->get(key);
 
           if (obj != NULL)
             {
@@ -194,7 +199,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
         }
       else if (startsWith(abbrev, "p_c["))
         {
-          CCopasiObject* obj = kf->get(key);
+          CDataObject* obj = kf->get(key);
 
           if (obj != NULL)
             {
@@ -209,7 +214,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
         }
       else if (startsWith(abbrev, "y_c["))
         {
-          CCopasiObject* obj = kf->get(key);
+          CDataObject* obj = kf->get(key);
 
           if (obj != NULL)
             {
@@ -532,7 +537,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
   NameMap[timeKey] = translateTimeVariableName();
 
-  const CCopasiVector< CMetab > & metabs = copasiModel->getMetabolitesX();
+  const CDataVector< CMetab > & metabs = copasiModel->getMetabolitesX();
   size_t metabs_size = metabs.size();
 
   for (i = 0; i < metabs_size; i++)
@@ -566,7 +571,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
     }
 
   size_t comps_size = copasiModel->getCompartments().size();
-  const CCopasiVector< CCompartment > & comps = copasiModel->getCompartments();
+  const CDataVector< CCompartment > & comps = copasiModel->getCompartments();
 
   for (i = 0; i < comps_size; i++)
     {
@@ -588,7 +593,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
     }
 
   size_t modvals_size = copasiModel->getModelValues().size();
-  const CCopasiVector< CModelValue > & modvals = copasiModel->getModelValues();
+  const CDataVector< CModelValue > & modvals = copasiModel->getModelValues();
 
   for (i = 0; i < modvals_size; i++)
     {
@@ -606,7 +611,7 @@ bool CODEExporterC::preprocess(const CModel* copasiModel)
 
   size_t reacs_size = copasiModel->getReactions().size();
 
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
+  const CDataVector< CReaction > & reacs = copasiModel->getReactions();
 
   std::set<std::string> tmpset;
 
@@ -651,7 +656,7 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
 {
   if (pNode)
     {
-      CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+      CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
       CCopasiTree<CEvaluationNode>::const_iterator treeIt = pNode;
 
       while (treeIt != NULL)
@@ -888,7 +893,7 @@ bool CODEExporterC::exportKineticFunction(CReaction* /* reac */)
 
 bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
 {
-  const CCopasiVector< CReaction > & reacs = copasiModel->getReactions();
+  const CDataVector< CReaction > & reacs = copasiModel->getReactions();
   size_t size = reacs.size();
   const CReaction* reac;
 
@@ -913,7 +918,7 @@ bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
 
 bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::string>& isExported)
 {
-  CFunctionDB* pFunctionDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunctionDB = CRootContainer::getFunctionList();
 
   CFunction* tmpfunc = NULL;
   tmpfunc = new CFunction(*func, NO_PARENT);
@@ -1032,7 +1037,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
           CFunctionParameter::Role role = params[k]->getUsage();
 
-          CCopasiObject * obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[k][0]);
+          CDataObject * obj = CRootContainer::getKeyFactory()->get(keyMap[k][0]);
 
           if ((role == CFunctionParameter::SUBSTRATE)
               || (role == CFunctionParameter::PRODUCT)
@@ -1088,10 +1093,10 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
     }
   else
     {
-      const CCopasiVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
-      const CCopasiVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
+      const CDataVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
+      const CDataVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
       const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
-      CCopasiObject * obj;
+      CDataObject * obj;
 
       size_t substrs_size = substrs.size(), prods_size = prods.size();
       size_t k, m, mult;
@@ -1103,7 +1108,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
       equation << "(";
 
-      obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[0][0]);
+      obj = CRootContainer::getKeyFactory()->get(keyMap[0][0]);
 
       if (!(reac->isLocalParameter(0)))
         {
@@ -1137,7 +1142,7 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
         {
           equation << " - ";
 
-          obj = CCopasiRootContainer::getKeyFactory()->get(keyMap[2][0]);
+          obj = CRootContainer::getKeyFactory()->get(keyMap[2][0]);
 
           if (!(reac->isLocalParameter(2)))
             {

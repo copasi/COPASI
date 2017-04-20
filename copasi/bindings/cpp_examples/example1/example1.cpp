@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,8 +24,8 @@
 #define COPASI_MAIN
 
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CCompartment.h"
 #include "copasi/model/CMetab.h"
@@ -37,11 +42,11 @@ int main()
   // since we are not interested in the arguments
   // that are passed to main, we pass 0 and NULL to
   // init
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
   // get the model from the datamodel
   CModel* pModel = pDataModel->getModel();
   assert(pModel != NULL);
@@ -57,12 +62,12 @@ int main()
   // the model building process
   // They are needed after the model has been built to make sure all initial
   // values are set to the correct initial value
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
 
   // create a compartment with the name cell and an initial volume of 5.0
   // microliter
   CCompartment* pCompartment = pModel->createCompartment("cell", 5.0);
-  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
+  const CDataObject* pObject = pCompartment->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pCompartment != NULL);
@@ -123,7 +128,7 @@ int main()
   // now we ned to set a kinetic law on the reaction
   // maybe constant flux would be OK
   // we need to get the function from the function database
-  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunDB = CRootContainer::getFunctionList();
   assert(pFunDB != NULL);
   // it should be in the list of suitable functions
   // lets get all suitable functions for an irreversible reaction with  2 substrates
@@ -253,7 +258,7 @@ int main()
   pDataModel->exportSBML("example1.xml", true, 2, 3);
 
   // destroy the root container once we are done
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 
   return 0;
 }

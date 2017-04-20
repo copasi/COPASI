@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,7 +22,7 @@
 
 #include "optimization/COptItem.h"
 
-class CCopasiDataModel;
+class CDataModel;
 
 class CFitItem : public COptItem
 {
@@ -35,27 +40,27 @@ protected:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent  (default: NULL)
+   * @param const CDataContainer * pParent  (default: NULL)
    * @param const std::string & name (default: FitItem)
    */
-  CFitItem(const CCopasiContainer * pParent,
+  CFitItem(const CDataContainer * pParent,
            const std::string & name = "FitItem");
 
   /**
    * Copy constructor
    * @param const CFitItem & src
-   * @param const CCopasiContainer * pParent (default: src data model)
+   * @param const CDataContainer * pParent (default: src data model)
    */
   CFitItem(const CFitItem & src,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: group data model)
+   * @param const CDataContainer * pParent (default: group data model)
    */
   CFitItem(const CCopasiParameterGroup & group,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -89,7 +94,7 @@ public:
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CCopasiContainer::EmptyList);
+                         CDataContainer::EmptyList);
 
   /**
    * This functions check whether the current value is within the limits
@@ -245,27 +250,27 @@ protected:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const std::string & name (default: FitItem)
    */
-  CFitConstraint(const CCopasiContainer * pParent,
+  CFitConstraint(const CDataContainer * pParent,
                  const std::string & name = "FitItem");
 
   /**
    * Copy constructor
    * @param const CFitItem & src
-   * @param const CCopasiContainer * pParent (default: src data model)
+   * @param const CDataContainer * pParent (default: src data model)
    */
   CFitConstraint(const CFitConstraint & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: group data model)
+   * @param const CDataContainer * pParent (default: group data model)
    */
   CFitConstraint(const CCopasiParameterGroup & group,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Destructor

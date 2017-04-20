@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CCompartment.h"
@@ -31,26 +36,26 @@
 #include "sbml/SBMLDocument.h"
 #include "sbml/Model.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
-CCopasiDataModel* test000078::pCOPASIDATAMODEL = NULL;
+CDataModel* test000078::pCOPASIDATAMODEL = NULL;
 
 void test000078::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000078::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000078::test_l2v4_import_unordered_functions()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -68,7 +73,7 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT(pModel->getVolumeUnitEnum() == CUnit::l);
   CPPUNIT_ASSERT(pModel->getTimeUnitEnum() == CUnit::s);
   // check if the function definitions were imported correctly
-  CFunctionDB* pFunDB = CCopasiRootContainer::getFunctionList();
+  CFunctionDB* pFunDB = CRootContainer::getFunctionList();
   const CEvaluationTree* pFun = pFunDB->findFunction("function_1");
   CPPUNIT_ASSERT(pFun != NULL);
   const CKinFunction* pKinFun = dynamic_cast<const CKinFunction*>(pFun);

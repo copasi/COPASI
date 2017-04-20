@@ -24,17 +24,21 @@
 #include <QPainter>
 #include <QMessageBox>
 
-#include "copasi.h"
+#include "CopasiFileDialog.h"
+
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
-#include "model/CModel.h"
-#include "lna/CLNAMethod.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "copasi/model/CModel.h"
+#include "copasi/lna/CLNAMethod.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "lna/CLNATask.h"
-#include "UI/CopasiFileDialog.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/lna/CLNATask.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
 /*
  *  Constructs a CLNAResultSubwidget as a child of 'parent', with the

@@ -46,9 +46,11 @@
 
 #include "CFixLocalReactionParameters.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 #include "utilities/CSlider.h"
 #include "model/CModel.h"
 #include "model/CState.h"
@@ -288,7 +290,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 {
   size_t Size = CCopasiMessage::size();
 
-  CUnitDefinitionDB * pCopasiUnitDefinitionList = CCopasiRootContainer::getUnitList();
+  CUnitDefinitionDB * pCopasiUnitDefinitionList = CRootContainer::getUnitList();
 
   if (pUnitDefImportList == NULL ||
       pCopasiUnitDefinitionList == NULL)
@@ -300,8 +302,8 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
   // Add them if they don't already exist. First change name and/or
   // symbol if there are collisions.
-  CCopasiVectorN< CUnitDefinition >::iterator itIL = pUnitDefImportList->begin();
-  CCopasiVectorN< CUnitDefinition >::iterator endIL = pUnitDefImportList->end();
+  CDataVectorN< CUnitDefinition >::iterator itIL = pUnitDefImportList->begin();
+  CDataVectorN< CUnitDefinition >::iterator endIL = pUnitDefImportList->end();
 
   for (; itIL != endIL; ++itIL) //For all of the Unit Defintions to potentially import . . .
     {
@@ -357,7 +359,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
             }
 
           // for all the ones remaining in the Import List
-          CCopasiVectorN< CUnitDefinition >::iterator itILrem = itIL;
+          CDataVectorN< CUnitDefinition >::iterator itILrem = itIL;
 
           for (; itILrem != endIL; ++itILrem)
             {
@@ -396,13 +398,13 @@ bool CCopasiXML::freeModel()
   return true;
 }
 
-bool CCopasiXML::setFunctionList(CCopasiVectorN< CFunction > *pFunctionList)
+bool CCopasiXML::setFunctionList(CDataVectorN< CFunction > *pFunctionList)
 {
   mpFunctionList = pFunctionList;
   return true;
 }
 
-CCopasiVectorN< CFunction > * CCopasiXML::getFunctionList() const
+CDataVectorN< CFunction > * CCopasiXML::getFunctionList() const
 {return mpFunctionList;}
 
 bool CCopasiXML::haveFunctionList() const
@@ -414,7 +416,7 @@ bool CCopasiXML::freeFunctionList()
   return true;
 }
 
-bool CCopasiXML::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
+bool CCopasiXML::setTaskList(CDataVectorN< CCopasiTask > * pTaskList)
 {
   mpTaskList = pTaskList;
   return true;
@@ -422,16 +424,16 @@ bool CCopasiXML::setTaskList(CCopasiVectorN< CCopasiTask > * pTaskList)
 
 /**
  * Set the datamodel.
- * @param CCopasiDataModel* pDataModel
+ * @param CDataModel* pDataModel
  * @return bool success
  */
-bool CCopasiXML::setDatamodel(CCopasiDataModel* pDataModel)
+bool CCopasiXML::setDatamodel(CDataModel* pDataModel)
 {
   this->mpDataModel = pDataModel;
   return true;
 }
 
-CCopasiVectorN< CCopasiTask > * CCopasiXML::getTaskList() const
+CDataVectorN< CCopasiTask > * CCopasiXML::getTaskList() const
 {return mpTaskList;}
 
 bool CCopasiXML::haveTaskList() const
@@ -747,10 +749,10 @@ bool CCopasiXML::saveModel()
       startSaveElement("ListOfReactions");
 
       CXMLAttributeList Attr;
-      const CCopasiVector< CChemEqElement > * pReactantList;
+      const CDataVector< CChemEqElement > * pReactantList;
       size_t j, jmax;
 
-      std::vector< const CCopasiObject * > ObjectList;
+      std::vector< const CDataObject * > ObjectList;
       size_t k, kmax;
 
       Attributes.erase();
@@ -859,7 +861,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("ListOfConstants");
             }
 
-          if (pReaction->getFunction() != CCopasiRootContainer::getUndefinedFunction())
+          if (pReaction->getFunction() != CRootContainer::getUndefinedFunction())
             {
               Attr.erase();
               Attr.add("function", pReaction->getFunction()->getKey());
@@ -974,7 +976,7 @@ bool CCopasiXML::saveModel()
               endSaveElement("PriorityExpression");
             }
 
-          const CCopasiVectorN< CEventAssignment > & Assignments = pEvent->getAssignments();
+          const CDataVectorN< CEventAssignment > & Assignments = pEvent->getAssignments();
 
           if (Assignments.size() > 0)
             {
@@ -983,8 +985,8 @@ bool CCopasiXML::saveModel()
               CXMLAttributeList Attr;
               Attr.add("targetKey", "");
 
-              CCopasiVectorN< CEventAssignment >::const_iterator it = Assignments.begin();
-              CCopasiVectorN< CEventAssignment >::const_iterator end = Assignments.end();
+              CDataVectorN< CEventAssignment >::const_iterator it = Assignments.begin();
+              CDataVectorN< CEventAssignment >::const_iterator end = Assignments.end();
 
               for (; it != end; ++it)
                 {
@@ -2056,10 +2058,10 @@ bool CCopasiXML::buildFunctionList()
 {
   bool success = true;
 
-  CCopasiVectorN< CFunction > * pFunctionList
-    = new CCopasiVectorN< CFunction >;
+  CDataVectorN< CFunction > * pFunctionList
+    = new CDataVectorN< CFunction >;
 
-  std::vector< const CFunction * > FunctionList = CCopasiRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
+  std::vector< const CFunction * > FunctionList = CRootContainer::getFunctionList()->getUsedFunctions(this->mpDataModel->getModel());
   *pFunctionList = *reinterpret_cast< std::vector< CFunction * > * >(&FunctionList);
 
   if (!setFunctionList(pFunctionList)) success = false;
@@ -2135,8 +2137,8 @@ void CCopasiXML::fixBuild113()
 {
   if (mpModel == NULL) return;
 
-  CCopasiVector< CReaction >::iterator it = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::iterator end = mpModel->getReactions().end();
+  CDataVector< CReaction >::iterator it = mpModel->getReactions().begin();
+  CDataVector< CReaction >::iterator end = mpModel->getReactions().end();
 
   for (; it != end; ++it)
     {
@@ -2145,8 +2147,8 @@ void CCopasiXML::fixBuild113()
           const CCompartment * pCompartment = NULL;
           std::set< const CCompartment * > Compartments;
 
-          CCopasiVector < CChemEqElement >::const_iterator itBalance = it->getChemEq().getBalances().begin();
-          CCopasiVector < CChemEqElement >::const_iterator endBalance = it->getChemEq().getBalances().end();
+          CDataVector < CChemEqElement >::const_iterator itBalance = it->getChemEq().getBalances().begin();
+          CDataVector < CChemEqElement >::const_iterator endBalance = it->getChemEq().getBalances().end();
 
           for (; itBalance != endBalance; ++itBalance)
             {
@@ -2168,7 +2170,7 @@ void CCopasiXML::fixBuild113()
 /**
  * Saves the list of global render information objects.
  */
-void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector< CLGlobalRenderInformation > & list)
+void CCopasiXML::saveListOfGlobalRenderInformation(const CDataVector< CLGlobalRenderInformation > & list)
 {
   startSaveElement("ListOfGlobalRenderInformation");
   size_t i, iMax = list.size();
@@ -2184,7 +2186,7 @@ void CCopasiXML::saveListOfGlobalRenderInformation(const CCopasiVector< CLGlobal
 /**
  * Saves the list of local render information objects.
  */
-void CCopasiXML::saveListOfLocalRenderInformation(const CCopasiVector<CLLocalRenderInformation>& list)
+void CCopasiXML::saveListOfLocalRenderInformation(const CDataVector<CLLocalRenderInformation>& list)
 {
   startSaveElement("ListOfRenderInformation");
   size_t i, iMax = list.size();
@@ -3018,7 +3020,7 @@ bool CCopasiXML::saveUnitDefinitionList()
 {
   bool success = true;
 
-  CUnitDefinitionDB * pUnitDefList = CCopasiRootContainer::getUnitList();
+  CUnitDefinitionDB * pUnitDefList = CRootContainer::getUnitList();
 
   if (!pUnitDefList) return success;
 

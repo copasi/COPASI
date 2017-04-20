@@ -14,7 +14,7 @@
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "report/CCopasiStaticString.h"
 #include "utilities/CNodeIterator.h"
@@ -27,23 +27,23 @@ CModelParameterSet * CModelParameterSet::fromData(const CData & data)
 }
 
 CModelParameterSet::CModelParameterSet(const std::string & name,
-                                       const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "ModelParameterSet"),
+                                       const CDataContainer * pParent):
+  CDataContainer(name, pParent, "ModelParameterSet"),
   CModelParameterGroup(NULL, CModelParameter::Set),
   CAnnotation(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
+  mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
   mpModel(NULL)
 {
   setObjectParent(pParent);
 }
 
 CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
-                                       const CCopasiContainer * pParent,
+                                       const CDataContainer * pParent,
                                        const bool & createMissing):
-  CCopasiContainer(src, pParent),
+  CDataContainer(src, pParent),
   CModelParameterGroup(src, NULL, createMissing),
   CAnnotation(src),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
+  mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
   mpModel(NULL)
 {
   setObjectParent(pParent);
@@ -59,7 +59,7 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
 // virtual
 CModelParameterSet::~CModelParameterSet()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 // virtual
@@ -69,9 +69,9 @@ const std::string & CModelParameterSet::getKey() const
 }
 
 // virtual
-bool CModelParameterSet::setObjectParent(const CCopasiContainer * pParent)
+bool CModelParameterSet::setObjectParent(const CDataContainer * pParent)
 {
-  bool success = CCopasiObject::setObjectParent(pParent);
+  bool success = CDataObject::setObjectParent(pParent);
 
   mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
 
@@ -109,8 +109,8 @@ void CModelParameterSet::createFromModel()
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Initial Compartment Sizes").getCN());
 
-  CCopasiVector< CCompartment >::const_iterator itCompartment = mpModel->getCompartments().begin();
-  CCopasiVector< CCompartment >::const_iterator endCompartment = mpModel->getCompartments().end();
+  CDataVector< CCompartment >::const_iterator itCompartment = mpModel->getCompartments().begin();
+  CDataVector< CCompartment >::const_iterator endCompartment = mpModel->getCompartments().end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
     {
@@ -124,8 +124,8 @@ void CModelParameterSet::createFromModel()
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Initial Species Values").getCN());
 
-  CCopasiVector< CMetab >::const_iterator itSpecies = mpModel->getMetabolites().begin();
-  CCopasiVector< CMetab >::const_iterator endSpecies = mpModel->getMetabolites().end();
+  CDataVector< CMetab >::const_iterator itSpecies = mpModel->getMetabolites().begin();
+  CDataVector< CMetab >::const_iterator endSpecies = mpModel->getMetabolites().end();
 
   for (; itSpecies != endSpecies; ++itSpecies)
     {
@@ -139,8 +139,8 @@ void CModelParameterSet::createFromModel()
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Initial Global Quantities").getCN());
 
-  CCopasiVector< CModelValue >::const_iterator itModelValue = mpModel->getModelValues().begin();
-  CCopasiVector< CModelValue >::const_iterator endModelValue = mpModel->getModelValues().end();
+  CDataVector< CModelValue >::const_iterator itModelValue = mpModel->getModelValues().begin();
+  CDataVector< CModelValue >::const_iterator endModelValue = mpModel->getModelValues().end();
 
   for (; itModelValue != endModelValue; ++itModelValue)
     {
@@ -154,8 +154,8 @@ void CModelParameterSet::createFromModel()
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CCopasiStaticString("Kinetic Parameters").getCN());
 
-  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
+  CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
+  CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
   for (; itReaction != endReaction; ++itReaction)
     {
@@ -183,7 +183,7 @@ void CModelParameterSet::createFromModel()
 
               if (ModelValue.size() != 1) fatalError();
 
-              const CModelValue * pModelValue = static_cast< CModelValue * >(CCopasiRootContainer::getKeyFactory()->get(ModelValue[0]));
+              const CModelValue * pModelValue = static_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(ModelValue[0]));
 
               if (pModelValue == NULL) fatalError();
 

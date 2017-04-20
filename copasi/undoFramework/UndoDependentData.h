@@ -1,8 +1,12 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
 
 #ifndef UNDODEPENDENTDATA_H_
 #define UNDODEPENDENTDATA_H_
@@ -11,7 +15,7 @@
 #include <set>
 
 class CModelEntity;
-class CCopasiObject;
+class CDataObject;
 class UndoCompartmentData;
 class UndoReactionData;
 class UndoSpeciesData;
@@ -35,7 +39,7 @@ public:
 
   virtual ~UndoDependentData();
 
-  void initializeFrom(const std::set< const CCopasiObject * > & deletedObjects);
+  void initializeFrom(const std::set< const CDataObject * > & deletedObjects);
   void initializeFrom(const CModelEntity* pObject);
   void initializeFrom(const CReaction* pObject);
 
@@ -44,7 +48,6 @@ public:
   void restoreIn(CModel* pModel);
 
   void freeUndoData();
-
 
   static void restoreDependentObjects(CModel* pModel,
                                       QList <UndoGlobalQuantityData *> *pGlobalQuantityData);

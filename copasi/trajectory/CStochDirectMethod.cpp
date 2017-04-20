@@ -37,7 +37,7 @@
 
 #include "copasi.h"
 #include "CStochDirectMethod.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "function/CFunction.h"
 #include "randomGenerator/CRandom.h"
 #include "CTrajectoryMethod.h"
@@ -47,7 +47,7 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 
-CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent,
+CStochDirectMethod::CStochDirectMethod(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
                                        const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -77,7 +77,7 @@ CStochDirectMethod::CStochDirectMethod(const CCopasiContainer * pParent,
 }
 
 CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mpRandomGenerator(NULL),
   mNumReactions(0),
@@ -213,7 +213,7 @@ void CStochDirectMethod::start()
   CMathObject * pTimeObject = mpContainer->getMathObject(mpContainerStateTime);
   Changed.insert(pTimeObject);
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateTimeDependentRoots, CMath::SimulationContext::Default, Changed, Requested);
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateTimeDependentRoots, CCore::SimulationContext::Default, Changed, Requested);
   mHaveTimeDependentRoots = (mUpdateTimeDependentRoots.size() > 0);
 
   // Build the reaction dependencies
@@ -225,7 +225,7 @@ void CStochDirectMethod::start()
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  CObjectInterface::UpdateSequence * pUpdateSequence = mUpdateSequences.array();
+  CCore::CUpdateSequence * pUpdateSequence = mUpdateSequences.array();
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
 
@@ -244,7 +244,7 @@ void CStochDirectMethod::start()
       Changed.insert(pTimeObject);
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, Changed, Requested);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CCore::SimulationContext::Default, Changed, Requested);
     }
 
   mMaxStepsReached = false;

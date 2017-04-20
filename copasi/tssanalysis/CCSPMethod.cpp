@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,21 +24,22 @@
 #include "copasi.h"
 
 #include "CCSPMethod.h"
+
+#include "copasi/core/CMatrix.h"
 #include "CTSSAProblem.h"
 #include "CTSSATask.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
-#include "utilities/CMatrix.h"
 #include "utilities/CAnnotatedMatrix.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "trajectory/CLsodaMethod.h"
 
 #include "lapack/lapackwrap.h"        // CLAPACK
 #include "lapack/blaswrap.h"           // BLAS
 
-CCSPMethod::CCSPMethod(const CCopasiContainer * pParent,
+CCSPMethod::CCSPMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CTSSAMethod(pParent, methodType, taskType)
@@ -44,7 +50,7 @@ CCSPMethod::CCSPMethod(const CCopasiContainer * pParent,
 }
 
 CCSPMethod::CCSPMethod(const CCSPMethod & src,
-                       const CCopasiContainer * pParent):
+                       const CDataContainer * pParent):
   CTSSAMethod(src, pParent)
 {
   initializeParameter();
@@ -420,7 +426,7 @@ void CCSPMethod::cspstep(const double & /* deltaT */, C_INT & N, C_INT & M, CMat
 
   for (j = 0; j < N; j++, ++pSpeciesValue)
     {
-      const CParticleReference* reference = static_cast<const CParticleReference*>(mpContainer->getMathObject(pSpeciesValue)->getDataObject());
+      const CDataObject * reference = static_cast< const CDataObject * >(mpContainer->getMathObject(pSpeciesValue)->getDataObject());
       const CMetab * pSpeciesObject = static_cast<const CMetab *>(reference->getObjectParent());
       const CCompartment* comp = pSpeciesObject->getCompartment();
 
@@ -1021,7 +1027,7 @@ void CCSPMethod::emptyOutputData(C_INT & N, C_INT & M, C_INT & R)
 {
 
   C_INT i, m, r;
-  //const CCopasiVector< CReaction > & reacs = Model.getReactions();
+  //const CDataVector< CReaction > & reacs = Model.getReactions();
 
   for (m = 0; m < M; m++)
     for (i = 0; i < N; i++)
@@ -1176,7 +1182,7 @@ void CCSPMethod::start()
   mImportanceIndexNormedRow.resize(reacs_size, mDim);
   mFastReactionPointerNormed.resize(reacs_size, mDim);
 
-  CCopasiVector<CMetab>  metabs;
+  CDataVector<CMetab>  metabs;
   metabs.resize(mDim);
 
 #if 0
@@ -1224,7 +1230,7 @@ void CCSPMethod::CSPOutput(C_INT & N, C_INT & M, C_INT & R)
   const CModel & Model = mpContainer->getModel();
 
   C_INT i, m, r;
-  const CCopasiVector< CReaction > & reacs = Model.getReactions();
+  const CDataVector< CReaction > & reacs = Model.getReactions();
 
   std::cout << "Amplitudes of reaction modes :" << std::endl;
 
@@ -1765,7 +1771,7 @@ void CCSPMethod::predefineAnnotation()
       N = Model.getNumIndependentReactionMetabs() + Model.getNumDependentReactionMetabs();
     }
 
-  CCopasiVector< CMetab >  metabs;
+  CDataVector< CMetab >  metabs;
   //metabs.resize(N);
 
   C_INT j;
@@ -2038,7 +2044,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
   mRadicalPointerTab = mVec_mRadicalPointer[step];
   pRadicalPointerAnn->resize();
 
-  CCopasiVector< CMetab >  metabs;
+  CDataVector< CMetab >  metabs;
   //FIXED :  metabs.resize(mDim);
   //metabs.resize(N);
 
@@ -2466,7 +2472,7 @@ void CCSPMethod::printResult(std::ostream * ostream) const
 
   this->print(&os);
 
-  const CCopasiVector< CReaction > & reacs = Model.getReactions();
+  const CDataVector< CReaction > & reacs = Model.getReactions();
 
   os << std::endl;
   os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;

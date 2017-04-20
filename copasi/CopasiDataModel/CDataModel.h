@@ -3,30 +3,19 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
-#ifndef COPASI_CCopasiDataModel
-#define COPASI_CCopasiDataModel
+#ifndef COPASI_CDataModel
+#define COPASI_CDataModel
 
 #include <map>
 
 #include "copasi.h"
-#include "utilities/COutputHandler.h"
-#include "utilities/CCopasiTask.h"
+
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/COutputHandler.h"
+#include "copasi/utilities/CTaskEnum.h"
 
 class CModel;
+class CReportDefinition;
 class CReportDefinitionVector;
 class COutputDefinitionVector;
 class CFunctionDB;
@@ -42,6 +31,7 @@ class SBMLIncompatibility;
 class CListOfLayouts;
 class CUndoStack;
 class CUndoData;
+class CCopasiTask;
 
 //TODO SEDML
 #ifdef COPASI_SEDML
@@ -59,40 +49,12 @@ class CombineArchive;
 // :TODO: remove
 class CMetabOld;
 
-template <class CType> class CCopasiVectorS;
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVectorS;
+template <class CType> class CDataVectorN;
 
 //******************************************************************************
 
-#include "copasi/report/CRenameHandler.h"
-class CCopasiDataModel;
-
-class CDataModelRenameHandler : public CRenameHandler
-{
-public:
-  CDataModelRenameHandler();
-
-  virtual ~CDataModelRenameHandler() {};
-
-  virtual void handle(const std::string & oldCN, const std::string & newCN) const;
-
-  /**
-   * Enable and disable the rename handler
-   * @param const bool & enabled
-   */
-  virtual void setEnabled(const bool & enabled);
-  virtual bool isEnabled() const;
-
-private:
-  /**
-   * Flag whether the rename handler is enable or not
-   */
-  bool mEnabled;
-};
-
-//******************************************************************************
-
-class CCopasiDataModel: public CCopasiContainer, public COutputHandler
+class CDataModel: public CDataContainer, public COutputHandler
 {
   enum FileType
   {
@@ -118,7 +80,7 @@ private:
     bool isValid() const;
 
     CModel * pModel;
-    CCopasiVectorN< CCopasiTask > * pTaskList;
+    CDataVectorN< CCopasiTask > * pTaskList;
     CReportDefinitionVector * pReportDefinitionList;
     COutputDefinitionVector * pPlotDefinitionList;
     CListOfLayouts * pListOfLayouts;
@@ -141,7 +103,7 @@ private:
      * corresponding SBML object if the current model
      * was created by an SBML import.
      */
-    std::map<const CCopasiObject*, SBase*> mCopasi2SBMLMap;
+    std::map<const CDataObject*, SBase*> mCopasi2SBMLMap;
 
     // if we want to display images in the render extension,
     // those images can be png or jpg files with a relative path name.
@@ -161,7 +123,7 @@ private:
      * corresponding SEDML object if the current model
      * was created by an SEDML import.
      */
-    std::map<CCopasiObject*, SedBase*> mCopasi2SEDMLMap;
+    std::map<CDataObject*, SedBase*> mCopasi2SEDMLMap;
 
     /**
      * The name of the referenced SEDML file
@@ -173,19 +135,19 @@ private:
 
   // Operations
 public:
-  static CCopasiDataModel * fromData(const CData & data);
+  static CDataModel * fromData(const CData & data);
 
-  CCopasiDataModel(const bool withGUI = false);
+  CDataModel(const bool withGUI = false);
 
-  CCopasiDataModel(const std::string & name,
-                   const CCopasiContainer * pParent = NO_PARENT,
-                   const std::string & type = "CN",
-                   bool withGUI = false);
+  CDataModel(const std::string & name,
+             const CDataContainer * pParent = NO_PARENT,
+             const std::string & type = "CN",
+             bool withGUI = false);
 
-  CCopasiDataModel(const CCopasiDataModel & src,
-                   const CCopasiContainer * pParent);
+  CDataModel(const CDataModel & src,
+             const CDataContainer * pParent);
 
-  virtual ~CCopasiDataModel();
+  virtual ~CDataModel();
 
   bool loadModel(std::istream & in,
                  const std::string & pwd,
@@ -266,19 +228,19 @@ public:
 
   CModel * getModel();
   const CModel * getModel() const;
-  CCopasiVectorN< CCopasiTask > * getTaskList();
-  const CCopasiVectorN< CCopasiTask > * getTaskList() const;
+  CDataVectorN< CCopasiTask > * getTaskList();
+  const CDataVectorN< CCopasiTask > * getTaskList() const;
   CCopasiTask * addTask(const CTaskEnum::Task & taskType);
   bool addDefaultTasks();
   /**
    * Appends pointers to tasks, which are dependent on any of the candidates
    * to the list dependentTasks.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentTasks
+   * @param CDataObject::ObjectSet candidates
+   * @param CDataObject::DataObjectSet & dependentTasks
    * @return bool functionsAppended
    */
-  bool appendDependentTasks(std::set< const CCopasiObject * > candidates,
-                            std::set< const CCopasiObject * > & dependentTasks) const;
+  bool appendDependentTasks(ObjectSet candidates,
+                            DataObjectSet & dependentTasks) const;
 
   const CReportDefinitionVector * getReportDefinitionList() const;
   CReportDefinitionVector * getReportDefinitionList();
@@ -302,7 +264,7 @@ public:
   bool setSBMLFileName(const std::string & fileName);
   const std::string & getSBMLFileName() const;
 
-  std::map<const CCopasiObject*, SBase*>& getCopasi2SBMLMap();
+  std::map<const CDataObject*, SBase*>& getCopasi2SBMLMap();
 
 public:
   const std::string& getReferenceDirectory() const;
@@ -341,7 +303,7 @@ public:
   bool setSEDMLFileName(const std::string & fileName);
   const std::string & getSEDMLFileName() const;
 
-  std::map<CCopasiObject*, SedBase*>& getCopasi2SEDMLMap();
+  std::map<CDataObject*, SedBase*>& getCopasi2SEDMLMap();
 
 #endif
 
@@ -358,7 +320,6 @@ protected:
 protected:
   CContent mData;
   CContent mOldData;
-  CDataModelRenameHandler mRenameHandler;
   std::vector<std::string> mTempFolders;
   bool mNeedToSaveExperimentalData;
 
@@ -366,13 +327,13 @@ public:
   /**
    *  This is a hack at the moment to be able to read Gepasi model files
    */
-  CCopasiVectorS < CMetabOld > * pOldMetabolites;
+  CDataVectorS < CMetabOld > * pOldMetabolites;
 
   //the objects that were added by the last model adding action.
-  std::set< const CCopasiObject * > mLastAddedObjects;
+  std::set< const CDataObject * > mLastAddedObjects;
 
 protected:
   void removeSBMLIdFromFunctions();
 };
 
-#endif // COPASI_CCopasiDataModel
+#endif // COPASI_CDataModel

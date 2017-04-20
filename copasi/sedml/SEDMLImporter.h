@@ -41,6 +41,8 @@ class CMetab;
 class CProcessReport;
 class CPlotSpecification;
 class CReportDefinition;
+class COutputDefinitionVector;
+class CListOfLayouts;
 
 class SEDMLImporter
 {
@@ -57,7 +59,7 @@ protected:
   unsigned int mOriginalLevel;
   unsigned int mVersion;
 
-  CCopasiDataModel * mpDataModel;
+  CDataModel * mpDataModel;
   CModel* mpCopasiModel;
 
   SedDocument* mpSEDMLDocument;
@@ -83,43 +85,43 @@ public:
   void readListOfPlotsFromSedMLOutput(
     COutputDefinitionVector *pPlotList, CModel* pModel,
     SedDocument *pSedDocument,
-    std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
+    std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
 
   /**
    * Updates COPASI tasks for a given SedML Simulation
    */
   void updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
-                                     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
+                                     std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
 
   /**
    * Imports the first viable SBML model
    */
   CModel* importFirstSBMLModel(CProcessReport* pImportHandler,
                                SBMLDocument *& pSBMLDocument,
-                               std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                               std::map<CDataObject*, SBase*>& copasi2sbmlmap,
                                CListOfLayouts *& prLol,
-                               CCopasiDataModel* pDataModel);
+                               CDataModel* pDataModel);
 
   /**
    * Import all tasks for the imported SBML model
    */
-  void importTasks(std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap);
+  void importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap);
 
   CModel* readSEDML(std::string filename, CProcessReport* pImportHandler,
                     SBMLDocument *& pSBMLDocument, SedDocument*& pSedDocument,
-                    std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
-                    std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                    std::map<CDataObject*, SedBase*>& copasi2sedmlmap,
+                    std::map<CDataObject*, SBase*>& copasi2sbmlmap,
                     CListOfLayouts *& prLol,
                     COutputDefinitionVector * & plotList,
-                    CCopasiDataModel* pDataModel);
+                    CDataModel* pDataModel);
 
   CModel* parseSEDML(const std::string& sedmlDocumentText, CProcessReport* pImportHandler,
                      SBMLDocument *& pSBMLDocument, SedDocument *& pSEDMLDocument,
-                     std::map<CCopasiObject*, SedBase*>& copasi2sedmlmap,
-                     std::map<CCopasiObject*, SBase*>& copasi2sbmlmap,
+                     std::map<CDataObject*, SedBase*>& copasi2sedmlmap,
+                     std::map<CDataObject*, SBase*>& copasi2sbmlmap,
                      CListOfLayouts *& prLol,
                      COutputDefinitionVector *& plotList,
-                     CCopasiDataModel* pDataModel);
+                     CDataModel* pDataModel);
 
   /**
    * This call deletes an existing COPASI model.

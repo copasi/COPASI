@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,14 +14,14 @@
 // All rights reserved.
 
 #include "CArrayElementReference.h"
-#include "CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "utilities/CAnnotatedMatrix.h"
 
-CArrayElementReference::CArrayElementReference(const std::vector< CRegisteredObjectName > & index, const CCopasiContainer * pParent)
-  : CCopasiObject("Value", pParent, "ElementReference",
-                  CCopasiObject::Reference |
-                  CCopasiObject::NonUniqueName |
-                  CCopasiObject::ValueDbl),
+CArrayElementReference::CArrayElementReference(const std::vector< CRegisteredObjectName > & index,
+    const CDataContainer * pParent,
+    const CFlags< Flag > & flag)
+  : CDataObject("Value", pParent, "ElementReference",
+                flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
   //    mpReference(NULL),
   mIndex(index),
   mIgnoreUpdateObjectName(false)
@@ -38,7 +43,7 @@ void CArrayElementReference::updateObjectName()
 
   for (; it != end; ++it)
     {
-      const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*it));
+      const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(*it));
 
       if (pObject != NULL)
         {
@@ -88,7 +93,7 @@ std::string CArrayElementReference::getObjectDisplayName() const
       const_cast< CArrayElementReference * >(this)->updateObjectName();
 
       //if the array has as task as ancestor, use the task (skip the problem/method)
-      CCopasiContainer* pT = getObjectAncestor("Task");
+      CDataContainer* pT = getObjectAncestor("Task");
 
       std::string part;
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,22 +21,23 @@
 
 #include <sstream>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 #include "CQArrayAnnotationsWidget.h"
 
-#include "UI/qtUtilities.h"
-#include "UI/listviews.h"
-#include "UI/CopasiFileDialog.h"
+#include "qtUtilities.h"
+#include "listviews.h"
+#include "CopasiFileDialog.h"
 
-#include "model/CChemEqInterface.h"
-#include "model/CModel.h"
-#include "model/CMetabNameInterface.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "steadystate/CEigen.h"
-#include "optimization/COptProblem.h"
-#include "optimization/COptTask.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/model/CChemEqInterface.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetabNameInterface.h"
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
+#include "copasi/steadystate/CEigen.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a StateSubwidget which is a child of 'parent', with the
@@ -63,8 +69,8 @@ StateSubwidget::~StateSubwidget()
 void StateSubwidget::loadMetabolites()
 {
   // Fill the table
-  CCopasiVectorN< CMetab >::const_iterator it = mpModel->getMetabolites().begin();
-  CCopasiVectorN< CMetab >::const_iterator end = mpModel->getMetabolites().end();
+  CDataVectorN< CMetab >::const_iterator it = mpModel->getMetabolites().begin();
+  CDataVectorN< CMetab >::const_iterator end = mpModel->getMetabolites().end();
   int i = 0;
 
   mpTblMetabolites->setRowCount((int) mpModel->getMetabolites().size());
@@ -112,8 +118,8 @@ void StateSubwidget::loadMetabolites()
 
 void StateSubwidget::loadCompartments()
 {
-  CCopasiVectorN< CCompartment >::const_iterator it = mpModel->getCompartments().begin();
-  CCopasiVectorN< CCompartment >::const_iterator end = mpModel->getCompartments().end();
+  CDataVectorN< CCompartment >::const_iterator it = mpModel->getCompartments().begin();
+  CDataVectorN< CCompartment >::const_iterator end = mpModel->getCompartments().end();
   C_INT32 i = 0;
 
   mpTblCompartments->setRowCount((int) mpModel->getCompartments().size());
@@ -148,8 +154,8 @@ void StateSubwidget::loadCompartments()
 void StateSubwidget::loadReactions()
 {
   // Fill the table
-  CCopasiVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
-  CCopasiVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
+  CDataVectorN< CReaction >::const_iterator it = mpModel->getReactions().begin();
+  CDataVectorN< CReaction >::const_iterator end = mpModel->getReactions().end();
   C_INT32 i = 0;
 
   mpTblReactions->setRowCount((int) mpModel->getReactions().size());
@@ -183,8 +189,8 @@ void StateSubwidget::loadReactions()
 
 void StateSubwidget::loadModelValues()
 {
-  CCopasiVectorN< CModelValue >::const_iterator it = mpModel->getModelValues().begin();
-  CCopasiVectorN< CModelValue >::const_iterator end = mpModel->getModelValues().end();
+  CDataVectorN< CModelValue >::const_iterator it = mpModel->getModelValues().begin();
+  CDataVectorN< CModelValue >::const_iterator end = mpModel->getModelValues().end();
   C_INT32 i = 0;
 
   mpTblModelValues->setRowCount((int) mpModel->getModelValues().size());

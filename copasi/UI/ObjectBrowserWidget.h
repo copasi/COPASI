@@ -32,7 +32,7 @@ Contact: Please contact lixu1@vt.edu.
 #include <QWidget>
 #include <vector>
 
-template <class CType> class CCopasiVector;
+template <class CType> class CDataVector;
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -45,8 +45,8 @@ class QTextEdit;
 class ObjectBrowserItem;
 class ObjectList;
 class QFrame;
-class CCopasiContainer;
-class CCopasiObject;
+class CDataContainer;
+class CDataObject;
 class CopasiUI3Window;
 class QPixmap;
 
@@ -72,7 +72,7 @@ public:
   QSpacerItem *spacer;
   QTextEdit *ObjectItemText;
 
-  void eXport(ObjectBrowserItem *pCurrent, std::vector< const CCopasiObject * > *outputVector);
+  void eXport(ObjectBrowserItem *pCurrent, std::vector< const CDataObject * > *outputVector);
   void removeDuplicate(ObjectList *objectItemList);
   void setCheck(ObjectBrowserItem *pCurrent);
   void setUncheck(ObjectBrowserItem *pCurrent);
@@ -80,12 +80,12 @@ public:
   void setCheckMark(ObjectBrowserItem *pCurrent);
 
   void loadData();
-  void loadChild(ObjectBrowserItem *parent, const CCopasiContainer *copaParent, bool nField);
-  void loadField(ObjectBrowserItem *parent, CCopasiVector<CCopasiObject> *copaParent);
+  void loadChild(ObjectBrowserItem *parent, const CDataContainer *copaParent, bool nField);
+  void loadField(ObjectBrowserItem *parent, CDataVector<CDataObject> *copaParent);
 
-  CCopasiObject *getFieldCopasiObject(CCopasiContainer *pCurrent, const char *name);
-  void setOutputVector(std::vector< const CCopasiObject * > *pObjectVector);
-  void selectObjects(std::vector< const CCopasiObject * > *pObjectVector);
+  CDataObject *getFieldCopasiObject(CDataContainer *pCurrent, const char *name);
+  void setOutputVector(std::vector< const CDataObject * > *pObjectVector);
+  void selectObjects(std::vector< const CDataObject * > *pObjectVector);
   void updateUI();
   void loadUI();
 
@@ -100,9 +100,9 @@ public slots:
   virtual void listviewChecked(QTreeWidgetItem *, int);
 
 private:
-  std::vector< const CCopasiObject * > *mOutputObjectVector;
+  std::vector< const CDataObject * > *mOutputObjectVector;
   pageIndex currentPage;
-  void selectObjects(ObjectBrowserItem *browserItem, const CCopasiObject *selectObject);
+  void selectObjects(ObjectBrowserItem *browserItem, const CDataObject *selectObject);
   void updateSelectedItemsView();
   void cleanup();
 };

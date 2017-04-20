@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -23,7 +28,7 @@
 #ifndef COPASI_COptTask
 #define COPASI_COptTask
 
-#include "utilities/CVector.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CCopasiTask.h"
 #include "utilities/CProcessReport.h"
 
@@ -45,10 +50,10 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: optimization)
    */
-  COptTask(const CCopasiContainer * pParent,
+  COptTask(const CDataContainer * pParent,
            const CTaskEnum::Task & type = CTaskEnum::optimization);
 
   /**
@@ -57,7 +62,7 @@ public:
    */
   //-COptTask(const COptTask & src);
   COptTask(const COptTask & src,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Destructor

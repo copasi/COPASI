@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,8 +25,8 @@
 #define COPASI_MAIN
 
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CReport.h"
@@ -39,11 +44,11 @@ extern const char* MODEL_STRING;
 int main()
 {
   // initialize the backend library
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // the only argument to the main routine should be the name of an SBML file
   try
@@ -54,7 +59,7 @@ int main()
   catch (...)
     {
       std::cerr << "Error while importing the model from the given string." << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -123,7 +128,7 @@ int main()
     }
 
   // get the task list
-  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the trajectory task object
   CTrajectoryTask* pTrajectoryTask = dynamic_cast<CTrajectoryTask*>(&TaskList["Time-Course"]);
@@ -225,7 +230,7 @@ int main()
           std::cerr << CCopasiMessage::getAllMessageText(true);
         }
 
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -233,7 +238,7 @@ int main()
   pScanTask->restore();
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 const char* MODEL_STRING =

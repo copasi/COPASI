@@ -13,13 +13,13 @@
 
 #include <string>
 
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/model/CModelParameterGroup.h"
 #include "copasi/model/CAnnotation.h"
 
 class CModel;
 
-class CModelParameterSet: public CCopasiContainer, public CModelParameterGroup, public CAnnotation
+class CModelParameterSet: public CDataContainer, public CModelParameterGroup, public CAnnotation
 {
 public:
   static CModelParameterSet * fromData(const CData & data);
@@ -27,19 +27,19 @@ public:
   /**
    * Constructor
    * @param const std::string & name
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModelParameterSet(const std::string & name,
-                     const CCopasiContainer * pParent = NO_PARENT);
+                     const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CModelParameterSet & src
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const bool & createMissing (default: false)
    */
   CModelParameterSet(const CModelParameterSet & src,
-                     const CCopasiContainer * pParent,
+                     const CDataContainer * pParent,
                      const bool & createMissing = false);
 
   /**
@@ -55,10 +55,10 @@ public:
 
   /**
    * Set the object parent
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Set the model the parameter set is storing values for

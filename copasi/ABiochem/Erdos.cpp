@@ -1,12 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/Erdos.cpp,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:33:58 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -46,7 +53,7 @@ using namespace std;
  *  @param C_FLOAT64 coopval the value for Hill coefficients
  *  @param C_FLOAT64 rateval the value for rate constants
  *  @param C_FLOAT64 constval the value for inh/act constants
- *  @param "CCopasiVector < CGene > &" gene a vector of genes (the network)
+ *  @param "CDataVector < CGene > &" gene a vector of genes (the network)
  *  @param "char *" comments a string to write comments on the network
  */
 
@@ -57,7 +64,7 @@ void MakeGeneNetwork(C_INT32 n,
                      C_FLOAT64 coopval,
                      C_FLOAT64 rateval,
                      C_FLOAT64 constval,
-                     CCopasiVector < CGene > &gene,
+                     CDataVector < CGene > &gene,
                      char *comments)
 {
   C_INT32 i, j, l, m, modf;
@@ -69,11 +76,13 @@ void MakeGeneNetwork(C_INT32 n,
   rem = k % n;
   // create and name genes
   gene.resize(n);
+
   for (i = 0; i < n; i++)
     {
       sprintf(gn, "G%ld", i + 1);
       gene[i]->setName(gn);
     }
+
   // add all the regular number of links
   for (i = 0; i < n; i++)
     {
@@ -82,6 +91,7 @@ void MakeGeneNetwork(C_INT32 n,
           for (l = -1; l < 0;)
             {
               l = r250n(n);
+
               for (m = 0; m < gene[i]->getModifierNumber(); m++)
                 if (gene[l] == gene[i]->getModifier(m))
                   {
@@ -89,25 +99,31 @@ void MakeGeneNetwork(C_INT32 n,
                     break;
                   }
             }
+
           if (dr250() < p)
             modf = 1;
           else
             modf = 0;
+
           // gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
           gene[i]->addModifier(gene[l], l, modf, constval, coopval);
         }
+
       // gene[i]->setRate(dr250()*9.99 + 1e-2);
       // gene[i]->setDegradationRate(gene[i]->getRate()*(dr250()*5.83 + 0.17));
       gene[i]->setRate(rateval);
       gene[i]->setDegradationRate(rateval);
     }
+
   // add the remainder of links to make up k
   for (i = 0; i < rem; i++)
     {
       j = r250n(n);
+
       for (l = -1; l < 0;)
         {
           l = r250n(n);
+
           for (m = 0; m < gene[j]->getModifierNumber(); m++)
             if (gene[l] == gene[j]->getModifier(m))
               {
@@ -115,12 +131,15 @@ void MakeGeneNetwork(C_INT32 n,
                 break;
               }
         }
+
       if (dr250() < p)
         modf = 1;
       else
         modf = 0;
+
       // gene[i]->addModifier(gene[l], r250n(2), dr250()*100.0 + 1e-5, dr250()*6.0 + 0.1);
       gene[j]->addModifier(gene[l], l, modf, constval, rateval);
     }
+
   sprintf(comments, "Model of a random gene network following a Erdos-Renyi topology\nwith %ld genes and %ld total input connections.\n\nCreated automatically by the A-Biochem system", n, k);
 }

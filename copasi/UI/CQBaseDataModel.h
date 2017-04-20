@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,7 +21,7 @@
 #include "copasi/UI/listviews.h"
 
 class QUndoStack;
-class CCopasiDataModel;
+class CDataModel;
 
 #define COL_ROW_NUMBER   0
 
@@ -25,7 +30,7 @@ class CQBaseDataModel : public QAbstractTableModel
   Q_OBJECT
 
 public:
-  CQBaseDataModel(QObject *parent, CCopasiDataModel * pDataModel);
+  CQBaseDataModel(QObject *parent, CDataModel * pDataModel);
   virtual QVariant data(const QModelIndex &index, int role) const = 0;
   virtual QVariant headerData(int section, Qt::Orientation orientation,
                               int role = Qt::DisplayRole) const = 0;
@@ -39,10 +44,10 @@ public:
 
   QString createNewName(const QString name, const int nameCol);
 
-  void setDataModel(CCopasiDataModel * pDataModel);
+  void setDataModel(CDataModel * pDataModel);
   void setUndoStack(QUndoStack* undoStack);
   QUndoStack* getUndoStack();
-  CCopasiDataModel * getDataModel() const;
+  CDataModel * getDataModel() const;
 
 public slots:
   virtual void resetCache();
@@ -52,7 +57,7 @@ protected:
   virtual bool removeRows(int position, int rows) = 0;
 
   QUndoStack *mpUndoStack;
-  CCopasiDataModel * mpDataModel;
+  CDataModel * mpDataModel;
 
 signals:
   void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");

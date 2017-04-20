@@ -28,7 +28,7 @@
 CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type,
     const QVariant& oldValue,
     const QVariant& newValue,
-    CCopasiObject* pObject,
+    CDataObject* pObject,
     CQCompartment* pWidget,
     double iValue /*= std::numeric_limits<double>::quiet_NaN()*/)
   : CCopasiUndoCommand("Compartment", type, "Change", "", TO_UTF8(newValue.toString()), TO_UTF8(oldValue.toString()), pObject->getObjectName())

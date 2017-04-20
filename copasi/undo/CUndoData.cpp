@@ -7,10 +7,10 @@
 
 #include "CUndoData.h"
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "report/CCopasiObjectName.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "utilities/CCopasiVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataVector.h"
 #include "model/CMetab.h"
 
 CUndoData::CUndoData():
@@ -24,7 +24,7 @@ CUndoData::CUndoData():
   time(&mTime);
 }
 
-CUndoData::CUndoData(const Type & type, const CCopasiObject * pObject, const size_t & authorId):
+CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_t & authorId):
   mType(type),
   mOldData(),
   mNewData(),
@@ -40,7 +40,7 @@ CUndoData::CUndoData(const Type & type, const CCopasiObject * pObject, const siz
     {
       case INSERT:
         // Sanity Check
-        assert(pObject->isContainer());
+        assert(pObject->hasFlag(CDataObject::Container));
 
         mNewData.addProperty(CData::OBJECT_PARENT_CN, pObject->getCN());
         break;
@@ -188,11 +188,11 @@ bool CUndoData::addDependentData(const CUndoData & dependentData)
   return true;
 }
 
-void CUndoData::recordDependentParticleNumberChange(const double factor, const CCopasiVector< CMetab > & species)
+void CUndoData::recordDependentParticleNumberChange(const double factor, const CDataVector< CMetab > & species)
 {
   // We need to record the old and new values for each species where new := factor * old
-  CCopasiVector< CMetab >::const_iterator it = species.begin();
-  CCopasiVector< CMetab >::const_iterator end = species.end();
+  CDataVector< CMetab >::const_iterator it = species.begin();
+  CDataVector< CMetab >::const_iterator end = species.end();
 
   for (; it != end; ++it)
     {
@@ -222,7 +222,7 @@ std::vector< CUndoData > & CUndoData::getDependentData()
   return mDependentData;
 }
 
-bool CUndoData::apply(const CCopasiDataModel & dataModel) const
+bool CUndoData::apply(const CDataModel & dataModel) const
 {
   bool success = true;
 
@@ -244,7 +244,7 @@ bool CUndoData::apply(const CCopasiDataModel & dataModel) const
   return success;
 }
 
-bool CUndoData::undo(const CCopasiDataModel & dataModel) const
+bool CUndoData::undo(const CDataModel & dataModel) const
 {
   bool success = true;
 
@@ -287,16 +287,16 @@ const size_t CUndoData::getAuthorID() const
 }
 
 // static
-bool CUndoData::insert(const CCopasiDataModel & dataModel, const bool & apply) const
+bool CUndoData::insert(const CDataModel & dataModel, const bool & apply) const
 {
   const CData & Data = getData(apply);
 
-  CCopasiContainer * pParent = getParent(dataModel, Data);
+  CDataContainer * pParent = getParent(dataModel, Data);
 
   if (pParent == NULL)
     return false;
 
-  CCopasiObject * pObject = pParent->insert(Data);
+  CDataObject * pObject = pParent->insert(Data);
 
   if (pObject == NULL)
     return false;
@@ -308,11 +308,11 @@ bool CUndoData::insert(const CCopasiDataModel & dataModel, const bool & apply) c
 }
 
 // static
-bool CUndoData::remove(const CCopasiDataModel & dataModel, const bool & apply) const
+bool CUndoData::remove(const CDataModel & dataModel, const bool & apply) const
 {
   const CData & Data = getData(apply);
 
-  CCopasiObject * pObject = getObject(dataModel, Data);
+  CDataObject * pObject = getObject(dataModel, Data);
 
   if (pObject == NULL)
     return false;
@@ -323,12 +323,12 @@ bool CUndoData::remove(const CCopasiDataModel & dataModel, const bool & apply) c
 }
 
 // static
-bool CUndoData::change(const CCopasiDataModel & dataModel, const bool & apply) const
+bool CUndoData::change(const CDataModel & dataModel, const bool & apply) const
 {
   const CData & OldData = getData(!apply);
   const CData & NewData = getData(apply);
 
-  CCopasiObject * pObject = getObject(dataModel, OldData);
+  CDataObject * pObject = getObject(dataModel, OldData);
 
   // We must always have the old object;
   if (pObject == NULL)
@@ -341,7 +341,7 @@ bool CUndoData::change(const CCopasiDataModel & dataModel, const bool & apply) c
   if (OldData.getProperty(CData::OBJECT_PARENT_CN).toString() != NewData.getProperty(CData::OBJECT_PARENT_CN).toString())
     {
       // We need to move
-      CCopasiContainer * pContainer = pObject->getObjectParent();
+      CDataContainer * pContainer = pObject->getObjectParent();
 
       if (pContainer != NULL)
         pContainer->remove(pObject);
@@ -358,7 +358,7 @@ bool CUndoData::change(const CCopasiDataModel & dataModel, const bool & apply) c
   return success;
 }
 
-bool CUndoData::processDependentData(const CCopasiDataModel & dataModel, const bool & apply) const
+bool CUndoData::processDependentData(const CDataModel & dataModel, const bool & apply) const
 {
   bool success = true;
 
@@ -394,25 +394,25 @@ const CData & CUndoData::getData(const bool & apply) const
 }
 
 // static
-CCopasiContainer * CUndoData::getParent(const CCopasiDataModel & dataModel, const CData & data)
+CDataContainer * CUndoData::getParent(const CDataModel & dataModel, const CData & data)
 {
-  const CCopasiContainer * pParent = NULL;
+  const CDataContainer * pParent = NULL;
 
   if (!data.empty())
-    pParent = dynamic_cast< const CCopasiContainer * >(dataModel.getObject(data.getProperty(CData::OBJECT_PARENT_CN).toString()));
+    pParent = dynamic_cast< const CDataContainer * >(dataModel.getObject(data.getProperty(CData::OBJECT_PARENT_CN).toString()));
 
-  return const_cast< CCopasiContainer * >(pParent);
+  return const_cast< CDataContainer * >(pParent);
 }
 
 // static
-CCopasiObject * CUndoData::getObject(const CCopasiDataModel & dataModel, const CData & data)
+CDataObject * CUndoData::getObject(const CDataModel & dataModel, const CData & data)
 {
-  const CCopasiObject * pObject = NULL;
-  CCopasiContainer * pParent = getParent(dataModel, data);
+  const CDataObject * pObject = NULL;
+  CDataContainer * pParent = getParent(dataModel, data);
 
   if (pParent != NULL)
     pObject =
-      dynamic_cast< const CCopasiObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
+      dynamic_cast< const CDataObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
 
-  return const_cast< CCopasiObject * >(pObject);
+  return const_cast< CDataObject * >(pObject);
 }

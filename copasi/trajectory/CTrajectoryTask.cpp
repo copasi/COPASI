@@ -43,7 +43,7 @@
 #include "report/CReport.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "steadystate/CSteadyStateTask.h"
 
 #define XXXX_Reporting
@@ -80,7 +80,7 @@ const CTaskEnum::Method CTrajectoryTask::ValidMethods[] =
   CTaskEnum::UnsetMethod
 };
 
-CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent,
+CTrajectoryTask::CTrajectoryTask(const CDataContainer * pParent,
                                  const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mTimeSeriesRequested(true),
@@ -106,7 +106,7 @@ CTrajectoryTask::CTrajectoryTask(const CCopasiContainer * pParent,
 }
 
 CTrajectoryTask::CTrajectoryTask(const CTrajectoryTask & src,
-                                 const CCopasiContainer * pParent):
+                                 const CDataContainer * pParent):
   CCopasiTask(src, pParent),
   mTimeSeriesRequested(src.mTimeSeriesRequested),
   mTimeSeries(),
@@ -198,7 +198,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   if (mpTrajectoryProblem->getStartInSteadyState())
     {
-      CCopasiDataModel* pDataModel = getObjectDataModel();
+      CDataModel* pDataModel = getObjectDataModel();
 
       if (pDataModel && pDataModel->getTaskList())
         mpSteadyState = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));

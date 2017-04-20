@@ -38,8 +38,8 @@
 #include "scan/CScanTask.h"
 #include "scan/CScanProblem.h"
 #include "scan/CScanMethod.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskBtnWidget.h"
@@ -137,7 +137,7 @@ bool ScanWidget::loadTask()
   loadCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CScanTask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!scanTask) return false;
 
@@ -156,7 +156,7 @@ bool ScanWidget::loadTask()
   //CScanWidgetBreak* tmp4;
 
   // the scan items
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
 
   size_t i, imax = scanProblem->getNumberOfScanItems();
 
@@ -253,11 +253,11 @@ bool ScanWidget::slotAddItem()
         CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
             CQSimpleSelectionTree::Parameters;
 
-        std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
+        std::vector< const CDataObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
         // create scan widgets as many as the number of selected objects
-        std::vector< const CCopasiObject * >::iterator it = Selection.begin();
-        std::vector< const CCopasiObject * >::iterator end = Selection.end();
+        std::vector< const CDataObject * >::iterator it = Selection.begin();
+        std::vector< const CDataObject * >::iterator end = Selection.end();
 
         for (; it != end; ++it)
           {
@@ -276,11 +276,11 @@ bool ScanWidget::slotAddItem()
         CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
             CQSimpleSelectionTree::Parameters;
 
-        std::vector< const CCopasiObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
+        std::vector< const CDataObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
         // create scan widgets as many as the number of selected objects
-        std::vector< const CCopasiObject * >::iterator it = Selection.begin();
-        std::vector< const CCopasiObject * >::iterator end = Selection.end();
+        std::vector< const CDataObject * >::iterator it = Selection.begin();
+        std::vector< const CDataObject * >::iterator end = Selection.end();
 
         for (; it != end; ++it)
           {
@@ -306,7 +306,7 @@ bool ScanWidget::saveTask()
   saveCommon();
 
   CScanTask* scanTask =
-    dynamic_cast< CScanTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< CScanTask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!scanTask) return false;
 

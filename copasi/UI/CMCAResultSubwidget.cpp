@@ -33,17 +33,18 @@
 #include <QPainter>
 #include <QMessageBox>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
-#include "model/CModel.h"
-#include "steadystate/CMCAMethod.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "CopasiFileDialog.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "steadystate/CMCATask.h"
-#include "UI/CopasiFileDialog.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/model/CModel.h"
+#include "copasi/steadystate/CMCAMethod.h"
+#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/steadystate/CMCATask.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CMCAResultSubwidget as a child of 'parent', with the

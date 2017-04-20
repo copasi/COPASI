@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000091.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2010/03/11 11:55:16 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,7 +16,7 @@
 #include <cppunit/TestResult.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000091 : public CppUnit::TestFixture
 {
@@ -31,7 +28,7 @@ class test000091 : public CppUnit::TestFixture
 protected:
   static const char* MODEL_STRING1;
   static const char* MODEL_STRING2;
-  static CCopasiDataModel* pCOPASIDATAMODEL;
+  static CDataModel* pCOPASIDATAMODEL;
 
 public:
   void setUp();

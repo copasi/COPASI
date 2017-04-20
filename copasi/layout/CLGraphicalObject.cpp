@@ -29,7 +29,8 @@
 
 #include "report/CKeyFactory.h"
 #include "sbml/CSBMLExporter.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 // static
 CLGraphicalObject * CLGraphicalObject::fromData(const CData & data)
@@ -39,20 +40,20 @@ CLGraphicalObject * CLGraphicalObject::fromData(const CData & data)
 }
 
 CLGraphicalObject::CLGraphicalObject(const std::string & name,
-                                     const CCopasiContainer * pParent)
+                                     const CDataContainer * pParent)
   : CLBase(),
-    CCopasiContainer(name, pParent, "LayoutElement"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
+    CDataContainer(name, pParent, "LayoutElement"),
+    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
     mObjectRole(""),
     mBBox()
 {};
 
 CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
-                                     const CCopasiContainer * pParent)
+                                     const CDataContainer * pParent)
   : CLBase(src),
-    CCopasiContainer(src, pParent),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
+    CDataContainer(src, pParent),
+    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(src.mModelObjectKey),
     mObjectRole(src.mObjectRole),
     mBBox(src.mBBox)
@@ -60,10 +61,10 @@ CLGraphicalObject::CLGraphicalObject(const CLGraphicalObject & src,
 
 CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
                                      std::map<std::string, std::string> & layoutmap,
-                                     const CCopasiContainer * pParent)
+                                     const CDataContainer * pParent)
   : CLBase(sbml),
-    CCopasiContainer(sbml.getId(), pParent, "LayoutElement"),
-    mKey(CCopasiRootContainer::getKeyFactory()->add("Layout", this)),
+    CDataContainer(sbml.getId(), pParent, "LayoutElement"),
+    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
     mModelObjectKey(""),
     mBBox(*sbml.getBoundingBox())
 {
@@ -78,7 +79,7 @@ CLGraphicalObject::CLGraphicalObject(const GraphicalObject & sbml,
 
 CLGraphicalObject::~CLGraphicalObject()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
@@ -88,7 +89,7 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
   CLBase::operator=(rhs);
 
   //warning: in this place we should call the assignment operator of
-  //CCopasiContainer (which does not exist).
+  //CDataContainer (which does not exist).
   //We handle this explicitly instead.
   setObjectName(rhs.getObjectName());
   //object flag cannot be accessed, it is private.
@@ -100,16 +101,16 @@ CLGraphicalObject & CLGraphicalObject::operator= (const CLGraphicalObject & rhs)
   return *this;
 }
 
-CCopasiObject * CLGraphicalObject::getModelObject() const
+CDataObject * CLGraphicalObject::getModelObject() const
 {
-  CCopasiObject* pObject = NULL;
+  CDataObject* pObject = NULL;
 
   // as an additional safeguard, we check
   // if the object is in the same datamodel
   // This is not foolproof, but should work in most cases.
   if (this->hasValidModelReference())
     {
-      pObject = CCopasiRootContainer::getKeyFactory()->get(mModelObjectKey);
+      pObject = CRootContainer::getKeyFactory()->get(mModelObjectKey);
     }
 
   return pObject;
@@ -122,7 +123,7 @@ void CLGraphicalObject::moveBy(const CLPoint &p)
 
 std::string CLGraphicalObject::getModelObjectName() const
 {
-  CCopasiObject * tmp = getModelObject();
+  CDataObject * tmp = getModelObject();
 
   if (tmp)
     return tmp->getObjectName();
@@ -132,7 +133,7 @@ std::string CLGraphicalObject::getModelObjectName() const
 
 std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, bool /* richtext */) const
 {
-  CCopasiObject * tmp = getModelObject();
+  CDataObject * tmp = getModelObject();
 
   if (tmp)
     {
@@ -145,7 +146,7 @@ std::string CLGraphicalObject::getModelObjectDisplayName(bool /* regular */, boo
 }
 
 void CLGraphicalObject::exportToSBML(GraphicalObject * sbmlobject,
-                                     const std::map<const CCopasiObject*, SBase*> & /* copasimodelmap */,
+                                     const std::map<const CDataObject*, SBase*> & /* copasimodelmap */,
                                      std::map<std::string, const SBase*>& sbmlIDs) const
 {
   if (!sbmlobject) return;
@@ -216,19 +217,19 @@ bool CLGraphicalObject::hasValidModelReference() const
   // TODO This is only a workaround because it is theoretically
   // TODO possible that the key no longer belongs to the same object it
   // TODO originally did.
-  CCopasiObject* pObj = CCopasiRootContainer::getKeyFactory()->get(this->mModelObjectKey);
+  CDataObject* pObj = CRootContainer::getKeyFactory()->get(this->mModelObjectKey);
 
   if (pObj != NULL)
     {
       // check if the object actually belongs to the same
       // model as the text glyph
-      const CCopasiDataModel* pDM1 = NULL;
-      const CCopasiDataModel* pDM2 = NULL;
-      const CCopasiContainer* pParent = pObj->getObjectParent();
+      const CDataModel* pDM1 = NULL;
+      const CDataModel* pDM2 = NULL;
+      const CDataContainer* pParent = pObj->getObjectParent();
 
       while (pParent != NULL)
         {
-          pDM1 = dynamic_cast<const CCopasiDataModel*>(pParent);
+          pDM1 = dynamic_cast<const CDataModel*>(pParent);
 
           if (pDM1 != NULL)
             {
@@ -242,7 +243,7 @@ bool CLGraphicalObject::hasValidModelReference() const
 
       while (pParent != NULL)
         {
-          pDM2 = dynamic_cast<const CCopasiDataModel*>(pParent);
+          pDM2 = dynamic_cast<const CDataModel*>(pParent);
 
           if (pDM2 != NULL)
             {

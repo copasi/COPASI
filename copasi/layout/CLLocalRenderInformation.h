@@ -14,7 +14,7 @@
 #include "copasi/layout/CLRenderInformationBase.h"
 #include "copasi/layout/CLLocalStyle.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class LocalRenderInformation;
@@ -23,7 +23,7 @@ LIBSBML_CPP_NAMESPACE_END
 class CLLocalRenderInformation: public CLRenderInformationBase
 {
 protected:
-  CCopasiVector<CLLocalStyle> mListOfStyles;
+  CDataVector<CLLocalStyle> mListOfStyles;
 
 public:
   static CLLocalRenderInformation * fromData(const CData & data);
@@ -31,12 +31,12 @@ public:
   /**
    *  Constructor.
    */
-  CLLocalRenderInformation(CCopasiContainer* pParent = NULL);
+  CLLocalRenderInformation(CDataContainer* pParent = NULL);
 
   /**
    *  Copy Constructor.
    */
-  CLLocalRenderInformation(const CLLocalRenderInformation& source, CCopasiContainer* pParent = NULL);
+  CLLocalRenderInformation(const CLLocalRenderInformation& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
@@ -47,7 +47,7 @@ public:
                            std::map<std::string,std::string>& gradientIdToKeyMap,
                            std::map<std::string,std::string>& lineEndingIdToKeyMap,
                            */
-                           CCopasiContainer* pParent = NULL);
+                           CDataContainer* pParent = NULL);
 
   /**
    * Returns the number of styles.
@@ -57,12 +57,12 @@ public:
   /**
    * Returns a pointer to the LitOfStyles object.
    */
-  CCopasiVector<CLLocalStyle>* getListOfStyles();
+  CDataVector<CLLocalStyle>* getListOfStyles();
 
   /**
    * Returns a pointer to the LitOfStyles object.
    */
-  const CCopasiVector<CLLocalStyle>* getListOfStyles() const;
+  const CDataVector<CLLocalStyle>* getListOfStyles() const;
 
   /**
    * Returns a pointer to the style with the given index.

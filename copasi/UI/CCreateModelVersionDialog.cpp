@@ -22,7 +22,7 @@
 #include "qtUtilities.h"
 
 #include "commandline/CConfigurationFile.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CCreateModelVersionDialog::CCreateModelVersionDialog(QWidget *parent) :
   QDialog(parent),
@@ -34,7 +34,7 @@ CCreateModelVersionDialog::CCreateModelVersionDialog(QWidget *parent) :
   mComments = QString("");
 
   // Retrieve Author's information from Configuration
-  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+  CConfigurationFile * configFile = CRootContainer::getConfiguration();
   CCopasiParameter * pParameter = configFile->getParameter("Given Name");
 
   if (pParameter != NULL)

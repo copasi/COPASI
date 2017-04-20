@@ -193,7 +193,7 @@ bool CQModifiedDM::removeRows(QModelIndexList rows, const QModelIndex&)
       CModification * pModified = *j;
 
       size_t delRow =
-        mpMIRIAMInfo->getModifications().CCopasiVector< CModification >::getIndex(pModified);
+        mpMIRIAMInfo->getModifications().CDataVector< CModification >::getIndex(pModified);
 
       if (delRow != C_INVALID_INDEX)
         {

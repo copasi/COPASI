@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,17 +21,17 @@ protected:
 public:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  CCrossSectionProblem(const CCopasiContainer * pParent = NO_PARENT);
+  CCrossSectionProblem(const CDataContainer * pParent = NO_PARENT);
 
   /**
    *  Copy constructor.
    *  @param "const CCrossSectionProblem &" src
-   * @paramconst CCopasiContainer * pParent (default: NULL)
+   * @paramconst CDataContainer * pParent (default: NULL)
    */
   CCrossSectionProblem(const CCrossSectionProblem & src,
-                       const CCopasiContainer * pParent);
+                       const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -71,7 +76,7 @@ public:
    * set the variable
    */
   void setSingleObjectCN(const std::string& cn);
-  void setSingleObjectCN(const CCopasiObject* pObject);
+  void setSingleObjectCN(const CDataObject* pObject);
   const C_FLOAT64& getThreshold() const;
   void setThreshold(const C_FLOAT64 &threshold);
 

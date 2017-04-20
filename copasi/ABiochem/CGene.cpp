@@ -1,12 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/CGene.cpp,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:33:58 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -33,8 +40,8 @@
 #include "ABiochem/CGene.h"
 
 CGeneModifier::CGeneModifier(const std::string & name,
-                             CCopasiContainer * pParent):
-    CCopasiObject(name, pParent, "CGeneModifier")
+                             CDataContainer * pParent):
+  CDataObject(name, pParent, "CGeneModifier")
 {
   mModifier = NULL;
   mType = 0;
@@ -42,17 +49,19 @@ CGeneModifier::CGeneModifier(const std::string & name,
 }
 
 CGeneModifier::CGeneModifier(const CGeneModifier & src,
-                             CCopasiContainer * pParent):
-    CCopasiObject(src, pParent)
+                             CDataContainer * pParent):
+  CDataObject(src, pParent)
 {}
 
 CGeneModifier::CGeneModifier(CGene * modf, C_INT32 type, C_FLOAT64 K, C_FLOAT64 n)
 {
   mModifier = modf;
+
   if ((type >= 0) && (type < 2))
     mType = type;
   else
     type = 0;
+
   mK = K > 0.0 ? K : 1.0;
   mn = n > 0.0 ? n : 1.0;
 }
@@ -89,8 +98,8 @@ void CGeneModifier::cleanup()
 {}
 
 CGene::CGene(const std::string & name,
-             CCopasiContainer * pParent):
-    CCopasiObject(name, pParent, "CGene")
+             CDataContainer * pParent):
+  CDataObject(name, pParent, "CGene")
 {
   mInDegree = 0;
   mOutDegree = 0;
@@ -99,8 +108,8 @@ CGene::CGene(const std::string & name,
 }
 
 CGene::CGene(const CGene & src,
-             CCopasiContainer * pParent):
-    CCopasiObject(src, pParent)
+             CDataContainer * pParent):
+  CDataObject(src, pParent)
 {}
 
 CGene::~CGene()
@@ -112,9 +121,9 @@ void CGene::setName(const std::string & name)
 }
 
 const std::string & CGene::getName() const
-  {
-    return mName;
-  }
+{
+  return mName;
+}
 
 C_INT32 CGene::getModifierNumber()
 {
@@ -175,8 +184,10 @@ void CGene::removeModifier(CGene *modf)
         modf->decreaseOutDegree();
         mModifier.remove(i);
         it = mModifierIndex.begin();
+
         for (j = 0; j < i; j++)
           it++;
+
         mModifierIndex.erase(it);
         return;
       }
@@ -211,9 +222,11 @@ C_INT32 CGene::getNegativeModifiers(void)
 {
   C_INT32 i, n, s;
   s = mModifier.size();
+
   for (i = n = 0; i < s; i++)
     if (mModifier[i]->getType() == 0)
       n++;
+
   return n;
 }
 
@@ -221,9 +234,11 @@ C_INT32 CGene::getPositiveModifiers(void)
 {
   C_INT32 i, n, s;
   s = mModifier.size();
+
   for (i = n = 0; i < s; i++)
     if (mModifier[i]->getType() == 1)
       n++;
+
   return n;
 }
 
@@ -268,6 +283,7 @@ void CGene::sortModifiers()
   CGeneModifier *tempModf;
   C_INT32 tempK, tempN, tempIdx;
   np = getPositiveModifiers();
+
   for (i = 0, j = mInDegree - 1; i < np; i++)
     {
       if (mModifier[i]->getType() == 0)

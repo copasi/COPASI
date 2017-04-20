@@ -21,7 +21,7 @@
 
 class CQLayoutScene;
 class CQCopasiAnimation;
-class CCopasiDataModel;
+class CDataModel;
 class QCloseEvent;
 class QMenu;
 class CLayout;
@@ -31,11 +31,11 @@ class CQAnimationWindow : public CWindowInterface, public Ui::CQAnimationWindow
 {
   Q_OBJECT
 public:
-  CQAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel = NULL);
+  CQAnimationWindow(CLayout* layout, CDataModel* dataModel = NULL);
   CQAnimationWindow();
   virtual ~CQAnimationWindow();
-  void setScene(CQLayoutScene* scene, CCopasiDataModel* dataModel);
-  void setAnimation(CQCopasiAnimation* animation, CCopasiDataModel* dataModel);
+  void setScene(CQLayoutScene* scene, CDataModel* dataModel);
+  void setAnimation(CQCopasiAnimation* animation, CDataModel* dataModel);
   virtual QMenu *getWindowMenu() const;
 public slots:
   void slotShowStep(int);
@@ -53,7 +53,7 @@ protected:
   virtual void closeEvent(QCloseEvent *closeEvent);
 
   CQLayoutScene* mpScene;
-  CCopasiDataModel* mpModel;
+  CDataModel* mpModel;
   QMenu* mpWindowMenu;
   CQCopasiAnimation* mAnimation;
   CQLayoutThread* mpLayoutThread;

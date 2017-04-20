@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -29,7 +34,7 @@
 #include "function/CNodeK.h"
 #include "utilities/CReadConfig.h"
 
-class CCopasiObject;
+class CDataObject;
 
 /** @dia:pos 61.7476,54.3157 */
 /** @dia:route CFunction; v,58.2,35.55,51.6337,82.8684,54.3157 */
@@ -45,7 +50,7 @@ private:
   /** @dia:route 0,2; h,61.7476,54.3157,55.1707,42.4925,46.911 */
   std::vector< CNodeK * > mNodes;
 
-  std::vector<CCopasiObject*> ObjList;
+  std::vector<CDataObject*> ObjList;
   /**
    *  Internal variable
    */
@@ -59,28 +64,28 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CKinFunction(const std::string & name = "NoName",
-               const CCopasiContainer * pParent = NO_PARENT);
+               const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CFunction &" src
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param "CReadConfig *" configBuffer (Default = NULL)
    */
   CKinFunction(const CFunction & src,
-               const CCopasiContainer * pParent,
+               const CDataContainer * pParent,
                CReadConfig * configBuffer = NULL);
 
   /**
    * Copy constructor
    * @param "const CKinFunction &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CKinFunction(const CKinFunction & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    *  Destructor

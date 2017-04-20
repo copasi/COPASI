@@ -22,7 +22,7 @@
 
 #include "CCopasiUndoCommand.h"
 
-class CCopasiObject;
+class CDataObject;
 class UndoCompartmentData;
 class CQCompartmentDM;
 
@@ -40,7 +40,6 @@ public:
 private:
   CQCompartmentDM *mpCompartmentDM;
   QList <UndoCompartmentData *> mpCompartmentData;
-
 };
 
 #endif /* REMOVECOMPARTMENTROWSCOMMAND_H_ */

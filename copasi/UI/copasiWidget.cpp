@@ -29,7 +29,7 @@
 #include "copasi/UI/DataModelGUI.h"
 #include "copasi/UI/copasiui3window.h"
 #include "copasi/report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : QWidget(parent, f),
@@ -69,7 +69,7 @@ void CopasiWidget::refresh()
 bool CopasiWidget::enter(const std::string &key)
 {
   mKey = key;
-  mpObject = CCopasiRootContainer::getKeyFactory()->get(key);
+  mpObject = CRootContainer::getKeyFactory()->get(key);
 
   if (mpObject != NULL)
     {
@@ -84,7 +84,7 @@ bool CopasiWidget::enter(const std::string &key)
   return enterProtected();
 }
 
-const CCopasiObject * CopasiWidget::getObject() const
+const CDataObject * CopasiWidget::getObject() const
 {
   return mpObject;
 }
@@ -127,7 +127,7 @@ void CopasiWidget::setIgnoreUpdates(bool v)
   mIgnoreUpdates = v;
 }
 
-CCopasiDataModel *CopasiWidget::getDataModel() const
+CDataModel *CopasiWidget::getDataModel() const
 {
   return mpDataModel;
 }

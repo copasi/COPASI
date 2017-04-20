@@ -20,7 +20,7 @@
 #include "model/CReaction.h"
 #include "model/CModel.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "UI/ReactionsWidget1.h"
 #include "UI/qtUtilities.h"
@@ -130,7 +130,7 @@ ReactionChangeCommand::removeCreatedObjects(const std::vector< std::string > & c
   for (; it != createdObjects.end(); ++it)
     {
       const std::string& key = *it;
-      CCopasiObject* pObject = CCopasiRootContainer::getKeyFactory()->get(key);
+      CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
 
       if (pObject == NULL) continue;
 
@@ -140,7 +140,6 @@ ReactionChangeCommand::removeCreatedObjects(const std::vector< std::string > & c
         {
           static_cast< CModel * >(pObject->getObjectAncestor("Model"))->removeCompartment(key, recursive);
           result = true;
-
         }
       else if (objectType == "Metabolite")
         {

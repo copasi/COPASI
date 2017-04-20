@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -66,7 +71,7 @@ CXMLHandler * TextGlyphHandler::processStart(const XML_Char * pszName,
           mpData->pTextGlyph->setText(text);
         else if (originOfText && originOfText[0])
           {
-            CCopasiObject * pObj = mpData->mKeyMap.get(originOfText);
+            CDataObject * pObj = mpData->mKeyMap.get(originOfText);
             CModelEntity * pME = dynamic_cast<CModelEntity *>(pObj);
             CReaction * pR = dynamic_cast<CReaction *>(pObj);
 

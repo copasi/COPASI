@@ -52,7 +52,7 @@ getNameForType(CDependencyType type)
   return "";
 }
 
-void CQDependencyWidget::updateFromDependencies(std::set< const CCopasiObject * > &elements, std::set<const CCopasiObject *> &dependencies, const CModel *pModel)
+void CQDependencyWidget::updateFromDependencies(std::set< const CDataObject * > &elements, std::set<const CDataObject *> &dependencies, const CModel *pModel)
 {
   mpModel = pModel;
   bool haveDependentElements = !dependencies.empty();
@@ -64,13 +64,13 @@ void CQDependencyWidget::updateFromDependencies(std::set< const CCopasiObject * 
   if (!haveDependentElements) return;
 
   ui->mpTable->setSortingEnabled(false);
-  std::set< const CCopasiObject * >::const_iterator it = dependencies.begin();
-  std::set< const CCopasiObject * >::const_iterator end = dependencies.end();
+  std::set< const CDataObject * >::const_iterator it = dependencies.begin();
+  std::set< const CDataObject * >::const_iterator end = dependencies.end();
   int i = 0;
 
   for (; it != end; ++it, ++i)
     {
-      const CCopasiObject *pObject = *it;
+      const CDataObject *pObject = *it;
       QTableWidgetItem *item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
       item->setData(Qt::UserRole, FROM_UTF8(pObject->getKey()));
       ui->mpTable->setItem(i, 0, item);
@@ -84,109 +84,10 @@ void CQDependencyWidget::updateFromDependencies(std::set< const CCopasiObject * 
   ui->mpLbl->setText(QString("Involved in \n%1 %2").arg(numDependentElements).arg(getNameForType(mType)));
 }
 
-void
-CQDependencyWidget::appendDependencies(
-  std::set< const CCopasiObject * > &dependencies,
-  const std::set<const CCopasiObject *> &elements)
-{
-  std::set< const CCopasiObject * > dependentReactions;
-  std::set< const CCopasiObject * > dependentMetabolites;
-  std::set< const CCopasiObject * > dependentCompartments;
-  std::set< const CCopasiObject * > dependentModelValues;
-  std::set< const CCopasiObject * > dependentEvents;
-  std::set< const CCopasiObject * > dependentEventAssignments;
-  mpModel->appendDependentModelObjects(elements,
-                                       dependentReactions,
-                                       dependentMetabolites,
-                                       dependentCompartments,
-                                       dependentModelValues,
-                                       dependentEvents,
-                                       dependentEventAssignments);
-
-  if ((mType & COMPARTMENT) == COMPARTMENT)
-    {
-      dependencies.insert(
-        dependentCompartments.begin(),
-        dependentCompartments.end()
-      );
-    }
-
-  if ((mType & SPECIES) == SPECIES)
-    {
-      dependencies.insert(
-        dependentMetabolites.begin(),
-        dependentMetabolites.end()
-      );
-    }
-
-  if ((mType & PARAMETERS) == PARAMETERS)
-    {
-      dependencies.insert(
-        dependentModelValues.begin(),
-        dependentModelValues.end()
-      );
-    }
-
-  if ((mType & REACTION) == REACTION)
-    {
-      dependencies.insert(
-        dependentReactions.begin(),
-        dependentReactions.end()
-      );
-    }
-
-  if ((mType & EVENT) == EVENT)
-    {
-      dependencies.insert(
-        dependentEvents.begin(),
-        dependentEvents.end()
-      );
-      std::set< const CCopasiObject * >::iterator it = dependentEventAssignments.begin();
-      std::set< const CCopasiObject * >::iterator end = dependentEventAssignments.end();
-
-      for (; it != end; ++it)
-        {
-          const CCopasiObject *pObject = *it;
-          dependencies.insert(pObject->getObjectParent()->getObjectParent());
-        }
-    }
-}
-
-void
-CQDependencyWidget::appendDependenciesIndividual(
-  std::set< const CCopasiObject * > &dependencies,
-  const std::set<const CCopasiObject *> &elements)
-{
-  if ((mType & COMPARTMENT) == COMPARTMENT)
-    {
-      mpModel->appendDependentCompartments(elements, dependencies);
-    }
-
-  if ((mType & SPECIES) == SPECIES)
-    {
-      mpModel->appendDependentMetabolites(elements, dependencies);
-    }
-
-  if ((mType & PARAMETERS) == PARAMETERS)
-    {
-      mpModel->appendDependentModelValues(elements, dependencies);
-    }
-
-  if ((mType & REACTION) == REACTION)
-    {
-      mpModel->appendDependentReactions(elements, dependencies);
-    }
-
-  if ((mType & EVENT) == EVENT)
-    {
-      mpModel->appendDependentEvents(elements, dependencies);
-    }
-}
-
-
 std::string
-CQDependencyWidget::getDetailsFor(const CCopasiObject *pObject, std::set< const CCopasiObject * > &elements)
+CQDependencyWidget::getDetailsFor(const CDataObject *pObject, std::set< const CDataObject * > &elements)
 {
+
   const CEvent *pEvent = dynamic_cast<const CEvent *>(pObject);
 
   if (pEvent != NULL) return pEvent->getOriginFor(elements);
@@ -197,26 +98,36 @@ CQDependencyWidget::getDetailsFor(const CCopasiObject *pObject, std::set< const 
 
   const CModelEntity *pEntity = dynamic_cast<const CModelEntity *>(pObject);
 
+  std::string Origin;
+  std::string Separator;
+
   if (pEntity != NULL)
     {
       if (pEntity->getExpressionPtr() != NULL &&
-          pEntity->getExpressionPtr()->mustBeDeleted(elements))
+          pEntity->getExpressionPtr()->prerequisitsContains(elements))
         {
           if (pEntity->getStatus() == CModelEntity::ASSIGNMENT)
-            return "Assignment Expression";
+            {
+              Origin += Separator + "Assignment Expression";
+              Separator = "\n";
+            }
 
           if (pEntity->getStatus() == CModelEntity::ODE)
-            return "ODE";
+            {
+              Origin += Separator + "ODE";
+              Separator = "\n";
+            }
         }
 
       if (pEntity->getInitialExpressionPtr() != NULL &&
-          pEntity->getInitialExpressionPtr()->mustBeDeleted(elements))
+          pEntity->getInitialExpressionPtr()->prerequisitsContains(elements))
         {
-          return "Initial Expression";
+          Origin += Separator + "Initial Expression";
+          Separator = "\n";
         }
     }
 
-  return pObject->getObjectDisplayName();
+  return Origin.empty() ? pObject->getObjectDisplayName() : Origin;
 }
 
 void
@@ -252,15 +163,6 @@ void CQDependencyWidget::resizeTable()
 }
 
 void
-CQDependencyWidget::updateFromCandidates(std::set<const CCopasiObject *> &elements, const CModel *pModel)
-{
-  mpModel = pModel;
-  std::set< const CCopasiObject * > dependencies;
-  appendDependencies(dependencies, elements);
-  updateFromDependencies(elements, dependencies, pModel);
-}
-
-void
 CQDependencyWidget::setLabelWidth(int width)
 {
   ui->mpLbl->setMinimumWidth(width);
@@ -285,7 +187,6 @@ CQDependencyWidget::setDependencyType(CDependencyType type)
   ui->mpTable->setSizePolicy(QSizePolicy::Expanding,
                              mType == REACTION ? QSizePolicy::Expanding : QSizePolicy::MinimumExpanding);
 #endif
-
 }
 
 CDependencyType

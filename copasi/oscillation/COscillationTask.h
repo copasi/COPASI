@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -36,19 +41,19 @@ public:
   /**
    * default constructor
    * @param const CTaskEnum::Task & type (default: optimization)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   //COscillationTask(const CTaskEnum::Task & type = CTaskEnum::oscillation,
-  //                 const CCopasiContainer * pParent = NO_PARENT);
+  //                 const CDataContainer * pParent = NO_PARENT);
   COscillationTask(const CTaskEnum::Task & type ,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Copy constructor
    * @param const COscillationTask & src
    */
   COscillationTask(const COscillationTask & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Destructor

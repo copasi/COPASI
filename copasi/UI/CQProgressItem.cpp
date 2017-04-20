@@ -19,10 +19,10 @@
 
 #include "CQProgressItem.h"
 
+#include "copasi/core/CVector.h"
 #include "copasi.h"
 
 #include "utilities/CProcessReport.h"
-#include "utilities/CVector.h"
 
 /*
  *  Constructs a CQProgressItem as a child of 'parent', with the

@@ -15,36 +15,36 @@
 #include <QtCore/QDateTime>
 #include <QToolBar>
 
-#include <qlayout/CQAnimationWindow.h>
-#include <qlayout/CQAnimationSettingsEditor.h>
-#include <qlayout/CQCopasiAnimation.h>
-#include <qlayout/CQLayoutScene.h>
-#include <qlayout/CQCopasiEffect.h>
-#include <qlayout/CQEffectDescription.h>
+#include "copasi/qlayout/CQAnimationWindow.h"
+#include "copasi/qlayout/CQAnimationSettingsEditor.h"
+#include "copasi/qlayout/CQCopasiAnimation.h"
+#include "copasi/qlayout/CQLayoutScene.h"
+#include "copasi/qlayout/CQCopasiEffect.h"
+#include "copasi/qlayout/CQEffectDescription.h"
 
-#include <layoutUI/CQSpringLayoutParameterWindow.h>
-#include <layoutUI/CQLayoutThread.h>
+#include "copasi/layoutUI/CQSpringLayoutParameterWindow.h"
+#include "copasi/layoutUI/CQLayoutThread.h"
 
-#include <layout/CLayout.h>
+#include "copasi/layout/CLayout.h"
 
-#include <report/CCopasiObjectName.h>
-#include <report/CCopasiRootContainer.h>
-#include <resourcesUI/CQIconResource.h>
+#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/resourcesUI/CQIconResource.h"
 
-#include <model/CModel.h>
-#include <model/CReaction.h>
-#include <elementaryFluxModes/CEFMTask.h>
-#include <elementaryFluxModes/CEFMProblem.h>
-#include <elementaryFluxModes/CFluxMode.h>
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/elementaryFluxModes/CEFMTask.h"
+#include "copasi/elementaryFluxModes/CEFMProblem.h"
+#include "copasi/elementaryFluxModes/CFluxMode.h"
 
 class QConservedSpeciesAnimation : public CQCopasiAnimation
 {
-  virtual void initialize(const CCopasiDataModel &dataModel)
+  virtual void initialize(const CDataModel &dataModel)
   {
     mpDataModel = &dataModel;
     const CModel& model = *dataModel.getModel();
-    const CCopasiVector< CMetab > & metabs = model.getMetabolites();
-    CCopasiVector< CMetab >::const_iterator it = metabs.begin();
+    const CDataVector< CMetab > & metabs = model.getMetabolites();
+    CDataVector< CMetab >::const_iterator it = metabs.begin();
 
     while (it != metabs.end())
       {
@@ -53,7 +53,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
       }
 
     // initialize number of steps
-    const CCopasiVector< CMoiety > & moieties = model.getMoieties();
+    const CDataVector< CMoiety > & moieties = model.getMoieties();
     mNumSteps = moieties.size();
   }
 
@@ -62,7 +62,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
     if (mpDataModel == NULL) return;
 
     const CModel& model = *mpDataModel->getModel();
-    const CCopasiVector< CMoiety > & moieties = model.getMoieties();
+    const CDataVector< CMoiety > & moieties = model.getMoieties();
     mNumSteps = moieties.size();
 
     if (moieties.size() <= (size_t)step) return;
@@ -89,12 +89,12 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 class QFluxModeAnimation : public CQCopasiAnimation
 {
 public:
-  virtual void initialize(const CCopasiDataModel &dataModel)
+  virtual void initialize(const CDataModel &dataModel)
   {
     mpDataModel = &dataModel;
     const CModel& model = *dataModel.getModel();
-    const CCopasiVector< CReaction > & reactions = model.getReactions();
-    CCopasiVector< CReaction >::const_iterator it = reactions.begin();
+    const CDataVector< CReaction > & reactions = model.getReactions();
+    CDataVector< CReaction >::const_iterator it = reactions.begin();
     size_t count = 0;
 
     while (it != reactions.end())
@@ -236,12 +236,12 @@ public:
       }
   }
 
-  virtual void initialize(const CCopasiDataModel &dataModel)
+  virtual void initialize(const CDataModel &dataModel)
   {
     mpDataModel = &dataModel;
     const CModel& model = *dataModel.getModel();
-    const CCopasiVector< CMetab > & metabs = model.getMetabolites();
-    CCopasiVector< CMetab >::const_iterator it = metabs.begin();
+    const CDataVector< CMetab > & metabs = model.getMetabolites();
+    CDataVector< CMetab >::const_iterator it = metabs.begin();
 
     while (it != metabs.end())
       {
@@ -265,7 +265,7 @@ protected:
   std::map<std::string, std::string> keyMap;
 };
 
-CQAnimationWindow::CQAnimationWindow(CLayout* layout, CCopasiDataModel* dataModel)
+CQAnimationWindow::CQAnimationWindow(CLayout* layout, CDataModel* dataModel)
   : mpScene(NULL)
   , mpModel(NULL)
   , mpWindowMenu(NULL)
@@ -355,7 +355,7 @@ CQAnimationWindow::~CQAnimationWindow()
   pdelete(mpLayoutThread);
 }
 
-void CQAnimationWindow::setScene(CQLayoutScene* scene, CCopasiDataModel* dataModel)
+void CQAnimationWindow::setScene(CQLayoutScene* scene, CDataModel* dataModel)
 {
   mpModel = dataModel;
 
@@ -397,7 +397,7 @@ QMenu *CQAnimationWindow::getWindowMenu() const
   return mpWindowMenu;
 }
 
-void CQAnimationWindow::setAnimation(CQCopasiAnimation* animation, CCopasiDataModel* dataModel)
+void CQAnimationWindow::setAnimation(CQCopasiAnimation* animation, CDataModel* dataModel)
 {
   if (mAnimation != NULL)
     {

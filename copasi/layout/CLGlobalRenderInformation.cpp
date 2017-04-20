@@ -18,7 +18,7 @@
 
 #include "CLGlobalRenderInformation.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -30,20 +30,20 @@ CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & da
 /**
  *  Constructor.
  */
-CLGlobalRenderInformation::CLGlobalRenderInformation(CCopasiContainer* pParent):
+CLGlobalRenderInformation::CLGlobalRenderInformation(CDataContainer* pParent):
   CLRenderInformationBase("GlobalRenderInformation", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
 }
 
 /**
  * Copy constructor
  */
-CLGlobalRenderInformation::CLGlobalRenderInformation(const CLGlobalRenderInformation& source, CCopasiContainer* pParent):
+CLGlobalRenderInformation::CLGlobalRenderInformation(const CLGlobalRenderInformation& source, CDataContainer* pParent):
   CLRenderInformationBase(source, pParent),
   mListOfStyles(source.mListOfStyles, this)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
 }
 
 /**
@@ -55,11 +55,11 @@ CLGlobalRenderInformation::CLGlobalRenderInformation(const GlobalRenderInformati
             std::map<std::string,std::string>& gradientIdToKeyMap,
             std::map<std::string,std::string>& lineEndingIdToKeyMap,
       */
-    CCopasiContainer* pParent):
+    CDataContainer* pParent):
   //CLRenderInformationBase(source,"GlobalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
   CLRenderInformationBase(source, "GlobalRenderInformation", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
   unsigned int i, iMax = source.getNumStyles();
 
   for (i = 0; i < iMax; ++i)
@@ -79,7 +79,7 @@ size_t CLGlobalRenderInformation::getNumStyles() const
 /**
  * Returns a pointer to the LitOfStyles object.
  */
-CCopasiVector<CLGlobalStyle>* CLGlobalRenderInformation::getListOfStyles()
+CDataVector<CLGlobalStyle>* CLGlobalRenderInformation::getListOfStyles()
 {
   return &(this->mListOfStyles);
 }
@@ -87,7 +87,7 @@ CCopasiVector<CLGlobalStyle>* CLGlobalRenderInformation::getListOfStyles()
 /**
  * Returns a pointer to the ListOfStyles object.
  */
-const CCopasiVector<CLGlobalStyle>* CLGlobalRenderInformation::getListOfStyles() const
+const CDataVector<CLGlobalStyle>* CLGlobalRenderInformation::getListOfStyles() const
 {
   return &(this->mListOfStyles);
 }

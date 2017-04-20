@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000097.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/04/26 16:10:39 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -23,7 +20,7 @@
  * Tests for dealing with render information
  */
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000097 : public CppUnit::TestFixture
 {
@@ -56,7 +53,7 @@ protected:
   // COPASI model with global render information
   static const char* CPS_MODEL_2;
 
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
 
   // method the create a model with a single compartment
   // and a small layout

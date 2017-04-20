@@ -23,30 +23,13 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.6)
-
-
-
-set(HEADERS_COPASIDM CopasiDataModel/CCopasiDataModel.h)
-set(SOURCES_COPASIDM CopasiDataModel/CCopasiDataModel.cpp)
+file(GLOB HEADERS_COPASIDM CopasiDataModel/*.h)
+file(GLOB SOURCES_COPASIDM CopasiDataModel/*.cpp)
 
 # create source group for IDEs
-source_group(copasiDM FILES ${SOURCES_COPASIDM} ${HEADERS_COPASIDM})
+source_group(report FILES ${SOURCES_COPASIDM} ${HEADERS_COPASIDM})
 
 # add files to main COPASI sources
 set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_COPASIDM})
 set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_COPASIDM})
-
-# project (copasiDM)
-# 
-# include_directories(
-#   "${PROJECT_SOURCE_DIR}/.." 
-#   "${PROJECT_SOURCE_DIR}/../.." 
-#   "${PROJECT_SOURCE_DIR}"
-# )
-
-
-#add_library(copasiDM STATIC ${SOURCES_COPASIDM} ${HEADERS_COPASIDM})
-#
-#target_link_libraries(copasiDM tss)
 

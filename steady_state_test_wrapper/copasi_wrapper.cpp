@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -15,11 +20,11 @@
 #include <stdlib.h>
 
 #include "copasi/copasi.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CCopasiObjectName.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/commandline/COptionParser.h"
@@ -36,7 +41,7 @@
 #include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/report/CReportDefinition.h"
 
-CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionVector* pReports)
+CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector* pReports)
 {
   CReportDefinition* pReport =  pReports->createReportDefinition("Report", "Output for batch run");
   pReport->setTaskType(CTaskEnum::steadyState);
@@ -53,7 +58,7 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
   //pHeader->push_back(CCopasiStaticString("time").getCN());
   //pHeader->push_back(pReport->getSeparator().getCN());
 
-  const CCopasiVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
+  const CDataVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
   unsigned int j, jMax = compartments.size();
 
   for (j = 0; j < jMax; ++j)
@@ -67,7 +72,7 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
         }
     }
 
-  const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
+  const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
 
   jMax = metabolites.size();
 
@@ -82,7 +87,7 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
         }
     }
 
-  const CCopasiVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
+  const CDataVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
 
   jMax = parameters.size();
 
@@ -98,7 +103,7 @@ CReportDefinition* createReport(CCopasiDataModel* pDataModel, CReportDefinitionV
     }
 
   /*
-  const CCopasiVectorNS<CReaction>& reactions = pDataModel->getModel()->getReactions();
+  const CDataVectorNS<CReaction>& reactions = pDataModel->getModel()->getReactions();
   jMax = reactions.size();
   for (j = 0; j < jMax;++j)
   {
@@ -132,7 +137,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(0, NULL, false);
+      CRootContainer::init(0, NULL, false);
     }
 
   catch (copasi::autoexcept &e)
@@ -155,7 +160,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+      CDataModel* pDataModel = CRootContainer::addDatamodel();
 
       // Import the SBML File
       pDataModel->importSBML(pSBMLFilename);
@@ -194,7 +199,7 @@ int main(int argc, char *argv[])
       //pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
       //***** run the task *********
-      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+      CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
       TaskList.remove("Steady-State");
       TaskList.add(pSSTask, true);
@@ -276,7 +281,7 @@ int main(int argc, char *argv[])
   if (Text != "") std::cerr << Text << std::endl;
 
   //finish
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 
   return 0;
 }

@@ -13,7 +13,7 @@
 
 #include "copasi/layout/CLStyle.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class GlobalStyle;
@@ -27,17 +27,17 @@ public:
   /**
    * Ctor.
    */
-  CLGlobalStyle(CCopasiContainer* pParent = NULL);
+  CLGlobalStyle(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor.
    */
-  CLGlobalStyle(const CLGlobalStyle& source, CCopasiContainer* pParent = NULL);
+  CLGlobalStyle(const CLGlobalStyle& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLGlobalStyle(const GlobalStyle& source, CCopasiContainer* pParent = NULL);
+  CLGlobalStyle(const GlobalStyle& source, CDataContainer* pParent = NULL);
 
   /**
    * Converts this object to the corresponding SBML object.

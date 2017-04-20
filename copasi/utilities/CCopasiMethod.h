@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -44,11 +49,11 @@ private:
 protected:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType
    */
-  CCopasiMethod(const CCopasiContainer * pParent,
+  CCopasiMethod(const CDataContainer * pParent,
                 const CTaskEnum::Method & methodType,
                 const CTaskEnum::Task & taskType);
 
@@ -57,21 +62,21 @@ protected:
 public:
   /**
    * Convenience method to create and actual instance
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType
    */
-  static CCopasiMethod * createMethod(const CCopasiContainer * pParent,
+  static CCopasiMethod * createMethod(const CDataContainer * pParent,
                                       const CTaskEnum::Method & methodType,
                                       const CTaskEnum::Task & taskType);
 
   /**
    * Copy constructor
    * @param const CCopasiMethodr & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiMethod(const CCopasiMethod & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -125,7 +130,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To overide this default behaviour one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream

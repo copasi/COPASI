@@ -33,17 +33,17 @@ const char * CMassAction::Infix[] =
 {"k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>", "k1*PRODUCT<substrate_i>"};
 
 CMassAction::CMassAction(const std::string & name,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CFunction(name, pParent, CEvaluationTree::MassAction)
 {}
 
 CMassAction::CMassAction(const CFunction & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CFunction(src, pParent)
 {}
 
 CMassAction::CMassAction(const TriLogic & reversible,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CFunction((reversible == TriTrue) ?
             "Mass action (reversible)" :
             "Mass action (irreversible)",
@@ -99,31 +99,6 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
     }
 
   return mValue -= Products;
-}
-
-bool CMassAction::dependsOn(const C_FLOAT64 * parameter,
-                            const CCallParameters<C_FLOAT64> & callParameters) const
-{
-  if (parameter == callParameters[0].value) return true;
-
-  CCallParameters<C_FLOAT64>::const_iterator it;
-  CCallParameters<C_FLOAT64>::const_iterator end;
-
-  it = callParameters[1].vector->begin();
-  end = callParameters[1].vector->end();
-
-  for (; it != end; it++) if (parameter == it->value) return true;
-
-  if (isReversible() != TriTrue) return false;
-
-  if (parameter == callParameters[2].value) return true;
-
-  it = callParameters[3].vector->begin();
-  end = callParameters[3].vector->end();
-
-  for (; it != end; it++) if (parameter == it->value) return true;
-
-  return false;
 }
 
 CIssue CMassAction::setInfix(const std::string & infix)

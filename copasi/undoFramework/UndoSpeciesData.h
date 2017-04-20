@@ -33,9 +33,9 @@ public:
 
   virtual ~UndoSpeciesData();
 
-  virtual CCopasiObject* createObjectIn(CModel* pModel);
+  virtual CDataObject* createObjectIn(CModel* pModel);
 
-  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
+  virtual CDataObject* restoreObjectIn(CModel* pModel);
 
   virtual void fillObject(CModel* pModel);
 
@@ -68,7 +68,7 @@ public:
    *          if it is not found the index of the metabolite in the
    *          models list of metabolites will be used, otherwise NULL is returned.
    */
-  virtual CCopasiObject * getObject(CModel* pModel);
+  virtual CDataObject * getObject(CModel* pModel);
 
 private:
 

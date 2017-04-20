@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,7 +15,7 @@
 #include "utilities/CCopasiMessage.h"
 
 #include "model/CReaction.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  * Replace KineticLaw with the name type of the handler and implement the
@@ -50,7 +55,7 @@ CXMLHandler * KineticLawHandler::processStart(const XML_Char * pszName,
             CCopasiMessage(CCopasiMessage::RAW, MCXML + 7, Function,
                            mpData->pReaction->getObjectName().c_str(),
                            mpParser->getCurrentLineNumber());
-            mpData->pFunction = CCopasiRootContainer::getUndefinedFunction();
+            mpData->pFunction = CRootContainer::getUndefinedFunction();
           }
 
         mpData->pReaction->setKineticLawUnitType(KineticLawUnitType);

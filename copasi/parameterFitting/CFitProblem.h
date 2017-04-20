@@ -21,8 +21,8 @@
 #define COPASI_CFitProblem
 
 #include "optimization/COptProblem.h"
-#include "utilities/CMatrix.h"
 #include <copasi/parameterFitting/CFitItem.h>
+#include "copasi/core/CMatrix.h"
 
 class CExperimentSet;
 class CCrossValidationSet;
@@ -39,18 +39,18 @@ public:
   /**
    * Default constructor
    * @param const CTaskEnum::Task & type (default: parameterFitting)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFitProblem(const CTaskEnum::Task & type = CTaskEnum::parameterFitting,
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
    * @param const CFitProblem & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFitProblem(const CFitProblem & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -101,7 +101,7 @@ public:
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
@@ -360,7 +360,7 @@ private:
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the initial values for each experiment.
    * */
-  CVector< CObjectInterface::UpdateSequence > mExperimentInitialUpdates;
+  CVector< CCore::CUpdateSequence > mExperimentInitialUpdates;
 
   /**
    * Matrix of constraints for each experiment.
@@ -371,7 +371,7 @@ private:
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the constraint values for each experiment.
    * */
-  CVector< CObjectInterface::UpdateSequence > mExperimentConstraintUpdates;
+  CVector< CCore::CUpdateSequence > mExperimentConstraintUpdates;
 
   /**
    * The simulation values for the experiments.
@@ -392,7 +392,7 @@ private:
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the initial values for each cross validation.
    * */
-  CVector< CObjectInterface::UpdateSequence > mCrossValidationInitialUpdates;
+  CVector< CCore::CUpdateSequence > mCrossValidationInitialUpdates;
 
   /**
    * Matrix of constraints for each experiment.
@@ -403,7 +403,7 @@ private:
    * A vector of refresh methods which contains the sequence of refresh methods
    * to update the constraint values for each cross validation.
    * */
-  CVector< CObjectInterface::UpdateSequence > mCrossValidationConstraintUpdates;
+  CVector< CCore::CUpdateSequence > mCrossValidationConstraintUpdates;
 
   /**
    * The simulation values for the experiments.

@@ -21,7 +21,7 @@
 #define CLREACG_H_
 
 #include "sbml/common/libsbml-version.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 #include "CLCurve.h"
 #include "CLGraphicalObject.h"
@@ -46,10 +46,10 @@ protected:
 
 public:
   CLGlyphWithCurve(const std::string & name = "ReferenceGlyph",
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 
   CLGlyphWithCurve(const CLGlyphWithCurve & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -57,7 +57,7 @@ public:
   CLGlyphWithCurve(const GraphicalObject & sbml, //TODO preliminary
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -100,10 +100,10 @@ public:
   static CLReferenceGlyph * fromData(const CData & data);
 
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 
   CLReferenceGlyph(const CLReferenceGlyph & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
 #if LIBSBML_VERSION >= 50800
   /**
@@ -112,7 +112,7 @@ public:
   CLReferenceGlyph(const ReferenceGlyph & sbml, //TODO preliminary
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
-                   const CCopasiContainer * pParent = NO_PARENT);
+                   const CDataContainer * pParent = NO_PARENT);
 #endif // LIBSBML_VERSION >= 50800
 
   /**
@@ -140,7 +140,7 @@ public:
    * this is needed for resolving the reference to the metab glyph.
    */
   virtual void exportToSBML(ReferenceGlyph * g, //TODO
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             const std::map<const CLBase*, const SBase*> & layoutmap) const;
 #endif // LIBSBML_VERSION >= 50800
@@ -214,10 +214,10 @@ public:
   static CLMetabReferenceGlyph * fromData(const CData & data);
 
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
-                        const CCopasiContainer * pParent = NO_PARENT);
+                        const CDataContainer * pParent = NO_PARENT);
 
   CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src,
-                        const CCopasiContainer * pParent);
+                        const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -225,7 +225,7 @@ public:
   CLMetabReferenceGlyph(const SpeciesReferenceGlyph & sbml,
                         const std::map<std::string, std::string> & modelmap,
                         std::map<std::string, std::string> & layoutmap,
-                        const CCopasiContainer * pParent = NO_PARENT);
+                        const CDataContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -257,7 +257,7 @@ public:
    * this is needed for resolving the reference to the metab glyph.
    */
   virtual void exportToSBML(SpeciesReferenceGlyph * g,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             const std::map<const CLBase*, const SBase*> & layoutmap) const;
 
@@ -275,18 +275,18 @@ public:
 class CLGeneralGlyph : public CLGlyphWithCurve
 {
 protected:
-  CCopasiVector<CLReferenceGlyph> mvReferences;
-  CCopasiVector<CLGraphicalObject> mvSubglyphs;
+  CDataVector<CLReferenceGlyph> mvReferences;
+  CDataVector<CLGraphicalObject> mvSubglyphs;
   CLGeneralGlyph(const CLGeneralGlyph & src);
 
 public:
   static CLGeneralGlyph * fromData(const CData & data);
 
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
-                 const CCopasiContainer * pParent = NO_PARENT);
+                 const CDataContainer * pParent = NO_PARENT);
 
   CLGeneralGlyph(const CLGeneralGlyph & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -294,12 +294,12 @@ public:
   CLGeneralGlyph(const GraphicalObject & sbml, //TODO
                  const std::map<std::string, std::string> & modelmap,
                  std::map<std::string, std::string> & layoutmap,
-                 const CCopasiContainer * pParent = NO_PARENT);
+                 const CDataContainer * pParent = NO_PARENT);
 
 //    CLGeneralGlyph(const ReactionGlyph & sbml, //TODO
 //                   const std::map<std::string, std::string> & modelmap,
 //                   std::map<std::string, std::string> & layoutmap,
-//                   const CCopasiContainer * pParent = NO_PARENT);
+//                   const CDataContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -307,13 +307,13 @@ public:
    */
   CLGeneralGlyph & operator= (const CLGeneralGlyph & rhs);
 
-  const CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs() const;
+  const CDataVector<CLReferenceGlyph> & getListOfReferenceGlyphs() const;
 
-  CCopasiVector<CLReferenceGlyph> & getListOfReferenceGlyphs();
+  CDataVector<CLReferenceGlyph> & getListOfReferenceGlyphs();
 
-  const CCopasiVector<CLGraphicalObject> & getListOfSubglyphs() const;
+  const CDataVector<CLGraphicalObject> & getListOfSubglyphs() const;
 
-  CCopasiVector<CLGraphicalObject> & getListOfSubglyphs();
+  CDataVector<CLGraphicalObject> & getListOfSubglyphs();
 
   /**
    *  add Glyph to general glyph. The general glyph takes ownership of the glyph.
@@ -334,7 +334,7 @@ public:
    * This should be removed once libsbml supports general glyphs.
    */
   virtual void exportToSBML(GraphicalObject * g,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             std::map<const CLBase*, const SBase*> & layoutmap) const;
 
@@ -351,7 +351,7 @@ public:
 class CLReactionGlyph : public CLGlyphWithCurve
 {
 protected:
-  CCopasiVector<CLMetabReferenceGlyph> mvMetabReferences;
+  CDataVector<CLMetabReferenceGlyph> mvMetabReferences;
 
   CLReactionGlyph(const CLReactionGlyph & src);
 
@@ -359,10 +359,10 @@ public:
   static CLReactionGlyph * fromData(const CData & data);
 
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
-                  const CCopasiContainer * pParent = NO_PARENT);
+                  const CDataContainer * pParent = NO_PARENT);
 
   CLReactionGlyph(const CLReactionGlyph & src,
-                  const CCopasiContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    * constructor from libsbml object
@@ -370,7 +370,7 @@ public:
   CLReactionGlyph(const ReactionGlyph & sbml,
                   const std::map<std::string, std::string> & modelmap,
                   std::map<std::string, std::string> & layoutmap,
-                  const CCopasiContainer * pParent = NO_PARENT);
+                  const CDataContainer * pParent = NO_PARENT);
 
   /**
    * assignment operator.
@@ -378,9 +378,9 @@ public:
    */
   CLReactionGlyph & operator= (const CLReactionGlyph & rhs);
 
-  const CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const;
+  const CDataVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs() const;
 
-  CCopasiVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs();
+  CDataVector<CLMetabReferenceGlyph> & getListOfMetabReferenceGlyphs();
 
   /**
    *  add Glyph to reaction glyph. The reaction glyph takes ownership of the glyph.
@@ -398,7 +398,7 @@ public:
    * the exported metab reference glyphs will be added.
    */
   virtual void exportToSBML(ReactionGlyph * g,
-                            const std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+                            const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             std::map<const CLBase*, const SBase*> & layoutmap) const;
 

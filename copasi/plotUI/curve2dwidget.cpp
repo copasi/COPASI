@@ -13,15 +13,16 @@
 #include "CQPlotEditWidget.h"
 #include "CQPlotColors.h"
 
-#include "UI/CCopasiSelectionDialog.h"
-#include "copasi.h"
+#include "copasi/UI/CCopasiSelectionDialog.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "plot/CPlotItem.h"
-#include "resourcesUI/CQIconResource.h"
-#include "model/CModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/plot/CPlotItem.h"
+#include "copasi/resourcesUI/CQIconResource.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a Curve2DWidget as a child of 'parent', with the
@@ -77,7 +78,7 @@ bool Curve2DWidget::LoadFromCurveSpec(const CPlotItem * curve)
   mpEditTitle->setText(FROM_UTF8(curve->getTitle()));
 
   //TODO: check if objects exist....
-  CCopasiDataModel* pDataModel = mpModel->getObjectDataModel();
+  CDataModel* pDataModel = mpModel->getObjectDataModel();
   assert(pDataModel != NULL);
   mpObjectX = mpObjectY = NULL;
 

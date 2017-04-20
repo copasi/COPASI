@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -38,11 +43,11 @@
 #include "lna/CLNATask.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CProcessReport.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "crosssection/CCrossSectionTask.h"
 
-CScanTask::CScanTask(const CCopasiContainer * pParent,
+CScanTask::CScanTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mProgress(0),
@@ -57,7 +62,7 @@ CScanTask::CScanTask(const CCopasiContainer * pParent,
 }
 
 CScanTask::CScanTask(const CScanTask & src,
-                     const CCopasiContainer * pParent):
+                     const CDataContainer * pParent):
   CCopasiTask(src, pParent),
   mProgress(0),
   mhProgress(C_INVALID_INDEX),
@@ -229,7 +234,7 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
 
   //get the parameters from the problem
   CTaskEnum::Task type = (CTaskEnum::Task) pProblem->getValue< unsigned C_INT32 >("Subtask");
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   switch (type)

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,7 +25,8 @@
 #define COPASI_COptMethodNelderMead
 
 #include <vector>
-#include "utilities/CMatrix.h"
+
+#include "copasi/core/CMatrix.h"
 #include "optimization/COptMethod.h"
 
 class CRandom;
@@ -31,21 +37,21 @@ class COptMethodNelderMead : public COptMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: NelderMead)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodNelderMead(const CCopasiContainer * pParent,
+  COptMethodNelderMead(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType = CTaskEnum::NelderMead,
                        const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodNelderMead & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodNelderMead(const COptMethodNelderMead & src,
-                       const CCopasiContainer * pParent);
+                       const CDataContainer * pParent);
 
   /**
    * Destructor

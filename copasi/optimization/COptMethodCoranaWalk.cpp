@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,14 +22,14 @@
 #include "COptTask.h"
 
 #include "parameterFitting/CFitProblem.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
 #define STORED 2
 #define NS 5
 #define K 1.0
 
-COptMethodCoranaWalk::COptMethodCoranaWalk(const CCopasiContainer * pParent,
+COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
@@ -38,7 +43,7 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CCopasiContainer * pParent,
 }
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   COptMethod(src, pParent)
 {initObjects();}
 
@@ -47,7 +52,7 @@ COptMethodCoranaWalk::~COptMethodCoranaWalk()
 
 void COptMethodCoranaWalk::initObjects()
 {
-  addObjectReference("Current Iteration", mCurrentIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentIteration, CDataObject::ValueInt);
 }
 
 bool COptMethodCoranaWalk::optimise()

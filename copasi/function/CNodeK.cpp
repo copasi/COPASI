@@ -1,14 +1,16 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/function/CNodeK.cpp,v $
-   $Revision: 1.31 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/04/23 21:10:23 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -459,6 +461,7 @@ C_INT16 CNodeK::isIdentifier() const
       case N_KCONSTANT:
       case N_VOLUME:
         return true;
+
       default:
         return false;
     }
@@ -486,13 +489,17 @@ C_INT16 CNodeK::leftPrecedence() const
       case '+':
       case '-':
         return 1;
+
       case '*':
       case '/':
         return 3;
+
       case '(':
         return 6;
+
       case '^':
         return 5;
+
       case ')':
       case '%':
         return 0;
@@ -509,6 +516,7 @@ C_INT16 CNodeK::rightPrecedence() const
       case N_NUMBER:
       case N_IDENTIFIER:
         return 6;
+
       case N_FUNCTION:
         return 4;
     }
@@ -519,13 +527,17 @@ C_INT16 CNodeK::rightPrecedence() const
       case '+':
       case '-':
         return 2;
+
       case '*':
       case '/':
         return 4;
+
       case ')':
         return 6;
+
       case '^':
         return 4;
+
       case '(':
       case '%':
         return 0;
@@ -543,7 +555,7 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
     switch (mType)
       {
       case N_OBJECT:
-        return *(double*)((CCopasiObject*)mLeft)->getValuePointer();
+        return *(double*)((CDataObject*)mLeft)->getValuePointer();
         break;
       case N_IDENTIFIER:
         return * callParameters[mIndex].value;
@@ -580,14 +592,12 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
           case N_LOG10:
             return log10(mLeft->value(callParameters));
 
-
           case N_SIN:
             return sin(mLeft->value(callParameters));
           case N_COS:
             return cos(mLeft->value(callParameters));
           case N_TAN:
             return tan(mLeft->value(callParameters));
-
 
           case N_SEC:
             return 1 / cos(mLeft->value(callParameters));
@@ -596,14 +606,12 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
           case N_COT:
             return 1 / tan(mLeft->value(callParameters));
 
-
           case N_SINH:
             return sinh(mLeft->value(callParameters));
           case N_COSH:
             return cosh(mLeft->value(callParameters));
           case N_TANH:
             return tanh(mLeft->value(callParameters));
-
 
           case N_SECH:
             return 1 / cosh(mLeft->value(callParameters));
@@ -612,14 +620,12 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
           case N_COTH:
             return 1 / tanh(mLeft->value(callParameters));
 
-
           case N_ARCSIN:
             return asin(mLeft->value(callParameters));
           case N_ARCCOS:
             return acos(mLeft->value(callParameters));
           case N_ARCTAN:
             return atan(mLeft->value(callParameters));
-
 
           case N_ARCSEC:   //TODO
             return acos(1 / mLeft->value(callParameters));
@@ -628,14 +634,12 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
           case N_ARCCOT:   //TODO
             return atan(1 / mLeft->value(callParameters));
 
-
           case N_ARCSINH:
             return asinh(mLeft->value(callParameters));
           case N_ARCCOSH:
             return acosh(mLeft->value(callParameters));
           case N_ARCTANH:
             return atanh(mLeft->value(callParameters));
-
 
           case N_ARCSECH:
             return acosh(1 / mLeft->value(callParameters));
@@ -644,12 +648,10 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
           case N_ARCCOTH:
             return atanh(1 / mLeft->value(callParameters));
 
-
           case N_ABS:
             return fabs(mLeft->value(callParameters));
           case N_SQRT:
             return sqrt(mLeft->value(callParameters));
-
 
           default:
             fatalError();   // THROW EXCEPTION
@@ -668,11 +670,9 @@ C_FLOAT64 CNodeK::value(const CCallParameters<C_FLOAT64> & callParameters) const
 /*
 #define SPC(level) std::string(level, ' ')
 
-
 void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
   {
     bool flag = false;
-
 
     switch (mType)
       {
@@ -680,7 +680,7 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         out << SPC(level) << "<mn>" << mConstant << "</mn>" << std::endl;
         break;
         //    case N_OBJECT:
-        //      return *(double*)((CCopasiObject*)mLeft)->getReference();
+        //      return *(double*)((CDataObject*)mLeft)->getReference();
         //      break;
       case N_IDENTIFIER:       //do some heuristics for indentifiers starting with "K" or "V"
         out << SPC(level);
@@ -706,7 +706,6 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
             mLeft->writeMathML(out, level + 1);
             out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
 
-
             //do we need "()" ?
             flag = (mRight->mType == N_OPERATOR) && ((mRight->mSubtype == '-') || (mRight->mSubtype == '+'));
             if (flag)
@@ -722,7 +721,6 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
             break;
           case '*':
             out << SPC(level) << "<mrow>" << std::endl;
-
 
             //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
@@ -751,7 +749,6 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
           case '^':
             out << SPC(level) << "<msup>" << std::endl;
 
-
             //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+')
                                                     || (mLeft->mSubtype == '*') || (mLeft->mSubtype == '/')
@@ -766,27 +763,22 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
                 out << SPC(level + 1) << "</mfenced>" << std::endl;
               }
 
-
             out << SPC(level + 1) << "<mrow>" << std::endl;
             mRight->writeMathML(out, level + 2);
             out << SPC(level + 1) << "</mrow>" << std::endl;
-
 
             out << SPC(level) << "</msup>" << std::endl;
             break;
           case '/':
             out << SPC(level) << "<mfrac>" << std::endl;
 
-
             out << SPC(level + 1) << "<mrow>" << std::endl;
             mLeft->writeMathML(out, level + 2);
             out << SPC(level + 1) << "</mrow>" << std::endl;
 
-
             out << SPC(level + 1) << "<mrow>" << std::endl;
             mRight->writeMathML(out, level + 2);
             out << SPC(level + 1) << "</mrow>" << std::endl;
-
 
             out << SPC(level) << "</mfrac>" << std::endl;
             break;
@@ -801,7 +793,6 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
           case '-':
             out << SPC(level) << "<mrow>" << std::endl;
             out << SPC(level + 1) << "<mo>" << "-" << "</mo>" << std::endl;
-
 
             //do we need "()" ?
             flag = (mLeft->mType == N_OPERATOR) && ((mLeft->mSubtype == '-') || (mLeft->mSubtype == '+'));
@@ -839,7 +830,6 @@ void CNodeK::writeMathML(std::ostream & out, C_INT32 level) const
         //return 0.0;
       }
   }
-
 
 #undef SPC
  */

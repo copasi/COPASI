@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000081.h,v $
-//   $Revision: 1.1 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2009/05/07 10:50:34 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -25,7 +27,7 @@
 // elements because ids were assigned several times and elements got
 // overwritten on reexport.
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000081 : public CppUnit::TestFixture
 {
@@ -36,7 +38,7 @@ class test000081 : public CppUnit::TestFixture
   CPPUNIT_TEST_SUITE_END();
 
 protected:
-  static CCopasiDataModel* pCOPASIDATAMODEL;
+  static CDataModel* pCOPASIDATAMODEL;
   static const char* MODEL_STRING1;
 
 public:

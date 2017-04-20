@@ -15,17 +15,18 @@
  *      Author: dada
  */
 
-#include "UI/CQCompartmentDM.h"
+#include "copasi/UI/CQCompartmentDM.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "RemoveAllCompartmentRowsCommand.h"
 #include "UndoCompartmentData.h"
 #include "UndoReactionData.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "model/CCompartment.h"
-#include "model/CModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 RemoveAllCompartmentRowsCommand::RemoveAllCompartmentRowsCommand(CQCompartmentDM * pCompartmentDM, const QModelIndex&)
   : CCopasiUndoCommand("Compartment", COMPARTMENT_REMOVE_ALL)

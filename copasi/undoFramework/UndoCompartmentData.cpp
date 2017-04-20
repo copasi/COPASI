@@ -17,20 +17,18 @@
 
 #include <QtCore/QList>
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include <copasi/model/CModel.h>
-#include <copasi/model/CMetab.h>
-#include <copasi/model/CCompartment.h>
+#include "copasi/model/CModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/function/CExpression.h"
 
-#include <copasi/function/CExpression.h>
-
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-#include <copasi/undoFramework/UndoData.h>
-#include <copasi/undoFramework/UndoDependentData.h>
-#include <copasi/undoFramework/UndoCompartmentData.h>
-
-#include <copasi/report/CCopasiRootContainer.h>
+#include "CCopasiUndoCommand.h"
+#include "UndoData.h"
+#include "UndoDependentData.h"
+#include "UndoCompartmentData.h"
 
 UndoCompartmentData::UndoCompartmentData()
   : UndoData()
@@ -57,7 +55,7 @@ UndoCompartmentData::~UndoCompartmentData()
 {
 }
 
-CCopasiObject *
+CDataObject *
 UndoCompartmentData::createObjectIn(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
@@ -74,10 +72,10 @@ UndoCompartmentData::createObjectIn(CModel *pModel)
   return pCompartment;
 }
 
-CCopasiObject *
+CDataObject *
 UndoCompartmentData::restoreObjectIn(CModel *pModel)
 {
-  CCopasiObject  *pCompartment = createObjectIn(pModel);
+  CDataObject  *pCompartment = createObjectIn(pModel);
 
   if (pCompartment == NULL)
     return NULL;
@@ -91,7 +89,7 @@ UndoCompartmentData::restoreObjectIn(CModel *pModel)
 void UndoCompartmentData::fillObject(CModel *)
 {
   CCompartment* pCompartment = dynamic_cast<CCompartment*>(
-                                 CCopasiRootContainer::getKeyFactory()->get(mKey));
+                                 CRootContainer::getKeyFactory()->get(mKey));
 
   if (pCompartment == NULL) return;
 

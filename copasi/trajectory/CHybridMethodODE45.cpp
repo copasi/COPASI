@@ -50,8 +50,8 @@
 #include "model/CChemEq.h"
 #include "model/CChemEqElement.h"
 #include "model/CCompartment.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CMatrix.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
 #include "utilities/CVersion.h"
@@ -75,7 +75,7 @@ std::string CHybridMethodODE45::PartitioningStrategy[] =
 /**
  * Default constructor.
  */
-CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
+CHybridMethodODE45::CHybridMethodODE45(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
                                        const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -134,7 +134,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CCopasiContainer * pParent,
  * Copy Constructor
  */
 CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mSlowReactions(),
   mFirstReactionSpeciesIndex(C_INVALID_INDEX),
@@ -462,10 +462,10 @@ void CHybridMethodODE45::partitionSystem()
     }
 
   // Create the sequence which updates the species rates discarding the contribution of the slow reactions.
-  mpContainer->getTransientDependencies().getUpdateSequence(mSpeciesRateUpdateSequence, CMath::SimulationContext::Default, Fluxes, SpeciesRates);
+  mpContainer->getTransientDependencies().getUpdateSequence(mSpeciesRateUpdateSequence, CCore::SimulationContext::Default, Fluxes, SpeciesRates);
 
   // Create the sequence which updates the propensities of the slow reactions.
-  mpContainer->getTransientDependencies().getUpdateSequence(mPropensitiesUpdateSequence, CMath::SimulationContext::Default, Fluxes, Propensities);
+  mpContainer->getTransientDependencies().getUpdateSequence(mPropensitiesUpdateSequence, CCore::SimulationContext::Default, Fluxes, Propensities);
 
   return;
 }
@@ -1049,7 +1049,7 @@ void CHybridMethodODE45::destroyRootMask()
  */
 C_INT32 CHybridMethodODE45::checkModel(CModel * model)
 {
-  CCopasiVectorNS <CReaction> * mpReactions = &model->getReactions();
+  CDataVectorNS <CReaction> * mpReactions = &model->getReactions();
   //CMatrix <C_FLOAT64> mStoi = model->getStoiReordered();
   CMatrix <C_FLOAT64> mStoi = model->getStoi();
   C_INT32 multInt;

@@ -35,8 +35,8 @@
 
 #include "function/CFunctionDB.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -48,7 +48,7 @@
 #include "model/CModel.h"
 #include "model/CCompartment.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CKeyFactory.h"
 
 #include "utilities/CProcessReport.h"
@@ -70,9 +70,12 @@ const unsigned int COptProblem::ValidSubtasks[] =
   CTaskEnum::UnsetTask
 };
 
+// static
+C_FLOAT64 COptProblem::MissingValue;
+
 //  Default constructor
 COptProblem::COptProblem(const CTaskEnum::Task & type,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiProblem(type, pParent),
   mWorstValue(0.0),
   mpParmSubtaskCN(NULL),
@@ -112,7 +115,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
 
 // copy constructor
 COptProblem::COptProblem(const COptProblem& src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mWorstValue(src.mWorstValue),
   mpParmSubtaskCN(NULL),
@@ -209,12 +212,12 @@ bool COptProblem::elevateChildren()
       // We do not use the key to find the objective function because keys are not re-mapped
       // for unknown parameters, instead we rely on the uniqueness of the name and the fact that
       // this is the only expression in the list.
-      size_t Index = CCopasiRootContainer::getFunctionList()->loadedFunctions().getIndex("Objective Function");
+      size_t Index = CRootContainer::getFunctionList()->loadedFunctions().getIndex("Objective Function");
 
       if (Index != C_INVALID_INDEX)
         {
           pObjectiveFunction =
-            dynamic_cast<CExpression *>(&CCopasiRootContainer::getFunctionList()->loadedFunctions()[Index]);
+            dynamic_cast<CExpression *>(&CRootContainer::getFunctionList()->loadedFunctions()[Index]);
         }
 
       if (pObjectiveFunction != NULL &&
@@ -292,9 +295,9 @@ bool COptProblem::setCallBack(CProcessReport * pCallBack)
 
 void COptProblem::initObjects()
 {
-  addObjectReference("Function Evaluations", mCounter, CCopasiObject::ValueInt);
-  addObjectReference("Best Value", mSolutionValue, CCopasiObject::ValueDbl);
-  addVectorReference("Best Parameters", mSolutionVariables, CCopasiObject::ValueDbl);
+  addObjectReference("Function Evaluations", mCounter, CDataObject::ValueInt);
+  addObjectReference("Best Value", mSolutionValue, CDataObject::ValueDbl);
+  addVectorReference("Best Parameters", mSolutionVariables, CDataObject::ValueDbl);
 }
 
 bool COptProblem::initializeSubtaskBeforeOutput()
@@ -391,13 +394,13 @@ bool COptProblem::initialize()
         }
       else
         {
-          mContainerVariables[i] = &DummyValue;
+          mContainerVariables[i] = &MissingValue;
           mOriginalVariables[i] = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
         }
     }
 
   changedObjects.erase(NULL);
-  mpContainer->getInitialDependencies().getUpdateSequence(mInitialRefreshSequence, CMath::SimulationContext::UpdateMoieties, changedObjects, mpContainer->getInitialStateObjects());
+  mpContainer->getInitialDependencies().getUpdateSequence(mInitialRefreshSequence, CCore::SimulationContext::UpdateMoieties, changedObjects, mpContainer->getInitialStateObjects());
 
   it = mpConstraintItems->begin();
   end = mpConstraintItems->end();
@@ -415,7 +418,7 @@ bool COptProblem::initialize()
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   mCPUTime.start();
 
@@ -433,7 +436,7 @@ bool COptProblem::initialize()
 
   mpMathObjectiveExpression = new CMathExpression(*mpObjectiveExpression, *mpContainer, false);
   Objects = mpMathObjectiveExpression->getPrerequisites();
-  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
+  mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   return success;
 }
@@ -704,7 +707,7 @@ size_t COptProblem::getOptItemSize() const
 
 COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
 {
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   COptItem * pItem = new COptItem(pDataModel);
@@ -759,10 +762,10 @@ bool COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
   mpSubtask = NULL;
   *mpParmSubtaskCN = "";
 
-  CCopasiVectorN< CCopasiTask > * pTasks =
-    dynamic_cast< CCopasiVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
+  CDataVectorN< CCopasiTask > * pTasks =
+    dynamic_cast< CDataVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
 
   if (pTasks == NULL && pDataModel)
     pTasks = pDataModel->getTaskList();

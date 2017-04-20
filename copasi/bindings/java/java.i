@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -313,11 +318,11 @@
 	}
 	
 	
-	public static CCopasiObject DowncastCCopasiObject(long cPtr, boolean owner)
+	public static CDataObject DowncastCDataObject(long cPtr, boolean owner)
 	{
 		if (cPtr == 0) return null;
 	
-		CCopasiObject co = new CCopasiObject(cPtr,false);
+		CDataObject co = new CDataObject(cPtr,false);
 		String type = co.getObjectType();
 		
 		if (type.equals("Metabolite"))
@@ -395,7 +400,7 @@
 		}
 		else if (type.equals("CN"))
 		{
-			return new CCopasiDataModel(cPtr, owner);
+			return new CDataModel(cPtr, owner);
 		}
 		else if (type.equals("PlotItem"))
 		{
@@ -451,7 +456,7 @@
 			if (System.getenv("COPASI_JAVA_DEBUG") != null)
 			System.err.println("WRAPPER: encountered unwrapped type: '" + type + "'");
 		}
-		return new CCopasiObject(cPtr, owner);
+		return new CDataObject(cPtr, owner);
 	}
 
     public static CCopasiParameter DowncastCCopasiParameter(long cPtr, boolean owner)
@@ -459,9 +464,9 @@
       if (cPtr == 0) return null;
 	  
       CCopasiParameter temp = new CCopasiParameter(cPtr, false);
-	  CCopasiObject co = temp.toObject();
+	  CDataObject co = temp.toObject();
 	  if (co != null)
-	  	return (CCopasiParameter)DowncastCCopasiObject(cPtr, owner);	
+	  	return (CCopasiParameter)DowncastCDataObject(cPtr, owner);	
 	  return new CCopasiParameter(cPtr, owner);	
     }
 	
@@ -470,29 +475,29 @@
       if (cPtr == 0) return null;
 	  
       CObjectInterface temp = new CObjectInterface(cPtr, false);
-	  CCopasiObject co = temp.toObject();
+	  CDataObject co = temp.toObject();
 	  if (co != null)
-	  	return DowncastCCopasiObject(cPtr, owner);	
+	  	return DowncastCDataObject(cPtr, owner);	
 	  return new CObjectInterface(cPtr, owner);	
     }
 	
-	public static CCopasiContainer DowncastCCopasiContainer(long cPtr, boolean owner)
+	public static CDataContainer DowncastCDataContainer(long cPtr, boolean owner)
     {
       if (cPtr == 0) return null;
 	  
-      CCopasiContainer temp = new CCopasiContainer(cPtr, false);
+      CDataContainer temp = new CDataContainer(cPtr, false);
 	  String name = temp.getObjectName();
 	  String type = temp.getObjectType();
 	  
 	  if (name.equals("CN") && type.equals("CN"))
-		return new CCopasiRootContainer(cPtr, owner);
+		return new CRootContainer(cPtr, owner);
 	  if (name.equals("CN") && type.equals("Root"))
-		return new CCopasiDataModel(cPtr, owner);
+		return new CDataModel(cPtr, owner);
 	  
-	  CCopasiObject co = temp.toObject();
+	  CDataObject co = temp.toObject();
 	  if (co != null)
-	  	return (CCopasiContainer)DowncastCCopasiObject(cPtr, owner);	
-	  return new CCopasiContainer(cPtr, owner);	
+	  	return (CDataContainer)DowncastCDataObject(cPtr, owner);	
+	  return new CDataContainer(cPtr, owner);	
     }
 
 	public static CEvaluationTree DowncastCEvaluationTree(long cPtr, boolean owner)
@@ -519,15 +524,15 @@
 
 
 /**
- * Convert CCopasiObject objects into the most specific object possible.
+ * Convert CDataObject objects into the most specific object possible.
  */
-%typemap("javaout") CCopasiObject*
+%typemap("javaout") CDataObject*
 {
-  return COPASI.DowncastCCopasiObject($jnicall, $owner);
+  return COPASI.DowncastCDataObject($jnicall, $owner);
 }
 
 /**
- * Convert CCopasiObject objects into the most specific object possible.
+ * Convert CDataObject objects into the most specific object possible.
  */
 %typemap("javaout") CCopasiParameter*
 {
@@ -536,15 +541,15 @@
 
 
 /**
- * Convert CCopasiObject objects into the most specific object possible.
+ * Convert CDataObject objects into the most specific object possible.
  */
-%typemap("javaout") CCopasiContainer*
+%typemap("javaout") CDataContainer*
 {
-  return COPASI.DowncastCCopasiContainer($jnicall, $owner);
+  return COPASI.DowncastCDataContainer($jnicall, $owner);
 }
 
 /**
- * Convert CCopasiObject objects into the most specific object possible.
+ * Convert CDataObject objects into the most specific object possible.
  */
 %typemap("javaout") CObjectInterface*
 {
@@ -622,7 +627,7 @@ void initCopasi();
 }
 
 
-%javaexception("java.lang.Exception") CCopasiDataModel::importSBML {
+%javaexception("java.lang.Exception") CDataModel::importSBML {
    try
    {
      $action
@@ -642,7 +647,7 @@ void initCopasi();
 }
 
 
-%javaexception("java.lang.Exception") CCopasiDataModel::newModel {
+%javaexception("java.lang.Exception") CDataModel::newModel {
    try
    {
      $action
@@ -661,7 +666,7 @@ void initCopasi();
    }
 }
 
-%javaexception("java.lang.Exception") CCopasiDataModel::importSBMLFromString {
+%javaexception("java.lang.Exception") CDataModel::importSBMLFromString {
    try
    {
      $action
@@ -680,7 +685,7 @@ void initCopasi();
    }
 }
 
-%javaexception("java.lang.Exception") CCopasiDataModel::exportSBMLToString {
+%javaexception("java.lang.Exception") CDataModel::exportSBMLToString {
    try
    {
      $action
@@ -699,7 +704,7 @@ void initCopasi();
    }
 }
 
-%javaexception("java.lang.Exception") CCopasiDataModel::exportSBML {
+%javaexception("java.lang.Exception") CDataModel::exportSBML {
    try
    {
      $action

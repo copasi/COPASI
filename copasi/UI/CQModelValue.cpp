@@ -25,31 +25,31 @@
 
 #include "copasi.h"
 
-#include "UI/qtUtilities.h"
+#include "qtUtilities.h"
+#include "CQValidatorUnit.h"
+#include "copasiui3window.h"
+#include "CQDependencyWidget.h"
+#include "CQDependenciesWidget.h"
 
-#include "model/CModel.h"
-#include "model/CModelValue.h"
-#include "function/CExpression.h"
-#include "report/CKeyFactory.h"
-#include "report/CCopasiRootContainer.h"
-#include "UI/CQValidatorUnit.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 //UNDO framework classes
-#include "model/CReactionInterface.h"
-#include "undoFramework/DeleteGlobalQuantityCommand.h"
-#include "undoFramework/CreateNewGlobalQuantityCommand.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/undoFramework/DeleteGlobalQuantityCommand.h"
+#include "copasi/undoFramework/CreateNewGlobalQuantityCommand.h"
 //#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
-#include "undoFramework/UndoGlobalQuantityData.h"
-#include "undoFramework/UndoReactionData.h"
-#include "undoFramework/UndoEventData.h"
-#include "undoFramework/UndoSpeciesData.h"
-#include "undoFramework/UndoEventAssignmentData.h"
+#include "copasi/undoFramework/UndoGlobalQuantityData.h"
+#include "copasi/undoFramework/UndoReactionData.h"
+#include "copasi/undoFramework/UndoEventData.h"
+#include "copasi/undoFramework/UndoSpeciesData.h"
+#include "copasi/undoFramework/UndoEventAssignmentData.h"
 
-#include <copasi/undoFramework/GlobalQuantityChangeCommand.h>
-#include "copasiui3window.h"
-
-#include <copasi/UI/CQDependencyWidget.h>
-#include <copasi/UI/CQDependenciesWidget.h>
+#include "copasi/undoFramework/GlobalQuantityChangeCommand.h"
 
 /*
  *  Constructs a CQModelValue which is a child of 'parent', with the
@@ -277,7 +277,7 @@ bool CQModelValue::enterProtected()
 
   if (mKeyToCopy != "")
     {
-      mpModelValue = dynamic_cast<CModelValue *>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
+      mpModelValue = dynamic_cast<CModelValue *>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
       mKeyToCopy = "";
     }
   else
@@ -577,7 +577,7 @@ void CQModelValue::deleteGlobalQuantity()
   QMessageBox::StandardButton choice =
     CQMessageBox::confirmDelete(this, "quantity",
                                 FROM_UTF8(mpModelValue->getObjectName()),
-                                mpModelValue->getDeletedObjects());
+                                mpModelValue);
 
   switch (choice)
     {
@@ -617,7 +617,7 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  CCopasiObject *pGlobalQuantity =  pData->restoreObjectIn(pModel);
+  CDataObject *pGlobalQuantity =  pData->restoreObjectIn(pModel);
 
   if (pGlobalQuantity == NULL)
     return;
@@ -636,7 +636,7 @@ CQModelValue::changeValue(const std::string& key,
   if (!mIgnoreUpdates)
     {
       mKey = key;
-      mpObject = CCopasiRootContainer::getKeyFactory()->get(mKey);
+      mpObject = CRootContainer::getKeyFactory()->get(mKey);
       mpModelValue = dynamic_cast<CModelValue*>(mpObject);
       load();
     }

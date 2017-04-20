@@ -106,9 +106,9 @@ void CMathDelay::createUpdateSequences()
         Requested.insert(*pObject);
       }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequence, CMath::SimulationContext::DelayValues,
+  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequence, CCore::SimulationContext::DelayValues,
       mpContainer->getStateObjects(false), Requested);
-  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequenceReduced, CMath::SimulationContextFlag(CMath::SimulationContext::UseMoieties) | CMath::SimulationContext::DelayValues,
+  mpContainer->getTransientDependencies().getUpdateSequence(mValueSequenceReduced, CCore::SimulationContextFlag(CCore::SimulationContext::UseMoieties) | CCore::SimulationContext::DelayValues,
       mpContainer->getStateObjects(true), Requested);
 }
 

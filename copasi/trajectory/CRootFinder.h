@@ -18,7 +18,7 @@
 #ifndef COPASI_CRootFinder
 #define COPASI_CRootFinder
 
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CBrent.h"
 
 class CRootFinder

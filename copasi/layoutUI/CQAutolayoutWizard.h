@@ -61,7 +61,7 @@ public:
    * Returns a pointer to the COPASI object
    * represented by this item.
    */
-  CCopasiObject* getObject() const;
+  CDataObject* getObject() const;
 };
 
 /**
@@ -168,7 +168,7 @@ protected:
     // returns the key of the associated model object
     const std::string& getKey() const;
 
-    CCopasiObject* getObject() const;
+    CDataObject* getObject() const;
 
   protected:
     std::string mKey;

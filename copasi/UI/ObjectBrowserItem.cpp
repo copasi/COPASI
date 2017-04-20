@@ -38,10 +38,10 @@ Contact: Please contact lixu1@vt.edu.
 #include <QTreeWidget>
 #include "ObjectBrowserItem.h"
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "report/CCopasiObjectName.h"
-#include "report/CCopasiContainer.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CDataVector.h"
 
 long ObjectBrowserItem::KeySpace = KEYBASE;
 
@@ -66,7 +66,7 @@ CBrowserObject::~CBrowserObject()
 /**
  *   Constructs a new ObjectBrowserItem
  */
-ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * after, const CCopasiObject* mObject, ObjectList* pList)
+ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * after, const CDataObject* mObject, ObjectList* pList)
   : QTreeWidgetItem(parent, after)
   , pBrowserObject(NULL)
   , mType(FIELDATTR)
@@ -112,7 +112,7 @@ ObjectBrowserItem::ObjectBrowserItem(QTreeWidget * parent, ObjectBrowserItem * a
   mKey = " ";
 }
 
-ObjectBrowserItem::ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after , const CCopasiObject* mObject, ObjectList* pList)
+ObjectBrowserItem::ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after , const CDataObject* mObject, ObjectList* pList)
   : QTreeWidgetItem(parent, after)
   , pBrowserObject(NULL)
   , mType(FIELDATTR)

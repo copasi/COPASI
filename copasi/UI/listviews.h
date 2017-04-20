@@ -36,7 +36,7 @@ class CQBrowserPane;
 class CQBrowserPaneDM;
 
 class Refresh;
-class CCopasiObject;
+class CDataObject;
 
 class DataModelGUI;
 class QSortFilterProxyModel;
@@ -103,7 +103,7 @@ class CQMathMatrixWidget;
 class CQLayoutsWidget;
 
 class CQPlotSubwidget;
-class CCopasiDataModel;
+class CDataModel;
 
 //********************************************************************************
 
@@ -116,9 +116,9 @@ class ListViews : public QSplitter
 public:
   static const std::string ObjectTypeName[];
   static ListViews * ancestor(QObject * qObject);
-  static CCopasiDataModel * dataModel(QObject * qObject);
+  static CDataModel * dataModel(QObject * qObject);
 
-  ListViews(QWidget * parent, DataModelGUI * pDataModelGUI, CCopasiDataModel * pDataModel);
+  ListViews(QWidget * parent, DataModelGUI * pDataModelGUI, CDataModel * pDataModel);
   virtual ~ListViews();
 
 #ifdef DELETE
@@ -144,7 +144,7 @@ public:
                   };
 
   DataModelGUI * getDataModelGUI();
-  CCopasiDataModel * getDataModel();
+  CDataModel * getDataModel();
 
   void resetCache();
 
@@ -191,8 +191,6 @@ signals:
 private:
   CopasiWidget* findWidgetFromIndex(const QModelIndex & index) const;
 
-
-
   void ConstructNodeWidgets();
 
 public slots:
@@ -210,7 +208,7 @@ private:
                           const std::string & key);
 
   DataModelGUI * mpDataModelGUI;
-  CCopasiDataModel * mpDataModel;
+  CDataModel * mpDataModel;
 
   CQBrowserPaneDM * mpTreeDM; // create the  object of the tree
   QSortFilterProxyModel * mpTreeSortDM;

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,8 +32,8 @@
 #include "CMCATask.h"
 #include "CSteadyStateTask.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "report/CKeyFactory.h"
@@ -37,7 +42,7 @@
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
+CMCAProblem::CMCAProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::mca, pParent)
 {
   //  addParameter("SteadyStateRequested", CCopasiParameter::BOOL, true);
@@ -50,7 +55,7 @@ CMCAProblem::CMCAProblem(const CCopasiContainer * pParent):
  *  @param "const CMCAProblem &" src
  */
 CMCAProblem::CMCAProblem(const CMCAProblem & src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiProblem(src, pParent)
 {CONSTRUCTOR_TRACE;}
 
@@ -85,7 +90,7 @@ void CMCAProblem::load(CReadConfig & configBuffer,
 void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
   CSteadyStateTask * pSubTask = NULL;
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
 
   if (pDataModel && pDataModel->getTaskList())
@@ -110,11 +115,11 @@ CSteadyStateTask * CMCAProblem::getSubTask() const
 
   if (isSteadyStateRequested())
     {
-      pSubTask = dynamic_cast<CSteadyStateTask *>(CCopasiRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
+      pSubTask = dynamic_cast<CSteadyStateTask *>(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
 
       if (pSubTask == NULL)
         {
-          CCopasiDataModel * pDataModel = getObjectDataModel();
+          CDataModel * pDataModel = getObjectDataModel();
           assert(pDataModel != NULL);
 
           if (pDataModel && pDataModel->getTaskList())

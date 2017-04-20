@@ -46,8 +46,8 @@
 
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/utilities/CVersion.h"
-#include "copasi/utilities/CMatrix.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/trajectory/CRungeKutta.h"
 
 /* DEFINE ********************************************************************/
@@ -114,21 +114,21 @@ protected:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: hybridODE45)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CHybridMethodODE45(const CCopasiContainer * pParent,
+  CHybridMethodODE45(const CDataContainer * pParent,
                      const CTaskEnum::Method & methodType = CTaskEnum::hybridODE45,
                      const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor
    * @param const CHybridMethodODE45 & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CHybridMethodODE45(const CHybridMethodODE45 & src,
-                     const CCopasiContainer * pParent);
+                     const CDataContainer * pParent);
   /**
    * Destructor.
    */
@@ -350,7 +350,7 @@ private:
   CVector< C_FLOAT64 > mY;
   const C_FLOAT64 * mpYdot;
   size_t mCountContainerVariables;
-  CObjectInterface::UpdateSequence mSpeciesRateUpdateSequence;
+  CCore::CUpdateSequence mSpeciesRateUpdateSequence;
 
   /**
    * The variables handling the integrated propensities of the stochastic reactions.
@@ -365,7 +365,7 @@ private:
   CVector< C_FLOAT64 > mSavedFluxes;
   CVector< C_FLOAT64 * > mFluxPointers;
 
-  CObjectInterface::UpdateSequence mPropensitiesUpdateSequence;
+  CCore::CUpdateSequence mPropensitiesUpdateSequence;
 
   //================Attributes for Root================
   /**

@@ -17,7 +17,7 @@
 
 #include "copasi.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CEvent.h"
 #include "model/CModel.h"
 #include "UI/CQEventWidget1.h"

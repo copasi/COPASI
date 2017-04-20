@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,7 +24,7 @@
 
 class CCopasiObjectName;
 class COptProblem;
-class CCopasiDataModel;
+class CDataModel;
 class CMathObject;
 class CRandom;
 
@@ -37,27 +42,27 @@ protected:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const std::string & name (default: OptimizationItem)
    */
-  COptItem(const CCopasiContainer * pParent,
+  COptItem(const CDataContainer * pParent,
            const std::string & name = "OptimizationItem");
 
   /**
    * Copy constructor
    * @param const COptItem & src
-   * @param const CCopasiContainer * pParent (default: src data model)
+   * @param const CDataContainer * pParent (default: src data model)
    */
   COptItem(const COptItem & src,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: group data model)
+   * @param const CDataContainer * pParent (default: group data model)
    */
   COptItem(const CCopasiParameterGroup & group,
-           const CCopasiContainer * pParent);
+           const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -133,7 +138,7 @@ public:
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CCopasiContainer::EmptyList);
+                         CDataContainer::EmptyList);
 
   /**
    * This functions check whether the current value is within the limits

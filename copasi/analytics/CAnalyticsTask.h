@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,14 +21,14 @@
 #ifndef COPASI_CAnalyticsTask
 #define COPASI_CAnalyticsTask
 
+#include "copasi/core/CMatrix.h"
 #include "copasi/model/CEvent.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CReadConfig.h"
 #include "copasi/trajectory/CTimeSeries.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CAnnotatedMatrix.h"
-#include "utilities/CMatrix.h"
 #include "analytics/CStatistics.h"
 
 class CAnalyticsProblem;
@@ -42,19 +47,19 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Task & type (default: analytics)
    */
-  CAnalyticsTask(const CCopasiContainer * pParent,
+  CAnalyticsTask(const CDataContainer * pParent,
                  const CTaskEnum::Task & type = CTaskEnum::analytics);
 
   /**
    * Copy constructor
    * @param const CAnalyticsTask & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CAnalyticsTask(const CAnalyticsTask & src,
-                 const CCopasiContainer * pParent = NULL);
+                 const CDataContainer * pParent = NULL);
 
   /**
    * Destructor
@@ -217,9 +222,9 @@ private:
   C_FLOAT64 mAverageFreq;
 
   //--- ETTORE start ---
-  const CCopasiObject *mpSelectedObject;
-  CCopasiObject * mpObjectSelected;
-  CCopasiObject * mpObjectRate;
+  const CDataObject *mpSelectedObject;
+  CDataObject * mpObjectSelected;
+  CDataObject * mpObjectRate;
 
   /**
    *  This holds the result

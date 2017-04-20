@@ -24,16 +24,16 @@
 #include <sedml/SedTypes.h>
 #include <sbml/SBMLTypes.h>
 
-#include <copasi/model/CModel.h>
-#include <copasi/report/CCopasiObject.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CDataObject.h"
 
 std::string SEDMLUtils::findIdByNameAndType(
-  const std::map<const CCopasiObject*, SBase*>& map,
+  const std::map<const CDataObject*, SBase*>& map,
   int typeCode,
   const std::string& name)
 {
-  std::map<const CCopasiObject*, SBase*>::const_iterator it = map.begin();
+  std::map<const CDataObject*, SBase*>::const_iterator it = map.begin();
 
   std::string::size_type compartmentStart = name.find("{");
 
@@ -50,7 +50,7 @@ std::string SEDMLUtils::findIdByNameAndType(
   while (it != map.end())
     {
       SBase* current = it->second;
-      const CCopasiObject* object = it->first;
+      const CDataObject* object = it->first;
       std::string displayName = object->getObjectDisplayName();
 
       if (((current->getTypeCode() & typeCode) != typeCode))
@@ -83,12 +83,12 @@ std::string
 SEDMLUtils::getXPathAndName(std::string& sbmlId,
                             const std::string &type,
                             const CModel *pModel,
-                            const CCopasiDataModel& dataModel)
+                            const CDataModel& dataModel)
 {
   std::vector<std::string> stringsContainer;
   std::string targetXPathString;
-  const std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap =
-    const_cast<CCopasiDataModel&>(dataModel).getCopasi2SBMLMap();
+  const std::map<const CDataObject*, SBase*>& copasi2sbmlmap =
+    const_cast<CDataModel&>(dataModel).getCopasi2SBMLMap();
   std::string displayName = sbmlId;
 
   if (copasi2sbmlmap.size() == 0)
@@ -97,7 +97,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
       return "";
     }
 
-  std::map<CCopasiObject*, SBase*>::const_iterator pos;
+  std::map<CDataObject*, SBase*>::const_iterator pos;
 
   if (type == "Concentration" || type == "InitialConcentration")
     {
@@ -167,7 +167,6 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
               sbmlId += "_" + parameterId;
 
               return xpath.str();
-
             }
 
           removeCharactersFromString(displayName, "()");
@@ -236,7 +235,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
   return targetXPathString;
 }
 
-const CCopasiObject*
+const CDataObject*
 SEDMLUtils::resolveDatagenerator(const CModel *model, const SedDataGenerator* dataReference)
 {
   // for now one variable only
@@ -246,7 +245,7 @@ SEDMLUtils::resolveDatagenerator(const CModel *model, const SedDataGenerator* da
 
   if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
     {
-      return static_cast<const CCopasiObject *>(model->getObject(CCopasiObjectName("Reference=Time")));
+      return static_cast<const CDataObject *>(model->getObject(CCopasiObjectName("Reference=Time")));
     }
 
   return resolveXPath(model, var->getTarget());
@@ -275,13 +274,13 @@ SEDMLUtils::translateTargetXpathInSBMLId(const std::string &xpath, std::string& 
   return id;
 }
 
-const CCopasiObject*
+const CDataObject*
 SEDMLUtils::resolveXPath(const CModel *model,  const std::string& xpath,
                          bool initial /* = false*/)
 {
   std::string SBMLType;
   std::string id = translateTargetXpathInSBMLId(xpath, SBMLType);
-  const CCopasiObject* result = getObjectForSbmlId(model, id, SBMLType, initial);
+  const CDataObject* result = getObjectForSbmlId(model, id, SBMLType, initial);
 
   if (result == NULL)
     {
@@ -292,13 +291,13 @@ SEDMLUtils::resolveXPath(const CModel *model,  const std::string& xpath,
         {
           std::string reactionType;
           std::string reactionId = translateTargetXpathInSBMLId(xpath.substr(0, pos), reactionType);
-          const CCopasiObject* flux = getObjectForSbmlId(model, reactionId, reactionType);
+          const CDataObject* flux = getObjectForSbmlId(model, reactionId, reactionType);
 
           if (flux != NULL)
             {
-              const CCopasiObject* reactionObj = flux->getObjectParent();
+              const CDataObject* reactionObj = flux->getObjectParent();
               std::string cn = "ParameterGroup=Parameters,Parameter=" + id + ",Reference=Value";
-              return dynamic_cast<const CCopasiObject*>(reactionObj->getObject(cn));
+              return dynamic_cast<const CDataObject*>(reactionObj->getObject(cn));
             }
         }
     }
@@ -318,10 +317,10 @@ SEDMLUtils::removeCharactersFromString(std::string& str, const std::string& char
 }
 
 std::string
-SEDMLUtils::getXPathForObject(const CCopasiObject& object)
+SEDMLUtils::getXPathForObject(const CDataObject& object)
 {
   const std::string& type = object.getObjectName();
-  const CCopasiDataModel* dm = object.getObjectDataModel();
+  const CDataModel* dm = object.getObjectDataModel();
   std::string yAxis = object.getObjectDisplayName();
   std::string targetXPathString = getXPathAndName(yAxis, type,
                                   dm->getModel(), *dm);
@@ -408,11 +407,11 @@ SEDMLUtils::splitStrings(const std::string &xpath, char delim,
     xpathStrings.push_back(next);
 }
 
-const CCopasiObject *
+const CDataObject *
 SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial/* = false*/)
 {
   if (SBMLType == "Time")
-    return static_cast<const CCopasiObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
+    return static_cast<const CDataObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
 
   if (SBMLType == "species")
     {

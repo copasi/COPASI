@@ -21,9 +21,9 @@
 
 #include "CSlider.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiObjectReference.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CDataObjectReference.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
 
@@ -41,9 +41,9 @@ CSlider * CSlider::fromData(const CData & data)
 }
 
 CSlider::CSlider(const std::string & name,
-                 const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Slider"),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
+                 const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Slider"),
+  mKey(CRootContainer::getKeyFactory()->add("Slider", this)),
   mAssociatedEntityKey(),
   mpSliderObject(NULL),
   mSliderType(Float),
@@ -60,9 +60,9 @@ CSlider::CSlider(const std::string & name,
 {}
 
 CSlider::CSlider(const CSlider & src,
-                 const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Slider", this)),
+                 const CDataContainer * pParent):
+  CDataContainer(src, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("Slider", this)),
   mAssociatedEntityKey(src.mAssociatedEntityKey),
   mpSliderObject(src.mpSliderObject),
   mSliderType(src.mSliderType),
@@ -79,13 +79,13 @@ CSlider::CSlider(const CSlider & src,
 {}
 
 CSlider::~CSlider()
-{CCopasiRootContainer::getKeyFactory()->remove(mKey);}
+{CRootContainer::getKeyFactory()->remove(mKey);}
 
 bool CSlider::compile(const CObjectInterface::ContainerList & listOfContainer)
 {
   if (getObjectDataModel() == NULL) return false;
 
-  //setSliderObject(CCopasiContainer::ObjectFromCN(listOfContainer, getObjectName()));
+  //setSliderObject(CDataContainer::ObjectFromCN(listOfContainer, getObjectName()));
   setSliderObject(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainer, mCN)));
 
   if (this->mSync) this->sync();
@@ -110,15 +110,15 @@ bool CSlider::setAssociatedEntityKey(const std::string & associatedEntityKey)
 {
   mAssociatedEntityKey = associatedEntityKey;
 
-  return (CCopasiRootContainer::getKeyFactory()->get(associatedEntityKey) != NULL);
+  return (CRootContainer::getKeyFactory()->get(associatedEntityKey) != NULL);
 }
 
 const std::string & CSlider::getAssociatedEntityKey() const
 {return mAssociatedEntityKey;}
 
-bool CSlider::setSliderObject(const CCopasiObject * pObject)
+bool CSlider::setSliderObject(const CDataObject * pObject)
 {
-  mpSliderObject = const_cast< CCopasiObject * >(pObject);
+  mpSliderObject = const_cast< CDataObject * >(pObject);
 
   if (!pObject)
     {
@@ -128,18 +128,18 @@ bool CSlider::setSliderObject(const CCopasiObject * pObject)
 
   mCN = pObject->getCN();
 
-  std::set< const CCopasiObject * > ChangedObjects;
+  std::set< const CDataObject * > ChangedObjects;
   ChangedObjects.insert(pObject);
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   mInitialRefreshes = pDataModel->getModel()->buildInitialRefreshSequence(ChangedObjects);
 
-  if (mpSliderObject->isValueInt())
+  if (mpSliderObject->hasFlag(CDataObject::ValueInt))
     {
       this->setSliderType(Integer);
     }
-  else if (mpSliderObject->isValueDbl())
+  else if (mpSliderObject->hasFlag(CDataObject::ValueDbl))
     {
       this->setSliderType(Float);
     }
@@ -188,7 +188,7 @@ bool CSlider::setSliderObject(const CCopasiObjectName & objectCN)
   return true;
 }
 
-const CCopasiObject * CSlider::getSliderObject() const
+const CDataObject * CSlider::getSliderObject() const
 {return mpSliderObject;}
 
 const std::string & CSlider::getSliderObjectCN() const
@@ -264,14 +264,14 @@ void CSlider::sync()
   if (mSliderType == CSlider::Integer || mSliderType == CSlider::UnsignedInteger)
     {
       C_INT32* reference =
-        (C_INT32*)(((CCopasiObjectReference<C_INT32>*)mpSliderObject)->getValuePointer());
+        (C_INT32*)(((CDataObjectReference<C_INT32>*)mpSliderObject)->getValuePointer());
 
       mValue = *reference;
     }
   else if (mSliderType == CSlider::Float || mSliderType == CSlider::UnsignedFloat)
     {
       C_FLOAT64* reference =
-        (C_FLOAT64*)(((CCopasiObjectReference<C_FLOAT64>*)mpSliderObject)->getValuePointer());
+        (C_FLOAT64*)(((CDataObjectReference<C_FLOAT64>*)mpSliderObject)->getValuePointer());
 
       mValue = *reference;
     }
@@ -281,14 +281,14 @@ void CSlider::writeToObject()
 {
   if (!mpSliderObject) return;
 
-  if (mpSliderObject->isValueDbl())
+  if (mpSliderObject->hasFlag(CDataObject::ValueDbl))
     *(C_FLOAT64*)mpSliderObject->getValuePointer() = mValue;
-  else if (mpSliderObject->isValueInt())
+  else if (mpSliderObject->hasFlag(CDataObject::ValueInt))
     *(C_INT32*)mpSliderObject->getValuePointer() = (C_INT32) floor(mValue + 0.5);
-  else if (mpSliderObject->isValueBool())
+  else if (mpSliderObject->hasFlag(CDataObject::ValueBool))
     *(bool*)mpSliderObject->getValuePointer() = (mValue != 0.0);
 
-  CCopasiDataModel* pDataModel = getObjectDataModel();
+  CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   CMathContainer & Container = pDataModel->getModel()->getMathContainer();
   Container.applyUpdateSequence(mInitialRefreshes);
@@ -430,7 +430,7 @@ bool CSlider::isValid() const
   const CModel* pModel = getObjectDataModel()->getModel();
   assert(pModel != NULL);
 
-  const CCopasiObject* pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(this->mCN));
+  const CDataObject* pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(this->mCN));
   result = (pObject != NULL && pObject == this->mpSliderObject);
   return result;
 }

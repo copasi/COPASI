@@ -23,7 +23,7 @@
 #include "function/CEvaluationTree.h"
 #include "function/CFunctionParameters.h"
 #include "function/CCallParameters.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 /*!
     \brief The class for handling a chemical kinetic function
@@ -45,19 +45,19 @@ public:
    * Default constructor
    * @param const std::string & name (default: "NoName")
    * @param const CEvaluationTree::Type & type (default: Function)
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunction(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NO_PARENT,
+            const CDataContainer * pParent = NO_PARENT,
             const Type & type = Function);
 
   /**
    * Copy constructor
    * @param const CFunction & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunction(const CFunction & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -106,15 +106,6 @@ public:
    * @return const C_FLOAT64 & result
    */
   virtual const C_FLOAT64 & calcValue(const CCallParameters<C_FLOAT64> & callParameters);
-
-  /**
-   * Function to return whether it depends on the given parameter
-   * @param const void * parameter
-   * @param const CCallParameters<C_FLOAT64> & callParameters
-   * @param bool dependsOn
-   */
-  virtual bool dependsOn(const C_FLOAT64 * parameter,
-                         const CCallParameters<C_FLOAT64> & callParameters) const;
 
   /**
    * Function to retrieve the index to the value of the named variable.

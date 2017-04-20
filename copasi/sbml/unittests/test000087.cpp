@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,9 +19,9 @@
 #include <limits>
 
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CCopasiMessage.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/report/CReportDefinition.h"
 #include "copasi/model/CModel.h"
@@ -36,19 +41,19 @@
 #include <sbml/Rule.h>
 #include <sbml/math/ASTNode.h>
 
-CCopasiDataModel* test000087::pCOPASIDATAMODEL = NULL;
+CDataModel* test000087::pCOPASIDATAMODEL = NULL;
 
 void test000087::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000087::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000087::test_import_reaction_flux_reference_1()
@@ -115,9 +120,9 @@ void test000087::test_import_reaction_flux_reference_2()
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == "Flux");
   CPPUNIT_ASSERT(pObject->getObjectParent() == pReaction);
 }
@@ -317,7 +322,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   CPPUNIT_ASSERT(parameterMappings[0][0] == pConstParameter->getKey());
   CPPUNIT_ASSERT(parameterMappings[1].size() == 1);
   std::string substrateKey = parameterMappings[1][0];
-  const CCopasiObject* pTempObject = CCopasiRootContainer::getKeyFactory()->get(substrateKey);
+  const CDataObject* pTempObject = CRootContainer::getKeyFactory()->get(substrateKey);
   CPPUNIT_ASSERT(pTempObject != NULL);
   const CMetab* pSubstrate = dynamic_cast<const CMetab*>(pTempObject);
   CPPUNIT_ASSERT(pSubstrate != NULL);
@@ -332,9 +337,9 @@ void test000087::test_simulate_reaction_flux_reference_1()
   const CRegisteredObjectName cn = pObjectNode->getObjectCN();
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
-  const CCopasiObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
+  const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == "Flux");
   CPPUNIT_ASSERT(pObject->getObjectParent() == pReaction);
   // Simulate the model (5 steps, stepsize 1 and check that at each step, the value of the variable parameter
@@ -388,7 +393,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
 
   pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
-  CCopasiVectorN< CCopasiTask > & TaskList = * pCOPASIDATAMODEL->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pCOPASIDATAMODEL->getTaskList();
 
   TaskList.remove("Time-Course");
   TaskList.add(pTrajectoryTask, true);

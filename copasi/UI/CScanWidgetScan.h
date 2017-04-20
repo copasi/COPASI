@@ -1,19 +1,20 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CScanWidgetScan.h,v $
-//   $Revision: 1.13 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/22 19:51:58 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef CSCANWIDGETSCAN_H
@@ -23,7 +24,7 @@
 #include "copasi/UI/CScanItemData.h"
 
 class CModel;
-class CCopasiObject;
+class CDataObject;
 
 class CCopasiParameterGroup;
 
@@ -42,11 +43,11 @@ public:
 
   virtual bool save(CCopasiParameterGroup * pItem) const;
 
-  void initFromObject(const CCopasiObject *obj);
+  void initFromObject(const CDataObject *obj);
 
 protected:
   // const CModel* mpModel;
-  const CCopasiObject* mpObject;
+  const CDataObject* mpObject;
 
 protected slots:
 

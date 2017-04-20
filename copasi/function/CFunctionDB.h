@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -22,18 +27,19 @@
 #ifndef COPASI_CFunctionDB
 #define COPASI_CFunctionDB
 
-#include "function/CEvaluationTree.h"
+#include "copasi/function/CEvaluationTree.h"
 
-#include "report/CCopasiContainer.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CReadConfig.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CReadConfig.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/math/CMathDependencyGraph.h"
 
 class CFunction;
 class CModel;
 
 /** @dia:pos 106.082,17.0878 */
-class CFunctionDB : public CCopasiContainer
+class CFunctionDB : public CDataContainer
 {
   // Attributes
 private:
@@ -45,7 +51,12 @@ private:
   /**
    *  Vector of the currently loaded functions
    */
-  CCopasiVectorN < CFunction > mLoadedFunctions;
+  CDataVectorN < CFunction > mLoadedFunctions;
+
+  /**
+   * The function dependencies
+   */
+  CMathDependencyGraph mDependencies;
 
   // Operations
 
@@ -53,10 +64,10 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CFunctionDB(const std::string & name,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -156,14 +167,14 @@ public:
 
   /**
    *  Retrieves the vector of loaded functions.
-   *  @return "CCopasiVectorNS < CFunction > &" loadedFunctions
+   *  @return "CDataVectorNS < CFunction > &" loadedFunctions
    */
-  CCopasiVectorN < CFunction > & loadedFunctions();
+  CDataVectorN < CFunction > & loadedFunctions();
 
   /**
    *  Retrieves the vector of functions that are suitable for a
    *  number of substrates, products and reversibility status.
-   *  Note: The returns CCopasiVector has to be deleted after use!
+   *  Note: The returns CDataVector has to be deleted after use!
    *  @param "const size_t" noSubstrates the number of substrates
    *  @param "const size_t" noProducts the number of products
    *  @param "const TriLogic" reversible the reversibility status
@@ -177,20 +188,12 @@ public:
   /**
    * Appends pointers to function, which are dependent on any of the candidates
    * to the list dependentFunctions.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentFunctions
+   * @param const ObjectSet & candidates
+   * @param std::set< const CDataObject * > & dependentFunctions
    * @return bool functionsAppended
    */
-  bool appendDependentFunctions(std::set< const CCopasiObject * > candidates,
-                                std::set< const CCopasiObject * > & dependentFunctions) const;
-
-  /**
-   * Retrieve a list of evaluation trees depending on the tree with the
-   * given name.
-   * @param const std::string & name
-   * @return std::set<std::string> list
-   */
-  std::set<std::string> listDependentTrees(const std::string & name) const;
+  bool appendDependentFunctions(const ObjectSet & candidates,
+                                DataObjectSet & dependentFunctions) const;
 
   /**
    * Retrieves a list of all functions used in the model

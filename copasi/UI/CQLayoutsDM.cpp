@@ -14,8 +14,8 @@
 #include "CQLayoutsDM.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "layout/CListOfLayouts.h"
 
 CQLayoutsDM::CQLayoutsDM(QObject *parent) :
@@ -232,14 +232,14 @@ bool CQLayoutsDM::removeRows(QModelIndexList rows, const QModelIndex & /* index 
   for (j = Layouts.begin(); j != Layouts.end(); ++j)
     {
       CLayout *pLayout = *j;
-      size_t delRow = mpListOfLayouts->CCopasiVector< CLayout >::getIndex(pLayout);
+      size_t delRow = mpListOfLayouts->CDataVector< CLayout >::getIndex(pLayout);
 
       if (delRow != C_INVALID_INDEX)
         {
           QMessageBox::StandardButton choice =
             CQMessageBox::confirmDelete(NULL, "layout",
                                         FROM_UTF8(pLayout->getObjectName()),
-                                        std::set< const CCopasiObject * >());
+                                        pLayout);
 
           if (choice == QMessageBox::Ok)
             removeRow((int) delRow);

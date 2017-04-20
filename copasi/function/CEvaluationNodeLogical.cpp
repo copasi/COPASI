@@ -592,7 +592,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 bool CEvaluationNodeLogical::isBoolean() const
 {return true;}
 
-ASTNode* CEvaluationNodeLogical::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();

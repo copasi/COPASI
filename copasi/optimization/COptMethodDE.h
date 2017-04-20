@@ -1,7 +1,12 @@
-// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 /**
  * COptMethodDE class
@@ -11,8 +16,8 @@
 #define COPASI_COptMethodDE
 #include <limits>
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
-#include "utilities/CVector.h"
 
 class CRandom;
 class CPermutation;
@@ -23,21 +28,21 @@ class COptMethodDE : public COptPopulationMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: DifferentialEvolution)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodDE(const CCopasiContainer * pParent,
+  COptMethodDE(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::DifferentialEvolution,
                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodDE & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodDE(const COptMethodDE & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor

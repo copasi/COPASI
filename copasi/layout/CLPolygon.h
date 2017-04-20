@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLPolygon.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,17 +14,17 @@
 #include <string>
 
 #include "copasi/layout/CLGraphicalPrimitive2D.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 class CLRenderPoint;
 class CLRenderCubicBezier;
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class sbmlPolygon;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLPolygon : public CLGraphicalPrimitive2D, public CCopasiObject
+class CLPolygon : public CLGraphicalPrimitive2D, public CDataObject
 {
 private:
   // prevent the compiler from generating an assignment operator
@@ -45,17 +42,17 @@ public:
   /**
    * Constructor.
    */
-  CLPolygon(CCopasiContainer* pParent = NULL);
+  CLPolygon(CDataContainer* pParent = NULL);
 
   /**
    * Copy constructor
    */
-  CLPolygon(const CLPolygon& source, CCopasiContainer* pParent);
+  CLPolygon(const CLPolygon& source, CDataContainer* pParent);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLPolygon(const sbmlPolygon& source, CCopasiContainer* pParent = NULL);
+  CLPolygon(const sbmlPolygon& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.

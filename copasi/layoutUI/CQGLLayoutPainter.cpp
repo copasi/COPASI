@@ -18,7 +18,7 @@
 #include "copasi.h"
 
 #include "copasi/model/CModel.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "CQFontRenderer.h"
 #include "copasi/layout/CLLayoutRenderer.h"
@@ -444,7 +444,7 @@ void CQGLLayoutPainter::calculateAndAssignBounds(CLayout* pLayout)
     }
 }
 
-void CQGLLayoutPainter::update(const CCopasiDataModel* pDatamodel, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir)
+void CQGLLayoutPainter::update(const CDataModel* pDatamodel, CLayout* pLayout, const CLRenderInformationBase* pRenderInfo, const QString& baseDir)
 {
   // delete the current renderer if there is one
   if (this->mpRenderer)

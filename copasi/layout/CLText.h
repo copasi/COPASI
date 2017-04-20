@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLText.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,17 +14,17 @@
 #include "copasi/layout/CLGraphicalPrimitive1D.h"
 #include "copasi/layout/CLRelAbsVector.h"
 
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 #include <string>
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class Text;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLText : public CLGraphicalPrimitive1D, public CCopasiObject
+class CLText : public CLGraphicalPrimitive1D, public CDataObject
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -77,22 +74,22 @@ protected:
 
 public:
   // Ctor
-  CLText(CCopasiContainer* pParent);
+  CLText(CDataContainer* pParent);
 
   /**
    * Constructor with optional coordinates.
    */
-  CLText(const CLRelAbsVector& x = CLRelAbsVector(0.0, 0.0), const CLRelAbsVector& y = CLRelAbsVector(0.0, 0.0), const CLRelAbsVector& z = CLRelAbsVector(0.0, 0.0), CCopasiContainer* pParent = NULL);
+  CLText(const CLRelAbsVector& x = CLRelAbsVector(0.0, 0.0), const CLRelAbsVector& y = CLRelAbsVector(0.0, 0.0), const CLRelAbsVector& z = CLRelAbsVector(0.0, 0.0), CDataContainer* pParent = NULL);
 
   /**
    * Copy constructor.
    */
-  CLText(const CLText& source, CCopasiContainer* pParent = NULL);
+  CLText(const CLText& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLText(const Text& source, CCopasiContainer* pParent = NULL);
+  CLText(const Text& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.

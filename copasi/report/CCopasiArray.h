@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,7 +21,7 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/utilities/CMatrix.h"
+#include "copasi/core/CMatrix.h"
 
 /**
  * This abstract class defines the interface for an n-dimensional array of floats
@@ -133,18 +138,18 @@ public:
  */
 
 template<class VectorType>
-class CCopasiVectorInterface: public CCopasiAbstractArray
+class CDataVectorInterface: public CCopasiAbstractArray
 {
 public:
 
-  CCopasiVectorInterface(VectorType * vector)
+  CDataVectorInterface(VectorType * vector)
     : mVector(vector)
   {
     assert(mVector);
     mSizes.resize(1);
     mSizes[0] = mVector->size();
   }
-  virtual ~CCopasiVectorInterface() {};
+  virtual ~CDataVectorInterface() {};
 
   data_type & operator[](const index_type & index)
   {

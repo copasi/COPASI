@@ -14,8 +14,8 @@
 
 #include "CTrajectoryProblem.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
@@ -80,7 +80,7 @@ const C_FLOAT64 beta41 = 0.0;
 const C_FLOAT64 beta42 = 1.0 / 2.0;
 const C_FLOAT64 beta43 = -1.0 / 2.0;
 
-CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CCopasiContainer * pParent,
+CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -136,7 +136,7 @@ CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CCopasiContainer * pPar
 }
 
 CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CStochasticRungeKuttaRI5 & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mContainerVariables(),
   mContainerRates(),
@@ -337,7 +337,7 @@ void CStochasticRungeKuttaRI5::start()
   CObjectInterface::ObjectSet::const_iterator endNoiseInputObject = mpContainer->getNoiseInputObjects().end();
 
   C_FLOAT64 ** ppNoiseInput = mNoiseInputValues.begin();
-  UpdateSequence * pUpdateSequence = mNoiseUpdateSequences.begin();
+  CCore::CUpdateSequence * pUpdateSequence = mNoiseUpdateSequences.begin();
 
   for (; itNoiseInputObject != endNoiseInputObject; ++itNoiseInputObject, ++ppNoiseInput, ++pUpdateSequence)
     {
@@ -346,15 +346,15 @@ void CStochasticRungeKuttaRI5::start()
       ObjectSet Objects;
       Objects.insert(*itNoiseInputObject);
 
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, mpContainer->getStateObjects(false), Objects);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Objects);
 
       if (pUpdateSequence->empty())
         {
           pUpdateSequence->insert(pUpdateSequence->end(), *itNoiseInputObject);
         }
 
-      UpdateSequence Sequence;
-      mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CMath::SimulationContext::Default, Objects, NoiseObjects);
+      CCore::CUpdateSequence Sequence;
+      mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CCore::SimulationContext::Default, Objects, NoiseObjects);
       pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
     }
 

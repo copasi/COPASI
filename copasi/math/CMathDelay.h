@@ -14,7 +14,7 @@
 #include <map>
 #include <string>
 
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathUpdateSequence.h"
@@ -114,13 +114,13 @@ private:
   /**
    * The sequence of calculations required to determine the delayed value
    */
-  CObjectInterface::UpdateSequence mValueSequence;
+  CCore::CUpdateSequence mValueSequence;
 
   /**
    * The sequence of calculations required to determine the delayed value based on the reduced
    * state
    */
-  CObjectInterface::UpdateSequence mValueSequenceReduced;
+  CCore::CUpdateSequence mValueSequenceReduced;
 };
 
 #endif // COPASI_CMathDelay

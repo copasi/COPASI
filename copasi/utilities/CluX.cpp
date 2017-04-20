@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,8 +24,9 @@
 #include "copasi.h"
 
 #include "CluX.h"
-#include "CMatrix.h"
-#include "CVector.h"
+
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "CProcessReport.h"
 
 #include "lapack/lapackwrap.h"
@@ -177,7 +183,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
 
               for (jj = i + 1; jj < Cols; jj++, pTmp2++, pTmp3++)
                 {
-                  *pTmp3 -= *pTmp1 * *pTmp2;
+                  *pTmp3 -= *pTmp1 **pTmp2;
                   //                  if (fabs(*pTmp3) < std::numeric_limits< C_FLOAT64 >::epsilon()) *pTmp3 = 0.0;
                 }
             }
@@ -365,7 +371,7 @@ bool LUfactor(CMatrix< C_FLOAT64 > & A,
                   pTmp2 = &T(j, iTop);
 
                   for (k = iTop; k < i && k < j; k++, pTmp1 += Rows, pTmp2++)
-                    tmp += *pTmp1 * *pTmp2;
+                    tmp += *pTmp1 **pTmp2;
 
                   if (i <= j) tmp += *pTmp2;
 

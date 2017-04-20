@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLLinearGradient.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:52 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,15 +12,15 @@
 
 #include "CLLinearGradient.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLLinearGradient::CLLinearGradient(CCopasiContainer* pParent)
-    : CLGradientBase("LinearGradient", pParent),
+CLLinearGradient::CLLinearGradient(CDataContainer* pParent)
+  : CLGradientBase("LinearGradient", pParent),
     mX1(CLRelAbsVector(0.0, 0.0)),
     mY1(CLRelAbsVector(0.0, 0.0)),
     mZ1(CLRelAbsVector(0.0, 0.0)),
@@ -31,37 +28,37 @@ CLLinearGradient::CLLinearGradient(CCopasiContainer* pParent)
     mY2(CLRelAbsVector(0.0, 100.0)),
     mZ2(CLRelAbsVector(0.0, 100.0))
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LinearGradient", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LinearGradient", this);
 }
 
 /**
  * Copy Constructor
  */
-CLLinearGradient::CLLinearGradient(const CLLinearGradient& source, CCopasiContainer* pParent):
-    CLGradientBase(source, pParent),
-    mX1(source.mX1),
-    mY1(source.mY1),
-    mZ1(source.mZ1),
-    mX2(source.mX2),
-    mY2(source.mY2),
-    mZ2(source.mZ2)
+CLLinearGradient::CLLinearGradient(const CLLinearGradient& source, CDataContainer* pParent):
+  CLGradientBase(source, pParent),
+  mX1(source.mX1),
+  mY1(source.mY1),
+  mZ1(source.mZ1),
+  mX2(source.mX2),
+  mY2(source.mY2),
+  mZ2(source.mZ2)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LinearGradient", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LinearGradient", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLLinearGradient::CLLinearGradient(const LinearGradient& source, CCopasiContainer* pParent):
-    CLGradientBase(source, "LinearGradient", pParent),
-    mX1(source.getXPoint1()),
-    mY1(source.getYPoint1()),
-    mZ1(source.getZPoint1()),
-    mX2(source.getXPoint2()),
-    mY2(source.getYPoint2()),
-    mZ2(source.getZPoint2())
+CLLinearGradient::CLLinearGradient(const LinearGradient& source, CDataContainer* pParent):
+  CLGradientBase(source, "LinearGradient", pParent),
+  mX1(source.getXPoint1()),
+  mY1(source.getYPoint1()),
+  mZ1(source.getZPoint1()),
+  mX2(source.getXPoint2()),
+  mY2(source.getYPoint2()),
+  mZ2(source.getZPoint2())
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LinearGradient", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LinearGradient", this);
 }
 
 /**

@@ -20,7 +20,7 @@
 #include "copasi.h"
 #include "qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
 
@@ -1148,7 +1148,7 @@ void CEntityProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
   int row;
 
   // Retrieve Author's information from Configuration
-  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+  CConfigurationFile * configFile = CRootContainer::getConfiguration();
   CCopasiParameter * pParameter;
   QString Name, Action, Property, NewValue, Time, Author, GivenName, FamilyName;
   pParameter = configFile->getParameter("Given Name");

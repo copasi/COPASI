@@ -37,10 +37,10 @@
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "report/CCopasiTimer.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CCopasiTask * CCopasiTask::fromData(const CData & data)
@@ -67,9 +67,9 @@ bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
 }
 
 CCopasiTask::CCopasiTask():
-  CCopasiContainer(CTaskEnum::TaskName[CTaskEnum::UnsetTask], NULL, "Task"),
+  CDataContainer(CTaskEnum::TaskName[CTaskEnum::UnsetTask], NULL, "Task"),
   mType(CTaskEnum::UnsetTask),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(this),
   mResult(this),
   mScheduled(false),
@@ -86,12 +86,12 @@ CCopasiTask::CCopasiTask():
   mOutputCounter(0)
 {initObjects();}
 
-CCopasiTask::CCopasiTask(const CCopasiContainer * pParent,
+CCopasiTask::CCopasiTask(const CDataContainer * pParent,
                          const CTaskEnum::Task & taskType,
                          const std::string & type):
-  CCopasiContainer(CTaskEnum::TaskName[taskType], pParent, type),
+  CDataContainer(CTaskEnum::TaskName[taskType], pParent, type),
   mType(taskType),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(this),
   mResult(this),
   mScheduled(false),
@@ -109,10 +109,10 @@ CCopasiTask::CCopasiTask(const CCopasiContainer * pParent,
 {initObjects();}
 
 CCopasiTask::CCopasiTask(const CCopasiTask & src,
-                         const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                         const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mType(src.mType),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Task", this)),
+  mKey(CRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(src.mDescription, this),
   mResult(src.mResult, this),
   mScheduled(src.mScheduled),
@@ -131,7 +131,7 @@ CCopasiTask::CCopasiTask(const CCopasiTask & src,
 
 CCopasiTask::~CCopasiTask()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 
   pdelete(mpProblem);
   pdelete(mpMethod);
@@ -429,11 +429,11 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
 
 void CCopasiTask::initObjects()
 {
-  addObjectReference("Output counter", mOutputCounter, CCopasiObject::ValueInt);
+  addObjectReference("Output counter", mOutputCounter, CDataObject::ValueInt);
   new CCopasiTimer(CCopasiTimer::WALL, this);
   new CCopasiTimer(CCopasiTimer::PROCESS, this);
 
-  CCopasiDataModel *pDataModel = getObjectDataModel();
+  CDataModel *pDataModel = getObjectDataModel();
 
   if (pDataModel != NULL)
     {
@@ -444,13 +444,13 @@ void CCopasiTask::initObjects()
     }
 }
 
-CCopasiTask::CDescription::CDescription(const CCopasiContainer * pParent):
-  CCopasiObject("Description", pParent, "Object")
+CCopasiTask::CDescription::CDescription(const CDataContainer * pParent):
+  CDataObject("Description", pParent, "Object")
 {}
 
 CCopasiTask::CDescription::CDescription(const CCopasiTask::CDescription & src,
-                                        const CCopasiContainer * pParent):
-  CCopasiObject(src, pParent)
+                                        const CDataContainer * pParent):
+  CDataObject(src, pParent)
 {}
 
 CCopasiTask::CDescription::~CDescription() {}
@@ -484,13 +484,13 @@ std::ostream &operator<<(std::ostream &os,
   return os;
 }
 
-CCopasiTask::CResult::CResult(const CCopasiContainer * pParent):
-  CCopasiObject("Result", pParent, "Object")
+CCopasiTask::CResult::CResult(const CDataContainer * pParent):
+  CDataObject("Result", pParent, "Object")
 {}
 
 CCopasiTask::CResult::CResult(const CCopasiTask::CResult & src,
-                              const CCopasiContainer * pParent):
-  CCopasiObject(src, pParent)
+                              const CDataContainer * pParent):
+  CDataObject(src, pParent)
 {}
 
 CCopasiTask::CResult::~CResult() {}

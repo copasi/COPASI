@@ -22,9 +22,9 @@
 
 #include "CQTSSAResultWidget.h"
 #include "CQTSSAResultSubWidget.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiVector.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataVector.h"
 #include "tssanalysis/CTSSATask.h"
 
 //#include "report/CKeyFactory.h"
@@ -79,7 +79,7 @@ bool CQTSSAResultWidget::loadFromBackend()
 
 #if 0
   mCentralWidget->displayOptimizationTab(false);
-  CCopasiDataModel* pDataModel = getDataModel();
+  CDataModel* pDataModel = getDataModel();
   assert(pDataModel != NULL);
   mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"))->getTimeSeries());
 #endif
@@ -126,7 +126,7 @@ bool CQTSSAResultWidget::leave()
 
 bool CQTSSAResultWidget::enterProtected()
 {
-  CCopasiDataModel* pDataModel = getDataModel();
+  CDataModel* pDataModel = getDataModel();
   assert(pDataModel != NULL);
   pTask =
     dynamic_cast<CTSSATask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"));
@@ -148,7 +148,7 @@ bool CQTSSAResultWidget::enterProtected()
 
   return loadFromBackend();
   /*objKey = key;
-  CCompartment* comp = dynamic_cast< CCompartment * >(CCopasiRootContainer::getKeyFactory()->get(key));
+  CCompartment* comp = dynamic_cast< CCompartment * >(CRootContainer::getKeyFactory()->get(key));
 
   if (comp) return loadFromCompartment(comp);
   else return false;*/

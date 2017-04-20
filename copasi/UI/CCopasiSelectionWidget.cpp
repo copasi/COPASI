@@ -59,7 +59,7 @@ void CCopasiSelectionWidget::populateTree(const CModel * model,
     CCopasiMessage::clearDeque();
 }
 
-void CCopasiSelectionWidget::populateTree(const std::vector< const CCopasiObject * > & objectList)
+void CCopasiSelectionWidget::populateTree(const std::vector< const CDataObject * > & objectList)
 {
   size_t lastError = CCopasiMessage::peekLastMessage().getNumber();
 
@@ -70,7 +70,7 @@ void CCopasiSelectionWidget::populateTree(const std::vector< const CCopasiObject
     CCopasiMessage::clearDeque();
 }
 
-void CCopasiSelectionWidget::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
+void CCopasiSelectionWidget::setOutputVector(std::vector< const CDataObject * > * outputVector)
 {
   this->mpOutputVector = outputVector;
 
@@ -174,7 +174,7 @@ void CCopasiSelectionWidget::commit()
 
           if (this->mSingleSelect && this->mpOutputVector->size() > 1)
             {
-              const CCopasiObject * object = this->mpOutputVector->at(0);
+              const CDataObject * object = this->mpOutputVector->at(0);
               this->mpOutputVector->clear();
               this->mpOutputVector->push_back(object);
             }

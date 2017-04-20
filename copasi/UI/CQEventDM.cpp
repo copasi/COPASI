@@ -15,8 +15,8 @@
 
 #include <QtCore/QString>
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "function/CExpression.h"
 #include "model/CModel.h"
@@ -32,7 +32,7 @@
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 
-CQEventDM::CQEventDM(QObject *parent, CCopasiDataModel * pDataModel)
+CQEventDM::CQEventDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
 
 {
@@ -95,14 +95,14 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
 
           if (index.column() == COL_ASSIGNTARGET_EVENTS || index.column() == COL_ASSIGNEXPRESSION_EVENTS)
             {
-              CCopasiVectorN< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
-              CCopasiVectorN< CEventAssignment >::const_iterator begin = pEvent->getAssignments().begin();
-              CCopasiVectorN< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
+              CDataVectorN< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator begin = pEvent->getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
 
               for (; it != end; ++it)
                 {
                   const CModelEntity * pEntity =
-                    dynamic_cast< CModelEntity * >(CCopasiRootContainer::getKeyFactory()->get(it->getTargetKey()));
+                    dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
 
                   if (pEntity != NULL)
                     {
@@ -250,7 +250,7 @@ bool CQEventDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CEvent >::const_iterator itRow = pModel->getEvents().begin() + position;
+  CDataVector< CEvent >::const_iterator itRow = pModel->getEvents().begin() + position;
 
   for (itDeletedKey = DeletedKeys.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow)
     {
@@ -356,7 +356,7 @@ void CQEventDM::addEventRow(UndoEventData *pEventData)
 
   beginInsertRows(QModelIndex(), 1, 1);
 
-  CCopasiObject *pEvent = pEventData->restoreObjectIn(pModel);
+  CDataObject *pEvent = pEventData->restoreObjectIn(pModel);
 
   if (pEvent == NULL) return;
 
@@ -398,16 +398,15 @@ bool CQEventDM::removeEventRows(QModelIndexList rows, const QModelIndex&)
       CEvent * pEvent = *j;
 
       size_t delRow =
-        pModel->getEvents().CCopasiVector< CEvent >::getIndex(pEvent);
+        pModel->getEvents().CDataVector< CEvent >::getIndex(pEvent);
 
       if (delRow == C_INVALID_INDEX)
         continue;
 
-      std::set< const CCopasiObject * > deletedObjects;
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(NULL, "event",
                                     FROM_UTF8(pEvent->getObjectName()),
-                                    deletedObjects);
+                                    pEvent);
 
       if (choice == QMessageBox::Ok)
         {
@@ -439,7 +438,7 @@ bool CQEventDM::insertEventRows(QList <UndoEventData *>& pData)
     {
       beginInsertRows(QModelIndex(), 1, 1);
       UndoEventData * data = *i;
-      CCopasiObject * pEvent = data->restoreObjectIn(pModel);
+      CDataObject * pEvent = data->restoreObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 

@@ -11,11 +11,11 @@
 #include "utilities/CUnitDefinitionDB.h"
 #include "utilities/CUnitDefinition.h"
 #include "utilities/CCopasiMessage.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
-                                     const CCopasiContainer * pParent):
-  CCopasiVectorN< CUnitDefinition >(name, pParent),
+                                     const CDataContainer * pParent):
+  CDataVectorN< CUnitDefinition >(name, pParent),
   mSymbolToUnitDefinitions()
 {}
 
@@ -23,7 +23,7 @@ CUnitDefinitionDB::CUnitDefinitionDB(const std::string & name,
 bool CUnitDefinitionDB::add(const CUnitDefinition & src)
 {
   // This form will construct a copy, before adding (inherited
-  // from CCopasiVectorN). When the CUnitDefinition
+  // from CDataVectorN). When the CUnitDefinition
   // copy constructor is called, an exception will be thrown if
   // the symbol is already in use.
   // If it's symbol is already present, this form will not add
@@ -62,7 +62,7 @@ bool CUnitDefinitionDB::add(CUnitDefinition * src, bool adopt)
       return false;
     }
 
-  CCopasiVectorN< CUnitDefinition >::add(src, adopt);
+  CDataVectorN< CUnitDefinition >::add(src, adopt);
   mSymbolToUnitDefinitions[src->getSymbol()] = src;
 
   if (src->getSymbol() == "\xCE\xA9")
@@ -80,7 +80,7 @@ void CUnitDefinitionDB::remove(const size_t & index)
 }
 
 //virtual
-bool CUnitDefinitionDB::remove(CCopasiObject * pObject)
+bool CUnitDefinitionDB::remove(CDataObject * pObject)
 {
   CUnitDefinition * pUnitDef = dynamic_cast< CUnitDefinition * >(pObject);
 
@@ -89,7 +89,7 @@ bool CUnitDefinitionDB::remove(CCopasiObject * pObject)
       mSymbolToUnitDefinitions.erase(pUnitDef->getSymbol());
     }
 
-  return CCopasiVector< CUnitDefinition >::remove(pObject);
+  return CDataVector< CUnitDefinition >::remove(pObject);
 }
 
 //virtual
@@ -178,9 +178,9 @@ void CUnitDefinitionDB::replaceSymbol(const std::string & oldSymbol,
       it->replaceSymbol(oldSymbol, newSymbol);
     }
 
-  if (getObjectParent() == CCopasiRootContainer::getRoot())
+  if (getObjectParent() == CRootContainer::getRoot())
     {
-      CCopasiRootContainer::replaceSymbol(oldSymbol, newSymbol);
+      CRootContainer::replaceSymbol(oldSymbol, newSymbol);
     }
 }
 
@@ -248,13 +248,13 @@ std::vector< CUnit > CUnitDefinitionDB::getAllValidUnits(const std::string & sym
   return ValidUnits;
 }
 
-bool CUnitDefinitionDB::appendDependentUnits(std::set< const CCopasiObject * > candidates,
-    std::set< const CCopasiObject * > & dependentUnits) const
+bool CUnitDefinitionDB::appendDependentUnits(std::set< const CDataObject * > candidates,
+    std::set< const CDataObject * > & dependentUnits) const
 {
   std::set< std::string > DeletedSymbols;
 
-  std::set< const CCopasiObject * >::const_iterator itCandidate = candidates.begin();
-  std::set< const CCopasiObject * >::const_iterator endCandidate = candidates.end();
+  std::set< const CDataObject * >::const_iterator itCandidate = candidates.begin();
+  std::set< const CDataObject * >::const_iterator endCandidate = candidates.end();
 
   for (; itCandidate != endCandidate; ++itCandidate)
     {
@@ -266,8 +266,8 @@ bool CUnitDefinitionDB::appendDependentUnits(std::set< const CCopasiObject * > c
         }
     }
 
-  CCopasiVectorN< CUnitDefinition >::const_iterator it = begin();
-  CCopasiVectorN< CUnitDefinition >::const_iterator itEnd = end();
+  CDataVectorN< CUnitDefinition >::const_iterator it = begin();
+  CDataVectorN< CUnitDefinition >::const_iterator itEnd = end();
 
   for (; it != itEnd; ++it)
     {

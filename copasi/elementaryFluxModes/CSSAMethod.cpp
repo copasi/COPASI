@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -33,11 +38,11 @@
  *  @param "const CSSAMethod &" src
  */
 CSSAMethod::CSSAMethod(const CSSAMethod & src,
-                       const CCopasiContainer * pParent):
+                       const CDataContainer * pParent):
   CEFMAlgorithm(src, pParent)
 {}
 
-CSSAMethod::CSSAMethod(const CCopasiContainer * pParent) :
+CSSAMethod::CSSAMethod(const CDataContainer * pParent) :
   CEFMAlgorithm(CCopasiMethod::stoichiometricStabilityAnalysis, pParent)
 {}
 
@@ -64,7 +69,7 @@ bool CSSAMethod::initialize()
 
   /* Get the reactions from the model */
   /* Note: We have as many reactions as we have rows in ModelStoi */
-  CCopasiVectorNS < CReaction > & Reaction = mpModel->getReactions();
+  CDataVectorNS < CReaction > & Reaction = mpModel->getReactions();
 
   /* Reversible reaction counter */
   mReversible = 0;
@@ -387,11 +392,11 @@ CSSAMethod::buildKineticMatrix()
   mTransposedKineticMatrix.resize((C_INT64)num_reactions, (C_INT64)num_metabolites);
   memset(mTransposedKineticMatrix.array(), 0, (int)(num_metabolites * num_reactions * sizeof(C_FLOAT64)));
 
-  CCopasiVector< CMetab > & metabOrder = mpModel->getMetabolitesX();
+  CDataVector< CMetab > & metabOrder = mpModel->getMetabolitesX();
 
   for (int ireac = 0; ireac < mIsBackwardReaction.size(); ++ireac)
     {
-      CCopasiVector< CChemEqElement > substrates;
+      CDataVector< CChemEqElement > substrates;
 
       if (mIsBackwardReaction[ireac])
         substrates = mReorderedReactions[ireac]->getChemEq().getProducts();
@@ -400,9 +405,9 @@ CSSAMethod::buildKineticMatrix()
 
       for (int jsubst = 0; jsubst < substrates.size(); ++jsubst)
         {
-          CCopasiVector< CMetab >::iterator found = find(metabOrder.begin(),
-              metabOrder.end(),
-              substrates[jsubst]->getMetabolite());
+          CDataVector< CMetab >::iterator found = find(metabOrder.begin(),
+                                                  metabOrder.end(),
+                                                  substrates[jsubst]->getMetabolite());
 
           if ((*found)->isDependent()) continue;
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -33,15 +38,15 @@
 #include "CLRenderPoint.h"
 #include "CLRenderCubicBezier.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLGroup::CLGroup(CCopasiContainer* pParent):
+CLGroup::CLGroup(CDataContainer* pParent):
   CLGraphicalPrimitive2D(),
-  CCopasiContainer("RenderGroup", pParent),
+  CDataContainer("RenderGroup", pParent),
   mFontFamily(""),
   mFontSize(CLRelAbsVector(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN())),
   mFontWeight(CLText::WEIGHT_UNSET),
@@ -53,15 +58,15 @@ CLGroup::CLGroup(CCopasiContainer* pParent):
   mElements("GroupElements", this),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderGroup", this);
 }
 
 /**
  * Copy constructor.
  */
-CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
+CLGroup::CLGroup(const CLGroup& source, CDataContainer* pParent):
   CLGraphicalPrimitive2D(source),
-  CCopasiContainer(source, pParent),
+  CDataContainer(source, pParent),
   mFontFamily(source.mFontFamily),
   mFontSize(source.mFontSize),
   mFontWeight(source.mFontWeight),
@@ -73,10 +78,10 @@ CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
   mElements("GroupElements", this),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderGroup", this);
   // copy the elements
   size_t i, iMax = source.mElements.size();
-  const CCopasiObject* pChild = NULL;
+  const CDataObject* pChild = NULL;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -116,9 +121,9 @@ CLGroup::CLGroup(const CLGroup& source, CCopasiContainer* pParent):
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
+CLGroup::CLGroup(const RenderGroup& source, CDataContainer* pParent):
   CLGraphicalPrimitive2D(source),
-  CCopasiContainer("RenderGroup", pParent),
+  CDataContainer("RenderGroup", pParent),
   mFontFamily(source.getFontFamily()),
   mFontSize(source.getFontSize()),
   mStartHead(source.getStartHead()),
@@ -126,7 +131,7 @@ CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
   mElements("GroupElements", this),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderGroup", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderGroup", this);
 
   // copy the elements
   switch (source.getFontWeight())
@@ -239,7 +244,7 @@ CLGroup::CLGroup(const RenderGroup& source, CCopasiContainer* pParent):
  */
 CLGroup::~CLGroup()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**
@@ -389,7 +394,7 @@ size_t CLGroup::getNumElements() const
 /**
  * Returns the list of  elements.
  */
-const CCopasiVector<CCopasiObject>* CLGroup::getListOfElements() const
+const CDataVector<CDataObject>* CLGroup::getListOfElements() const
 {
   return &this->mElements;
 }
@@ -397,7 +402,7 @@ const CCopasiVector<CCopasiObject>* CLGroup::getListOfElements() const
 /**
  * Returns the list of  elements.
  */
-CCopasiVector<CCopasiObject>* CLGroup::getListOfElements()
+CDataVector<CDataObject>* CLGroup::getListOfElements()
 {
   return &this->mElements;
 }
@@ -406,7 +411,7 @@ CCopasiVector<CCopasiObject>* CLGroup::getListOfElements()
  * Returns element with index n.
  * If there is no such element, NULL is returned.
  */
-CCopasiObject* CLGroup::getElement(size_t n)
+CDataObject* CLGroup::getElement(size_t n)
 {
   if (n < this->mElements.size())
     {
@@ -422,7 +427,7 @@ CCopasiObject* CLGroup::getElement(size_t n)
  * Returns element with index n.
  * If there is no such element, NULL is returned.
  */
-const CCopasiObject* CLGroup::getElement(size_t n) const
+const CDataObject* CLGroup::getElement(size_t n) const
 {
   if (n < this->mElements.size())
     {
@@ -881,7 +886,7 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
   for (i = 0; i < iMax; ++i)
     {
       const Transformation2D* pChild = NULL;
-      const CCopasiObject* pObject = &this->mElements[i];
+      const CDataObject* pObject = &this->mElements[i];
 
       if (dynamic_cast<const CLRectangle*>(pObject))
         {

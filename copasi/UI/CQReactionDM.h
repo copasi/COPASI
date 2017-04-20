@@ -45,7 +45,7 @@ class CQReactionDM : public CQBaseDataModel
   friend class ReactionDataChangeCommand;
 
 public:
-  CQReactionDM(QObject *parent, CCopasiDataModel * pDataModel);
+  CQReactionDM(QObject *parent, CDataModel * pDataModel);
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;

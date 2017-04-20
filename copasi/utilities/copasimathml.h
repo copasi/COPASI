@@ -1,28 +1,29 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/copasimathml.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/11/09 16:45:26 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 #ifndef COPASI_MATHML
 #define COPASI_MATHML
 
-#include "model/CModelValue.h"
-//#include "model/CMetab.h"
-#include "model/CCompartment.h"
-#include "report/CCopasiObjectReference.h"
-#include "xml/CCopasiXMLInterface.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CCompartment.h"
+#include "copasi/core/CDataObjectReference.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
 
 #define SPC(level) std::string(level, ' ')
 
@@ -42,7 +43,7 @@ public:
     return CCopasiXMLInterface::encode(Fixed, CCopasiXMLInterface::character);
   }
 
-  static std::string getMMLName(const CCopasiObject* obj)
+  static std::string getMMLName(const CDataObject* obj)
   {
     if (!obj) return "no object";
 

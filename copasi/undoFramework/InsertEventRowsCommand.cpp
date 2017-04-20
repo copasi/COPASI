@@ -15,8 +15,8 @@
  *      Author: dada
  */
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CEvent.h"
 #include "model/CModel.h"
 #include "CQEventDM.h"

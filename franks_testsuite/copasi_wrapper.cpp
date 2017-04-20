@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,11 +19,11 @@
 #include <stdlib.h>
 
 #include "copasi/copasi.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/report/CCopasiObjectName.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/commandline/COptionParser.h"
@@ -42,7 +47,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the root container.
-      CCopasiRootContainer::init(0, NULL, false);
+      CRootContainer::init(0, NULL, false);
     }
 
   catch (copasi::autoexcept &e)
@@ -90,7 +95,7 @@ int main(int argc, char *argv[])
   try
     {
       // Create the global data model.
-      CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+      CDataModel* pDataModel = CRootContainer::addDatamodel();
 
       // Import the SBML File
       pDataModel->importSBML(pSBMLFilename);
@@ -109,7 +114,7 @@ int main(int argc, char *argv[])
       pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
       pHeader->push_back(CCopasiStaticString("time").getCN());
       pHeader->push_back(pReport->getSeparator().getCN());
-      const CCopasiVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
+      const CDataVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
       unsigned int j, jMax = compartments.size();
       /*
       for (j = 0; j < jMax;++j)
@@ -123,7 +128,7 @@ int main(int argc, char *argv[])
         }
       }
       */
-      const CCopasiVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
+      const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
       jMax = metabolites.size();
 
       for (j = 0; j < jMax; ++j)
@@ -138,7 +143,7 @@ int main(int argc, char *argv[])
         }
 
       /*
-      const CCopasiVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
+      const CDataVectorN<CModelValue>& parameters = pDataModel->getModel()->getModelValues();
       jMax = parameters.size();
       for (j = 0; j < jMax;++j)
       {
@@ -150,7 +155,7 @@ int main(int argc, char *argv[])
           pHeader->push_back(pReport->getSeparator().getCN());
         }
       }
-      const CCopasiVectorNS<CReaction>& reactions = pDataModel->getModel()->getReactions();
+      const CDataVectorNS<CReaction>& reactions = pDataModel->getModel()->getReactions();
       jMax = reactions.size();
       for (j = 0; j < jMax;++j)
       {
@@ -195,7 +200,7 @@ int main(int argc, char *argv[])
 
       pMethod->getParameter("Absolute Tolerance")->setValue(1.0e-12);
 
-      CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+      CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
       TaskList.remove("Time-Course");
       TaskList.add(pTrajectoryTask, true);
@@ -241,7 +246,7 @@ int main(int argc, char *argv[])
 
   if (Text != "") std::cerr << Text << std::endl;
 
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 
   return 0;
 }

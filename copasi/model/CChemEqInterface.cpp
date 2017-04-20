@@ -27,7 +27,7 @@
 #include "CReaction.h"
 #include "CModel.h"
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/utility.h"
 
 CChemEqInterface::CChemEqInterface():
@@ -309,7 +309,7 @@ void CChemEqInterface::completeCompartments()
 bool CChemEqInterface::loadFromChemEq(const CChemEq & ce)
 {
   bool ret = true;
-  const CCopasiVector<CChemEqElement> * elements;
+  const CDataVector<CChemEqElement> * elements;
   size_t i, imax;
 
   elements = &ce.getSubstrates();

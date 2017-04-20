@@ -8,32 +8,30 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include <copasi/undoFramework/UndoDependentData.h>
+#include "UndoDependentData.h"
+#include "CCopasiUndoCommand.h"
+#include "UndoCompartmentData.h"
+#include "UndoSpeciesData.h"
+#include "UndoGlobalQuantityData.h"
+#include "UndoReactionData.h"
+#include "UndoEventData.h"
 
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-
-#include <copasi/undoFramework/UndoCompartmentData.h>
-#include <copasi/undoFramework/UndoSpeciesData.h>
-#include <copasi/undoFramework/UndoGlobalQuantityData.h>
-#include <copasi/undoFramework/UndoReactionData.h>
-#include <copasi/undoFramework/UndoEventData.h>
-
-#include <copasi/report/CCopasiObject.h>
-#include <copasi/report/CCopasiRootContainer.h>
-
-#include <copasi/model/CModelValue.h>
-#include <copasi/model/CModel.h>
-#include <copasi/model/CReactionInterface.h>
-
-#include <copasi/function/CFunctionDB.h>
-
-#include <copasi/UI/listviews.h>
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/UI/listviews.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
 UndoDependentData::UndoDependentData(const CModelEntity *pObject)
 {
-  initializeFrom(pObject->getDeletedObjects());
+  initializeFrom(pObject);
 }
 
 UndoDependentData::UndoDependentData()
@@ -48,13 +46,17 @@ UndoDependentData::~UndoDependentData()
 void
 UndoDependentData::initializeFrom(const CModelEntity* pObject)
 {
-  initializeFrom(pObject->getDeletedObjects());
+  CDataObject::DataObjectSet Descendants;
+  pObject->getDescendants(Descendants, true);
+  initializeFrom(Descendants);
 }
 
 void
 UndoDependentData::initializeFrom(const CReaction* pObject)
 {
-  initializeFrom(pObject->getDeletedObjects());
+  CDataObject::DataObjectSet Descendants;
+  pObject->getDescendants(Descendants, true);
+  initializeFrom(Descendants);
 }
 
 void UndoDependentData::fillIn(CModel *pModel)
@@ -97,7 +99,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel,
   for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
     {
       UndoGlobalQuantityData* data = *g;
-      CCopasiObject *pGlobalQuantity = data->createObjectIn(pModel);
+      CDataObject *pGlobalQuantity = data->createObjectIn(pModel);
 
       if (pGlobalQuantity == NULL) continue;
 
@@ -121,7 +123,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoReactio
       if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
         continue;
 
-      CCopasiObject *pRea = rData->createObjectIn(pModel);
+      CDataObject *pRea = rData->createObjectIn(pModel);
 
       if (pRea == NULL) continue;
 
@@ -140,7 +142,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoEventDa
   for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
     {
       UndoEventData* data = *ev;
-      CCopasiObject* pEvent = data->createObjectIn(pModel);
+      CDataObject* pEvent = data->createObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 
@@ -160,7 +162,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoSpecies
     {
       UndoSpeciesData * data = *rs;
 
-      CCopasiObject* pSpecies = data->createObjectIn(pModel);
+      CDataObject* pSpecies = data->createObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;
@@ -181,7 +183,7 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoCompart
     {
       UndoCompartmentData * data = *rs;
 
-      CCopasiObject* pCompartment = data->createObjectIn(pModel);
+      CDataObject* pCompartment = data->createObjectIn(pModel);
 
       if (pCompartment == NULL)
         continue;
@@ -202,7 +204,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel,
   for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
     {
       UndoGlobalQuantityData* data = *g;
-      CCopasiObject *pGlobalQuantity = data->restoreObjectIn(pModel);
+      CDataObject *pGlobalQuantity = data->restoreObjectIn(pModel);
 
       if (pGlobalQuantity == NULL) continue;
 
@@ -228,7 +230,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoReacti
       if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
         continue;
 
-      CCopasiObject *pRea = rData->restoreObjectIn(pModel);
+      CDataObject *pRea = rData->restoreObjectIn(pModel);
 
       rData->restoreDependentObjects(pModel);
 
@@ -247,7 +249,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoEventD
   for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
     {
       UndoEventData* data = *ev;
-      CCopasiObject* pEvent = data->restoreObjectIn(pModel);
+      CDataObject* pEvent = data->restoreObjectIn(pModel);
 
       if (pEvent == NULL) continue;
 
@@ -269,7 +271,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoSpecie
     {
       UndoSpeciesData * data = *rs;
 
-      CCopasiObject * pSpecies = data->restoreObjectIn(pModel);
+      CDataObject * pSpecies = data->restoreObjectIn(pModel);
 
       if (pSpecies == NULL)
         continue;
@@ -292,7 +294,7 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoCompar
     {
       UndoCompartmentData * data = *rs;
 
-      CCopasiObject* pCompartment = data->restoreObjectIn(pModel);
+      CDataObject* pCompartment = data->restoreObjectIn(pModel);
 
       if (pCompartment == NULL)
         continue;
@@ -421,23 +423,23 @@ UndoDependentData::freeUndoData()
 }
 
 void
-UndoDependentData::initializeFrom(
-  const std::set< const CCopasiObject * > &deletedObjects)
+UndoDependentData::initializeFrom(const std::set< const CDataObject * > &deletedObjects)
 {
   freeUndoData();
 
   if (deletedObjects.size() == 0)
     return;
 
-  std::set<const CCopasiObject *> DeletedObjects = deletedObjects;
+  CDataObject::ObjectSet DeletedObjects;
 
-  std::set< const CCopasiDataModel * > DMs;
-  std::set< const CCopasiObject * >::const_iterator it = deletedObjects.begin();
-  std::set< const CCopasiObject * >::const_iterator end = deletedObjects.end();
+  std::set< const CDataModel * > DMs;
+  CDataObject::DataObjectSet::const_iterator it = deletedObjects.begin();
+  CDataObject::DataObjectSet::const_iterator end = deletedObjects.end();
 
   for (; it != end; ++it)
     {
-      CCopasiDataModel * pDataModel = (*it)->getObjectDataModel();
+      DeletedObjects.insert(*it);
+      CDataModel * pDataModel = (*it)->getObjectDataModel();
 
       if (pDataModel != NULL)
         {
@@ -446,8 +448,8 @@ UndoDependentData::initializeFrom(
       else
         {
           // We may have a unit definition or a function which may be used in any data model.
-          CCopasiVector< CCopasiDataModel >::const_iterator itDM = CCopasiRootContainer::getDatamodelList()->begin();
-          CCopasiVector< CCopasiDataModel >::const_iterator endDM = CCopasiRootContainer::getDatamodelList()->end();
+          CDataVector< CDataModel >::const_iterator itDM = CRootContainer::getDatamodelList()->begin();
+          CDataVector< CDataModel >::const_iterator endDM = CRootContainer::getDatamodelList()->end();
 
           for (; itDM != endDM; ++itDM)
             {
@@ -462,11 +464,11 @@ UndoDependentData::initializeFrom(
     return;
 
   //TODO presently assume only reaction objects can be deleted when GlobalQuantity is deleted
-  std::set< const CCopasiObject * > Functions;
-  std::set< const CCopasiObject * > Units;
+  CDataObject::DataObjectSet Functions;
+  CDataObject::DataObjectSet Units;
 
   // First check whether any units depend on the deleted objects since functions may have units.
-  CCopasiRootContainer::getUnitList()->appendDependentUnits(deletedObjects, Units);
+  CRootContainer::getUnitList()->appendDependentUnits(deletedObjects, Units);
 
   it = Units.begin();
   end = Units.end();
@@ -478,7 +480,7 @@ UndoDependentData::initializeFrom(
     }
 
   // Check whether any functions depend on the deleted objects
-  CCopasiRootContainer::getFunctionList()->appendDependentFunctions(deletedObjects, Functions);
+  CRootContainer::getFunctionList()->appendDependentFunctions(DeletedObjects, Functions);
   it = Functions.begin();
   end = Functions.end();
   DeletedObjects.insert(it, end);
@@ -488,8 +490,8 @@ UndoDependentData::initializeFrom(
       // TODO store the function data
     }
 
-  std::set< const CCopasiDataModel * >::const_iterator itDM = DMs.begin();
-  std::set< const CCopasiDataModel * >::const_iterator endDM = DMs.end();
+  std::set< const CDataModel * >::const_iterator itDM = DMs.begin();
+  std::set< const CDataModel * >::const_iterator endDM = DMs.end();
 
   for (; itDM != endDM; ++itDM)
     {
@@ -498,19 +500,19 @@ UndoDependentData::initializeFrom(
       if (pModel == NULL)
         continue;
 
-      std::set< const CCopasiObject * > Reactions;
-      std::set< const CCopasiObject * > Metabolites;
-      std::set< const CCopasiObject * > Values;
-      std::set< const CCopasiObject * > Compartments;
-      std::set< const CCopasiObject * > Events;
-      std::set< const CCopasiObject * > EventAssignments;
+      CDataObject::DataObjectSet Reactions;
+      CDataObject::DataObjectSet Metabolites;
+      CDataObject::DataObjectSet Values;
+      CDataObject::DataObjectSet Compartments;
+      CDataObject::DataObjectSet Events;
+      CDataObject::DataObjectSet EventAssignments;
 
-      pModel->appendDependentModelObjects(deletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
+      pModel->appendAllDependents(DeletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
 
       if (Reactions.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Reactions.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Reactions.end();
+          std::set< const CDataObject * >::const_iterator it = Reactions.begin();
+          std::set< const CDataObject * >::const_iterator end = Reactions.end();
 
           for (; it != end; ++it)
             {
@@ -526,8 +528,8 @@ UndoDependentData::initializeFrom(
 
       if (Metabolites.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Metabolites.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Metabolites.end();
+          std::set< const CDataObject * >::const_iterator it = Metabolites.begin();
+          std::set< const CDataObject * >::const_iterator end = Metabolites.end();
 
           for (; it != end; ++it)
             {
@@ -543,8 +545,8 @@ UndoDependentData::initializeFrom(
 
       if (Compartments.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Compartments.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Compartments.end();
+          std::set< const CDataObject * >::const_iterator it = Compartments.begin();
+          std::set< const CDataObject * >::const_iterator end = Compartments.end();
 
           for (; it != end; ++it)
             {
@@ -561,8 +563,8 @@ UndoDependentData::initializeFrom(
 
       if (Values.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Values.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Values.end();
+          std::set< const CDataObject * >::const_iterator it = Values.begin();
+          std::set< const CDataObject * >::const_iterator end = Values.end();
 
           for (; it != end; ++it)
             {
@@ -579,8 +581,8 @@ UndoDependentData::initializeFrom(
 
       if (Events.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = Events.begin();
-          std::set< const CCopasiObject * >::const_iterator end = Events.end();
+          std::set< const CDataObject * >::const_iterator it = Events.begin();
+          std::set< const CDataObject * >::const_iterator end = Events.end();
 
           for (; it != end; ++it)
             {
@@ -594,8 +596,8 @@ UndoDependentData::initializeFrom(
 
       if (EventAssignments.size() > 0)
         {
-          std::set< const CCopasiObject * >::const_iterator it = EventAssignments.begin();
-          std::set< const CCopasiObject * >::const_iterator end = EventAssignments.end();
+          std::set< const CDataObject * >::const_iterator it = EventAssignments.begin();
+          std::set< const CDataObject * >::const_iterator end = EventAssignments.end();
 
           for (; it != end; ++it)
             {

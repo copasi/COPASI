@@ -39,7 +39,7 @@
 #include "utilities/CVersion.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CDirEntry.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "plot/COutputDefinitionVector.h"
 #include "plot/CPlotSpecification.h"
 #include "report/CReportDefinition.h"
@@ -48,14 +48,13 @@
 #include "model/CModelValue.h"
 #include "commandline/CLocaleString.h"
 
-
 #define SEDML_SET_ID(element, arguments) \
   {\
     std::ostringstream idStream; idStream << arguments;\
     element->setId(idStream.str());\
   }
 
-const std::string CSEDMLExporter::exportModelAndTasksToString(CCopasiDataModel& dataModel,
+const std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataModel,
     const std::string &modelLocation,
     unsigned int sedmlLevel,
     unsigned int sedmlVersion)
@@ -101,7 +100,7 @@ std::string createUniqueModelFileName(const std::string& dir, const std::string&
  * The SEDML document is written to the file given by SEDMLFilename and reference SBML model is written to SBMLFilename .
  * If the export fails, false is returned.
  */
-bool CSEDMLExporter::exportModelAndTasks(CCopasiDataModel& dataModel,
+bool CSEDMLExporter::exportModelAndTasks(CDataModel& dataModel,
     const std::string& filename,
     const std::string& sbmlDocument,
     unsigned int sedmlLevel,
@@ -164,7 +163,7 @@ bool CSEDMLExporter::exportModelAndTasks(CCopasiDataModel& dataModel,
   return success;
 }
 
-void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel, std::string modelRef)
+void CSEDMLExporter::createSEDMLDocument(CDataModel& dataModel, std::string modelRef)
 {
   const SedDocument* pOldSEDMLDocument = NULL; //dataModel.getCurrentSEDMLDocument();
   const CModel* pModel = dataModel.getModel();
@@ -191,7 +190,7 @@ void CSEDMLExporter::createSEDMLDocument(CCopasiDataModel& dataModel, std::strin
  * Creates the simulations for SEDML.
  */
 std::string
-CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const std::string & modelId)
+CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelId)
 {
   // need L1V2 to export repeated tasks
   if (mpSEDMLDocument->getVersion() != 2)
@@ -277,7 +276,7 @@ CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const std::string & 
           range->setType(log ? "log" : "linear");
 
           const CRegisteredObjectName& cn = (current->getParameter("Object")->getValue< CCopasiObjectName >());
-          const CCopasiObject* pObject = static_cast<const CCopasiObject*>(dataModel.getObject(cn));
+          const CDataObject* pObject = static_cast<const CDataObject*>(dataModel.getObject(cn));
 
           if (pObject == NULL)
             {
@@ -326,7 +325,7 @@ CSEDMLExporter::createScanTask(CCopasiDataModel& dataModel, const std::string & 
 /**
  * Creates the simulations for SEDML.
  */
-std::string CSEDMLExporter::createTimeCourseTask(CCopasiDataModel& dataModel, const std::string & modelId)
+std::string CSEDMLExporter::createTimeCourseTask(CDataModel& dataModel, const std::string & modelId)
 {
   mpTimecourse = this->mpSEDMLDocument->createUniformTimeCourse();
   mpTimecourse->setId(SEDMLUtils::getNextId("sim", mpSEDMLDocument->getNumSimulations()));
@@ -372,7 +371,7 @@ std::string CSEDMLExporter::createTimeCourseTask(CCopasiDataModel& dataModel, co
 /**
  * Creates the simulations for SEDML.
  */
-std::string CSEDMLExporter::createSteadyStateTask(CCopasiDataModel& dataModel, const std::string & modelId)
+std::string CSEDMLExporter::createSteadyStateTask(CDataModel& dataModel, const std::string & modelId)
 {
   SedSteadyState *steady  = this->mpSEDMLDocument->createSteadyState();
   steady->setId(SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
@@ -396,7 +395,7 @@ std::string CSEDMLExporter::createSteadyStateTask(CCopasiDataModel& dataModel, c
 /**
  * Creates the models for SEDML.
  */
-void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & modelRef)
+void CSEDMLExporter::createModels(CDataModel& dataModel, std::string & modelRef)
 {
   SedModel *model = this->mpSEDMLDocument->createModel();
   model->setId(CDirEntry::baseName(modelRef));
@@ -408,7 +407,7 @@ void CSEDMLExporter::createModels(CCopasiDataModel& dataModel, std::string & mod
  * Creates the Tasks for SEDML. This will always create a task running a time course
  * simulation. If the parameter scan has been specified, it will be exported as well.
  */
-void CSEDMLExporter::createTasks(CCopasiDataModel& dataModel, std::string & modelRef)
+void CSEDMLExporter::createTasks(CDataModel& dataModel, std::string & modelRef)
 {
   std::string modelId = CDirEntry::baseName(modelRef);
   // create time course task
@@ -456,7 +455,7 @@ SedDataGenerator * createDataGenerator(
 /**
  * Creates the data generators for SEDML.
  */
-void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
+void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
     std::string & taskId,
     CCopasiTask* task)
 {
@@ -467,7 +466,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
     CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
 
   //create generator for special variable time
-  const CCopasiObject* pTime = static_cast<const CCopasiObject *>(dataModel.getModel()->getObject(CCopasiObjectName("Reference=Time")));
+  const CDataObject* pTime = static_cast<const CDataObject *>(dataModel.getModel()->getObject(CCopasiObjectName("Reference=Time")));
   SedDataGenerator *pTimeDGenp = this->mpSEDMLDocument->createDataGenerator();
   SEDML_SET_ID(pTimeDGenp, "time_" << taskId);
   pTimeDGenp->setName(pTime->getObjectName());
@@ -510,7 +509,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
               if (current == def->getSeparator().getCN()) continue;
 
-              const CCopasiObject *object = CObjectInterface::DataObject(dataModel.getObjectFromCN(current));
+              const CDataObject *object = CObjectInterface::DataObject(dataModel.getObjectFromCN(current));
 
               if (object == NULL) continue;
 
@@ -537,7 +536,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
 
               if (def->isTable())
                 {
-                  const CCopasiObject *headerObj = NULL;
+                  const CDataObject *headerObj = NULL;
 
                   if (header.size() > i)
                     headerObj = CObjectInterface::DataObject(dataModel.getObjectFromCN(header[i]));
@@ -579,7 +578,7 @@ void CSEDMLExporter::createDataGenerators(CCopasiDataModel & dataModel,
         {
           const CPlotItem* pPlotItem = & pPlot->getItems()[j];
 
-          const CCopasiObject *objectX, *objectY;
+          const CDataObject *objectX, *objectY;
 
           if (pPlotItem->getChannels().size() >= 1)
             {

@@ -16,9 +16,9 @@
 #include "copasi/layout/CLRenderInformationBase.h"
 #include "copasi/layout/CLGlobalStyle.h"
 
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
-class CCopasiContainer;
+class CDataContainer;
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class GlobalRenderInformation;
@@ -27,7 +27,7 @@ LIBSBML_CPP_NAMESPACE_END
 class CLGlobalRenderInformation : public CLRenderInformationBase
 {
 protected:
-  CCopasiVector<CLGlobalStyle> mListOfStyles;
+  CDataVector<CLGlobalStyle> mListOfStyles;
 
 public:
   static CLGlobalRenderInformation * fromData(const CData & data);
@@ -35,12 +35,12 @@ public:
   /**
    *  Constructor.
    */
-  CLGlobalRenderInformation(CCopasiContainer* pParent = NULL);
+  CLGlobalRenderInformation(CDataContainer* pParent = NULL);
 
   /**
    *  Copy Constructor.
    */
-  CLGlobalRenderInformation(const CLGlobalRenderInformation& source, CCopasiContainer* pParent = NULL);
+  CLGlobalRenderInformation(const CLGlobalRenderInformation& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
@@ -51,7 +51,7 @@ public:
                             std::map<std::string,std::string>& gradientIdToKeyMap,
                             std::map<std::string,std::string>& lineEndingIdToKeyMap,
                             */
-                            CCopasiContainer* pParent = NULL);
+                            CDataContainer* pParent = NULL);
 
   /**
    * Returns the number of styles.
@@ -61,12 +61,12 @@ public:
   /**
    * Returns a pointer to the LitOfStyles object.
    */
-  CCopasiVector<CLGlobalStyle>* getListOfStyles();
+  CDataVector<CLGlobalStyle>* getListOfStyles();
 
   /**
    * Returns a pointer to the LitOfStyles object.
    */
-  const CCopasiVector<CLGlobalStyle>* getListOfStyles() const;
+  const CDataVector<CLGlobalStyle>* getListOfStyles() const;
 
   /**
    * Returns a pointer to the style with the given index.

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -10,7 +15,7 @@
 #include <QSet>
 #include <sbml/xml/XMLInputStream.h>
 #include <sbml/xml/XMLErrorLog.h>
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
 #include "CProvenanceXMLWriter.h"
@@ -330,7 +335,7 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
       XMLOutputStream_writeAttributeChars(stream, "xmlns:xsi",  "http://www.w3.org/2001/XMLSchema-instance");
       XMLOutputStream_writeAttributeChars(stream, "xmlns:xsd",  "http://www.w3.org/2001/XMLSchema");
 
-      CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+      CConfigurationFile * configFile = CRootContainer::getConfiguration();
       QString Action;
       int EditNumber = mpUndoStack->count();
       //QString EntityInfo[ EditNumber + 1][5];  // Information of each Entity in the model
@@ -649,7 +654,7 @@ void CProvenanceXMLWriter::updateOrigionOfProvenance(QString OrigionalFile)
     {
       XMLOutputStream_t * stream = XMLOutputStream_createFile(dataFile.toUtf8(), "UTF-8", 1);
       CCopasiParameter * pParameter;
-      CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+      CConfigurationFile * configFile = CRootContainer::getConfiguration();
 
       if (stream != NULL)
         {
@@ -746,7 +751,7 @@ void CProvenanceXMLWriter::updateOrigionOfProvenance(QString OrigionalFile)
           XMLOutputStream_startElement(stream, "prov:activity");
           XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Activity_0");
           XMLOutputStream_endElement(stream, "prov:activity");
-          XMLOutputStream_startElement(stream, "prov:time");//CCopasiRootContainer::getConfiguration()->getWorkingDirectory())
+          XMLOutputStream_startElement(stream, "prov:time");//CRootContainer::getConfiguration()->getWorkingDirectory())
           XMLOutputStream_writeChars(stream, mProvenanceOrigionTime.toUtf8());
           XMLOutputStream_endElement(stream, "prov:time");
           XMLOutputStream_endElement(stream, "prov:wasEndedBy");

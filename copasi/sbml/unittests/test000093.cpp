@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -7,7 +12,7 @@
 
 #include <sstream>
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/function/CExpression.h"
 #include "copasi/model/CModel.h"
@@ -23,21 +28,21 @@
 #include "sbml/Parameter.h"
 #include "sbml/math/ASTNode.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
-CCopasiDataModel* test000093::pCOPASIDATAMODEL = NULL;
+CDataModel* test000093::pCOPASIDATAMODEL = NULL;
 
 void test000093::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000093::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000093::test_bug1503_1()
@@ -45,7 +50,7 @@ void test000093::test_bug1503_1()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000093::MODEL_STRING_1);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 3);
@@ -406,9 +411,9 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(const_cast<CModel*>(pCModel));
-  const CCopasiObject* pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
+  const CDataObject* pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialVolume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCCompartment);
 
@@ -428,7 +433,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pMetabS);
   pEvalNode = dynamic_cast<const CEvaluationNode*>(pObjectNode->getSibling());
@@ -442,7 +447,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialValue"));
 
   //
@@ -522,7 +527,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCCompartment);
   CPPUNIT_ASSERT(pObjectNode->getSibling() == NULL);
@@ -545,7 +550,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pMetabA);
   pEvalNode = dynamic_cast<const CEvaluationNode*>(pObjectNode->getSibling());
@@ -559,7 +564,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObjectNode->getSibling() == NULL);
 }
@@ -569,7 +574,7 @@ void test000093::test_bug1503_2()
   // load the CPS file
   // export to SBML
   // check the resulting SBML model
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000093::MODEL_STRING_2);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   std::string content = pDataModel->exportSBMLToString(NULL, 2, 3);
@@ -856,9 +861,9 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(const_cast<CModel*>(pCModel));
-  const CCopasiObject* pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
+  const CDataObject* pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialVolume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCCompartment);
 
@@ -878,7 +883,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pMetabS);
   pEvalNode = dynamic_cast<const CEvaluationNode*>(pObjectNode->getSibling());
@@ -892,7 +897,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("InitialValue"));
 
   //
@@ -972,7 +977,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Volume"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pCCompartment);
   CPPUNIT_ASSERT(pObjectNode->getSibling() == NULL);
@@ -995,7 +1000,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("ParticleNumber"));
   CPPUNIT_ASSERT(pObject->getObjectParent() == pMetabA);
   pEvalNode = dynamic_cast<const CEvaluationNode*>(pObjectNode->getSibling());
@@ -1009,7 +1014,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(!objectCN.empty());
   pObject = pDataModel->getObjectFromCN(listOfContainers, objectCN);
   CPPUNIT_ASSERT(pObject != NULL);
-  CPPUNIT_ASSERT(pObject->isReference() == true);
+  CPPUNIT_ASSERT(pObject->hasFlag(CDataObject::Reference) == true);
   CPPUNIT_ASSERT(pObject->getObjectName() == std::string("Value"));
   CPPUNIT_ASSERT(pObjectNode->getSibling() == NULL);
 }

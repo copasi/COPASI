@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -35,10 +40,10 @@ email                : rluktuke@vt.edu
 #include "CRandomSearch.h"
 
 #include "math/CMathContainer.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "randomGenerator/CRandom.h"
 
-CRandomSearch::CRandomSearch(const CCopasiContainer * pParent,
+CRandomSearch::CRandomSearch(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
@@ -51,7 +56,7 @@ CRandomSearch::CRandomSearch(const CCopasiContainer * pParent,
 }
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src,
-                             const CCopasiContainer * pParent):
+                             const CDataContainer * pParent):
   COptMethod(src, pParent)
 {initObjects();}
 
@@ -66,7 +71,7 @@ CRandomSearch::~CRandomSearch()
 
 void CRandomSearch::initObjects()
 {
-  addObjectReference("Current Iteration", mCurrentIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentIteration, CDataObject::ValueInt);
 }
 
 /**

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,9 +26,9 @@
 
 #include "FminBrent.h"
 
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 
-COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pParent,
+COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType),
@@ -43,7 +48,7 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CCopasiContainer * pP
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
-    const CCopasiContainer * pParent): COptMethod(src, pParent),
+    const CDataContainer * pParent): COptMethod(src, pParent),
   mIterations(src.mIterations),
   mTolerance(src.mTolerance),
   mContinue(src.mContinue),
@@ -288,5 +293,5 @@ const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
 
 void COptMethodSteepestDescent::initObjects()
 {
-  addObjectReference("Current Iteration", mCurrentIteration, CCopasiObject::ValueInt);
+  addObjectReference("Current Iteration", mCurrentIteration, CDataObject::ValueInt);
 }

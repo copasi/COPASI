@@ -1056,7 +1056,7 @@ bool CEvaluationNodeFunction::isBoolean() const
     }
 }
 
-ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();

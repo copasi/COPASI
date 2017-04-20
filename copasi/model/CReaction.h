@@ -36,7 +36,7 @@
 #include "copasi/model/CChemEqElement.h"
 #include "copasi/model/CCompartment.h"
 
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/utilities/CCopasiParameterGroup.h"
 #include "copasi/function/CFunction.h"
 #include "copasi/function/CCallParameters.h"
@@ -48,7 +48,7 @@ class SBase;
 LIBSBML_CPP_NAMESPACE_END
 class CFunctionDB;
 
-class CReaction : public CCopasiContainer, public CAnnotation
+class CReaction : public CDataContainer, public CAnnotation
 {
 public:
   enum KineticLawUnit
@@ -65,18 +65,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CReaction(const std::string & name = "NoName",
-            const CCopasiContainer * pParent = NO_PARENT);
+            const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CReaction &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CReaction(const CReaction & src,
-            const CCopasiContainer * pParent);
+            const CDataContainer * pParent);
 
 private:
   CReaction & operator= (const CReaction &);
@@ -91,7 +91,7 @@ public:
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
 
   /**
    * Delete
@@ -115,24 +115,10 @@ public:
 
   /**
    * Sets the parent of the metabolite;
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-  /**
-   * Retrieve the list of deleted numeric child objects;
-   * @return std::set< const CCopasiObject * > deletedObjects
-   */
-  virtual std::set< const CCopasiObject * > getDeletedObjects() const;
-
-  /**
-   * Check whether an object must be deleted because its prerequisites can
-   * no longer be fulfilled due to the given deleted objects
-   * @param const DataObjectSet & deletedObjects
-   * @return bool mustBeDeleted
-   */
-  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    *  Retrieves the key of the reaction
@@ -364,51 +350,51 @@ public:
 
   /**
    * Retrieve object referencing the particle flux
-   * @return CCopasiObject * particleFluxReference
+   * @return CDataObject * particleFluxReference
    */
-  CCopasiObject * getParticleFluxReference();
+  CDataObject * getParticleFluxReference();
 
   /**
    * Retrieve const object referencing the particle flux
-   * @return CCopasiObject * particleFluxReference
+   * @return CDataObject * particleFluxReference
    */
-  const CCopasiObject * getParticleFluxReference() const;
+  const CDataObject * getParticleFluxReference() const;
 
   /**
    * Retrieve object referencing the flux
-   * @return CCopasiObject * fluxReference
+   * @return CDataObject * fluxReference
    */
-  CCopasiObject * getFluxReference();
+  CDataObject * getFluxReference();
 
   /**
    * Retrieve const object referencing the flux
-   * @return CCopasiObject * fluxReference
+   * @return CDataObject * fluxReference
    */
-  const CCopasiObject * getFluxReference() const;
+  const CDataObject * getFluxReference() const;
 
   /**
    * Retrieve object referencing the particle noise
-   * @return const CCopasiObject * particleNoiseReference
+   * @return const CDataObject * particleNoiseReference
    */
-  const CCopasiObject * getParticleNoiseReference() const;
+  const CDataObject * getParticleNoiseReference() const;
 
   /**
    * Retrieve object referencing the noise
-   * @return const CCopasiObject * noiseReference
+   * @return const CDataObject * noiseReference
    */
-  const CCopasiObject * getNoiseReference() const;
+  const CDataObject * getNoiseReference() const;
 
   /**
    * Retrieve object referencing the propensity
-   * @return CCopasiObject * propensityReference
+   * @return CDataObject * propensityReference
    */
-  CCopasiObject * getPropensityReference();
+  CDataObject * getPropensityReference();
 
   /**
    * Retrieve object referencing the propensity
-   * @return CCopasiObject * propensityReference
+   * @return CDataObject * propensityReference
    */
-  const CCopasiObject * getPropensityReference() const;
+  const CDataObject * getPropensityReference() const;
 
   /**
    * Retrieve the call parameter given to the kinetic function.
@@ -492,7 +478,7 @@ public:
    * and sets the mapping for the reaction.
    */
   CFunction * setFunctionFromExpressionTree(const CExpression & tree,
-      std::map<const CCopasiObject*, SBase*> & copasi2sbmlmap,
+      std::map<const CDataObject*, SBase*> & copasi2sbmlmap,
       CFunctionDB* pFunctionDB);
 
   /**
@@ -574,8 +560,8 @@ private:
    * On failure a NULL pointer is returned.
    */
   CEvaluationNode* objects2variables(const CEvaluationNode* expression,
-                                     std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
-                                     std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
+                                     std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap,
+                                     std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Converts a single object node to a variable node.
@@ -584,8 +570,8 @@ private:
    * On failure a NULL pointer is returned.
    */
   CEvaluationNodeVariable* object2variable(const CEvaluationNodeObject* objectNode,
-      std::map<std::string, std::pair<CCopasiObject*, CFunctionParameter*> >& replacementMap,
-      std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap);
+      std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap,
+      std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
 
   /**
    * Replaces all variable nodes in a function tree by object nodes.
@@ -674,31 +660,31 @@ private:
    *  The flux of the reaction, as amount of substance/time
    */
   C_FLOAT64 mFlux;
-  CCopasiObjectReference<C_FLOAT64> *mpFluxReference;
+  CDataObjectReference<C_FLOAT64> *mpFluxReference;
 
   /**
    *  The scaled flux of the reaction, as particle number/time
    */
   C_FLOAT64 mParticleFlux;
-  CCopasiObjectReference<C_FLOAT64> *mpParticleFluxReference;
+  CDataObjectReference<C_FLOAT64> *mpParticleFluxReference;
 
   /**
    *  The noise of the reaction
    */
   C_FLOAT64 mNoise;
-  CCopasiObjectReference<C_FLOAT64> *mpNoiseReference;
+  CDataObjectReference<C_FLOAT64> *mpNoiseReference;
 
   /**
    *  The particle noise
    */
   C_FLOAT64 mParticleNoise;
-  CCopasiObjectReference<C_FLOAT64> *mpParticleNoiseReference;
+  CDataObjectReference<C_FLOAT64> *mpParticleNoiseReference;
 
   /**
    *  The propensity of the reaction
    */
   C_FLOAT64 mPropensity;
-  CCopasiObjectReference<C_FLOAT64> *mpPropensityReference;
+  CDataObjectReference<C_FLOAT64> *mpPropensityReference;
 
   /**
    *  This describes the mapping of the species and parameters to the function parameters.

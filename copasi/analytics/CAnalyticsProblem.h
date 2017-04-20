@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,17 +21,17 @@ protected:
 public:
   /**
    * Default constructor.
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  CAnalyticsProblem(const CCopasiContainer * pParent = NULL);
+  CAnalyticsProblem(const CDataContainer * pParent = NULL);
 
   /**
    *  Copy constructor.
    *  @param "const CAnalyticsProblem &" src
-   * @paramconst CCopasiContainer * pParent (default: NULL)
+   * @paramconst CDataContainer * pParent (default: NULL)
    */
   CAnalyticsProblem(const CAnalyticsProblem & src,
-                    const CCopasiContainer * pParent);
+                    const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -71,11 +76,11 @@ public:
    * set the variable
    */
   void setSingleObjectCN(const std::string& cn);
-  void setSingleObjectCN(const CCopasiObject* pObject);
+  void setSingleObjectCN(const CDataObject* pObject);
 
   //--- ETTORE start ---
-  void retrieveSelectedObject(const CCopasiObject* pObject);
-  const CCopasiObject *getSelectedObject();
+  void retrieveSelectedObject(const CDataObject* pObject);
+  const CDataObject *getSelectedObject();
   //--- ETTORE end -----
 
   const C_FLOAT64& getThreshold() const;
@@ -250,7 +255,7 @@ private:
    * this variables is a pointer to the COPASI object selected by the user
    * in the Analytics widget.
    */
-  const CCopasiObject* mpObjectSelected;
+  const CDataObject* mpObjectSelected;
   //--- ETTORE end -----
 
   /**

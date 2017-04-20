@@ -65,7 +65,7 @@ class CModelVersion;
 #endif
 
 class CQOptPopulation;
-class CCopasiDataModel;
+class CDataModel;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
@@ -289,7 +289,7 @@ private:
   void setApplicationFont();
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
-  CCopasiDataModel* mpDataModel;
+  CDataModel* mpDataModel;
 
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;

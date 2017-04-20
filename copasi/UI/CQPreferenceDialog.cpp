@@ -24,7 +24,7 @@
 #include "qtUtilities.h"
 
 #include "commandline/CConfigurationFile.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #define COL_NAME 0
 #define COL_VALUE 1
@@ -56,7 +56,7 @@ CQPreferenceDialog::~CQPreferenceDialog()
 
 void CQPreferenceDialog::init()
 {
-  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+  CConfigurationFile * configFile = CRootContainer::getConfiguration();
   mpTreeView->setAdvanced(false);
   mpTreeView->pushGroup(configFile);
 
@@ -239,7 +239,7 @@ void CQPreferenceDialog::slotBtnOk()
 {
   // We need to commit the changes
   unsigned C_INT32 newMaxFiles = 0;
-  CConfigurationFile * configFile = CCopasiRootContainer::getConfiguration();
+  CConfigurationFile * configFile = CRootContainer::getConfiguration();
 
   /*
   QList< QTreeWidgetItem *> Items = mpTreeView->findItems("Max Last Visited Files", 0, 0);

@@ -42,8 +42,8 @@
 #include "copasi/UI/listviews.h"
 #include "copasi/UI/qtUtilities.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CCopasiProblem.h"
 #include "copasi/report/CCopasiObjectName.h"
@@ -62,8 +62,8 @@
 #include "copasi/UI/CCopasiSelectionDialog.h"
 #include "copasi/resourcesUI/CQIconResource.h"
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/commandline/CConfigurationFile.h>
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 size_t SliderDialog::numMappings = 14;
 
@@ -176,30 +176,30 @@ CopasiSlider* SliderDialog::findCopasiSliderAtPosition(const QPoint& p)
 void SliderDialog::createNewSlider()
 {
   // allow the user to create more than one slider
-  std::vector<const CCopasiObject*> objects = CCopasiSelectionDialog::getObjectVector(this,
+  std::vector<const CDataObject*> objects = CCopasiSelectionDialog::getObjectVector(this,
       CQSimpleSelectionTree::InitialTime |
       CQSimpleSelectionTree::Parameters);
   std::vector<CSlider*>* pVector = getCSlidersForCurrentFolderId();
-  std::vector<const CCopasiObject*>::const_iterator it = objects.begin(), endit = objects.end();
+  std::vector<const CDataObject*>::const_iterator it = objects.begin(), endit = objects.end();
   bool yesToAll = false;
   bool noToAll = false;
   // create the sliders for all the selected objects
 
   // first we need the task object because we need it later to associate the
   // later with the correct task
-  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
+  CDataObject* object = (CDataObject*)getTaskForFolderId(mCurrentFolderId);
 
   if (!object) return;
 
-  CCopasiObject* pTmpObject = NULL;
+  CDataObject* pTmpObject = NULL;
 
   while (it != endit)
     {
       // create a new slider
       assert((*it) != NULL);
-      pTmpObject = const_cast<CCopasiObject*>(determineCorrectObjectForSlider(*it));
+      pTmpObject = const_cast<CDataObject*>(determineCorrectObjectForSlider(*it));
 
-      CCopasiDataModel * pDataModel = pTmpObject->getObjectDataModel();
+      CDataModel * pDataModel = pTmpObject->getObjectDataModel();
       assert(pDataModel != NULL);
 
       CSlider* pCSlider = new CSlider("slider", pDataModel);
@@ -278,7 +278,7 @@ void SliderDialog::createNewSlider()
           else
             {
               CObjectInterface::ContainerList listOfContainers;
-              assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+              assert(CRootContainer::getDatamodelList()->size() > 0);
               listOfContainers.push_back(pDataModel->getModel());
               pCSlider->compile(listOfContainers);
               pCSlider->resetRange();
@@ -297,9 +297,9 @@ void SliderDialog::removeSlider()
 {
   if (mpCurrSlider)
     {
-      CCopasiDataModel * pDataModel = mpCurrSlider->getCSlider()->getObjectDataModel();
+      CDataModel * pDataModel = mpCurrSlider->getCSlider()->getObjectDataModel();
       assert(pDataModel != NULL);
-      CCopasiVector<CSlider>* pSliderList = pDataModel->getGUI()->getSliderList();
+      CDataVector<CSlider>* pSliderList = pDataModel->getGUI()->getSliderList();
       size_t i, maxCount = pSliderList->size();
 
       for (i = 0; i < maxCount; ++i)
@@ -348,11 +348,11 @@ void SliderDialog::editSlider()
 {
   SliderSettingsDialog* pSettingsDialog = new SliderSettingsDialog(this);
   // set the list of sliders that is already known
-  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
+  CDataObject* object = (CDataObject*)getTaskForFolderId(mCurrentFolderId);
 
   if (!object) return;
 
-  CCopasiDataModel * pDataModel = object->getObjectDataModel();
+  CDataModel * pDataModel = object->getObjectDataModel();
   assert(pDataModel != NULL);
   pSettingsDialog->setModel(pDataModel->getModel());
 
@@ -422,7 +422,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
     return;
 
   // check if there already is a slider for this  object
-  CCopasiDataModel * pDataModel = pSlider->getObjectDataModel();
+  CDataModel * pDataModel = pSlider->getObjectDataModel();
   assert(pDataModel != NULL);
   SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
@@ -430,7 +430,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
   if (!equivalentSliderExists(pSlider))
     {
       CObjectInterface::ContainerList listOfContainers;
-      assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+      assert(CRootContainer::getDatamodelList()->size() > 0);
       listOfContainers.push_back(pDataModel->getModel());
       pSlider->compile(listOfContainers);
       pGUI->getSliderList()->add(pSlider, true);
@@ -468,7 +468,7 @@ void SliderDialog::addSlider(CSlider* pSlider)
 CSlider* SliderDialog::equivalentSliderExists(CSlider* pCSlider)
 {
   CSlider* pResult = NULL;
-  CCopasiDataModel * pDataModel = pCSlider->getObjectDataModel();
+  CDataModel * pDataModel = pCSlider->getObjectDataModel();
   assert(pDataModel != NULL);
   SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
@@ -771,7 +771,7 @@ void SliderDialog::sliderValueChanged()
   mSliderValueChanged = true;
 
   if ((!mSliderPressed) && mpAutoRunCheckBox->isChecked()
-      && CCopasiRootContainer::getConfiguration()->useAdvancedSliders())
+      && CRootContainer::getConfiguration()->useAdvancedSliders())
     {
       CopasiSlider* slider = dynamic_cast<CopasiSlider*>(sender());
 
@@ -803,7 +803,7 @@ void SliderDialog::runTimeCourse()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getTrajectoryWidget()->enter(pDataModel->getTaskList()->operator[]("Time-Course").getKey());
       mpParentWindow->getMainWidget()->getTrajectoryWidget()->runTask();
@@ -822,7 +822,7 @@ void SliderDialog::runScanTask()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getScanWidget()->enter(pDataModel->getTaskList()->operator[]("Scan").getKey());
       mpParentWindow->getMainWidget()->getScanWidget()->runTask();
@@ -833,7 +833,7 @@ void SliderDialog::runMCATask()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getMCAWidget()->enter(pDataModel->getTaskList()->operator[]("Metabolic Control Analysis").getKey());
       mpParentWindow->getMainWidget()->getMCAWidget()->runTask();
@@ -844,7 +844,7 @@ void SliderDialog::runLNATask()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getLNAWidget()->enter(pDataModel->getTaskList()->operator[]("Linear Noise Approximation").getKey());
       mpParentWindow->getMainWidget()->getLNAWidget()->runTask();
@@ -855,7 +855,7 @@ void SliderDialog::runParameterEstimationTask()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getFittingWidget()->enter(pDataModel->getTaskList()->operator[]("Parameter Estimation").getKey());
       mpParentWindow->getMainWidget()->getFittingWidget()->runTask();
@@ -866,7 +866,7 @@ void SliderDialog::runCrossSectionTask()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->enter(pDataModel->getTaskList()->operator[]("Cross Section").getKey());
       mpParentWindow->getMainWidget()->getCrossSectionWidget()->runTask();
@@ -877,7 +877,7 @@ void SliderDialog::runOptimizationTask()
 {
   if (mpParentWindow)
     {
-      CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+      CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
       assert(pDataModel != NULL);
       mpParentWindow->getMainWidget()->getOptimizationWidget()->enter(pDataModel->getTaskList()->operator[]("Optimization").getKey());
       mpParentWindow->getMainWidget()->getOptimizationWidget()->runTask();
@@ -898,7 +898,7 @@ CCopasiTask* SliderDialog::getTaskForFolderId(size_t folderId)
 {
   folderId = mapFolderId2EntryId(folderId);
   CCopasiTask* task = NULL;
-  CCopasiDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
+  CDataModel * pDataModel = mpParentWindow->getMainWidget()->getDataModel();
   assert(pDataModel != NULL);
 
   switch (folderId)
@@ -1014,14 +1014,14 @@ void SliderDialog::editSlider(CopasiSlider* slider)
   editSlider();
 }
 
-std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CCopasiObject* pObject, std::vector<CSlider*>* pVector) const
+std::vector<CSlider*>* SliderDialog::getCSlidersForObject(CDataObject* pObject, std::vector<CSlider*>* pVector) const
 {
-  CCopasiDataModel * pDataModel = pObject->getObjectDataModel();
+  CDataModel * pDataModel = pObject->getObjectDataModel();
   assert(pDataModel != NULL);
   SCopasiXMLGUI* pGUI = pDataModel->getGUI();
   assert(pGUI);
   bool sliderDeleted = false;
-  CCopasiVector<CSlider>* pSliderList = pGUI->getSliderList();
+  CDataVector<CSlider>* pSliderList = pGUI->getSliderList();
   assert(pSliderList);
   // go through the list in reverse so that items can be deleted
   size_t i, iMax = pSliderList->size();
@@ -1078,7 +1078,7 @@ void SliderDialog::clearSliderBox()
 
 std::vector<CSlider*>* SliderDialog::getCSlidersForCurrentFolderId()
 {
-  CCopasiObject* object = (CCopasiObject*)getTaskForFolderId(mCurrentFolderId);
+  CDataObject* object = (CDataObject*)getTaskForFolderId(mCurrentFolderId);
 
   if (!object) return NULL;
 
@@ -1131,7 +1131,7 @@ void SliderDialog::setDefault()
 
 bool SliderDialog::sliderObjectChanged(CSlider* pSlider) const
 {
-  CCopasiDataModel * pDataModel = pSlider->getObjectDataModel();
+  CDataModel * pDataModel = pSlider->getObjectDataModel();
   assert(pDataModel != NULL);
   CModel * pModel = pDataModel->getModel();
   assert(pModel != NULL);
@@ -1148,9 +1148,9 @@ void SliderDialog::setParentWindow(CopasiUI3Window* pPW)
 // This method check if the given object is a reference to the initial amount or the initial concentration
 // of a metabolite. Then it checks the current framework and the metabolite if a slider to the object
 // is actually allowed and if it isn't, it will return the correct object
-const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasiObject* pObject)
+const CDataObject* SliderDialog::determineCorrectObjectForSlider(const CDataObject* pObject)
 {
-  const CCopasiObject* pResult = NULL;
+  const CDataObject* pResult = NULL;
 
   if (pObject == NULL)
     {
@@ -1173,7 +1173,8 @@ const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasi
               //
               // sometimes it is not allowed to change the concentration of a metabolite
               // because it would change the volume of the compartment
-              if (pMetab->isInitialConcentrationChangeAllowed() && pObject == pMetab->getInitialValueReference())
+              if (pMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework) &&
+                  pObject == pMetab->getInitialValueReference())
                 {
                   // if the current object is for the concentration, we return a new object to the amount
                   pResult = pMetab->getInitialConcentrationReference();
@@ -1185,7 +1186,8 @@ const CCopasiObject* SliderDialog::determineCorrectObjectForSlider(const CCopasi
               // we are in the particle number framework
               // if the object is for the amount, we leave it, otherwise we
               // return a new object for the amount
-              if (pObject == pMetab->getInitialConcentrationReference())
+              if (pMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework) &&
+                  pObject == pMetab->getInitialConcentrationReference())
                 {
                   pResult = pMetab->getInitialValueReference();
                   assert(pResult != NULL);
@@ -1223,7 +1225,7 @@ void SliderDialog::setFramework(int framework)
 
           if (pSlider != NULL)
             {
-              const CCopasiObject* pTmpObj = pSlider->object();
+              const CDataObject* pTmpObj = pSlider->object();
               this->setCorrectSliderObject(pSlider);
 
               if (pSlider->object() != pTmpObj && !changed)
@@ -1257,13 +1259,13 @@ bool SliderDialog::setCorrectSliderObject(CopasiSlider* pSlider)
   if (pSlider == NULL)
     return false;
 
-  const CCopasiObject *pObject = NULL, *pTmpObject = NULL;
+  const CDataObject *pObject = NULL, *pTmpObject = NULL;
   pObject = pSlider->object();
 
   if (pObject == NULL)
     return false;
 
-  pTmpObject = const_cast<CCopasiObject*>(this->determineCorrectObjectForSlider(pObject));
+  pTmpObject = const_cast<CDataObject*>(this->determineCorrectObjectForSlider(pObject));
 
   if (pTmpObject != pObject)
     {
@@ -1308,8 +1310,6 @@ void SliderDialog::deleteInvalidSliders()
           invalidSliders.push_back(pCopasiSlider);
           continue;
         }
-
-
     }
 
   std::vector<CopasiSlider*>::iterator it = invalidSliders.begin();
@@ -1319,8 +1319,6 @@ void SliderDialog::deleteInvalidSliders()
       this->removeSlider(*it);
       sliderDeleted = true;
     }
-
-
 
   if (sliderDeleted)
     {

@@ -11,15 +11,17 @@
 #include "UI/CopasiFileDialog.h"
 #include "UI/CQMessageBox.h"
 #include "CQSteadyStateResult.h"
+#include "qtUtilities.h"
 
-#include "copasi.h"
-#include "UI/qtUtilities.h"
-#include "steadystate/CSteadyStateTask.h"
-#include "steadystate/CSteadyStateProblem.h"
-#include "report/CCopasiRootContainer.h"
-#include "model/CModel.h"
-#include "math/CMathContainer.h"
-#include "commandline/CLocaleString.h"
+#include "copasi/copasi.h"
+
+#include "copasi/steadystate/CSteadyStateTask.h"
+#include "copasi/steadystate/CSteadyStateProblem.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/math/CMathContainer.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQSteadyStateResult which is a child of 'parent', with the

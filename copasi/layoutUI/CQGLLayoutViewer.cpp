@@ -177,7 +177,7 @@ void CQGLLayoutViewer::updateWidget()
   this->mpLayoutPainter->update();
 }
 
-void CQGLLayoutViewer::update(const CCopasiDataModel *pDatamodel, CLayout *pLayout, const CLRenderInformationBase *pRenderInfo, const QString &baseDir)
+void CQGLLayoutViewer::update(const CDataModel *pDatamodel, CLayout *pLayout, const CLRenderInformationBase *pRenderInfo, const QString &baseDir)
 {
   // pass the options on to the layout painter
   if (pRenderInfo)

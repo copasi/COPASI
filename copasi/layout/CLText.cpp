@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -9,13 +14,13 @@
 
 #include "CLText.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // Ctor
-CLText::CLText(CCopasiContainer* pParent):
+CLText::CLText(CDataContainer* pParent):
   CLGraphicalPrimitive1D(),
-  CCopasiObject("RenderText", pParent),
+  CDataObject("RenderText", pParent),
   mX(CLRelAbsVector(0.0, 0.0)),
   mY(CLRelAbsVector(0.0, 0.0)),
   mZ(CLRelAbsVector(0.0, 0.0)),
@@ -28,15 +33,15 @@ CLText::CLText(CCopasiContainer* pParent):
   mText(""),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderText", this);
 }
 
 /**
  * Constructor with optional coordinates.
  */
-CLText::CLText(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, CCopasiContainer* pParent):
+CLText::CLText(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsVector& z, CDataContainer* pParent):
   CLGraphicalPrimitive1D(),
-  CCopasiObject("RenderText", pParent),
+  CDataObject("RenderText", pParent),
   mX(x),
   mY(y),
   mZ(z),
@@ -49,15 +54,15 @@ CLText::CLText(const CLRelAbsVector& x, const CLRelAbsVector& y, const CLRelAbsV
   mText(""),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderText", this);
 }
 
 /**
  * Copy constructor.
  */
-CLText::CLText(const CLText& source, CCopasiContainer* pParent):
+CLText::CLText(const CLText& source, CDataContainer* pParent):
   CLGraphicalPrimitive1D(source),
-  CCopasiObject(source, pParent),
+  CDataObject(source, pParent),
   mX(source.mX),
   mY(source.mY),
   mZ(source.mZ),
@@ -70,15 +75,15 @@ CLText::CLText(const CLText& source, CCopasiContainer* pParent):
   mText(source.mText),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderText", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLText::CLText(const Text& source, CCopasiContainer* pParent):
+CLText::CLText(const Text& source, CDataContainer* pParent):
   CLGraphicalPrimitive1D(source),
-  CCopasiObject("RenderText", pParent),
+  CDataObject("RenderText", pParent),
   mX(source.getX()),
   mY(source.getY()),
   mZ(source.getZ()),
@@ -87,7 +92,7 @@ CLText::CLText(const Text& source, CCopasiContainer* pParent):
   mText(source.getText()),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderText", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderText", this);
 
   switch (source.getFontWeight())
     {
@@ -163,7 +168,7 @@ CLText::CLText(const Text& source, CCopasiContainer* pParent):
  */
 CLText::~CLText()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**

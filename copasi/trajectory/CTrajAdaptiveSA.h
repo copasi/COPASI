@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -52,21 +57,21 @@ protected:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: adaptiveSA)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CTrajAdaptiveSA(const CCopasiContainer * pParent,
+  CTrajAdaptiveSA(const CDataContainer * pParent,
                   const CTaskEnum::Method & methodType = CTaskEnum::adaptiveSA,
                   const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param const CTrajAdaptiveSA & src,
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
   CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
-                  const CCopasiContainer * pParent);
+                  const CDataContainer * pParent);
 
   /**
    *  Destructor.
@@ -215,7 +220,7 @@ protected:
   /**
    * A vector containing the update sequence required to update all propensity values.
    */
-  CVector< CObjectInterface::UpdateSequence > mUpdateSequences;
+  CVector< CCore::CUpdateSequence > mUpdateSequences;
 
   /**
    *   The ordered propensity function

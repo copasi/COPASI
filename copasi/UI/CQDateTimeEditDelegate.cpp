@@ -16,7 +16,7 @@
 #include <QDateTimeEdit>
 #include <QtCore/QAbstractItemModel>
 
-#include "../copasi.h"
+#include "copasi/copasi.h"
 #include "CQDateTimeEditDelegate.h"
 
 CQDateTimeEditDelegate::CQDateTimeEditDelegate(QObject *parent)

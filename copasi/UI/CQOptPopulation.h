@@ -18,8 +18,8 @@
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/UI/CWindowInterface.h"
 #include "copasi/utilities/COutputHandler.h"
-#include "copasi/utilities/CVector.h"
-class CCopasiContainer;
+#include "copasi/core/CVector.h"
+class CDataContainer;
 class CopasiUI3Window;
 class QMenu;
 class QAction;
@@ -96,7 +96,7 @@ public:
   /**
    * compile the object list from name vector
    * @param CObjectInterface::ContainerList listOfContainer
-   * @param  const CCopasiDataModel* pDataModel
+   * @param  const CDataModel* pDataModel
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer);

@@ -30,13 +30,13 @@
 #include <vector>
 #include "function/CFunctionParameter.h"
 #include "function/CFunctionParameters.h"
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 /**
  * CCallParameterPointers
  *
  * This is what is actually passed to a function. Some of the void* can be
- * pointers to vector<const CCopasiObject*>
+ * pointers to vector<const CDataObject*>
  */
 template < typename Type >
 class CCallParameters : private std::vector<void *>
@@ -110,7 +110,7 @@ public:
 class CFunctionParameterMap
 {
 public:
-  static CCopasiObject * pUnmappedObject;
+  static CDataObject * pUnmappedObject;
 
   CFunctionParameterMap();
 
@@ -124,17 +124,17 @@ public:
   /**
    * Sets a specific parameter. Works only if the parameter is no vector
    */
-  bool setCallParameter(const std::string paramName, const CCopasiObject* obj);
+  bool setCallParameter(const std::string paramName, const CDataObject* obj);
 
   /**
    * Adds an object to a specific parameter vector. Works only if the parameter is a vector
    */
-  bool addCallParameter(const std::string paramName, const CCopasiObject* obj);
+  bool addCallParameter(const std::string paramName, const CDataObject* obj);
 
   /**
    * Removes an object from a specific parameter vector. Works only if the parameter is a vector
    */
-  void removeCallParameter(const std::string paramName, const CCopasiObject* obj);
+  void removeCallParameter(const std::string paramName, const CDataObject* obj);
 
   /**
    * Removes all objects from a specific parameter vector. Works only if the parameter is a vector.
@@ -176,7 +176,7 @@ private:
    * This is a vector of pointers to objects. Each objects needs to have a value
    * that can be passed to a function
    */
-  CCallParameters<CCopasiObject> mObjects;
+  CCallParameters<CDataObject> mObjects;
 
   /**
    * The CFunctionParameters object provides the data types of the call parameters
@@ -191,11 +191,11 @@ public:
 
   const CCallParameters<C_FLOAT64> & getPointers() const;
 
-  CCallParameters<CCopasiObject> & getObjects();
+  CCallParameters<CDataObject> & getObjects();
 
-  const CCallParameters<CCopasiObject> & getObjects() const;
+  const CCallParameters<CDataObject> & getObjects() const;
 
-  std::vector< const CCopasiObject * > getObjects(const size_t & index) const;
+  std::vector< const CDataObject * > getObjects(const size_t & index) const;
 };
 
 #endif // COPASI_CCallParameters

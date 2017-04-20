@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -68,8 +73,8 @@ private:
   size_t mhProcess;
 
   //for updating the references
-  std::vector<CCopasiObjectReference<C_FLOAT64> *> mvExpRef;
-  std::vector<CCopasiObjectReference<C_FLOAT64> *> mvLocExpRef;
+  std::vector<CDataObjectReference< C_FLOAT64 > * > mvExpRef;
+  std::vector<CDataObjectReference< C_FLOAT64 > * > mvLocExpRef;
 
   bool mResultAvailable;
   bool mResultHasDivergence;
@@ -85,10 +90,10 @@ private:
 public:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const  CTaskEnum::Task & type (default: lyap)
    */
-  CLyapTask(const CCopasiContainer * pParent,
+  CLyapTask(const CDataContainer * pParent,
             const CTaskEnum::Task & type = CTaskEnum::lyap);
 
   /**

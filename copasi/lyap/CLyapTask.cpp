@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,11 +32,11 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "report/CReport.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
-#include  "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include  "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CCopasiTimer.h"
 
 #define XXXX_Reporting
@@ -41,7 +46,7 @@
 //working annotated vectors
 #define LYAP_NUM_REF 10
 
-CLyapTask::CLyapTask(const CCopasiContainer * pParent,
+CLyapTask::CLyapTask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
   mpLyapProblem(NULL),
@@ -87,29 +92,29 @@ void CLyapTask::initObjects()
 
   mvLocExpRef.resize(LYAP_NUM_REF);
 
-  addVectorReference("Exponents", mExponents, CCopasiObject::ValueDbl);
-  addVectorReference("Local exponents", mLocalExponents, CCopasiObject::ValueDbl);
+  addVectorReference("Exponents", mExponents, CDataObject::ValueDbl);
+  addVectorReference("Local exponents", mLocalExponents, CDataObject::ValueDbl);
 
   for (i = 0; i < LYAP_NUM_REF; ++i)
     {
       std::ostringstream sss;
       sss << "Exponent " << i + 1;
-      mvExpRef[i] = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-                    (addObjectReference(sss.str(), mExponents.array()[i], CCopasiObject::ValueDbl));
+      mvExpRef[i] = dynamic_cast<CDataObjectReference<C_FLOAT64> *>
+                    (addObjectReference(sss.str(), mExponents.array()[i], CDataObject::ValueDbl));
       assert(mvExpRef[i]);
 
       std::ostringstream sss2;
       sss2 << "Local exponent " << i + 1;
-      mvLocExpRef[i] = dynamic_cast<CCopasiObjectReference<C_FLOAT64> *>
-                       (addObjectReference(sss2.str(), mLocalExponents.array()[i], CCopasiObject::ValueDbl));
+      mvLocExpRef[i] = dynamic_cast<CDataObjectReference<C_FLOAT64> *>
+                       (addObjectReference(sss2.str(), mLocalExponents.array()[i], CDataObject::ValueDbl));
       assert(mvLocExpRef[i]);
     }
 
-  addObjectReference("Sum of exponents", mSumOfExponents, CCopasiObject::ValueDbl);
-  addObjectReference("Sum of local exponents", mSumOfLocalExponents, CCopasiObject::ValueDbl);
-  //addObjectReference("Local divergence", mDivergence, CCopasiObject::ValueDbl);
-  addObjectReference("Interval divergence", mIntervalDivergence, CCopasiObject::ValueDbl);
-  addObjectReference("Average divergence", mAverageDivergence, CCopasiObject::ValueDbl);
+  addObjectReference("Sum of exponents", mSumOfExponents, CDataObject::ValueDbl);
+  addObjectReference("Sum of local exponents", mSumOfLocalExponents, CDataObject::ValueDbl);
+  //addObjectReference("Local divergence", mDivergence, CDataObject::ValueDbl);
+  addObjectReference("Interval divergence", mIntervalDivergence, CDataObject::ValueDbl);
+  addObjectReference("Average divergence", mAverageDivergence, CDataObject::ValueDbl);
 }
 
 bool CLyapTask::initialize(const OutputFlag & of,

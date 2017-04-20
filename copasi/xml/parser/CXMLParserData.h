@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -51,7 +56,7 @@ class CLGraphicalObject;
 class CLCurve;
 class CLLineSegment;
 class CLMetabReferenceGlyph;
-class CCopasiDataModel;
+class CDataModel;
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
@@ -74,7 +79,7 @@ class CUnitDefinitionDB;
 class CUnitDefinition;
 class CKeyFactory;
 
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVectorN;
 
 class CXMLParserData
 {
@@ -115,7 +120,7 @@ public:
    * Pointer to a vector of functions which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CFunction > * pFunctionList;
+  CDataVectorN< CFunction > * pFunctionList;
 
   /**
    * Pointer to the currently processed function.
@@ -189,7 +194,7 @@ public:
    * Pointer to a vector of tasks which has been loaded or is to be saved.
    * The ownership is handed to the user.
    */
-  CCopasiVectorN< CCopasiTask > * pTaskList;
+  CDataVectorN< CCopasiTask > * pTaskList;
 
   /**
    * Pointer to a vector of reports which has been loaded or is to be saved.
@@ -304,7 +309,7 @@ public:
   /**
    * A pointer to the datamodel.
    */
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
 
   CUnitDefinitionDB * pUnitDefinitionImportList;
 

@@ -24,15 +24,15 @@
 //
 
 #include "copasi.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/utility.h"
 #include "CChemEqElement.h"
 #include "CCompartment.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiObjectReference.h"
+#include "copasi/core/CDataObjectReference.h"
 #include "CMetabNameInterface.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CChemEqElement * CChemEqElement::fromData(const CData & data)
@@ -42,8 +42,8 @@ CChemEqElement * CChemEqElement::fromData(const CData & data)
 }
 
 CChemEqElement::CChemEqElement(const std::string & name,
-                               const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Chemical Equation Element"),
+                               const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Chemical Equation Element"),
   mMetaboliteKey(),
   mMultiplicity(0)
   //mpMetabolite(NULL)
@@ -53,8 +53,8 @@ CChemEqElement::CChemEqElement(const std::string & name,
 }
 
 CChemEqElement::CChemEqElement(const CChemEqElement & src,
-                               const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                               const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mMetaboliteKey(src.mMetaboliteKey),
   mMultiplicity(src.mMultiplicity)
   //mpMetabolite(src.mpMetabolite)
@@ -67,7 +67,7 @@ CChemEqElement::~CChemEqElement() {DESTRUCTOR_TRACE;}
 
 void CChemEqElement::initObjects()
 {
-  addObjectReference("Multiplicity", mMultiplicity, CCopasiObject::ValueDbl);
+  addObjectReference("Multiplicity", mMultiplicity, CDataObject::ValueDbl);
   addObjectReference("Metab Key", mMetaboliteKey);
 }
 
@@ -76,7 +76,7 @@ void CChemEqElement::cleanup() {}
 void CChemEqElement::setMetabolite(const std::string & key)
 {
   mMetaboliteKey = key;
-  CMetab* tmp = dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(mMetaboliteKey));
+  CMetab* tmp = dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(mMetaboliteKey));
 
   if (tmp)
     this->setObjectName("ChEqEl_" + tmp->getObjectName());
@@ -88,7 +88,7 @@ const std::string & CChemEqElement::getMetaboliteKey() const
 {return mMetaboliteKey;}
 
 const CMetab * CChemEqElement::getMetabolite() const
-{return dynamic_cast< CMetab * >(CCopasiRootContainer::getKeyFactory()->get(mMetaboliteKey));}
+{return dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(mMetaboliteKey));}
 
 void CChemEqElement::setMultiplicity(const C_FLOAT64 multiplicity)
 {mMultiplicity = multiplicity;}

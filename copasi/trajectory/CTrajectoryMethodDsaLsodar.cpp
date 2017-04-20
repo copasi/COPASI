@@ -38,8 +38,8 @@
 #include "model/CChemEq.h"
 #include "model/CChemEqElement.h"
 #include "model/CCompartment.h"
-#include "utilities/CCopasiVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CMatrix.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
 #include "randomGenerator/CRandom.h"
@@ -266,7 +266,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
 /**
  *   Default constructor.
  */
-CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiContainer * pParent,
+CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType):
   CLsodaMethod(pParent, methodType, taskType)
@@ -276,7 +276,7 @@ CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CCopasiContainer * 
 }
 
 CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CTrajectoryMethodDsaLsodar & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CLsodaMethod(src, pParent)
 {
   mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
@@ -478,7 +478,7 @@ void CTrajectoryMethodDsaLsodar::start()
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  CObjectInterface::UpdateSequence * pUpdateSequence;
+  CCore::CUpdateSequence * pUpdateSequence;
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
 
@@ -511,7 +511,7 @@ void CTrajectoryMethodDsaLsodar::start()
         }
 
       pUpdateSequence->clear();
-      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CMath::SimulationContext::Default, Changed, Requested);
+      mpContainer->getTransientDependencies().getUpdateSequence(*pUpdateSequence, CCore::SimulationContext::Default, Changed, Requested);
     }
 
   mPartition.intialize(mpContainer, *mpLowerLimit, *mpUpperLimit);

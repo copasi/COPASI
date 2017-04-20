@@ -26,9 +26,9 @@
 #define COPASI_CExpression
 
 #include "function/CEvaluationTree.h"
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
-class CCopasiDataModel;
+class CDataModel;
 
 class CExpression: public CEvaluationTree
 {
@@ -37,18 +37,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "Expression")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CExpression(const std::string & name = "Expression",
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CExpression &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CExpression(const CExpression & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    *  Destructor
@@ -61,7 +61,7 @@ public:
    * @param const CExpression & expression
    * @return CExpression * pInitialExpression
    */
-  static CExpression * createInitialExpression(const CExpression & expression, const CCopasiDataModel* pDataModel);
+  static CExpression * createInitialExpression(const CExpression & expression, const CDataModel* pDataModel);
 
 private:
   /**
@@ -85,11 +85,11 @@ public:
 
   /**
    * Compile the evaluation tree.
-   * @param CObjectInterface::ContainerList listOfContainer (Default: CCopasiContainer::EmptyList)
+   * @param CObjectInterface::ContainerList listOfContainer (Default: CDataContainer::EmptyList)
    * @return CIssue issue
    */
   virtual CIssue compile(CObjectInterface::ContainerList listOfContainer =
-                           CCopasiContainer::EmptyList);
+                           CDataContainer::EmptyList);
 
   /**
    * Calculates the value of the function

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -11,44 +16,44 @@
 
 %{
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 %}
 
 
 
-%ignore CCopasiRootContainer::CCopasiRootContainer(const std::string& name,
-                                           const CCopasiRootContainer * pParent = NULL,
+%ignore CRootContainer::CRootContainer(const std::string& name,
+                                           const CRootContainer * pParent = NULL,
                                            const std::string & type = "CN",
                                            const unsigned C_INT32 & flag);
-%ignore CCopasiRootContainer::getConfiguration;
-%ignore CCopasiRootContainer::init;
+%ignore CRootContainer::getConfiguration;
+%ignore CRootContainer::init;
 
-%immutable CCopasiRootContainer::Root;
+%immutable CRootContainer::Root;
 
-%rename (RootContainer) CCopasiRootContainer::Root;
-%rename (removeDatamodelWithIndex) CCopasiRootContainer::removeDatamodel(const unsigned C_INT32);
+%rename (RootContainer) CRootContainer::Root;
+%rename (removeDatamodelWithIndex) CRootContainer::removeDatamodel(const unsigned C_INT32);
 
-%include "report/CCopasiRootContainer.h"
+%include "report/CRootContainer.h"
 
 // unignore init
-%rename(init) CCopasiRootContainer::init;
+%rename(init) CRootContainer::init;
 
-%extend CCopasiRootContainer
+%extend CRootContainer
 {
-   static CCopasiDataModel* get(unsigned C_INT32 index)
+   static CDataModel* get(unsigned C_INT32 index)
     {
-      return (CCopasiDataModel*)&(*CCopasiRootContainer::getDatamodelList())[index];
+      return (CDataModel*)&(*CRootContainer::getDatamodelList())[index];
     };
 
-    CCopasiDataModel* getDatamodel(unsigned C_INT32 index)
+    CDataModel* getDatamodel(unsigned C_INT32 index)
     {
       return &(*$self->getDatamodelList())[index];
     };
 
     static void init()
     {
-        CCopasiRootContainer::init(0,NULL,false);
+        CRootContainer::init(0,NULL,false);
     }
 
 };

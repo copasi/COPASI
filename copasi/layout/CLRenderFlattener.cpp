@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -25,9 +30,9 @@
  * If references can not be resolved, an unresolved_reference_exception is
  * thrown.
  */
-CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CCopasiVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
+CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
 {
-  CCopasiVector<CLLocalRenderInformation> empty;
+  CDataVector<CLLocalRenderInformation> empty;
 
   return dynamic_cast<CLGlobalRenderInformation*>(CLRenderFlattener::flatten(globalRenderInformation, globalList, empty));
 }
@@ -40,7 +45,7 @@ CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const C
  * If references can not be resolved, an unresolved_reference_exception is
  * thrown.
  */
-CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CCopasiVector<CLLocalRenderInformation>& localList, const CCopasiVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
+CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CDataVector<CLLocalRenderInformation>& localList, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
 {
   return dynamic_cast<CLLocalRenderInformation*>(CLRenderFlattener::flatten(localRenderInformation, globalList, localList));
 }
@@ -51,7 +56,7 @@ CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CL
  * If the object that is passed in is a global render information object,
  * the second list is not considered.
  */
-CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBase& renderInformation, const CCopasiVector<CLGlobalRenderInformation>& globalList, const CCopasiVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException)
+CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBase& renderInformation, const CDataVector<CLGlobalRenderInformation>& globalList, const CDataVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException)
 {
   CLRenderInformationBase* pResult = NULL;
 

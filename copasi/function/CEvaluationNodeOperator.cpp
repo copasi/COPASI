@@ -516,7 +516,7 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
   return pNode;
 }
 
-ASTNode* CEvaluationNodeOperator::toAST(const CCopasiDataModel* pDataModel) const
+ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
@@ -1422,7 +1422,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
     }
 }
 
-bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CCopasiDataModel* pDataModel) const
+bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CDataModel* pDataModel) const
 {
   bool result = false;
 

@@ -14,22 +14,24 @@
 #include "CQMessageBox.h"
 #include "CQUnitDM.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
 #include "qtUtilities.h"
 
-#include "model/CModel.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
-CQUnitDM::CQUnitDM(QObject *parent, CCopasiDataModel * pDataModel)
+CQUnitDM::CQUnitDM(QObject *parent, CDataModel * pDataModel)
   : CQBaseDataModel(parent, pDataModel)
 {
 }
 
 int CQUnitDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return (int) CCopasiRootContainer::getUnitList()->size() + 1;
+  return (int) CRootContainer::getUnitList()->size() + 1;
 }
 int CQUnitDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
 {
@@ -85,7 +87,7 @@ QVariant CQUnitDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          const CUnitDefinition * pUnitDef = &CCopasiRootContainer::getUnitList()->operator[](index.row());
+          const CUnitDefinition * pUnitDef = &CRootContainer::getUnitList()->operator[](index.row());
 
           if (pUnitDef == NULL)
             return QVariant();
@@ -162,7 +164,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
             return false;
         }
 
-      CUnitDefinition *pUnitDef = &CCopasiRootContainer::getUnitList()->operator[](index.row());
+      CUnitDefinition *pUnitDef = &CRootContainer::getUnitList()->operator[](index.row());
 
       if (pUnitDef == NULL)
         return false;
@@ -214,7 +216,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex&)
   for (int row = 0; row < rows; ++row)
     {
       CUnitDefinition *pUnitDef;
-      CCopasiRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CCopasiRootContainer::getUnitList()), true);
+      CRootContainer::getUnitList()->add(pUnitDef = new CUnitDefinition(TO_UTF8(createNewName("unit", COL_NAME_UNITS)), CRootContainer::getUnitList()), true);
       emit notifyGUI(ListViews::UNIT, ListViews::ADD, pUnitDef->getKey());
     }
 
@@ -234,8 +236,8 @@ bool CQUnitDM::removeRows(int position, int rows)
   std::vector< std::string >::iterator itDeletedKey;
   std::vector< std::string >::iterator endDeletedKey = DeletedKeys.end();
 
-  CCopasiVector< CUnitDefinition >::const_iterator itRow =
-    CCopasiRootContainer::getUnitList()->begin() + position;
+  CDataVector< CUnitDefinition >::const_iterator itRow =
+    CRootContainer::getUnitList()->begin() + position;
   int row = 0;
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0; itDeletedKey != endDeletedKey; ++itDeletedKey, ++itRow, ++row)
@@ -249,7 +251,7 @@ bool CQUnitDM::removeRows(int position, int rows)
     {
       if (*itDeletedKey != "")
         {
-          CCopasiObject * pUnitDef = CCopasiRootContainer::getKeyFactory()->get(*itDeletedKey);
+          CDataObject * pUnitDef = CRootContainer::getKeyFactory()->get(*itDeletedKey);
 
           if (pUnitDef != NULL) delete pUnitDef;
 
@@ -283,26 +285,23 @@ bool CQUnitDM::removeRows(QModelIndexList rows, const QModelIndex&)
   for (i = rows.begin(); i != rows.end(); ++i)
     {
       if (!isDefaultRow(*i) &&
-          (pUnitDef = &CCopasiRootContainer::getUnitList()->operator[](i->row())) != NULL &&
+          (pUnitDef = &CRootContainer::getUnitList()->operator[](i->row())) != NULL &&
           pModel->getUnitSymbolUsage(pUnitDef->getSymbol()).empty() &&
           !pUnitDef->isReadOnly())//Don't delete built-ins or used units
-        pUnitDefQList.append(&CCopasiRootContainer::getUnitList()->operator[](i->row()));
+        pUnitDefQList.append(&CRootContainer::getUnitList()->operator[](i->row()));
     }
 
   for (QList <CUnitDefinition *>::const_iterator j = pUnitDefQList.begin(); j != pUnitDefQList.end(); ++j)
     {
       size_t delRow =
-        CCopasiRootContainer::getUnitList()->CCopasiVector< CUnitDefinition >::getIndex(*j);
+        CRootContainer::getUnitList()->CDataVector< CUnitDefinition >::getIndex(*j);
 
       if (delRow != C_INVALID_INDEX)
         {
-          CCopasiObject::DataObjectSet DeletedObjects;
-          DeletedObjects.insert(*j);
-
           QMessageBox::StandardButton choice =
             CQMessageBox::confirmDelete(NULL, "unit",
                                         FROM_UTF8((*j)->getObjectName()),
-                                        DeletedObjects);
+                                        *j);
 
           if (choice == QMessageBox::Ok)
             removeRow((int) delRow);

@@ -1,19 +1,15 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000101.h,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/01 13:22:01 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #ifndef TEST_000101_H__
 #define TEST_000101_H__
-
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestSuite.h>
@@ -26,7 +22,7 @@
  * will lead to a crash if the model is exported to SBML Level 3 Version 1 twice.
  */
 
-class CCopasiDataModel;
+class CDataModel;
 
 class test000101 : public CppUnit::TestFixture
 {
@@ -38,7 +34,7 @@ protected:
   // SBML model for the test
   static const char* SBML_STRING;
 
-  CCopasiDataModel* pDataModel;
+  CDataModel* pDataModel;
 
   static struct sigaction* pNewAct;
   static struct sigaction* pOldAct;
@@ -51,7 +47,6 @@ public:
   void tearDown();
 
   void test_bug1740();
-
 };
 
 #endif /* TEST000101_H__ */

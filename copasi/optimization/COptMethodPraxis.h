@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,7 +25,8 @@
 #define COPASI_COptMethodPraxis
 
 #include <vector>
-#include "utilities/CMatrix.h"
+
+#include "copasi/core/CMatrix.h"
 #include "optimization/COptMethod.h"
 
 #include "CPraxis.h"
@@ -34,21 +40,21 @@ class COptMethodPraxis: public COptMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: Praxis)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodPraxis(const CCopasiContainer * pParent,
+  COptMethodPraxis(const CDataContainer * pParent,
                    const CTaskEnum::Method & methodType = CTaskEnum::Praxis,
                    const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodPraxis & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodPraxis(const COptMethodPraxis & src,
-                   const CCopasiContainer * pParent);
+                   const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -66,9 +72,9 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  COptMethodPraxis(const CCopasiContainer * pParent = NO_PARENT);
+  COptMethodPraxis(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Initialize contained objects.

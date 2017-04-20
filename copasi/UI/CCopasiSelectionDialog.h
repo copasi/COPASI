@@ -31,7 +31,7 @@ class QCheckBox;
 class CCopasiSelectionWidget;
 class QVBoxLayout;
 class QHBoxLayout;
-class CCopasiObject;
+class CDataObject;
 class CModel;
 class CArrayAnnotation;
 
@@ -45,8 +45,8 @@ protected:
   QWidget* mpMainWidget;
   CCopasiSelectionWidget* mpSelectionWidget;
   QVBoxLayout* mpMainLayout;
-  std::vector<const CCopasiObject * > * mpTmpVector;
-  std::vector<const CCopasiObject * > * mpOutputVector;
+  std::vector<const CDataObject * > * mpTmpVector;
+  std::vector<const CDataObject * > * mpOutputVector;
   bool mExpertMode;
   bool mExpertModeEnabled;
 
@@ -58,25 +58,25 @@ protected slots:
 public:
   CCopasiSelectionDialog(QWidget * parent = 0, const char * name = 0, bool modal = false);
   ~CCopasiSelectionDialog();
-  void setOutputVector(std::vector< const CCopasiObject * > * outputVector);
+  void setOutputVector(std::vector< const CDataObject * > * outputVector);
   void setFilter(const CQSimpleSelectionTree::ObjectClasses & classes);
-  void setValidObjects(const std::vector< const CCopasiObject * > & objectList);
+  void setValidObjects(const std::vector< const CDataObject * > & objectList);
   void setSingleSelection(bool singleSelectionMode);
   void enableExpertMode(bool enable);
 
   static
-  const CCopasiObject * getObjectSingle(QWidget * pParent,
-                                        const CQSimpleSelectionTree::ObjectClasses & classes,
-                                        const CCopasiObject * pCurrentObject = NULL);
+  const CDataObject * getObjectSingle(QWidget * pParent,
+                                      const CQSimpleSelectionTree::ObjectClasses & classes,
+                                      const CDataObject * pCurrentObject = NULL);
   static
-  std::vector< const CCopasiObject * > getObjectVector(QWidget * pParent,
+  std::vector< const CDataObject * > getObjectVector(QWidget * pParent,
       const CQSimpleSelectionTree::ObjectClasses & classes,
-      const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
+      const std::vector< const CDataObject * > * pCurrentSelection = NULL);
 
   static
-  std::vector< const CCopasiObject * > getObjectVector(QWidget * pParent,
-      const std::vector< const CCopasiObject * > & objectList,
-      const std::vector< const CCopasiObject * > * pCurrentSelection = NULL);
+  std::vector< const CDataObject * > getObjectVector(QWidget * pParent,
+      const std::vector< const CDataObject * > & objectList,
+      const std::vector< const CDataObject * > * pCurrentSelection = NULL);
 
   /**
    * single=true means only one object can be returned (in the first element of the return vector)
@@ -85,7 +85,7 @@ public:
    * value=true means only objects that have a value (i.e. arrayElementReferences) are allowed.
    * otherwise also the whole array annotation may be returned.
    */
-  static std::vector<const CCopasiObject*> chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation,
+  static std::vector<const CDataObject*> chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation,
       bool single, bool value, std::string caption = "");
 };
 #endif /* SimpleSelectionDialog_H__ */

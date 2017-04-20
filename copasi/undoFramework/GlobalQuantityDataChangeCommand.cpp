@@ -14,15 +14,14 @@
  *  Created on: 11 Sep 2014
  *      Author: dada
  */
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include "UI/qtUtilities.h"
-
-#include "report/CCopasiRootContainer.h"
-#include "model/CModelValue.h"
-#include "model/CModel.h"
-
-#include "CQGlobalQuantityDM.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/UI/CQGlobalQuantityDM.h"
 
 #include "GlobalQuantityDataChangeCommand.h"
 

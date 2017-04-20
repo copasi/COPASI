@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,15 +23,15 @@
 #include <vector>
 #include <set>
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 #include "math/CMathUpdateSequence.h"
 
 class CMathContainer;
-class CCopasiContainer;
+class CDataContainer;
 class CCopasiTask;
 class Refresh;
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  *  This is just the interface that is used to all output provided by COPASI.
@@ -138,7 +143,7 @@ public:
   /**
    * compile the object list from name vector
    * @param CObjectInterface::ContainerList listOfContainer
-   * @param  const CCopasiDataModel* pDataModel
+   * @param  const CDataModel* pDataModel
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer);
@@ -215,7 +220,7 @@ protected:
   /**
    * An ordered list of refresh methods needed by the master
    */
-  CObjectInterface::UpdateSequence mUpdateSequence;
+  CCore::CUpdateSequence mUpdateSequence;
 
   /**
    * A pointer to the math container

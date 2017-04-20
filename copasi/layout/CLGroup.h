@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLGroup.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,8 +14,8 @@
 #include "copasi/layout/CLGraphicalPrimitive2D.h"
 #include "copasi/layout/CLText.h"
 
-#include "copasi/report/CCopasiContainer.h"
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/core/CDataVector.h"
 
 #include <string>
 
@@ -32,7 +29,7 @@ class CLEllipse;
 class CLPolygon;
 class CLRenderCurve;
 
-class CLGroup : public CLGraphicalPrimitive2D, public CCopasiContainer
+class CLGroup : public CLGraphicalPrimitive2D, public CDataContainer
 {
 private:
   // prevent the compiler from generating the assignment operator
@@ -47,7 +44,7 @@ protected:
   CLText::TEXT_ANCHOR mVTextAnchor;
   std::string mStartHead;
   std::string mEndHead;
-  CCopasiVector<CCopasiObject> mElements;
+  CDataVector<CDataObject> mElements;
 
   /**
    * key for the object.
@@ -58,17 +55,17 @@ public:
   /**
    * Constructor.
    */
-  CLGroup(CCopasiContainer* pParent = NULL);
+  CLGroup(CDataContainer* pParent = NULL);
 
   /**
    * Copy constructor.
    */
-  CLGroup(const CLGroup& source, CCopasiContainer* pParent = NULL);
+  CLGroup(const CLGroup& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLGroup(const RenderGroup& source, CCopasiContainer* pParent = NULL);
+  CLGroup(const RenderGroup& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor.
@@ -168,24 +165,24 @@ public:
   /**
    * Returns the list of  elements.
    */
-  const CCopasiVector<CCopasiObject>* getListOfElements() const;
+  const CDataVector<CDataObject>* getListOfElements() const;
 
   /**
    * Returns the list of  elements.
    */
-  CCopasiVector<CCopasiObject>* getListOfElements();
+  CDataVector<CDataObject>* getListOfElements();
 
   /**
    * Returns element with index n.
    * If there is no such element, NULL is returned.
    */
-  CCopasiObject* getElement(size_t n);
+  CDataObject* getElement(size_t n);
 
   /**
    * Returns element with index n.
    * If there is no such element, NULL is returned.
    */
-  const CCopasiObject* getElement(size_t n) const;
+  const CDataObject* getElement(size_t n) const;
 
   /**
    * Returns true if the horizonal alignment attribute has been set.

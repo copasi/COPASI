@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +34,7 @@
 
 #include "expat.h"
 
-class CCopasiObject;
+class CDataObject;
 
 template<class CType, class CCommon>
 class CXMLElementHandler
@@ -116,7 +121,7 @@ protected:
       }
   }
 
-  void addFix(const std::string & key, CCopasiObject * pObject)
+  void addFix(const std::string & key, CDataObject * pObject)
   {
     if (!mCommon.KeyMap.addFix(key, pObject))
       {

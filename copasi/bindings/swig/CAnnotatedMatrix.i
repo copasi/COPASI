@@ -29,8 +29,8 @@
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
 %ignore CCopasiMatrixInterface::operator[] (const index_type & index) const;
-%ignore CCopasiVectorInterface::operator[] (const index_type & index) ;
-%ignore CCopasiVectorInterface::operator[] (const index_type & index) const;
+%ignore CDataVectorInterface::operator[] (const index_type & index) ;
+%ignore CDataVectorInterface::operator[] (const index_type & index) const;
 %ignore CArrayAnnotation::operator=(const CArrayAnnotation&);
 %ignore CArrayAnnotation::array() const;
 %ignore CArrayAnnotation::printRecursively;
@@ -48,7 +48,7 @@
    }
 };
 
-%extend CCopasiVectorInterface {
+%extend CDataVectorInterface {
    /* convert the operator[] to get methods */
    virtual CCopasiAbstractArray::data_type& get(const CCopasiAbstractArray::index_type & index)
    {

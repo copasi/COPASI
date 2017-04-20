@@ -19,8 +19,8 @@
 #include "copasi/copasi.h"
 
 #include "copasi/utilities/CCopasiTask.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 #include <copasi/parameterFitting/CFitTask.h>
 #include <copasi/parameterFitting/CFitProblem.h>
@@ -39,17 +39,17 @@ using namespace std;
 int main(int argc, char** argv)
 {
   // initialize the backend library
-  CCopasiRootContainer::init(argc, argv);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(argc, argv);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // the only argument to the main routine should be the name of an SBML file
   if (argc != 2)
     {
       std::cerr << "Usage: printAffectedExperiments <copasi file>" << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -58,8 +58,6 @@ int main(int argc, char** argv)
   cout << "printAffectedExperiments invoked with: " << endl
        << " model: " << filename << endl
        << endl;
-
-
 
   bool result = false;
   // load model
@@ -74,7 +72,7 @@ int main(int argc, char** argv)
     {
       cerr << "could not load the model. Error was: " << endl;
       cerr << CCopasiMessage::getAllMessageText();
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 2;
     }
 
@@ -84,7 +82,7 @@ int main(int argc, char** argv)
   if (pFitTask == NULL)
     {
       cerr << "No parameter fitting task defined, quitting" << endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 2;
     }
 
@@ -114,5 +112,5 @@ int main(int argc, char** argv)
     }
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

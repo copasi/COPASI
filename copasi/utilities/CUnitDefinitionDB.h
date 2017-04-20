@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -11,24 +16,24 @@
 #define CUNIT_DEFINITION_DB_H
 
 //#include <unordered_map>
-#include "copasi/utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 class CUnitDefinition;
 
-class CUnitDefinitionDB: public CCopasiVectorN< CUnitDefinition >
+class CUnitDefinitionDB: public CDataVectorN< CUnitDefinition >
 {
 public:
 
   // constructors
   // default
   CUnitDefinitionDB(const std::string & name = "NoName",
-                    const CCopasiContainer * pParent = NO_PARENT);
+                    const CDataContainer * pParent = NO_PARENT);
 
   ~CUnitDefinitionDB() {}
 
   virtual bool add(const CUnitDefinition & src);
   virtual bool add(CUnitDefinition * src, bool adopt = false);
   virtual void remove(const size_t & index);
-  virtual bool remove(CCopasiObject * pObject);
+  virtual bool remove(CDataObject * pObject);
   virtual void remove(const std::string & name);
 
   bool containsSymbol(std::string symbol);
@@ -44,12 +49,12 @@ public:
   /**
    * Appends pointers to units, which are dependent on any of the candidates
    * to the list dependentUnits.
-   * @param std::set< const CCopasiObject * > candidates
-   * @param std::set< const CCopasiObject * > & dependentUnits
+   * @param std::set< const CDataObject * > candidates
+   * @param std::set< const CDataObject * > & dependentUnits
    * @return bool unitsAppended
    */
-  bool appendDependentUnits(std::set< const CCopasiObject * > candidates,
-                            std::set< const CCopasiObject * > & dependentUnits) const;
+  bool appendDependentUnits(std::set< const CDataObject * > candidates,
+                            std::set< const CDataObject * > & dependentUnits) const;
 
 private:
   /**

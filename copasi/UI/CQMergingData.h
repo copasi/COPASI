@@ -26,7 +26,7 @@
 #include "ui_CQMergingData.h"
 
 class CModel;
-class CCopasiObject;
+class CDataObject;
 
 class CQMergingData : public QDialog, public Ui::CQMergingData
 {
@@ -36,8 +36,8 @@ public:
   CQMergingData(QWidget* parent = 0, CModel * pModel = 0, Qt::WindowFlags fl = 0);
   ~CQMergingData();
 
-  std::map< QTreeWidgetItem *, const CCopasiObject * > mItemMap1;
-  std::map< QTreeWidgetItem *, const CCopasiObject * > mItemMap2;
+  std::map< QTreeWidgetItem *, const CDataObject * > mItemMap1;
+  std::map< QTreeWidgetItem *, const CDataObject * > mItemMap2;
 
 protected:
   CModel* mpModel;
@@ -51,14 +51,14 @@ private:
   /**
    * fills a tree widget with the items of the model. All tree items are mapped to the model items
    * in itemMap.
-   * const std::set<CCopasiObject*> & added : contains the model elements that were added by the latest
+   * const std::set<CDataObject*> & added : contains the model elements that were added by the latest
    * model adding operation. They will be highlighted.
    * If highlightInvolved is true, items that are actually referred to in other parts of the model are
    * highlighted (these are the items that it is useful to replace)
    */
-  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, const CCopasiObject*>& itemMap,
+  void fillTree(QTreeWidget* pW, const CModel* pModel, std::map<QTreeWidgetItem*, const CDataObject*>& itemMap,
                 bool flagGlobalQuantities, bool flagReactions,
-                const std::set<const CCopasiObject*> & added,
+                const std::set<const CDataObject*> & added,
                 bool highlightInvolved);
 
   void load();

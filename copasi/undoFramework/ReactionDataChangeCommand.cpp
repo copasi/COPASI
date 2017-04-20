@@ -16,14 +16,15 @@
  */
 #include <QDebug>
 
-#include "copasi.h"
-#include "UI/qtUtilities.h"
+#include "copasi/copasi.h"
+#include "copasi/UI/qtUtilities.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "ReactionDataChangeCommand.h"
-#include "CQReactionDM.h"
-#include "model/CModel.h"
+#include "copasi/UI/CQReactionDM.h"
+#include "copasi/model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 ReactionDataChangeCommand::ReactionDataChangeCommand(
   const QModelIndex& index,
@@ -44,7 +45,7 @@ ReactionDataChangeCommand::ReactionDataChangeCommand(
   CModel * pModel = pReactionDM->getDataModel()->getModel();
   assert(pModel != NULL);
 
-  CCopasiVectorNS < CReaction > &reactions = pModel->getReactions();
+  CDataVectorNS < CReaction > &reactions = pModel->getReactions();
 
   if ((int)reactions.size() <= index.row())
     {

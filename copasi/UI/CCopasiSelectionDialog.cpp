@@ -32,8 +32,8 @@
 
 #include "copasi.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 #include "qtUtilities.h"
 #include "utilities/CAnnotatedMatrix.h"
@@ -47,7 +47,7 @@ CCopasiSelectionDialog::CCopasiSelectionDialog(QWidget * parent , const char * n
   mpButtonBox(NULL),
   mpMainWidget(NULL),
   mpMainLayout(NULL),
-  mpTmpVector(new std::vector< const CCopasiObject * >()),
+  mpTmpVector(new std::vector< const CDataObject * >()),
   mpOutputVector(NULL),
   mExpertMode(false),
   mExpertModeEnabled(true)
@@ -90,18 +90,18 @@ CCopasiSelectionDialog::~CCopasiSelectionDialog()
 
 void CCopasiSelectionDialog::setFilter(const CQSimpleSelectionTree::ObjectClasses & classes)
 {
-  CCopasiDataModel * pDataModel = ListViews::dataModel(this);
+  CDataModel * pDataModel = ListViews::dataModel(this);
   assert(pDataModel != NULL);
 
   this->mpSelectionWidget->populateTree(pDataModel->getModel(), classes);
 }
 
-void CCopasiSelectionDialog::setValidObjects(const std::vector< const CCopasiObject * > & objectList)
+void CCopasiSelectionDialog::setValidObjects(const std::vector< const CDataObject * > & objectList)
 {
   this->mpSelectionWidget->populateTree(objectList);
 }
 
-void CCopasiSelectionDialog::setOutputVector(std::vector< const CCopasiObject * > * outputVector)
+void CCopasiSelectionDialog::setOutputVector(std::vector< const CDataObject * > * outputVector)
 {
   this->mpSelectionWidget->setOutputVector(outputVector);
 }
@@ -145,12 +145,12 @@ void CCopasiSelectionDialog::enableExpertMode(bool enable)
     }
 }
 
-const CCopasiObject *
+const CDataObject *
 CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
                                         const CQSimpleSelectionTree::ObjectClasses & classes,
-                                        const CCopasiObject * pCurrentObject)
+                                        const CDataObject * pCurrentObject)
 {
-  std::vector< const CCopasiObject * > Selection;
+  std::vector< const CDataObject * > Selection;
 
   if (pCurrentObject != NULL)
     Selection.push_back(pCurrentObject);
@@ -165,7 +165,7 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
 
   if (Result == QDialog::Accepted && Selection.size() != 0)
     {
-      const CCopasiObject *pObject = Selection[0];
+      const CDataObject *pObject = Selection[0];
       const CArrayAnnotation * pArray;
 
       // if the selected object is an array then select firstly one cell of it
@@ -185,11 +185,11 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   return NULL;
 }
 
-std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
+std::vector< const CDataObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
     const CQSimpleSelectionTree::ObjectClasses & classes,
-    const std::vector< const CCopasiObject * > * pCurrentSelection)
+    const std::vector< const CDataObject * > * pCurrentSelection)
 {
-  std::vector< const CCopasiObject * > Selection;
+  std::vector< const CDataObject * > Selection;
 
   if (pCurrentSelection)
     Selection = *pCurrentSelection;
@@ -206,9 +206,9 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   else
     //    return Selection;
     {
-      std::vector<const CCopasiObject *> newSelection;
+      std::vector<const CDataObject *> newSelection;
 
-      std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
+      std::vector< const CDataObject * >::iterator itSelection = Selection.begin();
 
       for (; itSelection != Selection.end(); ++itSelection)
         {
@@ -218,8 +218,8 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
           if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
             {
               // second parameter is false in order 'ALL' options on the matrix dialog to appear
-              std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
-              std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+              std::vector<const CDataObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
+              std::vector<const CDataObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
 
               for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
                 newSelection.push_back(*tmpit);
@@ -237,11 +237,11 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   //  return Selection;
 }
 
-std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
-    const std::vector< const CCopasiObject * > & objectList,
-    const std::vector< const CCopasiObject * > * pCurrentSelection)
+std::vector< const CDataObject * > CCopasiSelectionDialog::getObjectVector(QWidget * parent,
+    const std::vector< const CDataObject * > & objectList,
+    const std::vector< const CDataObject * > * pCurrentSelection)
 {
-  std::vector< const CCopasiObject * > Selection;
+  std::vector< const CDataObject * > Selection;
 
   if (pCurrentSelection)
     Selection = *pCurrentSelection;
@@ -249,7 +249,7 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   CCopasiSelectionDialog * pDialog = new CCopasiSelectionDialog(parent);
   pDialog->setWindowTitle("Select Items");
   pDialog->setToolTip("Select multiple items by holding down the Ctrl or Shift (or equivalent) key.");
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
+  assert(CRootContainer::getDatamodelList()->size() > 0);
   pDialog->enableExpertMode(false);
   pDialog->setValidObjects(objectList);
   pDialog->setSingleSelection(false);
@@ -260,9 +260,9 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
       return Selection;
     }
 
-  std::vector<const CCopasiObject *> newSelection;
-  std::vector< const CCopasiObject * >::iterator itSelection = Selection.begin();
-  std::vector< const CCopasiObject * >::iterator endSelection = Selection.end();
+  std::vector<const CDataObject *> newSelection;
+  std::vector< const CDataObject * >::iterator itSelection = Selection.begin();
+  std::vector< const CDataObject * >::iterator endSelection = Selection.end();
 
   for (; itSelection != endSelection; ++itSelection)
     {
@@ -272,8 +272,8 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
       if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
         {
           // second parameter is false in order 'ALL' options on the matrix dialog to appear
-          std::vector<const CCopasiObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
-          std::vector<const CCopasiObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
+          std::vector<const CDataObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
+          std::vector<const CDataObject *>::const_iterator tmpit, tmpitEnd = tmp.end();
 
           for (tmpit = tmp.begin(); tmpit != tmpitEnd; ++tmpit)
             newSelection.push_back(*tmpit);
@@ -288,10 +288,10 @@ std::vector< const CCopasiObject * > CCopasiSelectionDialog::getObjectVector(QWi
   return newSelection;
 }
 
-std::vector<const CCopasiObject*>
+std::vector<const CDataObject*>
 CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value, std::string caption)
 {
-  std::vector< const CCopasiObject* > returnVector;
+  std::vector< const CDataObject* > returnVector;
 
   if (single)
     {returnVector.resize(1); returnVector[0] = NULL;}
@@ -306,7 +306,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
       CCopasiAbstractArray::index_type index;
       index.resize(0);
       returnVector.resize(1);
-      returnVector[0] = static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference(index));
+      returnVector[0] = static_cast< const CDataObject * >(pArrayAnnotation->addElementReference(index));
       return returnVector;
     }
 
@@ -336,7 +336,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
               if (index.size() > 1)
                 index[1] = pDialog->mpCBColumn->currentIndex();
 
-              returnVector[0] = static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference(index));
+              returnVector[0] = static_cast< const CDataObject * >(pArrayAnnotation->addElementReference(index));
             }
 
           return returnVector;
@@ -351,7 +351,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
         {
           // whole matrix should be chosen -> the object itself will be returned
           returnVector.resize(1);
-          returnVector[0] = (CCopasiObject *) pArrayAnnotation;
+          returnVector[0] = (CDataObject *) pArrayAnnotation;
           return returnVector;
         }
 
@@ -390,7 +390,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
             {
               for (j = minCols; j < maxCols; ++j)
                 {
-                  returnVector.push_back(static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference((int) i, (int) j)));
+                  returnVector.push_back(static_cast< const CDataObject * >(pArrayAnnotation->addElementReference((int) i, (int) j)));
                 }
             }
         }
@@ -399,7 +399,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
         {
           for (i = minRows; i < maxRows; ++i)
             {
-              returnVector.push_back(static_cast< const CCopasiObject * >(pArrayAnnotation->addElementReference((int) i)));
+              returnVector.push_back(static_cast< const CDataObject * >(pArrayAnnotation->addElementReference((int) i)));
             }
         }
 

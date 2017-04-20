@@ -1,12 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/elementaryFluxModes/CFluxScore.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2007/02/15 17:27:11 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -23,47 +30,47 @@
 
 #include <vector>
 
-#include "utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 class CFluxScore
-  {
-    // Attributes
+{
+  // Attributes
 
-  private:
-    /**
-     *  The score of a flux mode
-     */
-    CVector< unsigned char > mScore;
+private:
+  /**
+   *  The score of a flux mode
+   */
+  CVector< unsigned char > mScore;
 
-    // Operations
+  // Operations
 
-  public:
-    /**
-     *  Default constructor
-     */
-    CFluxScore();
+public:
+  /**
+   *  Default constructor
+   */
+  CFluxScore();
 
-    /**
-     *  Specific constructor
-     *  @param "const vector < C_FLOAT64 > &" fluxModes
-     */
-    CFluxScore(const std::vector < C_FLOAT64 > & fluxModes);
+  /**
+   *  Specific constructor
+   *  @param "const vector < C_FLOAT64 > &" fluxModes
+   */
+  CFluxScore(const std::vector < C_FLOAT64 > & fluxModes);
 
-    /**
-     *  Destructor();
-     */
-    ~CFluxScore();
+  /**
+   *  Destructor();
+   */
+  ~CFluxScore();
 
-    /**
-     *  Comparison operator deciding whether lhs has a smaller flux score than
-     *  rhs
-     *  @param "const CFluxScore &" lhs
-     *  @param "const CFluxScore &" rhs
-     *  @return "bool"
-     */
-    bool operator < (const CFluxScore & rhs) const;
+  /**
+   *  Comparison operator deciding whether lhs has a smaller flux score than
+   *  rhs
+   *  @param "const CFluxScore &" lhs
+   *  @param "const CFluxScore &" rhs
+   *  @return "bool"
+   */
+  bool operator < (const CFluxScore & rhs) const;
 
-    friend std::ostream & operator << (std::ostream & os, const CFluxScore & A);
-  };
+  friend std::ostream & operator << (std::ostream & os, const CFluxScore & A);
+};
 
 #endif // COPASI_CFluxScore

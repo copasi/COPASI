@@ -275,9 +275,9 @@ public:
 
   /**
    * Retrieve the list of parameters which will be deleted
-   * @return std::set< const CCopasiObject * > DeletedParameters
+   * @return std::set< const CDataObject * > DeletedParameters
    */
-  std::set< const CCopasiObject * > getDeletedParameters() const;
+  std::set< const CDataObject * > getDeletedParameters() const;
 
   void setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType);
   const CReaction::KineticLawUnit & getKineticLawUnitType() const;

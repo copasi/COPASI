@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -28,13 +33,13 @@
 #include "CTrajectoryProblem.h"
 #include "model/CModel.h"
 //#include "model/CState.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  *  Default constructor.
  */
-CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
+CTrajectoryProblem::CTrajectoryProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::timeCourse, pParent),
   mpAutomaticStepSize(NULL),
   mpDuration(NULL),
@@ -56,7 +61,7 @@ CTrajectoryProblem::CTrajectoryProblem(const CCopasiContainer * pParent):
  *  @param "const CTrajectoryProblem &" src
  */
 CTrajectoryProblem::CTrajectoryProblem(const CTrajectoryProblem & src,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mpAutomaticStepSize(NULL),
   mpDuration(NULL),

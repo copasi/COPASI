@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -28,13 +33,13 @@
 #include "CTSSATask.h"
 #include "model/CModel.h"
 //#include "model/CState.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 /**
  *  Default constructor.
  */
-CTSSAProblem::CTSSAProblem(const CCopasiContainer * pParent):
+CTSSAProblem::CTSSAProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::timeCourse, pParent),
   mpDuration(NULL),
   mpStepSize(NULL),
@@ -53,7 +58,7 @@ CTSSAProblem::CTSSAProblem(const CCopasiContainer * pParent):
  *  @param "const CTSSAProblem &" src
  */
 CTSSAProblem::CTSSAProblem(const CTSSAProblem & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mpDuration(NULL),
   mpStepSize(NULL),
@@ -243,10 +248,10 @@ void CTSSAProblem::printResult(std::ostream * ostream) const
 {
   std::ostream & os = *ostream;
 
-  const CCopasiDataModel* pDataModel = getObjectDataModel();
+  const CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
   const CCopasiTask* mpTask =
-    dynamic_cast<const CTSSATask *>(&const_cast<CCopasiDataModel*>(pDataModel)->getTaskList()->operator[]("Time Scale Separation Analysis"));
+    dynamic_cast<const CTSSATask *>(&const_cast<CDataModel*>(pDataModel)->getTaskList()->operator[]("Time Scale Separation Analysis"));
 
   if (!mpTask) return;
 

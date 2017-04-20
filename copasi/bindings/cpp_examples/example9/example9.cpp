@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -18,8 +23,8 @@
 
 #define COPASI_MAIN
 #include "copasi/copasi.h"
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
 #include "copasi/utilities/CAnnotatedMatrix.h"
@@ -108,12 +113,12 @@ int main()
   // since we are not interested in the arguments
   // that are passed to main, we pass 0 and NULL to
   // init
-  CCopasiRootContainer::init(0, NULL);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(0, NULL);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
   assert(pDataModel != NULL);
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  assert(CRootContainer::getDatamodelList()->size() == 1);
   // next we import a simple SBML model from a string
 
   // clear the message queue so that we only have error messages from the import in the queue
@@ -135,7 +140,7 @@ int main()
     }
 
   // get the task list
-  CCopasiVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
+  CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();
 
   // get the trajectory task object
   CSteadyStateTask* pTask = dynamic_cast<CSteadyStateTask*>(&TaskList["Steady-State"]);
@@ -175,7 +180,7 @@ int main()
           std::cerr << CCopasiMessage::getAllMessageText(true);
         }
 
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -228,6 +233,6 @@ int main()
         }
     }
 
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
   return 0;
 }

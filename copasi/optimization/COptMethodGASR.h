@@ -1,16 +1,21 @@
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * COptMethodGASR class
@@ -21,8 +26,8 @@
 
 #include <limits>
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptPopulationMethod.h"
-#include "utilities/CVector.h"
 
 class CRandom;
 class CPermutation;
@@ -33,21 +38,21 @@ class COptMethodGASR : public COptPopulationMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: GeneticAlgorithmSR)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodGASR(const CCopasiContainer * pParent,
+  COptMethodGASR(const CDataContainer * pParent,
                  const CTaskEnum::Method & methodType = CTaskEnum::GeneticAlgorithmSR,
                  const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodGASR & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodGASR(const COptMethodGASR & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -65,9 +70,9 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  COptMethodGASR(const CCopasiContainer * pParent = NO_PARENT);
+  COptMethodGASR(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Initialize contained objects.
@@ -173,7 +178,6 @@ private:
    * Vector of crossover points.
    */
   CVector< bool > mCrossOver;
-
 
   /**
    * A permutation of integers used to create the informants;

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,7 +22,7 @@
 //#include "utilities/CMatrix.h"
 
 #include "utilities/CAnnotatedMatrix.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
 class CSSAProblem;
 class CFluxMode;
@@ -26,9 +31,9 @@ class CSSAMethod : public CEFMAlgorithm
 {
 public:
   CSSAMethod(const CSSAMethod & src,
-             const CCopasiContainer * pParent);
+             const CDataContainer * pParent);
 
-  CSSAMethod(const CCopasiContainer * pParent = NO_PARENT);
+  CSSAMethod(const CDataContainer * pParent = NO_PARENT);
 
   bool process(CProcessReport * handler);
 
@@ -45,7 +50,7 @@ protected:
   // attributes
 
   //
-  CCopasiVectorNS< CReaction > mReactions;
+  CDataVectorNS< CReaction > mReactions;
 
   // the Stoichiometric Matrix in which we will have only irreversible reactions
   CMatrix<C_FLOAT64> mStoichiometry;

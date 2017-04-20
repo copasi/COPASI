@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -9,7 +14,7 @@
 #include <string>
 #include <map>
 
-class CCopasiObject;
+class CDataObject;
 
 class CAnnotation
 {
@@ -18,8 +23,8 @@ public:
 
   // Operations
 public:
-  static CAnnotation * castObject(CCopasiObject * pObject);
-  static const CAnnotation * castObject(const CCopasiObject * pObject);
+  static CAnnotation * castObject(CDataObject * pObject);
+  static const CAnnotation * castObject(const CDataObject * pObject);
 
   /**
    * Default constructor

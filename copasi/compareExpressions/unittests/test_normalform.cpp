@@ -1,22 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/unittests/test_normalform.cpp,v $
-//   $Revision: 1.43 $
-//   $Name:  $
-//   $Author: ssahle $
-//   $Date: 2012/04/22 14:51:18 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -40,7 +37,7 @@
 #include "compareExpressions/CNormalChoiceLogical.h"
 #include "compareExpressions/CNormalLogical.h"
 #include "compareExpressions/CNormalLogicalItem.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 #ifdef __SUNPRO_CC
 typedef std::set<CNormalProduct*, compareProducts>::iterator ProductIterator;
@@ -52,7 +49,7 @@ typedef std::set<CNormalItemPower*, compareItemPowers>::const_iterator ItemPower
 
 void test_normalform::setUp()
 {
-  CCopasiRootContainer::init(false, 0, NULL);
+  CRootContainer::init(false, 0, NULL);
   pFraction = NULL;
 }
 
@@ -60,7 +57,7 @@ void test_normalform::tearDown()
 {
   if (pFraction != NULL) delete pFraction;
 
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test_normalform::test_item_number()
@@ -9094,7 +9091,6 @@ void test_normalform::test_cancel_bug_1()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // n
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9114,7 +9110,6 @@ void test_normalform::test_cancel_bug_1()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "n");
-
 }
 
 void test_normalform::test_cancel_bug_2()
@@ -9183,7 +9178,6 @@ void test_normalform::test_cancel_bug_2()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // n
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9203,7 +9197,6 @@ void test_normalform::test_cancel_bug_2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "n");
-
 
   // Denominator
   const CNormalSum& numeratorX = pFraction->getDenominator();
@@ -9304,7 +9297,6 @@ void test_normalform::test_cancel_bug_3()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // n
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9324,9 +9316,6 @@ void test_normalform::test_cancel_bug_3()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "n");
-
-
-
 
   const CNormalSum& numeratorX = pFraction->getDenominator();
   CPPUNIT_ASSERT(numeratorX.getFractions().size() == 0);
@@ -9370,7 +9359,6 @@ void test_normalform::test_cancel_bug_3()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // x
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9390,9 +9378,7 @@ void test_normalform::test_cancel_bug_3()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "x");
-
 }
-
 
 void test_normalform::test_cancel_bug_4()
 {
@@ -9469,7 +9455,6 @@ void test_normalform::test_cancel_bug_4()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // x
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9489,9 +9474,6 @@ void test_normalform::test_cancel_bug_4()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "x");
-
-
-
 
   const CNormalSum& numeratorX = pFraction->getDenominator();
   CPPUNIT_ASSERT(numeratorX.getFractions().size() == 0);
@@ -9535,7 +9517,6 @@ void test_normalform::test_cancel_bug_4()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // n
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9555,9 +9536,7 @@ void test_normalform::test_cancel_bug_4()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "n");
-
 }
-
 
 void test_normalform::test_cancel_bug_5()
 {
@@ -9593,7 +9572,6 @@ void test_normalform::test_cancel_bug_5()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "L");
-
 
   // Denominator
   const CNormalSum& numeratorX = pFraction->getDenominator();
@@ -9649,7 +9627,6 @@ void test_normalform::test_cancel_bug_5()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "Ks");
 
-
   // n
   pFraction2 = &pPower->getRight();
   CPPUNIT_ASSERT(pFraction2 != NULL);
@@ -9669,7 +9646,6 @@ void test_normalform::test_cancel_bug_5()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "n");
-
 }
 
 void test_normalform::test_bug_1()
@@ -9749,8 +9725,6 @@ void test_normalform::test_bug_1()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "D");
 
-
-
   // Denominator B*D
   const CNormalSum& numeratorX = pFraction->getDenominator();
   CPPUNIT_ASSERT(numeratorX.getFractions().size() == 0);
@@ -9784,9 +9758,7 @@ void test_normalform::test_bug_1()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "D");
-
 }
-
 
 void test_normalform::test_bug_2()
 {
@@ -9898,7 +9870,6 @@ void test_normalform::test_bug_2()
   CPPUNIT_ASSERT(pItem != NULL);
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "D");
-
 }
 
 void test_normalform::test_bug_3()
@@ -10173,7 +10144,6 @@ void test_normalform::test_bug_6()
   CPPUNIT_ASSERT(pItem->getType() == CNormalItem::VARIABLE);
   CPPUNIT_ASSERT(pItem->getName() == "E");
 }
-
 
 void test_normalform::test_bug_7()
 {
@@ -10485,7 +10455,6 @@ void test_normalform::test_bug_10()
   //delete pTree;
   //CPPUNIT_ASSERT(pFraction != NULL);
   //delete pFraction;
-
 }
 
 void test_normalform::test_bug_11()
@@ -10500,4 +10469,3 @@ void test_normalform::test_bug_11()
   CPPUNIT_ASSERT(pFraction != NULL);
   delete pFraction;
 }
-

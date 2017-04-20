@@ -34,8 +34,8 @@
 
 %}
 
-%template(ObjectStdVector) std::vector<CCopasiObject*>;
-typedef std::vector<CCopasiObject*> ObjectStdVector;
+%template(ObjectStdVector) std::vector<CDataObject*>;
+typedef std::vector<CDataObject*> ObjectStdVector;
 
 %ignore CUnit::VolumeUnitNames;
 %ignore CUnit::AreaUnitNames;
@@ -307,9 +307,9 @@ typedef std::vector<CCopasiObject*> ObjectStdVector;
      return $self->compileIfNecessary(NULL);
    }
    
-   void updateInitialValues(const std::vector<CCopasiObject*>& v)
+   void updateInitialValues(const std::vector<CDataObject*>& v)
    {
-     std::set<const CCopasiObject*> changedObjects;
+     std::set<const CDataObject*> changedObjects;
      changedObjects.insert(v.begin(),v.end());
 		 
 		 $self->updateInitialValues(changedObjects);

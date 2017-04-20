@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -37,14 +42,14 @@ private:
 public:
 
   CGraphNode(const std::string & name = "GraphNode",
-             const CCopasiContainer * pParent = NO_PARENT);
+             const CDataContainer * pParent = NO_PARENT);
 
   CGraphNode(const CLMetabGlyph & src,
-             const CCopasiContainer * pParent);
+             const CDataContainer * pParent);
 
   CGraphNode(const CGraphNode & src,
 
-             const CCopasiContainer * pParent = NO_PARENT);
+             const CDataContainer * pParent = NO_PARENT);
 
   C_FLOAT64 getSize() {return this->msize;}
   //void setSize(C_FLOAT64 newSize, std::vector<CLCurve> *viewerCurves);

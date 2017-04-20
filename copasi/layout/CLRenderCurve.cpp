@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,33 +18,33 @@
 #include "CLRenderPoint.h"
 #include "CLRenderCubicBezier.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLRenderCurve::CLRenderCurve(CCopasiContainer* pParent):
+CLRenderCurve::CLRenderCurve(CDataContainer* pParent):
   CLGraphicalPrimitive1D(),
-  CCopasiObject("RenderCurve", pParent),
+  CDataObject("RenderCurve", pParent),
   mStartHead(""),
   mEndHead(""),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderCurve", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderCurve", this);
 }
 
 /**
  * Copy constructor
  */
-CLRenderCurve::CLRenderCurve(const CLRenderCurve& source, CCopasiContainer* pParent):
+CLRenderCurve::CLRenderCurve(const CLRenderCurve& source, CDataContainer* pParent):
   CLGraphicalPrimitive1D(source),
-  CCopasiObject(source, pParent),
+  CDataObject(source, pParent),
   mStartHead(source.mStartHead),
   mEndHead(source.mEndHead),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderCurve", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderCurve", this);
   size_t i, iMax = source.mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)
@@ -58,14 +63,14 @@ CLRenderCurve::CLRenderCurve(const CLRenderCurve& source, CCopasiContainer* pPar
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLRenderCurve::CLRenderCurve(const RenderCurve& source, CCopasiContainer* pParent):
+CLRenderCurve::CLRenderCurve(const RenderCurve& source, CDataContainer* pParent):
   CLGraphicalPrimitive1D(source),
-  CCopasiObject("RenderCurve", pParent),
+  CDataObject("RenderCurve", pParent),
   mStartHead(source.getStartHead()),
   mEndHead(source.getEndHead()),
   mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("RenderCurve", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("RenderCurve", this);
   size_t i, iMax = source.getNumElements();
 
   for (i = 0; i < iMax; ++i)
@@ -90,7 +95,7 @@ CLRenderCurve::CLRenderCurve(const RenderCurve& source, CCopasiContainer* pParen
  */
 CLRenderCurve::~CLRenderCurve()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
   size_t i, iMax = this->mListOfElements.size();
 
   for (i = 0; i < iMax; ++i)

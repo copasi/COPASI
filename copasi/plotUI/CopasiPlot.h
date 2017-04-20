@@ -48,11 +48,11 @@
 
 #include "plot/CPlotItem.h"
 
-#include "report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 #include "utilities/COutputHandler.h"
 #include "utilities/CopasiTime.h"
-#include "utilities/CVector.h"
-#include "utilities/CMatrix.h"
+#include "copasi/core/CVector.h"
+#include "copasi/core/CMatrix.h"
 
 //*******************************************************
 
@@ -91,7 +91,6 @@ public:
    */
   const CPlotSpecification* getPlotSpecification() const;
 
-
   /**
    * Destructor
    */
@@ -100,7 +99,7 @@ public:
   /**
    * compile the object list from name vector
    * @param CObjectInterface::ContainerList listOfContainer
-   * @param  const CCopasiDataModel* pDataModel
+   * @param  const CDataModel* pDataModel
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer);

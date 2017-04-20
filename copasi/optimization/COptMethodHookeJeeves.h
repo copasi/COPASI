@@ -24,8 +24,8 @@
 #ifndef COPASI_COptMethodHookeJeeves
 #define COPASI_COptMethodHookeJeeves
 
+#include "copasi/core/CVector.h"
 #include "optimization/COptMethod.h"
-#include "utilities/CVector.h"
 
 class CRandom;
 
@@ -36,21 +36,21 @@ class COptMethodHookeJeeves : public COptMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: HookeJeeves)
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
-  COptMethodHookeJeeves(const CCopasiContainer * pParent,
+  COptMethodHookeJeeves(const CDataContainer * pParent,
                         const CTaskEnum::Method & methodType = CTaskEnum::HookeJeeves,
                         const CTaskEnum::Task & taskType = CTaskEnum::optimization);
 
   /**
    * Copy Constructor
    * @param const COptMethodHookeJeeves & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodHookeJeeves(const COptMethodHookeJeeves & src,
-                        const CCopasiContainer * pParent);
+                        const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -68,9 +68,9 @@ public:
 private:
   /**
    * Default Constructor
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
-  COptMethodHookeJeeves(const CCopasiContainer * pParent = NO_PARENT);
+  COptMethodHookeJeeves(const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Initialize contained objects.

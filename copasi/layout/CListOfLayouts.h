@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,7 +20,7 @@
 #ifndef LOLAYOUT_H
 #define LOLAYOUT_H
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "CLayout.h"
 
 #include "copasi/layout/CLGlobalRenderInformation.h"
@@ -28,16 +33,16 @@ LIBSBML_CPP_NAMESPACE_END
  * this class stores a list of layouts. It should also keep the maps
  * that translate from sbml IDs to COPASI keys
  */
-class CListOfLayouts : public CCopasiVectorN< CLayout >
+class CListOfLayouts : public CDataVectorN< CLayout >
 {
 private:
   std::string mKey;
 
-  CCopasiVector<CLGlobalRenderInformation> mvGlobalRenderInformationObjects;
+  CDataVector<CLGlobalRenderInformation> mvGlobalRenderInformationObjects;
 
 public:
   CListOfLayouts(const std::string & name = "ListOfLayouts",
-                 const CCopasiContainer* pParent = NULL);
+                 const CDataContainer* pParent = NULL);
 
   ~CListOfLayouts();
 
@@ -57,15 +62,15 @@ public:
    * idSet should contain all sbml IDs that are used in the currently exported
    * model (including the layouts, but not the objects inside the layout).
    */
-  void exportToSBML(ListOf * lol, std::map<const CCopasiObject*, SBase*> & copasimodelmap,
+  void exportToSBML(ListOf * lol, std::map<const CDataObject*, SBase*> & copasimodelmap,
                     const std::map<std::string, const SBase*>& idMap, unsigned int level, unsigned int version) const;
 
   //*******************
 
-  const CCopasiVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects() const
+  const CDataVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects() const
   {return this->mvGlobalRenderInformationObjects;};
 
-  CCopasiVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects()
+  CDataVector< CLGlobalRenderInformation > & getListOfGlobalRenderInformationObjects()
   {return this->mvGlobalRenderInformationObjects;};
 
   /**

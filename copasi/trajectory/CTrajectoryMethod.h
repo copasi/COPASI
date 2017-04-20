@@ -32,7 +32,8 @@
 #include <string>
 
 #include "copasi/utilities/CCopasiMethod.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
+#include "copasi/math/CMathEnum.h"
 
 class CTrajectoryTask;
 class CTrajectoryProblem;
@@ -61,21 +62,21 @@ private:
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CTrajectoryMethod(const CCopasiContainer * pParent,
+  CTrajectoryMethod(const CDataContainer * pParent,
                     const CTaskEnum::Method & methodType,
                     const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor.
    * @param const CTrajectoryMethod & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CTrajectoryMethod(const CTrajectoryMethod & src,
-                    const CCopasiContainer * pParent);
+                    const CDataContainer * pParent);
 
   /**
    *  Destructor.

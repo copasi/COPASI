@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,8 +22,8 @@
 #include <string>
 
 class CModel;
-class CCopasiObject;
-class CCopasiDataModel;
+class CDataObject;
+class CDataModel;
 class UndoGlobalQuantityData;
 class UndoReactionData;
 class UndoEventData;
@@ -41,9 +46,9 @@ public:
 
   virtual ~UndoData();
 
-  virtual CCopasiObject* createObjectIn(CModel* pModel);
+  virtual CDataObject* createObjectIn(CModel* pModel);
 
-  virtual CCopasiObject* restoreObjectIn(CModel* pModel);
+  virtual CDataObject* restoreObjectIn(CModel* pModel);
 
   virtual void fillObject(CModel* pModel);
 
@@ -102,25 +107,25 @@ public:
    * @param pModel the model to use as base for the search
    * @returns the resolved object (from CN) if found, NULL otherwise.
    */
-  virtual const CCopasiObject * getObject(const CModel* pModel) const;
+  virtual const CDataObject * getObject(const CModel* pModel) const;
 
   /**
    * @param pModel the data model to use as base for the search
    * @returns the resolved object (from CN) if found, NULL otherwise.
    */
-  virtual const CCopasiObject * getObject(const CCopasiDataModel* pModel) const;
+  virtual const CDataObject * getObject(const CDataModel* pModel) const;
 
   /**
    * @param pModel the model to use as base for the search
    * @returns the resolved object (from CN) if found, NULL otherwise.
    */
-  virtual CCopasiObject * getObject(CModel* pModel);
+  virtual CDataObject * getObject(CModel* pModel);
 
   /**
    * @param pModel the data model to use as base for the search
    * @returns the resolved object (from CN) if found, NULL otherwise.
    */
-  virtual CCopasiObject * getObject(CCopasiDataModel* pModel);
+  virtual CDataObject * getObject(CDataModel* pModel);
 
   /**
    * @return the name of the object

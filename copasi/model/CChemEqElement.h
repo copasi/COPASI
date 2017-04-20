@@ -29,13 +29,13 @@
 
 #include <string>
 
-#include "report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 class CMetab;
 
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVectorN;
 
-class CChemEqElement : public CCopasiContainer
+class CChemEqElement : public CDataContainer
 {
   //  Attributes
 
@@ -59,18 +59,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CChemEqElement(const std::string & name = "Chem Eq Element",
-                 const CCopasiContainer * pParent = NO_PARENT);
+                 const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CChemEqElement &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CChemEqElement(const CChemEqElement & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    * Destructor

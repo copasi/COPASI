@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -36,7 +41,7 @@ class CModel;
 class CChemEq;
 class CChemEqElement;
 class CNormalProduct;
-template<typename T> class CCopasiVector;
+template<typename T> class CDataVector;
 
 ASTNode* create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions);
 
@@ -161,7 +166,7 @@ bool is_mass_action(const CNormalFraction* pFrac, const CModel* pModel, const CC
  * This method i sused in is_mass_action once for the substrates and if the
  * reaction is reversible once for the products.
  */
-bool contains_necessary_mass_action_elements(const CCopasiVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel);
+bool contains_necessary_mass_action_elements(const CDataVector<CChemEqElement>& elements, const CNormalProduct* pProduct, const CModel* pModel);
 
 #endif /* SWIG */
 #endif /* COMPARE_UTILITIES_H__ */

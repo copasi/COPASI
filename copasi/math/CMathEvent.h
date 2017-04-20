@@ -15,7 +15,7 @@
 #include "copasi/math/CMathEventQueue.h"
 
 #include "copasi/function/CExpression.h"
-#include "copasi/utilities/CVector.h"
+#include "copasi/core/CVector.h"
 
 #include "math/CMathUpdateSequence.h"
 
@@ -168,9 +168,9 @@ public:
 
       /**
        * Set the pointer to the data object
-       * @param const CCopasiObject * pDataObject
+       * @param const CDataObject * pDataObject
        */
-      void setDataObject(const CCopasiObject * pDataObject);
+      void setDataObject(const CDataObject * pDataObject);
 
       CEvaluationNode * createTriggerExpressionNode() const;
 
@@ -530,17 +530,17 @@ private:
   /**
    * The update sequence executed prior to creating calculation actions.
    */
-  CObjectInterface::UpdateSequence mDelaySequence;
+  CCore::CUpdateSequence mDelaySequence;
 
   /**
    * The update sequence executed prior to creating assignment actions.
    */
-  CObjectInterface::UpdateSequence mTargetValuesSequence;
+  CCore::CUpdateSequence mTargetValuesSequence;
 
   /**
    * The update sequence executed after the new values are assigned to update the state.
    */
-  CObjectInterface::UpdateSequence mPostAssignmentSequence;
+  CCore::CUpdateSequence mPostAssignmentSequence;
 
   /**
    * A Boolean flag indicating whether the event may fire at the initial time.

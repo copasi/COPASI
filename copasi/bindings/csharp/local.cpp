@@ -1,9 +1,14 @@
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-#include "../common/local_common.cpp"
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+#include "copasi/common/local_common.cpp"
 #include "plot/CPlotSpecification.h"
 
 #include <copasi/optimization/COptMethodCoranaWalk.h>
@@ -54,22 +59,22 @@ int GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer)
   return (int)result;
 }
 
-// Determine type for CCopasiContainer
-int GetType_CCopasiContainer(CCopasiContainer* pPointer)
+// Determine type for CDataContainer
+int GetType_CDataContainer(CDataContainer* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
   if (pPointer != NULL)
     {
-      if (dynamic_cast<CCopasiRootContainer*>(pPointer))
+      if (dynamic_cast<CRootContainer*>(pPointer))
         {
-          // return a CCopasiRootContainer
-          result = CCopasiRootContainer_Type;
+          // return a CRootContainer
+          result = CRootContainer_Type;
         }
-      else if (dynamic_cast<CCopasiDataModel*>(pPointer))
+      else if (dynamic_cast<CDataModel*>(pPointer))
         {
-          // return a CCopasiDataModel
-          result = CCopasiDataModel_Type;
+          // return a CDataModel
+          result = CDataModel_Type;
         }
       else if (dynamic_cast<CChemEq*>(pPointer))
         {
@@ -188,9 +193,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
         {
           if (pPointer->isVector())
             {
-              if (dynamic_cast<CCopasiVector<CCopasiTask>* >(pPointer))
+              if (dynamic_cast<CDataVector<CCopasiTask>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CCopasiTask>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CCopasiTask>* >(pPointer))
                     {
                       // return a TaskVectorN
                       result = TaskVectorN_Type;
@@ -201,9 +206,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = TaskVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CModelValue>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CModelValue>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CModelValue>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CModelValue>* >(pPointer))
                     {
                       // return a ModelValueVectorN
                       result = ModelValueVectorN_Type;
@@ -214,9 +219,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = ModelValueVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CEvent>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CEvent>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CEvent>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CEvent>* >(pPointer))
                     {
                       // return a CEventVectorN
                       result = EventVectorN_Type;
@@ -227,9 +232,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = EventVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CEventAssignment>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CEventAssignment>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CEventAssignment>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CEventAssignment>* >(pPointer))
                     {
                       // return a EventAssignmentVectorN
                       result = EventAssignmentVectorN_Type;
@@ -240,9 +245,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = EventAssignmentVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CReportDefinition>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CReportDefinition>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CReportDefinition>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CReportDefinition>* >(pPointer))
                     {
                       // return a ReportDefinitionVectorN
                       result = ReportDefinitionVectorN_Type;
@@ -253,9 +258,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = ReportDefinitionVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CPlotSpecification>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CPlotSpecification>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CPlotSpecification>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CPlotSpecification>* >(pPointer))
                     {
                       // return a ReportDefinitionVectorN
                       result = OutputDefinitionVectorN_Type;
@@ -266,16 +271,16 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = OutputDefinitionVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CMoiety>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CMoiety>* >(pPointer))
                 {
                   // return a MoietyVector
                   result = MoietyVector_Type;
                 }
-              else if (dynamic_cast<CCopasiVector<CMetab>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CMetab>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CMetab>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CMetab>* >(pPointer))
                     {
-                      if (dynamic_cast<CCopasiVectorNS<CMetab>* >(pPointer))
+                      if (dynamic_cast<CDataVectorNS<CMetab>* >(pPointer))
                         {
                           // return a MetabVectorNS
                           result = MetabVectorNS_Type;
@@ -292,11 +297,11 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = MetabVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CCompartment>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CCompartment>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CCompartment>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CCompartment>* >(pPointer))
                     {
-                      if (dynamic_cast<CCopasiVectorNS<CCompartment>* >(pPointer))
+                      if (dynamic_cast<CDataVectorNS<CCompartment>* >(pPointer))
                         {
                           // return a CompartmentVectorNS
                           result = CompartmentVectorNS_Type;
@@ -313,11 +318,11 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = CompartmentVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CReaction>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CReaction>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CReaction>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CReaction>* >(pPointer))
                     {
-                      if (dynamic_cast<CCopasiVectorNS<CReaction>* >(pPointer))
+                      if (dynamic_cast<CDataVectorNS<CReaction>* >(pPointer))
                         {
                           // return a ReactionVectorNS
                           result = ReactionVectorNS_Type;
@@ -334,9 +339,9 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = ReactionVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CEvaluationTree>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CEvaluationTree>* >(pPointer))
                 {
-                  if (dynamic_cast<CCopasiVectorN<CEvaluationTree>* >(pPointer))
+                  if (dynamic_cast<CDataVectorN<CEvaluationTree>* >(pPointer))
                     {
                       // return a CEvaluationTreeVectorN
                       result = CEvaluationTreeVectorN_Type;
@@ -347,7 +352,7 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
                       result = CEvaluationTreeVector_Type;
                     }
                 }
-              else if (dynamic_cast<CCopasiVector<CChemEqElement>* >(pPointer))
+              else if (dynamic_cast<CDataVector<CChemEqElement>* >(pPointer))
                 {
                   // return a CChemEqElementVector
                   result = CChemEqElementVector_Type;
@@ -360,8 +365,8 @@ int GetType_CCopasiContainer(CCopasiContainer* pPointer)
             }
           else
             {
-              // return a CCopasiContainer
-              result = CCopasiContainer_Type;
+              // return a CDataContainer
+              result = CDataContainer_Type;
             }
         }
     }
@@ -425,19 +430,19 @@ int GetType_CCopasiMethod(CCopasiMethod* pPointer)
   return (int)result;
 }
 
-// Determine type for CCopasiObject
-int GetType_CCopasiObject(CCopasiObject* pPointer)
+// Determine type for CDataObject
+int GetType_CDataObject(CDataObject* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
   if (pPointer != NULL)
     {
-      if (dynamic_cast<CCopasiContainer*>(pPointer))
+      if (dynamic_cast<CDataContainer*>(pPointer))
         {
           // If we are not to specific here, the typecasting code in csharp.i
           // actually gets a lot easier to maintain.
-          result = CCopasiContainer_Type;
-          //result = GetType_CCopasiContainer((CCopasiContainer*)pPointer);
+          result = CDataContainer_Type;
+          //result = GetType_CDataContainer((CDataContainer*)pPointer);
         }
       else if (dynamic_cast<CReportDefinition*>(pPointer))
         {
@@ -464,8 +469,8 @@ int GetType_CCopasiObject(CCopasiObject* pPointer)
         }
       else
         {
-          // return a CCopasiObject
-          result = CCopasiObject_Type;
+          // return a CDataObject
+          result = CDataObject_Type;
         }
     }
 
@@ -766,36 +771,52 @@ int GetType_COptMethod(COptMethod* optMethod)
 {
   if (dynamic_cast<COptMethodCoranaWalk*>(optMethod))
     return COptMethodCoranaWalk_Type;
+
   if (dynamic_cast<COptMethodDE*>(optMethod))
     return COptMethodDE_Type;
+
   if (dynamic_cast<COptMethodEP*>(optMethod))
     return COptMethodEP_Type;
+
   if (dynamic_cast<COptMethodGA*>(optMethod))
     return COptMethodGA_Type;
+
   if (dynamic_cast<COptMethodGASR*>(optMethod))
     return COptMethodGASR_Type;
+
   if (dynamic_cast<COptMethodHookeJeeves*>(optMethod))
     return COptMethodHookeJeeves_Type;
+
   if (dynamic_cast<COptMethodLevenbergMarquardt*>(optMethod))
     return COptMethodLevenbergMarquardt_Type;
+
   if (dynamic_cast<COptMethodNelderMead*>(optMethod))
     return COptMethodNelderMead_Type;
+
   if (dynamic_cast<COptMethodPraxis*>(optMethod))
     return COptMethodPraxis_Type;
+
   if (dynamic_cast<COptMethodSA*>(optMethod))
     return COptMethodSA_Type;
+
   if (dynamic_cast<COptMethodSRES*>(optMethod))
     return COptMethodSRES_Type;
+
   if (dynamic_cast<COptMethodSS*>(optMethod))
     return COptMethodSS_Type;
+
   if (dynamic_cast<COptMethodStatistics*>(optMethod))
     return COptMethodStatistics_Type;
+
   if (dynamic_cast<COptMethodSteepestDescent*>(optMethod))
     return COptMethodSteepestDescent_Type;
+
   if (dynamic_cast<CRandomSearch*>(optMethod))
     return CRandomSearch_Type;
+
   if (dynamic_cast<COptMethodTruncatedNewton*>(optMethod))
     return COptMethodTruncatedNewton_Type;
+
   return COptMethod_Type;
 }
 
@@ -845,5 +866,5 @@ int GetType_COptTask(COptTask* pPointer)
 
 void initCopasi()
 {
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
 }

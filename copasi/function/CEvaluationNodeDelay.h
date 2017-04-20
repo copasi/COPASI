@@ -21,7 +21,7 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class ASTNode;
 LIBSBML_CPP_NAMESPACE_END
 
-class CCopasiDataModel;
+class CDataModel;
 
 /**
  * This is class for nodes representing the (SBML) delay function.
@@ -115,7 +115,7 @@ public:
    * Create a new ASTNode corresponding to this delay node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  ASTNode* toAST(const CCopasiDataModel* pDataModel) const;
+  ASTNode* toAST(const CDataModel* pDataModel) const;
 
   /**
    * Build the MathML string

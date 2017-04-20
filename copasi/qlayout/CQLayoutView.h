@@ -18,7 +18,7 @@ class QAction;
 class QMenu;
 class QToolBar;
 class QComboBox;
-class CCopasiDataModel;
+class CDataModel;
 class CLayout;
 
 class CQLayoutView: public QGraphicsView
@@ -31,8 +31,8 @@ public:
   void fillZoomMenu(QMenu* menu);
   void fillZoomTooBar(QToolBar* toolBar);
   void fillSelectionToolBar(QToolBar* toolBar);
-  void setDataModel(CCopasiDataModel* dataModel, CLayout *layout = NULL);
-  CCopasiDataModel* getDataModel();
+  void setDataModel(CDataModel* dataModel, CLayout *layout = NULL);
+  CDataModel* getDataModel();
 
 public slots:
   void slotFitOnScreen();
@@ -54,7 +54,7 @@ protected:
   QComboBox* mpLayoutDropdown;
   QComboBox* mpRenderDropdown;
   bool mIgnoreEvents;
-  CCopasiDataModel* mpDataModel;
+  CDataModel* mpDataModel;
 
 private:
   void createActions();

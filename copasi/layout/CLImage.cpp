@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLImage.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,58 +12,58 @@
 
 #include "CLImage.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLImage::CLImage(CCopasiContainer* pParent):
-    CLTransformation2D(),
-    CCopasiObject("Image", pParent),
-    mX(CLRelAbsVector(0.0, 0.0)),
-    mY(CLRelAbsVector(0.0, 0.0)),
-    mZ(CLRelAbsVector(0.0, 0.0)),
-    mWidth(CLRelAbsVector(0.0, 0.0)),
-    mHeight(CLRelAbsVector(0.0, 0.0)),
-    mHRef(""),
-    mKey("")
+CLImage::CLImage(CDataContainer* pParent):
+  CLTransformation2D(),
+  CDataObject("Image", pParent),
+  mX(CLRelAbsVector(0.0, 0.0)),
+  mY(CLRelAbsVector(0.0, 0.0)),
+  mZ(CLRelAbsVector(0.0, 0.0)),
+  mWidth(CLRelAbsVector(0.0, 0.0)),
+  mHeight(CLRelAbsVector(0.0, 0.0)),
+  mHRef(""),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Image", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Image", this);
 }
 
 /**
  * Copy Constructor.
  */
-CLImage::CLImage(const CLImage& source, CCopasiContainer* pParent):
-    CLTransformation2D(source),
-    CCopasiObject(source, pParent),
-    mX(source.mX),
-    mY(source.mY),
-    mZ(source.mZ),
-    mWidth(source.mWidth),
-    mHeight(source.mHeight),
-    mHRef(source.mHRef),
-    mKey("")
+CLImage::CLImage(const CLImage& source, CDataContainer* pParent):
+  CLTransformation2D(source),
+  CDataObject(source, pParent),
+  mX(source.mX),
+  mY(source.mY),
+  mZ(source.mZ),
+  mWidth(source.mWidth),
+  mHeight(source.mHeight),
+  mHRef(source.mHRef),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Image", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Image", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLImage::CLImage(const Image& source, CCopasiContainer* pParent):
-    CLTransformation2D(source),
-    CCopasiObject("Image", pParent),
-    mX(source.getX()),
-    mY(source.getY()),
-    mZ(source.getZ()),
-    mWidth(source.getWidth()),
-    mHeight(source.getHeight()),
-    mHRef(source.getImageReference()),
-    mKey("")
+CLImage::CLImage(const Image& source, CDataContainer* pParent):
+  CLTransformation2D(source),
+  CDataObject("Image", pParent),
+  mX(source.getX()),
+  mY(source.getY()),
+  mZ(source.getZ()),
+  mWidth(source.getWidth()),
+  mHeight(source.getHeight()),
+  mHRef(source.getImageReference()),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Image", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Image", this);
 }
 
 /**
@@ -74,7 +71,7 @@ CLImage::CLImage(const Image& source, CCopasiContainer* pParent):
  */
 CLImage::~CLImage()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,7 +30,7 @@
 #include "math/CMathContainer.h"
 
 //  Default constructor
-CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
+CEFMProblem::CEFMProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::fluxMode, pParent),
   mFluxModes(),
   mReorderedReactions()
@@ -36,7 +41,7 @@ CEFMProblem::CEFMProblem(const CCopasiContainer * pParent):
 
 // copy constructor
 CEFMProblem::CEFMProblem(const CEFMProblem& src,
-                         const CCopasiContainer * pParent):
+                         const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mFluxModes(src.mFluxModes),
   mReorderedReactions(src.mReorderedReactions)

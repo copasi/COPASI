@@ -27,17 +27,17 @@
 #include "copasi.h"
 
 #include "CAnnotatedMatrix.h"
-#include "CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 
-#include "report/CKeyFactory.h"
-#include "report/CArrayElementReference.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/report/CArrayElementReference.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 CArrayAnnotation::CArrayAnnotation(const std::string & name,
-                                   const CCopasiContainer * pParent,
+                                   const CDataContainer * pParent,
                                    CCopasiAbstractArray * array,
                                    const bool & adopt)
-  : CCopasiContainer(name, pParent, "Array" , CCopasiObject::Array),
+  : CDataContainer(name, pParent, "Array" , CDataObject::Array),
     mpArray(array),
     mDestructArray(adopt),
     mDefaultMode(OBJECTS)
@@ -46,7 +46,7 @@ CArrayAnnotation::CArrayAnnotation(const std::string & name,
 
   resize();
 
-  //addObjectReference("Annotated Matrix", *this, CCopasiObject::ValueDbl);
+  //addObjectReference("Annotated Matrix", *this, CDataObject::ValueDbl);
 }
 
 CArrayAnnotation::~CArrayAnnotation()
@@ -180,12 +180,12 @@ void CArrayAnnotation::resize()
     resizeOneDimension(i);
 }
 
-const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotation::name_index_type & cnIndex) const
+const CDataObject * CArrayAnnotation::addElementReference(const CArrayAnnotation::name_index_type & cnIndex) const
 {
   return new CArrayElementReference(cnIndex, this);
 }
 
-const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotation::index_type & index) const
+const CDataObject * CArrayAnnotation::addElementReference(const CArrayAnnotation::index_type & index) const
 {
   CArrayAnnotation::name_index_type CNIndex(index.size());
   CArrayAnnotation::name_index_type::iterator to = CNIndex.begin();
@@ -206,7 +206,7 @@ const CCopasiObject * CArrayAnnotation::addElementReference(const CArrayAnnotati
   return addElementReference(CNIndex);
 }
 
-const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
+const CDataObject * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v) const
 {
   CArrayAnnotation::index_type CIndex(2);
 
@@ -216,7 +216,7 @@ const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u, C_INT32 v
   return addElementReference(CIndex);
 }
 
-const CCopasiObject * CArrayAnnotation::addElementReference(C_INT32 u) const
+const CDataObject * CArrayAnnotation::addElementReference(C_INT32 u) const
 {
   CArrayAnnotation::index_type CIndex(1);
 
@@ -234,13 +234,13 @@ const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & c
 
   if (cn == "Property=DisplayName")
     {
-      return CCopasiObject::getObject(cn);
+      return CDataObject::getObject(cn);
     }
 
   //if there are no indices there could still be other children. This can be handled
   //by the container base class
   if (cn.getElementName(0, false) == "") //no indices
-    return CCopasiContainer::getObject(cn);
+    return CDataContainer::getObject(cn);
 
   //first get the index string
   std::string tmp;
@@ -256,7 +256,7 @@ const CObjectInterface * CArrayAnnotation::getObject(const CCopasiObjectName & c
       ++ii;
     }
 
-  const CCopasiObject* pObject = NULL; //this will contain the element reference
+  const CDataObject* pObject = NULL; //this will contain the element reference
 
   //if the reference object already exists, its name will be identical to the index
   objectMap::range range = mObjects.equal_range(ObjectName);
@@ -493,7 +493,7 @@ CArrayAnnotation::index_type CArrayAnnotation::cnToIndex(const CArrayAnnotation:
 
 std::string CArrayAnnotation::createDisplayName(const std::string & cn) const
 {
-  const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(cn));
+  const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(cn));
 
   if (pObject)
     return pObject->getObjectDisplayName();

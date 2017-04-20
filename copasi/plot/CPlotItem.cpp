@@ -19,7 +19,7 @@
 
 #include "CPlotItem.h"
 
-#include "../undo/CData.h"
+#include "copasi/undo/CData.h"
 #include "report/CKeyFactory.h"
 #include "utilities/utility.h"
 
@@ -82,7 +82,7 @@ CPlotItem * CPlotItem::fromData(const CData & data)
 }
 
 CPlotItem::CPlotItem(const std::string & name,
-                     const CCopasiContainer * pParent,
+                     const CDataContainer * pParent,
                      const CPlotItem::Type & type):
   CCopasiParameterGroup(TypeName[type], pParent, "PlotItem"),
   mType(unset),
@@ -95,7 +95,7 @@ CPlotItem::CPlotItem(const std::string & name,
 }
 
 CPlotItem::CPlotItem(const CPlotItem & src,
-                     const CCopasiContainer * pParent):
+                     const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mType(unset),
   mActivity(),

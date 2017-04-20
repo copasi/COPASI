@@ -53,7 +53,7 @@ public:
    *
    * @param pObject the object whose dependencies to display
    */
-  void loadFrom(CCopasiObject *pObject);
+  void loadFrom(CDataObject *pObject);
 
   void setResizeTableToRows(bool resizeTable);
 

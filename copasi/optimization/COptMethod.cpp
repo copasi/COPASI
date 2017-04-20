@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,7 +34,7 @@
 #include "COptMethod.h"
 #include "COptProblem.h"
 
-COptMethod::COptMethod(const CCopasiContainer * pParent,
+COptMethod::COptMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
                        const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType),
@@ -41,7 +46,7 @@ COptMethod::COptMethod(const CCopasiContainer * pParent,
 {}
 
 COptMethod::COptMethod(const COptMethod & src,
-                       const CCopasiContainer * pParent):
+                       const CDataContainer * pParent):
   CCopasiMethod(src, pParent),
   mpOptProblem(src.mpOptProblem),
   mpParentTask(src.mpParentTask),

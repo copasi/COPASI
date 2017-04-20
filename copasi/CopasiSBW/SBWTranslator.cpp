@@ -1,4 +1,9 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -21,8 +26,8 @@
 
 #include <copasi/copasi.h>
 #include <copasi/commandline/COptions.h>
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/report/CRootContainer.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/utilities/CVersion.h>
 #include <copasi/utilities/CDirEntry.h>
 
@@ -57,8 +62,8 @@ void Copasi2SBMLTranslator::registerMethods(MethodTable<Copasi2SBMLTranslator> &
 
 std::string Copasi2SBMLTranslator::translateFileToSBML(const std::string &fileName)
 {
-  CCopasiRootContainer::init(0, NULL);
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
   pDataModel->loadModel(fileName, NULL);
   string sbml = pDataModel->exportSBMLToString(NULL, mLevel, mVersion);
   return sbml;
@@ -66,8 +71,8 @@ std::string Copasi2SBMLTranslator::translateFileToSBML(const std::string &fileNa
 
 std::string Copasi2SBMLTranslator::translate(const std::string &sbmlString)
 {
-  CCopasiRootContainer::init(0, NULL);
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
   pDataModel->importSBMLFromString(sbmlString);
 
   string tempDir;
@@ -85,8 +90,8 @@ std::string Copasi2SBMLTranslator::translate(const std::string &sbmlString)
 
 std::string Copasi2SBMLTranslator::translateToSBML(const std::string &copasiString)
 {
-  CCopasiRootContainer::init(0, NULL);
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
 
   istringstream str(copasiString);
 

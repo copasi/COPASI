@@ -31,10 +31,10 @@
 #include <QLabel>
 #include <QPixmap>
 
-class CCopasiDataModel;
+class CDataModel;
 class CCopasiSelectionDialog;
 class COptItem;
-class CCopasiObject;
+class CDataObject;
 class CCopasiObjectName;
 class CQValidatorBound;
 class CQValidatorNotEmpty;
@@ -54,7 +54,7 @@ public:
 
   enum ItemType {OPT_ITEM = 0, OPT_CONSTRAINT, FIT_ITEM, FIT_CONSTRAINT};
 
-  virtual bool load(CCopasiDataModel * pDataModel,
+  virtual bool load(CDataModel * pDataModel,
                     CCopasiParameterGroup * pItems,
                     const std::map<std::string, std::string> * pExperimentMap,
                     const std::map<std::string, std::string> * pCrossValidationMap);
@@ -68,7 +68,7 @@ signals:
   void numberChanged(int);
 
 protected:
-  const CCopasiDataModel * mpDataModel;
+  const CDataModel * mpDataModel;
   const CCrossValidationSet **mppCrossValidationSet;
   std::set< size_t > mSelection;
   size_t mCurrentRow;

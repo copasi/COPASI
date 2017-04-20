@@ -22,26 +22,26 @@
 
 #include <string>
 
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CMatrix.h"
+#include "copasi/core/CVector.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CMatrix.h"
-#include "utilities/CVector.h"
 
 class CExperimentObjectMap;
 class CMathContainer;
 
-class CFittingPoint: public CCopasiContainer
+class CFittingPoint: public CDataContainer
 {
   // Operations
 public:
   static CFittingPoint * fromData(const CData & data);
 
   CFittingPoint(const std::string & name = "unknown",
-                const CCopasiContainer * pParent = NO_PARENT);
+                const CDataContainer * pParent = NO_PARENT);
 
   CFittingPoint(const CFittingPoint & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
   ~CFittingPoint();
 
@@ -119,27 +119,27 @@ protected:
 public:
   /**
    * Default constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const std::string & name (default: Experiment)
    */
-  CExperiment(const CCopasiContainer * pParent,
+  CExperiment(const CDataContainer * pParent,
               const std::string & name = "Experiment");
 
   /**
    * Copy constructor
    * @param const CExperiment & src
-   * @param const CCopasiContainer * pParent (default: src data model)
+   * @param const CDataContainer * pParent (default: src data model)
    */
   CExperiment(const CExperiment & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Specific constructor used for reading COPASI files
    * @param const CCopasiParameterGroup & group
-   * @param const CCopasiContainer * pParent (default: group data model)
+   * @param const CDataContainer * pParent (default: group data model)
    */
   CExperiment(const CCopasiParameterGroup & group,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    * Destructor
@@ -184,7 +184,7 @@ public:
 
   /**
    * Retrieve the list of dependent data objects
-   * @return const std::map< const CCopasiObject *, size_t > & dependentObjects
+   * @return const std::map< const CDataObject *, size_t > & dependentObjects
    */
   const std::map< const CObjectInterface *, size_t > & getDependentObjects() const;
 
@@ -321,9 +321,9 @@ public:
 
   /**
    * Retrieve the list of fitting points
-   * @return const CCopasiVector< CFittingPoint > & fittingPoints
+   * @return const CDataVector< CFittingPoint > & fittingPoints
    */
-  const CCopasiVector< CFittingPoint > & getFittingPoints() const;
+  const CDataVector< CFittingPoint > & getFittingPoints() const;
 
   /**
    * This method needs to be called whenever the Object Map
@@ -663,8 +663,8 @@ private:
 
   CMathContainer * mpContainer;
 
-  CObjectInterface::UpdateSequence mIndependentUpdateSequence;
-  CObjectInterface::UpdateSequence mDependentUpdateSequence;
+  CCore::CUpdateSequence mIndependentUpdateSequence;
+  CCore::CUpdateSequence mDependentUpdateSequence;
 
   CObjectInterface::ObjectSet mIndependentObjects;
 
@@ -692,7 +692,7 @@ private:
    */
   std::map< const CObjectInterface *, size_t > mDependentObjects;
 
-  CCopasiVector< CFittingPoint > mFittingPoints;
+  CDataVector< CFittingPoint > mFittingPoints;
 
   //storage for extended time series (for nicer plotting)
   CVector< C_FLOAT64 > mExtendedTimeSeries;

@@ -17,26 +17,22 @@
 
 #include "UndoData.h"
 
-#include "copasi.h"
+#include "copasi/copasi.h"
 
-#include <copasi/undoFramework/UndoCompartmentData.h>
-#include <copasi/undoFramework/UndoSpeciesData.h>
-#include <copasi/undoFramework/UndoEventData.h>
-#include <copasi/undoFramework/UndoReactionData.h>
-#include <copasi/undoFramework/UndoGlobalQuantityData.h>
-#include <copasi/undoFramework/UndoDependentData.h>
+#include "UndoCompartmentData.h"
+#include "UndoSpeciesData.h"
+#include "UndoEventData.h"
+#include "UndoReactionData.h"
+#include "UndoGlobalQuantityData.h"
+#include "UndoDependentData.h"
 
-#include <copasi/model/CModel.h>
-#include <copasi/model/CReaction.h>
-#include <copasi/model/CReactionInterface.h>
-
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
-
-#include <copasi/function/CExpression.h>
-
-#include <copasi/report/CCopasiRootContainer.h>
-
-#include <copasi/UI/listviews.h>
+#include "copasi/model/CModel.h"
+#include "copasi/model/CReaction.h"
+#include "copasi/model/CReactionInterface.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/UI/listviews.h"
 
 UndoData::UndoData(const std::string &key  /*= ""*/,
                    const std::string &name /*= ""*/,
@@ -55,12 +51,12 @@ UndoData::~UndoData()
 {
 }
 
-CCopasiObject *UndoData::createObjectIn(CModel *)
+CDataObject *UndoData::createObjectIn(CModel *)
 {
   return NULL;
 }
 
-CCopasiObject *UndoData::restoreObjectIn(CModel *)
+CDataObject *UndoData::restoreObjectIn(CModel *)
 {
   return NULL;
 }
@@ -148,30 +144,30 @@ UndoData::hasCN() const
   return mCN.empty();
 }
 
-const CCopasiObject *UndoData::getObject(const CModel *pModel) const
+const CDataObject *UndoData::getObject(const CModel *pModel) const
 {
   if (pModel == NULL) return NULL;
 
   return getObject(pModel->getObjectDataModel());
 }
 
-const CCopasiObject *UndoData::getObject(const CCopasiDataModel *pModel) const
+const CDataObject *UndoData::getObject(const CDataModel *pModel) const
 {
   if (pModel == NULL) return NULL;
 
-  return dynamic_cast<const CCopasiObject*>(pModel->getObject(getCN()));
+  return dynamic_cast<const CDataObject*>(pModel->getObject(getCN()));
 }
 
-CCopasiObject *UndoData::getObject(CModel *pModel)
+CDataObject *UndoData::getObject(CModel *pModel)
 {
   if (pModel == NULL) return NULL;
 
   return getObject(pModel->getObjectDataModel());
 }
 
-CCopasiObject *UndoData::getObject(CCopasiDataModel *pDataModel)
+CDataObject *UndoData::getObject(CDataModel *pDataModel)
 {
   if (pDataModel == NULL) return NULL;
 
-  return const_cast< CCopasiObject * >(CObjectInterface::DataObject(pDataModel->getObject(mCN)));
+  return const_cast< CDataObject * >(CObjectInterface::DataObject(pDataModel->getObject(mCN)));
 }

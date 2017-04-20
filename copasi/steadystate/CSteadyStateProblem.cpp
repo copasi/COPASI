@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -25,14 +30,14 @@
 #include "copasi.h"
 #include "CSteadyStateProblem.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 
 /**
  *  Default constructor.
  */
-CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
+CSteadyStateProblem::CSteadyStateProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::steadyState, pParent)
   //mInitialState(),
   //mHasInitialState(false)
@@ -47,7 +52,7 @@ CSteadyStateProblem::CSteadyStateProblem(const CCopasiContainer * pParent):
  *  @param "const CSteadyStateProblem &" src
  */
 CSteadyStateProblem::CSteadyStateProblem(const CSteadyStateProblem & src,
-    const CCopasiContainer * pParent):
+    const CDataContainer * pParent):
   CCopasiProblem(src, pParent)
   //mInitialState(src.mInitialState),
   //mHasInitialState(src.mHasInitialState)

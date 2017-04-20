@@ -24,10 +24,13 @@
  * (C) Stefan Hoops 2001
  */
 
-#include "copasi.h"
+#include "copasi/copasi.h"
+
 #include "CFunctionParameter.h"
-#include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/undo/CData.h"
 
 //static
 const std::string CFunctionParameter::DataTypeName[] =
@@ -62,18 +65,18 @@ CFunctionParameter * CFunctionParameter::fromData(const CData & data)
 }
 
 CFunctionParameter::CFunctionParameter(const std::string & name,
-                                       const CCopasiContainer * pParent):
-  CCopasiContainer(name, pParent, "Variable"),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+                                       const CDataContainer * pParent):
+  CDataContainer(name, pParent, "Variable"),
+  mKey(CRootContainer::getKeyFactory()->add("FunctionParameter", this)),
   mType((CFunctionParameter::DataType) - 1),
   mUsage(VARIABLE),
   mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
-                                       const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+                                       const CDataContainer * pParent):
+  CDataContainer(src, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("FunctionParameter", this)),
   mType(src.mType),
   mUsage(src.mUsage),
   mIsUsed(src.mIsUsed)
@@ -82,17 +85,17 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
 CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
                                        Role usage,
-                                       const CCopasiContainer * pParent) :
-CCopasiContainer(name, pParent, "Variable"),
-                 mKey(CCopasiRootContainer::getKeyFactory()->add("FunctionParameter", this)),
-                 mType(type),
-                 mUsage(usage),
-                 mIsUsed(true)
+                                       const CDataContainer * pParent) :
+CDataContainer(name, pParent, "Variable"),
+               mKey(CRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+               mType(type),
+               mUsage(usage),
+               mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::~CFunctionParameter()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
   DESTRUCTOR_TRACE;
 }
 

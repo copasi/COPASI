@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/unittests/test000102.cpp,v $
-//   $Revision: 1.2 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/12/01 19:54:56 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -15,8 +12,8 @@
 
 #include <string>
 
-#include <copasi/report/CCopasiRootContainer.h>
-#include <copasi/CopasiDataModel/CCopasiDataModel.h>
+#include <copasi/report/CRootContainer.h>
+#include <copasi/CopasiDataModel/CDataModel.h>
 
 #include "sbml/xml/XMLNode.h"
 #include "sbml/xml/XMLAttributes.h"
@@ -30,16 +27,14 @@
 void test000102::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
-  pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL, false);
+  pDataModel = CRootContainer::addDatamodel();
 }
 
 void test000102::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
-
-
 
 void test000102::test_bug1741()
 {
@@ -109,7 +104,6 @@ void test000102::test_bug1741()
   CPPUNIT_ASSERT(index != -1);
   v = pAttr->getValue(index);
   CPPUNIT_ASSERT(v == "substance");
-
 
   // find the list of UnitDefinitions
   iMax = pModelNode->getNumChildren();
@@ -235,7 +229,6 @@ void test000102::test_bug1741()
   CPPUNIT_ASSERT(index != -1);
   v = pAttr->getValue(index);
   CPPUNIT_ASSERT(v == "2");
-
 
   CPPUNIT_ASSERT(pLengthNode != NULL);
   iMax = pLengthNode->getNumChildren();
@@ -408,7 +401,6 @@ void test000102::test_bug1741()
   v = pAttr->getValue(index);
   CPPUNIT_ASSERT(v == "1");
 
-
   CPPUNIT_ASSERT(pSubstanceNode != NULL);
   iMax = pSubstanceNode->getNumChildren();
   numUnitChildren = 0;
@@ -465,8 +457,6 @@ void test000102::test_bug1741()
   CPPUNIT_ASSERT(index != -1);
   v = pAttr->getValue(index);
   CPPUNIT_ASSERT(v == "1");
-
-
 }
 
 const char* test000102::SBML_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

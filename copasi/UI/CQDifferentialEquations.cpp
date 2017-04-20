@@ -37,11 +37,11 @@
 #endif // HAVE_MML
 
 #include "model/CMMLOutput.h"
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "qtUtilities.h"
 #include "utilities/utility.h"
 #include "tex/CMathMLToTeX.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CLocaleString.h"
 
 #include "CopasiFileDialog.h"
@@ -190,7 +190,6 @@ void CQDifferentialEquations::savePDF(const QString& outfilename)
   painter.begin(&printer);
   doc.paint(&painter, QPoint(0, 0));
   painter.end();
-
 }
 
 void CQDifferentialEquations::savePNG(const QString& outfilename)

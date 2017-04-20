@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,7 +14,7 @@
 #include <string>
 #include <vector>
 
-class CCopasiDataModel;
+class CDataModel;
 class CFitTask;
 class COptTask;
 
@@ -47,7 +52,7 @@ class ResultData
 {
 public:
   bool mIsOptimization;
-  CCopasiDataModel*  mpDataModel;
+  CDataModel*  mpDataModel;
   std::vector<FittingItem*> mFittingItems;
   std::vector<CheckPoint*> mCheckPoints;
 
@@ -61,10 +66,10 @@ public:
 
   ResultData(const std::vector<FittingItem*>& fittingItems,
              const std::vector<CheckPoint*>& checkPoints,
-             CCopasiDataModel* dataModel = NULL,
+             CDataModel* dataModel = NULL,
              bool isOptimization = false);
 
-  bool appliesTo(CCopasiDataModel* dataModel);
+  bool appliesTo(CDataModel* dataModel);
 
   void updateFitItems();
 
@@ -129,10 +134,10 @@ public:
 
   static std::vector<CheckPoint*> readValues(std::istream& reader);
 
-  static std::vector<ResultData*> parseStream(std::istream& reader, CCopasiDataModel* dataModel = NULL);
-  static std::vector<ResultData*> parseFile(const std::string& fileName, CCopasiDataModel* dataModel = NULL);
+  static std::vector<ResultData*> parseStream(std::istream& reader, CDataModel* dataModel = NULL);
+  static std::vector<ResultData*> parseFile(const std::string& fileName, CDataModel* dataModel = NULL);
 
-  static std::vector<ResultData*> fromFile(const std::string& fileName, CCopasiDataModel* dataModel = NULL);
+  static std::vector<ResultData*> fromFile(const std::string& fileName, CDataModel* dataModel = NULL);
 };
 
 #endif //COPASI_PARAMETER_ESTIMATION_UTILS_H

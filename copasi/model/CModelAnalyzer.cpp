@@ -27,7 +27,7 @@
 #include "CModel.h"
 #include "report/CKeyFactory.h"
 #include "function/CFunctionAnalyzer.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 CModelAnalyzer::CModelAnalyzer(const CModel* model)
 {
@@ -180,7 +180,7 @@ CModelAnalyzer::ReactionResult CModelAnalyzer::checkReaction(const CReaction* re
           || role == CFunctionParameter::PRODUCT
           || role == CFunctionParameter::MODIFIER)
         {
-          if (!dynamic_cast<CMetab*>(CCopasiRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0])))
+          if (!dynamic_cast<CMetab*>(CRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0])))
             {
               //COPASI bug!
               // COPASI bug! Something that is not a metabolite is mapped to a (subs/prod/mod) function parameter.

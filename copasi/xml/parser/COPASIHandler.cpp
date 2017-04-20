@@ -13,13 +13,16 @@
 #include "COPASIHandler.h"
 #include "CXMLParser.h"
 
-#include "utilities/CVersion.h"
-#include "utilities/CCopasiParameter.h"
-#include "report/CCopasiRootContainer.h"
-#include "report/CReportDefinitionVector.h"
-#include "plot/COutputDefinitionVector.h"
-#include "function/CFunction.h"
-#include "layout/CListOfLayouts.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/report/CReportDefinitionVector.h"
+#include "copasi/plot/COutputDefinitionVector.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/layout/CListOfLayouts.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 COPASIHandler::COPASIHandler(CXMLParser & parser, CXMLParserData & data):
   CXMLHandler(parser, data, CXMLHandler::COPASI)
@@ -70,7 +73,7 @@ CXMLHandler * COPASIHandler::processStart(const XML_Char * pszName,
         if (mpData->pTaskList != NULL)
           mpData->pTaskList->clear();
         else
-          mpData->pTaskList = new CCopasiVectorN<CCopasiTask>("TaskList");
+          mpData->pTaskList = new CDataVectorN<CCopasiTask>("TaskList");
 
         pHandlerToCall = getHandler(mCurrentElement.second);
         break;
@@ -153,12 +156,12 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
         for (; it != end; ++it)
           {
             CCopasiParameter * pParameter =
-              dynamic_cast< CCopasiParameter * >(CCopasiRootContainer::getKeyFactory()->get(*it));
+              dynamic_cast< CCopasiParameter * >(CRootContainer::getKeyFactory()->get(*it));
 
             if (pParameter != NULL &&
                 pParameter->getType() == CCopasiParameter::KEY)
               {
-                CCopasiObject * pObject =
+                CDataObject * pObject =
                   mpData->mKeyMap.get(pParameter->getValue< std::string >());
 
                 if (pObject != NULL)
@@ -189,8 +192,8 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
             size_t Size = CCopasiMessage::size();
 
             // We need to re-compile all functions which did not successfully compile.
-            CCopasiVectorN< CFunction >::iterator itFunction = mpData->pFunctionList->begin();
-            CCopasiVectorN< CFunction >::iterator endFunction = mpData->pFunctionList->end();
+            CDataVectorN< CFunction >::iterator itFunction = mpData->pFunctionList->begin();
+            CDataVectorN< CFunction >::iterator endFunction = mpData->pFunctionList->end();
 
             for (; itFunction != endFunction; ++itFunction)
               {
@@ -205,6 +208,7 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
             while (CCopasiMessage::size() > Size)
               CCopasiMessage::getLastMessage();
           }
+
         break;
 
       case Model:

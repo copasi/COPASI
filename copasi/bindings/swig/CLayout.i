@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -7,20 +12,20 @@
 
 
 
-%template(CompartmentGlyphVector) CCopasiVector<CLCompartmentGlyph>;
-typedef CCopasiVector<CLCompartmentGlyph> CompartmentGlyphVector;
+%template(CompartmentGlyphVector) CDataVector<CLCompartmentGlyph>;
+typedef CDataVector<CLCompartmentGlyph> CompartmentGlyphVector;
 
-%template(MetabGlyphVector) CCopasiVector<CLMetabGlyph>;
-typedef CCopasiVector<CLMetabGlyph> MetabGlyphVector;
+%template(MetabGlyphVector) CDataVector<CLMetabGlyph>;
+typedef CDataVector<CLMetabGlyph> MetabGlyphVector;
 
-%template(ReactionGlyphVector) CCopasiVector<CLReactionGlyph>;
-typedef CCopasiVector<CLReactionGlyph> ReactionGlyphVector;
+%template(ReactionGlyphVector) CDataVector<CLReactionGlyph>;
+typedef CDataVector<CLReactionGlyph> ReactionGlyphVector;
 
-%template(TextGlyphVector) CCopasiVector<CLTextGlyph>;
-typedef CCopasiVector<CLTextGlyph> TextGlyphVector;
+%template(TextGlyphVector) CDataVector<CLTextGlyph>;
+typedef CDataVector<CLTextGlyph> TextGlyphVector;
 
-%template(GraphicalObjectVector) CCopasiVector<CLGraphicalObject>;
-typedef CCopasiVector<CLGraphicalObject> GraphicalObjectVector;
+%template(GraphicalObjectVector) CDataVector<CLGraphicalObject>;
+typedef CDataVector<CLGraphicalObject> GraphicalObjectVector;
 
 
 %{
@@ -31,7 +36,7 @@ typedef CCopasiVector<CLGraphicalObject> GraphicalObjectVector;
 
 %ignore operator<<;
 
-%ignore CLayout::CLayout(const Layout & , std::map<std::string, std::string> & , const CCopasiContainer * pParent = NULL);
+%ignore CLayout::CLayout(const Layout & , std::map<std::string, std::string> & , const CDataContainer * pParent = NULL);
 %ignore CLayout::exportToSBML;
 %ignore CLayout::print;
 %ignore CLayout::getListOfCompartmentGlyphs() const;

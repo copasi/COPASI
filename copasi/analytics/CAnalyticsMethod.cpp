@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -10,9 +15,9 @@
 /**
  *  Default constructor.
  */
-CAnalyticsMethod::CAnalyticsMethod(const CCopasiContainer * pParent,
-    const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
+CAnalyticsMethod::CAnalyticsMethod(const CDataContainer * pParent,
+                                   const CTaskEnum::Method & methodType,
+                                   const CTaskEnum::Task & taskType):
   CCopasiMethod(pParent, methodType, taskType)
 {}
 
@@ -21,7 +26,7 @@ CAnalyticsMethod::CAnalyticsMethod(const CCopasiContainer * pParent,
  *  @param "const CAnalyticsMethod &" src
  */
 CAnalyticsMethod::CAnalyticsMethod(const CAnalyticsMethod & src,
-    const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiMethod(src, pParent)
   //mpProblem(src.mpProblem)
 {CONSTRUCTOR_TRACE;}

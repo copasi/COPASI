@@ -25,8 +25,8 @@
 
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "report/CKeyFactory.h"
 #include "model/CModel.h"
 #include "lyap/CLyapProblem.h"

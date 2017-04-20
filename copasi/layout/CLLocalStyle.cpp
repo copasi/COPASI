@@ -14,7 +14,7 @@
 
 #include "CLLocalStyle.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 // static
@@ -26,28 +26,28 @@ CLLocalStyle * CLLocalStyle::fromData(const CData & data)
 /**
  * Constructor.
  */
-CLLocalStyle::CLLocalStyle(CCopasiContainer* pParent): CLStyle("LocalStyle", pParent)
+CLLocalStyle::CLLocalStyle(CDataContainer* pParent): CLStyle("LocalStyle", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalStyle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LocalStyle", this);
 }
 
 /**
  * Copy Constructor.
  */
-CLLocalStyle::CLLocalStyle(const CLLocalStyle& source, CCopasiContainer* pParent):
+CLLocalStyle::CLLocalStyle(const CLLocalStyle& source, CDataContainer* pParent):
   CLStyle(source, pParent),
   mKeyList(source.mKeyList)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalStyle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LocalStyle", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLLocalStyle::CLLocalStyle(const LocalStyle& source, CCopasiContainer* pParent):
+CLLocalStyle::CLLocalStyle(const LocalStyle& source, CDataContainer* pParent):
   CLStyle(source, "LocalStyle", pParent)
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("LocalStyle", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("LocalStyle", this);
   CLStyle::readIntoSet(CLStyle::createStringFromSet(source.getIdList()), this->mKeyList);
 }
 

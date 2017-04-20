@@ -11,7 +11,7 @@
 #include <limits>
 
 class CQSpeciesDetail;
-class CCopasiObject;
+class CDataObject;
 
 class SpeciesChangeCommand : public CCopasiUndoCommand
 {
@@ -20,7 +20,7 @@ public:
   SpeciesChangeCommand(CCopasiUndoCommand::Type type,
                        const QVariant& oldValue,
                        const QVariant& newValue,
-                       CCopasiObject* pObject,
+                       CDataObject* pObject,
                        CQSpeciesDetail* pWidget,
                        double iValue = std::numeric_limits<double>::quiet_NaN());
   ~SpeciesChangeCommand();
@@ -32,7 +32,7 @@ protected:
   QVariant mOld, mNew;
   std::string mKey;
   double mIValue;
-  CCopasiObject* mpObject;
+  CDataObject* mpObject;
   CQSpeciesDetail* mpWidget;
 };
 

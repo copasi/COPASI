@@ -1,4 +1,9 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -13,7 +18,7 @@
 #define TOTAL_COLS       2
 
 class CModelParameterSet;
-template <class CType> class CCopasiVectorN;
+template <class CType> class CDataVectorN;
 
 class CQParameterSetsDM : public CQBaseDataModel
 {
@@ -33,7 +38,7 @@ public:
                        int role = Qt::EditRole);
   virtual bool isDefaultRow(const QModelIndex& i) const;
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
-  void setListOfModelParameterSets(CCopasiVectorN< CModelParameterSet > * pListOfModelParameterSets);
+  void setListOfModelParameterSets(CDataVectorN< CModelParameterSet > * pListOfModelParameterSets);
 
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
 
@@ -43,7 +48,7 @@ protected:
   virtual bool removeRows(int position, int rows);
 
 private:
-  CCopasiVectorN< CModelParameterSet > * mpListOfParameterSets;
+  CDataVectorN< CModelParameterSet > * mpListOfParameterSets;
 };
 
 #endif // COPASI_CQParameterSetsDM

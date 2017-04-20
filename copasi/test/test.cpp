@@ -1,12 +1,14 @@
-/* Begin CVS Header
-$Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/test/test.cpp,v $
-$Revision: 1.112 $
-$Name:  $
-$Author: shoops $
-$Date: 2009/02/19 19:52:26 $
-End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -33,7 +35,7 @@ End CVS Header */
 #include "utilities/CCopasiMessage.h"
 #include "utilities/CCopasiException.h"
 #include "utilities/CVersion.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "utilities/CDependencyGraph.h"
 #include "utilities/CIndexedPriorityQueue.h"
 
@@ -62,7 +64,7 @@ End CVS Header */
 #include "mathmodel/CMathNode.h"
 #include "xml/CCopasiXMLInterface.h"
 #include "xml/CCopasiXML.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 using namespace std;
 
@@ -101,10 +103,10 @@ C_INT32 MakeFunctionEntry(const string &name,
                           TriLogic reversible,
                           vector < string > modifier,
                           vector < string > parameter,
-                          CCopasiVectorNS <CKinFunction> &functions);
+                          CDataVectorNS <CKinFunction> &functions);
 
 vector < CMetab * >
-InitMetabolites(CCopasiVector < CCompartment > & compartment);
+InitMetabolites(CDataVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
 C_INT32 TestOutputEvent(void);
 
@@ -117,7 +119,7 @@ C_INT32 TestCopasiXML();
 int main(int argc, char *argv[])
 {
   cout << "Starting main program." << endl;
-  CCopasiContainer::init();
+  CDataContainer::init();
   Copasi = new CGlobals;
   Copasi->setArguments(argc, argv);
 
@@ -185,7 +187,7 @@ int main(int argc, char *argv[])
     }
 
   pdelete(Copasi);
-  pdelete(CCopasiRootContainer::Root);
+  pdelete(CRootContainer::Root);
 
   cout << "Leaving main program." << endl;
   return 0;
@@ -374,7 +376,7 @@ C_INT32 TestCopasiObject(void)
   cout << cn << endl;
 
   CCompartment * pCompartment =
-    (CCompartment *) (CCopasiContainer *) CCopasiRootContainer::getObject(cn);
+    (CCompartment *)(CDataContainer *) CRootContainer::getObject(cn);
 
   cout << *pCompartment << endl;
   return 0;
@@ -390,7 +392,7 @@ C_INT32 TestCompartment(void)
   c.save(of);
   of.flush();
 
-  CCopasiVectorNS < CCompartment > d;
+  CDataVectorNS < CCompartment > d;
   d.add(&c);
 
   CCompartment g;
@@ -403,7 +405,7 @@ C_INT32 TestCompartment(void)
 
   CReadConfig Specific("TestCompartment.txt");
 
-  CCopasiVectorNS < CCompartment > ListOut;
+  CDataVectorNS < CCompartment > ListOut;
 
   ListOut.load(Specific, 2);
 
@@ -411,7 +413,7 @@ C_INT32 TestCompartment(void)
   ListOut.save(VectorOut);
   VectorOut.flush();
 
-  CCopasiVectorNS < CCompartment > ListIn;
+  CDataVectorNS < CCompartment > ListIn;
 
   CReadConfig VectorIn((string) "TestCompartmentVector.txt");
 
@@ -503,12 +505,14 @@ C_INT32 TestCopasiTree(void)
 
   for (it = tree->begin(); it != end; ++it)
     std::cout << &*it << " ";
+
   std::cout << std::endl;
 
   std::cout << tree->moveNode(n0) << std::endl;
 
   for (it = tree->begin(); it != end; ++it)
     std::cout << &*it << " ";
+
   std::cout << std::endl;
 
   delete tree;
@@ -725,12 +729,17 @@ C_INT32 TestOptimization(void)
 
   MethodType = CRand->getSubType();
   char filename[20];
+
   if (MethodType == 0) sprintf(filename, "best_result.%s", "RS");
+
   if (MethodType == 1) sprintf(filename, "best_result.%s", "RSM");
+
   if (MethodType == 2) sprintf(filename, "best_result.%s", "SA");
+
   if (MethodType == 3) sprintf(filename, "best_result.%s", "GA");
 
   ofstream bestout(filename);
+
   if (!bestout)
     {
       cout << " output file  cannot be set!" << endl;
@@ -741,6 +750,7 @@ C_INT32 TestOptimization(void)
   bestout << endl << "Final result and the best object function value:" << CReal->getBestValue() << endl;
   cout << NumParameter << " Parameters are as follow:" << endl;
   bestout << NumParameter << " Parameters are as follow:" << endl;
+
   for (i = 0; i < NumParameter; i++)
     {
       cout << CReal->getBestValue(i) << endl;
@@ -868,7 +878,7 @@ C_INT32 TestKinFunction()
 
 /*
 vector < CMetab * >
-InitMetabolites(CCopasiVectorN < CCompartment > & compartments)
+InitMetabolites(CDataVectorN < CCompartment > & compartments)
 {
   vector < CMetab * > Metabolites;
 
@@ -895,7 +905,7 @@ C_INT32 TestBaseFunction()
 #ifdef XXXX
 C_INT32 MakeFunctionDB()
 {
-  CCopasiVectorNS <CKinFunction> functions;
+  CDataVectorNS <CKinFunction> functions;
   vector <string> modifier;
   vector <string> parameter;
 
@@ -1417,7 +1427,7 @@ C_INT32 MakeFunctionEntry(const string &name,
                           TriLogic reversible,
                           vector < string > modifier,
                           vector < string > parameter,
-                          CCopasiVectorNS <CKinFunction> &functions)
+                          CDataVectorNS <CKinFunction> &functions)
 {
   C_INT32 Index = functions.size();
   unsigned C_INT32 i;
@@ -1734,12 +1744,12 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
   for (j = 0; j < npoints; j++)
     {
       C_FLOAT64 rnd = generator.getUniformRandom();
-      C_INT32 k = static_cast<C_INT32> (rnd * nbins);
+      C_INT32 k = static_cast<C_INT32>(rnd * nbins);
 
       if (k >= nbins)
-      {cout << " k too big \n"; exit(2);}
+        {cout << " k too big \n"; exit(2);}
       else if (k < 0.0)
-      {cout << " k too small \n"; exit(2);}
+        {cout << " k too small \n"; exit(2);}
 
       store[k] += 1;
       random_nums.push_back(rnd);
@@ -1763,12 +1773,12 @@ C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins)
       mean += store[l];
     }
 
-  cout << "Total points = " << setprecision (12) << mean << endl,
-  mean = mean / nbins;
+  cout << "Total points = " << setprecision(12) << mean << endl,
+       mean = mean / nbins;
   C_FLOAT64 deviation = ((max - mean) > (mean - min)) ? (max - mean) : (mean - min);
   deviation = deviation / mean;
-  cout << "Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
-  fout << "#Average = " << setprecision (12) << mean << "  Deviation = " << deviation << endl;
+  cout << "Average = " << setprecision(12) << mean << "  Deviation = " << deviation << endl;
+  fout << "#Average = " << setprecision(12) << mean << "  Deviation = " << deviation << endl;
 
   // Check for repeats
   cout << "Searching for repeats...\n";
@@ -1882,7 +1892,7 @@ C_INT32 TestIndexedPriorityQueue(C_INT32 in_size)
 
   for (j = 0; j < size; j++)
     {
-      cout << " " << j << "-" << setprecision (5) << pq[j];
+      cout << " " << j << "-" << setprecision(5) << pq[j];
     }
 
   cout << endl;
@@ -1974,9 +1984,11 @@ C_INT32 Testr250(void)
   CRandom * rand = CRandom::createGenerator(CRandom::r250, 12345);
 
   C_INT32 i, j = 0;
+
   for (i = 0; i < 2000; i++)
     {
       cout << rand->getRandomU(10) << ", ";
+
       if (j++ == 4)
         {
           j = 0;

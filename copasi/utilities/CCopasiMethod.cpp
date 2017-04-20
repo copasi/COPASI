@@ -83,7 +83,7 @@
 // #include "tssanalysis/CTSSAMethod.h"
 
 //static
-CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
+CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
     const CTaskEnum::Task & taskType)
 {
@@ -271,7 +271,7 @@ CCopasiMethod * CCopasiMethod::createMethod(const CCopasiContainer * pParent,
   return pMethod;
 }
 
-CCopasiMethod::CCopasiMethod(const CCopasiContainer * pParent,
+CCopasiMethod::CCopasiMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType):
   CCopasiParameterGroup(CTaskEnum::MethodName[methodType], pParent, "Method"),
@@ -282,7 +282,7 @@ CCopasiMethod::CCopasiMethod(const CCopasiContainer * pParent,
 {}
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
-                             const CCopasiContainer * pParent):
+                             const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mTaskType(src.mTaskType),
   mSubType(src.mSubType),

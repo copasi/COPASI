@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,8 +16,8 @@
 #include "test000077.h"
 
 #include "utilities.hpp"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
 
@@ -20,7 +25,7 @@
 #include "sbml/Model.h"
 #include "sbml/Species.h"
 
-CCopasiDataModel* test000077::pCOPASIDATAMODEL = NULL;
+CDataModel* test000077::pCOPASIDATAMODEL = NULL;
 
 /**
  * Test the export of models with references to local parameters in
@@ -29,19 +34,19 @@ CCopasiDataModel* test000077::pCOPASIDATAMODEL = NULL;
 void test000077::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, false);
   // Create the global data model.
-  pCOPASIDATAMODEL = CCopasiRootContainer::addDatamodel();
+  pCOPASIDATAMODEL = CRootContainer::addDatamodel();
 }
 
 void test000077::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 void test000077::test_import_dimensionless_1()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -61,7 +66,7 @@ void test000077::test_import_dimensionless_1()
 
 void test000077::test_import_dimensionless_2()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -81,7 +86,7 @@ void test000077::test_import_dimensionless_2()
 
 void test000077::test_import_dimensionless_3()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -114,7 +119,7 @@ void test000077::test_import_dimensionless_3()
 
 void test000077::test_import_dimensionless_4()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -147,7 +152,7 @@ void test000077::test_import_dimensionless_4()
 
 void test000077::test_import_dimensionless_5()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
 
   try
     {
@@ -180,7 +185,7 @@ void test000077::test_import_dimensionless_5()
 
 void test000077::test_export_dimensionless()
 {
-  CCopasiDataModel* pDataModel = pCOPASIDATAMODEL;
+  CDataModel* pDataModel = pCOPASIDATAMODEL;
   std::istringstream iss(test000077::MODEL_STRING6);
   CPPUNIT_ASSERT(load_cps_model_from_stream(iss, *pDataModel) == true);
   CPPUNIT_ASSERT(pDataModel->getModel() != NULL);

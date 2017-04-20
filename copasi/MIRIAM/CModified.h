@@ -25,7 +25,7 @@
 #include "copasi/MIRIAM/CRDFTriplet.h"
 #include "copasi/MIRIAM/CRDFPredicate.h"
 
-class CModification : public CCopasiContainer
+class CModification : public CDataContainer
 {
   // Attributes
 private:
@@ -51,28 +51,28 @@ public:
   /**
    * Default constructor
    * @param const std::string & objectName
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModification(const std::string & objectName,
-                const CCopasiContainer * pParent = NO_PARENT);
+                const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Specific constructor
    * @param const CRDFTriplet & triplet
    * @param const std::string & objectName (default: "")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModification(const CRDFTriplet & triplet,
                 const std::string & objectName = "",
-                const CCopasiContainer * pParent = NO_PARENT);
+                const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param "const CModification &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModification(const CModification & src,
-                const CCopasiContainer * pParent);
+                const CDataContainer * pParent);
 
   /**
    * Destructor

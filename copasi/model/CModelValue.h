@@ -29,7 +29,7 @@
 #include <iostream>
 
 #include "copasi/model/CAnnotation.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/core/CDataContainer.h"
 
 #include "copasi/utilities/CUnit.h"
 
@@ -43,7 +43,7 @@ class CExpression;
  * (subject to ODEs), constant, or subject to algebraic assignments.
  * In addition, the CMetab objects can also be subject to reactions, and conservation rules.
  */
-class CModelEntity : public CCopasiContainer, public CAnnotation
+class CModelEntity : public CDataContainer, public CAnnotation
 {
 protected:
   /**
@@ -86,20 +86,20 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModelEntity(const std::string & name = "NoName",
-               const CCopasiContainer * pParent = NO_PARENT,
+               const CDataContainer * pParent = NO_PARENT,
                const std::string & type = "ModelEntity",
-               const unsigned C_INT32 & flag = CCopasiObject::Container | CCopasiObject::ValueDbl);
+               const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   /**
    * Copy constructor
    * @param const CModelValue & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModelEntity(const CModelEntity & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor.
@@ -182,7 +182,7 @@ public:
   /**
    * Retrieve the object representing the value;
    */
-  virtual const CCopasiObject * getValueObject() const;
+  virtual const CDataObject * getValueObject() const;
 
   /**
    * Retrieve a pointer to the value;
@@ -191,24 +191,10 @@ public:
 
   /**
    * Set the object parent
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CCopasiContainer * pParent);
-
-  /**
-   * Retrieve the list of deleted numeric child objects;
-   * @return std::set< const CCopasiObject * > deletedObjects
-   */
-  virtual std::set< const CCopasiObject * > getDeletedObjects() const;
-
-  /**
-   * Check whether an object must be deleted because its prerequisites can
-   * no longer be fulfilled due to the given deleted objects
-   * @param const DataObjectSet & deletedObjects
-   * @return bool mustBeDeleted
-   */
-  virtual bool mustBeDeleted(const DataObjectSet & deletedObjects) const;
+  virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
    * Sets the SBMLId.
@@ -351,7 +337,7 @@ public:
    * Retrieve the units of the child object.
    * @return const & CUnit units
    */
-  virtual std::string getChildObjectUnits(const CCopasiObject * pObject) const;
+  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
 
   /**
    * Set whether the model entity is used during simulation
@@ -367,27 +353,27 @@ public:
 
   /**
    * Retrieve object referencing the initial value
-   * @return CCopasiObject * initialValueReference
+   * @return CDataObject * initialValueReference
    */
-  CCopasiObject * getInitialValueReference() const;
+  CDataObject * getInitialValueReference() const;
 
   /**
    * Retrieve object referencing the value
-   * @return CCopasiObject * valueReference
+   * @return CDataObject * valueReference
    */
-  CCopasiObject * getValueReference() const;
+  CDataObject * getValueReference() const;
 
   /**
    * Retrieve object referencing the rate
-   * @return CCopasiObject * rateReference
+   * @return CDataObject * rateReference
    */
-  CCopasiObject * getRateReference() const;
+  CDataObject * getRateReference() const;
 
   /**
    * Retrieve object referencing the noise
-   * @return CCopasiObject * rateReference
+   * @return CDataObject * rateReference
    */
-  CCopasiObject * getNoiseReference() const;
+  CDataObject * getNoiseReference() const;
 
   /**
    * Retrieve a pointer to the model the entity belongs too
@@ -454,10 +440,10 @@ private:
   bool mUsed;
 
 protected:
-  CCopasiObjectReference<C_FLOAT64> *mpIValueReference;
-  CCopasiObjectReference<C_FLOAT64> *mpValueReference;
-  CCopasiObjectReference<C_FLOAT64> *mpRateReference;
-  CCopasiObjectReference<C_FLOAT64> *mpNoiseReference;
+  CDataObjectReference<C_FLOAT64> *mpIValueReference;
+  CDataObjectReference<C_FLOAT64> *mpValueReference;
+  CDataObjectReference<C_FLOAT64> *mpRateReference;
+  CDataObjectReference<C_FLOAT64> *mpNoiseReference;
   mutable CModel * mpModel;
 
 private:
@@ -528,18 +514,18 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModelValue(const std::string & name = "NoName",
-              const CCopasiContainer * pParent = NO_PARENT);
+              const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor
    * @param const CModelValue & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CModelValue(const CModelValue & src,
-              const CCopasiContainer * pParent);
+              const CDataContainer * pParent);
 
   /**
    *  Destructor.

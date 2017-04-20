@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLEllipse.cpp,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -19,99 +16,99 @@
 
 #include "CLEllipse.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
 /**
  * Constructor.
  */
-CLEllipse::CLEllipse(CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Ellipse", pParent),
-    mCX(0.0),
-    mCY(0.0),
-    mCZ(0.0),
-    mKey("")
+CLEllipse::CLEllipse(CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Ellipse", pParent),
+  mCX(0.0),
+  mCY(0.0),
+  mCZ(0.0),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Ellipse", this);
   setRadii(0.0, 0.0);
 }
 
 /**
  * Constructor with 2D center and radius.
  */
-CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& r, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Ellipse", pParent),
-    mCX(cx),
-    mCY(cy),
-    mCZ(0.0),
-    mKey("")
+CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& r, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Ellipse", pParent),
+  mCX(cx),
+  mCY(cy),
+  mCZ(0.0),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Ellipse", this);
   setRadii(r, r);
 }
 
 /**
  * Constructor with 2D center and radii.
  */
-CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Ellipse", pParent),
-    mCX(cx),
-    mCY(cy),
-    mCZ(CLRelAbsVector(0.0, 50.0)),
-    mKey("")
+CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Ellipse", pParent),
+  mCX(cx),
+  mCY(cy),
+  mCZ(CLRelAbsVector(0.0, 50.0)),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Ellipse", this);
   setRadii(rx, ry);
 }
 
 /**
  * Constructor with 3D center and radii.
  */
-CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& cz, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(),
-    CCopasiObject("Ellipse", pParent),
-    mCX(cx),
-    mCY(cy),
-    mCZ(cz),
-    mKey("")
+CLEllipse::CLEllipse(const CLRelAbsVector& cx, const CLRelAbsVector& cy, const CLRelAbsVector& cz, const CLRelAbsVector& rx, const CLRelAbsVector& ry, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(),
+  CDataObject("Ellipse", pParent),
+  mCX(cx),
+  mCY(cy),
+  mCZ(cz),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Ellipse", this);
   setRadii(rx, ry);
 }
 
 /**
  * Copy Constructor
  */
-CLEllipse::CLEllipse(const CLEllipse& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiObject(source, pParent),
-    mCX(source.mCX),
-    mCY(source.mCY),
-    mCZ(source.mCZ),
-    mRX(source.mRX),
-    mRY(source.mRY),
-    mKey("")
+CLEllipse::CLEllipse(const CLEllipse& source, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(source),
+  CDataObject(source, pParent),
+  mCX(source.mCX),
+  mCY(source.mCY),
+  mCZ(source.mCZ),
+  mRX(source.mRX),
+  mRY(source.mRY),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Ellipse", this);
 }
 
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLEllipse::CLEllipse(const Ellipse& source, CCopasiContainer* pParent):
-    CLGraphicalPrimitive2D(source),
-    CCopasiObject("Ellipse", pParent),
-    mCX(source.getCX()),
-    mCY(source.getCY()),
-    mCZ(source.getCZ()),
-    mRX(source.getRX()),
-    mRY(source.getRY()),
-    mKey("")
+CLEllipse::CLEllipse(const Ellipse& source, CDataContainer* pParent):
+  CLGraphicalPrimitive2D(source),
+  CDataObject("Ellipse", pParent),
+  mCX(source.getCX()),
+  mCY(source.getCY()),
+  mCZ(source.getCZ()),
+  mRX(source.getRX()),
+  mRY(source.getRY()),
+  mKey("")
 {
-  this->mKey = CCopasiRootContainer::getKeyFactory()->add("Ellipse", this);
+  this->mKey = CRootContainer::getKeyFactory()->add("Ellipse", this);
 }
 
 /**
@@ -119,7 +116,7 @@ CLEllipse::CLEllipse(const Ellipse& source, CCopasiContainer* pParent):
  */
 CLEllipse::~CLEllipse()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(this->mKey);
+  CRootContainer::getKeyFactory()->remove(this->mKey);
 }
 
 /**

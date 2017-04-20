@@ -27,7 +27,7 @@
 #include "CRDFNode.h"
 
 #include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 
 #include <sbml/xml/XMLNode.h>
@@ -62,10 +62,10 @@ void CMIRIAMResources::isCitation(void * pData, void * /* pCallee */)
 // static
 bool CMIRIAMResources::isCitation(const std::string & uri)
 {
-  size_t Index = CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResourceIndex(uri);
+  size_t Index = CRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResourceIndex(uri);
 
   if (Index != C_INVALID_INDEX &&
-      CCopasiRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResource(Index).getMIRIAMCitation())
+      CRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResource(Index).getMIRIAMCitation())
     {
       return true;
     }
@@ -74,7 +74,7 @@ bool CMIRIAMResources::isCitation(const std::string & uri)
 }
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
-                                   const CCopasiContainer * pParent) :
+                                   const CDataContainer * pParent) :
   CCopasiParameterGroup(name, pParent),
   mpLastUpdateDate(NULL),
   mpUpdateFrequency(NULL),
@@ -82,7 +82,7 @@ CMIRIAMResources::CMIRIAMResources(const std::string & name,
 {initializeParameter();}
 
 CMIRIAMResources::CMIRIAMResources(const CMIRIAMResources & src,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mpLastUpdateDate(NULL),
   mpUpdateFrequency(NULL),
@@ -90,7 +90,7 @@ CMIRIAMResources::CMIRIAMResources(const CMIRIAMResources & src,
 {initializeParameter();}
 
 CMIRIAMResources::CMIRIAMResources(const CCopasiParameterGroup & group,
-                                   const CCopasiContainer * pParent):
+                                   const CDataContainer * pParent):
   CCopasiParameterGroup(group, pParent),
   mpLastUpdateDate(NULL),
   mpUpdateFrequency(NULL),
@@ -454,7 +454,7 @@ void CMIRIAMResources::createURIMap()
 const CMIRIAMResource & CMIRIAMResources::getMIRIAMResource(const size_t index) const
 {
   if (index >= mpMIRIAMResources->size())
-    return CCopasiRootContainer::getUnknownMiriamResource();
+    return CRootContainer::getUnknownMiriamResource();
 
   return * static_cast< CMIRIAMResource * >(mpMIRIAMResources->getGroup(index));
 }
@@ -525,7 +525,7 @@ CMIRIAMResources::~CMIRIAMResources()
 
 /////////////////////////////////////////////////////////////////////////////////////
 CMIRIAMResource::CMIRIAMResource(const std::string & name,
-                                 const CCopasiContainer * pParent) :
+                                 const CDataContainer * pParent) :
   CCopasiParameterGroup(name, pParent),
   mpDisplayName(NULL),
   mpURI(NULL),
@@ -534,7 +534,7 @@ CMIRIAMResource::CMIRIAMResource(const std::string & name,
 {initializeParameter();}
 
 CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
-                                 const CCopasiContainer * pParent):
+                                 const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mpDisplayName(NULL),
   mpURI(NULL),
@@ -543,7 +543,7 @@ CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
 {initializeParameter();}
 
 CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
-                                 const CCopasiContainer * pParent):
+                                 const CDataContainer * pParent):
   CCopasiParameterGroup(group, pParent),
   mpDisplayName(NULL),
   mpURI(NULL),

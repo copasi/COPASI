@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -11,7 +16,7 @@
 #include "copasi/plotUI/ui_BandedGraphWidget.h"
 #include "copasi/plotUI/CQPlotEditWidget.h"
 
-class CCopasiObject;
+class CDataObject;
 class CModel;
 class CPlotItem;
 
@@ -32,9 +37,9 @@ public:
   virtual void setMultipleEditMode(bool mode);
 
 protected:
-  const CCopasiObject* mpObjectYone;
-  const CCopasiObject* mpObjectYtwo;
-  const CCopasiObject* mpObjectX;
+  const CDataObject* mpObjectYone;
+  const CDataObject* mpObjectYtwo;
+  const CDataObject* mpObjectX;
 
 protected slots:
 

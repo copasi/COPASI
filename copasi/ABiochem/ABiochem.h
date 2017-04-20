@@ -1,12 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/ABiochem/ABiochem.h,v $
-   $Revision: 1.5 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:33:58 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,7 +43,7 @@
  *  @param C_FLOAT64 coopval the value for Hill coefficients
  *  @param C_FLOAT64 rateval the value for rate constants
  *  @param C_FLOAT64 constval the value for inh/act constants
- *  @param "CCopasiVector < CGene > &" gene a vector of genes (the network)
+ *  @param "CDataVector < CGene > &" gene a vector of genes (the network)
  *  @param "char *" comments a string to write comments on the network
  */
 
@@ -47,5 +54,5 @@ void MakeGeneNetwork(C_INT32 n,
                      C_FLOAT64 coopval,
                      C_FLOAT64 rateval,
                      C_FLOAT64 constval,
-                     CCopasiVector < CGene > &gene,
+                     CDataVector < CGene > &gene,
                      char *comments);

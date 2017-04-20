@@ -41,7 +41,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "copasi.h"
 #include <QTreeWidgetItem>
 
-class CCopasiObject;
+class CDataObject;
 
 /* Macro:
  define the status of Objects(items) in object browser
@@ -68,7 +68,7 @@ class ObjectList;
 class CBrowserObject
 {
 public:
-  const CCopasiObject* pCopasiObject;
+  const CDataObject* pCopasiObject;
   bool mChecked;
   ObjectList* referenceList; //keep pointer to all its referenced items for later update
   CBrowserObject();
@@ -107,8 +107,8 @@ public:
     return mKey;
   }
 
-  ObjectBrowserItem(QTreeWidget * parent = NULL, ObjectBrowserItem * after = NULL, const CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
-  ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, const CCopasiObject* mObject = NULL, ObjectList* pList = NULL);
+  ObjectBrowserItem(QTreeWidget * parent = NULL, ObjectBrowserItem * after = NULL, const CDataObject* mObject = NULL, ObjectList* pList = NULL);
+  ObjectBrowserItem(ObjectBrowserItem * parent, ObjectBrowserItem * after = NULL, const CDataObject* mObject = NULL, ObjectList* pList = NULL);
   virtual ~ObjectBrowserItem()
   {
     //      if (getType() != FIELDATTR) //To avoid cross reference/multi deletion

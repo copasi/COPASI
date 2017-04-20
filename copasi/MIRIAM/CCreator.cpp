@@ -20,10 +20,10 @@
 #include "CRDFLiteral.h"
 #include "CModelMIRIAMInfo.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 
 // static
 CCreator * CCreator::fromData(const CData & data)
@@ -33,20 +33,20 @@ CCreator * CCreator::fromData(const CData & data)
 }
 
 CCreator::CCreator(const std::string & objectName,
-                   const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "Creator"),
+                   const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "Creator"),
   mTriplet(),
   mNodePath(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this))
+  mKey(CRootContainer::getKeyFactory()->add("Creator", this))
 {}
 
 CCreator::CCreator(const CRDFTriplet & triplet,
                    const std::string & objectName,
-                   const CCopasiContainer * pParent):
-  CCopasiContainer(objectName, pParent, "Creator"),
+                   const CDataContainer * pParent):
+  CDataContainer(objectName, pParent, "Creator"),
   mTriplet(triplet),
   mNodePath(),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this))
+  mKey(CRootContainer::getKeyFactory()->add("Creator", this))
 {
   if (!mTriplet)
     return;
@@ -55,16 +55,16 @@ CCreator::CCreator(const CRDFTriplet & triplet,
 }
 
 CCreator::CCreator(const CCreator & src,
-                   const CCopasiContainer * pParent):
-  CCopasiContainer(src, pParent),
+                   const CDataContainer * pParent):
+  CDataContainer(src, pParent),
   mTriplet(src.mTriplet),
   mNodePath(src.mNodePath),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Creator", this))
+  mKey(CRootContainer::getKeyFactory()->add("Creator", this))
 {}
 
 CCreator::~CCreator()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
 }
 
 const CRDFTriplet & CCreator::getTriplet() const

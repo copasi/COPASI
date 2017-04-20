@@ -31,7 +31,7 @@
 #include <string>
 
 #include "model/CModelValue.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "model/CMetab.h"
 
 class CReadConfig;
@@ -44,7 +44,7 @@ private:
    * @supplierCardinality 0..*
    * @associates <{CMetab}>
    */
-  CCopasiVectorNS < CMetab > mMetabolites;
+  CDataVectorNS < CMetab > mMetabolites;
 
 public:
   static CCompartment * fromData(const CData & data);
@@ -54,18 +54,18 @@ public:
   /**
    * Default constructor.
    * @param const std::string & name (default: "NoName")
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCompartment(const std::string & name = "NoName",
-               const CCopasiContainer * pParent = NO_PARENT);
+               const CDataContainer * pParent = NO_PARENT);
 
   /**
    * Copy constructor.
    * @param "const CCompartment &" src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CCompartment(const CCompartment & src,
-               const CCopasiContainer * pParent);
+               const CDataContainer * pParent);
 
   /**
    * Destructor.
@@ -85,12 +85,6 @@ public:
   void cleanup();
 
   /**
-   * Retrieve the list of deleted numeric child objects;
-   * @return std::set< const CCopasiObject * > deletedObjects
-   */
-  virtual std::set< const CCopasiObject * > getDeletedObjects() const;
-
-  /**
    * Loads an object with data coming from a CReadConfig object.
    * (CReadConfig object reads an input stream)
    * @param pconfigbuffer reference to a CReadConfig object.
@@ -101,15 +95,15 @@ public:
 
   /**
    * Retrieve the vector of contained metabolites
-   * @return CCopasiVectorNS < CMetab > & metabolites
+   * @return CDataVectorNS < CMetab > & metabolites
    */
-  CCopasiVectorNS < CMetab > & getMetabolites();
+  CDataVectorNS < CMetab > & getMetabolites();
 
   /**
    * Retrieve the vector of contained metabolites
-   * @return const CCopasiVectorNS < CMetab > & metabolites
+   * @return const CDataVectorNS < CMetab > & metabolites
    */
-  const CCopasiVectorNS < CMetab > & getMetabolites() const;
+  const CDataVectorNS < CMetab > & getMetabolites() const;
 
   /**
    *  Adds a metabolite to the compartment. Only the concentration is taken from

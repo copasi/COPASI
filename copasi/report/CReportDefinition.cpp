@@ -31,7 +31,8 @@
 #include "CReport.h"
 
 #include "utilities/CCopasiMessage.h"
-#include "copasi/report/CCopasiRootContainer.h"
+#include "copasi/undo/CData.h"
+#include "copasi/core/CRootContainer.h"
 
 //////////////////////////////////////////////////
 //
@@ -46,9 +47,9 @@ CReportDefinition * CReportDefinition::fromData(const CData & data)
 }
 
 CReportDefinition::CReportDefinition(const std::string & name,
-                                     const CCopasiContainer * pParent):
-  CCopasiObject(name, pParent, "ReportDefinition"),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
+                                     const CDataContainer * pParent):
+  CDataObject(name, pParent, "ReportDefinition"),
+  mKey(CRootContainer::getKeyFactory()->add("Report", this)),
   mComment(""),
   mTaskType(CTaskEnum::timeCourse),
   mSeparator("\t"),
@@ -58,9 +59,9 @@ CReportDefinition::CReportDefinition(const std::string & name,
 {}
 
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
-                                     const CCopasiContainer * pParent):
-  CCopasiObject(src, pParent),
-  mKey(CCopasiRootContainer::getKeyFactory()->add("Report", this)),
+                                     const CDataContainer * pParent):
+  CDataObject(src, pParent),
+  mKey(CRootContainer::getKeyFactory()->add("Report", this)),
   mComment(src.mComment),
   mTaskType(src.mTaskType),
   mSeparator(src.mSeparator, NO_PARENT),
@@ -78,7 +79,7 @@ CReportDefinition::~CReportDefinition()
 
 void CReportDefinition::cleanup()
 {
-  CCopasiRootContainer::getKeyFactory()->remove(mKey);
+  CRootContainer::getKeyFactory()->remove(mKey);
   mHeaderVector.clear();
   mBodyVector.clear();
   mFooterVector.clear();
@@ -98,7 +99,7 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
 
   for (; it != end; ++it)
     {
-      const CCopasiObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainer, *it));
+      const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainer, *it));
 
       if (pObject != NULL)
         {
@@ -170,7 +171,7 @@ const unsigned C_INT32 & CReportDefinition::getPrecision() const
 const std::string & CReportDefinition::getKey() const
 {return mKey;}
 
-void CReportDefinition::addTableElement(const CCopasiObject * pObject)
+void CReportDefinition::addTableElement(const CDataObject * pObject)
 {
   bool isFirst = false;
 

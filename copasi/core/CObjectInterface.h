@@ -10,10 +10,10 @@
 #include <vector>
 #include <set>
 
-#include "copasi/math/CMathEnum.h"
+#include "copasi/core/CCore.h"
 
-class CMathUpdateSequence;
-class CCopasiContainer;
+class CDataObject;
+class CDataContainer;
 class CCopasiObjectName;
 class CValidity;
 
@@ -23,10 +23,9 @@ class CObjectInterface
 {
 public:
   typedef std::set< const CObjectInterface * > ObjectSet;
-  typedef CMathUpdateSequence UpdateSequence;
-  typedef std::vector< const CCopasiContainer * > ContainerList;
+  typedef std::vector< const CDataContainer * > ContainerList;
 
-  static const CCopasiObject * DataObject(const CObjectInterface * pInterface);
+  static const CDataObject * DataObject(const CObjectInterface * pInterface);
 
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
       const CCopasiObjectName & objName);
@@ -79,12 +78,12 @@ public:
    * @return bool isPrerequisiteForContext
    */
   virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CMath::SimulationContextFlag & context,
+                                        const CCore::SimulationContextFlag & context,
                                         const CObjectInterface::ObjectSet & changedObjects) const = 0;
 
   /**
    * This is the output method for any object. The default implementation
-   * provided with CCopasiObject uses the ostream operator<< of the object
+   * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
    * reimplement the virtual print function.
    * @param std::ostream * ostream
@@ -98,9 +97,9 @@ public:
 
   /**
    * Retrieve a pointer to the data object
-   * @return const CCopasiObject * dataObject
+   * @return const CDataObject * dataObject
    */
-  virtual const CCopasiObject * getDataObject() const = 0;
+  virtual const CDataObject * getDataObject() const = 0;
 
   /**
    * Retrieve the display name of the object

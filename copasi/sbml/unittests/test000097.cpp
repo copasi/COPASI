@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -12,8 +17,8 @@
 #include "sbml/Model.h"
 #include "sbml/xml/XMLNode.h"
 
-#include "copasi/report/CCopasiRootContainer.h"
-#include "copasi/CopasiDataModel/CCopasiDataModel.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CCompartment.h"
 
@@ -37,13 +42,13 @@
 void test000097::setUp()
 {
   // Create the root container.
-  CCopasiRootContainer::init(0, NULL, false);
-  pDataModel = CCopasiRootContainer::addDatamodel();
+  CRootContainer::init(0, NULL, false);
+  pDataModel = CRootContainer::addDatamodel();
 }
 
 void test000097::tearDown()
 {
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }
 
 // tests whether we are importing local render information
@@ -661,10 +666,10 @@ void test000097::createModel()
   pModel->setQuantityUnit(CUnit::nMol);
 
   // add a compartment
-  std::set<const CCopasiObject*> changedObjects;
+  std::set<const CDataObject*> changedObjects;
   CCompartment* pCompartment = pModel->createCompartment("cell", 5.0);
   CPPUNIT_ASSERT(pCompartment != NULL);
-  const CCopasiObject* pObject = pCompartment->getInitialValueReference();
+  const CDataObject* pObject = pCompartment->getInitialValueReference();
   CPPUNIT_ASSERT(pObject != NULL);
   changedObjects.insert(pObject);
 

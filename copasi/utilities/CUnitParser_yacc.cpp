@@ -94,7 +94,7 @@
 #include "copasi.h"
 #include "CUnitParser.h"
 
-#include "report/CCopasiRootContainer.h"
+#include "copasi/core/CRootContainer.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
 
@@ -1416,7 +1416,7 @@ yyreduce:
       case 14:
 #line 143 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
+          mpCurrentUnitDef = CRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
           (yyval).pUnit = new CUnit(CBaseUnit::fromSymbol((yyvsp[0]).text));
           mSymbols.insert((yyvsp[0]).text);
         }
@@ -1427,7 +1427,7 @@ yyreduce:
       case 15:
 #line 149 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
+          mpCurrentUnitDef = CRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
           (yyval).pUnit = new CUnit(CUnitDefinition::getSIUnit((yyvsp[0]).text));
           mSymbols.insert((yyvsp[0]).text);
           mSymbols.insert((yyval).pUnit->getUsedSymbols().begin(), (yyval).pUnit->getUsedSymbols().end());
@@ -1439,7 +1439,7 @@ yyreduce:
       case 16:
 #line 156 "CUnitParser.ypp" /* yacc.c:1646  */
         {
-          mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
+          mpCurrentUnitDef = CRootContainer::getUnitDefFromSymbol((yyvsp[0]).text);
 
           if (mpCurrentUnitDef == NULL)
             {

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -16,24 +21,25 @@
 
 #include <QtCore/QVariant>
 
-#include "UI/CQTaskBtnWidget.h"
-#include "UI/CQTaskHeaderWidget.h"
+#include "CQTaskBtnWidget.h"
+#include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
 #include "CQTaskMethodWidget.h"
-#include "UI/CQFittingItemWidget.h"
-#include "UI/CProgressBar.h"
-#include "UI/CCopasiSelectionDialog.h"
-#include "UI/qtUtilities.h"
-#include "UI/CQExpressionWidget.h"
-#include "UI/CQCopasiApplication.h"
+#include "CQFittingItemWidget.h"
+#include "CProgressBar.h"
+#include "CCopasiSelectionDialog.h"
+#include "qtUtilities.h"
+#include "CQExpressionWidget.h"
+#include "CQCopasiApplication.h"
 
-#include "report/CKeyFactory.h"
-#include "optimization/COptTask.h"
-#include "optimization/COptItem.h"
-#include "optimization/COptMethod.h"
-#include "optimization/COptProblem.h"
-#include "utilities/CCopasiException.h"
-#include "report/CCopasiRootContainer.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/optimization/COptTask.h"
+#include "copasi/optimization/COptItem.h"
+#include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/utilities/CCopasiException.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
  *  Constructs a CQOptimizationWidget which is a child of 'parent', with the
@@ -166,7 +172,7 @@ bool CQOptimizationWidget::runTask()
   // ----
 
   COptTask * pTask =
-    dynamic_cast< COptTask * >(CCopasiRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< COptTask * >(CRootContainer::getKeyFactory()->get(mKey));
 
   if (!pTask) return false;
 

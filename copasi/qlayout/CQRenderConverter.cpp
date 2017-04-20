@@ -17,28 +17,28 @@
 #include <QtCore/QFile>
 #include <QGraphicsScene>
 
-#include <qlayout/CQRenderConverter.h>
-#include <qlayout/CQRoundedRect.h>
-#include <layout/CLStyle.h>
-#include <layout/CLEllipse.h>
-#include <layout/CLRectangle.h>
-#include <layout/CLImage.h>
-#include <layout/CLPolygon.h>
-#include <layout/CLText.h>
-#include <layout/CLCurve.h>
-#include <layout/CLRenderCurve.h>
-#include <layout/CLRenderCubicBezier.h>
-#include <layout/CLRenderPoint.h>
-#include <layout/CLLinearGradient.h>
-#include <layout/CLRadialGradient.h>
-#include <layout/CLRenderResolver.h>
-#include <layout/CLGraphicalPrimitive1D.h>
-#include <report/CCopasiRootContainer.h>
-#include <CopasiDataModel/CCopasiDataModel.h>
-
-#include <copasi/UI/qtUtilities.h>
-
 #include <math.h>
+
+#include "copasi/qlayout/CQRenderConverter.h"
+#include "copasi/qlayout/CQRoundedRect.h"
+#include "copasi/layout/CLStyle.h"
+#include "copasi/layout/CLEllipse.h"
+#include "copasi/layout/CLRectangle.h"
+#include "copasi/layout/CLImage.h"
+#include "copasi/layout/CLPolygon.h"
+#include "copasi/layout/CLText.h"
+#include "copasi/layout/CLCurve.h"
+#include "copasi/layout/CLRenderCurve.h"
+#include "copasi/layout/CLRenderCubicBezier.h"
+#include "copasi/layout/CLRenderPoint.h"
+#include "copasi/layout/CLLinearGradient.h"
+#include "copasi/layout/CLRadialGradient.h"
+#include "copasi/layout/CLRenderResolver.h"
+#include "copasi/layout/CLGraphicalPrimitive1D.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+
+#include "copasi/UI/qtUtilities.h"
 
 void transform(QGraphicsItem *item, const CLTransformation2D* trans, const CLGroup* group)
 {
@@ -1001,7 +1001,7 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds, co
 
   for (size_t i = 0; i < numElements; ++i)
     {
-      const CCopasiObject* object = group->getElement(i);
+      const CDataObject* object = group->getElement(i);
       const CLEllipse* ellipse = dynamic_cast<const CLEllipse*>(object);
       const CLRectangle* rect = dynamic_cast<const CLRectangle*>(object);
       const CLPolygon* poly = dynamic_cast<const CLPolygon*>(object);

@@ -22,8 +22,8 @@
 #include "CLsodaMethod.h"
 #include "CTrajectoryProblem.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
-#include "report/CCopasiRootContainer.h"
+#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"
@@ -34,7 +34,7 @@
 // Uncomment this line below to get processing flow output.
 // #define DEBUG_FLOW 1
 
-CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
+CLsodaMethod::CLsodaMethod(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
@@ -72,7 +72,7 @@ CLsodaMethod::CLsodaMethod(const CCopasiContainer * pParent,
 }
 
 CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
   mpRelativeTolerance(NULL),
   mpAbsoluteTolerance(NULL),
@@ -167,7 +167,7 @@ void CLsodaMethod::initializeParameter()
       else
         {
           C_FLOAT64 OldValue = *mpAbsoluteTolerance;
-          CCopasiDataModel* pDataModel = getObjectDataModel();
+          CDataModel* pDataModel = getObjectDataModel();
           assert(pDataModel != NULL);
           CModel * pModel = pDataModel->getModel();
 
@@ -176,7 +176,7 @@ void CLsodaMethod::initializeParameter()
             NewValue = 1.e-12;
           else
             {
-              const CCopasiVectorNS< CCompartment > & Compartment = pModel->getCompartments();
+              const CDataVectorNS< CCompartment > & Compartment = pModel->getCompartments();
               size_t i, imax;
               C_FLOAT64 Volume = std::numeric_limits< C_FLOAT64 >::max();
 

@@ -23,11 +23,11 @@
 
 using namespace std;
 
-bool applyParameterSetByName(CCopasiDataModel* pDataModel, std::string parameterSet)
+bool applyParameterSetByName(CDataModel* pDataModel, std::string parameterSet)
 {
   // obtain parameter set
-  CCopasiVectorN< CModelParameterSet > & sets = pDataModel->getModel()->getModelParameterSets();
-  CCopasiVectorN< CModelParameterSet >::iterator it = sets.begin();
+  CDataVectorN< CModelParameterSet > & sets = pDataModel->getModel()->getModelParameterSets();
+  CDataVectorN< CModelParameterSet >::iterator it = sets.begin();
 
   for (; it != sets.end(); ++it)
     {
@@ -44,17 +44,17 @@ bool applyParameterSetByName(CCopasiDataModel* pDataModel, std::string parameter
 int main(int argc, char** argv)
 {
   // initialize the backend library
-  CCopasiRootContainer::init(argc, argv);
-  assert(CCopasiRootContainer::getRoot() != NULL);
+  CRootContainer::init(argc, argv);
+  assert(CRootContainer::getRoot() != NULL);
   // create a new datamodel
-  CCopasiDataModel* pDataModel = CCopasiRootContainer::addDatamodel();
-  assert(CCopasiRootContainer::getDatamodelList()->size() == 1);
+  CDataModel* pDataModel = CRootContainer::addDatamodel();
+  assert(CRootContainer::getDatamodelList()->size() == 1);
 
   // the only argument to the main routine should be the name of an SBML file
   if (argc != 4)
     {
       std::cerr << "Usage: assignParameterSet <input copasi file> <parameter set> <output copasi file>" << std::endl;
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 1;
     }
 
@@ -67,8 +67,6 @@ int main(int argc, char** argv)
        << " parameter set: " << parameterSet << endl
        << " output: " << outputFile << endl
        << endl;
-
-
 
   bool result = false;
   // load model
@@ -83,13 +81,11 @@ int main(int argc, char** argv)
     {
       cerr << "could not load the model. Error was: " << endl;
       cerr << CCopasiMessage::getAllMessageText();
-      CCopasiRootContainer::destroy();
+      CRootContainer::destroy();
       return 2;
     }
 
-
   bool assigned = applyParameterSetByName(pDataModel, parameterSet);
-
 
   // write the result
   if (assigned)
@@ -103,5 +99,5 @@ int main(int argc, char** argv)
     }
 
   // clean up the library
-  CCopasiRootContainer::destroy();
+  CRootContainer::destroy();
 }

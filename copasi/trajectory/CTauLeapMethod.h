@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,7 +22,7 @@
 
 /* INCLUDES ******************************************************************/
 #include "trajectory/CTrajectoryMethod.h"
-#include "utilities/CCopasiVector.h"
+#include "copasi/core/CDataVector.h"
 #include "copasi/model/CState.h"
 
 /* CLASSES *******************************************************************/
@@ -32,21 +37,21 @@ class CTauLeapMethod : public CTrajectoryMethod
 public:
   /**
    * Specific constructor
-   * @param const CCopasiContainer * pParent
+   * @param const CDataContainer * pParent
    * @param const CTaskEnum::Method & methodType (default: tauLeap)
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
-  CTauLeapMethod(const CCopasiContainer * pParent,
+  CTauLeapMethod(const CDataContainer * pParent,
                  const CTaskEnum::Method & methodType = CTaskEnum::tauLeap,
                  const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
 
   /**
    * Copy constructor
    * @param const CTauLeapMethod & src
-   * @param const CCopasiContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CTauLeapMethod(const CTauLeapMethod & src,
-                 const CCopasiContainer * pParent);
+                 const CDataContainer * pParent);
 
   /**
    *   Destructor.

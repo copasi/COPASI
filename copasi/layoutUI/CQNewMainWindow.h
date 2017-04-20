@@ -19,7 +19,7 @@
 #include <vector>
 #include <set>
 
-class CCopasiDataModel;
+class CDataModel;
 class CLayout;
 class CLRenderInformationBase;
 class CLGraphicalObject;
@@ -43,7 +43,7 @@ class CMetab;
 #include "copasi/layout/CCopasiSpringLayout.h"
 
 class CCompartment;
-class CCopasiObject;
+class CDataObject;
 class CLayout;
 class CModel;
 class CLCompartmentGlyph;
@@ -79,7 +79,7 @@ public:
                                                                   , ASSOCIATED_SPECIES_GLYPHS = 512
   };
 
-  CQNewMainWindow(CCopasiDataModel* pDatamodel);
+  CQNewMainWindow(CDataModel* pDatamodel);
   virtual ~CQNewMainWindow();
 
   virtual QMenu *getWindowMenu() const;
@@ -288,7 +288,7 @@ private:
   QActionGroup* mpZoomActionGroup;
   CQGLLayoutViewer* mpLayoutViewer;
   CQLayoutMainWindow* mpAnimationWindow;
-  CCopasiDataModel* mpDataModel;
+  CDataModel* mpDataModel;
   QComboBox* mpLayoutDropdown;
   QComboBox* mpRenderDropdown;
   QComboBox* mpZoomDropdown;
@@ -368,11 +368,11 @@ public:
   // ancestor (e.g. to figure out mpDataModel)
   static CQNewMainWindow * ancestor(QObject * qObject);
 
-  // convenience function to find/return the CCopasiDataModel
+  // convenience function to find/return the CDataModel
   // from the/a CQNewMainWindow ancestor of a QObject
-  static CCopasiDataModel * dataModel(QObject * qObject);
+  static CDataModel * dataModel(QObject * qObject);
 
-  CCopasiDataModel * getDataModel() const;
+  CDataModel * getDataModel() const;
 
 protected:
   /** the layout thread */

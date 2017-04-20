@@ -22,7 +22,7 @@
 #include "CConfigurationFile.h"
 #include "COptions.h"
 
-#include "CopasiDataModel/CCopasiDataModel.h"
+#include "CopasiDataModel/CDataModel.h"
 #include "utilities/CVersion.h"
 #include "utilities/utility.h"
 #include "utilities/CDirEntry.h"
@@ -35,21 +35,21 @@
 #endif
 
 CRecentFiles::CRecentFiles(const std::string & name,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiParameterGroup(name, pParent),
   mpMaxFiles(NULL),
   mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CRecentFiles & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mpMaxFiles(NULL),
   mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CCopasiParameterGroup & group,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiParameterGroup(group, pParent),
   mpMaxFiles(NULL),
   mpRecentFiles(NULL)
@@ -111,7 +111,7 @@ void CRecentFiles::addFile(const std::string & file)
 }
 
 CConfigurationFile::CConfigurationFile(const std::string & name,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CCopasiParameterGroup(name, pParent),
   mpRecentFiles(NULL),
   mpRecentSBMLFiles(NULL),
@@ -137,7 +137,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
-                                       const CCopasiContainer * pParent):
+                                       const CDataContainer * pParent):
   CCopasiParameterGroup(src, pParent),
   mpRecentFiles(NULL),
   mpRecentSBMLFiles(NULL),

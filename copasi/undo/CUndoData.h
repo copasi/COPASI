@@ -10,12 +10,12 @@
 
 #include "CData.h"
 
-class CCopasiObject;
-class CCopasiContainer;
-class CCopasiDataModel;
+class CDataObject;
+class CDataContainer;
+class CDataModel;
 class CMetab;
 
-template < class CType > class CCopasiVector;
+template < class CType > class CDataVector;
 
 class CUndoData
 {
@@ -30,7 +30,7 @@ public:
     CHANGE
   };
 
-  CUndoData(const Type & type, const CCopasiObject * pObject, const size_t & authorId = C_INVALID_INDEX);
+  CUndoData(const Type & type, const CDataObject * pObject, const size_t & authorId = C_INVALID_INDEX);
 
   CUndoData(const CUndoData & src);
 
@@ -48,7 +48,7 @@ public:
 
   bool addDependentData(const CUndoData & dependentData);
 
-  void recordDependentParticleNumberChange(const double factor, const CCopasiVector< CMetab > & species);
+  void recordDependentParticleNumberChange(const double factor, const CDataVector< CMetab > & species);
 
   const CData & getOldData() const;
 
@@ -58,9 +58,9 @@ public:
 
   std::vector< CUndoData > & getDependentData();
 
-  bool apply(const CCopasiDataModel & dataModel) const;
+  bool apply(const CDataModel & dataModel) const;
 
-  bool undo(const CCopasiDataModel & dataModel) const;
+  bool undo(const CDataModel & dataModel) const;
 
   const std::time_t & getTime() const;
 
@@ -75,15 +75,15 @@ private:
 
   bool addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue);
 
-  bool insert(const CCopasiDataModel & dataModel, const bool & apply) const;
-  bool remove(const CCopasiDataModel & dataModel, const bool & apply) const;
-  bool change(const CCopasiDataModel & dataModel, const bool & apply) const;
-  bool processDependentData(const CCopasiDataModel & dataModel, const bool & apply) const;
+  bool insert(const CDataModel & dataModel, const bool & apply) const;
+  bool remove(const CDataModel & dataModel, const bool & apply) const;
+  bool change(const CDataModel & dataModel, const bool & apply) const;
+  bool processDependentData(const CDataModel & dataModel, const bool & apply) const;
 
   const CData & getData(const bool & apply) const;
 
-  static CCopasiContainer * getParent(const CCopasiDataModel & dataModel, const CData & data);
-  static CCopasiObject * getObject(const CCopasiDataModel & dataModel, const CData & data);
+  static CDataContainer * getParent(const CDataModel & dataModel, const CData & data);
+  static CDataObject * getObject(const CDataModel & dataModel, const CData & data);
 
   Type mType;
 

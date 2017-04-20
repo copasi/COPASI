@@ -1,12 +1,9 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRenderCurve.h,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:35:20 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -18,7 +15,7 @@
 #include <vector>
 
 #include "copasi/layout/CLGraphicalPrimitive1D.h"
-#include "copasi/report/CCopasiObject.h"
+#include "copasi/core/CDataObject.h"
 
 class CLRenderCubicBezier;
 class CLRenderPoint;
@@ -27,7 +24,7 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class RenderCurve;
 LIBSBML_CPP_NAMESPACE_END
 
-class CLRenderCurve : public CLGraphicalPrimitive1D, public CCopasiObject
+class CLRenderCurve : public CLGraphicalPrimitive1D, public CDataObject
 {
 private:
   // prevent the compiler from generating an assignment operator
@@ -47,17 +44,17 @@ public:
   /**
    * Constructor.
    */
-  CLRenderCurve(CCopasiContainer* pParent = NULL);
+  CLRenderCurve(CDataContainer* pParent = NULL);
 
   /**
    * Copy Constructor
    */
-  CLRenderCurve(const CLRenderCurve& source, CCopasiContainer* pParent = NULL);
+  CLRenderCurve(const CLRenderCurve& source, CDataContainer* pParent = NULL);
 
   /**
    * Constructor to generate object from the corresponding SBML object.
    */
-  CLRenderCurve(const RenderCurve& source, CCopasiContainer* pParent = NULL);
+  CLRenderCurve(const RenderCurve& source, CDataContainer* pParent = NULL);
 
   /**
    * Destructor

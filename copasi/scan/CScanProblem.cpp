@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,7 +33,7 @@
  *  Default constructor.
  *  @param "CModel *" pModel
  */
-CScanProblem::CScanProblem(const CCopasiContainer * pParent):
+CScanProblem::CScanProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::scan, pParent),
   mpScanItems(NULL)
 {
@@ -40,7 +45,7 @@ CScanProblem::CScanProblem(const CCopasiContainer * pParent):
  *  @param "const CScanProblem &" src
  */
 CScanProblem::CScanProblem(const CScanProblem & src,
-                           const CCopasiContainer * pParent):
+                           const CDataContainer * pParent):
   CCopasiProblem(src, pParent),
   mpScanItems(NULL)
 {
@@ -132,7 +137,7 @@ CCopasiParameterGroup* CScanProblem::getScanItem(size_t index)
 }
 
 //CScanProblem::Type CScanProblem::getScanItemType(size_t index);
-CCopasiParameterGroup* CScanProblem::addScanItem(CScanProblem::Type type, size_t steps, const CCopasiObject* obj)
+CCopasiParameterGroup* CScanProblem::addScanItem(CScanProblem::Type type, size_t steps, const CDataObject* obj)
 {
   CCopasiParameterGroup * pItem = createScanItem(type, steps, obj);
   mpScanItems->addParameter(pItem);
@@ -146,7 +151,7 @@ bool CScanProblem::removeScanItem(const size_t & index)
 }
 
 // static
-CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, size_t steps, const CCopasiObject* obj)
+CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, size_t steps, const CDataObject* obj)
 {
   CCopasiParameterGroup * tmp = new CCopasiParameterGroup("ScanItem");
 
