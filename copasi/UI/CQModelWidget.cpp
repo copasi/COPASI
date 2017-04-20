@@ -15,6 +15,7 @@
  *      Author: shoops
  */
 #include <QUndoStack>
+#include <QCompleter>
 
 #include "CQModelWidget.h"
 #include "CQUpdateAvogadro.h"
@@ -66,12 +67,76 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   mpLblLengthUnit->hide();
   mpEditLengthUnit->hide();
 
+  mpLblAvogadro->hide();
   mpEditAvogadro->hide();
   mpBtnUpdateAvogadro->hide();
 #endif
 
   mpBtnUpdateAvogadro->setIcon(CQIconResource::icon(CQIconResource::tool));
   mpEditAvogadro->setEnabled(false);
+
+  QStringList unitEntries;
+  const char ** pUnitNames;
+
+  for (pUnitNames = CUnit::TimeUnitNames; *pUnitNames != NULL; ++pUnitNames)
+    {
+      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+    }
+
+  QCompleter *completer = new QCompleter(unitEntries, this);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  mpEditTimeUnit->setCompleter(completer);
+  connect(mpEditTimeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+
+
+  unitEntries.clear();
+
+  for (pUnitNames = CUnit::VolumeUnitNames; *pUnitNames != NULL; ++pUnitNames)
+    {
+      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+    }
+
+  completer = new QCompleter(unitEntries, this);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  mpEditVolumeUnit->setCompleter(completer);
+  connect(mpEditVolumeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+
+  unitEntries.clear();
+
+  for (pUnitNames = CUnit::AreaUnitNames; *pUnitNames != NULL; ++pUnitNames)
+    {
+      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+    }
+
+  completer = new QCompleter(unitEntries, this);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  mpEditAreaUnit->setCompleter(completer);
+  connect(mpEditAreaUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+
+  unitEntries.clear();
+
+  for (pUnitNames = CUnit::LengthUnitNames; *pUnitNames != NULL; ++pUnitNames)
+    {
+      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+    }
+
+  completer = new QCompleter(unitEntries, this);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  mpEditLengthUnit->setCompleter(completer);
+  connect(mpEditLengthUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+
+  unitEntries.clear();
+
+  for (pUnitNames = CUnit::QuantityUnitNames; *pUnitNames != NULL; ++pUnitNames)
+    {
+      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+    }
+
+  completer = new QCompleter(unitEntries, this);
+  completer->setCaseSensitivity(Qt::CaseInsensitive);
+  mpEditQuantityUnit->setCompleter(completer);
+  connect(mpEditQuantityUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+
 }
 
 CQModelWidget::~CQModelWidget()
@@ -431,4 +496,16 @@ void CQModelWidget::slotUnitChanged()
 
   Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditLengthUnit->text())));
   mpEditLengthUnit->setText(Unit);
+
+}
+
+void CQModelWidget::slotShowCompleter()
+{
+  QLineEdit* pEdit = qobject_cast<QLineEdit*> (sender());
+
+  if (pEdit != NULL && pEdit->completer() != NULL
+      && pEdit->text().isEmpty())
+    {
+      pEdit->completer()->complete();
+    }
 }
