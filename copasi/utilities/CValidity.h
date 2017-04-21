@@ -127,7 +127,7 @@ public:
 
   const Kind & get(const CIssue::eSeverity & severity) const;
 
-  const std::string getIssueMessages() const;
+  const std::string getIssueMessages(const Severity & severityFilter = Severity::All, const Kind & kindFilter = Kind::All) const;
 
   CValidity operator | (const CValidity & rhs) const;
 

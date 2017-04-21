@@ -235,55 +235,59 @@ const CValidity::Kind & CValidity::get(const CIssue::eSeverity & severity) const
     }
 }
 
-const std::string CValidity::getIssueMessages() const
+const std::string CValidity::getIssueMessages(const Severity & severityFilter,
+    const Kind & kindFilter) const
 {
+  std::string severityString = "";
+  std::vector< const char * > descriptions;
   std::string messages = "";
+  std::vector< const char * >::const_iterator it, end;
 
-  messages += generateIssueMessages(CIssue::eSeverity::Error);
-  messages += generateIssueMessages(CIssue::eSeverity::Warning);
-  messages += generateIssueMessages(CIssue::eSeverity::Information);
+  if (severityFilter.isSet(CIssue::eSeverity::Error))
+    {
+      severityString = "Error: ";
+      descriptions = mErrors.getAnnotations(CIssue::kindDescriptions, kindFilter);
+
+      it = descriptions.begin();
+      end = descriptions.end();
+
+      for (; it != end; ++it)
+        {
+          messages += severityString + *it;
+        }
+    }
+
+  if (severityFilter.isSet(CIssue::eSeverity::Warning))
+    {
+      severityString = "Warning: ";
+      descriptions = mWarnings.getAnnotations(CIssue::kindDescriptions, kindFilter);
+
+      it = descriptions.begin();
+      end = descriptions.end();
+
+      for (; it != end; ++it)
+        {
+          messages += severityString + *it;
+        }
+    }
+
+  if (severityFilter.isSet(CIssue::eSeverity::Information))
+    {
+      severityString = "Information: ";
+      descriptions = mInformation.getAnnotations(CIssue::kindDescriptions, kindFilter);
+
+      it = descriptions.begin();
+      end = descriptions.end();
+
+      for (; it != end; ++it)
+        {
+          messages += severityString + *it;
+        }
+    }
 
   // Remove last newline
   if (!messages.empty())
     messages = messages.substr(0, messages.size() - 1);
-
-  return messages;
-}
-
-const std::string CValidity::generateIssueMessages(const CIssue::eSeverity & severity) const
-{
-  std::string severityString = "";
-  std::string messages = "";
-  std::vector< const char * > descriptions;
-
-  switch (severity)
-    {
-      case CIssue::eSeverity::Error:
-        severityString = "Error: ";
-        descriptions = mErrors.getAnnotations(CIssue::kindDescriptions);
-        break;
-
-      case CIssue::eSeverity::Warning:
-        severityString = "Warning: ";
-        descriptions = mWarnings.getAnnotations(CIssue::kindDescriptions);
-        break;
-
-      case CIssue::eSeverity::Information:
-        severityString = "Information: ";
-        descriptions = mInformation.getAnnotations(CIssue::kindDescriptions);
-        break;
-
-      default:
-        break;
-    }
-
-  std::vector< const char * >::const_iterator it = descriptions.begin();
-  std::vector< const char * >::const_iterator end = descriptions.end();
-
-  for (; it != end; ++it)
-    {
-      messages += severityString + *it;
-    }
 
   return messages;
 }
