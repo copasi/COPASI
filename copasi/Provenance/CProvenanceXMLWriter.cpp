@@ -8,6 +8,8 @@
 // of Manchester.
 // All rights reserved.
 
+#include "CProvenanceXMLWriter.h"
+
 #include <QUndoStack>
 #include <QFile>
 #include <QItemDelegate>
@@ -18,7 +20,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "commandline/CConfigurationFile.h"
 #include "copasi/undoFramework/CCopasiUndoCommand.h"
-#include "CProvenanceXMLWriter.h"
+#include <copasi/UI/qtUtilities.h>
 
 //CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QString ProvenanceParentOfCurrentModel, QString VersioningParentOfCurrentModel, QList<QString> VersionsPathToCurrentModel):
 CProvenanceXMLWriter::CProvenanceXMLWriter(QWidget* parent, QUndoStack *undoStack, QString PathFile, QString ProvenanceOrigionFiletype, QString ProvenanceOrigionTime, QList<QString> VersionsPathToCurrentModel):
