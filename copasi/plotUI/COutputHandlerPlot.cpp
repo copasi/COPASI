@@ -28,6 +28,7 @@
 #include "plot/COutputDefinitionVector.h"
 #include "UI/qtUtilities.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/CopasiDataModel/CDataModel.h>
 
 COutputHandlerPlot::COutputHandlerPlot():
   COutputHandler(),

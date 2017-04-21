@@ -30,6 +30,7 @@
 #include "function/CFunction.h"
 #include "report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
+#include <copasi/CopasiDataModel/CDataModel.h>
 #include "commandline/CConfigurationFile.h"
 
 /*

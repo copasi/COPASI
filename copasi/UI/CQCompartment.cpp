@@ -18,6 +18,7 @@
 // All rights reserved.
 
 #include "CQCompartment.h"
+#include "copasiui3window.h"
 
 #include "CQExpressionWidget.h"
 #include "CQMessageBox.h"
@@ -48,7 +49,6 @@
 #include "undoFramework/UndoReactionData.h"
 #include "undoFramework/UndoSpeciesData.h"
 #include "copasi/undoFramework/CompartmentChangeCommand.h"
-#include "copasiui3window.h"
 
 #include "undo/CUndoStack.h"
 #include "undo/CUndoData.h"

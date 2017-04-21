@@ -13,6 +13,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/report/CCopasiObjectName.h"
 #include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CFunction.h"
 
 // static
 const CDataObject * CObjectInterface::DataObject(const CObjectInterface * pInterface)

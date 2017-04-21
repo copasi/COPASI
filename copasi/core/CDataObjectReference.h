@@ -18,6 +18,8 @@
 
 #include "copasi/report/CCopasiObjectName.h"
 
+#include <assert.h>
+
 class CDataContainer;
 
 template <class CType> class CDataObjectReference: public CDataObject
@@ -95,22 +97,45 @@ public:
 template<> CDataObjectReference< double >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     double & reference,
-    const CFlags< Flag > & flag);
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
+  mpReference(&reference)
+{
+  assert(pParent != NULL);
+}
 
 template<> CDataObjectReference< int >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     int & reference,
-    const CFlags< Flag > & flag);
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueInt),
+  mpReference(&reference)
+{
+  assert(pParent != NULL);
+}
 
 template<> CDataObjectReference< bool >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     bool & reference,
-    const CFlags< Flag > & flag);
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "Reference",
+              flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueBool),
+  mpReference(&reference)
+{
+  assert(pParent != NULL);
+}
 
 template<> CDataObjectReference< std::string >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     std::string & reference,
-    const CFlags< Flag > & flag);
+    const CFlags< Flag > & flag) :
+  CDataObject(name, pParent, "String",
+              flag | CDataObject::ValueString),
+  mpReference(&reference)
+{}
+
 
 template <class CType> class CDataVectorReference: public CDataObject
 {
