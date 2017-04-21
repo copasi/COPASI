@@ -89,31 +89,31 @@ void CSteadyStateTask::cleanup()
 
 void CSteadyStateTask::initObjects()
 {
-  mpJacobianAnn = new CArrayAnnotation("Jacobian (complete system)", this,
-                                       new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
-  mpJacobianAnn->setMode(CArrayAnnotation::OBJECTS);
+  mpJacobianAnn = new CDataArray("Jacobian (complete system)", this,
+                                 new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
+  mpJacobianAnn->setMode(CDataArray::OBJECTS);
   mpJacobianAnn->setDescription("");
   mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent species");
   mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
 
-  mpJacobianXAnn = new CArrayAnnotation("Jacobian (reduced system)", this,
-                                        new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianReduced), true);
-  mpJacobianXAnn->setMode(CArrayAnnotation::OBJECTS);
+  mpJacobianXAnn = new CDataArray("Jacobian (reduced system)", this,
+                                  new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianReduced), true);
+  mpJacobianXAnn->setMode(CDataArray::OBJECTS);
   mpJacobianXAnn->setDescription("");
   mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
   mpJacobianXAnn->setDimensionDescription(1, "Independent variables of the system");
 
-  mpEigenvaluesJacobianAnn = new CArrayAnnotation("Eigenvalues of Jacobian", this,
-      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesMatrix), true);
-  mpEigenvaluesJacobianAnn->setMode(CArrayAnnotation::VECTOR);
+  mpEigenvaluesJacobianAnn = new CDataArray("Eigenvalues of Jacobian", this,
+      new CMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesMatrix), true);
+  mpEigenvaluesJacobianAnn->setMode(CDataArray::VECTOR);
   mpEigenvaluesJacobianAnn->setDescription("");
   mpEigenvaluesJacobianAnn->setDimensionDescription(0, "n-th value");
   mpEigenvaluesJacobianAnn->setDimensionDescription(1, "Real/Imaginary part");
 
-  mpEigenvaluesJacobianXAnn = new CArrayAnnotation("Eigenvalues of reduced system Jacobian", this,
-      new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesXMatrix), true);
+  mpEigenvaluesJacobianXAnn = new CDataArray("Eigenvalues of reduced system Jacobian", this,
+      new CMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesXMatrix), true);
 //  mpEigenvaluesJacobianXAnn->setMode(CArrayAnnotation::VECTOR);
-  mpEigenvaluesJacobianXAnn->setMode(CArrayAnnotation::OBJECTS);
+  mpEigenvaluesJacobianXAnn->setMode(CDataArray::OBJECTS);
   mpEigenvaluesJacobianXAnn->setDescription("");
   mpEigenvaluesJacobianXAnn->setDimensionDescription(0, "n-th value");
   mpEigenvaluesJacobianXAnn->setDimensionDescription(1, "Real/Imaginary part");
@@ -141,12 +141,12 @@ const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobian() const
 const CMatrix< C_FLOAT64 > & CSteadyStateTask::getJacobianReduced() const
 {return mJacobianReduced;}
 
-const CArrayAnnotation * CSteadyStateTask::getJacobianAnnotated() const
+const CDataArray * CSteadyStateTask::getJacobianAnnotated() const
 {
   return mpJacobianAnn;
 }
 
-const CArrayAnnotation * CSteadyStateTask::getJacobianXAnnotated() const
+const CDataArray * CSteadyStateTask::getJacobianXAnnotated() const
 {
   return mpJacobianXAnn;
 }

@@ -8,7 +8,7 @@
 #include "CUndoData.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CDataVector.h"
 #include "model/CMetab.h"

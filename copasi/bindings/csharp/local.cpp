@@ -33,18 +33,18 @@
 // for the type determination methods
 
 // Determine type CCopasiAbstractArray
-int GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer)
+int GetType_CCopasiAbstractArray(CArrayInterface* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
   if (pPointer != NULL)
     {
-      if (dynamic_cast<CCopasiArray*>(pPointer))
+      if (dynamic_cast<CArray*>(pPointer))
         {
           // return a CCopasiArray
           result = CCopasiArray_Type;
         }
-      else if (dynamic_cast<CCopasiMatrixInterface<CMatrix<C_FLOAT64> >*>(pPointer))
+      else if (dynamic_cast<CMatrixInterface<CMatrix<C_FLOAT64> >*>(pPointer))
         {
           // return a AnnotatedFloatMatrix
           result = AnnotatedFloatMatrix_Type;
@@ -358,7 +358,7 @@ int GetType_CDataContainer(CDataContainer* pPointer)
                   result = CChemEqElementVector_Type;
                 }
             }
-          else if (dynamic_cast<CArrayAnnotation*>(pPointer))
+          else if (dynamic_cast<CDataArray*>(pPointer))
             {
               // return a CArrayAnnotation
               result = CArrayAnnotation_Type;
@@ -454,7 +454,7 @@ int GetType_CDataObject(CDataObject* pPointer)
           // return a CCopasiParameter
           result = CCopasiParameter_Type;
         }
-      else if (dynamic_cast<CCopasiStaticString*>(pPointer))
+      else if (dynamic_cast<CDataString*>(pPointer))
         {
           if (dynamic_cast<CCopasiReportSeparator*>(pPointer))
             {

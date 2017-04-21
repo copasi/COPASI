@@ -6140,7 +6140,7 @@ void CCopasiXMLParser::PlotItemElement::end(const XML_Char *pszName)
                       break;
 
                     case CCopasiParameter::CN:
-                      p->setValue(mCommon.pCurrentParameter->getValue< CCopasiObjectName >());
+                      p->setValue(mCommon.pCurrentParameter->getValue< CCommonName >());
                       break;
 
                     case CCopasiParameter::EXPRESSION:
@@ -6383,7 +6383,7 @@ void CCopasiXMLParser::PlotSpecificationElement::end(const XML_Char *pszName)
                       break;
 
                     case CCopasiParameter::CN:
-                      p->setValue(mCommon.pCurrentParameter->getValue< CCopasiObjectName >());
+                      p->setValue(mCommon.pCurrentParameter->getValue< CCommonName >());
                       break;
 
                     case CCopasiParameter::EXPRESSION:
@@ -9659,11 +9659,11 @@ void CCopasiXMLParser::ListOfReportsElement::end(const XML_Char *pszName)
 
   CReportDefinition* reportDefinition;
 
-  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > >::iterator outerIt;
+  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredCommonName >*, size_t > > >::iterator outerIt;
 
-  std::vector<std::pair < std::vector <CRegisteredObjectName >*, size_t > >::iterator innerIt2;
+  std::vector<std::pair < std::vector <CRegisteredCommonName >*, size_t > >::iterator innerIt2;
 
-  std::vector<CRegisteredObjectName>* nameVector;
+  std::vector<CRegisteredCommonName>* nameVector;
 
   size_t reportIndex;
 
@@ -10103,7 +10103,7 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "html", mParser.getCurrentLineNumber());
 
-        mCommon.pReport->getHeaderAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
+        mCommon.pReport->getHeaderAddr()->push_back(CDataString(mCommon.CharacterData).getCN());
         mCurrentElement = Header;
         break;
 
@@ -10113,7 +10113,7 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Object", mParser.getCurrentLineNumber());
 
-        mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
+        mCommon.pReport->getHeaderAddr()->push_back(CCommonName(mCommon.CharacterData));
         mCurrentElement = Header;
         break;
 
@@ -10126,11 +10126,11 @@ void CCopasiXMLParser::HeaderElement::end(const XML_Char *pszName)
         // add the key that is stored in mCommon.CharacterData to the map
         if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
           {
-            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, size_t> >();
+            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredCommonName>*, size_t> >();
           }
 
-        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, size_t>(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
-        mCommon.pReport->getHeaderAddr()->push_back(CCopasiObjectName(""));
+        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredCommonName>*, size_t>(mCommon.pReport->getHeaderAddr(), mCommon.pReport->getHeaderAddr()->size()));
+        mCommon.pReport->getHeaderAddr()->push_back(CCommonName(""));
         mCurrentElement = Header;
         break;
 
@@ -10243,7 +10243,7 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "html", mParser.getCurrentLineNumber());
 
-        mCommon.pReport->getBodyAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
+        mCommon.pReport->getBodyAddr()->push_back(CDataString(mCommon.CharacterData).getCN());
         mCurrentElement = Body;
         break;
 
@@ -10253,7 +10253,7 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Object", mParser.getCurrentLineNumber());
 
-        mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
+        mCommon.pReport->getBodyAddr()->push_back(CCommonName(mCommon.CharacterData));
         mCurrentElement = Body;
         break;
 
@@ -10266,11 +10266,11 @@ void CCopasiXMLParser::BodyElement::end(const XML_Char *pszName)
         // add the key that is stored in mCommon.CharacterData to the map
         if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
           {
-            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, size_t> >();
+            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredCommonName>*, size_t> >();
           }
 
-        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, size_t>(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
-        mCommon.pReport->getBodyAddr()->push_back(CCopasiObjectName(""));
+        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredCommonName>*, size_t>(mCommon.pReport->getBodyAddr(), mCommon.pReport->getBodyAddr()->size()));
+        mCommon.pReport->getBodyAddr()->push_back(CCommonName(""));
         mCurrentElement = Body;
         break;
 
@@ -10383,7 +10383,7 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "html", mParser.getCurrentLineNumber());
 
-        mCommon.pReport->getFooterAddr()->push_back(CCopasiStaticString(mCommon.CharacterData).getCN());
+        mCommon.pReport->getFooterAddr()->push_back(CDataString(mCommon.CharacterData).getCN());
         mCurrentElement = Footer;
         break;
 
@@ -10393,7 +10393,7 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
                          pszName, "Object", mParser.getCurrentLineNumber());
 
-        mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(mCommon.CharacterData));
+        mCommon.pReport->getFooterAddr()->push_back(CCommonName(mCommon.CharacterData));
         mCurrentElement = Footer;
         break;
 
@@ -10406,11 +10406,11 @@ void CCopasiXMLParser::FooterElement::end(const XML_Char *pszName)
         // add the key that is stored in mCommon.CharacterData to the map
         if (mCommon.reportReferenceMap.find(mCommon.CharacterData) == mCommon.reportReferenceMap.end())
           {
-            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredObjectName>*, size_t> >();
+            mCommon.reportReferenceMap[mCommon.CharacterData] = std::vector<std::pair <std::vector<CRegisteredCommonName>*, size_t> >();
           }
 
-        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredObjectName>*, size_t>(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
-        mCommon.pReport->getFooterAddr()->push_back(CCopasiObjectName(""));
+        mCommon.reportReferenceMap[mCommon.CharacterData].push_back(std::pair<std::vector<CRegisteredCommonName>*, size_t>(mCommon.pReport->getFooterAddr(), mCommon.pReport->getFooterAddr()->size()));
+        mCommon.pReport->getFooterAddr()->push_back(CCommonName(""));
         mCurrentElement = Footer;
         break;
 

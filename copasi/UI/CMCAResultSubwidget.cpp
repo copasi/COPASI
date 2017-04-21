@@ -40,7 +40,7 @@
 
 #include "copasi/model/CModel.h"
 #include "copasi/steadystate/CMCAMethod.h"
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/steadystate/CMCATask.h"
 #include "copasi/commandline/CLocaleString.h"
@@ -139,7 +139,7 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
   //}
   //}
 
-  const CArrayAnnotation * elasticitiesAnn;
+  const CDataArray * elasticitiesAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
@@ -190,7 +190,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
             mTableCCC->setText(i, j, QString::number(CCCs[i][j]));
           }
       }*/
-  const CArrayAnnotation * CCCAnn;
+  const CDataArray * CCCAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
@@ -242,7 +242,7 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
           }
       }*/
 
-  const CArrayAnnotation * FCCAnn;
+  const CDataArray * FCCAnn;
 
   if (mComboScale->currentIndex() == 0)
     {

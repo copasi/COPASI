@@ -73,7 +73,7 @@ void test000052::test_bug988()
   CPPUNIT_ASSERT((pLogicalNode->subType()) == CEvaluationNode::S_LT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pLogicalNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);

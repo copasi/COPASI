@@ -238,7 +238,7 @@ void CQFittingItemWidget::slotLowerEdit()
       std::set< size_t >::const_iterator it = mSelection.begin();
       std::set< size_t >::const_iterator end = mSelection.end();
       mpLowerObject = pObject;
-      CCopasiObjectName CN = mpLowerObject->getCN();
+      CCommonName CN = mpLowerObject->getCN();
 
       for (; it != end; ++it)
         {
@@ -292,7 +292,7 @@ void CQFittingItemWidget::slotUpperEdit()
       std::set< size_t >::const_iterator it = mSelection.begin();
       std::set< size_t >::const_iterator end = mSelection.end();
       mpUpperObject = pObject;
-      CCopasiObjectName CN = mpUpperObject->getCN();
+      CCommonName CN = mpUpperObject->getCN();
 
       for (; it != end; ++it)
         {
@@ -1390,14 +1390,14 @@ void CQFittingItemWidget::saveSelection()
       pItem = (*mpItemsCopy)[*it];
 
       if (mpCheckLowerInf->isChecked())
-        pItem->setLowerBound(CCopasiObjectName("-inf"));
+        pItem->setLowerBound(CCommonName("-inf"));
       else if (isNumber(TO_UTF8(mpEditLower->text())))
-        pItem->setLowerBound(CCopasiObjectName(TO_UTF8(mpEditLower->text())));
+        pItem->setLowerBound(CCommonName(TO_UTF8(mpEditLower->text())));
 
       if (mpCheckUpperInf->isChecked())
-        pItem->setUpperBound(CCopasiObjectName("inf"));
+        pItem->setUpperBound(CCommonName("inf"));
       else if (isNumber(TO_UTF8(mpEditUpper->text())))
-        pItem->setUpperBound(CCopasiObjectName(TO_UTF8(mpEditUpper->text())));
+        pItem->setUpperBound(CCommonName(TO_UTF8(mpEditUpper->text())));
 
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());

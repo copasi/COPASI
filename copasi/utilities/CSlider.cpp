@@ -181,7 +181,7 @@ void CSlider::resetRange()
     }
 }
 
-bool CSlider::setSliderObject(const CCopasiObjectName & objectCN)
+bool CSlider::setSliderObject(const CCommonName & objectCN)
 {
   //return setObjectName(objectCN);
   mCN = objectCN;

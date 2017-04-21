@@ -49,7 +49,7 @@
 #include "utilities/utility.h"
 #include "utilities/CProcessReport.h"
 #include "CReactionInterface.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "CMetabNameInterface.h"
 
 #include "math/CMathContainer.h"
@@ -397,9 +397,9 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 bool CModel::compile()
 {
   bool success = true;
-  bool RenameHandlerEnabled = CRegisteredObjectName::isEnabled();
+  bool RenameHandlerEnabled = CRegisteredCommonName::isEnabled();
 
-  CRegisteredObjectName::setEnabled(false);
+  CRegisteredCommonName::setEnabled(false);
 
   unsigned C_INT32 CompileStep = 0;
   size_t hCompileStep;
@@ -528,7 +528,7 @@ finish:
 
   if (RenameHandlerEnabled)
     {
-      CRegisteredObjectName::setEnabled(true);
+      CRegisteredCommonName::setEnabled(true);
     }
 
   mCompileIsNecessary = !success;
@@ -846,7 +846,7 @@ void CModel::updateMatrixAnnotations()
   CDataVector< CMetab >::const_iterator it = CDataVector< CMetab >::const_iterator(mMetabolitesX.begin()) + mNumMetabolitesODE;
   CDataVector< CMetab >::const_iterator end = it + mNumMetabolitesReactionIndependent;
 
-  CCopasiObjectName CN;
+  CCommonName CN;
   size_t j;
 
   for (j = 0; it != end; ++it, j++)
@@ -1140,7 +1140,7 @@ const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 const CMatrix < C_FLOAT64 >& CModel::getStoi() const
 {return mStoi;}
 
-const CArrayAnnotation *
+const CDataArray *
 CModel::getStoiAnnotation() const
 {
   return mpStoiAnnotation;
@@ -2393,7 +2393,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       std::stringstream trigger; trigger
-          << "<"  << getObject(CRegisteredObjectName("Reference=Time"))->getCN()
+          << "<"  << getObject(CRegisteredCommonName("Reference=Time"))->getCN()
           << ">" << " > " << current;
       pEvent->setTriggerExpression(trigger.str());
       pEvent->getTriggerExpressionPtr()->compile();
@@ -2851,27 +2851,27 @@ void CModel::initObjects()
   addMatrixReference("Reduced Model Stoichiometry", mRedStoi, CDataObject::ValueDbl);
   addMatrixReference("Link Matrix"   , mLView, CDataObject::ValueDbl);
 
-  mpStoiAnnotation = new CArrayAnnotation("Stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
+  mpStoiAnnotation = new CDataArray("Stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
-  mpStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpStoiAnnotation->setMode(0, CDataArray::OBJECTS);
   mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
-  mpStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
+  mpStoiAnnotation->setMode(1, CDataArray::VECTOR_ON_THE_FLY);
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpStoiAnnotation->setCopasiVector(1, mSteps);
 
-  mpRedStoiAnnotation = new CArrayAnnotation("Reduced stoichiometry(ann)", this, new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi), true);
+  mpRedStoiAnnotation = new CDataArray("Reduced stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi), true);
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
-  mpRedStoiAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpRedStoiAnnotation->setMode(0, CDataArray::OBJECTS);
   mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
-  mpRedStoiAnnotation->setMode(1, CArrayAnnotation::VECTOR_ON_THE_FLY);
+  mpRedStoiAnnotation->setMode(1, CDataArray::VECTOR_ON_THE_FLY);
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpRedStoiAnnotation->setCopasiVector(1, mSteps);
 
-  mpLinkMatrixAnnotation = new CArrayAnnotation("Link matrix(ann)", this, new CCopasiMatrixInterface<CLinkMatrixView>(&mLView), true);
+  mpLinkMatrixAnnotation = new CDataArray("Link matrix(ann)", this, new CMatrixInterface<CLinkMatrixView>(&mLView), true);
   mpLinkMatrixAnnotation->setDescription("Link matrix");
-  mpLinkMatrixAnnotation->setMode(0, CArrayAnnotation::OBJECTS);
+  mpLinkMatrixAnnotation->setMode(0, CDataArray::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
-  mpLinkMatrixAnnotation->setMode(1, CArrayAnnotation::OBJECTS);
+  mpLinkMatrixAnnotation->setMode(1, CDataArray::OBJECTS);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
   // mpMathModel = new CMathModel(this);

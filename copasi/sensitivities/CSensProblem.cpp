@@ -34,14 +34,14 @@ bool CSensItem::isSingleObject() const
   return (mListType == CObjectLists::SINGLE_OBJECT);
 }
 
-void CSensItem::setSingleObjectCN(const CCopasiObjectName & cn)
+void CSensItem::setSingleObjectCN(const CCommonName & cn)
 {
   mSingleObjectCN = cn;
   //  if (cn != "")
   setListType(CObjectLists::SINGLE_OBJECT);
 }
 
-const CCopasiObjectName & CSensItem::getSingleObjectCN() const
+const CCommonName & CSensItem::getSingleObjectCN() const
 {
   return mSingleObjectCN;
 }
@@ -149,14 +149,14 @@ void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
 {
   if (!pg) return;
 
-  pg->assertParameter("SingleObject", CCopasiParameter::CN, CCopasiObjectName(""));
+  pg->assertParameter("SingleObject", CCopasiParameter::CN, CCommonName(""));
   pg->assertParameter("ObjectListType", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 }
 
 //static
 void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiParameterGroup *pg)
 {
-  CCopasiObjectName cn("");
+  CCommonName cn("");
 
   if (!pg) return; if (!si) return;
 
@@ -173,10 +173,10 @@ void CSensProblem::copyParameterGroupToSensItem(const CCopasiParameterGroup *pg,
 
   if (!pg) return; if (!si) return;
 
-  const CCopasiObjectName * pCN = &pg->getValue< CCopasiObjectName >("SingleObject");
+  const CCommonName * pCN = &pg->getValue< CCommonName >("SingleObject");
   const CObjectLists::ListType* pLT = &pg->getValue< CObjectLists::ListType >("ObjectListType");
 
-  CCopasiObjectName cn("");
+  CCommonName cn("");
 
   if (pCN) cn = *pCN;
 
@@ -239,17 +239,17 @@ CSensProblem::CSensProblem(const CSensProblem & src,
 
 void CSensProblem::initObjects()
 {
-  mpResultAnnotation = new CArrayAnnotation("Sensitivities array", this, &mResult, false);
+  mpResultAnnotation = new CDataArray("Sensitivities array", this, &mResult, false);
   mpResultAnnotation->setDescription("");
-  mpResultAnnotation->setMode(CArrayAnnotation::OBJECTS);
+  mpResultAnnotation->setMode(CDataArray::OBJECTS);
 
-  mpScaledResultAnnotation = new CArrayAnnotation("Scaled sensitivities array", this, &mScaledResult, false);
+  mpScaledResultAnnotation = new CDataArray("Scaled sensitivities array", this, &mScaledResult, false);
   mpScaledResultAnnotation->setDescription("");
-  mpScaledResultAnnotation->setMode(CArrayAnnotation::OBJECTS);
+  mpScaledResultAnnotation->setMode(CDataArray::OBJECTS);
 
-  mpCollapsedResultAnnotation = new CArrayAnnotation("Summarized sensitivities array", this, &mCollapsedResult, false);
+  mpCollapsedResultAnnotation = new CDataArray("Summarized sensitivities array", this, &mCollapsedResult, false);
   mpCollapsedResultAnnotation->setDescription("");
-  mpCollapsedResultAnnotation->setMode(CArrayAnnotation::OBJECTS);
+  mpCollapsedResultAnnotation->setMode(CDataArray::OBJECTS);
 }
 
 void CSensProblem::initializeParameter()
@@ -361,62 +361,62 @@ bool CSensProblem::changeVariables(size_t index, const CSensItem & item)
   return true;
 }
 
-CCopasiArray & CSensProblem::getResult()
+CArray & CSensProblem::getResult()
 {
   return mResult;
 }
 
-const CCopasiArray & CSensProblem::getResult() const
+const CArray & CSensProblem::getResult() const
 {
   return mResult;
 }
 
-CArrayAnnotation * CSensProblem::getResultAnnotated()
+CDataArray * CSensProblem::getResultAnnotated()
 {
   return mpResultAnnotation;
 }
 
-const CArrayAnnotation * CSensProblem::getResultAnnotated() const
+const CDataArray * CSensProblem::getResultAnnotated() const
 {
   return mpResultAnnotation;
 }
 
-CCopasiArray & CSensProblem::getScaledResult()
+CArray & CSensProblem::getScaledResult()
 {
   return mScaledResult;
 }
 
-const CCopasiArray & CSensProblem::getScaledResult() const
+const CArray & CSensProblem::getScaledResult() const
 {
   return mScaledResult;
 }
 
-CArrayAnnotation * CSensProblem::getScaledResultAnnotated()
+CDataArray * CSensProblem::getScaledResultAnnotated()
 {
   return mpScaledResultAnnotation;
 }
 
-const CArrayAnnotation * CSensProblem::getScaledResultAnnotated() const
+const CDataArray * CSensProblem::getScaledResultAnnotated() const
 {
   return mpScaledResultAnnotation;
 }
 
-CCopasiArray & CSensProblem::getCollapsedResult()
+CArray & CSensProblem::getCollapsedResult()
 {
   return mCollapsedResult;
 }
 
-const CCopasiArray & CSensProblem::getCollapsedResult() const
+const CArray & CSensProblem::getCollapsedResult() const
 {
   return mCollapsedResult;
 }
 
-CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated()
+CDataArray * CSensProblem::getCollapsedResultAnnotated()
 {
   return mpCollapsedResultAnnotation;
 }
 
-const CArrayAnnotation * CSensProblem::getCollapsedResultAnnotated() const
+const CDataArray * CSensProblem::getCollapsedResultAnnotated() const
 {
   return mpCollapsedResultAnnotation;
 }

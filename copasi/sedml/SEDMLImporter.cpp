@@ -284,8 +284,8 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
             def->setIsTable(false);
             def->setSeparator(", ");
 
-            std::vector<CRegisteredObjectName>* pHeader = def->getHeaderAddr();
-            std::vector<CRegisteredObjectName>* pBody = def->getBodyAddr();
+            std::vector<CRegisteredCommonName>* pHeader = def->getHeaderAddr();
+            std::vector<CRegisteredCommonName>* pBody = def->getBodyAddr();
 
             bool isTimeCourse = false;
             bool isScanTask = false;
@@ -300,7 +300,7 @@ void SEDMLImporter::readListOfPlotsFromSedMLOutput(
 
                 std::string title = ds->isSetLabel() ? ds->getLabel() : generator->isSetName() ? generator->getName() : ds->getId();
 
-                pHeader->push_back(CCopasiStaticString(title).getCN());
+                pHeader->push_back(CDataString(title).getCN());
                 pHeader->push_back(def->getSeparator().getCN());
 
                 pBody->push_back(tmp->getCN());
@@ -767,8 +767,8 @@ bool applyValueToModelParameter(CModelParameter* modelParameter, CDataObject *ob
 
   size_t numChilren = modelParameter->getNumChildren();
 
-  const CCopasiObjectName& cn = modelParameter->getCN();
-  const CCopasiObjectName& targetCN = obj->getCN();
+  const CCommonName& cn = modelParameter->getCN();
+  const CCommonName& targetCN = obj->getCN();
 
   if (cn == targetCN)
     {

@@ -3,23 +3,12 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
 #ifndef COPASI_CArrayElementReference
 #define COPASI_CArrayElementReference
 
-#include "CCopasiArray.h"
 #include "copasi/core/CDataObject.h"
-
-#include "CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "CArray.h"
 
 /**
  * Class CArrayElementReference
@@ -38,7 +27,7 @@ private:
   /**
    * this contains the index in string format, e.g. "[2][7]"
    */
-  std::vector< CRegisteredObjectName > mIndex;
+  std::vector< CRegisteredCommonName > mIndex;
   bool mIgnoreUpdateObjectName;
 
 private:
@@ -61,7 +50,7 @@ public:
    * The object name will be the index string, the type is "ElementReference"
    * pParent may not be NULL.
    */
-  CArrayElementReference(const std::vector< CRegisteredObjectName > & index,
+  CArrayElementReference(const std::vector< CRegisteredCommonName > & index,
                          const CDataContainer * pParent,
                          const CFlags< Flag > & flag = CFlags< Flag >::None);
 
@@ -88,7 +77,7 @@ public:
   /**
    *
    */
-  virtual CCopasiObjectName getCN() const;
+  virtual CCommonName getCN() const;
 };
 
 #endif

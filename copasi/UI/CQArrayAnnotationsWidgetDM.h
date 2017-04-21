@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -12,7 +17,7 @@
 #include <vector>
 
 class CColorScale;
-class CArrayAnnotation;
+class CDataArray;
 
 class CQArrayAnnotationsWidgetDM: public QAbstractTableModel
 {
@@ -29,14 +34,14 @@ public:
   virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
 
   void setContext(const CColorScale * pColorScale,
-                  const CArrayAnnotation * pArray,
+                  const CDataArray * pArray,
                   const std::vector< size_t > & index,
                   const size_t & row,
                   const size_t & column);
 
 private:
   const CColorScale * mpColorScale;
-  const CArrayAnnotation * mpArray;
+  const CDataArray * mpArray;
   mutable std::vector< size_t > mIndex;
   size_t mRow;
   size_t mColumn;

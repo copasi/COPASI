@@ -39,7 +39,7 @@ Contact: Please contact lixu1@vt.edu.
 #include "ObjectBrowserItem.h"
 
 #include "copasi/core/CDataObject.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CDataVector.h"
 

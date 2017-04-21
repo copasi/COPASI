@@ -163,7 +163,7 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   for (; it != end; ++it)
     {
-      const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, (*it)->getValue< CCopasiObjectName >()));
+      const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ContainerList, (*it)->getValue< CCommonName >()));
 
       if (pObject != NULL)
         {
@@ -175,9 +175,9 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   std::vector<const CDataObject * > ValidObjects;
 
-  const std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > > & ValidValues = cnTemplate.getValidValues< CCopasiObjectName >();
-  std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > >::const_iterator itValidValues = ValidValues.begin();
-  std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > >::const_iterator endValidValues = ValidValues.end();
+  const std::vector< std::pair < CCommonName, CCommonName > > & ValidValues = cnTemplate.getValidValues< CCommonName >();
+  std::vector< std::pair < CCommonName, CCommonName > >::const_iterator itValidValues = ValidValues.begin();
+  std::vector< std::pair < CCommonName, CCommonName > >::const_iterator endValidValues = ValidValues.end();
 
   for (; itValidValues != endValidValues; ++itValidValues)
     {

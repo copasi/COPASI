@@ -31,7 +31,7 @@
 #include "qtUtilities.h"
 #include "copasi/model/CModel.h"
 #include "copasi/lna/CLNAMethod.h"
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/lna/CLNATask.h"
@@ -129,7 +129,7 @@ void CLNAResultSubwidget::loadAll(const CLNAMethod *lnaMethod)
 
 void CLNAResultSubwidget::loadCovarianceMatrix(const CLNAMethod *lnaMethod)
 {
-  const CArrayAnnotation *covarianceMatrixAnn;
+  const CDataArray *covarianceMatrixAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
@@ -151,7 +151,7 @@ void CLNAResultSubwidget::loadCovarianceMatrix(const CLNAMethod *lnaMethod)
 
 void CLNAResultSubwidget::loadCovarianceMatrixReduced(const CLNAMethod *lnaMethod)
 {
-  const CArrayAnnotation *covarianceMatrixReducedAnn;
+  const CDataArray *covarianceMatrixReducedAnn;
 
   if (mComboScale->currentIndex() == 0)
     {
@@ -173,7 +173,7 @@ void CLNAResultSubwidget::loadCovarianceMatrixReduced(const CLNAMethod *lnaMetho
 
 void CLNAResultSubwidget::loadBMatrixReduced(const CLNAMethod *lnaMethod)
 {
-  const CArrayAnnotation *bMatrixReducedAnn;
+  const CDataArray *bMatrixReducedAnn;
 
   if (mComboScale->currentIndex() == 0)
     {

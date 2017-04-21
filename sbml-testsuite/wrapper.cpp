@@ -27,7 +27,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/model/CMetab.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
@@ -39,7 +39,7 @@
 #include "copasi/trajectory/CTrajectoryProblem.h"
 #include "copasi/report/CReportDefinitionVector.h"
 #include "copasi/report/CReportDefinition.h"
-#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/core/CDataString.h"
 
 #define THROW_COPASI_EXCEPTION(args)\
   {\
@@ -304,12 +304,12 @@ public:
     pReport->setSeparator(",");
     pReport->setTaskType(CTaskEnum::timeCourse);
     pReport->setIsTable(false);
-    std::vector<CRegisteredObjectName>* pHeaderAddr = pReport->getHeaderAddr();
-    std::vector<CRegisteredObjectName>* pBodyAddr = pReport->getBodyAddr();
+    std::vector<CRegisteredCommonName>* pHeaderAddr = pReport->getHeaderAddr();
+    std::vector<CRegisteredCommonName>* pBodyAddr = pReport->getBodyAddr();
 
-    //std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-    pHeaderAddr->push_back(CCopasiStaticString("time").getCN());
-    pBodyAddr->push_back(CCopasiObjectName(pDataModel->getModel()->getValueReference()->getCN()));
+    //std::vector<CRegisteredCommonName>* pTable = pReport->getTableAddr();
+    pHeaderAddr->push_back(CDataString("time").getCN());
+    pBodyAddr->push_back(CCommonName(pDataModel->getModel()->getValueReference()->getCN()));
     pHeaderAddr->push_back(pReport->getSeparator().getCN());
     pBodyAddr->push_back(pReport->getSeparator().getCN());
     // create a map of all possible variables
@@ -368,7 +368,7 @@ public:
 
         if (pMetab != NULL)
           {
-            pHeaderAddr->push_back(CCopasiStaticString(pMetab->getSBMLId()).getCN());
+            pHeaderAddr->push_back(CDataString(pMetab->getSBMLId()).getCN());
 
             if (amounts.find(*it) != amounts.end())
               {
@@ -399,19 +399,19 @@ public:
 
         if (pComp != NULL)
           {
-            pHeaderAddr->push_back(CCopasiStaticString(pComp->getSBMLId()).getCN());
+            pHeaderAddr->push_back(CDataString(pComp->getSBMLId()).getCN());
             pBodyAddr->push_back(pComp->getValueReference()->getCN());
           }
 
         if (pMV != NULL)
           {
-            pHeaderAddr->push_back(CCopasiStaticString(pMV->getSBMLId()).getCN());
+            pHeaderAddr->push_back(CDataString(pMV->getSBMLId()).getCN());
             pBodyAddr->push_back(pMV->getValueReference()->getCN());
           }
 
         if (pReaction != NULL)
           {
-            pHeaderAddr->push_back(CCopasiStaticString(pReaction->getSBMLId()).getCN());
+            pHeaderAddr->push_back(CDataString(pReaction->getSBMLId()).getCN());
             pBodyAddr->push_back(pReaction->getFluxReference()->getCN());
           }
 

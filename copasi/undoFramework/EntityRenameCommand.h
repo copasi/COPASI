@@ -13,7 +13,7 @@
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
 class CDataObject;
 class CQTabWidget;
@@ -34,7 +34,7 @@ protected:
   CDataObject *mpObject;
   CQTabWidget* mpTabWidget;
   std::string mKey;
-  CRegisteredObjectName mName;
+  CRegisteredCommonName mName;
 };
 
 #endif // COPASI_ENTITY_RENAME_COMMAND_H

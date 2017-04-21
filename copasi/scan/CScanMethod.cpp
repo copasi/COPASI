@@ -104,7 +104,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
 
   if (pProblem != NULL)
     {
-      mpObject = pProblem->getMathContainer()->getObject(si->getValue< CCopasiObjectName >("Object"));
+      mpObject = pProblem->getMathContainer()->getObject(si->getValue< CCommonName >("Object"));
     }
 
   if (mpObject != NULL)

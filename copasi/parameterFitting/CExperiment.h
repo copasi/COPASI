@@ -59,7 +59,7 @@ private:
 
   // Attributes
 private:
-  CRegisteredObjectName mModelObjectCN;
+  CRegisteredCommonName mModelObjectCN;
   C_FLOAT64 mIndependentValue;
   C_FLOAT64 mMeasuredValue;
   C_FLOAT64 mFittedValue;

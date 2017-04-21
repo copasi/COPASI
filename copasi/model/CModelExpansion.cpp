@@ -979,7 +979,7 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
       //We try to fix this now:
       if (!pObj && mpSourceModel)
         {
-          CCopasiObjectName cn = node->getObjectCN();
+          CCommonName cn = node->getObjectCN();
 
           while (cn.getPrimary().getObjectType() != "Model" && !cn.empty())
             {

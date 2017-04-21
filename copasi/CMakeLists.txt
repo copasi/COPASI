@@ -69,6 +69,7 @@ include(model/CMakeLists.txt)
 include(moieties/CMakeLists.txt)
 include(odepack++/CMakeLists.txt)
 include(optimization/CMakeLists.txt)
+include(output/CMakeLists.txt)
 include(parameterFitting/CMakeLists.txt)
 include(plot/CMakeLists.txt)
 

@@ -31,7 +31,7 @@
 #include "randomGenerator/CRandom.h"
 #include "copasi/core/CDataContainer.h"
 #include "CopasiDataModel/CDataModel.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "utilities/CCopasiParameterGroup.h"
 #include "utilities/CCopasiMessage.h"
 #include "utilities/utility.h"
@@ -97,13 +97,13 @@ COptItem::~COptItem()
 
 void COptItem::initializeParameter()
 {
-  mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::CN, CCopasiObjectName(""));
-  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::CN, CCopasiObjectName("1e-06"));
-  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::CN, CCopasiObjectName("1e+06"));
+  mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::CN, CCommonName(""));
+  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::CN, CCommonName("1e-06"));
+  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::CN, CCommonName("1e+06"));
   mpParmStartValue = assertParameter("StartValue", CCopasiParameter::DOUBLE, NaN);
 }
 
-bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
+bool COptItem::setObjectCN(const CCommonName & objectCN)
 {
   const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(objectCN));
 
@@ -120,7 +120,7 @@ bool COptItem::setObjectCN(const CCopasiObjectName & objectCN)
 const CObjectInterface * COptItem::getObject() const
 {return mpObject;}
 
-const CCopasiObjectName COptItem::getObjectCN() const
+const CCommonName COptItem::getObjectCN() const
 {return *mpParmObjectCN;}
 
 std::string COptItem::getObjectDisplayName() const
@@ -139,7 +139,7 @@ std::string COptItem::getObjectDisplayName() const
   return mpObject->getObjectDisplayName();
 }
 
-bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
+bool COptItem::setLowerBound(const CCommonName & lowerBound)
 {
   if (lowerBound[0] == '-' &&
       lowerBound[lowerBound.length() - 1] == '%' &&
@@ -164,7 +164,7 @@ bool COptItem::setLowerBound(const CCopasiObjectName & lowerBound)
 const std::string COptItem::getLowerBound() const
 {return *mpParmLowerBound;}
 
-bool COptItem::setUpperBound(const CCopasiObjectName & upperBound)
+bool COptItem::setUpperBound(const CCommonName & upperBound)
 {
   if (upperBound[0] == '+' &&
       upperBound[upperBound.length() - 1] == '%' &&

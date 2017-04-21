@@ -1448,7 +1448,7 @@ bool CCopasiXML::saveTaskList()
 
 //Mrinmayee
 bool CCopasiXML::saveReportSection(const std::string & name,
-                                   const std::vector <CRegisteredObjectName> & section)
+                                   const std::vector <CRegisteredCommonName> & section)
 {
   CXMLAttributeList Attributes;
   Attributes.add("NoName", "");
@@ -1517,7 +1517,7 @@ bool CCopasiXML::saveReportList()
           Attributes.add("printTitle", pReport->getTitle());
           startSaveElement("Table", Attributes);
 
-          const std::vector <CRegisteredObjectName> & Table = * pReport->getTableAddr();
+          const std::vector <CRegisteredCommonName> & Table = * pReport->getTableAddr();
           size_t j, jmax = Table.size();
 
           Attributes.erase();

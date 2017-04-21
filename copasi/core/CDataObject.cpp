@@ -20,7 +20,7 @@
 #include "copasi.h"
 
 #include "CDataContainer.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/undo/CData.h"
 
 CDataObject::CDataObject():
@@ -112,9 +112,9 @@ CDataObject::~CDataObject()
 
 void CDataObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
-CCopasiObjectName CDataObject::getCN() const
+CCommonName CDataObject::getCN() const
 {
-  CCopasiObjectName CN;
+  CCommonName CN;
 
   // if the object has a parent and if the object is not a datamodel,
   // we add the name of the parent to the common name
@@ -128,25 +128,25 @@ CCopasiObjectName CDataObject::getCN() const
       tmp << mpObjectParent->getCN();
 
       if (mpObjectParent->hasFlag(NameVector))
-        tmp << "[" << CCopasiObjectName::escape(mObjectName) << "]";
+        tmp << "[" << CCommonName::escape(mObjectName) << "]";
       else if (mpObjectParent->hasFlag(Vector))
         tmp << "[" << mpObjectParent->getIndex(this) << "]";
       else
-        tmp << "," << CCopasiObjectName::escape(mObjectType)
-            << "=" << CCopasiObjectName::escape(mObjectName);
+        tmp << "," << CCommonName::escape(mObjectType)
+            << "=" << CCommonName::escape(mObjectName);
 
       CN = tmp.str();
     }
   else
     {
-      CN = CCopasiObjectName::escape(mObjectType)
-           + "=" + CCopasiObjectName::escape(mObjectName);
+      CN = CCommonName::escape(mObjectType)
+           + "=" + CCommonName::escape(mObjectName);
     }
 
   return CN;
 }
 
-const CObjectInterface * CDataObject::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
 {
   if (cn == "")
     {
@@ -168,7 +168,7 @@ const CObjectInterface * CDataObject::getObject(const CCopasiObjectName & cn) co
   return NULL;
 }
 
-const CObjectInterface * CDataObject::getObjectFromCN(const CCopasiObjectName & cn) const
+const CObjectInterface * CDataObject::getObjectFromCN(const CCommonName & cn) const
 {
   CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(getObjectDataModel());
@@ -207,7 +207,7 @@ bool CDataObject::setObjectName(const std::string & name)
 
   if (mpObjectParent &&
       mpObjectParent->hasFlag(NameVector) &&
-      mpObjectParent->getObject("[" + CCopasiObjectName::escape(Name) + "]"))
+      mpObjectParent->getObject("[" + CCommonName::escape(Name) + "]"))
     return false;
 
   std::string OldName = mObjectName;
@@ -218,7 +218,7 @@ bool CDataObject::setObjectName(const std::string & name)
       mObjectName = Name;
       std::string newCN = this->getCN();
 
-      CRegisteredObjectName::handle(oldCN, newCN);
+      CRegisteredCommonName::handle(oldCN, newCN);
     }
   else
     {

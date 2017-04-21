@@ -33,7 +33,7 @@ class QVBoxLayout;
 class QHBoxLayout;
 class CDataObject;
 class CModel;
-class CArrayAnnotation;
+class CDataArray;
 
 class CCopasiSelectionDialog: public QDialog
 {
@@ -85,7 +85,7 @@ public:
    * value=true means only objects that have a value (i.e. arrayElementReferences) are allowed.
    * otherwise also the whole array annotation may be returned.
    */
-  static std::vector<const CDataObject*> chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation,
+  static std::vector<const CDataObject*> chooseCellMatrix(const CDataArray * pArrayAnnotation,
       bool single, bool value, std::string caption = "");
 };
 #endif /* SimpleSelectionDialog_H__ */

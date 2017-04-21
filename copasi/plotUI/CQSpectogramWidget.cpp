@@ -149,9 +149,9 @@ CQSpectogramWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
   std::string title = TO_UTF8(mpEditTitle->text());
 
-  CCopasiObjectName xName = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
-  CCopasiObjectName yName = mpObjectY ? mpObjectY->getCN() : CCopasiObjectName("");
-  CCopasiObjectName zName = mpObjectZ ? mpObjectZ->getCN() : CCopasiObjectName("");
+  CCommonName xName = mpObjectX ? mpObjectX->getCN() : CCommonName("");
+  CCommonName yName = mpObjectY ? mpObjectY->getCN() : CCommonName("");
+  CCommonName zName = mpObjectZ ? mpObjectZ->getCN() : CCommonName("");
 
   C_INT32 Activity = 0;
 

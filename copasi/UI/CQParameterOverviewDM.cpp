@@ -475,7 +475,7 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
     {
       if (pNode->getType() == CModelParameter::ReactionParameter)
         {
-          CCopasiObjectName GlobalQuantityCN = static_cast< const CModelParameterReactionParameter *>(pNode)->getGlobalQuantityCN();
+          CCommonName GlobalQuantityCN = static_cast< const CModelParameterReactionParameter *>(pNode)->getGlobalQuantityCN();
           CModelParameter * pGlobalQuantity = pNode->getSet()->getModelParameter(GlobalQuantityCN);
 
           if (pGlobalQuantity != NULL)

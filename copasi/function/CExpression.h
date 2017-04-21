@@ -112,10 +112,10 @@ public:
   /**
    * Retrieve a pointer to the object defined by CN. This method may only be called
    * during compile() since the list mpListOfContainer is only valid then.
-   * @param const CCopasiObjectName & CN
+   * @param const CCommonName & CN
    * @return const CObjectInterface * value
    */
-  const CObjectInterface * getNodeObject(const CCopasiObjectName & CN) const;
+  const CObjectInterface * getNodeObject(const CCommonName & CN) const;
 
 public:
   /**

@@ -36,7 +36,6 @@
 file(GLOB HEADERS_REPORT report/*.h)
 file(GLOB SOURCES_REPORT report/*.cpp)
 
-
 # create source group for IDEs
 source_group(report FILES ${SOURCES_REPORT} ${HEADERS_REPORT})
 
@@ -44,38 +43,4 @@ source_group(report FILES ${SOURCES_REPORT} ${HEADERS_REPORT})
 set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_REPORT})
 set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_REPORT})
 
-# set(HEADERS ${HEADERS} ArtisticLicense.h)
-# set(HEADERS ${HEADERS} CArrayElementReference.h)
-# set(HEADERS ${HEADERS} CCopasiArray.h)
-# set(HEADERS ${HEADERS} CDataContainer.h)
-# set(HEADERS ${HEADERS} CDataObject.h)
-# set(HEADERS ${HEADERS} CCopasiObjectName.h)
-# set(HEADERS ${HEADERS} CDataObjectReference.h)
-# set(HEADERS ${HEADERS} CRootContainer.h)
-# set(HEADERS ${HEADERS} CCopasiStaticString.h)
-# set(HEADERS ${HEADERS} CCopasiTimer.h)
-# set(HEADERS ${HEADERS} CKeyFactory.h)
-# set(HEADERS ${HEADERS} COutputAssistant.h)
-# set(HEADERS ${HEADERS} CRenameHandler.h)
-# set(HEADERS ${HEADERS} CReportDefinition.h)
-# set(HEADERS ${HEADERS} CReportDefinitionVector.h)
-# set(HEADERS ${HEADERS} CReport.h)
-# 
-# set(SOURCES ${SOURCES} CArrayElementReference.cpp)
-# set(SOURCES ${SOURCES} CCopasiArray.cpp)
-# set(SOURCES ${SOURCES} CDataContainer.cpp)
-# set(SOURCES ${SOURCES} CDataObject.cpp)
-# set(SOURCES ${SOURCES} CCopasiObjectName.cpp)
-# set(SOURCES ${SOURCES} CRootContainer.cpp)
-# set(SOURCES ${SOURCES} CCopasiStaticString.cpp)
-# set(SOURCES ${SOURCES} CCopasiTimer.cpp)
-# set(SOURCES ${SOURCES} CKeyFactory.cpp)
-# set(SOURCES ${SOURCES} COutputAssistant.cpp)
-# set(SOURCES ${SOURCES} CReportDefinition.cpp)
-# set(SOURCES ${SOURCES} CReportDefinitionVector.cpp)
-# set(SOURCES ${SOURCES} CReport.cpp)
-# 
-
-# add_library(report STATIC ${SOURCES} ${HEADERS})
-# target_link_libraries(report commandline)
 

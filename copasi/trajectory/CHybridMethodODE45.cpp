@@ -256,8 +256,8 @@ void CHybridMethodODE45::initializeParameter()
   getParameter("Partitioning Strategy")->setValidValues(ValidValues);
 
   CCopasiParameter FastReactionTemplate("Reaction", CCopasiParameter::CN);
-  std::vector< std::pair < CCopasiObjectName, CCopasiObjectName > > Reactions;
-  Reactions.push_back(std::make_pair(CCopasiObjectName("Reactions"), CCopasiObjectName("Reactions")));
+  std::vector< std::pair < CCommonName, CCommonName > > Reactions;
+  Reactions.push_back(std::make_pair(CCommonName("Reactions"), CCommonName("Reactions")));
   FastReactionTemplate.setValidValues(Reactions);
 
   mpFastReactions->getElementTemplates().addParameter(FastReactionTemplate);
@@ -412,7 +412,7 @@ void CHybridMethodODE45::partitionSystem()
 
           for (; it != end; ++it)
             {
-              const CReaction * pModelReaction = dynamic_cast< const CReaction * >(getObjectFromCN((*it)->getValue< CCopasiObjectName >()));
+              const CReaction * pModelReaction = dynamic_cast< const CReaction * >(getObjectFromCN((*it)->getValue< CCommonName >()));
 
               if (pModelReaction == NULL) continue;
 

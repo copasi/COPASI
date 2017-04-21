@@ -20,7 +20,7 @@
 #include "copasi.h"
 #include "qtUtilities.h"
 
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 /*
  *  Constructs a CQMatrixDialog as a child of 'parent', with the
@@ -45,7 +45,7 @@ CQMatrixDialog::~CQMatrixDialog()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void CQMatrixDialog::setArray(const CArrayAnnotation *tmp, bool single)
+void CQMatrixDialog::setArray(const CDataArray *tmp, bool single)
 {
   size_t i;
 

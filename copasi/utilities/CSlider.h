@@ -21,7 +21,7 @@
 #define COPASI_CSlider
 
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
 #include "math/CMathUpdateSequence.h"
 
@@ -109,10 +109,10 @@ public:
 
   /**
    * Set the slider object.
-   * @param const CCopasiObjectName & objectCN
+   * @param const CCommonName & objectCN
    * @return bool success
    */
-  bool setSliderObject(const CCopasiObjectName & objectCN);
+  bool setSliderObject(const CCommonName & objectCN);
 
   /**
    * Retrieve the slider object.
@@ -348,7 +348,7 @@ private:
   /**
    * The CN of the object that the slider modifies.
    */
-  CRegisteredObjectName mCN;
+  CRegisteredCommonName mCN;
 
   /**
    * The sequnece of methods to update initial values depending on this sliders

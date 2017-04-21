@@ -29,9 +29,9 @@
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CUnit.h"
 #include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-
 #include "copasi/undoFramework/ModelChangeCommand.h"
 #include <copasi/utilities/CUnitDefinitionDB.h>
 

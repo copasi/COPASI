@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -32,21 +37,21 @@
   
   int getNumBodyItems() 
   {
-    std::vector<CRegisteredObjectName>* items = self->getBodyAddr();
+    std::vector<CRegisteredCommonName>* items = self->getBodyAddr();
     return (int)(items == NULL ? 0 : items->size());
   }
   
-  CRegisteredObjectName getNthBodyItem(int index)
+  CRegisteredCommonName getNthBodyItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getBodyAddr();
+    std::vector<CRegisteredCommonName>* items = self->getBodyAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredObjectName("");
+      return CRegisteredCommonName("");
     return items->at(index);
   }
 
   void removeNthBodyItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getBodyAddr();
+    std::vector<CRegisteredCommonName>* items = self->getBodyAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
       return;
     items->erase(items->begin() + index);
@@ -54,21 +59,21 @@
 
   int getNumHeaderItems() 
   {
-    std::vector<CRegisteredObjectName>* items = self->getHeaderAddr();
+    std::vector<CRegisteredCommonName>* items = self->getHeaderAddr();
     return (int)(items == NULL ? 0 : items->size());
   }
 
-  CRegisteredObjectName getNthHeaderItem(int index)
+  CRegisteredCommonName getNthHeaderItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getHeaderAddr();
+    std::vector<CRegisteredCommonName>* items = self->getHeaderAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredObjectName("");
+      return CRegisteredCommonName("");
     return items->at(index);
   }
 
   void removeNthHeaderItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getHeaderAddr();
+    std::vector<CRegisteredCommonName>* items = self->getHeaderAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
       return;
     items->erase(items->begin() + index);
@@ -76,21 +81,21 @@
 
   int getNumFooterItems() 
   {
-    std::vector<CRegisteredObjectName>* items = self->getFooterAddr();
+    std::vector<CRegisteredCommonName>* items = self->getFooterAddr();
     return (int)(items == NULL ? 0 : items->size());
   }
 
-  CRegisteredObjectName getNthFooterItem(int index)
+  CRegisteredCommonName getNthFooterItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getFooterAddr();
+    std::vector<CRegisteredCommonName>* items = self->getFooterAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredObjectName("");
+      return CRegisteredCommonName("");
     return items->at(index);
   }
   
   void removeNthFooterItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getFooterAddr();
+    std::vector<CRegisteredCommonName>* items = self->getFooterAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
       return;
     items->erase(items->begin() + index);
@@ -99,21 +104,21 @@
 
   int getNumTableItems() 
   {
-    std::vector<CRegisteredObjectName>* items = self->getTableAddr();
+    std::vector<CRegisteredCommonName>* items = self->getTableAddr();
     return (int)(items == NULL ? 0 : items->size());
   }
 
-  CRegisteredObjectName getNthTableItem(int index)
+  CRegisteredCommonName getNthTableItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getTableAddr();
+    std::vector<CRegisteredCommonName>* items = self->getTableAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredObjectName("");
+      return CRegisteredCommonName("");
     return items->at(index);
   }
 
   void removeNthTableItem(int index)
   {
-    std::vector<CRegisteredObjectName>* items = self->getTableAddr();
+    std::vector<CRegisteredCommonName>* items = self->getTableAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
       return;
     items->erase(items->begin() + index);
@@ -121,22 +126,22 @@
 
   void addHeaderItem(std::string item)
   {
-    self->getHeaderAddr()->push_back(CRegisteredObjectName(item));
+    self->getHeaderAddr()->push_back(CRegisteredCommonName(item));
   }
   
   void addFooterItem(std::string item)
   {
-    self->getFooterAddr()->push_back(CRegisteredObjectName(item));
+    self->getFooterAddr()->push_back(CRegisteredCommonName(item));
   }
   
   void addBodyItem(std::string item)
   {
-    self->getBodyAddr()->push_back(CRegisteredObjectName(item));
+    self->getBodyAddr()->push_back(CRegisteredCommonName(item));
   }
   
   void addTableItem(std::string item)
   {
-    self->getTableAddr()->push_back(CRegisteredObjectName(item));
+    self->getTableAddr()->push_back(CRegisteredCommonName(item));
   }
   
 

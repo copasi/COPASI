@@ -20,9 +20,9 @@
 #ifndef COPASI_CEvaluationNodeObject
 #define COPASI_CEvaluationNodeObject
 
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
-class CRegisteredObjectName;
+class CRegisteredCommonName;
 class CDataModel;
 
 /**
@@ -141,9 +141,9 @@ public:
 
   /**
    * Retrieve the CN of the referred object.
-   * @return const CRegisteredObjectName & objectCN
+   * @return const CRegisteredCommonName & objectCN
    */
-  const CRegisteredObjectName & getObjectCN() const;
+  const CRegisteredCommonName & getObjectCN() const;
 
   /**
    * Retrieve the pointer to the referred object interface
@@ -184,7 +184,7 @@ private:
   /**
    * The registered object name to track eventual renaming.
    */
-  CRegisteredObjectName mRegisteredObjectCN;
+  CRegisteredCommonName mRegisteredObjectCN;
 };
 
 #endif // COPASI_CEvaluationNodeObject

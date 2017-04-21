@@ -117,7 +117,7 @@ void test000087::test_import_reaction_flux_reference_2()
   CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRoot);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  const CRegisteredObjectName cn = pObjectNode->getObjectCN();
+  const CRegisteredCommonName cn = pObjectNode->getObjectCN();
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
   const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
@@ -334,7 +334,7 @@ void test000087::test_simulate_reaction_flux_reference_1()
   CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pRoot);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  const CRegisteredObjectName cn = pObjectNode->getObjectCN();
+  const CRegisteredCommonName cn = pObjectNode->getObjectCN();
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
   const CDataObject* pObject = CObjectInterface::DataModel(pCOPASIDATAMODEL->getObjectFromCN(listOfContainers, cn));
@@ -353,22 +353,22 @@ void test000087::test_simulate_reaction_flux_reference_1()
   pReport->setIsTable(false);
   pReport->setSeparator(", ");
 
-  std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
-  std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();
-  pHeader->push_back(CCopasiStaticString("time").getCN());
+  std::vector<CRegisteredCommonName>* pHeader = pReport->getHeaderAddr();
+  std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
+  pHeader->push_back(CDataString("time").getCN());
   pHeader->push_back(pReport->getSeparator().getCN());
-  pHeader->push_back(CCopasiStaticString("substrate").getCN());
+  pHeader->push_back(CDataString("substrate").getCN());
   pHeader->push_back(pReport->getSeparator().getCN());
-  pHeader->push_back(CCopasiStaticString("reaction flux").getCN());
+  pHeader->push_back(CDataString("reaction flux").getCN());
   pHeader->push_back(pReport->getSeparator().getCN());
-  pHeader->push_back(CCopasiStaticString("variable model value").getCN());
-  pBody->push_back(CCopasiObjectName(pCOPASIDATAMODEL->getModel()->getCN() + ",Reference=Time"));
-  pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
-  pBody->push_back(CCopasiObjectName(pSubstrate->getCN() + ",Reference=Concentration"));
-  pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
-  pBody->push_back(CCopasiObjectName(pReaction->getCN() + ",Reference=Flux"));
-  pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
-  pBody->push_back(CCopasiObjectName(pNonConstParameter->getCN() + ",Reference=Value"));
+  pHeader->push_back(CDataString("variable model value").getCN());
+  pBody->push_back(CCommonName(pCOPASIDATAMODEL->getModel()->getCN() + ",Reference=Time"));
+  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+  pBody->push_back(CCommonName(pSubstrate->getCN() + ",Reference=Concentration"));
+  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+  pBody->push_back(CCommonName(pReaction->getCN() + ",Reference=Flux"));
+  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+  pBody->push_back(CCommonName(pNonConstParameter->getCN() + ",Reference=Value"));
   //
   // create a trajectory task
   CTrajectoryTask* pTrajectoryTask = new CTrajectoryTask();

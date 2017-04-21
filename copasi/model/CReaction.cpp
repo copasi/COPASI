@@ -179,7 +179,7 @@ void CReaction::cleanup()
   mMetabKeyMap.clear();
   setFunction(CRootContainer::getUndefinedFunction());
   mpScalingCompartment = NULL;
-  mScalingCompartmentCN = CRegisteredObjectName("");
+  mScalingCompartmentCN = CRegisteredCommonName("");
   // TODO: mMap.cleanup();
   //mParameterDescription.cleanup();
 }
@@ -526,7 +526,7 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
 //***********************************************************************************************
 
 // virtual
-const CObjectInterface * CReaction::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CReaction::getObject(const CCommonName & cn) const
 {
   const CDataObject * pObject =
     static_cast< const CDataObject * >(CDataContainer::getObject(cn));
@@ -1115,7 +1115,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
   CEvaluationNodeVariable* pVariableNode = NULL;
   std::string objectCN = objectNode->getData();
 
-  CDataObject* object = const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(CCopasiObjectName(objectCN.substr(1, objectCN.size() - 2)))));
+  CDataObject* object = const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(CCommonName(objectCN.substr(1, objectCN.size() - 2)))));
   std::string id;
 
   // if the object if of type reference

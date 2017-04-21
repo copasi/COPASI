@@ -30,7 +30,7 @@
 #include "model/CMetab.h"
 //#include "model/CState.h"
 //#include "utilities/CMatrix.h"
-//#include "utilities/CAnnotatedMatrix.h"
+//#include "core/CDataArray.h"
 //#include "copasi/core/CDataObjectReference.h"
 
 #include "lapack/lapackwrap.h"        // CLAPACK
@@ -1127,9 +1127,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Contribution of species to modes";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp1 = new CArrayAnnotation("Contribution of species to modes", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
+  CDataArray *
+  pTmp1 = new CDataArray("Contribution of species to modes", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->VECTOR);
   pTmp1->setDescription(" ");
@@ -1142,9 +1142,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Modes distribution for species";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp2 = new CArrayAnnotation("Modes distribution for species", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
+  CDataArray *
+  pTmp2 = new CDataArray("Modes distribution for species", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription(" ");
@@ -1157,9 +1157,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Slow space";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp3 = new CArrayAnnotation("Slow space", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
+  CDataArray *
+  pTmp3 = new CDataArray("Slow space", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setDescription(" ");
@@ -1172,9 +1172,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Fast space";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4 = new CArrayAnnotation("Fast space", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
+  CDataArray *
+  pTmp4 = new CDataArray("Fast space", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription(" ");
@@ -1189,9 +1189,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Reactions slow space";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp5 = new CArrayAnnotation("Reactions slow space", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mReacSlowSpacePrint), true);
+  CDataArray *
+  pTmp5 = new CDataArray("Reactions slow space", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mReacSlowSpacePrint), true);
   pTmp5->setMode(1, pTmp5->STRINGS);
   pTmp5->setMode(0, pTmp5->VECTOR);
   pTmp5->setDescription(" ");
@@ -1206,9 +1206,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Reactions contribution to the mode";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTMP1 = new CArrayAnnotation("", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP1Print), true);
+  CDataArray *
+  pTMP1 = new CDataArray("", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP1Print), true);
   pTMP1->setMode(0, pTMP1->VECTOR);
   pTMP1->setMode(1, pTMP1->STRINGS);
   pTMP1->setDescription("Reactions contribution to the mode ");
@@ -1221,9 +1221,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Reactions distribution between modes ";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTMP2 = new CArrayAnnotation("", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP2Print), true);
+  CDataArray *
+  pTMP2 = new CDataArray("", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP2Print), true);
   pTMP2->setMode(0, pTMP2->VECTOR);
   pTMP2->setMode(1, pTMP2->STRINGS);
   pTMP2->setDescription("Reactions distribution between modes ");
@@ -1236,9 +1236,9 @@ void CILDMMethod::createAnnotationsM()
   name = "Reactions fast space";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTMP3 = new CArrayAnnotation("", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP3Print), true);
+  CDataArray *
+  pTMP3 = new CDataArray("", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mTMP3Print), true);
   pTMP3->setMode(0, pTMP3->VECTOR);
   pTMP3->setMode(1, pTMP3->STRINGS);
   pTMP3->setDescription("Reactions fast space ");

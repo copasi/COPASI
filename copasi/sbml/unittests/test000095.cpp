@@ -71,7 +71,7 @@ void test000095::test_import_l3_event_1()
   CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
@@ -135,7 +135,7 @@ void test000095::test_import_l3_event_2()
   CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
@@ -199,7 +199,7 @@ void test000095::test_import_l3_event_3()
   CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
@@ -265,7 +265,7 @@ void test000095::test_import_l3_event_4()
   CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);
@@ -329,7 +329,7 @@ void test000095::test_import_l3_event_5()
   CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);

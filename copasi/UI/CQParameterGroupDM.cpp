@@ -504,7 +504,7 @@ QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
 
             case CCopasiParameter::CN:
             {
-              const CObjectInterface * pObject = pNode->getObjectFromCN(pNode->getValue< CRegisteredObjectName >());
+              const CObjectInterface * pObject = pNode->getObjectFromCN(pNode->getValue< CRegisteredCommonName >());
 
               if (pObject != NULL)
                 {

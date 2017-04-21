@@ -249,7 +249,7 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
   const_iterator itConst = pOther->begin();
   const_iterator endConst = pOther->end();
 
-  std::map< CCopasiObjectName, CModelParameter * > Map;
+  std::map< CCommonName, CModelParameter * > Map;
 
   for (; itConst != endConst; ++itConst)
     {
@@ -261,7 +261,7 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
 
   for (; itThis != endThis; ++itThis)
     {
-      std::map< CCopasiObjectName, CModelParameter * >::const_iterator itOther = Map.find((*itThis)->getCN());
+      std::map< CCommonName, CModelParameter * >::const_iterator itOther = Map.find((*itThis)->getCN());
 
       if (itOther == Map.end())
         {
@@ -281,8 +281,8 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
 
   if (createMissing)
     {
-      std::map< CCopasiObjectName, CModelParameter * >::const_iterator itMissing = Map.begin();
-      std::map< CCopasiObjectName, CModelParameter * >::const_iterator endMissing = Map.end();
+      std::map< CCommonName, CModelParameter * >::const_iterator itMissing = Map.begin();
+      std::map< CCommonName, CModelParameter * >::const_iterator endMissing = Map.end();
 
       for (; itMissing != endMissing; ++itMissing)
         {
@@ -298,8 +298,8 @@ const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelPa
     }
   else if (Map.size() > 0)
     {
-      std::map< CCopasiObjectName, CModelParameter * >::const_iterator itMissing = Map.begin();
-      std::map< CCopasiObjectName, CModelParameter * >::const_iterator endMissing = Map.end();
+      std::map< CCommonName, CModelParameter * >::const_iterator itMissing = Map.begin();
+      std::map< CCommonName, CModelParameter * >::const_iterator endMissing = Map.end();
 
       for (; itMissing != endMissing; ++itMissing)
         {

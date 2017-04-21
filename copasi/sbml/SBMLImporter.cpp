@@ -4708,7 +4708,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CCompartment*>(it->first)->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CCompartment*>(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getCN().c_str());
                         found = true;
                       }
 
@@ -4728,7 +4728,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CMetab*>(it->first)->getObject(CCopasiObjectName("Reference=InitialConcentration"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CMetab*>(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getCN().c_str());
                         found = true;
                       }
 
@@ -4748,7 +4748,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CReaction*>(it->first)->getObject(CCopasiObjectName("Reference=ParticleFlux"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CReaction*>(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getCN().c_str());
                         found = true;
                       }
 
@@ -5156,11 +5156,11 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
 
       if (itNode->getType() == AST_NAME_TIME)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Time"))->getCN().c_str());
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Time"))->getCN().c_str());
         }
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getCN().c_str());
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
         }
     }
 }
@@ -6193,7 +6193,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
 {
   CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(pCallNode->getChild());
   assert(pObjectNode);
-  CCopasiObjectName objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
+  CCommonName objectName = CCommonName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
   CDataObject* pObject = const_cast< CDataObject *>(CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectName)));
   assert(pObject);
 
@@ -6207,7 +6207,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
 
   if (pObjectNode)
     {
-      objectName = CCopasiObjectName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
+      objectName = CCommonName(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2));
       pObject = const_cast< CDataObject *>(CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectName)));
       assert(pObject);
 
@@ -9807,7 +9807,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
 const CDataObject* SBMLImporter::isConstantFlux(const CEvaluationNode* pRoot, CModel* pModel, CFunctionDB* pFunctionDB)
 {
   const CDataObject* pObject = NULL;
-  CRegisteredObjectName name;
+  CRegisteredCommonName name;
   CEvaluationNode::MainType MainType = pRoot->mainType();
 
   switch (MainType)

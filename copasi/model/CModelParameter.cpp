@@ -43,10 +43,10 @@ const char * CModelParameter::TypeNames[] =
 };
 
 // static
-std::string CModelParameter::nameFromCN(const CCopasiObjectName & cn)
+std::string CModelParameter::nameFromCN(const CCommonName & cn)
 {
-  CCopasiObjectName Primary = cn.getPrimary();
-  CCopasiObjectName Remainder = cn.getRemainder();
+  CCommonName Primary = cn.getPrimary();
+  CCommonName Remainder = cn.getRemainder();
 
   while (Remainder != "")
     {
@@ -174,12 +174,12 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
 }
 
 // virtual
-void CModelParameter::setCN(const CCopasiObjectName & cn)
+void CModelParameter::setCN(const CCommonName & cn)
 {
   mCN = cn;
 }
 
-const CCopasiObjectName & CModelParameter::getCN() const
+const CCommonName & CModelParameter::getCN() const
 {
   return mCN;
 }
@@ -506,7 +506,7 @@ bool CModelParameter::updateModel()
                 CModel * pModel = mpParent->getModel();
                 assert(pModel != NULL);
 
-                CCopasiObjectName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
+                CCommonName CN = static_cast< CEvaluationNodeObject * >(mpInitialExpression->getRoot())->getObjectCN();
                 CDataObject * pObject = const_cast< CDataObject * >(CObjectInterface::DataObject(pModel->getObjectFromCN(CN)));
 
                 assert(pObject != NULL);
@@ -621,7 +621,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
                   }
               }
 
-            CCopasiObjectName GlobalQuantityCN = static_cast< CModelParameterReactionParameter * >(this)->getGlobalQuantityCN();
+            CCommonName GlobalQuantityCN = static_cast< CModelParameterReactionParameter * >(this)->getGlobalQuantityCN();
 
             if (GlobalQuantityCN != "")
               {
@@ -770,18 +770,18 @@ void CModelParameterSpecies::compile()
 }
 
 // virtual
-void CModelParameterSpecies::setCN(const CCopasiObjectName & cn)
+void CModelParameterSpecies::setCN(const CCommonName & cn)
 {
   CModelParameter::setCN(cn);
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  CCopasiObjectName Tmp = mCN;
+  CCommonName Tmp = mCN;
   std::string Separator = "";
 
   for (; Tmp != ""; Tmp = Tmp.getRemainder())
     {
-      CCopasiObjectName Primary = Tmp.getPrimary();
+      CCommonName Primary = Tmp.getPrimary();
       mCompartmentCN += Separator + Primary;
       Separator = ",";
 
@@ -837,7 +837,7 @@ const C_FLOAT64 & CModelParameterSpecies::getValue(const Framework & framework) 
   return mValue;
 }
 
-CCopasiObjectName CModelParameterSpecies::getCompartmentCN() const
+CCommonName CModelParameterSpecies::getCompartmentCN() const
 {
   return mCompartmentCN;
 }
@@ -884,12 +884,12 @@ void CModelParameterReactionParameter::compile()
   if (Infix.length() > 2)
     {
       // Infix: <CN,Reference=InitialValue> or <CN,Reference=Value>
-      CCopasiObjectName Tmp = Infix.substr(1, Infix.length() - 2);
+      CCommonName Tmp = Infix.substr(1, Infix.length() - 2);
       std::string Separator = "";
 
       for (; Tmp != ""; Tmp = Tmp.getRemainder())
         {
-          CCopasiObjectName Primary = Tmp.getPrimary();
+          CCommonName Primary = Tmp.getPrimary();
 
           if (Primary.getObjectType() == "Reference")
             {
@@ -941,7 +941,7 @@ void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & g
   compile();
 }
 
-const CRegisteredObjectName & CModelParameterReactionParameter::getGlobalQuantityCN() const
+const CRegisteredCommonName & CModelParameterReactionParameter::getGlobalQuantityCN() const
 {
   return mGlobalQuantityCN;
 }

@@ -11,7 +11,7 @@
 #include "CRootContainer.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/function/CFunction.h"
 
@@ -28,9 +28,9 @@ const CDataObject * CObjectInterface::DataObject(const CObjectInterface * pInter
 
 // static
 CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-    const CCopasiObjectName & objName)
+    const CCommonName & objName)
 {
-  CCopasiObjectName Primary = objName.getPrimary();
+  CCommonName Primary = objName.getPrimary();
   std::string Type = Primary.getObjectType();
 
   // Check that we have a fully qualified CN
@@ -49,7 +49,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
   CObjectInterface::ContainerList::const_iterator end = listOfContainer.end();
 
-  CCopasiObjectName ContainerName;
+  CCommonName ContainerName;
 
   std::string::size_type pos;
 

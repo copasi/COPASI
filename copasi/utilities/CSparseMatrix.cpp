@@ -590,7 +590,7 @@ CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(cons
 
 #ifdef COPASI_DEBUG
 #include "randomGenerator/CRandom.h"
-#include "report/CCopasiTimer.h"
+#include "core/CDataTimer.h"
 
 bool SparseMatrixTest(const size_t & size,
                       const C_FLOAT64 & sparseness,

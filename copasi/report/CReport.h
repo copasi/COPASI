@@ -33,7 +33,7 @@
 #include <iostream>
 
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
 #include "utilities/COutputHandler.h"
 
@@ -218,7 +218,7 @@ private:
   void generateObjectsFromName(const CObjectInterface::ContainerList & listOfContainer,
                                std::vector< CObjectInterface * > & objectList,
                                CReport *& pReport,
-                               const std::vector<CRegisteredObjectName>* nameVector);
+                               const std::vector<CRegisteredCommonName>* nameVector);
 
   /**
    * Compile the child report

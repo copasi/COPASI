@@ -14,11 +14,10 @@
 #ifndef COPASI_CDataObjectReference
 #define COPASI_CDataObjectReference
 
-#include "copasi/core/CDataObject.h"
-
-#include "copasi/report/CCopasiObjectName.h"
-
 #include <assert.h>
+
+#include "copasi/core/CDataObject.h"
+#include "copasi/core/CRegisteredCommonName.h"
 
 class CDataContainer;
 
@@ -136,7 +135,6 @@ template<> inline CDataObjectReference< std::string >::CDataObjectReference(cons
   mpReference(&reference)
 {}
 
-
 template <class CType> class CDataVectorReference: public CDataObject
 {
 public:
@@ -174,7 +172,7 @@ public:
 
   virtual ~CDataVectorReference() {}
 
-  virtual CDataObject * getObject(const CCopasiObjectName & cn)
+  virtual CDataObject * getObject(const CCommonName & cn)
   {
     size_t Index = cn.getElementIndex();
 
@@ -238,7 +236,7 @@ public:
 
   virtual ~CDataMatrixReference() {}
 
-  virtual CDataObject * getObject(const CCopasiObjectName & cn)
+  virtual CDataObject * getObject(const CCommonName & cn)
   {
     size_t Index_0 = cn.getElementIndex(0);
     size_t Index_1 = cn.getElementIndex(1);

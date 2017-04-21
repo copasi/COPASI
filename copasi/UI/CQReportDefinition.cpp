@@ -28,7 +28,7 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/report/CReportDefinition.h"
 #include "copasi/report/CReportDefinitionVector.h"
-#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/core/CDataString.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -155,7 +155,7 @@ void CQReportDefinition::btnAdvancedClicked()
           for (i = 0; i < imax; ++i)
             {
               CQReportListItem *current = static_cast<CQReportListItem *>(mpBodyList->item(i));
-              const CCopasiObjectName& name = current->getCN();
+              const CCommonName& name = current->getCN();
 
               if (name.getObjectType() != "Separator")
                 mpTableList->addItem(new CQReportListItem(name, mpDataModel));
@@ -254,7 +254,7 @@ void CQReportDefinition::btnTextClicked()
   if (pDialog->exec() == QDialog::Accepted &&
       pDialog->getText() != "")
     {
-      CCopasiStaticString Text(TO_UTF8(pDialog->getText()));
+      CDataString Text(TO_UTF8(pDialog->getText()));
 
       static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Text.getCN(), mpDataModel));
     }
@@ -525,7 +525,7 @@ void CQReportDefinition::slotEditCurrentItem()
   foreach(QListWidgetItem * item, selectedItems)
   {
     CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-    const CCopasiObjectName & name = current->getCN();
+    const CCommonName & name = current->getCN();
 
     if (name.getObjectType() == "Separator")
       continue;
@@ -562,7 +562,7 @@ void CQReportDefinition::slotEditCurrentItemText()
   foreach(QListWidgetItem * item, selectedItems)
   {
     CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-    const CCopasiObjectName & name = current->getCN();
+    const CCommonName & name = current->getCN();
 
     std::string objectType = name.getObjectType();
 
@@ -577,7 +577,7 @@ void CQReportDefinition::slotEditCurrentItemText()
     if (pDialog->exec() == QDialog::Accepted &&
         pDialog->getText() != "")
       {
-        CCopasiStaticString Text(TO_UTF8(pDialog->getText()));
+        CDataString Text(TO_UTF8(pDialog->getText()));
 
         current->setObject(&Text);
         mChanged = true;
@@ -734,9 +734,9 @@ bool CQReportDefinition::load()
 
   mpPrecision->setText(QString::number(mpReportDefinition->getPrecision()));
 
-  std::vector< CRegisteredObjectName > * pList = NULL;
-  std::vector< CRegisteredObjectName >::const_iterator it;
-  std::vector< CRegisteredObjectName >::const_iterator end;
+  std::vector< CRegisteredCommonName > * pList = NULL;
+  std::vector< CRegisteredCommonName >::const_iterator it;
+  std::vector< CRegisteredCommonName >::const_iterator end;
 
   // Toggle the display mode.
   if (mpReportDefinition->isTable())
@@ -817,7 +817,7 @@ bool CQReportDefinition::save()
   mpReportDefinition->getFooterAddr()->clear();
   mpReportDefinition->getTableAddr()->clear();
 
-  std::vector< CRegisteredObjectName > * pList = NULL;
+  std::vector< CRegisteredCommonName > * pList = NULL;
   unsigned C_INT32 i, imax;
 
   if (mAdvanced)

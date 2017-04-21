@@ -14,7 +14,7 @@
 #include "utilities.hpp"
 
 #include "copasi/core/CDataContainer.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
@@ -50,7 +50,7 @@ void test000099::test_bug1675()
     {
       CPPUNIT_ASSERT(pModel == NULL);
       const CModel * pModel2 =
-        dynamic_cast< const CModel * >(pDataModel->getObjectFromCN(listOfContainer, CCopasiObjectName("CN=Root,Model=my test model")));
+        dynamic_cast< const CModel * >(pDataModel->getObjectFromCN(listOfContainer, CCommonName("CN=Root,Model=my test model")));
       CPPUNIT_ASSERT(pModel2 == NULL);
     }
 

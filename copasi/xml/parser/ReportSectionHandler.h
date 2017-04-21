@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,7 +14,7 @@
 #include <vector>
 #include "copasi/xml/parser/CXMLHandler.h"
 
-class CRegisteredObjectName;
+class CRegisteredCommonName;
 
 class ReportSectionHandler : public CXMLHandler
 {
@@ -53,10 +58,10 @@ protected:
    */
   virtual sProcessLogic * getProcessLogic() const;
 
-  void setSectionContent(std::vector< CRegisteredObjectName > * pSectionContent);
+  void setSectionContent(std::vector< CRegisteredCommonName > * pSectionContent);
 
 private:
-  std::vector< CRegisteredObjectName > * mpSectionContent;
+  std::vector< CRegisteredCommonName > * mpSectionContent;
 };
 
 #endif //COPASI_HeaderHandler

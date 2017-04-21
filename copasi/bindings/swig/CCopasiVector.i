@@ -261,7 +261,7 @@
 %template(ReactionVectorN) CDataVectorN<CReaction>;
 %template(ReactionVectorNS) CDataVectorNS<CReaction>;
 
-%template(ReportItemVector) std::vector<CRegisteredObjectName>;
+%template(ReportItemVector) std::vector<CRegisteredCommonName>;
 
 %template(CFunctionStdVector) std::vector<CFunction*>;
 %template(CFunctionVector) CDataVector<CFunction>;
@@ -334,7 +334,7 @@ typedef CDataVectorNS<CCompartment> CompartmentVectorNS;
 
 typedef CDataVectorNS<CReaction> ReactionVectorNS;
 
-typedef std::vector<CRegisteredObjectName> ReportItemVector;
+typedef std::vector<CRegisteredCommonName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CDataVectorN<CEvaluationTree> CEvaluationTreeVectorN;

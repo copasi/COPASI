@@ -117,10 +117,10 @@ void CMathObject::moved()
 }
 
 // virtual
-CCopasiObjectName CMathObject::getCN() const
+CCommonName CMathObject::getCN() const
 {
   if (mpDataObject == NULL)
-    return CCopasiObjectName("");
+    return CCommonName("");
 
   return mpDataObject->getCN();
 }
@@ -136,7 +136,7 @@ std::string CMathObject::getObjectDisplayName() const
 }
 
 //virtual
-const CObjectInterface * CMathObject::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CMathObject::getObject(const CCommonName & cn) const
 {
   if (mpDataObject == NULL)
     return NULL;

@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "copasi/core/CDataContainer.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CFlags.h"
 
 class CCopasiParameterGroup;
@@ -252,10 +252,10 @@ public:
 
   /**
    * Check whether the value corresponds to the type
-   * @param const CRegisteredObjectName & value
+   * @param const CRegisteredCommonName & value
    * @return bool isValidValue
    */
-  bool isValidValue(const CCopasiObjectName & value) const;
+  bool isValidValue(const CCommonName & value) const;
 
   /**
    * Check whether the value corresponds to the type
@@ -346,9 +346,9 @@ public:
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCopasiObjectName
+   * @return CCommonName
    */
-  virtual CCopasiObjectName getCN() const;
+  virtual CCommonName getCN() const;
 
   virtual void * getValuePointer() const;
 

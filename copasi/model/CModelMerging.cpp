@@ -187,7 +187,7 @@ bool CModelAdd::copyEventAssignmentExpression(const CEventAssignment * sourceAss
 
           if (pObjectNode == NULL) return info;
 
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* mObject =
             static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
@@ -243,7 +243,7 @@ bool CModelAdd::copyDelayExpression(const CEvent * sourceEvent, CEvent * newEven
 
           if (pObjectNode == NULL) return info;
 
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* mObject =
             static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
@@ -299,7 +299,7 @@ bool CModelAdd::copyTriggerExpression(const CEvent * sourceEvent, CEvent * newEv
 
           if (pObjectNode == NULL) return info;
 
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* mObject =
             static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
@@ -355,7 +355,7 @@ bool CModelAdd::copyExpression(const CModelEntity * sourceEntity, CModelEntity *
 
           if (pObjectNode == NULL) return info;
 
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* mObject =
             static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
@@ -411,7 +411,7 @@ bool CModelAdd::copyInitialExpression(const CModelEntity * sourceEntity, CModelE
 
           if (pObjectNode == NULL) return info;
 
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* mObject =
             static_cast< const CDataObject * >(mmModel->getObjectDataModel()->getObject(cn));
@@ -1240,7 +1240,7 @@ bool CModelMerging::mergeInExpression(std::string toKey, std::string key, CExpre
 
           if (pObjectNode == NULL) return info;
 
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* mObject =
             static_cast< const CDataObject * >(mpModel->getObjectDataModel()->getObject(cn));

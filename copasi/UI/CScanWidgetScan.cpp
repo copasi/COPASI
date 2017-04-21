@@ -30,7 +30,7 @@
 #include "copasi/resourcesUI/CQIconResource.h"
 
 #include "copasi/core/CRootContainer.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 /*

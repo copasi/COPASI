@@ -29,7 +29,7 @@
 
 %module COPASI
 
-%warnfilter(402) CCopasiObjectName;
+%warnfilter(402) CCommonName;
 // cannot do anything about warnings due to multiple inheritance
 // so hide those errors
 #pragma SWIG nowarn=314,402,813,833,302,325;
@@ -116,7 +116,7 @@ size_t INVALID_INDEX();
 %include "messages.i"
 %include "CKeyFactory.i"
 %include "CCopasiException.i"
-%include "CCopasiObjectName.i"
+%include "CCommonName.i"
 %include "CDataObject.i"
 %include "CDataObjectReference.i"
 %include "CDataContainer.i"

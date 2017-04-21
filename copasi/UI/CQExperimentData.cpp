@@ -1363,7 +1363,7 @@ void CQExperimentData::slotTypeChanged(int row, int index)
   mpTable->item(row, COL_TYPE)->setText(QString(FROM_UTF8(CExperiment::TypeName[NewType])));
   mpTable->item(row, COL_TYPE_HIDDEN)->setText(QString::number(NewType));
 
-  CCopasiObjectName CN = CCopasiObjectName(TO_UTF8(mpTable->item(row, COL_OBJECT_HIDDEN)->text()));
+  CCommonName CN = CCommonName(TO_UTF8(mpTable->item(row, COL_OBJECT_HIDDEN)->text()));
 
   switch (NewType)
     {

@@ -33,10 +33,10 @@
 #include "trajectory/CTrajectoryTask.h"
 #include "trajectory/CTrajectoryProblem.h"
 #include "trajectory/CTrajectoryMethod.h"
-#include "report/CCopasiStaticString.h"
+#include "core/CDataString.h"
 #include "report/CReportDefinition.h"
 #include "report/CReportDefinitionVector.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
@@ -86,7 +86,7 @@ typedef CDataVectorNS<CCompartment> CompartmentVectorNS;
 
 typedef CDataVectorNS<CReaction> ReactionVectorNS;
 
-typedef std::vector<CRegisteredObjectName> ReportItemVector;
+typedef std::vector<CRegisteredCommonName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CDataVectorN<CEvaluationTree> CEvaluationTreeVectorN;
@@ -104,7 +104,7 @@ typedef CDataVectorN<CReaction> ReactionVectorN;
 typedef CDataVector<CReaction> ReactionVector;
 typedef CDataVector<CEvaluationTree> CEvaluationTreeVector;
 
-typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
+typedef CMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 typedef CDataVectorN<CDataModel> CDataModelVectorN;
 
 #include "commandline/COptions.h"

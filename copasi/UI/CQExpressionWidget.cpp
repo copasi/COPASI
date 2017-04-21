@@ -36,7 +36,7 @@
 #include "function/CExpression.h"
 #include "function/CFunctionDB.h"
 #include "function/CMassAction.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "qtUtilities.h"
@@ -562,7 +562,7 @@ void CQExpressionWidget::setExpression(const std::string &expression)
 
       Index += InfixObjectPattern.matchedLength();
       it += InfixObjectPattern.matchedLength();
-      CCopasiObjectName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
+      CCommonName InfixName(TO_UTF8(InfixObjectPattern.cap(1)));
       const CDataObject *pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(containers, InfixName));
 
       if (pObject != NULL)

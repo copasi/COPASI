@@ -1,14 +1,16 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQMatrixDialog.h,v $
-//   $Revision: 1.9 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/09/30 16:39:40 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 #ifndef CQMATRIXDIALOG_H
@@ -17,7 +19,7 @@
 #include <QtCore/QVariant>
 #include "ui_CQMatrixDialog.h"
 
-class CArrayAnnotation;
+class CDataArray;
 
 class CQMatrixDialog : public QDialog, public Ui::CQMatrixDialog
 {
@@ -28,10 +30,9 @@ public:
   ~CQMatrixDialog();
 
 public slots:
-  virtual void setArray(const CArrayAnnotation * tmp, bool single);
+  virtual void setArray(const CDataArray * tmp, bool single);
 
 protected slots:
-
 };
 
 #endif // CQMATRIXDIALOG_H

@@ -26,13 +26,13 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/tssanalysis/CTSSATask.h"
 #include "copasi/tssanalysis/CTSSAProblem.h"
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 #include "copasi/commandline/CLocaleString.h"
 #include "copasi/model/CModel.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-const CArrayAnnotation * pResult;
+const CDataArray * pResult;
 
 /*
  *  Constructs a CQTSSAResultSubWidget as a child of 'parent', with the

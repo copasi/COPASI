@@ -11,7 +11,7 @@
 #include "copasi.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "copasi/core/COutputHandler.h"
+#include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CTaskEnum.h"
 
 class CModel;

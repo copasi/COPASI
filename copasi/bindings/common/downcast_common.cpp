@@ -35,7 +35,7 @@
 
 // CCopasiAbstractArray
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array);
+GetDowncastSwigTypeForCCopasiAbstractArray(CArrayInterface* array);
 
 // CDataContainer
 struct swig_type_info*
@@ -101,13 +101,13 @@ GetDowncastSwigTypeForCOptTask(COptTask* optTask);
  * @return the most specific Swig type for the given CCopasiAbstractArray object.
  */
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array)
+GetDowncastSwigTypeForCCopasiAbstractArray(CArrayInterface* array)
 {
   if (array == NULL) return SWIGTYPE_p_CCopasiAbstractArray;
 
   struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiAbstractArray;
 
-  if (dynamic_cast<CCopasiArray*>(array))
+  if (dynamic_cast<CArray*>(array))
     {
       pInfo = SWIGTYPE_p_CCopasiArray;
     }
@@ -235,9 +235,9 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
       else if (dynamic_cast<ReportItemVector*>(container))
         {
 #ifdef SWIGPERL
-          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredObjectName_t;
+          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
 #else
-          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredObjectName_std__allocatorT_CRegisteredObjectName_t_t;
+          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_std__allocatorT_CRegisteredCommonName_t_t;
 #endif // SWIGPERL
         }
       else if (dynamic_cast<ParameterVector*>(container))
@@ -297,7 +297,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     {
       pInfo = SWIGTYPE_p_CReaction;
     }
-  else if (dynamic_cast<CArrayAnnotation*>(container))
+  else if (dynamic_cast<CDataArray*>(container))
     {
       pInfo = SWIGTYPE_p_CArrayAnnotation;
     }
@@ -369,7 +369,7 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
     {
       pInfo = SWIGTYPE_p_CReportDefinition;
     }
-  else if (dynamic_cast<CCopasiStaticString*>(object))
+  else if (dynamic_cast<CDataString*>(object))
     {
       if (dynamic_cast<CCopasiReportSeparator*>(object))
         {

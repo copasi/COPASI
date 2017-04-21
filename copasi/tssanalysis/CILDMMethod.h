@@ -29,7 +29,7 @@
 //#include "odepack++/CLSODA.h"
 
 //#include "utilities/CMatrix.h"
-//#include "utilities/CAnnotatedMatrix.h"
+//#include "core/CDataArray.h"
 
 class CModel;
 class CState;
@@ -133,32 +133,32 @@ public:
     std::vector<std::string>  tableNames;
   */
 
-  CArrayAnnotation* pVslowPrintAnn;
-  CArrayAnnotation* pVslowMetabPrintAnn;
-  CArrayAnnotation* pVslowSpacePrintAnn;
-  CArrayAnnotation* pVfastSpacePrintAnn;
-  CArrayAnnotation* pReacSlowSpacePrintAnn;
+  CDataArray* pVslowPrintAnn;
+  CDataArray* pVslowMetabPrintAnn;
+  CDataArray* pVslowSpacePrintAnn;
+  CDataArray* pVfastSpacePrintAnn;
+  CDataArray* pReacSlowSpacePrintAnn;
 
   /* temporary tabs */
 
-  CArrayAnnotation* pTMP1PrintAnn;
-  CArrayAnnotation* pTMP2PrintAnn;
-  CArrayAnnotation* pTMP3PrintAnn;
+  CDataArray* pTMP1PrintAnn;
+  CDataArray* pTMP2PrintAnn;
+  CDataArray* pTMP3PrintAnn;
 
   /**
   *required for creation of above listed CArrayAnnotation
   **/
-  CArrayAnnotation* pTmp1;
-  CArrayAnnotation* pTmp2;
-  CArrayAnnotation* pTmp3;
-  CArrayAnnotation* pTmp4;
-  CArrayAnnotation* pTmp5;
+  CDataArray* pTmp1;
+  CDataArray* pTmp2;
+  CDataArray* pTmp3;
+  CDataArray* pTmp4;
+  CDataArray* pTmp5;
 
   /* temporary tabs */
 
-  CArrayAnnotation* pTMP1;
-  CArrayAnnotation* pTMP2;
-  CArrayAnnotation* pTMP3;
+  CDataArray* pTMP1;
+  CDataArray* pTMP2;
+  CDataArray* pTMP3;
 
   /**
   *input for every CArraAnnotations
@@ -189,23 +189,23 @@ public:
     {return mapTableToName[name];}
   */
 
-  const CArrayAnnotation* getVslowPrintAnn() const
+  const CDataArray* getVslowPrintAnn() const
   {return pVslowPrintAnn;}
-  const CArrayAnnotation* getVslowSpacePrintAnn() const
+  const CDataArray* getVslowSpacePrintAnn() const
   {return pVslowSpacePrintAnn;}
-  const CArrayAnnotation* getVfastSpacePrintAnn() const
+  const CDataArray* getVfastSpacePrintAnn() const
   {return pVfastSpacePrintAnn;}
-  const CArrayAnnotation* getVslowMetabPrintAnn() const
+  const CDataArray* getVslowMetabPrintAnn() const
   {return pVslowMetabPrintAnn;}
-  const CArrayAnnotation* getReacSlowSpacePrintAnn() const
+  const CDataArray* getReacSlowSpacePrintAnn() const
   {return pReacSlowSpacePrintAnn;}
 
   /* temporary tabs */
-  const CArrayAnnotation* getTMP1PrintAnn() const
+  const CDataArray* getTMP1PrintAnn() const
   {return pTMP1PrintAnn;}
-  const CArrayAnnotation* getTMP2PrintAnn() const
+  const CDataArray* getTMP2PrintAnn() const
   {return pTMP2PrintAnn;}
-  const CArrayAnnotation* getTMP3PrintAnn() const
+  const CDataArray* getTMP3PrintAnn() const
   {return pTMP3PrintAnn;}
 
   /* temporary tabs */

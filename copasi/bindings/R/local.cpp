@@ -30,9 +30,9 @@
 #include "model/CReaction.h"
 #include "model/CMoiety.h"
 #include "model/CEvent.h"
-#include "report/CCopasiStaticString.h"
+#include "core/CDataString.h"
 #include "report/CReportDefinition.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
@@ -81,7 +81,7 @@ typedef CDataVectorNS<CCompartment> CompartmentVectorNS;
 
 typedef CDataVectorNS<CReaction> ReactionVectorNS;
 
-typedef std::vector<CRegisteredObjectName> ReportItemVector;
+typedef std::vector<CRegisteredCommonName> ReportItemVector;
 typedef std::vector<CCopasiParameter*> ParameterVector;
 
 typedef CDataVectorN<CEvaluationTree> CEvaluationTreeVectorN;
@@ -100,7 +100,7 @@ typedef CDataVectorN<CReaction> ReactionVectorN;
 typedef CDataVector<CReaction> ReactionVector;
 typedef CDataVector<CEvaluationTree> CEvaluationTreeVector;
 
-typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
+typedef CMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 
 /**
  * @return the most specific Swig type for the given CExperimentSet object.
@@ -203,13 +203,13 @@ GetDowncastSwigTypeForCOptTask(COptTask* optTask)
  * @return the most specific Swig type for the given CCopasiAbstractArray object.
  */
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiAbstractArray(CCopasiAbstractArray* array)
+GetDowncastSwigTypeForCCopasiAbstractArray(CArrayInterface* array)
 {
   if (array == NULL) return SWIGTYPE_p_CCopasiAbstractArray;
 
   struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiAbstractArray;
 
-  if (dynamic_cast<CCopasiArray*>(array))
+  if (dynamic_cast<CArray*>(array))
     {
       pInfo = SWIGTYPE_p_CCopasiArray;
     }
@@ -522,7 +522,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
         }
       else if (dynamic_cast<ReportItemVector*>(container))
         {
-          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredObjectName_std__allocatorT_CRegisteredObjectName_t_t;
+          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_std__allocatorT_CRegisteredCommonName_t_t;
         }
       else if (dynamic_cast<ParameterVector*>(container))
         {
@@ -573,7 +573,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     {
       pInfo = SWIGTYPE_p_CReaction;
     }
-  else if (dynamic_cast<CArrayAnnotation*>(container))
+  else if (dynamic_cast<CDataArray*>(container))
     {
       pInfo = SWIGTYPE_p_CArrayAnnotation;
     }
@@ -600,7 +600,7 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
     {
       pInfo = SWIGTYPE_p_CReportDefinition;
     }
-  else if (dynamic_cast<CCopasiStaticString*>(object))
+  else if (dynamic_cast<CDataString*>(object))
     {
       if (dynamic_cast<CCopasiReportSeparator*>(object))
         {

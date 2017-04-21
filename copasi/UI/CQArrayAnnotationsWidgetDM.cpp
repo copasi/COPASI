@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -9,7 +14,7 @@
 #include <QSortFilterProxyModel>
 
 #include "copasi.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 CQArrayAnnotationsWidgetDM::CQArrayAnnotationsWidgetDM(QObject *parent):
   QAbstractTableModel(parent),
@@ -134,7 +139,7 @@ int CQArrayAnnotationsWidgetDM::columnCount(const QModelIndex & /* parent */) co
 }
 
 void CQArrayAnnotationsWidgetDM::setContext(const CColorScale * pColorScale,
-    const CArrayAnnotation * pArray,
+    const CDataArray * pArray,
     const std::vector< size_t > & index,
     const size_t & row,
     const size_t & column)

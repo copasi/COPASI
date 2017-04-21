@@ -49,7 +49,7 @@ class CUnitDefinitionDB;
 
 class CCopasiParameter;
 class CCopasiParameterGroup;
-class CRegisteredObjectName;
+class CRegisteredCommonName;
 class CDataModel;
 
 class CLLocalRenderInformation;
@@ -367,11 +367,11 @@ private:
   /**
    * Save a Report Section such as Header, Body or Footer.
    * @param const std::string & name
-   * @param const std::vector <CCopasiObjectName> & section
+   * @param const std::vector <CCommonName> & section
    * @return bool success
    */
   bool saveReportSection(const std::string & name,
-                         const std::vector <CRegisteredObjectName> & section);
+                         const std::vector <CRegisteredCommonName> & section);
 
   /**
    * Build a list of functions.

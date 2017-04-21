@@ -89,7 +89,7 @@ CSensMethod::~CSensMethod()
 
 //***********************************************************************************
 
-bool CSensMethod::do_target_calculation(size_t level,  CCopasiArray & result, bool /* first */)
+bool CSensMethod::do_target_calculation(size_t level,  CArray & result, bool /* first */)
 {
   bool success = false;
 
@@ -114,7 +114,7 @@ bool CSensMethod::do_target_calculation(size_t level,  CCopasiArray & result, bo
   //****** retrieve results ************
 
   //resize results array
-  CCopasiArray::index_type resultindex;
+  CArray::index_type resultindex;
   size_t i, imax = mTargetValuePointers.size();
 
   if (imax > 1)
@@ -170,17 +170,17 @@ C_FLOAT64 CSensMethod::do_variation(C_FLOAT64 & variable)
 }
 
 void CSensMethod::calculate_difference(size_t level, const C_FLOAT64 & delta,
-                                       CCopasiArray & result, CCopasiArray::index_type & resultindex)
+                                       CArray & result, CArray::index_type & resultindex)
 {
   assert(delta != 0.0);
   assert(mLocalData[level].tmp1.size() == mLocalData[level].tmp2.size());
   size_t dim = mLocalData[level].tmp1.dimensionality();
   assert(resultindex.size() >= dim);
 
-  CCopasiArray::index_type indexmax = mLocalData[level].tmp1.size();
+  CArray::index_type indexmax = mLocalData[level].tmp1.size();
 
   //init index with zero
-  CCopasiArray::index_type indexit; indexit.resize(dim);
+  CArray::index_type indexit; indexit.resize(dim);
   size_t i;
 
   for (i = 0; i < dim; ++i)
@@ -225,7 +225,7 @@ void CSensMethod::calculate_difference(size_t level, const C_FLOAT64 & delta,
     }
 }
 
-bool CSensMethod::calculate_one_level(size_t level, CCopasiArray & result)
+bool CSensMethod::calculate_one_level(size_t level, CArray & result)
 {
   //do first calculation
   if (level == 0)
@@ -238,7 +238,7 @@ bool CSensMethod::calculate_one_level(size_t level, CCopasiArray & result)
     }
 
   //resize results array
-  CCopasiArray::index_type resultindex; resultindex = mLocalData[level].tmp1.size();
+  CArray::index_type resultindex; resultindex = mLocalData[level].tmp1.size();
 
   if (mLocalData[level].mInitialStateVariables.size() > 1)
     resultindex.push_back(mLocalData[level].mInitialStateVariables.size());
@@ -285,14 +285,14 @@ bool CSensMethod::calculate_one_level(size_t level, CCopasiArray & result)
 //********** SCALING *************************************************************
 
 void CSensMethod::scaling_targetfunction(const C_FLOAT64 & factor,
-    CCopasiArray::index_type & resultindex)
+    CArray::index_type & resultindex)
 {
   size_t dim = mLocalData[0].tmp1.dimensionality();
   assert(resultindex.size() >= dim);
 
-  CCopasiArray::index_type indexmax = mLocalData[0].tmp1.size();
+  CArray::index_type indexmax = mLocalData[0].tmp1.size();
   //init index with zero
-  CCopasiArray::index_type indexit; indexit.resize(dim);
+  CArray::index_type indexit; indexit.resize(dim);
   size_t i;
 
   for (i = 0; i < dim; ++i)
@@ -337,7 +337,7 @@ void CSensMethod::scaling_targetfunction(const C_FLOAT64 & factor,
 }
 
 void CSensMethod::scaling_variables(size_t level, const C_FLOAT64 & factor,
-                                    CCopasiArray::index_type & resultindex)
+                                    CArray::index_type & resultindex)
 {
   //loop over all variables
   size_t i, imax = mLocalData[level].mInitialStateVariables.size();
@@ -364,14 +364,14 @@ void CSensMethod::scaling_variables(size_t level, const C_FLOAT64 & factor,
 
 void CSensMethod::do_scaling()
 {
-  CCopasiArray::index_type index;
+  CArray::index_type index;
   index.resize(mpProblem->getResult().dimensionality());
   scaling_variables(mLocalData.size() - 1, 1.0, index);
 }
 
 //****************************************************************************
 
-C_FLOAT64 CSensMethod::do_collapsing_innerloop(CCopasiArray::index_type & fullindex)
+C_FLOAT64 CSensMethod::do_collapsing_innerloop(CArray::index_type & fullindex)
 {
   //fullindex[0]=0;
   //return mpProblem->getScaledResult()[fullindex];
@@ -399,8 +399,8 @@ void CSensMethod::do_collapsing()
 {
   if (mpProblem->collapsRequested())
     {
-      CCopasiArray::index_type fullresultindex = mpProblem->getScaledResult().size();
-      CCopasiArray::index_type collapsedresultindex = mpProblem->getCollapsedResult().size();
+      CArray::index_type fullresultindex = mpProblem->getScaledResult().size();
+      CArray::index_type collapsedresultindex = mpProblem->getCollapsedResult().size();
 
       size_t shift = fullresultindex.size() - collapsedresultindex.size();
 
@@ -416,7 +416,7 @@ void CSensMethod::do_collapsing()
 
       //***** higher dimensions *********
       size_t i, dim = collapsedresultindex.size();
-      CCopasiArray::index_type indexmax = mpProblem->getCollapsedResult().size();
+      CArray::index_type indexmax = mpProblem->getCollapsedResult().size();
 
       //set index to zero
       for (i = 0; i < dim; ++i) collapsedresultindex[i] = 0;
@@ -590,8 +590,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
   //****** initialize result annotations ****************
 
   //determine dimensions of result
-  CCopasiArray::index_type s;
-  CCopasiArray::index_type sc; //size of collapsed result
+  CArray::index_type s;
+  CArray::index_type sc; //size of collapsed result
 
   if (mTargetValuePointers.size() > 1)
     {

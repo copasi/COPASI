@@ -24,7 +24,7 @@
 #include "model/CModelParameterSet.h"
 #include "model/CModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CCopasiStaticString.h"
+#include "core/CDataString.h"
 
 #include "copasiui3window.h"
 
@@ -233,7 +233,7 @@ void CQParameterOverviewWidget::buildSelectionList()
 {
   // We build the selection for the global parameters for kinetic constants.
   const CModelParameterGroup *pGlobalQuantities =
-    static_cast< CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CCopasiStaticString("Initial Global Quantities").getCN()));
+    static_cast< CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getCN()));
 
   CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
   CModelParameterGroup::const_iterator end = pGlobalQuantities->end();

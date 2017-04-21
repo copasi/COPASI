@@ -185,8 +185,8 @@ CRootContainer.getKeyFactory=_COPASI.CRootContainer_getKeyFactory
 CRootContainer.removeDatamodel=_COPASI.CRootContainer_removeDatamodel
 CRootContainer.removeDatamodelWithIndex=_COPASI.CRootContainer_removeDatamodelWithIndex
 
-CCopasiObjectName.escape=_COPASI.CCopasiObjectName_escape
-CCopasiObjectName.unescape=_COPASI.CCopasiObjectName_unescape
+CCommonName.escape=_COPASI.CCommonName_escape
+CCommonName.unescape=_COPASI.CCommonName_unescape
 
 CCopasiMethod.TypeNameToEnum=_COPASI.CCopasiMethod_TypeNameToEnum
 
@@ -211,7 +211,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
 
 %}
 
-%extend CCopasiObjectName
+%extend CCommonName
 {
   %pythoncode
   %{
@@ -222,7 +222,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
   %}
 }
 
-%extend CRegisteredObjectName
+%extend CRegisteredCommonName
 {
   %pythoncode
   %{
@@ -256,7 +256,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
            result=self.setBoolValue(arg) 
         elif(type(arg)==bytes):
            result=self.setStringValue(arg) 
-        elif(arg.__class__==CRegisteredObjectName):
+        elif(arg.__class__==CRegisteredCommonName):
            result=self.setCNValue(arg) 
         elif(arg.__class__ == ParameterVector):
            result=self.setGroupValue(arg) 
@@ -275,7 +275,7 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
            result=self.setBoolValue(arg) 
         elif(type(arg)==types.StringType):
            result=self.setStringValue(arg) 
-        elif(arg.__class__==CRegisteredObjectName):
+        elif(arg.__class__==CRegisteredCommonName):
            result=self.setCNValue(arg) 
         elif(arg.__class__ == ParameterVector):
            result=self.setGroupValue(arg) 

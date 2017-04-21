@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +25,7 @@
 #include "copasi/UI/ui_CQMathMatrixWidget.h"
 #include "copasi/UI/copasiWidget.h"
 
-class CArrayAnnotation;
+class CDataArray;
 
 class CQMathMatrixWidget : public CopasiWidget, public Ui::CQMathMatrixWidget
 {
@@ -45,9 +50,9 @@ protected:
 
   QLabel* mLabelTitle;
 
-  const CArrayAnnotation * mpArrayAnn1;
-  const CArrayAnnotation * mpArrayAnn2;
-  const CArrayAnnotation * mpArrayAnn3;
+  const CDataArray * mpArrayAnn1;
+  const CDataArray * mpArrayAnn2;
+  const CDataArray * mpArrayAnn3;
 };
 
 #endif // COPASI_CQMathMatrixWidget

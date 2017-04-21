@@ -108,7 +108,7 @@ public:
   virtual CData toData() const;
   virtual bool applyData(const CData & data);
 
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
   /**
    * This methods must be called to elevate subgroups to

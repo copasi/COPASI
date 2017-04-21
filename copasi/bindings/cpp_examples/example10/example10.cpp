@@ -31,7 +31,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 #include "copasi/steadystate/CMCATask.h"
 #include "copasi/steadystate/CMCAProblem.h"
 #include "copasi/steadystate/CMCAMethod.h"
@@ -228,7 +228,7 @@ int main(int argc, char** argv)
       // as well as a method that returns a normal float matrix
       // The method that returns the annotated matrix end with Ann and the method that
       // returns a double matrix doesn't have the Ann.
-      const CArrayAnnotation* pCCC = pMCAMethod->getScaledFluxCCAnn();
+      const CDataArray* pCCC = pMCAMethod->getScaledFluxCCAnn();
       assert(pCCC != NULL);
 
       if (pCCC != NULL)
@@ -264,7 +264,7 @@ int main(int argc, char** argv)
           // Alternatively, we could have used getAnnatationsString as in example 8 to get the annotations
           // that contain the display names.
           // In this case working with the common names is easier.
-          const std::vector<CRegisteredObjectName>& annotations = pCCC->getAnnotationsCN(1);
+          const std::vector<CRegisteredCommonName>& annotations = pCCC->getAnnotationsCN(1);
 
           std::cout << "Flux Control Coefficient for Reaction \"" << pReaction->getObjectName() << "\" with itself:";
 

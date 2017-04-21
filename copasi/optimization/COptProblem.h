@@ -33,7 +33,7 @@
 #include <string>
 #include <vector>
 
-#include "report/CCopasiTimer.h"
+#include "core/CDataTimer.h"
 
 #include "utilities/CCopasiProblem.h"
 #include "copasi/core/CDataVector.h"
@@ -220,10 +220,10 @@ public:
 
   /**
    * Add an optimization item to the problem.
-   * @param const CCopasiObjectName & objectCN
+   * @param const CCommonName & objectCN
    * @return COptItem optItemAdded
    */
-  COptItem & addOptItem(const CCopasiObjectName & objectCN);
+  COptItem & addOptItem(const CCommonName & objectCN);
 
   /**
    * Remove an optimization items.

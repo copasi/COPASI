@@ -21,7 +21,7 @@
 #include "elementaryFluxModes/CEFMAlgorithm.h"
 //#include "utilities/CMatrix.h"
 
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "copasi/core/CDataVector.h"
 
 class CSSAProblem;

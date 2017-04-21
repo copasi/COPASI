@@ -454,7 +454,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
         break;
 
       case CCopasiParameter::CN:
-        Attributes.add("value", parameter.getValue< CCopasiObjectName >());
+        Attributes.add("value", parameter.getValue< CCommonName >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 

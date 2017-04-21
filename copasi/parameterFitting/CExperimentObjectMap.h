@@ -140,7 +140,7 @@ public:
   private:
     CExperiment::Type *mpRole;
 
-    CCopasiObjectName *mpObjectCN;
+    CCommonName *mpObjectCN;
 
     C_FLOAT64 *mpScale;
   };

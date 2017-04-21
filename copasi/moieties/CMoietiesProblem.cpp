@@ -19,7 +19,7 @@
 
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 //  Default constructor
 CMoietiesProblem::CMoietiesProblem(const CTaskEnum::Task & type,
@@ -59,13 +59,13 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
   *pOstream << std::endl;
 
   // Print Reordered Stoichiometry Matrix
-  *pOstream << *dynamic_cast<const CArrayAnnotation *>(Model.getObject(CCopasiObjectName("Array=Stoichiometry(ann)"))) << std::endl;
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Stoichiometry(ann)"))) << std::endl;
 
   // Print Link Matrix
-  *pOstream << *dynamic_cast<const CArrayAnnotation *>(Model.getObject(CCopasiObjectName("Array=Link matrix(ann)"))) << std::endl;
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Link matrix(ann)"))) << std::endl;
 
   // Print Reduced Stoichiometry Matrix
-  *pOstream << *dynamic_cast<const CArrayAnnotation *>(Model.getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)"))) << std::endl;
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Reduced stoichiometry(ann)"))) << std::endl;
 
   return;
 }

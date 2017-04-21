@@ -24,7 +24,7 @@
 
 #include "copasi/UI/ui_CQSensResultWidget.h"
 
-class CArrayAnnotation;
+class CDataArray;
 
 class CQSensResultWidget : public CopasiWidget, public Ui::CQSensResultWidget
 {
@@ -47,9 +47,9 @@ protected:
   virtual bool enterProtected();
   void clearArrays();
 
-  const CArrayAnnotation * mpResult;
-  const CArrayAnnotation * mpScaledResult;
-  const CArrayAnnotation * mpCollapsedResult;
+  const CDataArray * mpResult;
+  const CDataArray * mpScaledResult;
+  const CDataArray * mpCollapsedResult;
 };
 
 #endif

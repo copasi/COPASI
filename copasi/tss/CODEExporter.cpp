@@ -577,7 +577,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
         {
           CEvaluationNodeObject* pObjectNode = dynamic_cast<CEvaluationNodeObject*>(objectNodes[j]);
           assert(pObjectNode);
-          CCopasiObjectName cn = pObjectNode->getObjectCN();
+          CCommonName cn = pObjectNode->getObjectCN();
 
           const CDataObject* pObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(cn));
 

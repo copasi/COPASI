@@ -44,7 +44,7 @@
 #include "function/CFunction.h"
 
 #include "randomGenerator/CRandom.h"
-#include "report/CCopasiTimer.h"
+#include "core/CDataTimer.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CVersion.h"
 #include "utilities/CDirEntry.h"

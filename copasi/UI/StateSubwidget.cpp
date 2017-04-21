@@ -224,7 +224,7 @@ void StateSubwidget::loadModelValues()
 
 void StateSubwidget::loadJacobian()
 {
-  const CArrayAnnotation * JacAnn = mpTask->getJacobianAnnotated();
+  const CDataArray * JacAnn = mpTask->getJacobianAnnotated();
 
   CColorScaleBiLog * tcs = new CColorScaleBiLog();
   mpJacobianAnnotationWidget->setColorCoding(tcs);
@@ -260,7 +260,7 @@ void StateSubwidget::loadJacobian()
 
   //JacobianX
 
-  const CArrayAnnotation * JacXAnn = mpTask->getJacobianXAnnotated();
+  const CDataArray * JacXAnn = mpTask->getJacobianXAnnotated();
 
   tcs = new CColorScaleBiLog();
   mpJacobianXAnnotationWidget->setColorCoding(tcs);

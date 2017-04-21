@@ -159,7 +159,7 @@ COptProblem::~COptProblem()
 
 void COptProblem::initializeParameter()
 {
-  mpParmSubtaskCN = assertParameter("Subtask", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmSubtaskCN = assertParameter("Subtask", CCopasiParameter::CN, CCommonName(""));
   mpParmObjectiveExpression = assertParameter("ObjectiveExpression", CCopasiParameter::EXPRESSION, std::string(""));
   mpParmMaximize = assertParameter("Maximize", CCopasiParameter::BOOL, false);
   mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::BOOL, false);
@@ -705,7 +705,7 @@ COptItem & COptProblem::getOptItem(const size_t & index)
 size_t COptProblem::getOptItemSize() const
 {return mpGrpItems->size();}
 
-COptItem & COptProblem::addOptItem(const CCopasiObjectName & objectCN)
+COptItem & COptProblem::addOptItem(const CCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);

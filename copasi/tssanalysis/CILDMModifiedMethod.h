@@ -25,7 +25,7 @@
 //#include "odepack++/CLSODA.h"
 
 //#include "utilities/CMatrix.h"
-//#include "utilities/CAnnotatedMatrix.h"
+//#include "core/CDataArray.h"
 
 class CModel;
 class CState;
@@ -110,18 +110,18 @@ public:
    std::vector<std::string>  tableNames;
   */
 
-  CArrayAnnotation* pVslowPrintAnn;
-  CArrayAnnotation* pVslowMetabPrintAnn;
-  CArrayAnnotation* pVslowSpacePrintAnn;
-  CArrayAnnotation* pVfastSpacePrintAnn;
+  CDataArray* pVslowPrintAnn;
+  CDataArray* pVslowMetabPrintAnn;
+  CDataArray* pVslowSpacePrintAnn;
+  CDataArray* pVfastSpacePrintAnn;
 
   /**
   *required for creation of above listed CArrayAnnotation
   **/
-  CArrayAnnotation* pTmp1;
-  CArrayAnnotation* pTmp2;
-  CArrayAnnotation* pTmp3;
-  CArrayAnnotation* pTmp4;
+  CDataArray* pTmp1;
+  CDataArray* pTmp2;
+  CDataArray* pTmp3;
+  CDataArray* pTmp4;
 
   /**
   *input for every CArraAnnotations
@@ -145,13 +145,13 @@ public:
     {return mapTableToName[name];}
   */
 
-  const CArrayAnnotation* getVslowPrintAnn() const
+  const CDataArray* getVslowPrintAnn() const
   {return pVslowPrintAnn;}
-  const CArrayAnnotation* getVslowSpacePrintAnn() const
+  const CDataArray* getVslowSpacePrintAnn() const
   {return pVslowSpacePrintAnn;}
-  const CArrayAnnotation* getVfastSpacePrintAnn() const
+  const CDataArray* getVfastSpacePrintAnn() const
   {return pVfastSpacePrintAnn;}
-  const CArrayAnnotation* getVslowMetabPrintAnn() const
+  const CDataArray* getVslowMetabPrintAnn() const
   {return pVslowMetabPrintAnn;}
 
   /**

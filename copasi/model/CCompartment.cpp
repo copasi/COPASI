@@ -186,7 +186,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   if (success && getObjectParent())
     {
       std::string newCN = pMetabolite->getCN();
-      CRegisteredObjectName::handle(oldCN, newCN);
+      CRegisteredCommonName::handle(oldCN, newCN);
     }
 
   return success;

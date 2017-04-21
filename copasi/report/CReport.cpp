@@ -21,7 +21,7 @@
 
 #include "CReportDefinition.h"
 #include "CReport.h"
-#include "CCopasiTimer.h"
+#include "copasi/core/CDataTimer.h"
 
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CRootContainer.h"
@@ -404,7 +404,7 @@ std::ostream * CReport::getStream() const {return mpOstream;}
 void CReport::generateObjectsFromName(const CObjectInterface::ContainerList & listOfContainer,
                                       std::vector< CObjectInterface * > & objectList,
                                       CReport *& pReport,
-                                      const std::vector<CRegisteredObjectName>* nameVector)
+                                      const std::vector<CRegisteredCommonName>* nameVector)
 {
   objectList.clear();
 

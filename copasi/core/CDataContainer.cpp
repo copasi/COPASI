@@ -23,9 +23,9 @@
 #include "CDataVector.h"
 #include "CRootContainer.h"
 
-#include "copasi/report/CCopasiObjectName.h"
-#include "copasi/report/CCopasiTimer.h"
-#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CDataTimer.h"
+#include "copasi/core/CDataString.h"
 
 #include "copasi/utilities/CUnit.h"
 
@@ -387,7 +387,7 @@ CDataContainer::~CDataContainer()
       }
 }
 
-const CObjectInterface * CDataContainer::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 {
   if (cn == "")
     {
@@ -416,7 +416,7 @@ const CObjectInterface * CDataContainer::getObject(const CCopasiObjectName & cn)
   if (range.first == range.second) //not found in the list of children
     {
       if (Type == "String")
-        return new CCopasiStaticString(Name, this);
+        return new CDataString(Name, this);
       else if (Type == "Separator")
         return new CCopasiReportSeparator(Name, this);
       else

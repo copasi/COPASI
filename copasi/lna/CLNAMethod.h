@@ -15,7 +15,7 @@
 
 #include "copasi/core/CMatrix.h"
 #include "utilities/CCopasiMethod.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "steadystate/CSteadyStateMethod.h"
 
 #define LNA_OK 0
@@ -37,13 +37,13 @@ private:
    * LNA Matrices
    */
   CMatrix<C_FLOAT64> mBMatrixReduced;
-  CArrayAnnotation* mBMatrixReducedAnn;
+  CDataArray* mBMatrixReducedAnn;
 
   CMatrix<C_FLOAT64> mCovarianceMatrixReduced;
-  CArrayAnnotation* mCovarianceMatrixReducedAnn;
+  CDataArray* mCovarianceMatrixReducedAnn;
 
   CMatrix<C_FLOAT64> mCovarianceMatrix;
-  CArrayAnnotation* mCovarianceMatrixAnn;
+  CDataArray* mCovarianceMatrixAnn;
 
   // Jacobian matrix of the reduced system
   CMatrix<C_FLOAT64> mJacobianReduced;
@@ -99,39 +99,39 @@ public:
   const CMatrix<C_FLOAT64> & getBMatrixReduced() const
   {return mBMatrixReduced;}
 
-  const CArrayAnnotation* getBMatrixReducedAnn() const
+  const CDataArray* getBMatrixReducedAnn() const
   {return mBMatrixReducedAnn;}
 
   const CMatrix<C_FLOAT64> & getCovarianceMatrix() const
   {return mCovarianceMatrix;}
 
-  const CArrayAnnotation* getCovarianceMatrixAnn() const
+  const CDataArray* getCovarianceMatrixAnn() const
   {return mCovarianceMatrixAnn;}
 
   const CMatrix<C_FLOAT64> & getCovarianceMatrixReduced() const
   {return mCovarianceMatrixReduced;}
 
-  const CArrayAnnotation* getCovarianceMatrixReducedAnn() const
+  const CDataArray* getCovarianceMatrixReducedAnn() const
   {return mCovarianceMatrixReducedAnn;}
 
   // remove the following, or change scaled versions to
   // fano factors, coefficient of variations etc.
-  const CArrayAnnotation* getScaledBMatrixReducedAnn() const
+  const CDataArray* getScaledBMatrixReducedAnn() const
   {return mBMatrixReducedAnn;}
 
-  const CArrayAnnotation* getUnscaledBMatrixReducedAnn() const
+  const CDataArray* getUnscaledBMatrixReducedAnn() const
   {return mBMatrixReducedAnn;}
 
-  const CArrayAnnotation* getScaledCovarianceMatrixAnn() const
+  const CDataArray* getScaledCovarianceMatrixAnn() const
   {return mCovarianceMatrixAnn;}
 
-  const CArrayAnnotation* getScaledCovarianceMatrixReducedAnn() const
+  const CDataArray* getScaledCovarianceMatrixReducedAnn() const
   {return mCovarianceMatrixReducedAnn;}
 
-  const CArrayAnnotation* getUnscaledCovarianceMatrixAnn() const
+  const CDataArray* getUnscaledCovarianceMatrixAnn() const
   {return mCovarianceMatrixAnn;}
 
-  const CArrayAnnotation* getUnscaledCovarianceMatrixReducedAnn() const
+  const CDataArray* getUnscaledCovarianceMatrixReducedAnn() const
   {return mCovarianceMatrixReducedAnn;}
 
   int calculateCovarianceMatrixReduced();

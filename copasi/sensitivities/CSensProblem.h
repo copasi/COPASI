@@ -24,7 +24,7 @@
 
 #include "copasi/utilities/CCopasiProblem.h"
 #include "copasi/model/CObjectLists.h"
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 
 /**
  * This class describes either one specific COPASI object (represented
@@ -39,8 +39,8 @@ public:
 
   bool isSingleObject() const;
 
-  void setSingleObjectCN(const CCopasiObjectName & cn);
-  const CCopasiObjectName & getSingleObjectCN() const;
+  void setSingleObjectCN(const CCommonName & cn);
+  const CCommonName & getSingleObjectCN() const;
   std::string getSingleObjectDisplayName(const CDataModel* pDataModel) const;
 
   void setListType(CObjectLists::ListType lt);
@@ -57,7 +57,7 @@ public:
   std::string print(const CDataModel* pDataModel) const;
 
 private:
-  CCopasiObjectName mSingleObjectCN;
+  CCommonName mSingleObjectCN;
   CObjectLists::ListType mListType;
 };
 
@@ -137,20 +137,20 @@ public:
   //remove all variables:
   bool removeVariables();
 
-  CCopasiArray & getResult();
-  const CCopasiArray & getResult() const;
-  CArrayAnnotation * getResultAnnotated();
-  const CArrayAnnotation * getResultAnnotated() const;
+  CArray & getResult();
+  const CArray & getResult() const;
+  CDataArray * getResultAnnotated();
+  const CDataArray * getResultAnnotated() const;
 
-  CCopasiArray & getScaledResult();
-  const CCopasiArray & getScaledResult() const;
-  CArrayAnnotation * getScaledResultAnnotated();
-  const CArrayAnnotation * getScaledResultAnnotated() const;
+  CArray & getScaledResult();
+  const CArray & getScaledResult() const;
+  CDataArray * getScaledResultAnnotated();
+  const CDataArray * getScaledResultAnnotated() const;
 
-  CCopasiArray & getCollapsedResult();
-  const CCopasiArray & getCollapsedResult() const;
-  CArrayAnnotation * getCollapsedResultAnnotated();
-  const CArrayAnnotation * getCollapsedResultAnnotated() const;
+  CArray & getCollapsedResult();
+  const CArray & getCollapsedResult() const;
+  CDataArray * getCollapsedResultAnnotated();
+  const CDataArray * getCollapsedResultAnnotated() const;
 
   bool collapsRequested() const;
 
@@ -212,23 +212,23 @@ private:
   /**
    *  This holds the result
    */
-  CCopasiArray mResult;
+  CArray mResult;
 
-  CArrayAnnotation * mpResultAnnotation;
+  CDataArray * mpResultAnnotation;
 
   /**
    *  This holds the scaled result
    */
-  CCopasiArray mScaledResult;
+  CArray mScaledResult;
 
-  CArrayAnnotation * mpScaledResultAnnotation;
+  CDataArray * mpScaledResultAnnotation;
 
   /**
    *  This holds the collapsed result
    */
-  CCopasiArray mCollapsedResult;
+  CArray mCollapsedResult;
 
-  CArrayAnnotation * mpCollapsedResultAnnotation;
+  CDataArray * mpCollapsedResultAnnotation;
 };
 
 #endif // COPASI_CSensProblem

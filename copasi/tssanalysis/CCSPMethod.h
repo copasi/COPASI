@@ -347,17 +347,17 @@ public:
     std::vector<std::string>  tableNames;
   */
 
-  CArrayAnnotation* pAmplitudeAnn;
-  CArrayAnnotation* pRadicalPointerAnn;
-  CArrayAnnotation* pFastReactionPointerAnn;
-  CArrayAnnotation* pFastReactionPointerNormedAnn;
-  CArrayAnnotation* pParticipationIndexAnn;
-  CArrayAnnotation* pParticipationIndexNormedRowAnn;
-  CArrayAnnotation* pParticipationIndexNormedColumnAnn;
-  CArrayAnnotation* pFastParticipationIndexAnn;
-  CArrayAnnotation* pSlowParticipationIndexAnn;
-  CArrayAnnotation* pImportanceIndexAnn;
-  CArrayAnnotation* pImportanceIndexNormedRowAnn;
+  CDataArray* pAmplitudeAnn;
+  CDataArray* pRadicalPointerAnn;
+  CDataArray* pFastReactionPointerAnn;
+  CDataArray* pFastReactionPointerNormedAnn;
+  CDataArray* pParticipationIndexAnn;
+  CDataArray* pParticipationIndexNormedRowAnn;
+  CDataArray* pParticipationIndexNormedColumnAnn;
+  CDataArray* pFastParticipationIndexAnn;
+  CDataArray* pSlowParticipationIndexAnn;
+  CDataArray* pImportanceIndexAnn;
+  CDataArray* pImportanceIndexNormedRowAnn;
 
   /**
   *input for every CArraAnnotations
@@ -386,27 +386,27 @@ public:
     {return tableNames;}
   */
 
-  const CArrayAnnotation* getAmplitudeAnn() const
+  const CDataArray* getAmplitudeAnn() const
   {return pAmplitudeAnn;}
-  const CArrayAnnotation* getRadicalPointerAnn() const
+  const CDataArray* getRadicalPointerAnn() const
   {return pRadicalPointerAnn;}
-  const CArrayAnnotation* getFastReactionPointerAnn() const
+  const CDataArray* getFastReactionPointerAnn() const
   {return pFastReactionPointerAnn;}
-  const CArrayAnnotation* getFastReactionPointerNormedAnn() const
+  const CDataArray* getFastReactionPointerNormedAnn() const
   {return pFastReactionPointerNormedAnn;}
-  const CArrayAnnotation* getParticipationIndexAnn() const
+  const CDataArray* getParticipationIndexAnn() const
   {return pParticipationIndexAnn;}
-  const CArrayAnnotation* getParticipationIndexNormedRowAnn() const
+  const CDataArray* getParticipationIndexNormedRowAnn() const
   {return pParticipationIndexNormedRowAnn;}
-  const CArrayAnnotation* getParticipationIndexNormedColumnAnn() const
+  const CDataArray* getParticipationIndexNormedColumnAnn() const
   {return pParticipationIndexNormedColumnAnn;}
-  const CArrayAnnotation* getFastParticipationIndexAnn() const
+  const CDataArray* getFastParticipationIndexAnn() const
   {return pFastParticipationIndexAnn;}
-  const CArrayAnnotation* getSlowParticipationIndexAnn() const
+  const CDataArray* getSlowParticipationIndexAnn() const
   {return pSlowParticipationIndexAnn;}
-  const CArrayAnnotation* getImportanceIndexAnn() const
+  const CDataArray* getImportanceIndexAnn() const
   {return pImportanceIndexAnn;}
-  const CArrayAnnotation* getImportanceIndexNormedRowAnn() const
+  const CDataArray* getImportanceIndexNormedRowAnn() const
   {return pImportanceIndexNormedRowAnn;}
 
   /**

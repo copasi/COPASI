@@ -43,9 +43,9 @@ Contact: Please contact lixu1@vt.edu.
 #include "copasiui3window.h"
 #include "qtUtilities.h"
 #include "copasi/core/CDataObject.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiStaticString.h"
+#include "core/CDataString.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CRootContainer.h"
 
@@ -533,7 +533,7 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
           current = *it;
 
           // Skip all strings
-          if (dynamic_cast< const CCopasiStaticString * >(current))
+          if (dynamic_cast< const CDataString * >(current))
             {
               it++;
               continue;

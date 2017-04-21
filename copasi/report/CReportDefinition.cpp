@@ -94,8 +94,8 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
   mBodyVector.clear();
   mFooterVector.clear();
 
-  std::vector<CRegisteredObjectName>::const_iterator it = mTableVector.begin();
-  std::vector<CRegisteredObjectName>::const_iterator end = mTableVector.end();
+  std::vector<CRegisteredCommonName>::const_iterator it = mTableVector.begin();
+  std::vector<CRegisteredCommonName>::const_iterator end = mTableVector.end();
 
   for (; it != end; ++it)
     {
@@ -114,28 +114,28 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
   return success;
 }
 
-std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr()
+std::vector<CRegisteredCommonName>* CReportDefinition::getBodyAddr()
 {return &mBodyVector;}
 
-const std::vector<CRegisteredObjectName>* CReportDefinition::getBodyAddr() const
+const std::vector<CRegisteredCommonName>* CReportDefinition::getBodyAddr() const
 {return &mBodyVector;}
 
-std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr()
+std::vector<CRegisteredCommonName>* CReportDefinition::getHeaderAddr()
 {return &mHeaderVector;}
 
-const std::vector<CRegisteredObjectName>* CReportDefinition::getHeaderAddr() const
+const std::vector<CRegisteredCommonName>* CReportDefinition::getHeaderAddr() const
 {return &mHeaderVector;}
 
-std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr()
+std::vector<CRegisteredCommonName>* CReportDefinition::getFooterAddr()
 {return &mFooterVector;}
 
-const std::vector<CRegisteredObjectName>* CReportDefinition::getFooterAddr() const
+const std::vector<CRegisteredCommonName>* CReportDefinition::getFooterAddr() const
 {return &mFooterVector;}
 
-std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr()
+std::vector<CRegisteredCommonName>* CReportDefinition::getTableAddr()
 {return &mTableVector;}
 
-const std::vector<CRegisteredObjectName>* CReportDefinition::getTableAddr() const
+const std::vector<CRegisteredCommonName>* CReportDefinition::getTableAddr() const
 {return &mTableVector;}
 
 bool CReportDefinition::setTaskType(const CTaskEnum::Task & taskType)
@@ -178,8 +178,8 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
     isFirst = true;
 
-  CCopasiObjectName SeparatorCN(mSeparator.getCN());
-  CCopasiObjectName Title;
+  CCommonName SeparatorCN(mSeparator.getCN());
+  CCommonName Title;
 
   if (!pObject) return;
 
@@ -206,7 +206,7 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
     }
   else
     Title =
-      CCopasiStaticString(pObject->getObjectName()).getCN();
+      CDataString(pObject->getObjectName()).getCN();
 
   if (mbTitle)
     mHeaderVector.push_back(Title);

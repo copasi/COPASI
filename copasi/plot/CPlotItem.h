@@ -29,13 +29,13 @@
 #include "copasi.h"
 
 #include "utilities/CCopasiParameterGroup.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "utilities/COutputHandler.h"
 
 #undef min
 #undef max
 
-class CPlotDataChannelSpec : public CRegisteredObjectName
+class CPlotDataChannelSpec : public CRegisteredCommonName
 {
 public:
   /**
@@ -55,23 +55,23 @@ public:
   bool maxAutoscale;
 
   CPlotDataChannelSpec()
-    : CRegisteredObjectName(),
+    : CRegisteredCommonName(),
       min(0.0),
       max(0.0),
       minAutoscale(true),
       maxAutoscale(true)
   {}
 
-  CPlotDataChannelSpec(const CCopasiObjectName & obj)
-    : CRegisteredObjectName(obj),
+  CPlotDataChannelSpec(const CCommonName & obj)
+    : CRegisteredCommonName(obj),
       min(0.0),
       max(0.0),
       minAutoscale(true),
       maxAutoscale(true)
   {}
 
-  CPlotDataChannelSpec(const CCopasiObjectName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
-    : CRegisteredObjectName(obj),
+  CPlotDataChannelSpec(const CCommonName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
+    : CRegisteredCommonName(obj),
       min(minimum),
       max(maximum),
       minAutoscale(false),

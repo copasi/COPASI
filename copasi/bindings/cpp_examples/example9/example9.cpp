@@ -27,7 +27,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 #include "copasi/steadystate/CSteadyStateTask.h"
 
 const char* MODEL_STRING = \
@@ -189,7 +189,7 @@ int main()
   // here we can either get the jacobian as we did in example 8 as a matrix with
   // getJacobian, or we can use getJacobianAnnotated to get an annotated matrix
   // Corresponding methods for the reduced jacobian are getJacobianX and getJacobianXAnnotated
-  const CArrayAnnotation* pAJ = pTask->getJacobianAnnotated();
+  const CDataArray* pAJ = pTask->getJacobianAnnotated();
   assert(pAJ != NULL);
 
   if (pAJ != NULL)

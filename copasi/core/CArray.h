@@ -3,16 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
 #ifndef COPASIARRAY_H
 #define COPASIARRAY_H
 
@@ -26,19 +16,17 @@
 /**
  * This abstract class defines the interface for an n-dimensional array of floats
  */
-class CCopasiAbstractArray
+class CArrayInterface
 {
 public:
-  typedef std::vector<size_t> index_type;
+  typedef std::vector< size_t > index_type;
+
   typedef C_FLOAT64 data_type;
 
-  //CCopasiAbstractArray();
-  //CCopasiAbstractArray(const index_type & sizes);
-  virtual ~CCopasiAbstractArray() {};
-
-  //virtual void resize(const index_type & sizes) = 0;
+  virtual ~CArrayInterface() {};
 
   virtual data_type & operator[](const index_type & index) = 0;
+
   virtual const data_type & operator[](const index_type & index) const = 0;
 
   virtual const index_type & size() const = 0;
@@ -49,17 +37,20 @@ public:
 /**
  * this class contains an n-dimensional array
  */
-class CCopasiArray: public CCopasiAbstractArray
+class CArray: public CArrayInterface
 {
 public:
 
-  CCopasiArray();
-  CCopasiArray(const index_type & sizes);
-  virtual ~CCopasiArray() {};
+  CArray();
+
+  CArray(const index_type & sizes);
+
+  virtual ~CArray() {};
 
   void resize(const index_type & sizes);
 
   virtual data_type & operator[](const index_type & index);
+
   virtual const data_type & operator[](const index_type & index) const;
 
   virtual const index_type & size() const;
@@ -68,8 +59,11 @@ public:
 
 private:
   std::vector<data_type> mData;
+
   index_type mSizes;
+
   size_t mDim;
+
   index_type mFactors;
 };
 
@@ -79,11 +73,11 @@ private:
  */
 
 template<class MatrixType>
-class CCopasiMatrixInterface: public CCopasiAbstractArray
+class CMatrixInterface: public CArrayInterface
 {
 public:
 
-  CCopasiMatrixInterface(MatrixType * matrix)
+  CMatrixInterface(MatrixType * matrix)
     : mMatrix(matrix)
   {
     assert(mMatrix);
@@ -91,44 +85,41 @@ public:
     mSizes[0] = mMatrix->numRows();
     mSizes[1] = mMatrix->numCols();
   }
-  virtual ~CCopasiMatrixInterface() {};
 
-  //void resize(const index_type & sizes);
+  virtual ~CMatrixInterface() {};
 
   data_type & operator[](const index_type & index)
   {
-#ifdef COPASI_DEBUG
     assert(index.size() == 2);
-#endif
+
     return (*mMatrix)(index[0], index[1]);
   }
 
   const data_type & operator[](const index_type & index) const
   {
-#ifdef COPASI_DEBUG
     assert(index.size() == 2);
-#endif
+
     return (*mMatrix)(index[0], index[1]);
   }
 
 private:
   MatrixType * mMatrix;
-  //std::vector<data_type> mData;
-  std::vector<size_t> mSizes;
-  //size_t mDim;
-  //std::vector<size_t> mFactors;
+
+  mutable std::vector<size_t> mSizes;
 
 public:
   virtual const index_type & size() const
   {
-    CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-    tmp->mSizes[0] = mMatrix->numRows();
-    tmp->mSizes[1] = mMatrix->numCols();
+    mSizes[0] = mMatrix->numRows();
+    mSizes[1] = mMatrix->numCols();
+
     return mSizes;
   }
 
   size_t dimensionality() const
-  {return 2;}
+  {
+    return 2;
+  }
 };
 
 /**
@@ -138,50 +129,51 @@ public:
  */
 
 template<class VectorType>
-class CDataVectorInterface: public CCopasiAbstractArray
+class CVectorInterface: public CArrayInterface
 {
 public:
 
-  CDataVectorInterface(VectorType * vector)
+  CVectorInterface(VectorType * vector)
     : mVector(vector)
   {
     assert(mVector);
     mSizes.resize(1);
     mSizes[0] = mVector->size();
   }
-  virtual ~CDataVectorInterface() {};
+
+  virtual ~CVectorInterface() {};
 
   data_type & operator[](const index_type & index)
   {
-#ifdef COPASI_DEBUG
     assert(index.size() == 1);
-#endif
+
     return (*mVector)[index[0]];
   }
 
   const data_type & operator[](const index_type & index) const
   {
-#ifdef COPASI_DEBUG
     assert(index.size() == 1);
-#endif
+
     return (*mVector)[index[0]];
   }
 
 private:
   VectorType * mVector;
-  mutable std::vector<size_t> mSizes;
+
+  mutable std::vector< size_t > mSizes;
 
 public:
   virtual const index_type & size() const
   {
-    //CCopasiMatrixInterface * tmp = const_cast<CCopasiMatrixInterface*>(this);
-    /*tmp->*/
-    mSizes[0] =        mVector->size();
+    mSizes[0] = mVector->size();
+
     return mSizes;
   }
 
   size_t dimensionality() const
-  {return 1;}
+  {
+    return 1;
+  }
 };
 
 #endif

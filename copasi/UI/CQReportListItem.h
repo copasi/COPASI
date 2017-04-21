@@ -21,7 +21,7 @@
 #define COPASI_CQReportListItem
 
 #include <QListWidgetItem>
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
 class CDataObject;
 class CDataModel;
@@ -36,7 +36,7 @@ public:
 
   ~CQReportListItem();
 
-  const CCopasiObjectName & getCN() const;
+  const CCommonName & getCN() const;
 
   void setObject(const CDataObject* pObject);
 
@@ -44,7 +44,7 @@ public:
 
   // Attributes
 private:
-  CRegisteredObjectName mCN;
+  CRegisteredCommonName mCN;
 };
 
 #endif // COPASI_CQReportListItem

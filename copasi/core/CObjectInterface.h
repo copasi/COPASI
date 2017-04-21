@@ -14,7 +14,7 @@
 
 class CDataObject;
 class CDataContainer;
-class CCopasiObjectName;
+class CCommonName;
 class CValidity;
 
 //********************************************************************************
@@ -28,7 +28,7 @@ public:
   static const CDataObject * DataObject(const CObjectInterface * pInterface);
 
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
-      const CCopasiObjectName & objName);
+      const CCommonName & objName);
 
   /**
    * Constructor
@@ -52,16 +52,16 @@ public:
 
   /**
    * Retrieve the CN of the object
-   * @return CCopasiObjectName
+   * @return CCommonName
    */
-  virtual CCopasiObjectName getCN() const = 0;
+  virtual CCommonName getCN() const = 0;
 
   /**
    * Retrieve a descendant object by its CN.
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const = 0;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const = 0;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated

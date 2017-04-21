@@ -323,10 +323,10 @@ public:
 
   /**
    * We are hiding local reaction parameter which are covered by global quantities.
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
   /**
    *  Gets the description of what parameters the function expects.
@@ -724,7 +724,7 @@ private:
   /**
    *
    */
-  CRegisteredObjectName mScalingCompartmentCN;
+  CRegisteredCommonName mScalingCompartmentCN;
 
   /**
    *

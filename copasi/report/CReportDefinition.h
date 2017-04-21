@@ -32,8 +32,8 @@
 #include <vector>
 
 #include "copasi/core/CDataObject.h"
-#include "report/CCopasiObjectName.h"
-#include "report/CCopasiStaticString.h"
+#include "core/CRegisteredCommonName.h"
+#include "core/CDataString.h"
 #include "utilities/CCopasiTask.h"
 
 class CReportDefinition;
@@ -52,10 +52,10 @@ private:
   std::string mComment;
   CTaskEnum::Task mTaskType;
 
-  std::vector<CRegisteredObjectName> mHeaderVector;
-  std::vector<CRegisteredObjectName> mBodyVector;
-  std::vector<CRegisteredObjectName> mFooterVector;
-  std::vector<CRegisteredObjectName> mTableVector;
+  std::vector<CRegisteredCommonName> mHeaderVector;
+  std::vector<CRegisteredCommonName> mBodyVector;
+  std::vector<CRegisteredCommonName> mFooterVector;
+  std::vector<CRegisteredCommonName> mTableVector;
 
   CCopasiReportSeparator mSeparator;
   bool mTable;
@@ -117,42 +117,42 @@ public:
   /**
    *gets the body in the report tag
    */
-  std::vector<CRegisteredObjectName>* getBodyAddr();
+  std::vector<CRegisteredCommonName>* getBodyAddr();
 
   /**
    *gets the body in the report tag
    */
-  const std::vector<CRegisteredObjectName>* getBodyAddr() const;
+  const std::vector<CRegisteredCommonName>* getBodyAddr() const;
 
   /**
    *gets the header in the report tag
    */
-  std::vector<CRegisteredObjectName>* getHeaderAddr();
+  std::vector<CRegisteredCommonName>* getHeaderAddr();
 
   /**
    *gets the header in the report tag
    */
-  const std::vector<CRegisteredObjectName>* getHeaderAddr() const;
+  const std::vector<CRegisteredCommonName>* getHeaderAddr() const;
 
   /**
    *gets the footer in the report tag
    */
-  std::vector<CRegisteredObjectName>* getFooterAddr();
+  std::vector<CRegisteredCommonName>* getFooterAddr();
 
   /**
    *gets the footer in the report tag
    */
-  const std::vector<CRegisteredObjectName>* getFooterAddr() const;
+  const std::vector<CRegisteredCommonName>* getFooterAddr() const;
 
   /**
    *gets the footer in the report tag
    */
-  std::vector<CRegisteredObjectName>* getTableAddr();
+  std::vector<CRegisteredCommonName>* getTableAddr();
 
   /**
    *gets the footer in the report tag
    */
-  const std::vector<CRegisteredObjectName>* getTableAddr() const;
+  const std::vector<CRegisteredCommonName>* getTableAddr() const;
 
   /**
    *

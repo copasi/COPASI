@@ -6639,11 +6639,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialConcentration")
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
                         }
                     }
                   else
@@ -6656,7 +6656,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
                   pResult = new CEvaluationNodeObject(CEvaluationNode::S_INVALID, "<rateOf>");
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getObjectParent()->getObject(CCopasiObjectName("Reference=Concentration"))->getCN() + ">"));
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getObjectParent()->getObject(CCommonName("Reference=Concentration"))->getCN() + ">"));
                   pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + id + ">"));
                 }
               else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
@@ -6716,11 +6716,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                           if (pObject->getObjectName() == "InitialParticleNumber")
                             {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=InitialVolume"))->getCN() + ">"));
+                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                             }
                           else
                             {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCopasiObjectName("Reference=Volume"))->getCN() + ">"));
+                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
                             }
 
                           pResult = pTmpNode;

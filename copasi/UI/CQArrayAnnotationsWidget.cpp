@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,7 +135,7 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
   if (cs) cs->setIsUsed(true);
 }
 
-void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
+void CQArrayAnnotationsWidget::setArrayAnnotation(const CDataArray * pArray)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in setArrayAnnotation -- \n";
@@ -172,11 +177,11 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
     }
 
   mSelectionIndex.resize(imax);
-  CCopasiAbstractArray::index_type::iterator it = mSelectionIndex.begin();
-  CCopasiAbstractArray::index_type::iterator end = mSelectionIndex.end();
+  CArrayInterface::index_type::iterator it = mSelectionIndex.begin();
+  CArrayInterface::index_type::iterator end = mSelectionIndex.end();
 
   mSelectedCell.resize(imax);
-  CCopasiAbstractArray::index_type::iterator itCell = mSelectedCell.begin();
+  CArrayInterface::index_type::iterator itCell = mSelectedCell.begin();
 
   for (; it != end; ++it)
     {
@@ -384,7 +389,7 @@ void CQArrayAnnotationsWidget::fillTable()
 }
 
 void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
-    const CCopasiAbstractArray::index_type & index)
+    const CArrayInterface::index_type & index)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in fillTable0 A -- \n";
@@ -400,7 +405,7 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
 
   if (jmax == 0) return;
 
-  CCopasiAbstractArray::index_type Index = index;
+  CArrayInterface::index_type Index = index;
 
   //automatic color scaling
   if (mAutomaticColorScaling)
@@ -434,7 +439,7 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
 }
 
 void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
-    const CCopasiAbstractArray::index_type & index)
+    const CArrayInterface::index_type & index)
 {
 #ifdef DEBUG_UI
   qDebug() << "-- in fillTable0 B -- \n";
@@ -446,7 +451,7 @@ void CQArrayAnnotationsWidget::fillTable1(size_t rowIndex,
 
   size_t i, imax = mpArray->size()[rowIndex];
 
-  CCopasiAbstractArray::index_type Index = index;
+  CArrayInterface::index_type Index = index;
 
   //automatic color scaling
   if (mAutomaticColorScaling)
@@ -481,7 +486,7 @@ void CQArrayAnnotationsWidget::fillTable0()
 
   if (!mpArray) return;
 
-  CCopasiAbstractArray::index_type Index;
+  CArrayInterface::index_type Index;
   mpColorScale->startAutomaticParameterCalculation();
   mpColorScale->passValue((*mpArray->array())[Index]);
   mpColorScale->finishAutomaticParameterCalculation();

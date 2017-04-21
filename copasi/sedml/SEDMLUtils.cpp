@@ -245,7 +245,7 @@ SEDMLUtils::resolveDatagenerator(const CModel *model, const SedDataGenerator* da
 
   if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
     {
-      return static_cast<const CDataObject *>(model->getObject(CCopasiObjectName("Reference=Time")));
+      return static_cast<const CDataObject *>(model->getObject(CCommonName("Reference=Time")));
     }
 
   return resolveXPath(model, var->getTarget());
@@ -411,7 +411,7 @@ const CDataObject *
 SEDMLUtils::getObjectForSbmlId(const CModel* pModel, const std::string& id, const std::string& SBMLType, bool initial/* = false*/)
 {
   if (SBMLType == "Time")
-    return static_cast<const CDataObject *>(pModel->getObject(CCopasiObjectName("Reference=Time")));
+    return static_cast<const CDataObject *>(pModel->getObject(CCommonName("Reference=Time")));
 
   if (SBMLType == "species")
     {

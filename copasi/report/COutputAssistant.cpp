@@ -638,7 +638,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
             if (it == end) continue;
 
             data2 =
-              static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Independent Value")));
+              static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
 
             for (; it != end; ++it)
               {
@@ -652,7 +652,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 Name = pExperiment->getObjectName() + "," + Name;
 
                 //1
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Measured Value"))));
+                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Measured Value)");
                 LineTypes.push_back(3); //symbols & lines
@@ -661,7 +661,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
                 //2
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Fitted Value"))));
+                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Fitted Value)");
 
@@ -680,7 +680,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                 Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
                 //3
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Weighted Error"))));
+                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
                 ChannelX.push_back(data2->getCN());
                 Names.push_back(Name + "(Weighted Error)");
                 LineTypes.push_back(2); //symbols
@@ -748,14 +748,14 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
             if (it == end) continue;
 
-            data2 = static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Independent Value")));
+            data2 = static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
             data1.clear();
 
             for (; it != end; ++it)
               {
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Measured Value"))));
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Fitted Value"))));
-                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCopasiObjectName("Reference=Weighted Error"))));
+                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+                data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
               }
 
             pPlotSpecification =
@@ -846,7 +846,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
             std::string Name = pExperiment->getObjectName();
             CPlotDataChannelSpec ChannelX =
-              it->getObject(CCopasiObjectName("Reference=Independent Value"))->getCN();
+              it->getObject(CCommonName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
 
             if (pExperiment->getExperimentType() == CTaskEnum::timeCourse)
@@ -894,7 +894,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                     pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
                     pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
-                    pItem->addChannel(it->getObject(CCopasiObjectName("Reference=Measured Value"))->getCN());
+                    pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getCN());
 
                     pItem =
                       pPlotSpecification->createItem(Name + "(Fitted Value)", CPlotItem::curve2d);
@@ -903,7 +903,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                     pItem->setValue("Symbol subtype", (unsigned C_INT32) 0);
                     pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
-                    pItem->addChannel(it->getObject(CCopasiObjectName("Reference=Fitted Value"))->getCN());
+                    pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getCN());
 
                     pItem =
                       pPlotSpecification->createItem(Name + "(Weighted Error)", CPlotItem::curve2d);
@@ -912,7 +912,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                     pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
                     pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                     pItem->addChannel(ChannelX);
-                    pItem->addChannel(it->getObject(CCopasiObjectName("Reference=Weighted Error"))->getCN());
+                    pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getCN());
                   }
               }
           }
@@ -934,9 +934,9 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
         //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
 
-        data2 = static_cast< const CDataObject * >(pFitProblem->getObject(CCopasiObjectName("Reference=Function Evaluations")));
+        data2 = static_cast< const CDataObject * >(pFitProblem->getObject(CCommonName("Reference=Function Evaluations")));
         data1.clear();
-        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getObject(CCommonName("Reference=Best Value"))));
 
         pPlotSpecification =
           createPlot("Progress of Fit" , data2, false, data1, false,  getItem(id).mTaskType, pDataModel);
@@ -974,10 +974,10 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
         //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
 
-        data2 = static_cast< const CDataObject * >(pOptProblem->getObject(CCopasiObjectName("Reference=Function Evaluations")));
+        data2 = static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Function Evaluations")));
 
         data1.clear();
-        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCopasiObjectName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Best Value"))));
 
         pPlotSpecification =
           createPlot("Progress of Optimization" , data2, false, data1, false, getItem(id).mTaskType, pDataModel);
@@ -1008,7 +1008,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
   C_INT32 idMod = id % 200;
   bool logY = false; //this is onyl used for plots; it indicates whether the y axis is plotted logarithmically
 
-  const CDataObject* pTime = static_cast< const CDataObject * >(Model.getObject(CCopasiObjectName("Reference=Time")));
+  const CDataObject* pTime = static_cast< const CDataObject * >(Model.getObject(CCommonName("Reference=Time")));
 
   switch (idMod)
     {
@@ -1158,7 +1158,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
         if (pFitProblem == NULL) break;
 
-        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getObject(CCopasiObjectName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getObject(CCommonName("Reference=Best Value"))));
         logY = true;
       }
       break;
@@ -1173,7 +1173,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
         if (pOptProblem == NULL) break;
 
-        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCopasiObjectName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Best Value"))));
       }
       break;
     }
@@ -1194,7 +1194,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
               for (i = 0; i < num_scanitems; ++i)
                 {
-                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredObjectName >("Object");
+                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredCommonName >("Object");
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {
@@ -1235,7 +1235,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
 
               for (i = 0; i < num_scanitems; ++i)
                 {
-                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredObjectName >("Object");
+                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredCommonName >("Object");
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {

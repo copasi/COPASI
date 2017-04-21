@@ -29,8 +29,8 @@ class CCrossValidationSet;
 class CTrajectoryProblem;
 class CState;
 class CFitConstraint;
-class CArrayAnnotation;
-template < class CMatrixType > class CCopasiMatrixInterface;
+class CDataArray;
+template < class CMatrixType > class CMatrixInterface;
 
 class CFitProblem : public COptProblem
 {
@@ -172,43 +172,43 @@ public:
    * Retrieve the Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fisherInformationMatrix
    */
-  CArrayAnnotation & getFisherInformation() const;
+  CDataArray & getFisherInformation() const;
 
   /**
    * Retrieve the Eigenvalues of the Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fimEigenvalues
    */
-  CArrayAnnotation & getFisherInformationEigenvalues() const;
+  CDataArray & getFisherInformationEigenvalues() const;
 
   /**
    * Retrieve the Eigenvectors corresponding to the Eigenvalues of the Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fimEigenvectors
    */
-  CArrayAnnotation & getFisherInformationEigenvectors() const;
+  CDataArray & getFisherInformationEigenvectors() const;
 
   /**
    * Retrieve the scaled Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fisherInformationMatrix
    */
-  CArrayAnnotation & getScaledFisherInformation() const;
+  CDataArray & getScaledFisherInformation() const;
 
   /**
    * Retrieve the Eigenvalues of the scaled Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fimEigenvalues
    */
-  CArrayAnnotation & getScaledFisherInformationEigenvalues() const;
+  CDataArray & getScaledFisherInformationEigenvalues() const;
 
   /**
    * Retrieve the Eigenvectors corresponding to the Eigenvalues of the scaled Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fimEigenvectors
    */
-  CArrayAnnotation & getScaledFisherInformationEigenvectors() const;
+  CDataArray & getScaledFisherInformationEigenvectors() const;
 
   /**
    * Retrieve the correlations of the solution variables.
    * @return CArrayAnnotation & variableCorrelations
    */
-  CArrayAnnotation & getCorrelations() const;
+  CDataArray & getCorrelations() const;
 
   /**
    * Retrieve the experiment set.
@@ -236,10 +236,10 @@ public:
 
   /**
    * Add an optimization item to the problem.
-   * @param const CCopasiObjectName & objectCN
+   * @param const CCommonName & objectCN
    * @return COptItem optItemAdded
    */
-  CFitItem & addFitItem(const CCopasiObjectName & objectCN);
+  CFitItem & addFitItem(const CCommonName & objectCN);
 
   /**
    * Set the solution.
@@ -475,44 +475,44 @@ private:
    * The Fisher information or parameter correlation matrix
    */
   CMatrix< C_FLOAT64 > mFisher;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherMatrixInterface;
-  CArrayAnnotation * mpFisherMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherMatrixInterface;
+  CDataArray * mpFisherMatrix;
 
   /**
    * The Fisher information Matrix Eigenvalues and corresponding Eigenvectors
    */
   CMatrix< C_FLOAT64 > mFisherEigenvalues;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherEigenvaluesMatrixInterface;
-  CArrayAnnotation * mpFisherEigenvaluesMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherEigenvaluesMatrixInterface;
+  CDataArray * mpFisherEigenvaluesMatrix;
 
   CMatrix< C_FLOAT64 > mFisherEigenvectors;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherEigenvectorsMatrixInterface;
-  CArrayAnnotation * mpFisherEigenvectorsMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherEigenvectorsMatrixInterface;
+  CDataArray * mpFisherEigenvectorsMatrix;
 
   /**
    * The Fisher information or parameter correlation matrix scaled to parameter values
    */
   CMatrix< C_FLOAT64 > mFisherScaled;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherScaledMatrixInterface;
-  CArrayAnnotation * mpFisherScaledMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherScaledMatrixInterface;
+  CDataArray * mpFisherScaledMatrix;
 
   /**
    * The scaled Fisher information Matrix Eigenvalues and corresponding Eigenvectors
    */
   CMatrix< C_FLOAT64 > mFisherScaledEigenvalues;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherScaledEigenvaluesMatrixInterface;
-  CArrayAnnotation * mpFisherScaledEigenvaluesMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherScaledEigenvaluesMatrixInterface;
+  CDataArray * mpFisherScaledEigenvaluesMatrix;
 
   CMatrix< C_FLOAT64 > mFisherScaledEigenvectors;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherScaledEigenvectorsMatrixInterface;
-  CArrayAnnotation * mpFisherScaledEigenvectorsMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpFisherScaledEigenvectorsMatrixInterface;
+  CDataArray * mpFisherScaledEigenvectorsMatrix;
 
   /**
    * The  parameter correlation matrix
    */
   CMatrix< C_FLOAT64 > mCorrelation;
-  CCopasiMatrixInterface< CMatrix< C_FLOAT64 > > * mpCorrelationMatrixInterface;
-  CArrayAnnotation * mpCorrelationMatrix;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpCorrelationMatrixInterface;
+  CDataArray * mpCorrelationMatrix;
 
   /**
    * A pointer to the value of the CCopasiParameter holding Create Parameter Sets

@@ -16,7 +16,7 @@
 
 %{
 
-#include "report/CCopasiArray.h"
+#include "core/CDataArray.h"
 
 %}
 
@@ -77,7 +77,7 @@
 #endif // SWIGPERL
 
 
-%include "report/CCopasiArray.h"
+%include "core/CDataArray.h"
 
 
 %extend CCopasiAbstractArray {

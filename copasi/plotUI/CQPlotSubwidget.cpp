@@ -23,7 +23,7 @@
 #include "plot/CPlotSpecification.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "UI/CCopasiPlotSelectionDialog.h"
 #include "model/CMetabNameInterface.h"
 #include "CopasiDataModel/CDataModel.h"
@@ -385,10 +385,10 @@ void CQPlotSubwidget::addCurve2D()
       return;
     }
 
-  std::vector<CCopasiObjectName> objects1, objects2;
+  std::vector<CCommonName> objects1, objects2;
   size_t i;
-  std::vector<CCopasiObjectName>::const_iterator sit;
-  const CArrayAnnotation *pArray;
+  std::vector<CCommonName>::const_iterator sit;
+  const CDataArray *pArray;
   // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
   // 2. translate to CNs and remove duplicates
   // x-axis is set for single cell selection
@@ -399,7 +399,7 @@ void CQPlotSubwidget::addCurve2D()
       if (vector1[i])  // the object is not empty
         {
           // is it an array annotation?
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector1[i])))
+          if ((pArray = dynamic_cast< const CDataArray * >(vector1[i])))
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
@@ -431,7 +431,7 @@ void CQPlotSubwidget::addCurve2D()
       if (vector2[i])
         {
           // is it an array annotation?
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
+          if ((pArray = dynamic_cast< const CDataArray * >(vector2[i])))
             {
               // second argument is set false for multi selection
               std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
@@ -524,10 +524,10 @@ void CQPlotSubwidget::addSpectrum()
       return;
     }
 
-  std::vector<CCopasiObjectName> objects1, objects2;
+  std::vector<CCommonName> objects1, objects2;
   size_t i;
-  std::vector<CCopasiObjectName>::const_iterator sit;
-  const CArrayAnnotation *pArray;
+  std::vector<CCommonName>::const_iterator sit;
+  const CDataArray *pArray;
   // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
   // 2. translate to CNs and remove duplicates
   // x-axis is set for single cell selection
@@ -538,7 +538,7 @@ void CQPlotSubwidget::addSpectrum()
       if (vector1[i])  // the object is not empty
         {
           // is it an array annotation?
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector1[i])))
+          if ((pArray = dynamic_cast< const CDataArray * >(vector1[i])))
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
@@ -570,7 +570,7 @@ void CQPlotSubwidget::addSpectrum()
       if (vector2[i])
         {
           // is it an array annotation?
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
+          if ((pArray = dynamic_cast< const CDataArray * >(vector2[i])))
             {
               // second argument is set false for multi selection
               std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
@@ -676,10 +676,10 @@ void CQPlotSubwidget::addBandedGraph()
       return;
     }
 
-  std::vector<CCopasiObjectName> objects1, objects2;
+  std::vector<CCommonName> objects1, objects2;
   size_t i;
-  std::vector<CCopasiObjectName>::const_iterator sit;
-  const CArrayAnnotation *pArray;
+  std::vector<CCommonName>::const_iterator sit;
+  const CDataArray *pArray;
   // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
   // 2. translate to CNs and remove duplicates
   // x-axis is set for single cell selection
@@ -690,7 +690,7 @@ void CQPlotSubwidget::addBandedGraph()
       if (vector1[i])  // the object is not empty
         {
           // is it an array annotation?
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector1[i])))
+          if ((pArray = dynamic_cast< const CDataArray * >(vector1[i])))
             {
               // second argument is true as only single cell here is allowed. In this case we
               //can assume that the size of the return vector is 1.
@@ -722,7 +722,7 @@ void CQPlotSubwidget::addBandedGraph()
       if (vector2[i])
         {
           // is it an array annotation?
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(vector2[i])))
+          if ((pArray = dynamic_cast< const CDataArray * >(vector2[i])))
             {
               // second argument is set false for multi selection
               std::vector<const CDataObject *> vvv = CCopasiSelectionDialog::chooseCellMatrix(pArray, false, true, "Y axis: ");
@@ -819,7 +819,7 @@ void CQPlotSubwidget::addHisto1DTab(const std::string &title,
 
 void CQPlotSubwidget::addHisto1D()
 {
-  addHisto1DTab("Histogram", CPlotDataChannelSpec(CCopasiObjectName("")), 1.0);
+  addHisto1DTab("Histogram", CPlotDataChannelSpec(CCommonName("")), 1.0);
 }
 
 void CQPlotSubwidget::createHistograms(std::vector<const CDataObject * >objects, const C_FLOAT64 &incr)

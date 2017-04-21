@@ -103,9 +103,9 @@
     return val;
   }
 
-  CRegisteredObjectName getCNValue()
+  CRegisteredCommonName getCNValue()
   {
-	  CRegisteredObjectName val = self->getValue<std::string>();
+	  CRegisteredCommonName val = self->getValue<std::string>();
     return val;
   }
 
@@ -166,7 +166,7 @@
     return self->setValue(v);
   }
 
-  bool setCNValue(const CRegisteredObjectName& v)
+  bool setCNValue(const CRegisteredCommonName& v)
   {
     return self->setValue(v);
   }

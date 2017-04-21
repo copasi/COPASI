@@ -71,7 +71,7 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pDelayNode != NULL);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pDelayNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);

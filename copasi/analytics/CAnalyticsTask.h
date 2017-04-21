@@ -28,7 +28,7 @@
 #include "copasi/utilities/CReadConfig.h"
 #include "copasi/trajectory/CTimeSeries.h"
 #include "copasi/core/CVector.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "analytics/CStatistics.h"
 
 class CAnalyticsProblem;
@@ -238,9 +238,9 @@ private:
   CStatistics * pStats;
   CStatistics * pStatsTime;
 
-  CArrayAnnotation * mpResultAnnotation;
+  CDataArray * mpResultAnnotation;
 
-  CArrayAnnotation * mpStatValAnn;
+  CDataArray * mpStatValAnn;
   //CArrayAnnotation * mpStatTimeAnn;
   //--- ETTORE end -----
 };

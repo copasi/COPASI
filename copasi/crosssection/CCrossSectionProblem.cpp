@@ -69,7 +69,7 @@ void CCrossSectionProblem::initializeParameter()
   mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::BOOL, false);
   mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::DOUBLE, (C_FLOAT64)1E-6);
   mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::EXPRESSION, std::string(""));
-  mSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCopasiObjectName(""));
+  mSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::CN, CCommonName(""));
   setOutputEvent(false);
 }
 

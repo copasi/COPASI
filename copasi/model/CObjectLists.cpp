@@ -24,7 +24,7 @@
 #include "model/CModel.h"
 #include "report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 //static
 const std::string CObjectLists::ListTypeName[] =
@@ -277,7 +277,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         for (; itMetab != endMetab; ++itMetab)
           if (itMetab->getStatus() == CModelEntity::ODE ||
               itMetab->getStatus() == CModelEntity::REACTIONS)
-            ret.push_back(static_cast< const CDataObject * >(itMetab->getObject(CCopasiObjectName("Reference=TransitionTime"))));
+            ret.push_back(static_cast< const CDataObject * >(itMetab->getObject(CCommonName("Reference=TransitionTime"))));
 
         break;
 
@@ -292,14 +292,14 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTION_CONC_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCopasiObjectName("Reference=Flux"))));
+          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCommonName("Reference=Flux"))));
 
         break;
 
       case REACTION_PART_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCopasiObjectName("Reference=ParticleFlux"))));
+          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCommonName("Reference=ParticleFlux"))));
 
         break;
 
@@ -502,7 +502,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         if (!pParent)
           break;
 
-        const CArrayAnnotation * pEV = dynamic_cast<const CArrayAnnotation*>(pParent->getObject(CCopasiObjectName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+        const CDataArray * pEV = dynamic_cast<const CDataArray*>(pParent->getObject(CCommonName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
 
         if (pEV->dimensionality() != 2) //2d matrix
           break;
@@ -525,7 +525,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         if (!pParent)
           break;
 
-        const CArrayAnnotation * pEV = dynamic_cast<const CArrayAnnotation*>(pParent->getObject(CCopasiObjectName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+        const CDataArray * pEV = dynamic_cast<const CDataArray*>(pParent->getObject(CCommonName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
 
         if (pEV->dimensionality() != 2) //2d matrix
           break;

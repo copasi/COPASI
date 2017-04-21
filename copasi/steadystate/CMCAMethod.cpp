@@ -76,50 +76,50 @@ CMCAMethod::CMCAMethod(const CMCAMethod & src,
 
 void CMCAMethod::initObjects()
 {
-  CArrayAnnotation *
-  tmp = new CArrayAnnotation("Unscaled elasticities", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledElasticities), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  CDataArray *
+  tmp = new CDataArray("Unscaled elasticities", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledElasticities), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Unscaled elasticity matrix");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Species (reduced system)");
   mUnscaledElasticitiesAnn = tmp;
 
-  tmp = new CArrayAnnotation("Unscaled concentration control coefficients", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledConcCC), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Unscaled concentration control coefficients", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledConcCC), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Unscaled concentration control coefficients");
   tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
   mUnscaledConcCCAnn = tmp;
 
-  tmp = new CArrayAnnotation("Unscaled flux control coefficients", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledFluxCC), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Unscaled flux control coefficients", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledFluxCC), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Unscaled flux control coefficients");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
   mUnscaledFluxCCAnn = tmp;
 
-  tmp = new CArrayAnnotation("Scaled elasticities", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledElasticities), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Scaled elasticities", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledElasticities), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Scaled elasticity matrix");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Species (reduced system)");
   mScaledElasticitiesAnn = tmp;
 
-  tmp = new CArrayAnnotation("Scaled concentration control coefficients", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledConcCC), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Scaled concentration control coefficients", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledConcCC), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Scaled concentration control coefficients");
   tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
   mScaledConcCCAnn = tmp;
 
-  tmp = new CArrayAnnotation("Scaled flux control coefficients", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledFluxCC), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Scaled flux control coefficients", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledFluxCC), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Scaled flux control coefficients");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");

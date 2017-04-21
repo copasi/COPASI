@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -76,7 +81,7 @@ bool ReportSectionHandler::processEnd(const XML_Char * pszName)
         break;
 
       case Object:
-        mpSectionContent->push_back(CCopasiObjectName(mpData->CharacterData));
+        mpSectionContent->push_back(CCommonName(mpData->CharacterData));
         break;
 
       default:
@@ -104,7 +109,7 @@ CXMLHandler::sProcessLogic * ReportSectionHandler::getProcessLogic() const
   return Elements;
 }
 
-void ReportSectionHandler::setSectionContent(std::vector< CRegisteredObjectName > * pSectionContent)
+void ReportSectionHandler::setSectionContent(std::vector< CRegisteredCommonName > * pSectionContent)
 {
   mpSectionContent = pSectionContent;
 }

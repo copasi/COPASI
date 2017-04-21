@@ -38,7 +38,7 @@
 #include "trajectory/CTrajectoryProblem.h"
 #include "utilities/CProcessReport.h"
 #include "utilities/CCopasiException.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 #include "lapack/blaswrap.h"           //use blas
 #include "lapack/lapackwrap.h"        //use CLAPACK
@@ -179,56 +179,56 @@ void CFitProblem::initObjects()
   addObjectReference("Validation Solution", mCrossValidationSolutionValue, CDataObject::ValueDbl);
   addObjectReference("Validation Objective", mCrossValidationObjective, CDataObject::ValueDbl);
 
-  mpFisherMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
-  mpFisherMatrix = new CArrayAnnotation("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
+  mpFisherMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
+  mpFisherMatrix = new CDataArray("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
   mpFisherMatrix->setDescription("Fisher Information Matrix");
   mpFisherMatrix->setDimensionDescription(0, "Parameters");
   mpFisherMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherMatrix->setMode(CArrayAnnotation::STRINGS);
+  mpFisherMatrix->setMode(CDataArray::STRINGS);
 
-  mpFisherEigenvaluesMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherEigenvalues);
-  mpFisherEigenvaluesMatrix = new CArrayAnnotation("FIM Eigenvalues", this, mpFisherEigenvaluesMatrixInterface, false);
+  mpFisherEigenvaluesMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherEigenvalues);
+  mpFisherEigenvaluesMatrix = new CDataArray("FIM Eigenvalues", this, mpFisherEigenvaluesMatrixInterface, false);
   mpFisherEigenvaluesMatrix->setDescription("FIM Eigenvalues");
   mpFisherEigenvaluesMatrix->setDimensionDescription(0, "Eigenvalues");
   mpFisherEigenvaluesMatrix->setDimensionDescription(1, "Result");
-  mpFisherEigenvaluesMatrix->setMode(CArrayAnnotation::NUMBERS);
+  mpFisherEigenvaluesMatrix->setMode(CDataArray::NUMBERS);
 
-  mpFisherEigenvectorsMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherEigenvectors);
-  mpFisherEigenvectorsMatrix = new CArrayAnnotation("FIM Eigenvectors", this, mpFisherEigenvectorsMatrixInterface, false);
+  mpFisherEigenvectorsMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherEigenvectors);
+  mpFisherEigenvectorsMatrix = new CDataArray("FIM Eigenvectors", this, mpFisherEigenvectorsMatrixInterface, false);
   mpFisherEigenvectorsMatrix->setDescription("FIM Eigenvectors");
   mpFisherEigenvectorsMatrix->setDimensionDescription(0, "Eigenvectors");
   mpFisherEigenvectorsMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherEigenvectorsMatrix->setMode(0, CArrayAnnotation::NUMBERS);
-  mpFisherEigenvectorsMatrix->setMode(1, CArrayAnnotation::STRINGS);
+  mpFisherEigenvectorsMatrix->setMode(0, CDataArray::NUMBERS);
+  mpFisherEigenvectorsMatrix->setMode(1, CDataArray::STRINGS);
 
-  mpFisherScaledMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaled);
-  mpFisherScaledMatrix = new CArrayAnnotation("Fisher Information Matrix (scaled)", this, mpFisherScaledMatrixInterface, false);
+  mpFisherScaledMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaled);
+  mpFisherScaledMatrix = new CDataArray("Fisher Information Matrix (scaled)", this, mpFisherScaledMatrixInterface, false);
   mpFisherScaledMatrix->setDescription("Fisher Information Matrix (scaled)");
   mpFisherScaledMatrix->setDimensionDescription(0, "Parameters");
   mpFisherScaledMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherScaledMatrix->setMode(CArrayAnnotation::STRINGS);
+  mpFisherScaledMatrix->setMode(CDataArray::STRINGS);
 
-  mpFisherScaledEigenvaluesMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaledEigenvalues);
-  mpFisherScaledEigenvaluesMatrix = new CArrayAnnotation("FIM Eigenvalues (scaled)", this, mpFisherScaledEigenvaluesMatrixInterface, false);
+  mpFisherScaledEigenvaluesMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaledEigenvalues);
+  mpFisherScaledEigenvaluesMatrix = new CDataArray("FIM Eigenvalues (scaled)", this, mpFisherScaledEigenvaluesMatrixInterface, false);
   mpFisherScaledEigenvaluesMatrix->setDescription("FIM Eigenvalues (scaled)");
   mpFisherScaledEigenvaluesMatrix->setDimensionDescription(0, "Eigenvalues");
   mpFisherScaledEigenvaluesMatrix->setDimensionDescription(1, "Result");
-  mpFisherScaledEigenvaluesMatrix->setMode(CArrayAnnotation::NUMBERS);
+  mpFisherScaledEigenvaluesMatrix->setMode(CDataArray::NUMBERS);
 
-  mpFisherScaledEigenvectorsMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaledEigenvectors);
-  mpFisherScaledEigenvectorsMatrix = new CArrayAnnotation("FIM Eigenvectors (scaled)", this, mpFisherScaledEigenvectorsMatrixInterface, false);
+  mpFisherScaledEigenvectorsMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaledEigenvectors);
+  mpFisherScaledEigenvectorsMatrix = new CDataArray("FIM Eigenvectors (scaled)", this, mpFisherScaledEigenvectorsMatrixInterface, false);
   mpFisherScaledEigenvectorsMatrix->setDescription("FIM Eigenvectors (scaled)");
   mpFisherScaledEigenvectorsMatrix->setDimensionDescription(0, "Eigenvectors");
   mpFisherScaledEigenvectorsMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherScaledEigenvectorsMatrix->setMode(0, CArrayAnnotation::NUMBERS);
-  mpFisherScaledEigenvectorsMatrix->setMode(1, CArrayAnnotation::STRINGS);
+  mpFisherScaledEigenvectorsMatrix->setMode(0, CDataArray::NUMBERS);
+  mpFisherScaledEigenvectorsMatrix->setMode(1, CDataArray::STRINGS);
 
-  mpCorrelationMatrixInterface = new CCopasiMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
-  mpCorrelationMatrix = new CArrayAnnotation("Correlation Matrix", this, mpCorrelationMatrixInterface, false);
+  mpCorrelationMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
+  mpCorrelationMatrix = new CDataArray("Correlation Matrix", this, mpCorrelationMatrixInterface, false);
   mpCorrelationMatrix->setDescription("Correlation Matrix");
   mpCorrelationMatrix->setDimensionDescription(0, "Parameters");
   mpCorrelationMatrix->setDimensionDescription(1, "Parameters");
-  mpCorrelationMatrix->setMode(CArrayAnnotation::STRINGS);
+  mpCorrelationMatrix->setMode(CDataArray::STRINGS);
 }
 
 void CFitProblem::initializeParameter()
@@ -239,8 +239,8 @@ void CFitProblem::initializeParameter()
   mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
 
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCommonName(""));
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCommonName(""));
   mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::BOOL, false);
 
   assertGroup("Experiment Set");
@@ -263,8 +263,8 @@ bool CFitProblem::elevateChildren()
 
   // Due to a naming conflict the following parameters may have been overwritten during
   // the load of a CopasiML file we replace them with default values if that was the case.
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCopasiObjectName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCopasiObjectName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::CN, CCommonName(""));
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::CN, CCommonName(""));
 
   CDataVectorN< CCopasiTask > * pTasks = NULL;
   CDataModel* pDataModel = getObjectDataModel();
@@ -763,7 +763,7 @@ bool CFitProblem::checkFunctionalConstraints()
   return true;
 }
 
-CFitItem & CFitProblem::addFitItem(const CCopasiObjectName & objectCN)
+CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -1774,25 +1774,25 @@ const C_FLOAT64 & CFitProblem::getStdDeviation() const
 const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
 {return mParameterSD;}
 
-CArrayAnnotation & CFitProblem::getFisherInformation() const
+CDataArray & CFitProblem::getFisherInformation() const
 {return *mpFisherMatrix;}
 
-CArrayAnnotation & CFitProblem::getFisherInformationEigenvalues() const
+CDataArray & CFitProblem::getFisherInformationEigenvalues() const
 {return *mpFisherEigenvaluesMatrix;}
 
-CArrayAnnotation & CFitProblem::getFisherInformationEigenvectors() const
+CDataArray & CFitProblem::getFisherInformationEigenvectors() const
 {return *mpFisherEigenvectorsMatrix;}
 
-CArrayAnnotation & CFitProblem::getScaledFisherInformation() const
+CDataArray & CFitProblem::getScaledFisherInformation() const
 {return *mpFisherScaledMatrix;}
 
-CArrayAnnotation & CFitProblem::getScaledFisherInformationEigenvalues() const
+CDataArray & CFitProblem::getScaledFisherInformationEigenvalues() const
 {return *mpFisherScaledEigenvaluesMatrix;}
 
-CArrayAnnotation & CFitProblem::getScaledFisherInformationEigenvectors() const
+CDataArray & CFitProblem::getScaledFisherInformationEigenvectors() const
 {return *mpFisherScaledEigenvectorsMatrix;}
 
-CArrayAnnotation & CFitProblem::getCorrelations() const
+CDataArray & CFitProblem::getCorrelations() const
 {return *mpCorrelationMatrix;}
 
 const CExperimentSet & CFitProblem::getExperimentSet() const

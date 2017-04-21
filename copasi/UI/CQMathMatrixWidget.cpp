@@ -77,18 +77,18 @@ void CQMathMatrixWidget::loadMatrices()
   assert(mpDataModel != NULL);
   const CModel* pModel = mpDataModel->getModel();
 
-  const CArrayAnnotation * tmp;
+  const CDataArray * tmp;
 
-  tmp = dynamic_cast<const CArrayAnnotation *>
-        (pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
+  tmp = dynamic_cast<const CDataArray *>
+        (pModel->getObject(CCommonName("Array=Stoichiometry(ann)")));
   mpArrayWidget1->setArrayAnnotation(tmp);
 
-  tmp = dynamic_cast<const CArrayAnnotation *>
-        (pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
+  tmp = dynamic_cast<const CDataArray *>
+        (pModel->getObject(CCommonName("Array=Reduced stoichiometry(ann)")));
   mpArrayWidget2->setArrayAnnotation(tmp);
 
-  tmp = dynamic_cast<const CArrayAnnotation *>
-        (pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
+  tmp = dynamic_cast<const CDataArray *>
+        (pModel->getObject(CCommonName("Array=Link matrix(ann)")));
   mpArrayWidget3->setArrayAnnotation(tmp);
 }
 

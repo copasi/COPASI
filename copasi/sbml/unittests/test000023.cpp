@@ -80,7 +80,7 @@ void test000023::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::S_DIVIDE);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
-  CCopasiObjectName objectCN = pObjectNode->getObjectCN();
+  CCommonName objectCN = pObjectNode->getObjectCN();
   CPPUNIT_ASSERT(!objectCN.empty());
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pModel);

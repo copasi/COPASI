@@ -13,7 +13,7 @@
 
 #include <set>
 
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/model/CModelValue.h"
 
 class CModelParameterSet;
@@ -110,15 +110,15 @@ public:
 
   /**
    * Set the CN of the object represented by the parameter
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    */
-  virtual void setCN(const CCopasiObjectName & cn);
+  virtual void setCN(const CCommonName & cn);
 
   /**
    * Retrieve the CN of the object represented by the parameter
-   * @return const CCopasiObjectName & cn
+   * @return const CCommonName & cn
    */
-  const CCopasiObjectName & getCN() const;
+  const CCommonName & getCN() const;
 
   /**
    * Set the role the parameters object plays in the simulation.
@@ -257,10 +257,10 @@ public:
 protected:
   /**
    * Determine the parameter name based on the CN of the corresponding object
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return std::string name
    */
-  static std::string nameFromCN(const CCopasiObjectName & cn);
+  static std::string nameFromCN(const CCommonName & cn);
 
 protected:
   /**
@@ -276,7 +276,7 @@ protected:
   /**
    * The CN of the corresponding model object
    */
-  CRegisteredObjectName mCN;
+  CRegisteredCommonName mCN;
 
   /**
    * The role the parameter object is used in the simulation.
@@ -389,9 +389,9 @@ public:
 
   /**
    * Set the CN of the object represented by the parameter
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    */
-  virtual void setCN(const CCopasiObjectName & cn);
+  virtual void setCN(const CCommonName & cn);
 
   /**
    * Set the value of the parameter based on the current framework
@@ -410,14 +410,14 @@ public:
 private:
   /**
    * Retrieve the CN of the compartment the species is contained in.
-   * @return CCopasiObjectName compartmentCN
+   * @return CCommonName compartmentCN
    */
-  CCopasiObjectName getCompartmentCN() const;
+  CCommonName getCompartmentCN() const;
 
   /**
    * The CN of the compartment the species is contained in.
    */
-  CRegisteredObjectName mCompartmentCN;
+  CRegisteredCommonName mCompartmentCN;
 
   /**
    * A pointer to the parameter representing the compartment the species is contained in.
@@ -468,9 +468,9 @@ public:
 
   /**
    * Retrieve the CN of the assigned global quantity
-   * @return const CRegisteredObjectName & globalQuantityCN
+   * @return const CRegisteredCommonName & globalQuantityCN
    */
-  const CRegisteredObjectName & getGlobalQuantityCN() const;
+  const CRegisteredCommonName & getGlobalQuantityCN() const;
 
 private:
   /**
@@ -481,7 +481,7 @@ private:
   /**
    * The CN of the assigned global quantity.
    */
-  CRegisteredObjectName mGlobalQuantityCN;
+  CRegisteredCommonName mGlobalQuantityCN;
 
   /**
    * A pointer to the parameter representing the assigned global quantity.

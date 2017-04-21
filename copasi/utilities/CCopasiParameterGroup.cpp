@@ -295,7 +295,7 @@ CDataObject * CCopasiParameterGroup::insert(const CData & data)
 }
 
 // virtual
-const CObjectInterface * CCopasiParameterGroup::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CCopasiParameterGroup::getObject(const CCommonName & cn) const
 {
   const CObjectInterface * pObjectInterface = CDataContainer::getObject(cn);
 

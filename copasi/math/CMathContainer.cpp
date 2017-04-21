@@ -395,14 +395,14 @@ CMathContainer::CMathContainer(CModel & model):
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
-  const CDataObject * pAvogadro = mpModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"))->getDataObject();
+  const CDataObject * pAvogadro = mpModel->getObject(CCommonName("Reference=Avogadro Constant"))->getDataObject();
   mAvogadroValue = *(C_FLOAT64 *)pAvogadro->getValuePointer();
   CMathObject::initialize(&mAvogadroObject, &mAvogadroValue,
                           CMath::Value, CMath::EntityTypeUndefined, CMath::Fixed, false, true,
                           pAvogadro);
   map(pAvogadro, &mAvogadroObject);
 
-  const CDataObject * pQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"))->getDataObject();
+  const CDataObject * pQuantity2NumberFactor = mpModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getDataObject();
   mQuantity2NumberFactorValue = *(C_FLOAT64 *)pQuantity2NumberFactor->getValuePointer();
 
   CMathObject::initialize(&mQuantity2NumberFactorObject, &mQuantity2NumberFactorValue,
@@ -1205,13 +1205,13 @@ void CMathContainer::pushAllTransientValues()
 }
 
 // virtual
-CCopasiObjectName CMathContainer::getCN() const
+CCommonName CMathContainer::getCN() const
 {
   return mpModel->getCN();
 }
 
 // virtual
-const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn) const
+const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 {
   // Since the CN should be relative we check in the model first
   const CObjectInterface * pObject = mpModel->getObject(cn);
@@ -1226,7 +1226,7 @@ const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn)
       ListOfContainer.push_back(mpModel);
       ListOfContainer.push_back(mpModel->getObjectDataModel());
 
-      CCopasiObjectName ModelCN = mpModel->getCN();
+      CCommonName ModelCN = mpModel->getCN();
 
       if (cn.getPrimary() != ModelCN.getPrimary())
         {
@@ -1252,7 +1252,7 @@ const CObjectInterface * CMathContainer::getObject(const CCopasiObjectName & cn)
   return pObject;
 }
 
-const CObjectInterface * CMathContainer::getObjectFromCN(const CCopasiObjectName & cn) const
+const CObjectInterface * CMathContainer::getObjectFromCN(const CCommonName & cn) const
 {
   CObjectInterface::ContainerList ListOfContainer;
   ListOfContainer.push_back(this);
@@ -1313,7 +1313,7 @@ CMathObject * CMathContainer::getMathObject(const C_FLOAT64 * pDataValue) const
   return NULL;
 }
 
-CMathObject * CMathContainer::getMathObject(const CCopasiObjectName & cn) const
+CMathObject * CMathContainer::getMathObject(const CCommonName & cn) const
 {
   return getMathObject(mpModel->getObject(cn));
 }

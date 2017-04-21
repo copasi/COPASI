@@ -38,7 +38,7 @@
 #include "model/CModel.h"
 #include "model/CState.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "report/CCopasiTimer.h"
+#include "core/CDataTimer.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 

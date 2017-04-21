@@ -23,7 +23,7 @@
 #include <vector>
 #include "utilities/CLinkMatrix.h"
 #include "utilities/CCopasiMethod.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "steadystate/CSteadyStateMethod.h"
 
 class CModel;
@@ -91,17 +91,17 @@ public:
   const CMatrix<C_FLOAT64> & getScaledFluxCC() const
   {return mScaledFluxCC;}
 
-  const CArrayAnnotation* getUnscaledElasticitiesAnn() const
+  const CDataArray* getUnscaledElasticitiesAnn() const
   {return mUnscaledElasticitiesAnn;}
-  const CArrayAnnotation* getScaledElasticitiesAnn() const
+  const CDataArray* getScaledElasticitiesAnn() const
   {return mScaledElasticitiesAnn;}
-  const CArrayAnnotation* getUnscaledConcentrationCCAnn() const
+  const CDataArray* getUnscaledConcentrationCCAnn() const
   {return mUnscaledConcCCAnn;}
-  const CArrayAnnotation* getScaledConcentrationCCAnn() const
+  const CDataArray* getScaledConcentrationCCAnn() const
   {return mScaledConcCCAnn;}
-  const CArrayAnnotation* getUnscaledFluxCCAnn() const
+  const CDataArray* getUnscaledFluxCCAnn() const
   {return mUnscaledFluxCCAnn;}
-  const CArrayAnnotation* getScaledFluxCCAnn() const
+  const CDataArray* getScaledFluxCCAnn() const
   {return mScaledFluxCCAnn;}
 
   /**
@@ -179,22 +179,22 @@ private:
    * MCA Matrices
    */
   CMatrix<C_FLOAT64> mUnscaledElasticities;
-  CArrayAnnotation* mUnscaledElasticitiesAnn;
+  CDataArray* mUnscaledElasticitiesAnn;
 
   CMatrix<C_FLOAT64> mUnscaledConcCC;
-  CArrayAnnotation* mUnscaledConcCCAnn;
+  CDataArray* mUnscaledConcCCAnn;
 
   CMatrix<C_FLOAT64> mUnscaledFluxCC;
-  CArrayAnnotation* mUnscaledFluxCCAnn;
+  CDataArray* mUnscaledFluxCCAnn;
 
   CMatrix<C_FLOAT64> mScaledElasticities;
-  CArrayAnnotation* mScaledElasticitiesAnn;
+  CDataArray* mScaledElasticitiesAnn;
 
   CMatrix<C_FLOAT64> mScaledConcCC;
-  CArrayAnnotation* mScaledConcCCAnn;
+  CDataArray* mScaledConcCCAnn;
 
   CMatrix<C_FLOAT64> mScaledFluxCC;
-  CArrayAnnotation* mScaledFluxCCAnn;
+  CDataArray* mScaledFluxCCAnn;
 
   /**
    * 1 if MCA coeffs are to be unscaled

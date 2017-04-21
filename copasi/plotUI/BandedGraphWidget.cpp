@@ -134,9 +134,9 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
 
   std::string title = TO_UTF8(mpEditTitle->text());
 
-  CCopasiObjectName xName = mpObjectX ? mpObjectX->getCN() : CCopasiObjectName("");
-  CCopasiObjectName yName1 = mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName("");
-  CCopasiObjectName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCopasiObjectName(""));
+  CCommonName xName = mpObjectX ? mpObjectX->getCN() : CCommonName("");
+  CCommonName yName1 = mpObjectYone ? mpObjectYone->getCN() : CCommonName("");
+  CCommonName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCommonName(""));
 
   C_INT32 Activity = 0;
 

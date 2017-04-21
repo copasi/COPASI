@@ -204,8 +204,8 @@ void CQMoietiesTaskResult::load()
 
   // Fill the stoichiometry matrix
   CColorScaleBiLog * tcs = NULL;
-  const CArrayAnnotation * pAnnotation =
-    static_cast< const CArrayAnnotation * >(pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
+  const CDataArray * pAnnotation =
+    static_cast< const CDataArray * >(pModel->getObject(CCommonName("Array=Stoichiometry(ann)")));
   tcs = new CColorScaleBiLog();
   mpStoichiometry->setColorCoding(tcs);
   mpStoichiometry->setColorScalingAutomatic(true);
@@ -213,7 +213,7 @@ void CQMoietiesTaskResult::load()
 
   // Fill the link matrix
   pAnnotation =
-    static_cast< const CArrayAnnotation * >(pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
+    static_cast< const CDataArray * >(pModel->getObject(CCommonName("Array=Link matrix(ann)")));
   tcs = new CColorScaleBiLog();
   mpLinkMatrix->setColorCoding(tcs);
   mpLinkMatrix->setColorScalingAutomatic(true);
@@ -221,7 +221,7 @@ void CQMoietiesTaskResult::load()
 
   // Fill the reduced stoichiometry matrix
   pAnnotation =
-    static_cast< const CArrayAnnotation * >(pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
+    static_cast< const CDataArray * >(pModel->getObject(CCommonName("Array=Reduced stoichiometry(ann)")));
   tcs = new CColorScaleBiLog();
   mpReducedStoichiometry->setColorCoding(tcs);
   mpReducedStoichiometry->setColorScalingAutomatic(true);

@@ -18,13 +18,13 @@
 #include "utilities/CCopasiParameterGroup.h"
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiTimer.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CDataTimer.h"
+#include "core/CRegisteredCommonName.h"
 #include "qtUtilities.h"
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "utilities/CCopasiTask.h"
 #include "steadystate/CMCAMethod.h"
 #include "steadystate/CSteadyStateTask.h"
@@ -120,7 +120,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(CCopasiObjectName("Timer=CPU Time")));
+  pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(CCommonName("Timer=CPU Time")));
 
   if (filter(classes, pObject))
     {
@@ -128,7 +128,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(CCopasiObjectName("Timer=Wall Clock Time")));
+  pObject = CObjectInterface::DataObject(pModel->getObjectFromCN(CCommonName("Timer=Wall Clock Time")));
 
   if (filter(classes, pObject))
     {
@@ -221,7 +221,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     {
       const CReaction *react = &reactions[counter - 1];
       std::string name = "flux(" + react->getObjectName() + ")";
-      pObject = static_cast< const CDataObject * >(react->getObject(CCopasiObjectName("Reference=Flux")));
+      pObject = static_cast< const CDataObject * >(react->getObject(CCommonName("Reference=Flux")));
 
       if (filter(classes, pObject))
         {
@@ -229,7 +229,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = static_cast< const CDataObject * >(react->getObject(CCopasiObjectName("Reference=ParticleFlux")));
+      pObject = static_cast< const CDataObject * >(react->getObject(CCommonName("Reference=ParticleFlux")));
 
       if (filter(classes, pObject))
         {
@@ -252,7 +252,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           if (!react->isLocalParameter(pParameter->getObjectName()))
             continue;
 
-          pObject = static_cast< const CDataObject * >(pParameter->getObject(CCopasiObjectName("Reference=Value")));
+          pObject = static_cast< const CDataObject * >(pParameter->getObject(CCommonName("Reference=Value")));
 
           if (filter(classes, pObject))
             {
@@ -337,7 +337,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         }
     }
 
-  pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Reference=Avogadro Constant")));
+  pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Avogadro Constant")));
 
   if (filter(classes, pObject))
     {
@@ -345,7 +345,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor")));
+  pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Quantity Conversion Factor")));
 
   if (filter(classes, pObject))
     {
@@ -358,7 +358,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (StoiMatrix.array())
     {
-      pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Array=Stoichiometry(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Array=Stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -372,7 +372,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (RedStoiMatrix.array())
     {
-      pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Array=Reduced stoichiometry(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Array=Reduced stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -386,7 +386,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (LinkMatrix.array())
     {
-      pObject = static_cast< const CDataObject * >(pModel->getObject(CCopasiObjectName("Array=Link matrix(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Array=Link matrix(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -412,11 +412,11 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           CMCAMethod *pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
           const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
           CDataContainer::objectMap::const_iterator its = pObjects->begin();
-          CArrayAnnotation *ann;
+          CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation *>(*its);
+              ann = dynamic_cast<CDataArray *>(*its);
 
               if (!ann) continue;
 
@@ -444,11 +444,11 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
             {
               const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
               CDataContainer::objectMap::const_iterator its = pObjects->begin();
-              CArrayAnnotation *ann;
+              CDataArray *ann;
 
               for (; its != pObjects->end(); ++its)
                 {
-                  ann = dynamic_cast<CArrayAnnotation *>(*its);
+                  ann = dynamic_cast<CDataArray *>(*its);
 
                   if (!ann) continue;
 
@@ -519,11 +519,11 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           //for steady state the results are in the task
           const CDataContainer::objectMap *pObjects = & task->getObjects();
           CDataContainer::objectMap::const_iterator its = pObjects->begin();
-          CArrayAnnotation *ann;
+          CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation *>(*its);
+              ann = dynamic_cast<CDataArray *>(*its);
 
               if (!ann) continue;
 
@@ -549,11 +549,11 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           CSensProblem *sens = dynamic_cast<CSensProblem *>(task->getProblem());
           const CDataContainer::objectMap *pObjects = & sens->getObjects();
           CDataContainer::objectMap::const_iterator its = pObjects->begin();
-          CArrayAnnotation *ann;
+          CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation *>(*its);
+              ann = dynamic_cast<CDataArray *>(*its);
 
               if (!ann) continue;
 
@@ -577,11 +577,11 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           const CDataContainer::objectMap *pObjects = & task->getMethod()->getObjects();
           CDataContainer::objectMap::const_iterator its = pObjects->begin();
-          CArrayAnnotation *ann;
+          CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
             {
-              ann = dynamic_cast<CArrayAnnotation *>(*its);
+              ann = dynamic_cast<CDataArray *>(*its);
 
               if (!ann) continue;
 

@@ -23,7 +23,7 @@
 
 #include "CQReportListItem.h"
 #include "qtUtilities.h"
-#include "copasi/report/CCopasiStaticString.h"
+#include "copasi/core/CDataString.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
@@ -46,13 +46,13 @@ CQReportListItem::CQReportListItem(const CDataObject * pObject):
   else
     {
       setText(QString("Not found"));
-      mCN = CCopasiStaticString("NotFound").getCN();
+      mCN = CDataString("NotFound").getCN();
     }
 }
 
 CQReportListItem::~CQReportListItem() {}
 
-const CCopasiObjectName &
+const CCommonName &
 CQReportListItem::getCN() const
 {
   return mCN;
@@ -68,7 +68,7 @@ void CQReportListItem::setObject(const CDataObject * pObject)
   else
     {
       setText(QString("Not found"));
-      mCN = CCopasiStaticString("NotFound").getCN();
+      mCN = CDataString("NotFound").getCN();
     }
 }
 

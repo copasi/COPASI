@@ -3,22 +3,8 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
-
 /*!
-    \file CAnnotatedMatrix.h
+    \file CDataArray.h
     \brief Header file of class CArrayAnnotation
  */
 
@@ -26,26 +12,26 @@
 #define CANNOTATEDMATRIX_H
 
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 
-#include "report/CCopasiArray.h"
 #include <string>
 
 #include "copasi.h"
 
 #include "copasi/core/CDataVector.h"
+#include "CArray.h"
 
 /**
  * This class contains the annotations to a n-dimensional array. Annotations can be provided
  * for the array as such, for each of the dimensions, and for each of the indices (rows,
  * columns, ...)
  */
-class CArrayAnnotation: public CDataContainer
+class CDataArray: public CDataContainer
 {
 public:
   typedef C_FLOAT64 data_type;
-  typedef CCopasiArray::index_type index_type;
-  typedef std::vector< CRegisteredObjectName > name_index_type;
+  typedef CArray::index_type index_type;
+  typedef std::vector< CRegisteredCommonName > name_index_type;
 
   /**
    * The annotation to an array can work in different modes. The mode
@@ -75,17 +61,17 @@ public:
   };
 
 private:
-  CArrayAnnotation();
-  CArrayAnnotation(const CArrayAnnotation &);
-  CArrayAnnotation & operator=(const CArrayAnnotation &);
+  CDataArray();
+  CDataArray(const CDataArray &);
+  CDataArray & operator=(const CDataArray &);
 
 public:
-  CArrayAnnotation(const std::string & name,
-                   const CDataContainer * pParent,
-                   CCopasiAbstractArray * array,
-                   const bool & adopt);
+  CDataArray(const std::string & name,
+             const CDataContainer * pParent,
+             CArrayInterface * array,
+             const bool & adopt);
 
-  virtual ~CArrayAnnotation();
+  virtual ~CDataArray();
 
   /**
    *  let the ArrayAnnotation point to a different array.
@@ -94,12 +80,12 @@ public:
    *  existing annotation (in dimensionality and, if not in VECTOR_ON_THE_FLY mode,
    *  in size).
    */
-  void setArray(CCopasiAbstractArray * a);
+  void setArray(CArrayInterface * a);
 
-  CCopasiAbstractArray * array()
+  CArrayInterface * array()
   {return mpArray;}
 
-  const CCopasiAbstractArray * array() const
+  const CArrayInterface * array() const
   {return mpArray;}
 
   /**
@@ -122,7 +108,7 @@ public:
 
   size_t dimensionality() const;
 
-  CCopasiAbstractArray::index_type size() const
+  CArrayInterface::index_type size() const
   {return mpArray->size();}
 
   /**
@@ -157,7 +143,7 @@ public:
    * returns the vector of CNs that correspond to the rows, columns, ... of the array.
    * This method must not be called if the mode for the dimension d is STRINGS or NUMBERS
    */
-  const std::vector<CRegisteredObjectName> & getAnnotationsCN(size_t d) const;
+  const std::vector<CRegisteredCommonName> & getAnnotationsCN(size_t d) const;
 
   /**
    * This returns strings that annotate the rows, columns, ... of the array.
@@ -205,7 +191,7 @@ public:
    * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
    * Since this is also a container, this is not necessarily the case.
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
   /**
    * Check whether the size of array is greater than 0 for each dimension.
@@ -226,7 +212,7 @@ public:
   //void printDebug(std::ostream & out) const;
 
   void printRecursively(std::ostream & ostream, size_t level,
-                        CCopasiAbstractArray::index_type & index,
+                        CArrayInterface::index_type & index,
                         const std::vector<std::vector<std::string> > & display) const;
 
   /**
@@ -236,7 +222,7 @@ public:
 
   virtual void print(std::ostream * ostream) const;
 
-  friend std::ostream &operator<<(std::ostream &os, const CArrayAnnotation & o);
+  friend std::ostream &operator<<(std::ostream &os, const CDataArray & o);
 
   data_type & operator[](const name_index_type & nameIndex);
   const data_type & operator[](const name_index_type & nameIndex) const;
@@ -246,10 +232,10 @@ private:
   std::string createDisplayName(const std::string & cn) const;
   void updateDisplayNames() const;
 
-  CCopasiAbstractArray * mpArray;
+  CArrayInterface * mpArray;
   bool mDestructArray;
 
-  std::vector< std::vector<CRegisteredObjectName> > mAnnotationsCN;
+  std::vector< std::vector<CRegisteredCommonName> > mAnnotationsCN;
   mutable std::vector< std::vector<std::string> > mAnnotationsString;
 
   std::vector< std::string > mDimensionDescriptions;

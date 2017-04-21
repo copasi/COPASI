@@ -27,7 +27,7 @@
 #include "copasi.h"
 
 #include "utilities/CCopasiParameterGroup.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "scan/CScanProblem.h"
 
 /*

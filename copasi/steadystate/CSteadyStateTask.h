@@ -34,7 +34,7 @@
 
 #include "copasi/core/CMatrix.h"
 #include "utilities/CCopasiTask.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "utilities/CReadConfig.h"
 #include "steadystate/CSteadyStateMethod.h"
 #include "steadystate/CEigen.h"
@@ -61,8 +61,8 @@ private:
    */
   CMatrix< C_FLOAT64 > mJacobianReduced;
 
-  CArrayAnnotation * mpJacobianAnn;
-  CArrayAnnotation * mpJacobianXAnn;
+  CDataArray * mpJacobianAnn;
+  CDataArray * mpJacobianXAnn;
 
   /**
    * The Eigenvalues of the Jacobian of the system
@@ -84,8 +84,8 @@ private:
    */
   CMatrix<C_FLOAT64> mEigenvaluesXMatrix;
 
-  CArrayAnnotation * mpEigenvaluesJacobianAnn;
-  CArrayAnnotation * mpEigenvaluesJacobianXAnn;
+  CDataArray * mpEigenvaluesJacobianAnn;
+  CDataArray * mpEigenvaluesJacobianXAnn;
 
   /**
    * The result of the steady state analysis.
@@ -190,14 +190,14 @@ public:
    * @return const CMatrix< C_FLOAT64 > jacobian
    */
   const CMatrix< C_FLOAT64 > & getJacobian() const;
-  const CArrayAnnotation * getJacobianAnnotated() const;
+  const CDataArray * getJacobianAnnotated() const;
 
   /**
    * Retrieves a the jacobian of the steady state.
    * @return const CMatrix< C_FLOAT64 > jacobian
    */
   const CMatrix< C_FLOAT64 > & getJacobianReduced() const;
-  const CArrayAnnotation * getJacobianXAnnotated() const;
+  const CDataArray * getJacobianXAnnotated() const;
 
   /**
    * Retrieves a the eigenvalues of the steady state.

@@ -27,7 +27,7 @@
 
 #include "copasi/layout/CLayout.h"
 
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/resourcesUI/CQIconResource.h"
 

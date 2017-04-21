@@ -36,7 +36,7 @@
 #include "copasi/odepack++/CLSODA.h"
 #include "copasi/core/CMatrix.h"
 
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 #include "copasi/core/CDataObjectReference.h"
 
 class CTSSAProblem;
@@ -81,13 +81,13 @@ public:
    */
   ~CTSSAMethod();
 
-  std::map< std::string, CArrayAnnotation* > mapTableToName;
+  std::map< std::string, CDataArray* > mapTableToName;
   std::vector<std::string>  tableNames;
 
   const std::vector<std::string> getTableName() const
   {return tableNames;}
 
-  const CArrayAnnotation* getTable(std::string name)
+  const CDataArray* getTable(std::string name)
   {return mapTableToName[name];}
 
   //virtual void setAnnotationM(int s) = 0;

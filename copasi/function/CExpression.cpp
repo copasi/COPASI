@@ -54,7 +54,7 @@ CExpression::~CExpression() {}
 void CExpression::initObjects()
 {
   CObjectInterface * pObject =
-    const_cast< CObjectInterface * >(getObject(CCopasiObjectName("Reference=Value")));
+    const_cast< CObjectInterface * >(getObject(CCommonName("Reference=Value")));
   assert(pObject != NULL);
 }
 
@@ -148,7 +148,7 @@ const C_FLOAT64 & CExpression::calcValue()
 void CExpression::refresh()
 {calcValue();}
 
-const CObjectInterface * CExpression::getNodeObject(const CCopasiObjectName & CN) const
+const CObjectInterface * CExpression::getNodeObject(const CCommonName & CN) const
 {
   if (mpListOfContainer != NULL)
     {

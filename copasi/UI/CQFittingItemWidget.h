@@ -35,7 +35,7 @@ class CDataModel;
 class CCopasiSelectionDialog;
 class COptItem;
 class CDataObject;
-class CCopasiObjectName;
+class CCommonName;
 class CQValidatorBound;
 class CQValidatorNotEmpty;
 class QColor;
@@ -83,7 +83,7 @@ protected:
   CQValidatorNotEmpty * mpObjectValidator;
   const CObjectInterface* mpUpperObject;
   const CObjectInterface* mpLowerObject;
-  CCopasiObjectName* mpObjectCN;
+  CCommonName* mpObjectCN;
   const CExperimentSet ** mppExperimentSet;
   CCopasiParameterGroup * mpItems;
 

@@ -3,21 +3,11 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-#include "CArrayElementReference.h"
 #include "copasi/core/CDataContainer.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
+#include "CArrayElementReference.h"
 
-CArrayElementReference::CArrayElementReference(const std::vector< CRegisteredObjectName > & index,
+CArrayElementReference::CArrayElementReference(const std::vector< CRegisteredCommonName > & index,
     const CDataContainer * pParent,
     const CFlags< Flag > & flag)
   : CDataObject("Value", pParent, "ElementReference",
@@ -38,8 +28,8 @@ void CArrayElementReference::updateObjectName()
   mIgnoreUpdateObjectName = true;
 
   std::string ObjectName;
-  std::vector< CRegisteredObjectName >::const_iterator it = mIndex.begin();
-  std::vector< CRegisteredObjectName >::const_iterator end = mIndex.end();
+  std::vector< CRegisteredCommonName >::const_iterator it = mIndex.begin();
+  std::vector< CRegisteredCommonName >::const_iterator end = mIndex.end();
 
   for (; it != end; ++it)
     {
@@ -47,7 +37,7 @@ void CArrayElementReference::updateObjectName()
 
       if (pObject != NULL)
         {
-          ObjectName += "[" + CCopasiObjectName::escape(pObject->getObjectDisplayName()) + "]";
+          ObjectName += "[" + CCommonName::escape(pObject->getObjectDisplayName()) + "]";
         }
       else
         {
@@ -76,7 +66,7 @@ void CArrayElementReference::updateObjectName()
 
 void * CArrayElementReference::getValuePointer() const
 {
-  CArrayAnnotation * pArray = dynamic_cast< CArrayAnnotation * >(getObjectParent());
+  CDataArray * pArray = dynamic_cast< CDataArray * >(getObjectParent());
 
   if (pArray != NULL)
     {
@@ -109,7 +99,7 @@ std::string CArrayElementReference::getObjectDisplayName() const
     return "Array" + getObjectName();
 }
 
-CCopasiObjectName CArrayElementReference::getCN() const
+CCommonName CArrayElementReference::getCN() const
 {
   const_cast< CArrayElementReference * >(this)->updateObjectName();
 
@@ -127,7 +117,7 @@ void CArrayElementReference::print(std::ostream * ostream) const
   //  (*ostream) << *mpReference;
 
   //TODO perhaps we should cache the
-  CCopasiAbstractArray::data_type * tmp = (double*)getValuePointer();
+  CArrayInterface::data_type * tmp = (double*)getValuePointer();
 
   if (tmp)
     (*ostream) << *tmp;

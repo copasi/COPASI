@@ -22,7 +22,7 @@
 
 #include "copasi/utilities/CCopasiParameterGroup.h"
 
-class CCopasiObjectName;
+class CCommonName;
 class COptProblem;
 class CDataModel;
 class CMathObject;
@@ -71,16 +71,16 @@ public:
 
   /**
    * Set the object of the optimization item.
-   * @param const CCopasiObjectName & objectCN
+   * @param const CCommonName & objectCN
    * @return bool success
    */
-  bool setObjectCN(const CCopasiObjectName & objectCN);
+  bool setObjectCN(const CCommonName & objectCN);
 
   /**
    * Retrieve the object of the optimization item.
-   * @return const CCopasiObjectName objectCN
+   * @return const CCommonName objectCN
    */
-  const CCopasiObjectName getObjectCN() const;
+  const CCommonName getObjectCN() const;
 
   /**
    * Retrieve the item object. This may only be called after compile
@@ -96,10 +96,10 @@ public:
 
   /**
    * Set the lower bound.
-   * @param const CCopasiObjectName & lowerBound
+   * @param const CCommonName & lowerBound
    * @return bool success
    */
-  bool setLowerBound(const CCopasiObjectName & lowerBound);
+  bool setLowerBound(const CCommonName & lowerBound);
 
   /**
    * Retrieve the lower bound.
@@ -109,10 +109,10 @@ public:
 
   /**
    * Set the upper bound.
-   * @param const CCopasiObjectName & upperBound
+   * @param const CCommonName & upperBound
    * @return bool success
    */
-  bool setUpperBound(const CCopasiObjectName & upperBound);
+  bool setUpperBound(const CCommonName & upperBound);
 
   /**
    * Retrieve the upper bound.

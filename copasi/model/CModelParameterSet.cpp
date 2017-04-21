@@ -16,7 +16,7 @@
 #include "model/CCompartment.h"
 #include "copasi/core/CRootContainer.h"
 #include "report/CKeyFactory.h"
-#include "report/CCopasiStaticString.h"
+#include "core/CDataString.h"
 #include "utilities/CNodeIterator.h"
 
 // static
@@ -100,14 +100,14 @@ void CModelParameterSet::createFromModel()
 
   // Create the proper structure that fits the parameter overview in the GUI
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CCopasiStaticString("Initial Time").getCN());
+  pGroup->setCN(CDataString("Initial Time").getCN());
 
   pParameter = pGroup->add(Model);
   pParameter->setCN(mpModel->getCN());
   pParameter->setValue(mpModel->getInitialTime(), ParticleNumbers);
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CCopasiStaticString("Initial Compartment Sizes").getCN());
+  pGroup->setCN(CDataString("Initial Compartment Sizes").getCN());
 
   CDataVector< CCompartment >::const_iterator itCompartment = mpModel->getCompartments().begin();
   CDataVector< CCompartment >::const_iterator endCompartment = mpModel->getCompartments().end();
@@ -122,7 +122,7 @@ void CModelParameterSet::createFromModel()
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CCopasiStaticString("Initial Species Values").getCN());
+  pGroup->setCN(CDataString("Initial Species Values").getCN());
 
   CDataVector< CMetab >::const_iterator itSpecies = mpModel->getMetabolites().begin();
   CDataVector< CMetab >::const_iterator endSpecies = mpModel->getMetabolites().end();
@@ -137,7 +137,7 @@ void CModelParameterSet::createFromModel()
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CCopasiStaticString("Initial Global Quantities").getCN());
+  pGroup->setCN(CDataString("Initial Global Quantities").getCN());
 
   CDataVector< CModelValue >::const_iterator itModelValue = mpModel->getModelValues().begin();
   CDataVector< CModelValue >::const_iterator endModelValue = mpModel->getModelValues().end();
@@ -152,7 +152,7 @@ void CModelParameterSet::createFromModel()
     }
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
-  pGroup->setCN(CCopasiStaticString("Kinetic Parameters").getCN());
+  pGroup->setCN(CDataString("Kinetic Parameters").getCN());
 
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();

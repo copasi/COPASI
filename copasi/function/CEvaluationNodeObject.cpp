@@ -21,7 +21,7 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "CExpression.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"
 #include "model/CModel.h"
@@ -277,7 +277,7 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
       case AST_NAME_AVOGADRO:
       case AST_NAME_TIME:
       case AST_NAME:
-        pNode = new CEvaluationNodeObject(S_CN, CCopasiObjectName(std::string("<") + pASTNode->getName() + std::string(">")));
+        pNode = new CEvaluationNodeObject(S_CN, CCommonName(std::string("<") + pASTNode->getName() + std::string(">")));
         break;
 
       default:
@@ -391,7 +391,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
   return node;
 }
 
-const CRegisteredObjectName & CEvaluationNodeObject::getObjectCN() const
+const CRegisteredCommonName & CEvaluationNodeObject::getObjectCN() const
 {return mRegisteredObjectCN;}
 
 const CObjectInterface * CEvaluationNodeObject::getObjectInterfacePtr() const

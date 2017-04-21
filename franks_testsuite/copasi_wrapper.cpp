@@ -22,7 +22,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
@@ -108,11 +108,11 @@ int main(int argc, char *argv[])
       pReport->setIsTable(false);
       pReport->setSeparator(", ");
 
-      std::vector<CRegisteredObjectName>* pHeader = pReport->getHeaderAddr();
-      std::vector<CRegisteredObjectName>* pBody = pReport->getBodyAddr();
-      pBody->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
-      pBody->push_back(CRegisteredObjectName(pReport->getSeparator().getCN()));
-      pHeader->push_back(CCopasiStaticString("time").getCN());
+      std::vector<CRegisteredCommonName>* pHeader = pReport->getHeaderAddr();
+      std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
+      pBody->push_back(CCommonName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+      pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+      pHeader->push_back(CDataString("time").getCN());
       pHeader->push_back(pReport->getSeparator().getCN());
       const CDataVectorNS<CCompartment>& compartments = pDataModel->getModel()->getCompartments();
       unsigned int j, jMax = compartments.size();
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
       {
         if(compartments[j]->getStatus()!=CModelEntity::FIXED)
         {
-          pBody->push_back(compartments[j]->getObject(CCopasiObjectName("Reference=Volume"))->getCN());
+          pBody->push_back(compartments[j]->getObject(CCommonName("Reference=Volume"))->getCN());
           pBody->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CCopasiStaticString(compartments[j]->getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -135,9 +135,9 @@ int main(int argc, char *argv[])
         {
           if (metabolites[j].getStatus() != CModelEntity::FIXED)
             {
-              pBody->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+              pBody->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
               pBody->push_back(pReport->getSeparator().getCN());
-              pHeader->push_back(CCopasiStaticString(metabolites[j].getSBMLId()).getCN());
+              pHeader->push_back(CDataString(metabolites[j].getSBMLId()).getCN());
               pHeader->push_back(pReport->getSeparator().getCN());
             }
         }
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
       {
         if(parameters[j]->getStatus()!=CModelEntity::FIXED)
         {
-          pBody->push_back(parameters[j]->getObject(CCopasiObjectName("Reference=Value"))->getCN());
+          pBody->push_back(parameters[j]->getObject(CCommonName("Reference=Value"))->getCN());
           pBody->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CCopasiStaticString(parameters[j]->getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
       jMax = reactions.size();
       for (j = 0; j < jMax;++j)
       {
-        pBody->push_back(reactions[j]->getObject(CCopasiObjectName("Reference=Flux"))->getCN());
+        pBody->push_back(reactions[j]->getObject(CCommonName("Reference=Flux"))->getCN());
         pBody->push_back(pReport->getSeparator().getCN());
         pHeader->push_back(CCopasiStaticString(reactions[j]->getSBMLId()).getCN());
         pHeader->push_back(pReport->getSeparator().getCN());

@@ -222,9 +222,9 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
         std::vector<CCopasiTask*>::iterator innerIt;
         CReportDefinition* reportDefinition;
 
-        std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > >::iterator outerIt;
-        std::vector<std::pair < std::vector <CRegisteredObjectName >*, size_t > >::iterator innerIt2;
-        std::vector<CRegisteredObjectName>* nameVector;
+        std::map<std::string , std::vector < std::pair < std::vector <CRegisteredCommonName >*, size_t > > >::iterator outerIt;
+        std::vector<std::pair < std::vector <CRegisteredCommonName >*, size_t > >::iterator innerIt2;
+        std::vector<CRegisteredCommonName>* nameVector;
 
         size_t reportIndex;
         it = mpData->taskReferenceMap.begin();

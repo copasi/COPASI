@@ -18,7 +18,7 @@
 #include "CMathContainer.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 #include "utilities/CCopasiMessage.h"
 
 // Uncomment this line below to get debug print out.

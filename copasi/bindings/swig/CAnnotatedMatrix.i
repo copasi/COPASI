@@ -19,7 +19,7 @@
 
 %{
 
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 %}
 
@@ -38,7 +38,7 @@
 %ignore CArrayAnnotation::appendElementReferences;
 %ignore operator<<(std::ostream &os, const CArrayAnnotation & o);
 
-%include "utilities/CAnnotatedMatrix.h"
+%include "core/CDataArray.h"
 
 %extend CCopasiMatrixInterface {
    /* convert the operator[] to get methods */

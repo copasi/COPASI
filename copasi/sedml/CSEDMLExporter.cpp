@@ -275,7 +275,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
           range->setNumberOfPoints(numSteps);
           range->setType(log ? "log" : "linear");
 
-          const CRegisteredObjectName& cn = (current->getParameter("Object")->getValue< CCopasiObjectName >());
+          const CRegisteredCommonName& cn = (current->getParameter("Object")->getValue< CCommonName >());
           const CDataObject* pObject = static_cast<const CDataObject*>(dataModel.getObject(cn));
 
           if (pObject == NULL)
@@ -466,7 +466,7 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
     CCopasiMessage(CCopasiMessage::ERROR, "SED-ML: No model for this SED-ML document. An SBML model must exist for every SED-ML document.");
 
   //create generator for special variable time
-  const CDataObject* pTime = static_cast<const CDataObject *>(dataModel.getModel()->getObject(CCopasiObjectName("Reference=Time")));
+  const CDataObject* pTime = static_cast<const CDataObject *>(dataModel.getModel()->getObject(CCommonName("Reference=Time")));
   SedDataGenerator *pTimeDGenp = this->mpSEDMLDocument->createDataGenerator();
   SEDML_SET_ID(pTimeDGenp, "time_" << taskId);
   pTimeDGenp->setName(pTime->getObjectName());
@@ -496,8 +496,8 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
           SEDML_SET_ID(pReport, "report" << "_" << taskId);
           pReport->setName(name);
 
-          std::vector<CRegisteredObjectName> header = *def->getHeaderAddr();
-          std::vector<CRegisteredObjectName> body =
+          std::vector<CRegisteredCommonName> header = *def->getHeaderAddr();
+          std::vector<CRegisteredCommonName> body =
             def->isTable() ? *def->getTableAddr() :
             *def->getBodyAddr();
 
@@ -505,7 +505,7 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
           for (size_t i = 0; i < body.size(); ++i)
             {
-              CRegisteredObjectName& current = body[i];
+              CRegisteredCommonName& current = body[i];
 
               if (current == def->getSeparator().getCN()) continue;
 

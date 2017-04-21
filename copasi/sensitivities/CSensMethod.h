@@ -23,7 +23,7 @@
 #include <string>
 
 #include "utilities/CCopasiMethod.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 
 class CSensProblem;
 //class CProcessReport;
@@ -31,8 +31,8 @@ class CSensProblem;
 class CSensMethodLocalData
 {
 public:
-  CCopasiArray tmp1;
-  CCopasiArray tmp2;
+  CArray tmp1;
+  CArray tmp2;
 
   /**
    * A vector pointers to variables.
@@ -117,13 +117,13 @@ public:
 
 protected:
 
-  bool calculate_one_level(size_t level, CCopasiArray & result);
-  bool do_target_calculation(size_t level, CCopasiArray & result, bool first);
+  bool calculate_one_level(size_t level, CArray & result);
+  bool do_target_calculation(size_t level, CArray & result, bool first);
 
   C_FLOAT64 do_variation(C_FLOAT64 & variable);
 
   void calculate_difference(size_t level, const C_FLOAT64 & delta,
-                            CCopasiArray & result, CCopasiArray::index_type & resultindex);
+                            CArray & result, CArray::index_type & resultindex);
 
   /**
    * calculate the scaled sensitivities. Calls scaling_variables().
@@ -136,14 +136,14 @@ protected:
    * This contains the loop over the target functions for scaling the sensitivities
    */
   void scaling_targetfunction(const C_FLOAT64 & factor,
-                              CCopasiArray::index_type & resultindex);
+                              CArray::index_type & resultindex);
 
   /**
    * This contains the loop over the variables for scaling the sensitivities. Works recursively
    * and calls scaling_targetfunction() in the end.
    */
   void scaling_variables(size_t level, const C_FLOAT64 & factor,
-                         CCopasiArray::index_type & resultindex);
+                         CArray::index_type & resultindex);
 
   /**
    * collapse the first dimension of the scaled result (by
@@ -151,7 +151,7 @@ protected:
    */
   void do_collapsing();
 
-  C_FLOAT64 do_collapsing_innerloop(CCopasiArray::index_type & fullindex);
+  C_FLOAT64 do_collapsing_innerloop(CArray::index_type & fullindex);
 
   // Attributes
 protected:

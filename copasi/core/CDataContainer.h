@@ -146,7 +146,7 @@ public:
 
   virtual ~CDataContainer();
 
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
   virtual const CDataObject * getValueObject() const;
 

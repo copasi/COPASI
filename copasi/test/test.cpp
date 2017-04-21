@@ -56,7 +56,7 @@
 #include "steadystate/CMca.h"
 #include "randomGenerator/CRandom.h"
 #include "utilities/CluX.h"
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
 #include "mathmodel/CMathModel.h"
 #include "utilities/CCopasiNode.h"
@@ -300,9 +300,9 @@ C_INT32 TestCopasiObject(void)
   myMap[m1.getObjectName()] = &m1;
   myMap[m2.getObjectName()] = &m2;
 
-  CCopasiObjectName Name("CN=Root,Vector=Metabolites\\[ADH\\],Metabolite=ADH");
+  CCommonName Name("CN=Root,Vector=Metabolites\\[ADH\\],Metabolite=ADH");
   cout << Name << endl;
-  cout << CCopasiObjectName::unescape(Name) << endl;
+  cout << CCommonName::unescape(Name) << endl;
 
   Name = (std::string) "CN=Root\\,Vector=Metabolites[ADH],Metabolite=ADH";
   cout << Name.getPrimary() << endl;
@@ -371,7 +371,7 @@ C_INT32 TestCopasiObject(void)
   model.load(inbuf);
   model.compile();
 
-  CCopasiObjectName cn = model.getCompartments()["compartment"]->getCN();
+  CCommonName cn = model.getCompartments()["compartment"]->getCN();
 
   cout << cn << endl;
 

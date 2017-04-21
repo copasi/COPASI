@@ -309,7 +309,7 @@ public:
    * A map that stores a vector of pairs of header,body or footer addresses
    *  with the index together with the key to the reference.
    */
-  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredObjectName >*, size_t > > > reportReferenceMap;
+  std::map<std::string , std::vector < std::pair < std::vector <CRegisteredCommonName >*, size_t > > > reportReferenceMap;
 
   SCopasiXMLGUI * pGUI;
 

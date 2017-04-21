@@ -37,7 +37,7 @@
 #include "utilities/CCopasiException.h"
 #include  "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CCopasiTimer.h"
+#include "core/CDataTimer.h"
 
 #define XXXX_Reporting
 

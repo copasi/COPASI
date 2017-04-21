@@ -950,9 +950,9 @@ void CILDMModifiedMethod::createAnnotationsM()
   name = "Contribution of species to modes";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp1 = new CArrayAnnotation("Contribution of species to modes", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
+  CDataArray *
+  pTmp1 = new CDataArray("Contribution of species to modes", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
   pTmp1->setMode(0, pTmp1->STRINGS);
   pTmp1->setMode(1, pTmp1->VECTOR);
   pTmp1->setDescription(" ");
@@ -965,9 +965,9 @@ void CILDMModifiedMethod::createAnnotationsM()
   name = "Modes distribution for species";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp2 = new CArrayAnnotation("Modes distribution for species", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
+  CDataArray *
+  pTmp2 = new CDataArray("Modes distribution for species", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
   pTmp2->setMode(1, pTmp2->STRINGS);
   pTmp2->setMode(0, pTmp2->VECTOR);
   pTmp2->setDescription(" ");
@@ -980,9 +980,9 @@ void CILDMModifiedMethod::createAnnotationsM()
   name = "Slow space";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp3 = new CArrayAnnotation("Slow space", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
+  CDataArray *
+  pTmp3 = new CDataArray("Slow space", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
   pTmp3->setMode(1, pTmp3->STRINGS);
   pTmp3->setMode(0, pTmp3->VECTOR);
   pTmp3->setDescription(" ");
@@ -995,9 +995,9 @@ void CILDMModifiedMethod::createAnnotationsM()
   name = "Fast space";
   tableNames.push_back(name);
 
-  CArrayAnnotation *
-  pTmp4 = new CArrayAnnotation("Fast space", this,
-                               new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
+  CDataArray *
+  pTmp4 = new CDataArray("Fast space", this,
+                         new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
   pTmp4->setMode(1, pTmp4->STRINGS);
   pTmp4->setMode(0, pTmp4->VECTOR);
   pTmp4->setDescription(" ");

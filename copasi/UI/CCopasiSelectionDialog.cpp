@@ -36,7 +36,7 @@
 #include "copasi/core/CRootContainer.h"
 
 #include "qtUtilities.h"
-#include "utilities/CAnnotatedMatrix.h"
+#include "core/CDataArray.h"
 #include "model/CModel.h"
 #include "CQMatrixDialog.h"
 #include "CQMessageBox.h"
@@ -166,10 +166,10 @@ CCopasiSelectionDialog::getObjectSingle(QWidget * parent,
   if (Result == QDialog::Accepted && Selection.size() != 0)
     {
       const CDataObject *pObject = Selection[0];
-      const CArrayAnnotation * pArray;
+      const CDataArray * pArray;
 
       // if the selected object is an array then select firstly one cell of it
-      if ((pArray = dynamic_cast< const CArrayAnnotation * >(pObject)))
+      if ((pArray = dynamic_cast< const CDataArray * >(pObject)))
         {
           pObject = chooseCellMatrix(pArray, true, true)[0];
 
@@ -213,9 +213,9 @@ std::vector< const CDataObject * > CCopasiSelectionDialog::getObjectVector(QWidg
       for (; itSelection != Selection.end(); ++itSelection)
         {
           // if the current object is an array then select firstly one cell of it
-          const CArrayAnnotation * pArray;
+          const CDataArray * pArray;
 
-          if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
+          if ((pArray = dynamic_cast< const CDataArray * >(*itSelection)))
             {
               // second parameter is false in order 'ALL' options on the matrix dialog to appear
               std::vector<const CDataObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
@@ -267,9 +267,9 @@ std::vector< const CDataObject * > CCopasiSelectionDialog::getObjectVector(QWidg
   for (; itSelection != endSelection; ++itSelection)
     {
       // if the current object is an array then select firstly one cell of it
-      const CArrayAnnotation * pArray;
+      const CDataArray * pArray;
 
-      if ((pArray = dynamic_cast< const CArrayAnnotation * >(*itSelection)))
+      if ((pArray = dynamic_cast< const CDataArray * >(*itSelection)))
         {
           // second parameter is false in order 'ALL' options on the matrix dialog to appear
           std::vector<const CDataObject *> tmp = chooseCellMatrix(pArray, false, true); //TODO value flag
@@ -289,7 +289,7 @@ std::vector< const CDataObject * > CCopasiSelectionDialog::getObjectVector(QWidg
 }
 
 std::vector<const CDataObject*>
-CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotation, bool single, bool value, std::string caption)
+CCopasiSelectionDialog::chooseCellMatrix(const CDataArray * pArrayAnnotation, bool single, bool value, std::string caption)
 {
   std::vector< const CDataObject* > returnVector;
 
@@ -303,7 +303,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
   //handle zero-dimensional array
   if (pArrayAnnotation->size().size() == 0)
     {
-      CCopasiAbstractArray::index_type index;
+      CArrayInterface::index_type index;
       index.resize(0);
       returnVector.resize(1);
       returnVector[0] = static_cast< const CDataObject * >(pArrayAnnotation->addElementReference(index));
@@ -319,7 +319,7 @@ CCopasiSelectionDialog::chooseCellMatrix(const CArrayAnnotation * pArrayAnnotati
 
   if (Result == QDialog::Accepted)
     {
-      CCopasiAbstractArray::index_type index;
+      CArrayInterface::index_type index;
       index.resize(pArrayAnnotation->dimensionality());
 
       if (index.size() > 2)

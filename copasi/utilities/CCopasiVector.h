@@ -34,7 +34,7 @@
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/utility.h"
 
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/report/CCopasiContainer.h"
 
 #include "../undo/CData.h"
@@ -527,10 +527,10 @@ public:
 
   /**
    * Retrieve a the CCopasiObject with the given name.
-   * @param const CCopasiObjectName &name
+   * @param const CCommonName &name
    * @return const CObjectInterface * object
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName &name) const
+  virtual const CObjectInterface * getObject(const CCommonName &name) const
   {
     size_t Index = name.getElementIndex();
 
@@ -969,9 +969,9 @@ public:
    * @param const std::string & name
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName &name) const
+  virtual const CObjectInterface * getObject(const CCommonName &name) const
   {
-    CCopasiObjectName ElementName = name.getElementName(0);
+    CCommonName ElementName = name.getElementName(0);
 
     if (!ElementName.empty())
       {

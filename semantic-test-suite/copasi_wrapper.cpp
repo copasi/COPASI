@@ -26,7 +26,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
@@ -114,8 +114,8 @@ int main(int argc, char *argv[])
       pReport->setTaskType(CTaskEnum::timeCourse);
       pReport->setIsTable(true);
 
-      std::vector<CRegisteredObjectName>* pTable = pReport->getTableAddr();
-      pTable->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+      std::vector<CRegisteredCommonName>* pTable = pReport->getTableAddr();
+      pTable->push_back(CCommonName(pDataModel->getModel()->getCN() + ",Reference=Time"));
       iMax = iMax - 6;
       const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
 
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
             {
               if (metabolites[j].getSBMLId() == pSBMLSpeciesIds[i])
                 {
-                  pTable->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=Concentration"))->getCN());
+                  pTable->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
                   //std::cout << "adding metabolite " << metabolites[j]->getObjectName() << " to report." << std::endl;
                   break;
                 }

@@ -51,27 +51,27 @@ CLNAMethod::CLNAMethod(const CLNAMethod & src,
 
 void CLNAMethod::initObjects()
 {
-  CArrayAnnotation * tmp;
+  CDataArray * tmp;
 
-  tmp = new CArrayAnnotation("B matrix (reduced)", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mBMatrixReduced), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("B matrix (reduced)", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mBMatrixReduced), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("B matrix (reduced)");
   tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Species (reduced system)");
   mBMatrixReducedAnn = tmp;
 
-  tmp = new CArrayAnnotation("Covariance matrix (reduced)", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mCovarianceMatrixReduced), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Covariance matrix (reduced)", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mCovarianceMatrixReduced), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Covariance matrix (reduced)");
   tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Species (reduced system)");
   mCovarianceMatrixReducedAnn = tmp;
 
-  tmp = new CArrayAnnotation("Covariance matrix", this,
-                             new CCopasiMatrixInterface<CMatrix<C_FLOAT64> >(&mCovarianceMatrix), true);
-  tmp->setMode(CArrayAnnotation::VECTOR);
+  tmp = new CDataArray("Covariance matrix", this,
+                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mCovarianceMatrix), true);
+  tmp->setMode(CDataArray::VECTOR);
   tmp->setDescription("Covariance matrix");
   tmp->setDimensionDescription(0, "Species (full system)");
   tmp->setDimensionDescription(1, "Species (full system)");

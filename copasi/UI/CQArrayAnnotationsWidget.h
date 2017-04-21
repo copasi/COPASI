@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -20,7 +25,7 @@
 #include "copasi/UI/ui_CQArrayAnnotationsWidget.h"
 #include "copasi/UI/CColorScale.h"
 
-#include "copasi/utilities/CAnnotatedMatrix.h"
+#include "copasi/core/CDataArray.h"
 
 class QLabel;
 
@@ -42,7 +47,7 @@ public:
 
   virtual ~CQArrayAnnotationsWidget();
 
-  void setArrayAnnotation(const CArrayAnnotation * pArray);
+  void setArrayAnnotation(const CDataArray * pArray);
 
   /**
    * set an algorithm for color coding. If cs=NULL no color coding is performed. The widget assumes
@@ -105,10 +110,10 @@ protected:
   void fillTable();
 
   void fillTableN(size_t rowIndex, size_t colIndex,
-                  const CCopasiAbstractArray::index_type & index);
+                  const CArrayInterface::index_type & index);
 
   void fillTable1(size_t rowIndex,
-                  const CCopasiAbstractArray::index_type & index);
+                  const CArrayInterface::index_type & index);
 
   void fillTable0();
 
@@ -137,16 +142,16 @@ protected:
   //void switchToTable();
   void switchToBarChart();
 
-  const CArrayAnnotation * mpArray;
+  const CDataArray * mpArray;
 
   CColorScale* mpColorScale;
   bool mAutomaticColorScaling;
 
   size_t mRowIndex;
   size_t mColIndex;
-  CCopasiAbstractArray::index_type mSelectionIndex;
+  CArrayInterface::index_type mSelectionIndex;
 
-  CCopasiAbstractArray::index_type mSelectedCell;
+  CArrayInterface::index_type mSelectedCell;
 
   bool mBarChartFilled;
   bool mOneDimensional;

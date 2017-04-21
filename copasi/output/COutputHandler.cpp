@@ -9,7 +9,7 @@
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CCopasiTask.h"
-#include "copasi/report/CCopasiTimer.h"
+#include "copasi/core/CDataTimer.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/trajectory/CTimeSeries.h"

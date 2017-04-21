@@ -67,9 +67,9 @@ public:
 
   /**
    * Retrieve the CN of the object
-   * @return CCopasiObjectName
+   * @return CCommonName
    */
-  virtual CCopasiObjectName getCN() const;
+  virtual CCommonName getCN() const;
 
   /**
    * Retrieve the display name of the object
@@ -81,10 +81,10 @@ public:
 
   /**
    * Retrieve a descendant object by its CN.
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated

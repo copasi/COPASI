@@ -82,7 +82,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCCompartment != NULL);
   CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::FIXED);
   const CEvaluationNodeObject* pCObjectNode = NULL;
-  const CRegisteredObjectName* pCObjectName = NULL;
+  const CRegisteredCommonName* pCObjectName = NULL;
   CObjectInterface::ContainerList listOfContainers;
   listOfContainers.push_back(pCOPASIDATAMODEL->getModel());
   const CDataObject* pCObject = NULL;

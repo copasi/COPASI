@@ -43,7 +43,7 @@
 
 class CMathContainer;
 class CProcessReport;
-class CArrayAnnotation;
+class CDataArray;
 class CMathModel;
 class CExperiment;
 
@@ -395,7 +395,7 @@ public:
   /**
    * @return Get the matrix annotation to the stoichiometry matrix.
    */
-  const CArrayAnnotation * getStoiAnnotation() const;
+  const CDataArray * getStoiAnnotation() const;
 
   /**
    * Return the mMoieties of this model
@@ -1210,7 +1210,7 @@ private:
   /**
    * Column and Row Annotation for the reduced Stoichiometry Matrix
    */
-  CArrayAnnotation * mpStoiAnnotation;
+  CDataArray * mpStoiAnnotation;
 
   /**
    *   Stoichiometry Matrix
@@ -1225,7 +1225,7 @@ private:
   /**
    * Column and Row Annotation for the reduced Stoichiometry Matrix
    */
-  CArrayAnnotation * mpRedStoiAnnotation;
+  CDataArray * mpRedStoiAnnotation;
 
   /**
    * The elasticity matrix d(Flux_i)/dx_j
@@ -1277,7 +1277,7 @@ private:
   /**
    * Column and Row Annotation for the Link Matrix
    */
-  CArrayAnnotation * mpLinkMatrixAnnotation;
+  CDataArray * mpLinkMatrixAnnotation;
 
   /**
    *   This is used to return a view to L

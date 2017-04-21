@@ -26,7 +26,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/model/CModel.h"
 #include "copasi/utilities/CCopasiException.h"
@@ -182,12 +182,12 @@ int main(int argc, char *argv[])
 
       pReport->setSeparator(",");
 
-      std::vector<CRegisteredObjectName> * pHeader = pReport->getHeaderAddr();
-      std::vector<CRegisteredObjectName> * pBody = pReport->getBodyAddr();
+      std::vector<CRegisteredCommonName> * pHeader = pReport->getHeaderAddr();
+      std::vector<CRegisteredCommonName> * pBody = pReport->getBodyAddr();
 
       // Add time column
-      pHeader->push_back(CCopasiStaticString("time").getCN());
-      pBody->push_back(CCopasiObjectName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+      pHeader->push_back(CDataString("time").getCN());
+      pBody->push_back(CCommonName(pDataModel->getModel()->getCN() + ",Reference=Time"));
 
       iMax = iMax - NUMARGS;
       const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
@@ -215,8 +215,8 @@ int main(int argc, char *argv[])
               exit(1);
             }
 
-          pHeader->push_back(CCopasiStaticString(SBMLId).getCN());
-          pBody->push_back(metabolites[j].getObject(CCopasiObjectName("Reference=ParticleNumber"))->getCN());
+          pHeader->push_back(CDataString(SBMLId).getCN());
+          pBody->push_back(metabolites[j].getObject(CCommonName("Reference=ParticleNumber"))->getCN());
         }
 
       CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

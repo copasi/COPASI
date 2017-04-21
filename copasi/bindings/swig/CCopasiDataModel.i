@@ -82,7 +82,7 @@
 %ignore CDataModel::mpTaskList;
 %ignore CDataModel::mpReportDefinitionList;
 %ignore CDataModel::mpPlotDefinitionList;
-%ignore CDataModel::ObjectFromName(std::vector<CDataContainer * > const &,CCopasiObjectName const &) const;
+%ignore CDataModel::ObjectFromName(std::vector<CDataContainer * > const &,CCommonName const &) const;
 %ignore CDataModel::getReportDefinitionList() const;
 
 %catches(CCopasiException) CDataModel::newModel();

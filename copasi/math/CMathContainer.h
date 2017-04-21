@@ -502,23 +502,23 @@ public:
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.
    * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCopasiObjectName
+   * @return CCommonName
    */
-  virtual CCopasiObjectName getCN() const;
+  virtual CCommonName getCN() const;
 
   /**
    * Retrieve a descendant object by its partial CN.
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
   /**
    * Retrieve a object by its full CN.
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObjectFromCN(const CCopasiObjectName & cn) const;
+  virtual const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
 
   /**
    * Retrieve a pointer to the corresponding the mathematical object
@@ -537,10 +537,10 @@ public:
 
   /**
    * Retrieve a pointer to the mathematical object for the given CN
-   * @param const CCopasiObjectName & cn
+   * @param const CCommonName & cn
    * @return CMathObject * pMathObject
    */
-  CMathObject * getMathObject(const CCopasiObjectName & cn) const;
+  CMathObject * getMathObject(const CCommonName & cn) const;
 
   /**
    * Retrieve a pointer to the data object for a data value pointer

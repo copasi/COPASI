@@ -46,7 +46,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CCopasiProblem.h"
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/steadystate/CSteadyStateTask.h"
 #include "copasi/steadystate/CMCATask.h"

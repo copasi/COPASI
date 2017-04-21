@@ -258,7 +258,7 @@ private:
   /**
    * The registered object name to track eventual renaming.
    */
-  CRegisteredObjectName mRegisteredFunctionCN;
+  CRegisteredCommonName mRegisteredFunctionCN;
 };
 
 #endif // COPASI_CEvaluationNodeCall

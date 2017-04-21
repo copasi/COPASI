@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -18,18 +23,18 @@
 %{
 
 #include <string>
-#include "report/CCopasiObjectName.h"
+#include "core/CCommonName.h"
 
 %}
 
 
-%ignore CCopasiObjectName::findEx;
-%ignore CRegisteredObjectName::getSet;
+%ignore CCommonName::findEx;
+%ignore CRegisteredCommonName::getSet;
 
 %include "std_string.i"
-%include "report/CCopasiObjectName.h"
+%include "core/CCommonName.h"
 
-%extend CCopasiObjectName
+%extend CCommonName
 {
   std::string getString()
   {

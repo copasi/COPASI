@@ -253,7 +253,7 @@ bool CCopasiParameter::applyData(const CData & data)
 
         if (pValue != NULL)
           {
-            *static_cast< CRegisteredObjectName * >(mpValue) = pValue->toString();
+            *static_cast< CRegisteredCommonName * >(mpValue) = pValue->toString();
           }
 
         break;
@@ -524,7 +524,7 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
   return inValidValues(value);
 }
 
-bool CCopasiParameter::isValidValue(const CCopasiObjectName & /* value */) const
+bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
 {
   if (mType != CCopasiParameter::CN) return false;
 
@@ -577,7 +577,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
         break;
 
       case CCopasiParameter::CN:
-        os << * static_cast< CRegisteredObjectName * >(o.mpValue);
+        os << * static_cast< CRegisteredCommonName * >(o.mpValue);
         break;
 
       case CCopasiParameter::GROUP:
@@ -621,7 +621,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
         break;
 
       case CCopasiParameter::CN:
-        return compareValues< CRegisteredObjectName >(lhs, rhs);
+        return compareValues< CRegisteredCommonName >(lhs, rhs);
         break;
 
       case CCopasiParameter::GROUP:
@@ -641,7 +641,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 }
 
 // virtual
-CCopasiObjectName CCopasiParameter::getCN() const
+CCommonName CCopasiParameter::getCN() const
 {
   CDataContainer * pObjectParent = getObjectParent();
   CCopasiParameterGroup * pGroup;
@@ -649,7 +649,7 @@ CCopasiObjectName CCopasiParameter::getCN() const
   if (pObjectParent != NULL &&
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
-      return pObjectParent->getCN() + "," + CCopasiObjectName::escape(getObjectType()) + "=" + CCopasiObjectName::escape(pGroup->getUniqueParameterName(this));
+      return pObjectParent->getCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
     }
 
   return CDataObject::getCN();
@@ -708,9 +708,9 @@ void CCopasiParameter::createValue(const void * pValue)
         break;
 
       case CCopasiParameter::CN:
-        mpValue = new CRegisteredObjectName;
-        mSize = sizeof(CRegisteredObjectName);
-        mpValueReference = addObjectReference("Value", *static_cast< CRegisteredObjectName * >(mpValue), CDataObject::ValueString);
+        mpValue = new CRegisteredCommonName;
+        mSize = sizeof(CRegisteredCommonName);
+        mpValueReference = addObjectReference("Value", *static_cast< CRegisteredCommonName * >(mpValue), CDataObject::ValueString);
         assignValue(pValue);
         break;
 
@@ -764,7 +764,7 @@ void CCopasiParameter::createValidValues(const void * pValidValues)
         break;
 
       case CCopasiParameter::CN:
-        mpValidValues = new std::vector< std::pair< CRegisteredObjectName, CRegisteredObjectName > >;
+        mpValidValues = new std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > >;
         assignValidValues(pValidValues);
         break;
 
@@ -807,7 +807,7 @@ void CCopasiParameter::assignValue(const void * pValue)
         break;
 
       case CCopasiParameter::CN:
-        *static_cast< CRegisteredObjectName * >(mpValue) = *static_cast< const CRegisteredObjectName * >(pValue);
+        *static_cast< CRegisteredCommonName * >(mpValue) = *static_cast< const CRegisteredCommonName * >(pValue);
         break;
 
       case CCopasiParameter::GROUP:
@@ -854,8 +854,8 @@ void CCopasiParameter::assignValidValues(const void * pValidValues)
         break;
 
       case CCopasiParameter::CN:
-        *static_cast<std::vector< std::pair< CRegisteredObjectName, CRegisteredObjectName > > * >(mpValidValues) =
-          *static_cast< const std::vector< std::pair< CRegisteredObjectName, CRegisteredObjectName > > * >(pValidValues);
+        *static_cast<std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > * >(mpValidValues) =
+          *static_cast< const std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > * >(pValidValues);
         break;
 
       case CCopasiParameter::GROUP:
@@ -896,7 +896,7 @@ void CCopasiParameter::deleteValue(const Type & type, void *& pValue)
         break;
 
       case CCopasiParameter::CN:
-        delete static_cast< CRegisteredObjectName * >(pValue);
+        delete static_cast< CRegisteredCommonName * >(pValue);
         break;
 
       case CCopasiParameter::GROUP:
@@ -948,7 +948,7 @@ void CCopasiParameter::deleteValidValues(const Type & type, void *& pValidValues
         break;
 
       case CCopasiParameter::CN:
-        delete static_cast< std::vector< std::pair < CRegisteredObjectName, CRegisteredObjectName > > * >(pValidValues);
+        delete static_cast< std::vector< std::pair < CRegisteredCommonName, CRegisteredCommonName > > * >(pValidValues);
         break;
 
       case CCopasiParameter::GROUP:

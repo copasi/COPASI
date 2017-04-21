@@ -22,7 +22,7 @@
 #include "COutputHandler.h"
 #include "CCopasiTask.h"
 
-#include "report/CCopasiTimer.h"
+#include "core/CDataTimer.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "math/CMathContainer.h"

@@ -28,7 +28,7 @@
 #include "copasi/copasi.h"
 #include <vector>
 #include <map>
-#include "copasi/report/CCopasiObjectName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/UI/CWindowInterface.h"
 #include "copasi/UI/ui_SliderDialog.h"
 

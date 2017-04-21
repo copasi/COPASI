@@ -25,7 +25,7 @@
 #include "qtUtilities.h"
 #include "CCopasiSelectionDialog.h"
 
-#include "report/CCopasiObjectName.h"
+#include "core/CRegisteredCommonName.h"
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
