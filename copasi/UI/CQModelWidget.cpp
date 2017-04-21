@@ -77,65 +77,108 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   mpEditAvogadro->setEnabled(false);
 
   QStringList unitEntries;
-  const char ** pUnitNames;
 
-  for (pUnitNames = CUnit::TimeUnitNames; *pUnitNames != NULL; ++pUnitNames)
+  std::vector< CUnit > ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("s", 1);
+  std::vector< CUnit >::const_iterator itUnit = ValidUnits.begin();
+  std::vector< CUnit >::const_iterator endUnit = ValidUnits.end();
+
+  for (; itUnit != endUnit; ++itUnit)
     {
-      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+      unitEntries.push_back(FROM_UTF8(itUnit->getExpression()));
+
+      if (!itUnit->getExpression().compare(0, 2, "\xc2\xb5"))
+        {
+          unitEntries.push_back(FROM_UTF8(itUnit->getExpression().replace(0, 2, "u")));
+        }
     }
 
   QCompleter *completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditTimeUnit->setCompleter(completer);
-  connect(mpEditTimeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
+  ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("m", 3);
+  itUnit = ValidUnits.begin();
+  endUnit = ValidUnits.end();
 
-  for (pUnitNames = CUnit::VolumeUnitNames; *pUnitNames != NULL; ++pUnitNames)
+  for (; itUnit != endUnit; ++itUnit)
     {
-      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+      unitEntries.push_back(FROM_UTF8(itUnit->getExpression()));
+
+      if (!itUnit->getExpression().compare(0, 2, "\xc2\xb5"))
+        {
+          unitEntries.push_back(FROM_UTF8(itUnit->getExpression().replace(0, 2, "u")));
+        }
     }
 
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditVolumeUnit->setCompleter(completer);
-  connect(mpEditVolumeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
+  ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("m", 2);
+  itUnit = ValidUnits.begin();
+  endUnit = ValidUnits.end();
 
-  for (pUnitNames = CUnit::AreaUnitNames; *pUnitNames != NULL; ++pUnitNames)
+  for (; itUnit != endUnit; ++itUnit)
     {
-      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+      unitEntries.push_back(FROM_UTF8(itUnit->getExpression()));
+
+      if (!itUnit->getExpression().compare(0, 2, "\xc2\xb5"))
+        {
+          unitEntries.push_back(FROM_UTF8(itUnit->getExpression().replace(0, 2, "u")));
+        }
     }
 
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditAreaUnit->setCompleter(completer);
-  connect(mpEditAreaUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
+  ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("m", 1);
+  itUnit = ValidUnits.begin();
+  endUnit = ValidUnits.end();
 
-  for (pUnitNames = CUnit::LengthUnitNames; *pUnitNames != NULL; ++pUnitNames)
+  for (; itUnit != endUnit; ++itUnit)
     {
-      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+      unitEntries.push_back(FROM_UTF8(itUnit->getExpression()));
+
+      if (!itUnit->getExpression().compare(0, 2, "\xc2\xb5"))
+        {
+          unitEntries.push_back(FROM_UTF8(itUnit->getExpression().replace(0, 2, "u")));
+        }
     }
 
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditLengthUnit->setCompleter(completer);
-  connect(mpEditLengthUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
+  ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("#", 1);
+  itUnit = ValidUnits.begin();
+  endUnit = ValidUnits.end();
 
-  for (pUnitNames = CUnit::QuantityUnitNames; *pUnitNames != NULL; ++pUnitNames)
+  for (; itUnit != endUnit; ++itUnit)
     {
-      unitEntries.push_front(QString::fromUtf8(*pUnitNames));
+      unitEntries.push_back(FROM_UTF8(itUnit->getExpression()));
+
+      if (!itUnit->getExpression().compare(0, 2, "\xc2\xb5"))
+        {
+          unitEntries.push_back(FROM_UTF8(itUnit->getExpression().replace(0, 2, "u")));
+        }
     }
 
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditQuantityUnit->setCompleter(completer);
+
+#if QT_VERSION >= 0x050000
+  connect(mpEditTimeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+  connect(mpEditVolumeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+  connect(mpEditAreaUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+  connect(mpEditLengthUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
   connect(mpEditQuantityUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
+#endif
 }
 
 CQModelWidget::~CQModelWidget()
