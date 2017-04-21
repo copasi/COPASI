@@ -94,7 +94,7 @@ public:
   }
 };
 
-template<> CDataObjectReference< double >::CDataObjectReference(const std::string & name,
+template<> inline CDataObjectReference< double >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     double & reference,
     const CFlags< Flag > & flag) :
@@ -105,7 +105,7 @@ template<> CDataObjectReference< double >::CDataObjectReference(const std::strin
   assert(pParent != NULL);
 }
 
-template<> CDataObjectReference< int >::CDataObjectReference(const std::string & name,
+template<> inline CDataObjectReference< int >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     int & reference,
     const CFlags< Flag > & flag) :
@@ -116,7 +116,7 @@ template<> CDataObjectReference< int >::CDataObjectReference(const std::string &
   assert(pParent != NULL);
 }
 
-template<> CDataObjectReference< bool >::CDataObjectReference(const std::string & name,
+template<> inline CDataObjectReference< bool >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     bool & reference,
     const CFlags< Flag > & flag) :
@@ -127,7 +127,7 @@ template<> CDataObjectReference< bool >::CDataObjectReference(const std::string 
   assert(pParent != NULL);
 }
 
-template<> CDataObjectReference< std::string >::CDataObjectReference(const std::string & name,
+template<> inline CDataObjectReference< std::string >::CDataObjectReference(const std::string & name,
     const CDataContainer * pParent,
     std::string & reference,
     const CFlags< Flag > & flag) :
