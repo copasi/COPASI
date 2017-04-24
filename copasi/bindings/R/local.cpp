@@ -8,7 +8,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi/../core/CMatrix.h"
+#include "copasi/core/CMatrix.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"

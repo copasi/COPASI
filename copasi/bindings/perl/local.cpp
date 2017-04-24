@@ -481,71 +481,65 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     {
       pInfo = SWIGTYPE_p_CMIRIAMInfo;
     }
-  else if (container->isNameVector())
+  else if (dynamic_cast<CDataModelVectorN*>(container))
     {
-      if (dynamic_cast<CDataModelVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CDataModel_t;
-        }
-      else if (dynamic_cast<TaskVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CCopasiTask_t;
-        }
-      else if (dynamic_cast<ModelValueVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CModelValue_t;
-        }
-      else if (dynamic_cast<MetabVectorNS*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNST_CMetab_t;
-        }
-      else if (dynamic_cast<CompartmentVectorNS*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNST_CCompartment_t;
-        }
-      else if (dynamic_cast<ReactionVectorNS*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNST_CReaction_t;
-        }
-      else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CEvaluationTree_t;
-        }
-      else if (dynamic_cast<EventVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CEvent_t;
-        }
-      else if (dynamic_cast<EventAssignmentVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CEventAssignment_t;
-        }
+      pInfo = SWIGTYPE_p_CDataVectorT_CDataModel_t;
     }
-  else if (container->isVector())
+  else if (dynamic_cast<TaskVectorN*>(container))
     {
-      if (dynamic_cast<MoietyVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CMoiety_t;
-        }
-      else if (dynamic_cast<MetabVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CMetab_t;
-        }
-      else if (dynamic_cast<ReportItemVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
-        }
-      else if (dynamic_cast<ParameterVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_t;
-        }
-      else if (dynamic_cast<CFunctionStdVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_t;
-        }
-      else if (dynamic_cast<CChemEqElementVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
-        }
+      pInfo = SWIGTYPE_p_CDataVectorNT_CCopasiTask_t;
+    }
+  else if (dynamic_cast<ModelValueVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CModelValue_t;
+    }
+  else if (dynamic_cast<MetabVectorNS*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNST_CMetab_t;
+    }
+  else if (dynamic_cast<CompartmentVectorNS*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNST_CCompartment_t;
+    }
+  else if (dynamic_cast<ReactionVectorNS*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNST_CReaction_t;
+    }
+  else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CEvaluationTree_t;
+    }
+  else if (dynamic_cast<EventVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CEvent_t;
+    }
+  else if (dynamic_cast<EventAssignmentVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CEventAssignment_t;
+    }
+  else if (dynamic_cast<MoietyVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CMoiety_t;
+    }
+  else if (dynamic_cast<MetabVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CMetab_t;
+    }
+  else if (dynamic_cast<ReportItemVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
+    }
+  else if (dynamic_cast<ParameterVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_t;
+    }
+  else if (dynamic_cast<CFunctionStdVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_t;
+    }
+  else if (dynamic_cast<CChemEqElementVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
     }
   else if (dynamic_cast<CEvaluationTree*>(container))
     {
