@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -91,7 +96,7 @@ public class example9
    // here we can either get the jacobian as we did in example 8 as a matrix with
    // getJacobian, or we can use getJacobianAnnotated to get an annotated matrix
    // Corresponding methods for the reduced jacobian are getJacobianX and getJacobianXAnnotated
-   CArrayAnnotation aj = task.getJacobianAnnotated();
+   CDataArray aj = task.getJacobianAnnotated();
    assert(aj != null);
 
    if (aj != null)

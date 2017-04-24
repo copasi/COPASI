@@ -1,18 +1,16 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunScan.java,v $ 
-//   $Revision: 1.8 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:21:44 $ 
-// End CVS Header 
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
 // All rights reserved. 
 
 package org.COPASI.unittests;
@@ -54,14 +52,14 @@ public class Test_RunScan extends TestCase
     CModelValue fixedModelValue=model.createModelValue("R",2.0);
     CModelValue variableModelValue=model.createModelValue("K");
     variableModelValue.setStatus(CModelEntity.ODE);
-    String s=fixedModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+    String s=fixedModelValue.getObject(new CCommonName("Reference=Value")).getCN().getString();
     s="<"+s+">^2";
     variableModelValue.setExpression(s);
     variableModelValue.setInitialValue(0.0);
     model.compileIfNecessary();
     ObjectStdVector changedObjects=new ObjectStdVector();
-    changedObjects.add(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
-    changedObjects.add(variableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+    changedObjects.add(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")));
+    changedObjects.add(variableModelValue.getObject(new CCommonName("Reference=InitialValue")));
     model.updateInitialValues(changedObjects);
     return model;
    }
@@ -134,8 +132,8 @@ public class Test_RunScan extends TestCase
         CReportDefinition repDef=reportDefs.createReportDefinition("htmlConc","value table in HTML format");
         repDef.setIsTable(false);
         assertFalse(repDef==null);
-        CCopasiStaticString htmlHeader=new CCopasiStaticString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<body>\n<table>\n");
-        CCopasiStaticString htmlFooter=new CCopasiStaticString("</table>\n</body>\n</html>\n");
+        CDataString htmlHeader=new CDataString("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n<body>\n<table>\n");
+        CDataString htmlFooter=new CDataString("</table>\n</body>\n</html>\n");
         ReportItemVector header=repDef.getHeaderAddr(); 
         assertFalse(header==null);
         header.add(new CRegisteredObjectName(htmlHeader.getCN().getString()));
@@ -146,23 +144,23 @@ public class Test_RunScan extends TestCase
         assertFalse(body==null);
         CModel model=mDataModel.getModel();
         assertFalse(model==null);
-        CCopasiObject timeObject=model.getObject(new CCopasiObjectName("Reference=Time"));
+        CCopasiObject timeObject=model.getObject(new CCommonName("Reference=Time"));
         assertFalse(timeObject==null);
-        body.add(new CRegisteredObjectName(new CCopasiStaticString("<tr>\n<td>").getCN().getString()));
+        body.add(new CRegisteredObjectName(new CDataString("<tr>\n<td>").getCN().getString()));
         body.add(new CRegisteredObjectName(timeObject.getCN().getString()));
-        body.add(new CRegisteredObjectName(new CCopasiStaticString("</td>\n").getCN().getString()));
+        body.add(new CRegisteredObjectName(new CDataString("</td>\n").getCN().getString()));
         long i,iMax=model.getNumModelValues();
         for(i=0;i<iMax;++i)
         {
-            body.add(new CRegisteredObjectName(new CCopasiStaticString("<td>").getCN().getString()));
+            body.add(new CRegisteredObjectName(new CDataString("<td>").getCN().getString()));
             CModelValue mv=model.getModelValue(i);
             assertFalse(mv==null);
-            CCopasiObject valueObject=mv.getObject(new CCopasiObjectName("Reference=Value"));
+            CCopasiObject valueObject=mv.getObject(new CCommonName("Reference=Value"));
             assertFalse(valueObject==null);
             body.add(new CRegisteredObjectName(valueObject.getCN().getString()));
-            body.add(new CRegisteredObjectName(new CCopasiStaticString("</td>\n").getCN().getString()));
+            body.add(new CRegisteredObjectName(new CDataString("</td>\n").getCN().getString()));
         }
-        body.add(new CRegisteredObjectName(new CCopasiStaticString("</tr>\n").getCN().getString()));
+        body.add(new CRegisteredObjectName(new CDataString("</tr>\n").getCN().getString()));
         repDef.setTaskType(CCopasiTask.timeCourse);
         CReport report=task.getReport();
         assertFalse(report==null);

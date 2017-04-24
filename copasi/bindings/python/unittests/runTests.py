@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/runTests.py,v $ 
-#   $Revision: 1.11 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import unittest
@@ -26,11 +27,11 @@ import Test_CCopasiContainer
 import Test_CCopasiDataModel
 import Test_CCopasiMethod
 import Test_CCopasiObject
-import Test_CCopasiObjectName
+import Test_CCommonName
 import Test_CCopasiParameter
 import Test_CCopasiParameterGroup
 import Test_CCopasiProblem
-import Test_CCopasiStaticString
+import Test_CDataString
 import Test_CCopasiTask
 #import Test_CCopasiVector
 import Test_CEvaluationTree
@@ -74,8 +75,8 @@ suites=[
 	 ,Test_CChemEqElement.suite()
 #         ,Test_CCopasiVector.suite()
          ,Test_CMatrix.suite()
-         ,Test_CCopasiStaticString.suite()
-         ,Test_CCopasiObjectName.suite()
+         ,Test_CDataString.suite()
+         ,Test_CCommonName.suite()
          ,Test_CCopasiParameter.suite()
          ,Test_CCopasiParameterGroup.suite()
          ,Test_CReportDefinition.suite()

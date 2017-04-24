@@ -227,34 +227,34 @@ stopifnot(result == TRUE)
 stopifnot(CExperimentObjectMap_getRole(objectMap,0) == "time")
 
 stopifnot(!is.null(model))
-timeReference <- CObjectInterface_getObject(model,CCopasiObjectName("Reference=Time"))
+timeReference <- CObjectInterface_getObject(model,CCommonName("Reference=Time"))
 stopifnot(!is.null(timeReference))
-invisible(CExperimentObjectMap_setObjectCN(objectMap,0,CCopasiObjectName_getString(CCopasiObject_getCN(timeReference))))
+invisible(CExperimentObjectMap_setObjectCN(objectMap,0,CCommonName_getString(CCopasiObject_getCN(timeReference))))
 
 # now we tell COPASI which column contain the concentrations of
 # metabolites and belong to dependent variables
 invisible(CExperimentObjectMap_setRole(objectMap,1,"dependent"))
 metab <- metabVector[[1]]
 stopifnot(!is.null(metab))
-particleReference <- CObjectInterface_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CObjectInterface_getObject(metab,CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
-invisible(CExperimentObjectMap_setObjectCN(objectMap,1,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
+invisible(CExperimentObjectMap_setObjectCN(objectMap,1,CCommonName_getString(CCopasiObject_getCN(particleReference))))
 
 invisible(CExperimentObjectMap_setRole(objectMap,2,"dependent"))
 
 metab <- metabVector[[2]]
 stopifnot(!is.null(metab))
-particleReference <- CObjectInterface_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CObjectInterface_getObject(metab,CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
-invisible(CExperimentObjectMap_setObjectCN(objectMap,2,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
+invisible(CExperimentObjectMap_setObjectCN(objectMap,2,CCommonName_getString(CCopasiObject_getCN(particleReference))))
 
 invisible(CExperimentObjectMap_setRole(objectMap,3,"dependent"))
 
 metab <- metabVector[[3]]
 stopifnot(!is.null(metab))
-particleReference <- CObjectInterface_getObject(metab,CCopasiObjectName("Reference=Concentration"))
+particleReference <- CObjectInterface_getObject(metab,CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
-invisible(CExperimentObjectMap_setObjectCN(objectMap,3,CCopasiObjectName_getString(CCopasiObject_getCN(particleReference))))
+invisible(CExperimentObjectMap_setObjectCN(objectMap,3,CCommonName_getString(CCopasiObject_getCN(particleReference))))
 
 invisible(CExperimentSet_addExperiment(experimentSet,experiment))
 stopifnot(CExperimentSet_getExperimentCount(experimentSet) == 1)
@@ -272,14 +272,14 @@ parameter <- CCopasiParameterGroup_getParameter(CReaction_getParameters(reaction
 stopifnot(!is.null(parameter))
 
 # define a CFitItem
-parameterReference <- CObjectInterface_getObject(parameter,CCopasiObjectName("Reference=Value"))
+parameterReference <- CObjectInterface_getObject(parameter,CCommonName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
 fitItem1 <- CFitProblem_addFitItem(fitProblem, parameterReference$getCN())
 stopifnot(!is.null(fitItem1))
 #invisible(COptItem_setObjectCN(fitItem1,parameterReference$getCN()))
 invisible(COptItem_setStartValue(fitItem1,4.0))
-invisible(COptItem_setLowerBound(fitItem1,CCopasiObjectName("0.00001")))
-invisible(COptItem_setUpperBound(fitItem1,CCopasiObjectName("10")))
+invisible(COptItem_setLowerBound(fitItem1,CCommonName("0.00001")))
+invisible(COptItem_setUpperBound(fitItem1,CCommonName("10")))
 # add the fit item to the correct parameter group
 optimizationItemGroup <- CCopasiParameterGroup_getParameter(fitProblem,"OptimizationItemList")
 stopifnot(!is.null(optimizationItemGroup))
@@ -291,13 +291,13 @@ parameter <- CCopasiParameterGroup_getParameter(CReaction_getParameters(reaction
 stopifnot(!is.null(parameter))
 
 # define a CFitItem
-parameterReference <- CObjectInterface_getObject(parameter,CCopasiObjectName("Reference=Value"))
+parameterReference <- CObjectInterface_getObject(parameter,CCommonName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
 fitItem2 <- CFitProblem_addFitItem(fitProblem, parameterReference$getCN())
 stopifnot(!is.null(fitItem2))
 invisible(COptItem_setStartValue(fitItem2,4.0))
-invisible(COptItem_setLowerBound(fitItem2,CCopasiObjectName("0.00001")))
-invisible(COptItem_setUpperBound(fitItem2,CCopasiObjectName("10")))
+invisible(COptItem_setLowerBound(fitItem2,CCommonName("0.00001")))
+invisible(COptItem_setUpperBound(fitItem2,CCommonName("10")))
 
 result <- TRUE
 # running the task for this example will probably take some time
@@ -319,8 +319,8 @@ optItem2 <- COptProblem_getOptItem(fitProblem, 1)
 solutionVariables <- COptProblem_getSolutionVariables(fitProblem);
 stopifnot(FloatVectorCore_size(solutionVariables) == 2)
 
-cat("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem1))) , ": " , FloatVectorCore_get(solutionVariables,0), "\n", sep = "")
-cat("value for " , CCopasiObjectName_getString(CCopasiObject_getCN(COptItem_getObject(optItem2))) , ": " , FloatVectorCore_get(solutionVariables,1), "\n", sep = "")
+cat("value for " , CCommonName_getString(CCopasiObject_getCN(COptItem_getObject(optItem1))) , ": " , FloatVectorCore_get(solutionVariables,0), "\n", sep = "")
+cat("value for " , CCommonName_getString(CCopasiObject_getCN(COptItem_getObject(optItem2))) , ": " , FloatVectorCore_get(solutionVariables,1), "\n", sep = "")
 # depending on the noise, the fit can be quite bad, so we are a litle
 # relaxed here (we should be within 3% of the original values)
 stopifnot((abs(FloatVectorCore_get(solutionVariables,0) - 0.03) / 0.03) < 3e-2)

@@ -1,5 +1,10 @@
 
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -331,8 +336,8 @@ def main():
    assert fitItem1 !=None
    fitItem1.setObjectCN(parameterReference.getCN())
    fitItem1.setStartValue(4.0)
-   fitItem1.setLowerBound(CCopasiObjectName("0.00001"))
-   fitItem1.setUpperBound(CCopasiObjectName("10"))
+   fitItem1.setLowerBound(CCommonName("0.00001"))
+   fitItem1.setUpperBound(CCommonName("10"))
    # add the fit item to the correct parameter group
    optimizationItemGroup=fitProblem.getParameter("OptimizationItemList")
    assert optimizationItemGroup != None
@@ -351,8 +356,8 @@ def main():
    assert fitItem2 !=None
    fitItem2.setObjectCN(parameterReference.getCN())
    fitItem2.setStartValue(4.0)
-   fitItem2.setLowerBound(CCopasiObjectName("0.00001"))
-   fitItem2.setUpperBound(CCopasiObjectName("10"))
+   fitItem2.setLowerBound(CCommonName("0.00001"))
+   fitItem2.setUpperBound(CCommonName("10"))
    # add the fit item to the correct parameter group
    optimizationItemGroup.addParameter(fitItem2)
    

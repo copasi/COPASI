@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CreateSimpleModel.py,v $ 
-#   $Revision: 1.5 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:00 $ 
-# End CVS Header 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -43,10 +44,10 @@ def createModel():
     react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary()
     changedObjects=COPASI.ObjectStdVector()
-    changedObjects.push_back(comp.getObject(COPASI.CCopasiObjectName("Reference=InitialVolume")))
-    changedObjects.push_back(A.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
-    changedObjects.push_back(B.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
-    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCopasiObjectName("Reference=Value")))
+    changedObjects.push_back(comp.getObject(COPASI.CCommonName("Reference=InitialVolume")))
+    changedObjects.push_back(A.getObject(COPASI.CCommonName("Reference=InitialConcentration")))
+    changedObjects.push_back(B.getObject(COPASI.CCommonName("Reference=InitialConcentration")))
+    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCommonName("Reference=Value")))
     model.updateInitialValues(changedObjects)
     return datamodel
 
@@ -65,8 +66,8 @@ def extendModel(datamodel):
     react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);
     model.compileIfNecessary()
     changedObjects=COPASI.ObjectStdVector()
-    changedObjects.push_back(metab.getObject(COPASI.CCopasiObjectName("Reference=InitialConcentration")))
-    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCopasiObjectName("Reference=Value")))
+    changedObjects.push_back(metab.getObject(COPASI.CCommonName("Reference=InitialConcentration")))
+    changedObjects.push_back(react.getParameters().getParameter(0).getObject(COPASI.CCommonName("Reference=Value")))
     model.updateInitialValues(changedObjects);
 
 

@@ -47,13 +47,13 @@ invisible(CReportDefinition_setSeparator(report,CCopasiReportSeparator(", ")))
 # the first column
 # the body will contain the actual timecourse data
 sep <- CReportDefinition_getSeparator(report)
-sep_string <- CCopasiObjectName_getString(CCopasiObject_getCN(sep))
+sep_string <- CCommonName_getString(CCopasiObject_getCN(sep))
 header <- CReportDefinition_getHeaderAddr(report)
 body <- CReportDefinition_getBodyAddr(report)
-time_string <- CCopasiObjectName_getString(CCopasiObjectName(paste(CCopasiObjectName_getString(CCopasiObject_getCN(model)), ",Reference=Time", sep = "")))
+time_string <- CCommonName_getString(CCommonName(paste(CCommonName_getString(CCopasiObject_getCN(model)), ",Reference=Time", sep = "")))
 invisible(ReportItemVector_push_back(body,CRegisteredObjectName(time_string)))
 invisible(ReportItemVector_push_back(body,CRegisteredObjectName(sep_string)))
-time_string <- CCopasiObjectName_getString(CCopasiObject_getCN(CCopasiStaticString("time")))
+time_string <- CCommonName_getString(CCopasiObject_getCN(CDataString("time")))
 invisible(ReportItemVector_push_back(header,CRegisteredObjectName(time_string)))
 invisible(ReportItemVector_push_back(header,CRegisteredObjectName(sep_string)))
 
@@ -67,12 +67,12 @@ while (i < iMax) {
         # we want the concentration in the output
         # alternatively, we could use "Reference=Amount" to get the
         # particle number
-        conc <- CCopasiContainer_getObject(metab, CCopasiObjectName("Reference=Concentration"))
-        conc_string <- CCopasiObjectName_getString(CCopasiObject_getCN(conc))
+        conc <- CCopasiContainer_getObject(metab, CCommonName("Reference=Concentration"))
+        conc_string <- CCommonName_getString(CCopasiObject_getCN(conc))
         invisible(ReportItemVector_push_back(body,CRegisteredObjectName(conc_string)))
         # add the corresponding id to the header
         sbml_id <- CModelEntity_getSBMLId(metab)
-        sbml_string <- CCopasiObjectName_getString(CCopasiObject_getCN(CCopasiStaticString(sbml_id)))
+        sbml_string <- CCommonName_getString(CCopasiObject_getCN(CDataString(sbml_id)))
         invisible(ReportItemVector_push_back(header,CRegisteredObjectName(sbml_string)))
         
         if (i != iMax-1) {

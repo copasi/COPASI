@@ -31,7 +31,7 @@ my $changedObjects = new COPASI::ObjectStdVector();
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
 my $compartment = $model->createCompartment("cell", 5.0);
-my $object = $compartment->getObject(new COPASI::CCopasiObjectName("Reference=InitialVolume"));
+my $object = $compartment->getObject(new COPASI::CCommonName("Reference=InitialVolume"));
 unless(defined($object)){warn "Assertion failed.\n";die;}
 $changedObjects->push($object);
 unless(defined($compartment)){warn "Assertion failed.\n";die;}
@@ -41,7 +41,7 @@ unless($model->getCompartments()->size() == 1){warn "Assertion failed.\n";die;}
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
 my $S = $model->createMetabolite("S", $compartment->getObjectName(), 10.0, $COPASI::CModelEntity::FIXED);
-$object = $S->getObject(new COPASI::CCopasiObjectName("Reference=InitialConcentration"));
+$object = $S->getObject(new COPASI::CCommonName("Reference=InitialConcentration"));
 unless(defined($object)){warn "Assertion failed.\n";die;}
 $changedObjects->push($object);
 unless(defined($compartment)){warn "Assertion failed.\n";die;}
@@ -51,7 +51,7 @@ unless($model->getMetabolites()->size() == 1){warn "Assertion failed.\n";die;}
 # concentration of 0. This metabolite is to be changed by reactions
 my $P = $model->createMetabolite("P", $compartment->getObjectName(), 0.0, $COPASI::CModelEntity::REACTIONS);
 unless(defined($P)){warn "Assertion failed.\n";die;}
-$object = $P->getObject(new COPASI::CCopasiObjectName("Reference=InitialConcentration"));
+$object = $P->getObject(new COPASI::CCommonName("Reference=InitialConcentration"));
 unless(defined($object)){warn "Assertion failed.\n";die;}
 $changedObjects->push($object);
 unless($model->getMetabolites()->size() == 2){warn "Assertion failed.\n";die;}
@@ -77,7 +77,7 @@ my $MV = $model->createModelValue("K", 42.0);
 # set the status to FIXED
 $MV->setStatus($COPASI::CModelEntity::FIXED);
 unless(defined($MV)){warn "Assertion failed.\n";die;}
-$object = $MV->getObject(new COPASI::CCopasiObjectName("Reference=InitialValue"));
+$object = $MV->getObject(new COPASI::CCommonName("Reference=InitialValue"));
 unless(defined($object)){warn "Assertion failed.\n";die;}
 $changedObjects->push($object);
 unless($model->getModelValues()->size() == 1){warn "Assertion failed.\n";die;}

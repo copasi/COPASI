@@ -17,5 +17,5 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi/common/local_common.cpp"
-#include "copasi/common/downcast_common.cpp"
+#include "copasi/bindings/common/local_common.cpp"
+#include "copasi/bindings/common/downcast_common.cpp"

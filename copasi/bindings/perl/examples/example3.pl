@@ -44,10 +44,10 @@ if ($#ARGV + 1 == 1) {
     my $header = $report->getHeaderAddr();
     my $body = $report->getBodyAddr();
    
-    my $str = new COPASI::CCopasiObjectName($dataModel->getModel()->getCN()->getString() . ",Reference=Time")->getString();
+    my $str = new COPASI::CCommonName($dataModel->getModel()->getCN()->getString() . ",Reference=Time")->getString();
     $body->push(new COPASI::CRegisteredObjectName($str));
     $body->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
-    $header->push(new COPASI::CRegisteredObjectName(new COPASI::CCopasiStaticString("time")->getCN()->getString()));
+    $header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString("time")->getCN()->getString()));
     $header->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
 
     my $iMax = $model->getMetabolites()->size();
@@ -59,9 +59,9 @@ if ($#ARGV + 1 == 1) {
             # we want the concentration oin the output
             # alternatively, we could use "Reference=Amount" to get the
             # particle number
-            $body->push(new COPASI::CRegisteredObjectName($metab->getObject(new COPASI::CCopasiObjectName("Reference=Concentration"))->getCN()->getString()));
+            $body->push(new COPASI::CRegisteredObjectName($metab->getObject(new COPASI::CCommonName("Reference=Concentration"))->getCN()->getString()));
             # add the corresponding id to the header
-            $header->push(new COPASI::CRegisteredObjectName(new COPASI::CCopasiStaticString($metab->getSBMLId())->getCN()->getString()));
+            $header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString($metab->getSBMLId())->getCN()->getString()));
             # after each entry, we need a seperator
             if($i != ($iMax - 1)) {
               $body->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));

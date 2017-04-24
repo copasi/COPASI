@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -296,8 +301,8 @@ public class example6
         assert fitItem1 !=null;
         fitItem1.setObjectCN(parameterReference.getCN());
         fitItem1.setStartValue(4.0);
-        fitItem1.setLowerBound(new CCopasiObjectName("0.00001"));
-        fitItem1.setUpperBound(new CCopasiObjectName("10"));
+        fitItem1.setLowerBound(new CCommonName("0.00001"));
+        fitItem1.setUpperBound(new CCommonName("10"));
         // add the fit item to the correct parameter group
         CCopasiParameterGroup optimizationItemGroup=(CCopasiParameterGroup)fitProblem.getParameter("OptimizationItemList");
         assert optimizationItemGroup != null;
@@ -316,8 +321,8 @@ public class example6
         assert fitItem2 !=null;
         fitItem2.setObjectCN(parameterReference.getCN());
         fitItem2.setStartValue(4.0);
-        fitItem2.setLowerBound(new CCopasiObjectName("0.00001"));
-        fitItem2.setUpperBound(new CCopasiObjectName("10"));
+        fitItem2.setLowerBound(new CCommonName("0.00001"));
+        fitItem2.setUpperBound(new CCommonName("10"));
         // add the fit item to the correct parameter group
         optimizationItemGroup.addParameter(fitItem2);
         

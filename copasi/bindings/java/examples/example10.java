@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -177,7 +182,7 @@ public class example10
       // as well as a method that returns a normal float matrix
       // The method that returns the annotated matrix end with Ann and the method that
       // returns a double matrix doesn't have the Ann.
-      CArrayAnnotation pCCC = pMCAMethod.getScaledFluxCCAnn();
+      CDataArray pCCC = pMCAMethod.getScaledFluxCCAnn();
       assert(pCCC != null);
 
       if (pCCC != null)

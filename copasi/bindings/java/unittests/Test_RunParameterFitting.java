@@ -1,17 +1,14 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunParameterFitting.java,v $ 
-//   $Revision: 1.4 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:01 $ 
-// End CVS Header 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
@@ -84,12 +81,12 @@ public class Test_RunParameterFitting extends TestCase
         CModel model=mDataModel.getModel();
         assertTrue(model!=null);
         assertTrue(model.getClass()==CModel.class);
-        CCopasiObject timeReference=model.getObject(new CCopasiObjectName("Reference=Time"));
+        CCopasiObject timeReference=model.getObject(new CCommonName("Reference=Time"));
         assertTrue(timeReference!=null);
         assertTrue(timeReference.getClass()==CCopasiObject.class);
         objectMap.setObjectCN(0,timeReference.getCN().getString());
         // getObjectCN returns a string whereas getCN returns a
-        // CCopasiObjectname
+        // CCommonName
         assertTrue(objectMap.getObjectCN(0).equals(timeReference.getCN().getString()));
         CMetab metabA=model.getMetabolite(0);
         assertTrue(metabA!=null);
@@ -109,20 +106,20 @@ public class Test_RunParameterFitting extends TestCase
             assertTrue(metabB.getClass()==CMetab.class);
         }
         objectMap.setRole(1,CExperiment.dependent);
-        CCopasiObject particleReference=metabA.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+        CCopasiObject particleReference=metabA.getObject(new CCommonName("Reference=ParticleNumber"));
         assertTrue(particleReference!=null);
         assertTrue(particleReference.getClass()==CCopasiObject.class);
         objectMap.setObjectCN(1,particleReference.getCN().getString());
         // getObjectCN returns a string whereas getCN returns a
-        // CCopasiObjectname
+        // CCommonName
         assertTrue(objectMap.getObjectCN(1).equals(particleReference.getCN().getString()));
         objectMap.setRole(2,CExperiment.dependent);
-        particleReference=metabB.getObject(new CCopasiObjectName("Reference=ParticleNumber"));
+        particleReference=metabB.getObject(new CCommonName("Reference=ParticleNumber"));
         assertTrue(particleReference!=null);
         assertTrue(particleReference.getClass()==CCopasiObject.class);
         objectMap.setObjectCN(2,particleReference.getCN().getString());
         // getObjectCN returns a string whereas getCN returns a
-        // CCopasiObjectname
+        // CCommonName
         assertTrue(objectMap.getObjectCN(2).equals(particleReference.getCN().getString()));
         // reading from string is not possible with the current C++ API
         //result=experiment.read(TIME_COURSE_DATA,false)
@@ -145,7 +142,7 @@ public class Test_RunParameterFitting extends TestCase
         
         // define CFitItems
         assertTrue(fitProblem.getOptItemSize()==0);
-        CCopasiObject parameterReference=parameter.getObject(new CCopasiObjectName("Reference=Value"));
+        CCopasiObject parameterReference=parameter.getObject(new CCommonName("Reference=Value"));
         assertTrue(parameterReference!=null);
         assertTrue(parameterReference.getClass()==CCopasiObject.class);
         CFitItem fitItem=new CFitItem(mDataModel);
@@ -153,8 +150,8 @@ public class Test_RunParameterFitting extends TestCase
         assertTrue(fitItem.getClass()==CFitItem.class);
         fitItem.setObjectCN(parameterReference.getCN());
         fitItem.setStartValue(4.0);
-        fitItem.setLowerBound(new CCopasiObjectName("0.0001"));
-        fitItem.setUpperBound(new CCopasiObjectName("10"));
+        fitItem.setLowerBound(new CCommonName("0.0001"));
+        fitItem.setUpperBound(new CCommonName("10"));
         // add the experiment to the fit item
         //fitItem.addExperiment(experiment.getKey())
         assertTrue(fitItem.getStartValue()==4.0);

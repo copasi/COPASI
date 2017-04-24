@@ -28,7 +28,7 @@
 
 %{
 
-#include "utilities/CVector.h"
+#include "core/CVector.h"
 
 %}
 
@@ -52,7 +52,7 @@
 %warnfilter(302) operator<<;
 
 
-%include "utilities/CVector.h"
+%include "copasi/core/CVector.h"
 
 %extend CVectorCore
 {

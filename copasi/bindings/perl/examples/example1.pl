@@ -28,7 +28,7 @@ my $changedObjects = new COPASI::ObjectStdVector();
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
 my $compartment = $model->createCompartment("cell", 5.0);
-my $object = $compartment->getObject(new COPASI::CCopasiObjectName("Reference=InitialVolume"));
+my $object = $compartment->getObject(new COPASI::CCommonName("Reference=InitialVolume"));
 unless(defined($object)){warn "Assertion failed";die;}
 $changedObjects->push($object);
 unless(defined($compartment)){warn "Assertion failed";die;}
@@ -39,7 +39,7 @@ unless($model->getCompartments()->size() == 1){warn "Assertion failed";die;}
 # fixed
 my $glucose = $model->createMetabolite("glucose", $compartment->getObjectName(), 10.0, $COPASI::CModelEntity::FIXED);
 unless(defined($glucose)){warn "Assertion failed";die;}
-$object = $glucose->getObject(new COPASI::CCopasiObjectName("Reference=InitialConcentration"));
+$object = $glucose->getObject(new COPASI::CCommonName("Reference=InitialConcentration"));
 unless(defined($object)){warn "Assertion failed";die;}
 $changedObjects->push($object);
 unless($model->getMetabolites()->size() == 1){warn "Assertion failed";die;}
@@ -47,21 +47,21 @@ unless($model->getMetabolites()->size() == 1){warn "Assertion failed";die;}
 # concentration of 0. This metabolite is to be changed by reactions
 my $g6p = $model->createMetabolite("glucose-6-phosphate", $compartment->getObjectName(), 0.0, $COPASI::CModelEntity::REACTIONS);
 unless(defined($g6p)){warn "Assertion failed";die;}
-$object = $g6p->getObject(new COPASI::CCopasiObjectName("Reference=InitialConcentration"));
+$object = $g6p->getObject(new COPASI::CCommonName("Reference=InitialConcentration"));
 unless(defined($object)){warn "Assertion failed";die;}
 $changedObjects->push($object);
 unless($model->getMetabolites()->size() == 2){warn "Assertion failed";die;}
 # another metabolite for ATP, also fixed
 my $atp = $model->createMetabolite("ATP", $compartment->getObjectName(), 10.0, $COPASI::CModelEntity::FIXED);
 unless(defined($atp)){warn "Assertion failed";die;};
-$object = $atp->getObject(new COPASI::CCopasiObjectName("Reference=InitialConcentration"));
+$object = $atp->getObject(new COPASI::CCommonName("Reference=InitialConcentration"));
 unless(defined($object)){warn "Assertion failed";die;}
 $changedObjects->push($object);
 unless($model->getMetabolites()->size() == 3){warn "Assertion failed";die;}
 # and one for ADP
 my $adp = $model->createMetabolite("ADP", $compartment->getObjectName(), 0.0, $COPASI::CModelEntity::REACTIONS);
 unless(defined($adp)){warn "Assertion failed";die;}
-$object = $adp->getObject(new COPASI::CCopasiObjectName("Reference=InitialConcentration"));
+$object = $adp->getObject(new COPASI::CCommonName("Reference=InitialConcentration"));
 unless(defined($object)){warn "Assertion failed";die;}
 $changedObjects->push($object);
 unless($model->getMetabolites()->size() == 4){warn "Assertion failed";die;}
@@ -129,7 +129,7 @@ if(defined($function)){
     unless($parameter->getType() == $COPASI::CCopasiParameter::DOUBLE){warn "Assertion failed";die;}
     # now we set the value of the parameter to 0.5
     $parameter->setDblValue(0.5);
-    $object = $parameter->getObject(new COPASI::CCopasiObjectName("Reference=Value"));
+    $object = $parameter->getObject(new COPASI::CCommonName("Reference=Value"));
     unless(defined($object)){warn "Assertion failed";die;}
     $changedObjects->push($object);
 }
@@ -179,7 +179,7 @@ unless($reaction->getParameterMappings()->size() == 2){warn "Assertion failed";d
 # it gets the name rateConstant and an initial value of 1.56
 my $modelValue = $model->createModelValue("rateConstant", 1.56);
 unless(defined($modelValue)){warn "Assertion failed";die;}
-$object = $modelValue->getObject(new COPASI::CCopasiObjectName("Reference=InitialValue"));
+$object = $modelValue->getObject(new COPASI::CCommonName("Reference=InitialValue"));
 unless(defined($object)){warn "Assertion failed";die;}
 $changedObjects->push($object);
 unless($model->getModelValues()->size() == 1){warn "Assertion failed";die;}

@@ -3,20 +3,6 @@
 // of Connecticut School of Medicine. 
 // All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
-
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
-
 
 
 
@@ -91,7 +77,7 @@
 %rename(addCopy) CDataVector::add(const CType&);
 
 
-%include "utilities/CDataVector.h"
+%include "core/CDataVector.h"
 
 // this extension makes the assumption hat only instances of classes
 // that are derived from CDataObject are stored in a CDataVector

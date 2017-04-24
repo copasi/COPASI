@@ -3,16 +3,6 @@
 // of Connecticut School of Medicine. 
 // All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
-
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
-
 %{
 
 #include "copasi/core/CDataObjectReference.h"
@@ -25,7 +15,7 @@
 %ignore CDataObjectReference::CDataObjectReference;
 %ignore CDataObjectReference::print;
 
-%include "report/CDataObjectReference.h"
+%include "core/CDataObjectReference.h"
 
 typedef CDataObjectReference<C_FLOAT64> FloatReference;
 

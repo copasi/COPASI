@@ -33,9 +33,9 @@
 #include <copasi/optimization/CRandomSearch.h>
 #include <copasi/optimization/COptMethodTruncatedNewton.h>
 
-// CCopasiAbstractArray
+// CArrayInterface
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiAbstractArray(CArrayInterface* array);
+GetDowncastSwigTypeForCArrayInterface(CArrayInterface* array);
 
 // CDataContainer
 struct swig_type_info*
@@ -98,18 +98,18 @@ struct swig_type_info*
 GetDowncastSwigTypeForCOptTask(COptTask* optTask);
 
 /**
- * @return the most specific Swig type for the given CCopasiAbstractArray object.
+ * @return the most specific Swig type for the given CArrayInterface object.
  */
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiAbstractArray(CArrayInterface* array)
+GetDowncastSwigTypeForCArrayInterface(CArrayInterface* array)
 {
-  if (array == NULL) return SWIGTYPE_p_CCopasiAbstractArray;
+  if (array == NULL) return SWIGTYPE_p_CArrayInterface;
 
-  struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiAbstractArray;
+  struct swig_type_info* pInfo = SWIGTYPE_p_CArrayInterface;
 
   if (dynamic_cast<CArray*>(array))
     {
-      pInfo = SWIGTYPE_p_CCopasiArray;
+      pInfo = SWIGTYPE_p_CArray;
     }
 
   /* The following code no longer compiles out of some reason
@@ -183,84 +183,80 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     {
       pInfo = SWIGTYPE_p_CMIRIAMInfo;
     }
-  else if (container->isNameVector())
+  else if (dynamic_cast<CDataModelVectorN*>(container))
     {
-      if (dynamic_cast<CDataModelVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CDataModel_t;
-        }
-      else if (dynamic_cast<TaskVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CCopasiTask_t;
-        }
-      else if (dynamic_cast<ModelValueVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CModelValue_t;
-        }
-      else if (dynamic_cast<MetabVectorNS*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNST_CMetab_t;
-        }
-      else if (dynamic_cast<CompartmentVectorNS*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNST_CCompartment_t;
-        }
-      else if (dynamic_cast<ReactionVectorNS*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNST_CReaction_t;
-        }
-      else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CEvaluationTree_t;
-        }
-      else if (dynamic_cast<EventVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CEvent_t;
-        }
-      else if (dynamic_cast<EventAssignmentVectorN*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorNT_CEventAssignment_t;
-        }
+      pInfo = SWIGTYPE_p_CDataVectorT_CDataModel_t;
     }
-  else if (container->isVector())
+  else if (dynamic_cast<TaskVectorN*>(container))
     {
-      if (dynamic_cast<MoietyVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CMoiety_t;
-        }
-      else if (dynamic_cast<MetabVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CMetab_t;
-        }
-      else if (dynamic_cast<ReportItemVector*>(container))
-        {
-#ifdef SWIGPERL
-          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
-#else
-          pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_std__allocatorT_CRegisteredCommonName_t_t;
-#endif // SWIGPERL
-        }
-      else if (dynamic_cast<ParameterVector*>(container))
-        {
-#ifdef SWIGPERL
-          pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_t;
-#else
-          pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_std__allocatorT_CCopasiParameter_p_t_t;
-#endif // SWIGPERL
-        }
-      else if (dynamic_cast<CFunctionStdVector*>(container))
-        {
-#ifdef SWIGPERL
-          pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_t;
-#else
-          pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_std__allocatorT_CFunction_p_t_t;
-#endif // SWIGPERL
-        }
-      else if (dynamic_cast<CChemEqElementVector*>(container))
-        {
-          pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
-        }
+      pInfo = SWIGTYPE_p_CDataVectorNT_CCopasiTask_t;
     }
+  else if (dynamic_cast<ModelValueVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CModelValue_t;
+    }
+  else if (dynamic_cast<MetabVectorNS*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNST_CMetab_t;
+    }
+  else if (dynamic_cast<CompartmentVectorNS*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNST_CCompartment_t;
+    }
+  else if (dynamic_cast<ReactionVectorNS*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNST_CReaction_t;
+    }
+  else if (dynamic_cast<CEvaluationTreeVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CEvaluationTree_t;
+    }
+  else if (dynamic_cast<EventVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CEvent_t;
+    }
+  else if (dynamic_cast<EventAssignmentVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CEventAssignment_t;
+    }
+
+  else if (dynamic_cast<MoietyVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CMoiety_t;
+    }
+  else if (dynamic_cast<MetabVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CMetab_t;
+    }
+  else if (dynamic_cast<ReportItemVector*>(container))
+    {
+#ifdef SWIGPERL
+      pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
+#else
+      pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_std__allocatorT_CRegisteredCommonName_t_t;
+#endif // SWIGPERL
+    }
+  else if (dynamic_cast<ParameterVector*>(container))
+    {
+#ifdef SWIGPERL
+      pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_t;
+#else
+      pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_std__allocatorT_CCopasiParameter_p_t_t;
+#endif // SWIGPERL
+    }
+  else if (dynamic_cast<CFunctionStdVector*>(container))
+    {
+#ifdef SWIGPERL
+      pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_t;
+#else
+      pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_std__allocatorT_CFunction_p_t_t;
+#endif // SWIGPERL
+    }
+  else if (dynamic_cast<CChemEqElementVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
+    }
+
   else if (dynamic_cast<CEvaluationTree*>(container))
     {
       pInfo = GetDowncastSwigTypeForCEvaluationTree(static_cast<CEvaluationTree*>(container));
@@ -299,7 +295,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<CDataArray*>(container))
     {
-      pInfo = SWIGTYPE_p_CArrayAnnotation;
+      pInfo = SWIGTYPE_p_CDataArray;
     }
   else if (dynamic_cast<CFittingPoint*>(container))
     {
@@ -377,7 +373,7 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
         }
       else
         {
-          pInfo = SWIGTYPE_p_CCopasiStaticString;
+          pInfo = SWIGTYPE_p_CDataString;
         }
     }
 

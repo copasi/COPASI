@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -59,9 +64,9 @@ class example4
         // the body will contain the actual timecourse data
         ReportItemVector header = report.getHeaderAddr();
         ReportItemVector body = report.getBodyAddr();
-        body.add(new CRegisteredObjectName(new CCopasiObjectName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
+        body.add(new CRegisteredObjectName(new CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
         body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-        header.add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
+        header.add(new CRegisteredObjectName(new CDataString("time").getCN().getString()));
         header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
         int i, iMax = (int)model.getMetabolites().size();
@@ -75,9 +80,9 @@ class example4
                 // we want the concentration oin the output
                 // alternatively, we could use "Reference=Amount" to get the
                 // particle number
-                body.add(new CRegisteredObjectName(metab.getObject(new CCopasiObjectName("Reference=Concentration")).getCN().getString()));
+                body.add(new CRegisteredObjectName(metab.getObject(new CCommonName("Reference=Concentration")).getCN().getString()));
                 // add the corresponding id to the header
-                header.add(new CRegisteredObjectName(new CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
+                header.add(new CRegisteredObjectName(new CDataString(metab.getSBMLId()).getCN().getString()));
                 
                 if(i!=iMax-1)
                 {

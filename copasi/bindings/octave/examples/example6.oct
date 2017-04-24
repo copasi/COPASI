@@ -335,8 +335,8 @@ fitItem1=CFitItem(dataModel);
 %!assert( swig_this(fitItem1) !=0);
 fitItem1.setObjectCN(parameterReference.getCN());
 fitItem1.setStartValue(4.0);
-fitItem1.setLowerBound(CCopasiObjectName("0.00001"));
-fitItem1.setUpperBound(CCopasiObjectName("10"));
+fitItem1.setLowerBound(CCommonName("0.00001"));
+fitItem1.setUpperBound(CCommonName("10"));
 % add the fit item to the correct parameter group
 optimizationItemGroup=fitProblem.getParameter("OptimizationItemList");
 %!assert( swig_this(optimizationItemGroup) != 0);
@@ -355,8 +355,8 @@ fitItem2=CFitItem(dataModel);
 %!assert( swig_this(fitItem2) != 0);
 fitItem2.setObjectCN(parameterReference.getCN());
 fitItem2.setStartValue(4.0);
-fitItem2.setLowerBound(CCopasiObjectName("0.00001"));
-fitItem2.setUpperBound(CCopasiObjectName("10"));
+fitItem2.setLowerBound(CCommonName("0.00001"));
+fitItem2.setUpperBound(CCommonName("10"));
 % add the fit item to the correct parameter group
 optimizationItemGroup.addParameter(fitItem2);
 

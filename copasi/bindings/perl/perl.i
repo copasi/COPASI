@@ -33,11 +33,11 @@
  */
 
 /**
- * Convert CCopasiAbstractArray objects into the most specific type possible.
+ * Convert CArrayInterface objects into the most specific type possible.
  */
-%typemap(out) CCopasiAbstractArray*
+%typemap(out) CArrayInterface*
 {
-  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCCopasiAbstractArray($1), 0);
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCArrayInterface($1), 0);
 }
 
 /**

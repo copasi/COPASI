@@ -292,7 +292,7 @@ unless($objectMap->getRole(0) == $COPASI::CExperiment::time){warn "Assertion fai
 
 my $model=$dataModel->getModel();
 unless(defined($model)){warn "Assertion failed";die;}
-my $timeReference=$model->getObject(new COPASI::CCopasiObjectName("Reference=Time"));
+my $timeReference=$model->getObject(new COPASI::CCommonName("Reference=Time"));
 unless(defined($timeReference)){warn "Assertion failed";die;}
 $objectMap->setObjectCN(0,$timeReference->getCN()->getString());
 
@@ -301,21 +301,21 @@ $objectMap->setObjectCN(0,$timeReference->getCN()->getString());
 $objectMap->setRole(1,$COPASI::CExperiment::dependent);
 my $metab=$metabVector[0];
 unless(defined($metab)){warn "Assertion failed";die;}
-my $particleReference=$metab->getObject(new COPASI::CCopasiObjectName("Reference=Concentration"));
+my $particleReference=$metab->getObject(new COPASI::CCommonName("Reference=Concentration"));
 unless(defined($particleReference)){warn "Assertion failed";die;}
 $objectMap->setObjectCN(1,$particleReference->getCN()->getString());
 
 $objectMap->setRole(2,$COPASI::CExperiment::dependent);
 $metab=$metabVector[1];
 unless(defined($metab)){warn "Assertion failed";die;}
-$particleReference=$metab->getObject(new COPASI::CCopasiObjectName("Reference=Concentration"));
+$particleReference=$metab->getObject(new COPASI::CCommonName("Reference=Concentration"));
 unless(defined($particleReference)){warn "Assertion failed";die;}
 $objectMap->setObjectCN(2,$particleReference->getCN()->getString());
 
 $objectMap->setRole(3,$COPASI::CExperiment::dependent);
 $metab=$metabVector[2];
 unless(defined($metab)){warn "Assertion failed";die;}
-$particleReference=$metab->getObject(new COPASI::CCopasiObjectName("Reference=Concentration"));
+$particleReference=$metab->getObject(new COPASI::CCommonName("Reference=Concentration"));
 unless(defined($particleReference)){warn "Assertion failed";die;}
 $objectMap->setObjectCN(3,$particleReference->getCN()->getString());
 
@@ -335,14 +335,14 @@ my $parameter = $reaction->getParameters()->getParameter(0);
 unless(defined($parameter)){warn "Assertion failed";die;}
 
 # define a CFitItem
-my $parameterReference=$parameter->getObject(new COPASI::CCopasiObjectName("Reference=Value"));
+my $parameterReference=$parameter->getObject(new COPASI::CCommonName("Reference=Value"));
 unless(defined($parameterReference)){warn "Assertion failed";die;}
 my $fitItem1=new COPASI::CFitItem($dataModel);
 unless(defined($fitItem1)){warn "Assertion failed";die;}
 $fitItem1->setObjectCN($parameterReference->getCN());
 $fitItem1->setStartValue(4.0);
-$fitItem1->setLowerBound(new COPASI::CCopasiObjectName("0.00001"));
-$fitItem1->setUpperBound(new COPASI::CCopasiObjectName("10"));
+$fitItem1->setLowerBound(new COPASI::CCommonName("0.00001"));
+$fitItem1->setUpperBound(new COPASI::CCommonName("10"));
 # add the fit item to the correct parameter group
 my $optimizationItemGroup=$fitProblem->getParameter("OptimizationItemList");
 unless(defined($optimizationItemGroup)){warn "Assertion failed";die;}
@@ -355,14 +355,14 @@ $parameter=$reaction->getParameters()->getParameter(0);
 unless(defined($parameter)){warn "Assertion failed";die;}
 
 # define a CFitItem
-$parameterReference=$parameter->getObject(new COPASI::CCopasiObjectName("Reference=Value"));
+$parameterReference=$parameter->getObject(new COPASI::CCommonName("Reference=Value"));
 unless(defined($parameterReference)){warn "Assertion failed";die;}
 my $fitItem2=new COPASI::CFitItem($dataModel);
 unless(defined($fitItem2)){warn "Assertion failed";die;}
 $fitItem2->setObjectCN($parameterReference->getCN());
 $fitItem2->setStartValue(4.0);
-$fitItem2->setLowerBound(new COPASI::CCopasiObjectName("0.00001"));
-$fitItem2->setUpperBound(new COPASI::CCopasiObjectName("10"));
+$fitItem2->setLowerBound(new COPASI::CCommonName("0.00001"));
+$fitItem2->setUpperBound(new COPASI::CCommonName("10"));
 # add the fit item to the correct parameter group
 $optimizationItemGroup->addParameter($fitItem2);
 

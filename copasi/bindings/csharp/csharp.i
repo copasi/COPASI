@@ -26,14 +26,14 @@ enum CLASS_TYPE
 {
   UNDEFINED_CLASS_TYPE
   , AnnotatedFloatMatrix_Type
-  , CArrayAnnotation_Type
+  , CDataArray_Type
   , CBiologicalDescription_Type
   , CChemEqElementVector_Type
   , CChemEqElement_Type
   , CChemEq_Type
   , CCompartment_Type
-  , CCopasiArray_Type
-  , CCopasiAbstractArray_Type
+  , CArray_Type
+  , CArrayInterface_Type
   , CDataContainer_Type
   , CDataModel_Type
   , CCopasiMethod_Type
@@ -43,7 +43,7 @@ enum CLASS_TYPE
   , CCopasiProblem_Type
   , CCopasiReportSeparator_Type
   , CRootContainer_Type
-  , CCopasiStaticString_Type
+  , CDataString_Type
   , CCopasiTask_Type
   , CCreator_Type
   , CEvaluationTreeVectorN_Type
@@ -140,8 +140,8 @@ enum CLASS_TYPE
 };
 
 class CCompartment;
-class CCopasiAbstractArray;
-class CCopasiArray;
+class CArrayInterface;
+class CArray;
 class CDataContainer;
 class CCopasiMethod;
 class CDataObject;
@@ -162,8 +162,8 @@ class COptProblem;
 class COptTask;
 class CTrajectoryTask;
 
-// Determine type CCopasiAbstractArray
-int GetType_CCopasiAbstractArray(CCopasiAbstractArray* pPointer);
+// Determine type CArrayInterface
+int GetType_CArrayInterface(CArrayInterface* pPointer);
 
 // Determine type for CDataContainer
 int GetType_CDataContainer(CDataContainer* pPointer);
@@ -474,27 +474,27 @@ int GetType_COptTask(COptTask* pPointer);
         return ret;
     }
 
-    // CCopasiAbstractArray
-    public static CCopasiAbstractArray InstantiateConcrete_CCopasiAbstractArray(IntPtr cPtr, bool owner)
+    // CArrayInterface
+    public static CArrayInterface InstantiateConcrete_CArrayInterface(IntPtr cPtr, bool owner)
     {
-        CCopasiAbstractArray ret = null;
+        CArrayInterface ret = null;
 
         if (cPtr != IntPtr.Zero)
         {
-            int type = $modulePINVOKE.GetType_CCopasiAbstractArray(new HandleRef(null, cPtr));
+            int type = $modulePINVOKE.GetType_CArrayInterface(new HandleRef(null, cPtr));
             switch(type)
             {
-                case COPASI.CCopasiArray_Type:
-                    // return a CCopasiArray
-                    ret = new CCopasiArray(cPtr,owner);
+                case COPASI.CArray_Type:
+                    // return a CArray
+                    ret = new CArray(cPtr,owner);
                     break;
                 case COPASI.AnnotatedFloatMatrix_Type:
                     // return a AnnotatedFloatMatrix
                     ret = new AnnotatedFloatMatrix(cPtr,owner);
                     break;
-                case COPASI.CCopasiAbstractArray_Type:
-                    // return a CCopasiAbstractArray
-                    ret = new CCopasiAbstractArray(cPtr,owner);
+                case COPASI.CArrayInterface_Type:
+                    // return a CArrayInterface
+                    ret = new CArrayInterface(cPtr,owner);
                     break;
                 default:
                     System.Diagnostics.Debug.Assert(false,
@@ -699,9 +699,9 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CChemEqElementVector
                     ret = new CChemEqElementVector(cPtr,owner);
                     break;
-                case COPASI.CArrayAnnotation_Type:
-                    // return a CArrayAnnotation
-                    ret = new CArrayAnnotation(cPtr,owner);
+                case COPASI.CDataArray_Type:
+                    // return a CDataArray
+                    ret = new CDataArray(cPtr,owner);
                     break;
                 case COPASI.CDataContainer_Type:
                     // return a CDataContainer
@@ -823,9 +823,9 @@ int GetType_COptTask(COptTask* pPointer);
                     // return a CCopasiReportSeparator
                     ret = new CCopasiReportSeparator(cPtr,owner);
                     break;
-                case COPASI.CCopasiStaticString_Type:
-                    // return a CCopasiStaticString
-                    ret = new CCopasiStaticString(cPtr,owner);
+                case COPASI.CDataString_Type:
+                    // return a CDataString
+                    ret = new CDataString(cPtr,owner);
                     break;
                 case COPASI.CDataObject_Type:
                     // return a CDataObject
@@ -1068,15 +1068,15 @@ int GetType_COptTask(COptTask* pPointer);
     return ret;
 }
 
-// CCopasiAbstractArray
+// CArrayInterface
 %typemap(csout, excode=SWIGEXCODE)
-  CCopasiAbstractArray *,
-  const CCopasiAbstractArray *,
-  CCopasiAbstractArray &,
-  const CCopasiAbstractArray &
+  CArrayInterface *,
+  const CArrayInterface *,
+  CArrayInterface &,
+  const CArrayInterface &
 {
     IntPtr cPtr = $imcall;
-    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CCopasiAbstractArray(cPtr, $owner);$excode
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CArrayInterface(cPtr, $owner);$excode
     return ret;
 }
 

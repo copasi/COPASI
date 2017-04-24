@@ -84,7 +84,7 @@ class example5
      // we want to minimize the value of the variable model value at the end of
      // the simulation
      // the objective function is normally minimized
-     string objectiveFunction=variableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+     string objectiveFunction=variableModelValue.getObject(new CCommonName("Reference=Value")).getCN().getString();
      // we need to put the angled brackets around the common name of the object
      objectiveFunction="<"+objectiveFunction+">";
      // now we set the objective function in the problem
@@ -93,12 +93,12 @@ class example5
      // now we create the optimization items
      // i.e. the model elements that have to be changed during the optimization
      // in order to get to the optimal solution
-     COptItem optItem=optProblem.addOptItem(new CCopasiObjectName(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()));
+     COptItem optItem=optProblem.addOptItem(new CCommonName(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN()));
      // we want to change the fixed model value from -100 to +100 with a start
      // value of 50
      optItem.setStartValue(50.0);
-     optItem.setLowerBound(new CCopasiObjectName("-100"));
-     optItem.setUpperBound(new CCopasiObjectName("100"));
+     optItem.setLowerBound(new CCommonName("-100"));
+     optItem.setUpperBound(new CCommonName("100"));
      
      // now we set some parameters on the method
      // these parameters are specific to the method type we set above
@@ -136,14 +136,14 @@ class example5
      ReportItemVector body = report.getBodyAddr();
      
      // in the report header we write two strings and a separator
-     header.Add(new CRegisteredObjectName(new CCopasiStaticString("best value of objective function").getCN().getString()));
+     header.Add(new CRegisteredObjectName(new CDataString("best value of objective function").getCN().getString()));
      header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     header.Add(new CRegisteredObjectName(new CCopasiStaticString("initial value of F").getCN().getString()));
+     header.Add(new CRegisteredObjectName(new CDataString("initial value of F").getCN().getString()));
      // in the report body we write the best value of the objective function and
      // the initial value of the fixed parameter separated by a komma
-     body.Add(new CRegisteredObjectName(optProblem.getObject(new CCopasiObjectName("Reference=Best Value")).getCN().getString()));
+     body.Add(new CRegisteredObjectName(optProblem.getObject(new CCommonName("Reference=Best Value")).getCN().getString()));
      body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     body.Add(new CRegisteredObjectName(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN().getString()));
+     body.Add(new CRegisteredObjectName(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN().getString()));
 
      
      // set the report for the task

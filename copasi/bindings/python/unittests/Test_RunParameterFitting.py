@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_RunParameterFitting.py,v $ 
-#   $Revision: 1.4 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2012/03/05 18:09:29 $ 
-# End CVS Header 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
 # All rights reserved. 
@@ -296,12 +293,12 @@ class Test_RunParameterFitting(unittest.TestCase):
         model=self.datamodel.getModel()
         self.assert_(model!=None)
         self.assert_(model.__class__==COPASI.CModel)
-        timeReference=model.getObject(COPASI.CCopasiObjectName("Reference=Time"))
+        timeReference=model.getObject(COPASI.CCommonName("Reference=Time"))
         self.assert_(timeReference!=None)
         self.assert_(timeReference.__class__==COPASI.CCopasiObject)
         objectMap.setObjectCN(0,timeReference.getCN())
         # getObjectCN returns a string whereas getCN returns a
-        # CCopasiObjectname
+        # CCommonName
         self.assert_(objectMap.getObjectCN(0)==timeReference.getCN().getString())
         metabA=model.getMetabolite(0)
         self.assert_(metabA!=None)
@@ -317,20 +314,20 @@ class Test_RunParameterFitting(unittest.TestCase):
             self.assert_(metabB!=None)
             self.assert_(metabB.__class__==COPASI.CMetab)
         objectMap.setRole(1,COPASI.CExperiment.dependent)
-        particleReference=metabA.getObject(COPASI.CCopasiObjectName("Reference=ParticleNumber"))
+        particleReference=metabA.getObject(COPASI.CCommonName("Reference=ParticleNumber"))
         self.assert_(particleReference!=None)
         self.assert_(particleReference.__class__==COPASI.CCopasiObject)
         objectMap.setObjectCN(1,particleReference.getCN())
         # getObjectCN returns a string whereas getCN returns a
-        # CCopasiObjectname
+        # CCommonName
         self.assert_(objectMap.getObjectCN(1)==particleReference.getCN().getString())
         objectMap.setRole(2,COPASI.CExperiment.dependent)
-        particleReference=metabB.getObject(COPASI.CCopasiObjectName("Reference=ParticleNumber"))
+        particleReference=metabB.getObject(COPASI.CCommonName("Reference=ParticleNumber"))
         self.assert_(particleReference!=None)
         self.assert_(particleReference.__class__==COPASI.CCopasiObject)
         objectMap.setObjectCN(2,particleReference.getCN())
         # getObjectCN returns a string whereas getCN returns a
-        # CCopasiObjectname
+        # CCommonName
         self.assert_(objectMap.getObjectCN(2)==particleReference.getCN().getString())
         # reading from string is not possible with the current C++ API
         #result=experiment.read(TIME_COURSE_DATA,False)
@@ -353,7 +350,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         
         # define CFitItems
         self.assert_(fitProblem.getOptItemSize()==0)
-        parameterReference=parameter.getObject(COPASI.CCopasiObjectName("Reference=Value"))
+        parameterReference=parameter.getObject(COPASI.CCommonName("Reference=Value"))
         self.assert_(parameterReference!=None)
         self.assert_(parameterReference.__class__==COPASI.CCopasiObject)
         fitItem=COPASI.CFitItem()
@@ -361,8 +358,8 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(fitItem.__class__==COPASI.CFitItem)
         fitItem.setObjectCN(parameterReference.getCN())
         fitItem.setStartValue(4.0)
-        fitItem.setLowerBound(COPASI.CCopasiObjectName("0.0001"))
-        fitItem.setUpperBound(COPASI.CCopasiObjectName("10"))
+        fitItem.setLowerBound(COPASI.CCommonName("0.0001"))
+        fitItem.setUpperBound(COPASI.CCommonName("10"))
         # add the experiment to the fit item
         #fitItem.addExperiment(experiment.getKey())
         self.assert_(fitItem.getStartValue()==4.0)

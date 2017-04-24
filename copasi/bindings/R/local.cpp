@@ -200,18 +200,18 @@ GetDowncastSwigTypeForCOptTask(COptTask* optTask)
 }
 
 /**
- * @return the most specific Swig type for the given CCopasiAbstractArray object.
+ * @return the most specific Swig type for the given CArrayInterface object.
  */
 struct swig_type_info*
-GetDowncastSwigTypeForCCopasiAbstractArray(CArrayInterface* array)
+GetDowncastSwigTypeForCArrayInterface(CArrayInterface* array)
 {
-  if (array == NULL) return SWIGTYPE_p_CCopasiAbstractArray;
+  if (array == NULL) return SWIGTYPE_p_CArrayInterface;
 
-  struct swig_type_info* pInfo = SWIGTYPE_p_CCopasiAbstractArray;
+  struct swig_type_info* pInfo = SWIGTYPE_p_CArrayInterface;
 
   if (dynamic_cast<CArray*>(array))
     {
-      pInfo = SWIGTYPE_p_CCopasiArray;
+      pInfo = SWIGTYPE_p_CArray;
     }
 
   /* The following code no longer compiles out of some reason
@@ -575,7 +575,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<CDataArray*>(container))
     {
-      pInfo = SWIGTYPE_p_CArrayAnnotation;
+      pInfo = SWIGTYPE_p_CDataArray;
     }
   else if (dynamic_cast<CFittingPoint*>(container))
     {
@@ -608,7 +608,7 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
         }
       else
         {
-          pInfo = SWIGTYPE_p_CCopasiStaticString;
+          pInfo = SWIGTYPE_p_CDataString;
         }
     }
 

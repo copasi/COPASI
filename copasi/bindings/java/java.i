@@ -412,7 +412,7 @@
 		}
 		else if (type.equals("Array"))
 		{
-			return new CArrayAnnotation(cPtr, owner);
+			return new CDataArray(cPtr, owner);
 		}
 		else if (type.equals("Method"))
 		{

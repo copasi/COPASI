@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -129,9 +134,9 @@ def main(args):
    # the body will contain the actual timecourse data
    header = report.getHeaderAddr()
    body = report.getBodyAddr()
-   body.push_back(CRegisteredObjectName(CCopasiObjectName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()))
+   body.push_back(CRegisteredObjectName(CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()))
    body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
-   header.push_back(CRegisteredObjectName(CCopasiStaticString("time").getCN().getString()))
+   header.push_back(CRegisteredObjectName(CDataString("time").getCN().getString()))
    header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
 
    iMax = model.getMetabolites().size()
@@ -143,9 +148,9 @@ def main(args):
            # we want the concentration in the output
            # alternatively, we could use "Reference=Amount" to get the
            # particle number
-           body.push_back(CRegisteredObjectName(metab.getObject(CCopasiObjectName("Reference=Concentration")).getCN().getString()))
+           body.push_back(CRegisteredObjectName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()))
            # add the corresponding id to the header
-           header.push_back(CRegisteredObjectName(CCopasiStaticString(metab.getSBMLId()).getCN().getString()))
+           header.push_back(CRegisteredObjectName(CDataString(metab.getSBMLId()).getCN().getString()))
            
            if i!=iMax-1:
              # after each entry, we need a seperator

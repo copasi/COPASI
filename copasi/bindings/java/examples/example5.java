@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -46,7 +51,7 @@ public class example5
      variableModelValue.setStatus(CModelEntity.ASSIGNMENT);
      // we create a very simple assignment that is easy on the optimization
      // a parabole with the minimum at x=6 should do just fine
-     String s=fixedModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+     String s=fixedModelValue.getObject(new CCommonName("Reference=Value")).getCN().getString();
      s="(<"+s+"> - 6.0)^2";
      variableModelValue.setExpression(s);
      // now we compile the model and tell COPASI which values have changed so
@@ -99,7 +104,7 @@ public class example5
      // we want to minimize the value of the variable model value at the end of
      // the simulation
      // the objective function is normally minimized
-     String objectiveFunction=variableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+     String objectiveFunction=variableModelValue.getObject(new CCommonName("Reference=Value")).getCN().getString();
      // we need to put the angled brackets around the common name of the object
      objectiveFunction="<"+objectiveFunction+">";
      // now we set the objective function in the problem
@@ -108,12 +113,12 @@ public class example5
      // now we create the optimization items
      // i.e. the model elements that have to be changed during the optimization
      // in order to get to the optimal solution
-     COptItem optItem=optProblem.addOptItem(new CCopasiObjectName(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()));
+     COptItem optItem=optProblem.addOptItem(new CCommonName(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN()));
      // we want to change the fixed model value from -100 to +100 with a start
      // value of 50
      optItem.setStartValue(50.0);
-     optItem.setLowerBound(new CCopasiObjectName("-100"));
-     optItem.setUpperBound(new CCopasiObjectName("100"));
+     optItem.setLowerBound(new CCommonName("-100"));
+     optItem.setUpperBound(new CCommonName("100"));
      
      // now we set some parameters on the method
      // these parameters are specific to the method type we set above
@@ -151,14 +156,14 @@ public class example5
      ReportItemVector body = report.getBodyAddr();
      
      // in the report header we write two strings and a separator
-     header.add(new CRegisteredObjectName(new CCopasiStaticString("best value of objective function").getCN().getString()));
+     header.add(new CRegisteredObjectName(new CDataString("best value of objective function").getCN().getString()));
      header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     header.add(new CRegisteredObjectName(new CCopasiStaticString("initial value of F").getCN().getString()));
+     header.add(new CRegisteredObjectName(new CDataString("initial value of F").getCN().getString()));
      // in the report body we write the best value of the objective function and
      // the initial value of the fixed parameter separated by a komma
-     body.add(new CRegisteredObjectName(optProblem.getObject(new CCopasiObjectName("Reference=Best Value")).getCN().getString()));
+     body.add(new CRegisteredObjectName(optProblem.getObject(new CCommonName("Reference=Best Value")).getCN().getString()));
      body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     body.add(new CRegisteredObjectName(fixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN().getString()));
+     body.add(new CRegisteredObjectName(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN().getString()));
 
      
      // set the report for the task

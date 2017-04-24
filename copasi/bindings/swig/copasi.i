@@ -106,7 +106,7 @@ size_t INVALID_INDEX();
 %ignore CIssue::eSeverity;
 #endif // SWIGCSHARP
 
-%include <copasi/report/CObjectInterface.h>
+%include <copasi/core/CObjectInterface.h>
 %include <copasi/utilities/CValidity.h>
 
 %include "CObjectLists.i"
@@ -120,7 +120,7 @@ size_t INVALID_INDEX();
 %include "CDataObject.i"
 %include "CDataObjectReference.i"
 %include "CDataContainer.i"
-%include "CCopasiArray.i"
+%include "CArray.i"
 %include "CAnnotatedMatrix.i"
 %include "CAnnotation.i"
 %include "CEigen.i"
@@ -131,7 +131,7 @@ size_t INVALID_INDEX();
 %include "CExpression.i"
 %include "CFunction.i"
 %include "CFunctionDB.i"
-%include "CCopasiStaticString.i"
+%include "CDataString.i"
 %include "CMoiety.i"
 %include "CModelValue.i"
 %include "CMetab.i"

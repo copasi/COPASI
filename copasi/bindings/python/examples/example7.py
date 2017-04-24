@@ -51,7 +51,7 @@ def main():
      # create a compartment with the name cell and an initial volume of 5.0
      # microliter
      compartment = model.createCompartment("cell", 5.0)
-     object = compartment.getObject(CCopasiObjectName("Reference=InitialVolume"))
+     object = compartment.getObject(CCommonName("Reference=InitialVolume"))
      assert object != None
      changedObjects.push_back(object)
      assert compartment != None
@@ -61,7 +61,7 @@ def main():
      # the metabolite belongs to the compartment we created and is is to be
      # fixed
      S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED)
-     object = S.getObject(CCopasiObjectName("Reference=InitialConcentration"))
+     object = S.getObject(CCommonName("Reference=InitialConcentration"))
      assert object != None
      changedObjects.push_back(object)
      assert compartment != None
@@ -71,7 +71,7 @@ def main():
      # concentration of 0. This metabolite is to be changed by reactions
      P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS)
      assert P != None
-     object = P.getObject(CCopasiObjectName("Reference=InitialConcentration"))
+     object = P.getObject(CCommonName("Reference=InitialConcentration"))
      assert object != None
      changedObjects.push_back(object)
      assert model.getMetabolites().size() == 2
@@ -97,7 +97,7 @@ def main():
      # set the status to FIXED
      MV.setStatus(CModelValue.FIXED)
      assert MV != None
-     object = MV.getObject(CCopasiObjectName("Reference=InitialValue"))
+     object = MV.getObject(CCommonName("Reference=InitialValue"))
      assert object != None
      changedObjects.push_back(object)
      assert model.getModelValues().size() == 1

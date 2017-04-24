@@ -24,7 +24,7 @@ stopifnot(!is.null(model))
 # we want seconds as the time unit
 # microliter as the volume units
 # and nanomole as the substance units
-invisible(CModel_setTimeUnit(model,"s"))
+invisible(model$setTimeUnit("s"))
 invisible(CModel_setVolumeUnit(model,"microl"))
 invisible(CModel_setQuantityUnit(model,"nMol"))
 
@@ -37,7 +37,7 @@ changedObjects <- ObjectStdVector()
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
 compartment <- CModel_createCompartment(model,"cell", 5.0)
-object <- CCopasiContainer_getObject(compartment,CCopasiObjectName("Reference=InitialVolume"))
+object <- CCopasiContainer_getObject(compartment,CCommonName("Reference=InitialVolume"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(!is.null(compartment))
@@ -47,7 +47,7 @@ stopifnot(CompartmentVector_size(CModel_getCompartments(model)) == 1)
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
 S <- CModel_createMetabolite(model,"S", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
-object <- CCopasiContainer_getObject(S,CCopasiObjectName("Reference=InitialConcentration"))
+object <- CCopasiContainer_getObject(S,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(!is.null(compartment))
@@ -57,7 +57,7 @@ stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 1)
 # concentration of 0. This metabolite is to be changed by reactions
 P <- CModel_createMetabolite(model,"P", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
 stopifnot(!is.null(P))
-object <- CCopasiContainer_getObject(P,CCopasiObjectName("Reference=InitialConcentration"))
+object <- CCopasiContainer_getObject(P,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 2)
@@ -83,7 +83,7 @@ MV <- CModel_createModelValue(model,"K", 42.0)
 # set the status to FIXED
 invisible(CModelEntity_setStatus(MV,"FIXED"))
 stopifnot(!is.null(MV))
-object <- CCopasiContainer_getObject(MV,CCopasiObjectName("Reference=InitialValue"))
+object <- CCopasiContainer_getObject(MV,CCommonName("Reference=InitialValue"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(ModelValueVector_size(CModel_getModelValues(model)) == 1)

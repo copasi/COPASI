@@ -96,16 +96,16 @@ if (!is.null(aj)) {
 
     # first the array annotation can tell us how many dimensions it has.
     # Since the matrix is a 2D array, it should have 2 dimensions
-    stopifnot(CArrayAnnotation_dimensionality(aj) == 2)
+    stopifnot(CDataArray_dimensionality(aj) == 2)
 
     # since the rows and columns have the same annotation for the jacobian, it doesn't matter
     # for which dimension we get the annotations
-    annotations <- CArrayAnnotation_getAnnotationsString(aj,1)
+    annotations <- CDataArray_getAnnotationsString(aj,1)
     cat("Jacobian Matrix:\n")
     cat("\n")
     cat(format(" ", width = 7))
     
-    arr <- CArrayAnnotation_array(aj);            
+    arr <- CDataArray_array(aj);            
 
     i <- 0
     while (i < StringStdVector_size(annotations)) {
@@ -120,7 +120,7 @@ if (!is.null(aj)) {
         
         j <- 0
         while (j < StringStdVector_size(annotations)) {
-            cat(format(CCopasiAbstractArray_get(arr,i,j), width = 7, digits = 3))
+            cat(format(CArrayInterface_get(arr,i,j), width = 7, digits = 3))
             j <- j + 1
         }
         cat("\n")

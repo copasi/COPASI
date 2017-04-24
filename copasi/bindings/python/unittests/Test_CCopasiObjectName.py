@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiObjectName.py,v $ 
-#   $Revision: 1.11 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -22,7 +23,7 @@ import unittest
 from types import *
 
 
-class Test_CCopasiObjectName(unittest.TestCase):
+class Test_CCommonName(unittest.TestCase):
   def setUp(self):
     self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
     self.model=self.datamodel.getModel()
@@ -33,12 +34,12 @@ class Test_CCopasiObjectName(unittest.TestCase):
 
   def test_getPrimary(self):
     prim=self.cn.getPrimary()
-    self.assert_(prim.__class__==COPASI.CCopasiObjectName)
+    self.assert_(prim.__class__==COPASI.CCommonName)
     self.assert_(prim.getString()=="CN=Root") 
 
   def test_getRemainder(self):
     prim=self.cn.getRemainder()
-    self.assert_(prim.__class__==COPASI.CCopasiObjectName)
+    self.assert_(prim.__class__==COPASI.CCommonName)
     self.assert_(prim.getString()=='Model=New Model,Vector=Compartments[Comp1],Vector=Metabolites[metab3]')
 
   def test_getObjectType(self):
@@ -54,14 +55,14 @@ class Test_CCopasiObjectName(unittest.TestCase):
 
   def test_escape(self):
     a="This- \ \ is a test--!"
-    o=COPASI.CCopasiObjectName.escape(a)
+    o=COPASI.CCommonName.escape(a)
     self.assert_(type(o)==StringType)
     self.assert_(len(o)==len(a)+2)
 
 
   def test_unescape(self):
     a="This- \\ \\ is a test--!"
-    o=COPASI.CCopasiObjectName.unescape(a)
+    o=COPASI.CCommonName.unescape(a)
     self.assert_(type(o)==StringType)
     self.assert_(len(o)==len(a)-2)
                                   
@@ -75,7 +76,7 @@ def suite():
          ,'test_escape'
          ,'test_unescape'
         ]
-  return unittest.TestSuite(map(Test_CCopasiObjectName,tests))
+  return unittest.TestSuite(map(Test_CCommonName,tests))
 
 
 if(__name__ == '__main__'):

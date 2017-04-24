@@ -86,7 +86,7 @@ class example9
    // here we can either get the jacobian as we did in example 8 as a matrix with
    // getJacobian, or we can use getJacobianAnnotated to get an annotated matrix
    // Corresponding methods for the reduced jacobian are getJacobianX and getJacobianXAnnotated
-   CArrayAnnotation aj = task.getJacobianAnnotated();
+   CDataArray aj = task.getJacobianAnnotated();
    Debug.Assert((aj != null));
 
    if (aj != null)

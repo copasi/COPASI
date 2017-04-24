@@ -32,8 +32,8 @@
 // Now we specify the definitions
 // for the type determination methods
 
-// Determine type CCopasiAbstractArray
-int GetType_CCopasiAbstractArray(CArrayInterface* pPointer)
+// Determine type CArrayInterface
+int GetType_CArrayInterface(CArrayInterface* pPointer)
 {
   CLASS_TYPE result = UNDEFINED_CLASS_TYPE;
 
@@ -41,8 +41,8 @@ int GetType_CCopasiAbstractArray(CArrayInterface* pPointer)
     {
       if (dynamic_cast<CArray*>(pPointer))
         {
-          // return a CCopasiArray
-          result = CCopasiArray_Type;
+          // return a CArray
+          result = CArray_Type;
         }
       else if (dynamic_cast<CMatrixInterface<CMatrix<C_FLOAT64> >*>(pPointer))
         {
@@ -51,8 +51,8 @@ int GetType_CCopasiAbstractArray(CArrayInterface* pPointer)
         }
       else
         {
-          // return a CCopasiAbstractArray
-          result = CCopasiAbstractArray_Type;
+          // return a CArrayInterface
+          result = CArrayInterface_Type;
         }
     }
 
@@ -360,8 +360,8 @@ int GetType_CDataContainer(CDataContainer* pPointer)
             }
           else if (dynamic_cast<CDataArray*>(pPointer))
             {
-              // return a CArrayAnnotation
-              result = CArrayAnnotation_Type;
+              // return a CDataArray
+              result = CDataArray_Type;
             }
           else
             {
@@ -463,8 +463,8 @@ int GetType_CDataObject(CDataObject* pPointer)
             }
           else
             {
-              // return a CCopasiStaticString
-              result = CCopasiStaticString_Type;
+              // return a CDataString
+              result = CDataString_Type;
             }
         }
       else

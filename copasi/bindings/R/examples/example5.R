@@ -33,15 +33,15 @@ stopifnot(!is.null(variableModelValue))
 invisible(CModelEntity_setStatus(variableModelValue,"ASSIGNMENT"))
 # we create a very simple assignment that is easy on the optimization
 # a parabole with the minimum at x=6 should do just fine
-s <- CCopasiContainer_getObject(fixedModelValue,CCopasiObjectName("Reference=Value"))
-s <- paste("(<", CCopasiObjectName_getString(CCopasiObject_getCN(s)), "> - 6.0)^2", sep = "")
+s <- CCopasiContainer_getObject(fixedModelValue,CCommonName("Reference=Value"))
+s <- paste("(<", CCommonName_getString(CCopasiObject_getCN(s)), "> - 6.0)^2", sep = "")
 invisible(CModelEntity_setExpression(variableModelValue,s))
 # now we compile the model and tell COPASI which values have changed so
 # that COPASI can update the values that depend on those
 invisible(CModel_compileIfNecessary(model))
 changedObjects <- ObjectStdVector()
-invisible(ObjectStdVector_push_back(changedObjects,CCopasiContainer_getObject(fixedModelValue,CCopasiObjectName("Reference=InitialValue"))))
-invisible(ObjectStdVector_push_back(changedObjects,CCopasiContainer_getObject(variableModelValue,CCopasiObjectName("Reference=InitialValue"))))
+invisible(ObjectStdVector_push_back(changedObjects,CCopasiContainer_getObject(fixedModelValue,CCommonName("Reference=InitialValue"))))
+invisible(ObjectStdVector_push_back(changedObjects,CCopasiContainer_getObject(variableModelValue,CCommonName("Reference=InitialValue"))))
 invisible(CModel_updateInitialValues(model,changedObjects))
 
 # now we set up the optimization
@@ -85,21 +85,21 @@ invisible(COptProblem_setSubtaskType(optProblem,"timeCourse"))
 # we want to minimize the value of the variable model value at the end of
 # the simulation
 # the objective function is normally minimized
-objectiveFunction <- CCopasiContainer_getObject(variableModelValue,CCopasiObjectName("Reference=Value"))
+objectiveFunction <- CCopasiContainer_getObject(variableModelValue,CCommonName("Reference=Value"))
 # we need to put the angled brackets around the common name of the object
-objectiveFunction <- paste("<", CCopasiObjectName_getString(CCopasiObject_getCN(objectiveFunction)) ,">", sep = "")
+objectiveFunction <- paste("<", CCommonName_getString(CCopasiObject_getCN(objectiveFunction)) ,">", sep = "")
 # now we set the objective function in the problem
 invisible(COptProblem_setObjectiveFunction(optProblem,objectiveFunction))
 
 # now we create the optimization items
 # i.e. the model elements that have to be changed during the optimization
 # in order to get to the optimal solution
-optItem <- COptProblem_addOptItem(optProblem,CCopasiObject_getCN((CCopasiObject_getObject(fixedModelValue,CCopasiObjectName("Reference=InitialValue")))))
+optItem <- COptProblem_addOptItem(optProblem,CCopasiObject_getCN((CCopasiObject_getObject(fixedModelValue,CCommonName("Reference=InitialValue")))))
 # we want to change the fixed model value from -100 to +100 with a start
 # value of 50
 invisible(COptItem_setStartValue(optItem,50.0))
-invisible(COptItem_setLowerBound(optItem,CCopasiObjectName("-100")))
-invisible(COptItem_setUpperBound(optItem,CCopasiObjectName("100")))
+invisible(COptItem_setLowerBound(optItem,CCommonName("-100")))
+invisible(COptItem_setUpperBound(optItem,CCommonName("100")))
 
 # now we set some parameters on the method
 # these parameters are specific to the method type we set above
@@ -137,21 +137,21 @@ header <- CReportDefinition_getHeaderAddr(report)
 body <- CReportDefinition_getBodyAddr(report)
 
 sep <- CReportDefinition_getSeparator(report)
-sep_string <- CCopasiObjectName_getString(CCopasiObject_getCN(sep))
+sep_string <- CCommonName_getString(CCopasiObject_getCN(sep))
 # in the report header we write two strings and a separator
-s <- CCopasiObjectName_getString(CCopasiObject_getCN(CCopasiStaticString("best value of objective function")))
+s <- CCommonName_getString(CCopasiObject_getCN(CDataString("best value of objective function")))
 invisible(ReportItemVector_push_back(header, CRegisteredObjectName(s)))
 invisible(ReportItemVector_push_back(header, CRegisteredObjectName(sep_string)))
-s <- CCopasiObjectName_getString(CCopasiObject_getCN(CCopasiStaticString("initial value of F")))
+s <- CCommonName_getString(CCopasiObject_getCN(CDataString("initial value of F")))
 invisible(ReportItemVector_push_back(header, CRegisteredObjectName(s)))
 # in the report body we write the best value of the objective function and
 # the initial value of the fixed parameter separated by a komma
-o <- CCopasiContainer_getObject(optProblem,CCopasiObjectName("Reference=Best Value"))
-s <- CCopasiObjectName_getString(CCopasiObject_getCN(o))
+o <- CCopasiContainer_getObject(optProblem,CCommonName("Reference=Best Value"))
+s <- CCommonName_getString(CCopasiObject_getCN(o))
 invisible(ReportItemVector_push_back(body, CRegisteredObjectName(s)))
 invisible(ReportItemVector_push_back(body, CRegisteredObjectName(sep_string)))
-o <- CCopasiContainer_getObject(fixedModelValue,CCopasiObjectName("Reference=InitialValue"))
-s <- CCopasiObjectName_getString(CCopasiObject_getCN(o))
+o <- CCopasiContainer_getObject(fixedModelValue,CCommonName("Reference=InitialValue"))
+s <- CCommonName_getString(CCopasiObject_getCN(o))
 invisible(ReportItemVector_push_back(body, CRegisteredObjectName(s)))
 
 

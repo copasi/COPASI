@@ -26,14 +26,14 @@ unless(defined($variableModelValue )){warn "Assertion failed";die;}
 $variableModelValue->setStatus($COPASI::CModelEntity::ASSIGNMENT);
 # we create a very simple assignment that is easy on the optimization
 # a parabole with the minimum at x=6 should do just fine
-my $s="(<" . $fixedModelValue->getObject(new COPASI::CCopasiObjectName("Reference=Value"))->getCN()->getString() . "> - 6.0)^2";
+my $s="(<" . $fixedModelValue->getObject(new COPASI::CCommonName("Reference=Value"))->getCN()->getString() . "> - 6.0)^2";
 $variableModelValue->setExpression($s);
 # now we compile the model and tell COPASI which values have changed so
 # that COPASI can update the values that depend on those
 $model->compileIfNecessary();
 my $changedObjects = new COPASI::ObjectStdVector();
-$changedObjects->push($fixedModelValue->getObject(new COPASI::CCopasiObjectName("Reference=InitialValue")));
-$changedObjects->push($variableModelValue->getObject(new COPASI::CCopasiObjectName("Reference=InitialValue")));
+$changedObjects->push($fixedModelValue->getObject(new COPASI::CCommonName("Reference=InitialValue")));
+$changedObjects->push($variableModelValue->getObject(new COPASI::CCommonName("Reference=InitialValue")));
 $model->updateInitialValues($changedObjects);
 
 # now we set up the optimization
@@ -80,19 +80,19 @@ $optProblem->setSubtaskType($COPASI::CCopasiTask::timeCourse);
 # the objective function is normally minimized
 
 # we need to put the angled brackets around the common name of the object
-my $objectiveFunction = "<" . $variableModelValue->getObject(new COPASI::CCopasiObjectName("Reference=Value"))->getCN()->getString() . ">";
+my $objectiveFunction = "<" . $variableModelValue->getObject(new COPASI::CCommonName("Reference=Value"))->getCN()->getString() . ">";
 # now we set the objective function in the problem
 $optProblem->setObjectiveFunction($objectiveFunction);
 
 # now we create the optimization items
 # i.e. the model elements that have to be changed during the optimization
 # in order to get to the optimal solution
-my $optItem = $optProblem->addOptItem(new COPASI::CCopasiObjectName($fixedModelValue->getObject(new COPASI::CCopasiObjectName("Reference=InitialValue"))->getCN()));
+my $optItem = $optProblem->addOptItem(new COPASI::CCommonName($fixedModelValue->getObject(new COPASI::CCommonName("Reference=InitialValue"))->getCN()));
 # we want to change the fixed model value from -100 to +100 with a start
 # value of 50
 $optItem->setStartValue(50.0);
-$optItem->setLowerBound(new COPASI::CCopasiObjectName("-100"));
-$optItem->setUpperBound(new COPASI::CCopasiObjectName("100"));
+$optItem->setLowerBound(new COPASI::CCommonName("-100"));
+$optItem->setUpperBound(new COPASI::CCommonName("100"));
 
 # now we set some parameters on the method
 # these parameters are specific to the method type we set above
@@ -130,14 +130,14 @@ my $header = $report->getHeaderAddr();
 my $body = $report->getBodyAddr();
 
 # in the report header we write two strings and a separator
-$header->push(new COPASI::CRegisteredObjectName(new COPASI::CCopasiStaticString("best value of objective function")->getCN()->getString()));
+$header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString("best value of objective function")->getCN()->getString()));
 $header->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
-$header->push(new COPASI::CRegisteredObjectName(new COPASI::CCopasiStaticString("initial value of F")->getCN()->getString()));
+$header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString("initial value of F")->getCN()->getString()));
 # in the report body we write the best value of the objective function and
 # the initial value of the fixed parameter separated by a komma
-$body->push(new COPASI::CRegisteredObjectName($optProblem->getObject(new COPASI::CCopasiObjectName("Reference=Best Value"))->getCN()->getString()));
+$body->push(new COPASI::CRegisteredObjectName($optProblem->getObject(new COPASI::CCommonName("Reference=Best Value"))->getCN()->getString()));
 $body->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
-$body->push(new COPASI::CRegisteredObjectName($fixedModelValue->getObject(new COPASI::CCopasiObjectName("Reference=InitialValue"))->getCN()->getString()));
+$body->push(new COPASI::CRegisteredObjectName($fixedModelValue->getObject(new COPASI::CCommonName("Reference=InitialValue"))->getCN()->getString()));
 
 
 # set the report for the task

@@ -1,18 +1,16 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSteadyStateCalculation.java,v $ 
-//   $Revision: 1.8 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:21:44 $ 
-// End CVS Header 
-
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
 // All rights reserved. 
 
 package org.COPASI.unittests;
@@ -66,10 +64,10 @@ public class Test_RunSteadyStateCalculation extends TestCase
         react.setParameterMappingVector(react.getFunction().getVariables().getParameter(1).getObjectName(),mapping);;
         model.compileIfNecessary();
         ObjectStdVector changedObjects=new ObjectStdVector();
-        changedObjects.add(comp.getObject(new CCopasiObjectName("Reference=InitialVolume")));
-        changedObjects.add(A.getObject(new CCopasiObjectName("Reference=InitialConcentration")));
-        changedObjects.add(B.getObject(new CCopasiObjectName("Reference=InitialConcentration")));
-        changedObjects.add(react.getParameters().getParameter(0).getObject(new CCopasiObjectName("Reference=Value")));
+        changedObjects.add(comp.getObject(new CCommonName("Reference=InitialVolume")));
+        changedObjects.add(A.getObject(new CCommonName("Reference=InitialConcentration")));
+        changedObjects.add(B.getObject(new CCommonName("Reference=InitialConcentration")));
+        changedObjects.add(react.getParameters().getParameter(0).getObject(new CCommonName("Reference=Value")));
         model.updateInitialValues(changedObjects);
         return model;
     }

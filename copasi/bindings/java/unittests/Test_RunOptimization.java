@@ -1,22 +1,19 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunOptimization.java,v $ 
-//   $Revision: 1.8 $ 
-//   $Name:  $ 
-//   $Author: shoops $ 
-//   $Date: 2010/07/16 18:56:01 $ 
-// End CVS Header 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
@@ -60,13 +57,13 @@ public class Test_RunOptimization extends TestCase
     this.mFixedModelValue=model.createModelValue("R",4.0);
     this.mVariableModelValue=model.createModelValue("K");
     this.mVariableModelValue.setStatus(CModelEntity.ASSIGNMENT);
-    String s=this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+    String s=this.mFixedModelValue.getObject(new CCommonName("Reference=Value")).getCN().getString();
     s="<"+s+">^2";
     this.mVariableModelValue.setExpression(s);
     model.compileIfNecessary();
     ObjectStdVector changedObjects=new ObjectStdVector();
-    changedObjects.add(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
-    changedObjects.add(this.mVariableModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")));
+    changedObjects.add(this.mFixedModelValue.getObject(new CCommonName("Reference=InitialValue")));
+    changedObjects.add(this.mVariableModelValue.getObject(new CCommonName("Reference=InitialValue")));
     model.updateInitialValues(changedObjects);
     return model;
    }
@@ -155,8 +152,8 @@ public class Test_RunOptimization extends TestCase
         optProblem.setObjectiveFunction(objectiveFunction);
         COptItem optItem2=optProblem.addOptItem(optItem.getObjectCN());
         optItem2.setStartValue(optItem.getStartValue());
-        optItem2.setLowerBound(new CCopasiObjectName(optItem.getLowerBound()));
-        optItem2.setUpperBound(new CCopasiObjectName(optItem.getUpperBound()));
+        optItem2.setLowerBound(new CCommonName(optItem.getLowerBound()));
+        optItem2.setUpperBound(new CCommonName(optItem.getUpperBound()));
         boolean result=false;
         try
         {
@@ -188,17 +185,17 @@ public class Test_RunOptimization extends TestCase
         HashMap<String,Object> problemParameters=new HashMap<String,Object>();
         // opt_items 
         COptItem optItem=new COptItem(mDataModel);
-        optItem.setObjectCN(new CCopasiObjectName(this.mFixedModelValue.getObject(new CCopasiObjectName("Reference=InitialValue")).getCN()));
+        optItem.setObjectCN(new CCommonName(this.mFixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN()));
         optItem.setStartValue(4.0);
-        optItem.setLowerBound(new CCopasiObjectName("-100"));
-        optItem.setUpperBound(new CCopasiObjectName("100"));
+        optItem.setLowerBound(new CCommonName("-100"));
+        optItem.setUpperBound(new CCommonName("100"));
         HashMap<String,Object> methodParameters=new HashMap<String,Object>();
         // iteration limit
         // tolerance
         methodParameters.put("Iteration Limit",new Integer(2000));
         methodParameters.put("Tolerance",new Double(1.0e-5));
         // objective function
-        String objectiveFunction=this.mVariableModelValue.getObject(new CCopasiObjectName("Reference=Value")).getCN().getString();
+        String objectiveFunction=this.mVariableModelValue.getObject(new CCommonName("Reference=Value")).getCN().getString();
         objectiveFunction="<"+objectiveFunction+">";
         COptTask optTask=runOptimization(mDataModel,CCopasiMethod.LevenbergMarquardt,CCopasiTask.timeCourse,problemParameters,methodParameters,objectiveFunction,optItem);
         assertFalse(optTask==null);

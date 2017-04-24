@@ -3,16 +3,6 @@
 // of Connecticut School of Medicine. 
 // All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
-
-// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
-
 
 %{
 
@@ -20,23 +10,23 @@
 
 %}
 
-%ignore CCopasiAbstractArray::operator[] (const index_type & index); 
-%ignore CCopasiAbstractArray::operator[] (const index_type & index) const;
-%ignore CCopasiArray::operator[] (const index_type & index); 
-%ignore CCopasiArray::operator[] (const index_type & index) const;
-%ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
-%ignore CCopasiMatrixInterface::operator[] (const index_type & index) const;
-%ignore CDataVectorInterface::operator[] (const index_type & index) ;
-%ignore CDataVectorInterface::operator[] (const index_type & index) const;
-%ignore CArrayAnnotation::operator=(const CArrayAnnotation&);
-%ignore CArrayAnnotation::array() const;
-%ignore operator<<(std::ostream &os, const CArrayAnnotation & o);
+%ignore CArrayInterface::operator[] (const index_type & index); 
+%ignore CArrayInterface::operator[] (const index_type & index) const;
+%ignore CArray::operator[] (const index_type & index); 
+%ignore CArray::operator[] (const index_type & index) const;
+%ignore CMatrixInterface::operator[] (const index_type & index); 
+%ignore CMatrixInterface::operator[] (const index_type & index) const;
+%ignore CVectorInterface::operator[] (const index_type & index) ;
+%ignore CVectorInterface::operator[] (const index_type & index) const;
+%ignore CDataArray::operator=(const CDataArray&);
+%ignore CDataArray::array() const;
+%ignore operator<<(std::ostream &os, const CDataArray & o);
 
 
 #ifdef SWIGPERL
 // we need a new typemap for the get function below
 // to accept a reference to a cell array as the index argument
-%typemap (in) const CCopasiAbstractArray::index_type & MY_FUNNY_INDEX {
+%typemap (in) const CArrayInterface::index_type & MY_FUNNY_INDEX {
   // this typemap is almost identical with the one that
   // is described for handling char** values in section 30.8.1
   // of the SWIG manual  
@@ -59,7 +49,7 @@
   // the object that we dynamically allocate here
   // has to be deleted by a separate freearg typemap
   // (see below)
-  $1 = new CCopasiAbstractArray::index_type;
+  $1 = new CArrayInterface::index_type;
   SV **tv;
   for(I32 i=0;i <= len;++i)
   {
@@ -71,29 +61,30 @@
 
 // Since we allocate the temporary vector in the in typemap above on the heap,
 // we need to make sure the object is deleted after the call.
-%typemap (freearg) const CCopasiAbstractArray::index_type & MY_FUNNY_INDEX {
+%typemap (freearg) const CArrayInterface::index_type & MY_FUNNY_INDEX {
  delete $1;
 }
 #endif // SWIGPERL
 
 
 %include "core/CDataArray.h"
+%include "core/CMatrix.h"
+%include "core/CArray.h"
 
-
-%extend CCopasiAbstractArray {
+%extend CArrayInterface {
    /* convert the operator[] to get methods */
    /* The argument needs a name that is unique so that I can write a specific typemap 
       (see above).    
    */ 
-   virtual CCopasiAbstractArray::data_type get(const CCopasiAbstractArray::index_type & MY_FUNNY_INDEX)
+   virtual CArrayInterface::data_type get(const CArrayInterface::index_type & MY_FUNNY_INDEX)
    {
       return (*($self))[MY_FUNNY_INDEX];
    }
 
    /** overload for easy access of 2d arrays */
-   virtual CCopasiAbstractArray::data_type get(int index1, int index2)
+   virtual CArrayInterface::data_type get(int index1, int index2)
    {  
-      CCopasiAbstractArray::index_type MY_FUNNY_INDEX(2);
+      CArrayInterface::index_type MY_FUNNY_INDEX(2);
       MY_FUNNY_INDEX[0] = index1;
       MY_FUNNY_INDEX[1] = index2;
       return (*($self))[MY_FUNNY_INDEX];
@@ -101,6 +92,6 @@
 
 };
 
-%template(AnnotatedFloatMatrix) CCopasiMatrixInterface<CMatrix<C_FLOAT64> >;
-typedef CCopasiMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
+%template(AnnotatedFloatMatrix) CMatrixInterface<CMatrix<C_FLOAT64> >;
+typedef CMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 

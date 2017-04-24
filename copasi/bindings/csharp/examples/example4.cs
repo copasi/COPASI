@@ -46,9 +46,9 @@ class example4
         // the body will contain the actual timecourse data
         ReportItemVector header = report.getHeaderAddr();
         ReportItemVector body = report.getBodyAddr();
-        body.Add(new CRegisteredObjectName(new CCopasiObjectName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
+        body.Add(new CRegisteredObjectName(new CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
         body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-        header.Add(new CRegisteredObjectName(new CCopasiStaticString("time").getCN().getString()));
+        header.Add(new CRegisteredObjectName(new CDataString("time").getCN().getString()));
         header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
         uint i, iMax = (uint)model.getMetabolites().size();
@@ -62,9 +62,9 @@ class example4
                 // we want the concentration oin the output
                 // alternatively, we could use "Reference=Amount" to get the
                 // particle number
-                body.Add(new CRegisteredObjectName(metab.getObject(new CCopasiObjectName("Reference=Concentration")).getCN().getString()));
+                body.Add(new CRegisteredObjectName(metab.getObject(new CCommonName("Reference=Concentration")).getCN().getString()));
                 // add the corresponding id to the header
-                header.Add(new CRegisteredObjectName(new CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
+                header.Add(new CRegisteredObjectName(new CDataString(metab.getSBMLId()).getCN().getString()));
                 
                 if(i!=iMax-1)
                 {

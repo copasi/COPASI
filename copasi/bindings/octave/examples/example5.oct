@@ -86,12 +86,12 @@ optProblem.setObjectiveFunction(objectiveFunction);
 % now we create the optimization items
 % i.e. the model elements that have to be changed during the optimization
 % in order to get to the optimal solution
-optItem=optProblem.addOptItem(CCopasiObjectName(fixedModelValue.getInitialValueReference().getCN()));
+optItem=optProblem.addOptItem(CCommonName(fixedModelValue.getInitialValueReference().getCN()));
 % we want to change the fixed model value from -100 to +100 with a start
 % value of 50
 optItem.setStartValue(50.0);
-optItem.setLowerBound(CCopasiObjectName("-100"));
-optItem.setUpperBound(CCopasiObjectName("100"));
+optItem.setLowerBound(CCommonName("-100"));
+optItem.setUpperBound(CCommonName("100"));
 
 % now we set some parameters on the method
 % these parameters are specific to the method type we set above
@@ -129,12 +129,12 @@ header = report.getHeaderAddr();
 body = report.getBodyAddr();
 
 % in the report header we write two strings and a separator
-header.push_back(CRegisteredObjectName(CCopasiStaticString("best value of objective function").getCN().getString()));
+header.push_back(CRegisteredObjectName(CDataString("best value of objective function").getCN().getString()));
 header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
-header.push_back(CRegisteredObjectName(CCopasiStaticString("initial value of F").getCN().getString()));
+header.push_back(CRegisteredObjectName(CDataString("initial value of F").getCN().getString()));
 % in the report body we write the best value of the objective function and
 % the initial value of the fixed parameter separated by a komma
-body.push_back(CRegisteredObjectName(optProblem.getObject(CCopasiObjectName("Reference=Best Value")).getCN().getString()));
+body.push_back(CRegisteredObjectName(optProblem.getObject(CCommonName("Reference=Best Value")).getCN().getString()));
 body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
 body.push_back(CRegisteredObjectName(fixedModelValue.getInitialValueReference().getCN().getString()));
 

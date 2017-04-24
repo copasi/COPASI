@@ -114,9 +114,9 @@ report.setSeparator(CCopasiReportSeparator(", "));
 % the body will contain the actual timecourse data
 header = report.getHeaderAddr();
 body = report.getBodyAddr();
-body.push_back(CRegisteredObjectName(CCopasiObjectName(strcat(dataModel.getModel().getCN().getString() , ",Reference=Time")).getString()));
+body.push_back(CRegisteredObjectName(CCommonName(strcat(dataModel.getModel().getCN().getString() , ",Reference=Time")).getString()));
 body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
-header.push_back(CRegisteredObjectName(CCopasiStaticString("time").getCN().getString()));
+header.push_back(CRegisteredObjectName(CDataString("time").getCN().getString()));
 header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
 
 iMax = model.getMetabolites().size()-1;
@@ -128,9 +128,9 @@ for i = 0:iMax
     % we want the concentration in the output
     % alternatively, we could use "Reference=Amount" to get the
     % particle number
-    body.push_back(CRegisteredObjectName(metab.getObject(CCopasiObjectName("Reference=Concentration")).getCN().getString()));
+    body.push_back(CRegisteredObjectName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()));
     % add the corresponding id to the header
-    header.push_back(CRegisteredObjectName(CCopasiStaticString(metab.getSBMLId()).getCN().getString()));
+    header.push_back(CRegisteredObjectName(CDataString(metab.getSBMLId()).getCN().getString()));
     
     if (i != iMax)
       % after each entry, we need a seperator

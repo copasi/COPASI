@@ -25,32 +25,33 @@
 
 %ignore operator<<;
 
-%ignore CArrayAnnotation::operator[]; 
-%ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
-%ignore CCopasiMatrixInterface::operator[] (const index_type & index); 
-%ignore CCopasiMatrixInterface::operator[] (const index_type & index) const;
-%ignore CDataVectorInterface::operator[] (const index_type & index) ;
-%ignore CDataVectorInterface::operator[] (const index_type & index) const;
-%ignore CArrayAnnotation::operator=(const CArrayAnnotation&);
-%ignore CArrayAnnotation::array() const;
-%ignore CArrayAnnotation::printRecursively;
-%ignore CArrayAnnotation::print;
-%ignore CArrayAnnotation::appendElementReferences;
-%ignore operator<<(std::ostream &os, const CArrayAnnotation & o);
+%ignore CDataArray::operator[]; 
+%ignore CMatrixInterface::operator[] (const index_type & index); 
+%ignore CMatrixInterface::operator[] (const index_type & index); 
+%ignore CMatrixInterface::operator[] (const index_type & index) const;
+%ignore CVectorInterface::operator[] (const index_type & index) ;
+%ignore CVectorInterface::operator[] (const index_type & index) const;
+%ignore CDataArray::operator=(const CDataArray&);
+%ignore CDataArray::array() const;
+%ignore CDataArray::printRecursively;
+%ignore CDataArray::print;
+%ignore CDataArray::appendElementReferences;
+%ignore operator<<(std::ostream &os, const CDataArray & o);
 
 %include "core/CDataArray.h"
+%include "core/CMatrix.h"
 
-%extend CCopasiMatrixInterface {
+%extend CMatrixInterface {
    /* convert the operator[] to get methods */
-   virtual CCopasiAbstractArray::data_type& get(const CCopasiAbstractArray::index_type & index)
+   virtual CArrayInterface::data_type& get(const CArrayInterface::index_type & index)
    {
       return (*($self))[index];
    }
 };
 
-%extend CDataVectorInterface {
+%extend CVectorInterface {
    /* convert the operator[] to get methods */
-   virtual CCopasiAbstractArray::data_type& get(const CCopasiAbstractArray::index_type & index)
+   virtual CArrayInterface::data_type& get(const CArrayInterface::index_type & index)
    {
       return (*($self))[index];
    }

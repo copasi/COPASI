@@ -51,7 +51,7 @@ if (length(args) == 1) {
 
     cn <- CCopasiObject_getCN(model)
     stopifnot(!is.null(cn))
-    cn_string <- CCopasiObjectName_getString(cn)
+    cn_string <- CCommonName_getString(cn)
     stopifnot(!is.null(cn_string))
     
     cn_string <- paste(cn_string,",Reference=Time", sep = "")
@@ -63,16 +63,16 @@ if (length(args) == 1) {
     stopifnot(!is.null(separator))
     cn <- CCopasiObject_getCN(separator)
     stopifnot(!is.null(cn))
-    cn_string <- CCopasiObjectName_getString(cn)
+    cn_string <- CCommonName_getString(cn)
     sep_on <- CRegisteredObjectName(cn_string)
     stopifnot(!is.null(on))
     invisible(ReportItemVector_push_back(body, sep_on))
 
-    s <- CCopasiStaticString("time")
+    s <- CDataString("time")
     stopifnot(!is.null(s))
     cn <- CCopasiObject_getCN(s)
     stopifnot(!is.null(cn))
-    cn_string <- CCopasiObjectName_getString(cn)
+    cn_string <- CCommonName_getString(cn)
     on <- CRegisteredObjectName(cn_string)
     stopifnot(!is.null(on))
 
@@ -91,15 +91,15 @@ if (length(args) == 1) {
             # particle number
             # We could probably just concatenate the string to get the common name for
             # the particle number, but in this case, we get the object and get its common name
-            obj <- CCopasiContainer_getObject(metab , CCopasiObjectName("Reference=Concentration"))
+            obj <- CCopasiContainer_getObject(metab , CCommonName("Reference=Concentration"))
             cn <- CCopasiObject_getCN(obj)
-            cn_string <- CCopasiObjectName_getString(cn)
+            cn_string <- CCommonName_getString(cn)
             on <- CRegisteredObjectName(cn_string)
             invisible(ReportItemVector_push_back(body,on))
             # add the corresponding id to the header
-            s <- CCopasiStaticString(CModelEntity_getSBMLId(metab))
+            s <- CDataString(CModelEntity_getSBMLId(metab))
             cn <- CCopasiObject_getCN(s)
-            cn_string <- CCopasiObjectName_getString(cn)
+            cn_string <- CCommonName_getString(cn)
             on <- CRegisteredObjectName(cn_string)
             invisible(ReportItemVector_push_back(header, on))
             # after each entry, we need a seperator
@@ -132,8 +132,8 @@ if (length(args) == 1) {
     # to set the model on the subtask
     
     # get the problem for the task to set some parameters
-    problem <- CCopasiTask_getProblem(trajectoryTask)
-    invisible(CCopasiProblem_setModel(problem,CCopasiDataModel_getModel(dataModel)))
+    problem <- trajectoryTask$getProblem()
+    invisible(problem$setModel(CCopasiDataModel_getModel(dataModel)))
 
     # actiavate the task so that it will be run when the model is saved
     # and passed to CopasiSE
