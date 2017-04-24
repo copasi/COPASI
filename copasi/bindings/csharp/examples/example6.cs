@@ -17,10 +17,10 @@ class example6
 
     static void Main(string[] args)
     {
-        Debug.Assert(CCopasiRootContainer.getRoot() != null);
+        Debug.Assert(CRootContainer.getRoot() != null);
         // create a new datamodel
-        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-        Debug.Assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+        CDataModel dataModel = CRootContainer.addDatamodel();
+        Debug.Assert(CRootContainer.getDatamodelList().size() == 1);
         // first we load a simple model
           try
           {
@@ -124,12 +124,12 @@ class example6
         {
           System.IO.StreamWriter os = new System.IO.StreamWriter("fakedata_example6.txt");
           os.Write("# time ");
-          CKeyFactory keyFactory=CCopasiRootContainer.getKeyFactory();
+          CKeyFactory keyFactory=CRootContainer.getKeyFactory();
           Debug.Assert(keyFactory != null);
           for(i=1;i<iMax;++i)
           {
             string key=timeSeries.getKey(i);
-            CCopasiObject obj=keyFactory.get(key);
+            CDataObject obj=keyFactory.get(key);
             Debug.Assert(obj != null);
             // only write header data or metabolites
             System.Type type = obj.GetType();
@@ -241,7 +241,7 @@ class example6
 
         CModel model=dataModel.getModel();
         Debug.Assert(model!=null);
-        CCopasiObject timeReference=model.getValueReference();
+        CDataObject timeReference=model.getValueReference();
         Debug.Assert(timeReference != null);
         objectMap.setObjectCN(0,timeReference.getCN().getString());
        
@@ -250,7 +250,7 @@ class example6
         objectMap.setRole(1,CExperiment.dependent);
         CMetab metab=metabVector[0];
         Debug.Assert(metab != null);
-        CCopasiObject particleReference=metab.getConcentrationReference();
+        CDataObject particleReference=metab.getConcentrationReference();
         Debug.Assert(particleReference != null);
         objectMap.setObjectCN(1,particleReference.getCN().getString());
 
@@ -284,7 +284,7 @@ class example6
         Debug.Assert(parameter != null);
         
         // define a CFitItem
-        CCopasiObject parameterReference=parameter.getValueReference();
+        CDataObject parameterReference=parameter.getValueReference();
         Debug.Assert(parameterReference != null);
         CFitItem fitItem1=new CFitItem(dataModel);
         Debug.Assert(fitItem1 !=null);

@@ -11,10 +11,10 @@ class example4
 {
     static void Main()
     {
-        Debug.Assert(CCopasiRootContainer.getRoot() != null);
+        Debug.Assert(CRootContainer.getRoot() != null);
         // create a new datamodel
-        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-        Debug.Assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+        CDataModel dataModel = CRootContainer.addDatamodel();
+        Debug.Assert(CRootContainer.getDatamodelList().size() == 1);
         // the only argument to the main routine should be the name of an SBML file
         try
         {
@@ -46,10 +46,10 @@ class example4
         // the body will contain the actual timecourse data
         ReportItemVector header = report.getHeaderAddr();
         ReportItemVector body = report.getBodyAddr();
-        body.Add(new CRegisteredObjectName(new CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
-        body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-        header.Add(new CRegisteredObjectName(new CDataString("time").getCN().getString()));
-        header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+        body.Add(new CRegisteredCommonName(new CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()));
+        body.Add(new CRegisteredCommonName(report.getSeparator().getCN().getString()));
+        header.Add(new CRegisteredCommonName(new CDataString("time").getCN().getString()));
+        header.Add(new CRegisteredCommonName(report.getSeparator().getCN().getString()));
 
         uint i, iMax = (uint)model.getMetabolites().size();
         for (i = 0;i < iMax;++i)
@@ -62,17 +62,17 @@ class example4
                 // we want the concentration oin the output
                 // alternatively, we could use "Reference=Amount" to get the
                 // particle number
-                body.Add(new CRegisteredObjectName(metab.getObject(new CCommonName("Reference=Concentration")).getCN().getString()));
+                body.Add(new CRegisteredCommonName(metab.getObject(new CCommonName("Reference=Concentration")).getCN().getString()));
                 // add the corresponding id to the header
-                header.Add(new CRegisteredObjectName(new CDataString(metab.getSBMLId()).getCN().getString()));
+                header.Add(new CRegisteredCommonName(new CDataString(metab.getSBMLId()).getCN().getString()));
                 
                 if(i!=iMax-1)
                 {
                   // after each entry, we need a seperator
-                  body.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+                  body.Add(new CRegisteredCommonName(report.getSeparator().getCN().getString()));
 
                   // and a seperator
-                  header.Add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
+                  header.Add(new CRegisteredCommonName(report.getSeparator().getCN().getString()));
                 }
             }
         }

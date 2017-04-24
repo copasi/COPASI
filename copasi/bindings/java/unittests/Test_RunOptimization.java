@@ -30,7 +30,7 @@ import junit.framework.*;
 public class Test_RunOptimization extends TestCase
 {
 
-    CCopasiDataModel mDataModel;
+    CDataModel mDataModel;
     CModel mModel;
     CModelValue mVariableModelValue;
     CModelValue mFixedModelValue;
@@ -70,11 +70,11 @@ public class Test_RunOptimization extends TestCase
     
     public void setUp()
     {
-        this.mDataModel=CCopasiRootContainer.addDatamodel();
+        this.mDataModel=CRootContainer.addDatamodel();
         this.mModel=createModel();
     }
 
-    public static COptTask runOptimization(CCopasiDataModel dataModel,int methodType,int methodSubtype,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters,String objectiveFunction,COptItem optItem)
+    public static COptTask runOptimization(CDataModel dataModel,int methodType,int methodSubtype,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters,String objectiveFunction,COptItem optItem)
     {
         COptTask optTask=(COptTask)dataModel.addTask(CCopasiTask.optimization);
         if(optTask==null) return null;

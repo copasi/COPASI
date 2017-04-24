@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -23,10 +28,10 @@ public class example1
 
  public static void main(String[] args)
  {
-     assert CCopasiRootContainer.getRoot() != null;
+     assert CRootContainer.getRoot() != null;
      // create a new datamodel
-     CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-     assert CCopasiRootContainer.getDatamodelList().size() == 1;
+     CDataModel dataModel = CRootContainer.addDatamodel();
+     assert CRootContainer.getDatamodelList().size() == 1;
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      assert model != null;
@@ -47,7 +52,7 @@ public class example1
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject object = compartment.getInitialValueReference();
+     CDataObject object = compartment.getInitialValueReference();
      assert object != null;
      changedObjects.add(object);
      assert compartment != null;
@@ -107,7 +112,7 @@ public class example1
      // now we ned to set a kinetic law on the reaction
      // maybe constant flux would be OK
      // we need to get the function from the function database
-     CFunctionDB funDB = CCopasiRootContainer.getFunctionList();
+     CFunctionDB funDB = CRootContainer.getFunctionList();
      assert funDB != null;
      // it should be in the list of suitable functions
      // lets get all suitable functions for an irreversible reaction with  2 substrates

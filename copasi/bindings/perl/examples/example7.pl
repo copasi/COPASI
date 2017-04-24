@@ -7,10 +7,10 @@ use warnings;
 use COPASI;
 
 
-unless(defined(COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed.\n";die;}
+unless(defined(COPASI::CRootContainer::getRoot())){warn "Assertion failed.\n";die;}
 # create a new datamodel
-my $dataModel = COPASI::CCopasiRootContainer::addDatamodel();
-unless(COPASI::CCopasiRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed.\n";die;}
+my $dataModel = COPASI::CRootContainer::addDatamodel();
+unless(COPASI::CRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed.\n";die;}
 # get the model from the datamodel
 my $model = $dataModel->getModel();
 unless(defined($model)){warn "Assertion failed.\n";die;}
@@ -84,7 +84,7 @@ unless($model->getModelValues()->size() == 1){warn "Assertion failed.\n";die;}
 
 # now we ned to set a kinetic law on the reaction
 # for this we create a user defined function
-my $funDB = COPASI::CCopasiRootContainer::getFunctionList();
+my $funDB = COPASI::CRootContainer::getFunctionList();
 unless(defined($funDB)){warn "Assertion failed.\n";die;}
 
 my $function = $funDB->createFunction("My Rate Law",$COPASI::CEvaluationTree::UserDefined);

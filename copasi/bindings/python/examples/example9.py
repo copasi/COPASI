@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -27,11 +32,11 @@ def main():
   # since we are not interested in the arguments
   # that are passed to main, we pass 0 and None to
   # init
-  assert CCopasiRootContainer.getRoot() != None
+  assert CRootContainer.getRoot() != None
   # create a new datamodel
-  dataModel = CCopasiRootContainer.addDatamodel()
+  dataModel = CRootContainer.addDatamodel()
   assert dataModel != None
-  assert CCopasiRootContainer.getDatamodelList().size() == 1
+  assert CRootContainer.getDatamodelList().size() == 1
   # next we import a simple SBML model from a string
 
   # clear the message queue so that we only have error messages from the import in the queue

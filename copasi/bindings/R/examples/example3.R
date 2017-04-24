@@ -15,24 +15,24 @@ source("COPASI.R")
 # The cacheMetaData(1) will cause R to refresh its object tables. Without it, inheritance of wrapped objects may fail.
 cacheMetaData(1)
 
-stopifnot(!is.null(CCopasiRootContainer_getRoot()))
+stopifnot(!is.null(CRootContainer_getRoot()))
 # create a datamodel
-dataModel <- CCopasiRootContainer_addDatamodel()
-stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
+dataModel <- CRootContainer_addDatamodel()
+stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
 # the only argument to the main routine should be the name of an SBML file
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
     filename <- args[1]
-    tryCatch(CCopasiDataModel_importSBML(dataModel,filename), error = function(e) {
+    tryCatch(CDataModel_importSBML(dataModel,filename), error = function(e) {
       write(paste("Error while importing the model from file named \"" , filename , "\"."), stderr())
       quit(save = "default", status = 1, runLast = TRUE)
     } )
 
-    model <- CCopasiDataModel_getModel(dataModel)
+    model <- CDataModel_getModel(dataModel)
     stopifnot(!is.null(model))
     # create a report with the correct filename and all the species against
     # time.
-    reports <- CCopasiDataModel_getReportDefinitionList(dataModel)
+    reports <- CDataModel_getReportDefinitionList(dataModel)
     # create a report definition object
     report <- CReportDefinitionVector_createReportDefinition(reports, "Report", "Output for timecourse")
     # set the task type for the report definition to timecourse
@@ -49,31 +49,31 @@ if (length(args) == 1) {
     header <- CReportDefinition_getHeaderAddr(report)
     body <- CReportDefinition_getBodyAddr(report)
 
-    cn <- CCopasiObject_getCN(model)
+    cn <- CDataObject_getCN(model)
     stopifnot(!is.null(cn))
     cn_string <- CCommonName_getString(cn)
     stopifnot(!is.null(cn_string))
     
     cn_string <- paste(cn_string,",Reference=Time", sep = "")
-    on <- CRegisteredObjectName(cn_string)
+    on <- CRegisteredCommonName(cn_string)
     stopifnot(!is.null(on))
     invisible(ReportItemVector_push_back(body, on))
 
     separator <- CReportDefinition_getSeparator(report)
     stopifnot(!is.null(separator))
-    cn <- CCopasiObject_getCN(separator)
+    cn <- CDataObject_getCN(separator)
     stopifnot(!is.null(cn))
     cn_string <- CCommonName_getString(cn)
-    sep_on <- CRegisteredObjectName(cn_string)
+    sep_on <- CRegisteredCommonName(cn_string)
     stopifnot(!is.null(on))
     invisible(ReportItemVector_push_back(body, sep_on))
 
     s <- CDataString("time")
     stopifnot(!is.null(s))
-    cn <- CCopasiObject_getCN(s)
+    cn <- CDataObject_getCN(s)
     stopifnot(!is.null(cn))
     cn_string <- CCommonName_getString(cn)
-    on <- CRegisteredObjectName(cn_string)
+    on <- CRegisteredCommonName(cn_string)
     stopifnot(!is.null(on))
 
     invisible(ReportItemVector_push_back(header,on))
@@ -91,16 +91,16 @@ if (length(args) == 1) {
             # particle number
             # We could probably just concatenate the string to get the common name for
             # the particle number, but in this case, we get the object and get its common name
-            obj <- CCopasiContainer_getObject(metab , CCommonName("Reference=Concentration"))
-            cn <- CCopasiObject_getCN(obj)
+            obj <- CDataContainer_getObject(metab , CCommonName("Reference=Concentration"))
+            cn <- CDataObject_getCN(obj)
             cn_string <- CCommonName_getString(cn)
-            on <- CRegisteredObjectName(cn_string)
+            on <- CRegisteredCommonName(cn_string)
             invisible(ReportItemVector_push_back(body,on))
             # add the corresponding id to the header
             s <- CDataString(CModelEntity_getSBMLId(metab))
-            cn <- CCopasiObject_getCN(s)
+            cn <- CDataObject_getCN(s)
             cn_string <- CCommonName_getString(cn)
-            on <- CRegisteredObjectName(cn_string)
+            on <- CRegisteredCommonName(cn_string)
             invisible(ReportItemVector_push_back(header, on))
             # after each entry, we need a seperator
             if( i != (iMax-1) ) {
@@ -111,7 +111,7 @@ if (length(args) == 1) {
         i <- i + 1
     }
     # get the trajectory task object
-    trajectoryTask <- CCopasiDataModel_getTask(dataModel,"Time-Course")
+    trajectoryTask <- CDataModel_getTask(dataModel,"Time-Course")
     # if there isn't one
     if (is.null(trajectoryTask)) {
         # create a one
@@ -119,7 +119,7 @@ if (length(args) == 1) {
         # add the time course task to the task list
         # this method makes sure the object is now owned by the list
         # and that SWIG does not delete it
-        invisible(CCopasiTaskList_addAndOwn(CCopasiDataModel_getTaskList(dataModel),trajectoryTask))
+        invisible(CCopasiTaskList_addAndOwn(CDataModel_getTaskList(dataModel),trajectoryTask))
     }
 
     # run a deterministic time course
@@ -133,7 +133,7 @@ if (length(args) == 1) {
     
     # get the problem for the task to set some parameters
     problem <- trajectoryTask$getProblem()
-    invisible(problem$setModel(CCopasiDataModel_getModel(dataModel)))
+    invisible(problem$setModel(CDataModel_getModel(dataModel)))
 
     # actiavate the task so that it will be run when the model is saved
     # and passed to CopasiSE
@@ -149,7 +149,7 @@ if (length(args) == 1) {
     # simulate 100 steps
     invisible(CTrajectoryProblem_setStepNumber(problem,100))
     # start at time 0
-    invisible(CModel_setInitialTime(CCopasiDataModel_getModel(dataModel),0.0))
+    invisible(CModel_setInitialTime(CDataModel_getModel(dataModel),0.0))
     # simulate a duration of 10 time units
     invisible(CTrajectoryProblem_setDuration(problem, 10))
     # tell the problem to actually generate time series data

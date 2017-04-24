@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -20,7 +25,7 @@ import math
 
 class Test_CModel(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.datamodel=COPASI.CRootContainer.addDatamodel()
     self.model=self.datamodel.getModel()
     self.model.createCompartment("comp1",1.0)
     self.model.createCompartment("comp2",2.0)

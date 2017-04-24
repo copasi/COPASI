@@ -22,9 +22,9 @@ import COPASI
 import unittest
 from types import *
 
-class Test_CCopasiObject(unittest.TestCase):
+class Test_CDataObject(unittest.TestCase):
     def setUp(self):
-      self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+      self.datamodel=COPASI.CRootContainer.addDatamodel()
       self.model=self.datamodel.getModel()
       self.compartment=self.model.createCompartment("Comp1")
       self.object=self.model.createMetabolite("Metab1","Comp1")
@@ -131,7 +131,7 @@ def suite():
          ,'test_isSeparator'
          ,'test_getKey'
         ]
-  return unittest.TestSuite(map(Test_CCopasiObject,tests))
+  return unittest.TestSuite(map(Test_CDataObject,tests))
 
 if(__name__ == '__main__'):
     unittest.TextTestRunner(verbosity=2).run(suite())

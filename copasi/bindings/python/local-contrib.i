@@ -251,7 +251,7 @@ class AutoProperty(type):
 }
 
 
-%extend CRenameHandler
+%extend CCommonName
 {
     %pythoncode
     {

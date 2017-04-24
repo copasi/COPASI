@@ -18,21 +18,21 @@ cacheMetaData(1)
 MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?><!-- Created by COPASI version 4.4.29 (Debug) on 2009-03-05 14:41 with libSBML version 3.3.0. --><sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3"><model metaid="COPASI1" id="Model_1" name="New Model"> <listOfUnitDefinitions><unitDefinition id="volume"><listOfUnits><unit kind="litre" scale="-6"/></listOfUnits></unitDefinition><unitDefinition id="substance"><listOfUnits><unit kind="mole" scale="-9"/></listOfUnits></unitDefinition></listOfUnitDefinitions><listOfCompartments><compartment id="compartment_1" name="compartment" size="1"/></listOfCompartments><listOfSpecies><species metaid="COPASI2" id="species_1" name="A" compartment="compartment_1" initialConcentration="1e-10"></species><species metaid="COPASI3" id="species_2" name="B" compartment="compartment_1" initialConcentration="0"></species><species metaid="COPASI4" id="species_3" name="C" compartment="compartment_1" initialConcentration="0"></species></listOfSpecies><listOfReactions><reaction id="reaction_1" name="reaction" reversible="false"><listOfReactants><speciesReference species="species_1"/></listOfReactants><listOfProducts><speciesReference species="species_2"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_1 </ci></apply></math><listOfParameters><parameter id="k1" value="0.1"/></listOfParameters></kineticLaw></reaction><reaction id="reaction_2" name="reaction_1" reversible="false"><listOfReactants><speciesReference species="species_2"/></listOfReactants><listOfProducts><speciesReference species="species_3"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_2 </ci></apply></math><listOfParameters><parameter id="k1" value="0.1"/></listOfParameters></kineticLaw></reaction></listOfReactions></model></sbml>'
 
 
-stopifnot(!is.null(CCopasiRootContainer_getRoot()))
+stopifnot(!is.null(CRootContainer_getRoot()))
 # create a datamodel
-dataModel <- CCopasiRootContainer_addDatamodel()
-stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
+dataModel <- CRootContainer_addDatamodel()
+stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
 # the only argument to the main routine should be the name of an SBML file
-tryCatch(CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(CDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
   write("Error while importing the model from given string.", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
 
-model <- CCopasiDataModel_getModel(dataModel)
+model <- CDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 # create a report with the correct filename and all the species against
 # time.
-reports <- CCopasiDataModel_getReportDefinitionList(dataModel)
+reports <- CDataModel_getReportDefinitionList(dataModel)
 # create a report definition object
 report <- CReportDefinitionVector_createReportDefinition(reports,"Report", "Output for timecourse")
 # set the task type for the report definition to timecourse
@@ -47,15 +47,15 @@ invisible(CReportDefinition_setSeparator(report,CCopasiReportSeparator(", ")))
 # the first column
 # the body will contain the actual timecourse data
 sep <- CReportDefinition_getSeparator(report)
-sep_string <- CCommonName_getString(CCopasiObject_getCN(sep))
+sep_string <- CCommonName_getString(CDataObject_getCN(sep))
 header <- CReportDefinition_getHeaderAddr(report)
 body <- CReportDefinition_getBodyAddr(report)
-time_string <- CCommonName_getString(CCommonName(paste(CCommonName_getString(CCopasiObject_getCN(model)), ",Reference=Time", sep = "")))
-invisible(ReportItemVector_push_back(body,CRegisteredObjectName(time_string)))
-invisible(ReportItemVector_push_back(body,CRegisteredObjectName(sep_string)))
-time_string <- CCommonName_getString(CCopasiObject_getCN(CDataString("time")))
-invisible(ReportItemVector_push_back(header,CRegisteredObjectName(time_string)))
-invisible(ReportItemVector_push_back(header,CRegisteredObjectName(sep_string)))
+time_string <- CCommonName_getString(CCommonName(paste(CCommonName_getString(CDataObject_getCN(model)), ",Reference=Time", sep = "")))
+invisible(ReportItemVector_push_back(body,CRegisteredCommonName(time_string)))
+invisible(ReportItemVector_push_back(body,CRegisteredCommonName(sep_string)))
+time_string <- CCommonName_getString(CDataObject_getCN(CDataString("time")))
+invisible(ReportItemVector_push_back(header,CRegisteredCommonName(time_string)))
+invisible(ReportItemVector_push_back(header,CRegisteredCommonName(sep_string)))
 
 iMax <- MetabVector_size(CModel_getMetabolites(model))
 i <- 0
@@ -67,27 +67,27 @@ while (i < iMax) {
         # we want the concentration in the output
         # alternatively, we could use "Reference=Amount" to get the
         # particle number
-        conc <- CCopasiContainer_getObject(metab, CCommonName("Reference=Concentration"))
-        conc_string <- CCommonName_getString(CCopasiObject_getCN(conc))
-        invisible(ReportItemVector_push_back(body,CRegisteredObjectName(conc_string)))
+        conc <- CDataContainer_getObject(metab, CCommonName("Reference=Concentration"))
+        conc_string <- CCommonName_getString(CDataObject_getCN(conc))
+        invisible(ReportItemVector_push_back(body,CRegisteredCommonName(conc_string)))
         # add the corresponding id to the header
         sbml_id <- CModelEntity_getSBMLId(metab)
-        sbml_string <- CCommonName_getString(CCopasiObject_getCN(CDataString(sbml_id)))
-        invisible(ReportItemVector_push_back(header,CRegisteredObjectName(sbml_string)))
+        sbml_string <- CCommonName_getString(CDataObject_getCN(CDataString(sbml_id)))
+        invisible(ReportItemVector_push_back(header,CRegisteredCommonName(sbml_string)))
         
         if (i != iMax-1) {
           # after each entry, we need a seperator
-          invisible(ReportItemVector_push_back(body,CRegisteredObjectName(sep_string)))
+          invisible(ReportItemVector_push_back(body,CRegisteredCommonName(sep_string)))
 
           # and a seperator
-          invisible(ReportItemVector_push_back(header,CRegisteredObjectName(sep_string)))
+          invisible(ReportItemVector_push_back(header,CRegisteredCommonName(sep_string)))
         }
     }
     i <- i + 1
 }
 
 # get the trajectory task object
-trajectoryTask <- CCopasiDataModel_getTask(dataModel,"Time-Course")
+trajectoryTask <- CDataModel_getTask(dataModel,"Time-Course")
 stopifnot(!is.null(trajectoryTask))
 # if there isn't one
 if (is.null(trajectoryTask)) {
@@ -96,7 +96,7 @@ if (is.null(trajectoryTask)) {
     # add the time course task to the task list
     # this method makes sure the object is now owned by the list
     # and that SWIG does not delete it
-    invisible(CCopasiTaskList_addAndOwn(CCopasiDataModel_getTaskList(dataModel), trajectoryTask))
+    invisible(CCopasiTaskList_addAndOwn(CDataModel_getTaskList(dataModel), trajectoryTask))
 }
 
 
@@ -123,7 +123,7 @@ invisible(CTrajectoryProblem_setDuration(problem,10))
 invisible(CTrajectoryProblem_setTimeSeriesRequested(problem,TRUE))
 
 # now we set up the scan
-scanTask <- CCopasiDataModel_getTask(dataModel,"Scan")
+scanTask <- CDataModel_getTask(dataModel,"Scan")
 stopifnot(!is.null(scanTask))
 if (is.null(scanTask)) {
     # create a scan task
@@ -131,7 +131,7 @@ if (is.null(scanTask)) {
     # add the scan task
     # this method makes sure the object is now owned by the list
     # and that SWIG does not delete it
-    invisible(CCopasiTaskList_addAndOwn(CCopasiDataModel_getTaskList(dataModel),scanTask))
+    invisible(CCopasiTaskList_addAndOwn(CDataModel_getTaskList(dataModel),scanTask))
 }
 
 # get the problem

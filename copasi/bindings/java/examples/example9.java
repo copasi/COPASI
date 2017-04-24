@@ -33,11 +33,11 @@ public class example9
    // since we are not interested in the arguments
    // that are passed to main, we pass 0 and NULL to
    // init
-   assert CCopasiRootContainer.getRoot() != null;
+   assert CRootContainer.getRoot() != null;
    // create a new datamodel
-   CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+   CDataModel dataModel = CRootContainer.addDatamodel();
    assert(dataModel != null);
-   assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+   assert(CRootContainer.getDatamodelList().size() == 1);
    // next we import a simple SBML model from a string
 
    // clear the message queue so that we only have error messages from the import in the queue

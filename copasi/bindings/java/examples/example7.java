@@ -28,10 +28,10 @@ public class example7
 
  public static void main(String[] args)
  {
-     assert CCopasiRootContainer.getRoot() != null;
+     assert CRootContainer.getRoot() != null;
      // create a new datamodel
-     CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-     assert CCopasiRootContainer.getDatamodelList().size() == 1;
+     CDataModel dataModel = CRootContainer.addDatamodel();
+     assert CRootContainer.getDatamodelList().size() == 1;
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      assert model != null;
@@ -52,7 +52,7 @@ public class example7
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject object = compartment.getValueReference();
+     CDataObject object = compartment.getValueReference();
      assert object != null;
      changedObjects.add(object);
      assert compartment != null;
@@ -105,7 +105,7 @@ public class example7
 
      // now we ned to set a kinetic law on the reaction
      // for this we create a user defined function
-     CFunctionDB funDB = CCopasiRootContainer.getFunctionList();
+     CFunctionDB funDB = CRootContainer.getFunctionList();
      assert funDB != null;
 
      CFunction function = new CFunction("My Rate Law");

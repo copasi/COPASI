@@ -21,7 +21,7 @@ public class exampleMathExport
 	public static void Main(String[] args)
 	{
 		// create a new datamodel
-		CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+		CDataModel dataModel = CRootContainer.addDatamodel();
 		
 		if (args.Length != 2)
 		{

@@ -8,10 +8,10 @@ use warnings;
 
 use COPASI;
 
-unless(defined(COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
+unless(defined(COPASI::CRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a datamodel
-my $dataModel = COPASI::CCopasiRootContainer::addDatamodel();
-unless(COPASI::DataModelVector::size(COPASI::CCopasiRootContainer::getDatamodelList()) == 1){warn "Assertion failed";die;}
+my $dataModel = COPASI::CRootContainer::addDatamodel();
+unless(COPASI::DataModelVector::size(COPASI::CRootContainer::getDatamodelList()) == 1){warn "Assertion failed";die;}
 # the only argument to the main routine should be the name of a CPS file
 if ($#ARGV + 1 == 1) {
     my $filename = $ARGV[0];

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -26,7 +31,7 @@ import java.util.Vector;
 import java.awt.Insets;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import org.COPASI.CCopasiDataModel;
+import org.COPASI.CDataModel;
 import org.COPASI.CCopasiParameter;
 import org.COPASI.CCopasiProblem;
 import org.COPASI.CCopasiTask;
@@ -354,7 +359,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
                                long jMax=timeSeries.getNumVariables();
                                Vector<String> columnNames=new Vector<String>();
                                Vector<Vector<Double>> data=new Vector<Vector<Double>>();
-                               CCopasiDataModel datamodel=task.getObjectDataModel();
+                               CDataModel datamodel=task.getObjectDataModel();
                                for(j=0;j<jMax;j++)
                                {
                                  columnNames.addElement(timeSeries.getSBMLId(j,datamodel));

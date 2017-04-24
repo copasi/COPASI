@@ -6,10 +6,10 @@
 
 COPASI
 
-%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CRootContainer.getRoot()) != 0);
 % create a datamodel
-dataModel = CCopasiRootContainer.addDatamodel();
-%!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
+dataModel = CRootContainer.addDatamodel();
+%!assert( CRootContainer.getDatamodelList().size() == 1);
 % the only argument to the main routine should be the name of an SBML file
 if (length(argv()) == 1)
   filename = argv(){1};
@@ -43,10 +43,10 @@ if (length(argv()) == 1)
   header = report.getHeaderAddr();
   body = report.getBodyAddr();
   
-  body.push_back(CRegisteredObjectName(CCommonName(strcat(dataModel.getModel().getCN().getString() , ",Reference=Time")).getString()));
-  body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
-  header.push_back(CRegisteredObjectName(CDataString("time").getCN().getString()));
-  header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
+  body.push_back(CRegisteredCommonName(CCommonName(strcat(dataModel.getModel().getCN().getString() , ",Reference=Time")).getString()));
+  body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()));
+  header.push_back(CRegisteredCommonName(CDataString("time").getCN().getString()));
+  header.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()));
 
   iMax = model.getMetabolites().size()-1;
   for i = 0:iMax
@@ -57,13 +57,13 @@ if (length(argv()) == 1)
       % we want the concentration oin the output
       % alternatively, we could use "Reference=Amount" to get the
       % particle number
-      body.push_back(CRegisteredObjectName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()));
+      body.push_back(CRegisteredCommonName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()));
       % add the corresponding id to the header
-      header.push_back(CRegisteredObjectName(CDataString(metab.getSBMLId()).getCN().getString()));
+      header.push_back(CRegisteredCommonName(CDataString(metab.getSBMLId()).getCN().getString()));
       % after each entry, we need a seperator
       if(i != iMax)
-        body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
-        header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()));
+        body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()));
+        header.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()));
       endif
     endif
   endfor

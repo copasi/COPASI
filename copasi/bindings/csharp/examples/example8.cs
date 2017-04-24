@@ -13,11 +13,11 @@ class example8
 
   static void Main()
   {
-    Debug.Assert((CCopasiRootContainer.getRoot() != null));
+    Debug.Assert((CRootContainer.getRoot() != null));
     // create a new datamodel
-    CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+    CDataModel dataModel = CRootContainer.addDatamodel();
     Debug.Assert((dataModel != null));
-    Debug.Assert((CCopasiRootContainer.getDatamodelList().size() == 1));
+    Debug.Assert((CRootContainer.getDatamodelList().size() == 1));
     // next we import a simple SBML model from a string
 
     // clear the message queue so that we only have error messages from the import in the queue

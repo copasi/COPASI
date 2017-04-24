@@ -3,10 +3,10 @@
 %
 COPASI
 
-%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CRootContainer.getRoot()) != 0);
 % create a new datamodel
-dataModel = CCopasiRootContainer.addDatamodel();
-%!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
+dataModel = CRootContainer.addDatamodel();
+%!assert( CRootContainer.getDatamodelList().size() == 1);
 % get the model from the datamodel
 model = dataModel.getModel();
 %!assert( swig_this(model) != 0);
@@ -80,7 +80,7 @@ changedObjects.push_back(object);
 
 % now we ned to set a kinetic law on the reaction
 % for this we create a user defined function
-funDB = CCopasiRootContainer.getFunctionList();
+funDB = CRootContainer.getFunctionList();
 %!assert( swig_this(funDB) != 0);
 
 fun = funDB.createFunction("My Rate Law",CEvaluationTree_UserDefined);

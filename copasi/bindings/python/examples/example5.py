@@ -27,10 +27,10 @@ from COPASI import *
 import sys
 
 def main():
-   assert CCopasiRootContainer.getRoot() != None
+   assert CRootContainer.getRoot() != None
    # create a new datamodel
-   dataModel = CCopasiRootContainer.addDatamodel()
-   assert CCopasiRootContainer.getDatamodelList().size() == 1
+   dataModel = CRootContainer.addDatamodel()
+   assert CRootContainer.getDatamodelList().size() == 1
    # get the model from the datamodel
    model = dataModel.getModel()
    assert model != None
@@ -151,14 +151,14 @@ def main():
    body = report.getBodyAddr()
    
    # in the report header we write two strings and a separator
-   header.push_back(CRegisteredObjectName(CDataString("best value of objective function").getCN().getString()))
-   header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
-   header.push_back(CRegisteredObjectName(CDataString("initial value of F").getCN().getString()))
+   header.push_back(CRegisteredCommonName(CDataString("best value of objective function").getCN().getString()))
+   header.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
+   header.push_back(CRegisteredCommonName(CDataString("initial value of F").getCN().getString()))
    # in the report body we write the best value of the objective function and
    # the initial value of the fixed parameter separated by a komma
-   body.push_back(CRegisteredObjectName(optProblem.getObject(CCommonName("Reference=Best Value")).getCN().getString()))
-   body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
-   body.push_back(CRegisteredObjectName(fixedModelValue.getObject(CCommonName("Reference=InitialValue")).getCN().getString()))
+   body.push_back(CRegisteredCommonName(optProblem.getObject(CCommonName("Reference=Best Value")).getCN().getString()))
+   body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
+   body.push_back(CRegisteredCommonName(fixedModelValue.getObject(CCommonName("Reference=InitialValue")).getCN().getString()))
 
    
    # set the report for the task

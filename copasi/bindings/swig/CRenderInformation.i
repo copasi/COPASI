@@ -273,7 +273,7 @@
 %template(GlobalStyleVector) CDataVector<CLGlobalStyle>;
 %template(LocalStyleVector) CDataVector<CLLocalStyle>;
 %template(GradientBaseVector) CDataVector<CLGradientBase>;
-%template(CCopasiObjectVector) CDataVector<CDataObject>;
+%template(CDataObjectVector) CDataVector<CDataObject>;
 %template(GradientStopVector) CDataVector<CLGradientStop>;
 %template(LineEndingVector) CDataVector<CLLineEnding>;
 typedef CDataVector<CLColorDefinition> ColorDefinitionVector;
@@ -281,7 +281,7 @@ typedef CDataVector<CLGlobalRenderInformation> GlobalRenderInformationVector;
 typedef CDataVector<CLGlobalStyle> GlobalStyleVector;
 typedef CDataVector<CLLocalStyle> LocalStyleVector;
 typedef CDataVector<CLGradientBase> GradientBaseVector;
-typedef CDataVector<CDataObject> CCopasiObjectVector;
+typedef CDataVector<CDataObject> CDataObjectVector;
 typedef CDataVector<CLGradientStop> GradientStopVector;
 typedef CDataVector<CLLineEnding> LineEndingVector;
 

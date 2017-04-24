@@ -4,10 +4,10 @@ use warnings;
 
 use COPASI;
 
-unless(defined(&COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
+unless(defined(&COPASI::CRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a new datamodel
-my $dataModel = &COPASI::CCopasiRootContainer::addDatamodel();
-unless(COPASI::DataModelVector::size(COPASI::CCopasiRootContainer::getDatamodelList()) == 1){warn "Assertion failed";die;}
+my $dataModel = &COPASI::CRootContainer::addDatamodel();
+unless(COPASI::DataModelVector::size(COPASI::CRootContainer::getDatamodelList()) == 1){warn "Assertion failed";die;}
 # get the model from the datamodel
 my $model = $dataModel->getModel();
 unless(defined($model)){warn "Assertion failed";die;}
@@ -88,7 +88,7 @@ unless($reaction->isReversible() eq ""){warn "Assertion failed";die;}
 # now we ned to set a kinetic law on the reaction
 # maybe constant flux would be OK
 # we need to get the function from the function database
-my $funDB = COPASI::CCopasiRootContainer::getFunctionList();
+my $funDB = COPASI::CRootContainer::getFunctionList();
 unless(defined($funDB)){warn "Assertion failed";die;}
 # it should be in the list of suitable functions
 # lets get all suitable functions for an irreversible reaction with  2 substrates

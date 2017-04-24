@@ -1,23 +1,21 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/unittests/Test_RunSimulations.java,v $ 
-//   $Revision: 1.10 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/03/06 08:21:44 $ 
-// End CVS Header 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
-
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
 
 package org.COPASI.unittests;
 
@@ -32,7 +30,7 @@ public class Test_RunSimulations extends TestCase
 {
 
 
-   protected CCopasiDataModel mDataModel;
+   protected CDataModel mDataModel;
    protected CModel model;
    protected int NUM_REPEATS;
 
@@ -41,7 +39,7 @@ public class Test_RunSimulations extends TestCase
     super(name);
    }
 
-   public static CTrajectoryTask runSimulation(CCopasiDataModel dataModel,int methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
+   public static CTrajectoryTask runSimulation(CDataModel dataModel,int methodType,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
    {
     CTrajectoryTask task=null;
     for(int  x=0;x < dataModel.getTaskList().size();x++)
@@ -136,7 +134,7 @@ public class Test_RunSimulations extends TestCase
     return task;
    }
 
-  public static CTrajectoryTask runDeterministicSimulation(CCopasiDataModel dataModel)
+  public static CTrajectoryTask runDeterministicSimulation(CDataModel dataModel)
   {
    HashMap<String,Object> problemParameters=new HashMap<String,Object>();
    problemParameters.put("StepSize",new Double(0.001));
@@ -149,7 +147,7 @@ public class Test_RunSimulations extends TestCase
    return runSimulation(dataModel,CCopasiMethod.deterministic,problemParameters,methodParameters);
   }
 
-  public static CTrajectoryTask runStochasticSimulation(CCopasiDataModel dataModel)
+  public static CTrajectoryTask runStochasticSimulation(CDataModel dataModel)
   {
    HashMap<String,Object> problemParameters=new HashMap<String,Object>();
    problemParameters.put("StepSize",new Double(0.001));
@@ -161,7 +159,7 @@ public class Test_RunSimulations extends TestCase
    return runSimulation(dataModel,CCopasiMethod.stochastic,problemParameters,methodParameters);
   }
 
-  public static CTrajectoryTask runHybridSimulation(CCopasiDataModel dataModel)
+  public static CTrajectoryTask runHybridSimulation(CDataModel dataModel)
   {
    HashMap<String,Object> problemParameters=new HashMap<String,Object>();
    problemParameters.put("StepSize",new Double(0.001));
@@ -175,7 +173,7 @@ public class Test_RunSimulations extends TestCase
 
   public void setUp()
   {
-    mDataModel=CCopasiRootContainer.addDatamodel();
+    mDataModel=CRootContainer.addDatamodel();
     this.model=Test_CreateSimpleModel.createModel(mDataModel);
     this.NUM_REPEATS=20;
   }

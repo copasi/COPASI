@@ -25,7 +25,7 @@ import junit.framework.*;
 public class Test_CreateSimpleModel extends TestCase
 {
 
-   CCopasiDataModel mDataModel;
+   CDataModel mDataModel;
    CModel model;
 
    public Test_CreateSimpleModel(String name)
@@ -33,7 +33,7 @@ public class Test_CreateSimpleModel extends TestCase
     super(name);
    }
 
-   public static CModel createModel(CCopasiDataModel dataModel)
+   public static CModel createModel(CDataModel dataModel)
    {
     try
     {
@@ -94,7 +94,7 @@ public class Test_CreateSimpleModel extends TestCase
    
   public void setUp()
   {
-    mDataModel=CCopasiRootContainer.addDatamodel();
+    mDataModel=CRootContainer.addDatamodel();
     this.model=this.createModel(mDataModel);
   }
 

@@ -29,12 +29,12 @@ public class example10
   // since we are not interested in the arguments
   // that are passed to main, we pass 0 and null to
   // init
-  CCopasiRootContainer.init();
-  assert(CCopasiRootContainer.getRoot() != null);
+  CRootContainer.init();
+  assert(CRootContainer.getRoot() != null);
   // create a new datamodel
-  CCopasiDataModel pDataModel = CCopasiRootContainer.addDatamodel();
+  CDataModel pDataModel = CRootContainer.addDatamodel();
   assert(pDataModel != null);
-  assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+  assert(CRootContainer.getDatamodelList().size() == 1);
 
   // check if we got exactly one argument, which should be an SBML filename
   if (args.length == 1)
@@ -59,7 +59,7 @@ public class example10
         {
           System.err.println("Error while importing the model from file named \"" + filename + "\"." );
           // final cleanup
-          CCopasiRootContainer.destroy();
+          CRootContainer.destroy();
           return;
         }
 
@@ -76,7 +76,7 @@ public class example10
         {
           System.err.println( "Sorry. Model could not be imported." );
           // final cleanup
-          CCopasiRootContainer.destroy();
+          CRootContainer.destroy();
           return;
         }
 
@@ -145,7 +145,7 @@ public class example10
                 System.err.println(lastError);
             }
           // final cleanup
-          CCopasiRootContainer.destroy();
+          CRootContainer.destroy();
           return;
         }
 
@@ -164,7 +164,7 @@ public class example10
             // we are also not interested in steady states with negative concentrations
           case CSteadyStateMethod.foundNegative:
             System.err.println("Could not find a steady state with non-negative concentrations, so I can't output control coefficients.");
-            CCopasiRootContainer.destroy();
+            CRootContainer.destroy();
             return;
 		}
 
@@ -194,7 +194,7 @@ public class example10
           if (numReactions == 0)
             {
               System.err.println("There are no reactions in the model, can't output a flux control coefficient.");
-              CCopasiRootContainer.destroy();
+              CRootContainer.destroy();
               return;
             }
 

@@ -19,11 +19,11 @@ my $MODEL_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n <!-- Created by
 # since we are not interested in the arguments
 # that are passed to main, we pass 0 and None to
 # init
-unless(defined(COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed.\n";die;}
+unless(defined(COPASI::CRootContainer::getRoot())){warn "Assertion failed.\n";die;}
 # create a new datamodel
-my $dataModel = COPASI::CCopasiRootContainer::addDatamodel();
+my $dataModel = COPASI::CRootContainer::addDatamodel();
 unless(defined($dataModel)){warn "Assertion failed.\n";die;}
-unless(COPASI::CCopasiRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed.\n";die;}
+unless(COPASI::CRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed.\n";die;}
 # next we import a simple SBML model from a string
 
 # clear the message queue so that we only have error messages from the import in the queue

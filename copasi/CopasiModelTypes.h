@@ -13,7 +13,17 @@
 #include "copasi.h"
 
 #include "core/CRootContainer.h"
+#include "core/CDataObject.h"
+#include "core/CDataObjectReference.h"
+#include "core/CDataContainer.h"
+#include "core/CCore.h"
+#include "core/CRegisteredCommonName.h"
 #include "CopasiDataModel/CDataModel.h"
+
+
+#include "copasi/math/CMathContainer.h"
+#include "copasi/math/CMathObject.h"
+#include "copasi/math/CMathEvent.h"
 
 #include "model/CModel.h"
 #include "model/CCompartment.h"

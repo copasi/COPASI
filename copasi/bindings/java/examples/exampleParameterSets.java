@@ -1,11 +1,16 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
 
-import org.COPASI.CCopasiDataModel;
+import org.COPASI.CDataModel;
 import org.COPASI.CCopasiMessage;
-import org.COPASI.CCopasiRootContainer;
+import org.COPASI.CRootContainer;
 import org.COPASI.CModel;
 import org.COPASI.CModelParameterSet;
 import org.COPASI.CModelParameter;
@@ -16,7 +21,7 @@ public class exampleParameterSets
 
     public static void main(String[] args)
     {
-        CCopasiRootContainer.init();
+        CRootContainer.init();
 
         if (args.length == 0)
         {
@@ -24,7 +29,7 @@ public class exampleParameterSets
             System.exit(1);
         }
 
-        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+        CDataModel dataModel = CRootContainer.addDatamodel();
         if (!dataModel.loadModel(args[0]))
         {
             System.err.println("Could not open file");

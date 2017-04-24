@@ -17,8 +17,8 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifndef COPASI_CCopasiVector
-#define COPASI_CCopasiVector
+#ifndef COPASI_CDataVector
+#define COPASI_CDataVector
 
 #ifdef WIN32
 # pragma warning (disable: 4786)
@@ -35,7 +35,7 @@
 #include "copasi/utilities/utility.h"
 
 #include "copasi/core/CRegisteredCommonName.h"
-#include "copasi/report/CCopasiContainer.h"
+#include "copasi/report/CDataContainer.h"
 
 #include "../undo/CData.h"
 #undef min
@@ -44,13 +44,13 @@
 
 class CReadConfig;
 
-template <class CType> class CCopasiVector;
+template <class CType> class CDataVector;
 
 template <class CType>
-std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d);
+std::ostream &operator<<(std::ostream &os, const CDataVector<CType> & d);
 
-template < class CType > class CCopasiVector:
-  protected std::vector< CType * >, public CCopasiContainer
+template < class CType > class CDataVector:
+  protected std::vector< CType * >, public CDataContainer
 {
 public:
   // typedef typename std::vector< CType * >::value_type value_type;
@@ -221,31 +221,31 @@ public:
 #endif // SWIG
   // Operations
 protected:
-  CCopasiVector(const CCopasiVector < CType > & src);
+  CDataVector(const CDataVector < CType > & src);
 
 public:
   /**
    * Default constructor
    * @param const const std::string & name (Default: "NoName")
-   * @param const CCopasiContainer * pParent (Default: NULL)
-   * @param const size_t & flag (Default: flag | CCopasiObject::Vector)
+   * @param const CDataContainer * pParent (Default: NULL)
+   * @param const size_t & flag (Default: flag | CDataObject::Vector)
    */
-  CCopasiVector(const std::string & name = "NoName",
-                const CCopasiContainer * pParent = NO_PARENT,
-                const unsigned C_INT32 & flag = CCopasiObject::Vector):
+  CDataVector(const std::string & name = "NoName",
+              const CDataContainer * pParent = NO_PARENT,
+              const unsigned C_INT32 & flag = CDataObject::Vector):
     std::vector< CType * >(),
-    CCopasiContainer(name, pParent, "Vector", flag | CCopasiObject::Vector)
+    CDataContainer(name, pParent, "Vector", flag | CDataObject::Vector)
   {CONSTRUCTOR_TRACE;}
 
   /**
    * Copy constructor
-   * @param const CCopasiVector < CType > & src
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataVector < CType > & src
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVector(const CCopasiVector < CType > & src,
-                const CCopasiContainer * pParent):
+  CDataVector(const CDataVector < CType > & src,
+              const CDataContainer * pParent):
     std::vector< CType * >(src),
-    CCopasiContainer(src, pParent)
+    CDataContainer(src, pParent)
   {
     CONSTRUCTOR_TRACE;
 
@@ -272,7 +272,7 @@ public:
   /**
    *  Destructor
    */
-  virtual ~CCopasiVector()
+  virtual ~CDataVector()
   {
     cleanup();
     DESTRUCTOR_TRACE;
@@ -282,10 +282,10 @@ public:
    * Assignment operator. The effect of this operator is that both vectors will
    * share the same objects. However, the parentship of the objects is not affected
    * This means that the assigned vector must be used with some care.
-   * @param const CCopasiVector< CType > & rhs
-   * @return CCopasiVector< CType > & lhs
+   * @param const CDataVector< CType > & rhs
+   * @return CDataVector< CType > & lhs
    */
-  CCopasiVector< CType > & operator = (const CCopasiVector< CType > & rhs)
+  CDataVector< CType > & operator = (const CDataVector< CType > & rhs)
   {
     cleanup();
 
@@ -301,9 +301,9 @@ public:
   /**
    * Assignment operator.
    * @param const std::vector< CType * > & rhs
-   * @return CCopasiVector< CType > & lhs
+   * @return CDataVector< CType > & lhs
    */
-  CCopasiVector< CType > & operator = (const std::vector< CType * > & rhs)
+  CDataVector< CType > & operator = (const std::vector< CType * > & rhs)
   {
     cleanup();
 
@@ -319,9 +319,9 @@ public:
   /**
    * This creates a deep copy of the source, i.e., all objects are copied and
    * the parent of these copies is the current vector.
-   * @param const CCopasiVector< CType > & source
+   * @param const CDataVector< CType > & source
    */
-  void deepCopy(const CCopasiVector< CType > & source)
+  void deepCopy(const CDataVector< CType > & source)
   {
     cleanup();
     resize(source.size());
@@ -366,13 +366,13 @@ public:
       if (*it != NULL &&
           (*it)->getObjectParent() == this)
         {
-          CCopasiContainer::remove(*it);
+          CDataContainer::remove(*it);
           (*it)->setObjectParent(NULL);
           delete(*it);
           *it = NULL;
         }
 
-    CCopasiVector< CType >::clear();
+    CDataVector< CType >::clear();
   }
 
   /**
@@ -400,7 +400,7 @@ public:
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
     std::vector< CType * >::push_back(pCopy);
-    return CCopasiContainer::add(pCopy, true);
+    return CDataContainer::add(pCopy, true);
   }
 
   /**
@@ -413,10 +413,10 @@ public:
     size_t Size = size();
 
     if (!(indexFrom < Size))
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexFrom, Size - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCDataVector + 3, indexFrom, Size - 1);
 
     if (!(indexTo < Size))
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, indexTo, Size - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCDataVector + 3, indexTo, Size - 1);
 
     typename std::vector< CType * >::iterator from = std::vector< CType * >::begin() + indexFrom;
     typename std::vector< CType * >::iterator to = std::vector< CType * >::begin() + indexTo;
@@ -433,7 +433,7 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CCopasiObject * pObject, const bool & adopt = true)
+  virtual bool add(CDataObject * pObject, const bool & adopt = true)
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -445,7 +445,7 @@ public:
         std::vector< CType * >::push_back(pNew);
       }
 
-    return CCopasiContainer::add(pObject, adopt);
+    return CDataContainer::add(pObject, adopt);
   }
 
   /**
@@ -468,7 +468,7 @@ public:
           }
         else
           {
-            CCopasiContainer::remove(*Target);
+            CDataContainer::remove(*Target);
             std::vector< CType * >::erase(Target, Target + 1);
           }
       }
@@ -476,10 +476,10 @@ public:
 
   /**
    * Removes the pointer to the object, from the vector
-   * @param CCopasiObject * pObject
+   * @param CDataObject * pObject
    * @return bool success
    */
-  virtual bool remove(CCopasiObject * pObject)
+  virtual bool remove(CDataObject * pObject)
   {
     const size_t index = getIndex(pObject);
 
@@ -494,7 +494,7 @@ public:
     else
       success = false;
 
-    success &= CCopasiContainer::remove(pObject);
+    success &= CDataContainer::remove(pObject);
 
     return success;
   }
@@ -507,7 +507,7 @@ public:
   const CType & operator[](const size_t & index) const
   {
     if (!(index < size()))
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCDataVector + 3, index, size() - 1);
 
     return **(std::vector< CType *>::begin() + index);
   }
@@ -520,13 +520,13 @@ public:
   CType & operator[](const size_t & index)
   {
     if (!(index < size()))
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCCopasiVector + 3, index, size() - 1);
+      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCDataVector + 3, index, size() - 1);
 
     return **(std::vector< CType *>::begin() + index);
   }
 
   /**
-   * Retrieve a the CCopasiObject with the given name.
+   * Retrieve a the CDataObject with the given name.
    * @param const CCommonName &name
    * @return const CObjectInterface * object
    */
@@ -536,7 +536,7 @@ public:
 
     if (Index < size())
       {
-        CCopasiObject * pObject = *(std::vector< CType * >::begin() + Index);
+        CDataObject * pObject = *(std::vector< CType * >::begin() + Index);
 
         if (name.getObjectType() == pObject->getObjectType())
           return pObject; //exact match of type and name
@@ -545,7 +545,7 @@ public:
           return pObject; //cn contains no "="; type cannot be checked
       }
 
-    return CCopasiContainer::getObject(name);
+    return CDataContainer::getObject(name);
   }
 
   /**
@@ -585,12 +585,12 @@ public:
             {
               if ((*Target)->getObjectParent() == this)
                 {
-                  CCopasiContainer::remove(*Target);
+                  CDataContainer::remove(*Target);
                   (*Target)->setObjectParent(NULL);
                   delete *Target;
                 }
               else
-                CCopasiContainer::remove(*Target);
+                CDataContainer::remove(*Target);
             }
 
         std::vector< CType * >::resize(newSize);
@@ -611,12 +611,12 @@ public:
         {
           if ((*Target)->getObjectParent() == this)
             {
-              CCopasiContainer::remove(*Target);
+              CDataContainer::remove(*Target);
               (*Target)->setObjectParent(NULL);
               delete *Target;
             }
           else
-            CCopasiContainer::remove(*Target);
+            CDataContainer::remove(*Target);
         }
 
     mValidity.clear();
@@ -627,17 +627,17 @@ public:
   /**
    * Retrieve the index of the pointed to object in the vector. If the object
    * is not found C_INVALID_INDEX is returned.
-   * @param const CCopasiObject * pObject
+   * @param const CDataObject * pObject
    * @return size_t index
    */
-  virtual size_t getIndex(const CCopasiObject * pObject) const
+  virtual size_t getIndex(const CDataObject * pObject) const
   {
     size_t i, imax = size();
     typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
 
     for (i = 0; i < imax; i++, Target++)
       {
-        const CCopasiObject * pTarget = static_cast< const CCopasiObject * >(*Target);
+        const CDataObject * pTarget = static_cast< const CDataObject * >(*Target);
 
         if (pTarget == pObject)
           {
@@ -648,7 +648,7 @@ public:
     return C_INVALID_INDEX;
   }
 
-  virtual CCopasiObject * insert(const CData & data)
+  virtual CDataObject * insert(const CData & data)
   {
     CType * pNew = NULL;
     size_t Index = 0;
@@ -676,7 +676,7 @@ public:
     if (pNew != NULL)
       {
         std::vector< CType * >::insert(std::vector< CType * >::begin() + Index, pNew);
-        CCopasiContainer::add(pNew, !IsReference);
+        CDataContainer::add(pNew, !IsReference);
       }
 
     return pNew;
@@ -685,24 +685,24 @@ public:
   /**
    * ostream operator
    * @param std::ostream & os
-   * @param const CCopasiVector<CType> & d
+   * @param const CDataVector<CType> & d
    * @return std::ostream & os
    */
 #if defined SWIG
   friend std::ostream &operator << (std::ostream &os,
-                                    const CCopasiVector<CType> & d);
+                                    const CDataVector<CType> & d);
 #else
 #if defined _MSC_VER && _MSC_VER < 1201 // 1200 Identifies Visual C++ 6.0
   friend std::ostream &operator << (std::ostream &os,
-                                    const CCopasiVector<CType> & d);
+                                    const CDataVector<CType> & d);
 #else
   friend std::ostream &operator << <>(std::ostream &os,
-                                      const CCopasiVector<CType> & d);
+                                      const CDataVector<CType> & d);
 #endif // WIN32
 #endif // SWIG
 };
 
-template < class CType > class CCopasiVectorS: public CCopasiVector < CType >
+template < class CType > class CDataVectorS: public CDataVector < CType >
 {
 public:
   typedef typename std::vector< CType * >::value_type value_type;
@@ -714,25 +714,25 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (Default: "NoName")
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVectorS(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NO_PARENT):
-    CCopasiVector< CType >(name, pParent) {}
+  CDataVectorS(const std::string & name = "NoName",
+               const CDataContainer * pParent = NO_PARENT):
+    CDataVector< CType >(name, pParent) {}
 
   /**
    * Copy constructor
-   * @param const CCopasiVectorS < CType > & src
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataVectorS < CType > & src
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVectorS(const CCopasiVectorS < CType > & src,
-                 const CCopasiContainer * pParent) :
-    CCopasiVector < CType > (src, pParent) {}
+  CDataVectorS(const CDataVectorS < CType > & src,
+               const CDataContainer * pParent) :
+    CDataVector < CType > (src, pParent) {}
 
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorS() {}
+  virtual ~CDataVectorS() {}
 
   /**
    * Loads an object with data coming from a CReadConfig object.
@@ -744,8 +744,8 @@ public:
   {
     size_t i;
 
-    CCopasiVector< CType >::cleanup();
-    CCopasiVector< CType >::resize(size);
+    CDataVector< CType >::cleanup();
+    CDataVector< CType >::resize(size);
 
     typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin();
 
@@ -770,7 +770,7 @@ public:
   }
 };
 
-template < class CType > class CCopasiVectorN: public CCopasiVector < CType >
+template < class CType > class CDataVectorN: public CDataVector < CType >
 {
 public:
   // typedef typename std::vector< CType * >::value_type value_type;
@@ -782,39 +782,39 @@ public:
   /**
    * Default constructor
    * @param const std::string & name (Default: "NoName")
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVectorN(const std::string & name = "NoName",
-                 const CCopasiContainer * pParent = NO_PARENT):
-    CCopasiVector< CType >(name, pParent,
-                           CCopasiObject::Container
-                           + CCopasiObject::Vector
-                           + CCopasiObject::NameVector)
+  CDataVectorN(const std::string & name = "NoName",
+               const CDataContainer * pParent = NO_PARENT):
+    CDataVector< CType >(name, pParent,
+                         CDataObject::Container
+                         + CDataObject::Vector
+                         + CDataObject::NameVector)
   {}
 
   /**
    * Copy constructor
-   * @param const CCopasiVectorN < CType > & src
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataVectorN < CType > & src
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVectorN(const CCopasiVectorN < CType > & src,
-                 const CCopasiContainer * pParent) :
-    CCopasiVector < CType > (src, pParent)
+  CDataVectorN(const CDataVectorN < CType > & src,
+               const CDataContainer * pParent) :
+    CDataVector < CType > (src, pParent)
   {}
 
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorN() {}
+  virtual ~CDataVectorN() {}
 
   /**
    * Assignment operator.
    * @param const std::vector< CType * > & rhs
-   * @return CCopasiVectorN< CType > & lhs
+   * @return CDataVectorN< CType > & lhs
    */
-  CCopasiVectorN< CType > & operator = (const std::vector< CType * > & rhs)
+  CDataVectorN< CType > & operator = (const std::vector< CType * > & rhs)
   {
-    CCopasiVector< CType >::operator=(rhs);
+    CDataVector< CType >::operator=(rhs);
     return *this;
   }
 
@@ -828,7 +828,7 @@ public:
     if (!isInsertAllowed(&src))
       {
         CCopasiMessage ex(CCopasiMessage::ERROR,
-                          MCCopasiVector + 2, src.getObjectName().c_str());
+                          MCDataVector + 2, src.getObjectName().c_str());
         return false;
       }
 
@@ -847,7 +847,7 @@ public:
       CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
 
     std::vector< CType * >::push_back(Element);
-    return CCopasiContainer::add(Element, true);
+    return CDataContainer::add(Element, true);
   }
 
   /**
@@ -857,7 +857,7 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CCopasiObject * pObject, const bool & adopt = true)
+  virtual bool add(CDataObject * pObject, const bool & adopt = true)
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -869,14 +869,14 @@ public:
         if (!isInsertAllowed(pNew))
           {
             CCopasiMessage ex(CCopasiMessage::ERROR,
-                              MCCopasiVector + 2, pNew->getObjectName().c_str());
+                              MCDataVector + 2, pNew->getObjectName().c_str());
             return false;
           }
 
         std::vector< CType * >::push_back(pNew);
       }
 
-    return CCopasiContainer::add(pObject, adopt);
+    return CDataContainer::add(pObject, adopt);
   }
 
   /**
@@ -890,11 +890,11 @@ public:
     if (Index == C_INVALID_INDEX)
       {
         CCopasiMessage ex(CCopasiMessage::ERROR,
-                          MCCopasiVector + 1, name.c_str());
+                          MCDataVector + 1, name.c_str());
         return;
       }
 
-    CCopasiVector< CType >::remove(Index);
+    CDataVector< CType >::remove(Index);
     return;
   }
 
@@ -904,7 +904,7 @@ public:
    * @return value_type & object
    */
   CType & operator[](const size_t & index)
-  {return CCopasiVector< CType >::operator[](index);}
+  {return CDataVector< CType >::operator[](index);}
 
   /**
    * Retrieve the indexed object.
@@ -912,7 +912,7 @@ public:
    * @return const value_type & object
    */
   const CType & operator[](const size_t & index) const
-  {return CCopasiVector< CType >::operator[](index);}
+  {return CDataVector< CType >::operator[](index);}
 
   /**
    * Retrieve the named object.
@@ -921,7 +921,7 @@ public:
    */
   CType & operator[](const std::string & name)
   {
-    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(name);
+    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -933,7 +933,7 @@ public:
     if (pType == NULL)
       {
         CCopasiMessage ex(CCopasiMessage::EXCEPTION,
-                          MCCopasiVector + 1, name.c_str());
+                          MCDataVector + 1, name.c_str());
       }
 
     return *pType;
@@ -946,7 +946,7 @@ public:
    */
   const CType & operator[](const std::string &name) const
   {
-    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(name);
+    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -958,7 +958,7 @@ public:
     if (pType == NULL)
       {
         CCopasiMessage ex(CCopasiMessage::EXCEPTION,
-                          MCCopasiVector + 1, name.c_str());
+                          MCDataVector + 1, name.c_str());
       }
 
     return *pType;
@@ -975,7 +975,7 @@ public:
 
     if (!ElementName.empty())
       {
-        CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(ElementName);
+        CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(ElementName);
 
         for (; Range.first != Range.second; ++Range.first)
           {
@@ -984,7 +984,7 @@ public:
           }
       }
 
-    return CCopasiVector < CType >::getObject(name);
+    return CDataVector < CType >::getObject(name);
   }
 
   /**
@@ -995,7 +995,7 @@ public:
    */
   virtual size_t getIndex(const std::string &name) const
   {
-    size_t i, imax = CCopasiVector< CType >::size();
+    size_t i, imax = CDataVector< CType >::size();
     typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
 
     std::string Name = unQuote(name);
@@ -1033,45 +1033,45 @@ private:
   virtual bool isInsertAllowed(const CType * src)
   {
     bool isInserAllowed = true;
-    CCopasiContainer::objectMap::range Range = CCopasiContainer::getObjects().equal_range(src->getObjectName());
+    CDataContainer::objectMap::range Range = CDataContainer::getObjects().equal_range(src->getObjectName());
 
     for (; Range.first != Range.second && isInserAllowed; ++Range.first)
       {
         if (dynamic_cast< CType * >(*Range.first) != NULL)
-          isInserAllowed = (CCopasiVector< CType >::getIndex(src) == C_INVALID_INDEX);
+          isInserAllowed = (CDataVector< CType >::getIndex(src) == C_INVALID_INDEX);
       }
 
     return isInserAllowed;
   }
 };
 
-template < class CType > class CCopasiVectorNS: public CCopasiVectorN < CType >
+template < class CType > class CDataVectorNS: public CDataVectorN < CType >
 {
   // Operations
 public:
   /**
    * Default constructor
    * @param const std::string & name (Default: "NoName")
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVectorNS(const std::string & name = "NoName",
-                  const CCopasiContainer * pParent = NO_PARENT):
-    CCopasiVectorN< CType >(name, pParent)
+  CDataVectorNS(const std::string & name = "NoName",
+                const CDataContainer * pParent = NO_PARENT):
+    CDataVectorN< CType >(name, pParent)
   {}
 
   /**
    * Copy constructor
-   * @param const CCopasiVectorNS < CType > & src
-   * @param const CCopasiContainer * pParent (Default: NULL)
+   * @param const CDataVectorNS < CType > & src
+   * @param const CDataContainer * pParent (Default: NULL)
    */
-  CCopasiVectorNS(const CCopasiVectorNS < CType > & src,
-                  const CCopasiContainer * pParent) :
-    CCopasiVectorN< CType >(src, pParent) {}
+  CDataVectorNS(const CDataVectorNS < CType > & src,
+                const CDataContainer * pParent) :
+    CDataVectorN< CType >(src, pParent) {}
 
   /**
    *  Destructor
    */
-  virtual ~CCopasiVectorNS() {}
+  virtual ~CDataVectorNS() {}
 
   /**
    *  Loads an object with data coming from a CReadConfig object.
@@ -1083,8 +1083,8 @@ public:
   {
     size_t i;
 
-    CCopasiVector< CType >::cleanup();
-    CCopasiVector< CType >::resize(size);
+    CDataVector< CType >::cleanup();
+    CDataVector< CType >::resize(size);
 
     typename std::vector< CType * >::iterator Target = std::vector< CType * >::begin();
 
@@ -1110,7 +1110,7 @@ public:
 };
 
 template <class CType>
-std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
+std::ostream &operator<<(std::ostream &os, const CDataVector<CType> & d)
 {
   os << "   +++Vektor;  size: " << d.size() << std::endl;
 
@@ -1127,4 +1127,4 @@ std::ostream &operator<<(std::ostream &os, const CCopasiVector<CType> & d)
   return os;
 }
 
-#endif // COPASI_CCopasiVector
+#endif // COPASI_CDataVector

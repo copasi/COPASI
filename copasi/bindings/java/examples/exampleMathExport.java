@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -13,10 +18,10 @@ public class exampleMathExport
 	public static void main(String[] args)
 	{
 		System.loadLibrary("CopasiJava");
-		assert CCopasiRootContainer.getRoot() != null;
+		assert CRootContainer.getRoot() != null;
 		// create a new datamodel
-		CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-		assert CCopasiRootContainer.getDatamodelList().size() == 1;
+		CDataModel dataModel = CRootContainer.addDatamodel();
+		assert CRootContainer.getDatamodelList().size() == 1;
 		
 		if (args.length != 2)
 		{

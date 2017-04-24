@@ -13,12 +13,12 @@ source("COPASI.R")
 # The cacheMetaData(1) will cause R to refresh its object tables. Without it, inheritance of wrapped objects may fail.
 cacheMetaData(1)
 
-stopifnot(!is.null(CCopasiRootContainer_getRoot()))
+stopifnot(!is.null(CRootContainer_getRoot()))
 # create a new datamodel
-dataModel <- CCopasiRootContainer_addDatamodel()
-stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
+dataModel <- CRootContainer_addDatamodel()
+stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
 # get the model from the datamodel
-model <- CCopasiDataModel_getModel(dataModel)
+model <- CDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 # set the units for the model
 # we want seconds as the time unit
@@ -37,7 +37,7 @@ changedObjects <- ObjectStdVector()
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
 compartment <- CModel_createCompartment(model,"cell", 5.0)
-object <- CCopasiContainer_getObject(compartment,CCommonName("Reference=InitialVolume"))
+object <- CDataContainer_getObject(compartment,CCommonName("Reference=InitialVolume"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(!is.null(compartment))
@@ -46,8 +46,8 @@ stopifnot(CompartmentVector_size(CModel_getCompartments(model)) == 1)
 # concentration of 10 nanomol
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
-S <- CModel_createMetabolite(model,"S", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
-object <- CCopasiContainer_getObject(S,CCommonName("Reference=InitialConcentration"))
+S <- CModel_createMetabolite(model,"S", CDataObject_getObjectName(compartment), 10.0, "FIXED")
+object <- CDataContainer_getObject(S,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(!is.null(compartment))
@@ -55,9 +55,9 @@ stopifnot(!is.null(S))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 1)
 # create a second metabolite called P with an initial
 # concentration of 0. This metabolite is to be changed by reactions
-P <- CModel_createMetabolite(model,"P", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
+P <- CModel_createMetabolite(model,"P", CDataObject_getObjectName(compartment), 0.0, "REACTIONS")
 stopifnot(!is.null(P))
-object <- CCopasiContainer_getObject(P,CCommonName("Reference=InitialConcentration"))
+object <- CDataContainer_getObject(P,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 2)
@@ -83,14 +83,14 @@ MV <- CModel_createModelValue(model,"K", 42.0)
 # set the status to FIXED
 invisible(CModelEntity_setStatus(MV,"FIXED"))
 stopifnot(!is.null(MV))
-object <- CCopasiContainer_getObject(MV,CCommonName("Reference=InitialValue"))
+object <- CDataContainer_getObject(MV,CCommonName("Reference=InitialValue"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(ModelValueVector_size(CModel_getModelValues(model)) == 1)
 
 # now we ned to set a kinetic law on the reaction
 # for this we create a user defined function
-funDB <- CCopasiRootContainer_getFunctionList()
+funDB <- CRootContainer_getFunctionList()
 stopifnot(!is.null(funDB))
 
 func <- CFunctionDB_createFunction(funDB,"My Rate Law","UserDefined")
@@ -145,12 +145,12 @@ invisible(CModel_updateInitialValues(model,changedObjects))
 # and we want to overwrite any existing file with the same name
 # Default tasks are automatically generated and will always appear in cps
 # file unless they are explicitley deleted before saving.
-invisible(CCopasiDataModel_saveModel(dataModel,"example7.cps", TRUE))
+invisible(CDataModel_saveModel(dataModel,"example7.cps", TRUE))
 
 # export the model to an SBML file
 # we save to a file named example1.xml, we want to overwrite any
 # existing file with the same name and we want SBML L2V3
-tryCatch(CCopasiDataModel_exportSBML(dataModel,"example7.xml", TRUE, 2, 3), error = function(e) {
+tryCatch(CDataModel_exportSBML(dataModel,"example7.xml", TRUE, 2, 3), error = function(e) {
   write("Error. Exporting the model to SBML failed.", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )

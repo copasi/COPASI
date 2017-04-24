@@ -18,7 +18,7 @@ public class exampleParameterSets
       Environment.Exit(1);
     }
 
-    CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+    CDataModel dataModel = CRootContainer.addDatamodel();
     if (!dataModel.loadModel(args[0]))
     {
       Console.WriteLine("Could not open file");

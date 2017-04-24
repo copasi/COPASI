@@ -7,10 +7,10 @@ use warnings;
 
 use COPASI;
 
-unless(defined(COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
+unless(defined(COPASI::CRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a new datamodel
-my $dataModel = COPASI::CCopasiRootContainer::addDatamodel();
-unless(COPASI::CCopasiRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed";die;}
+my $dataModel = COPASI::CRootContainer::addDatamodel();
+unless(COPASI::CRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed";die;}
 # get the model from the datamodel
 my $model = $dataModel->getModel();
 unless(defined($model )){warn "Assertion failed";die;}
@@ -130,14 +130,14 @@ my $header = $report->getHeaderAddr();
 my $body = $report->getBodyAddr();
 
 # in the report header we write two strings and a separator
-$header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString("best value of objective function")->getCN()->getString()));
-$header->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
-$header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString("initial value of F")->getCN()->getString()));
+$header->push(new COPASI::CRegisteredCommonName(new COPASI::CDataString("best value of objective function")->getCN()->getString()));
+$header->push(new COPASI::CRegisteredCommonName($report->getSeparator()->getCN()->getString()));
+$header->push(new COPASI::CRegisteredCommonName(new COPASI::CDataString("initial value of F")->getCN()->getString()));
 # in the report body we write the best value of the objective function and
 # the initial value of the fixed parameter separated by a komma
-$body->push(new COPASI::CRegisteredObjectName($optProblem->getObject(new COPASI::CCommonName("Reference=Best Value"))->getCN()->getString()));
-$body->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
-$body->push(new COPASI::CRegisteredObjectName($fixedModelValue->getObject(new COPASI::CCommonName("Reference=InitialValue"))->getCN()->getString()));
+$body->push(new COPASI::CRegisteredCommonName($optProblem->getObject(new COPASI::CCommonName("Reference=Best Value"))->getCN()->getString()));
+$body->push(new COPASI::CRegisteredCommonName($report->getSeparator()->getCN()->getString()));
+$body->push(new COPASI::CRegisteredCommonName($fixedModelValue->getObject(new COPASI::CCommonName("Reference=InitialValue"))->getCN()->getString()));
 
 
 # set the report for the task

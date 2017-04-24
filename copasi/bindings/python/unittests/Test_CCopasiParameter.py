@@ -25,7 +25,7 @@ import math
 
 class Test_CCopasiParameter(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.datamodel=COPASI.CRootContainer.addDatamodel()
     self.datamodel.loadModel("calcium_juergen.cps")
     self.param=self.datamodel.getModel().getReaction(0).getParameters().getParameter(0)
 

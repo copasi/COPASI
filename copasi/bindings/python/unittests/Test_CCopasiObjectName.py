@@ -25,7 +25,7 @@ from types import *
 
 class Test_CCommonName(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.datamodel=COPASI.CRootContainer.addDatamodel()
     self.model=self.datamodel.getModel()
     self.compartment=self.model.createCompartment("Comp1")
     self.metab=self.model.createMetabolite("metab3","Comp1")

@@ -251,7 +251,7 @@ class Test_RunParameterFitting(unittest.TestCase):
     self.model=Test_CreateSimpleModel.createModel()
 
    def test_runParameterFittingOnSimpleModel(self):
-        self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+        self.datamodel=COPASI.CRootContainer.addDatamodel()
         fitTask=COPASI.self.datamodel.addTask(COPASI.CCopasiTask.parameterFitting)
         self.assert_(fitTask!=None)
         self.assert_(fitTask.__class__==COPASI.CFitTask)
@@ -295,7 +295,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(model.__class__==COPASI.CModel)
         timeReference=model.getObject(COPASI.CCommonName("Reference=Time"))
         self.assert_(timeReference!=None)
-        self.assert_(timeReference.__class__==COPASI.CCopasiObject)
+        self.assert_(timeReference.__class__==COPASI.CDataObject)
         objectMap.setObjectCN(0,timeReference.getCN())
         # getObjectCN returns a string whereas getCN returns a
         # CCommonName
@@ -316,7 +316,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         objectMap.setRole(1,COPASI.CExperiment.dependent)
         particleReference=metabA.getObject(COPASI.CCommonName("Reference=ParticleNumber"))
         self.assert_(particleReference!=None)
-        self.assert_(particleReference.__class__==COPASI.CCopasiObject)
+        self.assert_(particleReference.__class__==COPASI.CDataObject)
         objectMap.setObjectCN(1,particleReference.getCN())
         # getObjectCN returns a string whereas getCN returns a
         # CCommonName
@@ -324,7 +324,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         objectMap.setRole(2,COPASI.CExperiment.dependent)
         particleReference=metabB.getObject(COPASI.CCommonName("Reference=ParticleNumber"))
         self.assert_(particleReference!=None)
-        self.assert_(particleReference.__class__==COPASI.CCopasiObject)
+        self.assert_(particleReference.__class__==COPASI.CDataObject)
         objectMap.setObjectCN(2,particleReference.getCN())
         # getObjectCN returns a string whereas getCN returns a
         # CCommonName
@@ -352,7 +352,7 @@ class Test_RunParameterFitting(unittest.TestCase):
         self.assert_(fitProblem.getOptItemSize()==0)
         parameterReference=parameter.getObject(COPASI.CCommonName("Reference=Value"))
         self.assert_(parameterReference!=None)
-        self.assert_(parameterReference.__class__==COPASI.CCopasiObject)
+        self.assert_(parameterReference.__class__==COPASI.CDataObject)
         fitItem=COPASI.CFitItem()
         self.assert_(fitItem!=None)
         self.assert_(fitItem.__class__==COPASI.CFitItem)

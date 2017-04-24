@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CEvent.py,v $ 
-#   $Revision: 1.2 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:55:59 $ 
-# End CVS Header 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -19,7 +16,7 @@ import math
 
 class Test_CEvent(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.datamodel=COPASI.CRootContainer.addDatamodel()
     self.model=self.datamodel.getModel()
     self.compartment=self.model.createCompartment("Comp1")
     self.metab=self.model.createMetabolite("metab1","Comp1")

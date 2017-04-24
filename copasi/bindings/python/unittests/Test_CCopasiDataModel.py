@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-# Begin CVS Header 
-#   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/python/unittests/Test_CCopasiDataModel.py,v $ 
-#   $Revision: 1.16 $ 
-#   $Name:  $ 
-#   $Author: shoops $ 
-#   $Date: 2010/07/16 18:56:00 $ 
-# End CVS Header 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
 
-# Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
 
-# Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 # and The University of Manchester. 
+# All rights reserved. 
+
+# Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc. and EML Research, gGmbH. 
 # All rights reserved. 
 
 import COPASI
@@ -25,9 +26,9 @@ import string
 CPS_FILE="calcium_juergen.cps"
 SBML_FILE="calcium_juergen.xml"
 
-class Test_CCopasiDataModel(unittest.TestCase):
+class Test_CDataModel(unittest.TestCase):
   def setUp(self):
-    self.datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    self.datamodel=COPASI.CRootContainer.addDatamodel()
 
   def test_loadModel(self):
     self.assert_(self.datamodel.loadModel(CPS_FILE),"Error. Could not load model.")
@@ -137,7 +138,7 @@ def suite():
          ,'test_getFileName'
          ,'test_getSBMLFileName'
         ]
-  return unittest.TestSuite(map(Test_CCopasiDataModel,tests))
+  return unittest.TestSuite(map(Test_CDataModel,tests))
 
 if(__name__ == '__main__'):
     unittest.TextTestRunner(verbosity=2).run(suite())

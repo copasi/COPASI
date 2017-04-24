@@ -83,10 +83,10 @@ my $MODEL_STRING = <<END;
 END
 
 
-unless(defined(COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
+unless(defined(COPASI::CRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a datamodel
-my $dataModel = COPASI::CCopasiRootContainer::addDatamodel();
-unless(COPASI::CCopasiRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed";die;}
+my $dataModel = COPASI::CRootContainer::addDatamodel();
+unless(COPASI::CRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed";die;}
 # the only argument to the main routine should be the name of an SBML file
 eval {
     # load the model
@@ -117,10 +117,10 @@ $report->setSeparator(new COPASI::CCopasiReportSeparator(", "));
 # the body will contain the actual timecourse data
 my $header = $report->getHeaderAddr();
 my $body = $report->getBodyAddr();
-$body->push(new COPASI::CRegisteredObjectName(new COPASI::CCommonName($dataModel->getModel()->getCN()->getString() . ",Reference=Time")->getString()));
-$body->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
-$header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString("time")->getCN()->getString()));
-$header->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
+$body->push(new COPASI::CRegisteredCommonName(new COPASI::CCommonName($dataModel->getModel()->getCN()->getString() . ",Reference=Time")->getString()));
+$body->push(new COPASI::CRegisteredCommonName($report->getSeparator()->getCN()->getString()));
+$header->push(new COPASI::CRegisteredCommonName(new COPASI::CDataString("time")->getCN()->getString()));
+$header->push(new COPASI::CRegisteredCommonName($report->getSeparator()->getCN()->getString()));
 
 my $iMax = $model->getMetabolites()->size();
 for (my $i=0; $i < $iMax; $i++) {
@@ -131,16 +131,16 @@ for (my $i=0; $i < $iMax; $i++) {
         # we want the concentration in the output
         # alternatively, we could use "Reference=Amount" to get the
         # particle number
-        $body->push(new COPASI::CRegisteredObjectName($metab->getObject(new COPASI::CCommonName("Reference=Concentration"))->getCN()->getString()));
+        $body->push(new COPASI::CRegisteredCommonName($metab->getObject(new COPASI::CCommonName("Reference=Concentration"))->getCN()->getString()));
         # add the corresponding id to the header
-        $header->push(new COPASI::CRegisteredObjectName(new COPASI::CDataString($metab->getSBMLId())->getCN()->getString()));
+        $header->push(new COPASI::CRegisteredCommonName(new COPASI::CDataString($metab->getSBMLId())->getCN()->getString()));
         
         if ($i != ($iMax-1)) {
           # after each entry, we need a seperator
-          $body->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
+          $body->push(new COPASI::CRegisteredCommonName($report->getSeparator()->getCN()->getString()));
 
           # and a seperator
-          $header->push(new COPASI::CRegisteredObjectName($report->getSeparator()->getCN()->getString()));
+          $header->push(new COPASI::CRegisteredCommonName($report->getSeparator()->getCN()->getString()));
         }
     }
 }

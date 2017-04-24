@@ -8,7 +8,7 @@
 // of Manchester.
 // All rights reserved.
 
-#include "copasi/common/local_common.cpp"
+#include "../common/local_common.cpp"
 #include "plot/CPlotSpecification.h"
 
 #include <copasi/optimization/COptMethodCoranaWalk.h>
@@ -191,174 +191,173 @@ int GetType_CDataContainer(CDataContainer* pPointer)
         }
       else
         {
-          if (pPointer->isVector())
+
+          if (dynamic_cast<CDataVector<CCopasiTask>* >(pPointer))
             {
-              if (dynamic_cast<CDataVector<CCopasiTask>* >(pPointer))
+              if (dynamic_cast<CDataVectorN<CCopasiTask>* >(pPointer))
                 {
-                  if (dynamic_cast<CDataVectorN<CCopasiTask>* >(pPointer))
-                    {
-                      // return a TaskVectorN
-                      result = TaskVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a TaskVector
-                      result = TaskVector_Type;
-                    }
+                  // return a TaskVectorN
+                  result = TaskVectorN_Type;
                 }
-              else if (dynamic_cast<CDataVector<CModelValue>* >(pPointer))
+              else
                 {
-                  if (dynamic_cast<CDataVectorN<CModelValue>* >(pPointer))
-                    {
-                      // return a ModelValueVectorN
-                      result = ModelValueVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a ModelValueVector
-                      result = ModelValueVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CEvent>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CEvent>* >(pPointer))
-                    {
-                      // return a CEventVectorN
-                      result = EventVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a EventVector
-                      result = EventVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CEventAssignment>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CEventAssignment>* >(pPointer))
-                    {
-                      // return a EventAssignmentVectorN
-                      result = EventAssignmentVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a EventAssignmentVector
-                      result = EventAssignmentVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CReportDefinition>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CReportDefinition>* >(pPointer))
-                    {
-                      // return a ReportDefinitionVectorN
-                      result = ReportDefinitionVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a ReportDefinitionVector
-                      result = ReportDefinitionVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CPlotSpecification>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CPlotSpecification>* >(pPointer))
-                    {
-                      // return a ReportDefinitionVectorN
-                      result = OutputDefinitionVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a ReportDefinitionVector
-                      result = OutputDefinitionVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CMoiety>* >(pPointer))
-                {
-                  // return a MoietyVector
-                  result = MoietyVector_Type;
-                }
-              else if (dynamic_cast<CDataVector<CMetab>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CMetab>* >(pPointer))
-                    {
-                      if (dynamic_cast<CDataVectorNS<CMetab>* >(pPointer))
-                        {
-                          // return a MetabVectorNS
-                          result = MetabVectorNS_Type;
-                        }
-                      else
-                        {
-                          // return a MetabVectorN
-                          result = MetabVectorN_Type;
-                        }
-                    }
-                  else
-                    {
-                      // return a MetabVector
-                      result = MetabVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CCompartment>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CCompartment>* >(pPointer))
-                    {
-                      if (dynamic_cast<CDataVectorNS<CCompartment>* >(pPointer))
-                        {
-                          // return a CompartmentVectorNS
-                          result = CompartmentVectorNS_Type;
-                        }
-                      else
-                        {
-                          // return a CompartmentVectorN
-                          result = CompartmentVectorN_Type;
-                        }
-                    }
-                  else
-                    {
-                      // return a CompartmentVector
-                      result = CompartmentVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CReaction>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CReaction>* >(pPointer))
-                    {
-                      if (dynamic_cast<CDataVectorNS<CReaction>* >(pPointer))
-                        {
-                          // return a ReactionVectorNS
-                          result = ReactionVectorNS_Type;
-                        }
-                      else
-                        {
-                          // return a ReactionVectorN
-                          result = ReactionVectorN_Type;
-                        }
-                    }
-                  else
-                    {
-                      // return a ReactionVector
-                      result = ReactionVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CEvaluationTree>* >(pPointer))
-                {
-                  if (dynamic_cast<CDataVectorN<CEvaluationTree>* >(pPointer))
-                    {
-                      // return a CEvaluationTreeVectorN
-                      result = CEvaluationTreeVectorN_Type;
-                    }
-                  else
-                    {
-                      // return a CEvaluationTreeVector
-                      result = CEvaluationTreeVector_Type;
-                    }
-                }
-              else if (dynamic_cast<CDataVector<CChemEqElement>* >(pPointer))
-                {
-                  // return a CChemEqElementVector
-                  result = CChemEqElementVector_Type;
+                  // return a TaskVector
+                  result = TaskVector_Type;
                 }
             }
-          else if (dynamic_cast<CDataArray*>(pPointer))
+          else if (dynamic_cast<CDataVector<CModelValue>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CModelValue>* >(pPointer))
+                {
+                  // return a ModelValueVectorN
+                  result = ModelValueVectorN_Type;
+                }
+              else
+                {
+                  // return a ModelValueVector
+                  result = ModelValueVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CEvent>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CEvent>* >(pPointer))
+                {
+                  // return a CEventVectorN
+                  result = EventVectorN_Type;
+                }
+              else
+                {
+                  // return a EventVector
+                  result = EventVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CEventAssignment>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CEventAssignment>* >(pPointer))
+                {
+                  // return a EventAssignmentVectorN
+                  result = EventAssignmentVectorN_Type;
+                }
+              else
+                {
+                  // return a EventAssignmentVector
+                  result = EventAssignmentVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CReportDefinition>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CReportDefinition>* >(pPointer))
+                {
+                  // return a ReportDefinitionVectorN
+                  result = ReportDefinitionVectorN_Type;
+                }
+              else
+                {
+                  // return a ReportDefinitionVector
+                  result = ReportDefinitionVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CPlotSpecification>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CPlotSpecification>* >(pPointer))
+                {
+                  // return a ReportDefinitionVectorN
+                  result = OutputDefinitionVectorN_Type;
+                }
+              else
+                {
+                  // return a ReportDefinitionVector
+                  result = OutputDefinitionVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CMoiety>* >(pPointer))
+            {
+              // return a MoietyVector
+              result = MoietyVector_Type;
+            }
+          else if (dynamic_cast<CDataVector<CMetab>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CMetab>* >(pPointer))
+                {
+                  if (dynamic_cast<CDataVectorNS<CMetab>* >(pPointer))
+                    {
+                      // return a MetabVectorNS
+                      result = MetabVectorNS_Type;
+                    }
+                  else
+                    {
+                      // return a MetabVectorN
+                      result = MetabVectorN_Type;
+                    }
+                }
+              else
+                {
+                  // return a MetabVector
+                  result = MetabVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CCompartment>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CCompartment>* >(pPointer))
+                {
+                  if (dynamic_cast<CDataVectorNS<CCompartment>* >(pPointer))
+                    {
+                      // return a CompartmentVectorNS
+                      result = CompartmentVectorNS_Type;
+                    }
+                  else
+                    {
+                      // return a CompartmentVectorN
+                      result = CompartmentVectorN_Type;
+                    }
+                }
+              else
+                {
+                  // return a CompartmentVector
+                  result = CompartmentVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CReaction>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CReaction>* >(pPointer))
+                {
+                  if (dynamic_cast<CDataVectorNS<CReaction>* >(pPointer))
+                    {
+                      // return a ReactionVectorNS
+                      result = ReactionVectorNS_Type;
+                    }
+                  else
+                    {
+                      // return a ReactionVectorN
+                      result = ReactionVectorN_Type;
+                    }
+                }
+              else
+                {
+                  // return a ReactionVector
+                  result = ReactionVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CEvaluationTree>* >(pPointer))
+            {
+              if (dynamic_cast<CDataVectorN<CEvaluationTree>* >(pPointer))
+                {
+                  // return a CEvaluationTreeVectorN
+                  result = CEvaluationTreeVectorN_Type;
+                }
+              else
+                {
+                  // return a CEvaluationTreeVector
+                  result = CEvaluationTreeVector_Type;
+                }
+            }
+          else if (dynamic_cast<CDataVector<CChemEqElement>* >(pPointer))
+            {
+              // return a CChemEqElementVector
+              result = CChemEqElementVector_Type;
+            }
+
+          if (dynamic_cast<CDataArray*>(pPointer))
             {
               // return a CDataArray
               result = CDataArray_Type;

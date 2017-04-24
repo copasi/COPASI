@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -24,10 +29,10 @@ from types import *
 import sys 
 
 def main():
-  assert CCopasiRootContainer.getRoot() != None
+  assert CRootContainer.getRoot() != None
   # create a new datamodel
-  dataModel = CCopasiRootContainer.addDatamodel()
-  assert CCopasiRootContainer.getDatamodelList().size() == 1
+  dataModel = CRootContainer.addDatamodel()
+  assert CRootContainer.getDatamodelList().size() == 1
   # get the model from the datamodel
   model = dataModel.getModel()
   assert model != None
@@ -108,7 +113,7 @@ def main():
   # now we ned to set a kinetic law on the reaction
   # maybe constant flux would be OK
   # we need to get the function from the function database
-  funDB = CCopasiRootContainer.getFunctionList()
+  funDB = CRootContainer.getFunctionList()
   assert funDB != None
   # it should be in the list of suitable functions
   # lets get all suitable functions for an irreversible reaction with  2 substrates

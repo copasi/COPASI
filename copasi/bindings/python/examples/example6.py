@@ -101,10 +101,10 @@ MODEL_STRING="""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 </sbml>"""
 
 def main():
-   assert CCopasiRootContainer.getRoot() != None
+   assert CRootContainer.getRoot() != None
    # create a datamodel
-   dataModel = CCopasiRootContainer.addDatamodel()
-   assert CCopasiRootContainer.getDatamodelList().size() == 1
+   dataModel = CRootContainer.addDatamodel()
+   assert CRootContainer.getDatamodelList().size() == 1
    # first we load a simple model
    try:
      # load the model 
@@ -192,7 +192,7 @@ def main():
    rand=0.0
    os=open("fakedata_example6.txt","w")
    os.write("# time ")
-   keyFactory=CCopasiRootContainer.getKeyFactory()
+   keyFactory=CRootContainer.getKeyFactory()
    assert keyFactory != None
    for i in range(1,iMax):
      key=timeSeries.getKey(i)

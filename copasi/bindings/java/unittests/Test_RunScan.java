@@ -28,7 +28,7 @@ public class Test_RunScan extends TestCase
 {
 
     CModel mModel;
-    CCopasiDataModel mDataModel;
+    CDataModel mDataModel;
 
    public Test_RunScan(String name)
    {
@@ -66,11 +66,11 @@ public class Test_RunScan extends TestCase
     
     public void setUp()
     {
-        mDataModel=CCopasiRootContainer.addDatamodel();
+        mDataModel=CRootContainer.addDatamodel();
         this.mModel=createModel();
     }
 
-    public static CScanTask runScan(CCopasiDataModel dataModel,int subTask,Vector<CCopasiParameterGroup> scanItems,boolean adjustInitialValues)
+    public static CScanTask runScan(CDataModel dataModel,int subTask,Vector<CCopasiParameterGroup> scanItems,boolean adjustInitialValues)
     {
         CScanTask scanTask=(CScanTask)dataModel.addTask(CCopasiTask.scan);
         if(scanTask==null) return null;
@@ -136,31 +136,31 @@ public class Test_RunScan extends TestCase
         CDataString htmlFooter=new CDataString("</table>\n</body>\n</html>\n");
         ReportItemVector header=repDef.getHeaderAddr(); 
         assertFalse(header==null);
-        header.add(new CRegisteredObjectName(htmlHeader.getCN().getString()));
+        header.add(new CRegisteredCommonName(htmlHeader.getCN().getString()));
         ReportItemVector footer=repDef.getFooterAddr(); 
         assertFalse(footer==null);
-        footer.add(new CRegisteredObjectName(htmlFooter.getCN().getString()));
+        footer.add(new CRegisteredCommonName(htmlFooter.getCN().getString()));
         ReportItemVector body=repDef.getBodyAddr(); 
         assertFalse(body==null);
         CModel model=mDataModel.getModel();
         assertFalse(model==null);
-        CCopasiObject timeObject=model.getObject(new CCommonName("Reference=Time"));
+        CDataObject timeObject=model.getObject(new CCommonName("Reference=Time"));
         assertFalse(timeObject==null);
-        body.add(new CRegisteredObjectName(new CDataString("<tr>\n<td>").getCN().getString()));
-        body.add(new CRegisteredObjectName(timeObject.getCN().getString()));
-        body.add(new CRegisteredObjectName(new CDataString("</td>\n").getCN().getString()));
+        body.add(new CRegisteredCommonName(new CDataString("<tr>\n<td>").getCN().getString()));
+        body.add(new CRegisteredCommonName(timeObject.getCN().getString()));
+        body.add(new CRegisteredCommonName(new CDataString("</td>\n").getCN().getString()));
         long i,iMax=model.getNumModelValues();
         for(i=0;i<iMax;++i)
         {
-            body.add(new CRegisteredObjectName(new CDataString("<td>").getCN().getString()));
+            body.add(new CRegisteredCommonName(new CDataString("<td>").getCN().getString()));
             CModelValue mv=model.getModelValue(i);
             assertFalse(mv==null);
-            CCopasiObject valueObject=mv.getObject(new CCommonName("Reference=Value"));
+            CDataObject valueObject=mv.getObject(new CCommonName("Reference=Value"));
             assertFalse(valueObject==null);
-            body.add(new CRegisteredObjectName(valueObject.getCN().getString()));
-            body.add(new CRegisteredObjectName(new CDataString("</td>\n").getCN().getString()));
+            body.add(new CRegisteredCommonName(valueObject.getCN().getString()));
+            body.add(new CRegisteredCommonName(new CDataString("</td>\n").getCN().getString()));
         }
-        body.add(new CRegisteredObjectName(new CDataString("</tr>\n").getCN().getString()));
+        body.add(new CRegisteredCommonName(new CDataString("</tr>\n").getCN().getString()));
         repDef.setTaskType(CCopasiTask.timeCourse);
         CReport report=task.getReport();
         assertFalse(report==null);

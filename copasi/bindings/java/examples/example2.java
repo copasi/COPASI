@@ -1,12 +1,14 @@
-// Begin CVS Header 
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/bindings/java/examples/example2.java,v $ 
-//   $Revision: 1.4 $ 
-//   $Name:  $ 
-//   $Author: gauges $ 
-//   $Date: 2009/09/01 13:51:30 $ 
-// End CVS Header 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
 // and The University of Manchester. 
 // All rights reserved. 
@@ -22,10 +24,10 @@ public class example2
 {
     public static void main(String[] args)
     {
-        assert CCopasiRootContainer.getRoot() != null;
+        assert CRootContainer.getRoot() != null;
         // create a new datamodel
-        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-        assert CCopasiRootContainer.getDatamodelList().size() == 1;
+        CDataModel dataModel = CRootContainer.addDatamodel();
+        assert CRootContainer.getDatamodelList().size() == 1;
         // the only argument to the main routine should be the name of a CPS file
         if (args.length == 1)
         {

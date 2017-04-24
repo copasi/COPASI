@@ -27,10 +27,10 @@ import sys
 
 
 def main():
-     assert CCopasiRootContainer.getRoot() != None
+     assert CRootContainer.getRoot() != None
      # create a new datamodel
-     dataModel = CCopasiRootContainer.addDatamodel()
-     assert CCopasiRootContainer.getDatamodelList().size() == 1
+     dataModel = CRootContainer.addDatamodel()
+     assert CRootContainer.getDatamodelList().size() == 1
      # get the model from the datamodel
      model = dataModel.getModel()
      assert model != None
@@ -104,7 +104,7 @@ def main():
 
      # now we ned to set a kinetic law on the reaction
      # for this we create a user defined function
-     funDB = CCopasiRootContainer.getFunctionList()
+     funDB = CRootContainer.getFunctionList()
      assert funDB != None
 
      function = funDB.createFunction("My Rate Law",CEvaluationTree.UserDefined)

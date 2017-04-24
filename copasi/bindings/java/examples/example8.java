@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -20,11 +25,11 @@ public class example8
 
   public static void main(String[] args)
   {
-    assert(CCopasiRootContainer.getRoot() != null);
+    assert(CRootContainer.getRoot() != null);
     // create a new datamodel
-    CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
+    CDataModel dataModel = CRootContainer.addDatamodel();
     assert(dataModel != null);
-    assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+    assert(CRootContainer.getDatamodelList().size() == 1);
     // next we import a simple SBML model from a string
 
     // clear the message queue so that we only have error messages from the import in the queue

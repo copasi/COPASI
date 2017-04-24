@@ -16,11 +16,11 @@ MODEL_STRING = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n <!-- Created by COP
 % since we are not interested in the arguments
 % that are passed to main, we pass 0 and None to
 % init
-%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CRootContainer.getRoot()) != 0);
 % create a new datamodel
-dataModel = CCopasiRootContainer.addDatamodel();
+dataModel = CRootContainer.addDatamodel();
 %!assert( swig_this(dataModel) != 0);
-%!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
+%!assert( CRootContainer.getDatamodelList().size() == 1);
 % next we import a simple SBML model from a string
 
 % clear the message queue so that we only have error messages from the import in the queue

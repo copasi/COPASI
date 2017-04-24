@@ -10,10 +10,10 @@ class example2
 {
     static void Main(string[] args)
     {
-        Debug.Assert(CCopasiRootContainer.getRoot() != null);
+        Debug.Assert(CRootContainer.getRoot() != null);
         // create a new datamodel
-        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-        Debug.Assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+        CDataModel dataModel = CRootContainer.addDatamodel();
+        Debug.Assert(CRootContainer.getDatamodelList().size() == 1);
         // the only argument to the main routine should be the name of a CPS file
         if (args.Length == 1)
         {

@@ -17,17 +17,17 @@ cacheMetaData(1)
 MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?><!-- Created by COPASI version4.5.31 (Debug) on 2010-05-11 13:40 with libSBML version 4.1.0-b3. --><sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4"><model metaid="COPASI1" id="Model_1" name="New Model"><listOfUnitDefinitions><unitDefinition id="volume" name="volume"><listOfUnits><unit kind="litre" scale="-3"/></listOfUnits></unitDefinition><unitDefinition id="substance" name="substance"><listOfUnits><unit kind="mole" scale="-3"/></listOfUnits></unitDefinition><unitDefinition id="unit_0"><listOfUnits><unit kind="second" exponent="-1"/></listOfUnits></unitDefinition></listOfUnitDefinitions><listOfCompartments><compartment id="compartment_1" name="compartment" size="1"/></listOfCompartments><listOfSpecies><species metaid="COPASI2" id="species_1" name="A" compartment="compartment_1" initialConcentration="1"/><species metaid="COPASI3" id="species_2" name="B" compartment="compartment_1" initialConcentration="0"/><species metaid="COPASI4" id="species_3" name="C" compartment="compartment_1" initialConcentration="0"/></listOfSpecies><listOfReactions><reaction metaid="COPASI5" id="reaction_1" name="reaction_1" reversible="false"><listOfReactants><speciesReference species="species_1"/></listOfReactants><listOfProducts><speciesReference species="species_2"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_1 </ci></apply></math><listOfParameters><parameter id="k1" name="k1" value="0.2" units="unit_0"/></listOfParameters></kineticLaw></reaction><reaction metaid="COPASI6" id="reaction_2" name="reaction_2" reversible="false"><listOfReactants><speciesReference species="species_2"/></listOfReactants><listOfProducts><speciesReference species="species_3"/></listOfProducts><kineticLaw><math xmlns="http://www.w3.org/1998/Math/MathML"><apply><times/><ci> compartment_1 </ci><ci> k1 </ci><ci> species_2 </ci></apply></math><listOfParameters><parameter id="k1" name="k1" value="0.1" units="unit_0"/></listOfParameters></kineticLaw></reaction></listOfReactions></model></sbml>'
 
 
-stopifnot(!is.null(CCopasiRootContainer_getRoot()))
+stopifnot(!is.null(CRootContainer_getRoot()))
 # create a new datamodel
-dataModel <- CCopasiRootContainer_addDatamodel()
+dataModel <- CRootContainer_addDatamodel()
 stopifnot(!is.null(dataModel))
-stopifnot(DataModelVector_size(CCopasiRootContainer_getDatamodelList()) == 1)
+stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
 # next we import a simple SBML model from a string
 
 # clear the message queue so that we only have error messages from the import in the queue
 invisible(CCopasiMessage_clearDeque())
 result <- TRUE
-tryCatch(result <- CCopasiDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(result <- CDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
   write("Import of model failed miserably.", stderr())
   if(CCopasiMessage_size() > 0) {
     write(CCopasiMessage_getAllMessageText(TRUE), stderr())
@@ -55,7 +55,7 @@ if (result != TRUE && any(errorList,mostSevere)) {
 #
 # now we tell the model object to calculate the jacobian
 #
-model <- CCopasiDataModel_getModel(dataModel)
+model <- CDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 
 if (!is.null(model)) {
@@ -102,7 +102,7 @@ if (!is.null(model)) {
         status <- CModelEntity_getStatus(entity)
 
         if (status == "ODE" || (status == "REACTIONS" && CModelEntity_isUsed(entity))) {
-            nameVector[[length(nameVector)+1]] <- CCopasiObject_getObjectName(entity)
+            nameVector[[length(nameVector)+1]] <- CDataObject_getObjectName(entity)
         }
         i <- i + 1
     }
@@ -152,7 +152,7 @@ if (!is.null(model)) {
    
     i <- 0
     while (i < iMax) {
-       cat(format(CCopasiObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7))
+       cat(format(CDataObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7))
        i <- i + 1
     }
 
@@ -160,7 +160,7 @@ if (!is.null(model)) {
 
     i <- 0
     while (i < iMax) {
-        cat(format(CCopasiObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7))
+        cat(format(CDataObject_getObjectName(CStateTemplate_getIndependent(stateTemplate,i)), width = 7))
 
         j <- 0
         while (j < iMax) {

@@ -23,7 +23,7 @@ import unittest
 from types import *
 
 def createModel():
-    datamodel=COPASI.CCopasiRootContainer.addDatamodel()
+    datamodel=COPASI.CRootContainer.addDatamodel()
     model=datamodel.getModel()
     model.setVolumeUnit(COPASI.CModel.fl)
     model.setTimeUnit(COPASI.CModel.s)

@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -20,10 +25,10 @@ from COPASI import *
 from types import *
 
 def main(args):
-    assert CCopasiRootContainer.getRoot() != None
+    assert CRootContainer.getRoot() != None
     # create a datamodel
-    dataModel = CCopasiRootContainer.addDatamodel()
-    assert CCopasiRootContainer.getDatamodelList().size() == 1
+    dataModel = CRootContainer.addDatamodel()
+    assert CRootContainer.getDatamodelList().size() == 1
     # the only argument to the main routine should be the name of a CPS file
     if (len(args) == 1):
         filename = args[0]

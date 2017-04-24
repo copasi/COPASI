@@ -281,7 +281,7 @@ protected:
 
 private:
   /**
-   * Initialize the contained CCopasiObjects
+   * Initialize the contained CDataObjects
    */
   void initObjects();
 

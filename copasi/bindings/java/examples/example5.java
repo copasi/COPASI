@@ -32,10 +32,10 @@ public class example5
 
    public static void main(String[] args) 
    {
-     assert CCopasiRootContainer.getRoot() != null;
+     assert CRootContainer.getRoot() != null;
      // create a new datamodel
-     CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-     assert CCopasiRootContainer.getDatamodelList().size() == 1;
+     CDataModel dataModel = CRootContainer.addDatamodel();
+     assert CRootContainer.getDatamodelList().size() == 1;
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      assert model != null;
@@ -156,14 +156,14 @@ public class example5
      ReportItemVector body = report.getBodyAddr();
      
      // in the report header we write two strings and a separator
-     header.add(new CRegisteredObjectName(new CDataString("best value of objective function").getCN().getString()));
-     header.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     header.add(new CRegisteredObjectName(new CDataString("initial value of F").getCN().getString()));
+     header.add(new CRegisteredCommonName(new CDataString("best value of objective function").getCN().getString()));
+     header.add(new CRegisteredCommonName(report.getSeparator().getCN().getString()));
+     header.add(new CRegisteredCommonName(new CDataString("initial value of F").getCN().getString()));
      // in the report body we write the best value of the objective function and
      // the initial value of the fixed parameter separated by a komma
-     body.add(new CRegisteredObjectName(optProblem.getObject(new CCommonName("Reference=Best Value")).getCN().getString()));
-     body.add(new CRegisteredObjectName(report.getSeparator().getCN().getString()));
-     body.add(new CRegisteredObjectName(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN().getString()));
+     body.add(new CRegisteredCommonName(optProblem.getObject(new CCommonName("Reference=Best Value")).getCN().getString()));
+     body.add(new CRegisteredCommonName(report.getSeparator().getCN().getString()));
+     body.add(new CRegisteredCommonName(fixedModelValue.getObject(new CCommonName("Reference=InitialValue")).getCN().getString()));
 
      
      // set the report for the task

@@ -32,10 +32,10 @@ public class example6
 
     public static void main(String[] args)
     {
-        assert CCopasiRootContainer.getRoot() != null;
+        assert CRootContainer.getRoot() != null;
         // create a new datamodel
-        CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-        assert CCopasiRootContainer.getDatamodelList().size() == 1;
+        CDataModel dataModel = CRootContainer.addDatamodel();
+        assert CRootContainer.getDatamodelList().size() == 1;
         // first we load a simple model
           try
           {
@@ -136,12 +136,12 @@ public class example6
         {
           java.io.FileWriter os=new java.io.FileWriter("fakedata_example6.txt");
           os.write("# time ");
-          CKeyFactory keyFactory=CCopasiRootContainer.getKeyFactory();
+          CKeyFactory keyFactory=CRootContainer.getKeyFactory();
           assert keyFactory != null;
           for(i=1;i<iMax;++i)
           {
             String key=timeSeries.getKey(i);
-            CCopasiObject object=keyFactory.get(key);
+            CDataObject object=keyFactory.get(key);
             assert object != null;
             // only write header data or metabolites
             if(object.getClass()==org.COPASI.CMetab.class)
@@ -252,7 +252,7 @@ public class example6
 
         CModel model=dataModel.getModel();
         assert model!=null;
-        CCopasiObject timeReference=model.getValueReference();
+        CDataObject timeReference=model.getValueReference();
         assert timeReference != null;
         objectMap.setObjectCN(0,timeReference.getCN().getString());
        
@@ -261,7 +261,7 @@ public class example6
         objectMap.setRole(1,CExperiment.dependent);
         CMetab metab=metabVector.elementAt(0);
         assert metab != null;
-        CCopasiObject particleReference=metab.getConcentrationReference();
+        CDataObject particleReference=metab.getConcentrationReference();
         assert particleReference != null;
         objectMap.setObjectCN(1,particleReference.getCN().getString());
 
@@ -295,7 +295,7 @@ public class example6
         assert parameter != null;
         
         // define a CFitItem
-        CCopasiObject parameterReference=parameter.getValueReference();
+        CDataObject parameterReference=parameter.getValueReference();
         assert parameterReference != null;
         CFitItem fitItem1=new CFitItem(dataModel);
         assert fitItem1 !=null;

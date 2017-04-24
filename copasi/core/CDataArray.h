@@ -113,7 +113,7 @@ public:
 
   /**
    * Associates a dimension d of the array with a CDataVector of
-   * CCopasiObjects. If the mode of the dimension d is VECTOR than
+   * CDataObjects. If the mode of the dimension d is VECTOR than
    * the CNs of the objects in the vector are generated and stored immediately.
    * If the mode is VECTOR_ON_THE_FLY the CNs are generated when getAnnotationsCN()
    * or getAnnotationsString() is called.

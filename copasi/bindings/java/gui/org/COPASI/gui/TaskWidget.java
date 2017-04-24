@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -49,13 +54,13 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 import java.util.Enumeration;
 
-import org.COPASI.CCopasiRootContainer;
-import org.COPASI.CCopasiDataModel;
-import org.COPASI.CCopasiObject;
+import org.COPASI.CRootContainer;
+import org.COPASI.CDataModel;
+import org.COPASI.CDataObject;
 import org.COPASI.CCopasiTask;
 import org.COPASI.CCopasiMethod;
 import org.COPASI.CCopasiParameter;
-import org.COPASI.CRegisteredObjectName;
+import org.COPASI.CRegisteredCommonName;
 import org.COPASI.CReport;
 import org.COPASI.CReportDefinition;
 import org.COPASI.COutputAssistant;
@@ -484,7 +489,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	protected MethodParameterWidget  mMethodWidget;
 	protected ButtonWidget  mButtonWidget;
 	protected CCopasiTask mTask;
-	protected CCopasiDataModel mDataModel;
+	protected CDataModel mDataModel;
 	protected boolean mDefaultReportCreated;
         protected boolean mOverwrite;
         protected Vector<TaskRunEventListener> mListeners;
@@ -492,7 +497,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 	public TaskWidget(String title,boolean enableReportButton)
 	{
 		super();
-                this.mDataModel=CCopasiRootContainer.addDatamodel();
+                this.mDataModel=CRootContainer.addDatamodel();
 		this.mTask=null;
                 this.mOverwrite=false;
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -626,7 +631,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
   			  }
   			  break;
   		  case CCopasiParameter.CN:
-  			  CRegisteredObjectName on=new CRegisteredObjectName(value);
+  			  CRegisteredCommonName on=new CRegisteredCommonName(value);
   			  p.setCNValue(on);
   			  break;
   		  case CCopasiParameter.KEY:
@@ -807,7 +812,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
 		{
                   //System.out.println("Creating default report.");;
 		  int index=COutputAssistant.getDefaultReportIndex(this.mTask.getProblem());
-		  CCopasiObject def=COutputAssistant.createDefaultOutput(index, this.mTask,mDataModel, true);
+		  CDataObject def=COutputAssistant.createDefaultOutput(index, this.mTask,mDataModel, true);
 		  if (def instanceof CReportDefinition) 
 		  {
 			 this.mTask.getReport().setReportDefinition((CReportDefinition)def);

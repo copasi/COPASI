@@ -9,10 +9,10 @@ class example1
 
  static void Main()
  {
-     Debug.Assert(CCopasiRootContainer.getRoot() != null);
+     Debug.Assert(CRootContainer.getRoot() != null);
      // create a new datamodel
-     CCopasiDataModel dataModel = CCopasiRootContainer.addDatamodel();
-     Debug.Assert(CCopasiRootContainer.getDatamodelList().size() == 1);
+     CDataModel dataModel = CRootContainer.addDatamodel();
+     Debug.Assert(CRootContainer.getDatamodelList().size() == 1);
      // get the model from the datamodel
      CModel model = dataModel.getModel();
      Debug.Assert(model != null);
@@ -33,7 +33,7 @@ class example1
      // create a compartment with the name cell and an initial volume of 5.0
      // microliter
      CCompartment compartment = model.createCompartment("cell", 5.0);
-     CCopasiObject obj= compartment.getInitialValueReference();
+     CDataObject obj= compartment.getInitialValueReference();
      Debug.Assert(obj!= null);
      changedObjects.Add(obj);
      Debug.Assert(compartment != null);
@@ -93,7 +93,7 @@ class example1
      // now we ned to set a kinetic law on the reaction
      // maybe constant flux would be OK
      // we need to get the function from the function database
-     CFunctionDB funDB = CCopasiRootContainer.getFunctionList();
+     CFunctionDB funDB = CRootContainer.getFunctionList();
      Debug.Assert(funDB != null);
      // it should be in the list of suitable functions
      // lets get all suitable functions for an irreversible reaction with  2 substrates

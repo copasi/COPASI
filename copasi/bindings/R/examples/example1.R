@@ -10,13 +10,13 @@ source("COPASI.R")
 # The cacheMetaData(1) will cause R to refresh its object tables. Without it, inheritance of wrapped objects may fail.
 cacheMetaData(1)
 
-stopifnot(!is.null(CCopasiRootContainer_getRoot()))
+stopifnot(!is.null(CRootContainer_getRoot()))
 # create a new datamodel
-dataModel <- CCopasiRootContainer_addDatamodel()
-datamodel_list <- CCopasiRootContainer_getDatamodelList()
+dataModel <- CRootContainer_addDatamodel()
+datamodel_list <- CRootContainer_getDatamodelList()
 stopifnot(DataModelVector_size(datamodel_list) == 1)
 # get the model from the datamodel
-model <- CCopasiDataModel_getModel(dataModel)
+model <- CDataModel_getModel(dataModel)
 stopifnot(!is.null(model))
 # set the units for the model
 # we want seconds as the time unit
@@ -35,7 +35,7 @@ changedObjects <- ObjectStdVector()
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
 compartment <- CModel_createCompartment(model,"cell", 5.0)
-object <- CCopasiObject_getObject(compartment,CCommonName("Reference=InitialVolume"))
+object <- CDataObject_getObject(compartment,CCommonName("Reference=InitialVolume"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(!is.null(compartment))
@@ -44,31 +44,31 @@ stopifnot(CompartmentVector_size(CModel_getCompartments(model)) == 1)
 # concentration of 10 nanomol
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
-glucose <- CModel_createMetabolite(model,"glucose", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
+glucose <- CModel_createMetabolite(model,"glucose", CDataObject_getObjectName(compartment), 10.0, "FIXED")
 stopifnot(!is.null(glucose))
-object <- CCopasiObject_getObject(glucose,CCommonName("Reference=InitialConcentration"))
+object <- CDataObject_getObject(glucose,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 1)
 # create a second metabolite called glucose-6-phosphate with an initial
 # concentration of 0. This metabolite is to be changed by reactions
-g6p <- CModel_createMetabolite(model,"glucose-6-phosphate", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
+g6p <- CModel_createMetabolite(model,"glucose-6-phosphate", CDataObject_getObjectName(compartment), 0.0, "REACTIONS")
 stopifnot(!is.null(g6p))
-object <- CCopasiObject_getObject(g6p,CCommonName("Reference=InitialConcentration"))
+object <- CDataObject_getObject(g6p,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 2)
 # another metabolite for ATP, also fixed
-atp <- CModel_createMetabolite(model,"ATP", CCopasiObject_getObjectName(compartment), 10.0, "FIXED")
+atp <- CModel_createMetabolite(model,"ATP", CDataObject_getObjectName(compartment), 10.0, "FIXED")
 stopifnot(!is.null(atp))
-object <- CCopasiObject_getObject(atp,CCommonName("Reference=InitialConcentration"))
+object <- CDataObject_getObject(atp,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 3)
 # and one for ADP
-adp <- CModel_createMetabolite(model,"ADP", CCopasiObject_getObjectName(compartment), 0.0, "REACTIONS")
+adp <- CModel_createMetabolite(model,"ADP", CDataObject_getObjectName(compartment), 0.0, "REACTIONS")
 stopifnot(!is.null(adp))
-object <- CCopasiObject_getObject(adp,CCommonName("Reference=InitialConcentration"))
+object <- CDataObject_getObject(adp,CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 4)
@@ -80,13 +80,13 @@ stopifnot(ReactionVector_size(CModel_getReactions(model)) == 1)
 # we can set these on the chemical equation of the reaction
 chemEq <- CReaction_getChemEq(reaction)
 # glucose is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(glucose), 1.0, "SUBSTRATE"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(glucose), 1.0, "SUBSTRATE"))
 # ATP is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(atp), 1.0, "SUBSTRATE"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(atp), 1.0, "SUBSTRATE"))
 # glucose-6-phosphate is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(g6p), 1.0, "PRODUCT"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(g6p), 1.0, "PRODUCT"))
 # ADP is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(adp), 1.0, "PRODUCT"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(adp), 1.0, "PRODUCT"))
 stopifnot(CChemEqElementVector_size(CChemEq_getSubstrates(chemEq)) == 2)
 stopifnot(CChemEqElementVector_size(CChemEq_getProducts(chemEq)) == 2)
 # this reaction is to be irreversible
@@ -95,7 +95,7 @@ stopifnot(CReaction_isReversible(reaction) == FALSE)
 # now we ned to set a kinetic law on the reaction
 # maybe constant flux would be OK
 # we need to get the function from the function database
-funDB <- CCopasiRootContainer_getFunctionList()
+funDB <- CRootContainer_getFunctionList()
 stopifnot(!is.null(funDB))
 # it should be in the list of suitable functions
 # lets get all suitable functions for an irreversible reaction with  2 substrates
@@ -113,7 +113,7 @@ while (index < maxIndex){
     # using the ___getitem__ function looks awkward, but I have not found out how else
     # I can get to the elements of wrapped std::vector instances
     temp_fun <- CFunctionStdVector___getitem__(suitableFunctions,index)
-    name=CCopasiObject_getObjectName(temp_fun)
+    name=CDataObject_getObjectName(temp_fun)
     if (length(grep("Constant",name)) != 0) {
         fun <- temp_fun
         break
@@ -135,11 +135,11 @@ if (!is.null(fun)){
     stopifnot(CCopasiParameterGroup_size(parameterGroup) == 1)
     parameter <- CCopasiParameterGroup_getParameter(parameterGroup, 0)
     # make sure the parameter is a local parameter
-    stopifnot(CReaction_isLocalParameter(reaction,CCopasiObject_getObjectName(parameter)))
+    stopifnot(CReaction_isLocalParameter(reaction,CDataObject_getObjectName(parameter)))
     stopifnot(CCopasiParameter_getType(parameter) == "DOUBLE")
     # now we set the value of the parameter to 0.5
     invisible(CCopasiParameter_setDblValue(parameter,0.5))
-    object <- CCopasiObject_getObject(parameter,CCommonName("Reference=Value"))
+    object <- CDataObject_getObject(parameter,CCommonName("Reference=Value"))
     stopifnot(!is.null(object))
     invisible(ObjectStdVector_push_back(changedObjects,object))
 } else{
@@ -154,13 +154,13 @@ stopifnot(!is.null(reaction))
 stopifnot(ReactionVector_size(CModel_getReactions(model)) == 2)
 chemEq <- CReaction_getChemEq(reaction)
 # glucose is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(glucose), 1.0, "PRODUCT"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(glucose), 1.0, "PRODUCT"))
 # ATP is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(atp), 1.0, "PRODUCT"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(atp), 1.0, "PRODUCT"))
 # glucose-6-phosphate is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(g6p), 1.0, "SUBSTRATE"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(g6p), 1.0, "SUBSTRATE"))
 # ADP is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CCopasiObject_getKey(adp), 1.0, "SUBSTRATE"))
+invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(adp), 1.0, "SUBSTRATE"))
 stopifnot(CChemEqElementVector_size(CChemEq_getSubstrates(chemEq)) == 2)
 stopifnot(CChemEqElementVector_size(CChemEq_getProducts(chemEq)) == 2)
 # this reaction is to be irreversible
@@ -189,7 +189,7 @@ stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) ==
 # it gets the name rateConstant and an initial value of 1.56
 modelValue <- CModel_createModelValue(model,"rateConstant", 1.56)
 stopifnot(!is.null(modelValue))
-object <- CCopasiObject_getObject(modelValue,CCommonName("Reference=InitialValue"))
+object <- CDataObject_getObject(modelValue,CCommonName("Reference=InitialValue"))
 stopifnot(!is.null(object))
 invisible(ObjectStdVector_push_back(changedObjects,object))
 stopifnot(ModelValueVector_size(CModel_getModelValues(model)) == 1)
@@ -203,10 +203,10 @@ invisible(CModelEntity_setExpression(modelValue,"1.0 / 4.0 + 2.0"))
 # of the local one that is created by default
 # The first parameter is the one for the rate constant, so we point it to
 # the key of out model value
-invisible(CReaction_setParameterMapping(reaction,0, CCopasiObject_getKey(modelValue)))
+invisible(CReaction_setParameterMapping(reaction,0, CDataObject_getKey(modelValue)))
 # now we have to set the parameter mapping for the substrates
-invisible(CReaction_addParameterMapping(reaction,"substrate", CCopasiObject_getKey(g6p)))
-invisible(CReaction_addParameterMapping(reaction,"substrate", CCopasiObject_getKey(adp)))
+invisible(CReaction_addParameterMapping(reaction,"substrate", CDataObject_getKey(g6p)))
+invisible(CReaction_addParameterMapping(reaction,"substrate", CDataObject_getKey(adp)))
 
 # finally compile the model
 # compile needs to be done before updating all initial values for
@@ -222,12 +222,12 @@ invisible(CModel_updateInitialValues(model,changedObjects))
 # and we want to overwrite any existing file with the same name
 # Default tasks are automatically generated and will always appear in cps
 # file unless they are explicitley deleted before saving.
-invisible(CCopasiDataModel_saveModel(dataModel,"example1.cps", TRUE))
+invisible(CDataModel_saveModel(dataModel,"example1.cps", TRUE))
 
 # export the model to an SBML file
 # we save to a file named example1.xml, we want to overwrite any
 # existing file with the same name and we want SBML L2V3
-invisible(CCopasiDataModel_exportSBML(dataModel,"example1.xml", TRUE, 2, 3))
+invisible(CDataModel_exportSBML(dataModel,"example1.xml", TRUE, 2, 3))
 
 
 

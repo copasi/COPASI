@@ -26,7 +26,7 @@ import junit.framework.*;
 public class Test_RunSteadyStateCalculation extends TestCase
 {
 
-    CCopasiDataModel mDataModel;
+    CDataModel mDataModel;
     CModel mModel;
 
     public Test_RunSteadyStateCalculation(String name)
@@ -34,7 +34,7 @@ public class Test_RunSteadyStateCalculation extends TestCase
         super(name);
     }
 
-    public CModel createModel(CCopasiDataModel dataModel)
+    public CModel createModel(CDataModel dataModel)
     {
         try
         {
@@ -74,11 +74,11 @@ public class Test_RunSteadyStateCalculation extends TestCase
 
     public void setUp()
     {
-        mDataModel=CCopasiRootContainer.addDatamodel();
+        mDataModel=CRootContainer.addDatamodel();
         this.mModel=createModel(mDataModel);
     }
 
-    public static CSteadyStateTask runSteadyStateCalculation(CCopasiDataModel dataModel,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
+    public static CSteadyStateTask runSteadyStateCalculation(CDataModel dataModel,HashMap<String,Object> problemParameters,HashMap<String,Object> methodParameters)
     {
         CSteadyStateTask steadyStateTask=(CSteadyStateTask)dataModel.addTask(CCopasiTask.steadyState);
         if(steadyStateTask==null) return null;

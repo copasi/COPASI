@@ -24,10 +24,8 @@
 
 #define COPASI_MAIN
 
-#include <copasi/copasi.h>
+#include <copasi/CopasiTypes.h>
 #include <copasi/commandline/COptions.h>
-#include <copasi/report/CRootContainer.h>
-#include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/utilities/CVersion.h>
 #include <copasi/utilities/CDirEntry.h>
 

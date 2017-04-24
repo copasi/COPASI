@@ -82,10 +82,10 @@ my $MODEL_STRING = <<END;
 </sbml>
 END
 
-unless(defined(COPASI::CCopasiRootContainer::getRoot())){warn "Assertion failed";die;}
+unless(defined(COPASI::CRootContainer::getRoot())){warn "Assertion failed";die;}
 # create a datamodel
-my $dataModel = COPASI::CCopasiRootContainer::addDatamodel();
-unless(COPASI::CCopasiRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed";die;}
+my $dataModel = COPASI::CRootContainer::addDatamodel();
+unless(COPASI::CRootContainer::getDatamodelList()->size() == 1){warn "Assertion failed";die;}
 # first we load a simple model
 eval {
   # load the model 
@@ -184,7 +184,7 @@ my @metabVector=();
 my $random=0.0;
 open(OS,">fakedata_example6.txt");
 print OS "# time ";
-my $keyFactory=COPASI::CCopasiRootContainer::getKeyFactory();
+my $keyFactory=COPASI::CRootContainer::getKeyFactory();
 unless(defined($keyFactory)){warn "Assertion failed";die;}
 for (my $i=0;$i < $iMax;$i++) {
   my $key=$timeSeries->getKey($i);

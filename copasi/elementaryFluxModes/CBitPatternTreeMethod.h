@@ -122,7 +122,7 @@ public:
 
 private:
   /**
-   * Initialize the needed CCopasiObjects.
+   * Initialize the needed CDataObjects.
    */
   void initObjects();
 

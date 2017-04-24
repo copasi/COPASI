@@ -7,10 +7,10 @@
 
 COPASI
 
-%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CRootContainer.getRoot()) != 0);
 % create a datamodel
-dataModel = CCopasiRootContainer.addDatamodel();
-%!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
+dataModel = CRootContainer.addDatamodel();
+%!assert( CRootContainer.getDatamodelList().size() == 1);
 % the only argument to the main routine should be the name of a CPS file
 if (length(argv) == 1)
   filename = argv(){1};

@@ -78,10 +78,10 @@ MODEL_STRING="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\
   </model>\
 </sbml>";
 
-%!assert( swig_this(CCopasiRootContainer.getRoot()) != 0);
+%!assert( swig_this(CRootContainer.getRoot()) != 0);
 % create a datamodel
-dataModel = CCopasiRootContainer.addDatamodel();
-%!assert( CCopasiRootContainer.getDatamodelList().size() == 1);
+dataModel = CRootContainer.addDatamodel();
+%!assert( CRootContainer.getDatamodelList().size() == 1);
 % first we load a simple model
 % load the model 
 if (dataModel.importSBMLFromString(MODEL_STRING) == false)
@@ -174,7 +174,7 @@ metabVector={};
 r=0.0;
 os=fopen("fakedata_example6.txt","w");
 fprintf(os,"# time ");
-keyFactory=CCopasiRootContainer.getKeyFactory();
+keyFactory=CRootContainer.getKeyFactory();
 %!assert( swig_this(keyFactory) != 0);
 for i = 1:iMax
   key=timeSeries.getKey(i);

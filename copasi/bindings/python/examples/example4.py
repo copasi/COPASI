@@ -103,10 +103,10 @@ MODEL_STRING="""<?xml version="1.0" encoding="UTF-8"?>
 
 
 def main(args):
-   assert CCopasiRootContainer.getRoot() != None
+   assert CRootContainer.getRoot() != None
    # create a datamodel
-   dataModel = CCopasiRootContainer.addDatamodel()
-   assert CCopasiRootContainer.getDatamodelList().size() == 1
+   dataModel = CRootContainer.addDatamodel()
+   assert CRootContainer.getDatamodelList().size() == 1
    # the only argument to the main routine should be the name of an SBML file
    try:
        # load the model
@@ -134,10 +134,10 @@ def main(args):
    # the body will contain the actual timecourse data
    header = report.getHeaderAddr()
    body = report.getBodyAddr()
-   body.push_back(CRegisteredObjectName(CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()))
-   body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
-   header.push_back(CRegisteredObjectName(CDataString("time").getCN().getString()))
-   header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
+   body.push_back(CRegisteredCommonName(CCommonName(dataModel.getModel().getCN().getString() + ",Reference=Time").getString()))
+   body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
+   header.push_back(CRegisteredCommonName(CDataString("time").getCN().getString()))
+   header.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
 
    iMax = model.getMetabolites().size()
    for i in range(0,iMax):
@@ -148,16 +148,16 @@ def main(args):
            # we want the concentration in the output
            # alternatively, we could use "Reference=Amount" to get the
            # particle number
-           body.push_back(CRegisteredObjectName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()))
+           body.push_back(CRegisteredCommonName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()))
            # add the corresponding id to the header
-           header.push_back(CRegisteredObjectName(CDataString(metab.getSBMLId()).getCN().getString()))
+           header.push_back(CRegisteredCommonName(CDataString(metab.getSBMLId()).getCN().getString()))
            
            if i!=iMax-1:
              # after each entry, we need a seperator
-             body.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
+             body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
 
              # and a seperator
-             header.push_back(CRegisteredObjectName(report.getSeparator().getCN().getString()))
+             header.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
 
    # get the trajectory task object
    trajectoryTask = dataModel.getTask("Time-Course")

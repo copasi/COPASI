@@ -22,7 +22,7 @@ import junit.framework.*;
 public class Test_RunParameterFitting extends TestCase
 {
 
-   CCopasiDataModel mDataModel;
+   CDataModel mDataModel;
 
    public Test_RunParameterFitting(String name)
    {
@@ -31,7 +31,7 @@ public class Test_RunParameterFitting extends TestCase
 
     public void setUp()
     {
-        mDataModel=CCopasiRootContainer.addDatamodel();
+        mDataModel=CRootContainer.addDatamodel();
         Test_CreateSimpleModel.createModel(mDataModel);
     }
 
@@ -81,9 +81,9 @@ public class Test_RunParameterFitting extends TestCase
         CModel model=mDataModel.getModel();
         assertTrue(model!=null);
         assertTrue(model.getClass()==CModel.class);
-        CCopasiObject timeReference=model.getObject(new CCommonName("Reference=Time"));
+        CDataObject timeReference=model.getObject(new CCommonName("Reference=Time"));
         assertTrue(timeReference!=null);
-        assertTrue(timeReference.getClass()==CCopasiObject.class);
+        assertTrue(timeReference.getClass()==CDataObject.class);
         objectMap.setObjectCN(0,timeReference.getCN().getString());
         // getObjectCN returns a string whereas getCN returns a
         // CCommonName
@@ -106,9 +106,9 @@ public class Test_RunParameterFitting extends TestCase
             assertTrue(metabB.getClass()==CMetab.class);
         }
         objectMap.setRole(1,CExperiment.dependent);
-        CCopasiObject particleReference=metabA.getObject(new CCommonName("Reference=ParticleNumber"));
+        CDataObject particleReference=metabA.getObject(new CCommonName("Reference=ParticleNumber"));
         assertTrue(particleReference!=null);
-        assertTrue(particleReference.getClass()==CCopasiObject.class);
+        assertTrue(particleReference.getClass()==CDataObject.class);
         objectMap.setObjectCN(1,particleReference.getCN().getString());
         // getObjectCN returns a string whereas getCN returns a
         // CCommonName
@@ -116,7 +116,7 @@ public class Test_RunParameterFitting extends TestCase
         objectMap.setRole(2,CExperiment.dependent);
         particleReference=metabB.getObject(new CCommonName("Reference=ParticleNumber"));
         assertTrue(particleReference!=null);
-        assertTrue(particleReference.getClass()==CCopasiObject.class);
+        assertTrue(particleReference.getClass()==CDataObject.class);
         objectMap.setObjectCN(2,particleReference.getCN().getString());
         // getObjectCN returns a string whereas getCN returns a
         // CCommonName
@@ -142,9 +142,9 @@ public class Test_RunParameterFitting extends TestCase
         
         // define CFitItems
         assertTrue(fitProblem.getOptItemSize()==0);
-        CCopasiObject parameterReference=parameter.getObject(new CCommonName("Reference=Value"));
+        CDataObject parameterReference=parameter.getObject(new CCommonName("Reference=Value"));
         assertTrue(parameterReference!=null);
-        assertTrue(parameterReference.getClass()==CCopasiObject.class);
+        assertTrue(parameterReference.getClass()==CDataObject.class);
         CFitItem fitItem=new CFitItem(mDataModel);
         assertTrue(fitItem!=null);
         assertTrue(fitItem.getClass()==CFitItem.class);
