@@ -36,7 +36,7 @@
 #include "core/CDataString.h"
 #include "report/CReportDefinition.h"
 #include "core/CDataArray.h"
-#include "copasi/../core/CMatrix.h"
+#include "copasi/core/CMatrix.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "steadystate/CSteadyStateProblem.h"
 #include "steadystate/CSteadyStateMethod.h"
