@@ -1292,14 +1292,9 @@ void CMathContainer::compile()
   CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
 
-  for (; itReaction != endReaction; ++itReaction)
+  for (; itReaction != endReaction; ++itReaction, ++pReaction)
     {
-      // We ignore reactions which do not have any effect.
-      if (itReaction->getChemEq().getBalances().size() > 0 || true)
-        {
-          pReaction->initialize(itReaction, *this);
-          ++pReaction;
-        }
+      pReaction->initialize(itReaction, *this);
     }
 
   // TODO We may have unused event triggers and roots due to optimization
@@ -1749,24 +1744,9 @@ void CMathContainer::allocate()
   Size.nODE = mpModel->getStateTemplate().getNumIndependent() - mpModel->getNumIndependentReactionMetabs();
   Size.nReactionSpecies = mpModel->getNumIndependentReactionMetabs() + mpModel->getNumDependentReactionMetabs();
   Size.nAssignment = mpModel->getStateTemplate().getNumDependent() - mpModel->getNumDependentReactionMetabs();
-
   Size.nIntensiveValues = mpModel->getNumMetabs();
-
-  Size.nReactions = 0;
-  CCopasiVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
-  CCopasiVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
-
-  for (; itReaction != endReaction; ++itReaction)
-    {
-      // We ignore reactions which do not have any effect.
-      if (itReaction->getChemEq().getBalances().size() > 0 || true)
-        {
-          Size.nReactions++;
-        }
-    }
-
+  Size.nReactions = mpModel->getReactions().size();
   Size.nMoieties = mpModel->getMoieties().size();
-
   Size.nDiscontinuities = 0;
   Size.nEvents = 0;
   Size.nEventAssignments = 0;
@@ -3362,12 +3342,6 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CReaction > & re
 
   for (; it != end; ++it)
     {
-      // We ignore reactions which do not have any effect.
-      if (it->getChemEq().getBalances().size() == 0)
-        {
-          continue;
-        }
-
       // Initial Particle Flux
       CMathObject::initialize(p.pInitialParticleFluxesObject, p.pInitialParticleFluxes,
                               CMath::ParticleFlux, CMath::Reaction, CMath::SimulationTypeUndefined, false, true,
