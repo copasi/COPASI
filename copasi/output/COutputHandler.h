@@ -39,59 +39,53 @@ public:
   /**
    * Default constructor
    */
-  COutputInterface():
-    mObjects()
-  {};
+  COutputInterface();
 
   /**
    * Copy constructor
    * @param const COutputInterface & src
    */
-  COutputInterface(const COutputInterface & src):
-    mObjects(src.mObjects)
-  {};
+  COutputInterface(const COutputInterface & src);
 
   /**
    * Destructor
    */
-  virtual ~COutputInterface() {};
+  virtual ~COutputInterface();
 
   /**
    * compile the object list from name vector
    * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList /* listOfContainer */)
-  {return false;};
+  virtual bool compile(CObjectInterface::ContainerList /* listOfContainer */);
 
   /**
    * Perform an output event for the current activity
    * @param const Activity & activity
    */
-  virtual void output(const Activity & /* activity */) {};
+  virtual void output(const Activity & /* activity */);
 
   /**
    * Introduce an additional separator into the output
    * @param const Activity & activity
    */
-  virtual void separate(const Activity & /* activity */) {};
+  virtual void separate(const Activity & /* activity */);
 
   /**
    * Finish the output
    */
-  virtual void finish() {};
+  virtual void finish();
 
   /**
    * Close the stream if applicable
    */
-  virtual void close() {};
+  virtual void close();
 
   /**
    * Retrieve the list of objects handled by the interface
    * @return const CObjectInterface::ObjectSet & objects
    */
-  virtual const CObjectInterface::ObjectSet & getObjects() const
-  {return mObjects;}
+  virtual const CObjectInterface::ObjectSet & getObjects() const;
 
   // Attributes
 protected:

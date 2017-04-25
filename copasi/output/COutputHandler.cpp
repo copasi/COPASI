@@ -187,3 +187,50 @@ bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList
 
   return true;
 }
+
+COutputInterface::COutputInterface() :
+  mObjects()
+{
+
+}
+
+COutputInterface::COutputInterface(const COutputInterface & src) :
+  mObjects(src.mObjects)
+{
+
+}
+
+COutputInterface::~COutputInterface()
+{
+
+}
+
+bool COutputInterface::compile(CObjectInterface::ContainerList /* listOfContainer */)
+{
+  return false;
+}
+
+void COutputInterface::output(const Activity & /* activity */)
+{
+
+}
+
+void COutputInterface::separate(const Activity & /* activity */)
+{
+
+}
+
+void COutputInterface::finish()
+{
+
+}
+
+void COutputInterface::close()
+{
+
+}
+
+const CObjectInterface::ObjectSet & COutputInterface::getObjects() const
+{
+  return mObjects;
+}
