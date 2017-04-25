@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <QtCore/QVariant>
+ #include <QStringListModel>
 
 #include "copasi/UI/ui_CQModelWidget.h"
 
@@ -49,6 +50,7 @@ protected slots:
   virtual void slotUpdateAvogadro();
   virtual void slotUnitChanged();
   virtual void slotShowCompleter();
+  virtual void slotDelayed();
 
 protected:
   virtual bool enterProtected();
@@ -61,6 +63,12 @@ private:
   CModel * mpModel;
 
   QUndoStack *mpUndoStack;
+
+  QLineEdit * mpFocusUnit;
+};
+
+class CQStringListModel : public QStringListModel
+{
 };
 
 #endif // COPASI_CQModelWidget

@@ -16,6 +16,7 @@
  */
 #include <QUndoStack>
 #include <QCompleter>
+#include <QTimer>
 
 #include "CQModelWidget.h"
 #include "CQUpdateAvogadro.h"
@@ -33,12 +34,12 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/undoFramework/ModelChangeCommand.h"
-#include <copasi/utilities/CUnitDefinitionDB.h>
 
 
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
-  mpModel(NULL)
+  mpModel(NULL),
+  mpFocusUnit(NULL)
 {
   setupUi(this);
 
@@ -98,6 +99,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   QCompleter *completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditTimeUnit->setCompleter(completer);
+  connect(mpEditTimeUnit, SIGNAL(textEdited(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
   ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("m", 3);
@@ -117,6 +119,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditVolumeUnit->setCompleter(completer);
+  connect(mpEditVolumeUnit, SIGNAL(textEdited(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
   ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("m", 2);
@@ -136,6 +139,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditAreaUnit->setCompleter(completer);
+  connect(mpEditAreaUnit, SIGNAL(textEdited(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
   ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("m", 1);
@@ -155,6 +159,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditLengthUnit->setCompleter(completer);
+  connect(mpEditLengthUnit, SIGNAL(textEdited(QString)), this, SLOT(slotShowCompleter()));
 
   unitEntries.clear();
   ValidUnits = CRootContainer::getUnitList()->getAllValidUnits("#", 1);
@@ -174,14 +179,7 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   completer = new QCompleter(unitEntries, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   mpEditQuantityUnit->setCompleter(completer);
-
-#if QT_VERSION >= 0x050000
-  connect(mpEditTimeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
-  connect(mpEditVolumeUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
-  connect(mpEditAreaUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
-  connect(mpEditLengthUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
-  connect(mpEditQuantityUnit, SIGNAL(textChanged(QString)), this, SLOT(slotShowCompleter()));
-#endif
+  connect(mpEditQuantityUnit, SIGNAL(textEdited(QString)), this, SLOT(slotShowCompleter()));
 }
 
 CQModelWidget::~CQModelWidget()
@@ -524,32 +522,52 @@ void CQModelWidget::slotUpdateAvogadro()
 // virtual
 void CQModelWidget::slotUnitChanged()
 {
-  QString Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditTimeUnit->text())));
-  mpEditTimeUnit->setText(Unit);
+  if (mpEditTimeUnit->text() != "?")
+    {
+      QString Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditTimeUnit->text())));
+      mpEditTimeUnit->setText(Unit);
 
-  mpLblInitialTime->setText("Initial Time [" + Unit + "]");
-  mpLblCurrentTime->setText("Time [" + Unit + "]");
+      mpLblInitialTime->setText("Initial Time [" + Unit + "]");
+      mpLblCurrentTime->setText("Time [" + Unit + "]");
+    }
 
-  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditQuantityUnit->text())));
-  mpEditQuantityUnit->setText(Unit);
+  if (mpEditQuantityUnit->text() != "?")
+    {
+      mpEditQuantityUnit->setText(FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditQuantityUnit->text()))));
+    }
 
-  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditVolumeUnit->text())));
-  mpEditVolumeUnit->setText(Unit);
+  if (mpEditVolumeUnit->text() != "?")
+    {
+      mpEditVolumeUnit->setText(FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditVolumeUnit->text()))));
+    }
 
-  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditAreaUnit->text())));
-  mpEditAreaUnit->setText(Unit);
+  if (mpEditAreaUnit->text() != "?")
+    {
+      mpEditAreaUnit->setText(FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditAreaUnit->text()))));
+    }
 
-  Unit = FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditLengthUnit->text())));
-  mpEditLengthUnit->setText(Unit);
+  if (mpEditLengthUnit->text() != "?")
+    {
+      mpEditLengthUnit->setText(FROM_UTF8(CUnit::prettyPrint(TO_UTF8(mpEditLengthUnit->text()))));
+    }
 }
 
 void CQModelWidget::slotShowCompleter()
 {
-  QLineEdit* pEdit = qobject_cast<QLineEdit*> (sender());
+  mpFocusUnit = qobject_cast<QLineEdit*> (sender());
 
-  if (pEdit != NULL && pEdit->completer() != NULL
-      && pEdit->text().isEmpty())
-    {
-      pEdit->completer()->complete();
-    }
+  QTimer::singleShot(10, this, SLOT(slotDelayed()));
 }
+
+void CQModelWidget::slotDelayed()
+{
+  if (mpFocusUnit != NULL &&
+      mpFocusUnit->text().isEmpty())
+    {
+      mpFocusUnit->completer()->setCompletionPrefix("");
+      mpFocusUnit->completer()->complete();
+    }
+
+  mpFocusUnit = NULL;
+}
+
