@@ -119,7 +119,11 @@ def takeImportantThings_python(ename, aname, dname):
   idxAux = 0
 
   absErrorUB = 1e-09
+  if 'ABSOLUTE_ERROR' in os.environ:
+    absErrorUB = float(os.environ['ABSOLUTE_ERROR'])
   relErrorUB = 1e-05
+  if 'RELATIVE_ERROR' in os.environ:
+    relErrorUB = float(os.environ['RELATIVE_ERROR'])
 
   file3 = open(dname, 'w')
 

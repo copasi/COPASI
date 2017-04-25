@@ -55,6 +55,8 @@ add_test(NAME CopasiTestsuite
          
 )
 set_tests_properties(CopasiTestsuite PROPERTIES FAIL_REGULAR_EXPRESSION "ifferent")	
+# reduce precision, as the test comparison code uses truncated data
+set_tests_properties(CopasiTestsuite PROPERTIES ENVIRONMENT "ABSOLUTE_ERROR=1e-04;RELATIVE_ERROR=1e-04")	
 
 endif()
 
