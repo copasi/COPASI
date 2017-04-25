@@ -27,13 +27,21 @@ file(READ "${FILENAME}" SOURCECODE)
 # message("${match}")
 #endforeach()
 
+# Fixes for swig <3.0.11
 string(REPLACE "'get''get'" "'get','get'" SOURCECODE "${SOURCECODE}" )
-string(REPLACE ", \"}" ", \"" SOURCECODE "${SOURCECODE}" )
-string(REPLACE "\${enumTo" "enumTo" SOURCECODE "${SOURCECODE}" )
-string(REPLACE "\${enumFrom" "enumFrom" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "if ( &&" "if (" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "if ()" "if(TRUE)" SOURCECODE "${SOURCECODE}" )
+
+# Fixes for swig 3.0.12
 string(REPLACE "ans <- new(\"_p_size_t\", ref=ans) ;" "" SOURCECODE "${SOURCECODE}" )
+
+# Changes $ operator of Copasi S4 classes to disable partial matching which can mess up calls to inherited methods.
+string(REPLACE "idx = pmatch(name, names(accessorFuns));" "idx = match(name, names(accessorFuns));" SOURCECODE "${SOURCECODE}" )
+
+# Prevents get(...) methods from falsely being categorizes as accessor functions by swig
+string(REPLACE "vaccessors = c('get', " "vaccessors = c(" SOURCECODE "${SOURCECODE}" )
+string(REPLACE "vaccessors = c('get'," "vaccessors = c(" SOURCECODE "${SOURCECODE}" )
+string(REPLACE "vaccessors = c('get')" "vaccessors = c()" SOURCECODE "${SOURCECODE}" )
 
 # remove enumFrom/ToInteger code
 SET(NEW_CODE "
