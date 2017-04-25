@@ -425,7 +425,7 @@ if(BUILD_GUI)
 
   # first try to find whether Qt5 is present
   option(QT_USE_TEXTBROSWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" OFF)
-  QT_FIND_MODULES(Core Gui Network OpenGL Svg WebKit Xml)
+  QT_FIND_MODULES(Core Gui Network OpenGL Svg Xml)
   if (Qt5_FOUND)
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
