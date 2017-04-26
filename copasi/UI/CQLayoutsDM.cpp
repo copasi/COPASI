@@ -41,7 +41,7 @@ bool CQLayoutsDM::clear()
 
 int CQLayoutsDM::columnCount(const QModelIndex & /* parent */) const
 {
-  return TOTAL_COLS;
+  return TOTAL_COLS_LAYOUT;
 }
 
 Qt::ItemFlags CQLayoutsDM::flags(const QModelIndex &index) const

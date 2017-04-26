@@ -15,7 +15,7 @@
 
 #define COL_ROW_NUMBER   0
 #define COL_NAME         1
-#define TOTAL_COLS       2
+#define TOTAL_COLS_PARAMETERSET       2
 
 class CModelParameterSet;
 template <class CType> class CDataVectorN;

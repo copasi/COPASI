@@ -41,7 +41,7 @@ bool CQParameterSetsDM::clear()
 
 int CQParameterSetsDM::columnCount(const QModelIndex & /* parent */) const
 {
-  return TOTAL_COLS;
+  return TOTAL_COLS_PARAMETERSET;
 }
 
 Qt::ItemFlags CQParameterSetsDM::flags(const QModelIndex &index) const
