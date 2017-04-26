@@ -143,9 +143,9 @@ CValidity::CValidity(const CValidity & src):
 
 void CValidity::clear()
 {
-  mErrors.clear();
-  mWarnings.clear();
-  mInformation.clear();
+  mErrors.reset();
+  mWarnings.reset();
+  mInformation.reset();
 }
 
 void CValidity::add(const CIssue & issue)

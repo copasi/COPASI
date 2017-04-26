@@ -401,7 +401,7 @@ CData CDataObject::toData() const
   Data.addProperty(CData::OBJECT_NAME, mObjectName);
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
   Data.addProperty(CData::OBJECT_PARENT_CN, (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string(""));
-  Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.toString());
+  Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
   Data.addProperty(CData::OBJECT_INDEX, (mpObjectParent != NULL) ? (unsigned C_INT32) mpObjectParent->getIndex(this) : 0);
 
   std::vector< CData > References;

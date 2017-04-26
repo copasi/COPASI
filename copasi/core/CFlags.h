@@ -10,130 +10,275 @@
 #include <vector>
 #include <array>
 
-template < class Enum > class CFlags
+template < class Enum > class CFlags : public std::bitset< static_cast< size_t >(Enum::__SIZE) >
 {
 public:
+  typedef std::bitset< static_cast< size_t >(Enum::__SIZE) > bitset;
+
+  /**
+   * Static member where no flag is set
+   */
   static const CFlags None;
+
+  /**
+   * Static member where all flag is set
+   */
   static const CFlags All;
 
+  /**
+   * Default constructor
+   */
   CFlags():
-    mFlags()
+    bitset()
   {}
 
+  /**
+   * Copy constructor
+   * @param const CFlags & src
+   */
   CFlags(const CFlags & src):
-    mFlags(src.mFlags)
+    bitset(src)
   {}
 
+  /**
+   * Enum constructor
+   * @param const Enum & flag
+   */
   CFlags(const Enum & flag):
-    mFlags()
+    bitset()
   {
-    mFlags.set(static_cast< size_t >(flag));
+    bitset::set(static_cast< size_t >(flag));
   }
 
-  CFlags(const std::bitset< static_cast< size_t >(Enum::__SIZE) > & flags):
-    mFlags(flags)
+  /**
+   * Bitset constructor
+   * @param const bitset & flags
+   */
+  CFlags(const bitset & flags):
+    bitset(flags)
   {}
 
+  /**
+   * String constructor
+   * @param const std::string & str
+   */
   CFlags(const std::string & str):
-    mFlags(str)
+    bitset(str)
   {}
 
+  /**
+   * Destructor
+   */
   ~CFlags() {}
 
-  CFlags operator & (const CFlags & mask) const
+  /**
+   * Cast to bitset
+   */
+  operator bitset()
   {
-    return (mFlags & mask.mFlags);
-  }
-
-  CFlags & operator &= (const CFlags & other)
-  {
-    mFlags &= other.mFlags;
     return *this;
   }
 
-  CFlags & operator = (const CFlags & rhs)
-  {
-    mFlags = rhs.mFlags;
-    return *this;
-  }
-
-  CFlags & operator = (const Enum & flag)
-  {
-    mFlags.reset();
-    mFlags.set(static_cast< size_t >(flag));
-
-    return *this;
-  }
-
-  CFlags operator | (const CFlags & other) const
-  {
-    return mFlags | other.mFlags;
-  }
-
-  CFlags operator | (const Enum & flag) const
-  {
-    return mFlags | CFlags(flag).mFlags;
-  }
-
-  CFlags & operator |= (const CFlags & other)
-  {
-    mFlags |= other.mFlags;
-    return *this;
-  }
-
-  CFlags operator ~() const
-  {
-    return ~mFlags;
-  }
-
-  bool isSet(const Enum & flag) const
-  {
-    return mFlags[static_cast< size_t >(flag)];
-  }
-
-  bool operator != (const CFlags & rhs) const
-  {
-    return mFlags != rhs.mFlags;
-  }
-
-  bool operator == (const CFlags & rhs) const
-  {
-    return mFlags == rhs.mFlags;
-  }
-
+  /**
+   * Cast to bool
+   */
   operator bool () const
   {
-    return this->operator != (None);
+    return operator != (None);
   }
 
-  std::string toString() const
+  /**
+   * Equality comparison operator
+   * @param const CFlags< Enum > & rhs
+   * @return bool equal
+   */
+  bool operator == (const CFlags< Enum > & rhs) const
   {
-    return mFlags.to_string();
+    return bitset::operator == ((bitset) rhs);
   }
 
-  void clear()
+  /**
+   * Inequality comparison operator
+   * @param const CFlags< Enum > & rhs
+   * @return bool notEqual
+   */
+  bool operator != (const CFlags< Enum > & rhs) const
   {
-    mFlags.reset();
+    return bitset::operator != ((bitset) rhs);
   }
 
-  // takes an array of all possible annotations and
-  // returns a vector with annotations for only the
-  // flags which are set
+  /**
+   * Bitwise OR assignment operator
+   * @param const CFlags & flags
+   * @return CFlags & *this
+   */
+  CFlags & operator |= (const CFlags & flags)
+  {
+    bitset::operator |= ((bitset) flags);
+
+    return *this;
+  }
+
+  /**
+   * Bitwise OR assignment operator
+   * @param const Enum & flag
+   * @return CFlags & *this
+   */
+  CFlags & operator |= (const Enum & flag)
+  {
+    return operator |= (CFlags(flag));
+  }
+
+  /**
+   * Bitwise AND assignment operator
+   * @param const CFlags & flags
+   * @return CFlags & *this
+   */
+  CFlags & operator &= (const CFlags & flags)
+  {
+    bitset::operator &= ((bitset) flags);
+
+    return *this;
+  }
+
+  /**
+   * Bitwise AND assignment operator
+   * @param const Enum & flag
+   * @return CFlags & *this
+   */
+  CFlags & operator &= (const Enum & flag)
+  {
+    return operator &= (CFlags(flag));
+  }
+
+  /**
+   * Bitwise XOR assignment operator
+   * @param const CFlags & flags
+   * @return CFlags & *this
+   */
+  CFlags & operator ^= (const CFlags & flags)
+  {
+    bitset::operator ^= ((bitset) flags);
+
+    return *this;
+  }
+
+  /**
+   * Bitwise XOR assignment operator
+   * @param const Enum & flag
+   * @return CFlags & *this
+   */
+  CFlags & operator ^= (const Enum & flag)
+  {
+    return operator ^= (CFlags(flag));
+  }
+
+  /**
+   * Check whether a the given flag is set
+   * @param const Enum & flag
+   * @return bool isSet
+   */
+  bool isSet(const Enum & flag) const
+  {
+    return bitset::operator[](static_cast< size_t >(flag));
+  }
+
+  /**
+   * Create the subset of the provided annotations for the flags which are set
+   * @param const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations
+   * @param const CFlags & filter (Default: All)
+   * @return std::vector< AType > Annotations
+   */
   template< typename AType >
   std::vector< AType > getAnnotations(const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations,
                                       const CFlags & filter = All) const
   {
-    std::vector< AType > setFlagAnnotations;
+    std::vector< AType > Annotations;
 
-    for (size_t i = 0; i < mFlags.size(); i++)
-      if (mFlags[i] && filter.mFlags[i]) setFlagAnnotations.push_back(annotations[i]);
+    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); i++)
+      if (bitset::operator[](i) && filter[i])
+        {
+          Annotations.push_back(annotations[i]);
+        }
 
-    return setFlagAnnotations;
+    return Annotations;
   }
-
-private:
-  std::bitset< static_cast< size_t >(Enum::__SIZE) > mFlags;
 };
+
+/**
+ * Bitwise OR operator
+ * @param const CFlags< Enum > & lhs
+ * @param const CFlags< Enum > & rhs
+ * @return CFlags< Enum > result
+ */
+template < class Enum >
+CFlags< Enum > operator | (const CFlags< Enum > & lhs, const CFlags< Enum > & rhs)
+{
+  return operator | ((std::bitset< static_cast< size_t >(Enum::__SIZE) >) lhs,
+                     (std::bitset< static_cast< size_t >(Enum::__SIZE) >) rhs);
+}
+
+/**
+ * Bitwise OR operator
+ * @param const CFlags< Enum > & lhs
+ * @param const Enum & rhs
+ * @return CFlags< Enum > result
+ */
+template < class Enum >
+CFlags< Enum > operator | (const CFlags< Enum > & lhs, const Enum & rhs)
+{
+  return operator | (lhs, CFlags< Enum >(rhs));
+}
+
+/**
+ * Bitwise AND operator
+ * @param const CFlags< Enum > & lhs
+ * @param const CFlags< Enum > & rhs
+ * @return CFlags< Enum > result
+ */
+template < class Enum >
+CFlags< Enum > operator & (const CFlags< Enum > & lhs, const CFlags< Enum > & rhs)
+{
+  return operator & ((std::bitset< static_cast< size_t >(Enum::__SIZE) >) lhs,
+                     (std::bitset< static_cast< size_t >(Enum::__SIZE) >) rhs);
+}
+
+/**
+ * Bitwise AND operator
+ * @param const CFlags< Enum > & lhs
+ * @param const Enum & rhs
+ * @return CFlags< Enum > result
+ */
+template < class Enum >
+CFlags< Enum > operator & (const CFlags< Enum > & lhs, const Enum & rhs)
+{
+  return operator & (lhs, CFlags< Enum >(rhs));
+}
+
+/**
+ * Bitwise XOR operator
+ * @param const CFlags< Enum > & lhs
+ * @param const CFlags< Enum > & rhs
+ * @return CFlags< Enum > result
+ */
+template < class Enum >
+CFlags< Enum > operator ^ (const CFlags< Enum > & lhs, const CFlags< Enum > & rhs)
+{
+  return operator ^ ((std::bitset< static_cast< size_t >(Enum::__SIZE) >) lhs,
+                     (std::bitset< static_cast< size_t >(Enum::__SIZE) >) rhs);
+}
+
+/**
+ * Bitwise XOR operator
+ * @param const CFlags< Enum > & lhs
+ * @param const Enum & rhs
+ * @return CFlags< Enum > result
+ */
+template < class Enum >
+CFlags< Enum > operator ^ (const CFlags< Enum > & lhs, const Enum & rhs)
+{
+  return operator ^ (lhs, CFlags< Enum >(rhs));
+}
 
 // static
 template< class Enum > const CFlags< Enum > CFlags< Enum >::None;

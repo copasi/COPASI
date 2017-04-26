@@ -2127,7 +2127,8 @@ bool CMathContainer::compileObjects()
   mNoiseInputObjects.clear();
 
   // Assure that Avogadro's number and the quantity conversion are up to date.
-  quantityConversionChanged(CModelParameter::ParticleNumbers);
+  mAvogadroValue = *(C_FLOAT64 *)mAvogadroObject.getDataObject()->getValuePointer();
+  mQuantity2NumberFactorValue = *(C_FLOAT64 *)mQuantity2NumberFactorObject.getDataObject()->getValuePointer();
 
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
