@@ -41,7 +41,7 @@
 #include "steadystate/CSteadyStateProblem.h"
 #include "lna/CLNAProblem.h"
 #include "lna/CLNATask.h"
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 #include "utilities/CProcessReport.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"

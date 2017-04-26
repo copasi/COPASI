@@ -17,7 +17,7 @@
 #include "copasi/copasi.h"
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/UI/CWindowInterface.h"
-#include "copasi/utilities/COutputHandler.h"
+#include "copasi/output/COutputHandler.h"
 #include "copasi/core/CVector.h"
 class CDataContainer;
 class CopasiUI3Window;

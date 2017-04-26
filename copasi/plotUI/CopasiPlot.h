@@ -49,7 +49,7 @@
 #include "plot/CPlotItem.h"
 
 #include "copasi/core/CDataObject.h"
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 #include "utilities/CopasiTime.h"
 #include "copasi/core/CVector.h"
 #include "copasi/core/CMatrix.h"

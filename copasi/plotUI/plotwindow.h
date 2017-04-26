@@ -25,7 +25,7 @@
 #include "copasi/copasi.h"
 #include "copasi/UI/CopasiFileDialog.h"
 #include "copasi/UI/CWindowInterface.h"
-#include "copasi/utilities/COutputHandler.h"
+#include "copasi/output/COutputHandler.h"
 
 class CopasiPlot;
 class CPlotSpecification;

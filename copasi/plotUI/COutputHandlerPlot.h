@@ -22,7 +22,7 @@
 
 #include <map>
 
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 
 class COutputDefinitionVector;
 class PlotWindow;

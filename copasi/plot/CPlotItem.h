@@ -30,7 +30,7 @@
 
 #include "utilities/CCopasiParameterGroup.h"
 #include "core/CRegisteredCommonName.h"
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 
 #undef min
 #undef max

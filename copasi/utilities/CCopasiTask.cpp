@@ -33,7 +33,7 @@
 #include "CTaskFactory.h"
 #include "report/CReport.h"
 #include "report/CKeyFactory.h"
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 #include "math/CMathContainer.h"
 #include "model/CModel.h"
 #include "model/CState.h"

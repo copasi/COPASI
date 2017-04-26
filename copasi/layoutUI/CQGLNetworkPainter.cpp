@@ -52,7 +52,7 @@
 #include <utility>
 
 #include "copasi.h"
-#include "copasi/utilities/COutputHandler.h"
+#include "copasi/output/COutputHandler.h"
 
 #include "FontChooser.h"
 

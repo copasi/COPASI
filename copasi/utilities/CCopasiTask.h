@@ -31,7 +31,7 @@
 #include <string>
 
 #include "copasi/utilities/CTaskEnum.h"
-#include "copasi/utilities/COutputHandler.h"
+#include "copasi/output/COutputHandler.h"
 #include "copasi/core/CVector.h"
 
 #include "copasi/core/CDataContainer.h"

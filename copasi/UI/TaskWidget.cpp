@@ -44,7 +44,7 @@
 #include "copasi/utilities/CCopasiTask.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/CCopasiException.h"
-#include "copasi/utilities/COutputHandler.h"
+#include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"

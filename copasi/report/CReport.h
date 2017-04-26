@@ -35,7 +35,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "core/CRegisteredCommonName.h"
 
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 
 class CReportDefinition;
 class CReportTable;

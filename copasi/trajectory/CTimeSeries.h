@@ -25,7 +25,7 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/core/CVector.h"
 #include "model/CState.h"
-#include "utilities/COutputHandler.h"
+#include "output/COutputHandler.h"
 
 class CModel;
 class CDataModel;
