@@ -683,8 +683,17 @@ void CODEExporterC::setExportNameOfFunction(const CEvaluationNode* pNode, std::s
 
 bool CODEExporterC::exportSingleObject(std::ostringstream & which, const std::string & name, const std::string & expression, const std::string & comments)
 {
-  which << name << " = " << expression << ";"
-        << '\t' << "//" << comments << std::endl;
+  // don't write out invalid expressions
+  if (expression.empty() || expression == " ")
+    return true;
+
+  which << name << " = " << expression << ";";
+
+  // only write comments if we have them
+  if (!comments.empty() && comments != " ")
+    which << '\t' << "//" << comments;
+
+  which << std::endl;
 
   return true;
 }
