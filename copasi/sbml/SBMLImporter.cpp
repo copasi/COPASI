@@ -2785,7 +2785,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           /* Create a new user defined CKinFunction */
-          if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters()))
+          if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters(), sbmlReaction))
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
             }
@@ -4639,7 +4639,10 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
   return pMV;
 }
 
-bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup)
+bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode,
+                                   std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
+                                   CCopasiParameterGroup& pParamGroup,
+                                   SBase* pParentObject)
 {
   // TODO CRITICAL We need to use a node iterator
 
@@ -4648,6 +4651,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*
 
   if (pNode->getType() == AST_NAME)
     {
+      Reaction* pParentReaction = dynamic_cast<Reaction*>(pParentObject);
       Compartment* pSBMLCompartment = NULL;
       Species* pSBMLSpecies = NULL;
       Reaction* pSBMLReaction = NULL;
@@ -4658,11 +4662,16 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*
 
       std::map<std::string, double>::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
 
-      if (speciesReference  != mSBMLSpeciesReferenceIds.end())
+      // replace species references only in case we don't have a local parameter
+      // that shadows it
+      if (speciesReference  != mSBMLSpeciesReferenceIds.end()
+          && (pParentReaction == NULL
+              || pParentReaction->getKineticLaw() == NULL
+              || pParentReaction->getKineticLaw()->getParameter(name) == NULL))
         {
           // replace the name with the value
           pNode->setType(AST_REAL);
-          pNode->setValue(mSBMLSpeciesReferenceIds[name]);
+          pNode->setValue(speciesReference->second);
         }
       else if (pParam)
         {
@@ -4773,7 +4782,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CCopasiObject*
 
   for (i = 0; i < iMax; ++i)
     {
-      if (!this->sbmlId2CopasiCN(pNode->getChild(i), copasi2sbmlmap, pParamGroup))
+      if (!this->sbmlId2CopasiCN(pNode->getChild(i), copasi2sbmlmap, pParamGroup, pParentObject))
         {
           success = false;
           break;
@@ -7108,7 +7117,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CCopa
                 {
                   // replace the name with the value
                   itNode->setType(AST_REAL);
-                  itNode->setValue(mSBMLSpeciesReferenceIds[name]);
+                  itNode->setValue(speciesReference->second);
                   continue;
                 }
 

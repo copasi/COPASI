@@ -393,7 +393,8 @@ protected:
    */
   bool sbmlId2CopasiCN(ASTNode* pNode,
                        std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap,
-                       CCopasiParameterGroup& pParamGroup);
+                       CCopasiParameterGroup& pParamGroup,
+                       SBase* pParentObject = NULL);
 
   /**
    * Upon import a function object might change its name due to naming conflicts in the function
