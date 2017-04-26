@@ -17,6 +17,7 @@
 #include "copasi.h"
 
 #include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "plot/CPlotItem.h"
 #include "resourcesUI/CQIconResource.h"
 
