@@ -39,9 +39,10 @@ string(REPLACE "ans <- new(\"_p_size_t\", ref=ans) ;" "" SOURCECODE "${SOURCECOD
 string(REPLACE "idx = pmatch(name, names(accessorFuns));" "idx = match(name, names(accessorFuns));" SOURCECODE "${SOURCECODE}" )
 
 # Prevents get(...) methods from falsely being categorizes as accessor functions by swig
-string(REPLACE "vaccessors = c('get', " "vaccessors = c(" SOURCECODE "${SOURCECODE}" )
-string(REPLACE "vaccessors = c('get'," "vaccessors = c(" SOURCECODE "${SOURCECODE}" )
-string(REPLACE "vaccessors = c('get')" "vaccessors = c()" SOURCECODE "${SOURCECODE}" )
+string(REGEX REPLACE "vaccessors = c\\('(get|set)[a-zA-Z0-9_]*'" "vaccessors = c(''" SOURCECODE "${SOURCECODE}" )
+string(REGEX REPLACE "vaccessors = c\\('([a-zA-Z0-9_]*)', ?'(get|set)[a-zA-Z0-9_]*'" "vaccessors = c('\\1'" SOURCECODE "${SOURCECODE}" )
+string(REGEX REPLACE "vaccessors = c\\('', ?" "vaccessors = c(" SOURCECODE "${SOURCECODE}" )
+string(REPLACE "vaccessors = c('')" "vaccessors = c()" SOURCECODE "${SOURCECODE}" )
 
 # remove enumFrom/ToInteger code
 SET(NEW_CODE "
