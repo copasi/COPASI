@@ -1314,7 +1314,35 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
     {
       try
         {
-          this->createCReactionFromReaction(sbmlModel->getReaction(counter), sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
+          Reaction* reaction = sbmlModel->getReaction(counter);
+
+          if (reaction->getNumReactants() + reaction->getNumProducts() == 0)
+            {
+              if (reaction->isSetId()
+                  &&  reaction->isSetKineticLaw()
+                  && reaction->getKineticLaw()->isSetMath())
+                {
+                  // create a an ode rule for that reaction instead
+                  std::string id = reaction->getId();
+                  reaction->setId(std::string("unused_") + id);
+                  Parameter* param = sbmlModel->createParameter();
+                  param->setId(id);
+                  param->setValue(0);
+
+                  //
+                  AssignmentRule *rule = sbmlModel->createAssignmentRule();
+                  rule->setVariable(id);
+                  rule->setMath(reaction->getKineticLaw()->getMath());
+
+                  // create copasi model value for it
+                  createCModelValueFromParameter(param, mpCopasiModel, copasi2sbmlmap);
+
+                }
+
+              continue;
+            }
+
+          this->createCReactionFromReaction(reaction, sbmlModel, this->mpCopasiModel, copasi2sbmlmap, pTmpFunctionDB);
         }
       catch (...)
         {
@@ -6612,8 +6640,6 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
 
       assert(it != endit);
       const CChemEqElement* pChemEqElement = dynamic_cast<const CChemEqElement*>(it->first);
-
-      assert(rule->getMath() != NULL);
 
       if (this->mLevel > 2 &&  pChemEqElement != NULL && rule->getMath() != NULL)
         {
