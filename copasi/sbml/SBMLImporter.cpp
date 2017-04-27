@@ -1556,7 +1556,14 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
                               ))
     return NULL;
 
-  mpCopasiModel->compileIfNecessary(mpProgressHandler);
+  if (!mpCopasiModel->compileIfNecessary(mpProgressHandler))
+    {
+      CCopasiMessage Message(CCopasiMessage::ERROR,
+                             "The SBML file could not be imported.");
+      return NULL;
+    }
+
+  ++mCurrentStepCounter;
 
   // All initial values must be properly set so that we can compute the
   // stoichiometric expressions.
