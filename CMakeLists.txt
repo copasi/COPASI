@@ -386,6 +386,15 @@ if(BUILD_GUI)
   # check for qwtplot3d
   find_package(Qwtplot3dQt4 REQUIRED)
 
+  # if the MML widget is available, we need to enable "HAVE_MML"
+
+  option(ENABLE_MML "Enable the MML widget" ON)
+
+  if(ENABLE_MML)
+    find_package(QtMmlQt4 REQUIRED)
+    add_definitions(-DHAVE_MML)
+  endif(ENABLE_MML)
+
   # check for sbw
   option(ENABLE_SBW_INTEGRATION "Enable SBW Integration" ON)
   if (ENABLE_SBW_INTEGRATION)
@@ -459,15 +468,6 @@ mark_as_advanced(ENABLE_COPASI_UNDO)
 if(ENABLE_COPASI_UNDO)
   add_definitions(-DCOPASI_UNDO)
 endif(ENABLE_COPASI_UNDO)
-
-# if the MML widget is available, we need to enable "HAVE_MML"
-
-option(ENABLE_MML "Enable the MML widget" ON)
-
-if(ENABLE_MML)
-find_package(QtMmlQt4 REQUIRED)
-add_definitions(-DHAVE_MML)
-endif(ENABLE_MML)
 
 option (BUILD_SEMANTIC_TESTSUITE "Build the program to run the SBML semantic testsuite." OFF)
 option (BUILD_STEADY_STATE_RUNNER "Build the program to run the comparisons on steady state results." OFF)
