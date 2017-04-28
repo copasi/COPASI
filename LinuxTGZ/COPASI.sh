@@ -1,5 +1,10 @@
 #!/bin/bash
-# Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -91,6 +96,11 @@ chmod 644 share/copasi/doc/html/figures/*.png
 echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 chmod 644 share/copasi/lib/libQt*
+
+# Copy libpng12 library
+echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libpng12/ {print $3}'` share/copasi/lib
+cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libpng12/ {print $3}'` share/copasi/lib
+chmod 644 share/copasi/lib/libpng12*
 
 popd
 
