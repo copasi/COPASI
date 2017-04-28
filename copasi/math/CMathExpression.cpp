@@ -296,6 +296,7 @@ bool CMathExpression::convertToInitialExpression()
   if (changed)
     {
       mInfix = mpRootNode->buildInfix();
+      mpRootValue = mpRootNode->getValuePointer();
     }
 
   return true;
