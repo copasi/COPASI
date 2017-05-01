@@ -614,8 +614,9 @@ bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
   return false;
 }
 
-CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
+CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name)
 {
+  sanitizeObjectName(name);
   objectMap::range range = getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
@@ -623,8 +624,9 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name)
   return dynamic_cast<CCopasiParameter *>(const_cast< CDataObject * >(*range.first));
 }
 
-const CCopasiParameter * CCopasiParameterGroup::getParameter(const std::string & name) const
+const CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name) const
 {
+  sanitizeObjectName(name);
   objectMap::range range = getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;

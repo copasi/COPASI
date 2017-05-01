@@ -79,6 +79,8 @@ protected:
 public:
   static CDataObject * fromData(const CData & data);
 
+  static void sanitizeObjectName(std::string & name);
+
   CDataObject(const CDataObject & src,
               const CDataContainer * pParent);
 

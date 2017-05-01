@@ -25,55 +25,55 @@ const CIssue CIssue::Error(CIssue::eSeverity::Error);
 // static
 const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindNames =
 {
-  "unknown issue\n",
-  "invalid expression\n",
-  "empty expression\n",
-  "missing initial value\n",
-  "calculation problem\n",
-  "missing event assignment\n",
-  "missing event trigger expression\n",
-  "undefined unit\n",
-  "unit conflict\n",
-  "invalid unit\n",
-  "undefined or unrepresentable value\n",
-  "unfound object\n",
-  "unfound value\n",
-  "unfound variable\n",
-  "Invalid structure\n",
-  "excess arguments\n",
-  "circular dependency\n",
-  "invalid expression data type\n",
-  "variable in expression\n",
-  "unfound CExpression\n",
-  "unfound CFunction\n",
-  "mismatched variables\n"
+  "unknown issue",
+  "invalid expression",
+  "empty expression",
+  "missing initial value",
+  "calculation problem",
+  "missing event assignment",
+  "missing event trigger expression",
+  "undefined unit",
+  "unit conflict",
+  "invalid unit",
+  "undefined or unrepresentable value",
+  "unfound object",
+  "unfound value",
+  "unfound variable",
+  "Invalid structure",
+  "excess arguments",
+  "circular dependency",
+  "invalid expression data type",
+  "variable in expression",
+  "unfound CExpression",
+  "unfound CFunction",
+  "mismatched variables"
 };
 
 // static
 const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindDescriptions =
 {
-  "Unknown issue.\n",
-  "Invalid expression.\n",
-  "Empty expression.\n",
-  "Missing initial value.\n",
-  "Problem with calculation.\n",
-  "Missing event assignment.\n",
-  "Missing event trigger expression.\n",
-  "Unit is undefined.\n",
-  "Conflicting units.\n",
-  "Invalid unit.\n",
-  "Value is undefined or unrepresentable.\n",
-  "Object not found.\n",
-  "Value not found.\n",
-  "Variable not found.\n",
-  "Invalid structure.\n",
-  "Too many arguments.\n",
-  "Has circular dependency.\n",
-  "Invalid expression data type.\n",
-  "Expression contains a variable.\n",
-  "CExpression not found.\n",
-  "CFunction not found.\n",
-  "Variables are mismatched.\n"
+  "Unknown issue.",
+  "Invalid expression.",
+  "Empty expression.",
+  "Missing initial value.",
+  "Problem with calculation.",
+  "Missing event assignment.",
+  "Missing event trigger expression.",
+  "Unit is undefined.",
+  "Conflicting units.",
+  "Invalid unit.",
+  "Value is undefined or unrepresentable.",
+  "Object not found.",
+  "Value not found.",
+  "Variable not found.",
+  "Invalid structure.",
+  "Too many arguments.",
+  "Has circular dependency.",
+  "Invalid expression data type.",
+  "Expression contains a variable.",
+  "CExpression not found.",
+  "CFunction not found.",
+  "Variables are mismatched."
 };
 
 CIssue::CIssue(const CIssue::eSeverity & severity,
@@ -253,7 +253,7 @@ const std::string CValidity::getIssueMessages(const Severity & severityFilter,
 
       for (; it != end; ++it)
         {
-          messages += severityString + *it;
+          messages += severityString + *it + "\n";
         }
     }
 
@@ -267,7 +267,7 @@ const std::string CValidity::getIssueMessages(const Severity & severityFilter,
 
       for (; it != end; ++it)
         {
-          messages += severityString + *it;
+          messages += severityString + *it + "\n";
         }
     }
 
@@ -281,7 +281,7 @@ const std::string CValidity::getIssueMessages(const Severity & severityFilter,
 
       for (; it != end; ++it)
         {
-          messages += severityString + *it;
+          messages += severityString + *it + "\n";
         }
     }
 

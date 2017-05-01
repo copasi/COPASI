@@ -176,32 +176,36 @@ const CObjectInterface * CDataObject::getObjectFromCN(const CCommonName & cn) co
   return CObjectInterface::GetObjectFromCN(ListOfContainer, cn);
 }
 
+// static
+void CDataObject::sanitizeObjectName(std::string & name)
+{
+  // We need to ensure that the name does not include any whitespace character except ' ' (space),
+  // i.e., we convert '\t' (tab), '\n' (newline) and '\r' (return) to ' ' (space).
+  std::string::iterator it = name.begin();
+  std::string::iterator end = name.end();
+
+  for (; it != end; ++it)
+    {
+      switch (*it)
+        {
+          case '\t':
+          case '\n':
+          case '\r':
+            *it = ' ';
+            break;
+
+          default:
+            break;
+        }
+    }
+}
+
 bool CDataObject::setObjectName(const std::string & name)
 {
   std::string Name = (name == "") ? "No Name" : name;
 
   if (!hasFlag(StaticString))
-    {
-      // We need to ensure that the name does not include any whitespace character except ' ' (space),
-      // i.e., we convert '\t' (tab), '\n' (newline) and '\r' (return) to ' ' (space).
-      std::string::iterator it = Name.begin();
-      std::string::iterator end = Name.end();
-
-      for (; it != end; ++it)
-        {
-          switch (*it)
-            {
-              case '\t':
-              case '\n':
-              case '\r':
-                *it = ' ';
-                break;
-
-              default:
-                break;
-            }
-        }
-    }
+    sanitizeObjectName(Name);
 
   if (Name == mObjectName) return true;
 

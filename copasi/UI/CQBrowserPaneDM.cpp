@@ -63,7 +63,18 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  bool ShowItemIssues = CRootContainer::getConfiguration()->showItemIssues();
+  CValidity::Kind kindFilter;
+
+  CCopasiParameterGroup::index_iterator it =
+    CRootContainer::getConfiguration()->getGroup("Display Issues")->beginIndex();
+  CCopasiParameterGroup::index_iterator end =
+    CRootContainer::getConfiguration()->getGroup("Display Issues")->endIndex();
+
+  for (size_t i = 0; it != end && i < kindFilter.size(); it++, i++)
+    {
+      if ((*it)->getValue< bool >())
+        kindFilter.set(i);
+    }
 
   CDataObject * pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
 
@@ -98,14 +109,14 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   switch (role)
     {
       case Qt::DecorationRole:
-        if (ShowItemIssues)
+        if (kindFilter != kindFilter.None)
           return issueIcon;
 
         break;
 
       case Qt::ToolTipRole:
-        if (ShowItemIssues)
-          return QVariant(QString(FROM_UTF8(validity.getIssueMessages())));
+        if (kindFilter != kindFilter.None)
+          return QVariant(QString(FROM_UTF8(validity.getIssueMessages(CValidity::Severity::All, kindFilter))));
 
         break;
 

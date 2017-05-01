@@ -271,14 +271,14 @@ public:
    * @param const std::string & name
    * @return CCopasiParameter * parameter
    */
-  CCopasiParameter * getParameter(const std::string & name);
+  CCopasiParameter * getParameter(std::string name);
 
   /**
    * Retrieve a parameter or subgroup from the group
    * @param const std::string & name
    * @return const CCopasiParameter * parameter
    */
-  const CCopasiParameter * getParameter(const std::string & name) const;
+  const CCopasiParameter * getParameter(std::string name) const;
 
   /**
    * Retrieve a parameter or subgroup from the group

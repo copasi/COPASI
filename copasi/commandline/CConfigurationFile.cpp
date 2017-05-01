@@ -119,7 +119,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
-  mpShowItemIssues(NULL),
+  mpDisplayIssues(NULL),
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
@@ -145,7 +145,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
-  mpShowItemIssues(NULL),
+  mpDisplayIssues(NULL),
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
@@ -198,6 +198,7 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
   assertGroup("Recent SEDML Files");
+  mpDisplayIssues = assertGroup("Display Issues");
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
   getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
@@ -205,7 +206,14 @@ void CConfigurationFile::initializeParameter()
   assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::basic));
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
-  mpShowItemIssues = assertParameter("Show Item Issues", CCopasiParameter::BOOL, true);
+
+  for (size_t i = 0; i < CIssue::kindNames.size(); i++)
+    {
+      std::cout << "Round: " << i << std::endl;
+
+      mpDisplayIssues->assertParameter(std::string(CIssue::kindNames[i]), CCopasiParameter::BOOL, true);
+    }
+
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
@@ -368,9 +376,9 @@ bool CConfigurationFile::validateUnits() const
   return *mpValidateUnits;
 }
 
-bool CConfigurationFile::showItemIssues() const
+bool CConfigurationFile::showItemIssues(CIssue::eKind kind) const
 {
-  return *mpShowItemIssues;
+  return mpDisplayIssues->getParameter(static_cast< size_t>(kind))->getValue< bool >();
 }
 
 void CConfigurationFile::setDisplayPopulations(bool flag)
@@ -431,11 +439,6 @@ void CConfigurationFile::setProxyPassword(const std::string &proxyPassword)
 void CConfigurationFile::setValidateUnits(bool validateUnits)
 {
   *mpValidateUnits = validateUnits;
-}
-
-void CConfigurationFile::setShowItemIssues(bool showItemIssues)
-{
-  *mpShowItemIssues = showItemIssues;
 }
 
 CConfigurationFile::CXML::CXML():

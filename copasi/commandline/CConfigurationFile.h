@@ -192,12 +192,7 @@ public:
    * @return a flag indicating whether an icon and tooltip should be
    * displayed for items.
    */
-  bool showItemIssues() const;
-
-  /**
-   * Set whether an icon and tooltip should be displayed for items.
-   */
-  void setShowItemIssues(bool showItemIssues);
+  bool showItemIssues(CIssue::eKind kind) const;
 
   /**
    * @return a flag on whether to use the open GL based rendering, or the Qt based one
@@ -446,7 +441,7 @@ private:
    * A pointer indicating whether items will display a warning
    * or error icon, and tooltip description, for any item issues.
    */
-  bool * mpShowItemIssues;
+  CCopasiParameterGroup * mpDisplayIssues;
 
   /**
    * A pointer indicating whether units will always be validated
