@@ -1207,23 +1207,24 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
       std::string name = reac->getObjectName();
 
-      size_t params_size = reac->getParameters().size();
+      const CCopasiParameterGroup & parameters = reac->getParameters();
+      size_t params_size = parameters.size();
 
       for (j = 0; j < params_size; ++j)
         {
-          if (!reac->isLocalParameter(j))
+          const CCopasiParameter* param = parameters.getParameter(j);
+          const std::string & parameterName = param->getObjectName();
+
+          if (!reac->isLocalParameter(parameterName))
             continue;
 
           std::ostringstream comments;
           std::ostringstream expression;
 
-          const CCopasiParameter* param;
-
-          param = reac->getParameters().getParameter(j);
           expression << param->getValue< C_FLOAT64 >();
 
           comments << "reaction \'" << name << "\': " <<
-                   " kinetic parameter \'" << param->getObjectName() << "\'";
+                   " kinetic parameter \'" << parameterName << "\'";
 
           std::string str1 = expression.str();
           std::string str2 = comments.str();

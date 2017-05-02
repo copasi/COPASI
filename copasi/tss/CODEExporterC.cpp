@@ -883,7 +883,7 @@ bool CODEExporterC::exportSingleParameter(const CCopasiParameter* param, std::st
   return true;
 }
 
-bool CODEExporterC::exportKineticFunction(CReaction* /* reac */)
+bool CODEExporterC::exportKineticFunction(const CReaction* /* reac */)
 {return true;}
 
 bool CODEExporterC::exportKineticFunctionGroup(const CModel* copasiModel)
