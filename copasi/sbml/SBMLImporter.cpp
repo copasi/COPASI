@@ -2256,11 +2256,78 @@ CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* fun
   return NULL;
 }
 
-/**
- * Creates and returns a COPASI CReaction object from the given SBML
- * Reaction object.
- */
 
+/**
+ * This function replaces any local parameters of the
+ * kinetic law that references another reaction with
+ * an altered name.
+ *
+ * @param kLaw the kinetic law
+ * @param pSBMLModel the model to search for conflicting reactions
+ * @param prefix the prefix to use when modifying the id.
+ */
+void renameShadowingFluxReferences(KineticLaw* kLaw,
+                                   Model* pSBMLModel,
+                                   const std::string& prefix)
+{
+  if (!kLaw->isSetMath()) return;
+
+  ASTNode* pMath = const_cast<ASTNode*>(kLaw->getMath());
+
+  std::set<std::string> toBeRenamed;
+  std::set<std::string> viableIds;
+
+  for (int i = 0; i < (int)kLaw->getNumParameters(); ++i)
+    {
+      Parameter* current = kLaw->getParameter(i);
+
+      if (current == NULL || !current->isSetId())
+        continue;
+
+      std::string currentId = current->getId();
+      viableIds.insert(currentId);
+
+      Reaction* other = pSBMLModel->getReaction(currentId);
+
+      if (other == NULL)
+        continue;
+
+      toBeRenamed.insert(currentId);
+
+    }
+
+  if (!toBeRenamed.empty())
+    {
+      std::set<std::string>::iterator it = toBeRenamed.begin();
+
+      while (it != toBeRenamed.end())
+        {
+          std::string newId = prefix
+                              + std::string("_")
+                              + *it;
+          pMath->renameSIdRefs(*it, newId);
+
+          Parameter* parameter = kLaw->getParameter(*it);
+
+          if (parameter != NULL)
+            parameter->setId(newId);
+          else
+            {
+              parameter = kLaw->getLocalParameter(*it);
+
+              if (parameter != NULL)
+                parameter->setId(newId);
+            }
+
+          ++it;
+        }
+    }
+}
+
+/**
+* Creates and returns a COPASI CReaction object from the given SBML
+* Reaction object.
+*/
 CReaction*
 SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
@@ -2271,7 +2338,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   std::string name = sbmlReaction->getName();
 
-  if (name == "")
+  if (name.empty())
     {
       name = sbmlReaction->getId();
     }
@@ -2658,6 +2725,13 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
   if (kLaw != NULL)
     {
+
+      // issue 2407: ensure that no reaction ids are shadowed
+      // by local parameters
+      renameShadowingFluxReferences(kLaw, pSBMLModel,
+                                    copasiReaction->getObjectName());
+
+
       const ListOfParameters* pParamList = NULL;
 
       if (this->mLevel > 2)
