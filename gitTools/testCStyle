@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-GitTools=`git config copasi.gittools`
+. "$(git rev-parse --show-toplevel)/gitTools/functions"
 
 DIR=
 PATTERN=

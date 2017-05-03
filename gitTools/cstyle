@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "`git config copasi.gittools`/functions"
+. "$(git rev-parse --show-toplevel)/gitTools/functions"
 
 ASTYLE=`gitTool astyle`
 GAWK=`gitTool gawk`

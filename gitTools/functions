@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+GitTools="$(git rev-parse --show-toplevel)/gitTools"
+
 # Clear User configuration
 function setGitConfig () {
   unsetGitConfig "$1"

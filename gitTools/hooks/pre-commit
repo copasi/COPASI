@@ -7,8 +7,7 @@
 #
 # To enable this hook, rename this file to "pre-commit".
 
-GitTools=`git config copasi.gittools`
-. ${GitTools}/functions
+. "$(git rev-parse --show-toplevel)/gitTools/functions"
 
 [ -e ${GitTools}/checkout ] && rm ${GitTools}/checkout
 
