@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-GitTools="`git config copasi.gittools`"
-. ${GitTools}/functions
+. "$(git rev-parse --show-toplevel)/gitTools/functions"
 
 clean="cat"
 clean="$clean | ${GitTools}/header --clean $1" 
