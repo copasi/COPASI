@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -228,7 +233,7 @@ CCopasiXMLInterface::DBL::operator const C_FLOAT64 & () const
 
 std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & dbl)
 {
-  os.precision(16);
+  os.precision(std::numeric_limits<double>::digits10 + 2);
 
   if (isnan(dbl.mValue))
     os << "NaN";

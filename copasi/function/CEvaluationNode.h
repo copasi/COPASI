@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -141,7 +146,15 @@ public:
     S_MIN = 0x0000004B,
     S_RGAMMA = 0x0000004C,
     S_RPOISSON = 0x0000004D,
+    S_AVOGADRO = 0x0000004E,
     S_INVALID = 0x00FFFFFF
+  };
+
+  enum ValueType
+  {
+    Unknown,
+    Boolean,
+    Number
   };
 
   // Methods
@@ -242,7 +255,7 @@ public:
 
   /**
    * Compile a node;
-   * @param const CEvaluationTree * pTree
+   * @param const CFunction * pFunction
    * @return bool success;
    */
   virtual bool compile(const CEvaluationTree * pTree);
@@ -314,6 +327,19 @@ public:
    * @return bool isBoolean
    */
   virtual bool isBoolean() const;
+
+  /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return bool success
+   */
+  virtual bool setValueType(const ValueType & valueType);
+
+  /**
+   * Retrieve the value type of the node
+   * @return const ValueType & valueType
+   */
+  const ValueType & getValueType() const;
 
   /**
    * Add the children to the node
@@ -417,6 +443,11 @@ protected:
    * The type the node
    */
   SubType mSubType;
+
+  /**
+   * The value type of the node
+   */
+  ValueType mValueType;
 
   /**
    * The numerical value of the node

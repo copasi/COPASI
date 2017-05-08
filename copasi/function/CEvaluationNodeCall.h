@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -64,10 +69,17 @@ public:
 
   /**
    * Compile a node;
-   * @param const CEvaluationTree * pTree
+   * @param const CFunction * pFunction
    * @return bool success;
    */
   virtual bool compile(const CEvaluationTree * pTree);
+
+  /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return bool success
+   */
+  virtual bool setValueType(const ValueType & valueType);
 
   /**
    * Check whether node the calls any tree in the list
@@ -156,9 +168,9 @@ public:
 
   /**
    * Retrieve the tree which is called from this node
-   * @return const CEvaluationTree * calledTree
+   * @return const CFunction * calledTree
    */
-  const CEvaluationTree * getCalledTree() const;
+  const CFunction * getCalledTree() const;
 
   /**
    * Build the MathML string
@@ -175,12 +187,6 @@ public:
    *  returns the vector of child nodes, corresponding to the arguments of a function call
    */
   const std::vector<CEvaluationNode *> getListOfChildNodes() const {return mCallNodes;}
-
-  /**
-   * Set whether the result of the node must be Boolean
-   * @param const bool & booleanRequired
-   */
-  void setBooleanRequired(const bool & booleanRequired);
 
   /**
    * Check whether the result must be Boolean
@@ -226,7 +232,6 @@ private:
   std::vector<CEvaluationNode *> mCallNodes;
   CCallParameters< C_FLOAT64 > * mpCallParameters;
   mutable bool mQuotesRequired;
-  bool mBooleanRequired;
 
   /**
    * The registered object name to track eventual renaming.

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -58,7 +63,7 @@ public:
 
   /**
    * Compile a node;
-   * @param const CEvaluationTree * pTree
+   * @param const CFunction * pFunction
    * @return bool success;
    */
   virtual bool compile(const CEvaluationTree * pTree);
@@ -94,6 +99,13 @@ public:
    * @return const Data & value
    */
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
+
+  /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return bool success
+   */
+  virtual bool setValueType(const ValueType & valueType);
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children

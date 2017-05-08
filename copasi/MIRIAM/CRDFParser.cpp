@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -60,7 +65,7 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
   bool done = false;
 
   stream.imbue(std::locale::classic());
-  stream.precision(16);
+  stream.precision(std::numeric_limits<double>::digits10 + 2);
 
   // Create the new graph
   CRDFGraph * pGraph = new CRDFGraph;

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,7 +19,7 @@
 
 #include "copasi.h"
 #include "CEvaluationNode.h"
-#include "CEvaluationTree.h"
+#include "CFunction.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -57,8 +62,27 @@ void CEvaluationNodeVariable::calculate()
   mValue = mpTree->getVariableValue(mIndex);
 }
 
+// virtual
+bool CEvaluationNodeVariable::setValueType(const ValueType & valueType)
+{
+  if (mValueType == Unknown)
+    {
+      mValueType = valueType;
+    }
+
+  return CEvaluationNode::setValueType(valueType);
+}
+
 size_t CEvaluationNodeVariable::getIndex() const
 {return mIndex;}
+
+// static
+CEvaluationNode * CEvaluationNodeVariable::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
+{
+  assert(pASTNode->getNumChildren() == children.size());
+
+  return new CEvaluationNodeVariable(S_DEFAULT, pASTNode->getName());
+}
 
 ASTNode* CEvaluationNodeVariable::toAST(const CCopasiDataModel* /*pDataModel*/) const
 {

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -82,12 +87,6 @@ public:
    * @return CEvaluationNode * pCretedNode
    */
   static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
-
-  /**
-   * Check whether the result is Boolean
-   * @return bool isBoolean
-   */
-  virtual bool isBoolean() const;
 
   /**
    * Create a new ASTNode corresponding to this ConstantNode.

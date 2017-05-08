@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -125,17 +130,27 @@ public:
   /**
    * Sets the complete tree from an SBML ASTNode.
    * @param const ASTNode& root node of the tree
+   * @param bool isFunction
    * @return bool success
    */
-  bool setTree(const ASTNode& pRootNode);
+  bool setTree(const ASTNode& pRootNode, bool isFunction);
+
+  /**
+   * Retrieve a pointer to the object defined by CN. This method may only be called
+   * during compile() since the list mpListOfContainer is only valid then.
+   * @param const CCopasiObjectName & CN
+   * @return const CObjectInterface * value
+   */
+  virtual const CObjectInterface * getNodeObject(const CCopasiObjectName & CN) const;
 
   /**
    * Converts an SBML ASTNode to the corresponding
    * CEvaluationNode tree.
    * @param const ASTNode * pASTNode
+   * @param bool isFunction
    * @return CEvaluationNode*
    */
-  static CEvaluationNode* fromAST(const ASTNode * pASTNode);
+  static CEvaluationNode* fromAST(const ASTNode * pASTNode, bool isFunction);
 
   /**
    * Converts a CEvaluationTree to an ASTNode based tree.

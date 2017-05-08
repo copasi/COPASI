@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,7 +60,7 @@ public:
 
   /**
    * Compile a node;
-   * @param const CEvaluationTree * pTree
+   * @param const CFunction * pFunction
    * @return bool success;
    */
   virtual bool compile(const CEvaluationTree * pTree);
@@ -65,6 +70,21 @@ public:
    * all child nodes are up to date.
    */
   virtual void calculate();
+
+  /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return bool success
+   */
+  virtual bool setValueType(const ValueType & valueType);
+
+  /**
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
+   */
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
    * Converts this node to an AST Node of type AST_NAME

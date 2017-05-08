@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -44,21 +49,34 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
   mpObject(NULL),
   mRegisteredObjectCN()
 {
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+
   switch (subType)
     {
       case S_INVALID:
         break;
 
       case S_CN:
-        mRegisteredObjectCN = data.substr(1, data.length() - 2);
+
+        if (mData == "<Reference=Avogadro Constant>")
+          {
+            mSubType = S_AVOGADRO;
+          }
+
+        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
+
+        break;
+
+      case S_AVOGADRO:
+        mData = "<Reference=Avogadro Constant>";
+        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
         break;
 
       case S_POINTER:
         mpValue = (const C_FLOAT64 *) stringToPointer(data);
         break;
     }
-
-  mPrecedence = PRECEDENCE_NUMBER;
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
@@ -67,6 +85,8 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
   mRegisteredObjectCN("")
 {
   mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+
   mpValue = pValue;
   mData = pointerToString(pValue);
 }
@@ -83,6 +103,8 @@ CEvaluationNodeObject::~CEvaluationNodeObject() {}
 
 bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 {
+  assert(pTree != NULL);
+
   mpObject = NULL;
   mpValue = NULL;
 
@@ -90,12 +112,7 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
     {
       case S_CN:
       {
-        const CExpression * pExpression = dynamic_cast< const CExpression * >(pTree);
-
-        if (!pExpression) return false;
-
-        mpObject =
-          pExpression->getNodeObject(mRegisteredObjectCN);
+        mpObject = pTree->getNodeObject(mRegisteredObjectCN);
 
         const CCopasiObject * pDataObject = dynamic_cast< const CCopasiObject * >(mpObject);
 
@@ -158,6 +175,40 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           }
 
         break;
+
+      case S_AVOGADRO:
+      {
+        CCopasiDataModel * pDataModel = pTree->getObjectDataModel();
+
+        // Expression
+        if (pDataModel != NULL)
+          {
+            if (pDataModel->getModel() != NULL)
+              {
+                mpObject = pTree->getNodeObject(pDataModel->getModel()->getCN() + "," + mRegisteredObjectCN);
+              }
+
+            if (mpObject != NULL)
+              {
+                mpValue = (C_FLOAT64 *) mpObject->getValuePointer();
+              }
+
+            if (mpValue == NULL)
+              {
+                mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+                mpValue = &mValue;
+
+                return false;
+              }
+          }
+        // Function
+        else
+          {
+            mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+            mpValue = &mValue;
+          }
+      }
+      break;
 
       case S_INVALID:
         break;
@@ -265,11 +316,13 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
 
   switch (pASTNode->getType())
     {
-      case AST_NAME_AVOGADRO:
-      case AST_NAME_TIME:
       case AST_NAME:
+      case AST_NAME_TIME:
         pNode = new CEvaluationNodeObject(S_CN, CCopasiObjectName(std::string("<") + pASTNode->getName() + std::string(">")));
         break;
+
+      case AST_NAME_AVOGADRO:
+        pNode = new CEvaluationNodeObject(S_AVOGADRO, "");
 
       default:
         break;

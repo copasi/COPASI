@@ -24,6 +24,7 @@
 #include "CFunction.h"
 #include "CFunctionDB.h"
 
+#include "model/CModel.h"
 #include "report/CCopasiRootContainer.h"
 #include "utilities/copasimathml.h"
 

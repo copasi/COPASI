@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -386,17 +391,15 @@ bool CEvaluationTree::compileNodes()
     }
   else
     {
-      const CObjectInterface * pObject;
-
       for (it = mpNodeList->begin(); it != end; ++it)
         switch ((*it)->mainType())
           {
             case CEvaluationNode::T_OBJECT:
             {
-              if (mType == Expression &&
-                  (pObject = static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr()) != NULL)
+              const CCopasiObject * pDataObject = CObjectInterface::DataObject(static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr());
+
+              if (pDataObject != NULL)
                 {
-                  const CCopasiObject * pDataObject = CObjectInterface::DataObject(pObject);
                   addDirectDependency(pDataObject);
                 }
             }
@@ -514,12 +517,18 @@ bool CEvaluationTree::updateTree()
   return true;
 }
 
-bool CEvaluationTree::setTree(const ASTNode& pRootNode)
+// virtual
+const CObjectInterface * CEvaluationTree::getNodeObject(const CCopasiObjectName & CN) const
 {
-  return setRoot(CEvaluationTree::fromAST(&pRootNode));
+  return NULL;
 }
 
-CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
+bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
+{
+  return setRoot(CEvaluationTree::fromAST(&pRootNode, isFunction));
+}
+
+CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunction)
 {
   if (pASTNode == NULL) return NULL;
 
@@ -557,10 +566,27 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
                 break;
 
               case AST_NAME:
+
+                if (isFunction)
+                  pResultNode = CEvaluationNodeVariable::fromAST(*itNode, itNode.context());
+                else
+                  pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
+
+                break;
+
               case AST_NAME_TIME:
-#if LIBSBML_VERSION >= 40100
+
+                if (isFunction)
+                  {
+                    fatalError();
+                  }
+                else
+                  pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
+
+                break;
+
               case AST_NAME_AVOGADRO:
-#endif // LIBSBML_VERSION >= 40100
+
                 // create a CEvaluationNodeObject
                 pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
                 break;

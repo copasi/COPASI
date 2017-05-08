@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -212,7 +217,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
 
   if (product.getItemPowers().size() == 0)
     {
-      sstream.precision(18);
+      sstream.precision(std::numeric_limits<double>::digits10 + 2);
       sstream << product.getFactor();
       pResult = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, sstream.str());
     }
@@ -233,7 +238,7 @@ CEvaluationNode* convertToCEvaluationNode(const CNormalProduct& product)
 
       if (fabs(product.getFactor() - 1.0) >= 1e-12)
         {
-          sstream.precision(18);
+          sstream.precision(std::numeric_limits<double>::digits10 + 2);
           sstream << product.getFactor();
           products.push_back(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, sstream.str()));
         }

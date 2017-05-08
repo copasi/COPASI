@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -19,7 +24,10 @@ CEvaluationNodeDelay::CEvaluationNodeDelay():
   mpDelayLagNode(NULL),
   mpDelayValueValue(NULL),
   mpDelayLagValue(NULL)
-{mPrecedence = PRECEDENCE_NUMBER;}
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+}
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
     const Data & /* data */):
@@ -29,6 +37,9 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
   mpDelayValueValue(NULL),
   mpDelayLagValue(NULL)
 {
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+
   switch (subType)
     {
       case S_DELAY:
@@ -39,8 +50,6 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
         fatalError();
         break;
     }
-
-  mPrecedence = PRECEDENCE_FUNCTION;
 }
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
@@ -53,7 +62,7 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):
 
 CEvaluationNodeDelay::~CEvaluationNodeDelay() {}
 
-bool CEvaluationNodeDelay::compile(const CEvaluationTree * /*pTree*/)
+bool CEvaluationNodeDelay::compile(const CEvaluationTree * /* pTree */)
 {
   bool success = true;
 

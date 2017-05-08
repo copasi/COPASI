@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -33,6 +38,8 @@ CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     const Data & data):
   CEvaluationNode(T_CONSTANT, subType, data)
 {
+  mValueType = (mSubType != S_TRUE && mSubType != S_FALSE) ? Number : Boolean;
+
   switch ((SubType) subType)
     {
       case S_PI:
@@ -213,20 +220,6 @@ CEvaluationNode * CEvaluationNodeConstant::fromAST(const ASTNode * pASTNode, con
     }
 
   return new CEvaluationNodeConstant(subType, data);
-}
-
-// virtual
-bool CEvaluationNodeConstant::isBoolean() const
-{
-  switch (mSubType)
-    {
-      case S_TRUE:
-      case S_FALSE:
-        return true;
-
-      default:
-        return false;
-    }
 }
 
 ASTNode* CEvaluationNodeConstant::toAST(const CCopasiDataModel* /*pDataModel*/) const

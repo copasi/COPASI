@@ -1,12 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CWriteConfig.cpp,v $
-   $Revision: 1.19 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/19 15:55:09 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -36,7 +43,7 @@ CWriteConfig::CWriteConfig(void)
   mFail = 0;
 
   mBuffer.setf(std::ios_base::scientific);
-  mBuffer.precision(16);
+  mBuffer.precision((std::numeric_limits<double>::digits10 + 2);
 }
 
 CWriteConfig::CWriteConfig(const std::string& name, std::ios_base::openmode mode)
@@ -48,10 +55,10 @@ CWriteConfig::CWriteConfig(const std::string& name, std::ios_base::openmode mode
   mFail = 0;
 
   mBuffer.setf(std::ios_base::scientific);
-  mBuffer.precision(16);
+  mBuffer.precision((std::numeric_limits<double>::digits10 + 2);
 
-  if (mOpenMode & std::ios_base::out)
-    writeVersion();
+                    if (mOpenMode & std::ios_base::out)
+                    writeVersion();
 }
 
 CWriteConfig::~CWriteConfig(void)
@@ -171,11 +178,11 @@ C_INT32 CWriteConfig::setVariable(const std::string & name,
     {
       // pout1 and pout2 point to chars mType and mSubtype.
       // Therfore, we need this complicated cast.
-      mBuffer << (C_INT32) (*(char *) pout1) << ","
-      << (C_INT32) (*(char *) pout2)
-      //  This will help to debug
-      //  << "\t" << *(char *) pout1 << "," << *(char *) pout2
-;
+      mBuffer << (C_INT32)(*(char *) pout1) << ","
+              << (C_INT32)(*(char *) pout2)
+              //  This will help to debug
+              //  << "\t" << *(char *) pout1 << "," << *(char *) pout2
+              ;
     }
   else
     {

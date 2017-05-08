@@ -116,7 +116,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
 
       std::ostringstream Infix;
       Infix.imbue(std::locale::classic());
-      Infix.precision(16);
+      Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
       Infix << container.getModel().getQuantity2NumberFactor();
       Infix << "*<";

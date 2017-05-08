@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -176,6 +181,7 @@ CEvaluationNode::CEvaluationNode():
   CCopasiNode<Data>(""),
   mMainType(T_INVALID),
   mSubType(S_INVALID),
+  mValueType(Unknown),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mpValue(NULL),
   mPrecedence(PRECEDENCE_DEFAULT)
@@ -189,6 +195,7 @@ CEvaluationNode::CEvaluationNode(const MainType & mainType,
   CCopasiNode<Data>(data),
   mMainType(mainType),
   mSubType(subType),
+  mValueType(Unknown),
   mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
   mpValue(NULL),
   mPrecedence(PRECEDENCE_DEFAULT)
@@ -200,6 +207,7 @@ CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
   CCopasiNode<Data>(src),
   mMainType(src.mMainType),
   mSubType(src.mSubType),
+  mValueType(src.mValueType),
   mValue(src.mValue),
   mpValue(NULL),
   mPrecedence(src.mPrecedence)
@@ -352,7 +360,20 @@ std::string CEvaluationNode::buildXPPString() const
 
 // virtual
 bool CEvaluationNode::isBoolean() const
-{return false;}
+{
+  return mValueType == Boolean;
+}
+
+// virtual
+bool CEvaluationNode::setValueType(const CEvaluationNode::ValueType & valueType)
+{
+  return mValueType == valueType;
+}
+
+const CEvaluationNode::ValueType & CEvaluationNode::getValueType() const
+{
+  return mValueType;
+}
 
 void CEvaluationNode::addChildren(const std::vector< CEvaluationNode * > & children)
 {

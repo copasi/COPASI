@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,6 +36,9 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
     const Data & data):
   CEvaluationNode(T_NUMBER, subType, data)
 {
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+
   const char * end;
   const char * str = mData.c_str();
 
@@ -59,19 +67,20 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
         fatalError();
         break;
     }
-
-  mPrecedence = PRECEDENCE_NUMBER;
 }
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const C_FLOAT64 & number):
   CEvaluationNode(T_NUMBER, S_DOUBLE, "")
 {
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+
   mValue = number;
 
   std::ostringstream Data;
 
   Data.imbue(std::locale::classic());
-  Data.precision(16);
+  Data.precision(std::numeric_limits<double>::digits10 + 2);
   Data << mValue;
 
   mData = Data.str();
@@ -90,6 +99,9 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
   assert(pASTNode->getNumChildren() == children.size());
 
   std::stringstream ss;
+  ss.imbue(std::locale::classic());
+  ss.precision(std::numeric_limits<double>::digits10 + 2);
+
   SubType subType;
   std::string data = "";
   CEvaluationNode* pNode = NULL;

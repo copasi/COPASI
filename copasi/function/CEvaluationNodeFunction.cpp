@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -71,7 +76,9 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
   mpArgValue2(NULL),
   mpArgValue3(NULL),
   mpArgValue4(NULL)
-{mPrecedence = PRECEDENCE_NUMBER;}
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
@@ -88,6 +95,8 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
   mpArgValue3(NULL),
   mpArgValue4(NULL)
 {
+  mValueType = (mSubType != S_NOT) ? Number : Boolean;
+
   switch (subType)
     {
       case S_LOG:
@@ -298,23 +307,29 @@ CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
 bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
+  bool success = true;
+
   mpArgNode1 = static_cast<CEvaluationNode *>(getChild());
 
   if (mpArgNode1 == NULL) return false;
 
   mpArgValue1 = mpArgNode1->getValuePointer();
+  success &= mpArgNode1->setValueType(mValueType);
 
   if (mpFunction)
-    return (mpArgNode1->getSibling() == NULL); // We must have only one child
+    return (success &&
+            mpArgNode1->getSibling() == NULL); // We must have only one child
 
   mpArgNode2 = static_cast<CEvaluationNode *>(mpArgNode1->getSibling());
 
   if (mpArgNode2 == NULL) return false;
 
   mpArgValue2 = mpArgNode2->getValuePointer();
+  success &= mpArgNode2->setValueType(mValueType);
 
   if (mpFunction2)
-    return (mpArgNode2->getSibling() == NULL); // We must have exactly 1 children
+    return (success &&
+            mpArgNode2->getSibling() == NULL); // We must have exactly 1 children
 
   // equality
   mpArgNode3 = static_cast<CEvaluationNode *>(mpArgNode2->getSibling());
@@ -322,14 +337,17 @@ bool CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   if (mpArgNode3 == NULL) return false;
 
   mpArgValue3 = mpArgNode3->getValuePointer();
+  success &= mpArgNode3->setValueType(mValueType);
 
   mpArgNode4 = static_cast<CEvaluationNode *>(mpArgNode3->getSibling());
 
   if (mpArgNode4 == NULL) return false;
 
   mpArgValue4 = mpArgNode4->getValuePointer();
+  success &= mpArgNode4->setValueType(mValueType);
 
-  return (mpArgNode4->getSibling() == NULL); // We must have exactly 4 children
+  return (success &&
+          mpArgNode4->getSibling() == NULL); // We must have exactly 4 children
 }
 
 // virtual
@@ -1017,19 +1035,6 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
     pNode->addChild(children[0]);
 
   return pNode;
-}
-
-// virtual
-bool CEvaluationNodeFunction::isBoolean() const
-{
-  switch (mSubType)
-    {
-      case S_NOT:
-        return true;
-
-      default:
-        return false;
-    }
 }
 
 ASTNode* CEvaluationNodeFunction::toAST(const CCopasiDataModel* pDataModel) const

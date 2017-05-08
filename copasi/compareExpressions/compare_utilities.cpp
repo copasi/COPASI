@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -439,7 +444,7 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
 {
   CNormalFraction* pFraction = NULL;
   // translate the ASTNode based tree into an CEvaluationNode based tree and
-  CEvaluationNode* pEvaluationNode = CEvaluationTree::fromAST(pSource);
+  CEvaluationNode* pEvaluationNode = CEvaluationTree::fromAST(pSource, false);
   // all variable nodes in this tree are objects nodes so we have to convert
   // them
   CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;
@@ -491,7 +496,7 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
 {
   CNormalFraction* pFraction = NULL;
   // translate the ASTNode based tree into an CEvaluationNode based tree and
-  CEvaluationNode* pEvaluationNode = CEvaluationTree::fromAST(pSource);
+  CEvaluationNode* pEvaluationNode = CEvaluationTree::fromAST(pSource, false);
   // all variable nodes in this tree are objects nodes so we have to convert
   // them
   CCopasiTree<CEvaluationNode>::iterator treeIt = pEvaluationNode;

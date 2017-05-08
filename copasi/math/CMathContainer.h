@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -954,8 +959,10 @@ private:
   /**
    * Create an event of type CEvent::Discontinuity for each discontinuity the tree with root pNode
    * @param const CEvaluationTree * pTree
+   * @param const std::vector< CEvaluationNode * > & variables
    */
-  void createDiscontinuityEvents(const CEvaluationTree * pTree);
+  void createDiscontinuityEvents(const CEvaluationTree * pTree,
+                                 const std::vector< CEvaluationNode * > & variables);
 
   /**
    * Create an event of type CEvent::Discontinuity for the given node

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,7 +29,9 @@ CEvaluationNodeLogical::CEvaluationNodeLogical():
   mpRightNode(NULL),
   mpLeftValue(NULL),
   mpRightValue(NULL)
-{}
+{
+  mValueType = Boolean;
+}
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
@@ -34,6 +41,8 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
   mpLeftValue(NULL),
   mpRightValue(NULL)
 {
+  mValueType = Boolean;
+
   switch (mSubType)
     {
       case S_OR:
@@ -98,7 +107,39 @@ bool CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 
   mpRightValue = mpRightNode->getValuePointer();
 
-  return (mpRightNode->getSibling() == NULL); // We must have exactly two children
+  // We must have exactly two children and
+  bool success = (mpRightNode->getSibling() == NULL);
+
+  // The child nodes must have the same type
+  switch (mSubType)
+    {
+      case S_OR:
+      case S_XOR:
+      case S_AND:
+        success &= mpLeftNode->setValueType(Boolean);
+        success &= mpRightNode->setValueType(Boolean);
+        break;
+
+      case S_EQ:
+      case S_NE:
+
+        if (mpLeftNode->getValueType() != Unknown)
+          success &= mpRightNode->setValueType(mpLeftNode->getValueType());
+        else if (mpRightNode->getValueType() != Unknown)
+          success &= mpLeftNode->setValueType(mpRightNode->getValueType());
+
+        break;
+
+      case S_GT:
+      case S_GE:
+      case S_LT:
+      case S_LE:
+        success &= mpLeftNode->setValueType(Number);
+        success &= mpRightNode->setValueType(Number);
+        break;
+    }
+
+  return success;
 }
 
 // virtual
@@ -506,10 +547,6 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 
   return pNode;
 }
-
-// virtual
-bool CEvaluationNodeLogical::isBoolean() const
-{return true;}
 
 ASTNode* CEvaluationNodeLogical::toAST(const CCopasiDataModel* pDataModel) const
 {

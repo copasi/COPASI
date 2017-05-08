@@ -1336,7 +1336,6 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
                   // create copasi model value for it
                   createCModelValueFromParameter(param, mpCopasiModel, copasi2sbmlmap);
-
                 }
 
               continue;
@@ -1991,37 +1990,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
       this->mExplicitelyTimeDependentFunctionDefinitions.insert(pSBMLFunction->getId());
     }
 
-  pFun->setTree(*root.getChild(iMax));
-  CCopasiTree<CEvaluationNode>::iterator treeIt = pFun->getRoot();
-
-  // if the root node already is an object node, this has to be dealt with separately
-  if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
-    {
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
-      pFun->setRoot(pVariableNode);
-    }
-  else
-    {
-      while (treeIt != NULL)
-        {
-          if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
-            {
-              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
-
-              if ((*treeIt).getParent())
-                {
-                  (*treeIt).getParent()->addChild(pVariableNode, &(*treeIt));
-                  (*treeIt).getParent()->removeChild(&(*treeIt));
-                }
-
-              delete &(*treeIt);
-              treeIt = pVariableNode;
-            }
-
-          ++treeIt;
-        }
-    }
-
+  pFun->setTree(*root.getChild(iMax), true);
   pFun->updateTree();
 
   if (!pFun->compile())
@@ -2256,7 +2225,6 @@ CFunction* findFunction(CCopasiVectorN < CFunction > &  db, const CFunction* fun
   return NULL;
 }
 
-
 /**
  * This function replaces any local parameters of the
  * kinetic law that references another reaction with
@@ -2293,7 +2261,6 @@ void renameShadowingFluxReferences(KineticLaw* kLaw,
         continue;
 
       toBeRenamed.insert(currentId);
-
     }
 
   if (!toBeRenamed.empty())
@@ -2325,9 +2292,9 @@ void renameShadowingFluxReferences(KineticLaw* kLaw,
 }
 
 /**
-* Creates and returns a COPASI CReaction object from the given SBML
-* Reaction object.
-*/
+ * Creates and returns a COPASI CReaction object from the given SBML
+ * Reaction object.
+ */
 CReaction*
 SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLModel, CModel* copasiModel, std::map<const CCopasiObject*, SBase*>& copasi2sbmlmap, CFunctionDB* pTmpFunctionDB)
 {
@@ -2424,7 +2391,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
           if (sr->isSetStoichiometry())
             stoi = sr->getStoichiometry();
-
         }
 
       std::map<std::string, CMetab*>::iterator pos;
@@ -2731,7 +2697,6 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       renameShadowingFluxReferences(kLaw, pSBMLModel,
                                     copasiReaction->getObjectName());
 
-
       const ListOfParameters* pParamList = NULL;
 
       if (this->mLevel > 2)
@@ -2899,7 +2864,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
             }
 
-          CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::fromAST(node);
+          CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::fromAST(node, false);
           delete node;
           node = NULL;
 
@@ -6992,7 +6957,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
   this->replaceObjectNames(&tmpNode, copasi2sbmlmap);
   // now we convert the node to a CEvaluationNode
   CExpression* pExpression = new CExpression;
-  pExpression->setTree(tmpNode);
+  pExpression->setTree(tmpNode, false);
 
   if (dynamic_cast<CMetab*>(pModelEntity) != NULL)
     {
@@ -7618,6 +7583,9 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CCopasi
 
   //    ++reactIt;
   //}
+
+  // The Avogadro Constant may have changed and all expressions depending on it must be updated;
+  mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Avogadro Constant"))));
 
   pModel->updateInitialValues(mChangedObjects);
 
@@ -9298,7 +9266,7 @@ void SBMLImporter::importInitialAssignments(Model* pSBMLModel, std::map<const CC
 
                       // now we convert the node to a CEvaluationNode
                       CExpression* pExpression = new CExpression();
-                      pExpression->setTree(tmpNode);
+                      pExpression->setTree(tmpNode, false);
                       CCopasiObject * pObject = const_cast< CCopasiObject * >(pos->second);
 
                       if (dynamic_cast<CMetab*>(pObject) != NULL)
@@ -9416,7 +9384,7 @@ void SBMLImporter::applyStoichiometricExpressions(std::map<const CCopasiObject*,
       this->preprocessNode(pNode, pSBMLModel, copasi2sbmlmap);
       this->replaceObjectNames(pNode, copasi2sbmlmap, true);
       CExpression* pExpr = new CExpression("", mpDataModel);
-      pExpr->setTree(*pNode);
+      pExpr->setTree(*pNode, false);
       pExpr->compile(listOfContainers);
       delete pNode;
 
@@ -10151,7 +10119,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
   pExpression->setIsBoolean(true);
 
-  pExpression->setTree(*pTmpNode);
+  pExpression->setTree(*pTmpNode, false);
 
   delete pTmpNode;
 
@@ -10183,7 +10151,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
       // now we convert the node to a CEvaluationNode
       CExpression* pExpression = new CExpression;
-      pExpression->setTree(*pTmpNode);
+      pExpression->setTree(*pTmpNode, false);
       delete pTmpNode;
       pCOPASIEvent->setPriorityExpressionPtr(pExpression);
     }
@@ -10235,7 +10203,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       this->replaceObjectNames(pTmpNode, copasi2sbmlmap);
       // now we convert the node to a CEvaluationNode
       CExpression* pExpression = new CExpression;
-      pExpression->setTree(*pTmpNode);
+      pExpression->setTree(*pTmpNode, false);
       delete pTmpNode;
       pCOPASIEvent->setDelayExpressionPtr(pExpression);
     }
@@ -10333,7 +10301,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           if (pos2 == copasi2sbmlmap.end()) fatalError();
 
           pExpression = new CExpression;
-          pExpression->setTree(*pTmpNode);
+          pExpression->setTree(*pTmpNode, false);
           delete pTmpNode;
 
           if (pos2->second->getTypeCode() == SBML_SPECIES && dynamic_cast<const Species*>(pos2->second)->getHasOnlySubstanceUnits() == true)
@@ -11032,7 +11000,6 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::st
                          stoichiometry));
               // update stoichiometry
               pSpeciesReference->setStoichiometry(stoichiometry);
-
             }
         }
     }

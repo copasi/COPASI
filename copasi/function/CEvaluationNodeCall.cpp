@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -32,7 +37,6 @@ CEvaluationNodeCall::CEvaluationNodeCall():
   mCallNodes(),
   mpCallParameters(NULL),
   mQuotesRequired(false),
-  mBooleanRequired(false),
   mRegisteredFunctionCN()
 {mPrecedence = PRECEDENCE_NUMBER;}
 
@@ -44,7 +48,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
   mCallNodes(),
   mpCallParameters(NULL),
   mQuotesRequired(false),
-  mBooleanRequired(false),
   mRegisteredFunctionCN()
 {
   setData(data);
@@ -82,7 +85,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
   mCallNodes(src.mCallNodes),
   mpCallParameters(NULL),
   mQuotesRequired(src.mQuotesRequired),
-  mBooleanRequired(src.mBooleanRequired),
   mRegisteredFunctionCN(src.mRegisteredFunctionCN)
 {mpCallParameters = buildParameters(mCallNodes);}
 
@@ -139,9 +141,14 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
         mRegisteredFunctionCN = mpFunction->getCN();
 
-        // We need to check whether the provided arguments match the on needed by the
+        // We need to check whether the provided arguments match the one needed by the
         // function;
         if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return false;
+
+        if (mpFunction->isBoolean())
+          success &= setValueType(Boolean);
+        else
+          success &= (mValueType != Boolean);
 
         mpCallParameters = buildParameters(mCallNodes);
         break;
@@ -179,13 +186,13 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
             mMainType = T_CALL;
             mSubType = S_FUNCTION;
 
+            // We compile again with the correct type
             success = compile(pTree);
           }
         else
           {
-            mRegisteredFunctionCN = mpExpression->getCN();
-
-            success = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
+            // This is not really needed since expression cannot be called
+            fatalError();
           }
 
         break;
@@ -196,6 +203,17 @@ bool CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
     }
 
   return success;
+}
+
+// virtual
+bool CEvaluationNodeCall::setValueType(const ValueType & valueType)
+{
+  if (mValueType == Unknown)
+    {
+      mValueType = valueType;
+    }
+
+  return CEvaluationNode::setValueType(valueType);
 }
 
 bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
@@ -569,7 +587,7 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
   return true;
 }
 
-const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
+const CFunction * CEvaluationNodeCall::getCalledTree() const
 {
   switch (mSubType)
     {
@@ -659,12 +677,6 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
 
   return out.str();
 }
-
-void CEvaluationNodeCall::setBooleanRequired(const bool & booleanRequired)
-{mBooleanRequired = booleanRequired;}
-
-const bool & CEvaluationNodeCall::isBooleanRequired() const
-{return mBooleanRequired;}
 
 // virtual
 bool CEvaluationNodeCall::isBoolean() const

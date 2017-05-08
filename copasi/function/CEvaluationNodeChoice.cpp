@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -89,7 +94,16 @@ bool CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
 
   mpFalseValue = mpFalseNode->getValuePointer();
 
-  return (mpFalseNode->getSibling() == NULL); // We must have exactly three children
+  // We must have exactly three children
+  bool success = (mpFalseNode->getSibling() == NULL);
+
+  // True and false node must have the same type if either is known
+  if (mpTrueNode->getValueType() != Unknown)
+    success &= mpFalseNode->setValueType(mpTrueNode->getValueType());
+  else if (mpFalseNode->getValueType() != Unknown)
+    success &= mpTrueNode->setValueType(mpFalseNode->getValueType());
+
+  return success;
 }
 
 // virtual
@@ -135,6 +149,24 @@ std::string CEvaluationNodeChoice::getXPPString(const std::vector< std::string >
     return "if(" + children[0] + ")then(" + children[1] + ")else(" + children[2] + ")";
   else
     return "@"; //TODO
+}
+
+// virtual
+bool CEvaluationNodeChoice::setValueType(const CEvaluationNode::ValueType & valueType)
+{
+  bool success = true;
+
+  if (mpTrueNode != NULL)
+    {
+      success &= mpTrueNode->setValueType(valueType);
+    }
+
+  if (mpFalseNode != NULL)
+    {
+      success &= mpFalseNode->setValueType(valueType);
+    }
+
+  return success;
 }
 
 // static
