@@ -159,10 +159,12 @@ QMutex * pCopasiGuiMutex = NULL;
 /* Define Constructor/Destructor Trace */
 #ifdef COPASI_DEBUG_TRACE
 # include <time.h>
-# include <sys/time.h>
+# if !defined(WIN32)
+#   include <sys/time.h>
+# endif
 
 # ifdef COPASI_MAIN
-#  ifndef Darwin
+#  if !defined(Darwin) && !defined(WIN32)
 timeval C_init_time;
 unsigned C_INT32 C_last_time = 0;
 unsigned C_INT32 C_this_time;
@@ -170,7 +172,7 @@ unsigned C_INT32 C_this_time;
 std::ofstream DebugFile("trace");
 # else // not COPASI_MAIN
 #  include <fstream>
-#  ifndef Darwin
+#  if !defined(Darwin) && !defined(WIN32)
 extern timeval C_init_time;
 extern unsigned C_INT32 C_last_time;
 extern unsigned C_INT32 C_this_time;
@@ -178,7 +180,7 @@ extern unsigned C_INT32 C_this_time;
 extern std::ofstream DebugFile;
 # endif // COPASI_MAIN
 
-# ifndef Darwin
+#  if !defined(Darwin) && !defined(WIN32)
 #  include <iostream>
 #  define TIME_TRACE(f, l) {\
     gettimeofday(&C_init_time, NULL); \
