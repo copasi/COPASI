@@ -78,7 +78,9 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
   mpArgValue2(NULL),
   mpArgValue3(NULL),
   mpArgValue4(NULL)
-{mPrecedence = PRECEDENCE_NUMBER;}
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+}
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
@@ -95,6 +97,8 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
   mpArgValue3(NULL),
   mpArgValue4(NULL)
 {
+  mValueType = (mSubType != S_NOT) ? Number : Boolean;
+
   switch (subType)
     {
       case S_LOG:
@@ -309,11 +313,14 @@ CEvaluationNodeFunction::~CEvaluationNodeFunction() {}
 
 CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
 {
+  bool success = true;
+
   mpArgNode1 = static_cast<CEvaluationNode *>(getChild());
 
   if (mpArgNode1 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue1 = mpArgNode1->getValuePointer();
+  success &= mpArgNode1->setValueType(mValueType);
 
   if (mpFunction)
     {
@@ -328,6 +335,7 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   if (mpArgNode2 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue2 = mpArgNode2->getValuePointer();
+  success &= mpArgNode2->setValueType(mValueType);
 
   if (mpFunction2)
     {
@@ -343,12 +351,14 @@ CIssue CEvaluationNodeFunction::compile(const CEvaluationTree * /* pTree */)
   if (mpArgNode3 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue3 = mpArgNode3->getValuePointer();
+  success &= mpArgNode3->setValueType(mValueType);
 
   mpArgNode4 = static_cast<CEvaluationNode *>(mpArgNode3->getSibling());
 
   if (mpArgNode4 == NULL) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   mpArgValue4 = mpArgNode4->getValuePointer();
+  success &= mpArgNode4->setValueType(mValueType);
 
   if (mpArgNode4->getSibling() == NULL)
     return CIssue::Success;
@@ -1041,19 +1051,6 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
     pNode->addChild(children[0]);
 
   return pNode;
-}
-
-// virtual
-bool CEvaluationNodeFunction::isBoolean() const
-{
-  switch (mSubType)
-    {
-      case S_NOT:
-        return true;
-
-      default:
-        return false;
-    }
 }
 
 ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const

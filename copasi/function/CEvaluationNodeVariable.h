@@ -82,6 +82,21 @@ public:
                                  const std::vector< CValidatedUnit > & units) const;
 
   /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return CIssue issue;
+   */
+  virtual CIssue setValueType(const ValueType & valueType);
+
+  /**
+   * Creates a new CEvaluationNodeCall from an ASTNode and the given children
+   * @param const ASTNode* pNode
+   * @param const std::vector< CEvaluationNode * > & children
+   * @return CEvaluationNode * pCretedNode
+   */
+  static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
+
+  /**
    * Converts this node to an AST Node of type AST_NAME
    * @return ASTNode* the resulting ASTNode.
    */

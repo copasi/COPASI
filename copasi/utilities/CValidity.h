@@ -46,6 +46,7 @@ public:
     CExpressionNotFound,
     CFunctionNotFound,
     VariablesMismatch,
+    ValueTypeMismatch,
     __SIZE
   };
 
@@ -74,6 +75,8 @@ public:
   ~CIssue();
 
   operator bool();
+
+  CIssue & operator &= (const CIssue & rhs);
 
   /**
    * Utility method for language bindings where the bool operator is not

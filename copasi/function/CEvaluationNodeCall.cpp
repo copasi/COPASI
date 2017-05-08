@@ -38,7 +38,6 @@ CEvaluationNodeCall::CEvaluationNodeCall():
   mCallNodes(),
   mpCallParameters(NULL),
   mQuotesRequired(false),
-  mBooleanRequired(false),
   mRegisteredFunctionCN()
 {mPrecedence = PRECEDENCE_NUMBER;}
 
@@ -50,7 +49,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
   mCallNodes(),
   mpCallParameters(NULL),
   mQuotesRequired(false),
-  mBooleanRequired(false),
   mRegisteredFunctionCN()
 {
   setData(data);
@@ -88,7 +86,6 @@ CEvaluationNodeCall::CEvaluationNodeCall(const CEvaluationNodeCall & src):
   mCallNodes(src.mCallNodes),
   mpCallParameters(NULL),
   mQuotesRequired(src.mQuotesRequired),
-  mBooleanRequired(src.mBooleanRequired),
   mRegisteredFunctionCN(src.mRegisteredFunctionCN)
 {mpCallParameters = buildParameters(mCallNodes);}
 
@@ -145,9 +142,14 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
         mRegisteredFunctionCN = mpFunction->getCN();
 
-        // We need to check whether the provided arguments match the on needed by the
+        // We need to check whether the provided arguments match the one needed by the
         // function;
         if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
+
+        if (mpFunction->isBoolean())
+          issue &= setValueType(Boolean);
+        else if (mValueType == Boolean)
+          issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueTypeMismatch);
 
         mpCallParameters = buildParameters(mCallNodes);
         break;
@@ -189,9 +191,8 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
           }
         else
           {
-            mRegisteredFunctionCN = mpExpression->getCN();
-
-            issue = mpExpression->compile(static_cast<const CExpression *>(pTree)->getListOfContainer());
+            // This is not really needed since expression cannot be called
+            fatalError();
           }
 
         break;
@@ -202,6 +203,17 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
     }
 
   return issue;
+}
+
+// virtual
+CIssue CEvaluationNodeCall::setValueType(const ValueType & valueType)
+{
+  if (mValueType == Unknown)
+    {
+      mValueType = valueType;
+    }
+
+  return CEvaluationNode::setValueType(valueType);
 }
 
 bool CEvaluationNodeCall::calls(std::set< std::string > & list) const
@@ -575,7 +587,7 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
   return true;
 }
 
-const CEvaluationTree * CEvaluationNodeCall::getCalledTree() const
+const CFunction * CEvaluationNodeCall::getCalledTree() const
 {
   switch (mSubType)
     {
@@ -665,12 +677,6 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
 
   return out.str();
 }
-
-void CEvaluationNodeCall::setBooleanRequired(const bool & booleanRequired)
-{mBooleanRequired = booleanRequired;}
-
-const bool & CEvaluationNodeCall::isBooleanRequired() const
-{return mBooleanRequired;}
 
 // virtual
 bool CEvaluationNodeCall::isBoolean() const

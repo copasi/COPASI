@@ -438,8 +438,6 @@ CIssue CEvaluationTree::compileNodes()
     }
   else
     {
-      const CObjectInterface * pObject;
-
       for (it = mpNodeList->begin(); it != end; ++it)
         switch ((*it)->mainType())
           {
@@ -570,12 +568,18 @@ CIssue CEvaluationTree::updateTree()
   return mIssue;
 }
 
-bool CEvaluationTree::setTree(const ASTNode& pRootNode)
+// virtual
+const CObjectInterface * CEvaluationTree::getNodeObject(const CCommonName & CN) const
 {
-  return setRoot(CEvaluationTree::fromAST(&pRootNode));
+  return NULL;
 }
 
-CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
+bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
+{
+  return setRoot(CEvaluationTree::fromAST(&pRootNode, isFunction));
+}
+
+CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunction)
 {
   if (pASTNode == NULL) return NULL;
 
@@ -613,10 +617,27 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode)
                 break;
 
               case AST_NAME:
+
+                if (isFunction)
+                  pResultNode = CEvaluationNodeVariable::fromAST(*itNode, itNode.context());
+                else
+                  pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
+
+                break;
+
               case AST_NAME_TIME:
-#if LIBSBML_VERSION >= 40100
+
+                if (isFunction)
+                  {
+                    fatalError();
+                  }
+                else
+                  pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
+
+                break;
+
               case AST_NAME_AVOGADRO:
-#endif // LIBSBML_VERSION >= 40100
+
                 // create a CEvaluationNodeObject
                 pResultNode = CEvaluationNodeObject::fromAST(*itNode, itNode.context());
                 break;

@@ -101,6 +101,13 @@ public:
   virtual std::string getXPPString(const std::vector< std::string > & children) const;
 
   /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return CIssue issue;
+   */
+  virtual CIssue setValueType(const ValueType & valueType);
+
+  /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
    * @param const ASTNode* pNode
    * @param const std::vector< CEvaluationNode * > & children

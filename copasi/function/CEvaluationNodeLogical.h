@@ -178,12 +178,6 @@ public:
   static CEvaluationNode * fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children);
 
   /**
-   * Check whether the result is Boolean
-   * @return bool isBoolean
-   */
-  virtual bool isBoolean() const;
-
-  /**
    * Create a new ASTNode corresponding to this OperatorNode.
    * @return ASTNode* return a pointer to the newly created node;
    */

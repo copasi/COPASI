@@ -25,6 +25,7 @@
 #include "CFunctionDB.h"
 
 #include "copasi/core/CRootContainer.h"
+#include "model/CModel.h"
 #include "utilities/copasimathml.h"
 
 // static

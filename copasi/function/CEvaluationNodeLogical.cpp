@@ -30,7 +30,9 @@ CEvaluationNodeLogical::CEvaluationNodeLogical():
   mpRightNode(NULL),
   mpLeftValue(NULL),
   mpRightValue(NULL)
-{}
+{
+  mValueType = Boolean;
+}
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
@@ -40,6 +42,8 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
   mpLeftValue(NULL),
   mpRightValue(NULL)
 {
+  mValueType = Boolean;
+
   switch (mSubType)
     {
       case S_OR:
@@ -104,10 +108,41 @@ CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
 
   mpRightValue = mpRightNode->getValuePointer();
 
-  if (mpRightNode->getSibling() == NULL) // We must have exactly two children
-    return CIssue::Success;
-  else
-    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
+  CIssue Result;
+
+  if (mpRightNode->getSibling() != NULL) // We must have exactly two children
+    Result &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
+
+  // The child nodes must have the same type
+  switch (mSubType)
+    {
+      case S_OR:
+      case S_XOR:
+      case S_AND:
+        Result &= mpLeftNode->setValueType(Boolean);
+        Result &= mpRightNode->setValueType(Boolean);
+        break;
+
+      case S_EQ:
+      case S_NE:
+
+        if (mpLeftNode->getValueType() != Unknown)
+          Result &= mpRightNode->setValueType(mpLeftNode->getValueType());
+        else if (mpRightNode->getValueType() != Unknown)
+          Result &= mpLeftNode->setValueType(mpRightNode->getValueType());
+
+        break;
+
+      case S_GT:
+      case S_GE:
+      case S_LT:
+      case S_LE:
+        Result &= mpLeftNode->setValueType(Number);
+        Result &= mpRightNode->setValueType(Number);
+        break;
+    }
+
+  return Result;
 }
 
 // virtual
@@ -587,10 +622,6 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 
   return pNode;
 }
-
-// virtual
-bool CEvaluationNodeLogical::isBoolean() const
-{return true;}
 
 ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
 {

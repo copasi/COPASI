@@ -94,10 +94,17 @@ CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
 
   mpFalseValue = mpFalseNode->getValuePointer();
 
-  if (mpFalseNode->getSibling() == NULL) // We must have exactly three children
-    return CIssue::Success;
-  else
+  if (mpFalseNode->getSibling() != NULL) // We must have exactly three children
     return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
+
+  // True and false node must have the same type if either is known
+  if (mpTrueNode->getValueType() != Unknown)
+    return mpFalseNode->setValueType(mpTrueNode->getValueType());
+
+  if (mpFalseNode->getValueType() != Unknown)
+    return mpTrueNode->setValueType(mpFalseNode->getValueType());
+
+  return CIssue::Success;
 }
 
 // virtual
@@ -143,6 +150,24 @@ std::string CEvaluationNodeChoice::getXPPString(const std::vector< std::string >
     return "if(" + children[0] + ")then(" + children[1] + ")else(" + children[2] + ")";
   else
     return "@"; //TODO
+}
+
+// virtual
+CIssue CEvaluationNodeChoice::setValueType(const CEvaluationNode::ValueType & valueType)
+{
+  CIssue Result;
+
+  if (mpTrueNode != NULL)
+    {
+      Result &= mpTrueNode->setValueType(valueType);
+    }
+
+  if (mpFalseNode != NULL)
+    {
+      Result &= mpFalseNode->setValueType(valueType);
+    }
+
+  return Result;
 }
 
 // static

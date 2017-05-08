@@ -119,7 +119,7 @@ bool CCopasiXML::save(std::ostream & os,
   mPWD = relativeTo;
 
   os.imbue(std::locale::classic());
-  os.precision(16);
+  os.precision(std::numeric_limits<double>::digits10 + 2);
 
   mpOstream = &os;
   bool success = true;
@@ -184,7 +184,7 @@ bool CCopasiXML::load(std::istream & is,
   mPWD = relativeTo;
 
   is.imbue(std::locale::classic());
-  is.precision(16);
+  is.precision(std::numeric_limits<double>::digits10 + 2);
 
   mpIstream = &is;
   bool success = true;

@@ -27,7 +27,10 @@ CEvaluationNodeDelay::CEvaluationNodeDelay():
   mpDelayLagNode(NULL),
   mpDelayValueValue(NULL),
   mpDelayLagValue(NULL)
-{mPrecedence = PRECEDENCE_NUMBER;}
+{
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+}
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
     const Data & /* data */):
@@ -37,6 +40,9 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
   mpDelayValueValue(NULL),
   mpDelayLagValue(NULL)
 {
+  mPrecedence = PRECEDENCE_NUMBER;
+  mValueType = Number;
+
   switch (subType)
     {
       case S_DELAY:
@@ -47,8 +53,6 @@ CEvaluationNodeDelay::CEvaluationNodeDelay(const SubType & subType,
         fatalError();
         break;
     }
-
-  mPrecedence = PRECEDENCE_FUNCTION;
 }
 
 CEvaluationNodeDelay::CEvaluationNodeDelay(const CEvaluationNodeDelay & src):

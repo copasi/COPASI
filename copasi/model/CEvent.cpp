@@ -195,8 +195,6 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpExpression) return true;
 
-  if (pExpression == mpExpression) return true;
-
   if (pExpression == NULL) return false;
 
   if (mpModel != NULL)

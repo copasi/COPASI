@@ -47,6 +47,8 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
   mpRightValue(NULL),
   mpOperator(&CEvaluationNodeOperator::s_invalid)
 {
+  mValueType = Number;
+
   switch (mSubType)
     {
       case S_POWER:
@@ -114,10 +116,16 @@ CIssue CEvaluationNodeOperator::compile(const CEvaluationTree * /* pTree */)
 
   mpRightValue = mpRightNode->getValuePointer();
 
-  if (mpRightNode->getSibling() == NULL) // We must have only two children
-    return CIssue::Success;
-  else
-    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
+  CIssue Result;
+
+  if (mpRightNode->getSibling() != NULL) // We must have only two children
+    Result &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
+
+  // We must be able to set the left and right nodes to numbers
+  Result &= mpLeftNode->setValueType(Number);
+  Result &= mpRightNode->setValueType(Number);
+
+  return Result;
 }
 
 // virtual
@@ -596,7 +604,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               {
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << pow(*child1->getValuePointer(), *child2->getValuePointer());
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
@@ -628,7 +636,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 CEvaluationNode* newchild2 = CEvaluationNode::create(T_OPERATOR, S_POWER, "^");
                 CEvaluationNode* grandchild1 = child1;
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << fabs(*child2->getValuePointer());
                 CEvaluationNode* grandchild2 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 newnode->addChild(newchild1, NULL);
@@ -751,7 +759,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
             CEvaluationNode* newchild2 = CEvaluationNode::create((Type)(T_OPERATOR | S_POWER), "^");
             CEvaluationNode * grandchild1 = child1;
             std::stringstream tmp;
-            tmp.precision(18);
+            tmp.precision(std::numeric_limits<double>::digits10 + 2);
             tmp << *child2->getValuePointer() - 1.0;
             CEvaluationNode * grandchild2 = CEvaluationNode::create((Type)(T_NUMBER | S_DOUBLE), tmp.str());
             newnode->addChild(newchild1, NULL);
@@ -794,7 +802,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               {
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << *child1->getValuePointer() **child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
@@ -826,7 +834,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 CEvaluationNode *newnode = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
                 CEvaluationNode *newchild1 = CEvaluationNode::create(T_OPERATOR, S_MULTIPLY, "*");
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << fabs(*child1->getValuePointer());
                 CEvaluationNode *grandchild1 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 CEvaluationNode *grandchild2 = child2;
@@ -863,7 +871,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
                 CEvaluationNode *newnode = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
                 CEvaluationNode *newchild1 = CEvaluationNode::create(T_OPERATOR, S_MULTIPLY, "*");
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << fabs(*child2->getValuePointer());
                 CEvaluationNode *grandchild1 = child1;
                 CEvaluationNode *grandchild2 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
@@ -1110,7 +1118,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               {
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << *child1->getValuePointer() / *child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
@@ -1322,7 +1330,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               {
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << *child1->getValuePointer() + *child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;
@@ -1371,7 +1379,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
               {
                 // both children T_NUMBERs ->calculate
                 std::stringstream tmp;
-                tmp.precision(18);
+                tmp.precision(std::numeric_limits<double>::digits10 + 2);
                 tmp << *child1->getValuePointer() - *child2->getValuePointer();
                 CEvaluationNode *newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
                 delete child1;

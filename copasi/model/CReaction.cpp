@@ -1332,8 +1332,17 @@ CEvaluationNode* CReaction::objects2variables(const CEvaluationNode* pNode, std:
       switch (itNode->mainType())
         {
           case CEvaluationNode::T_OBJECT:
+
             // convert to a variable node
-            pResult = object2variable(static_cast<const CEvaluationNodeObject * >(*itNode), replacementMap, copasi2sbmlmap);
+            if (itNode->subType() != CEvaluationNode::S_AVOGADRO)
+              {
+                pResult = object2variable(static_cast<const CEvaluationNodeObject * >(*itNode), replacementMap, copasi2sbmlmap);
+              }
+            else
+              {
+                pResult = itNode->copyNode(itNode.context());
+              }
+
             break;
 
           case CEvaluationNode::T_STRUCTURE:

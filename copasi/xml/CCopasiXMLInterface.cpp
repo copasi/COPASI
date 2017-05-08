@@ -232,7 +232,7 @@ CCopasiXMLInterface::DBL::operator const C_FLOAT64 & () const
 
 std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & dbl)
 {
-  os.precision(16);
+  os.precision(std::numeric_limits<double>::digits10 + 2);
 
   if (isnan(dbl.mValue))
     os << "NaN";

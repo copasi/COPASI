@@ -300,7 +300,7 @@ bool CAnnotation::isValidXML(const std::string & xml)
   std::istringstream XML;
   XML.str(xml);
   XML.imbue(std::locale::classic());
-  XML.precision(16);
+  XML.precision(std::numeric_limits<double>::digits10 + 2);
 
   bool done = false;
 

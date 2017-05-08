@@ -322,7 +322,7 @@ void CMathObject::calculateValue()
   // Check for NaN
   if (isnan(*mpValue) && mpExpression->getInfix() != "")
     {
-      // std::cout << "NaN Value for: " << getCN() << std::endl;
+      std::cout << "NaN Value for: " << getCN() << std::endl;
     }
 
 #endif // COPASI_DEBUG
@@ -877,7 +877,7 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   Infix << pointerToString(&container.getQuantity2NumberFactor());
   Infix << "*";
@@ -1125,7 +1125,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   // Propensity for reversible reactions must be NaN
   if (pReaction->isReversible())
@@ -1142,7 +1142,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
         {
           std::ostringstream Divisor;
           Divisor.imbue(std::locale::classic());
-          Divisor.precision(16);
+          Divisor.precision(std::numeric_limits<double>::digits10 + 2);
 
           const CDataVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
           CDataVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
@@ -1220,7 +1220,7 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = pMoiety->getEquation().begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = pMoiety->getEquation().end();
@@ -1271,7 +1271,7 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   Infix << pointerToString(container.getMathObject(pMoiety->getTotalNumberReference())->getValuePointer());
 
@@ -1330,7 +1330,7 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   switch (pSpecies->getStatus())
     {
@@ -1347,11 +1347,11 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
       {
         std::ostringstream PositiveFlux;
         PositiveFlux.imbue(std::locale::classic());
-        PositiveFlux.precision(16);
+        PositiveFlux.precision(std::numeric_limits<double>::digits10 + 2);
 
         std::ostringstream NegativeFlux;
         NegativeFlux.imbue(std::locale::classic());
-        NegativeFlux.precision(16);
+        NegativeFlux.precision(std::numeric_limits<double>::digits10 + 2);
 
         std::string Key = pSpecies->getKey();
         bool First = true;
@@ -1499,7 +1499,7 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   Infix << pointerToString(container.getMathObject(pNumber)->getValuePointer());
   Infix << "/(";
@@ -1543,7 +1543,7 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   Infix << pointerToString(&container.getQuantity2NumberFactor());
   Infix << "*";
@@ -1576,7 +1576,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   Infix << "(";
   Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
@@ -1608,7 +1608,7 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   /*
     mRate = mpModel->getQuantity2NumberFactor() *
@@ -1643,7 +1643,7 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   std::string Key = pSpecies->getKey();
   bool First = true;

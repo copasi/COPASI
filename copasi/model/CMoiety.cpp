@@ -161,7 +161,7 @@ std::string CMoiety::getDescription(const CModel * model) const
 {
   std::ostringstream Description;
   Description.imbue(std::locale::classic());
-  Description.precision(16);
+  Description.precision(std::numeric_limits<double>::digits10 + 2);
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();
@@ -225,7 +225,7 @@ std::string CMoiety::getExpression() const
 {
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator it = mEquation.begin();
   std::vector< std::pair< C_FLOAT64, CMetab * > >::const_iterator end = mEquation.end();

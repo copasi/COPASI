@@ -65,7 +65,7 @@ CRDFGraph * CRDFParser::parse(std::istream & stream)
   bool done = false;
 
   stream.imbue(std::locale::classic());
-  stream.precision(16);
+  stream.precision(std::numeric_limits<double>::digits10 + 2);
 
   // Create the new graph
   CRDFGraph * pGraph = new CRDFGraph;

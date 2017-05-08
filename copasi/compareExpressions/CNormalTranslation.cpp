@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -222,7 +227,7 @@ CEvaluationNode* CNormalTranslation::expandPowerExponents(const CEvaluationNode*
           else if (((*it)->mainType() == CEvaluationNode::T_NUMBER && *dynamic_cast<const CEvaluationNodeNumber *>((*it))->getValuePointer() < 0.0))
             {
               std::ostringstream os;
-              os.precision(18);
+              os.precision(std::numeric_limits<double>::digits10 + 2);
               os << fabs(*dynamic_cast<const CEvaluationNodeNumber *>(*it)->getValuePointer());
               pPowerNode->addChild(new CEvaluationNodeNumber((*it)->subType(), os.str().c_str()));
               denominatorNodes.push_back(pPowerNode);
@@ -718,7 +723,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationFunction(const CEvalua
         if (pChild->mainType() == CEvaluationNode::T_NUMBER)
           {
             std::ostringstream os;
-            os.precision(18);
+            os.precision(std::numeric_limits<double>::digits10 + 2);
             os << -1.0 * *dynamic_cast<const CEvaluationNodeNumber *>(pChild)->getValuePointer();
             pResult = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
           }
@@ -1440,7 +1445,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(const CEvaluatio
 //                if (fabs((value - 1.0)) >= ZERO)
 //                  {
 //                    std::ostringstream os;
-//                    os.precision(18);
+//                    os.precision(std::numeric_limits<double>::digits10 + 2);
 //
 //                    if (fabs(value) < 1.0)
 //                      {
@@ -1580,7 +1585,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(const CEvaluatio
 //                if (fabs(value) >= ZERO)
 //                  {
 //                    std::ostringstream os;
-//                    os.precision(18);
+//                    os.precision(std::numeric_limits<double>::digits10 + 2);
 //
 //                    if (value < 0.0)
 //                      {
@@ -1676,7 +1681,7 @@ CEvaluationNode* CNormalTranslation::elementaryEliminationMinus(const CEvaluatio
 //                        if (newSubtractions.size() == 1 && CEvaluationNode::type(newSubtractions[0]->mainType()) == CEvaluationNode::T_NUMBER)
 //                          {
 //                            std::ostringstream os;
-//                            os.precision(18);
+//                            os.precision(std::numeric_limits<double>::digits10 + 2);
 //                            os << -1.0 * *newSubtractions[0]->getValuePointer();
 //                            pTmpOrig = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
 //
@@ -1915,7 +1920,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                         if (fabs((value - 1.0)) >= ZERO)
                           {
                             std::ostringstream os;
-                            os.precision(18);
+                            os.precision(std::numeric_limits<double>::digits10 + 2);
 
                             if (fabs(value) < 1.0)
                               {
@@ -2102,7 +2107,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                         if (fabs(value) >= ZERO)
                           {
                             std::ostringstream os;
-                            os.precision(18);
+                            os.precision(std::numeric_limits<double>::digits10 + 2);
 
                             if (value < 0.0)
                               {
@@ -2183,7 +2188,7 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
                                 if (newSubtractions.size() == 1 && newSubtractions[0]->mainType() == CEvaluationNode::T_NUMBER)
                                   {
                                     std::ostringstream os;
-                                    os.precision(18);
+                                    os.precision(std::numeric_limits<double>::digits10 + 2);
                                     os << -1.0 * *newSubtractions[0]->getValuePointer();
                                     delete pTmpOrig;
                                     pTmpOrig = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
@@ -2636,7 +2641,7 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
           if (pCurrentNode->mainType() == CEvaluationNode::T_NUMBER && *pCurrentNode->getValuePointer() < 0.0)
             {
               std::ostringstream os;
-              os.precision(18);
+              os.precision(std::numeric_limits<double>::digits10 + 2);
               os << *pCurrentNode->getValuePointer() * -1.0;
               CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
 
@@ -2674,7 +2679,7 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
                     {
                       CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
                       std::ostringstream os;
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *static_cast<const CEvaluationNodeNumber *>(pCurrentNode->getChild())->getValuePointer() * -1.0;
                       pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
                       pTmp->addChild(dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild()->getSibling())->copyBranch());
@@ -2711,7 +2716,7 @@ void CNormalTranslation::splitSum(const CEvaluationNode* pRoot, std::vector<CEva
                       CEvaluationNode* pTmp = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
                       pTmp->addChild(dynamic_cast<const CEvaluationNode*>(pCurrentNode->getChild())->copyBranch());
                       std::ostringstream os;
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *static_cast<const CEvaluationNodeNumber *>(pCurrentNode->getChild()->getSibling())->getValuePointer() * -1.0;
                       pTmp->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
 
@@ -3175,7 +3180,7 @@ std::vector<product_match> CNormalTranslation::matchPowerBases(const std::vector
                       if (matchPos->second.factor != 0.0)
                         {
                           os.str("");
-                          os.precision(18);
+                          os.precision(std::numeric_limits<double>::digits10 + 2);
                           os << matchPos->second.factor;
                           pExponent = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                           pAddNode = new CEvaluationNodeOperator(CEvaluationNode::S_PLUS, "+");
@@ -3529,7 +3534,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
           if (pNode->mainType() == CEvaluationNode::T_NUMBER)
             {
               std::ostringstream os;
-              os.precision(18);
+              os.precision(std::numeric_limits<double>::digits10 + 2);
               os << static_cast<CEvaluationNodeNumber*>(pNode)->getValue() * -1.0;
               CEvaluationNode* pTmpNumber = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
               delete pNode;
@@ -3776,7 +3781,7 @@ std::vector<std::pair<CEvaluationNode*, CEvaluationNode*> > CNormalTranslation::
           if (pNode->mainType() == CEvaluationNode::T_NUMBER)
             {
               std::ostringstream os;
-              os.precision(18);
+              os.precision(std::numeric_limits<double>::digits10 + 2);
               os << *dynamic_cast<const CEvaluationNodeNumber *>(pNode)->getValuePointer() * -1.0;
               pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
               delete pNode;
@@ -4009,7 +4014,7 @@ CEvaluationNode* CNormalTranslation::multiply(const CEvaluationNode* pNode1, con
           if (tmp.size() == 1 && tmp[0]->mainType() == CEvaluationNode::T_NUMBER)
             {
               std::ostringstream os;
-              os.precision(18);
+              os.precision(std::numeric_limits<double>::digits10 + 2);
               os << *tmp[0]->getValuePointer() * -1.0;
               pResult = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
               delete tmp[0];
@@ -4117,7 +4122,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                                     else
                                       {
                                         os.str("");
-                                        os.precision(18);
+                                        os.precision(std::numeric_limits<double>::digits10 + 2);
                                         os << match.factor;
                                         CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
                                         pPower->addChild(match.pNode);
@@ -4136,7 +4141,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                                         CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
                                         pPower->addChild(match.pNode);
                                         os.str("");
-                                        os.precision(18);
+                                        os.precision(std::numeric_limits<double>::digits10 + 2);
                                         os << fabs(match.factor);
                                         pPower->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
                                         denominatorChain.push_back(pPower);
@@ -4295,7 +4300,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                               {
                                 CEvaluationNode* pMult = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
                                 os.str("");
-                                os.precision(18);
+                                os.precision(std::numeric_limits<double>::digits10 + 2);
                                 os << match.factor;
                                 pMult->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
                                 assert(pMult != NULL);
@@ -4553,7 +4558,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
 //                    {
 //                      CEvaluationNode* pMult = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
 //                      os.str("");
-//                      os.precision(18);
+//                      os.precision(std::numeric_limits<double>::digits10 + 2);
 //                      os << match.factor;
 //                      pMult->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
 //                      assert(pMult != NULL);
@@ -4688,7 +4693,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
 //                          else
 //                            {
 //                              os.str("");
-//                              os.precision(18);
+//                              os.precision(std::numeric_limits<double>::digits10 + 2);
 //                              os << match.factor;
 //                              CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
 //                              pPower->addChild(match.pNode);
@@ -4707,7 +4712,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
 //                              CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
 //                              pPower->addChild(match.pNode);
 //                              os.str("");
-//                              os.precision(18);
+//                              os.precision(std::numeric_limits<double>::digits10 + 2);
 //                              os << fabs(match.factor);
 //                              pPower->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
 //                              denominatorChain.push_back(pPower);
@@ -4978,7 +4983,7 @@ CEvaluationNode* CNormalTranslation::newCancel(const CEvaluationNode* pOrig)
                             CEvaluationNode* pPower = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
                             pPower->addChild(pair.second);
                             std::ostringstream os;
-                            os.precision(18);
+                            os.precision(std::numeric_limits<double>::digits10 + 2);
                             os << fabs(*dynamic_cast<const CEvaluationNodeNumber *>(pair.first)->getValuePointer());
                             pPower->addChild(new CEvaluationNodeNumber(CEvaluationNode::subType(pair.first->getType()), os.str().c_str()));
                             delete pair.first;
@@ -5963,7 +5968,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
           it = v1.erase(it);
           endit = v1.end();
           os.str("");
-          os.precision(18);
+          os.precision(std::numeric_limits<double>::digits10 + 2);
           os << *pNode->getValuePointer() * -1.0;
           v2.push_back(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
           delete pNode;
@@ -5985,7 +5990,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   if (*pChild1->getValuePointer() < 0.0 && *pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild1);
@@ -5993,7 +5998,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                       pNode->addChild(pTmpNode);
                       delete pChild1;
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->addChild(pTmpNode);
@@ -6002,7 +6007,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   else if (*pChild1->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild1);
@@ -6016,7 +6021,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   else if (*pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild2);
@@ -6033,7 +6038,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   if (*pChild1->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild1);
@@ -6050,7 +6055,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   if (*pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild2);
@@ -6081,7 +6086,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
           it = v2.erase(it);
           endit = v2.end();
           os.str("");
-          os.precision(18);
+          os.precision(std::numeric_limits<double>::digits10 + 2);
           os << *pNode->getValuePointer() * -1.0;
           v1.push_back(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
           delete pNode;
@@ -6103,7 +6108,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   if (*pChild1->getValuePointer() < 0.0 && *pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild1);
@@ -6111,7 +6116,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                       pNode->addChild(pTmpNode);
                       delete pChild1;
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->addChild(pTmpNode);
@@ -6120,7 +6125,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   else if (*pChild1->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild1);
@@ -6134,7 +6139,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   else if (*pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild2);
@@ -6151,7 +6156,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   if (*pChild1->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild1);
@@ -6168,7 +6173,7 @@ void CNormalTranslation::swapNegativeNumbers(std::vector<CEvaluationNode*>& v1, 
                   if (*pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       pNode->removeChild(pChild2);
@@ -6208,7 +6213,7 @@ void CNormalTranslation::findNegativeNumbers(std::vector<const CEvaluationNode*>
           it = v1.erase(it);
           endit = v1.end();
           os.str("");
-          os.precision(18);
+          os.precision(std::numeric_limits<double>::digits10 + 2);
           os << *pNode->getValuePointer() * -1.0;
           v2.push_back(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str()));
           continue;
@@ -6236,7 +6241,7 @@ void CNormalTranslation::findNegativeNumbers(std::vector<const CEvaluationNode*>
                   else if (*pChild1->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       std::vector<CEvaluationNode*> children;
@@ -6251,7 +6256,7 @@ void CNormalTranslation::findNegativeNumbers(std::vector<const CEvaluationNode*>
                   else if (*pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       std::vector<CEvaluationNode*> children;
@@ -6269,7 +6274,7 @@ void CNormalTranslation::findNegativeNumbers(std::vector<const CEvaluationNode*>
                   if (*pChild1->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild1->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       std::vector<CEvaluationNode*> children;
@@ -6287,7 +6292,7 @@ void CNormalTranslation::findNegativeNumbers(std::vector<const CEvaluationNode*>
                   if (*pChild2->getValuePointer() < 0.0)
                     {
                       os.str("");
-                      os.precision(18);
+                      os.precision(std::numeric_limits<double>::digits10 + 2);
                       os << *pChild2->getValuePointer() * -1.0;
                       CEvaluationNodeNumber* pTmpNode = new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str().c_str());
                       std::vector<CEvaluationNode*> children;

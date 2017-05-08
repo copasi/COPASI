@@ -1022,8 +1022,10 @@ private:
   /**
    * Create an event of type CEvent::Discontinuity for each discontinuity the tree with root pNode
    * @param const CEvaluationTree * pTree
+   * @param const std::vector< CEvaluationNode * > & variables
    */
-  void createDiscontinuityEvents(const CEvaluationTree * pTree);
+  void createDiscontinuityEvents(const CEvaluationTree * pTree,
+                                 const std::vector< CEvaluationNode * > & variables);
 
   /**
    * Create an event of type CEvent::Discontinuity for the given node

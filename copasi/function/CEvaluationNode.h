@@ -153,7 +153,15 @@ public:
     S_RGAMMA = 0x0000004C,
     S_RPOISSON = 0x0000004D,
     S_SIGN = 0x0000004E,
+    S_AVOGADRO = 0x0000004F,
     S_INVALID = 0x00FFFFFF
+  };
+
+  enum ValueType
+  {
+    Unknown,
+    Boolean,
+    Number
   };
 
   // Methods
@@ -328,6 +336,19 @@ public:
   virtual bool isBoolean() const;
 
   /**
+   * Set the type the result of the node
+   * @param const ValueType & valueType
+   * @return CIssue issue;
+   */
+  virtual CIssue setValueType(const ValueType & valueType);
+
+  /**
+   * Retrieve the value type of the node
+   * @return const ValueType & valueType
+   */
+  const ValueType & getValueType() const;
+
+  /**
    * Add the children to the node
    * @param const std::vector< CEvaluationNode * > & children
    */
@@ -451,6 +472,11 @@ protected:
    * The type the node
    */
   SubType mSubType;
+
+  /**
+   * The value type of the node
+   */
+  ValueType mValueType;
 
   /**
    * The numerical value of the node

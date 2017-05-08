@@ -115,7 +115,7 @@ public:
    * @param const CCommonName & CN
    * @return const CObjectInterface * value
    */
-  const CObjectInterface * getNodeObject(const CCommonName & CN) const;
+  virtual const CObjectInterface * getNodeObject(const CCommonName & CN) const;
 
 public:
   /**

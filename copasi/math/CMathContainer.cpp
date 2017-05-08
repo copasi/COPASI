@@ -1605,7 +1605,8 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch (itNode->mainType() | itNode->subType())
         {
-            // Handle object nodes which are of type CN
+            // Handle object nodes which are of type CN and AVOGADRO
+          case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_AVOGADRO):
           case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_CN):
           {
             // We need to map the object to a math object if possible.
@@ -1624,7 +1625,10 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
               getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
 
             // Create a converted node
-            pCopy = createNodeFromObject(pObject);
+            if (pObject != NULL)
+              pCopy = createNodeFromObject(pObject);
+            else
+              pCopy = (*itNode)->copyNode(itNode.context());
           }
           break;
 
@@ -4347,16 +4351,21 @@ void CMathContainer::createDiscontinuityEvents()
   std::vector< const CEvaluationTree * >::const_iterator it = TreesWithDiscontinuities.begin();
   std::vector< const CEvaluationTree * >::const_iterator end = TreesWithDiscontinuities.end();
 
+  std::vector< CEvaluationNode * > Variables;
+
   for (; it != end; ++it)
     {
-      createDiscontinuityEvents(*it);
+      createDiscontinuityEvents(*it, Variables);
     }
 }
 
-void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
+void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
+    const std::vector< CEvaluationNode * > & variables)
 {
-  CEvaluationNodeConstant VariableNode(CEvaluationNode::S_NAN, "NAN");
-  CNodeIterator< const CEvaluationNode > itNode(pTree->getRoot());
+  // We create an AST in which all function calls are expanded
+  CEvaluationNode * pRoot = copyBranch(pTree->getRoot(), variables, false);
+
+  CNodeIterator< CEvaluationNode  > itNode(pRoot);
 
   while (itNode.next() != itNode.end())
     {
@@ -4375,17 +4384,19 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree)
             createDiscontinuityDataEvent(*itNode);
             break;
 
-            // Call nodes may include discontinuities but each called tree is handled
-            // separately.
+            // Call nodes and variables are eliminated.
           case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
           case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
-            createDiscontinuityEvents(static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree());
+          case (CEvaluationNode::T_VARIABLE | CEvaluationNode::S_DEFAULT):
+            fatalError();
             break;
 
           default:
             break;
         }
     }
+
+  pdelete(pRoot);
 
   return;
 }

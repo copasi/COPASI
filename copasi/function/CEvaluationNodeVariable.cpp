@@ -66,11 +66,30 @@ void CEvaluationNodeVariable::calculate()
   mValue = mpTree->getVariableValue(mIndex);
 }
 
+// virtual
+CIssue CEvaluationNodeVariable::setValueType(const ValueType & valueType)
+{
+  if (mValueType == Unknown)
+    {
+      mValueType = valueType;
+    }
+
+  return CEvaluationNode::setValueType(valueType);
+}
+
 size_t CEvaluationNodeVariable::getIndex() const
 {return mIndex;}
 
+// static
+CEvaluationNode * CEvaluationNodeVariable::fromAST(const ASTNode * pASTNode, const std::vector< CEvaluationNode * > & children)
+{
+  assert(pASTNode->getNumChildren() == children.size());
+
+  return new CEvaluationNodeVariable(S_DEFAULT, pASTNode->getName());
+}
+
 // virtual
-CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & /* container */,
+CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & container,
     const std::vector< CValidatedUnit > & units) const
 {
   if (mIndex < units.size())

@@ -46,7 +46,8 @@ const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CI
   "variable in expression",
   "unfound CExpression",
   "unfound CFunction",
-  "mismatched variables"
+  "mismatched variables",
+  "inconsistent value types"
 };
 
 // static
@@ -73,7 +74,8 @@ const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CI
   "Expression contains a variable.",
   "CExpression not found.",
   "CFunction not found.",
-  "Variables are mismatched."
+  "Variables are mismatched.",
+  "Inconsistent value types encountered."
 };
 
 CIssue::CIssue(const CIssue::eSeverity & severity,
@@ -96,6 +98,17 @@ CIssue::operator bool()
   // evaluation, it will evaluate to "true" that there IS NOT a
   // significant "issue", if it is not at "Error" severity.
   return (mSeverity != CIssue::eSeverity::Error);
+}
+
+CIssue & CIssue::operator &= (const CIssue & rhs)
+{
+  if (rhs.mSeverity > mSeverity)
+    {
+      mSeverity = rhs.mSeverity;
+      mKind = rhs.mKind;
+    }
+
+  return *this;
 }
 
 bool CIssue::isError() const
