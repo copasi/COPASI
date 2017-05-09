@@ -164,6 +164,11 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
             if (pContainer != NULL)
               {
                 mpObject = pContainer->getMathObject(mpValue);
+
+                if (mpObject == NULL)
+                  {
+                    mpObject = pContainer->getDataObject(mpValue);
+                  }
               }
           }
 

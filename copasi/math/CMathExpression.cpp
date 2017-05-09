@@ -214,30 +214,11 @@ bool CMathExpression::compile()
       if ((*it)->mainType() == CEvaluationNode::T_OBJECT &&
           (*it)->subType() == CEvaluationNode::S_POINTER)
         {
-          void * pValue = stringToPointer((*it)->getData());
-
-          CMathObject * pMathObject = pMathContainer->getMathObject((C_FLOAT64 *) pValue);
-
-          if (pMathObject != NULL)
-            {
-              mPrerequisites.insert(pMathObject);
-            }
-          else
-            {
-              CCopasiObject * pDataObject = pMathContainer->getDataObject((C_FLOAT64 *) pValue);
-
-              if (pDataObject != NULL)
-                {
-                  mPrerequisites.insert(pDataObject);
-                }
-              else
-                {
-                  // This must never happen
-                  fatalError();
-                }
-            }
+          mPrerequisites.insert(static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr());
         }
     }
+
+  assert(mPrerequisites.erase(NULL) == 0);
 
   if (mInfix == "@")
     {

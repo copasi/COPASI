@@ -371,8 +371,11 @@ CMathContainer::CMathContainer(CModel & model):
   // do not use &model in the constructor of CCopasiContainer
   setObjectParent(mpModel);
 
-  mpAvogadro = mpModel->getObject(CCopasiObjectName("Reference=Avogadro Constant"));
-  mpQuantity2NumberFactor = mpModel->getObject(CCopasiObjectName("Reference=Quantity Conversion Factor"));
+  mpAvogadro = CObjectInterface::DataObject(mpModel->getObject(std::string("Reference=Avogadro Constant")));
+  mDataValue2DataObject[(C_FLOAT64*) mpAvogadro->getValuePointer()] = const_cast< CCopasiObject * >(mpAvogadro);
+
+  mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getObject(std::string("Reference=Quantity Conversion Factor")));
+  mDataValue2DataObject[(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CCopasiObject * >(mpQuantity2NumberFactor);
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src):
@@ -629,7 +632,7 @@ const bool & CMathContainer::isAutonomous() const
 
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
 {
-  return *(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer();
+  return *(const C_FLOAT64 *)mpQuantity2NumberFactor->getValuePointer();
 }
 
 const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
@@ -689,8 +692,8 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
             std::map< const CCopasiObject *, CMathObject * >::const_iterator itFound
               = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
 
-            C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer())
-                              ** (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
+            C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer()) *
+                              * (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
 
             if (InitialValue != 0.0)
               *pAtol *= std::min(Limit, InitialValue);
@@ -2146,6 +2149,14 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
   const CMathObject * pObject = mObjects.array();
   const CMathObject * pObjectEnd = getMathObject(mExtensiveValues.array());
+
+  mInitialStateValueAll.insert(mpAvogadro);
+  mInitialStateValueExtensive.insert(mpAvogadro);
+  mInitialStateValueIntensive.insert(mpAvogadro);
+
+  mInitialStateValueAll.insert(mpQuantity2NumberFactor);
+  mInitialStateValueExtensive.insert(mpQuantity2NumberFactor);
+  mInitialStateValueIntensive.insert(mpQuantity2NumberFactor);
 
   for (; pObject != pObjectEnd; ++pObject)
     {
