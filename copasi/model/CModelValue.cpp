@@ -265,13 +265,6 @@ void CModelEntity::calculate()
     }
 }
 
-void CModelEntity::refreshInitialValue()
-{
-  if (mpInitialExpression != NULL &&
-      mpInitialExpression->getInfix() != "")
-    mIValue = mpInitialExpression->calcValue();
-}
-
 bool CModelEntity::setExpression(const std::string & expression)
 {
   if (isFixed()) return false;

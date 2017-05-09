@@ -146,11 +146,6 @@ public:
   const C_FLOAT64 & getInitialValue() const;
 
   /**
-   * Refresh the initial value
-   */
-  virtual void refreshInitialValue();
-
-  /**
    * Return rate of production of this entity
    */
   const C_FLOAT64 & getRate() const;

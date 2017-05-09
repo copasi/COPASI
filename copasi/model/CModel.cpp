@@ -1888,7 +1888,7 @@ CMetab* CModel::createMetabolite(const std::string & name,
 
   pMetab->setStatus(status);
   pMetab->setInitialConcentration(iconc);
-  pMetab->refreshInitialValue();
+  pMetab->setInitialValue(iconc * mCompartments[Index].getInitialValue() * mpModel->getQuantity2NumberFactor());
 
   if (!mMetabolites.add(pMetab, false))
     return NULL;

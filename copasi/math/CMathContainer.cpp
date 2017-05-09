@@ -1109,6 +1109,10 @@ void CMathContainer::fetchInitialState()
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {
+      // We must not fetch initial values of type assignment as they may be calculated
+      // by a constant expression which is only evaluated during CMathObject::compile.
+      if (pObject->getSimulationType() == CMath::Assignment) continue;
+
       const CDataObject * pDataObject = pObject->getDataObject();
 
       if (pDataObject != NULL)
