@@ -214,38 +214,16 @@ CIssue CMathExpression::compile()
       NodeIssue = (*it)->compile(this);
 
       mValidity.add(NodeIssue);
-
-      // Set mIssue to the first encountered Error level issue.
-      if (mIssue && !NodeIssue)
-        mIssue = NodeIssue;
+      mIssue &= NodeIssue;
 
       if ((*it)->mainType() == CEvaluationNode::T_OBJECT &&
           (*it)->subType() == CEvaluationNode::S_POINTER)
         {
-          void * pValue = stringToPointer((*it)->getData());
-
-          CMathObject * pMathObject = pMathContainer->getMathObject((C_FLOAT64 *) pValue);
-
-          if (pMathObject != NULL)
-            {
-              mPrerequisites.insert(pMathObject);
-            }
-          else
-            {
-              CDataObject * pDataObject = pMathContainer->getDataObject((C_FLOAT64 *) pValue);
-
-              if (pDataObject != NULL)
-                {
-                  mPrerequisites.insert(pDataObject);
-                }
-              else
-                {
-                  // This must never happen
-                  fatalError();
-                }
-            }
+          mPrerequisites.insert(static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr());
         }
     }
+
+  assert(mPrerequisites.erase(NULL) == 0);
 
   if (mInfix == "@")
     {

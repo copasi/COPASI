@@ -7596,8 +7596,9 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
   //    ++reactIt;
   //}
 
-  // The Avogadro Constant may have changed and all expressions depending on it must be updated;
+  // The Avogadro Constant and the quantity conversion factor may have changed and all expressions depending on it must be updated;
   mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Avogadro Constant"))));
+  mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Quantity Conversion Factor"))));
 
   pModel->updateInitialValues(mChangedObjects);
 

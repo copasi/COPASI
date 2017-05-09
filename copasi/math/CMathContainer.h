@@ -1059,10 +1059,8 @@ private:
    * A pointer to the data model which mathematics are contained
    */
   CModel * mpModel;
-  C_FLOAT64 mAvogadroValue;
-  CMathObject mAvogadroObject;
-  C_FLOAT64 mQuantity2NumberFactorValue;
-  CMathObject mQuantity2NumberFactorObject;
+  const CDataObject * mpAvogadro;
+  const CDataObject * mpQuantity2NumberFactor;
 
   CMathEventQueue * mpProcessQueue;
   CRandom * mpRandomGenerator;

@@ -207,10 +207,8 @@ void CMathContainer::relocateObject(const CMathObject *& pObject, const std::vec
 CMathContainer::CMathContainer():
   CDataContainer("Math Container", NULL, "CMathContainer"),
   mpModel(NULL),
-  mAvogadroValue(),
-  mAvogadroObject(),
-  mQuantity2NumberFactorValue(),
-  mQuantity2NumberFactorObject(),
+  mpAvogadro(NULL),
+  mpQuantity2NumberFactor(NULL),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
@@ -300,10 +298,8 @@ CMathContainer::CMathContainer():
 CMathContainer::CMathContainer(CModel & model):
   CDataContainer("Math Container", NULL, "CMathContainer"),
   mpModel(&model),
-  mAvogadroValue(),
-  mAvogadroObject(),
-  mQuantity2NumberFactorValue(),
-  mQuantity2NumberFactorObject(),
+  mpAvogadro(NULL),
+  mpQuantity2NumberFactor(NULL),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
@@ -395,29 +391,18 @@ CMathContainer::CMathContainer(CModel & model):
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
-  const CDataObject * pAvogadro = mpModel->getObject(CCommonName("Reference=Avogadro Constant"))->getDataObject();
-  mAvogadroValue = *(C_FLOAT64 *)pAvogadro->getValuePointer();
-  CMathObject::initialize(&mAvogadroObject, &mAvogadroValue,
-                          CMath::Value, CMath::EntityTypeUndefined, CMath::Fixed, false, true,
-                          pAvogadro);
-  map(pAvogadro, &mAvogadroObject);
+  mpAvogadro = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Avogadro Constant")));
+  mDataValue2DataObject[(C_FLOAT64*) mpAvogadro->getValuePointer()] = const_cast< CDataObject * >(mpAvogadro);
 
-  const CDataObject * pQuantity2NumberFactor = mpModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getDataObject();
-  mQuantity2NumberFactorValue = *(C_FLOAT64 *)pQuantity2NumberFactor->getValuePointer();
-
-  CMathObject::initialize(&mQuantity2NumberFactorObject, &mQuantity2NumberFactorValue,
-                          CMath::Value, CMath::EntityTypeUndefined, CMath::Fixed, false, true,
-                          pQuantity2NumberFactor);
-  map(pQuantity2NumberFactor, &mQuantity2NumberFactorObject);
+  mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Quantity Conversion Factor")));
+  mDataValue2DataObject[(C_FLOAT64*) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CDataObject * >(mpQuantity2NumberFactor);
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src):
   CDataContainer(src, NULL),
   mpModel(src.mpModel),
-  mAvogadroValue(src.mAvogadroValue),
-  mAvogadroObject(src.mAvogadroObject),
-  mQuantity2NumberFactorValue(src.mQuantity2NumberFactorValue),
-  mQuantity2NumberFactorObject(src.mQuantity2NumberFactorObject),
+  mpAvogadro(src.mpAvogadro),
+  mpQuantity2NumberFactor(src.mpQuantity2NumberFactor),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
@@ -706,15 +691,12 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
 
 void CMathContainer::quantityConversionChanged(const CModelParameter::Framework & framework)
 {
-  mAvogadroValue = *(C_FLOAT64 *)mAvogadroObject.getDataObject()->getValuePointer();
-  mQuantity2NumberFactorValue = *(C_FLOAT64 *)mQuantity2NumberFactorObject.getDataObject()->getValuePointer();
-
   updateInitialValues(framework);
 }
 
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
 {
-  return mQuantity2NumberFactorValue;
+  return *(const C_FLOAT64 *)mpQuantity2NumberFactor->getValuePointer();
 }
 
 const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
@@ -774,7 +756,8 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
             std::map< const CDataObject *, CMathObject * >::const_iterator itFound
               = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
 
-            C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer()) * mQuantity2NumberFactorValue;
+            C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer()) *
+                              * (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
 
             if (InitialValue != 0.0)
               *pAtol *= std::min(Limit, InitialValue);
@@ -1293,17 +1276,6 @@ CMathObject * CMathContainer::getMathObject(const C_FLOAT64 * pDataValue) const
   if (pValues <= pDataValue && pDataValue < pValues + mValues.size())
     {
       return const_cast< CMathObject * >(mObjects.array() + (pDataValue - pValues));
-    }
-
-  // We have 2 special math objects which needs to be checked individually
-  if (pDataValue == &mAvogadroValue)
-    {
-      return const_cast< CMathObject * >(&mAvogadroObject);
-    }
-
-  if (pDataValue == &mQuantity2NumberFactorValue)
-    {
-      return const_cast< CMathObject * >(&mQuantity2NumberFactorObject);
     }
 
   std::map< C_FLOAT64 *, CMathObject * >::const_iterator found =
@@ -2132,12 +2104,6 @@ bool CMathContainer::compileObjects()
 {
   bool success = true;
 
-  mNoiseInputObjects.clear();
-
-  // Assure that Avogadro's number and the quantity conversion are up to date.
-  mAvogadroValue = *(C_FLOAT64 *)mAvogadroObject.getDataObject()->getValuePointer();
-  mQuantity2NumberFactorValue = *(C_FLOAT64 *)mQuantity2NumberFactorObject.getDataObject()->getValuePointer();
-
   CMathObject *pObject = mObjects.array();
   CMathObject *pObjectEnd = pObject + mObjects.size();
 
@@ -2192,14 +2158,6 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
     {
       // We have an invalid value, i.e. NaN
       pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, "NAN");
-    }
-  else if (pObject == mAvogadroObject.getDataObject())
-    {
-      pNode = new CEvaluationNodeObject(&mAvogadroValue);
-    }
-  else if (pObject == mQuantity2NumberFactorObject.getDataObject())
-    {
-      pNode = new CEvaluationNodeObject(&mQuantity2NumberFactorValue);
     }
   else
     {
@@ -2305,6 +2263,14 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
   const CMathObject * pObject = mObjects.array();
   const CMathObject * pObjectEnd = getMathObject(mExtensiveValues.array());
+
+  mInitialStateValueAll.insert(mpAvogadro);
+  mInitialStateValueExtensive.insert(mpAvogadro);
+  mInitialStateValueIntensive.insert(mpAvogadro);
+
+  mInitialStateValueAll.insert(mpQuantity2NumberFactor);
+  mInitialStateValueExtensive.insert(mpQuantity2NumberFactor);
+  mInitialStateValueIntensive.insert(mpQuantity2NumberFactor);
 
   for (; pObject != pObjectEnd; ++pObject)
     {
@@ -3651,10 +3617,7 @@ void CMathContainer::map(const CDataObject * pDataObject, CMathObject * pMathObj
 
 C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) const
 {
-  assert((mValues.array() <= pValue && pValue < mValues.array() + mValues.size()) ||
-         pValue == &mAvogadroValue ||
-         pValue == &mQuantity2NumberFactorValue ||
-         getDataObject(pValue) != NULL);
+  assert((mValues.array() <= pValue && pValue < mValues.array() + mValues.size()) || getDataObject(pValue) != NULL);
 
   const C_FLOAT64 * pInitialValue = pValue;
 
