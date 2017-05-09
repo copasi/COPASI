@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -136,11 +141,6 @@ public:
    * Retrieve the initial value
    */
   const C_FLOAT64 & getInitialValue() const;
-
-  /**
-   * Refresh the initial value
-   */
-  virtual void refreshInitialValue();
 
   /**
    * Return rate of production of this entity
