@@ -2129,16 +2129,6 @@ bool CMathContainer::compileEvents()
       success &= pItEvent->compile(itEvent, *this);
     }
 
-  // Events representing discontinuities.
-  std::multimap< size_t, size_t >::iterator itUnused = mRootCount2Events.begin();
-  std::multimap< size_t, size_t >::iterator endUnused = mRootCount2Events.end();
-
-  for (; itUnused != endUnused; ++itUnused)
-    {
-      // Mark the event as unused by setting the trigger to ''
-      (mCreateDiscontinuousPointer.pEvent + itUnused->second)->setTriggerExpression("", *this);
-    }
-
   itEvent = mDiscontinuityEvents.begin();
   endEvent = mDiscontinuityEvents.end();
 
@@ -2146,6 +2136,25 @@ bool CMathContainer::compileEvents()
     {
       success &= pItEvent->compile(*this);
     }
+
+  // Events representing discontinuities.
+  std::multimap< size_t, size_t >::iterator itUnused = mRootCount2Events.begin();
+  std::multimap< size_t, size_t >::iterator endUnused = mRootCount2Events.end();
+
+  size_t UnusedRoots = 0;
+
+  for (; itUnused != endUnused; ++itUnused)
+    {
+      // The event is disabled
+      (mCreateDiscontinuousPointer.pEvent + itUnused->second)->setDisabled(true);
+      UnusedRoots + itUnused->first;
+    }
+
+  mEventRoots.initialize(mSize.nEventRoots - UnusedRoots, mEventRoots.array());
+  mEventRootStates.initialize(mSize.nEventRoots - UnusedRoots, mEventRootStates.array());
+  mRootProcessors.resize(mSize.nEventRoots - UnusedRoots, true);
+  mRootIsDiscrete.resize(mSize.nEventRoots - UnusedRoots, true);
+  mRootIsTimeDependent.resize(mSize.nEventRoots - UnusedRoots, true);
 
   return success;
 }
