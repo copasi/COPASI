@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -43,6 +48,11 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
     }
 
   CCompartment *pCompartment = &pModel->getCompartments()[index.row()];
+
+  // need to store additional undo data to be able to restore
+  // species initial concentrations / particle numbers
+  mpCompartmentUndoData = new UndoCompartmentData(pCompartment);
+
   setKey(pCompartment->getKey());
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));

@@ -333,11 +333,21 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
     UndoCompartmentData* pUndoData)
 {
   GET_MODEL_OR(pModel, return false);
+  CCopasiVectorNS < CCompartment > & Compartments = pModel->getCompartments();
+  CCompartment* pCompartment = NULL;
 
-  CCompartment *pComp = &pModel->getCompartments()[index.row()];
+  if (pUndoData != NULL)
+    {
+      pCompartment = &Compartments[pUndoData->getName()];
+    }
 
-  if (pComp == NULL)
-    return false;
+  if (pCompartment == NULL)
+    {
+      assert((size_t)index.row() < Compartments.size());
+      pCompartment = &Compartments[index.row()];
+    }
+
+  assert(pCompartment != NULL);
 
   switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 
@@ -345,14 +355,14 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
 
   if (column == COL_NAME_COMPARTMENTS)
     {
-      pComp->setObjectName(TO_UTF8(value.toString()));
-      emit notifyGUI(ListViews::COMPARTMENT, ListViews::RENAME, pComp->getKey());
+      pCompartment->setObjectName(TO_UTF8(value.toString()));
+      emit notifyGUI(ListViews::COMPARTMENT, ListViews::RENAME, pCompartment->getKey());
     }
   else if (column == COL_TYPE_COMPARTMENTS)
-    pComp->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
+    pCompartment->setStatus((CModelEntity::Status) mItemToType[value.toInt()]);
   else if (column == COL_IVOLUME)
     {
-      pComp->setInitialValue(value.toDouble());
+      pCompartment->setInitialValue(value.toDouble());
 
       if (pUndoData != NULL)
         {
@@ -361,7 +371,7 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
     }
 
   emit dataChanged(index, index);
-  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pComp->getKey());
+  emit notifyGUI(ListViews::COMPARTMENT, ListViews::CHANGE, pCompartment->getKey());
 
   return true;
 }
