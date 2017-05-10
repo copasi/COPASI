@@ -8548,8 +8548,7 @@ std::string unitKindToString(UnitKind_t kind)
         return "A";
 
       case UNIT_KIND_AVOGADRO:
-        // TODO: verify what to do here
-        return "";
+        return "Avogadro";
 
       case UNIT_KIND_BECQUEREL:
         return "Bq";
