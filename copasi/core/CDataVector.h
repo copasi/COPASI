@@ -542,6 +542,14 @@ public:
   {return std::vector< CType * >::size();}
 
   /**
+   * @return a boolean indicating whether vector is empty
+   */
+  virtual bool empty() const
+  {
+    return std::vector< CType * >::empty();
+  }
+
+  /**
    *  Resizes the vector but does not create new member objects
    *  @param const size_t & newSize
    */
