@@ -50,6 +50,11 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
     }
 
   CCompartment *pCompartment = &pModel->getCompartments()[index.row()];
+
+  // need to store additional undo data to be able to restore
+  // species initial concentrations / particle numbers
+  mpCompartmentUndoData = new UndoCompartmentData(pCompartment);
+
   setKey(pCompartment->getKey());
   setName(pCompartment->getObjectName());
   setOldValue(TO_UTF8(mOld.toString()));
@@ -87,9 +92,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
       case 3:
         setProperty("Initial Volume");
-        // need to store additional undo data to be able to restore
-        // species initial concentrations / particle numbers
-        mpCompartmentUndoData = new UndoCompartmentData(pCompartment);
+
         break;
     }
 
