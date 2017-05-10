@@ -195,7 +195,7 @@ CUnit::~CUnit()
 //virtual
 CIssue CUnit::setExpression(const std::string & expression)
 {
-  if (expression.empty() || expression[0] == '/')
+  if (expression.empty())
     {
       *this = CBaseUnit::undefined;
       return CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
