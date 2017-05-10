@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -456,9 +461,29 @@ public:
    */
   const CEvent::Type & getType() const;
 
+  /**
+   * Set the callback to be executed for events of type Callback
+   * @param CCallbackInterface * pCallback
+   */
   void setCallback(CCallbackInterface * pCallback);
 
+  /**
+   * Execute the callback
+   * @param void * pCaller (default: NULL)
+   */
   void executeCallback(void * pCaller = NULL);
+
+  /**
+   * Set whether the event is disabled.
+   * @param const bool & disabled
+   */
+  void setDisabled(const bool & disabled);
+
+  /**
+   * Check whether an even is disabled.
+   * @return const bool & isDisabled
+   */
+  const bool & isDisabled() const;
 
 private:
   /**
@@ -551,6 +576,11 @@ private:
    * A pointer to the currently pending actions for used for persistent triggers
    */
   std::pair< CMathEventQueue::CKey, CMathEventQueue::CAction > * mpPendingAction;
+
+  /**
+   * A Boolean flag indicating whether the even is disabled, i.e., will not fire
+   */
+  bool mDisabled;
 };
 
 #endif // COPASI_CMathEvent

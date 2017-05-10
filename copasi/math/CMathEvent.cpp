@@ -1092,7 +1092,8 @@ CMathEvent::CMathEvent():
   mFireAtInitialTime(false),
   mTriggerIsPersistent(false),
   mDelayExecution(true),
-  mpPendingAction(NULL)
+  mpPendingAction(NULL),
+  mDisabled(false)
 {}
 
 CMathEvent::CMathEvent(const CMathEvent & src):
@@ -1113,7 +1114,8 @@ CMathEvent::CMathEvent(const CMathEvent & src):
   mFireAtInitialTime(src.mFireAtInitialTime),
   mTriggerIsPersistent(src.mTriggerIsPersistent),
   mDelayExecution(src.mDelayExecution),
-  mpPendingAction(NULL)
+  mpPendingAction(NULL),
+  mDisabled(src.mDisabled)
 {}
 
 /**
@@ -1146,6 +1148,7 @@ CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
   mTriggerIsPersistent = rhs.mTriggerIsPersistent;
   mDelayExecution = rhs.mDelayExecution;
   mpPendingAction = NULL;
+  mDisabled = rhs.mDisabled;
 
   return *this;
 }
@@ -1473,8 +1476,9 @@ void CMathEvent::createUpdateSequences()
 
 void CMathEvent::fire(const bool & equality)
 {
-  // Discontinuities have to be fired also when the trigger switches to false.
+  if (mDisabled) return;
 
+  // Discontinuities have to be fired also when the trigger switches to false.
   if (mTrigger.isTrue() || mType == CEvent::Discontinuity)
     {
       if (mDelayExecution)
@@ -1639,4 +1643,18 @@ void CMathEvent::executeCallback(void * pCaller)
     {
       (*mpCallback)(this, pCaller);
     }
+}
+
+void CMathEvent::setDisabled(const bool & disabled)
+{
+  mDisabled = disabled;
+}
+
+/**
+ * Check whether an even is disabled.
+ * @return const bool & isDisabled
+ */
+const bool & CMathEvent::isDisabled() const
+{
+  return mDisabled;
 }
