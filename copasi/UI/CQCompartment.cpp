@@ -818,6 +818,9 @@ bool CQCompartment::changeValue(const std::string& key,
       switchToWidget(C_INVALID_INDEX, mKey);
     }
 
+  if (mpCompartment == NULL)
+    return false;
+
   switch (type)
     {
       case CCopasiUndoCommand::COMPARTMENT_EXPRESSION_CHANGE:

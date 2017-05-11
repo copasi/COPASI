@@ -198,30 +198,33 @@ void CQTabWidget::load()
           mpBtnRevert->setEnabled(!readOnly);
           mpBtnDelete->setEnabled(!readOnly);
         }
+
+
+#ifdef COPASI_Provenance
+
+      if (mObjectType == ListViews::METABOLITE ||
+          mObjectType == ListViews::COMPARTMENT ||
+          mObjectType == ListViews::REACTION ||
+          mObjectType == ListViews::EVENT ||
+          mObjectType == ListViews::MODELVALUE)
+        {
+          CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow());
+
+          if (pWindow) //Probably could just assume the Main Window exists
+            {
+              QList<QString> VersioningPath = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
+              mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), VersioningPath);
+            }
+        }
+
+#endif
+
     }
   else
     {
       mpEditName->setText("");
     }
 
-#ifdef COPASI_Provenance
-
-  if (mObjectType == ListViews::METABOLITE ||
-      mObjectType == ListViews::COMPARTMENT ||
-      mObjectType == ListViews::REACTION ||
-      mObjectType == ListViews::EVENT ||
-      mObjectType == ListViews::MODELVALUE)
-    {
-      CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(CopasiUI3Window::getMainWindow());
-
-      if (pWindow) //Probably could just assume the Main Window exists
-        {
-          QList<QString> VersioningPath = pWindow->getVersionHierarchy()->getVersionsPathToCurrentModel();
-          mpEntityProvenanceDialog->load(mpUndoStack, FROM_UTF8(mpObject->getObjectName()), FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), VersioningPath);
-        }
-    }
-
-#endif
 }
 
 bool CQTabWidget::save()
@@ -329,6 +332,9 @@ bool CQTabWidget::renameEntity(const std::string& key, const std::string& newNam
   mKey = key;
   load();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+
+  if (mpObject == NULL)
+    return false;
 
   if (!mpObject->setObjectName(newName))
     {

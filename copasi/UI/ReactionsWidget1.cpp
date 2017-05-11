@@ -991,6 +991,8 @@ bool ReactionsWidget1::changeReaction(
         std::vector<std::string> previouslyCreatedObjects =
           command->getCreatedObjects();
 
+        bool deletedObjects = false;
+
         if (!previouslyCreatedObjects.empty())
           {
 
@@ -998,7 +1000,7 @@ bool ReactionsWidget1::changeReaction(
             pReaction->cleanup();
             pReaction->compile();
 
-            ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects, false);
+            deletedObjects = ReactionChangeCommand::removeCreatedObjects(previouslyCreatedObjects, false);
           }
 
         // set new
@@ -1011,7 +1013,7 @@ bool ReactionsWidget1::changeReaction(
         bool createdMetabs = mpRi->createMetabolites(createdObjects);
 
         if (mpRi->createOtherObjects(createdObjects) || createdMetabs
-            || !previouslyCreatedObjects.empty())
+            || deletedObjects)
           {
             bool oldNotify = mIgnoreUpdates;
             mIgnoreUpdates = false;

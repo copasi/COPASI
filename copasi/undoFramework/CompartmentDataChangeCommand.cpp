@@ -101,7 +101,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
 void CompartmentDataChangeCommand::redo()
 {
-  mpCompartmentDM->compartmentDataChange(mIndex, mNew, NULL);
+  mpCompartmentDM->compartmentDataChange(mIndex, mNew, mpCompartmentUndoData);
   setAction("Change");
 }
 

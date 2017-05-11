@@ -985,6 +985,9 @@ bool CQSpeciesDetail::changeValue(
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 
+  if (mpMetab == NULL)
+    return false;
+
   CModel* pModel = mpMetab->getModel();
 
   switch (type)
