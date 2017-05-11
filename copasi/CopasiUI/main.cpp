@@ -30,6 +30,7 @@
 #include "UI/copasiui3window.h"
 #include "UI/DataModelGUI.h"
 #include "UI/CQMessageBox.h"
+#include  <copasi/UI/CQUndoTester.h>
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -110,6 +111,14 @@ int main(int argc, char *argv[])
   if (pWindow != NULL)
     {
       a.setMainWindow(pWindow);
+
+      if (!COptions::getEnvironmentVariable("COPASI_TEST_UNDO").empty())
+        {
+          // test undo if environment variable is present
+          CQUndoTester*  tester = new CQUndoTester(&a, NULL, pWindow->getUndoStack());
+          tester->startTestIn(1000);
+        }
+
       a.exec();
     }
 
