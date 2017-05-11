@@ -2033,7 +2033,7 @@ bool CMathContainer::compileEvents()
     {
       // The event is disabled
       (mCreateDiscontinuousPointer.pEvent + itUnused->second)->setDisabled(true);
-      UnusedRoots + itUnused->first;
+      UnusedRoots += itUnused->first;
     }
 
   mEventRoots.initialize(mSize.nEventRoots - UnusedRoots, mEventRoots.array());
