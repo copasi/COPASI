@@ -16,7 +16,7 @@
 
 #include <copasi/UI/qtUtilities.h>
 
-#include <copasi/core/CRootContainer.h>
+#include <copasi/report/CCopasiRootContainer.h>
 
 EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
                                        const QVariant& oldValue,
@@ -53,7 +53,7 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
       case EVENT_ASSIGNMENT_ADDED:
       {
         std::string targetKey = TO_UTF8(newValue.toString());
-        CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetKey);
+        CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(targetKey);
         mOldExpression = pObject->getCN();
         mNew = FROM_UTF8(mOldExpression);
 
@@ -66,7 +66,7 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
       case EVENT_ASSIGNMENT_REMOVED:
       {
         std::string targetKey = TO_UTF8(oldValue.toString());
-        CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetKey);
+        CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(targetKey);
         mNewExpression = pObject->getCN();
         mOld = FROM_UTF8(mNewExpression);
 
@@ -78,7 +78,7 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
       case EVENT_ASSIGNMENT_EXPRESSION_CHANGE:
       {
         std::string targetKey = oldExpression;
-        CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetKey);
+        CCopasiObject * pObject = CCopasiRootContainer::getKeyFactory()->get(targetKey);
         mOldExpression = pObject->getCN();
         mNewExpression = mOldExpression;
 

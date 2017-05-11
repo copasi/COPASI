@@ -252,7 +252,7 @@ CQEventWidget1::loadFromEvent()
 
   mpLBTarget->setCurrentRow((int) NewTarget);
 
-  if (mAssignments.empty())
+  if (mAssignments.size() == 0)
     {
       mpExpressionEA->mpExpressionWidget->clear();
       mpExpressionEA->updateWidget();
@@ -805,7 +805,7 @@ CQEventWidget1::changeValue(const std::string &key,
       {
         // if newValue is empty, this means, that we want to remove the event
         // that targets the key in expression,
-        const CDataObject * pTargetObject = dynamic_cast<const CDataObject *>(mpDataModel->getObject(expression));
+        const CCopasiObject * pTargetObject = dynamic_cast<const CCopasiObject *>(mpDataModel->getObject(expression));
 
         if (newValue.toString().isEmpty()
             && pTargetObject != NULL
@@ -816,7 +816,7 @@ CQEventWidget1::changeValue(const std::string &key,
         else
           {
             std::string targetCN = TO_UTF8(newValue.toString());
-            pTargetObject = dynamic_cast<const CDataObject *>(mpDataModel->getObject(targetCN));
+            pTargetObject = dynamic_cast<const CCopasiObject *>(mpDataModel->getObject(targetCN));
 
             if (pTargetObject == NULL)
               return false;
@@ -834,18 +834,18 @@ CQEventWidget1::changeValue(const std::string &key,
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE:
       {
         std::string targetCN = expression;
-        const CDataObject * pObject = dynamic_cast<const CDataObject *>(mpDataModel->getObject(targetCN));
+        const CCopasiObject * pObject = dynamic_cast<const CCopasiObject *>(mpDataModel->getObject(targetCN));
 
         if (pObject == NULL)
           return false;
 
         std::string targetName = pObject->getObjectName();
-        CDataVectorN< CEventAssignment > &assignments = mpEvent->getAssignments();
-        CDataVectorN< CEventAssignment >::iterator it = assignments.begin();
+        CCopasiVectorN< CEventAssignment > &assignments = mpEvent->getAssignments();
+        CCopasiVectorN< CEventAssignment >::iterator it = assignments.begin();
 
         for (; it != assignments.end(); ++it)
           {
-            const CDataObject* target = it->getTargetObject();
+            const CCopasiObject* target = it->getTargetObject();
 
             if (target->getObjectParent()->getObjectName() != targetName)
               continue;
