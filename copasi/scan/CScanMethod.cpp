@@ -374,7 +374,7 @@ bool CScanMethod::init()
   mTotalSteps = 1;
   CObjectInterface::ObjectSet ObjectSet;
 
-  size_t Offset = mpContainer->getInitialStateObjects().size();
+  size_t Offset = mpContainer->getState(false).begin() - mpContainer->getInitialState().begin();
 
   size_t i, imax = mpProblem->getNumberOfScanItems();
   mContinueFromCurrentState = mpProblem->getContinueFromCurrentState();
