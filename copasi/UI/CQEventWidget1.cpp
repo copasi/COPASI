@@ -219,6 +219,7 @@ CQEventWidget1::loadFromEvent()
   CCopasiVectorN< CEventAssignment >::const_iterator it = mpEvent->getAssignments().begin();
   CCopasiVectorN< CEventAssignment >::const_iterator end = mpEvent->getAssignments().end();
 
+  mIgnoreUpdates = true;
   mAssignments.clear();
   QStringList Targets;
 
@@ -239,6 +240,7 @@ CQEventWidget1::loadFromEvent()
   // fill the list box and the expression widget with correct assignments
   mpLBTarget->clear();
   mpLBTarget->insertItems(0, Targets);
+  mIgnoreUpdates = false;
 
   size_t NewTarget = mCurrentTarget;
 
@@ -249,6 +251,12 @@ CQEventWidget1::loadFromEvent()
     }
 
   mpLBTarget->setCurrentRow((int) NewTarget);
+
+  if (mAssignments.empty())
+    {
+      mpExpressionEA->mpExpressionWidget->clear();
+      mpExpressionEA->updateWidget();
+    }
 
   mChanged = false;
 
@@ -362,7 +370,7 @@ void CQEventWidget1::saveToEvent()
       mChanged = true;
     }
 
-  if (mCurrentTarget != C_INVALID_INDEX)
+  if (mCurrentTarget != C_INVALID_INDEX && mAssignments.size() > mCurrentTarget)
     {
       mAssignments[mCurrentTarget].setExpression(mpExpressionEA->mpExpressionWidget->getExpression());
     }
@@ -589,6 +597,8 @@ void CQEventWidget1::slotSelectObject()
 /// Slot to actualize the assignment expression widget of event assignment according to the target
 void CQEventWidget1::slotActualizeAssignmentExpression(int index)
 {
+  if (mIgnoreUpdates) return;
+
   size_t NewTarget = (size_t) index;
 
   if (NewTarget != C_INVALID_INDEX &&
