@@ -799,27 +799,60 @@ CQEventWidget1::changeValue(const std::string &key,
 
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED:
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_REMOVED:
-
+      {
         // if newValue is empty, this means, that we want to remove the event
         // that targets the key in expression,
-        if (newValue.toString().isEmpty() &&
-            mpEvent->getAssignments().getIndex(expression) != C_INVALID_INDEX)
+        const CDataObject * pTargetObject = dynamic_cast<const CDataObject *>(mpDataModel->getObject(expression));
+
+        if (newValue.toString().isEmpty()
+            && pTargetObject != NULL
+            && mpEvent->getAssignments().getIndex(pTargetObject->getKey()) != C_INVALID_INDEX)
           {
-            mpEvent->getAssignments().remove(expression);
+            mpEvent->getAssignments().remove(pTargetObject->getKey());
           }
         else
           {
+            std::string targetCN = TO_UTF8(newValue.toString());
+            pTargetObject = dynamic_cast<const CDataObject *>(mpDataModel->getObject(targetCN));
+
+            if (pTargetObject == NULL)
+              return false;
+
+            std::string targetKey = pTargetObject->getKey();
             CEventAssignment *assignment =
-              new CEventAssignment(TO_UTF8(newValue.toString()), mpEvent->getObjectParent());
+              new CEventAssignment(targetKey, mpEvent->getObjectParent());
             assignment->setExpression(expression);
             mpEvent->getAssignments().add(assignment, true);
           }
 
         break;
+      }
 
       case CCopasiUndoCommand::EVENT_ASSIGNMENT_EXPRESSION_CHANGE:
-        mpEvent->getAssignments()[expression].setExpression(TO_UTF8(newValue.toString()));
+      {
+        std::string targetCN = expression;
+        const CDataObject * pObject = dynamic_cast<const CDataObject *>(mpDataModel->getObject(targetCN));
+
+        if (pObject == NULL)
+          return false;
+
+        std::string targetName = pObject->getObjectName();
+        CDataVectorN< CEventAssignment > &assignments = mpEvent->getAssignments();
+        CDataVectorN< CEventAssignment >::iterator it = assignments.begin();
+
+        for (; it != assignments.end(); ++it)
+          {
+            const CDataObject* target = it->getTargetObject();
+
+            if (target->getObjectParent()->getObjectName() != targetName)
+              continue;
+
+            it->setExpression(TO_UTF8(newValue.toString()));
+            break;
+          }
+
         break;
+      }
 
       default:
         return false;
