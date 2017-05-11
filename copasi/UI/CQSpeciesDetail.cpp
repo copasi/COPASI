@@ -851,7 +851,6 @@ void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
   protectedNotify(ListViews::METABOLITE, ListViews::ADD, key);
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
-
 }
 
 void CQSpeciesDetail::speciesTypeChanged(int type)
@@ -999,6 +998,9 @@ bool CQSpeciesDetail::changeValue(
     }
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+
+  if (mpMetab == NULL)
+    return false;
 
   CModel* pModel = const_cast< CModel * >(mpMetab->getModel());
 
