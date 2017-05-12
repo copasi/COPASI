@@ -20,17 +20,18 @@ find_path(QWT_INCLUDE_DIR qwt.h
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-    PATH_SUFFIXES qwt qwt-qt4
+    PATH_SUFFIXES qwt qwt-qt4 qwt-qt5
     NO_DEFAULT_PATH)
 
 if (NOT QWT_INCLUDE_DIR)
     find_path(QWT_INCLUDE_DIR qwt.h
-        PATH_SUFFIXES qwt qwt-qt4)
+        PATH_SUFFIXES qwt qwt-qt4 qwt-qt5)
 endif ()
 
 find_library(QWT_LIBRARY
     NAMES qwt-static
           qwt-qt4
+          qwt-qt5
           qwt
     PATHS $ENV{QWT_DIR}/lib
           $ENV{QWT_DIR}
@@ -47,6 +48,7 @@ if (NOT QWT_LIBRARY)
     find_library(QWT_LIBRARY
         NAMES qwt-static
               qwt-qt4
+              qwt-qt5
               qwt)
 endif (NOT QWT_LIBRARY)
 

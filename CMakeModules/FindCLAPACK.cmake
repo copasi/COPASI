@@ -81,6 +81,39 @@ if (NOT LAPACK_FOUND)
   find_package(LAPACK REQUIRED)
 endif() 
 
+if (NOT LAPACK_FOUND AND DEFINED ENV{LAPACK_DIR} AND EXISTS $ENV{LAPACK_DIR})
+  message (status " Using COPASI Dependencies for LAPACK")
+
+  # clapack
+  set (CLAPACK_INCLUDE_DIR $ENV{LAPACK_DIR}/include CACHE PATH "clapack include directory" FORCE)
+
+  find_library(CLAPACK_LIBRARY_LAPACK
+      NAMES lapack
+      PATHS $ENV{LAPACK_DIR}/lib
+      NO_DEFAULT_PATH)
+
+  find_library(CLAPACK_LIBRARY_BLAS
+      NAMES blas
+      PATHS $ENV{LAPACK_DIR}/lib
+      NO_DEFAULT_PATH)
+
+  find_library(CLAPACK_LIBRARY_F2C
+      NAMES f2c
+      PATHS $ENV{LAPACK_DIR}/lib
+      NO_DEFAULT_PATH)
+
+  set (CLAPACK_LIBRARIES
+       ${CLAPACK_LIBRARY_LAPACK};${CLAPACK_LIBRARY_BLAS};${CLAPACK_LIBRARY_F2C}
+       CACHE FILEPATH "lapack library" FORCE)
+
+  add_definitions(-DHAVE_BLASWRAP_H)
+  add_definitions(-DHAVE_F2C_H)
+  add_definitions(-DHAVE_CLAPACK_H)
+  add_definitions(-DNO_BLAS_WRAP)
+
+  set (BLA_VENDOR "COPASI Dependencies")
+endif()
+
 find_path(BLASWRAP_INCLUDE_DIR blaswrap.h
     PATHS $ENV{LAPACK_DIR}/include
           $ENV{LAPACK_DIR}
