@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <sstream>
 
@@ -63,12 +63,23 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  CValidity::Kind kindFilter;
+  CValidity::Severity severityFilter; //first, "success", flag should be off, with default constructor
 
   CCopasiParameterGroup::index_iterator it =
-    CRootContainer::getConfiguration()->getGroup("Display Issues")->beginIndex();
+    CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->beginIndex();
   CCopasiParameterGroup::index_iterator end =
-    CRootContainer::getConfiguration()->getGroup("Display Issues")->endIndex();
+    CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->endIndex();
+
+  for (size_t i = 1; it != end && i < severityFilter.size(); it++, i++) //skip the "success" flag
+    {
+      if ((*it)->getValue< bool >())
+        severityFilter.set(i);
+    }
+
+  CValidity::Kind kindFilter;
+
+  it = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->beginIndex();
+  end = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->endIndex();
 
   for (size_t i = 0; it != end && i < kindFilter.size(); it++, i++)
     {
@@ -91,15 +102,18 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   switch (highestSeverity)
     {
       case CIssue::eSeverity::Error:
-        issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
+        if(severityFilter.isSet(CIssue::eSeverity::Error))
+          issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
         break;
 
       case CIssue::eSeverity::Warning:
-        issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
+        if(severityFilter.isSet(CIssue::eSeverity::Warning))
+          issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
         break;
 
       case CIssue::eSeverity::Information:
-        issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
+        if(severityFilter.isSet(CIssue::eSeverity::Information))
+          issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
         break;
 
       default:
@@ -116,7 +130,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
       case Qt::ToolTipRole:
         if (kindFilter != kindFilter.None)
-          return QVariant(QString(FROM_UTF8(validity.getIssueMessages(CValidity::Severity::All, kindFilter))));
+          return QVariant(QString(FROM_UTF8(validity.getIssueMessages(severityFilter, kindFilter))));
 
         break;
 

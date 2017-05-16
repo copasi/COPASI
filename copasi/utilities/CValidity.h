@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CValidity
 #define COPASI_CValidity
@@ -59,6 +59,7 @@ public:
     __SIZE
   };
 
+  static const std::array<const char *, static_cast< size_t >(CIssue::eSeverity::__SIZE) > severityNames;
   static const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > kindNames;
   static const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > kindDescriptions;
 

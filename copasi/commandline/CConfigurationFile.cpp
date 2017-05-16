@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "copasi.h"
 
@@ -119,7 +119,8 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
-  mpDisplayIssues(NULL),
+  mpDisplayIssueSeverity(NULL),
+  mpDisplayIssueKinds(NULL),
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
@@ -145,7 +146,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpRecentMIRIAMResources(NULL),
   mpApplicationFont(NULL),
   mpValidateUnits(NULL),
-  mpDisplayIssues(NULL),
+  mpDisplayIssueSeverity(NULL),
+  mpDisplayIssueKinds(NULL),
   mpUseOpenGL(NULL),
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
@@ -198,7 +200,8 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
   assertGroup("Recent SEDML Files");
-  mpDisplayIssues = assertGroup("Display Issues");
+  mpDisplayIssueSeverity = assertGroup("Display Issue Severity");
+  mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
   getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
@@ -207,9 +210,14 @@ void CConfigurationFile::initializeParameter()
 
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
 
+  for (size_t i = 1; i < CIssue::severityNames.size(); i++) //skip the "success" flag
+    {
+      mpDisplayIssueSeverity->assertParameter(std::string(CIssue::severityNames[i]), CCopasiParameter::BOOL, true);
+    }
+
   for (size_t i = 0; i < CIssue::kindNames.size(); i++)
     {
-      mpDisplayIssues->assertParameter(std::string(CIssue::kindNames[i]), CCopasiParameter::BOOL, true);
+      mpDisplayIssueKinds->assertParameter(std::string(CIssue::kindNames[i]), CCopasiParameter::BOOL, true);
     }
 
   mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
@@ -376,7 +384,7 @@ bool CConfigurationFile::validateUnits() const
 
 bool CConfigurationFile::showItemIssues(CIssue::eKind kind) const
 {
-  return mpDisplayIssues->getParameter(static_cast< size_t>(kind))->getValue< bool >();
+  return mpDisplayIssueKinds->getParameter(static_cast< size_t>(kind))->getValue< bool >();
 }
 
 void CConfigurationFile::setDisplayPopulations(bool flag)
