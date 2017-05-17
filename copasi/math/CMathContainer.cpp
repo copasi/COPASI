@@ -710,7 +710,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
             break;
 
-            // These are fixed event targets the absolute tolerance can be large since they do not change
+          // These are fixed event targets the absolute tolerance can be large since they do not change
           default:
             *pAtol = std::max(1.0, *pAtol);
         }
@@ -1470,7 +1470,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       // We need to replace variables, expand called trees, and handle discrete nodes.
       switch (itNode->mainType() | itNode->subType())
         {
-            // Handle object nodes which are of type CN and AVOGADRO
+          // Handle object nodes which are of type CN and AVOGADRO
           case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_AVOGADRO):
           case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_CN):
           {
@@ -2244,7 +2244,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
             break;
 
-            // Everything which is not a value must be calculated.
+          // Everything which is not a value must be calculated.
           default:
             RequestedExtensive.insert(pObject);
             RequestedIntensive.insert(pObject);
@@ -2339,11 +2339,11 @@ void CMathContainer::createApplyInitialValuesSequence()
 
             break;
 
-            // Delay values are always calculate in a separate step
+          // Delay values are always calculate in a separate step
           case CMath::DelayValue:
             break;
 
-            // Everything else must be calculated.
+          // Everything else must be calculated.
           default:
             Requested.insert(pObject);
             break;
@@ -2578,6 +2578,8 @@ void CMathContainer::analyzeRoots()
 
   for (; pEvent != pEventEnd; ++pEvent)
     {
+      if (pEvent->isDisabled()) continue;
+
       CMathEvent::CTrigger::CRootProcessor * pRootProcessor = const_cast< CMathEvent::CTrigger::CRootProcessor * >(pEvent->getTrigger().getRoots().array());
       CMathEvent::CTrigger::CRootProcessor * pRootProcessorEnd = pRootProcessor + pEvent->getTrigger().getRoots().size();
 
@@ -4181,7 +4183,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
             createDiscontinuityDataEvent(*itNode);
             break;
 
-            // Call nodes and variables are eliminated.
+          // Call nodes and variables are eliminated.
           case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
           case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
           case (CEvaluationNode::T_VARIABLE | CEvaluationNode::S_DEFAULT):
