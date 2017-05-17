@@ -421,14 +421,13 @@ if(BUILD_GUI)
 
   find_package(OpenGL REQUIRED)
 
-  find_package(Qt5Core QUIET)
-  
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
 
   # first try to find whether Qt5 is present
   option(QT_USE_TEXTBROSWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" OFF)
   
-  if (Qt5Core_FOUND)
+  if (${SELECT_QT} MATCHES "Qt5" OR
+      ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     
@@ -471,14 +470,14 @@ if(BUILD_GUI)
       )
     endif()
     set(QTVERSION 5)
-  else(Qt5Core_FOUND)
+  else()
     # using qt 4.8
     if (QT_USE_TEXTBROSWSER)
       QT_FIND_MODULES(Core Gui Network OpenGL Svg Xml)
     else(QT_USE_TEXTBROSWSER)
       QT_FIND_MODULES(Core Gui Network OpenGL Svg WebKit Xml)
     endif(QT_USE_TEXTBROSWSER)
-  endif(Qt5Core_FOUND)
+  endif()
 
   # find Qt4
   #find_package(Qt4 4.7.0 REQUIRED QtCore QtOpenGL QtGui QtXml QtWebKit QtNetwork)
