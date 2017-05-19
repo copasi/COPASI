@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -299,6 +304,8 @@ public:
     pReport->setSeparator(",");
     pReport->setTaskType(CTaskEnum::timeCourse);
     pReport->setIsTable(false);
+    pReport->setPrecision(std::numeric_limits<double>::digits10 + 2);
+
     std::vector<CRegisteredObjectName>* pHeaderAddr = pReport->getHeaderAddr();
     std::vector<CRegisteredObjectName>* pBodyAddr = pReport->getBodyAddr();
 
@@ -355,7 +362,6 @@ public:
           {
             THROW_COPASI_EXCEPTION("Could not find a model entity for the SBML id " << *it << std::endl);
           }
-
 
         const CMetab* pMetab = dynamic_cast<const CMetab*>(pos->second);
         const CCompartment* pComp = dynamic_cast<const CCompartment*>(pos->second);
