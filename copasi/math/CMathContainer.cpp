@@ -290,7 +290,8 @@ CMathContainer::CMathContainer():
   mIsAutonomous(true),
   mSize(),
   mNoiseInputObjects(),
-  mUpdateSequences()
+  mUpdateSequences(),
+  mNumTotalRootsIgnored(0)
 {
   memset(&mSize, 0, sizeof(mSize));
 }
@@ -383,7 +384,8 @@ CMathContainer::CMathContainer(CModel & model):
   mIsAutonomous(true),
   mSize(),
   mNoiseInputObjects(),
-  mUpdateSequences()
+  mUpdateSequences(),
+  mNumTotalRootsIgnored(0)
 {
   memset(&mSize, 0, sizeof(mSize));
 
@@ -485,7 +487,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mIsAutonomous(src.mIsAutonomous),
   mSize(),
   mNoiseInputObjects(src.mNoiseInputObjects),
-  mUpdateSequences()
+  mUpdateSequences(),
+  mNumTotalRootsIgnored(src.mNumTotalRootsIgnored)
 {
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
@@ -2140,21 +2143,13 @@ bool CMathContainer::compileEvents()
   // Events representing discontinuities.
   std::multimap< size_t, size_t >::iterator itUnused = mRootCount2Events.begin();
   std::multimap< size_t, size_t >::iterator endUnused = mRootCount2Events.end();
-
-  size_t UnusedRoots = 0;
+  mNumTotalRootsIgnored = 0;
 
   for (; itUnused != endUnused; ++itUnused)
     {
-      // The event is disabled
-      (mCreateDiscontinuousPointer.pEvent + itUnused->second)->setDisabled(true);
-      UnusedRoots += itUnused->first;
+      // The event is ignored.
+      ignoreDiscontinuityEvent(mCreateDiscontinuousPointer.pEvent + itUnused->second);
     }
-
-  mEventRoots.initialize(mSize.nEventRoots - UnusedRoots, mEventRoots.array());
-  mEventRootStates.initialize(mSize.nEventRoots - UnusedRoots, mEventRootStates.array());
-  mRootProcessors.resize(mSize.nEventRoots - UnusedRoots, true);
-  mRootIsDiscrete.resize(mSize.nEventRoots - UnusedRoots, true);
-  mRootIsTimeDependent.resize(mSize.nEventRoots - UnusedRoots, true);
 
   return success;
 }
@@ -4668,6 +4663,146 @@ void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::
     {
       relocations.push_back(Relocate);
     }
+}
+
+void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
+{
+  pEvent->setDisabled(true);
+
+  size_t EventIndex = pEvent - mEvents.begin();
+  size_t NumRootsIgnored = pEvent->getTrigger().getRoots().size();
+  size_t NumRootsToKeep = 0;
+
+  for (CMathEvent * pIt = mEvents.begin(); pIt != pEvent; ++pIt)
+
+    // The roots of disabled events have already been moved
+    if (!pIt->isDisabled())
+      {
+        NumRootsToKeep += pIt->getTrigger().getRoots().size();
+      }
+
+  std::vector< CMath::sRelocate > Relocations;
+  std::set< CMathObject * > UnusedObjects;
+
+  CMath::sRelocate Relocate;
+  Relocate.pValueStart = mSize.pValue;
+  Relocate.pValueEnd = mSize.pValue;
+  Relocate.pOldValue = mSize.pValue;
+  Relocate.pNewValue = mSize.pValue;
+
+  Relocate.pObjectStart = mSize.pObject;
+  Relocate.pObjectEnd = mSize.pObject;
+  Relocate.pOldObject = mSize.pObject;
+  Relocate.pNewObject = mSize.pObject;
+
+  Relocate.offset = 0;
+
+  size_t Keep =
+    2 * mSize.nFixed +
+    2 * mSize.nFixedEventTargets +
+    2 * mSize.nTime +
+    2 * mSize.nODE +
+    2 * mSize.nReactionSpecies +
+    2 * mSize.nAssignment +
+    2 * mSize.nIntensiveValues +
+    2 * mSize.nReactions +
+    mSize.nMoieties +
+    EventIndex;
+
+  // Keep all initial values in place before the ignored event in place.
+  createRelocation(Keep, Keep, Relocate, Relocations);
+  // Skip the ignored initial event trigger
+  createRelocation(0, 1, Relocate, Relocations);
+  // Move the remaining initial event triggers
+  createRelocation(mSize.nEvents - EventIndex - 1,
+                   mSize.nEvents - EventIndex - 1,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(1, 0, Relocate, Relocations);
+  UnusedObjects.insert(Relocate.pObjectStart - 1);
+
+  // Keep all values in place before the ignored event in place.
+  createRelocation(Keep, Keep, Relocate, Relocations);
+  // Skip the ignored event trigger
+  createRelocation(0, 1, Relocate, Relocations);
+  // Move the remaining event triggers
+  createRelocation(mSize.nEvents - EventIndex - 1,
+                   mSize.nEvents - EventIndex - 1,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(1, 0, Relocate, Relocations);
+  UnusedObjects.insert(Relocate.pObjectStart - 1);
+
+  // Keep noise related values and event delays before the ignored event.
+  Keep =
+    mSize.nODE +
+    2 * mSize.nODESpecies +
+    2 * mSize.nReactionSpecies +
+    2 * mSize.nReactions +
+    EventIndex;
+
+  // Event Delays
+  createRelocation(Keep, Keep, Relocate, Relocations);
+  // Skip the ignored event delay
+  createRelocation(0, 1, Relocate, Relocations);
+  // Move the remaining event delays
+  createRelocation(mSize.nEvents - EventIndex - 1,
+                   mSize.nEvents - EventIndex - 1,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(1, 0, Relocate, Relocations);
+  UnusedObjects.insert(Relocate.pObjectStart - 1);
+
+  // Event Priorities
+  createRelocation(EventIndex, EventIndex, Relocate, Relocations);
+  // Skip the ignored event priority
+  createRelocation(0, 1, Relocate, Relocations);
+  // Move the remaining event priorities
+  createRelocation(mSize.nEvents - EventIndex - 1,
+                   mSize.nEvents - EventIndex - 1,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(1, 0, Relocate, Relocations);
+  UnusedObjects.insert(Relocate.pObjectStart - 1);
+
+  // Keep the assignments and roots in place before the ignored roots
+  createRelocation(mSize.nEventAssignments + NumRootsToKeep, mSize.nEventAssignments + NumRootsToKeep, Relocate, Relocations);
+  // Skip the ignored roots
+  createRelocation(0, NumRootsIgnored, Relocate, Relocations);
+  // Move the remaining roots
+  createRelocation(mSize.nEventRoots - NumRootsToKeep - NumRootsIgnored,
+                   mSize.nEventRoots - NumRootsToKeep - NumRootsIgnored,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(NumRootsIgnored, 0, Relocate, Relocations);
+
+  // Add the ignored root objects to the unused objects
+  for (CMathObject * pObject = Relocate.pObjectStart - NumRootsIgnored; pObject != Relocate.pObjectStart; ++pObject)
+    {
+      UnusedObjects.insert(pObject);
+    }
+
+  if (Relocate.pValueStart != Relocate.pValueEnd)
+    {
+      Relocations.push_back(Relocate);
+    }
+
+  relocate(mSize, Relocations);
+
+  std::set< CMathObject * >::iterator it = UnusedObjects.begin();
+  std::set< CMathObject * >::iterator end = UnusedObjects.end();
+
+  for (; it != end; ++it)
+    {
+      (*it)->setExpression("", false, *this);
+    }
+
+  mNumTotalRootsIgnored += NumRootsIgnored;
+  mEventRoots.initialize(mEventRoots.size() - mNumTotalRootsIgnored, mEventRoots.array());
+  mEventRootStates.initialize(mEventRootStates.size() - mNumTotalRootsIgnored, mEventRootStates.array());
+  mRootProcessors.resize(mRootProcessors.size() - mNumTotalRootsIgnored, true);
+  mRootIsDiscrete.resize(mRootIsDiscrete.size() - mNumTotalRootsIgnored, true);
+  mRootIsTimeDependent.resize(mRootIsTimeDependent.size() - mNumTotalRootsIgnored, true);
 }
 
 std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & size)
