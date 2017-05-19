@@ -304,6 +304,8 @@ public:
     pReport->setSeparator(",");
     pReport->setTaskType(CTaskEnum::timeCourse);
     pReport->setIsTable(false);
+    pReport->setPrecision(std::numeric_limits<double>::digits10 + 2);
+
     std::vector<CRegisteredCommonName>* pHeaderAddr = pReport->getHeaderAddr();
     std::vector<CRegisteredCommonName>* pBodyAddr = pReport->getBodyAddr();
 
