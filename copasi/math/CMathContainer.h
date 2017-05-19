@@ -770,6 +770,12 @@ private:
   void createRelocations(const sSize & size, std::vector< CMath::sRelocate > & Relocations);
 
   /**
+   * Ignore the discontinuity event
+   * @param CMathEvent * pEvent
+   */
+  void ignoreDiscontinuityEvent(CMathEvent * pEvent);
+
+  /**
    * Resize the container
    * @param CMathContainer::sSize & size
    * @return std::vector< CMath::sRelocate > relocations
@@ -1266,6 +1272,11 @@ private:
    * Pointers to all update sequences associated with this container;
    */
   std::set< CMathUpdateSequence * > mUpdateSequences;
+
+  /**
+   * The total number of ignored event roots.
+   */
+  size_t mNumTotalRootsIgnored;
 };
 
 #endif // COPASI_CMathContainer

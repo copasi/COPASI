@@ -547,9 +547,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
       *mpValue = * (C_FLOAT64 *) mpDataObject->getValuePointer();
     }
 
-  // Reset the prerequisites
-  mPrerequisites.clear();
-
   const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
   const CMetab * pSpecies = NULL;
 
@@ -638,9 +635,6 @@ bool CMathObject::compileValue(CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
-
-  // Reset the prerequisites
-  mPrerequisites.clear();
 
   const CModelEntity * pEntity = NULL;
   const CMetab * pSpecies = NULL;
@@ -747,9 +741,6 @@ bool CMathObject::compileRate(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
-  // Reset the prerequisites
-  mPrerequisites.clear();
-
   const CModelEntity * pEntity = NULL;
   const CMetab * pSpecies = NULL;
 
@@ -844,9 +835,6 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
-  // Reset the prerequisites
-  mPrerequisites.clear();
-
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
   // We need to check whether this reaction is a single compartment reaction and scale
@@ -879,9 +867,6 @@ bool CMathObject::compileFlux(CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
-
-  // Reset the prerequisites
-  mPrerequisites.clear();
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
@@ -919,9 +904,6 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
-
-  // Reset the prerequisites
-  mPrerequisites.clear();
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
 
@@ -1014,9 +996,6 @@ bool CMathObject::compileTotalMass(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
-  // Reset the prerequisites
-  mPrerequisites.clear();
-
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
 
   std::ostringstream Infix;
@@ -1063,9 +1042,6 @@ bool CMathObject::compileDependentMass(CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
-
-  // Reset the prerequisites
-  mPrerequisites.clear();
 
   const CMoiety * pMoiety = static_cast< const CMoiety *>(mpDataObject->getObjectParent());
 
@@ -1121,9 +1097,6 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
   // The default value is NaN
   *mpValue = InvalidValue;
-
-  // Reset the prerequisites
-  mPrerequisites.clear();
 
   const CMetab * pSpecies = static_cast< const CMetab *>(mpDataObject->getObjectParent());
 
@@ -1238,6 +1211,9 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
 void CMathObject::compileExpression()
 {
+  // Reset the prerequisites
+  mPrerequisites.clear();
+
   if (mpExpression == NULL) return;
 
   if (mIsInitialValue)
