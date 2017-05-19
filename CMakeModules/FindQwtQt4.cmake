@@ -1,3 +1,8 @@
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -20,17 +25,18 @@ find_path(QWT_INCLUDE_DIR qwt.h
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
-    PATH_SUFFIXES qwt qwt-qt4
+    PATH_SUFFIXES qwt qwt-qt4 qwt-qt5 qwt6
     NO_DEFAULT_PATH)
 
 if (NOT QWT_INCLUDE_DIR)
     find_path(QWT_INCLUDE_DIR qwt.h
-        PATH_SUFFIXES qwt qwt-qt4)
+        PATH_SUFFIXES qwt qwt-qt4 qwt-qt5 qwt6)
 endif ()
 
 find_library(QWT_LIBRARY
     NAMES qwt-static
           qwt-qt4
+          qwt-qt5
           qwt
     PATHS $ENV{QWT_DIR}/lib
           $ENV{QWT_DIR}
@@ -47,6 +53,7 @@ if (NOT QWT_LIBRARY)
     find_library(QWT_LIBRARY
         NAMES qwt-static
               qwt-qt4
+              qwt-qt5
               qwt)
 endif (NOT QWT_LIBRARY)
 
