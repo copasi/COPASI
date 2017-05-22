@@ -2541,148 +2541,150 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
 
   for (j = 0; j < jMax; ++j)
     {
-      if (objectNodes[j]->mainType() == CEvaluationNode::T_OBJECT)
+      const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
+
+      if (pObjectNode->mainType() != CEvaluationNode::T_OBJECT)
+        continue;
+
+      assert(pObjectNode);
+
+      if (pObjectNode == NULL) continue;
+
+      const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(pObjectNode->getObjectCN()));
+      assert(pObject);
+
+      if (pObject->hasFlag(CDataObject::Reference))
         {
-          const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
-          assert(pObjectNode);
+          const CDataObject* pObjectParent = pObject->getObjectParent();
+          assert(pObjectParent);
+          std::string typeString = pObjectParent->getObjectType();
 
-          if (pObjectNode == NULL) continue;
-
-          const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(pObjectNode->getObjectCN()));
-          assert(pObject);
-
-          if (pObject->hasFlag(CDataObject::Reference))
+          if (typeString == "Compartment")
             {
-              const CDataObject* pObjectParent = pObject->getObjectParent();
-              assert(pObjectParent);
-              std::string typeString = pObjectParent->getObjectType();
-
-              if (typeString == "Compartment")
+              // must be a reference to the (transient) or initial volume
+              if (initialExpression == true)
                 {
-                  // must be a reference to the (transient) or initial volume
-                  if (initialExpression == true)
+                  if (pObject->getObjectName() != "InitialVolume")
                     {
-                      if (pObject->getObjectName() != "InitialVolume")
-                        {
-                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
-                        }
-                    }
-                  else
-                    {
-                      if (pObject->getObjectName() == "InitialVolume"
-                          && initialMap != NULL
-                          && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
-                        {
-                          // add new parameter for the initial value
-                          addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
-                        }
-                      else if (pObject->getObjectName() != "Volume"
-                               && pObject->getObjectName() != "Rate")
-                        {
-                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
-                        }
-                    }
-                }
-              else if (typeString == "Metabolite")
-                {
-                  // must be a reference to the transient or initial concentration
-                  if (initialExpression == true)
-                    {
-                      if (pObject->getObjectName() != "InitialConcentration" && pObject->getObjectName() != "InitialParticleNumber")
-                        {
-                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
-                        }
-                    }
-                  else
-                    {
-                      if (pObject->getObjectName() == "InitialConcentration"
-                          && initialMap != NULL
-                          && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
-                        {
-                          // add new parameter for the initial value
-                          addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
-                        }
-                      else if (pObject->getObjectName() != "Concentration"
-                               && pObject->getObjectName() != "ParticleNumber"
-                               && pObject->getObjectName() != "Rate")
-                        {
-
-                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
-                        }
-                    }
-                }
-              else if (typeString == "ModelValue")
-                {
-                  // must be a reference to the transient or initial value
-                  if (initialExpression == true)
-                    {
-                      if (pObject->getObjectName() != "InitialValue")
-                        {
-                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
-                        }
-                    }
-                  else
-                    {
-                      if (pObject->getObjectName() == "InitialValue"
-                          && initialMap != NULL
-                          && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
-                        {
-                          // add new parameter for the initial value
-                          addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
-                        }
-                      else if (pObject->getObjectName() != "Value"
-                               && pObject->getObjectName() != "Rate")
-                        {
-                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
-                        }
-                    }
-                }
-              else if (typeString == "Model")
-                {
-                  // must be a reference to the model time
-                  if (pObject->getObjectName() != "Time")
-                    {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "model", pObjectParent->getObjectName().c_str()));
-                    }
-                }
-              else if (typeString == "Parameter")
-                {
-                  // must be a local parameter
-                  if (pObject->getObjectName() != "Value")
-                    {
-                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "local parameter", pObjectParent->getObjectName().c_str()));
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
                     }
                 }
               else
                 {
-                  if (sbmlLevel == 1 || (sbmlLevel == 2 && sbmlVersion == 1))
+                  if (pObject->getObjectName() == "InitialVolume"
+                      && initialMap != NULL
+                      && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
                     {
-                      result.push_back(SBMLIncompatibility(10, pObject->getObjectName().c_str(), typeString.c_str(), pObjectParent->getObjectName().c_str()));
+                      // add new parameter for the initial value
+                      addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
                     }
-                  else
+                  else if (pObject->getObjectName() != "Volume"
+                           && pObject->getObjectName() != "Rate")
                     {
-                      if (typeString == "Reaction")
-                        {
-                          if (pObject->getObjectName() != "Flux")
-                            {
-                              result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "reaction", pObjectParent->getObjectName().c_str()));
-                            }
-                        }
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "compartment", pObjectParent->getObjectName().c_str()));
                     }
+                }
+            }
+          else if (typeString == "Metabolite")
+            {
+              // must be a reference to the transient or initial concentration
+              if (initialExpression == true)
+                {
+                  if (pObject->getObjectName() != "InitialConcentration" && pObject->getObjectName() != "InitialParticleNumber")
+                    {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
+                    }
+                }
+              else
+                {
+                  if (pObject->getObjectName() == "InitialConcentration"
+                      && initialMap != NULL
+                      && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
+                    {
+                      // add new parameter for the initial value
+                      addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
+                    }
+                  else if (pObject->getObjectName() != "Concentration"
+                           && pObject->getObjectName() != "ParticleNumber"
+                           && pObject->getObjectName() != "Rate")
+                    {
+
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "metabolite", pObjectParent->getObjectName().c_str()));
+                    }
+                }
+            }
+          else if (typeString == "ModelValue")
+            {
+              // must be a reference to the transient or initial value
+              if (initialExpression == true)
+                {
+                  if (pObject->getObjectName() != "InitialValue")
+                    {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
+                    }
+                }
+              else
+                {
+                  if (pObject->getObjectName() == "InitialValue"
+                      && initialMap != NULL
+                      && (sbmlLevel > 2 || (sbmlLevel == 2 && sbmlVersion > 1)))
+                    {
+                      // add new parameter for the initial value
+                      addToInitialValueMap(initialMap, idMap, pObject, pObjectParent, sbmlLevel, sbmlVersion);
+                    }
+                  else if (pObject->getObjectName() != "Value"
+                           && pObject->getObjectName() != "Rate")
+                    {
+                      result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "parameter", pObjectParent->getObjectName().c_str()));
+                    }
+                }
+            }
+          else if (typeString == "Model")
+            {
+              // must be a reference to the model time
+              if (pObject->getObjectName() != "Time")
+                {
+                  result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "model", pObjectParent->getObjectName().c_str()));
+                }
+            }
+          else if (typeString == "Parameter")
+            {
+              // must be a local parameter
+              if (pObject->getObjectName() != "Value")
+                {
+                  result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "local parameter", pObjectParent->getObjectName().c_str()));
                 }
             }
           else
             {
-              // normally local parameters are referenced via their value and
-              // not directly, so this code should never be called
-              const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
-
-              if (pLocalParameter == NULL)
+              if (sbmlLevel == 1 || (sbmlLevel == 2 && sbmlVersion == 1))
                 {
-                  result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+                  result.push_back(SBMLIncompatibility(10, pObject->getObjectName().c_str(), typeString.c_str(), pObjectParent->getObjectName().c_str()));
+                }
+              else
+                {
+                  if (typeString == "Reaction")
+                    {
+                      if (pObject->getObjectName() != "Flux")
+                        {
+                          result.push_back(SBMLIncompatibility(1, pObject->getObjectName().c_str(), "reaction", pObjectParent->getObjectName().c_str()));
+                        }
+                    }
                 }
             }
         }
+      else
+        {
+          // normally local parameters are referenced via their value and
+          // not directly, so this code should never be called
+          const CCopasiParameter* pLocalParameter = dynamic_cast<const CCopasiParameter*>(pObject);
+
+          if (pLocalParameter == NULL)
+            {
+              result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+            }
+        }
+
     }
 }
 
@@ -4443,8 +4445,9 @@ bool CSBMLExporter::createEvents(CDataModel& dataModel)
 {
   if (this->mSBMLLevel == 1)
     {
-      CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
-      return false;
+      // only fail if we have an event!
+      return CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
+
     }
 
   // bail early
@@ -5063,12 +5066,16 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
     }
 }
 
-void CSBMLExporter::checkForEvents(const CDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
+bool
+CSBMLExporter::checkForEvents(const CDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
 {
   if (dataModel.getModel() != NULL && dataModel.getModel()->getEvents().size() > 0)
     {
       result.push_back(SBMLIncompatibility(7));
+      return false;
     }
+
+  return true;
 }
 
 void CSBMLExporter::updateCOPASI2SBMLMap(const CDataModel& dataModel)

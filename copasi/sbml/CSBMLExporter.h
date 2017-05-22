@@ -570,8 +570,9 @@ protected:
   /**
    * Checks if the given datamodel contains events.
    * This is called if SBML Level 1 is to be exported.
+   * @return false if an event was used in the model, true otherwise
    */
-  static void checkForEvents(const CDataModel& dataModel,
+  static bool checkForEvents(const CDataModel& dataModel,
                              std::vector<SBMLIncompatibility>& result);
 
   /**
