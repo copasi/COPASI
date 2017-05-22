@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -565,9 +570,10 @@ protected:
   /**
    * Checks if the given datamodel contains events.
    * This is called if SBML Level 1 is to be exported.
+   * @return false if an event was used in the model, true otherwise
    */
-  static void checkForEvents(const CCopasiDataModel& dataModel,
-                             std::vector<SBMLIncompatibility>& result);
+  static bool checkForEvents(const CCopasiDataModel & dataModel,
+                             std::vector< SBMLIncompatibility > & result);
 
   /**
    * Creates an SBMLDocument from the given CCopasiDataModelObject.
