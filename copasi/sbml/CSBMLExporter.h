@@ -572,8 +572,8 @@ protected:
    * This is called if SBML Level 1 is to be exported.
    * @return false if an event was used in the model, true otherwise
    */
-  static bool checkForEvents(const CDataModel& dataModel,
-                             std::vector<SBMLIncompatibility>& result);
+  static bool checkForEvents(const CDataModel & dataModel,
+                             std::vector< SBMLIncompatibility > & result);
 
   /**
    * Creates an SBMLDocument from the given CDataModelObject.

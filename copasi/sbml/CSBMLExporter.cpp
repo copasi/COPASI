@@ -2543,12 +2543,8 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
     {
       const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
 
-      if (pObjectNode->mainType() != CEvaluationNode::T_OBJECT)
-        continue;
-
-      assert(pObjectNode);
-
-      if (pObjectNode == NULL) continue;
+      if (pObjectNode == NULL ||
+          pObjectNode->mainType() != CEvaluationNode::T_OBJECT) continue;
 
       const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(pObjectNode->getObjectCN()));
       assert(pObject);
@@ -2684,7 +2680,6 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
               result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
             }
         }
-
     }
 }
 
@@ -4447,7 +4442,6 @@ bool CSBMLExporter::createEvents(CDataModel& dataModel)
     {
       // only fail if we have an event!
       return CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
-
     }
 
   // bail early
@@ -5066,8 +5060,8 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
     }
 }
 
-bool
-CSBMLExporter::checkForEvents(const CDataModel& dataModel, std::vector<SBMLIncompatibility>& result)
+bool CSBMLExporter::checkForEvents(const CDataModel & dataModel,
+                                   std::vector< SBMLIncompatibility > & result)
 {
   if (dataModel.getModel() != NULL && dataModel.getModel()->getEvents().size() > 0)
     {
@@ -6998,9 +6992,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7038,7 +7032,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             break;
 #if LIBSBML_VERSION >= 40100
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7061,9 +7055,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
