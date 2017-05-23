@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 /*!
     \file CDataContainer.cpp
@@ -376,7 +376,8 @@ bool CDataContainer::applyData(const CData & data)
 
 CDataContainer::CDataContainer() :
   CDataObject(),
-  mObjects()
+  mObjects(),
+  mValidityRefreshNeeded(true)
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CDataContainer::CDataContainer(const std::string & name,
@@ -384,7 +385,8 @@ CDataContainer::CDataContainer(const std::string & name,
                                const std::string & type,
                                const CFlags< Flag > & flag):
   CDataObject(name, pParent, type, flag | CDataObject::Container),
-  mObjects()
+  mObjects(),
+  mValidityRefreshNeeded(true)
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CDataContainer::CDataContainer(const CDataContainer & src,
@@ -539,6 +541,8 @@ bool CDataContainer::add(CDataObject * pObject,
   else
     pObject->addReference(this);
 
+  mValidity = mValidity | pObject->getValidity();
+
   return true;
 }
 
@@ -547,6 +551,7 @@ bool CDataContainer::remove(CDataObject * pObject)
 {
   if (pObject != NULL)
     {
+      setValidityRefreshNeeded(true);
       pObject->removeReference(this);
     }
 
@@ -595,4 +600,24 @@ std::string CDataContainer::getChildObjectUnits(const CDataObject * /* pObject *
 CDataObject * CDataContainer::insert(const CData & data)
 {
   return NULL;
+}
+
+//virtual
+void CDataContainer::refreshValidity() const
+{
+  if(mValidityRefreshNeeded)
+  {
+    objectMap::const_iterator it = mObjects.begin();
+    objectMap::const_iterator end = mObjects.end();
+
+    for (; it != end; ++it)
+      mValidity = mValidity | it->getValidity();
+  }
+
+  mValidityRefreshNeeded = false;
+}
+
+void CDataContainer::setValidityRefreshNeeded(const bool & needed)
+{
+  mValidityRefreshNeeded = needed;
 }

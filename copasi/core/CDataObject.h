@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 /**
  * Class CDataObject
@@ -237,6 +237,14 @@ public:
   const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
 
 private:
+
+  /**
+   * To be reimplemented for where the validity aggregate
+   * will need to be cleared and recollected for
+   * groups of objects. e.g. CDataVector::remove(___)
+   */
+  virtual void refreshValidity() const;
+
   std::string mObjectName;
 
   std::string mObjectType;
@@ -253,7 +261,7 @@ private:
 protected:
   ObjectSet mPrerequisits;
 
-  CValidity mValidity;
+  mutable CValidity mValidity;
 };
 
 #endif // COPASI_CDataObject

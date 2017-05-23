@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 /*!
     \file CDataContainer.h
@@ -132,6 +132,10 @@ private:
   // Operations
   CDataContainer();
 
+  virtual void refreshValidity() const;
+
+  mutable bool mValidityRefreshNeeded;
+
 protected:
   CDataContainer(const CDataContainer & src);
 
@@ -200,6 +204,8 @@ public:
    * @param const bool & recursive (default: false)
    */
   void getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive = false) const;
+
+  void setValidityRefreshNeeded(const bool & needed);
 
 protected:
   void initObjects();
