@@ -45,12 +45,32 @@ private:
 
 public:
   /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CArrayElementReference * pDataObject
+   */
+  static CArrayElementReference * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
+
+  /**
    * create an element reference with a given index. The index
    * is passed as a string, e.g. "[3][2]"
    * The object name will be the index string, the type is "ElementReference"
    * pParent may not be NULL.
    */
-  CArrayElementReference(const std::vector< CRegisteredCommonName > & index,
+  CArrayElementReference(const std::vector< std::string > & index,
                          const CDataContainer * pParent,
                          const CFlags< Flag > & flag = CFlags< Flag >::None);
 

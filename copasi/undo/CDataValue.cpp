@@ -64,6 +64,13 @@ CDataValue::CDataValue(const void * pVoidPointer):
   assignData(pVoidPointer);
 }
 
+CDataValue::CDataValue(const std::vector< CDataValue > & value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(value);
+}
+
 CDataValue::CDataValue(const std::vector< CData > & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
@@ -115,6 +122,13 @@ CDataValue & CDataValue::operator = (const bool & value)
 }
 
 CDataValue & CDataValue::operator = (const std::string & value)
+{
+  assignData(value);
+
+  return *this;
+}
+
+CDataValue & CDataValue::operator = (const std::vector< CDataValue > & value)
 {
   assignData(value);
 
@@ -184,6 +198,16 @@ const std::string & CDataValue::toString() const
   return *static_cast< const std::string * >(mpData);
 }
 
+const std::vector< CDataValue > & CDataValue::toDataValues() const
+{
+  static const std::vector< CDataValue > Invalid(0);
+
+  if (mType != DATA_VALUES)
+    return Invalid;
+
+  return *static_cast< const std::vector< CDataValue > * >(mpData);
+}
+
 const std::vector< CData > & CDataValue::toDataVector() const
 {
   static const std::vector< CData > Invalid(0);
@@ -234,6 +258,10 @@ void CDataValue::allocateData(const CDataValue::Type & type)
         mpData = new std::string;
         break;
 
+      case DATA_VALUES:
+        mpData = new std::vector< CDataValue >;
+        break;
+
       case DATA_VECTOR:
         mpData = new std::vector< CData >;
         break;
@@ -274,6 +302,10 @@ void CDataValue::deleteData()
 
       case STRING:
         delete static_cast< std::string * >(mpData);
+        break;
+
+      case DATA_VALUES:
+        delete static_cast< std::vector< CDataValue > * >(mpData);
         break;
 
       case DATA_VECTOR:
@@ -360,6 +392,13 @@ void CDataValue::assignData(const std::string & value)
   *static_cast< std::string * >(mpData) = value;
 }
 
+void CDataValue::assignData(const std::vector< CDataValue > & value)
+{
+  allocateData(DATA_VALUES);
+
+  *static_cast< std::vector< CDataValue > * >(mpData) = value;
+}
+
 void CDataValue::assignData(const std::vector< CData > & value)
 {
   allocateData(DATA_VECTOR);
@@ -397,6 +436,16 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
       case CDataValue::STRING:
         os << o.toString();
         break;
+
+      case CDataValue::DATA_VALUES:
+      {
+        std::vector< CDataValue >::const_iterator it = o.toDataValues().begin();
+        std::vector< CDataValue >::const_iterator end = o.toDataValues().end();
+
+        for (; it != end; ++it)
+          os << *it << std::endl;
+      }
+      break;
 
       case CDataValue::DATA_VECTOR:
       {

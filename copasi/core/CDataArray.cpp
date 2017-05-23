@@ -453,8 +453,8 @@ CDataArray::index_type CDataArray::cnToIndex(const CDataArray::name_index_type &
     }
 
   index_type::iterator to = Index.begin();
-  std::vector< CRegisteredCommonName >::const_iterator it = cnIndex.begin();
-  std::vector< CRegisteredCommonName >::const_iterator itEnd = cnIndex.end();
+  std::vector< std::string >::const_iterator it = cnIndex.begin();
+  std::vector< std::string >::const_iterator itEnd = cnIndex.end();
   std::vector< std::vector<CRegisteredCommonName> >::const_iterator itCNs = mAnnotationsCN.begin();
   size_t index = 0;
 

@@ -48,6 +48,7 @@ public:
     MODEL_TYPE,
     AVOGADRO_NUMBER,
     DIMENSIONALITY,
+    ARRAY_ELEMENT_INDEX,
     __SIZE
   };
 

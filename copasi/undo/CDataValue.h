@@ -21,6 +21,7 @@ public:
     UINT,
     BOOL,
     STRING,
+    DATA_VALUES,
     DATA_VECTOR,
     VOID_POINTER,
     INVALID
@@ -36,6 +37,7 @@ public:
   CDataValue(const unsigned C_INT32 & value);
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
+  CDataValue(const std::vector< CDataValue > & value);
   CDataValue(const std::vector< CData > & value);
   CDataValue(const void * pVoidPointer);
 
@@ -47,6 +49,7 @@ public:
   CDataValue & operator = (const unsigned C_INT32 & value);
   CDataValue & operator = (const bool & value);
   CDataValue & operator = (const std::string & value);
+  CDataValue & operator = (const std::vector< CDataValue > & value);
   CDataValue & operator = (const std::vector< CData > & value);
   CDataValue & operator = (const void * pVoidPointer);
 
@@ -55,6 +58,7 @@ public:
   const unsigned C_INT32 & toUint() const;
   const bool & toBool() const;
   const std::string & toString() const;
+  const std::vector< CDataValue > & toDataValues() const;
   const std::vector< CData > & toDataVector() const;
   const void * toVoidPointer() const;
 
@@ -71,6 +75,7 @@ private:
   void assignData(const unsigned C_INT32 & value);
   void assignData(const bool & value);
   void assignData(const std::string & value);
+  void assignData(const std::vector< CDataValue > & value);
   void assignData(const std::vector< CData > & value);
   void assignData(const void * pVoidPointer);
 

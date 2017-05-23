@@ -76,6 +76,8 @@ const std::array< const std::string, static_cast< size_t >(CData::Property::__SI
   "Avogadro's Number",
   // DIMENSIONALITY,
   "Dimensionality"
+  // ARRAY_ELEMENT_INDEX,
+  "Array Element Index"
 };
 
 CData::CData():

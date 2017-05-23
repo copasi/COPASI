@@ -7,14 +7,70 @@
 #include "core/CDataArray.h"
 #include "CArrayElementReference.h"
 
-CArrayElementReference::CArrayElementReference(const std::vector< CRegisteredCommonName > & index,
+// static
+CArrayElementReference * CArrayElementReference::fromData(const CData & data)
+{
+  std::vector< std::string > Index;
+
+  if (data.isSetProperty(CData::Property::ARRAY_ELEMENT_INDEX))
+    {
+      const std::vector< CDataValue > & DataIndex = data.getProperty(CData::Property::ARRAY_ELEMENT_INDEX).toDataValues();
+      Index.resize(DataIndex.size());
+
+      std::vector< CDataValue >::const_iterator it = DataIndex.begin();
+      std::vector< CDataValue >::const_iterator end = DataIndex.end();
+      std::vector< std::string >::iterator itIndex = Index.begin();
+
+      for (; it != end; ++it, ++itIndex)
+        {
+          *itIndex = it->toString();
+        }
+    }
+
+  return new CArrayElementReference(Index, NO_PARENT, CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
+}
+
+// virtual
+CData CArrayElementReference::toData() const
+{
+  CData Data = CDataObject::toData();
+
+  Data.addProperty(CData::Property::ARRAY_ELEMENT_INDEX, std::vector< CDataValue >(mIndex.begin(), mIndex.end()));
+
+  return Data;
+}
+
+// virtual
+bool CArrayElementReference::applyData(const CData & data)
+{
+  bool success = CDataObject::applyData(data);
+
+  if (data.isSetProperty(CData::Property::ARRAY_ELEMENT_INDEX))
+    {
+      const std::vector< CDataValue > & Index = data.getProperty(CData::Property::ARRAY_ELEMENT_INDEX).toDataValues();
+      mIndex.resize(Index.size());
+
+      std::vector< CDataValue >::const_iterator it = Index.begin();
+      std::vector< CDataValue >::const_iterator end = Index.end();
+      std::vector< CRegisteredCommonName >::iterator itIndex = mIndex.begin();
+
+      for (; it != end; ++it, ++itIndex)
+        {
+          *itIndex = it->toString();
+        }
+    }
+
+  return success;
+}
+
+CArrayElementReference::CArrayElementReference(const std::vector< std::string > & index,
     const CDataContainer * pParent,
     const CFlags< Flag > & flag)
   : CDataObject("Value", pParent, "ElementReference",
                 flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
-  //    mpReference(NULL),
-  mIndex(index),
-  mIgnoreUpdateObjectName(false)
+    //    mpReference(NULL),
+    mIndex(index.begin(), index.end()),
+    mIgnoreUpdateObjectName(false)
 {
   assert(pParent != NULL);
 
@@ -70,7 +126,7 @@ void * CArrayElementReference::getValuePointer() const
 
   if (pArray != NULL)
     {
-      return &pArray->operator [](mIndex);
+      return &pArray->operator [](CDataArray::name_index_type(mIndex.begin(), mIndex.end()));
     }
 
   return NULL;

@@ -31,7 +31,7 @@ class CDataArray: public CDataContainer
 public:
   typedef C_FLOAT64 data_type;
   typedef CArray::index_type index_type;
-  typedef std::vector< CRegisteredCommonName > name_index_type;
+  typedef std::vector< std::string > name_index_type;
 
   /**
    * The annotation to an array can work in different modes. The mode
@@ -235,8 +235,8 @@ private:
   CArrayInterface * mpArray;
   bool mDestructArray;
 
-  std::vector< std::vector<CRegisteredCommonName> > mAnnotationsCN;
-  mutable std::vector< std::vector<std::string> > mAnnotationsString;
+  std::vector< std::vector< CRegisteredCommonName > > mAnnotationsCN;
+  mutable std::vector< std::vector< std::string > > mAnnotationsString;
 
   std::vector< std::string > mDimensionDescriptions;
 

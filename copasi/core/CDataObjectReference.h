@@ -37,6 +37,7 @@ private:
   {};
 
 public:
+  // Data methods do not apply as these references point to memory locations during runtime.
   CDataObjectReference(const std::string & name,
                        const CDataContainer * pParent,
                        referenceType & reference,
@@ -151,6 +152,7 @@ private:
   {};
 
 public:
+  // Data methods do not apply as these references point to memory locations during runtime.
   CDataVectorReference(const std::string & name,
                        const CDataContainer * pParent,
                        referenceType & reference,
@@ -215,6 +217,7 @@ private:
   {};
 
 public:
+  // Data methods do not apply as these references point to memory locations during runtime.
   CDataMatrixReference(const std::string & name,
                        const CDataContainer * pParent,
                        referenceType & reference,
