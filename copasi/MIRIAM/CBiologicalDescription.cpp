@@ -33,6 +33,28 @@ CBiologicalDescription * CBiologicalDescription::fromData(const CData & data)
                                     NO_PARENT);
 }
 
+// virtual
+CData CBiologicalDescription::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CBiologicalDescription::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CBiologicalDescription::CBiologicalDescription(const std::string & objectName,
     const CDataContainer * pParent):
   CDataContainer(objectName, pParent, "BiologicalDescription"),

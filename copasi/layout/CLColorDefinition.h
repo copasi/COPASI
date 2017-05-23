@@ -49,7 +49,25 @@ protected:
   std::string mId;
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLColorDefinition * pDataObject
+   */
   static CLColorDefinition * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   /**
    * Contructor which sets the ColorDefinition to completely opaque

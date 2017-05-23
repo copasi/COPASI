@@ -40,7 +40,25 @@ protected:
   CLMetabGlyph(const CLMetabGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLMetabGlyph * pDataObject
+   */
   static CLMetabGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLMetabGlyph(const std::string & name = "MetabGlyph",
                const CDataContainer * pParent = NO_PARENT);
@@ -89,7 +107,25 @@ protected:
   CLCompartmentGlyph(const CLCompartmentGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLCompartmentGlyph * pDataObject
+   */
   static CLCompartmentGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
                      const CDataContainer * pParent = NO_PARENT);
@@ -152,7 +188,25 @@ protected:
   CLTextGlyph(const CLTextGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLTextGlyph * pDataObject
+   */
   static CLTextGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLTextGlyph(const std::string & name = "TextGlyph",
               const CDataContainer * pParent = NO_PARENT);

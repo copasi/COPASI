@@ -84,6 +84,28 @@ CDataModel * CDataModel::fromData(const CData & data)
                         NO_PARENT);
 }
 
+// virtual
+CData CDataModel::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CDataModel::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CDataModel::CDataModel(const std::string & name,
                        const CDataContainer * pParent,
                        const std::string & type,
@@ -2033,7 +2055,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2062,7 +2084,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2079,7 +2101,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2096,7 +2118,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2113,7 +2135,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2130,7 +2152,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);

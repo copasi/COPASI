@@ -40,6 +40,28 @@ CLMetabGlyph * CLMetabGlyph::fromData(const CData & data)
                           NO_PARENT);
 }
 
+// virtual
+CData CLMetabGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLMetabGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CLMetabGlyph::CLMetabGlyph(const std::string & name,
                            const CDataContainer * pParent)
   : CLGraphicalObject(name, pParent)
@@ -119,6 +141,28 @@ CLCompartmentGlyph * CLCompartmentGlyph::fromData(const CData & data)
                                 NO_PARENT);
 }
 
+// virtual
+CData CLCompartmentGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLCompartmentGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CLCompartmentGlyph::CLCompartmentGlyph(const std::string & name,
                                        const CDataContainer * pParent)
   : CLGraphicalObject(name, pParent)
@@ -196,6 +240,28 @@ CLTextGlyph * CLTextGlyph::fromData(const CData & data)
 {
   return new CLTextGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);
+}
+
+// virtual
+CData CLTextGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLTextGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 CLTextGlyph::CLTextGlyph(const std::string & name,

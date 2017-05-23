@@ -97,7 +97,25 @@ protected:
   CLReferenceGlyph(const CLReferenceGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLReferenceGlyph * pDataObject
+   */
   static CLReferenceGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
                    const CDataContainer * pParent = NO_PARENT);
@@ -211,7 +229,25 @@ protected:
   CLMetabReferenceGlyph(const CLMetabReferenceGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLMetabReferenceGlyph * pDataObject
+   */
   static CLMetabReferenceGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
                         const CDataContainer * pParent = NO_PARENT);
@@ -280,7 +316,25 @@ protected:
   CLGeneralGlyph(const CLGeneralGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLGeneralGlyph * pDataObject
+   */
   static CLGeneralGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
                  const CDataContainer * pParent = NO_PARENT);
@@ -356,7 +410,25 @@ protected:
   CLReactionGlyph(const CLReactionGlyph & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLReactionGlyph * pDataObject
+   */
   static CLReactionGlyph * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
                   const CDataContainer * pParent = NO_PARENT);

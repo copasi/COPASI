@@ -1701,6 +1701,28 @@ CFittingPoint * CFittingPoint::fromData(const CData & data)
                            NO_PARENT);
 }
 
+// virtual
+CData CFittingPoint::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CFittingPoint::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CFittingPoint::CFittingPoint(const std::string & name,
                              const CDataContainer * pParent):
   CDataContainer("Fitting Point", pParent, "Fitted Point"),

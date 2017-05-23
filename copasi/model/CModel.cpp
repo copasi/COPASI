@@ -62,6 +62,28 @@
 const char * CModel::ModelTypeNames[] =
 {"deterministic", "stochastic", NULL};
 
+// static
+CModel * CModel::fromData(const CData & data)
+{
+  CModel * pModel = NULL;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return pModel;
+}
+
+// virtual
+CData CModel::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
 // virtual
 bool CModel::applyData(const CData & data)
 {
@@ -3034,7 +3056,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-            // Intentionally no break statement!
+          // Intentionally no break statement!
 
           case ASSIGNMENT:
 

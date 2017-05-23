@@ -42,13 +42,13 @@ public:
 
   bool addProperty(const CData::Property & property, const CDataValue & oldValue, const CDataValue & newValue);
 
+  bool isSetProperty(const CData::Property & property) const;
+
   bool appendData(const CData & data);
 
   bool appendData(const CData & oldData, const CData & newData);
 
   bool addDependentData(const CUndoData & dependentData);
-
-  void recordDependentParticleNumberChange(const double factor, const CDataVector< CMetab > & species);
 
   const CData & getOldData() const;
 
@@ -74,6 +74,8 @@ private:
   bool addProperty(const std::string & name, const CDataValue & value);
 
   bool addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue);
+
+  bool isSetProperty(const std::string & name) const;
 
   bool insert(const CDataModel & dataModel, const bool & apply) const;
   bool remove(const CDataModel & dataModel, const bool & apply) const;

@@ -55,6 +55,28 @@ CCopasiTask * CCopasiTask::fromData(const CData & data)
   return pNew;
 }
 
+// virtual
+CData CCopasiTask::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CCopasiTask::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
                                 const CTaskEnum::Method * validMethods)
 {

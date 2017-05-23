@@ -23,6 +23,28 @@ CLLocalStyle * CLLocalStyle::fromData(const CData & data)
   return new CLLocalStyle(NO_PARENT);
 }
 
+// virtual
+CData CLLocalStyle::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLLocalStyle::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 /**
  * Constructor.
  */

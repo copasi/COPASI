@@ -68,6 +68,28 @@ CReaction * CReaction::fromData(const CData & data)
                        NO_PARENT);
 }
 
+// virtual
+CData CReaction::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CReaction::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CReaction::CReaction(const std::string & name,
                      const CDataContainer * pParent):
   CDataContainer(name, pParent, "Reaction"),

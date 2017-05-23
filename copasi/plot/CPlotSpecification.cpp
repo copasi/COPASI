@@ -32,6 +32,28 @@ CPlotSpecification * CPlotSpecification::fromData(const CData & data)
                                 (CPlotSpecification::Type) data.getProperty(CData::PLOT_TYPE).toUint());
 }
 
+// virtual
+CData CPlotSpecification::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CPlotSpecification::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CPlotSpecification::CPlotSpecification(const std::string & name,
                                        const CDataContainer * pParent,
                                        const CPlotSpecification::Type & type):

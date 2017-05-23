@@ -22,11 +22,34 @@
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
+#include "copasi/undo/CData.h"
 
 // static
 CLColorDefinition * CLColorDefinition::fromData(const CData & data)
 {
   return new CLColorDefinition(NO_PARENT);
+}
+
+// virtual
+CData CLColorDefinition::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLColorDefinition::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 /**

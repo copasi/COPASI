@@ -61,7 +61,25 @@ protected:
   CLGraphicalObject(const CLGraphicalObject & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CLGraphicalObject * pDataObject
+   */
   static CLGraphicalObject * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
 
   CLGraphicalObject(const std::string & name = "GraphicalObject",
                     const CDataContainer * pParent = NO_PARENT);

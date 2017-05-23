@@ -31,6 +31,7 @@ class CModel;
 class CDataModel;
 class CUnit;
 class CData;
+class CUndoData;
 
 template <class CType> class CDataObjectReference;
 
@@ -77,7 +78,32 @@ protected:
   CDataObject(const CDataObject & src);
 
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CDataObject * pDataObject
+   */
   static CDataObject * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data);
+
+  /**
+   * Append all required dependent undo data
+   * @param CUndoData & undoData
+   * @param const CModelParameter::Framework & framework
+   */
+  virtual void appendDependentData(CUndoData & undoData, const CCore::Framework & framework);
 
   static void sanitizeObjectName(std::string & name);
 
@@ -203,10 +229,6 @@ public:
   bool hasFlag(const Flag & flag) const;
 
   virtual const CDataObject * getValueObject() const;
-
-  virtual CData toData() const;
-
-  virtual bool applyData(const CData & data);
 
   friend std::ostream &operator<<(std::ostream &os, const CDataObject & o);
 

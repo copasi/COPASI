@@ -41,6 +41,28 @@ CEventAssignment * CEventAssignment::fromData(const CData & data)
                               NO_PARENT);
 }
 
+// virtual
+CData CEventAssignment::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CEventAssignment::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
 CEventAssignment::CEventAssignment(const std::string & targetKey,
@@ -254,6 +276,28 @@ CEvent * CEvent::fromData(const CData & data)
 {
   return new CEvent(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);
+}
+
+// virtual
+CData CEvent::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CEvent::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 CEvent::CEvent(const std::string & name,

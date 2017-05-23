@@ -81,6 +81,28 @@ CPlotItem * CPlotItem::fromData(const CData & data)
                        (CPlotItem::Type) data.getProperty(CData::PLOT_ITEM_TYPE).toUint());
 }
 
+// virtual
+CData CPlotItem::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CPlotItem::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CPlotItem::CPlotItem(const std::string & name,
                      const CDataContainer * pParent,
                      const CPlotItem::Type & type):

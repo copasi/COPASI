@@ -23,6 +23,28 @@ CLGlobalStyle * CLGlobalStyle::fromData(const CData & data)
   return new CLGlobalStyle(NO_PARENT);
 }
 
+// virtual
+CData CLGlobalStyle::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLGlobalStyle::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CLGlobalStyle::CLGlobalStyle(CDataContainer* pParent): CLStyle("GlobalStyle", pParent)
 {
   this->mKey = CRootContainer::getKeyFactory()->add("GlobalStyle", this);

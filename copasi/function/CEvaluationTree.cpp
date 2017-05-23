@@ -143,6 +143,28 @@ CEvaluationTree * CEvaluationTree::fromData(const CData & data)
   return pNew;
 }
 
+// virtual
+CData CEvaluationTree::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CEvaluationTree::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CEvaluationTree::CEvaluationTree(const std::string & name,
                                  const CDataContainer * pParent,
                                  const CEvaluationTree::Type & type):

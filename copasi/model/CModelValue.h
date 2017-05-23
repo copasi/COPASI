@@ -80,7 +80,24 @@ public:
    */
   static const char * XMLStatus[];
 
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CModelEntity * pDataObject
+   */
+  static CModelEntity * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
   virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
   virtual bool applyData(const CData & data);
 
   /**
@@ -502,8 +519,24 @@ TIME                    implemented
 class CModelValue : public CModelEntity
 {
 public:
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CModelValue * pDataObject
+   */
   static CModelValue * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
   virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
   virtual bool applyData(const CData & data);
 
   /**

@@ -27,6 +27,28 @@ CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & da
   return new CLGlobalRenderInformation(NO_PARENT);
 }
 
+// virtual
+CData CLGlobalRenderInformation::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLGlobalRenderInformation::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 /**
  *  Constructor.
  */

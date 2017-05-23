@@ -32,6 +32,28 @@ CModification * CModification::fromData(const CData & data)
                            NO_PARENT);
 }
 
+// virtual
+CData CModification::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CModification::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CModification::CModification(const std::string & objectName,
                              const CDataContainer * pParent):
   CDataContainer(objectName, pParent, "Modification"),

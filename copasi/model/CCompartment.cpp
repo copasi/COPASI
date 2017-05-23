@@ -36,6 +36,7 @@
 #include "CCompartment.h"
 #include "CModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/undo/CUndoData.h"
 
 // static
 CCompartment * CCompartment::fromData(const CData & data)
@@ -65,6 +66,53 @@ bool CCompartment::applyData(const CData & data)
     }
 
   return success;
+}
+
+// virtual
+void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framework & framework)
+{
+  switch (undoData.getType())
+    {
+      case CUndoData::INSERT:
+        break;
+
+      case CUndoData::REMOVE:
+        break;
+
+      case CUndoData::CHANGE:
+
+        if (undoData.isSetProperty(CData::INITIAL_VALUE))
+          {
+            double Factor = undoData.getNewData().getProperty(CData::INITIAL_VALUE).toDouble() / undoData.getOldData().getProperty(CData::INITIAL_VALUE).toDouble();
+
+            CDataVector< CMetab >::const_iterator it = mMetabolites.begin();
+            CDataVector< CMetab >::const_iterator end = mMetabolites.end();
+
+            for (; it != end; ++it)
+              {
+                CUndoData Data(CUndoData::CHANGE, &*it, undoData.getAuthorID());
+
+                switch (framework)
+                  {
+                    case CCore::Framework::Concentration:
+                      // We need to record the old and new initial particle numbers for each species where new := old * factor
+                      Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), it->getInitialValue() * Factor);
+                      break;
+
+                    case CCore::Framework::ParticleNumbers:
+                      // We need to record the old and new concentrations for each species where new := old / factor
+                      Data.addProperty(CData::INITIAL_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
+                      break;
+                  }
+
+                undoData.addDependentData(Data);
+              }
+          }
+
+        break;
+    }
+
+  return;
 }
 
 CCompartment::CCompartment(const std::string & name,

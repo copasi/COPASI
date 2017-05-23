@@ -46,6 +46,28 @@ CReportDefinition * CReportDefinition::fromData(const CData & data)
                                NO_PARENT);
 }
 
+// virtual
+CData CReportDefinition::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CReportDefinition::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CReportDefinition::CReportDefinition(const std::string & name,
                                      const CDataContainer * pParent):
   CDataObject(name, pParent, "ReportDefinition"),

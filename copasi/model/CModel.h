@@ -79,8 +79,24 @@ private:
   CModel& operator=(const CModel& src);
 
 public:
-  // static CModel * fromData(const CData & data);
-  // virtual CData toData() const;
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CModel * pDataObject
+   */
+  static CModel * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
   virtual bool applyData(const CData & data);
 
   /**

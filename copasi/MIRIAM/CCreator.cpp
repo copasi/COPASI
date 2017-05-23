@@ -32,6 +32,28 @@ CCreator * CCreator::fromData(const CData & data)
                       NO_PARENT);
 }
 
+// virtual
+CData CCreator::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CCreator::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CCreator::CCreator(const std::string & objectName,
                    const CDataContainer * pParent):
   CDataContainer(objectName, pParent, "Creator"),

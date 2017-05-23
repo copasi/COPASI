@@ -40,6 +40,28 @@ CSlider * CSlider::fromData(const CData & data)
                      NO_PARENT);
 }
 
+// virtual
+CData CSlider::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CSlider::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CSlider::CSlider(const std::string & name,
                  const CDataContainer * pParent):
   CDataContainer(name, pParent, "Slider"),

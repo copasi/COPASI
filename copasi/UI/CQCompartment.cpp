@@ -503,6 +503,8 @@ void CQCompartment::save()
                        mpCompartment->getInitialValue(),
                        mpEditInitialVolume->text().toDouble());
 
+      mpCompartment->appendDependentData(Data, (CCore::Framework) mFramework);
+
       mpUndoStack->push(new CompartmentChangeCommand(
                           CCopasiUndoCommand::COMPARTMENT_INITIAL_VOLUME_CHANGE,
                           mpCompartment->getInitialValue(),
@@ -511,12 +513,6 @@ void CQCompartment::save()
                           this
                         ));
       mChanged = true;
-
-      if (mFramework == 0) // Concentration
-        {
-          Data.recordDependentParticleNumberChange(mpEditInitialVolume->text().toDouble() / mpCompartment->getInitialValue(),
-              mpCompartment->getMetabolites());
-        }
     }
 
   // Expression

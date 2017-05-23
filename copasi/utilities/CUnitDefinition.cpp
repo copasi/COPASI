@@ -128,6 +128,28 @@ CUnitDefinition * CUnitDefinition::fromData(const CData & data)
                              NO_PARENT);
 }
 
+// virtual
+CData CUnitDefinition::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CUnitDefinition::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 // constructors
 // default
 CUnitDefinition::CUnitDefinition(const std::string & name,

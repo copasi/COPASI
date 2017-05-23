@@ -136,6 +136,34 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
   return success;
 }
 
+bool CUndoData::isSetProperty(const CData::Property & property) const
+{
+  return isSetProperty(CData::PropertyName[property]);
+}
+
+bool CUndoData::isSetProperty(const std::string & name) const
+{
+  bool isSet = true;
+
+  switch (mType)
+    {
+      case INSERT:
+        isSet &= mNewData.isSetProperty(name);
+        break;
+
+      case REMOVE:
+        isSet &= mOldData.isSetProperty(name);
+        break;
+
+      case CHANGE:
+        isSet &= mNewData.isSetProperty(name);
+        isSet &= mOldData.isSetProperty(name);
+        break;
+    }
+
+  return isSet;
+}
+
 bool CUndoData::appendData(const CData & data)
 {
   bool success = true;
@@ -186,20 +214,6 @@ bool CUndoData::addDependentData(const CUndoData & dependentData)
   mDependentData.push_back(dependentData);
 
   return true;
-}
-
-void CUndoData::recordDependentParticleNumberChange(const double factor, const CDataVector< CMetab > & species)
-{
-  // We need to record the old and new values for each species where new := factor * old
-  CDataVector< CMetab >::const_iterator it = species.begin();
-  CDataVector< CMetab >::const_iterator end = species.end();
-
-  for (; it != end; ++it)
-    {
-      CUndoData Data(CHANGE, &*it, mAuthorID);
-      Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), factor * it->getInitialValue());
-      mDependentData.push_back(Data);
-    }
 }
 
 const CData & CUndoData::getOldData() const
@@ -362,11 +376,12 @@ bool CUndoData::processDependentData(const CDataModel & dataModel, const bool & 
 {
   bool success = true;
 
-  std::vector< CUndoData >::const_iterator it = mDependentData.begin();
-  std::vector< CUndoData >::const_iterator end = mDependentData.end();
-
+  // The order of processing of dependent data
   if (apply)
     {
+      std::vector< CUndoData >::const_iterator it = mDependentData.begin();
+      std::vector< CUndoData >::const_iterator end = mDependentData.end();
+
       for (; it != end; ++it)
         {
           // If we are here we have dependent data, e.g. particle number changes
@@ -375,6 +390,9 @@ bool CUndoData::processDependentData(const CDataModel & dataModel, const bool & 
     }
   else
     {
+      std::vector< CUndoData >::const_reverse_iterator it = mDependentData.rbegin();
+      std::vector< CUndoData >::const_reverse_iterator end = mDependentData.rend();
+
       for (; it != end; ++it)
         {
           // If we are here we have dependent data, e.g. particle number changes

@@ -134,6 +134,28 @@ CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data)
                               NO_PARENT);
 }
 
+// virtual
+CData CLReferenceGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLReferenceGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CLReferenceGlyph::CLReferenceGlyph(const std::string & name,
                                    const CDataContainer * pParent)
   : CLGlyphWithCurve(name, pParent)
@@ -318,6 +340,28 @@ CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data)
 {
   return new CLMetabReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                    NO_PARENT);
+}
+
+// virtual
+CData CLMetabReferenceGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLMetabReferenceGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 CLMetabReferenceGlyph::CLMetabReferenceGlyph(const std::string & name,
@@ -507,6 +551,28 @@ CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data)
 {
   return new CLGeneralGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);
+}
+
+// virtual
+CData CLGeneralGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLGeneralGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 CLGeneralGlyph::CLGeneralGlyph(const std::string & name,
@@ -834,6 +900,28 @@ CLReactionGlyph * CLReactionGlyph::fromData(const CData & data)
 {
   return new CLReactionGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);
+}
+
+// virtual
+CData CLReactionGlyph::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLReactionGlyph::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 CLReactionGlyph::CLReactionGlyph(const std::string & name,

@@ -397,6 +397,15 @@ const CDataObject * CDataObject::getValueObject() const
   return NULL;
 }
 
+// static
+CDataObject * CDataObject::fromData(const CData & data)
+{
+  return new CDataObject(data.getProperty(CData::OBJECT_NAME).toString(),
+                         NO_PARENT,
+                         data.getProperty(CData::OBJECT_TYPE).toString(),
+                         CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
+}
+
 // virtual
 CData CDataObject::toData() const
 {
@@ -432,15 +441,6 @@ CData CDataObject::toData() const
     }
 
   return Data;
-}
-
-// static
-CDataObject * CDataObject::fromData(const CData & data)
-{
-  return new CDataObject(data.getProperty(CData::OBJECT_NAME).toString(),
-                         NO_PARENT,
-                         data.getProperty(CData::OBJECT_TYPE).toString(),
-                         CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
 }
 
 // virtual
@@ -481,6 +481,10 @@ bool CDataObject::applyData(const CData & data)
 
   return success;
 }
+
+// virtual
+void CDataObject::appendDependentData(CUndoData & /* undoData */ , const CCore::Framework & /* framework */)
+{}
 
 bool CDataObject::hasFlag(const Flag & flag) const
 {

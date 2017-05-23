@@ -38,6 +38,12 @@ public:
 
   typedef CFlags< SimulationContext > SimulationContextFlag;
 
+  enum struct Framework
+  {
+    Concentration = 0,
+    ParticleNumbers
+  };
+
   /**
    * Convert an annotation to enum. If no matching name is found the parameter enumDefault is returned.
    * @param const AType & annotation

@@ -45,6 +45,28 @@ CMoiety * CMoiety::fromData(const CData & data)
                      NO_PARENT);
 }
 
+// virtual
+CData CMoiety::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CMoiety::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CMoiety::CMoiety(const std::string & name,
                  const CDataContainer * pParent):
   CDataContainer(name, pParent, "Moiety"),

@@ -27,6 +27,28 @@ CLGradientBase * CLGradientBase::fromData(const CData & data)
                             NO_PARENT);
 }
 
+// virtual
+CData CLGradientBase::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLGradientBase::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 /**
  * Constructor.
  */

@@ -56,6 +56,28 @@ CMetab * CMetab::fromData(const CData & data)
                     NO_PARENT);
 }
 
+// virtual
+CData CMetab::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CMetab::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CMetab::CMetab(const std::string & name,
                const CDataContainer * pParent):
   CModelEntity(name, pParent, "Metabolite",
@@ -520,6 +542,28 @@ CMetabOld * CMetabOld::fromData(const CData & data)
 {
   return new CMetabOld(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);
+}
+
+// virtual
+CData CMetabOld::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CMetabOld::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 CMetabOld::CMetabOld(const std::string & name,

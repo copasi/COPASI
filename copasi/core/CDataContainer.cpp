@@ -353,6 +353,27 @@ CDataContainer::CObjectMap::const_iterator CDataContainer::CObjectMap::end() con
 
 const CObjectInterface::ContainerList CDataContainer::EmptyList;
 
+// static
+CDataContainer * CDataContainer::fromData(const CData & data)
+{
+  return new CDataContainer(data.getProperty(CData::OBJECT_NAME).toString(),
+                            NO_PARENT,
+                            data.getProperty(CData::OBJECT_TYPE).toString(),
+                            CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
+}
+
+// virtual
+CData CDataContainer::toData() const
+{
+  return CDataObject::toData();
+}
+
+// virtual
+bool CDataContainer::applyData(const CData & data)
+{
+  return CDataObject::applyData(data);
+}
+
 CDataContainer::CDataContainer() :
   CDataObject(),
   mObjects()

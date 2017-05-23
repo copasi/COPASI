@@ -26,6 +26,28 @@ CLLocalRenderInformation * CLLocalRenderInformation::fromData(const CData & data
   return new CLLocalRenderInformation(NO_PARENT);
 }
 
+// virtual
+CData CLLocalRenderInformation::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLLocalRenderInformation::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 /**
  *  Constructor.
  */

@@ -64,6 +64,28 @@ CFunctionParameter * CFunctionParameter::fromData(const CData & data)
                                 NO_PARENT);
 }
 
+// virtual
+CData CFunctionParameter::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CFunctionParameter::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CFunctionParameter::CFunctionParameter(const std::string & name,
                                        const CDataContainer * pParent):
   CDataContainer(name, pParent, "Variable"),
@@ -86,11 +108,11 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
                                        Role usage,
                                        const CDataContainer * pParent) :
-CDataContainer(name, pParent, "Variable"),
-               mKey(CRootContainer::getKeyFactory()->add("FunctionParameter", this)),
-               mType(type),
-               mUsage(usage),
-               mIsUsed(true)
+  CDataContainer(name, pParent, "Variable"),
+  mKey(CRootContainer::getKeyFactory()->add("FunctionParameter", this)),
+  mType(type),
+  mUsage(usage),
+  mIsUsed(true)
 {CONSTRUCTOR_TRACE;}
 
 CFunctionParameter::~CFunctionParameter()

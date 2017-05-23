@@ -18,11 +18,34 @@
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
+#include "copasi/undo/CData.h"
 
 // static
 CLGradientStop * CLGradientStop::fromData(const CData & data)
 {
   return new CLGradientStop(NO_PARENT);
+}
+
+// virtual
+CData CLGradientStop::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLGradientStop::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
 }
 
 /**

@@ -27,6 +27,28 @@ CLLineEnding * CLLineEnding::fromData(const CData & data)
   return new CLLineEnding(NO_PARENT);
 }
 
+// virtual
+CData CLLineEnding::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CLLineEnding::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 /**
  * Constructor.
  */

@@ -26,6 +26,28 @@ CModelParameterSet * CModelParameterSet::fromData(const CData & data)
                                 NO_PARENT);
 }
 
+// virtual
+CData CModelParameterSet::toData() const
+{
+  CData Data;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return Data;
+}
+
+// virtual
+bool CModelParameterSet::applyData(const CData & data)
+{
+  bool success = true;
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return success;
+}
+
 CModelParameterSet::CModelParameterSet(const std::string & name,
                                        const CDataContainer * pParent):
   CDataContainer(name, pParent, "ModelParameterSet"),
