@@ -26,8 +26,8 @@ public:
   enum Type
   {
     INSERT = 0,
-    REMOVE,
-    CHANGE
+    CHANGE,
+    REMOVE
   };
 
   CUndoData(const Type & type, const CDataObject * pObject, const size_t & authorId = C_INVALID_INDEX);
@@ -50,6 +50,8 @@ public:
 
   bool addDependentData(const CUndoData & dependentData);
 
+  bool addDependentData(std::vector< CUndoData > & dependentData, bool sort);
+
   const CData & getOldData() const;
 
   const CData & getNewData() const;
@@ -69,6 +71,8 @@ public:
   std::tm * getUTCTime() const;
 
   const size_t getAuthorID() const;
+
+  bool operator < (const CUndoData & rhs) const;
 
 private:
   bool addProperty(const std::string & name, const CDataValue & value);

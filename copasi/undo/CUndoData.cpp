@@ -216,6 +216,18 @@ bool CUndoData::addDependentData(const CUndoData & dependentData)
   return true;
 }
 
+bool CUndoData::addDependentData(std::vector< CUndoData > & dependentData, bool sort)
+{
+  if (sort)
+    {
+      std::sort(dependentData.begin(), dependentData.end());
+    }
+
+  mDependentData.insert(mDependentData.end(), dependentData.begin(), dependentData.end());
+
+  return true;
+}
+
 const CData & CUndoData::getOldData() const
 {
   return mOldData;
@@ -298,6 +310,89 @@ std::tm * CUndoData::getUTCTime() const
 const size_t CUndoData::getAuthorID() const
 {
   return mAuthorID;
+}
+
+bool CUndoData::operator < (const CUndoData & rhs) const
+{
+  if (mType != rhs.mType) return mType < rhs.mType;
+
+  switch (mType)
+    {
+      case INSERT:
+      {
+        const std::string & CN = mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+
+        if (CN != RhsCN) return CN < RhsCN;
+      }
+      break;
+
+      case REMOVE:
+      {
+        const std::string & CN = mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+
+        if (CN != RhsCN) return CN > RhsCN;
+      }
+      break;
+
+      case CHANGE:
+      {
+        const std::string & CN = mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+
+        if (CN != RhsCN) return CN < RhsCN;
+      }
+
+      {
+        const std::string & CN = mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+
+        if (CN != RhsCN) return CN > RhsCN;
+      }
+      break;
+    }
+
+  // At the point the data is of the same point and type now we sort by the index
+  switch (mType)
+    {
+      case INSERT:
+      {
+        const unsigned C_INT32 & Index = mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const unsigned C_INT32 & RhsIndex = rhs.mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+
+        if (Index != RhsIndex) return Index < RhsIndex;
+      }
+      break;
+
+      case REMOVE:
+      {
+        const unsigned C_INT32 & Index = mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const unsigned C_INT32 & RhsIndex = rhs.mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+
+        if (Index != RhsIndex) return Index > RhsIndex;
+      }
+      break;
+
+      case CHANGE:
+      {
+        const unsigned C_INT32 & Index = mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const unsigned C_INT32 & RhsIndex = rhs.mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+
+        if (Index != RhsIndex) return Index < RhsIndex;
+      }
+
+      {
+        const unsigned C_INT32 & Index = mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const unsigned C_INT32 & RhsIndex = rhs.mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+
+        if (Index != RhsIndex) return Index > RhsIndex;
+      }
+      break;
+    }
+
+  // Default by pointer
+  return this < &rhs;
 }
 
 // static

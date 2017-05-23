@@ -92,27 +92,36 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
         // Reactions, Metabolites, and Event Assignments may directly depend on the compartment and have to be removed.
         DataObjectSet::const_iterator it = dependentEventAssignments.begin();
         DataObjectSet::const_iterator end = dependentEventAssignments.end();
+        std::vector< CUndoData > DependentData;
 
         for (; it != end; ++it)
           {
-            undoData.addDependentData(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+            DependentData.push_back(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
           }
+
+        undoData.addDependentData(DependentData, true);
+        DependentData.clear();
 
         it = dependentReactions.begin();
         end = dependentReactions.end();
 
         for (; it != end; ++it)
           {
-            undoData.addDependentData(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+            DependentData.push_back(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
           }
+
+        undoData.addDependentData(DependentData, true);
+        DependentData.clear();
 
         it = dependentMetabolites.begin();
         end = dependentMetabolites.end();
 
         for (; it != end; ++it)
           {
-            undoData.addDependentData(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+            DependentData.push_back(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
           }
+
+        undoData.addDependentData(DependentData, true);
       }
 
       break;
