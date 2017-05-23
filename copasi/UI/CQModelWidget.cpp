@@ -35,7 +35,6 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/undoFramework/ModelChangeCommand.h"
 
-
 CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
   mpModel(NULL),
@@ -427,7 +426,7 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   else if (type == CCopasiUndoCommand::MODEL_QUANTITY_UNIT_CHANGE)
     {
       QList< QVariant > Values = newValue.toList();
-      mpModel->setQuantityUnit(TO_UTF8(Values[0].toString()), (CModelParameter::Framework) Values[1].toInt());
+      mpModel->setQuantityUnit(TO_UTF8(Values[0].toString()), (CCore::Framework) Values[1].toInt());
     }
   else if (type == CCopasiUndoCommand::MODEL_VOLUME_UNIT_CHANGE)
     {
@@ -444,7 +443,7 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
   else if (type == CCopasiUndoCommand::MODEL_AVOGADRO_NUMBER_CHANGE)
     {
       QList< QVariant > Values = newValue.toList();
-      mpModel->setAvogadro(Values[0].toDouble(), (CModelParameter::Framework) Values[1].toInt());
+      mpModel->setAvogadro(Values[0].toDouble(), (CCore::Framework) Values[1].toInt());
     }
   else if (type == CCopasiUndoCommand::MODEL_INITIAL_TIME_CHANGE)
     {
@@ -570,4 +569,3 @@ void CQModelWidget::slotDelayed()
 
   mpFocusUnit = NULL;
 }
-

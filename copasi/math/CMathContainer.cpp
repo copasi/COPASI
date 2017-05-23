@@ -692,7 +692,7 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
   return UpdateSequence.empty();
 }
 
-void CMathContainer::quantityConversionChanged(const CModelParameter::Framework & framework)
+void CMathContainer::quantityConversionChanged(const CCore::Framework & framework)
 {
   updateInitialValues(framework);
 }
@@ -842,15 +842,15 @@ CVector< CMathEvent::CTrigger::CRootProcessor * > & CMathContainer::getRootProce
   return mRootProcessors;
 }
 
-void CMathContainer::updateInitialValues(const CModelParameter::Framework & framework)
+void CMathContainer::updateInitialValues(const CCore::Framework & framework)
 {
   switch (framework)
     {
-      case CModelParameter::Concentration:
+      case CCore::Framework::Concentration:
         applyUpdateSequence(mSynchronizeInitialValuesSequenceIntensive);
         break;
 
-      case CModelParameter::ParticleNumbers:
+      case CCore::Framework::ParticleNumbers:
         applyUpdateSequence(mSynchronizeInitialValuesSequenceExtensive);
         break;
     }
@@ -1007,15 +1007,15 @@ void CMathContainer::updateTransientDataValues()
   applyUpdateSequence(mTransientDataObjectSequence);
 }
 
-const CCore::CUpdateSequence & CMathContainer::getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const
+const CCore::CUpdateSequence & CMathContainer::getSynchronizeInitialValuesSequence(const CCore::Framework & framework) const
 {
   switch (framework)
     {
-      case CModelParameter::Concentration:
+      case CCore::Framework::Concentration:
         return mSynchronizeInitialValuesSequenceIntensive;
         break;
 
-      case CModelParameter::ParticleNumbers:
+      case CCore::Framework::ParticleNumbers:
         return mSynchronizeInitialValuesSequenceExtensive;
         break;
     }
@@ -1392,7 +1392,7 @@ void CMathContainer::compile()
   createDependencyGraphs();
   createUpdateSequences();
 
-  updateInitialValues(CModelParameter::ParticleNumbers);
+  updateInitialValues(CCore::Framework::ParticleNumbers);
 
   CMathReaction * pReaction = mReactions.array();
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();

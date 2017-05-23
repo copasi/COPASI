@@ -1173,7 +1173,7 @@ const CDataObject* SliderDialog::determineCorrectObjectForSlider(const CDataObje
               //
               // sometimes it is not allowed to change the concentration of a metabolite
               // because it would change the volume of the compartment
-              if (pMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework) &&
+              if (pMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework) &&
                   pObject == pMetab->getInitialValueReference())
                 {
                   // if the current object is for the concentration, we return a new object to the amount
@@ -1186,7 +1186,7 @@ const CDataObject* SliderDialog::determineCorrectObjectForSlider(const CDataObje
               // we are in the particle number framework
               // if the object is for the amount, we leave it, otherwise we
               // return a new object for the amount
-              if (pMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework) &&
+              if (pMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework) &&
                   pObject == pMetab->getInitialConcentrationReference())
                 {
                   pResult = pMetab->getInitialValueReference();

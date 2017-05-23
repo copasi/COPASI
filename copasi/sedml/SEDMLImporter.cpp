@@ -560,7 +560,7 @@ SEDMLImporter::parseSEDML(const std::string& sedmlDocumentText,
 
           case LIBSEDML_SEV_FATAL:
 
-            // treat unknown as fatal
+          // treat unknown as fatal
           default:
 
             if (pSEDMLError->getErrorId() == 10804)
@@ -772,7 +772,7 @@ bool applyValueToModelParameter(CModelParameter* modelParameter, CDataObject *ob
 
   if (cn == targetCN)
     {
-      modelParameter->setValue(newValue, CModelParameter::Concentration);
+      modelParameter->setValue(newValue, CCore::Framework::Concentration);
       return true;
     }
 

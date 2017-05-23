@@ -2624,7 +2624,7 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
   if (mData.pModel)
     {
       mData.pModel->compileIfNecessary(pProcessReport);
-      mData.pModel->updateInitialValues(CModelParameter::ParticleNumbers);
+      mData.pModel->updateInitialValues(CCore::Framework::ParticleNumbers);
     }
 
   changed(false);

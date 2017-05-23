@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -115,11 +120,11 @@ public:
   /**
    * Compare the parameter to an other
    * @param const CModelParameter & other
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    * @param const bool & createMissing = false
    */
   const virtual CompareResult & diff(const CModelParameter& other,
-                                     const CModelParameter::Framework & framework,
+                                     const CCore::Framework & framework,
                                      const bool & createMissing = false);
 #endif //SWIG
 

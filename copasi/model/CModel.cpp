@@ -111,7 +111,7 @@ bool CModel::applyData(const CData & data)
 
   if (data.isSetProperty(CData::QUANTITY_UNIT))
     {
-      success &= setQuantityUnit(data.getProperty(CData::QUANTITY_UNIT).toString(), CModelParameter::ParticleNumbers);
+      success &= setQuantityUnit(data.getProperty(CData::QUANTITY_UNIT).toString(), CCore::Framework::ParticleNumbers);
     }
 
   if (data.isSetProperty(CData::MODEL_TYPE))
@@ -121,7 +121,7 @@ bool CModel::applyData(const CData & data)
 
   if (data.isSetProperty(CData::AVOGADRO_NUMBER))
     {
-      setAvogadro(data.getProperty(CData::AVOGADRO_NUMBER).toDouble(), CModelParameter::ParticleNumbers);
+      setAvogadro(data.getProperty(CData::AVOGADRO_NUMBER).toDouble(), CCore::Framework::ParticleNumbers);
     }
 
   return success;
@@ -177,7 +177,7 @@ CModel::CModel(CDataContainer* pParent):
   setUsed(true);
   mIValue = 0.0;
 
-  setQuantityUnit(mQuantityUnit, CModelParameter::ParticleNumbers);
+  setQuantityUnit(mQuantityUnit, CCore::Framework::ParticleNumbers);
 
   initializeMetabolites();
 
@@ -349,10 +349,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // We suppress all errors and warnings
   size_t MessageSize = CCopasiMessage::size();
 
-  if (!setQuantityUnit(tmp, CModelParameter::ParticleNumbers) &&
-      !setQuantityUnit(tmp.substr(0, 1) + "mol", CModelParameter::ParticleNumbers))
+  if (!setQuantityUnit(tmp, CCore::Framework::ParticleNumbers) &&
+      !setQuantityUnit(tmp.substr(0, 1) + "mol", CCore::Framework::ParticleNumbers))
     {
-      setQuantityUnit("mmol", CModelParameter::ParticleNumbers);
+      setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
     }
 
   // Remove error messages created by the task initialization as this may fail
@@ -531,7 +531,7 @@ bool CModel::compile()
 
   mpMathContainer->compile();
   mpMathContainer->fetchInitialState();
-  mpMathContainer->updateInitialValues(CModelParameterSet::ParticleNumbers);
+  mpMathContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
   mpMathContainer->pushInitialState();
 
   mIsAutonomous = mpMathContainer->isAutonomous();
@@ -1255,7 +1255,7 @@ size_t CModel::findMoiety(const std::string &Target) const
 void CModel::applyInitialValues()
 {
   mpMathContainer->fetchInitialState();
-  mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpMathContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
   mpMathContainer->applyInitialValues();
   mpMathContainer->updateSimulatedValues(false);
   mpMathContainer->updateTransientDataValues();
@@ -1402,7 +1402,7 @@ bool CModel::buildUserOrder()
   return true;
 }
 
-bool CModel::updateInitialValues(const CModelParameter::Framework & framework)
+bool CModel::updateInitialValues(const CCore::Framework & framework)
 {
   bool success = compileIfNecessary(NULL);
 
@@ -1418,7 +1418,7 @@ void CModel::stateToIntialState()
 {
   mpMathContainer->fetchState();
   mpMathContainer->setInitialState(mpMathContainer->getState(false));
-  mpMathContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpMathContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
   mpMathContainer->pushInitialState();
 }
 
@@ -1556,7 +1556,7 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 //****
 
 bool CModel::setQuantityUnit(const std::string & name,
-                             const CModelParameter::Framework & frameWork)
+                             const CCore::Framework & frameWork)
 {
   mQuantityUnit = name;
 
@@ -1586,7 +1586,7 @@ bool CModel::setQuantityUnit(const std::string & name,
 }
 
 bool CModel::setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
-                             const CModelParameter::Framework & frameWork)
+                             const CCore::Framework & frameWork)
 {
   return setQuantityUnit(CUnit::QuantityUnitNames[unitEnum],
                          frameWork);
@@ -1618,7 +1618,7 @@ void CModel::setModelType(const CModel::ModelType & modelType)
 const CModel::ModelType & CModel::getModelType() const
 {return mType;}
 
-void CModel::setAvogadro(const C_FLOAT64 & avogadro, const CModelParameter::Framework & frameWork)
+void CModel::setAvogadro(const C_FLOAT64 & avogadro, const CCore::Framework & frameWork)
 {
   mAvogadro = avogadro;
 

@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -572,7 +577,7 @@ void CCopasiXMLParser::ModelParameterElement::start(const XML_Char *pszName,
             SimulationType = toEnum(pSimulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
             mCommon.pCurrentModelParameter->setSimulationType(SimulationType);
 
-            mCommon.pCurrentModelParameter->setValue(Value, CModelParameter::ParticleNumbers);
+            mCommon.pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);
             return;
 
           case InitialExpression:

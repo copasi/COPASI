@@ -458,10 +458,10 @@ public:
 
   /**
    * Update all initial values.
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    * @return bool success
    */
-  bool updateInitialValues(const CModelParameter::Framework & framework);
+  bool updateInitialValues(const CCore::Framework & framework);
 
   /**
    * Copy the current state value to the initial state
@@ -612,7 +612,7 @@ public:
    * @return bool success
    */
   bool setQuantityUnit(const std::string & name,
-                       const CModelParameter::Framework & frameWork);
+                       const CCore::Framework & frameWork);
 
   /**
    * Set the unit for quantities. If COPASI recognizes
@@ -622,7 +622,7 @@ public:
    * @return bool success
    */
   bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum,
-                       const CModelParameter::Framework & frameWork);
+                       const CCore::Framework & frameWork);
 
   /**
    * Get the current quantity unit of the model
@@ -660,7 +660,7 @@ public:
    * @param const C_FLOAT64 & avogadro
    */
   void setAvogadro(const C_FLOAT64 & avogadro,
-                   const CModelParameter::Framework & frameWork);
+                   const CCore::Framework & frameWork);
 
   /**
    * Retrieve the Avogadro number.

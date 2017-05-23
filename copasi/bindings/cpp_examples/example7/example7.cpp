@@ -56,7 +56,7 @@ int main()
   // and nanomole as the substance units
   pModel->setTimeUnit(CUnit::s);
   pModel->setVolumeUnit(CUnit::microl);
-  pModel->setQuantityUnit(CUnit::nMol, CModelParameter::ParticleNumbers);
+  pModel->setQuantityUnit(CUnit::nMol, CCore::Framework::ParticleNumbers);
 
   // we have to keep a set of all the initial values that are changed during
   // the model building process

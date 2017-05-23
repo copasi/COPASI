@@ -167,12 +167,12 @@ typedef std::vector<CDataObject*> ObjectStdVector;
    
    bool setQuantityUnit(const std::string & name)
    {
-     return self->setQuantityUnit(name, CModelParameter::Concentration);
+     return self->setQuantityUnit(name, CCore::Framework::Concentration);
    }
    
    bool setQuantityUnit(const CUnit::QuantityUnit & unitEnum)
    {
-     return self->setQuantityUnit(unitEnum, CModelParameter::Concentration);
+     return self->setQuantityUnit(unitEnum, CCore::Framework::Concentration);
    }
    
    /**

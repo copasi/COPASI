@@ -233,7 +233,7 @@ public:
    * Check whether changing the initial concentration is allowed
    * @return const bool & allowed
    */
-  const bool & isInitialValueChangeAllowed(CModelParameter::Framework framework) const;
+  const bool & isInitialValueChangeAllowed(CCore::Framework framework) const;
 
   /**
    * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE

@@ -138,7 +138,7 @@ bool CQParameterOverviewWidget::leave()
     }
 
   if (mpParameterSet->diff(*mpParameterSetCopy,
-                           static_cast< CModelParameter::Framework >(mFramework),
+                           static_cast< CCore::Framework >(mFramework),
                            false) != CModelParameter::Identical)
     {
       mpParameterSet->assignSetContent(*mpParameterSetCopy, false);
@@ -173,7 +173,7 @@ void CQParameterOverviewWidget::setFramework(int framework)
 
   if (!mpParameterSet->isActive())
     {
-      mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+      mpParameterSetCopy->compareWithModel(static_cast< CCore::Framework >(mFramework));
     }
 
   mpTreeView->expandAll();
@@ -209,7 +209,7 @@ bool CQParameterOverviewWidget::enterProtected()
   else
     {
       mpParameterSetDM->setParameterSetKey(mpParameterSet->getKey());
-      mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+      mpParameterSetCopy->compareWithModel(static_cast< CCore::Framework >(mFramework));
       mpHeaderWidget->hide();
       mpBtnWidget->hide();
     }
@@ -451,7 +451,7 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
       separator = "\t";
     }
 
-  mpParameterSet->saveToStream(file, static_cast< CModelParameter::Framework >(mFramework), mode, separator);
+  mpParameterSet->saveToStream(file, static_cast< CCore::Framework >(mFramework), mode, separator);
 
   file.close();
 }
@@ -562,7 +562,7 @@ void CQParameterOverviewWidget::slotResolve(const QModelIndex & index)
 
   pModelParameter->refreshFromModel(true);
 
-  mpParameterSetCopy->compareWithModel(static_cast< CModelParameter::Framework >(mFramework));
+  mpParameterSetCopy->compareWithModel(static_cast< CCore::Framework >(mFramework));
 
   buildSelectionList();
 

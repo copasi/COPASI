@@ -94,9 +94,9 @@ CXMLHandler * ModelHandler::processStart(const XML_Char * pszName,
         mpData->pModel->setVolumeUnit(volumeUnit);
         mpData->pModel->setAreaUnit(areaUnit);
         mpData->pModel->setLengthUnit(lengthUnit);
-        mpData->pModel->setQuantityUnit(quantityUnit, CModelParameter::ParticleNumbers);
+        mpData->pModel->setQuantityUnit(quantityUnit, CCore::Framework::ParticleNumbers);
         mpData->pModel->setModelType(ModelType);
-        mpData->pModel->setAvogadro(Avogadro, CModelParameter::ParticleNumbers);
+        mpData->pModel->setAvogadro(Avogadro, CCore::Framework::ParticleNumbers);
 
         break;
 

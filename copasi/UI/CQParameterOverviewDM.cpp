@@ -438,9 +438,9 @@ QVariant CQParameterOverviewDM::valueData(const CModelParameter * pNode, int rol
       default:
 
         if (role == Qt::EditRole)
-          return QVariant(QString::number(pNode->getValue(static_cast< CModelParameter::Framework >(mFramework)), 'g', 10));
+          return QVariant(QString::number(pNode->getValue(static_cast< CCore::Framework >(mFramework)), 'g', 10));
         else if (role == Qt::DisplayRole)
-          return QVariant(pNode->getValue(static_cast< CModelParameter::Framework >(mFramework)));
+          return QVariant(pNode->getValue(static_cast< CCore::Framework >(mFramework)));
 
         break;
     }
@@ -452,7 +452,7 @@ QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role
 {
   if (role == Qt::DisplayRole)
     {
-      std::string rawUnit = pNode->getUnit(static_cast< CModelParameter::Framework >(mFramework));
+      std::string rawUnit = pNode->getUnit(static_cast< CCore::Framework >(mFramework));
       QMap< std::string, QVariant >::const_iterator it = mUnitCache.find(rawUnit);
 
       if (it == mUnitCache.end())
@@ -535,7 +535,7 @@ CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value,
   //  switch (_index.column())
   //  {
   //  case COL_VALUE:
-  //    pNode->setValue(value.toDouble(), static_cast<CModelParameter::Framework>(mFramework));
+  //    pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
   //    success = true;
   //    break;
   //
@@ -586,7 +586,7 @@ CQParameterOverviewDM::parameterOverviewDataChange(const std::string &cn,
   switch (_index.column())
     {
       case COL_VALUE:
-        pNode->setValue(value.toDouble(), static_cast<CModelParameter::Framework>(mFramework));
+        pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
         success = true;
         break;
 

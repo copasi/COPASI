@@ -263,7 +263,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
   // for SBML L3 files the default units are defined on the model
   if (this->mLevel > 2)
     {
-      this->mpCopasiModel->setAvogadro(6.02214179e23, CModelParameter::Concentration);
+      this->mpCopasiModel->setAvogadro(6.02214179e23, CCore::Framework::Concentration);
       this->mAvogadroSet = true;
 
       // we make copies of the unit definitions so that we do not have to remember
@@ -670,11 +670,11 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
           // the unit could not be handled, give an error message and
           // set the units to mole
           CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
-          this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CModelParameter::Concentration);
+          this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CCore::Framework::Concentration);
         }
       else
         {
-          this->mpCopasiModel->setQuantityUnit(qUnit.first, CModelParameter::Concentration);
+          this->mpCopasiModel->setQuantityUnit(qUnit.first, CCore::Framework::Concentration);
         }
 
       // check if the extent units are set and if they are equal to the substance units
@@ -954,7 +954,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
   this->mpCopasiModel->setAreaUnit(CUnit::m2);
   this->mpCopasiModel->setVolumeUnit(CUnit::l);
   this->mpCopasiModel->setTimeUnit(CUnit::s);
-  this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CModelParameter::Concentration);
+  this->mpCopasiModel->setQuantityUnit(CUnit::Mol, CCore::Framework::Concentration);
   this->mpCopasiModel->setSBMLId(sbmlModel->getId());
 
   mCurrentStepHandle = C_INVALID_INDEX;
@@ -3518,7 +3518,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());

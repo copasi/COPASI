@@ -1696,9 +1696,9 @@ void CCopasiXMLParser::ModelElement::start(const XML_Char *pszName,
         mCommon.pModel->setVolumeUnit(volumeUnit);
         mCommon.pModel->setAreaUnit(areaUnit);
         mCommon.pModel->setLengthUnit(lengthUnit);
-        mCommon.pModel->setQuantityUnit(quantityUnit, CModelParameter::ParticleNumbers);
+        mCommon.pModel->setQuantityUnit(quantityUnit, CCore::Framework::ParticleNumbers);
         mCommon.pModel->setModelType(ModelType);
-        mCommon.pModel->setAvogadro(Avogadro, CModelParameter::ParticleNumbers);
+        mCommon.pModel->setAvogadro(Avogadro, CCore::Framework::ParticleNumbers);
 
         return;
         break;
@@ -8369,16 +8369,16 @@ void CCopasiXMLParser::LayoutElement::end(const XML_Char *pszName)
     {
       switch (mCurrentElement)
         {
-            //     case Layout:
-            //       if (strcmp(pszName, "Layout"))
-            //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
-            //                        pszName, "Layout", mParser.getCurrentLineNumber());
-            //       mParser.popElementHandler();
-            //       mCurrentElement = START_ELEMENT;
-            //
-            //       /* Tell the parent element we are done. */
-            //       mParser.onEndElement(pszName);
-            //       break;
+          //     case Layout:
+          //       if (strcmp(pszName, "Layout"))
+          //         CCopasiMessage(CCopasiMessage::EXCEPTION, MCXML + 11,
+          //                        pszName, "Layout", mParser.getCurrentLineNumber());
+          //       mParser.popElementHandler();
+          //       mCurrentElement = START_ELEMENT;
+          //
+          //       /* Tell the parent element we are done. */
+          //       mParser.onEndElement(pszName);
+          //       break;
 
           case Dimensions:
 
@@ -13045,7 +13045,7 @@ void CCopasiXMLParser::GroupElement::start(const XML_Char * pszName,
         return;
         break;
 
-        // a group can have many different children
+      // a group can have many different children
       case GroupChild:
 
         // handle the possible children

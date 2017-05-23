@@ -357,9 +357,9 @@ void CMetab::compileIsInitialValueChangeAllowed()
   return;
 }
 
-const bool & CMetab::isInitialValueChangeAllowed(CModelParameter::Framework framework) const
+const bool & CMetab::isInitialValueChangeAllowed(CCore::Framework framework) const
 {
-  if (framework == CModelParameter::Concentration)
+  if (framework == CCore::Framework::Concentration)
     return mIsInitialConcentrationChangeAllowed;
 
   return mIsInitialParticleNumberChangeAllowed;

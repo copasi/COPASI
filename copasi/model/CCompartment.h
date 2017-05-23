@@ -70,7 +70,7 @@ public:
   /**
    * Append all required dependent undo data
    * @param CUndoData & undoData
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    */
   virtual void appendDependentData(CUndoData & undoData, const CCore::Framework & framework);
 

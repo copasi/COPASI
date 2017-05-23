@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -78,7 +83,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
         SimulationType = toEnum(pSimulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
         mpData->pCurrentModelParameter->setSimulationType(SimulationType);
 
-        mpData->pCurrentModelParameter->setValue(Value, CModelParameter::ParticleNumbers);
+        mpData->pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);
         break;
 
       case InitialExpression:

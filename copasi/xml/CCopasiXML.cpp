@@ -1168,7 +1168,7 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
       pModelParameter->getType() != CModelParameter::Group)
     {
       Attributes.add("cn", pModelParameter->getCN());
-      Attributes.add("value", pModelParameter->getValue(CModelParameter::ParticleNumbers));
+      Attributes.add("value", pModelParameter->getValue(CCore::Framework::ParticleNumbers));
       Attributes.add("type", CModelParameter::TypeNames[pModelParameter->getType()]);
       Attributes.add("simulationType", CModelEntity::XMLStatus[pModelParameter->getSimulationType()]);
 
@@ -2076,17 +2076,17 @@ void CCopasiXML::fixBuild18()
   std::string quantityUnit = mpModel->getQuantityUnit();
 
   if (quantityUnit == "Mol")
-    mpModel->setQuantityUnit("mol", CModelParameter::ParticleNumbers);
+    mpModel->setQuantityUnit("mol", CCore::Framework::ParticleNumbers);
   else if (quantityUnit == "mMol")
-    mpModel->setQuantityUnit("mmol", CModelParameter::ParticleNumbers);
+    mpModel->setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
   else if (quantityUnit == "\xc2\xb5Mol")
-    mpModel->setQuantityUnit("\xc2\xb5mol", CModelParameter::ParticleNumbers);
+    mpModel->setQuantityUnit("\xc2\xb5mol", CCore::Framework::ParticleNumbers);
   else if (quantityUnit == "nMol")
-    mpModel->setQuantityUnit("nmol", CModelParameter::ParticleNumbers);
+    mpModel->setQuantityUnit("nmol", CCore::Framework::ParticleNumbers);
   else if (quantityUnit == "pMol")
-    mpModel->setQuantityUnit("pmol", CModelParameter::ParticleNumbers);
+    mpModel->setQuantityUnit("pmol", CCore::Framework::ParticleNumbers);
   else if (quantityUnit == "fMol")
-    mpModel->setQuantityUnit("fmol", CModelParameter::ParticleNumbers);
+    mpModel->setQuantityUnit("fmol", CCore::Framework::ParticleNumbers);
 
   return;
 }

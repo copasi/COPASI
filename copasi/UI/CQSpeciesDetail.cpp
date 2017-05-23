@@ -183,7 +183,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblValue->setText("Concentration " + ConcentrationUnits);
         mpLblRate->setText("Rate " + ConcentrationRateUnits);
         mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
-        mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework));
+        mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
         mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
         mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
         break;
@@ -200,7 +200,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblValue->setText("Particle Number " + ParticleNumberUnits);
         mpLblRate->setText("Rate " + ParticleNumberRateUnits);
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
-        mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CModelParameter::Framework) mFramework));
+        mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
         mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
         mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
         break;

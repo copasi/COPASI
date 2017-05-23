@@ -98,7 +98,7 @@ public:
   /**
    * Compare the parameter set with the assigned model
    */
-  bool compareWithModel(const CModelParameter::Framework & framework);
+  bool compareWithModel(const CCore::Framework & framework);
 
   /**
    * Retrieve the name of the parameter set
@@ -130,12 +130,12 @@ public:
   /**
    * Save the parameter set to a stream
    * @param std::ostream & os
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    * @param const std::string & mode (report or table)
    * @param const std::string & separator
    */
   bool saveToStream(std::ostream & os,
-                    const CModelParameter::Framework & framework,
+                    const CCore::Framework & framework,
                     const std::string & mode,
                     const std::string & separator);
 

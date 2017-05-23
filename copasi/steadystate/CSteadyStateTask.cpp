@@ -379,7 +379,7 @@ bool CSteadyStateTask::restore()
           mpContainer->setInitialState(mInitialState);
         }
 
-      mpContainer->updateInitialValues(CModelParameter::ParticleNumbers);
+      mpContainer->updateInitialValues(CCore::Framework::ParticleNumbers);
       mpContainer->pushInitialState();
     }
 

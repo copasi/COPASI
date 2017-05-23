@@ -57,7 +57,7 @@ int main()
   assert(pModel != NULL);
   pModel->setVolumeUnit(CUnit::fl);
   pModel->setTimeUnit(CUnit::s);
-  pModel->setQuantityUnit(CUnit::fMol, CModelParameter::ParticleNumbers);
+  pModel->setQuantityUnit(CUnit::fMol, CCore::Framework::ParticleNumbers);
   CModelValue* pFixedModelValue = pModel->createModelValue("F");
   assert(pFixedModelValue != NULL);
   pFixedModelValue->setStatus(CModelEntity::FIXED);

@@ -248,9 +248,9 @@ public:
   /**
    * Notify the math container that the quantity conversion factor in
    * the corresponding model has changed
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    */
-  void quantityConversionChanged(const CModelParameter::Framework & framework);
+  void quantityConversionChanged(const CCore::Framework & framework);
 
   /**
    * Retrieve the Quantity to Number conversion factor
@@ -353,9 +353,9 @@ public:
   /**
    * Calculate all dependent initial values based on initial extensive
    * or intensive values
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    */
-  void updateInitialValues(const CModelParameter::Framework & framework);
+  void updateInitialValues(const CCore::Framework & framework);
 
   /**
    * Set the transient values to the initial values and calculate all
@@ -691,10 +691,10 @@ public:
 
   /**
    * Retrieve the sequence for synchronizing all transient values for the given framework.
-   * @param const CModelParameter::Framework & framework
+   * @param const CCore::Framework & framework
    * @return CCore::CUpdateSequence & synchronizeInitialValuesSequence
    */
-  const CCore::CUpdateSequence & getSynchronizeInitialValuesSequence(const CModelParameter::Framework & framework) const;
+  const CCore::CUpdateSequence & getSynchronizeInitialValuesSequence(const CCore::Framework & framework) const;
 
   /**
    * Retrieve the sequence for applying the initial values to the transient values.

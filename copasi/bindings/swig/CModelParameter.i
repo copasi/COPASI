@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2014 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -23,12 +28,12 @@
    */
   void setValue(double value, C_INT32 framework)
   {
-	$self->setValue(value, (CModelParameter::Framework)framework);
+	$self->setValue(value, (CCore::Framework)framework);
   }
   
   void setValue(double value)
   {
-	$self->setValue(value, (CModelParameter::Framework)0);
+	$self->setValue(value, (CCore::Framework)0);
   }
 
   /**
@@ -38,23 +43,23 @@
    */
   double getValue(C_INT32 framework) const
   {
-	return $self->getValue((CModelParameter::Framework)framework);
+	return $self->getValue((CCore::Framework)framework);
   }
   
   double getValue() const
   {
-	return $self->getValue((CModelParameter::Framework)0);
+	return $self->getValue((CCore::Framework)0);
   }
 
   bool hasValue(C_INT32 framework) const
   {
-	volatile double value = $self->getValue((CModelParameter::Framework)framework);
+	volatile double value = $self->getValue((CCore::Framework)framework);
 	return !(value != value);
   }
   
   bool hasValue() const
   {
-	volatile double value = $self->getValue((CModelParameter::Framework)0);
+	volatile double value = $self->getValue((CCore::Framework)0);
 	return !(value != value);
   }
 

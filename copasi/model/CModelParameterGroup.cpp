@@ -228,7 +228,7 @@ void CModelParameterGroup::clear()
 
 // virtual
 const CModelParameter::CompareResult & CModelParameterGroup::diff(const CModelParameter & other,
-    const CModelParameter::Framework & framework,
+    const CCore::Framework & framework,
     const bool & createMissing)
 {
   // We can only work on reactions, groups or sets.

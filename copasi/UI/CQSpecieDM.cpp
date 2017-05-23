@@ -114,7 +114,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
         {
-          if (Species.isInitialValueChangeAllowed(CModelParameter::Concentration))
+          if (Species.isInitialValueChangeAllowed(CCore::Framework::Concentration))
             return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
           else
             return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
@@ -129,7 +129,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
       else
         {
-          if (Species.isInitialValueChangeAllowed(CModelParameter::ParticleNumbers))
+          if (Species.isInitialValueChangeAllowed(CCore::Framework::ParticleNumbers))
             return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
           else
             return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;

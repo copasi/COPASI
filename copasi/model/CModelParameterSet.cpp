@@ -126,7 +126,7 @@ void CModelParameterSet::createFromModel()
 
   pParameter = pGroup->add(Model);
   pParameter->setCN(mpModel->getCN());
-  pParameter->setValue(mpModel->getInitialTime(), ParticleNumbers);
+  pParameter->setValue(mpModel->getInitialTime(), CCore::Framework::ParticleNumbers);
 
   pGroup = static_cast< CModelParameterGroup *>(CModelParameterGroup::add(Group));
   pGroup->setCN(CDataString("Initial Compartment Sizes").getCN());
@@ -139,7 +139,7 @@ void CModelParameterSet::createFromModel()
       pParameter = pGroup->add(Compartment);
       pParameter->setCN(itCompartment->getCN());
       pParameter->setSimulationType(itCompartment->getStatus());
-      pParameter->setValue(itCompartment->getInitialValue(), ParticleNumbers);
+      pParameter->setValue(itCompartment->getInitialValue(), CCore::Framework::ParticleNumbers);
       pParameter->setInitialExpression(itCompartment->getInitialExpression());
     }
 
@@ -154,7 +154,7 @@ void CModelParameterSet::createFromModel()
       pParameter = pGroup->add(Species);
       pParameter->setCN(itSpecies->getCN());
       pParameter->setSimulationType(itSpecies->getStatus());
-      pParameter->setValue(itSpecies->getInitialValue(), ParticleNumbers);
+      pParameter->setValue(itSpecies->getInitialValue(), CCore::Framework::ParticleNumbers);
       pParameter->setInitialExpression(itSpecies->getInitialExpression());
     }
 
@@ -169,7 +169,7 @@ void CModelParameterSet::createFromModel()
       pParameter = pGroup->add(ModelValue);
       pParameter->setCN(itModelValue->getCN());
       pParameter->setSimulationType(itModelValue->getStatus());
-      pParameter->setValue(itModelValue->getInitialValue(), ParticleNumbers);
+      pParameter->setValue(itModelValue->getInitialValue(), CCore::Framework::ParticleNumbers);
       pParameter->setInitialExpression(itModelValue->getInitialExpression());
     }
 
@@ -196,7 +196,7 @@ void CModelParameterSet::createFromModel()
           if (itReaction->isLocalParameter((*itParameter)->getObjectName()))
             {
               pParameter->setSimulationType(CModelEntity::FIXED);
-              pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), ParticleNumbers);
+              pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), CCore::Framework::ParticleNumbers);
             }
           else
             {
@@ -209,7 +209,7 @@ void CModelParameterSet::createFromModel()
 
               if (pModelValue == NULL) fatalError();
 
-              pParameter->setValue(pModelValue->getInitialValue(), ParticleNumbers);
+              pParameter->setValue(pModelValue->getInitialValue(), CCore::Framework::ParticleNumbers);
               pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
             }
         }
@@ -218,7 +218,7 @@ void CModelParameterSet::createFromModel()
   compile();
 }
 
-bool CModelParameterSet::compareWithModel(const CModelParameter::Framework & framework)
+bool CModelParameterSet::compareWithModel(const CCore::Framework & framework)
 {
   if (mpModel == NULL)
     {
@@ -249,7 +249,7 @@ bool CModelParameterSet::updateModel()
 
   bool success = CModelParameterGroup::updateModel();
 
-  mpModel->updateInitialValues(CModelParameter::ParticleNumbers);
+  mpModel->updateInitialValues(CCore::Framework::ParticleNumbers);
 
   return success;
 }
@@ -272,7 +272,7 @@ void CModelParameterSet::assignSetContent(const CModelParameterSet & src,
 }
 
 bool CModelParameterSet::saveToStream(std::ostream & os,
-                                      const CModelParameter::Framework & framework,
+                                      const CCore::Framework & framework,
                                       const std::string & mode,
                                       const std::string & separator)
 {

@@ -118,7 +118,7 @@ const CModelParameter::Type & CModelParameter::getType() const
   return mType;
 }
 
-const std::string CModelParameter::getUnit(const Framework & framework) const
+const std::string CModelParameter::getUnit(const CCore::Framework & framework) const
 {
   std::string Unit;
 
@@ -150,7 +150,7 @@ const std::string CModelParameter::getUnit(const Framework & framework) const
             return "";
           }
 
-        if (framework == Concentration)
+        if (framework == CCore::Framework::Concentration)
           {
             return pSpecies->getChildObjectUnits(pSpecies->getInitialConcentrationReference());
           }
@@ -228,7 +228,7 @@ const CModelEntity::Status & CModelParameter::getSimulationType() const
 }
 
 // virtual
-void CModelParameter::setValue(const C_FLOAT64 & value, const Framework & /* framework */)
+void CModelParameter::setValue(const C_FLOAT64 & value, const CCore::Framework & /* framework */)
 {
   mValue = value;
 
@@ -241,7 +241,7 @@ void CModelParameter::setValue(const C_FLOAT64 & value, const Framework & /* fra
 }
 
 // virtual
-const C_FLOAT64 & CModelParameter::getValue(const Framework & /* framework */) const
+const C_FLOAT64 & CModelParameter::getValue(const CCore::Framework & /* framework */) const
 {
   return mValue;
 }
@@ -409,7 +409,7 @@ void CModelParameter::compile()
 }
 
 const CModelParameter::CompareResult & CModelParameter::diff(const CModelParameter & other,
-    const CModelParameter::Framework & framework,
+    const CCore::Framework & framework,
     const bool & /* createMissing */)
 {
   if (mCompareResult == Missing ||
@@ -427,7 +427,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
         if (other.getObject() != NULL &&
             mpObject != NULL &&
             static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::ASSIGNMENT &&
-            (fabs(getValue(ParticleNumbers) - other.getValue(ParticleNumbers)) > 50 * (fabs(getValue(ParticleNumbers)) + fabs(other.getValue(ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
+            (fabs(getValue(CCore::Framework::ParticleNumbers) - other.getValue(CCore::Framework::ParticleNumbers)) > 50 * (fabs(getValue(CCore::Framework::ParticleNumbers)) + fabs(other.getValue(CCore::Framework::ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
              getInitialExpression() != ""))
           {
             mCompareResult = Conflict;
@@ -629,7 +629,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
                 if (pGlobalQuantity != NULL)
                   {
-                    Value = pGlobalQuantity->getValue(ParticleNumbers);
+                    Value = pGlobalQuantity->getValue(CCore::Framework::ParticleNumbers);
                   }
               }
           }
@@ -640,7 +640,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
             break;
         }
 
-      setValue(Value, ParticleNumbers);
+      setValue(Value, CCore::Framework::ParticleNumbers);
     }
 
   return success;
@@ -683,7 +683,7 @@ CModelParameterCompartment::~CModelParameterCompartment()
 }
 
 // virtual
-void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const Framework & framework)
+void CModelParameterCompartment::setValue(const C_FLOAT64 & value, const CCore::Framework & framework)
 {
   CVector< C_FLOAT64 > SpeciesValues(mSpecies.size());
   C_FLOAT64 * pSpeciesValue = SpeciesValues.array();
@@ -766,7 +766,7 @@ void CModelParameterSpecies::compile()
     }
 
   // Update the concentration if possible
-  setValue(mValue, ParticleNumbers);
+  setValue(mValue, CCore::Framework::ParticleNumbers);
 }
 
 // virtual
@@ -794,17 +794,17 @@ void CModelParameterSpecies::setCN(const CCommonName & cn)
 }
 
 // virtual
-void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework & framework)
+void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Framework & framework)
 {
   CModel * pModel = getModel();
 
-  if (framework == Concentration)
+  if (framework == CCore::Framework::Concentration)
     {
       mConcentration = value;
 
       if (mpCompartment != NULL && pModel != NULL)
         {
-          mValue = mConcentration * mpCompartment->getValue(ParticleNumbers) * pModel->getQuantity2NumberFactor();
+          mValue = mConcentration * mpCompartment->getValue(CCore::Framework::ParticleNumbers) * pModel->getQuantity2NumberFactor();
         }
       else
         {
@@ -817,7 +817,7 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework &
 
       if (mpCompartment != NULL && pModel != NULL)
         {
-          mConcentration = mValue / mpCompartment->getValue(ParticleNumbers) * pModel->getNumber2QuantityFactor();
+          mConcentration = mValue / mpCompartment->getValue(CCore::Framework::ParticleNumbers) * pModel->getNumber2QuantityFactor();
         }
       else
         {
@@ -827,9 +827,9 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const Framework &
 }
 
 // virtual
-const C_FLOAT64 & CModelParameterSpecies::getValue(const Framework & framework) const
+const C_FLOAT64 & CModelParameterSpecies::getValue(const CCore::Framework & framework) const
 {
-  if (framework == Concentration)
+  if (framework == CCore::Framework::Concentration)
     {
       return mConcentration;
     }
@@ -911,7 +911,7 @@ void CModelParameterReactionParameter::compile()
 
   if (mpGlobalQuantity != NULL)
     {
-      mValue = mpGlobalQuantity->getValue(ParticleNumbers);
+      mValue = mpGlobalQuantity->getValue(CCore::Framework::ParticleNumbers);
     }
 
   CObjectInterface::ContainerList ListOfContainer;

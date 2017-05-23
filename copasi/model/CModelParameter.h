@@ -52,12 +52,6 @@ public:
     Identical
   };
 
-  enum Framework
-  {
-    Concentration = 0,
-    ParticleNumbers
-  };
-
 private:
   /**
    * The default constructor is hidden.
@@ -106,7 +100,7 @@ public:
    * @param const Framework & framework (default: ParticleNumbers)
    * @return const std::string unit
    */
-  const std::string getUnit(const Framework & framework) const;
+  const std::string getUnit(const CCore::Framework & framework) const;
 
   /**
    * Set the CN of the object represented by the parameter
@@ -140,14 +134,14 @@ public:
    * @param const double & value
    * @param const Framework & framework
    */
-  virtual void setValue(const double & value, const Framework& framework);
+  virtual void setValue(const double & value, const CCore::Framework & framework);
 
   /**
    * Retrieve the value of the parameter based on the current framework
    * @param const Framework & framework
    * @return const double & value
    */
-  const virtual double& getValue(const Framework & framework) const;
+  const virtual double& getValue(const CCore::Framework & framework) const;
 #endif
 
   /**
@@ -231,11 +225,11 @@ public:
   /**
    * Compare the parameter to an other
    * @param const CModelParameter & other
-   * @param const CModelParameter::Framework & framework (default: ParticleNumbers)
+   * @param const CCore::Framework & framework (default: ParticleNumbers)
    * @param const bool & createMissing = false
    */
   const virtual CompareResult & diff(const CModelParameter& other,
-                                     const CModelParameter::Framework & framework = ParticleNumbers,
+                                     const CCore::Framework & framework = CCore::Framework::ParticleNumbers,
                                      const bool & createMissing = false);
 #endif
 
@@ -336,7 +330,7 @@ public:
    * @param const double & value
    * @param const Framework & framework
    */
-  virtual void setValue(const C_FLOAT64 & value, const Framework & framework);
+  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework);
 
   /**
    * Add a pointer to a species parameter to the compartment
@@ -398,14 +392,14 @@ public:
    * @param const double & value
    * @param const Framework & framework
    */
-  virtual void setValue(const C_FLOAT64 & value, const Framework & framework);
+  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework);
 
   /**
    * Retrieve the value of the parameter based on the current framework
    * @param const Framework & framework
    * @return const double & value
    */
-  virtual const C_FLOAT64 & getValue(const Framework & framework) const;
+  virtual const C_FLOAT64 & getValue(const CCore::Framework & framework) const;
 
 private:
   /**

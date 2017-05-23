@@ -108,7 +108,7 @@ void CQUpdatesWidget::loadWidget()
 
   CMathContainer & Container = pModel->getMathContainer();
 
-  loadOneTable(mpTable0, Container.getSynchronizeInitialValuesSequence(CModelParameter::ParticleNumbers));
+  loadOneTable(mpTable0, Container.getSynchronizeInitialValuesSequence(CCore::Framework::ParticleNumbers));
   loadOneTable(mpTable1, Container.getApplyInitialValuesSequence());
   loadOneTable(mpTable2, Container.getSimulationValuesSequence(false));
   loadOneTable(mpTable3, Container.getTransientDataValueSequence());
