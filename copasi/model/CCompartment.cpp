@@ -74,10 +74,48 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
   switch (undoData.getType())
     {
       case CUndoData::INSERT:
+        // Nothing to append
         break;
 
       case CUndoData::REMOVE:
-        break;
+        // We need to add all contained species and reactions;
+      {
+        DataObjectSet dependentReactions;
+        DataObjectSet dependentMetabolites;
+        DataObjectSet dependentCompartments;
+        DataObjectSet dependentModelValues;
+        DataObjectSet dependentEvents;
+        DataObjectSet dependentEventAssignments;
+
+        mpModel->appendAllDependents(*this, dependentReactions, dependentMetabolites, dependentCompartments,  dependentModelValues,  dependentEvents,  dependentEventAssignments);
+
+        // Reactions, Metabolites, and Event Assignments may directly depend on the compartment and have to be removed.
+        DataObjectSet::const_iterator it = dependentEventAssignments.begin();
+        DataObjectSet::const_iterator end = dependentEventAssignments.end();
+
+        for (; it != end; ++it)
+          {
+            undoData.addDependentData(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+          }
+
+        it = dependentReactions.begin();
+        end = dependentReactions.end();
+
+        for (; it != end; ++it)
+          {
+            undoData.addDependentData(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+          }
+
+        it = dependentMetabolites.begin();
+        end = dependentMetabolites.end();
+
+        for (; it != end; ++it)
+          {
+            undoData.addDependentData(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+          }
+      }
+
+      break;
 
       case CUndoData::CHANGE:
 
