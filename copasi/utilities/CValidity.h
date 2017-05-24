@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #ifndef COPASI_CValidity
 #define COPASI_CValidity
@@ -127,7 +127,8 @@ public:
   void remove(const CValidity::Severity & severity,
               const CValidity::Kind & kind);
 
-  CIssue::eSeverity getHighestSeverity() const;
+  CIssue::eSeverity getHighestSeverity(const CValidity::Severity & filterSeverity = CValidity::Severity::All,
+                                       const CValidity::Kind & filterKind = CValidity::Kind::All) const;
 
   const Kind & get(const CIssue::eSeverity & severity) const;
 

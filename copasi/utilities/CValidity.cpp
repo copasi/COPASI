@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CValidity.h"
 
@@ -222,13 +222,17 @@ void CValidity::remove(const CValidity::Severity & severity,
     mInformation &= ~kind;
 }
 
-CIssue::eSeverity CValidity::getHighestSeverity() const
+CIssue::eSeverity CValidity::getHighestSeverity(const CValidity::Severity & filterSeverity,
+    const CValidity::Kind & filterKind) const
 {
-  if (mErrors) return CIssue::eSeverity::Error;
+  if (filterSeverity.isSet(CIssue::eSeverity::Error) &&
+      (mErrors & filterKind)) return CIssue::eSeverity::Error;
 
-  if (mWarnings) return CIssue::eSeverity::Warning;
+  if (filterSeverity.isSet(CIssue::eSeverity::Warning) &&
+      (mWarnings & filterKind)) return CIssue::eSeverity::Warning;
 
-  if (mInformation) return CIssue::eSeverity::Information;
+  if (filterSeverity.isSet(CIssue::eSeverity::Information) &&
+      (mInformation & filterKind)) return CIssue::eSeverity::Information;
 
   return CIssue::eSeverity::Success;
 }
