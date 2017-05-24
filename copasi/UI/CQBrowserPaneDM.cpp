@@ -94,7 +94,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   if (pObject != NULL)
     validity = pObject->getValidity();
 
-  CIssue::eSeverity highestSeverity = validity.getHighestSeverity();
+  CIssue::eSeverity highestSeverity = validity.getHighestSeverity(severityFilter, kindFilter);
 
   QCommonStyle * tmpStyle = new QCommonStyle;
   QIcon issueIcon;
