@@ -57,6 +57,8 @@
 %ignore CEFMProblem::getFluxModes() const;
 %ignore CEFMProblem::getReorderedReactions() const;
 
+%ignore *::toData;
+%ignore *::applyData;
 
 #if SWIGR
 %include "rtype.swg"
