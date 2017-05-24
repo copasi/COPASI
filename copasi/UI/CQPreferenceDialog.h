@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -17,6 +22,8 @@
 
 #include "copasi/UI/ui_CQPreferenceDialog.h"
 
+class CConfigurationFile;
+
 class CQPreferenceDialog : public QDialog, public Ui::CQPreferenceDialog
 {
   Q_OBJECT
@@ -33,6 +40,9 @@ protected slots:
 private slots:
   virtual void slotBtnOk();
   virtual void slotBtnCancel();
+
+private:
+  CConfigurationFile * mpConfiguration;
 };
 
 #endif // CQPREFERENCEDIALOG_H

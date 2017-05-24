@@ -1396,9 +1396,15 @@ void CopasiUI3Window::slotObjectBrowserDialogWasClosed()
 void CopasiUI3Window::slotPreferences()
 {
   CQPreferenceDialog *preferenceDialog = new CQPreferenceDialog(this, 0, false);
+  connect(preferenceDialog, SIGNAL(Accepted()), this, SLOT(slotPreferencesAccepted()));
+
   preferenceDialog->setAttribute(Qt::WA_DeleteOnClose);
   preferenceDialog->setModal(true);
   preferenceDialog->show();
+}
+
+void CopasiUI3Window::slotPreferencesAccepted()
+{
 }
 
 void CopasiUI3Window::slotTutorialWizard()

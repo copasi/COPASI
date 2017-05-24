@@ -69,7 +69,7 @@ class CDataModel;
 
 class CopasiUI3Window : public QMainWindow
 #ifdef COPASI_SBW_INTEGRATION
-  // A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
+// A SBW listener can catch messages from SBW ... used here to allow COPASI to be shut down
   , public SBWListener
 #endif // COPASI_SBW_INTEGRATION
 
@@ -206,6 +206,7 @@ protected slots:
   void slotQuit();
   void slotQuitFinished(bool success);
   void slotPreferences();
+  void slotPreferencesAccepted();
   void slotConvertToIrreversible();
 #ifdef WITH_PE_EVENT_CREATION
   void slotCreateEventsForTimeseries();
