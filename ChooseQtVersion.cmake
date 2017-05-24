@@ -5,6 +5,7 @@
 
 cmake_minimum_required(VERSION 2.8.9)
 
+set(SELECT_QT "Any" CACHE STRING "The prefered Qt version one of: Qt5, Qt4 or Any" )
 if (DEFINED SELECT_QT)
   if (NOT (${SELECT_QT} MATCHES "Qt5" OR
            ${SELECT_QT} MATCHES "Qt4" OR
