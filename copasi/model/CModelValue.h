@@ -85,7 +85,7 @@ public:
    * @param const CData & data
    * @return CModelEntity * pDataObject
    */
-  //static CModelEntity * fromData(const CData & data);
+  static CModelEntity * fromData(const CData & data);
 
   /**
    * Retrieve the data describing the object

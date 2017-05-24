@@ -61,6 +61,15 @@ const char * CModelEntity::XMLStatus[] =
   NULL
 };
 
+// static
+CModelEntity * CModelEntity::fromData(const CData & data)
+{
+  // It is not possible to create a CModelEntity from data.
+  // Only derived classes are allowed!
+
+  return NULL;
+}
+
 // virtual
 CData CModelEntity::toData() const
 {
