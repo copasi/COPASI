@@ -54,5 +54,6 @@ copasi/copasi.pro.user
 /Tools/Build95/*
 /Tools/BuildHead/*
 /core
-
+/.vs
+CMakeSettings.json
 StructuralDependencies\.dot
