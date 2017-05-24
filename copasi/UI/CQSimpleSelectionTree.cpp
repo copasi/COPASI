@@ -440,7 +440,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           CTSSAMethod *pMethod = dynamic_cast<CTSSAMethod *>(task->getMethod());
 
-          if (pMethod->getSubType() == CTaskEnum::tssCSP)
+          if (pMethod->getSubType() == CTaskEnum::Method::tssCSP)
             {
               const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
               CDataContainer::objectMap::const_iterator its = pObjects->begin();

@@ -102,7 +102,7 @@ int main()
     }
 
   // run a deterministic time course
-  pTrajectoryTask->setMethodType(CTaskEnum::deterministic);
+  pTrajectoryTask->setMethodType(CTaskEnum::Method::deterministic);
 
   // activate the task so that it will be run when the model is saved
   // and passed to CopasiSE
@@ -299,8 +299,8 @@ int main()
   assert(pExperiment->getLastRow() == 4001);
   pExperiment->setHeaderRow(1);
   assert(pExperiment->getHeaderRow() == 1);
-  pExperiment->setExperimentType(CTaskEnum::timeCourse);
-  assert(pExperiment->getExperimentType() == CTaskEnum::timeCourse);
+  pExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
+  assert(pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse);
   pExperiment->setNumColumns(4);
   assert(pExperiment->getNumColumns() == 4);
   CExperimentObjectMap* pObjectMap = &pExperiment->getObjectMap();

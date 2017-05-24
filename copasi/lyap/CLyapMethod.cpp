@@ -32,7 +32,7 @@
 CLyapValidSubTypes::CLyapValidSubTypes():
   std::vector< CTaskEnum::Method >()
 {
-  push_back(CTaskEnum::lyapWolf);
+  push_back(CTaskEnum::Method::lyapWolf);
 }
 
 CLyapValidSubTypes::~CLyapValidSubTypes() {}

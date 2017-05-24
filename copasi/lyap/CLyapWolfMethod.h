@@ -154,8 +154,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: lyap)
    */
   CLyapWolfMethod(const CDataContainer * pParent,
-                  const CTaskEnum::Method & methodType = CTaskEnum::lyapWolf,
-                  const CTaskEnum::Task & taskType = CTaskEnum::lyap);
+                  const CTaskEnum::Method & methodType = CTaskEnum::Method::lyapWolf,
+                  const CTaskEnum::Task & taskType = CTaskEnum::Task::lyap);
 
   /**
    * Copy constructor.

@@ -336,7 +336,7 @@ public:
    * @param const CTaskEnum::Method & type
    * @return bool success
    */
-  bool setMethodType(const int & type);
+  bool setMethodType(const CTaskEnum::Method & type);
 
   /**
    * Create a method of the specified type to solve the task.

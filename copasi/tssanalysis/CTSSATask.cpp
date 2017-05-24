@@ -57,10 +57,10 @@ bool tbl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 // static
 const CTaskEnum::Method CTSSATask::ValidMethods[] =
 {
-  CTaskEnum::tssILDM,
-  CTaskEnum::tssILDMModified,
-  CTaskEnum::tssCSP,
-  CTaskEnum::UnsetMethod
+  CTaskEnum::Method::tssILDM,
+  CTaskEnum::Method::tssILDMModified,
+  CTaskEnum::Method::tssCSP,
+  CTaskEnum::Method::UnsetMethod
 };
 
 CTSSATask::CTSSATask(const CDataContainer * pParent,
@@ -74,7 +74,7 @@ CTSSATask::CTSSATask(const CDataContainer * pParent,
   mpContainerStateTime(NULL)
 {
   mpProblem = new CTSSAProblem(this);
-  mpMethod = createMethod(CTaskEnum::tssILDM);
+  mpMethod = createMethod(CTaskEnum::Method::tssILDM);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
 

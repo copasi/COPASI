@@ -45,8 +45,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodPraxis(const CDataContainer * pParent,
-                   const CTaskEnum::Method & methodType = CTaskEnum::Praxis,
-                   const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                   const CTaskEnum::Method & methodType = CTaskEnum::Method::Praxis,
+                   const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

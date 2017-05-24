@@ -63,43 +63,43 @@ void CScanWidgetTask::load(const CScanProblem * pg)
 
   switch (type)
     {
-      case CTaskEnum::steadyState:
+      case CTaskEnum::Task::steadyState:
         n = 0;
         break;
 
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::timeCourse:
         n = 1;
         break;
 
-      case CTaskEnum::mca:
+      case CTaskEnum::Task::mca:
         n = 2;
         break;
 
-      case CTaskEnum::lyap:
+      case CTaskEnum::Task::lyap:
         n = 3;
         break;
 
-      case CTaskEnum::optimization:
+      case CTaskEnum::Task::optimization:
         n = 4;
         break;
 
-      case CTaskEnum::parameterFitting:
+      case CTaskEnum::Task::parameterFitting:
         n = 5;
         break;
 
-      case CTaskEnum::sens:
+      case CTaskEnum::Task::sens:
         n = 6;
         break;
 
-      case CTaskEnum::lna:
+      case CTaskEnum::Task::lna:
         n = 7;
         break;
 
-      case CTaskEnum::crosssection:
+      case CTaskEnum::Task::crosssection:
         n = 8;
         break;
 
-      case CTaskEnum::tssAnalysis:
+      case CTaskEnum::Task::tssAnalysis:
         n = 9;
         break;
 
@@ -128,47 +128,47 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
   switch (type)
     {
       case 0:
-        Type = CTaskEnum::steadyState;
+        Type = CTaskEnum::Task::steadyState;
         break;
 
       case 1:
-        Type = CTaskEnum::timeCourse;
+        Type = CTaskEnum::Task::timeCourse;
         break;
 
       case 2:
-        Type = CTaskEnum::mca;
+        Type = CTaskEnum::Task::mca;
         break;
 
       case 3:
-        Type = CTaskEnum::lyap;
+        Type = CTaskEnum::Task::lyap;
         break;
 
       case 4:
-        Type = CTaskEnum::optimization;
+        Type = CTaskEnum::Task::optimization;
         break;
 
       case 5:
-        Type = CTaskEnum::parameterFitting;
+        Type = CTaskEnum::Task::parameterFitting;
         break;
 
       case 6:
-        Type = CTaskEnum::sens;
+        Type = CTaskEnum::Task::sens;
         break;
 
       case 7:
-        Type = CTaskEnum::lna;
+        Type = CTaskEnum::Task::lna;
         break;
 
       case 8:
-        Type = CTaskEnum::crosssection;
+        Type = CTaskEnum::Task::crosssection;
         break;
 
       case 9:
-        Type = CTaskEnum::tssAnalysis;
+        Type = CTaskEnum::Task::tssAnalysis;
         break;
 
       default :
-        Type = CTaskEnum::steadyState;
+        Type = CTaskEnum::Task::steadyState;
         break;
     }
 

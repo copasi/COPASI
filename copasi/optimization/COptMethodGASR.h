@@ -43,8 +43,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodGASR(const CDataContainer * pParent,
-                 const CTaskEnum::Method & methodType = CTaskEnum::GeneticAlgorithmSR,
-                 const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                 const CTaskEnum::Method & methodType = CTaskEnum::Method::GeneticAlgorithmSR,
+                 const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

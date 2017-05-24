@@ -43,8 +43,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CStochasticRungeKuttaRI5(const CDataContainer * pParent,
-                           const CTaskEnum::Method & methodType = CTaskEnum::stochasticRunkeKuttaRI5,
-                           const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+                           const CTaskEnum::Method & methodType = CTaskEnum::Method::stochasticRunkeKuttaRI5,
+                           const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.

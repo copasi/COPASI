@@ -95,19 +95,19 @@ int main()
   COptTask* pOptTask = dynamic_cast<COptTask*>(&TaskList["Optimization"]);
   assert(pOptTask != NULL);
   // we want to use Levenberg-Marquardt as the optimization method
-  pOptTask->setMethodType(CTaskEnum::LevenbergMarquardt);
+  pOptTask->setMethodType(CTaskEnum::Method::LevenbergMarquardt);
 
   // next we need to set subtask type on the problem
   COptProblem* pOptProblem = dynamic_cast<COptProblem*>(pOptTask->getProblem());
   assert(pOptProblem != NULL);
-  pOptProblem->setSubtaskType(CTaskEnum::timeCourse);
+  pOptProblem->setSubtaskType(CTaskEnum::Task::timeCourse);
 
   CTrajectoryTask* pTimeCourseTask = dynamic_cast<CTrajectoryTask*>(&TaskList["Time-Course"]);
   assert(pTimeCourseTask != NULL);
   // since for this example it really doesn't matter how long we run the time course
   // we run for 1 second and calculate 10 steps
   // run a deterministic time course
-  pTimeCourseTask->setMethodType(CTaskEnum::deterministic);
+  pTimeCourseTask->setMethodType(CTaskEnum::Method::deterministic);
 
   // pass a pointer of the model to the problem
 
@@ -165,7 +165,7 @@ int main()
   // create a new report definition object
   CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for optimization");
   // set the task type for the report definition to timecourse
-  pReport->setTaskType(CTaskEnum::optimization);
+  pReport->setTaskType(CTaskEnum::Task::optimization);
   // we don't want a table
   pReport->setIsTable(false);
   // the entries in the output should be separated by a ", "

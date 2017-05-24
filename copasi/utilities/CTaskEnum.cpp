@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,7 +10,7 @@
 
 #include "CTaskEnum.h"
 
-const std::string CTaskEnum::TaskName[] =
+EnumArray< const std::string, CTaskEnum::Task >::base TaskName
 {
   "Steady-State",
   "Time-Course",
@@ -21,11 +26,12 @@ const std::string CTaskEnum::TaskName[] =
   "Cross Section",
   "Linear Noise Approximation",
   "Analytics",
-  "not specified",
-  ""
+  "not specified"
 };
 
-const char* CTaskEnum::TaskXML[] =
+const EnumArray< const std::string, CTaskEnum::Task > CTaskEnum::TaskName(TaskName);
+
+EnumArray< const std::string, CTaskEnum::Task >::base TaskXML
 {
   "steadyState",
   "timeCourse",
@@ -41,11 +47,12 @@ const char* CTaskEnum::TaskXML[] =
   "crosssection",
   "linearNoiseApproximation",
   "analytics",
-  "unset",
-  NULL
+  "unset"
 };
 
-const std::string CTaskEnum::MethodName[] =
+const EnumArray< const std::string, CTaskEnum::Task > CTaskEnum::TaskXML(TaskXML);
+
+EnumArray< const std::string, CTaskEnum::Method >::base MethodName
 {
   "Not set",
   "Random Search",
@@ -96,10 +103,11 @@ const std::string CTaskEnum::MethodName[] =
   "Cross Section Finder",
   "Linear Noise Approximation",
   "Analytics Finder"
-  ""
 };
 
-const char * CTaskEnum::MethodXML[] =
+const EnumArray< const std::string, CTaskEnum::Method > CTaskEnum::MethodName(MethodName);
+
+EnumArray< const std::string, CTaskEnum::Method >::base MethodXML
 {
   "NotSet",
   "RandomSearch",
@@ -149,6 +157,7 @@ const char * CTaskEnum::MethodXML[] =
   "Householder",
   "crossSectionMethod",
   "LinearNoiseApproximation",
-  "analyticsMethod",
-  NULL
+  "analyticsMethod"
 };
+
+const EnumArray< const std::string, CTaskEnum::Method > CTaskEnum::MethodXML(MethodXML);

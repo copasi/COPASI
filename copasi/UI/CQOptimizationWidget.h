@@ -52,7 +52,7 @@ protected:
   QColor mSavedColor;
   bool mTypeChanged;
 
-  std::map< std::string, C_INT32 > mSubtaskMap;
+  std::map< std::string, size_t > mSubtaskMap;
 
   virtual bool saveTask();
   virtual bool loadTask();

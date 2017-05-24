@@ -73,8 +73,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: lna)
    */
   CLNAMethod(const CDataContainer * pParent,
-             const CTaskEnum::Method & methodType = CTaskEnum::linearNoiseApproximation,
-             const CTaskEnum::Task & taskType = CTaskEnum::lna);
+             const CTaskEnum::Method & methodType = CTaskEnum::Method::linearNoiseApproximation,
+             const CTaskEnum::Task & taskType = CTaskEnum::Task::lna);
 
   /**
    * Copy constructor

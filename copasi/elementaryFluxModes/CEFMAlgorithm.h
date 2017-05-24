@@ -73,8 +73,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
   CEFMAlgorithm(const CDataContainer * pParent,
-                const CTaskEnum::Method & methodType = CTaskEnum::EFMAlgorithm,
-                const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+                const CTaskEnum::Method & methodType = CTaskEnum::Method::EFMAlgorithm,
+                const CTaskEnum::Task & taskType = CTaskEnum::Task::fluxMode);
 
   /**
    * Copy Constructor

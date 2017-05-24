@@ -49,10 +49,14 @@ CReportDefinition * CReportDefinition::fromData(const CData & data)
 // virtual
 CData CReportDefinition::toData() const
 {
-  CData Data;
+  CData Data = CDataObject::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::Property::COMMENT, mComment);
+  Data.addProperty(CData::Property::TASK_TYPE, CTaskEnum::TaskName[mTaskType]);
+  Data.addProperty(CData::Property::REPORT_SEPARATOR, mSeparator.getStaticString());
+  Data.addProperty(CData::Property::REPORT_IS_TABLE, mTable);
+  Data.addProperty(CData::Property::REPORT_SHOW_TITLE, mbTitle);
+  Data.addProperty(CData::Property::REPORT_PRECISION, mPrecision);
 
   return Data;
 }
@@ -60,7 +64,7 @@ CData CReportDefinition::toData() const
 // virtual
 bool CReportDefinition::applyData(const CData & data)
 {
-  bool success = true;
+  bool success = CDataObject::applyData(data);
 
   // TODO CRITICAL Implement me!
   fatalError();
@@ -73,7 +77,7 @@ CReportDefinition::CReportDefinition(const std::string & name,
   CDataObject(name, pParent, "ReportDefinition"),
   mKey(CRootContainer::getKeyFactory()->add("Report", this)),
   mComment(""),
-  mTaskType(CTaskEnum::timeCourse),
+  mTaskType(CTaskEnum::Task::timeCourse),
   mSeparator("\t"),
   mTable(true),
   mbTitle(true),

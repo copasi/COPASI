@@ -97,7 +97,7 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
         // We need to fix the "Key" parameter of each "Experiment" of the the "Parameter Estimation" problem,
         // since they are handled by the elevation of the problem to CFitProblem.
         if (mpData->pCurrentTask != NULL &&
-            mpData->pCurrentTask->getType() == CTaskEnum::parameterFitting &&
+            mpData->pCurrentTask->getType() == CTaskEnum::Task::parameterFitting &&
             (mpData->pCurrentParameter->getObjectName() == "Key" ||
              mpData->pCurrentParameter->getObjectName() == "Experiment Key"))
           {

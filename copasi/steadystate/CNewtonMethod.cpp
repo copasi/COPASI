@@ -196,7 +196,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
   C_FLOAT64 maxDuration = forward ? mMaxDurationForward : -mMaxDurationBackward;
   //minimum duration is either hardcoded or equal to maximum duration, whichever is smaller.
   C_FLOAT64 minDuration = forward ? (mMaxDurationForward < 1e-1 ? mMaxDurationForward : 1e-1)
-                            : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
+                          : -(mMaxDurationBackward < 1e-2 ? mMaxDurationBackward : 1e-2);
 
   //progress bar
   size_t hProcess;
@@ -745,8 +745,8 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
         dynamic_cast<CTrajectoryProblem *>(mpTrajectory->getProblem());
       assert(pTrajectoryProblem);
 
-      if (mpTrajectory->getMethod()->getSubType() != CTaskEnum::deterministic)
-        mpTrajectory->setMethodType(CTaskEnum::deterministic);
+      if (mpTrajectory->getMethod()->getSubType() != CTaskEnum::Method::deterministic)
+        mpTrajectory->setMethodType(CTaskEnum::Method::deterministic);
 
       pTrajectoryMethod =
         dynamic_cast<CTrajectoryMethod *>(mpTrajectory->getMethod());

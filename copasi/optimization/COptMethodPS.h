@@ -42,8 +42,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodPS(const CDataContainer * pParent,
-               const CTaskEnum::Method & methodType = CTaskEnum::ParticleSwarm,
-               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+               const CTaskEnum::Method & methodType = CTaskEnum::Method::ParticleSwarm,
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

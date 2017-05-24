@@ -62,7 +62,7 @@ CCrossSectionTask::CCrossSectionTask(const CDataContainer * pParent,
 {
   initObjects();
   mpProblem = new CCrossSectionProblem(this);
-  mpMethod = createMethod(CTaskEnum::deterministic);
+  mpMethod = createMethod(CTaskEnum::Method::deterministic);
   this->add(mpMethod, true);
 }
 
@@ -300,8 +300,8 @@ const CTaskEnum::Method * CCrossSectionTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::deterministic,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::deterministic,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

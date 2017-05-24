@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -42,8 +47,7 @@ CXMLHandler * ReportDefinitionHandler::processStart(const XML_Char * pszName,
       case ReportDefinition:
         Key = mpParser->getAttributeValue("key", papszAttrs);
         Name = mpParser->getAttributeValue("name", papszAttrs);
-        type = toEnum(mpParser->getAttributeValue("taskType", papszAttrs),
-                      CTaskEnum::TaskXML, CTaskEnum::UnsetTask);
+        type = CTaskEnum::TaskXML.toEnum(mpParser->getAttributeValue("taskType", papszAttrs), CTaskEnum::Task::UnsetTask);
 
         Separator = mpParser->getAttributeValue("separator", papszAttrs, "\t");
         Precision = mpParser->getAttributeValue("precision", papszAttrs, "6");

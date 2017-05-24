@@ -78,6 +78,16 @@ const std::array< const std::string, static_cast< size_t >(CData::Property::__SI
   "Dimensionality"
   // ARRAY_ELEMENT_INDEX,
   "Array Element Index"
+  // COMMENT,
+  "Comment",
+  // REPORT_SEPARATOR,
+  "Report Separator",
+  // REPORT_IS_TABLE,
+  "Report is Table",
+  // REPORT_SHOW_TITLE,
+  "Report show Title",
+  // REPORT_PRECISION,
+  "Report Precision"
 };
 
 CData::CData():

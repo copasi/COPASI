@@ -28,7 +28,7 @@ CMoietiesTask::CMoietiesTask(const CDataContainer * pParent,
   CCopasiTask(pParent, type)
 {
   mpProblem = new CMoietiesProblem(type, this);
-  mpMethod = createMethod(CTaskEnum::Householder);
+  mpMethod = createMethod(CTaskEnum::Method::Householder);
   this->add(mpMethod, true);
 }
 
@@ -114,8 +114,8 @@ const CTaskEnum::Method * CMoietiesTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::Householder,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::Householder,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

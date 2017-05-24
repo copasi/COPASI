@@ -35,7 +35,7 @@ public:
    * @param const CTaskEnum::Task & type (default: moieties)
    */
   CMoietiesTask(const CDataContainer * pParent,
-                const CTaskEnum::Task & type = CTaskEnum::moieties);
+                const CTaskEnum::Task & type = CTaskEnum::Task::moieties);
 
   /**
    * Copy constructor

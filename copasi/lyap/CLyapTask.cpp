@@ -62,7 +62,7 @@ CLyapTask::CLyapTask(const CDataContainer * pParent,
   mModelVariablesInResult(0)
 {
   mpProblem = new CLyapProblem(this);
-  mpMethod = createMethod(CTaskEnum::lyapWolf);
+  mpMethod = createMethod(CTaskEnum::Method::lyapWolf);
   this->add(mpMethod, true);
 
   initObjects();
@@ -218,8 +218,8 @@ const CTaskEnum::Method * CLyapTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::lyapWolf,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::lyapWolf,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

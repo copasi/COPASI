@@ -37,8 +37,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: moieties)
    */
   CMoietiesMethod(const CDataContainer * pParent,
-                  const CTaskEnum::Method & methodType = CTaskEnum::Householder,
-                  const CTaskEnum::Task & taskType = CTaskEnum::moieties);
+                  const CTaskEnum::Method & methodType = CTaskEnum::Method::Householder,
+                  const CTaskEnum::Task & taskType = CTaskEnum::Task::moieties);
 
   /**
    * Copy constructor

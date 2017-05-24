@@ -112,27 +112,27 @@ int main(int argc, char *argv[])
 
   if (!strcmp(pMethodType, "stochastic"))
     {
-      MethodType = CTaskEnum::stochastic;
+      MethodType = CTaskEnum::Method::stochastic;
     }
   else if (!strcmp(pMethodType, "directMethod"))
     {
-      MethodType = CTaskEnum::directMethod;
+      MethodType = CTaskEnum::Method::directMethod;
     }
   else if (!strcmp(pMethodType, "tauLeap"))
     {
-      MethodType = CTaskEnum::tauLeap;
+      MethodType = CTaskEnum::Method::tauLeap;
     }
   else if (!strcmp(pMethodType, "adaptiveSA"))
     {
-      MethodType = CTaskEnum::adaptiveSA;
+      MethodType = CTaskEnum::Method::adaptiveSA;
     }
   else if (!strcmp(pMethodType, "LSODA"))
     {
-      MethodType = CTaskEnum::deterministic;
+      MethodType = CTaskEnum::Method::deterministic;
     }
   else if (!strcmp(pMethodType, "HybridODE45"))
     {
-      MethodType = CTaskEnum::hybridODE45;
+      MethodType = CTaskEnum::Method::hybridODE45;
     }
   else
     {
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for stochastic testsuite run");
-      pReport->setTaskType(CTaskEnum::timeCourse);
+      pReport->setTaskType(CTaskEnum::Task::timeCourse);
       pReport->setIsTable(false);
 
       pReport->setSeparator(",");
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
       pScanTask->getReport().setTarget(pOutputFilename);
       pScanTask->getReport().setAppend(false);
 
-      pScanProblem->setSubtask(CTaskEnum::timeCourse);
+      pScanProblem->setSubtask(CTaskEnum::Task::timeCourse);
       //pScanProblem->createScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->addScanItem(CScanProblem::SCAN_REPEAT, repeats);
       pScanProblem->setOutputInSubtask(true);

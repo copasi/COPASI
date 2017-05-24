@@ -70,7 +70,7 @@ public:
    */
   CSensMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType,
-              const CTaskEnum::Task & taskType = CTaskEnum::sens);
+              const CTaskEnum::Task & taskType = CTaskEnum::Task::sens);
 
   /**
   * Copy constructor.

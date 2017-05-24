@@ -61,14 +61,14 @@ public:
   /**
    * The methods which can be selected for performing this task.
    */
-  static const unsigned int ValidSubtasks[];
+  static const CTaskEnum::Task ValidSubtasks[];
 
   /**
    * Default constructor
    * @param const CTaskEnum::Task & type (default: optimization)
    * @param const CDataContainer * pParent (default: NULL)
    */
-  COptProblem(const CTaskEnum::Task & type = CTaskEnum::optimization,
+  COptProblem(const CTaskEnum::Task & type = CTaskEnum::Task::optimization,
               const CDataContainer * pParent = NO_PARENT);
 
   /**

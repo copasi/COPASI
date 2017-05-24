@@ -54,7 +54,7 @@ public:
    * @param const CTaskEnum::Task & type (default: optimization)
    */
   COptTask(const CDataContainer * pParent,
-           const CTaskEnum::Task & type = CTaskEnum::optimization);
+           const CTaskEnum::Task & type = CTaskEnum::Task::optimization);
 
   /**
    * Copy constructor

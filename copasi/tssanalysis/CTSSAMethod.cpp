@@ -221,13 +221,13 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
       switch (subType)
         {
-          case CTaskEnum::tssILDM:
-          case CTaskEnum::tssILDMModified:
+          case CTaskEnum::Method::tssILDM:
+          case CTaskEnum::Method::tssILDMModified:
 
             CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 16);
             return false;
 
-          case CTaskEnum::tssCSP:
+          case CTaskEnum::Method::tssCSP:
             return true;
 
           default:
@@ -291,7 +291,7 @@ void CTSSAMethod::initializeParameter()
 {
   if (mpLsodaMethod == NULL)
     {
-      mpLsodaMethod = static_cast< CLsodaMethod *>(createMethod(this, CTaskEnum::deterministic, getType()));
+      mpLsodaMethod = static_cast< CLsodaMethod *>(createMethod(this, CTaskEnum::Method::deterministic, getType()));
 
       mpLsodaMethod->setValue("Integrate Reduced Model", true);
       mpLsodaMethod->setValue("Relative Tolerance", (C_FLOAT64) 1.0e-6);
@@ -811,15 +811,15 @@ void CTSSAMethod::schur(C_INT &info)
 
           switch (subType)
             {
-              case CTaskEnum::tssILDM:
+              case CTaskEnum::Method::tssILDM:
                 diagorder = (index[count + 1] < index[count]);
                 break;
 
-              case CTaskEnum::tssILDMModified:
+              case CTaskEnum::Method::tssILDMModified:
                 diagorder = (index[count + 1] < index[count]);
                 break;
 
-              case CTaskEnum::tssCSP:
+              case CTaskEnum::Method::tssCSP:
                 diagorder = (index[count + 1] > index[count]);
                 break;
 

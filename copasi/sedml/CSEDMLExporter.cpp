@@ -207,8 +207,8 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
   if (numItems == 0)
     return "";
 
-  if (pProblem->getSubtask() != CTaskEnum::steadyState &&
-      pProblem->getSubtask() != CTaskEnum::timeCourse)
+  if (pProblem->getSubtask() != CTaskEnum::Task::steadyState &&
+      pProblem->getSubtask() != CTaskEnum::Task::timeCourse)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: This version of COPASI only allows the export of time course or steady state scans.");
       return "";
@@ -216,7 +216,7 @@ CSEDMLExporter::createScanTask(CDataModel& dataModel, const std::string & modelI
 
   std::string subTaskId;
 
-  if (pProblem->getSubtask() == CTaskEnum::steadyState)
+  if (pProblem->getSubtask() == CTaskEnum::Task::steadyState)
     {
       subTaskId = createSteadyStateTask(dataModel, modelId);
     }

@@ -94,7 +94,7 @@ public:
    * @param const  CTaskEnum::Task & type (default: lyap)
    */
   CLyapTask(const CDataContainer * pParent,
-            const CTaskEnum::Task & type = CTaskEnum::lyap);
+            const CTaskEnum::Task & type = CTaskEnum::Task::lyap);
 
   /**
    * Destructor

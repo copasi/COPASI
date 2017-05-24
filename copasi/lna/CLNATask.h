@@ -48,7 +48,7 @@ public:
    * @param const CTaskEnum::Task & type (default: lna)
    */
   CLNATask(const CDataContainer * pParent,
-           const CTaskEnum::Task & type = CTaskEnum::lna);
+           const CTaskEnum::Task & type = CTaskEnum::Task::lna);
 
   /**
    * Copy constructor

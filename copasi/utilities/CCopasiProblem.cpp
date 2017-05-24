@@ -37,7 +37,7 @@
 
 CCopasiProblem::CCopasiProblem():
   CCopasiParameterGroup("NoName", NULL, "Problem"),
-  mType(CTaskEnum::UnsetTask),
+  mType(CTaskEnum::Task::UnsetTask),
   mpContainer(NULL),
   mpCallBack(NULL),
   mpReport(NULL)

@@ -33,8 +33,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodCoranaWalk(const CDataContainer * pParent,
-                       const CTaskEnum::Method & methodType = CTaskEnum::CoranaWalk,
-                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                       const CTaskEnum::Method & methodType = CTaskEnum::Method::CoranaWalk,
+                       const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

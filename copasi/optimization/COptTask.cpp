@@ -38,26 +38,26 @@
 // static
 const CTaskEnum::Method COptTask::ValidMethods[]  =
 {
-  CTaskEnum::Statistics,
+  CTaskEnum::Method::Statistics,
 #ifdef COPASI_DEBUG
-  CTaskEnum::CoranaWalk,
+  CTaskEnum::Method::CoranaWalk,
 #endif // COPASI_DEBUG
-  CTaskEnum::DifferentialEvolution,
-  CTaskEnum::SRES,
-  CTaskEnum::EvolutionaryProgram,
-  CTaskEnum::GeneticAlgorithm,
-  CTaskEnum::GeneticAlgorithmSR,
-  CTaskEnum::HookeJeeves,
-  CTaskEnum::LevenbergMarquardt,
-  CTaskEnum::NelderMead,
-  CTaskEnum::ParticleSwarm,
-  CTaskEnum::Praxis,
-  CTaskEnum::RandomSearch,
-  CTaskEnum::ScatterSearch,
-  CTaskEnum::SimulatedAnnealing,
-  CTaskEnum::SteepestDescent,
-  CTaskEnum::TruncatedNewton,
-  CTaskEnum::UnsetMethod
+  CTaskEnum::Method::DifferentialEvolution,
+  CTaskEnum::Method::SRES,
+  CTaskEnum::Method::EvolutionaryProgram,
+  CTaskEnum::Method::GeneticAlgorithm,
+  CTaskEnum::Method::GeneticAlgorithmSR,
+  CTaskEnum::Method::HookeJeeves,
+  CTaskEnum::Method::LevenbergMarquardt,
+  CTaskEnum::Method::NelderMead,
+  CTaskEnum::Method::ParticleSwarm,
+  CTaskEnum::Method::Praxis,
+  CTaskEnum::Method::RandomSearch,
+  CTaskEnum::Method::ScatterSearch,
+  CTaskEnum::Method::SimulatedAnnealing,
+  CTaskEnum::Method::SteepestDescent,
+  CTaskEnum::Method::TruncatedNewton,
+  CTaskEnum::Method::UnsetMethod
 };
 
 COptTask::COptTask(const CDataContainer * pParent,
@@ -65,7 +65,7 @@ COptTask::COptTask(const CDataContainer * pParent,
   CCopasiTask(pParent, type)
 {
   mpProblem = new COptProblem(type, this);
-  mpMethod = createMethod(CTaskEnum::RandomSearch);
+  mpMethod = createMethod(CTaskEnum::Method::RandomSearch);
 
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
 }

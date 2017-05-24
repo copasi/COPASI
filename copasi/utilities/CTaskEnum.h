@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -8,13 +13,15 @@
 
 #include <string>
 
+#include "copasi/core/CFlags.h"
+
 class CTaskEnum
 {
 public:
   /**
    * Enumeration of the types of tasks known to COPASI.
    */
-  enum Task
+  enum struct Task
   {
     steadyState = 0,
     timeCourse,
@@ -30,24 +37,25 @@ public:
     crosssection,
     lna,
     analytics,
-    UnsetTask
+    UnsetTask,
+    __SIZE
   };
 
   /**
    * String literals for the GUI to display type names of tasks known
    * to COPASI.
    */
-  static const std::string TaskName[];
+  static const EnumArray< const std::string, Task > TaskName;
 
   /**
    * XML type names of tasks known to COPASI.
    */
-  static const char* TaskXML[];
+  static const EnumArray< const std::string, Task > TaskXML;
 
   /**
    * Enumeration of the sub types of methods known to COPASI.
    */
-  enum Method
+  enum struct Method
   {
     UnsetMethod = 0,
     RandomSearch,
@@ -97,19 +105,20 @@ public:
     Householder,
     crossSectionMethod,
     linearNoiseApproximation,
-    analyticsMethod
+    analyticsMethod,
+    __SIZE
   };
 
   /**
    * String literals for the GUI to display sub type names of methods known
    * to COPASI.
    */
-  static const std::string MethodName[];
+  static const EnumArray< const std::string, Method > MethodName;
 
   /**
    * XML sub type names of methods known to COPASI.
    */
-  static const char* MethodXML[];
+  static const EnumArray< const std::string, Method > MethodXML;
 };
 
 #endif // COPASI_CTaskEnum

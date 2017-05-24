@@ -40,8 +40,8 @@ public:
     name(""),
     description(""),
     isPlot(true),
-    mTaskType(CTaskEnum::steadyState),
-    mSecondaryTask(CTaskEnum::UnsetTask)
+    mTaskType(CTaskEnum::Task::steadyState),
+    mSecondaryTask(CTaskEnum::Task::UnsetTask)
   {}
 
   //C_INT32 id;

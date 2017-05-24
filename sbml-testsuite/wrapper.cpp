@@ -104,7 +104,7 @@ public:
     , output_filename("")
     , pTrajectoryTask(NULL)
     , pDataModel(NULL)
-    , methodType(CTaskEnum::deterministic)
+    , methodType(CTaskEnum::Method::deterministic)
   {
     if (argc < 6)
       {
@@ -128,7 +128,7 @@ public:
             MethodType << argv[i];
           }
 
-        methodType = toEnum(unQuote(MethodType.str()), CTaskEnum::MethodName, CTaskEnum::deterministic);
+        methodType = CTaskEnum::MethodName.toEnum(unQuote(MethodType.str()), CTaskEnum::Method::deterministic);
       }
 
     std::ostringstream os;
@@ -302,7 +302,7 @@ public:
     CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
     CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
     pReport->setSeparator(",");
-    pReport->setTaskType(CTaskEnum::timeCourse);
+    pReport->setTaskType(CTaskEnum::Task::timeCourse);
     pReport->setIsTable(false);
     pReport->setPrecision(std::numeric_limits<double>::digits10 + 2);
 

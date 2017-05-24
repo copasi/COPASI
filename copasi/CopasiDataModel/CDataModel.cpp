@@ -1305,7 +1305,7 @@ bool CDataModel::exportCombineArchive(std::string fileName, bool includeCOPASI, 
     {
       // go through all experiments and find the files and add them to the archive
       // alter COPASI file (temporarily) to reference those files
-      problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
+      problem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::Task::parameterFitting].getProblem());
       {
         CExperimentSet& experiments = problem->getExperimentSet();
 
@@ -1483,7 +1483,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
       if (result)
         {
           // figure out whether the file needs experimental data
-          CFitProblem* pProblem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::parameterFitting].getProblem());
+          CFitProblem* pProblem = dynamic_cast<CFitProblem*>((*getTaskList())[CTaskEnum::Task::parameterFitting].getProblem());
           CExperimentSet& experiments = pProblem->getExperimentSet();
           std::vector<std::string> experimentalDataFiles;
 
@@ -2001,7 +2001,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
 
   switch (taskType)
     {
-      case CTaskEnum::steadyState:
+      case CTaskEnum::Task::steadyState:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2010,15 +2010,15 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Steady-State]"));
         break;
 
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::timeCourse:
         // No default report available.
         break;
 
-      case CTaskEnum::scan:
+      case CTaskEnum::Task::scan:
         // No default report available.
         break;
 
-      case CTaskEnum::fluxMode:
+      case CTaskEnum::Task::fluxMode:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2027,7 +2027,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"));
         break;
 
-      case CTaskEnum::optimization:
+      case CTaskEnum::Task::optimization:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2056,7 +2056,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       //**************************************************************************
-      case CTaskEnum::parameterFitting:
+      case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2085,7 +2085,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       //**************************************************************************
-      case CTaskEnum::lyap:
+      case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2102,7 +2102,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       //**************************************************************************
-      case CTaskEnum::mca:
+      case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2119,7 +2119,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       //**************************************************************************
-      case CTaskEnum::lna:
+      case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2136,7 +2136,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       //**************************************************************************
-      case CTaskEnum::sens:
+      case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");
@@ -2153,7 +2153,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         break;
 
       //**************************************************************************
-      case CTaskEnum::tssAnalysis:
+      case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
         pReport->setComment("Automatically generated report.");

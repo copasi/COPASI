@@ -58,8 +58,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CStochDirectMethod(const CDataContainer * pParent,
-                     const CTaskEnum::Method & methodType = CTaskEnum::directMethod,
-                     const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+                     const CTaskEnum::Method & methodType = CTaskEnum::Method::directMethod,
+                     const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.

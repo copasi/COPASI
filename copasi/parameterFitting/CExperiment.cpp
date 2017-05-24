@@ -272,7 +272,7 @@ void CExperiment::initializeParameter()
   mpFileName = assertParameter("File Name", CCopasiParameter::FILE, std::string(""));
   mpFirstRow = assertParameter("First Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
   mpLastRow = assertParameter("Last Row", CCopasiParameter::UINT, (unsigned C_INT32) InvalidIndex);
-  mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::UnsetTask);
+  mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::Task::UnsetTask);
   mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
 
   mpSeparator = assertParameter("Separator", CCopasiParameter::STRING, std::string("\t"));
@@ -365,7 +365,7 @@ void CExperiment::updateFittedPointValues(const size_t & index, bool includeSimu
 
   C_FLOAT64 Independent;
 
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     Independent = mDataTime[index];
   else
     Independent = (C_FLOAT64) index;
@@ -589,7 +589,7 @@ bool CExperiment::calculateStatistics()
   C_FLOAT64 * pTime = NULL;
   C_FLOAT64 SavedTime = 0.0;
 
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     {
       pTime = const_cast<C_FLOAT64 *>(&getObjectDataModel()->getModel()->getTime());
       SavedTime = *pTime;
@@ -713,7 +713,7 @@ bool CExperiment::calculateStatistics()
   else
     mMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  if (*mpTaskType == CTaskEnum::timeCourse) *pTime = SavedTime;
+  if (*mpTaskType == CTaskEnum::Task::timeCourse) *pTime = SavedTime;
 
   return true;
 }
@@ -821,7 +821,7 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
     }
 
   /* We need to check whether a column is mapped to time */
-  if (!TimeFound && *mpTaskType == CTaskEnum::timeCourse)
+  if (!TimeFound && *mpTaskType == CTaskEnum::Task::timeCourse)
     success = false;
 
   // Allocation and initialization of statistical information
@@ -911,7 +911,7 @@ bool CExperiment::read(std::istream & in,
   mDefaultColumnScale.resize(DependentCount);
   mColumnValidValueCount.resize(DependentCount);
 
-  if (!TimeCount && *mpTaskType == CTaskEnum::timeCourse)
+  if (!TimeCount && *mpTaskType == CTaskEnum::Task::timeCourse)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 3, getObjectName().c_str());
       return false;
@@ -1016,7 +1016,7 @@ bool CExperiment::read(std::istream & in,
     }
 
   // If it is a time course this is the place to assert that it is sorted.
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     {
       CVector<size_t> Pivot;
       sortWithPivot(mDataTime.array(), mDataTime.array() + mDataTime.size(), CompareDoubleWithNaN(), Pivot);
@@ -1223,8 +1223,8 @@ bool CExperiment::setExperimentType(const CTaskEnum::Task & type)
 {
   switch (type)
     {
-      case CTaskEnum::steadyState:
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::steadyState:
+      case CTaskEnum::Task::timeCourse:
         *mpTaskType = type;
         return true;
         break;
@@ -1412,7 +1412,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
   os << "Row\t";
 
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     os << "Time\t";
 
   for (k = 0; k < kmax; k++)
@@ -1439,7 +1439,7 @@ void CExperiment::printResult(std::ostream * ostream) const
       {
         os << i + 1 << ".\t";
 
-        if (*mpTaskType == CTaskEnum::timeCourse)
+        if (*mpTaskType == CTaskEnum::Task::timeCourse)
           os << mDataTime[i] << "\t";
 
         for (j = 0; j < jmax; j++, pDataDependentCalculated++)
@@ -1456,7 +1456,7 @@ void CExperiment::printResult(std::ostream * ostream) const
       {
         os << i + 1 << ".\t";
 
-        if (*mpTaskType == CTaskEnum::timeCourse)
+        if (*mpTaskType == CTaskEnum::Task::timeCourse)
           os << mDataTime[i] << "\t";
 
         for (j = 0; j < jmax; j++)
@@ -1487,7 +1487,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
   os << "Objective Value";
 
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     os << "\t";
 
   for (j = 0; j < jmax; j++)
@@ -1502,7 +1502,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
   os << "Root Mean Square";
 
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     os << "\t";
 
   for (j = 0; j < jmax; j++)
@@ -1517,7 +1517,7 @@ void CExperiment::printResult(std::ostream * ostream) const
 
   os << "Weight";
 
-  if (*mpTaskType == CTaskEnum::timeCourse)
+  if (*mpTaskType == CTaskEnum::Task::timeCourse)
     os << "\t";
 
   for (j = 0; j < jmax; j++)

@@ -57,8 +57,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CHybridNextReactionRKMethod(const CDataContainer * pParent,
-                              const CTaskEnum::Method & methodType = CTaskEnum::hybrid,
-                              const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+                              const CTaskEnum::Method & methodType = CTaskEnum::Method::hybrid,
+                              const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.

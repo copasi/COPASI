@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -44,9 +49,9 @@ CXMLHandler * MethodHandler::processStart(const XML_Char * pszName,
         sType = mpParser->getAttributeValue("type", papszAttrs, "default");
         // first set the type of the with setMethodType of the current task
         // object
-        type = toEnum(sType.c_str(), CTaskEnum::MethodXML, CTaskEnum::UnsetMethod);
+        type = CTaskEnum::MethodXML.toEnum(sType, CTaskEnum::Method::UnsetMethod);
 
-        if (type != CTaskEnum::UnsetMethod)
+        if (type != CTaskEnum::Method::UnsetMethod)
           {
             mpData->pCurrentTask->setMethodType(type);
           }

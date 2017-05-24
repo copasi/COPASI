@@ -78,8 +78,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodSteepestDescent(const CDataContainer * pParent,
-                            const CTaskEnum::Method & methodType = CTaskEnum::SteepestDescent,
-                            const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                            const CTaskEnum::Method & methodType = CTaskEnum::Method::SteepestDescent,
+                            const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

@@ -91,179 +91,179 @@ CCopasiMethod * CCopasiMethod::createMethod(const CDataContainer * pParent,
 
   switch (methodType)
     {
-      case CTaskEnum::UnsetMethod:
+      case CTaskEnum::Method::UnsetMethod:
         pMethod = new CCopasiMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::RandomSearch:
+      case CTaskEnum::Method::RandomSearch:
         pMethod = new CRandomSearch(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::SimulatedAnnealing:
+      case CTaskEnum::Method::SimulatedAnnealing:
         pMethod = new COptMethodSA(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::CoranaWalk:
+      case CTaskEnum::Method::CoranaWalk:
         pMethod = new COptMethodCoranaWalk(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::DifferentialEvolution:
+      case CTaskEnum::Method::DifferentialEvolution:
         pMethod = new COptMethodDE(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::ScatterSearch:
+      case CTaskEnum::Method::ScatterSearch:
         pMethod = new COptMethodSS(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::GeneticAlgorithm:
+      case CTaskEnum::Method::GeneticAlgorithm:
         pMethod = new COptMethodGA(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::EvolutionaryProgram:
+      case CTaskEnum::Method::EvolutionaryProgram:
         pMethod = new COptMethodEP(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::SteepestDescent:
+      case CTaskEnum::Method::SteepestDescent:
         pMethod = new COptMethodSteepestDescent(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::GeneticAlgorithmSR:
+      case CTaskEnum::Method::GeneticAlgorithmSR:
         pMethod = new COptMethodGASR(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::HookeJeeves:
+      case CTaskEnum::Method::HookeJeeves:
         pMethod = new COptMethodHookeJeeves(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::LevenbergMarquardt:
+      case CTaskEnum::Method::LevenbergMarquardt:
         pMethod = new COptMethodLevenbergMarquardt(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::NelderMead:
+      case CTaskEnum::Method::NelderMead:
         pMethod = new COptMethodNelderMead(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::SRES:
+      case CTaskEnum::Method::SRES:
         pMethod = new COptMethodSRES(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::Statistics:
+      case CTaskEnum::Method::Statistics:
         pMethod = new COptMethodStatistics(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::ParticleSwarm:
+      case CTaskEnum::Method::ParticleSwarm:
         pMethod = new COptMethodPS(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::Praxis:
+      case CTaskEnum::Method::Praxis:
         pMethod = new COptMethodPraxis(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::TruncatedNewton:
+      case CTaskEnum::Method::TruncatedNewton:
         pMethod = new COptMethodTruncatedNewton(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::Newton:
+      case CTaskEnum::Method::Newton:
         pMethod = new CNewtonMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::deterministic:
+      case CTaskEnum::Method::deterministic:
         pMethod = new CLsodaMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::directMethod:
+      case CTaskEnum::Method::directMethod:
         pMethod = new CStochDirectMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::stochastic:
+      case CTaskEnum::Method::stochastic:
         pMethod = new CStochNextReactionMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::tauLeap:
+      case CTaskEnum::Method::tauLeap:
         pMethod = new CTauLeapMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::adaptiveSA:
+      case CTaskEnum::Method::adaptiveSA:
         pMethod = new CTrajAdaptiveSA(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::hybrid:
+      case CTaskEnum::Method::hybrid:
         pMethod = new CHybridNextReactionRKMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::hybridLSODA:
+      case CTaskEnum::Method::hybridLSODA:
         pMethod = new CHybridNextReactionLSODAMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::hybridODE45:
+      case CTaskEnum::Method::hybridODE45:
         pMethod = new CHybridMethodODE45(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::DsaLsodar:
+      case CTaskEnum::Method::DsaLsodar:
         pMethod = new CTrajectoryMethodDsaLsodar(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::stochasticRunkeKuttaRI5:
+      case CTaskEnum::Method::stochasticRunkeKuttaRI5:
         pMethod = new CStochasticRungeKuttaRI5(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::tssILDM:
+      case CTaskEnum::Method::tssILDM:
         pMethod = new CILDMMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::tssILDMModified:
+      case CTaskEnum::Method::tssILDMModified:
         pMethod = new CILDMModifiedMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::tssCSP:
+      case CTaskEnum::Method::tssCSP:
         pMethod = new CCSPMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::mcaMethodReder:
+      case CTaskEnum::Method::mcaMethodReder:
         pMethod = new CMCAMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::scanMethod:
+      case CTaskEnum::Method::scanMethod:
         pMethod = new CScanMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::lyapWolf:
+      case CTaskEnum::Method::lyapWolf:
         pMethod = new CLyapWolfMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::sensMethod:
+      case CTaskEnum::Method::sensMethod:
         pMethod = new CSensMethod(pParent, methodType, taskType);
         break;
 
 #ifdef COPASI_SSA
 
-      case CTaskEnum::stoichiometricStabilityAnalysis:
+      case CTaskEnum::Method::stoichiometricStabilityAnalysis:
         pMethod = new CSSAMethod(pParent, methodType, taskType);
         break;
 
 #endif // COPASI_SSA
 
-      case CTaskEnum::EFMAlgorithm:
+      case CTaskEnum::Method::EFMAlgorithm:
         pMethod = new CEFMAlgorithm(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::EFMBitPatternTreeAlgorithm:
+      case CTaskEnum::Method::EFMBitPatternTreeAlgorithm:
         pMethod = new CBitPatternTreeMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::EFMBitPatternAlgorithm:
+      case CTaskEnum::Method::EFMBitPatternAlgorithm:
         pMethod = new CBitPatternMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::Householder:
+      case CTaskEnum::Method::Householder:
         pMethod = new CMoietiesMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::crossSectionMethod:
+      case CTaskEnum::Method::crossSectionMethod:
         pMethod = new CCrossSectionMethod(pParent, methodType, taskType);
         break;
 
-      case CTaskEnum::linearNoiseApproximation:
+      case CTaskEnum::Method::linearNoiseApproximation:
         pMethod = new CLNAMethod(pParent, methodType, taskType);
         break;
     }
@@ -345,19 +345,19 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (mpContainer->getEvents().size())
     {
-      if (mTaskType == CTaskEnum::lyap)
+      if (mTaskType == CTaskEnum::Task::lyap)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Lyapunov Exponents");
           return false;
         }
 
-      if (mTaskType == CTaskEnum::tssAnalysis)
+      if (mTaskType == CTaskEnum::Task::tssAnalysis)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Time Scale Separation Analysis");
           return false;
         }
 
-      if (mTaskType == CTaskEnum::lna)
+      if (mTaskType == CTaskEnum::Task::lna)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 4, "Linear Noise Approximation");
           return false;

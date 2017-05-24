@@ -31,7 +31,7 @@
 
 //  Default constructor
 CEFMProblem::CEFMProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::fluxMode, pParent),
+  CCopasiProblem(CTaskEnum::Task::fluxMode, pParent),
   mFluxModes(),
   mReorderedReactions()
 {

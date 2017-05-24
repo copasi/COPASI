@@ -39,7 +39,7 @@ CFitTask::CFitTask(const CDataContainer * pParent,
   pdelete(mpProblem);
   mpProblem = new CFitProblem(type, this);
   pdelete(mpMethod);
-  mpMethod = createMethod(CTaskEnum::EvolutionaryProgram);
+  mpMethod = createMethod(CTaskEnum::Method::EvolutionaryProgram);
 
   ((COptMethod *) mpMethod)->setProblem((COptProblem *) mpProblem);
 }

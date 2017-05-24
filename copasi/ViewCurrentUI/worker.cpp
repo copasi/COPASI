@@ -89,10 +89,10 @@ TaskWidget* Worker::getWidgetForTask(CCopasiTask *task)  const
 
   switch (task->getType())
     {
-      case CTaskEnum::steadyState:
+      case CTaskEnum::Task::steadyState:
         return reinterpret_cast<TaskWidget*>(views->getSteadyStateWidget());
 
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::timeCourse:
         return reinterpret_cast<TaskWidget*>(views->getTrajectoryWidget());
 
       case CTaskEnum::scan:
@@ -117,7 +117,7 @@ TaskWidget* Worker::getWidgetForTask(CCopasiTask *task)  const
       case CTaskEnum::moieties:
       case CTaskEnum::crosssection:
 
-        //case CTaskEnum::unset:
+      //case CTaskEnum::unset:
       default:
         // have no widget for these
         return NULL;
@@ -130,10 +130,10 @@ int Worker::getIndexForTask(CCopasiTask* task)
 
   switch (task->getType())
     {
-      case CTaskEnum::steadyState:
+      case CTaskEnum::Task::steadyState:
         return 21;
 
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::timeCourse:
         return 23;
 
       case CTaskEnum::scan:
@@ -158,7 +158,7 @@ int Worker::getIndexForTask(CCopasiTask* task)
       case CTaskEnum::moieties:
       case CTaskEnum::crosssection:
 
-        //case CTaskEnum::unset:
+      //case CTaskEnum::unset:
       default:
         // have no id
         return -1;

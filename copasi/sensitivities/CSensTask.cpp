@@ -40,7 +40,7 @@ CSensTask::CSensTask(const CDataContainer * pParent,
 {
   mpProblem = new CSensProblem(this);
 
-  mpMethod = createMethod(CTaskEnum::sensMethod);
+  mpMethod = createMethod(CTaskEnum::Method::sensMethod);
 }
 
 CSensTask::CSensTask(const CSensTask & src,
@@ -129,8 +129,8 @@ const CTaskEnum::Method * CSensTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::sensMethod,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::sensMethod,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

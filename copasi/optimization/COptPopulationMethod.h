@@ -33,7 +33,7 @@ public:
   */
   COptPopulationMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
-                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                       const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
   * Copy constructor

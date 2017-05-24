@@ -286,4 +286,45 @@ template< class Enum > const CFlags< Enum > CFlags< Enum >::None;
 // static
 template< class Enum > const CFlags< Enum > CFlags< Enum >::All(~None);
 
+template < class Type, class Enum > class EnumArray : public std::array< Type, static_cast< size_t >(Enum::__SIZE) >
+{
+public:
+  typedef std::array< Type, static_cast< size_t >(Enum::__SIZE) > base;
+
+  EnumArray(base & src) :
+    base(src)
+  {}
+
+  typename base::const_reference operator [](Enum e) const
+  {
+    return base::operator[](static_cast< size_t >(e));
+  }
+
+  typename base::reference operator [](Enum e)
+  {
+    return base::operator[](static_cast< size_t >(e));
+  }
+
+  typename base::const_reference operator [](size_t i) const
+  {
+    return base::operator[](i);
+  }
+
+  typename base::reference operator [](size_t i)
+  {
+    return base::operator[](i);
+  }
+
+  Enum toEnum(Type value, Enum enumDefault = Enum::__SIZE) const
+  {
+    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); ++i)
+      if (value == base::operator[](i))
+        {
+          return static_cast< Enum >(i);
+        }
+
+    return enumDefault;
+  }
+};
+
 #endif // COPASI_CFlags

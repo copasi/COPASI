@@ -89,8 +89,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: steadyState)
    */
   CNewtonMethod(const CDataContainer * pParent,
-                const CTaskEnum::Method & methodType = CTaskEnum::Newton,
-                const CTaskEnum::Task & taskType = CTaskEnum::steadyState);
+                const CTaskEnum::Method & methodType = CTaskEnum::Method::Newton,
+                const CTaskEnum::Task & taskType = CTaskEnum::Task::steadyState);
 
   /**
   * Copy constructor.

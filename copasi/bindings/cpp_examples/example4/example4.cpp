@@ -71,7 +71,7 @@ int main()
   // create a new report definition object
   CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for timecourse");
   // set the task type for the report definition to timecourse
-  pReport->setTaskType(CTaskEnum::timeCourse);
+  pReport->setTaskType(CTaskEnum::Task::timeCourse);
   // we don't want a table
   pReport->setIsTable(false);
   // the entries in the output should be seperated by a ", "
@@ -148,7 +148,7 @@ int main()
     }
 
   // run a stochastic time course
-  pTrajectoryTask->setMethodType(CTaskEnum::stochastic);
+  pTrajectoryTask->setMethodType(CTaskEnum::Method::stochastic);
 
   // we don't want the trajectory task to run by itself, but we want to
   // run it from a scan, so we deactivate the standalone trajectory task
@@ -198,7 +198,7 @@ int main()
   pScanTask->getReport().setAppend(false);
 
   // tell the scan that we want to make a scan over a trajectory task
-  pScanProblem->setSubtask(CTaskEnum::timeCourse);
+  pScanProblem->setSubtask(CTaskEnum::Task::timeCourse);
 
   // we just want to run the timecourse task a number of times, so we
   // create a repeat item with 100 repeats

@@ -44,7 +44,7 @@ public:
    * @param const CTaskEnum::Task & type (default: sens)
    */
   CSensTask(const CDataContainer * pParent,
-            const CTaskEnum::Task & type = CTaskEnum::sens);
+            const CTaskEnum::Task & type = CTaskEnum::Task::sens);
 
   /**
    * Copy constructor

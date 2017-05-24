@@ -292,7 +292,7 @@ bool CExperimentSet::calculateStatistics()
   for (i = 0; i < imax; i++)
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
-        (*it)->updateFittedPointValues(i, (*it)->getExperimentType() != CTaskEnum::timeCourse); //false means without simulated data
+        (*it)->updateFittedPointValues(i, (*it)->getExperimentType() != CTaskEnum::Task::timeCourse); //false means without simulated data
 
       pParentTask->output(COutputInterface::AFTER);
     }
@@ -305,7 +305,7 @@ bool CExperimentSet::calculateStatistics()
     {
       for (it = mpExperiments->begin() + mNonExperiments; it != end; ++it)
         {
-          if ((*it)->getExperimentType() == CTaskEnum::timeCourse)
+          if ((*it)->getExperimentType() == CTaskEnum::Task::timeCourse)
             {
               (*it)->updateFittedPointValuesFromExtendedTimeSeries(i);
             }

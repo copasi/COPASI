@@ -40,7 +40,7 @@
  *  Default constructor.
  */
 CTrajectoryProblem::CTrajectoryProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::timeCourse, pParent),
+  CCopasiProblem(CTaskEnum::Task::timeCourse, pParent),
   mpAutomaticStepSize(NULL),
   mpDuration(NULL),
   mpStepSize(NULL),

@@ -92,7 +92,7 @@ public:
    */
   CLyapMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType,
-              const CTaskEnum::Task & taskType = CTaskEnum::lyap);
+              const CTaskEnum::Task & taskType = CTaskEnum::Task::lyap);
 
   /**
    * Copy constructor.

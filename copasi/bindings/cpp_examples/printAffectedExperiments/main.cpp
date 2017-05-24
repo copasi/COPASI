@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     }
 
   // get the fitTask
-  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[CTaskEnum::parameterFitting]);
+  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)]);
 
   if (pFitTask == NULL)
     {

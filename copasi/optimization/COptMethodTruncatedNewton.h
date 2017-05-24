@@ -45,8 +45,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodTruncatedNewton(const CDataContainer * pParent,
-                            const CTaskEnum::Method & methodType = CTaskEnum::TruncatedNewton,
-                            const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                            const CTaskEnum::Method & methodType = CTaskEnum::Method::TruncatedNewton,
+                            const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

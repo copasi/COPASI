@@ -93,7 +93,7 @@ public:
    * @param const CTaskEnum::Task & type (default: tssAnalysis)
    */
   CTSSATask(const CDataContainer * pParent,
-            const CTaskEnum::Task & type = CTaskEnum::tssAnalysis);
+            const CTaskEnum::Task & type = CTaskEnum::Task::tssAnalysis);
 
   /**
    * Copy constructor

@@ -56,7 +56,7 @@ CSteadyStateTask::CSteadyStateTask(const CDataContainer * pParent,
 {
   mpProblem = new CSteadyStateProblem(this);
 
-  mpMethod = createMethod(CTaskEnum::Newton);
+  mpMethod = createMethod(CTaskEnum::Method::Newton);
 
   initObjects();
 }
@@ -391,8 +391,8 @@ const CTaskEnum::Method * CSteadyStateTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::Newton,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::Newton,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

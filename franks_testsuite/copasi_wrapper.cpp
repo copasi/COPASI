@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for batch run");
-      pReport->setTaskType(CTaskEnum::timeCourse);
+      pReport->setTaskType(CTaskEnum::Task::timeCourse);
       pReport->setIsTable(false);
       pReport->setSeparator(", ");
 

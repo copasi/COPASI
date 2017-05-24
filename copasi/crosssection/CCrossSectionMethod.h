@@ -32,7 +32,7 @@ public:
    */
   CCrossSectionMethod(const CDataContainer * pParent,
                       const CTaskEnum::Method & methodType,
-                      const CTaskEnum::Task & taskType = CTaskEnum::crosssection);
+                      const CTaskEnum::Task & taskType = CTaskEnum::Task::crosssection);
 
   /**
    * Copy constructor.

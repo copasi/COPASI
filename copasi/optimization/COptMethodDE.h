@@ -33,8 +33,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodDE(const CDataContainer * pParent,
-               const CTaskEnum::Method & methodType = CTaskEnum::DifferentialEvolution,
-               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+               const CTaskEnum::Method & methodType = CTaskEnum::Method::DifferentialEvolution,
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

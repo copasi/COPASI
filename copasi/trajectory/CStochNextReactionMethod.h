@@ -58,8 +58,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CStochNextReactionMethod(const CDataContainer * pParent,
-                           const CTaskEnum::Method & methodType = CTaskEnum::stochastic,
-                           const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+                           const CTaskEnum::Method & methodType = CTaskEnum::Method::stochastic,
+                           const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.

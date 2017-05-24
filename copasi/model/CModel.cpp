@@ -2329,7 +2329,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         {
           const CExperiment* exp = experiments.getExperiment(i);
 
-          if (exp->getExperimentType() == CTaskEnum::timeCourse)
+          if (exp->getExperimentType() == CTaskEnum::Task::timeCourse)
             {
               theExperiment = exp;
               break;
@@ -2355,7 +2355,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
 #pragma endregion //find_experiment
 
-  if (experiment->getExperimentType() != CTaskEnum::timeCourse)
+  if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
       CCopasiMessage(CCopasiMessage::ERROR,
                      "The selected experiment, is not a time series experiment.");

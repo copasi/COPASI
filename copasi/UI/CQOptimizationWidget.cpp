@@ -224,12 +224,12 @@ void CQOptimizationWidget::init()
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
   //mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
-  const unsigned int * pSubtask = COptProblem::ValidSubtasks;
+  const CTaskEnum::Task * pSubtask = COptProblem::ValidSubtasks;
 
-  for (; *pSubtask != CTaskEnum::UnsetTask; ++pSubtask)
+  for (; *pSubtask != CTaskEnum::Task::UnsetTask; ++pSubtask)
     {
       mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[*pSubtask]));
-      mSubtaskMap[CTaskEnum::TaskName[*pSubtask]] = *pSubtask;
+      mSubtaskMap[CTaskEnum::TaskName[*pSubtask]] = static_cast< size_t>(*pSubtask);
     }
 
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);

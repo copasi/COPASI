@@ -47,7 +47,7 @@ changeTaskIfScheduled(COptTask* pTask)
   COptProblem* pFitProblem = dynamic_cast<COptProblem*>(pTask->getProblem());
   pFitProblem->setRandomizeStartValues(false);
 
-  pTask->setMethodType(CTaskEnum::Statistics);
+  pTask->setMethodType(CTaskEnum::Method::Statistics);
 }
 
 /**
@@ -143,11 +143,11 @@ int main(int argc, char** argv)
     }
 
   // get the optimization task
-  COptTask* pOptTask = dynamic_cast<COptTask*>(&(*pDataModel->getTaskList())[CTaskEnum::optimization]);
+  COptTask* pOptTask = dynamic_cast<COptTask*>(&(*pDataModel->getTaskList())[static_cast< size_t >(CTaskEnum::Task::optimization)]);
   changeTaskIfScheduled(pOptTask);
 
   // get the fitTask
-  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[CTaskEnum::parameterFitting]);
+  CFitTask* pFitTask = dynamic_cast<CFitTask*>(&(*pDataModel->getTaskList())[static_cast< size_t >(CTaskEnum::Task::parameterFitting)]);
 
   changeTaskIfScheduled(pFitTask);
 

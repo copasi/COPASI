@@ -55,19 +55,19 @@
 #include "utilities/CCopasiException.h"
 
 // static
-const unsigned int COptProblem::ValidSubtasks[] =
+const CTaskEnum::Task COptProblem::ValidSubtasks[] =
 {
-  CTaskEnum::steadyState,
-  CTaskEnum::timeCourse,
-  CTaskEnum::scan,
-  CTaskEnum::parameterFitting,
-  CTaskEnum::mca,
-  CTaskEnum::lyap,
-  CTaskEnum::tssAnalysis,
-  CTaskEnum::sens,
-  CTaskEnum::crosssection,
-  CTaskEnum::lna,
-  CTaskEnum::UnsetTask
+  CTaskEnum::Task::steadyState,
+  CTaskEnum::Task::timeCourse,
+  CTaskEnum::Task::scan,
+  CTaskEnum::Task::parameterFitting,
+  CTaskEnum::Task::mca,
+  CTaskEnum::Task::lyap,
+  CTaskEnum::Task::tssAnalysis,
+  CTaskEnum::Task::sens,
+  CTaskEnum::Task::crosssection,
+  CTaskEnum::Task::lna,
+  CTaskEnum::Task::UnsetTask
 };
 
 // static
@@ -182,7 +182,7 @@ bool COptProblem::elevateChildren()
         {
           if (pParameter->getValue< std::string >() != "")
             {
-              setSubtaskType(CTaskEnum::steadyState);
+              setSubtaskType(CTaskEnum::Task::steadyState);
             }
 
           removeParameter("Steady-State");
@@ -192,7 +192,7 @@ bool COptProblem::elevateChildren()
         {
           if (pParameter->getValue< std::string >() != "")
             {
-              setSubtaskType(CTaskEnum::timeCourse);
+              setSubtaskType(CTaskEnum::Task::timeCourse);
             }
 
           removeParameter("Time-Course");
@@ -200,7 +200,7 @@ bool COptProblem::elevateChildren()
 
       // If no subtask is defined we default to steady-state
       if (*mpParmSubtaskCN == "")
-        setSubtaskType(CTaskEnum::steadyState);
+        setSubtaskType(CTaskEnum::Task::steadyState);
     }
 
   // Handle old file format in which the objective expression was stored in the function DB
@@ -539,7 +539,7 @@ bool COptProblem::calculate()
     return false;
 
   if (mStoreResults &&
-      mpSubtask->getType() == CTaskEnum::timeCourse)
+      mpSubtask->getType() == CTaskEnum::Task::timeCourse)
     {
       static_cast< CTrajectoryProblem * >(mpSubtask->getProblem())->setTimeSeriesRequested(true);
 
@@ -574,7 +574,7 @@ bool COptProblem::calculate()
     }
 
   if (mStoreResults &&
-      mpSubtask->getType() == CTaskEnum::timeCourse)
+      mpSubtask->getType() == CTaskEnum::Task::timeCourse)
     {
       mStoreResults = false;
       mpSubtask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -793,7 +793,7 @@ CTaskEnum::Task COptProblem::getSubtaskType() const
   mpSubtask = dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubtaskCN));
 
   if (mpSubtask == NULL)
-    return CTaskEnum::UnsetTask;
+    return CTaskEnum::Task::UnsetTask;
 
   return mpSubtask->getType();
 }

@@ -41,7 +41,7 @@ public:
    * @param const CTaskEnum::Task & type (default: parameterFitting)
    * @param const CDataContainer * pParent (default: NULL)
    */
-  CFitProblem(const CTaskEnum::Task & type = CTaskEnum::parameterFitting,
+  CFitProblem(const CTaskEnum::Task & type = CTaskEnum::Task::parameterFitting,
               const CDataContainer * pParent = NO_PARENT);
 
   /**

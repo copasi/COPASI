@@ -58,7 +58,7 @@ public:
    * @param const CTaskEnum::Task & type (default: timeCourse)
    */
   CTrajectoryTask(const CDataContainer * pParent,
-                  const CTaskEnum::Task & type = CTaskEnum::timeCourse);
+                  const CTaskEnum::Task & type = CTaskEnum::Task::timeCourse);
 
   /**
     * Copy constructor

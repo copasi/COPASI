@@ -47,7 +47,7 @@ public:
    * @param const CTaskEnum::Task & type (default: parameterFitting)
    */
   CFitTask(const CDataContainer * pParent,
-           const CTaskEnum::Task & type = CTaskEnum::parameterFitting);
+           const CTaskEnum::Task & type = CTaskEnum::Task::parameterFitting);
 
   /**
    * Copy constructor

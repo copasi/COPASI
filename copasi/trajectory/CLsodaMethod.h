@@ -216,8 +216,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CLsodaMethod(const CDataContainer * pParent,
-               const CTaskEnum::Method & methodType = CTaskEnum::deterministic,
-               const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+               const CTaskEnum::Method & methodType = CTaskEnum::Method::deterministic,
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.

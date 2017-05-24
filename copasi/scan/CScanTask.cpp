@@ -57,7 +57,7 @@ CScanTask::CScanTask(const CDataContainer * pParent,
   mUseInitialValues(true)
 {
   mpProblem = new CScanProblem(this);
-  mpMethod = createMethod(CTaskEnum::scanMethod);
+  mpMethod = createMethod(CTaskEnum::Method::scanMethod);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
@@ -71,7 +71,7 @@ CScanTask::CScanTask(const CScanTask & src,
   mUseInitialValues(true)
 {
   mpProblem = new CScanProblem(*(CScanProblem *) src.mpProblem, this);
-  mpMethod = createMethod(CTaskEnum::scanMethod);
+  mpMethod = createMethod(CTaskEnum::Method::scanMethod);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
@@ -181,8 +181,8 @@ const CTaskEnum::Method * CScanTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::scanMethod,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::scanMethod,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;
@@ -239,52 +239,52 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
 
   switch (type)
     {
-      case CTaskEnum::steadyState:
+      case CTaskEnum::Task::steadyState:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::timeCourse:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-      case CTaskEnum::mca:
+      case CTaskEnum::Task::mca:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Metabolic Control Analysis"));
         break;
 
-      case CTaskEnum::lyap:
+      case CTaskEnum::Task::lyap:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
         break;
 
-      case CTaskEnum::optimization:
+      case CTaskEnum::Task::optimization:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
-      case CTaskEnum::parameterFitting:
+      case CTaskEnum::Task::parameterFitting:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
-      case CTaskEnum::sens:
+      case CTaskEnum::Task::sens:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Sensitivities"));
         break;
 
-      case CTaskEnum::lna:
+      case CTaskEnum::Task::lna:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Linear Noise Approximation"));
         break;
 
-      case CTaskEnum::tssAnalysis :
+      case CTaskEnum::Task::tssAnalysis :
         mpSubtask = dynamic_cast<CCopasiTask*>
-                    (&pDataModel->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::tssAnalysis]));
+                    (&pDataModel->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::tssAnalysis]));
         break;
 
-      case CTaskEnum::crosssection:
+      case CTaskEnum::Task::crosssection:
         mpSubtask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;

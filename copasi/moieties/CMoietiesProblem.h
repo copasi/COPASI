@@ -29,7 +29,7 @@ public:
    * @param const CTaskEnum::Task & type (default: moieties)
    * @param const CDataContainer * pParent (default: NULL)
    */
-  CMoietiesProblem(const CTaskEnum::Task & type = CTaskEnum::moieties,
+  CMoietiesProblem(const CTaskEnum::Task & type = CTaskEnum::Task::moieties,
                    const CDataContainer * pParent = NO_PARENT);
 
   /**

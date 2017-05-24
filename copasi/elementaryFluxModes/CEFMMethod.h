@@ -46,7 +46,7 @@ public:
    */
   CEFMMethod(const CDataContainer * pParent,
              const CTaskEnum::Method & methodType,
-             const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+             const CTaskEnum::Task & taskType = CTaskEnum::Task::fluxMode);
 
   /**
    * Copy constructor

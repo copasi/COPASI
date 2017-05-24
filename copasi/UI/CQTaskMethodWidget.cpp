@@ -53,7 +53,7 @@ void CQTaskMethodWidget::slotChangeMethod(int /* index */)
     return;
 
   CTaskEnum::Method Type =
-    toEnum(TO_UTF8(mpBoxMethod->currentText()), CTaskEnum::MethodName, CTaskEnum::UnsetMethod);
+    CTaskEnum::MethodName.toEnum(TO_UTF8(mpBoxMethod->currentText()), CTaskEnum::Method::UnsetMethod);
 
   setActiveMethod(Type);
   loadMethod();
@@ -86,7 +86,7 @@ void CQTaskMethodWidget::setValidMethods(const CTaskEnum::Method * validMethods)
 {
   unsigned C_INT32 i;
 
-  for (i = 0; validMethods[i] != CTaskEnum::UnsetMethod; i++)
+  for (i = 0; validMethods[i] != CTaskEnum::Method::UnsetMethod; i++)
     mpBoxMethod->insertItem(mpBoxMethod->count(), FROM_UTF8(CTaskEnum::MethodName[validMethods[i]]));
 
   if (i > 0)

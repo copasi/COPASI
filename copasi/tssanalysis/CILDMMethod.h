@@ -51,8 +51,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
    */
   CILDMMethod(const CDataContainer * pParent,
-              const CTaskEnum::Method & methodType = CTaskEnum::tssILDM,
-              const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
+              const CTaskEnum::Method & methodType = CTaskEnum::Method::tssILDM,
+              const CTaskEnum::Task & taskType = CTaskEnum::Task::tssAnalysis);
 
   /**
    * Copy constructor.

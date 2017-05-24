@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
       // time.
       CReportDefinitionVector* pReports = pDataModel->getReportDefinitionList();
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for SBML testsuite run");
-      pReport->setTaskType(CTaskEnum::timeCourse);
+      pReport->setTaskType(CTaskEnum::Task::timeCourse);
       pReport->setIsTable(true);
 
       std::vector<CRegisteredCommonName>* pTable = pReport->getTableAddr();

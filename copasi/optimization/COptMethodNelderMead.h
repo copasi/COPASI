@@ -42,8 +42,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodNelderMead(const CDataContainer * pParent,
-                       const CTaskEnum::Method & methodType = CTaskEnum::NelderMead,
-                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                       const CTaskEnum::Method & methodType = CTaskEnum::Method::NelderMead,
+                       const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

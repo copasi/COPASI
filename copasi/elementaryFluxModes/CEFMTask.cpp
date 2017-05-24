@@ -50,7 +50,7 @@ CEFMTask::CEFMTask(const CDataContainer * pParent,
   CCopasiTask(pParent, type)
 {
   mpProblem = new CEFMProblem(this);
-  mpMethod = createMethod(CTaskEnum::EFMAlgorithm);
+  mpMethod = createMethod(CTaskEnum::Method::EFMAlgorithm);
 
   this->add(mpMethod, true);
 }
@@ -103,18 +103,18 @@ const CTaskEnum::Method * CEFMTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::EFMAlgorithm,
+    CTaskEnum::Method::EFMAlgorithm,
 
 #ifdef COPASI_DEBUG
-    CTaskEnum::EFMBitPatternTreeAlgorithm,
-    CTaskEnum::EFMBitPatternAlgorithm,
+    CTaskEnum::Method::EFMBitPatternTreeAlgorithm,
+    CTaskEnum::Method::EFMBitPatternAlgorithm,
 #endif // COPASI_DEBUG
 
 #ifdef COPASI_SSA
-    CTaskEnum::stoichiometricStabilityAnalysis,
+    CTaskEnum::Method::stoichiometricStabilityAnalysis,
 #endif // COPASI_SSA
 
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;
@@ -135,7 +135,7 @@ std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
 
 #ifdef COPASI_SSA
 
-  if (mpMethod->getSubType() == CTaskEnum::stoichiometricStabilityAnalysis)
+  if (mpMethod->getSubType() == CTaskEnum::Method::stoichiometricStabilityAnalysis)
     {
       CSSAMethod * method = dynamic_cast<CSSAMethod *>(mpMethod);
 
@@ -185,7 +185,7 @@ std::string CEFMTask::getReactionEquation(const std::map< size_t, C_FLOAT64 >::c
 
 #ifdef COPASI_SSA
 
-  if (mpMethod->getSubType() == CTaskEnum::stoichiometricStabilityAnalysis)
+  if (mpMethod->getSubType() == CTaskEnum::Method::stoichiometricStabilityAnalysis)
     {
       CSSAMethod * method = static_cast<CSSAMethod *>(mpMethod);
 

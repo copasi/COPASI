@@ -144,7 +144,7 @@ bool COptMethodSS::initialize()
       // this is a least squares problem (param estimation)
       // let's use our favorite lsq method
       mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
-                         CTaskEnum::LevenbergMarquardt,
+                         CTaskEnum::Method::LevenbergMarquardt,
                          getType()));
       // the intermediate local minimizations use a rather relaxed tolerance
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);
@@ -156,7 +156,7 @@ bool COptMethodSS::initialize()
       // this is a generic optimisation problem
       // let's use Hooke and Jeeves
       mpLocalMinimizer = static_cast< COptMethod * >(CCopasiMethod::createMethod(getObjectParent(),
-                         CTaskEnum::HookeJeeves,
+                         CTaskEnum::Method::HookeJeeves,
                          getType()));
       // with a rather relaxed tolerance (1e-3) for intermediate minimizations
       mpLocalMinimizer->setValue("Tolerance", (C_FLOAT64) 1.e-003);

@@ -40,8 +40,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodSRES(const CDataContainer * pParent,
-                 const CTaskEnum::Method & methodType = CTaskEnum::SRES,
-                 const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                 const CTaskEnum::Method & methodType = CTaskEnum::Method::SRES,
+                 const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

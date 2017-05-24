@@ -211,8 +211,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: scan)
    */
   CScanMethod(const CDataContainer * pParent,
-              const CTaskEnum::Method & methodType = CTaskEnum::scanMethod,
-              const CTaskEnum::Task & taskType = CTaskEnum::scan);
+              const CTaskEnum::Method & methodType = CTaskEnum::Method::scanMethod,
+              const CTaskEnum::Task & taskType = CTaskEnum::Task::scan);
 
   /**
    *  Destructor.

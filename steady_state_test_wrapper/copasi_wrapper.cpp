@@ -44,7 +44,7 @@
 CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector* pReports)
 {
   CReportDefinition* pReport =  pReports->createReportDefinition("Report", "Output for batch run");
-  pReport->setTaskType(CTaskEnum::steadyState);
+  pReport->setTaskType(CTaskEnum::Task::steadyState);
   pReport->setIsTable(false);
   pReport->setSeparator(", ");
 

@@ -37,7 +37,7 @@ CLNATask::CLNATask(const CDataContainer * pParent,
 {
   mpProblem = new CLNAProblem(this);
 
-  mpMethod = createMethod(CTaskEnum::linearNoiseApproximation);
+  mpMethod = createMethod(CTaskEnum::Method::linearNoiseApproximation);
 }
 
 CLNATask::CLNATask(const CLNATask & src,
@@ -185,8 +185,8 @@ const CTaskEnum::Method * CLNATask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::linearNoiseApproximation,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::linearNoiseApproximation,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

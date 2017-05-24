@@ -45,8 +45,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: mca)
    */
   CMCAMethod(const CDataContainer * pParent,
-             const CTaskEnum::Method & methodType = CTaskEnum::mcaMethodReder,
-             const CTaskEnum::Task & taskType = CTaskEnum::mca);
+             const CTaskEnum::Method & methodType = CTaskEnum::Method::mcaMethodReder,
+             const CTaskEnum::Task & taskType = CTaskEnum::Task::mca);
   /**
    * Copy constructor
    * @param const CMCAMethod & src

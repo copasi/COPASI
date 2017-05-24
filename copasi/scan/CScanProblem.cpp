@@ -34,7 +34,7 @@
  *  @param "CModel *" pModel
  */
 CScanProblem::CScanProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::scan, pParent),
+  CCopasiProblem(CTaskEnum::Task::scan, pParent),
   mpScanItems(NULL)
 {
   initializeParameter();
@@ -60,7 +60,7 @@ CScanProblem::~CScanProblem()
 
 void CScanProblem::initializeParameter()
 {
-  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::timeCourse);
+  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::Task::timeCourse);
 
   addGroup("ScanItems");
   mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));

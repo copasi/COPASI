@@ -112,7 +112,7 @@ protected:
    */
   CSteadyStateMethod(const CDataContainer * pParent,
                      const CTaskEnum::Method & methodType,
-                     const CTaskEnum::Task & taskType = CTaskEnum::steadyState);
+                     const CTaskEnum::Task & taskType = CTaskEnum::Task::steadyState);
   /**
    * Specific constructor.
    * @param CTaskEnum::Method subType

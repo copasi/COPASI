@@ -78,7 +78,7 @@ public:
    * @param const CTaskEnum::Task & type (default: scan)
    */
   CScanTask(const CDataContainer * pParent,
-            const CTaskEnum::Task & type = CTaskEnum::scan);
+            const CTaskEnum::Task & type = CTaskEnum::Task::scan);
 
   /**
    * Copy constructor

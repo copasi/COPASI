@@ -37,61 +37,61 @@ CCopasiTask * CTaskFactory::createTask(const CTaskEnum::Task & type, const CData
 
   switch (type)
     {
-      case CTaskEnum::steadyState:
+      case CTaskEnum::Task::steadyState:
         pTask = new CSteadyStateTask(pParent);
         break;
 
-      case CTaskEnum::timeCourse:
+      case CTaskEnum::Task::timeCourse:
         pTask = new CTrajectoryTask(pParent);
         break;
 
-      case CTaskEnum::scan:
+      case CTaskEnum::Task::scan:
         pTask = new CScanTask(pParent);
         break;
 
-      case CTaskEnum::fluxMode:
+      case CTaskEnum::Task::fluxMode:
         pTask = new CEFMTask(pParent);
         break;
 
-      case CTaskEnum::optimization:
+      case CTaskEnum::Task::optimization:
         pTask = new COptTask(pParent);
         break;
 
-      case CTaskEnum::parameterFitting:
+      case CTaskEnum::Task::parameterFitting:
         pTask = new CFitTask(pParent);
         break;
 
-      case CTaskEnum::mca:
+      case CTaskEnum::Task::mca:
         pTask = new CMCATask(pParent);
         break;
 
-      case CTaskEnum::lna:
+      case CTaskEnum::Task::lna:
         pTask = new CLNATask(pParent);
         break;
 
-      case CTaskEnum::lyap:
+      case CTaskEnum::Task::lyap:
         pTask = new CLyapTask(pParent);
         break;
 
-      case CTaskEnum::sens:
+      case CTaskEnum::Task::sens:
         pTask = new CSensTask(pParent);
         break;
 
-      case CTaskEnum::tssAnalysis:
+      case CTaskEnum::Task::tssAnalysis:
         pTask = new CTSSATask(pParent);
         break;
 
-      case CTaskEnum::moieties:
+      case CTaskEnum::Task::moieties:
         pTask = new CMoietiesTask(pParent);
         break;
 
-      case CTaskEnum::crosssection:
+      case CTaskEnum::Task::crosssection:
         pTask = new CCrossSectionTask(pParent);
         break;
 
 #ifdef  WITH_ANALYTICS
 
-      case CTaskEnum::analytics:
+      case CTaskEnum::Task::analytics:
         pTask = new CAnalyticsTask(pParent);
         break;
 #endif // WITH_ANALYTICS

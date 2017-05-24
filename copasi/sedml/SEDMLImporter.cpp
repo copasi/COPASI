@@ -138,7 +138,7 @@ void SEDMLImporter::updateCopasiTaskForSimulation(SedSimulation* sedmlsim,
               {
                 if (alg->getKisaoID() == SEDML_KISAO_STOCHASTIC)
                   {
-                    tTask->setMethodType(CTaskEnum::stochastic);
+                    tTask->setMethodType(CTaskEnum::Method::stochastic);
                   }
               }
           }
@@ -727,12 +727,12 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
 
             if (code == SEDML_SIMULATION_STEADYSTATE)
               {
-                pProblem->setSubtask(CTaskEnum::steadyState);
+                pProblem->setSubtask(CTaskEnum::Task::steadyState);
                 pProblem->setOutputInSubtask(false);
               }
             else if (code == SEDML_SIMULATION_ONESTEP || code == SEDML_SIMULATION_UNIFORMTIMECOURSE)
               {
-                pProblem->setSubtask(CTaskEnum::timeCourse);
+                pProblem->setSubtask(CTaskEnum::Task::timeCourse);
               }
 
             break;

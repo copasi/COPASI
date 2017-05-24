@@ -328,12 +328,12 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
   if (isSteadyState)
     {
       mpBtnSteadystate->setFocus();
-      mpExperiment->setExperimentType(CTaskEnum::steadyState);
+      mpExperiment->setExperimentType(CTaskEnum::Task::steadyState);
     }
   else
     {
       mpBtnTimeCourse->setFocus();
-      mpExperiment->setExperimentType(CTaskEnum::timeCourse);
+      mpExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
     }
 
   saveTable(mpExperiment);
@@ -341,11 +341,11 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
   // Undo the changes so that copy from and to work.
   if (isSteadyState)
     {
-      mpExperiment->setExperimentType(CTaskEnum::timeCourse);
+      mpExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
     }
   else
     {
-      mpExperiment->setExperimentType(CTaskEnum::steadyState);
+      mpExperiment->setExperimentType(CTaskEnum::Task::steadyState);
     }
 
   size_t i, imax = mpTable->rowCount();
@@ -982,7 +982,7 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
           mpCheckHeader->setChecked(true);
         }
 
-      if (pExperiment->getExperimentType() == CTaskEnum::timeCourse)
+      if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
         mpBtnTimeCourse->setChecked(true);
       else
         mpBtnSteadystate->setChecked(true);
@@ -1096,9 +1096,9 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     }
 
   if (mpBtnTimeCourse->isChecked())
-    pExperiment->setExperimentType(CTaskEnum::timeCourse);
+    pExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
   else
-    pExperiment->setExperimentType(CTaskEnum::steadyState);
+    pExperiment->setExperimentType(CTaskEnum::Task::steadyState);
 
   pExperiment->setWeightMethod((CExperiment::WeightMethod) mpBoxWeightMethod->currentIndex());
 

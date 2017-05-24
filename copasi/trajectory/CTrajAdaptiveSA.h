@@ -62,8 +62,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: timeCourse)
    */
   CTrajAdaptiveSA(const CDataContainer * pParent,
-                  const CTaskEnum::Method & methodType = CTaskEnum::adaptiveSA,
-                  const CTaskEnum::Task & taskType = CTaskEnum::timeCourse);
+                  const CTaskEnum::Method & methodType = CTaskEnum::Method::adaptiveSA,
+                  const CTaskEnum::Task & taskType = CTaskEnum::Task::timeCourse);
 
   /**
    * Copy constructor.

@@ -66,7 +66,7 @@ public:
    */
   CTSSAMethod(const CDataContainer * pParent,
               const CTaskEnum::Method & methodType,
-              const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
+              const CTaskEnum::Task & taskType = CTaskEnum::Task::tssAnalysis);
 
   /**
    * Copy constructor.

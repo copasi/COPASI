@@ -72,7 +72,7 @@ int main(int argc, char** argv)
       // create a new report definition object
       CReportDefinition* pReport = pReports->createReportDefinition("Report", "Output for timecourse");
       // set the task type for the report definition to timecourse
-      pReport->setTaskType(CTaskEnum::timeCourse);
+      pReport->setTaskType(CTaskEnum::Task::timeCourse);
       // we don't want a table
       pReport->setIsTable(false);
       // the entries in the output should be seperated by a ", "
@@ -149,7 +149,7 @@ int main(int argc, char** argv)
         }
 
       // run a deterministic time course
-      pTrajectoryTask->setMethodType(CTaskEnum::deterministic);
+      pTrajectoryTask->setMethodType(CTaskEnum::Method::deterministic);
 
       // Activate the task so that it will be run when the model is saved
       // and passed to CopasiSE

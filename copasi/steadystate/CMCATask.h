@@ -70,7 +70,7 @@ public:
    * @param const CTaskEnum::Task & type (default: mca)
    */
   CMCATask(const CDataContainer * pParent,
-           const CTaskEnum::Task & type = CTaskEnum::mca);
+           const CTaskEnum::Task & type = CTaskEnum::Task::mca);
 
   /**
    * Copy constructor

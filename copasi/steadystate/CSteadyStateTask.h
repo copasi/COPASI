@@ -106,7 +106,7 @@ public:
    * @param const CTaskEnum::Task & type (default: steadyState)
    */
   CSteadyStateTask(const CDataContainer * pParent,
-                   const CTaskEnum::Task & type = CTaskEnum::steadyState);
+                   const CTaskEnum::Task & type = CTaskEnum::Task::steadyState);
   /**
    * Copy constructor
    * @param const CSteadyStateTask & src

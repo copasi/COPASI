@@ -63,21 +63,21 @@ bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 // static
 const CTaskEnum::Method CTrajectoryTask::ValidMethods[] =
 {
-  CTaskEnum::deterministic,
-  CTaskEnum::stochastic,
-  CTaskEnum::directMethod,
-  CTaskEnum::tauLeap,
-  CTaskEnum::adaptiveSA,
-  CTaskEnum::hybrid,
-  CTaskEnum::hybridLSODA,
-  CTaskEnum::hybridODE45,
+  CTaskEnum::Method::deterministic,
+  CTaskEnum::Method::stochastic,
+  CTaskEnum::Method::directMethod,
+  CTaskEnum::Method::tauLeap,
+  CTaskEnum::Method::adaptiveSA,
+  CTaskEnum::Method::hybrid,
+  CTaskEnum::Method::hybridLSODA,
+  CTaskEnum::Method::hybridODE45,
 #ifdef COPASI_DEBUG
-  CTaskEnum::DsaLsodar,
+  CTaskEnum::Method::DsaLsodar,
 #endif // COPASI_DEBUG
 #ifdef WITH_SDE_SUPPORT
-  CTaskEnum::stochasticRunkeKuttaRI5,
+  CTaskEnum::Method::stochasticRunkeKuttaRI5,
 #endif // WITH_SDE_SUPPORT
-  CTaskEnum::UnsetMethod
+  CTaskEnum::Method::UnsetMethod
 };
 
 CTrajectoryTask::CTrajectoryTask(const CDataContainer * pParent,
@@ -97,7 +97,7 @@ CTrajectoryTask::CTrajectoryTask(const CDataContainer * pParent,
   mProceed(true)
 {
   mpProblem = new CTrajectoryProblem(this);
-  mpMethod = createMethod(CTaskEnum::deterministic);
+  mpMethod = createMethod(CTaskEnum::Method::deterministic);
   this->add(mpMethod, true);
 
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
@@ -154,7 +154,7 @@ void CTrajectoryTask::load(CReadConfig & configBuffer)
   ((CTrajectoryProblem *) mpProblem)->load(configBuffer);
 
   pdelete(mpMethod);
-  mpMethod = createMethod(CTaskEnum::deterministic);
+  mpMethod = createMethod(CTaskEnum::Method::deterministic);
 
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
 

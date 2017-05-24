@@ -47,7 +47,7 @@ public:
    * @param const CTaskEnum::Task & type (default: crosssection)
    */
   CCrossSectionTask(const CDataContainer * pParent,
-                    const CTaskEnum::Task & type = CTaskEnum::crosssection);
+                    const CTaskEnum::Task & type = CTaskEnum::Task::crosssection);
 
   /**
    * Copy constructor

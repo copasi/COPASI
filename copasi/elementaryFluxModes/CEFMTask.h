@@ -49,7 +49,7 @@ public:
    * @param const CDataContainer * pParent
    */
   CEFMTask(const CDataContainer * pParent,
-           const CTaskEnum::Task & type = CTaskEnum::fluxMode);
+           const CTaskEnum::Task & type = CTaskEnum::Task::fluxMode);
 
   /**
    * Copy constructor

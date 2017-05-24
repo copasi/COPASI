@@ -85,8 +85,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
   CBitPatternMethod(const CDataContainer * pParent,
-                    const CTaskEnum::Method & methodType = CTaskEnum::EFMBitPatternAlgorithm,
-                    const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+                    const CTaskEnum::Method & methodType = CTaskEnum::Method::EFMBitPatternAlgorithm,
+                    const CTaskEnum::Task & taskType = CTaskEnum::Task::fluxMode);
 
   /**
    * Copy Constructor

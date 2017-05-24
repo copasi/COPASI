@@ -48,8 +48,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
    */
   CILDMModifiedMethod(const CDataContainer * pParent,
-                      const CTaskEnum::Method & methodType = CTaskEnum::tssILDMModified,
-                      const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
+                      const CTaskEnum::Method & methodType = CTaskEnum::Method::tssILDMModified,
+                      const CTaskEnum::Task & taskType = CTaskEnum::Task::tssAnalysis);
 
   /**
    * Copy constructor.

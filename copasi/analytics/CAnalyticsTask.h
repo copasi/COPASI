@@ -51,7 +51,7 @@ public:
    * @param const CTaskEnum::Task & type (default: analytics)
    */
   CAnalyticsTask(const CDataContainer * pParent,
-                 const CTaskEnum::Task & type = CTaskEnum::analytics);
+                 const CTaskEnum::Task & type = CTaskEnum::Task::analytics);
 
   /**
    * Copy constructor

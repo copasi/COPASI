@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -49,7 +54,7 @@ CXMLHandler * TaskHandler::processStart(const XML_Char * pszName,
 
         Key = mpParser->getAttributeValue("key", papszAttrs, false);
         type = mpParser->getAttributeValue("type", papszAttrs);
-        Type = toEnum(type, CTaskEnum::TaskXML, CTaskEnum::UnsetTask);
+        Type = CTaskEnum::TaskXML.toEnum(type, CTaskEnum::Task::UnsetTask);
         Scheduled = mpParser->toBool(mpParser->getAttributeValue("scheduled", papszAttrs, "false"));
         UpdateModel = mpParser->toBool(mpParser->getAttributeValue("updateModel", papszAttrs, "false"));
 
@@ -111,7 +116,7 @@ bool TaskHandler::processEnd(const XML_Char * pszName)
 
         // This is needed for old files containing the objective function as
         // part of the list of function definitions
-        if (mpData->pCurrentTask->getType() == CTaskEnum::optimization)
+        if (mpData->pCurrentTask->getType() == CTaskEnum::Task::optimization)
           {
             CCopasiProblem * pProblem = mpData->pCurrentTask->getProblem();
             CCopasiParameter * pParameter = pProblem->getParameter("ObjectiveFunction");

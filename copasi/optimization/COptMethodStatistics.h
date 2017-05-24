@@ -87,8 +87,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodStatistics(const CDataContainer * pParent,
-                       const CTaskEnum::Method & methodType = CTaskEnum::Statistics,
-                       const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                       const CTaskEnum::Method & methodType = CTaskEnum::Method::Statistics,
+                       const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

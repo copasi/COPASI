@@ -113,8 +113,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   CRandomSearch(const CDataContainer * pParent,
-                const CTaskEnum::Method & methodType = CTaskEnum::RandomSearch,
-                const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                const CTaskEnum::Method & methodType = CTaskEnum::Method::RandomSearch,
+                const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

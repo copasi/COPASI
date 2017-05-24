@@ -33,7 +33,7 @@
  *  @param "CModel *" pModel
  */
 CLNAProblem::CLNAProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::lna, pParent)
+  CCopasiProblem(CTaskEnum::Task::lna, pParent)
 {
   addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
   CONSTRUCTOR_TRACE;

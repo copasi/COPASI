@@ -42,8 +42,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodGA(const CDataContainer * pParent,
-               const CTaskEnum::Method & methodType = CTaskEnum::GeneticAlgorithm,
-               const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+               const CTaskEnum::Method & methodType = CTaskEnum::Method::GeneticAlgorithm,
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

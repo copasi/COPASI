@@ -282,7 +282,7 @@ bool CFitProblem::elevateChildren()
       if (!mpParmSteadyStateCN->compare(0, 5 , "Task_") ||
           *mpParmSteadyStateCN == "")
         for (i = 0; i < imax; i++)
-          if (pTasks->operator[](i).getType() == CTaskEnum::steadyState)
+          if (pTasks->operator[](i).getType() == CTaskEnum::Task::steadyState)
             {
               *mpParmSteadyStateCN = pTasks->operator[](i).getCN();
               break;
@@ -291,7 +291,7 @@ bool CFitProblem::elevateChildren()
       if (!mpParmTimeCourseCN->compare(0, 5 , "Task_") ||
           *mpParmTimeCourseCN == "")
         for (i = 0; i < imax; i++)
-          if (pTasks->operator[](i).getType() == CTaskEnum::timeCourse)
+          if (pTasks->operator[](i).getType() == CTaskEnum::Task::timeCourse)
             {
               *mpParmTimeCourseCN = pTasks->operator[](i).getCN();
               break;
@@ -433,7 +433,7 @@ bool CFitProblem::initialize()
   assert(pDataModel != NULL);
 
   // We only need to initialize the steady-state task if steady-state data is present.
-  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::steadyState))
+  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::steadyState))
     {
       mpSteadyState =
         dynamic_cast< CSteadyStateTask * >(const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmSteadyStateCN))));
@@ -457,7 +457,7 @@ bool CFitProblem::initialize()
   pdelete(mpTrajectoryProblem);
 
   // We only need to initialize the trajectory task if time course data is present.
-  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::timeCourse))
+  if (mpExperimentSet->hasDataForTaskType(CTaskEnum::Task::timeCourse))
     {
       mpTrajectory =
         dynamic_cast< CTrajectoryTask * >(const_cast< CDataObject * >(CObjectInterface::DataObject(getObjectFromCN(*mpParmTimeCourseCN))));
@@ -850,7 +850,7 @@ bool CFitProblem::calculate()
 
           switch (pExp->getExperimentType())
             {
-              case CTaskEnum::steadyState:
+              case CTaskEnum::Task::steadyState:
               {
                 CVector< C_FLOAT64 > CompleteExperimentInitialState = mpContainer->getCompleteInitialState();
 
@@ -889,7 +889,7 @@ bool CFitProblem::calculate()
               }
               break;
 
-              case CTaskEnum::timeCourse:
+              case CTaskEnum::Task::timeCourse:
               {
                 size_t numIntermediateSteps;
                 C_FLOAT64 LastTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -1887,7 +1887,7 @@ bool CFitProblem::calculateCrossValidation()
 
           switch (pExp->getExperimentType())
             {
-              case CTaskEnum::steadyState:
+              case CTaskEnum::Task::steadyState:
               {
                 CVector< C_FLOAT64 > CompleteExperimentInitialState = mpContainer->getCompleteInitialState();
 
@@ -1925,7 +1925,7 @@ bool CFitProblem::calculateCrossValidation()
               }
               break;
 
-              case CTaskEnum::timeCourse:
+              case CTaskEnum::Task::timeCourse:
               {
                 size_t numIntermediateSteps;
                 C_FLOAT64 LastTime = std::numeric_limits< C_FLOAT64 >::quiet_NaN();

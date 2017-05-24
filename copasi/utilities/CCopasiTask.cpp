@@ -82,15 +82,15 @@ bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
 {
   unsigned C_INT32 i;
 
-  for (i = 0; validMethods[i] != CTaskEnum::UnsetMethod; i++)
+  for (i = 0; validMethods[i] != CTaskEnum::Method::UnsetMethod; i++)
     if (method == validMethods[i]) return true;
 
   return false;
 }
 
 CCopasiTask::CCopasiTask():
-  CDataContainer(CTaskEnum::TaskName[CTaskEnum::UnsetTask], NULL, "Task"),
-  mType(CTaskEnum::UnsetTask),
+  CDataContainer(CTaskEnum::TaskName[CTaskEnum::Task::UnsetTask], NULL, "Task"),
+  mType(CTaskEnum::Task::UnsetTask),
   mKey(CRootContainer::getKeyFactory()->add("Task", this)),
   mDescription(this),
   mResult(this),
@@ -325,7 +325,7 @@ const CTaskEnum::Method * CCopasiTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;
@@ -336,7 +336,7 @@ CCopasiProblem * CCopasiTask::getProblem() {return mpProblem;}
 const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 
 // virtual
-bool CCopasiTask::setMethodType(const int & type)
+bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
 {
   CTaskEnum::Method Type = (CTaskEnum::Method) type;
 

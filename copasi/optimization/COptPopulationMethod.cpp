@@ -54,7 +54,7 @@ COptPopulationMethod::~COptPopulationMethod()
 
 void COptPopulationMethod::initObjects()
 {
-  if (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch)
+  if (getSubType() != CTaskEnum::Method::ParticleSwarm && getSubType() != CTaskEnum::Method::ScatterSearch)
     addObjectReference("Current Generation", mCurrentGeneration, CDataObject::ValueInt);
 }
 
@@ -74,7 +74,7 @@ COptPopulationMethod::initialize()
     mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
 
   if (mpCallBack
-      && (getSubType() != CTaskEnum::ParticleSwarm && getSubType() != CTaskEnum::ScatterSearch))
+      && (getSubType() != CTaskEnum::Method::ParticleSwarm && getSubType() != CTaskEnum::Method::ScatterSearch))
     {
       mhGenerations =
         mpCallBack->addItem("Current Generation",

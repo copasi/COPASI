@@ -35,7 +35,7 @@
  *  Default constructor.
  */
 CLyapProblem::CLyapProblem(const CDataContainer * pParent):
-  CCopasiProblem(CTaskEnum::lyap, pParent),
+  CCopasiProblem(CTaskEnum::Task::lyap, pParent),
   mpExponentNumber(NULL),
   //mpTimeSeriesRequested(NULL),
   mpDivergenceRequested(NULL),

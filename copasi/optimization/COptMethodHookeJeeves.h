@@ -41,8 +41,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: optimization)
    */
   COptMethodHookeJeeves(const CDataContainer * pParent,
-                        const CTaskEnum::Method & methodType = CTaskEnum::HookeJeeves,
-                        const CTaskEnum::Task & taskType = CTaskEnum::optimization);
+                        const CTaskEnum::Method & methodType = CTaskEnum::Method::HookeJeeves,
+                        const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
 
   /**
    * Copy Constructor

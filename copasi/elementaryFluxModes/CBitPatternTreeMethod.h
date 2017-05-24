@@ -91,8 +91,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: fluxMode)
    */
   CBitPatternTreeMethod(const CDataContainer * pParent,
-                        const CTaskEnum::Method & methodType = CTaskEnum::EFMBitPatternTreeAlgorithm,
-                        const CTaskEnum::Task & taskType = CTaskEnum::fluxMode);
+                        const CTaskEnum::Method & methodType = CTaskEnum::Method::EFMBitPatternTreeAlgorithm,
+                        const CTaskEnum::Task & taskType = CTaskEnum::Task::fluxMode);
 
   /**
    * Copy Constructor

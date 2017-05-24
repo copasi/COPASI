@@ -47,7 +47,7 @@ CMCATask::CMCATask(const CDataContainer * pParent,
 {
   mpProblem = new CMCAProblem(this);
 
-  mpMethod = createMethod(CTaskEnum::mcaMethodReder);
+  mpMethod = createMethod(CTaskEnum::Method::mcaMethodReder);
 }
 
 CMCATask::CMCATask(const CMCATask & src,
@@ -170,8 +170,8 @@ const CTaskEnum::Method * CMCATask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::mcaMethodReder,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::mcaMethodReder,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;
