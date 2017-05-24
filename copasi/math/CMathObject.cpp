@@ -2058,11 +2058,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
   return os;
 }
 
-CValidity & CMathObject::getValidity()
-{
-  return mValidity;
-}
-
 const CValidity & CMathObject::getValidity() const
 {
   return mValidity;

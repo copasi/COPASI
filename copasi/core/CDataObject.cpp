@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 /**
  * Class CDataObject
@@ -541,12 +541,6 @@ CDataModel * CDataObject::getObjectDataModel() const
     }
 
   return NULL;
-}
-
-CValidity & CDataObject::getValidity()
-{
-  refreshValidity();
-  return mValidity;
 }
 
 const CValidity & CDataObject::getValidity() const

@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 /**
  * Class CDataObject
@@ -175,12 +175,6 @@ public:
    * @return std::string objectDisplayName
    */
   virtual std::string getObjectDisplayName() const;
-
-  /**
-   * Get the aggregation of any issues associated with this object
-   * @return CValidity & validity
-   */
-  virtual CValidity & getValidity();
 
   /**
    * Get the aggregation of any issues associated with this object

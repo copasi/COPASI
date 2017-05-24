@@ -111,12 +111,6 @@ public:
 
   /**
    * Get the aggregation of any issues associated with this object
-   * @return CValidity & validity
-   */
-  virtual CValidity & getValidity() = 0;
-
-  /**
-   * Get the aggregation of any issues associated with this object
    * @return const CValidity & validity
    */
   virtual const CValidity & getValidity() const = 0;
