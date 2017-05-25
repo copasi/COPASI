@@ -452,8 +452,8 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
 void CCopasiTask::initObjects()
 {
   addObjectReference("Output counter", mOutputCounter, CDataObject::ValueInt);
-  new CCopasiTimer(CCopasiTimer::WALL, this);
-  new CCopasiTimer(CCopasiTimer::PROCESS, this);
+  new CCopasiTimer(CCopasiTimer::Type::WALL, this);
+  new CCopasiTimer(CCopasiTimer::Type::PROCESS, this);
 
   CDataModel *pDataModel = getObjectDataModel();
 

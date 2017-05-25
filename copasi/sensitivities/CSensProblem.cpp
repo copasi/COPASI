@@ -241,15 +241,15 @@ void CSensProblem::initObjects()
 {
   mpResultAnnotation = new CDataArray("Sensitivities array", this, &mResult, false);
   mpResultAnnotation->setDescription("");
-  mpResultAnnotation->setMode(CDataArray::OBJECTS);
+  mpResultAnnotation->setMode(CDataArray::Mode::OBJECTS);
 
   mpScaledResultAnnotation = new CDataArray("Scaled sensitivities array", this, &mScaledResult, false);
   mpScaledResultAnnotation->setDescription("");
-  mpScaledResultAnnotation->setMode(CDataArray::OBJECTS);
+  mpScaledResultAnnotation->setMode(CDataArray::Mode::OBJECTS);
 
   mpCollapsedResultAnnotation = new CDataArray("Summarized sensitivities array", this, &mCollapsedResult, false);
   mpCollapsedResultAnnotation->setDescription("");
-  mpCollapsedResultAnnotation->setMode(CDataArray::OBJECTS);
+  mpCollapsedResultAnnotation->setMode(CDataArray::Mode::OBJECTS);
 }
 
 void CSensProblem::initializeParameter()

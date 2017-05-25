@@ -56,13 +56,14 @@ template <class CType> class CDataVectorN;
 
 class CDataModel: public CDataContainer, public COutputHandler
 {
-  enum FileType
+  enum struct FileType
   {
     CopasiML = 0,
     SBML,
     SEDML,
     Gepasi,
-    unset
+    unset,
+    __SIZE
   };
 
 private:

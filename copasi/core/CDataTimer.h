@@ -15,11 +15,12 @@ public:
   /**
    * Enumeration of timer types
    */
-  enum Type
+  enum struct Type
   {
     WALL = 0,
     PROCESS,
-    THREAD
+    THREAD,
+    __SIZE
   };
 
   // Operations
@@ -28,7 +29,7 @@ public:
    * @param const Type & type (default: WALL)
    * @param const CDataContainer * pParent (default: NULL)
    */
-  CCopasiTimer(const Type & type = WALL,
+  CCopasiTimer(const Type & type = Type::WALL,
                const CDataContainer * pParent = NO_PARENT);
 
   /**

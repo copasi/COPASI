@@ -653,8 +653,8 @@ bool SparseMatrixTest(const size_t & size,
   std::cout << "CompressedColumnFormat(" << size << "x" << size << "):\t" << tmp2 << std::endl;
   std::cout << "CompressedColumnFormat/Matrix:\t" << tmp2 / tmp << std::endl << std::endl;
 
-  CCopasiTimer CPU(CCopasiTimer::PROCESS);
-  CCopasiTimer WALL(CCopasiTimer::WALL);
+  CCopasiTimer CPU(CCopasiTimer::Type::PROCESS);
+  CCopasiTimer WALL(CCopasiTimer::Type::WALL);
 
   if (RMP)
     {

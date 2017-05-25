@@ -11,7 +11,7 @@
 
 CCopasiTimer::CCopasiTimer(const Type & type,
                            const CDataContainer * pParent):
-  CDataObject((type == CCopasiTimer::WALL) ? "Wall Clock Time" : "CPU Time",
+  CDataObject((type == CCopasiTimer::Type::WALL) ? "Wall Clock Time" : "CPU Time",
               pParent, "Timer", CDataObject::ValueDbl),
   mType(type),
   mStartTime(),
@@ -20,15 +20,15 @@ CCopasiTimer::CCopasiTimer(const Type & type,
 {
   switch (mType)
     {
-      case WALL:
+      case Type::WALL:
         mStartTime = CCopasiTimeVariable::getCurrentWallTime();
         break;
 
-      case PROCESS:
+      case Type::PROCESS:
         mStartTime = CCopasiTimeVariable::getProcessTime();
         break;
 
-      case THREAD:
+      case Type::THREAD:
         mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
     }
@@ -50,15 +50,15 @@ bool CCopasiTimer::start()
 {
   switch (mType)
     {
-      case WALL:
+      case Type::WALL:
         mStartTime = CCopasiTimeVariable::getCurrentWallTime();
         break;
 
-      case PROCESS:
+      case Type::PROCESS:
         mStartTime = CCopasiTimeVariable::getProcessTime();
         break;
 
-      case THREAD:
+      case Type::THREAD:
         mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
     }
@@ -73,15 +73,15 @@ void CCopasiTimer::calculateValue()
 {
   switch (mType)
     {
-      case WALL:
+      case Type::WALL:
         mElapsedTime = CCopasiTimeVariable::getCurrentWallTime() - mStartTime;
         break;
 
-      case PROCESS:
+      case Type::PROCESS:
         mElapsedTime = CCopasiTimeVariable::getProcessTime() - mStartTime;
         break;
 
-      case THREAD:
+      case Type::THREAD:
         mElapsedTime = CCopasiTimeVariable::getThreadTime() - mStartTime;
         break;
     }

@@ -73,8 +73,8 @@ CDataModel::CDataModel(const bool withGUI):
   pOldMetabolites(new CDataVectorS < CMetabOld >)
 {
   newModel(NULL, true);
-  new CCopasiTimer(CCopasiTimer::WALL, this);
-  new CCopasiTimer(CCopasiTimer::PROCESS, this);
+  new CCopasiTimer(CCopasiTimer::Type::WALL, this);
+  new CCopasiTimer(CCopasiTimer::Type::PROCESS, this);
 }
 
 // static
@@ -119,8 +119,8 @@ CDataModel::CDataModel(const std::string & name,
   pOldMetabolites(new CDataVectorS < CMetabOld >)
 {
   newModel(NULL, true);
-  new CCopasiTimer(CCopasiTimer::WALL, this);
-  new CCopasiTimer(CCopasiTimer::PROCESS, this);
+  new CCopasiTimer(CCopasiTimer::Type::WALL, this);
+  new CCopasiTimer(CCopasiTimer::Type::PROCESS, this);
 }
 
 CDataModel::CDataModel(const CDataModel & src,
@@ -198,7 +198,7 @@ bool CDataModel::loadModel(std::istream & in,
         }
 
       newModel(NULL, deleteOldData);
-      mData.mFileType = Gepasi;
+      mData.mFileType = FileType::Gepasi;
       mData.mReferenceDir = pwd;
 
       if (mData.pModel->load(inbuf))
@@ -215,7 +215,7 @@ bool CDataModel::loadModel(std::istream & in,
   else if (Line.find("<COPASI") != std::string::npos)
     {
       pushData();
-      mData.mFileType = CopasiML;
+      mData.mFileType = FileType::CopasiML;
       mData.mReferenceDir = pwd;
 
       CCopasiXML XML;
@@ -358,13 +358,13 @@ bool CDataModel::loadModel(const std::string & fileName,
 
   switch (mData.mFileType)
     {
-      case CopasiML:
+      case FileType::CopasiML:
         mData.mSaveFileName = CDirEntry::normalize(FileName);
         // we have to store the reference directory
         mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
         break;
 
-      case Gepasi:
+      case FileType::Gepasi:
         mData.mSaveFileName = CDirEntry::dirName(FileName)
                               + CDirEntry::Separator
                               + CDirEntry::baseName(FileName);
@@ -764,7 +764,7 @@ bool CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,
 
   mData.pCurrentSBMLDocument = pSBMLDocument;
   mData.mCopasi2SBMLMap = Copasi2SBMLMap;
-  mData.mFileType = SBML;
+  mData.mFileType = FileType::SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -859,7 +859,7 @@ bool CDataModel::importSBML(const std::string & fileName,
 
   mData.pCurrentSBMLDocument = pSBMLDocument;
   mData.mCopasi2SBMLMap = Copasi2SBMLMap;
-  mData.mFileType = SBML;
+  mData.mFileType = FileType::SBML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -1633,7 +1633,7 @@ bool CDataModel::importSEDMLFromString(const std::string& sedmlDocumentText,
 
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
-  mData.mFileType = SEDML;
+  mData.mFileType = FileType::SEDML;
 
   commonAfterLoad(pImportHandler, deleteOldData);
 
@@ -1734,7 +1734,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
 
   mData.pCurrentSEDMLDocument = pSEDMLDocument;
   mData.mCopasi2SEDMLMap = Copasi2SEDMLMap;
-  mData.mFileType = SEDML;
+  mData.mFileType = FileType::SEDML;
 
   mData.mSaveFileName = CDirEntry::dirName(FileName)
                         + CDirEntry::Separator
@@ -1954,7 +1954,7 @@ bool CDataModel::addDefaultTasks()
 {
   size_t i;
 
-  for (i = 0; CTaskEnum::TaskName[i] != ""; i++)
+  for (i = 0; i < CTaskEnum::TaskName.size(); i++)
     if (mData.pTaskList->getIndex(CTaskEnum::TaskName[i]) == C_INVALID_INDEX)
       addTask((CTaskEnum::Task) i);
 
@@ -2182,7 +2182,7 @@ bool CDataModel::addDefaultReports()
 {
   size_t i;
 
-  for (i = 0; CTaskEnum::TaskName[i] != ""; i++)
+  for (i = 0; i < CTaskEnum::TaskName.size(); i++)
     {
       //try to create the report if it doesn't exist
       if (mData.pReportDefinitionList->getIndex(CTaskEnum::TaskName[i]) == C_INVALID_INDEX)
@@ -2357,7 +2357,7 @@ CDataModel::CContent::CContent(const bool & withGUI):
   mWithGUI(withGUI),
   mpUndoStack(NULL),
   mSaveFileName(),
-  mFileType(unset),
+  mFileType(FileType::unset),
   mChanged(false),
   mAutoSaveNeeded(false),
   mSBMLFileName(""),

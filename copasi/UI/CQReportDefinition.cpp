@@ -52,7 +52,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   QStringList TaskNames;
 
-  for (i = 0; CTaskEnum::TaskName[i] != ""; i++)
+  for (i = 0; i < CTaskEnum::TaskName.size(); i++)
     {
       TaskNames.append(FROM_UTF8(CTaskEnum::TaskName[i]));
     }

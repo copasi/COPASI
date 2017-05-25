@@ -51,13 +51,14 @@ public:
    * NUMBERS: The rows, cols, ... of the array are only annotation with
    * running numbers (starting with 0)-
    */
-  enum Mode
+  enum struct Mode
   {
     OBJECTS,
     VECTOR,
     VECTOR_ON_THE_FLY,
     STRINGS,
-    NUMBERS
+    NUMBERS,
+    __SIZE
   };
 
 private:
@@ -121,7 +122,7 @@ public:
   template < class CType > void setCopasiVector(size_t d, const CDataVector< CType > & v)
   {
     assert(d < dimensionality());
-    assert((mModes[d] == VECTOR) || (mModes[d] == VECTOR_ON_THE_FLY));
+    assert((mModes[d] == Mode::VECTOR) || (mModes[d] == Mode::VECTOR_ON_THE_FLY));
 
     size_t i;
 
