@@ -10,7 +10,7 @@
 #include "utilities/utility.h"
 
 // static
-const std::array< const std::string, static_cast< size_t >(CData::Property::__SIZE) > CData::PropertyName =
+const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
 {
   // EXPRESSION = 0,
   "Expression",
@@ -88,7 +88,7 @@ const std::array< const std::string, static_cast< size_t >(CData::Property::__SI
   "Report show Title",
   // REPORT_PRECISION,
   "Report Precision"
-};
+});
 
 CData::CData():
   std::map< std::string, CDataValue >()
@@ -127,7 +127,7 @@ const CDataValue & CData::getProperty(const std::string & name) const
 
 const CDataValue & CData::getProperty(const Property & property) const
 {
-  return getProperty(EnumToAnnotation(property, PropertyName));
+  return getProperty(PropertyName[property]);
 }
 
 CDataValue & CData::getProperty(const std::string & name)
@@ -146,7 +146,7 @@ CDataValue & CData::getProperty(const std::string & name)
 
 CDataValue & CData::getProperty(const Property & property)
 {
-  return getProperty(EnumToAnnotation(property, PropertyName));
+  return getProperty(PropertyName[property]);
 }
 
 bool CData::setProperty(const std::string & name, const CDataValue & value)
@@ -164,7 +164,7 @@ bool CData::setProperty(const std::string & name, const CDataValue & value)
 
 bool CData::setProperty(const Property & property, const CDataValue & value)
 {
-  return setProperty(EnumToAnnotation(property, PropertyName), value);
+  return setProperty(PropertyName[property], value);
 }
 
 bool CData::addProperty(const std::string & name, const CDataValue & value)
@@ -182,7 +182,7 @@ bool CData::addProperty(const std::string & name, const CDataValue & value)
 
 bool CData::addProperty(const Property & property, const CDataValue & value)
 {
-  return addProperty(EnumToAnnotation(property, PropertyName), value);
+  return addProperty(PropertyName[property], value);
 }
 
 bool CData::appendData(const CData & data)
@@ -215,7 +215,7 @@ bool CData::removeProperty(const std::string & name)
 
 bool CData::removeProperty(const Property & property)
 {
-  return removeProperty(EnumToAnnotation(property, PropertyName));
+  return removeProperty(PropertyName[property]);
 }
 
 bool CData::isSetProperty(const std::string & name) const
@@ -225,7 +225,7 @@ bool CData::isSetProperty(const std::string & name) const
 
 bool CData::isSetProperty(const Property & property) const
 {
-  return isSetProperty(EnumToAnnotation(property, PropertyName));
+  return isSetProperty(PropertyName[property]);
 }
 
 bool CData::empty() const

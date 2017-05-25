@@ -8,7 +8,8 @@
 
 #include <bitset>
 #include <vector>
-#include <array>
+
+#include "copasi/core/CEnumAnnotation.h"
 
 template < class Enum > class CFlags : public std::bitset< static_cast< size_t >(Enum::__SIZE) >
 {
@@ -185,12 +186,12 @@ public:
 
   /**
    * Create the subset of the provided annotations for the flags which are set
-   * @param const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations
+   * @param const CEnumAnnotation< AType, Enum > & annotation
    * @param const CFlags & filter (Default: All)
    * @return std::vector< AType > Annotations
    */
   template< typename AType >
-  std::vector< AType > getAnnotations(const std::array< AType, static_cast< size_t >(Enum::__SIZE) > & annotations,
+  std::vector< AType > getAnnotations(const CEnumAnnotation< AType, Enum > & annotation,
                                       const CFlags & filter = All) const
   {
     std::vector< AType > Annotations;
@@ -198,7 +199,7 @@ public:
     for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); i++)
       if (bitset::operator[](i) && filter[i])
         {
-          Annotations.push_back(annotations[i]);
+          Annotations.push_back(annotation[i]);
         }
 
     return Annotations;

@@ -10,7 +10,7 @@
 
 #include "CTaskEnum.h"
 
-const CEnumAnnotation< const std::string, CTaskEnum::Task > CTaskEnum::TaskName(
+const CEnumAnnotation< std::string, CTaskEnum::Task > CTaskEnum::TaskName(
 {
   "Steady-State",
   "Time-Course",
@@ -29,7 +29,7 @@ const CEnumAnnotation< const std::string, CTaskEnum::Task > CTaskEnum::TaskName(
   "not specified"
 });
 
-const CEnumAnnotation< const std::string, CTaskEnum::Task > CTaskEnum::TaskXML(
+const CEnumAnnotation< std::string, CTaskEnum::Task > CTaskEnum::TaskXML(
 {
   "steadyState",
   "timeCourse",
@@ -48,7 +48,7 @@ const CEnumAnnotation< const std::string, CTaskEnum::Task > CTaskEnum::TaskXML(
   "unset"
 });
 
-const CEnumAnnotation< const std::string, CTaskEnum::Method > CTaskEnum::MethodName(
+const CEnumAnnotation< std::string, CTaskEnum::Method > CTaskEnum::MethodName(
 {
   "Not set",
   "Random Search",
@@ -101,7 +101,7 @@ const CEnumAnnotation< const std::string, CTaskEnum::Method > CTaskEnum::MethodN
   "Analytics Finder"
 });
 
-const CEnumAnnotation< const std::string, CTaskEnum::Method > CTaskEnum::MethodXML(
+const CEnumAnnotation< std::string, CTaskEnum::Method > CTaskEnum::MethodXML(
 {
   "NotSet",
   "RandomSearch",

@@ -23,16 +23,16 @@ const CIssue CIssue::Warning(CIssue::eSeverity::Warning);
 const CIssue CIssue::Error(CIssue::eSeverity::Error);
 
 // static
-const std::array<const char *, static_cast< size_t >(CIssue::eSeverity::__SIZE) > CIssue::severityNames =
+const CEnumAnnotation< std::string, CIssue::eSeverity > CIssue::severityNames(
 {
   "success",
   "information",
   "warnings",
   "errors"
-};
+});
 
 // static
-const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindNames =
+const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindNames(
 {
   "unknown issue",
   "invalid expression",
@@ -57,10 +57,10 @@ const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CI
   "unfound CFunction",
   "mismatched variables",
   "inconsistent value types"
-};
+});
 
 // static
-const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CIssue::kindDescriptions =
+const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindDescriptions(
 {
   "Unknown issue.",
   "Invalid expression.",
@@ -85,7 +85,7 @@ const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > CI
   "CFunction not found.",
   "Variables are mismatched.",
   "Inconsistent value types encountered."
-};
+});
 
 CIssue::CIssue(const CIssue::eSeverity & severity,
                const CIssue::eKind & kind):
@@ -265,9 +265,9 @@ const std::string CValidity::getIssueMessages(const Severity & severityFilter,
     const Kind & kindFilter) const
 {
   std::string severityString = "";
-  std::vector< const char * > descriptions;
+  std::vector< std::string > descriptions;
   std::string messages = "";
-  std::vector< const char * >::const_iterator it, end;
+  std::vector< std::string >::const_iterator it, end;
 
   if (severityFilter.isSet(CIssue::eSeverity::Error))
     {

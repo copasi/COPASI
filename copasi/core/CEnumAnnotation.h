@@ -3,8 +3,8 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#ifndef COPASI_EnumAnnotation
-#define COPASI_EnumAnnotation
+#ifndef COPASI_CEnumAnnotation
+#define COPASI_CEnumAnnotation
 
 #include <array>
 
@@ -36,7 +36,7 @@ public:
    * Specific constructor from the base class
    * @param const base & src
    */
-  CEnumAnnotation(typename std::enable_if < !std::is_same< Type, const char * >::value, const base & >::type src):
+  CEnumAnnotation(typename std::enable_if < !std::is_same< Type, const char * >::value & & !std::is_const< Type >::value, const base & >::type src):
     base(src)
   {}
 
@@ -77,4 +77,19 @@ public:
   }
 };
 
-#endif // COPASI_EnumAnnotation
+/**
+ * Convert an annotation to enum. If no matching name is found the parameter enumDefault is returned.
+ * @param const AType & annotation
+ * @param const CEnumAnnotation< AType, Enum > & enumAnnotations
+ * @param const Enum & enumDefault (default Enum::__SIZE)
+ * @return Enum enum
+ */
+template < typename Enum, typename AType >
+Enum AnnotationToEnum(const AType & annotation,
+                      const CEnumAnnotation< AType, Enum > & enumAnnotations,
+                      const Enum & enumDefault = Enum::__SIZE)
+{
+  return enumAnnotations.toEnum(annotation, enumDefault);
+}
+
+#endif // COPASI_CEnumAnnotation

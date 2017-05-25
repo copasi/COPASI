@@ -7,8 +7,8 @@
 #define COPASI_CData
 
 #include <map>
-#include <array>
 
+#include "copasi/core/CEnumAnnotation.h"
 #include "copasi/undo/CDataValue.h"
 
 class CData : private std::map< std::string, CDataValue >
@@ -57,7 +57,7 @@ public:
     __SIZE
   };
 
-  static const std::array< const std::string, static_cast< size_t >(Property::__SIZE) > PropertyName;
+  static const CEnumAnnotation< std::string, Property > PropertyName;
 
   typedef CDataValue::Type Type;
 

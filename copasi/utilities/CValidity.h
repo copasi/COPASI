@@ -12,6 +12,7 @@
 #define COPASI_CValidity
 
 #include "copasi/core/CFlags.h"
+#include "copasi/core/CEnumAnnotation.h"
 
 #include <string>
 
@@ -59,9 +60,9 @@ public:
     __SIZE
   };
 
-  static const std::array<const char *, static_cast< size_t >(CIssue::eSeverity::__SIZE) > severityNames;
-  static const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > kindNames;
-  static const std::array<const char *, static_cast< size_t >(CIssue::eKind::__SIZE) > kindDescriptions;
+  static const CEnumAnnotation< std::string, CIssue::eSeverity > severityNames;
+  static const CEnumAnnotation< std::string, CIssue::eKind > kindNames;
+  static const CEnumAnnotation< std::string, CIssue::eKind > kindDescriptions;
 
   static const CIssue Success;
   static const CIssue Information;
