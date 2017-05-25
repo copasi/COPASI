@@ -753,7 +753,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
 
       switch (pObject->getEntityType())
         {
-          case CMath::Species:
+          case CMath::EntityType::Species:
           {
             const CMetab * pMetab = static_cast< const CMetab * >(pObject->getDataObject()->getObjectParent());
             std::map< const CDataObject *, CMathObject * >::const_iterator itFound
@@ -769,9 +769,9 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
           }
           break;
 
-          case CMath::GlobalQuantity:
-          case CMath::Compartment:
-          case CMath::Model:
+          case CMath::EntityType::GlobalQuantity:
+          case CMath::EntityType::Compartment:
+          case CMath::EntityType::Model:
             if (InitialValue != 0.0)
               *pAtol *= std::min(1.0, InitialValue);
 
@@ -1097,7 +1097,7 @@ void CMathContainer::fetchInitialState()
     {
       // We must not fetch initial values of type assignment as they may be calculated
       // by a constant expression which is only evaluated during CMathObject::compile.
-      if (pObject->getSimulationType() == CMath::Assignment) continue;
+      if (pObject->getSimulationType() == CMath::SimulationType::Assignment) continue;
 
       const CDataObject * pDataObject = pObject->getDataObject();
 
@@ -1324,7 +1324,7 @@ CMathReaction * CMathContainer::getMathReaction(const CReaction * pReaction) con
 CMathObject * CMathContainer::getCompartment(const CMathObject * pObject) const
 {
   if (pObject == NULL ||
-      pObject->getEntityType() != CMath::Species)
+      pObject->getEntityType() != CMath::EntityType::Species)
     {
       return NULL;
     }
@@ -1706,7 +1706,7 @@ CMathContainer::replaceDiscontinuousNode(const CEvaluationNode * pSrc,
 
       // We need to advance both creation pointer to assure that we have the correct allocation
       // Mark the discontinuity objects as unused
-      mCreateDiscontinuousPointer.pDiscontinuous->setValueType(CMath::ValueTypeUndefined);
+      mCreateDiscontinuousPointer.pDiscontinuous->setValueType(CMath::ValueType::Undefined);
       mCreateDiscontinuousPointer.pDiscontinuous += 1;
 
       pdelete(pNode);
@@ -1962,7 +1962,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
     }
 
   // Process fixed entities which are not event targets.
-  initializeMathObjects(FixedEntities, CMath::Fixed, p);
+  initializeMathObjects(FixedEntities, CMath::SimulationType::Fixed, p);
 
   // Process local reaction parameters
   std::vector<const CDataObject*> LocalReactionParameter =
@@ -1971,30 +1971,30 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   assert(mSize.nFixed == FixedEntities.size() + LocalReactionParameter.size());
 
   // Process fixed entities which are event targets.
-  initializeMathObjects(FixedEventTargetEntities, CMath::EventTarget, p);
+  initializeMathObjects(FixedEventTargetEntities, CMath::SimulationType::EventTarget, p);
   assert(mSize.nFixedEventTargets == FixedEventTargetEntities.size());
 
   // The simulation time
   // Extensive Initial Value
   map(mpModel->getInitialValueReference(), p.pInitialExtensiveValuesObject);
   CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
-                          CMath::Value, CMath::Model, CMath::Time, false, true,
+                          CMath::ValueType::Value, CMath::EntityType::Model, CMath::SimulationType::Time, false, true,
                           mpModel->getInitialValueReference());
 
   // Extensive Value
   map(mpModel->getValueReference(), p.pExtensiveValuesObject);
   CMathObject::initialize(p.pExtensiveValuesObject++, p.pExtensiveValues++,
-                          CMath::Value, CMath::Model, CMath::Time, false, false,
+                          CMath::ValueType::Value, CMath::EntityType::Model, CMath::SimulationType::Time, false, false,
                           mpModel->getValueReference());
 
   // Initial Extensive Rate
   CMathObject::initialize(p.pInitialExtensiveRatesObject++, p.pInitialExtensiveRates++,
-                          CMath::Rate, CMath::Model, CMath::Time, false, true,
+                          CMath::ValueType::Rate, CMath::EntityType::Model, CMath::SimulationType::Time, false, true,
                           mpModel->getRateReference());
   // Extensive Rate
   map(mpModel->getRateReference(), p.pExtensiveRatesObject);
   CMathObject::initialize(p.pExtensiveRatesObject++, p.pExtensiveRates++,
-                          CMath::Rate, CMath::Model, CMath::Time, false, false,
+                          CMath::ValueType::Rate, CMath::EntityType::Model, CMath::SimulationType::Time, false, false,
                           mpModel->getRateReference());
 
   // Process entities which are determined by ODEs
@@ -2008,7 +2008,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
       ODEEntities.push_back(*ppEntities);
     }
 
-  initializeMathObjects(ODEEntities, CMath::ODE, p);
+  initializeMathObjects(ODEEntities, CMath::SimulationType::ODE, p);
   assert(mSize.nODE + mSize.nODESpecies == ODEEntities.size());
 
   // Process independent species
@@ -2025,7 +2025,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
       IndependentSpecies.push_back(*ppEntities);
     }
 
-  initializeMathObjects(IndependentSpecies, CMath::Independent, p);
+  initializeMathObjects(IndependentSpecies, CMath::SimulationType::Independent, p);
   assert(mSize.nReactionSpecies - mSize.nMoieties == IndependentSpecies.size());
 
   // Process dependent species
@@ -2039,7 +2039,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
       DependentSpecies.push_back(*ppEntities);
     }
 
-  initializeMathObjects(DependentSpecies, CMath::Dependent, p);
+  initializeMathObjects(DependentSpecies, CMath::SimulationType::Dependent, p);
   assert(mSize.nMoieties == DependentSpecies.size());
 
   // Process entities which are determined by assignments
@@ -2053,7 +2053,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
       AssignmentEntities.push_back(*ppEntities);
     }
 
-  initializeMathObjects(AssignmentEntities, CMath::Assignment, p);
+  initializeMathObjects(AssignmentEntities, CMath::SimulationType::Assignment, p);
   assert(mSize.nAssignment == AssignmentEntities.size());
 
   // Process Reactions
@@ -2069,7 +2069,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   for (n = 0; n != mSize.nDiscontinuities; ++n)
     {
       CMathObject::initialize(p.pDiscontinuousObject++, p.pDiscontinuous++,
-                              CMath::Discontinuous, CMath::Event, CMath::SimulationTypeUndefined,
+                              CMath::ValueType::Discontinuous, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                               false, false, NULL);
     }
 
@@ -2282,22 +2282,22 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
       switch (pObject->getValueType())
         {
-          case CMath::Value:
+          case CMath::ValueType::Value:
 
             switch (pObject->getSimulationType())
               {
-                case CMath::Fixed:
-                case CMath::Time:
+                case CMath::SimulationType::Fixed:
+                case CMath::SimulationType::Time:
                   mInitialStateValueExtensive.insert(pObject);
                   mInitialStateValueIntensive.insert(pObject);
                   break;
 
-                case CMath::EventTarget:
-                case CMath::ODE:
-                case CMath::Independent:
-                case CMath::Dependent:
+                case CMath::SimulationType::EventTarget:
+                case CMath::SimulationType::ODE:
+                case CMath::SimulationType::Independent:
+                case CMath::SimulationType::Dependent:
 
-                  if (pObject->getEntityType() != CMath::Species)
+                  if (pObject->getEntityType() != CMath::EntityType::Species)
                     {
                       mInitialStateValueExtensive.insert(pObject);
                       mInitialStateValueIntensive.insert(pObject);
@@ -2315,10 +2315,10 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                   break;
 
-                case CMath::Conversion:
+                case CMath::SimulationType::Conversion:
 
                   // If the species has an initial assignment the intensive values has to be calculated.
-                  if (pObject->getCorrespondingProperty()->getSimulationType() == CMath::Assignment)
+                  if (pObject->getCorrespondingProperty()->getSimulationType() == CMath::SimulationType::Assignment)
                     {
                       RequestedExtensive.insert(pObject);
                       RequestedIntensive.insert(pObject);
@@ -2336,7 +2336,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                   break;
 
-                case CMath::Assignment:
+                case CMath::SimulationType::Assignment:
                   if (pObject->getPrerequisites().size() > 0)
                     {
                       RequestedExtensive.insert(pObject);
@@ -2411,22 +2411,22 @@ void CMathContainer::createApplyInitialValuesSequence()
     {
       switch (pObject->getValueType())
         {
-          case CMath::Value:
+          case CMath::ValueType::Value:
 
             switch (pObject->getSimulationType())
               {
-                case CMath::Fixed:
-                case CMath::Time:
+                case CMath::SimulationType::Fixed:
+                case CMath::SimulationType::Time:
                   Changed.insert(pObject);
                   break;
 
-                case CMath::EventTarget:
-                case CMath::ODE:
-                case CMath::Independent:
-                case CMath::Dependent:
-                case CMath::Conversion:
+                case CMath::SimulationType::EventTarget:
+                case CMath::SimulationType::ODE:
+                case CMath::SimulationType::Independent:
+                case CMath::SimulationType::Dependent:
+                case CMath::SimulationType::Conversion:
 
-                  if (pObject->getEntityType() != CMath::Species)
+                  if (pObject->getEntityType() != CMath::EntityType::Species)
                     {
                       Changed.insert(pObject);
                     }
@@ -2441,7 +2441,7 @@ void CMathContainer::createApplyInitialValuesSequence()
 
                   break;
 
-                case CMath::Assignment:
+                case CMath::SimulationType::Assignment:
                   Requested.insert(pObject);
                   break;
               }
@@ -2449,7 +2449,7 @@ void CMathContainer::createApplyInitialValuesSequence()
             break;
 
           // Delay values are always calculate in a separate step
-          case CMath::DelayValue:
+          case CMath::ValueType::DelayValue:
             break;
 
           // Everything else must be calculated.
@@ -2474,7 +2474,7 @@ void CMathContainer::createApplyInitialValuesSequence()
 
       for (; it != end; ++it)
         {
-          if (static_cast< CMathObject * >(*it)->getValueType() == CMath::Discontinuous)
+          if (static_cast< CMathObject * >(*it)->getValueType() == CMath::ValueType::Discontinuous)
             {
               UpdatedDiscontinuities.insert(*it);
             }
@@ -2486,7 +2486,7 @@ void CMathContainer::createApplyInitialValuesSequence()
 
       for (; pDiscontinuity != pDiscontinuityEnd; ++pDiscontinuity)
         {
-          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::Discontinuous &&
+          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::ValueType::Discontinuous &&
               UpdatedDiscontinuities.find(pDiscontinuity) == UpdatedDiscontinuities.end())
             {
               OutofDateDiscontinuities.insert(pDiscontinuity);
@@ -2519,22 +2519,22 @@ void CMathContainer::createUpdateSimulationValuesSequence()
     {
       switch (pObject->getSimulationType())
         {
-          case CMath::EventTarget:
-          case CMath::Time:
-          case CMath::ODE:
-          case CMath::Independent:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
             mStateValues.insert(pObject);
             mReducedStateValues.insert(pObject);
             break;
 
-          case CMath::Dependent:
+          case CMath::SimulationType::Dependent:
             mStateValues.insert(pObject);
             ReducedSimulationRequiredValues.insert(pObject);
             break;
 
-          case CMath::SimulationTypeUndefined:
+          case CMath::SimulationType::Undefined:
 
-            if (pObject->getValueType() == CMath::DelayValue)
+            if (pObject->getValueType() == CMath::ValueType::DelayValue)
               {
                 mStateValues.insert(pObject);
                 mReducedStateValues.insert(pObject);
@@ -2590,7 +2590,7 @@ void CMathContainer::createUpdateSimulationValuesSequence()
 
   for (; pObject != pObjectEnd; ++pObject)
     {
-      if (pObject->getSimulationType() != CMath::Dependent)
+      if (pObject->getSimulationType() != CMath::SimulationType::Dependent)
         {
           ReducedNoise.insert(pObject);
         }
@@ -3028,7 +3028,7 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (*pRootFound == CMath::NoToggle)
+      if (*pRootFound == static_cast< C_INT >(CMath::RootToggleType::NoToggle))
         {
           (*pRoot)->calculateTrueValue();
         }
@@ -3053,9 +3053,9 @@ void CMathContainer::processRoots(const bool & equality,
 
   for (; pRoot != pRootEnd; ++pRoot, ++pRootFound)
     {
-      if (*pRootFound == CMath::ToggleBoth ||
-          (*pRootFound == CMath::ToggleEquality && equality) ||
-          (*pRootFound == CMath::ToggleInequality && !equality))
+      if (*pRootFound == static_cast< C_INT >(CMath::RootToggleType::ToggleBoth) ||
+          (*pRootFound == static_cast< C_INT >(CMath::RootToggleType::ToggleEquality) && equality) ||
+          (*pRootFound == static_cast< C_INT >(CMath::RootToggleType::ToggleInequality) && !equality))
         {
           (*pRoot)->toggle(Time, equality);
         }
@@ -3325,18 +3325,18 @@ CMath::EntityType CMathContainer::getEntityType(const CModelEntity * pEntity)
 
   if (pSpecies != NULL)
     {
-      return CMath::Species;
+      return CMath::EntityType::Species;
     }
   else if (dynamic_cast< const CCompartment * >(pEntity) != NULL)
     {
-      return CMath::Compartment;
+      return CMath::EntityType::Compartment;
     }
   else if (dynamic_cast< const CModelValue * >(pEntity) != NULL)
     {
-      return CMath::GlobalQuantity;
+      return CMath::EntityType::GlobalQuantity;
     }
 
-  return CMath::EntityTypeUndefined;
+  return CMath::EntityType::Undefined;
 }
 
 void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*> & entities,
@@ -3359,128 +3359,128 @@ void CMathContainer::initializeMathObjects(const std::vector<const CModelEntity*
       // We must check whether the initial value must be calculated, i.e., whether it has
       // dependencies or not. In case of species it always possible that is must be calculated.
 
-      CMath::SimulationType SimulationType = CMath::Fixed;
+      CMath::SimulationType SimulationType = CMath::SimulationType::Fixed;
       CDataObject * pObject = (*it)->getInitialValueReference();
 
-      if (EntityType == CMath::Species)
+      if (EntityType == CMath::EntityType::Species)
         {
-          SimulationType = CMath::Conversion;
+          SimulationType = CMath::SimulationType::Conversion;
         }
-      else if ((simulationType == CMath::Assignment && (*it)->getExpression() != "") ||
+      else if ((simulationType == CMath::SimulationType::Assignment && (*it)->getExpression() != "") ||
                (*it)->getInitialExpression() != "")
         {
-          SimulationType = CMath::Assignment;
+          SimulationType = CMath::SimulationType::Assignment;
         }
 
       map(pObject, p.pInitialExtensiveValuesObject);
       CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
-                              CMath::Value, EntityType, SimulationType, false, true,
+                              CMath::ValueType::Value, EntityType, SimulationType, false, true,
                               pObject);
 
       // Extensive Value
       SimulationType = simulationType;
 
-      if (EntityType == CMath::Species &&
-          simulationType == CMath::Assignment)
+      if (EntityType == CMath::EntityType::Species &&
+          simulationType == CMath::SimulationType::Assignment)
         {
-          SimulationType = CMath::Conversion;
+          SimulationType = CMath::SimulationType::Conversion;
         }
 
       map((*it)->getValueReference(), p.pExtensiveValuesObject);
       CMathObject::initialize(p.pExtensiveValuesObject++, p.pExtensiveValues++,
-                              CMath::Value, EntityType, SimulationType, false, false,
+                              CMath::ValueType::Value, EntityType, SimulationType, false, false,
                               (*it)->getValueReference());
 
       // Initial Extensive Rate
       SimulationType = simulationType;
 
-      if (simulationType == CMath::EventTarget)
+      if (simulationType == CMath::SimulationType::EventTarget)
         {
-          SimulationType = CMath::Fixed;
+          SimulationType = CMath::SimulationType::Fixed;
         }
 
       CMathObject::initialize(p.pInitialExtensiveRatesObject++, p.pInitialExtensiveRates++,
-                              CMath::Rate, EntityType, SimulationType, false, true,
+                              CMath::ValueType::Rate, EntityType, SimulationType, false, true,
                               (*it)->getRateReference());
 
       // Extensive Rate
       map((*it)->getRateReference(), p.pExtensiveRatesObject);
       CMathObject::initialize(p.pExtensiveRatesObject++, p.pExtensiveRates++,
-                              CMath::Rate, EntityType, SimulationType, false, false,
+                              CMath::ValueType::Rate, EntityType, SimulationType, false, false,
                               (*it)->getRateReference());
 
       // Intensive Noise
-      if (SimulationType == CMath::ODE ||
-          SimulationType == CMath::Independent ||
-          SimulationType == CMath::Dependent)
+      if (SimulationType == CMath::SimulationType::ODE ||
+          SimulationType == CMath::SimulationType::Independent ||
+          SimulationType == CMath::SimulationType::Dependent)
         {
           map((*it)->getNoiseReference(), p.pExtensiveNoiseObject);
           CMathObject::initialize(p.pExtensiveNoiseObject++, p.pExtensiveNoise++,
-                                  CMath::Noise, EntityType, SimulationType, false, false,
+                                  CMath::ValueType::Noise, EntityType, SimulationType, false, false,
                                   (*it)->getNoiseReference());
         }
 
       // Species have intensive values in addition to the extensive ones and transition time.
-      if (EntityType == CMath::Species)
+      if (EntityType == CMath::EntityType::Species)
         {
           const CMetab *pSpecies = static_cast<const CMetab*>(*it);
 
           // Intensive Initial Value
 
-          // The simulation type for initial values is either CMath::Assignment or CMath::Conversion
+          // The simulation type for initial values is either CMath::SimulationType::Assignment or CMath::SimulationType::Conversion
           // In case of species it always possible that is must be calculated.
-          SimulationType = CMath::Conversion;
+          SimulationType = CMath::SimulationType::Conversion;
 
-          if (simulationType == CMath::Assignment ||
+          if (simulationType == CMath::SimulationType::Assignment ||
               pSpecies->getInitialExpression() != "")
             {
-              SimulationType = CMath::Assignment;
+              SimulationType = CMath::SimulationType::Assignment;
             }
 
           map(pSpecies->getInitialConcentrationReference(), p.pInitialIntensiveValuesObject);
           CMathObject::initialize(p.pInitialIntensiveValuesObject++, p.pInitialIntensiveValues++,
-                                  CMath::Value, CMath::Species, SimulationType, true, true,
+                                  CMath::ValueType::Value, CMath::EntityType::Species, SimulationType, true, true,
                                   pSpecies->getInitialConcentrationReference());
 
           // Intensive Value
-          SimulationType = CMath::Conversion;
+          SimulationType = CMath::SimulationType::Conversion;
 
-          if (simulationType == CMath::Assignment)
+          if (simulationType == CMath::SimulationType::Assignment)
             {
               SimulationType = simulationType;
             }
 
           map(pSpecies->getConcentrationReference(), p.pIntensiveValuesObject);
           CMathObject::initialize(p.pIntensiveValuesObject++, p.pIntensiveValues++,
-                                  CMath::Value, CMath::Species, SimulationType, true, false,
+                                  CMath::ValueType::Value, CMath::EntityType::Species, SimulationType, true, false,
                                   pSpecies->getConcentrationReference());
 
           // Initial Intensive Rate
           CMathObject::initialize(p.pInitialIntensiveRatesObject++, p.pInitialIntensiveRates++,
-                                  CMath::Rate, CMath::Species, CMath::Assignment, true, true,
+                                  CMath::ValueType::Rate, CMath::EntityType::Species, CMath::SimulationType::Assignment, true, true,
                                   pSpecies->getConcentrationRateReference());
 
           // Intensive Rate
           map(pSpecies->getConcentrationRateReference(), p.pIntensiveRatesObject);
           CMathObject::initialize(p.pIntensiveRatesObject++, p.pIntensiveRates++,
-                                  CMath::Rate, CMath::Species, CMath::Assignment, true, false,
+                                  CMath::ValueType::Rate, CMath::EntityType::Species, CMath::SimulationType::Assignment, true, false,
                                   pSpecies->getConcentrationRateReference());
 
           // Intensive Noise
-          if (SimulationType == CMath::ODE ||
-              SimulationType == CMath::Independent ||
-              SimulationType == CMath::Dependent)
+          if (SimulationType == CMath::SimulationType::ODE ||
+              SimulationType == CMath::SimulationType::Independent ||
+              SimulationType == CMath::SimulationType::Dependent)
             {
               map(pSpecies->getIntensiveNoiseReference(), p.pIntensiveNoiseObject);
               CMathObject::initialize(p.pIntensiveNoiseObject++, p.pIntensiveNoise++,
-                                      CMath::Noise, CMath::Species, CMath::Assignment, true, false,
+                                      CMath::ValueType::Noise, CMath::EntityType::Species, CMath::SimulationType::Assignment, true, false,
                                       pSpecies->getIntensiveNoiseReference());
             }
 
           // Transition Time
           map(pSpecies->getTransitionTimeReference(), p.pTransitionTimeObject);
           CMathObject::initialize(p.pTransitionTimeObject++, p.pTransitionTime++,
-                                  CMath::TransitionTime, CMath::Species, CMath::Assignment, false, false,
+                                  CMath::ValueType::TransitionTime, CMath::EntityType::Species, CMath::SimulationType::Assignment, false, false,
                                   pSpecies->getTransitionTimeReference());
         }
     }
@@ -3498,22 +3498,22 @@ void CMathContainer::initializeMathObjects(const std::vector<const CDataObject *
       // Extensive Initial Value
       map(const_cast< CDataObject * >(*it), p.pInitialExtensiveValuesObject);
       CMathObject::initialize(p.pInitialExtensiveValuesObject++, p.pInitialExtensiveValues++,
-                              CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, true,
+                              CMath::ValueType::Value, CMath::EntityType::LocalReactionParameter, CMath::SimulationType::Fixed, false, true,
                               *it);
 
       // Extensive Value
       CMathObject::initialize(p.pExtensiveValuesObject++, p.pExtensiveValues++,
-                              CMath::Value, CMath::LocalReactionParameter, CMath::Fixed, false, false,
+                              CMath::ValueType::Value, CMath::EntityType::LocalReactionParameter, CMath::SimulationType::Fixed, false, false,
                               NULL);
 
       // Initial Extensive Rate
       CMathObject::initialize(p.pInitialExtensiveRatesObject++, p.pInitialExtensiveRates++,
-                              CMath::Rate, CMath::LocalReactionParameter, CMath::Fixed, false, true,
+                              CMath::ValueType::Rate, CMath::EntityType::LocalReactionParameter, CMath::SimulationType::Fixed, false, true,
                               NULL);
 
       // Extensive Rate
       CMathObject::initialize(p.pExtensiveRatesObject++, p.pExtensiveRates++,
-                              CMath::Rate, CMath::LocalReactionParameter, CMath::Fixed, false, false,
+                              CMath::ValueType::Rate, CMath::EntityType::LocalReactionParameter, CMath::SimulationType::Fixed, false, false,
                               NULL);
     }
 }
@@ -3529,42 +3529,42 @@ void CMathContainer::initializeMathObjects(const CDataVector< CReaction > & reac
     {
       // Initial Particle Flux
       CMathObject::initialize(p.pInitialParticleFluxesObject++, p.pInitialParticleFluxes++,
-                              CMath::ParticleFlux, CMath::Reaction, CMath::SimulationTypeUndefined, false, true,
+                              CMath::ValueType::ParticleFlux, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, true,
                               it->getParticleFluxReference());
 
       // Particle Flux
       map(it->getParticleFluxReference(), p.pParticleFluxesObject);
       CMathObject::initialize(p.pParticleFluxesObject++, p.pParticleFluxes++,
-                              CMath::ParticleFlux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::ParticleFlux, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getParticleFluxReference());
 
       // Initial Flux
       CMathObject::initialize(p.pInitialFluxesObject++, p.pInitialFluxes++,
-                              CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, true,
+                              CMath::ValueType::Flux, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, true,
                               it->getFluxReference());
 
       // Flux
       map(it->getFluxReference(), p.pFluxesObject);
       CMathObject::initialize(p.pFluxesObject++, p.pFluxes++,
-                              CMath::Flux, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::Flux, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getFluxReference());
 
       // Noise
       map(it->getNoiseReference(), p.pReactionNoiseObject);
       CMathObject::initialize(p.pReactionNoiseObject++, p.pReactionNoise++,
-                              CMath::Noise, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::Noise, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getNoiseReference());
 
       // Particle Noise
       map(it->getParticleNoiseReference(), p.pReactionParticleNoiseObject);
       CMathObject::initialize(p.pReactionParticleNoiseObject++, p.pReactionParticleNoise++,
-                              CMath::ParticleNoise, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::ParticleNoise, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getParticleNoiseReference());
 
       // Propensity
       map(it->getPropensityReference(), p.pPropensitiesObject);
       CMathObject::initialize(p.pPropensitiesObject++, p.pPropensities++,
-                              CMath::Propensity, CMath::Reaction, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::Propensity, CMath::EntityType::Reaction, CMath::SimulationType::Undefined, false, false,
                               it->getPropensityReference());
     }
 }
@@ -3580,19 +3580,19 @@ void CMathContainer::initializeMathObjects(const CDataVector< CMoiety > & moieti
     {
       // Initial Total Mass
       CMathObject::initialize(p.pInitialTotalMassesObject++, p.pInitialTotalMasses++,
-                              CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, true,
+                              CMath::ValueType::TotalMass, CMath::EntityType::Moiety, CMath::SimulationType::Undefined, false, true,
                               it->getTotalNumberReference());
 
       // Total Mass
       map(it->getTotalNumberReference(), p.pTotalMassesObject);
       CMathObject::initialize(p.pTotalMassesObject++, p.pTotalMasses++,
-                              CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::TotalMass, CMath::EntityType::Moiety, CMath::SimulationType::Undefined, false, false,
                               it->getTotalNumberReference());
 
       // Dependent
       map(it->getDependentNumberReference(), p.pDependentMassesObject);
       CMathObject::initialize(p.pDependentMassesObject++, p.pDependentMasses++,
-                              CMath::DependentMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, false,
+                              CMath::ValueType::DependentMass, CMath::EntityType::Moiety, CMath::SimulationType::Undefined, false, false,
                               it->getDependentNumberReference());
     }
 }
@@ -3645,24 +3645,24 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
 
   switch (simulationType)
     {
-      case CMath::Fixed:
+      case CMath::SimulationType::Fixed:
         Size.nFixed++;
         break;
 
-      case CMath::ODE:
+      case CMath::SimulationType::ODE:
         Size.nODE++;
         break;
 
-      case CMath::Assignment:
+      case CMath::SimulationType::Assignment:
         Size.nAssignment++;
         break;
 
-      case CMath::SimulationTypeUndefined:
-      case CMath::EventTarget:
-      case CMath::Time:
-      case CMath::Dependent:
-      case CMath::Independent:
-      case CMath::Conversion:
+      case CMath::SimulationType::Undefined:
+      case CMath::SimulationType::EventTarget:
+      case CMath::SimulationType::Time:
+      case CMath::SimulationType::Dependent:
+      case CMath::SimulationType::Independent:
+      case CMath::SimulationType::Conversion:
         fatalError();
         break;
     }
@@ -3680,20 +3680,20 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
 
   for (; pObject != pObjectEnd; ++pObject)
     {
-      if (pObject->getValueType() != CMath::ValueTypeUndefined ||
-          pObject->getEntityType() != CMath::EntityTypeUndefined ||
-          pObject->getSimulationType() != CMath::SimulationTypeUndefined) continue;
+      if (pObject->getValueType() != CMath::ValueType::Undefined ||
+          pObject->getEntityType() != CMath::EntityType::Undefined ||
+          pObject->getSimulationType() != CMath::SimulationType::Undefined) continue;
 
       C_FLOAT64 * pValue = (C_FLOAT64 *) pObject->getValuePointer();
 
       switch (kind)
         {
           case 0:
-            CMathObject::initialize(pObject++, pValue++, CMath::Value, CMath::Analysis,
-                                    (simulationType == CMath::Assignment) ? CMath::Assignment : CMath::Fixed,
+            CMathObject::initialize(pObject++, pValue++, CMath::ValueType::Value, CMath::EntityType::Analysis,
+                                    (simulationType == CMath::SimulationType::Assignment) ? CMath::SimulationType::Assignment : CMath::SimulationType::Fixed,
                                     false, true, entity.InitialValue);
 
-            if (simulationType == CMath::Assignment)
+            if (simulationType == CMath::SimulationType::Assignment)
               {
                 CMathExpression * pExpression = new CMathExpression("Assignment", *this);
                 pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
@@ -3710,11 +3710,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
             break;
 
           case 1:
-            CMathObject::initialize(pObject++, pValue++, CMath::Rate, CMath::Analysis,
+            CMathObject::initialize(pObject++, pValue++, CMath::ValueType::Rate, CMath::EntityType::Analysis,
                                     simulationType, false, true,
                                     entity.InitialRate);
 
-            if (simulationType == CMath::ODE)
+            if (simulationType == CMath::SimulationType::ODE)
               {
                 CMathExpression * pExpression = new CMathExpression("Rate", *this);
                 pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
@@ -3731,11 +3731,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
             break;
 
           case 2:
-            CMathObject::initialize(pObject++, pValue++, CMath::Value, CMath::Analysis,
+            CMathObject::initialize(pObject++, pValue++, CMath::ValueType::Value, CMath::EntityType::Analysis,
                                     simulationType, false, false,
                                     entity.Value);
 
-            if (simulationType == CMath::Assignment)
+            if (simulationType == CMath::SimulationType::Assignment)
               {
                 CMathExpression * pExpression = new CMathExpression("Assignment", *this);
                 pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
@@ -3751,11 +3751,11 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
             break;
 
           case 3:
-            CMathObject::initialize(pObject++, pValue++, CMath::Rate, CMath::Analysis,
+            CMathObject::initialize(pObject++, pValue++, CMath::ValueType::Rate, CMath::EntityType::Analysis,
                                     simulationType, false, false,
                                     entity.Rate);
 
-            if (simulationType == CMath::ODE)
+            if (simulationType == CMath::SimulationType::ODE)
               {
                 CMathExpression * pExpression = new CMathExpression("Rate", *this);
                 pExpression->CEvaluationTree::setRoot(copyBranch(Expression.getRoot(), false));
@@ -3787,31 +3787,31 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
 
   switch (mathObjects.Value->getSimulationType())
     {
-      case CMath::Fixed:
+      case CMath::SimulationType::Fixed:
         Size.nFixed--;
         Index += mSize.nFixed;
         break;
 
-      case CMath::EventTarget:
+      case CMath::SimulationType::EventTarget:
         Size.nFixedEventTargets--;
         Index += mSize.nFixed + mSize.nFixedEventTargets;
         break;
 
-      case CMath::ODE:
+      case CMath::SimulationType::ODE:
         Size.nODE--;
         Index += mSize.nFixed + mSize.nFixedEventTargets + 2;
         break;
 
-      case CMath::Assignment:
+      case CMath::SimulationType::Assignment:
         Size.nAssignment--;
         Index += mSize.nFixed + mSize.nFixedEventTargets + mSize.nTime + mSize.nODE + mSize.nODESpecies + mSize.nReactionSpecies + mSize.nAssignment;
         break;
 
-      case CMath::SimulationTypeUndefined:
-      case CMath::Time:
-      case CMath::Dependent:
-      case CMath::Independent:
-      case CMath::Conversion:
+      case CMath::SimulationType::Undefined:
+      case CMath::SimulationType::Time:
+      case CMath::SimulationType::Dependent:
+      case CMath::SimulationType::Independent:
+      case CMath::SimulationType::Conversion:
         fatalError();
         break;
     }
@@ -4500,16 +4500,16 @@ void CMathContainer::createDelays()
 
   while (pObject != pObjectEnd)
     {
-      CMathObject::initialize(pObject++, pValue++, CMath::DelayValue, CMath::Delay,
-                              CMath::SimulationTypeUndefined, false, false, NULL);
+      CMathObject::initialize(pObject++, pValue++, CMath::ValueType::DelayValue, CMath::EntityType::Delay,
+                              CMath::SimulationType::Undefined, false, false, NULL);
     }
 
   pObjectEnd += mSize.nDelayLags;
 
   while (pObject != pObjectEnd)
     {
-      CMathObject::initialize(pObject++, pValue++, CMath::DelayLag, CMath::Delay,
-                              CMath::SimulationTypeUndefined, false, false, NULL);
+      CMathObject::initialize(pObject++, pValue++, CMath::ValueType::DelayLag, CMath::EntityType::Delay,
+                              CMath::SimulationType::Undefined, false, false, NULL);
     }
 
   CMathDelay * pDelay = mDelays.array();

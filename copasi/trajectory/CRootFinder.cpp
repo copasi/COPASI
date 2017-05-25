@@ -78,10 +78,10 @@ void CRootFinder::initialize(CRootFinder::Eval * pRootValueCalculator,
   mRootsCurrent.resize(numRoots);
 
   mToggledRootsLeft.resize(numRoots);
-  mToggledRootsLeft = CMath::NoToggle;
+  mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
   mToggledRootsCurrent.resize(numRoots);
-  mToggledRootsCurrent = CMath::NoToggle;
+  mToggledRootsCurrent = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
   mToggledRootsLeftValid = false;
   mRootError = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -120,7 +120,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
       bool Reset = false;
 
       for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRoot, ++pRootFound)
-        if (*pRootFound != CMath::NoToggle &&
+        if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle) &&
             *pRoot == -1.0 * *pLeftRoot)
           {
             *pLeftRoot = -1.0 * *pRoot;
@@ -136,7 +136,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
       if (Reset)
         {
           // We have a clean restart and reset
-          mToggledRootsLeft = CMath::NoToggle;
+          mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
         }
     }
 
@@ -194,8 +194,8 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
       // Find the "exact" location of the left most root.
       if (!CBrent::findRoot(mTimeLeft, mTimeRight, mpBrentRootValueCalculator, &RootTime, &RootValue, mRelativeTolerance * fabs(mTimeRight)))
         {
-          mToggledRootsCurrent = CMath::NoToggle;
-          mToggledRootsLeft = CMath::NoToggle;
+          mToggledRootsCurrent = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
+          mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
           return NotFound;
         }
 
@@ -213,7 +213,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
 
       for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRightRoot, ++pRoot, ++pRootFound, ++pRootFoundLeft, ++pMask)
         {
-          *pRootFound = CMath::NoToggle;
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
           if (*pMask & mRootMasking)
             continue;
@@ -223,21 +223,21 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
             {
               if (*pLeftRoot **pRoot < 0)
                 {
-                  *pRootFound = CMath::ToggleBoth;
+                  *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
                   Status = RootFound;
 
                   if (mToggledRootsLeftValid &&
-                      *pRootFoundLeft == CMath::NoToggle)
+                      *pRootFoundLeft == static_cast< C_INT >(CMath::RootToggleType::NoToggle))
                     Advanced = true;
                 }
               else if (fabs(*pRoot) <= (1.0 + std::numeric_limits< C_FLOAT64 >::epsilon()) * fabs(RootValue))
                 {
                   *pRoot *= -1; // Change sign to avoid finding it again
-                  *pRootFound = CMath::ToggleBoth;
+                  *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
                   Status = RootFound;
 
                   if (mToggledRootsLeftValid &&
-                      *pRootFoundLeft == CMath::NoToggle)
+                      *pRootFoundLeft == static_cast< C_INT >(CMath::RootToggleType::NoToggle))
                     Advanced = true;
                 }
             }

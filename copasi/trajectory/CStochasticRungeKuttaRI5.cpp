@@ -315,8 +315,8 @@ void CStochasticRungeKuttaRI5::start()
 
   for (; pObject != pObjectEnd; ++pObject, ++pPhysicalValue)
     {
-      *pPhysicalValue = (pObject->getEntityType() == CMath::Compartment ||
-                         pObject->getEntityType() == CMath::Species);
+      *pPhysicalValue = (pObject->getEntityType() == CMath::EntityType::Compartment ||
+                         pObject->getEntityType() == CMath::EntityType::Species);
     }
 
   mNoiseInputValues.resize(mNumNoise);
@@ -857,7 +857,7 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
                 C_INT * pRootFoundEnd = mRootsFound.end();
 
                 for (; pRootFound != pRootFoundEnd; ++pRootFound)
-                  if (*pRootFound != CMath::NoToggle)
+                  if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
                     {
                       Result = ROOT;
                       break;
@@ -878,7 +878,7 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
                 C_INT * pRootFoundEnd = mRootsFound.end();
 
                 for (; pRootFound != pRootFoundEnd; ++pRootFound)
-                  if (*pRootFound != CMath::NoToggle)
+                  if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
                     {
                       break;
                     }

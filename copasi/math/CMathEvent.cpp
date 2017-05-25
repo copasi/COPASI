@@ -54,7 +54,7 @@ void CMathEvent::CAssignment::initialize(CMath::sPointers & pointers)
   // Initialize the assignment object
   mpAssignment = pointers.pEventAssignmentsObject;
   CMathObject::initialize(pointers.pEventAssignmentsObject++, pointers.pEventAssignments++,
-                          CMath::EventAssignment, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventAssignment, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, false, NULL);
 }
 
@@ -87,7 +87,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
 
   if (mpTarget != NULL)
     {
-      if (mpTarget->getEntityType() == CMath::Species)
+      if (mpTarget->getEntityType() == CMath::EntityType::Species)
         {
           assert(mpTarget->isIntensiveProperty());
 
@@ -95,9 +95,9 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
           mpTarget = const_cast< CMathObject * >(mpTarget->getCorrespondingProperty());
         }
 
-      if (mpTarget->getSimulationType() == CMath::Fixed)
+      if (mpTarget->getSimulationType() == CMath::SimulationType::Fixed)
         {
-          mpTarget->setSimulationType(CMath::EventTarget);
+          mpTarget->setSimulationType(CMath::SimulationType::EventTarget);
         }
     }
   else
@@ -271,7 +271,7 @@ void CMathEvent::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointer
   mpRootValue = pointers.pEventRoots;
   *mpRootValue = 1.0;
   CMathObject::initialize(pointers.pEventRootsObject++, pointers.pEventRoots++,
-                          CMath::EventRoot, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventRoot, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, false, NULL);
 
   // Initialize the root state object!
@@ -279,7 +279,7 @@ void CMathEvent::CTrigger::CRootProcessor::initialize(CMath::sPointers & pointer
   mpRootStateValue = pointers.pEventRootStates;
   *mpRootStateValue = 1.0;
   CMathObject::initialize(pointers.pEventRootStatesObject++, pointers.pEventRootStates++,
-                          CMath::EventRootState, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventRootState, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, false, NULL);
 }
 
@@ -417,14 +417,14 @@ void CMathEvent::CTrigger::initialize(CMath::sPointers & pointers)
   mpTrigger = pointers.pEventTriggersObject;
   *pointers.pEventTriggers = 1.0;
   CMathObject::initialize(pointers.pEventTriggersObject++, pointers.pEventTriggers++,
-                          CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventTrigger, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, false, NULL);
 
   // Initialize initial trigger object.
   mpInitialTrigger = pointers.pInitialEventTriggersObject;
   *pointers.pInitialEventTriggers = 1.0;
   CMathObject::initialize(pointers.pInitialEventTriggersObject++, pointers.pInitialEventTriggers++,
-                          CMath::EventTrigger, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventTrigger, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, true, NULL);
 
   // Initialize root object.
@@ -1192,13 +1192,13 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
   // Initialize delay object.
   mpDelay = pointers.pEventDelaysObject;
   CMathObject::initialize(pointers.pEventDelaysObject++, pointers.pEventDelays++,
-                          CMath::EventDelay, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventDelay, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, false, NULL);
 
   // Initialize priority object.
   mpPriority = pointers.pEventPrioritiesObject;
   CMathObject::initialize(pointers.pEventPrioritiesObject++, pointers.pEventPriorities++,
-                          CMath::EventPriority, CMath::Event, CMath::SimulationTypeUndefined,
+                          CMath::ValueType::EventPriority, CMath::EntityType::Event, CMath::SimulationType::Undefined,
                           false, false, NULL);
 }
 
@@ -1424,8 +1424,8 @@ void CMathEvent::createUpdateSequences()
 
       // We need to distinguish between Fixed Event Targets, Discontinuities, and State Values
 
-      if (pTarget->getSimulationType() == CMath::EventTarget ||
-          (pTarget->getSimulationType() == CMath::Conversion &&
+      if (pTarget->getSimulationType() == CMath::SimulationType::EventTarget ||
+          (pTarget->getSimulationType() == CMath::SimulationType::Conversion &&
            dynamic_cast< CModelEntity * >(pTarget->getDataObject()->getObjectParent())->getStatus() == CModelEntity::Status::FIXED))
         {
           mEffectsSimulation |= CMath::eStateChange::FixedEventTarget;
@@ -1459,7 +1459,7 @@ void CMathEvent::createUpdateSequences()
 
   for (; it != end; ++it)
     {
-      if (static_cast< const CMathObject * >(*it)->getEntityType() != CMath::Event)
+      if (static_cast< const CMathObject * >(*it)->getEntityType() != CMath::EntityType::Event)
         {
           ContinuousSimulationValues.insert(*it);
         }

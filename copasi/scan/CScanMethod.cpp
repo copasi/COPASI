@@ -401,7 +401,7 @@ bool CScanMethod::init()
               // If we continue from the current state we must change the transient values
               // unless we have a local reaction parameter
               if (mContinueFromCurrentState &&
-                  static_cast< const CMathObject * >(pObject)->getEntityType() != CMath::LocalReactionParameter)
+                  static_cast< const CMathObject * >(pObject)->getEntityType() != CMath::EntityType::LocalReactionParameter)
                 {
                   pObject += Offset;
                 }

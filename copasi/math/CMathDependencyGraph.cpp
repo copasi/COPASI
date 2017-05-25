@@ -550,63 +550,63 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
       switch (pMathObject->getValueType())
         {
-          case CMath::ValueTypeUndefined:
+          case CMath::ValueType::Undefined:
             os << "ValueTypeUndefined";
             break;
 
-          case CMath::Value:
+          case CMath::ValueType::Value:
             os << "Value";
             break;
 
-          case CMath::Rate:
+          case CMath::ValueType::Rate:
             os << "ValueRate";
             break;
 
-          case CMath::ParticleFlux:
+          case CMath::ValueType::ParticleFlux:
             os << "ParticleFlux";
             break;
 
-          case CMath::Flux:
+          case CMath::ValueType::Flux:
             os << "Flux";
             break;
 
-          case CMath::Propensity:
+          case CMath::ValueType::Propensity:
             os << "Propensity";
             break;
 
-          case CMath::TotalMass:
+          case CMath::ValueType::TotalMass:
             os << "TotalMass";
             break;
 
-          case CMath::DependentMass:
+          case CMath::ValueType::DependentMass:
             os << "DependentMass";
             break;
 
-          case CMath::Discontinuous:
+          case CMath::ValueType::Discontinuous:
             os << "Discontinuous";
             break;
 
-          case CMath::EventDelay:
+          case CMath::ValueType::EventDelay:
             os << "EventDelay";
             break;
 
-          case CMath::EventPriority:
+          case CMath::ValueType::EventPriority:
             os << "EventPriority";
             break;
 
-          case CMath::EventAssignment:
+          case CMath::ValueType::EventAssignment:
             os << "EventAssignment";
             break;
 
-          case CMath::EventTrigger:
+          case CMath::ValueType::EventTrigger:
             os << "EventTrigger";
             break;
 
-          case CMath::EventRoot:
+          case CMath::ValueType::EventRoot:
             os << "EventRoot";
             break;
 
-          case CMath::EventRootState:
+          case CMath::ValueType::EventRootState:
             os << "EventRootState";
             break;
         }

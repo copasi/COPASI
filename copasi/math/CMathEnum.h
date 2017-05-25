@@ -153,9 +153,9 @@ public:
 
   typedef CFlags< SimulationContext > SimulationContextFlag;
 
-  enum ValueType
+  enum struct ValueType
   {
-    ValueTypeUndefined,
+    Undefined,
     Value,
     Rate,
     ParticleFlux,
@@ -174,12 +174,13 @@ public:
     EventRootState,
     DelayValue,
     DelayLag,
-    TransitionTime
+    TransitionTime,
+    __SIZE
   };
 
-  enum SimulationType
+  enum struct SimulationType
   {
-    SimulationTypeUndefined,
+    Undefined,
     Fixed,
     EventTarget,
     Time,
@@ -187,12 +188,13 @@ public:
     Independent,
     Dependent,
     Assignment,
-    Conversion
+    Conversion,
+    __SIZE
   };
 
-  enum EntityType
+  enum struct EntityType
   {
-    EntityTypeUndefined,
+    Undefined,
     Model,
     Analysis,
     GlobalQuantity,
@@ -203,7 +205,8 @@ public:
     Reaction,
     Moiety,
     Event,
-    Delay
+    Delay,
+    __SIZE
   };
 
   enum struct eStateChange
@@ -216,12 +219,13 @@ public:
     __SIZE
   };
 
-  enum RootToggleType
+  enum struct RootToggleType
   {
-    NoToggle = 0x0,
-    ToggleBoth = 0x1,
-    ToggleEquality = 0x2,
-    ToggleInequality = 0x3
+    NoToggle,
+    ToggleBoth,
+    ToggleEquality,
+    ToggleInequality,
+    __SIZE
   };
 
   typedef CFlags< eStateChange > StateChange;

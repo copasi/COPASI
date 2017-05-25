@@ -264,8 +264,8 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
                 if (!context.isSet(CCore::SimulationContext::UseMoieties) ||
                     (pMathObject != NULL &&
                      pMathObject->getCorrespondingProperty() != static_cast< const CMathObject *>(mpObject) &&
-                     (pMathObject->getSimulationType() != CMath::Dependent ||
-                      pMathObject->getValueType() != CMath::Value)))
+                     (pMathObject->getSimulationType() != CMath::SimulationType::Dependent ||
+                      pMathObject->getValueType() != CMath::ValueType::Value)))
                   {
                     // Only Math Objects with expressions can be updated.
                     if (pMathObject != NULL &&

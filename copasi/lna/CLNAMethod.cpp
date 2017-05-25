@@ -177,7 +177,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
         {
           pSpecies = mpContainer->getMathObject(pBalanceRow->first);
 
-          if (pSpecies->getSimulationType() == CMath::Independent)
+          if (pSpecies->getSimulationType() == CMath::SimulationType::Independent)
             {
               size_t i = pSpecies - pFirstReactionSpecies;
 
@@ -185,7 +185,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
                 {
                   pSpecies = mpContainer->getMathObject(pBalanceColumn->first);
 
-                  if (pSpecies->getSimulationType() == CMath::Independent)
+                  if (pSpecies->getSimulationType() == CMath::SimulationType::Independent)
                     {
                       size_t j = pSpecies - pFirstReactionSpecies;
                       mBMatrixReduced(i, j) += *pParticleFlux * pBalanceRow->second * pBalanceColumn->second;

@@ -60,8 +60,8 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
     {
       CMathObject * pParticleNumber = container.getMathObject(it->getMetabolite()->getValueReference());
 
-      if (pParticleNumber->getSimulationType() == CMath::Independent ||
-          pParticleNumber->getSimulationType() == CMath::Dependent)
+      if (pParticleNumber->getSimulationType() == CMath::SimulationType::Independent ||
+          pParticleNumber->getSimulationType() == CMath::SimulationType::Dependent)
         {
           mChangedSpecies.insert(pParticleNumber);
           mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(pParticleNumber, it->getMultiplicity()));

@@ -51,9 +51,9 @@ CMathObject::CMathObject():
   mpExpression(NULL),
   mpValue(&InvalidValue),
   mPrerequisites(),
-  mValueType(CMath::ValueTypeUndefined),
-  mEntityType(CMath::EntityTypeUndefined),
-  mSimulationType(CMath::SimulationTypeUndefined),
+  mValueType(CMath::ValueType::Undefined),
+  mEntityType(CMath::EntityType::Undefined),
+  mSimulationType(CMath::SimulationType::Undefined),
   mIsIntensiveProperty(false),
   mIsInitialValue(false),
   mpCorrespondingProperty(NULL),
@@ -166,16 +166,16 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
   switch (mEntityType)
     {
-      case CMath::Moiety:
+      case CMath::EntityType::Moiety:
 
         if (context.isSet(CCore::SimulationContext::UpdateMoieties) &&
-            mValueType == CMath::TotalMass)
+            mValueType == CMath::ValueType::TotalMass)
           {
             return true;
           }
 
         if (context.isSet(CCore::SimulationContext::UseMoieties) &&
-            mValueType == CMath::DependentMass)
+            mValueType == CMath::ValueType::DependentMass)
           {
             return true;
           }
@@ -183,14 +183,14 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         return false;
         break;
 
-      case CMath::Species:
+      case CMath::EntityType::Species:
 
         // For species we need to account for the duality of the intensive and extensive value
-        if (mValueType != CMath::Value)
+        if (mValueType != CMath::ValueType::Value)
           return true;
 
         if (context.isSet(CCore::SimulationContext::UseMoieties) &&
-            mSimulationType == CMath::Dependent &&
+            mSimulationType == CMath::SimulationType::Dependent &&
             !mIsIntensiveProperty)
           {
             if (mpCorrespondingProperty != pObject)
@@ -213,7 +213,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         else
           {
             // Amount which are determine by assignment need to be recalculated.
-            if (mSimulationType == CMath::Assignment)
+            if (mSimulationType == CMath::SimulationType::Assignment)
               return true;
 
             // If the concentration was changed in the context we need to recalculate.
@@ -221,7 +221,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
               return true;
 
             // If the concentration is calculated by an assignment we need to recalculate.
-            if (mpCorrespondingProperty->getSimulationType() == CMath::Assignment)
+            if (mpCorrespondingProperty->getSimulationType() == CMath::SimulationType::Assignment)
               return true;
 
             return false;
@@ -229,10 +229,10 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
         break;
 
-      case CMath::Event:
+      case CMath::EntityType::Event:
 
         if (context.isSet(CCore::SimulationContext::EventHandling) &&
-            mValueType == CMath::Discontinuous)
+            mValueType == CMath::ValueType::Discontinuous)
           {
             switch (mpExpression->getRoot()->mainType() | mpExpression->getRoot()->subType())
               {
@@ -241,7 +241,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
                   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
                   if (pMathObject != NULL &&
-                      pMathObject->mValueType == CMath::EventTrigger)
+                      pMathObject->mValueType == CMath::ValueType::EventTrigger)
                     {
                       return false;
                     }
@@ -266,14 +266,14 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
         return true;
         break;
 
-      case CMath::Delay:
+      case CMath::EntityType::Delay:
 
         if (context.isSet(CCore::SimulationContext::EventHandling))
           {
             return true;
           }
 
-        return (mValueType == CMath::DelayLag);
+        return (mValueType == CMath::ValueType::DelayLag);
 
         break;
 
@@ -477,11 +477,11 @@ bool CMathObject::compile(CMathContainer & container)
 
   switch (mValueType)
     {
-      case CMath::ValueTypeUndefined:
+      case CMath::ValueType::Undefined:
         success = false;
         break;
 
-      case CMath::Value:
+      case CMath::ValueType::Value:
 
         if (mIsInitialValue)
           {
@@ -494,21 +494,21 @@ bool CMathObject::compile(CMathContainer & container)
 
         break;
 
-      case CMath::Rate:
+      case CMath::ValueType::Rate:
         success = compileRate(container);
         break;
 
-      case CMath::ParticleFlux:
+      case CMath::ValueType::ParticleFlux:
         success = compileParticleFlux(container);
         break;
 
-      case CMath::Flux:
+      case CMath::ValueType::Flux:
         success = compileFlux(container);
         break;
 
-      case CMath::Noise:
+      case CMath::ValueType::Noise:
 
-        if (mEntityType == CMath::Reaction)
+        if (mEntityType == CMath::EntityType::Reaction)
           {
             success = compileReactionNoise(container);
           }
@@ -519,33 +519,33 @@ bool CMathObject::compile(CMathContainer & container)
 
         break;
 
-      case CMath::ParticleNoise:
+      case CMath::ValueType::ParticleNoise:
         success = compileReactionParticleNoise(container);
         break;
 
-      case CMath::Propensity:
+      case CMath::ValueType::Propensity:
         success = compilePropensity(container);
         break;
 
-      case CMath::TotalMass:
+      case CMath::ValueType::TotalMass:
         success = compileTotalMass(container);
         break;
 
-      case CMath::DependentMass:
+      case CMath::ValueType::DependentMass:
         success = compileDependentMass(container);
         break;
 
-      case CMath::TransitionTime:
+      case CMath::ValueType::TransitionTime:
         success = compileTransitionTime(container);
         break;
 
-      case CMath::Discontinuous:
-      case CMath::EventDelay:
-      case CMath::EventPriority:
-      case CMath::EventAssignment:
-      case CMath::EventTrigger:
-      case CMath::EventRoot:
-      case CMath::EventRootState:
+      case CMath::ValueType::Discontinuous:
+      case CMath::ValueType::EventDelay:
+      case CMath::ValueType::EventPriority:
+      case CMath::ValueType::EventAssignment:
+      case CMath::ValueType::EventTrigger:
+      case CMath::ValueType::EventRoot:
+      case CMath::ValueType::EventRootState:
         // These objects are compiled through the event compile,
         // which is executed after the object compile. It is therefore
         // correct to leave the object in its default state.
@@ -572,7 +572,7 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
   const CMetab * pSpecies = NULL;
 
   // Only species have corresponding properties (extensive vs intensive).
-  if (mEntityType == CMath::Species)
+  if (mEntityType == CMath::EntityType::Species)
     {
       pSpecies = static_cast< const CMetab * >(pEntity);
 
@@ -590,23 +590,23 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
     {
       switch (mSimulationType)
         {
-          case CMath::EventTarget:
-          case CMath::Fixed:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
-          case CMath::Conversion:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Fixed:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
+          case CMath::SimulationType::Conversion:
             success &= createIntensiveValueExpression(pSpecies, container);
             break;
 
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             // Extensive Property * Conversion / Compartment Size
             success &= createConvertedExpression(pSpecies->getInitialExpressionPtr(), container);
 
             break;
 
-          case CMath::Time:
-          case CMath::SimulationTypeUndefined:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::Undefined:
             success = false;
             break;
         }
@@ -615,10 +615,10 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
     {
       switch (mSimulationType)
         {
-          case CMath::Fixed:
+          case CMath::SimulationType::Fixed:
             break;
 
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             if (pEntity != NULL)
               {
                 success &= createConvertedExpression(pEntity->getInitialExpressionPtr(), container);
@@ -630,18 +630,18 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
 
             break;
 
-          case CMath::Conversion:
+          case CMath::SimulationType::Conversion:
           {
             success &= createExtensiveValueExpression(pSpecies, container);
           }
           break;
 
-          case CMath::SimulationTypeUndefined:
-          case CMath::EventTarget:
-          case CMath::Time:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::SimulationType::Undefined:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
             success = false;
             break;
         }
@@ -666,7 +666,7 @@ bool CMathObject::compileValue(CMathContainer & container)
     }
 
   // Only species have corresponding properties (extensive vs intensive).
-  if (mEntityType == CMath::Species)
+  if (mEntityType == CMath::EntityType::Species)
     {
       pSpecies = static_cast< const CMetab * >(pEntity);
 
@@ -684,21 +684,21 @@ bool CMathObject::compileValue(CMathContainer & container)
     {
       switch (mSimulationType)
         {
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             success &= createConvertedExpression(pSpecies->getExpressionPtr(), container);
             break;
 
-          case CMath::EventTarget:
-          case CMath::Conversion:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Conversion:
             success &= createIntensiveValueExpression(pSpecies, container);
             break;
 
-          case CMath::SimulationTypeUndefined:
-          case CMath::Fixed:
-          case CMath::Time:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::SimulationType::Undefined:
+          case CMath::SimulationType::Fixed:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
             success = false;
             break;
         }
@@ -707,22 +707,22 @@ bool CMathObject::compileValue(CMathContainer & container)
     {
       // Species need an additional conversion since the event targets the
       // intensive property.
-      if (mEntityType == CMath::Species)
+      if (mEntityType == CMath::EntityType::Species)
         {
           success &= createExtensiveValueExpression(pSpecies, container);
         }
 
       switch (mSimulationType)
         {
-          case CMath::Fixed:
-          case CMath::EventTarget:
-          case CMath::Time:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Conversion:
+          case CMath::SimulationType::Fixed:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Conversion:
             break;
 
-          case CMath::Dependent:
+          case CMath::SimulationType::Dependent:
           {
             // We need to add the dependent number of the moiety as a possible
             // prerequisite.
@@ -734,7 +734,7 @@ bool CMathObject::compileValue(CMathContainer & container)
           }
           break;
 
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             if (pEntity != NULL)
               {
                 success &= createConvertedExpression(pEntity->getExpressionPtr(), container);
@@ -746,7 +746,7 @@ bool CMathObject::compileValue(CMathContainer & container)
 
             break;
 
-          case CMath::SimulationTypeUndefined:
+          case CMath::SimulationType::Undefined:
             success = false;
             break;
         }
@@ -771,7 +771,7 @@ bool CMathObject::compileRate(CMathContainer & container)
     }
 
   // Only species have corresponding properties (extensive vs intensive).
-  if (mEntityType == CMath::Species)
+  if (mEntityType == CMath::EntityType::Species)
     {
       pSpecies = static_cast< const CMetab * >(pEntity);
     }
@@ -781,18 +781,18 @@ bool CMathObject::compileRate(CMathContainer & container)
       // Only species have intensive properties.
       switch (mSimulationType)
         {
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             success &= createIntensiveRateExpression(pSpecies, container);
             break;
 
-          case CMath::SimulationTypeUndefined:
-          case CMath::Fixed:
-          case CMath::EventTarget:
-          case CMath::Time:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
-          case CMath::Conversion:
+          case CMath::SimulationType::Undefined:
+          case CMath::SimulationType::Fixed:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
+          case CMath::SimulationType::Conversion:
             success = false;
             break;
         }
@@ -802,17 +802,17 @@ bool CMathObject::compileRate(CMathContainer & container)
 
       switch (mSimulationType)
         {
-          case CMath::Fixed:
+          case CMath::SimulationType::Fixed:
             *mpValue = 0;
             break;
 
-          case CMath::Time:
+          case CMath::SimulationType::Time:
             *mpValue = 1;
             break;
 
-          case CMath::ODE:
+          case CMath::SimulationType::ODE:
 
-            if (mEntityType == CMath::Species)
+            if (mEntityType == CMath::EntityType::Species)
               {
                 success &= createExtensiveODERateExpression(pSpecies, container);
               }
@@ -827,20 +827,20 @@ bool CMathObject::compileRate(CMathContainer & container)
 
             break;
 
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
           {
             success &= createExtensiveReactionRateExpression(pSpecies, container);
           }
           break;
 
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             // TODO When we have symbolic differentiation we can deal with this.
             break;
 
-          case CMath::SimulationTypeUndefined:
-          case CMath::EventTarget:
-          case CMath::Conversion:
+          case CMath::SimulationType::Undefined:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Conversion:
             success = false;
             break;
         }
@@ -939,7 +939,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
     }
 
   // Only species have corresponding properties (extensive vs intensive).
-  if (mEntityType == CMath::Species)
+  if (mEntityType == CMath::EntityType::Species)
     {
       pSpecies = static_cast< const CMetab * >(pEntity);
     }
@@ -949,18 +949,18 @@ bool CMathObject::compileNoise(CMathContainer & container)
       // Only species have intensive properties.
       switch (mSimulationType)
         {
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             success &= createIntensiveNoiseExpression(pSpecies, container);
             break;
 
-          case CMath::SimulationTypeUndefined:
-          case CMath::Fixed:
-          case CMath::EventTarget:
-          case CMath::Time:
-          case CMath::ODE:
-          case CMath::Independent:
-          case CMath::Dependent:
-          case CMath::Conversion:
+          case CMath::SimulationType::Undefined:
+          case CMath::SimulationType::Fixed:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::ODE:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
+          case CMath::SimulationType::Conversion:
             success = false;
             break;
         }
@@ -969,12 +969,12 @@ bool CMathObject::compileNoise(CMathContainer & container)
     {
       switch (mSimulationType)
         {
-          case CMath::ODE:
+          case CMath::SimulationType::ODE:
 
             if (pEntity != NULL &&
                 pEntity->hasNoise())
               {
-                if (mEntityType == CMath::Species)
+                if (mEntityType == CMath::EntityType::Species)
                   {
                     success &= createExtensiveNoiseExpression(pSpecies, container);
                   }
@@ -994,8 +994,8 @@ bool CMathObject::compileNoise(CMathContainer & container)
 
             break;
 
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
             // TODO CRITICAL Implement me!
           {
             success &= createExtensiveReactionNoiseExpression(pSpecies, container);
@@ -1003,12 +1003,12 @@ bool CMathObject::compileNoise(CMathContainer & container)
 
           break;
 
-          case CMath::Fixed:
-          case CMath::Time:
-          case CMath::Assignment:
-          case CMath::SimulationTypeUndefined:
-          case CMath::EventTarget:
-          case CMath::Conversion:
+          case CMath::SimulationType::Fixed:
+          case CMath::SimulationType::Time:
+          case CMath::SimulationType::Assignment:
+          case CMath::SimulationType::Undefined:
+          case CMath::SimulationType::EventTarget:
+          case CMath::SimulationType::Conversion:
             success = false;
             break;
         }
@@ -1441,10 +1441,10 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
 
   bool ReplaceDiscontinousNodes =
     !mIsInitialValue &&
-    mValueType != CMath::Discontinuous &&
-    mValueType != CMath::EventAssignment &&
-    mValueType != CMath::EventPriority &&
-    mValueType != CMath::EventDelay;
+    mValueType != CMath::ValueType::Discontinuous &&
+    mValueType != CMath::ValueType::EventAssignment &&
+    mValueType != CMath::ValueType::EventPriority &&
+    mValueType != CMath::ValueType::EventDelay;
 
   pdelete(mpExpression);
   mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
@@ -1854,83 +1854,83 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   switch (o.mValueType)
     {
-      case CMath::ValueTypeUndefined:
+      case CMath::ValueType::Undefined:
         os << "ValueTypeUndefined" << std::endl;
         break;
 
-      case CMath::Value:
+      case CMath::ValueType::Value:
         os << "Value" << std::endl;
         break;
 
-      case CMath::Rate:
+      case CMath::ValueType::Rate:
         os << "ValueRate" << std::endl;
         break;
 
-      case CMath::ParticleFlux:
+      case CMath::ValueType::ParticleFlux:
         os << "ParticleFlux" << std::endl;
         break;
 
-      case CMath::Flux:
+      case CMath::ValueType::Flux:
         os << "Flux" << std::endl;
         break;
 
-      case CMath::Propensity:
+      case CMath::ValueType::Propensity:
         os << "Propensity" << std::endl;
         break;
 
-      case CMath::Noise:
+      case CMath::ValueType::Noise:
         os << "Noise" << std::endl;
         break;
 
-      case CMath::ParticleNoise:
+      case CMath::ValueType::ParticleNoise:
         os << "ParticleNoise" << std::endl;
         break;
 
-      case CMath::TotalMass:
+      case CMath::ValueType::TotalMass:
         os << "TotalMass" << std::endl;
         break;
 
-      case CMath::DependentMass:
+      case CMath::ValueType::DependentMass:
         os << "DependentMass" << std::endl;
         break;
 
-      case CMath::Discontinuous:
+      case CMath::ValueType::Discontinuous:
         os << "Discontinuous" << std::endl;
         break;
 
-      case CMath::EventDelay:
+      case CMath::ValueType::EventDelay:
         os << "EventDelay" << std::endl;
         break;
 
-      case CMath::EventPriority:
+      case CMath::ValueType::EventPriority:
         os << "EventPriority" << std::endl;
         break;
 
-      case CMath::EventAssignment:
+      case CMath::ValueType::EventAssignment:
         os << "EventAssignment" << std::endl;
         break;
 
-      case CMath::EventTrigger:
+      case CMath::ValueType::EventTrigger:
         os << "EventTrigger" << std::endl;
         break;
 
-      case CMath::EventRoot:
+      case CMath::ValueType::EventRoot:
         os << "EventRoot" << std::endl;
         break;
 
-      case CMath::EventRootState:
+      case CMath::ValueType::EventRootState:
         os << "EventRootState" << std::endl;
         break;
 
-      case CMath::DelayValue:
+      case CMath::ValueType::DelayValue:
         os << "DelayValue" << std::endl;
         break;
 
-      case CMath::DelayLag:
+      case CMath::ValueType::DelayLag:
         os << "DelayLag" << std::endl;
         break;
 
-      case CMath::TransitionTime:
+      case CMath::ValueType::TransitionTime:
         os << "TransitionTime" << std::endl;
         break;
     }
@@ -1939,39 +1939,39 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   switch (o.mSimulationType)
     {
-      case CMath::SimulationTypeUndefined:
+      case CMath::SimulationType::Undefined:
         os << "SimulationTypeUndefined" << std::endl;
         break;
 
-      case CMath::Fixed:
+      case CMath::SimulationType::Fixed:
         os << "Fixed" << std::endl;
         break;
 
-      case CMath::EventTarget:
+      case CMath::SimulationType::EventTarget:
         os << "EventTarget" << std::endl;
         break;
 
-      case CMath::Time:
+      case CMath::SimulationType::Time:
         os << "Time" << std::endl;
         break;
 
-      case CMath::ODE:
+      case CMath::SimulationType::ODE:
         os << "ODE" << std::endl;
         break;
 
-      case CMath::Independent:
+      case CMath::SimulationType::Independent:
         os << "Independent" << std::endl;
         break;
 
-      case CMath::Dependent:
+      case CMath::SimulationType::Dependent:
         os << "Dependent" << std::endl;
         break;
 
-      case CMath::Assignment:
+      case CMath::SimulationType::Assignment:
         os << "Assignment" << std::endl;
         break;
 
-      case CMath::Conversion:
+      case CMath::SimulationType::Conversion:
         os << "Conversion" << std::endl;
         break;
     };
@@ -1980,47 +1980,47 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   switch (o.mEntityType)
     {
-      case CMath::EntityTypeUndefined:
+      case CMath::EntityType::Undefined:
         os << "EntityTypeUndefined" << std::endl;
         break;
 
-      case CMath::Model:
+      case CMath::EntityType::Model:
         os << "Model" << std::endl;
         break;
 
-      case CMath::Analysis:
+      case CMath::EntityType::Analysis:
         os << "Analysis" << std::endl;
         break;
 
-      case CMath::GlobalQuantity:
+      case CMath::EntityType::GlobalQuantity:
         os << "GlobalQuantity" << std::endl;
         break;
 
-      case CMath::Compartment:
+      case CMath::EntityType::Compartment:
         os << "Compartment" << std::endl;
         break;
 
-      case CMath::Species:
+      case CMath::EntityType::Species:
         os << "Species" << std::endl;
         break;
 
-      case CMath::LocalReactionParameter:
+      case CMath::EntityType::LocalReactionParameter:
         os << "LocalReactionParameter" << std::endl;
         break;
 
-      case CMath::StoichiometricCoefficients:
+      case CMath::EntityType::StoichiometricCoefficients:
         os << "StoichiometricCoefficients" << std::endl;
         break;
 
-      case CMath::Reaction:
+      case CMath::EntityType::Reaction:
         os << "Reaction" << std::endl;
         break;
 
-      case CMath::Moiety:
+      case CMath::EntityType::Moiety:
         os << "Moiety" << std::endl;
         break;
 
-      case CMath::Event:
+      case CMath::EntityType::Event:
         os << "Event" << std::endl;
         break;
     };

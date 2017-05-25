@@ -373,11 +373,11 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
             {
               if (*pRootValue == RootValue || *pRootValue == -RootValue)
                 {
-                  *pRootFound = CMath::ToggleBoth;
+                  *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
                 }
               else
                 {
-                  *pRootFound = CMath::NoToggle;
+                  *pRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
                 }
             }
 
@@ -445,13 +445,13 @@ bool CStochDirectMethod::checkRoots()
         {
           // These root changes are not caused by the time alone as those are handled in do single step.
           hasRoots = true;
-          *pRootFound = CMath::ToggleBoth;
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
         }
       else if (*pRootValueNew == 0.0 &&
                *pRootValueOld != 0.0)
         {
           hasRoots = true;
-          *pRootFound = CMath::ToggleEquality; // toggle only equality
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleEquality); // toggle only equality
           *pRootNonZero = *pRootValueOld;
         }
       else if (*pRootValueNew != 0.0 &&
@@ -459,11 +459,11 @@ bool CStochDirectMethod::checkRoots()
                *pRootValueNew **pRootNonZero < 0.0)
         {
           hasRoots = true;
-          *pRootFound = CMath::ToggleInequality; // toggle only inequality
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleInequality); // toggle only inequality
         }
       else
         {
-          *pRootFound = CMath::NoToggle;
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
         }
     }
 

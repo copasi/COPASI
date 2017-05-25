@@ -453,9 +453,9 @@ void CHybridMethodODE45::partitionSystem()
     {
       const CMathObject * pObject = static_cast< const CMathObject * >(*it);
 
-      if ((pObject->getSimulationType() == CMath::Dependent ||
-           pObject->getSimulationType() == CMath::Independent) &&
-          pObject->getValueType() == CMath::Rate)
+      if ((pObject->getSimulationType() == CMath::SimulationType::Dependent ||
+           pObject->getSimulationType() == CMath::SimulationType::Independent) &&
+          pObject->getValueType() == CMath::ValueType::Rate)
         {
           SpeciesRates.insert(pObject);
         }
@@ -646,13 +646,13 @@ bool CHybridMethodODE45::checkRoots()
         {
           // These root changes are not caused by the time alone as those are handled in do single step.
           hasRoots = true;
-          *pRootFound = CMath::ToggleBoth;
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
         }
       else if (*pRootValueNew == 0.0 &&
                *pRootValueOld != 0.0)
         {
           hasRoots = true;
-          *pRootFound = CMath::ToggleEquality; // toggle only equality
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleEquality); // toggle only equality
           *pRootNonZero = *pRootValueOld;
         }
       else if (*pRootValueNew != 0.0 &&
@@ -660,11 +660,11 @@ bool CHybridMethodODE45::checkRoots()
                *pRootValueNew **pRootNonZero < 0.0)
         {
           hasRoots = true;
-          *pRootFound = CMath::ToggleInequality; // toggle only inequality
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleInequality); // toggle only inequality
         }
       else
         {
-          *pRootFound = CMath::NoToggle;
+          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
         }
     }
 

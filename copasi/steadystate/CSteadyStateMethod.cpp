@@ -201,7 +201,7 @@ bool CSteadyStateMethod::allPositive()
     {
       switch (pValueObject->getEntityType())
         {
-          case CMath::Compartment:
+          case CMath::EntityType::Compartment:
 
             if (*pValue < - *mpDerivationResolution)
               {
@@ -210,7 +210,7 @@ bool CSteadyStateMethod::allPositive()
 
             break;
 
-          case CMath::Species:
+          case CMath::EntityType::Species:
 
             if (*pValue < - ParticleResolution ***ppCompartmentVolume)
               {
@@ -219,7 +219,7 @@ bool CSteadyStateMethod::allPositive()
 
             break;
 
-            // No restrictions on other values
+          // No restrictions on other values
           default:
             break;
         }

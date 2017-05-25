@@ -626,7 +626,7 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 
       tmp = *pDistance;
 
-      if (pMathObject->getEntityType() == CMath::Species)
+      if (pMathObject->getEntityType() == CMath::EntityType::Species)
         {
           tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
         }
@@ -766,7 +766,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   for (; pMathObject != pMathObjectEnd; ++pMathObject, ++ppCompartmentVolume)
     {
-      if (pMathObject->getEntityType() == CMath::Species)
+      if (pMathObject->getEntityType() == CMath::EntityType::Species)
         {
           Requested.insert(pMathObject->getCorrespondingProperty());
           *ppCompartmentVolume = (C_FLOAT64 *) mpContainer->getCompartment(pMathObject)->getValuePointer();
@@ -780,7 +780,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
   for (; pMathObject != pMathObjectEnd; ++pMathObject, ++ppCompartmentVolume)
     {
-      if (pMathObject->getEntityType() == CMath::Species)
+      if (pMathObject->getEntityType() == CMath::EntityType::Species)
         {
           *ppCompartmentVolume = (C_FLOAT64 *) mpContainer->getCompartment(pMathObject)->getValuePointer();
         }
@@ -1035,7 +1035,7 @@ C_FLOAT64 CNewtonMethod::solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVect
 
           tmp = fabs(*pAx - *pB);
 
-          if (pMathObject->getEntityType() == CMath::Species)
+          if (pMathObject->getEntityType() == CMath::EntityType::Species)
             {
               tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
             }

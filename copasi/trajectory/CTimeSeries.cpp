@@ -172,36 +172,36 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
     {
       switch (pObject->getSimulationType())
         {
-          case CMath::Fixed:
+          case CMath::SimulationType::Fixed:
             mPivot[Fixed++] = i;
 
             // We do not expose Fixed values we keep them for internal calculations.
             continue;
             break;
 
-          case CMath::EventTarget:
+          case CMath::SimulationType::EventTarget:
             EventTargetCount++;
             mPivot[EventTarget++] = i;
             break;
 
-          case CMath::Time:
+          case CMath::SimulationType::Time:
             mPivot[Time++] = i;
             break;
 
-          case CMath::ODE:
+          case CMath::SimulationType::ODE:
             mPivot[ODE++] = i;
             break;
 
-          case CMath::Independent:
-          case CMath::Dependent:
+          case CMath::SimulationType::Independent:
+          case CMath::SimulationType::Dependent:
             mPivot[Reaction++] = i;
             break;
 
-          case CMath::Assignment:
+          case CMath::SimulationType::Assignment:
             mPivot[Assignment++] = i;
             break;
 
-          case CMath::Conversion:
+          case CMath::SimulationType::Conversion:
 
             if (EventTargetCount < pContainer->getCountFixedEventTargets())
               {
