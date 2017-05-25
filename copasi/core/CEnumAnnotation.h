@@ -77,19 +77,4 @@ public:
   }
 };
 
-/**
- * Convert an annotation to enum. If no matching name is found the parameter enumDefault is returned.
- * @param const AType & annotation
- * @param const CEnumAnnotation< AType, Enum > & enumAnnotations
- * @param const Enum & enumDefault (default Enum::__SIZE)
- * @return Enum enum
- */
-template < typename Enum, typename AType >
-Enum AnnotationToEnum(const AType & annotation,
-                      const CEnumAnnotation< AType, Enum > & enumAnnotations,
-                      const Enum & enumDefault = Enum::__SIZE)
-{
-  return enumAnnotations.toEnum(annotation, enumDefault);
-}
-
 #endif // COPASI_CEnumAnnotation
