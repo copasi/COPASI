@@ -10,7 +10,7 @@
 
 #include "CTaskEnum.h"
 
-EnumArray< const std::string, CTaskEnum::Task >::base TaskName
+const CEnumAnnotation< const std::string, CTaskEnum::Task > CTaskEnum::TaskName(
 {
   "Steady-State",
   "Time-Course",
@@ -27,11 +27,9 @@ EnumArray< const std::string, CTaskEnum::Task >::base TaskName
   "Linear Noise Approximation",
   "Analytics",
   "not specified"
-};
+});
 
-const EnumArray< const std::string, CTaskEnum::Task > CTaskEnum::TaskName(TaskName);
-
-EnumArray< const std::string, CTaskEnum::Task >::base TaskXML
+const CEnumAnnotation< const std::string, CTaskEnum::Task > CTaskEnum::TaskXML(
 {
   "steadyState",
   "timeCourse",
@@ -48,11 +46,9 @@ EnumArray< const std::string, CTaskEnum::Task >::base TaskXML
   "linearNoiseApproximation",
   "analytics",
   "unset"
-};
+});
 
-const EnumArray< const std::string, CTaskEnum::Task > CTaskEnum::TaskXML(TaskXML);
-
-EnumArray< const std::string, CTaskEnum::Method >::base MethodName
+const CEnumAnnotation< const std::string, CTaskEnum::Method > CTaskEnum::MethodName(
 {
   "Not set",
   "Random Search",
@@ -103,11 +99,9 @@ EnumArray< const std::string, CTaskEnum::Method >::base MethodName
   "Cross Section Finder",
   "Linear Noise Approximation",
   "Analytics Finder"
-};
+});
 
-const EnumArray< const std::string, CTaskEnum::Method > CTaskEnum::MethodName(MethodName);
-
-EnumArray< const std::string, CTaskEnum::Method >::base MethodXML
+const CEnumAnnotation< const std::string, CTaskEnum::Method > CTaskEnum::MethodXML(
 {
   "NotSet",
   "RandomSearch",
@@ -158,6 +152,4 @@ EnumArray< const std::string, CTaskEnum::Method >::base MethodXML
   "crossSectionMethod",
   "LinearNoiseApproximation",
   "analyticsMethod"
-};
-
-const EnumArray< const std::string, CTaskEnum::Method > CTaskEnum::MethodXML(MethodXML);
+});

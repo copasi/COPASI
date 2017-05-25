@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "copasi/core/CFlags.h"
+#include "../core/CCEnumAnnotation.h"
 
 class CTaskEnum
 {
@@ -45,12 +45,12 @@ public:
    * String literals for the GUI to display type names of tasks known
    * to COPASI.
    */
-  static const EnumArray< const std::string, Task > TaskName;
+  static const CEnumAnnotation< const std::string, Task > TaskName;
 
   /**
    * XML type names of tasks known to COPASI.
    */
-  static const EnumArray< const std::string, Task > TaskXML;
+  static const CEnumAnnotation< const std::string, Task > TaskXML;
 
   /**
    * Enumeration of the sub types of methods known to COPASI.
@@ -113,12 +113,12 @@ public:
    * String literals for the GUI to display sub type names of methods known
    * to COPASI.
    */
-  static const EnumArray< const std::string, Method > MethodName;
+  static const CEnumAnnotation< const std::string, Method > MethodName;
 
   /**
    * XML sub type names of methods known to COPASI.
    */
-  static const EnumArray< const std::string, Method > MethodXML;
+  static const CEnumAnnotation< const std::string, Method > MethodXML;
 };
 
 #endif // COPASI_CTaskEnum
