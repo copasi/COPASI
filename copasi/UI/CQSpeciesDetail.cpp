@@ -55,14 +55,14 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget *parent, const char *name) :
   mpDependencies(new CQDependenciesWidget(parent))
 {
   setupUi(this);
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
-  mItemToType.push_back(CModelEntity::REACTIONS);
-  mItemToType.push_back(CModelEntity::FIXED);
-  mItemToType.push_back(CModelEntity::ASSIGNMENT);
-  mItemToType.push_back(CModelEntity::ODE);
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::REACTIONS]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::REACTIONS));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ODE));
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
   mpNoiseExpressionWidget->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
@@ -92,8 +92,8 @@ CQSpeciesDetail::~CQSpeciesDetail()
 
 bool CQSpeciesDetail::leave()
 {
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED &&
-      (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::REACTIONS)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED &&
+      (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::REACTIONS)
     {
       // -- Expression --
       mpExpressionEMW->updateWidget();
@@ -175,7 +175,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblInitialExpression->setText("Initial Expression\n" + ConcentrationUnits);
 
         if (mpMetab != NULL &&
-            (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] == CModelEntity::ASSIGNMENT)
+            (CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] == CModelEntity::Status::ASSIGNMENT)
           mpLblExpression->setText("Expression " + ConcentrationUnits);
         else
           mpLblExpression->setText("Expression " + ConcentrationRateUnits);
@@ -192,7 +192,7 @@ void CQSpeciesDetail::setFramework(int framework)
         mpLblInitialValue->setText("Initial Particle Number " + ParticleNumberUnits);
         mpLblInitialExpression->setText("Initial Expression " + ConcentrationUnits);
 
-        if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT)
+        if (mpMetab->getStatus() == CModelEntity::Status::ASSIGNMENT)
           mpLblExpression->setText("Expression" + ConcentrationUnits);
         else
           mpLblExpression->setText("Expression" + ConcentrationRateUnits);
@@ -271,7 +271,7 @@ void CQSpeciesDetail::load()
   slotTypeChanged(mpComboBoxType->currentIndex());
 
   // Use Initial Expression
-  if (mpMetab->getStatus() == CModelEntity::ASSIGNMENT ||
+  if (mpMetab->getStatus() == CModelEntity::Status::ASSIGNMENT ||
       mpMetab->getInitialExpression() == "")
     {
       mpBoxUseInitialExpression->setChecked(false);
@@ -341,7 +341,7 @@ void CQSpeciesDetail::save()
     {
       case 0:
         if (mpMetab->getInitialConcentration() != mInitialConcentration
-            && mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+            && mpMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
           {
             // SpeciesChangeCommand  -> initial concentration
             bool wasNaN = mpMetab->getInitialConcentration() != mpMetab->getInitialConcentration();
@@ -364,7 +364,7 @@ void CQSpeciesDetail::save()
 
       case 1:
         if (mpMetab->getInitialValue() != mInitialNumber
-            && mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+            && mpMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
           {
             // SpeciesChangeCommand  -> initial particle number
             bool wasNaN = mpMetab->getInitialValue() != mpMetab->getInitialValue();
@@ -401,7 +401,7 @@ void CQSpeciesDetail::save()
     }
 
   // Initial Expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpMetab->getInitialExpression() != (mpInitialExpressionEMW->mpExpressionWidget->getExpression()))
@@ -636,7 +636,7 @@ void CQSpeciesDetail::slotInitialTypeChanged(bool useInitialExpression)
     {
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
-      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT);
     }
 }
 
@@ -730,7 +730,7 @@ bool CQSpeciesDetail::createNewSpecies()
   std::string name = "species_1";
   int i = 1;
 
-  while (!(mpMetab = pModel->createMetabolite(name, "", 1.0, CModelEntity::REACTIONS)))
+  while (!(mpMetab = pModel->createMetabolite(name, "", 1.0, CModelEntity::Status::REACTIONS)))
     {
       i++;
       name = "species_";
@@ -836,7 +836,7 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 {
   switch ((CModelEntity::Status) mItemToType[type])
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
         mpLblExpression->hide();
         mpExpressionEMW->hide();
         mpBoxUseInitialExpression->setEnabled(true);
@@ -845,7 +845,7 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
         slotAddNoiseChanged(false);
         break;
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
         mpLblExpression->show();
         mpExpressionEMW->show();
         mpBoxUseInitialExpression->setEnabled(false);
@@ -855,7 +855,7 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
         slotAddNoiseChanged(false);
         break;
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
         mpLblExpression->show();
         mpExpressionEMW->show();
         mpBoxUseInitialExpression->setEnabled(true);
@@ -870,7 +870,7 @@ void CQSpeciesDetail::speciesTypeChanged(int type)
 #endif
         break;
 
-      case CModelEntity::REACTIONS:
+      case CModelEntity::Status::REACTIONS:
         mpLblExpression->hide();
         mpExpressionEMW->hide();
         mpBoxUseInitialExpression->setEnabled(true);
@@ -1051,7 +1051,7 @@ bool CQSpeciesDetail::changeValue(
         mpMetab->setStatus((CModelEntity::Status)index);
 
         if (iValue == iValue
-            && mpMetab->getStatus() != CModelEntity::ASSIGNMENT)
+            && mpMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
           mpMetab->setInitialValue(iValue);
 
         break;

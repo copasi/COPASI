@@ -137,7 +137,7 @@ bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
 
   // The entity type must not be an ASSIGNMENT
   if (pEntity != NULL &&
-      pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+      pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       mPrerequisits.insert(pEntity);
 
@@ -146,7 +146,7 @@ bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
       mpTarget = pEntity->getValueObject();
     }
   else if (pEntity != NULL &&
-           pEntity->getStatus() == CModelEntity::ASSIGNMENT)
+           pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
     }

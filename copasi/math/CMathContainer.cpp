@@ -1857,7 +1857,7 @@ void CMathContainer::allocate()
 
   for (; ppEntities != ppEntitiesEnd; ++ppEntities)
     {
-      if ((*ppEntities)->getStatus() == CModelEntity::ASSIGNMENT)
+      if ((*ppEntities)->getStatus() == CModelEntity::Status::ASSIGNMENT)
         continue;
 
       if (EventTargets.find(*ppEntities) != EventTargets.end())
@@ -1948,7 +1948,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
 
   for (; ppEntities != ppEntitiesEnd; ++ppEntities)
     {
-      if ((*ppEntities)->getStatus() == CModelEntity::ASSIGNMENT)
+      if ((*ppEntities)->getStatus() == CModelEntity::Status::ASSIGNMENT)
         continue;
 
       if (EventTargets.find(*ppEntities) == EventTargets.end())
@@ -2003,7 +2003,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   ppEntities = StateTemplate.beginIndependent();
   ppEntitiesEnd = StateTemplate.endIndependent();
 
-  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ODE; ++ppEntities)
+  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::Status::ODE; ++ppEntities)
     {
       ODEEntities.push_back(*ppEntities);
     }
@@ -2019,7 +2019,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
 
   for (; ppEntities != ppEntitiesEnd; ++ppEntities)
     {
-      if ((*ppEntities)->getStatus() != CModelEntity::REACTIONS)
+      if ((*ppEntities)->getStatus() != CModelEntity::Status::REACTIONS)
         continue;
 
       IndependentSpecies.push_back(*ppEntities);
@@ -2034,7 +2034,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   ppEntities = StateTemplate.beginDependent();
   ppEntitiesEnd = StateTemplate.endDependent();
 
-  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::REACTIONS; ++ppEntities)
+  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::Status::REACTIONS; ++ppEntities)
     {
       DependentSpecies.push_back(*ppEntities);
     }
@@ -2048,7 +2048,7 @@ void CMathContainer::initializeObjects(CMath::sPointers & p)
   // We continue with the pointer ppEntities
   ppEntitiesEnd = StateTemplate.endFixed();
 
-  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::ASSIGNMENT; ++ppEntities)
+  for (; ppEntities != ppEntitiesEnd && (*ppEntities)->getStatus() == CModelEntity::Status::ASSIGNMENT; ++ppEntities)
     {
       AssignmentEntities.push_back(*ppEntities);
     }

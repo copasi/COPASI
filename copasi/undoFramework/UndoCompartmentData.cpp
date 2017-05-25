@@ -96,13 +96,13 @@ void UndoCompartmentData::fillObject(CModel *)
   pCompartment->setInitialValue(getInitialValue());
   pCompartment->setStatus(getStatus());
 
-  if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
+  if (getStatus() == CModelEntity::Status::ODE || getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
       pCompartment->setExpression(getExpression());
     }
 
   // set initial expression
-  if (getStatus() != CModelEntity::ASSIGNMENT)
+  if (getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       pCompartment->setInitialExpression(getInitialExpression());
     }

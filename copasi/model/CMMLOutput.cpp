@@ -287,7 +287,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   for (i = 0; i < imax; i++)
     {
-      if (model->getCompartments()[i].getStatus() == CModelEntity::ODE)
+      if (model->getCompartments()[i].getStatus() == CModelEntity::Status::ODE)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
@@ -324,7 +324,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;
         }
-      else if (model->getCompartments()[i].getStatus() == CModelEntity::ASSIGNMENT)
+      else if (model->getCompartments()[i].getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
@@ -355,7 +355,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
   for (i = 0; i < imax; i++)
     {
-      if (model->getMetabolites()[i].getStatus() == CModelEntity::REACTIONS)
+      if (model->getMetabolites()[i].getStatus() == CModelEntity::Status::REACTIONS)
         {
 
           std::set<std::string> reacKeys = listReactionsForMetab(model, model->getMetabolites()[i].getKey());
@@ -394,7 +394,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
               mml << SPC(l + 1) << "</mtr>" << std::endl;
             }
         }
-      else if (model->getMetabolites()[i].getStatus() == CModelEntity::ODE)
+      else if (model->getMetabolites()[i].getStatus() == CModelEntity::Status::ODE)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
@@ -425,7 +425,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
           mml << SPC(l + 1) << "</mtr>" << std::endl;
         }
-      else if (model->getMetabolites()[i].getStatus() == CModelEntity::ASSIGNMENT)
+      else if (model->getMetabolites()[i].getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           mml << SPC(l + 1) << "<mtr>" << std::endl;
 
@@ -453,7 +453,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   imax = model->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
-    if (model->getModelValues()[i].getStatus() == CModelEntity::ODE)
+    if (model->getModelValues()[i].getStatus() == CModelEntity::Status::ODE)
       {
         hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << std::endl;
@@ -481,7 +481,7 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   imax = model->getModelValues().size();
 
   for (i = 0; i < imax; ++i)
-    if (model->getModelValues()[i].getStatus() == CModelEntity::ASSIGNMENT)
+    if (model->getModelValues()[i].getStatus() == CModelEntity::Status::ASSIGNMENT)
       {
         hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << std::endl;

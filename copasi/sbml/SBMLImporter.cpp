@@ -2192,11 +2192,11 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
 
   if (sbmlSpecies->getConstant() || sbmlSpecies->getBoundaryCondition())
     {
-      copasiMetabolite->setStatus(CModelEntity::FIXED);
+      copasiMetabolite->setStatus(CModelEntity::Status::FIXED);
     }
   else
     {
-      copasiMetabolite->setStatus(CModelEntity::REACTIONS);
+      copasiMetabolite->setStatus(CModelEntity::Status::REACTIONS);
     }
 
   // also check if the compartment has a spatialSize of 0 because this also implies hasOnlySubstanceUnits for the species in this compartment
@@ -2785,7 +2785,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
               CModelValue* parameter = this->mpCopasiModel->createModelValue(newParameterId);
               parameter->setSBMLId(newParameterId);
-              parameter->setStatus(CModelEntity::ASSIGNMENT);
+              parameter->setStatus(CModelEntity::Status::ASSIGNMENT);
               parameter->setInitialExpression("0");
 
               mParameterFluxMap[reactionId] = parameter;
@@ -6374,7 +6374,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
     {
       CModelEntity* pME = &this->mpCopasiModel->getCompartments()[i];
 
-      if (pME->getStatus() != CModelEntity::FIXED)
+      if (pME->getStatus() != CModelEntity::Status::FIXED)
         {
           const CEvaluationTree* pTree = pME->getExpressionPtr();
 
@@ -6384,7 +6384,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
             }
         }
 
-      if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+      if (pME->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
 
@@ -6403,7 +6403,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
     {
       CModelEntity* pME = &this->mpCopasiModel->getMetabolites()[i];
 
-      if (pME->getStatus() != CModelEntity::FIXED)
+      if (pME->getStatus() != CModelEntity::Status::FIXED)
         {
           const CEvaluationTree* pTree = pME->getExpressionPtr();
 
@@ -6413,7 +6413,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
             }
         }
 
-      if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+      if (pME->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
 
@@ -6432,7 +6432,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
     {
       CModelEntity* pME = &this->mpCopasiModel->getModelValues()[i];
 
-      if (pME->getStatus() != CModelEntity::FIXED)
+      if (pME->getStatus() != CModelEntity::Status::FIXED)
         {
           const CEvaluationTree* pTree = pME->getExpressionPtr();
 
@@ -6442,7 +6442,7 @@ bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<c
             }
         }
 
-      if (pME->getStatus() != CModelEntity::ASSIGNMENT)
+      if (pME->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           const CEvaluationTree* pTree = pME->getInitialExpressionPtr();
 
@@ -6607,7 +6607,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<const CDataObje
 
       if (pAssignmentRule && pAssignmentRule->isSetVariable())
         {
-          this->importRule(pAssignmentRule, CModelEntity::ASSIGNMENT, copasi2sbmlmap, pSBMLModel);
+          this->importRule(pAssignmentRule, CModelEntity::Status::ASSIGNMENT, copasi2sbmlmap, pSBMLModel);
         }
       else
         {
@@ -6620,7 +6620,7 @@ void SBMLImporter::importSBMLRule(const Rule* sbmlRule, std::map<const CDataObje
 
       if (pRateRule && pRateRule->isSetVariable())
         {
-          this->importRule(pRateRule, CModelEntity::ODE, copasi2sbmlmap, pSBMLModel);
+          this->importRule(pRateRule, CModelEntity::Status::ODE, copasi2sbmlmap, pSBMLModel);
         }
       else
         {
@@ -6725,11 +6725,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                 // if the file is not a level 1 file
                 if (this->mOriginalLevel > 1 && pC->getConstant())
                   {
-                    if (ruleType == CModelEntity::ASSIGNMENT)
+                    if (ruleType == CModelEntity::Status::ASSIGNMENT)
                       {
                         CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Compartment", sbmlId.c_str());
                       }
-                    else if (ruleType == CModelEntity::ODE)
+                    else if (ruleType == CModelEntity::Status::ODE)
                       {
                         CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Compartment", sbmlId.c_str());
                       }
@@ -6760,11 +6760,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                 // if the file is not a level 1 file
                 if (this->mOriginalLevel > 1 && pS->getConstant())
                   {
-                    if (ruleType == CModelEntity::ASSIGNMENT)
+                    if (ruleType == CModelEntity::Status::ASSIGNMENT)
                       {
                         CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Species", sbmlId.c_str());
                       }
-                    else if (ruleType == CModelEntity::ODE)
+                    else if (ruleType == CModelEntity::Status::ODE)
                       {
                         CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Species", sbmlId.c_str());
                       }
@@ -6796,11 +6796,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
                 if (this->mOriginalLevel > 1 && pP->getConstant())
 
                   {
-                    if (ruleType == CModelEntity::ASSIGNMENT)
+                    if (ruleType == CModelEntity::Status::ASSIGNMENT)
                       {
                         CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "AssignmentRule", "Parameter", sbmlId.c_str());
                       }
-                    else if (ruleType == CModelEntity::ODE)
+                    else if (ruleType == CModelEntity::Status::ODE)
                       {
                         CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 34 , "RateRule", "Parameter", sbmlId.c_str());
                       }
@@ -6848,11 +6848,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
 
             if (!pME)
               {
-                if (ruleType == CModelEntity::ASSIGNMENT)
+                if (ruleType == CModelEntity::Status::ASSIGNMENT)
                   {
                     CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "AssigmentRule", sbmlId.c_str());
                   }
-                else if (ruleType == CModelEntity::ODE)
+                else if (ruleType == CModelEntity::Status::ODE)
                   {
                     CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 33, "RateRule", sbmlId.c_str());
                   }
@@ -6876,11 +6876,11 @@ void SBMLImporter::importRule(const Rule* rule, CModelEntity::Status ruleType, s
   else
     {
       // issue a warning
-      if (ruleType == CModelEntity::ASSIGNMENT)
+      if (ruleType == CModelEntity::Status::ASSIGNMENT)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "AssignmentRule" , sbmlId.c_str());
         }
-      else if (ruleType == CModelEntity::ODE)
+      else if (ruleType == CModelEntity::Status::ODE)
         {
           CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 32, "RateRule" , sbmlId.c_str());
         }
@@ -6999,7 +6999,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
             }
         }
 
-      if (pCompartment->getStatus() != CModelValue::FIXED && pModelEntity->getStatus() == CModelValue::ODE)
+      if (pCompartment->getStatus() != CModelEntity::Status::FIXED && pModelEntity->getStatus() == CModelEntity::Status::ODE)
         {
           // if it is an assignment rule we do nothing, if it is an ode rule,
           // we need to issue a warning or an error
@@ -7018,7 +7018,7 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
           delete pExpression;
         }
 
-      pModelEntity->setStatus(CModelValue::FIXED);
+      pModelEntity->setStatus(CModelEntity::Status::FIXED);
       std::string m = "Some error occurred while importing the rule for object with id \"" + rule->getVariable() + "\".";
       CCopasiMessage(CCopasiMessage::RAW, m.c_str());
     }
@@ -7411,7 +7411,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
     {
       // We cannot change the initial value if we have an assignment rule
       // or an initial expression.
-      if (compartmentIt->getStatus() == CModelEntity::ASSIGNMENT ||
+      if (compartmentIt->getStatus() == CModelEntity::Status::ASSIGNMENT ||
           compartmentIt->getInitialExpression() != "")
         {
           ++compartmentIt;
@@ -7440,8 +7440,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
           // if the entity has a status of FIXED or ODE,
           // check if there is an initial assignment, else it is an
           // error
-          if ((compartmentIt->getStatus() == CModelValue::FIXED ||
-               compartmentIt->getStatus() == CModelValue::ODE) &&
+          if ((compartmentIt->getStatus() == CModelEntity::Status::FIXED ||
+               compartmentIt->getStatus() == CModelEntity::Status::ODE) &&
               compartmentIt->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
@@ -7462,7 +7462,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
     {
       // We cannot change the initial value if we have an assignment rule
       // or an initial expression.
-      if (metabIt->getStatus() == CModelEntity::ASSIGNMENT ||
+      if (metabIt->getStatus() == CModelEntity::Status::ASSIGNMENT ||
           metabIt->getInitialExpression() != "")
         {
           ++metabIt;
@@ -7498,9 +7498,9 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
           // if the entity has a status of FIXED, REACTION or ODE,
           // check if there is an initial assignment, else it is an
           // error
-          if ((metabIt->getStatus() == CModelValue::FIXED ||
-               metabIt->getStatus() == CModelValue::REACTIONS ||
-               metabIt->getStatus() == CModelValue::ODE) &&
+          if ((metabIt->getStatus() == CModelEntity::Status::FIXED ||
+               metabIt->getStatus() == CModelEntity::Status::REACTIONS ||
+               metabIt->getStatus() == CModelEntity::Status::ODE) &&
               metabIt->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;
@@ -7521,7 +7521,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
     {
       // We cannot change the initial value if we have an assignment rule
       // or an initial expression.
-      if (mvIt->getStatus() == CModelEntity::ASSIGNMENT ||
+      if (mvIt->getStatus() == CModelEntity::Status::ASSIGNMENT ||
           mvIt->getInitialExpression() != "")
         {
           ++mvIt;
@@ -7547,8 +7547,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
           // if the entity has a status of FIXED or ODE,
           // check if there is an initial assignment, else it is an
           // error
-          if ((mvIt->getStatus() == CModelValue::FIXED ||
-               mvIt->getStatus() == CModelValue::ODE) &&
+          if ((mvIt->getStatus() == CModelEntity::Status::FIXED ||
+               mvIt->getStatus() == CModelEntity::Status::ODE) &&
               mvIt->getInitialExpressionPtr() == NULL)
             {
               this->mIncompleteModel = true;

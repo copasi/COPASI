@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -99,11 +104,11 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
       if ((*ppEntity)->isUsed())
         switch ((*ppEntity)->getStatus())
           {
-            case CModelEntity::FIXED:
+            case CModelEntity::Status::FIXED:
               Fixed++;
               break;
 
-            case CModelEntity::REACTIONS:
+            case CModelEntity::Status::REACTIONS:
 
               if (static_cast< const CMetab * >(*ppEntity)->isDependent())
                 {
@@ -118,17 +123,17 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
 
               break;
 
-            case CModelEntity::ODE:
+            case CModelEntity::Status::ODE:
               assert(Dependent == 0);
               Independent++;
               break;
 
-            case CModelEntity::ASSIGNMENT:
+            case CModelEntity::Status::ASSIGNMENT:
               assert(Fixed == 0);
               Dependent++;
               break;
 
-            case CModelEntity::TIME:
+            case CModelEntity::Status::TIME:
               assert(false);
               break;
           }

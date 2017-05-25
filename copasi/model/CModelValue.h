@@ -30,7 +30,7 @@
 
 #include "copasi/model/CAnnotation.h"
 #include "copasi/core/CDataContainer.h"
-
+#include "copasi/core/CEnumAnnotation.h"
 #include "copasi/utilities/CUnit.h"
 
 class CModel;
@@ -59,26 +59,25 @@ public:
   /**
    *  The valid states for metabolites
    */
-  enum Status
+  enum struct Status
   {
-    FIXED = 0, //the entity is constant (for species even if they are part of a reaction)
+    FIXED = 0,  //the entity is constant (for species even if they are part of a reaction)
     ASSIGNMENT, //the entity is changed by an assignment rule
     REACTIONS, //applies only for species, the species concentration is changed by reactions
-    //      DEPENDENT, //applies only for species, the species concentration is determined by conservation rules
-    //      UNUSED,
     ODE, //the entity is changed by an ordinary differential equation
-    TIME
+    TIME,
+    __SIZE
   };
 
   /**
    * String representation of the states
    */
-  static const std::string StatusName[];
+  static const CEnumAnnotation< std::string, Status > StatusName;
 
   /**
    * XML representation of the states
    */
-  static const char * XMLStatus[];
+  static const CEnumAnnotation< std::string, Status > XMLStatus;
 
   /**
    * Static method to create a CDataObject based on the provided data
@@ -150,7 +149,7 @@ public:
    * Check whether the entity is FIXED or not.
    * @return bool isFixed
    */
-  inline bool isFixed() const {return mStatus == FIXED;}
+  inline bool isFixed() const {return mStatus == Status::FIXED;}
 
   /**
    * Retrieve the value

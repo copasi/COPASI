@@ -63,7 +63,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
 
   for (j = 0; j < jMax; ++j)
     {
-      if (compartments[j].getStatus() != CModelEntity::FIXED)
+      if (compartments[j].getStatus() != CModelEntity::Status::FIXED)
         {
           pFoot->push_back(compartments[j].getObject(CCommonName("Reference=Volume"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
@@ -78,7 +78,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
 
   for (j = 0; j < jMax; ++j)
     {
-      if (metabolites[j].getStatus() != CModelEntity::FIXED)
+      if (metabolites[j].getStatus() != CModelEntity::Status::FIXED)
         {
           pFoot->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
@@ -93,7 +93,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
 
   for (j = 0; j < jMax; ++j)
     {
-      if (parameters[j].getStatus() != CModelEntity::FIXED)
+      if (parameters[j].getStatus() != CModelEntity::Status::FIXED)
         {
           pFoot->push_back(parameters[j].getObject(CCommonName("Reference=Value"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());

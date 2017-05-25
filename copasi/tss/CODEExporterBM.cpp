@@ -230,14 +230,14 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
 
   switch (metab->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
 
         if (!exportSingleObject(fixed, name, expression, comments))
           return false;
 
         break;
 
-      case CModelEntity::REACTIONS:
+      case CModelEntity::Status::REACTIONS:
       {
         if (metab->isDependent())
           {
@@ -255,7 +255,7 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         initial << "init ";
 
@@ -265,7 +265,7 @@ bool CODEExporterBM::exportSingleMetabolite(const CMetab* metab, std::string & e
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
@@ -285,7 +285,7 @@ bool CODEExporterBM::exportSingleCompartment(const CCompartment* comp, std::stri
 {
   switch (comp->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments))
           return false;
@@ -293,7 +293,7 @@ bool CODEExporterBM::exportSingleCompartment(const CCompartment* comp, std::stri
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         initial << "init ";
 
@@ -303,7 +303,7 @@ bool CODEExporterBM::exportSingleCompartment(const CCompartment* comp, std::stri
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
           return false;
@@ -323,7 +323,7 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
 {
   switch (modval->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         if (!exportSingleObject(fixed, NameMap[modval->getKey()], expression, comments))
           return false;
@@ -331,7 +331,7 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         initial << "init ";
 
@@ -341,7 +341,7 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
           return false;
@@ -376,7 +376,7 @@ bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::strin
 
   switch (tmp->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         if (!exportSingleObject(fixed, name, expression, comments))
           return false;
@@ -384,7 +384,7 @@ bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::strin
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         if (!exportSingleObject(initial, name, expression, comments))
           return false;
@@ -392,7 +392,7 @@ bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::strin
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;

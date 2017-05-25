@@ -55,7 +55,7 @@ void test000073::test_bug1087()
   const CModelValue* pModelValue = pDataModel->getModel()->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getSBMLId() == "parameter_1");
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT);
   std::string formula = pModelValue->getExpression();
   CPPUNIT_ASSERT(formula == "3.1*4.5");
 }

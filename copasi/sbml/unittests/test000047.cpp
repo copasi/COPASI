@@ -55,14 +55,14 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
-  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::Status::FIXED);
   CMetab* pA = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pA != NULL);
-  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pA->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -90,7 +90,7 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 0);
   //CPPUNIT_ASSERT(CCopasiMessage::size() == 2);
   CCopasiMessage message = CCopasiMessage::getLastMessage();

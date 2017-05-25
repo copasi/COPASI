@@ -173,7 +173,7 @@ void CQUnitDetail::slotBtnDelete()
 //{
 //  switch ((CModelEntity::Status) mItemToType[type])
 //    {
-//      case CModelEntity::FIXED:
+//      case CModelEntity::Status::FIXED:
 //        // hide label, widget, and all buttons
 //        mpLblExpression->hide();
 //        mpExpressionEMW->hide();
@@ -186,7 +186,7 @@ void CQUnitDetail::slotBtnDelete()
 
 //        break;
 
-//      case CModelEntity::ASSIGNMENT:
+//      case CModelEntity::Status::ASSIGNMENT:
 //        // show label, widget, and correct buttons
 //        mpLblExpression->show();   // show the label
 //        mpExpressionEMW->show();  // show the widget
@@ -200,7 +200,7 @@ void CQUnitDetail::slotBtnDelete()
 
 //        break;
 
-//      case CModelEntity::ODE:
+//      case CModelEntity::Status::ODE:
 //        // show label, widget, and correct buttons
 //        mpLblExpression->show();   // show the label
 //        mpExpressionEMW->show();  // show the widget
@@ -234,13 +234,13 @@ void CQUnitDetail::slotBtnDelete()
 
 void CQUnitDetail::init()
 {
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
+//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
+//  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
 
-//  mItemToType.push_back(CModelEntity::FIXED);
-//  mItemToType.push_back(CModelEntity::ASSIGNMENT);
-//  mItemToType.push_back(CModelEntity::ODE);
+//  mItemToType.push_back(CModelEntity::Status::FIXED);
+//  mItemToType.push_back(CModelEntity::Status::ASSIGNMENT);
+//  mItemToType.push_back(CModelEntity::Status::ODE);
 
 //  mExpressionValid = false;
 //  mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
@@ -302,7 +302,7 @@ bool CQUnitDetail::update(ListViews::ObjectType  objectType,
 
 bool CQUnitDetail::leave()
 {
-//  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
+//  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED)
 //    {
 //      // -- Expression --
 //      mpExpressionEMW->updateWidget();
@@ -377,7 +377,7 @@ void CQUnitDetail::load()
 ////  slotTypeChanged(mpComboBoxType->currentIndex());
 
 //  // Use Initial Expression
-//  if (mpModelValue->getStatus() == CModelEntity::ASSIGNMENT ||
+//  if (mpModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT ||
 //      mpModelValue->getInitialExpression() == "")
 //    {
 //      mpBoxUseInitialExpression->setChecked(false);
@@ -461,7 +461,7 @@ void CQUnitDetail::save()
 //      mpInitialExpressionEMW->hide();
 
 //      // enable the option of use Initial Value
-//      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
+//      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT);
 
 //      // we don't need to update the Initial Expression Widget
 //}
@@ -568,20 +568,20 @@ void CQUnitDetail::save()
 //  CModelValue *pGlobalQuantity =  pModel->createModelValue(pSData->getName());
 //  pGlobalQuantity->setStatus(pSData->getStatus());
 
-//  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+//  if (pSData->getStatus() != CModelEntity::Status::ASSIGNMENT)
 //    {
 //      pGlobalQuantity->setInitialValue(pSData->getInitialValue());
 //}
 
 //  // set the expression
-//  if (pSData->getStatus() != CModelEntity::FIXED)
+//  if (pSData->getStatus() != CModelEntity::Status::FIXED)
 //    {
 //      pGlobalQuantity->setExpression(pSData->getExpression());
 //      pGlobalQuantity->getExpressionPtr()->compile();
 //}
 
 //  // set initial expression
-//  if (pSData->getStatus() != CModelEntity::ASSIGNMENT)
+//  if (pSData->getStatus() != CModelEntity::Status::ASSIGNMENT)
 //    {
 //      pGlobalQuantity->setInitialExpression(pSData->getInitialExpression());
 //      pGlobalQuantity->getInitialExpressionPtr()->compile();
@@ -610,19 +610,19 @@ void CQUnitDetail::save()
 //          if (pSpecie)
 //            {
 
-//              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+//              if (sData->getStatus() != CModelEntity::Status::ASSIGNMENT)
 //                {
 //                  pSpecie->setInitialConcentration(sData->getIConc());
 //}
 
-//              if (sData->getStatus() == CModelEntity::ODE || sData->getStatus() == CModelEntity::ASSIGNMENT)
+//              if (sData->getStatus() == CModelEntity::Status::ODE || sData->getStatus() == CModelEntity::Status::ASSIGNMENT)
 //                {
 //                  pSpecie->setExpression(sData->getExpression());
 //                  pSpecie->getExpressionPtr()->compile();
 //}
 
 //              // set initial expression
-//              if (sData->getStatus() != CModelEntity::ASSIGNMENT)
+//              if (sData->getStatus() != CModelEntity::Status::ASSIGNMENT)
 //                {
 //                  pSpecie->setInitialExpression(sData->getInitialExpression());
 //                  pSpecie->getInitialExpressionPtr()->compile();

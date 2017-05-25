@@ -1075,7 +1075,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
   // both
   CModelEntity::Status status = compartment.getStatus();
 
-  if (status == CModelEntity::ASSIGNMENT)
+  if (status == CModelEntity::Status::ASSIGNMENT)
     {
       if (compartment.getDimensionality() != 0)
         {
@@ -1088,7 +1088,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
           fatalError();
         }
     }
-  else if (status == CModelEntity::ODE)
+  else if (status == CModelEntity::Status::ODE)
     {
       if (compartment.getDimensionality() != 0)
         {
@@ -1310,14 +1310,14 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
 
   // a species can either have an assignment or an initial assignment but not
   // both
-  if (status == CModelEntity::ASSIGNMENT)
+  if (status == CModelEntity::Status::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&metab);
       pSBMLSpecies->setConstant(false);
       pSBMLSpecies->setBoundaryCondition(true);
       removeInitialAssignment(pSBMLSpecies->getId());
     }
-  else if (status == CModelEntity::ODE)
+  else if (status == CModelEntity::Status::ODE)
     {
       this->mODEVector.push_back(&metab);
       pSBMLSpecies->setConstant(false);
@@ -1332,7 +1332,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
           removeInitialAssignment(pSBMLSpecies->getId());
         }
     }
-  else if (status == CModelEntity::FIXED)
+  else if (status == CModelEntity::Status::FIXED)
     {
       // do this explicitly since we might handle an existing object from an
       // earlier import that had it attribute set already
@@ -1360,7 +1360,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
           removeInitialAssignment(pSBMLSpecies->getId());
         }
     }
-  else if (status == CModelEntity::REACTIONS)
+  else if (status == CModelEntity::Status::REACTIONS)
     {
       pSBMLSpecies->setConstant(false);
       pSBMLSpecies->setBoundaryCondition(false);
@@ -1467,13 +1467,13 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
   // both
   CModelEntity::Status status = modelValue.getStatus();
 
-  if (status == CModelEntity::ASSIGNMENT)
+  if (status == CModelEntity::Status::ASSIGNMENT)
     {
       this->mAssignmentVector.push_back(&modelValue);
       pParameter->setConstant(false);
       removeInitialAssignment(pParameter->getId());
     }
-  else if (status == CModelEntity::ODE)
+  else if (status == CModelEntity::Status::ODE)
     {
       this->mODEVector.push_back(&modelValue);
       pParameter->setConstant(false);
@@ -2114,7 +2114,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
 
       if (pOldRule == NULL)
         {
-          if (modelEntity.getStatus() == CModelEntity::ASSIGNMENT)
+          if (modelEntity.getStatus() == CModelEntity::Status::ASSIGNMENT)
             {
               pOldRule = this->mpSBMLDocument->getModel()->createAssignmentRule();
             }
@@ -2123,7 +2123,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
               if (pMetab != NULL)
                 {
                   // check if the compartment is fixed
-                  if (pMetab->getCompartment()->getStatus() != CModelEntity::FIXED)
+                  if (pMetab->getCompartment()->getStatus() != CModelEntity::Status::FIXED)
                     {
                       CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 52, pMetab->getObjectName().c_str());
                     }
@@ -2883,12 +2883,12 @@ void CSBMLExporter::checkForODESpeciesInNonfixedCompartment(const CDataModel& da
 
   while (it != endit)
     {
-      if (it->getStatus() == CModelValue::ODE)
+      if (it->getStatus() == CModelEntity::Status::ODE)
         {
           const CCompartment* pCompartment = it->getCompartment();
           assert(pCompartment != NULL);
 
-          if (pCompartment->getStatus() != CModelValue::FIXED)
+          if (pCompartment->getStatus() != CModelEntity::Status::FIXED)
             {
               result.push_back(SBMLIncompatibility(3, it->getObjectName().c_str(), pCompartment->getObjectName().c_str()));
             }
@@ -4282,7 +4282,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
     {
       status = compIt->getStatus();
 
-      if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+      if (status == CModelEntity::Status::ODE || status == CModelEntity::Status::ASSIGNMENT)
         {
           pExpression = compIt->getExpressionPtr();
           assert(pExpression != NULL);
@@ -4318,7 +4318,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
     {
       status = metabIt->getStatus();
 
-      if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+      if (status == CModelEntity::Status::ODE || status == CModelEntity::Status::ASSIGNMENT)
         {
           pExpression = metabIt->getExpressionPtr();
           assert(pExpression != NULL);
@@ -4354,7 +4354,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
     {
       status = mvIt->getStatus();
 
-      if (status == CModelEntity::ODE || status == CModelEntity::ASSIGNMENT)
+      if (status == CModelEntity::Status::ODE || status == CModelEntity::Status::ASSIGNMENT)
         {
           pExpression = mvIt->getExpressionPtr();
           assert(pExpression != NULL);
@@ -6075,7 +6075,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CDataModel& dataModel, std:
     {
       pME = &compartments[i];
 
-      if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
+      if (pME->getStatus() == CModelEntity::Status::ODE || pME->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           const CEvaluationTree* pTree = pME->getExpressionPtr();
           CSBMLExporter::findDirectlyUsedFunctions(pTree->getRoot(), usedFunctionNames);
@@ -6091,7 +6091,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CDataModel& dataModel, std:
     {
       pME = &metabolites[i];
 
-      if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
+      if (pME->getStatus() == CModelEntity::Status::ODE || pME->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           const CEvaluationTree* pTree = pME->getExpressionPtr();
           CSBMLExporter::findDirectlyUsedFunctions(pTree->getRoot(), usedFunctionNames);
@@ -6107,7 +6107,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CDataModel& dataModel, std:
     {
       pME = &modelvalues[i];
 
-      if (pME->getStatus() == CModelEntity::ODE || pME->getStatus() == CModelEntity::ASSIGNMENT)
+      if (pME->getStatus() == CModelEntity::Status::ODE || pME->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           const CEvaluationTree* pTree = pME->getExpressionPtr();
           CSBMLExporter::findDirectlyUsedFunctions(pTree->getRoot(), usedFunctionNames);
@@ -6782,7 +6782,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           const CDataObject* pObjectParent2 = pObject2->getObjectParent();
                           const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
 
-                          if (pMV != NULL && pMV->getStatus() == CModelEntity::FIXED)
+                          if (pMV != NULL && pMV->getStatus() == CModelEntity::Status::FIXED)
                             {
                               double value = pMV->getValue();
 
@@ -6821,7 +6821,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                                       const CDataObject* pObjectParent2 = pObject2->getObjectParent();
                                       const CModelValue* pMV = dynamic_cast<const CModelValue*>(pObjectParent2);
 
-                                      if (pMV != NULL && pMV->getStatus() == CModelEntity::FIXED)
+                                      if (pMV != NULL && pMV->getStatus() == CModelEntity::Status::FIXED)
                                         {
                                           double value = pMV->getValue();
 
@@ -6864,7 +6864,7 @@ void CSBMLExporter::findAvogadro(const CDataModel& dataModel)
 
   while (it != endit)
     {
-      if (it->getStatus() == CModelEntity::FIXED)
+      if (it->getStatus() == CModelEntity::Status::FIXED)
         {
           double value = it->getInitialValue();
 
@@ -7847,7 +7847,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
       else
         {
           // make sure the component that is assigned to is not constant
-          if (pME->getStatus() == CModelEntity::FIXED)
+          if (pME->getStatus() == CModelEntity::Status::FIXED)
             {
               // create an nerror message since the entity may not be
               // constant
@@ -7856,7 +7856,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
               CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
           // make sure there is no assignment rule for the variable
-          else if (pME->getStatus() == CModelEntity::ASSIGNMENT)
+          else if (pME->getStatus() == CModelEntity::Status::ASSIGNMENT)
             {
               // create an nerror message since the entity may not be
               // determined by an assignment
@@ -8146,7 +8146,7 @@ bool CSBMLExporter::hasVolumeAssignment(const CDataModel& dataModel)
     {
       status = it->getStatus();
 
-      if (status == CModelEntity::ASSIGNMENT || status == CModelEntity::ODE)
+      if (status == CModelEntity::Status::ASSIGNMENT || status == CModelEntity::Status::ODE)
         {
           result = true;
         }

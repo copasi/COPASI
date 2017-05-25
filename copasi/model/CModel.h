@@ -691,7 +691,7 @@ public:
   CMetab* createMetabolite(const std::string & name,
                            const std::string & compartment,
                            const C_FLOAT64 & iconc = 1.0,
-                           const CModelEntity::Status & status = CModelEntity::REACTIONS);
+                           const CModelEntity::Status & status = CModelEntity::Status::REACTIONS);
 
   /* Remove a metabolite from the model */
   bool removeMetabolite(const std::string & key,

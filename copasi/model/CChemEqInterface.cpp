@@ -737,7 +737,7 @@ bool CChemEqInterface::createNonExistingMetabs(
 
       CMetab* metab = mpModel->createMetabolite(it->first,
                       it->second,
-                      1.0, CModelEntity::REACTIONS);
+                      1.0, CModelEntity::Status::REACTIONS);
 
       if (metab != NULL)
         {

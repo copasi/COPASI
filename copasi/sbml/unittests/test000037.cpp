@@ -55,18 +55,18 @@ void test000037::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   CMetab* pA = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pA != NULL);
-  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::Status::REACTIONS);
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
-  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::Status::REACTIONS);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModelValue->getInitialExpression() != "");
   const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
   // check the expression

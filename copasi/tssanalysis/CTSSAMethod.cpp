@@ -248,8 +248,8 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   CDataVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
-    if (it->getStatus() == CModelEntity::ODE ||
-        it->getStatus() ==  CModelEntity::ASSIGNMENT)
+    if (it->getStatus() == CModelEntity::Status::ODE ||
+        it->getStatus() ==  CModelEntity::Status::ASSIGNMENT)
 
       {
         CCopasiMessage(CCopasiMessage::ERROR, " TSSA can not be applyed for systems with non-constant  volumes");
@@ -262,7 +262,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   for (i = 0; i < Model.getModelValues().size(); i++)
     {
-      if (Model.getModelValues()[i].getStatus() == CModelEntity::ODE)
+      if (Model.getModelValues()[i].getStatus() == CModelEntity::Status::ODE)
         {
           CCopasiMessage(CCopasiMessage::ERROR, "TSSA can not be applyed for systems with parameters defined by ODE.");
           return false;

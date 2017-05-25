@@ -609,7 +609,7 @@ void test000059::test_unique_id_2()
   // now we add a new species
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
+  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CDataObject*> changedObjects;
@@ -745,7 +745,7 @@ void test000059::test_unique_id_5()
   // now we add a new species
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
+  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CDataObject*> changedObjects;
@@ -1012,7 +1012,7 @@ void test000059::test_unique_id_11()
   // now we add a new species
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
+  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CDataObject*> changedObjects;
@@ -1264,7 +1264,7 @@ void test000059::test_unique_id_17()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
@@ -1319,7 +1319,7 @@ void test000059::test_unique_id_18()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
@@ -1374,7 +1374,7 @@ void test000059::test_unique_id_19()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
@@ -1429,7 +1429,7 @@ void test000059::test_unique_id_20()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
@@ -1479,7 +1479,7 @@ void test000059::test_unique_id_21()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string("\"" + pFunctionDefinition->getObjectName() + "\"()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
@@ -1530,7 +1530,7 @@ void test000059::test_unique_id_21_2()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);

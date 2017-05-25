@@ -134,7 +134,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case SINGLE_OBJECT:
         break;
 
-        // Metabolites
+      // Metabolites
       case METABS:
 
         for (; itMetab != endMetab; ++itMetab)
@@ -145,7 +145,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case METAB_INITIAL_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() != CModelEntity::ASSIGNMENT)
+          if (itMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itMetab->getInitialConcentrationReference());
 
         break;
@@ -153,7 +153,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case METAB_INITIAL_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() != CModelEntity::ASSIGNMENT)
+          if (itMetab->getStatus() != CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itMetab->getInitialValueReference());
 
         break;
@@ -175,7 +175,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case NON_CONST_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() != CModelEntity::FIXED ||
+          if (itMetab->getStatus() != CModelEntity::Status::FIXED ||
               EventTargets.count(itMetab) > 0)
             ret.push_back(itMetab->getConcentrationReference());
 
@@ -184,7 +184,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case NON_CONST_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() != CModelEntity::FIXED ||
+          if (itMetab->getStatus() != CModelEntity::Status::FIXED ||
               EventTargets.count(itMetab) > 0)
             ret.push_back(itMetab->getValueReference());
 
@@ -193,7 +193,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case CONST_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::FIXED)
+          if (itMetab->getStatus() == CModelEntity::Status::FIXED)
             ret.push_back(itMetab->getConcentrationReference());
 
         break;
@@ -201,7 +201,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case CONST_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::FIXED)
+          if (itMetab->getStatus() == CModelEntity::Status::FIXED)
             ret.push_back(itMetab->getValueReference());
 
         break;
@@ -209,7 +209,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ODE_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ODE)
+          if (itMetab->getStatus() == CModelEntity::Status::ODE)
             ret.push_back(itMetab->getConcentrationReference());
 
         break;
@@ -217,7 +217,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ODE_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ODE)
+          if (itMetab->getStatus() == CModelEntity::Status::ODE)
             ret.push_back(itMetab->getValueReference());
 
         break;
@@ -225,7 +225,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTION_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::REACTIONS)
+          if (itMetab->getStatus() == CModelEntity::Status::REACTIONS)
             ret.push_back(itMetab->getConcentrationReference());
 
         break;
@@ -233,7 +233,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTION_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::REACTIONS)
+          if (itMetab->getStatus() == CModelEntity::Status::REACTIONS)
             ret.push_back(itMetab->getValueReference());
 
         break;
@@ -241,7 +241,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ASS_METAB_CONCENTRATIONS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ASSIGNMENT)
+          if (itMetab->getStatus() == CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itMetab->getConcentrationReference());
 
         break;
@@ -249,7 +249,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ASS_METAB_NUMBERS:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ASSIGNMENT)
+          if (itMetab->getStatus() == CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itMetab->getValueReference());
 
         break;
@@ -257,8 +257,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case METAB_CONC_RATES:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ODE ||
-              itMetab->getStatus() == CModelEntity::REACTIONS)
+          if (itMetab->getStatus() == CModelEntity::Status::ODE ||
+              itMetab->getStatus() == CModelEntity::Status::REACTIONS)
             ret.push_back(itMetab->getConcentrationRateReference());
 
         break; //not possible at the moment
@@ -266,8 +266,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case METAB_PART_RATES:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ODE ||
-              itMetab->getStatus() == CModelEntity::REACTIONS)
+          if (itMetab->getStatus() == CModelEntity::Status::ODE ||
+              itMetab->getStatus() == CModelEntity::Status::REACTIONS)
             ret.push_back(itMetab->getRateReference());
 
         break;
@@ -275,13 +275,13 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case METAB_TRANSITION_TIME:
 
         for (; itMetab != endMetab; ++itMetab)
-          if (itMetab->getStatus() == CModelEntity::ODE ||
-              itMetab->getStatus() == CModelEntity::REACTIONS)
+          if (itMetab->getStatus() == CModelEntity::Status::ODE ||
+              itMetab->getStatus() == CModelEntity::Status::REACTIONS)
             ret.push_back(static_cast< const CDataObject * >(itMetab->getObject(CCommonName("Reference=TransitionTime"))));
 
         break;
 
-        // reactions
+      // reactions
       case REACTIONS:
 
         for (; itReaction != endReaction; ++itReaction)
@@ -303,7 +303,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
 
         break;
 
-        // global quantities
+      // global quantities
       case GLOBAL_PARAMETERS:
 
         for (; itValue != endValue; ++itValue)
@@ -314,7 +314,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case GLOBAL_PARAMETER_INITIAL_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if (itValue->getStatus() != CModelEntity::ASSIGNMENT)
+          if (itValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itValue->getInitialValueReference());
 
         break;
@@ -329,7 +329,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case NON_CONST_GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if (itValue->getStatus() != CModelEntity::FIXED ||
+          if (itValue->getStatus() != CModelEntity::Status::FIXED ||
               EventTargets.count(itValue) > 0)
             ret.push_back(itValue->getValueReference());
 
@@ -338,7 +338,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case CONST_GLOBAL_PARAMETER_INITIAL_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if (itValue->getStatus() == CModelEntity::FIXED)
+          if (itValue->getStatus() == CModelEntity::Status::FIXED)
             ret.push_back(itValue->getInitialValueReference());
 
         break;
@@ -346,7 +346,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ODE_GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if (itValue->getStatus() == CModelEntity::ODE)
+          if (itValue->getStatus() == CModelEntity::Status::ODE)
             ret.push_back(itValue->getValueReference());
 
         break;
@@ -354,7 +354,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ASS_GLOBAL_PARAMETER_VALUES:
 
         for (; itValue != endValue; ++itValue)
-          if (itValue->getStatus() == CModelEntity::ASSIGNMENT)
+          if (itValue->getStatus() == CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itValue->getValueReference());
 
         break;
@@ -362,12 +362,12 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case GLOBAL_PARAMETER_RATES:
 
         for (; itValue != endValue; ++itValue)
-          if (itValue->getStatus() == CModelEntity::ODE)
+          if (itValue->getStatus() == CModelEntity::Status::ODE)
             ret.push_back(itValue->getRateReference());
 
         break;
 
-        // compartments
+      // compartments
       case COMPARTMENTS:
 
         for (; itComp != endComp; ++itComp)
@@ -378,7 +378,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case COMPARTMENT_INITIAL_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if (itComp->getStatus() != CModelEntity::ASSIGNMENT)
+          if (itComp->getStatus() != CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itComp->getInitialValueReference());
 
         break;
@@ -393,7 +393,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case NON_CONST_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if (itComp->getStatus() != CModelEntity::FIXED ||
+          if (itComp->getStatus() != CModelEntity::Status::FIXED ||
               EventTargets.count(itComp) > 0)
             ret.push_back(itComp->getValueReference());
 
@@ -402,7 +402,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case CONST_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if (itComp->getStatus() == CModelEntity::FIXED)
+          if (itComp->getStatus() == CModelEntity::Status::FIXED)
             ret.push_back(itComp->getValueReference());
 
         break;
@@ -410,7 +410,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ODE_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if (itComp->getStatus() == CModelEntity::ODE)
+          if (itComp->getStatus() == CModelEntity::Status::ODE)
             ret.push_back(itComp->getValueReference());
 
         break;
@@ -418,7 +418,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case ASS_COMPARTMENT_VOLUMES:
 
         for (; itComp != endComp; ++itComp)
-          if (itComp->getStatus() == CModelEntity::ASSIGNMENT)
+          if (itComp->getStatus() == CModelEntity::Status::ASSIGNMENT)
             ret.push_back(itComp->getValueReference());
 
         break;
@@ -426,7 +426,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case COMPARTMENT_RATES:
 
         for (; itComp != endComp; ++itComp)
-          if (itComp->getStatus() == CModelEntity::ODE)
+          if (itComp->getStatus() == CModelEntity::Status::ODE)
             ret.push_back(itComp->getRateReference());
 
         break;
@@ -556,7 +556,7 @@ bool CObjectLists::existsFixedMetab(const CModel* pModel)
   size_t i, imax = metabs.size();
 
   for (i = 0; i < imax; ++i)
-    if (metabs[i].getStatus() == CModelEntity::FIXED)
+    if (metabs[i].getStatus() == CModelEntity::Status::FIXED)
       {fixedMetab = true; break;}
 
   return fixedMetab;

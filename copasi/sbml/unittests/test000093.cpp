@@ -303,7 +303,7 @@ void test000093::test_bug1503_1()
   CPPUNIT_ASSERT(pCModel->getEvents().size() == 0);
   const CCompartment* pCCompartment = pCModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCCompartment != NULL);
-  CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pCCompartment->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pEvalNode = pExpr->getRoot();
@@ -375,7 +375,7 @@ void test000093::test_bug1503_1()
     }
 
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::FIXED);
   pExpr = pModelValue->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pEvalNode = pExpr->getRoot();
@@ -452,7 +452,7 @@ void test000093::test_bug1503_1()
 
   //
   // then we test the expression and the initial expression for the two metabolites
-  CPPUNIT_ASSERT(pMetabA->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pMetabA->getStatus() == CModelEntity::Status::REACTIONS);
   pExpr = pMetabA->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pEvalNode = pExpr->getRoot();
@@ -489,7 +489,7 @@ void test000093::test_bug1503_1()
       CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
     }
 
-  CPPUNIT_ASSERT(pMetabS->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetabS->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pExpr = pMetabS->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pEvalNode = pExpr->getRoot();
@@ -789,7 +789,7 @@ void test000093::test_bug1503_2()
   CPPUNIT_ASSERT(pCModel->getEvents().size() == 1);
   const CCompartment* pCCompartment = pCModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCCompartment != NULL);
-  CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::Status::FIXED);
   const CMetab* pMetabA = pCModel->getMetabolites()[0];
 
   CPPUNIT_ASSERT(pMetabA != NULL);
@@ -825,7 +825,7 @@ void test000093::test_bug1503_2()
     }
 
   CPPUNIT_ASSERT(pModelValue != NULL);
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::FIXED);
   const CExpression* pExpr = pModelValue->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pEvalNode = pExpr->getRoot();
@@ -902,7 +902,7 @@ void test000093::test_bug1503_2()
 
   //
   // then we test the expression and the initial expression for the two metabolites
-  CPPUNIT_ASSERT(pMetabA->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pMetabA->getStatus() == CModelEntity::Status::REACTIONS);
   pExpr = pMetabA->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pEvalNode = pExpr->getRoot();
@@ -939,7 +939,7 @@ void test000093::test_bug1503_2()
       CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
     }
 
-  CPPUNIT_ASSERT(pMetabS->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetabS->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pExpr = pMetabS->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pEvalNode = pExpr->getRoot();

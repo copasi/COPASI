@@ -184,8 +184,8 @@ int main()
           // determined by an ODE or a reaction
           status = pEntity->getStatus();
 
-          if (status == CModelEntity::ODE ||
-              (status == CModelEntity::REACTIONS && pEntity->isUsed()))
+          if (status == CModelEntity::Status::ODE ||
+              (status == CModelEntity::Status::REACTIONS && pEntity->isUsed()))
             {
               nameVector.push_back(pEntity->getObjectName());
             }

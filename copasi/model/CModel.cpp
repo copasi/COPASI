@@ -173,7 +173,7 @@ CModel::CModel(CDataContainer* pParent):
 {
   initObjects();
 
-  setStatus(TIME);
+  setStatus(Status::TIME);
   setUsed(true);
   mIValue = 0.0;
 
@@ -969,22 +969,22 @@ void CModel::initializeMetabolites()
 
           switch (itMetab->getStatus())
             {
-              case FIXED:
+              case Status::FIXED:
                 FixedMetabs.push_back(itMetab);
                 itMetab->setUsed(false);
                 break;
 
-              case ASSIGNMENT:
+              case Status::ASSIGNMENT:
                 AssignmentMetabs.push_back(itMetab);
                 itMetab->setUsed(true);
                 break;
 
-              case ODE:
+              case Status::ODE:
                 ODEMetabs.push_back(itMetab);
                 itMetab->setUsed(true);
                 break;
 
-              case REACTIONS:
+              case Status::REACTIONS:
                 ReactionMetabs.push_back(itMetab);
                 itMetab->setUsed(true);
                 break;
@@ -1276,7 +1276,7 @@ bool CModel::buildStateTemplate()
   CDataVector< CModelValue >::iterator endValue = mValues.end();
 
   for (; itValue != endValue; ++itValue)
-    if (itValue->getStatus() == ODE)
+    if (itValue->getStatus() == Status::ODE)
       {
         itValue->setUsed(true);
         *ppEntity++ = itValue;
@@ -1286,7 +1286,7 @@ bool CModel::buildStateTemplate()
   CDataVector< CCompartment >::iterator endCompartment = mCompartments.end();
 
   for (; itCompartment != endCompartment; ++itCompartment)
-    if (itCompartment->getStatus() == ODE)
+    if (itCompartment->getStatus() == Status::ODE)
       {
         itCompartment->setUsed(true);
         *ppEntity++ = itCompartment;
@@ -1305,7 +1305,7 @@ bool CModel::buildStateTemplate()
   itCompartment = mCompartments.begin();
 
   for (; itCompartment != endCompartment; ++itCompartment)
-    if (itCompartment->getStatus() == ASSIGNMENT)
+    if (itCompartment->getStatus() == Status::ASSIGNMENT)
       {
         itCompartment->setUsed(true);
         *ppEntity++ = itCompartment;
@@ -1314,7 +1314,7 @@ bool CModel::buildStateTemplate()
   itValue = mValues.begin();
 
   for (; itValue != endValue; ++itValue)
-    if (itValue->getStatus() == ASSIGNMENT)
+    if (itValue->getStatus() == Status::ASSIGNMENT)
       {
         itValue->setUsed(true);
         *ppEntity++ = itValue;
@@ -1394,8 +1394,8 @@ bool CModel::buildUserOrder()
     {
       const Status & Status = Entities[*pUserOrder]->getStatus();
 
-      if (Status == ODE ||
-          (Status == REACTIONS && Entities[*pUserOrder]->isUsed()))
+      if (Status == Status::ODE ||
+          (Status == Status::REACTIONS && Entities[*pUserOrder]->isUsed()))
         mJacobianPivot[i++] = *pUserOrder - 1;
     }
 
@@ -3048,7 +3048,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
     {
       switch ((*ppEntity)->getStatus())
         {
-          case ODE:
+          case Status::ODE:
 
             if ((*ppEntity)->getNoiseExpressionPtr() &&
                 (*ppEntity)->getNoiseExpressionPtr()->hasDiscontinuity())
@@ -3058,7 +3058,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
 
           // Intentionally no break statement!
 
-          case ASSIGNMENT:
+          case Status::ASSIGNMENT:
 
             if ((*ppEntity)->getExpressionPtr() &&
                 (*ppEntity)->getExpressionPtr()->hasDiscontinuity())

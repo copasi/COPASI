@@ -68,7 +68,7 @@ CModelParameter::CModelParameter(CModelParameterGroup * pParent, const CModelPar
   mpParent(static_cast< CModelParameterGroup * >(pParent)),
   mType(type),
   mCN(),
-  mSimulationType(type == CModelParameter::Model ? CModelEntity::TIME : CModelEntity::FIXED),
+  mSimulationType(type == CModelParameter::Model ? CModelEntity::Status::TIME : CModelEntity::Status::FIXED),
   mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN()),
   mpInitialExpression(NULL),
   mCompareResult(CModelParameter::Identical),
@@ -191,26 +191,26 @@ bool CModelParameter::setSimulationType(const CModelEntity::Status & simulationT
   switch (mType)
     {
       case Model:
-        success = (simulationType == CModelEntity::TIME);
+        success = (simulationType == CModelEntity::Status::TIME);
         break;
 
       case Species:
-        success = (simulationType != CModelEntity::TIME);
+        success = (simulationType != CModelEntity::Status::TIME);
         break;
 
       case ReactionParameter:
-        success = (simulationType == CModelEntity::FIXED ||
-                   simulationType == CModelEntity::ASSIGNMENT);
+        success = (simulationType == CModelEntity::Status::FIXED ||
+                   simulationType == CModelEntity::Status::ASSIGNMENT);
         break;
 
       case ModelValue:
       case Compartment:
-        success = (simulationType != CModelEntity::TIME &&
-                   simulationType != CModelEntity::REACTIONS);
+        success = (simulationType != CModelEntity::Status::TIME &&
+                   simulationType != CModelEntity::Status::REACTIONS);
         break;
 
       default:
-        success = (simulationType == CModelEntity::FIXED);
+        success = (simulationType == CModelEntity::Status::FIXED);
         break;
     }
 
@@ -426,7 +426,7 @@ const CModelParameter::CompareResult & CModelParameter::diff(const CModelParamet
 
         if (other.getObject() != NULL &&
             mpObject != NULL &&
-            static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::ASSIGNMENT &&
+            static_cast< CModelEntity *>(mpObject)->getStatus() == CModelEntity::Status::ASSIGNMENT &&
             (fabs(getValue(CCore::Framework::ParticleNumbers) - other.getValue(CCore::Framework::ParticleNumbers)) > 50 * (fabs(getValue(CCore::Framework::ParticleNumbers)) + fabs(other.getValue(CCore::Framework::ParticleNumbers))) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
              getInitialExpression() != ""))
           {
@@ -483,7 +483,7 @@ bool CModelParameter::updateModel()
           {
             CModelEntity * pEntity = static_cast< CModelEntity * >(mpObject);
 
-            if (pEntity->getStatus() != CModelEntity::ASSIGNMENT)
+            if (pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT)
               {
                 pEntity->setInitialValue(mValue);
 
@@ -606,12 +606,12 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
               {
                 if (pReaction->isLocalParameter(getName()))
                   {
-                    mSimulationType = CModelEntity::FIXED;
+                    mSimulationType = CModelEntity::Status::FIXED;
                     static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN("");
                   }
                 else
                   {
-                    mSimulationType = CModelEntity::ASSIGNMENT;
+                    mSimulationType = CModelEntity::Status::ASSIGNMENT;
                     const std::vector<std::string> ModelValue = pReaction->getParameterMapping(getName());
 
                     assert(ModelValue.size() == 1);
@@ -900,11 +900,11 @@ void CModelParameterReactionParameter::compile()
           Separator = ",";
         }
 
-      setSimulationType(CModelEntity::ASSIGNMENT);
+      setSimulationType(CModelEntity::Status::ASSIGNMENT);
     }
   else
     {
-      setSimulationType(CModelEntity::FIXED);
+      setSimulationType(CModelEntity::Status::FIXED);
     }
 
   mpGlobalQuantity = this->getSet()->getModelParameter(mGlobalQuantityCN);

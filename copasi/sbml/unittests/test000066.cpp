@@ -63,7 +63,7 @@ void test000066::test_import_reaction_with_constant_flux()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -99,7 +99,7 @@ void test000066::test_import_reaction_with_constant_flux_function()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -250,7 +250,7 @@ void test000066::test_import_reaction_with_constant_flux_global_parameter()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -281,7 +281,7 @@ void test000066::test_import_reaction_with_constant_flux_function_global_paramet
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -427,7 +427,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -463,7 +463,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible_function()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 0);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -622,7 +622,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible_global_param
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
@@ -653,7 +653,7 @@ void test000066::test_import_reaction_with_constant_flux_reversible_function_glo
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 1);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);

@@ -63,7 +63,7 @@ void test000065::test_import_reaction_with_unsuitable_kinetic_1()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 4);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
   const CReaction* pReaction = pModel->getReactions()[0];
@@ -129,7 +129,7 @@ void test000065::test_import_reaction_with_unsuitable_kinetic_2()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 4);
   CPPUNIT_ASSERT(pModel->getReactions().size() == 1);
   const CReaction* pReaction = pModel->getReactions()[0];

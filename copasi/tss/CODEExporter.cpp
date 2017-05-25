@@ -107,7 +107,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
     {
       const CModelEntity* entity = &copasiModel->getModelValues()[i];
 
-      if (entity->getStatus() == CModelEntity::ASSIGNMENT)
+      if (entity->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           if (entity->getExpressionPtr() == NULL || entity->getExpressionPtr()->getRoot() == NULL)
             continue;
@@ -123,7 +123,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
     {
       const CModelEntity* entity = &copasiModel->getMetabolites()[i];
 
-      if (entity->getStatus() == CModelEntity::ASSIGNMENT)
+      if (entity->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           if (entity->getExpressionPtr() == NULL || entity->getExpressionPtr()->getRoot() == NULL)
             continue;
@@ -139,7 +139,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
     {
       const CModelEntity* entity = &copasiModel->getCompartments()[i];
 
-      if (entity->getStatus() == CModelEntity::ASSIGNMENT)
+      if (entity->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           if (entity->getExpressionPtr() == NULL || entity->getExpressionPtr()->getRoot() == NULL)
             continue;
@@ -319,7 +319,7 @@ bool CODEExporter::exportModelEntityExpression(const CDataObject * obj, const CD
 
       comments << "model entity \'" << tmp->getObjectName() << "\':" << CModelEntity::StatusName[tmp->getStatus()];
 
-      if (tmp->getStatus() == CModelEntity::ODE)
+      if (tmp->getStatus() == CModelEntity::Status::ODE)
         {
           const CExpression* pExpression = tmp->getExpressionPtr();
           assert(pExpression);
@@ -339,10 +339,10 @@ bool CODEExporter::exportModelEntityExpression(const CDataObject * obj, const CD
 
       switch (tmp->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
           {
 
             const CExpression* pExpression = tmp->getExpressionPtr();
@@ -378,7 +378,7 @@ bool CODEExporter::exportModelEntityExpression(const CDataObject * obj, const CD
             break;
           }
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
           {
 
             const CExpression* pExpression = tmp->getExpressionPtr();
@@ -473,7 +473,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                   CMetab* metab;
                   metab = dynamic_cast< CMetab * >(pObjectParent);
 
-                  if ((metab->getStatus() == CModelEntity::REACTIONS &&  metab->isDependent()) && pObject->getObjectName() == "Rate")
+                  if ((metab->getStatus() == CModelEntity::Status::REACTIONS &&  metab->isDependent()) && pObject->getObjectName() == "Rate")
                     {
 
                       result << std::endl << getSingleLineComment() <<  "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
@@ -631,7 +631,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                   const CModelValue* modval;
                   modval = dynamic_cast<const CModelValue * >(pObject);
 
-                  if (modval->getStatus() == CModelEntity::ODE)
+                  if (modval->getStatus() == CModelEntity::Status::ODE)
                     {
 
                       if ((isEmptyString(equations[modval->getKey()])))
@@ -677,7 +677,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                   const CMetab* metab;
                   metab = dynamic_cast<const CMetab * >(pObject);
 
-                  if ((metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::ODE)
+                  if ((metab->getStatus() == CModelEntity::Status::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::Status::ODE)
                     {
                       if ((isEmptyString(equations[metab->getKey()])))
                         {
@@ -714,7 +714,7 @@ std::string CODEExporter::exportExpression(const CExpression* pExpression, const
                   const CCompartment* comp;
                   comp = dynamic_cast<const CCompartment * >(pObject);
 
-                  if (comp->getStatus() == CModelEntity::ODE)
+                  if (comp->getStatus() == CModelEntity::Status::ODE)
                     {
 
                       if ((isEmptyString(equations[comp->getKey()])))
@@ -811,7 +811,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 
         NameMap[metab->getKey()] = setConcentrationName(name); //concentration
 
-        if ((metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::ODE)
+        if ((metab->getStatus() == CModelEntity::Status::REACTIONS && !metab->isDependent()) || metab->getStatus() == CModelEntity::Status::ODE)
           {
             std::ostringstream odeKey;
             odeKey << "ode_" << metab->getKey();
@@ -829,7 +829,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
       std::string name = translateObjectName(comp->getObjectName());
       NameMap[comp->getKey()] = name;
 
-      if (comp->getStatus() == CModelEntity::ODE)
+      if (comp->getStatus() == CModelEntity::Status::ODE)
         {
           std::ostringstream odeKey;
           odeKey << "ode_" << comp->getKey();
@@ -846,7 +846,7 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
       std::string name = translateObjectName(modval->getObjectName());
       NameMap[modval->getKey()] = name;
 
-      if (modval->getStatus() == CModelEntity::ODE)
+      if (modval->getStatus() == CModelEntity::Status::ODE)
         {
           std::ostringstream odeKey;
           odeKey << "ode_" << modval->getKey();
@@ -918,7 +918,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
 
       switch (metab->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
           {
             const CCompartment * comp;
             comp = metab->getCompartment();
@@ -931,11 +931,11 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
             break;
           }
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
           {
 
             const CCompartment * comp;
@@ -949,7 +949,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
             break;
           }
 
-          case CModelEntity::REACTIONS:
+          case CModelEntity::Status::REACTIONS:
           {
             const CCompartment * comp;
             comp = metab->getCompartment();
@@ -1022,7 +1022,7 @@ bool CODEExporter::exportMetabolites(const CModel* copasiModel)
       str1 = expression.str();
       str2 = comments.str();
 
-      if (metab->getStatus() != CModelEntity::ASSIGNMENT)
+      if (metab->getStatus() != CModelEntity::Status::ASSIGNMENT)
         if (!exportSingleMetabolite(metab, str1, str2)) return false;
     }
 
@@ -1092,18 +1092,18 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
 
       switch (comp->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
           {
             expression << exportNumber(comp->getInitialValue());
 
             break;
           }
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
           {
 
             expression << exportNumber(comp->getInitialValue());
@@ -1119,7 +1119,7 @@ bool CODEExporter::exportCompartments(const CModel* copasiModel)
       str1 = expression.str();
       str2 = comments.str();
 
-      if (comp->getStatus() != CModelEntity::ASSIGNMENT)
+      if (comp->getStatus() != CModelEntity::Status::ASSIGNMENT)
         if (!exportSingleCompartment(comp, str1, str2)) return false;
     }
 
@@ -1149,14 +1149,14 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
 
       switch (modval->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
           {
             expression << exportNumber(modval->getInitialValue());
 
             break;
           }
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
             //{
             //CExpression *cexpression = new CExpression(*modval->getExpressionPtr());
             //CEvaluationNode *node = cexpression->getRoot();
@@ -1168,7 +1168,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
             //}
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
           {
             expression << exportNumber(modval->getInitialValue());
 
@@ -1183,7 +1183,7 @@ bool CODEExporter::exportModelValues(const CModel* copasiModel)
       str1 = expression.str();
       str2 = comments.str();
 
-      if (modval->getStatus() != CModelEntity::ASSIGNMENT)
+      if (modval->getStatus() != CModelEntity::Status::ASSIGNMENT)
         if (!exportSingleModVal(modval, str1, str2)) return false;
     }
 
@@ -1287,7 +1287,7 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
       std::string str1 = equations[metab->getKey()];
       std::string str2 = " ";
 
-      if ((metab->getStatus() == CModelEntity::REACTIONS && !(metab->isDependent())))
+      if ((metab->getStatus() == CModelEntity::Status::REACTIONS && !(metab->isDependent())))
         if (!exportSingleODE(metab, str1, str2)) return false;
     }
 
@@ -1295,7 +1295,7 @@ bool CODEExporter::exportODEs(const CModel* copasiModel)
     {
       const CMetab * metab = &metabs[ode_size + i];
 
-      if (metab->getStatus() == CModelEntity::REACTIONS && !metab->isDependent())
+      if (metab->getStatus() == CModelEntity::Status::REACTIONS && !metab->isDependent())
         {
           std::string str1 = "0";
           std::string str2 = " ";

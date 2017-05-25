@@ -50,7 +50,7 @@ CXMLHandler * CompartmentHandler::processStart(const XML_Char * pszName,
         mKey = mpParser->getAttributeValue("key", papszAttrs);
         Name = mpParser->getAttributeValue("name", papszAttrs);
         simulationType = mpParser->getAttributeValue("simulationType", papszAttrs, "fixed");
-        SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModel::FIXED);
+        SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::FIXED);
         Dimensionality = mpParser->getAttributeValue("dimensionality", papszAttrs, "3");
         AddNoise = mpParser->toBool(mpParser->getAttributeValue("addNoise", papszAttrs, "false"));
 

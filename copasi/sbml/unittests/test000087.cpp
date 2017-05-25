@@ -109,7 +109,7 @@ void test000087::test_import_reaction_flux_reference_2()
   CPPUNIT_ASSERT(pReaction != NULL);
   const CModelValue* pMV = pCOPASIDATAMODEL->getModel()->getModelValues()[0];
   CPPUNIT_ASSERT(pMV != NULL);
-  CPPUNIT_ASSERT(pMV->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMV->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pMV->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
@@ -295,12 +295,12 @@ void test000087::test_simulate_reaction_flux_reference_1()
 
   for (i = 0; i < iMax; ++i)
     {
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::FIXED)
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::Status::FIXED)
         {
           pConstParameter = pModel->getModelValues()[i];
         }
 
-      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::ASSIGNMENT)
+      if (pModel->getModelValues()[i]->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           pNonConstParameter = pModel->getModelValues()[i];
         }

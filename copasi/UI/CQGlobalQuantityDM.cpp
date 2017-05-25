@@ -43,13 +43,13 @@ CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
     mpGlobalQuantities(NULL)
 
 {
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
 
-  mItemToType.push_back(CModelEntity::FIXED);
-  mItemToType.push_back(CModelEntity::ASSIGNMENT);
-  mItemToType.push_back(CModelEntity::ODE);
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ODE));
 }
 
 const QString & CQGlobalQuantityDM::indexToStatus(int index) const
@@ -90,7 +90,7 @@ Qt::ItemFlags CQGlobalQuantityDM::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
   else if (index.column() == COL_INITIAL_GQ)
     {
-      if (this->index(index.row(), COL_TYPE_GQ).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT])))
+      if (this->index(index.row(), COL_TYPE_GQ).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT])))
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
         return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;

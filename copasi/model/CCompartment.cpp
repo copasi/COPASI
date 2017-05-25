@@ -172,7 +172,7 @@ CCompartment::CCompartment(const std::string & name,
 
   //mKey = CRootContainer::getKeyFactory()->add("Compartment", this);
 
-  setStatus(FIXED);
+  setStatus(Status::FIXED);
 
   mIValue = 1.0;
 

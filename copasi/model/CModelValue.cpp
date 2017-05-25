@@ -40,26 +40,24 @@
 #include "copasi/core/CRootContainer.h"
 
 //static
-const std::string CModelEntity::StatusName[] =
+const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::StatusName(
 {
   "fixed",
   "assignment",
   "reactions",
   "ode",
-  "time",
-  ""
-};
+  "time"
+});
 
 //static
-const char * CModelEntity::XMLStatus[] =
+const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::XMLStatus(
 {
   "fixed",
   "assignment",
   "reactions",
   "ode",
-  "time",
-  NULL
-};
+  "time"
+});
 
 // static
 CModelEntity * CModelEntity::fromData(const CData & data)
@@ -140,7 +138,7 @@ CModelEntity::CModelEntity(const std::string & name,
   mpInitialExpression(NULL),
   mpNoiseExpression(NULL),
   mHasNoise(false),
-  mStatus(FIXED),
+  mStatus(Status::FIXED),
   mUsed(false),
   mpModel(NULL),
   mUnitExpression("")
@@ -164,7 +162,7 @@ CModelEntity::CModelEntity(const CModelEntity & src,
   mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL),
   mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
   mHasNoise(src.mHasNoise),
-  mStatus(FIXED),
+  mStatus(Status::FIXED),
   mUsed(false),
   mpModel(NULL),
   mUnitExpression(src.mUnitExpression)
@@ -217,7 +215,7 @@ bool CModelEntity::compile()
 
   switch (mStatus)
     {
-      case ASSIGNMENT:
+      case Status::ASSIGNMENT:
         success &= mpExpression->compile(listOfContainer);
 
         pdelete(mpInitialExpression);
@@ -228,7 +226,7 @@ bool CModelEntity::compile()
         add(mpInitialExpression, true);
         break;
 
-      case ODE:
+      case Status::ODE:
         success &= mpExpression->compile(listOfContainer);
 
         if (mHasNoise && mpNoiseExpression != NULL)
@@ -261,11 +259,11 @@ void CModelEntity::calculate()
 {
   switch (mStatus)
     {
-      case ASSIGNMENT:
+      case Status::ASSIGNMENT:
         mValue = mpExpression->calcValue();
         break;
 
-      case ODE:
+      case Status::ODE:
         mRate = mpExpression->calcValue();
         break;
 
@@ -367,7 +365,7 @@ std::string CModelEntity::getDefaultNoiseExpression() const
 
 bool CModelEntity::setNoiseExpression(const std::string & expression)
 {
-  if (mStatus != ODE) return false;
+  if (mStatus != Status::ODE) return false;
 
   if (mpModel)
     mpModel->setCompileFlag(true);
@@ -384,7 +382,7 @@ bool CModelEntity::setNoiseExpression(const std::string & expression)
 
 std::string CModelEntity::getNoiseExpression() const
 {
-  if (mStatus != ODE || mpNoiseExpression == NULL)
+  if (mStatus != Status::ODE || mpNoiseExpression == NULL)
     return "";
 
   mpNoiseExpression->updateInfix();
@@ -393,7 +391,7 @@ std::string CModelEntity::getNoiseExpression() const
 
 bool CModelEntity::setNoiseExpressionPtr(CExpression* pExpression)
 {
-  if (mStatus != ODE) return false;
+  if (mStatus != Status::ODE) return false;
 
   if (pExpression == mpNoiseExpression) return true;
 
@@ -460,7 +458,7 @@ const bool & CModelEntity::hasNoise() const
 
 bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 {
-  if (mStatus == ASSIGNMENT) return false;
+  if (mStatus == Status::ASSIGNMENT) return false;
 
   if (pExpression == mpInitialExpression) return true;
 
@@ -494,7 +492,7 @@ bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
 
 bool CModelEntity::setInitialExpression(const std::string & expression)
 {
-  if (mStatus == ASSIGNMENT) return false;
+  if (mStatus == Status::ASSIGNMENT) return false;
 
   if ((mpInitialExpression == NULL &&
        expression.empty()) ||
@@ -515,7 +513,7 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
 
 std::string CModelEntity::getInitialExpression() const
 {
-  if (mStatus == ASSIGNMENT || mpInitialExpression == NULL)
+  if (mStatus == Status::ASSIGNMENT || mpInitialExpression == NULL)
     return "";
 
   mpInitialExpression->updateInfix();
@@ -629,7 +627,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
       // An assignment may not have an initial expression.
       // However, internally we always create one, which need
       // to be deleted.
-      if (mStatus == ASSIGNMENT)
+      if (mStatus == Status::ASSIGNMENT)
         pdelete(mpInitialExpression);
 
       mStatus = status;
@@ -641,7 +639,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
       switch (mStatus)
         {
-          case ASSIGNMENT:
+          case Status::ASSIGNMENT:
 
             if (mpExpression == NULL)
               mpExpression = new CExpression("Expression", this);
@@ -657,7 +655,7 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mUsed = true;
             break;
 
-          case ODE:
+          case Status::ODE:
 
             if (mpExpression == NULL)
               mpExpression = new CExpression("Expression", this);
@@ -665,19 +663,19 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
             mUsed = true;
             break;
 
-          case REACTIONS:
+          case Status::REACTIONS:
             pdelete(mpExpression);
 
             mUsed = true;
             break;
 
-          case TIME:
+          case Status::TIME:
             pdelete(mpExpression);
 
             mUsed = true;
             break;
 
-          case FIXED:
+          case Status::FIXED:
             pdelete(mpExpression);
 
             mRate = 0.0;
@@ -837,7 +835,7 @@ std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
   os << "    ++++CModelValue: " << d.getObjectName() << std::endl;
   os << "        mValue " << d.mValue << " mIValue " << d.mIValue << std::endl;
-  os << "        mRate " << d.mRate << " mStatus " << d.getStatus() << std::endl;
+  os << "        mRate " << d.mRate << " mStatus " << CModelEntity::StatusName[d.getStatus()] << std::endl;
   os << "    ----CModelValue " << std::endl;
 
   return os;

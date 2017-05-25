@@ -1050,7 +1050,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
 
             if (pME)
               {
-                if (pME->getStatus() == CModelEntity::FIXED)
+                if (pME->getStatus() == CModelEntity::Status::FIXED)
                   callParameters[i] = CValue(pME->getInitialValue());
                 else
                   callParameters[i] = CValue::positive;
@@ -1114,10 +1114,10 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
                   Result = itNode.context()[0] ^ itNode.context()[1];
                   break;
 
-                  // case MODULUS:
-                  //   Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
-                  //   break;
-                  //
+                // case MODULUS:
+                //   Value = (C_FLOAT64) (((size_t) mpLeft->value()) % ((size_t) mpRight->value()));
+                //   break;
+                //
 
                 default:
                   Result = CValue::unknown;

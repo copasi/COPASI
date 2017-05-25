@@ -2275,7 +2275,7 @@ void CCopasiXMLParser::CompartmentElement::start(const XML_Char *pszName,
             mKey = mParser.getAttributeValue("key", papszAttrs);
             Name = mParser.getAttributeValue("name", papszAttrs);
             simulationType = mParser.getAttributeValue("simulationType", papszAttrs, "fixed");
-            SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModel::FIXED);
+            SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::FIXED);
             Dimensionality = mParser.getAttributeValue("dimensionality", papszAttrs, "3");
             AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
@@ -2609,7 +2609,7 @@ void CCopasiXMLParser::MetaboliteElement::start(const XML_Char *pszName,
                   simulationType = reactions;
               }
 
-            SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::REACTIONS);
+            SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::REACTIONS);
             Compartment = mParser.getAttributeValue("compartment", papszAttrs);
             AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
@@ -2952,7 +2952,7 @@ void CCopasiXMLParser::ModelValueElement::start(const XML_Char *pszName,
                   simulationType = mParser.getAttributeValue("simulationType", papszAttrs);
               }
 
-            SimulationType = toEnum(simulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
+            SimulationType = CModelEntity::XMLStatus.toEnum(simulationType, CModelEntity::Status::FIXED);
             AddNoise = mParser.toBool(mParser.getAttributeValue("addNoise", papszAttrs, "false"));
 
             mpMV = new CModelValue();

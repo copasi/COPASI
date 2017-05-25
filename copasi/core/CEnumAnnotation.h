@@ -36,7 +36,7 @@ public:
    * Specific constructor from the base class
    * @param const base & src
    */
-  CEnumAnnotation(typename std::enable_if < !std::is_same< Type, const char * >::value & & !std::is_const< Type >::value, const base & >::type src):
+  CEnumAnnotation(typename std::enable_if < !(std::is_same< Type, const char * >::value || std::is_const< Type >::value), const base & >::type src):
     base(src)
   {}
 

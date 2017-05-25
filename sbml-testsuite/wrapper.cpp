@@ -384,7 +384,7 @@ public:
                 // create an assignment that takes the concentration of the
                 // metabolite and multiplies it by the compartment
                 ss << "<" << pMetab->getConcentrationReference()->getCN() << "> * <" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
-                pTmpMV->setStatus(CModelEntity::ASSIGNMENT);
+                pTmpMV->setStatus(CModelEntity::Status::ASSIGNMENT);
                 bool tmpRes = pTmpMV->setExpression(ss.str());
                 assert(tmpRes == true);
                 pBodyAddr->push_back(pTmpMV->getValueReference()->getCN());

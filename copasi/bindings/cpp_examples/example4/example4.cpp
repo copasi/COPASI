@@ -96,7 +96,7 @@ int main()
       assert(pMetab != NULL);
 
       // we don't want output for FIXED metabolites right now
-      if (pMetab->getStatus() != CModelEntity::FIXED)
+      if (pMetab->getStatus() != CModelEntity::Status::FIXED)
         {
           // we want the concentration oin the output
           // alternatively, we could use "Reference=Amount" to get the

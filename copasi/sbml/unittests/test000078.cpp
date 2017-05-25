@@ -361,22 +361,22 @@ void test000078::test_l2v4_import_unordered_functions()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 6);
   // check metabolites
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::REACTIONS);
   pMetab = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "B");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::REACTIONS);
 
   pMetab = pModel->getMetabolites()[2];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "C");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT);
   // check assignment
   const CEvaluationTree* pTree = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pTree != NULL);
@@ -388,7 +388,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pMetab = pModel->getMetabolites()[3];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "D");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ODE);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ODE);
   // check ode
   pTree = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pTree != NULL);
@@ -400,7 +400,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pMetab = pModel->getMetabolites()[4];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "E");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ODE);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ODE);
   // check ode
   pTree = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pTree != NULL);
@@ -412,7 +412,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pMetab = pModel->getMetabolites()[5];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "F");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ODE);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ODE);
   // check ode
   pTree = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pTree != NULL);
@@ -426,7 +426,7 @@ void test000078::test_l2v4_import_unordered_functions()
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getObjectName() == "K1");
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT);
   // check assignment
   pTree = pModelValue->getExpressionPtr();
   CPPUNIT_ASSERT(pTree != NULL);
@@ -438,7 +438,7 @@ void test000078::test_l2v4_import_unordered_functions()
   pModelValue = pModel->getModelValues()[1];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getObjectName() == "K2");
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::FIXED);
 
   pModelValue = pModel->getModelValues()[2];
   CPPUNIT_ASSERT(pModelValue != NULL);

@@ -574,7 +574,7 @@ void CCopasiXMLParser::ModelParameterElement::start(const XML_Char *pszName,
 
             mCommon.pCurrentModelParameter->setCN(std::string(CN));
 
-            SimulationType = toEnum(pSimulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
+            SimulationType = CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
             mCommon.pCurrentModelParameter->setSimulationType(SimulationType);
 
             mCommon.pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);

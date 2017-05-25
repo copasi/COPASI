@@ -70,14 +70,14 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   setupUi(this);
 
   mpComboBoxType->blockSignals(true);
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
   mpComboBoxType->blockSignals(false);
 
-  mItemToType.push_back(CModelEntity::FIXED);
-  mItemToType.push_back(CModelEntity::ASSIGNMENT);
-  mItemToType.push_back(CModelEntity::ODE);
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ODE));
 
   mpMetaboliteTable->horizontalHeader()->hide();
 
@@ -220,7 +220,7 @@ void CQCompartment::slotTypeChanged(int type)
 
   switch ((CModelEntity::Status) mItemToType[type])
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
         mpLblExpression->hide();
         mpExpressionEMW->hide();
 
@@ -231,7 +231,7 @@ void CQCompartment::slotTypeChanged(int type)
         slotAddNoiseChanged(false);
         break;
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
         mpLblExpression->setText("Expression" + mValueUnits);
 
         mpLblExpression->show();
@@ -247,7 +247,7 @@ void CQCompartment::slotTypeChanged(int type)
 
         break;
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
         mpLblExpression->setText("Expression" + mRateUnits);
 
         mpLblExpression->show();
@@ -312,7 +312,7 @@ void CQCompartment::slotInitialTypeChanged(bool useInitialAssignment)
       mpLblInitialExpression->hide();
       mpInitialExpressionEMW->hide();
 
-      mpEditInitialVolume->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
+      mpEditInitialVolume->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT);
     }
 }
 
@@ -330,7 +330,7 @@ bool CQCompartment::enterProtected()
 
 bool CQCompartment::leave()
 {
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED)
     {
       // -- Expression --
       mpExpressionEMW->updateWidget();
@@ -430,7 +430,7 @@ void CQCompartment::load()
   slotTypeChanged(mpComboBoxType->currentIndex());
 
   // Use Initial Expression
-  if (mpCompartment->getStatus() == CModelEntity::ASSIGNMENT ||
+  if (mpCompartment->getStatus() == CModelEntity::Status::ASSIGNMENT ||
       mpCompartment->getInitialExpression() == "")
     {
       mpBoxUseInitialExpression->setChecked(false);
@@ -533,7 +533,7 @@ void CQCompartment::save()
     }
 
   // Initial Expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpCompartment->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
@@ -854,7 +854,7 @@ bool CQCompartment::changeValue(const std::string& key,
         mpCompartment->setStatus((CModelEntity::Status)index);
 
         if (iValue == iValue
-            && mpCompartment->getStatus() != CModelEntity::ASSIGNMENT)
+            && mpCompartment->getStatus() != CModelEntity::Status::ASSIGNMENT)
           mpCompartment->setInitialValue(iValue);
 
         break;

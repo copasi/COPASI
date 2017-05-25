@@ -655,7 +655,7 @@ void test000058::test_bug1025_3()
   // now we add a new species
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
+  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CDataObject*> changedObjects;
@@ -754,7 +754,7 @@ void test000058::test_bug1025_5()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);
@@ -873,7 +873,7 @@ void test000058::test_bug1025_8()
   // now we add a new species
   CModel* pModel = pDataModel->getModel();
   CPPUNIT_ASSERT(pModel != NULL);
-  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::FIXED);
+  CMetab* pMetabolite = pModel->createMetabolite("species_2", "compartment_1", 1.0, CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pMetabolite != NULL);
   pModel->compileIfNecessary(NULL);
   std::set<const CDataObject*> changedObjects;
@@ -960,7 +960,7 @@ void test000058::test_bug1025_10()
   CRootContainer::getFunctionList()->addAndAdaptName(pFunctionDefinition);
   CModelValue* pModelValue = pModel->createModelValue("parameter_2");
   CPPUNIT_ASSERT(pModelValue != NULL);
-  pModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->setExpression(std::string(pFunctionDefinition->getObjectName() + "()")) == true);
   // now create a rule for the parameter
   pModel->compileIfNecessary(NULL);

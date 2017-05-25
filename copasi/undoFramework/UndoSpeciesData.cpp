@@ -106,19 +106,19 @@ UndoSpeciesData::fillObject(CModel *)
 
   if (pSpecies == NULL) return;
 
-  if (getStatus() != CModelEntity::ASSIGNMENT)
+  if (getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       pSpecies->setInitialConcentration(getIConc());
       pSpecies->setInitialValue(getINumber());
     }
 
-  if (getStatus() == CModelEntity::ODE || getStatus() == CModelEntity::ASSIGNMENT)
+  if (getStatus() == CModelEntity::Status::ODE || getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
       pSpecies->setExpression(getExpression());
     }
 
   // set initial expression
-  if (getStatus() != CModelEntity::ASSIGNMENT)
+  if (getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       pSpecies->setInitialExpression(getInitialExpression());
     }

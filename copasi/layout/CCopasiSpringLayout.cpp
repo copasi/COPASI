@@ -1399,7 +1399,7 @@ CLayout* CCopasiSpringLayout::createLayout(
       if (!pMetab)
         continue;
 
-      if (pMetab->getStatus() == CModelEntity::ODE || pMetab->getStatus() == CModelEntity::ASSIGNMENT)
+      if (pMetab->getStatus() == CModelEntity::Status::ODE || pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT)
         {
           CLGeneralGlyph* pGG = new CLGeneralGlyph;
           pGG->setDimensions(CLDimensions(10, 10));

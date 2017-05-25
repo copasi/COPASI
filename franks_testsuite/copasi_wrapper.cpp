@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
       /*
       for (j = 0; j < jMax;++j)
       {
-        if(compartments[j]->getStatus()!=CModelEntity::FIXED)
+        if(compartments[j]->getStatus()!=CModelEntity::Status::FIXED)
         {
           pBody->push_back(compartments[j]->getObject(CCommonName("Reference=Volume"))->getCN());
           pBody->push_back(pReport->getSeparator().getCN());
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 
       for (j = 0; j < jMax; ++j)
         {
-          if (metabolites[j].getStatus() != CModelEntity::FIXED)
+          if (metabolites[j].getStatus() != CModelEntity::Status::FIXED)
             {
               pBody->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
               pBody->push_back(pReport->getSeparator().getCN());
@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
       jMax = parameters.size();
       for (j = 0; j < jMax;++j)
       {
-        if(parameters[j]->getStatus()!=CModelEntity::FIXED)
+        if(parameters[j]->getStatus()!=CModelEntity::Status::FIXED)
         {
           pBody->push_back(parameters[j]->getObject(CCommonName("Reference=Value"))->getCN());
           pBody->push_back(pReport->getSeparator().getCN());

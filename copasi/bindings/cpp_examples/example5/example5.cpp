@@ -60,11 +60,11 @@ int main()
   pModel->setQuantityUnit(CUnit::fMol, CCore::Framework::ParticleNumbers);
   CModelValue* pFixedModelValue = pModel->createModelValue("F");
   assert(pFixedModelValue != NULL);
-  pFixedModelValue->setStatus(CModelEntity::FIXED);
+  pFixedModelValue->setStatus(CModelEntity::Status::FIXED);
   pFixedModelValue->setInitialValue(3.0);
   CModelValue* pVariableModelValue = pModel->createModelValue("V");
   assert(pVariableModelValue != NULL);
-  pVariableModelValue->setStatus(CModelEntity::ASSIGNMENT);
+  pVariableModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   // we create a very simple assignment that is easy on the optimization
   // a parabole with the minimum at x=6 should do just fine
   std::string s = pFixedModelValue->getValueReference()->getCN();

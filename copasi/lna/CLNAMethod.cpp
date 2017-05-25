@@ -679,7 +679,7 @@ bool CLNAMethod::isValidProblem(const CCopasiProblem * pProblem)
   CDataVector< CCompartment >::const_iterator end = Model.getCompartments().end();
 
   for (; it != end; ++it)
-    if (it->getStatus() != CModelEntity::FIXED)
+    if (it->getStatus() != CModelEntity::Status::FIXED)
       {
         CCopasiMessage(CCopasiMessage::ERROR, "LNA is not applicable for a system with changing volumes, e.g. compartment assignments or ODEs.");
         return false;

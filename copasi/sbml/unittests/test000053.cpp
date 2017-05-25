@@ -68,7 +68,7 @@ void test000053::test1_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
@@ -172,7 +172,7 @@ void test000053::test2_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
@@ -233,7 +233,7 @@ void test000053::test3_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
@@ -328,7 +328,7 @@ void test000053::test4_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();
@@ -393,7 +393,7 @@ void test000053::test5_bug1000()
   const CMetab* pMetab = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pMetab != NULL);
   CPPUNIT_ASSERT(pMetab->getObjectName() == "A");
-  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pMetab->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pMetab->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pRoot = pExpr->getRoot();

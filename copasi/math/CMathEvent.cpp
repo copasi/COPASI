@@ -1426,7 +1426,7 @@ void CMathEvent::createUpdateSequences()
 
       if (pTarget->getSimulationType() == CMath::EventTarget ||
           (pTarget->getSimulationType() == CMath::Conversion &&
-           dynamic_cast< CModelEntity * >(pTarget->getDataObject()->getObjectParent())->getStatus() == CModelEntity::FIXED))
+           dynamic_cast< CModelEntity * >(pTarget->getDataObject()->getObjectParent())->getStatus() == CModelEntity::Status::FIXED))
         {
           mEffectsSimulation |= CMath::eStateChange::FixedEventTarget;
         }

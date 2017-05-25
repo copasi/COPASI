@@ -486,7 +486,7 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
                     dynamic_cast<const CModelValue *>(CRootContainer::getKeyFactory()->get(Key));
 
                   if (pParamObject != NULL &&
-                      pParamObject->getStatus() == CModelEntity::FIXED)
+                      pParamObject->getStatus() == CModelEntity::Status::FIXED)
                     {
                       pItem->setText(QString::number(pParamObject->getInitialValue()));
                       pItem->setTextColor(QColor(Qt::darkGray));

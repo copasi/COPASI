@@ -80,8 +80,8 @@ void StateSubwidget::loadMetabolites()
   mpTblMetabolites->setSortingEnabled(false);
 
   for (; it != end; ++it)
-    if (it->getStatus() == CModelEntity::ODE ||
-        (it->getStatus() == CModelEntity::REACTIONS && it->isUsed()))
+    if (it->getStatus() == CModelEntity::Status::ODE ||
+        (it->getStatus() == CModelEntity::Status::REACTIONS && it->isUsed()))
       {
         mpTblMetabolites->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(CMetabNameInterface::getDisplayName(mpModel, *it, false))));
 
@@ -129,7 +129,7 @@ void StateSubwidget::loadCompartments()
   QTableWidgetItem * pItem;
 
   for (; it != end; ++it)
-    if (it->getStatus() == CModelEntity::ODE)
+    if (it->getStatus() == CModelEntity::Status::ODE)
       {
         mpTblCompartments->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
         mpTblCompartments->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
@@ -200,7 +200,7 @@ void StateSubwidget::loadModelValues()
   mpTblModelValues->setSortingEnabled(false);
 
   for (; it != end; ++it)
-    if (it->getStatus() == CModelEntity::ODE)
+    if (it->getStatus() == CModelEntity::Status::ODE)
       {
         mpTblModelValues->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
         mpTblModelValues->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));

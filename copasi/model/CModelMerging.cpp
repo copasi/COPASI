@@ -497,17 +497,17 @@ bool CModelAdd::addCompartmentsExpressions()
 
       switch (newComp ->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
 
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             if (!copyExpression(sourceComp, newComp)) return info;
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
 
             if (!copyExpression(sourceComp, newComp)) return info;
 
@@ -581,17 +581,17 @@ bool CModelAdd::addMetabolitesExpressions()
 
       switch (newMetab ->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
 
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             if (!copyExpression(sourceMetab, newMetab)) return info;
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
 
             if (!copyExpression(sourceMetab, newMetab)) return info;
 
@@ -600,7 +600,7 @@ bool CModelAdd::addMetabolitesExpressions()
 
             break;
 
-          case CModelEntity::REACTIONS:
+          case CModelEntity::Status::REACTIONS:
 
             break;
 
@@ -666,17 +666,17 @@ bool CModelAdd::addModelValuesExpressions()
 
       switch (newModVal ->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
 
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             if (!copyExpression(sourceModVal, newModVal)) return info;
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
 
             if (!copyExpression(sourceModVal, newModVal)) return info;
 
@@ -1123,18 +1123,18 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       switch (metab->getStatus())
         {
-          case CModelEntity::FIXED:
-          case CModelEntity::REACTIONS:
+          case CModelEntity::Status::FIXED:
+          case CModelEntity::Status::REACTIONS:
 
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             if (!mergeInExpression(toKey, key, metab->getExpressionPtr())) return info;
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
 
             if (!mergeInExpression(toKey, key, metab->getExpressionPtr())) return info;
 
@@ -1159,17 +1159,17 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       switch (comp ->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
 
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             if (!mergeInExpression(toKey, key, comp->getExpressionPtr())) return info;
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
 
             if (!mergeInExpression(toKey, key, comp->getExpressionPtr())) return info;
 
@@ -1194,17 +1194,17 @@ bool CModelMerging::mergeMetabolites(std::string toKey, std::string  key)
 
       switch (modval ->getStatus())
         {
-          case CModelEntity::FIXED:
+          case CModelEntity::Status::FIXED:
 
             break;
 
-          case CModelEntity::ASSIGNMENT:
+          case CModelEntity::Status::ASSIGNMENT:
 
             if (!mergeInExpression(toKey, key, modval->getExpressionPtr())) return info;
 
             break;
 
-          case CModelEntity::ODE:
+          case CModelEntity::Status::ODE:
 
             if (!mergeInExpression(toKey, key, modval->getExpressionPtr())) return info;
 

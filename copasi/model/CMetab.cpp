@@ -94,7 +94,7 @@ CMetab::CMetab(const std::string & name,
   //mKey = CRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
 
-  setStatus(REACTIONS);
+  setStatus(Status::REACTIONS);
 
   if (getObjectParent())
     {
@@ -219,10 +219,10 @@ bool CMetab::setObjectParent(const CDataContainer * pParent)
 
   Status CurrentStatus = getStatus();
 
-  if (CurrentStatus != FIXED)
-    setStatus(FIXED);
+  if (CurrentStatus != Status::FIXED)
+    setStatus(Status::FIXED);
   else
-    setStatus(REACTIONS);
+    setStatus(Status::REACTIONS);
 
   setStatus(CurrentStatus);
 
@@ -258,7 +258,7 @@ bool CMetab::compile()
   // Compiling of the rest.
   switch (getStatus())
     {
-      case FIXED:
+      case Status::FIXED:
         // Fixed values
         mRate = 0.0;
         mConcRate = 0.0;
@@ -266,7 +266,7 @@ bool CMetab::compile()
         mTT = std::numeric_limits<C_FLOAT64>::infinity();
         break;
 
-      case ASSIGNMENT:
+      case Status::ASSIGNMENT:
         // Concentration
         success = mpExpression->compile(listOfContainer);
 
@@ -283,7 +283,7 @@ bool CMetab::compile()
         mTT = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
         break;
 
-      case ODE:
+      case Status::ODE:
         // Concentration
 
         // Rate (particle number rate)
@@ -297,7 +297,7 @@ bool CMetab::compile()
 
         break;
 
-      case REACTIONS:
+      case Status::REACTIONS:
         break;
 
       default:
@@ -318,7 +318,7 @@ bool CMetab::compileInitialValueDependencies()
   listOfContainer.push_back(getObjectAncestor("Model"));
 
   // If we have an assignment or a valid initial expression we must update both
-  if (getStatus() == ASSIGNMENT ||
+  if (getStatus() == Status::ASSIGNMENT ||
       (mpInitialExpression != NULL &&
        mpInitialExpression->getInfix() != ""))
     {
@@ -369,18 +369,18 @@ void CMetab::calculate()
 {
   switch (getStatus())
     {
-      case FIXED:
+      case Status::FIXED:
         break;
 
-      case ASSIGNMENT:
+      case Status::ASSIGNMENT:
         mConc = mpExpression->calcValue();
         break;
 
-      case ODE:
+      case Status::ODE:
         mRate = mpCompartment->getValue() * mpExpression->calcValue() * mpModel->getQuantity2NumberFactor();
         break;
 
-      case REACTIONS:
+      case Status::REACTIONS:
 
         if (isDependent())
           mValue = mpMoiety->getDependentNumber();
@@ -445,7 +445,7 @@ std::ostream & operator<<(std::ostream &os, const CMetab & d)
   os << "    ++++CMetab: " << d.getObjectName() << std::endl;
   os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
   os << "        mValue (particle number) " << d.mValue << " mIValue " << d.mIValue << std::endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << d.getStatus() << std::endl;
+  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << CModelEntity::StatusName[d.getStatus()] << std::endl;
 
   if (d.mpCompartment)
     os << "        mpCompartment == " << d.mpCompartment << std::endl;
@@ -492,17 +492,17 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
   setStatus(GepasiStatus);
 
   // sanity check
-  if ((GepasiStatus < 0) || (GepasiStatus > 7))
+  if ((static_cast<int>(GepasiStatus) < 0) || (static_cast<int>(GepasiStatus) > 7))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal species.",
                      getObjectName().c_str());
-      setStatus(REACTIONS);
+      setStatus(Status::REACTIONS);
     }
 
   // sanity check
-  if ((GepasiStatus != METAB_MOIETY) && (mIConc < 0.0))
+  if ((static_cast<int>(GepasiStatus) != METAB_MOIETY) && (mIConc < 0.0))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a negative concentration "
@@ -570,7 +570,7 @@ CMetabOld::CMetabOld(const std::string & name,
                      const CDataContainer * pParent):
   CDataContainer(name, pParent, "Old Metabolite"),
   mIConc(1.0),
-  mStatus(CModelEntity::REACTIONS),
+  mStatus(CModelEntity::Status::REACTIONS),
   mCompartment()
 {CONSTRUCTOR_TRACE;}
 
@@ -617,22 +617,22 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
                                   (void *) & Status);
 
   if (Status == 0)
-    mStatus = CModelEntity::FIXED;
+    mStatus = CModelEntity::Status::FIXED;
   else
-    mStatus = CModelEntity::REACTIONS;
+    mStatus = CModelEntity::Status::REACTIONS;
 
   // sanity check
-  if ((mStatus < 0) || (mStatus > 7))
+  if ((static_cast< int >(mStatus) < 0) || (7 < static_cast< int >(mStatus) < 0))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
                      "for '%s'.\nReset to internal species.",
                      getObjectName().c_str());
-      mStatus = CModelEntity::REACTIONS;
+      mStatus = CModelEntity::Status::REACTIONS;
     }
 
   // sanity check
-  if ((mStatus != METAB_MOIETY) && (mIConc < 0.0))
+  if ((static_cast< int >(mStatus) != METAB_MOIETY) && (mIConc < 0.0))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a negative concentration "

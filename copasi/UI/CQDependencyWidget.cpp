@@ -106,13 +106,13 @@ CQDependencyWidget::getDetailsFor(const CDataObject *pObject, std::set< const CD
       if (pEntity->getExpressionPtr() != NULL &&
           pEntity->getExpressionPtr()->prerequisitsContains(elements))
         {
-          if (pEntity->getStatus() == CModelEntity::ASSIGNMENT)
+          if (pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
             {
               Origin += Separator + "Assignment Expression";
               Separator = "\n";
             }
 
-          if (pEntity->getStatus() == CModelEntity::ODE)
+          if (pEntity->getStatus() == CModelEntity::Status::ODE)
             {
               Origin += Separator + "ODE";
               Separator = "\n";

@@ -195,12 +195,12 @@ void CModelParameterSet::createFromModel()
           // Check whether this refers to a global quantity.
           if (itReaction->isLocalParameter((*itParameter)->getObjectName()))
             {
-              pParameter->setSimulationType(CModelEntity::FIXED);
+              pParameter->setSimulationType(CModelEntity::Status::FIXED);
               pParameter->setValue((*itParameter)->getValue< C_FLOAT64 >(), CCore::Framework::ParticleNumbers);
             }
           else
             {
-              pParameter->setSimulationType(CModelEntity::ASSIGNMENT);
+              pParameter->setSimulationType(CModelEntity::Status::ASSIGNMENT);
               const std::vector<std::string> ModelValue = itReaction->getParameterMapping((*itParameter)->getObjectName());
 
               if (ModelValue.size() != 1) fatalError();

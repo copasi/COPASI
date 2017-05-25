@@ -173,7 +173,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      if (metab->getStatus() != CModelEntity::ASSIGNMENT)
+      if (metab->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           pObject = metab->getRateReference();
 
@@ -201,7 +201,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      if (metab->getStatus() != CModelEntity::ASSIGNMENT)
+      if (metab->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           pObject = metab->getConcentrationRateReference();
 
@@ -289,7 +289,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      if (object->getStatus() != CModelEntity::ASSIGNMENT)
+      if (object->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           pObject = object->getRateReference();
 
@@ -325,7 +325,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      if (object->getStatus() != CModelEntity::ASSIGNMENT)
+      if (object->getStatus() != CModelEntity::Status::ASSIGNMENT)
         {
           pObject = object->getRateReference();
 
@@ -1063,21 +1063,21 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
       CModelEntity::Status Status = pEntity->getStatus();
 
       if ((classes & InitialTime) &&
-          Status == CModelEntity::TIME &&
+          Status == CModelEntity::Status::TIME &&
           !static_cast<const CModel *>(pEntity)->isAutonomous() &&
           ObjectName == "Initial Time")
         return true;
 
       if ((classes & Parameters) &&
-          Status != CModelEntity::TIME &&
-          Status != CModelEntity::ASSIGNMENT &&
+          Status != CModelEntity::Status::TIME &&
+          Status != CModelEntity::Status::ASSIGNMENT &&
           ObjectName.compare(0, 7, "Initial") == 0 &&
           pEntity->getInitialExpression() == "")
         return true;
 
       if ((classes & Variables) &&
-          Status != CModelEntity::TIME &&
-          Status != CModelEntity::ASSIGNMENT &&
+          Status != CModelEntity::Status::TIME &&
+          Status != CModelEntity::Status::ASSIGNMENT &&
           (ObjectName == "Value" ||
            ObjectName == "Volume" ||
            ObjectName == "ParticleNumber" ||
@@ -1085,39 +1085,39 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
         return true;
 
       if ((classes & EventTarget) &&
-          Status != CModelEntity::TIME &&
-          Status != CModelEntity::ASSIGNMENT &&
+          Status != CModelEntity::Status::TIME &&
+          Status != CModelEntity::Status::ASSIGNMENT &&
           (ObjectName == "Value" ||
            ObjectName == "Volume" ||
            ObjectName == "Concentration"))
         return true;
 
       if ((classes & ObservedConstants) &&
-          ((Status == CModelEntity::TIME &&
+          ((Status == CModelEntity::Status::TIME &&
             (ObjectName == "Avogadro Constant" ||
              ObjectName == "Quantity Conversion Factor")) ||
            // TODO Until we have not changed to named array elements we do not support matrix elements
            //            || pCheckedObject->hasFlag(CDataObject::Array))) ||
-           (Status == CModelEntity::ASSIGNMENT &&
+           (Status == CModelEntity::Status::ASSIGNMENT &&
             ObjectName.compare(0, 7, "Initial") == 0) ||
-           ((Status == CModelEntity::ODE ||
-             Status == CModelEntity::REACTIONS ||
-             Status == CModelEntity::FIXED) &&
+           ((Status == CModelEntity::Status::ODE ||
+             Status == CModelEntity::Status::REACTIONS ||
+             Status == CModelEntity::Status::FIXED) &&
             ObjectName.compare(0, 7, "Initial") == 0 &&
             pEntity->getInitialExpression() != "")))
         return true;
 
       if ((classes & Time) &&
-          Status == CModelEntity::TIME &&
+          Status == CModelEntity::Status::TIME &&
           ObjectName == "Time")
         return true;
 
       if ((classes & ObservedValues) &&
-          ((Status != CModelEntity::TIME &&
-            Status != CModelEntity::ASSIGNMENT &&
+          ((Status != CModelEntity::Status::TIME &&
+            Status != CModelEntity::Status::ASSIGNMENT &&
             (ObjectName.find("Rate") != std::string::npos ||
              ObjectName == "TransitionTime")) ||
-           (Status == CModelEntity::ASSIGNMENT &&
+           (Status == CModelEntity::Status::ASSIGNMENT &&
             (ObjectName == "Value" ||
              ObjectName == "Volume" ||
              ObjectName == "ParticleNumber" ||

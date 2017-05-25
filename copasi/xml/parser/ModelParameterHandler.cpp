@@ -80,7 +80,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
 
         mpData->pCurrentModelParameter->setCN(std::string(CN));
 
-        SimulationType = toEnum(pSimulationType, CModelEntity::XMLStatus, CModelEntity::FIXED);
+        SimulationType = CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
         mpData->pCurrentModelParameter->setSimulationType(SimulationType);
 
         mpData->pCurrentModelParameter->setValue(Value, CCore::Framework::ParticleNumbers);

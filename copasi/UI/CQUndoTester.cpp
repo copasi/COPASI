@@ -75,7 +75,6 @@ CQUndoTester::CQUndoTester(QApplication* app,
   mpDmModelValues = dynamic_cast<CQGlobalQuantityDM*>(mpDmWidgetModelValues->getCqDataModel());
   mpDmEvents = dynamic_cast<CQEventDM*>(mpDmWidgetEvents->getCqDataModel());
   mpDmReactions = dynamic_cast<CQReactionDM*>(mpDmWidgetReactions->getCqDataModel());
-
 }
 
 CQUndoTester::~CQUndoTester()
@@ -93,7 +92,6 @@ void CQUndoTester::test()
   QString options = FROM_UTF8(COptions::getEnvironmentVariable("COPASI_TEST_UNDO"));
 
   if (options.isEmpty()) options = "all";
-
 
   if (options.contains("all") || options.contains("model"))
     testModelDetail();
@@ -132,10 +130,8 @@ void CQUndoTester::test()
 
           while (mpUndoStack->canRedo())
             mpUndoStack->redo();
-
         }
     }
-
 }
 
 void CQUndoTester::testModelDetail()
@@ -197,8 +193,6 @@ void CQUndoTester::testModelDetail()
                            pModel->getModelType() != CModel::deterministic,
                            mpDetailModel)
   );
-
-
 }
 
 void CQUndoTester::testCompartmentDetail()
@@ -235,12 +229,11 @@ void CQUndoTester::testCompartmentDetail()
                                 )
   );
 
-
   // change type
   mpUndoStack->push(
     new CompartmentChangeCommand(CCopasiUndoCommand::COMPARTMENT_SIMULATION_TYPE_CHANGE,
-                                 mpCompartment->getStatus(),
-                                 CModelEntity::ASSIGNMENT,
+                                 static_cast<unsigned C_INT32>(mpCompartment->getStatus()),
+                                 static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT),
                                  mpCompartment,
                                  mpDetailComp,
                                  static_cast<CModelEntity*>(mpCompartment)->getInitialValue()
@@ -257,7 +250,6 @@ void CQUndoTester::testCompartmentDetail()
                                  static_cast<CModelEntity*>(mpCompartment)->getInitialValue()
                                 )
   );
-
 
   deleteCompartment();
 }
@@ -302,8 +294,8 @@ void CQUndoTester::testSpeciesDetail()
   // change type this time by name
   mpUndoStack->push(
     new SpeciesChangeCommand(CCopasiUndoCommand::SPECIES_SIMULATION_TYPE_CHANGE,
-                             FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]),
-                             FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]),
+                             FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::REACTIONS]),
+                             FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]),
                              mpSpecies,
                              mpDetailSpecies, mpSpecies->getInitialValue()
                             )
@@ -312,8 +304,8 @@ void CQUndoTester::testSpeciesDetail()
   // change type by number
   mpUndoStack->push(
     new SpeciesChangeCommand(CCopasiUndoCommand::SPECIES_SIMULATION_TYPE_CHANGE,
-                             CModelEntity::FIXED,
-                             CModelEntity::ASSIGNMENT,
+                             static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED),
+                             static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT),
                              mpSpecies,
                              mpDetailSpecies, mpSpecies->getInitialValue()
                             )
@@ -328,7 +320,6 @@ void CQUndoTester::testSpeciesDetail()
                              mpSpecies,
                              mpDetailSpecies, mpSpecies->getInitialValue())
   );
-
 
   deleteSpecies();
 }
@@ -367,12 +358,11 @@ void CQUndoTester::testModelValueDetail()
                                    )
   );
 
-
   // change type
   mpUndoStack->push(
     new GlobalQuantityChangeCommand(CCopasiUndoCommand::GLOBALQUANTITY_SIMULATION_TYPE_CHANGE,
-                                    mpModelValue->getStatus(),
-                                    CModelEntity::ASSIGNMENT,
+                                    static_cast<int>(mpModelValue->getStatus()),
+                                    static_cast<int>(CModelEntity::Status::ASSIGNMENT),
                                     mpModelValue,
                                     mpDetailMV,
                                     static_cast<CModelEntity*>(mpModelValue)->getInitialValue()
@@ -389,7 +379,6 @@ void CQUndoTester::testModelValueDetail()
                                     static_cast<CModelEntity*>(mpModelValue)->getInitialValue()
                                    )
   );
-
 
   deleteModelValue();
 }
@@ -442,7 +431,6 @@ void CQUndoTester::testEventDetail()
                            mpDetailEvent)
   );
 
-
   // change delay expression
   mpUndoStack->push(
     new EventChangeCommand(CCopasiUndoCommand::EVENT_DELAY_EXPRESSION_CHANGE,
@@ -451,7 +439,6 @@ void CQUndoTester::testEventDetail()
                            mpEvent,
                            mpDetailEvent)
   );
-
 
   // change priority expression
   mpUndoStack->push(
@@ -519,7 +506,6 @@ void CQUndoTester::testReactionDetail()
       mpTabReactions)
   );
 
-
   // set reaction scheme
   mpUndoStack->push(new ReactionChangeCommand(
                       CCopasiUndoCommand::REACTION_SCHEME_CHANGE,
@@ -530,7 +516,6 @@ void CQUndoTester::testReactionDetail()
                       FROM_UTF8(mpReaction->getFunction()->getObjectName()),
                       FROM_UTF8(mpReaction->getFunction()->getObjectName())
                     ));
-
 
   // change reversibility
   mpUndoStack->push(new ReactionChangeCommand(
@@ -579,8 +564,6 @@ void CQUndoTester::testCompartmentDM(int repetitions)
       lst.append(mpDmCompartments->index(currentRow, COL_NAME_COMPARTMENTS));
       mpUndoStack->push(new RemoveCompartmentRowsCommand(lst, mpDmCompartments));
       //++currentRow;
-
-
     }
 
   // remove
@@ -590,8 +573,6 @@ void CQUndoTester::testCompartmentDM(int repetitions)
   //  lst.append(mpDmCompartments->index(i + 1, COL_NAME_COMPARTMENTS));
   //}
   //mpUndoStack->push(new RemoveCompartmentRowsCommand(lst, mpDmCompartments));
-
-
 }
 
 void CQUndoTester::testSpeciesDM(int repetitions)
@@ -619,11 +600,7 @@ void CQUndoTester::testSpeciesDM(int repetitions)
       QModelIndexList lst;
       lst.append(mpDmSpecies->index(currentRow, COL_NAME_SPECIES));
       mpUndoStack->push(new RemoveSpecieRowsCommand(lst, mpDmSpecies));
-
     }
-
-
-
 }
 
 void CQUndoTester::testModelValueDM(int repetitions)
@@ -651,10 +628,7 @@ void CQUndoTester::testModelValueDM(int repetitions)
       QModelIndexList lst;
       lst.append(mpDmModelValues->index(currentRow, COL_NAME_GQ));
       mpUndoStack->push(new RemoveGlobalQuantityRowsCommand(lst, mpDmModelValues));
-
     }
-
-
 }
 
 void CQUndoTester::testEventDM(int repetitions)
@@ -684,7 +658,6 @@ void CQUndoTester::testEventDM(int repetitions)
       QModelIndexList lst;
       lst.append(mpDmEvents->index(currentRow, COL_NAME_EVENTS));
       mpUndoStack->push(new RemoveEventRowsCommand(lst, mpDmEvents));
-
     }
 }
 
@@ -743,7 +716,6 @@ void CQUndoTester::testReactionDM(int repetitions)
     }
 }
 
-
 void CQUndoTester::createCompartment()
 {
   // add compartment
@@ -773,7 +745,6 @@ void CQUndoTester::createReaction()
   mpUndoStack->push(new CreateNewReactionCommand(mpDetailReaction));
   mpReaction = dynamic_cast<CReaction*>(const_cast<CDataObject*>(mpDetailReaction->getObject()));
 }
-
 
 void CQUndoTester::createSpecies()
 {
@@ -811,7 +782,6 @@ void CQUndoTester::deleteEvent()
   mpEvent = NULL;
 }
 
-
 void CQUndoTester::deleteModelValue()
 {
   if (mpModelValue == NULL)
@@ -838,7 +808,6 @@ void CQUndoTester::deleteReaction()
 
   mpReaction = NULL;
 }
-
 
 void CQUndoTester::deleteSpecies()
 {

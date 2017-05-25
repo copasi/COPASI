@@ -1307,7 +1307,7 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
   switch (pSpecies->getStatus())
     {
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
         // mTT = *mpValue / fabs(mRate);
         Infix << "abs(";
         Infix << pointerToString(container.getMathObject(pSpecies->getValueReference())->getValuePointer());
@@ -1316,7 +1316,7 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         Infix << ")";
         break;
 
-      case CModelEntity::REACTIONS:
+      case CModelEntity::Status::REACTIONS:
       {
         std::ostringstream PositiveFlux;
         PositiveFlux.imbue(std::locale::classic());

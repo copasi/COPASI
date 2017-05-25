@@ -587,7 +587,7 @@ bool CCopasiXML::saveModel()
 
           saveAnnotation(pComp);
 
-          if (SimulationType != CModelEntity::FIXED &&
+          if (SimulationType != CModelEntity::Status::FIXED &&
               pComp->getExpression() != "")
             {
               startSaveElement("Expression");
@@ -646,8 +646,8 @@ bool CCopasiXML::saveModel()
 
           saveAnnotation(pMetab);
 
-          if (SimulationType != CModelEntity::FIXED &&
-              SimulationType != CModelEntity::REACTIONS &&
+          if (SimulationType != CModelEntity::Status::FIXED &&
+              SimulationType != CModelEntity::Status::REACTIONS &&
               pMetab->getExpression() != "")
             {
               startSaveElement("Expression");
@@ -704,7 +704,7 @@ bool CCopasiXML::saveModel()
 
           saveAnnotation(pMV);
 
-          if (SimulationType != CModelEntity::FIXED &&
+          if (SimulationType != CModelEntity::Status::FIXED &&
               pMV->getExpression() != "")
             {
               startSaveElement("Expression");

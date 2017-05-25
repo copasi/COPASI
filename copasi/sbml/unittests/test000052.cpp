@@ -55,11 +55,11 @@ void test000052::test_bug988()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 1);
   CMetab* pA = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pA != NULL);
-  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pA->getExpressionPtr();
   // check the expression
   const CEvaluationNode* pNode = pExpr->getRoot();

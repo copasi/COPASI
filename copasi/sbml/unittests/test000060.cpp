@@ -65,7 +65,7 @@ void test000060::test_bug_1026()
   // now change the status of the species in the underlying COPASI model
   CPPUNIT_ASSERT(pDataModel->getModel()->getMetabolites().size() == 1);
   CMetab* pMetab = pDataModel->getModel()->getMetabolites()[0];
-  pMetab->setStatus(CModelEntity::REACTIONS);
+  pMetab->setStatus(CModelEntity::Status::REACTIONS);
   std::set<const CDataObject*> changedObjects;
   changedObjects.insert(pMetab);
   std::vector<Refresh*> refreshes = pDataModel->getModel()->buildInitialRefreshSequence(changedObjects);

@@ -80,7 +80,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCModel->getCompartments().size() == 1);
   const CCompartment* pCCompartment = pCModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCCompartment != NULL);
-  CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCCompartment->getStatus() == CModelEntity::Status::FIXED);
   const CEvaluationNodeObject* pCObjectNode = NULL;
   const CRegisteredCommonName* pCObjectName = NULL;
   CObjectInterface::ContainerList listOfContainers;
@@ -106,7 +106,7 @@ void test000075::test_import_time_dependent_function_definition()
     }
 
   CPPUNIT_ASSERT(pCSpecies1 != NULL);
-  CPPUNIT_ASSERT(pCSpecies1->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pCSpecies1->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pCExpression = pCSpecies1->getExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   const CEvaluationNode* pCRoot = pCExpression->getRoot();
@@ -133,7 +133,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   CPPUNIT_ASSERT(pCSpecies2 != NULL);
-  CPPUNIT_ASSERT(pCSpecies2->getStatus() == CModelEntity::ODE);
+  CPPUNIT_ASSERT(pCSpecies2->getStatus() == CModelEntity::Status::ODE);
   pCExpression = pCSpecies2->getExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
@@ -189,7 +189,7 @@ void test000075::test_import_time_dependent_function_definition()
     }
 
   CPPUNIT_ASSERT(pCModelValue1 != NULL);
-  CPPUNIT_ASSERT(pCModelValue1->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pCModelValue1->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pCExpression = pCModelValue1->getExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
@@ -216,7 +216,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   CPPUNIT_ASSERT(pCModelValue2 != NULL);
-  CPPUNIT_ASSERT(pCModelValue2->getStatus() == CModelEntity::ODE);
+  CPPUNIT_ASSERT(pCModelValue2->getStatus() == CModelEntity::Status::ODE);
   pCExpression = pCModelValue2->getExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
@@ -243,7 +243,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   CPPUNIT_ASSERT(pCModelValue4 != NULL);
-  CPPUNIT_ASSERT(pCModelValue4->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCModelValue4->getStatus() == CModelEntity::Status::FIXED);
   pCExpression = pCModelValue4->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
@@ -270,7 +270,7 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCObject->getObjectParent() == pCModel);
 
   CPPUNIT_ASSERT(pCModelValue5 != NULL);
-  CPPUNIT_ASSERT(pCModelValue5->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCModelValue5->getStatus() == CModelEntity::Status::FIXED);
   pCExpression = pCModelValue5->getInitialExpressionPtr();
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();

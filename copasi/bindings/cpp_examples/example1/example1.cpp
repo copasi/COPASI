@@ -76,7 +76,7 @@ int main()
   // concentration of 10 nanomol
   // the metabolite belongs to the compartment we created and is is to be
   // fixed
-  CMetab* pGlucose = pModel->createMetabolite("glucose", pCompartment->getObjectName(), 10.0, CMetab::FIXED);
+  CMetab* pGlucose = pModel->createMetabolite("glucose", pCompartment->getObjectName(), 10.0, CModelEntity::Status::FIXED);
   pObject = pGlucose->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
@@ -85,21 +85,21 @@ int main()
   assert(pModel->getMetabolites().size() == 1);
   // create a second metabolite called glucose-6-phosphate with an initial
   // concentration of 0. This metabolite is to be changed by reactions
-  CMetab* pG6P = pModel->createMetabolite("glucose-6-phosphate", pCompartment->getObjectName(), 0.0, CMetab::REACTIONS);
+  CMetab* pG6P = pModel->createMetabolite("glucose-6-phosphate", pCompartment->getObjectName(), 0.0, CModelEntity::Status::REACTIONS);
   assert(pG6P != NULL);
   pObject = pG6P->getInitialValueReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getMetabolites().size() == 2);
   // another metabolite for ATP, also fixed
-  CMetab* pATP = pModel->createMetabolite("ATP", pCompartment->getObjectName(), 10.0, CMetab::FIXED);
+  CMetab* pATP = pModel->createMetabolite("ATP", pCompartment->getObjectName(), 10.0, CModelEntity::Status::FIXED);
   assert(pATP != NULL);
   pObject = pATP->getInitialConcentrationReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
   assert(pModel->getMetabolites().size() == 3);
   // and one for ADP
-  CMetab* pADP = pModel->createMetabolite("ADP", pCompartment->getObjectName(), 0.0, CMetab::REACTIONS);
+  CMetab* pADP = pModel->createMetabolite("ADP", pCompartment->getObjectName(), 0.0, CModelEntity::Status::REACTIONS);
   assert(pADP != NULL);
   pObject = pADP->getInitialConcentrationReference();
   assert(pObject != NULL);
@@ -222,7 +222,7 @@ int main()
   changedObjects.insert(pObject);
   assert(pModel->getModelValues().size() == 1);
   // set the status to assignment
-  pModelValue->setStatus(CModelValue::ASSIGNMENT);
+  pModelValue->setStatus(CModelEntity::Status::ASSIGNMENT);
   // the assignment does not have to make sense
   pModelValue->setExpression("1.0 / 4.0 + 2.0");
 

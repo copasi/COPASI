@@ -109,7 +109,7 @@ void CQModelValue::slotTypeChanged(int type)
 {
   switch ((CModelEntity::Status) mItemToType[type])
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
         // hide label, widget, and all buttons
         mpLblExpression->hide();
         mpExpressionEMW->hide();
@@ -123,7 +123,7 @@ void CQModelValue::slotTypeChanged(int type)
 
         break;
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
         // show label, widget, and correct buttons
         mpLblExpression->show();   // show the label
         mpExpressionEMW->show();  // show the widget
@@ -140,7 +140,7 @@ void CQModelValue::slotTypeChanged(int type)
 
         break;
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
         // show label, widget, and correct buttons
         mpLblExpression->show();   // show the label
         mpExpressionEMW->show();  // show the widget
@@ -190,13 +190,13 @@ void CQModelValue::slotAddNoiseChanged(bool hasNoise)
 
 void CQModelValue::init()
 {
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
+  mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
 
-  mItemToType.push_back(CModelEntity::FIXED);
-  mItemToType.push_back(CModelEntity::ASSIGNMENT);
-  mItemToType.push_back(CModelEntity::ODE);
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ODE));
 
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::TransientExpression);
   mpInitialExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::InitialExpression);
@@ -254,7 +254,7 @@ bool CQModelValue::update(ListViews::ObjectType  objectType,
 
 bool CQModelValue::leave()
 {
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::FIXED)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::FIXED)
     {
       // -- Expression --
       mpExpressionEMW->updateWidget();
@@ -344,7 +344,7 @@ void CQModelValue::load()
   slotTypeChanged(mpComboBoxType->currentIndex());
 
   // Use Initial Expression
-  if (mpModelValue->getStatus() == CModelEntity::ASSIGNMENT ||
+  if (mpModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT ||
       mpModelValue->getInitialExpression() == "")
     {
       mpBoxUseInitialExpression->setChecked(false);
@@ -390,7 +390,7 @@ void CQModelValue::save()
 
   // set initial value
   if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
-      mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+      mpModelValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       mpUndoStack->push(new GlobalQuantityChangeCommand(
                           CCopasiUndoCommand::GLOBALQUANTITY_INITIAL_VALUE_CHANGE,
@@ -416,7 +416,7 @@ void CQModelValue::save()
     }
 
   // set initial expression
-  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT)
+  if ((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT)
     {
       if (mpBoxUseInitialExpression->isChecked() &&
           mpModelValue->getInitialExpression() != mpInitialExpressionEMW->mpExpressionWidget->getExpression())
@@ -526,7 +526,7 @@ void CQModelValue::slotInitialTypeChanged(bool useInitialAssignment)
       mpInitialExpressionEMW->hide();
 
       // enable the option of use Initial Value
-      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::ASSIGNMENT);
+      mpEditInitialValue->setEnabled((CModelEntity::Status) mItemToType[mpComboBoxType->currentIndex()] != CModelEntity::Status::ASSIGNMENT);
 
       // we don't need to update the Initial Expression Widget
     }
@@ -670,7 +670,7 @@ CQModelValue::changeValue(const std::string& key,
         mpModelValue->setStatus((CModelEntity::Status)index);
 
         if (iValue == iValue
-            && mpModelValue->getStatus() != CModelEntity::ASSIGNMENT)
+            && mpModelValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
           mpModelValue->setInitialValue(iValue);
 
         break;

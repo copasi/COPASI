@@ -174,15 +174,15 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       QColor c(100, 100, 100);
 
-      if (pM->getStatus() == CModelEntity::FIXED) c = QColor(150, 150, 150);
+      if (pM->getStatus() == CModelEntity::Status::FIXED) c = QColor(150, 150, 150);
 
-      if (pM->getStatus() == CModelEntity::ASSIGNMENT) c = QColor(250, 150, 250);
+      if (pM->getStatus() == CModelEntity::Status::ASSIGNMENT) c = QColor(250, 150, 250);
 
-      if (pM->getStatus() == CModelEntity::REACTIONS) c = QColor(250, 250, 200);
+      if (pM->getStatus() == CModelEntity::Status::REACTIONS) c = QColor(250, 250, 200);
 
-      if (pM->getStatus() == CModelEntity::ODE) c = QColor(150, 250, 250);
+      if (pM->getStatus() == CModelEntity::Status::ODE) c = QColor(150, 250, 250);
 
-      if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
+      if (pM->getStatus() == CModelEntity::Status::TIME) c = QColor(250, 150, 150);
 
       mpTableObj->setItem((int) i, 0, new QTableWidgetItem(FROM_UTF8(pM->getObjectName())));
 
@@ -213,15 +213,15 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       QColor c(100, 100, 100);
 
-      if (pM->getStatus() == CModelEntity::FIXED) c = QColor(150, 150, 150);
+      if (pM->getStatus() == CModelEntity::Status::FIXED) c = QColor(150, 150, 150);
 
-      if (pM->getStatus() == CModelEntity::ASSIGNMENT) c = QColor(250, 150, 250);
+      if (pM->getStatus() == CModelEntity::Status::ASSIGNMENT) c = QColor(250, 150, 250);
 
-      if (pM->getStatus() == CModelEntity::REACTIONS) c = QColor(250, 250, 200);
+      if (pM->getStatus() == CModelEntity::Status::REACTIONS) c = QColor(250, 250, 200);
 
-      if (pM->getStatus() == CModelEntity::ODE) c = QColor(150, 250, 250);
+      if (pM->getStatus() == CModelEntity::Status::ODE) c = QColor(150, 250, 250);
 
-      if (pM->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
+      if (pM->getStatus() == CModelEntity::Status::TIME) c = QColor(250, 150, 150);
 
       mpTableObj->setItem((int) i, 3, new QTableWidgetItem(FROM_UTF8(pM->getObjectName())));
       //mpTableObj->setText(i, 3, FROM_UTF8(pM->getObjectName()));
@@ -281,15 +281,15 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
       c = QColor(100, 100, 100);
 
-      if (pME->getStatus() == CModelEntity::FIXED) c = QColor(150, 150, 150);
+      if (pME->getStatus() == CModelEntity::Status::FIXED) c = QColor(150, 150, 150);
 
-      if (pME->getStatus() == CModelEntity::ASSIGNMENT) c = QColor(250, 150, 250);
+      if (pME->getStatus() == CModelEntity::Status::ASSIGNMENT) c = QColor(250, 150, 250);
 
-      if (pME->getStatus() == CModelEntity::REACTIONS) c = QColor(250, 250, 200);
+      if (pME->getStatus() == CModelEntity::Status::REACTIONS) c = QColor(250, 250, 200);
 
-      if (pME->getStatus() == CModelEntity::ODE) c = QColor(150, 250, 250);
+      if (pME->getStatus() == CModelEntity::Status::ODE) c = QColor(150, 250, 250);
 
-      if (pME->getStatus() == CModelEntity::TIME) c = QColor(250, 150, 150);
+      if (pME->getStatus() == CModelEntity::Status::TIME) c = QColor(250, 150, 150);
 
       mpTableState->setItem((int) i, 1, new QTableWidgetItem(FROM_UTF8(tmpString)));
       //mpTableState->setText(i, 1, FROM_UTF8(tmpString));

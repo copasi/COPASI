@@ -56,7 +56,7 @@ void test000061::test_bug_1044()
   const CModelValue* pModelValue = pModel->getModelValues()[0];
   CPPUNIT_ASSERT(pModelValue != NULL);
   CPPUNIT_ASSERT(pModelValue->getObjectName() == "A");
-  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pModelValue->getStatus() == CModelEntity::Status::ASSIGNMENT);
   CPPUNIT_ASSERT(pModelValue->getExpressionPtr() != NULL);
   const CEvaluationNode* pRoot = pModelValue->getExpressionPtr()->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);

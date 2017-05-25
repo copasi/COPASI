@@ -37,7 +37,7 @@ UndoGlobalQuantityData::UndoGlobalQuantityData(const std::string &key  /*= ""*/,
     const std::string &type /*= ""*/)
   : UndoData(key, name, type)
   , mInitialValue()
-  , mStatus(CModelEntity::FIXED)
+  , mStatus(CModelEntity::Status::FIXED)
   , mExpression()
   , mInitialExpression()
 {
@@ -103,18 +103,18 @@ UndoGlobalQuantityData::fillObject(CModel *)
 
   pGlobalQuantity->setStatus(getStatus());
 
-  if (getStatus() != CModelEntity::ASSIGNMENT)
+  if (getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       pGlobalQuantity->setInitialValue(getInitialValue());
     }
 
-  if (getStatus() != CModelEntity::FIXED)
+  if (getStatus() != CModelEntity::Status::FIXED)
     {
       pGlobalQuantity->setExpression(getExpression());
     }
 
   // set initial expression
-  if (getStatus() != CModelEntity::ASSIGNMENT)
+  if (getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       pGlobalQuantity->setInitialExpression(getInitialExpression());
     }

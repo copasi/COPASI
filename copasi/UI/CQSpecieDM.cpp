@@ -44,15 +44,15 @@ CQSpecieDM::CQSpecieDM(QObject *parent):
   mpMetabolites(NULL),
   mNotify(true)
 {
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::REACTIONS]));
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::FIXED]));
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]));
-  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ODE]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::REACTIONS]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::FIXED]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]));
+  mTypes.push_back(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ODE]));
 
-  mItemToType.push_back(CModelEntity::REACTIONS);
-  mItemToType.push_back(CModelEntity::FIXED);
-  mItemToType.push_back(CModelEntity::ASSIGNMENT);
-  mItemToType.push_back(CModelEntity::ODE);
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::REACTIONS));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::FIXED));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ASSIGNMENT));
+  mItemToType.push_back(static_cast<unsigned C_INT32>(CModelEntity::Status::ODE));
 
   mUnits.append("?");
   mUnits.append("?");
@@ -109,7 +109,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
     {
       CMetab & Species = mpMetabolites->operator[](index.row());
 
-      if (this->index(index.row(), COL_TYPE_SPECIES).data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
+      if (this->index(index.row(), COL_TYPE_SPECIES).data().toString() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
@@ -124,7 +124,7 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
     {
       CMetab & Species = mpMetabolites->operator[](index.row());
 
-      if (this->index(index.row(), COL_TYPE_SPECIES).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::ASSIGNMENT]))
+      if (this->index(index.row(), COL_TYPE_SPECIES).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT]))
           || !(this->index(index.row(), COL_IEXPRESSION_SPECIES).data().toString().isEmpty()))
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
       else
@@ -629,7 +629,7 @@ QList <UndoSpeciesData *> CQSpecieDM::insertNewSpecieRow(int position, int rows,
       double initial = index.isValid() && column == COL_ICONCENTRATION ? value.toDouble() : 1.0;
 
       CModelEntity::Status status = index.isValid() && column == COL_TYPE_SPECIES ?
-                                    (CModelEntity::Status) mItemToType[value.toInt()] : CModelEntity::REACTIONS;
+                                    (CModelEntity::Status) mItemToType[value.toInt()] : CModelEntity::Status::REACTIONS;
 
       CMetab * pSpecies =
         pModel->createMetabolite(TO_UTF8(name), TO_UTF8(compartment), initial, status);

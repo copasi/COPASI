@@ -76,7 +76,7 @@ int main()
   // concentration of 10 nanomol
   // the metabolite belongs to the compartment we created and is is to be
   // fixed
-  CMetab* pS = pModel->createMetabolite("S", pCompartment->getObjectName(), 10.0, CMetab::FIXED);
+  CMetab* pS = pModel->createMetabolite("S", pCompartment->getObjectName(), 10.0, CModelEntity::Status::FIXED);
   pObject = pS->getInitialConcentrationReference();
   assert(pObject != NULL);
   changedObjects.insert(pObject);
@@ -85,7 +85,7 @@ int main()
   assert(pModel->getMetabolites().size() == 1);
   // create a second metabolite called P with an initial
   // concentration of 0. This metabolite is to be changed by reactions
-  CMetab* pP = pModel->createMetabolite("P", pCompartment->getObjectName(), 0.0, CMetab::REACTIONS);
+  CMetab* pP = pModel->createMetabolite("P", pCompartment->getObjectName(), 0.0, CModelEntity::Status::REACTIONS);
   assert(pP != NULL);
   pObject = pP->getInitialConcentrationReference();
   assert(pObject != NULL);
@@ -110,7 +110,7 @@ int main()
 
   CModelValue* pMV = pModel->createModelValue("K", 42.0);
   // set the status to FIXED
-  pMV->setStatus(CModelValue::FIXED);
+  pMV->setStatus(CModelEntity::Status::FIXED);
   assert(pMV != NULL);
   pObject = pMV->getInitialValueReference();
   assert(pObject != NULL);

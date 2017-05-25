@@ -349,7 +349,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
 
   switch (metab->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
@@ -360,8 +360,8 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
         break;
       }
 
-      case CModelEntity::ODE:
-      case CModelEntity::REACTIONS:
+      case CModelEntity::Status::ODE:
+      case CModelEntity::Status::REACTIONS:
       {
         if (!metab->isDependent())
           {
@@ -382,7 +382,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
 
@@ -405,7 +405,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
 
   switch (comp->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
@@ -416,7 +416,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
@@ -427,7 +427,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
 #if 0
         assignment << "#" << comments << std::endl;
@@ -452,7 +452,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
   switch (modval->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
@@ -463,7 +463,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
@@ -474,7 +474,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
 #if 0
         assignment << "#" << comments << std::endl;
@@ -512,7 +512,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
   switch (tmp->getStatus())
     {
-      case CModelEntity::FIXED:
+      case CModelEntity::Status::FIXED:
       {
         fixed << "#" << comments << std::endl;
         fixed << "param ";
@@ -523,7 +523,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
         break;
       }
 
-      case CModelEntity::ODE:
+      case CModelEntity::Status::ODE:
       {
         initial << "#" << comments << std::endl;
         initial << "init ";
@@ -534,7 +534,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
         break;
       }
 
-      case CModelEntity::ASSIGNMENT:
+      case CModelEntity::Status::ASSIGNMENT:
       {
         assignment << "#" << comments << std::endl;
 

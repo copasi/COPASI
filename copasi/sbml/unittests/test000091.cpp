@@ -58,14 +58,14 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
-  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::Status::REACTIONS);
   CMetab* pA = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pA != NULL);
-  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::Status::REACTIONS);
   // there should now be three model values because we created two dummy model
   // values that represent the two different delay expression
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 3);
@@ -94,10 +94,10 @@ void test000091::test_delay_in_kinetic_law()
     }
 
   CPPUNIT_ASSERT(pK1 != NULL);
-  CPPUNIT_ASSERT(pK1->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pK1->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(fabs((pK1->getInitialValue() - 4.0) / 4.0) < 1e-9);
   CPPUNIT_ASSERT(pDummy1 != NULL);
-  CPPUNIT_ASSERT(pDummy1->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pDummy1->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pDummy1->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -126,7 +126,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   CPPUNIT_ASSERT(pDummy2 != NULL);
-  CPPUNIT_ASSERT(pDummy2->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pDummy2->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pExpr = pDummy2->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
@@ -368,14 +368,14 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pModel->getCompartments().size() == 1);
   const CCompartment* pCompartment = pModel->getCompartments()[0];
   CPPUNIT_ASSERT(pCompartment != NULL);
-  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pCompartment->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(pModel->getMetabolites().size() == 2);
   const CMetab* pB = pModel->getMetabolites()[1];
   CPPUNIT_ASSERT(pB != NULL);
-  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pB->getStatus() == CModelEntity::Status::REACTIONS);
   CMetab* pA = pModel->getMetabolites()[0];
   CPPUNIT_ASSERT(pA != NULL);
-  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::REACTIONS);
+  CPPUNIT_ASSERT(pA->getStatus() == CModelEntity::Status::REACTIONS);
   // there should now be three model values because we created two dummy model
   // values that represent the two different delay expression
   CPPUNIT_ASSERT(pModel->getModelValues().size() == 7);
@@ -412,19 +412,19 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
 
   // check if K1 has the correct value
   CPPUNIT_ASSERT(pK1 != NULL);
-  CPPUNIT_ASSERT(pK1->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pK1->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(fabs((pK1->getInitialValue() - 4.0) / 4.0) < 1e-9);
   // check if pGlobalized1 (former k3) has the correct value
   CPPUNIT_ASSERT(pGlobalized1 != NULL);
-  CPPUNIT_ASSERT(pGlobalized1->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pGlobalized1->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(fabs((pGlobalized1->getInitialValue() - 0.3) / 0.3) < 1e-9);
   // check if pGlobalized2 (former k2) has the correct value
   CPPUNIT_ASSERT(pGlobalized2 != NULL);
-  CPPUNIT_ASSERT(pGlobalized2->getStatus() == CModelEntity::FIXED);
+  CPPUNIT_ASSERT(pGlobalized2->getStatus() == CModelEntity::Status::FIXED);
   CPPUNIT_ASSERT(fabs((pGlobalized2->getInitialValue() - 0.2) / 0.2) < 1e-9);
 
   // check if pDummy1 has the correct expression
-  CPPUNIT_ASSERT(pDummy1->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pDummy1->getStatus() == CModelEntity::Status::ASSIGNMENT);
   const CExpression* pExpr = pDummy1->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
@@ -453,7 +453,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   // check if pDummy2 has the correct expression
-  CPPUNIT_ASSERT(pDummy2->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pDummy2->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pExpr = pDummy2->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
@@ -480,7 +480,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   // check if pDummy3 has the correct expression
-  CPPUNIT_ASSERT(pDummy3->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pDummy3->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pExpr = pDummy3->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
@@ -507,7 +507,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
   // check if pDummy4 has the correct expression
-  CPPUNIT_ASSERT(pDummy4->getStatus() == CModelEntity::ASSIGNMENT);
+  CPPUNIT_ASSERT(pDummy4->getStatus() == CModelEntity::Status::ASSIGNMENT);
   pExpr = pDummy4->getExpressionPtr();
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
