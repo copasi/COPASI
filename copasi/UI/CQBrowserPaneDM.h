@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CQBrowserPaneDM
 #define COPASI_CQBrowserPaneDM
@@ -16,6 +16,8 @@
 #include "copasi/UI/listviews.h"
 
 #include "copasi/utilities/CCopasiNode.h"
+
+#include "copasi/utilities/CValidity.h"
 
 class DataModelGUI;
 class CDataModel;
@@ -122,6 +124,7 @@ public:
 
 private slots:
   bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
+  void slotRefreshValidityFilters();
 
 private:
   QModelIndex index(CNode * pNode) const;
@@ -143,6 +146,9 @@ private:
   bool mEmitDataChanged;
 
   int mFlags;
+
+  CValidity::Severity mSeverityFilter;
+  CValidity::Kind mKindFilter;
 };
 
 #endif // COPASI_CQBrowserPaneDM

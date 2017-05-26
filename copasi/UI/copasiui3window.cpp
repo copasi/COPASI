@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <sbml/SBMLDocument.h>
 
@@ -231,6 +231,9 @@ CopasiUI3Window::CopasiUI3Window():
 #endif
   , mpPopulationDisplay(NULL)
 {
+  // There can only be one
+  pMainWindow = this;
+
   // set destructive close
   this->setAttribute(Qt::WA_DeleteOnClose);
   // Add this window to the list of windows
@@ -1396,7 +1399,7 @@ void CopasiUI3Window::slotObjectBrowserDialogWasClosed()
 void CopasiUI3Window::slotPreferences()
 {
   CQPreferenceDialog *preferenceDialog = new CQPreferenceDialog(this, 0, false);
-  connect(preferenceDialog, SIGNAL(Accepted()), this, SLOT(slotPreferencesAccepted()));
+  connect(preferenceDialog, SIGNAL(accepted()), this, SLOT(slotPreferencesAccepted()));
 
   preferenceDialog->setAttribute(Qt::WA_DeleteOnClose);
   preferenceDialog->setModal(true);
@@ -1405,6 +1408,7 @@ void CopasiUI3Window::slotPreferences()
 
 void CopasiUI3Window::slotPreferencesAccepted()
 {
+  emit signalPreferenceUpdated();
 }
 
 void CopasiUI3Window::slotTutorialWizard()

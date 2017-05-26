@@ -31,6 +31,7 @@
 #include "function/CFunctionDB.h"
 #include "model/CMetabNameInterface.h"
 #include "resourcesUI/CQIconResource.h"
+#include "UI/copasiui3window.h"
 
 CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   QAbstractItemModel(pParent),
@@ -38,10 +39,14 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   mpCopasiDM(NULL),
   mpGuiDM(NULL),
   mEmitDataChanged(true),
-  mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB | CQBrowserPaneDM::Units)
+  mFlags(CQBrowserPaneDM::Model | CQBrowserPaneDM::Tasks | CQBrowserPaneDM::Output | CQBrowserPaneDM::FunctionDB | CQBrowserPaneDM::Units),
+  mSeverityFilter(), // All flags should be off,
+  mKindFilter()      // with default constructor
 {
-  // setSortRole(Qt::EditRole);
   createStaticDM();
+
+  connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotRefreshValidityFilters()));
+  slotRefreshValidityFilters();
 }
 
 // virtual
@@ -63,30 +68,6 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  CValidity::Severity severityFilter; //first, "success", flag should be off, with default constructor
-
-  CCopasiParameterGroup::index_iterator it =
-    CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->beginIndex();
-  CCopasiParameterGroup::index_iterator end =
-    CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->endIndex();
-
-  for (size_t i = 1; it != end && i < severityFilter.size(); it++, i++) //skip the "success" flag
-    {
-      if ((*it)->getValue< bool >())
-        severityFilter.set(i);
-    }
-
-  CValidity::Kind kindFilter;
-
-  it = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->beginIndex();
-  end = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->endIndex();
-
-  for (size_t i = 0; it != end && i < kindFilter.size(); it++, i++)
-    {
-      if ((*it)->getValue< bool >())
-        kindFilter.set(i);
-    }
-
   CDataObject * pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
 
   CValidity validity;
@@ -94,7 +75,7 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   if (pObject != NULL)
     validity = pObject->getValidity();
 
-  CIssue::eSeverity highestSeverity = validity.getHighestSeverity(severityFilter, kindFilter);
+  CIssue::eSeverity highestSeverity = validity.getHighestSeverity(mSeverityFilter, mKindFilter);
 
   QCommonStyle * tmpStyle = new QCommonStyle;
   QIcon issueIcon;
@@ -102,17 +83,17 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   switch (highestSeverity)
     {
       case CIssue::eSeverity::Error:
-        if(severityFilter.isSet(CIssue::eSeverity::Error))
+        if(mSeverityFilter.isSet(CIssue::eSeverity::Error))
           issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
         break;
 
       case CIssue::eSeverity::Warning:
-        if(severityFilter.isSet(CIssue::eSeverity::Warning))
+        if(mSeverityFilter.isSet(CIssue::eSeverity::Warning))
           issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
         break;
 
       case CIssue::eSeverity::Information:
-        if(severityFilter.isSet(CIssue::eSeverity::Information))
+        if(mSeverityFilter.isSet(CIssue::eSeverity::Information))
           issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
         break;
 
@@ -123,14 +104,14 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   switch (role)
     {
       case Qt::DecorationRole:
-        if (kindFilter != kindFilter.None)
+        if (mKindFilter != mKindFilter.None)
           return issueIcon;
 
         break;
 
       case Qt::ToolTipRole:
-        if (kindFilter != kindFilter.None)
-          return QVariant(QString(FROM_UTF8(validity.getIssueMessages(severityFilter, kindFilter))));
+        if (mKindFilter != mKindFilter.None)
+          return QVariant(QString(FROM_UTF8(validity.getIssueMessages(mSeverityFilter, mKindFilter))));
 
         break;
 
@@ -722,6 +703,33 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
     }
 
   return true;
+}
+
+void CQBrowserPaneDM::slotRefreshValidityFilters()
+{
+  mSeverityFilter.reset();
+
+  CCopasiParameterGroup::index_iterator it =
+    CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->beginIndex();
+  CCopasiParameterGroup::index_iterator end =
+    CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->endIndex();
+
+  for (size_t i = 1; it != end && i < mSeverityFilter.size(); it++, i++) //skip the "success" flag
+    {
+      if ((*it)->getValue< bool >())
+        mSeverityFilter.set(i);
+    }
+
+  mKindFilter.reset();
+
+  it = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->beginIndex();
+  end = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->endIndex();
+
+  for (size_t i = 0; it != end && i < mKindFilter.size(); it++, i++)
+    {
+      if ((*it)->getValue< bool >())
+        mKindFilter.set(i);
+    }
 }
 
 QModelIndex CQBrowserPaneDM::index(CQBrowserPaneDM::CNode * pNode) const
