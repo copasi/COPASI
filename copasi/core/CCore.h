@@ -39,7 +39,8 @@ public:
   enum struct Framework
   {
     Concentration = 0,
-    ParticleNumbers
+    ParticleNumbers,
+    __SIZE
   };
 };
 

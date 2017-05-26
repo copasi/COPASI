@@ -79,7 +79,7 @@ void CMCAMethod::initObjects()
   CDataArray *
   tmp = new CDataArray("Unscaled elasticities", this,
                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledElasticities), true);
-  tmp->setMode(CDataArray::Mode::VECTOR);
+  tmp->setMode(CDataArray::Mode::Vector);
   tmp->setDescription("Unscaled elasticity matrix");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Species (reduced system)");
@@ -87,7 +87,7 @@ void CMCAMethod::initObjects()
 
   tmp = new CDataArray("Unscaled concentration control coefficients", this,
                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledConcCC), true);
-  tmp->setMode(CDataArray::Mode::VECTOR);
+  tmp->setMode(CDataArray::Mode::Vector);
   tmp->setDescription("Unscaled concentration control coefficients");
   tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
@@ -95,7 +95,7 @@ void CMCAMethod::initObjects()
 
   tmp = new CDataArray("Unscaled flux control coefficients", this,
                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mUnscaledFluxCC), true);
-  tmp->setMode(CDataArray::Mode::VECTOR);
+  tmp->setMode(CDataArray::Mode::Vector);
   tmp->setDescription("Unscaled flux control coefficients");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
@@ -103,7 +103,7 @@ void CMCAMethod::initObjects()
 
   tmp = new CDataArray("Scaled elasticities", this,
                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledElasticities), true);
-  tmp->setMode(CDataArray::Mode::VECTOR);
+  tmp->setMode(CDataArray::Mode::Vector);
   tmp->setDescription("Scaled elasticity matrix");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Species (reduced system)");
@@ -111,7 +111,7 @@ void CMCAMethod::initObjects()
 
   tmp = new CDataArray("Scaled concentration control coefficients", this,
                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledConcCC), true);
-  tmp->setMode(CDataArray::Mode::VECTOR);
+  tmp->setMode(CDataArray::Mode::Vector);
   tmp->setDescription("Scaled concentration control coefficients");
   tmp->setDimensionDescription(0, "Species (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");
@@ -119,7 +119,7 @@ void CMCAMethod::initObjects()
 
   tmp = new CDataArray("Scaled flux control coefficients", this,
                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mScaledFluxCC), true);
-  tmp->setMode(CDataArray::Mode::VECTOR);
+  tmp->setMode(CDataArray::Mode::Vector);
   tmp->setDescription("Scaled flux control coefficients");
   tmp->setDimensionDescription(0, "Reactions (reduced system)");
   tmp->setDimensionDescription(1, "Reactions (reduced system)");

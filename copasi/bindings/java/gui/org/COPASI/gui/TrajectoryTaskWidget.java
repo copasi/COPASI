@@ -165,7 +165,7 @@ public class TrajectoryTaskWidget extends TaskWidget  implements FocusListener{
 		  long i=0;
 		  while(t==null && i < size)
 		  {
-		  	if(mDataModel.getTask(i).getType()==CTaskEnum.timeCourse)
+		  	if(mDataModel.getTask(i).getType()==CTaskEnum.Task_timeCourse)
 		  	{
 		  		t=mDataModel.getTask(i);
 		  	}

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
 // All rights reserved. 
@@ -36,9 +41,9 @@
 			
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
-      while(methods[i]!=CTaskEnum::UnsetMethod)
+      while(methods[i]!=CTaskEnum::Method::UnsetMethod)
       {
-        validMethods.push_back(methods[i]);
+        validMethods.push_back(static_cast< C_INT32>(methods[i]));
         ++i;
       }
       return validMethods;

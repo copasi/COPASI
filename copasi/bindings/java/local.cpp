@@ -17,7 +17,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#include "copasi/../core/CMatrix.h"
+#include "core/CMatrix.h"
 #include "utilities/CCopasiMethod.h"
 #include "utilities/CCopasiProblem.h"
 #include "utilities/CCopasiTask.h"

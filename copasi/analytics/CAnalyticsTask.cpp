@@ -435,8 +435,8 @@ const CTaskEnum::Method * CAnalyticsTask::getValidMethods() const
 {
   static const CTaskEnum::Method ValidMethods[] =
   {
-    CTaskEnum::deterministic,
-    CTaskEnum::UnsetMethod
+    CTaskEnum::Method::deterministic,
+    CTaskEnum::Method::UnsetMethod
   };
 
   return ValidMethods;

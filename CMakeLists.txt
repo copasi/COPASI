@@ -267,8 +267,8 @@ option (BUILD_GUI "Disable this if you do not want to build the COPASI GUI (Copa
 
 option(ENABLE_FLEX_BISON "Enable the use of flex and bison to create parsers." OFF)
 if (ENABLE_FLEX_BISON)
-  find_package(FLEX)
-  find_package(BISON)
+  find_package(FLEX REQUIRED)
+  find_package(BISON REQUIRED) 
   set(FLEX_BINARY ${FLEX_EXECUTABLE})
   set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
   set(BISON_BINARY ${BISON_EXECUTABLE})
@@ -547,6 +547,13 @@ if (ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_PERL OR ENABLE_OCTAV
   endif ()
 
   find_package(SWIG REQUIRED)
+  find_program(SED_EXECUTABLE sed)
+  
+  if (${SED_EXECUTABLE} MATCHES "SED_EXECUTABLE-NOTFOUND")
+    message(FATAL_ERROR "sed not found")
+  else ()
+    message(STATUS "Found sed: ${SED_EXECUTABLE}")
+  endif ()
 endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)

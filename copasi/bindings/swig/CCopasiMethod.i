@@ -53,6 +53,6 @@
 
   static int TypeNameToEnum(const std::string& typeName)
   {
-     return toEnum(typeName.c_str(), CTaskEnum::MethodName, CTaskEnum::UnsetMethod); 
+     return static_cast< int >(CTaskEnum::MethodName.toEnum(typeName, CTaskEnum::Method::UnsetMethod)); 
   }
 }

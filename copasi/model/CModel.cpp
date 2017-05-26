@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //
 
@@ -2875,25 +2875,25 @@ void CModel::initObjects()
 
   mpStoiAnnotation = new CDataArray("Stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mStoi), true);
   mpStoiAnnotation->setDescription("Stoichiometry Matrix");
-  mpStoiAnnotation->setMode(0, CDataArray::Mode::OBJECTS);
+  mpStoiAnnotation->setMode(0, CDataArray::Mode::Objects);
   mpStoiAnnotation->setDimensionDescription(0, "Species that are controlled by reactions");
-  mpStoiAnnotation->setMode(1, CDataArray::Mode::VECTOR_ON_THE_FLY);
+  mpStoiAnnotation->setMode(1, CDataArray::Mode::VectorOnTheFly);
   mpStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpStoiAnnotation->setCopasiVector(1, mSteps);
 
   mpRedStoiAnnotation = new CDataArray("Reduced stoichiometry(ann)", this, new CMatrixInterface<CMatrix<C_FLOAT64> >(&mRedStoi), true);
   mpRedStoiAnnotation->setDescription("Reduced stoichiometry Matrix");
-  mpRedStoiAnnotation->setMode(0, CDataArray::Mode::OBJECTS);
+  mpRedStoiAnnotation->setMode(0, CDataArray::Mode::Objects);
   mpRedStoiAnnotation->setDimensionDescription(0, "Species (reduced system)");
-  mpRedStoiAnnotation->setMode(1, CDataArray::Mode::VECTOR_ON_THE_FLY);
+  mpRedStoiAnnotation->setMode(1, CDataArray::Mode::VectorOnTheFly);
   mpRedStoiAnnotation->setDimensionDescription(1, "Reactions");
   mpRedStoiAnnotation->setCopasiVector(1, mSteps);
 
   mpLinkMatrixAnnotation = new CDataArray("Link matrix(ann)", this, new CMatrixInterface<CLinkMatrixView>(&mLView), true);
   mpLinkMatrixAnnotation->setDescription("Link matrix");
-  mpLinkMatrixAnnotation->setMode(0, CDataArray::Mode::OBJECTS);
+  mpLinkMatrixAnnotation->setMode(0, CDataArray::Mode::Objects);
   mpLinkMatrixAnnotation->setDimensionDescription(0, "Species that are controlled by reactions (full system)");
-  mpLinkMatrixAnnotation->setMode(1, CDataArray::Mode::OBJECTS);
+  mpLinkMatrixAnnotation->setMode(1, CDataArray::Mode::Objects);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
   // mpMathModel = new CMathModel(this);

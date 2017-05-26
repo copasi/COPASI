@@ -26,7 +26,7 @@ CDataArray::CDataArray(const std::string & name,
   : CDataContainer(name, pParent, "Array" , CDataObject::Array),
     mpArray(array),
     mDestructArray(adopt),
-    mDefaultMode(Mode::OBJECTS)
+    mDefaultMode(Mode::Objects)
 {
   assert(mpArray);
 
@@ -99,7 +99,7 @@ const std::vector<std::string> & CDataArray::getAnnotationsString(size_t d, bool
   std::vector< std::string >::iterator itName = mAnnotationsString[d].begin();
   std::vector< std::string >::iterator endName = mAnnotationsString[d].end();
 
-  if (mModes[d] == Mode::NUMBERS)
+  if (mModes[d] == Mode::Numbers)
     {
       size_t Index = 1;
 

@@ -18,19 +18,20 @@ public:
   typedef std::array< Type, static_cast< size_t >(Enum::__SIZE) > base;
 
   /**
-   * Disable the default constructor
+   * Default constructor
    */
-  CEnumAnnotation() = delete;
+  CEnumAnnotation():
+    base()
+  {
+    base::fill(Type());
+  }
 
   /**
    * Disable the copy constructor
    */
-  CEnumAnnotation(const CEnumAnnotation &) = delete;
-
-  /**
-   * Disable the assignment operator
-   */
-  CEnumAnnotation & operator = (const CEnumAnnotation &) = delete;
+  CEnumAnnotation(const CEnumAnnotation & src):
+    base(src)
+  {}
 
   /**
    * Specific constructor from the base class

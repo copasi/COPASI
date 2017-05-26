@@ -119,9 +119,9 @@
       
       std::vector<C_INT32> validMethods;
       unsigned int i=0;
-      while(methods[i]!=CTaskEnum::UnsetMethod)
+      while(methods[i]!=CTaskEnum::Method::UnsetMethod)
       {
-        validMethods.push_back(methods[i]);
+        validMethods.push_back(static_cast< C_INT32>(methods[i]));
         ++i;
       }
       return validMethods;

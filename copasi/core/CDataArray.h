@@ -42,7 +42,7 @@ public:
    * VECTOR: A CDataVector is provided from which the CNs are generated at
    * the time the vector is set
    *
-   * VECTOR_ON_THE_FLY: A CDataVector is provided, but the CNs are generated
+   * VectorOnTheFly: A CDataVector is provided, but the CNs are generated
    * every time the annotations are retrieved (so that they are always up to date).
    *
    * STRINGS: The annotations for the rows, cols, ... are given explicitly
@@ -53,11 +53,11 @@ public:
    */
   enum struct Mode
   {
-    OBJECTS,
-    VECTOR,
-    VECTOR_ON_THE_FLY,
-    STRINGS,
-    NUMBERS,
+    Objects,
+    Vector,
+    VectorOnTheFly,
+    Strings,
+    Numbers,
     __SIZE
   };
 
@@ -78,7 +78,7 @@ public:
    *  let the ArrayAnnotation point to a different array.
    *  If you use this method without updating the annotations afterwards
    *  it is your responsibility to make sure the new array fits the
-   *  existing annotation (in dimensionality and, if not in VECTOR_ON_THE_FLY mode,
+   *  existing annotation (in dimensionality and, if not in VectorOnTheFly mode,
    *  in size).
    */
   void setArray(CArrayInterface * a);
@@ -116,13 +116,13 @@ public:
    * Associates a dimension d of the array with a CDataVector of
    * CDataObjects. If the mode of the dimension d is VECTOR than
    * the CNs of the objects in the vector are generated and stored immediately.
-   * If the mode is VECTOR_ON_THE_FLY the CNs are generated when getAnnotationsCN()
+   * If the mode is VectorOnTheFly the CNs are generated when getAnnotationsCN()
    * or getAnnotationsString() is called.
    */
   template < class CType > void setCopasiVector(size_t d, const CDataVector< CType > & v)
   {
     assert(d < dimensionality());
-    assert((mModes[d] == Mode::VECTOR) || (mModes[d] == Mode::VECTOR_ON_THE_FLY));
+    assert((mModes[d] == Mode::Vector) || (mModes[d] == Mode::VectorOnTheFly));
 
     size_t i;
 
@@ -148,7 +148,7 @@ public:
 
   /**
    * This returns strings that annotate the rows, columns, ... of the array.
-   * If the mode is OBJECTS, VECTOR, or VECTOR_ON_THE_FLY the display argument determines
+   * If the mode is OBJECTS, VECTOR, or VectorOnTheFly the display argument determines
    * if the object name or the object display name is used.
    * Note that this method returns a reference. The content that the reference points to
    * may be changes by later calls to the getAnnotationsCN() method with the same value for d.

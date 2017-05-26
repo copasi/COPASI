@@ -1813,8 +1813,8 @@ void CCSPMethod::createAnnotationsM()
 #if 0
   pAmplitudeAnn = new CDataArray("Amplitude", this,
                                  new CMatrixInterface<CMatrix<C_FLOAT64> >(&mAmplitudeTab), true);
-  pAmplitudeAnn->setMode(0, pTmp1->STRINGS);
-  pAmplitudeAnn->setMode(1, pTmp1->STRINGS);
+  pAmplitudeAnn->setMode(0, CDataArray::Mode::Strings);
+  pAmplitudeAnn->setMode(1, CDataArray::Mode::Strings);
   pAmplitudeAnn->setDescription(" ");
   pAmplitudeAnn->setDimensionDescription(0, "Fast Reaction Modes");
   pAmplitudeAnn->setDimensionDescription(1, "Amplitudes ");
@@ -1825,8 +1825,8 @@ void CCSPMethod::createAnnotationsM()
 
   pRadicalPointerAnn = new CDataArray("Radical Pointer", this,
                                       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mRadicalPointerTab), true);
-  pRadicalPointerAnn->setMode(0, CDataArray::Mode::VECTOR);
-  pRadicalPointerAnn->setMode(1, CDataArray::Mode::STRINGS);
+  pRadicalPointerAnn->setMode(0, CDataArray::Mode::Vector);
+  pRadicalPointerAnn->setMode(1, CDataArray::Mode::Strings);
   pRadicalPointerAnn->setDescription("Radical Pointer: whenever is not a small number, species k is said to be CSP radical ");
   pRadicalPointerAnn->setDimensionDescription(0, "Species");
   pRadicalPointerAnn->setDimensionDescription(1, "Fast Time Scales");
@@ -1839,8 +1839,8 @@ void CCSPMethod::createAnnotationsM()
 
   pFastReactionPointerAnn = new CDataArray("Fast Reaction Pointer", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerTab), true);
-  pFastReactionPointerAnn->setMode(0, CDataArray::Mode::VECTOR);
-  pFastReactionPointerAnn->setMode(1, CDataArray::Mode::STRINGS);
+  pFastReactionPointerAnn->setMode(0, CDataArray::Mode::Vector);
+  pFastReactionPointerAnn->setMode(1, CDataArray::Mode::Strings);
   pFastReactionPointerAnn->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
   pFastReactionPointerAnn->setDimensionDescription(0, "Reactions");
   pFastReactionPointerAnn->setDimensionDescription(1, "Fast Time Scales");
@@ -1853,8 +1853,8 @@ void CCSPMethod::createAnnotationsM()
 
   pFastReactionPointerNormedAnn = new CDataArray("Normed Fast Reaction Pointer", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mFastReactionPointerNormedTab), true);
-  pFastReactionPointerNormedAnn->setMode(0, CDataArray::Mode::VECTOR);
-  pFastReactionPointerNormedAnn->setMode(1, CDataArray::Mode::STRINGS);
+  pFastReactionPointerNormedAnn->setMode(0, CDataArray::Mode::Vector);
+  pFastReactionPointerNormedAnn->setMode(1, CDataArray::Mode::Strings);
   pFastReactionPointerNormedAnn->setDescription("Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, the r-th reaction is said to be a fast reaction");
   pFastReactionPointerNormedAnn->setDimensionDescription(0, "Reactions");
   pFastReactionPointerNormedAnn->setDimensionDescription(1, "Fast Time Scales");
@@ -1867,8 +1867,8 @@ void CCSPMethod::createAnnotationsM()
 
   pParticipationIndexAnn = new CDataArray("Participation Index", this,
                                           new CMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexTab), true);
-  pParticipationIndexAnn->setMode(1, CDataArray::Mode::STRINGS);
-  pParticipationIndexAnn->setMode(0, CDataArray::Mode::VECTOR);
+  pParticipationIndexAnn->setMode(1, CDataArray::Mode::Strings);
+  pParticipationIndexAnn->setMode(0, CDataArray::Mode::Vector);
   pParticipationIndexAnn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
   pParticipationIndexAnn->setDimensionDescription(0, "Reactions");
   pParticipationIndexAnn->setDimensionDescription(1, "Time Scales");
@@ -1881,8 +1881,8 @@ void CCSPMethod::createAnnotationsM()
 
   pParticipationIndexNormedColumnAnn = new CDataArray("Normed Participation Index (by column)", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedColumnTab), true);
-  pParticipationIndexNormedColumnAnn->setMode(1, CDataArray::Mode::STRINGS);
-  pParticipationIndexNormedColumnAnn->setMode(0, CDataArray::Mode::VECTOR);
+  pParticipationIndexNormedColumnAnn->setMode(1, CDataArray::Mode::Strings);
+  pParticipationIndexNormedColumnAnn->setMode(0, CDataArray::Mode::Vector);
   pParticipationIndexNormedColumnAnn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
   pParticipationIndexNormedColumnAnn->setDimensionDescription(0, "Reactions");
   pParticipationIndexNormedColumnAnn->setDimensionDescription(1, "Time Scales");
@@ -1895,8 +1895,8 @@ void CCSPMethod::createAnnotationsM()
 
   pParticipationIndexNormedRowAnn = new CDataArray("Normed Participation Index (by row)", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mParticipationIndexNormedRowTab), true);
-  pParticipationIndexNormedRowAnn->setMode(1, CDataArray::Mode::STRINGS);
-  pParticipationIndexNormedRowAnn->setMode(0, CDataArray::Mode::VECTOR);
+  pParticipationIndexNormedRowAnn->setMode(1, CDataArray::Mode::Strings);
+  pParticipationIndexNormedRowAnn->setMode(0, CDataArray::Mode::Vector);
   pParticipationIndexNormedRowAnn->setDescription("Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of the i-th mode");
   pParticipationIndexNormedRowAnn->setDimensionDescription(0, "Reactions");
   pParticipationIndexNormedRowAnn->setDimensionDescription(1, "Time Scales");
@@ -1909,8 +1909,8 @@ void CCSPMethod::createAnnotationsM()
 
   pFastParticipationIndexAnn = new CDataArray("Fast Participation Index", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mFastParticipationIndexTab), true);
-  pFastParticipationIndexAnn->setMode(0, CDataArray::Mode::VECTOR);
-  pFastParticipationIndexAnn->setMode(1, CDataArray::Mode::STRINGS);
+  pFastParticipationIndexAnn->setMode(0, CDataArray::Mode::Vector);
+  pFastParticipationIndexAnn->setMode(1, CDataArray::Mode::Strings);
   pFastParticipationIndexAnn->setDescription(" Fast Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of fast modes");
   pFastParticipationIndexAnn->setDimensionDescription(0, "Reactions");
   pFastParticipationIndexAnn->setDimensionDescription(1, " ");
@@ -1924,8 +1924,8 @@ void CCSPMethod::createAnnotationsM()
   pSlowParticipationIndexAnn = new CDataArray("Slow Participation Index", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mSlowParticipationIndexTab), true);
 
-  pSlowParticipationIndexAnn->setMode(0, CDataArray::Mode::VECTOR);
-  pSlowParticipationIndexAnn->setMode(1, CDataArray::Mode::STRINGS);
+  pSlowParticipationIndexAnn->setMode(0, CDataArray::Mode::Vector);
+  pSlowParticipationIndexAnn->setMode(1, CDataArray::Mode::Strings);
   pSlowParticipationIndexAnn->setDescription("Slow Participation Index : is a measure of participation of the r-th elementary reaction to the balancing act of slow modes");
   pSlowParticipationIndexAnn->setDimensionDescription(0, "Reactions");
   pSlowParticipationIndexAnn->setDimensionDescription(1, " ");
@@ -1938,8 +1938,8 @@ void CCSPMethod::createAnnotationsM()
 
   pImportanceIndexAnn = new CDataArray("Importance Index", this,
                                        new CMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexTab), true);
-  pImportanceIndexAnn->setMode(1, CDataArray::Mode::VECTOR);
-  pImportanceIndexAnn->setMode(0, CDataArray::Mode::VECTOR);
+  pImportanceIndexAnn->setMode(1, CDataArray::Mode::Vector);
+  pImportanceIndexAnn->setMode(0, CDataArray::Mode::Vector);
   pImportanceIndexAnn->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
   pImportanceIndexAnn->setDimensionDescription(0, "Reactions");
   pImportanceIndexAnn->setDimensionDescription(1, "Species");
@@ -1952,8 +1952,8 @@ void CCSPMethod::createAnnotationsM()
 
   pImportanceIndexNormedRowAnn = new CDataArray("Normed Importance Index (by row)", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mImportanceIndexNormedRowTab), true);
-  pImportanceIndexNormedRowAnn->setMode(1, CDataArray::Mode::VECTOR);
-  pImportanceIndexNormedRowAnn->setMode(0, CDataArray::Mode::VECTOR);
+  pImportanceIndexNormedRowAnn->setMode(1, CDataArray::Mode::Vector);
+  pImportanceIndexNormedRowAnn->setMode(0, CDataArray::Mode::Vector);
   pImportanceIndexNormedRowAnn->setDescription("Importance Index: is a measure of relative importance of the contribution of r-th elementary reaction to the current reaction rate of i-th species");
   pImportanceIndexNormedRowAnn->setDimensionDescription(0, "Reactions");
   pImportanceIndexNormedRowAnn->setDimensionDescription(1, "Species");

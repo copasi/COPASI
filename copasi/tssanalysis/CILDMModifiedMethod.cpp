@@ -953,8 +953,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   CDataArray *
   pTmp1 = new CDataArray("Contribution of species to modes", this,
                          new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowPrint), true);
-  pTmp1->setMode(0, CDataArray::Mode::STRINGS);
-  pTmp1->setMode(1, CDataArray::Mode::VECTOR);
+  pTmp1->setMode(0, CDataArray::Mode::Strings);
+  pTmp1->setMode(1, CDataArray::Mode::Vector);
   pTmp1->setDescription(" ");
   pTmp1->setDimensionDescription(0, "Contribution to  mode (TS - corresponding timescale)");
   pTmp1->setDimensionDescription(1, "Species");
@@ -968,8 +968,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   CDataArray *
   pTmp2 = new CDataArray("Modes distribution for species", this,
                          new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowMetabPrint), true);
-  pTmp2->setMode(1, CDataArray::Mode::STRINGS);
-  pTmp2->setMode(0, CDataArray::Mode::VECTOR);
+  pTmp2->setMode(1, CDataArray::Mode::Strings);
+  pTmp2->setMode(0, CDataArray::Mode::Vector);
   pTmp2->setDescription(" ");
   pTmp2->setDimensionDescription(0, "Mode distribution for each metabolite");
   pTmp2->setDimensionDescription(1, "modes (TS - corresponding  timescale)");
@@ -983,8 +983,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   CDataArray *
   pTmp3 = new CDataArray("Slow space", this,
                          new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVslowSpacePrint), true);
-  pTmp3->setMode(1, CDataArray::Mode::STRINGS);
-  pTmp3->setMode(0, CDataArray::Mode::VECTOR);
+  pTmp3->setMode(1, CDataArray::Mode::Strings);
+  pTmp3->setMode(0, CDataArray::Mode::Vector);
   pTmp3->setDescription(" ");
   pTmp3->setDimensionDescription(0, "Species");
   pTmp3->setDimensionDescription(1, "Contribution to slow space");
@@ -998,8 +998,8 @@ void CILDMModifiedMethod::createAnnotationsM()
   CDataArray *
   pTmp4 = new CDataArray("Fast space", this,
                          new CMatrixInterface<CMatrix<C_FLOAT64> >(&mVfastSpacePrint), true);
-  pTmp4->setMode(1, CDataArray::Mode::STRINGS);
-  pTmp4->setMode(0, CDataArray::Mode::VECTOR);
+  pTmp4->setMode(1, CDataArray::Mode::Strings);
+  pTmp4->setMode(0, CDataArray::Mode::Vector);
   pTmp4->setDescription(" ");
   pTmp4->setDimensionDescription(0, "Species");
   pTmp4->setDimensionDescription(1, "Contribution to fast space");

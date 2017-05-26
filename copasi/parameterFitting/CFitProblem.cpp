@@ -184,51 +184,51 @@ void CFitProblem::initObjects()
   mpFisherMatrix->setDescription("Fisher Information Matrix");
   mpFisherMatrix->setDimensionDescription(0, "Parameters");
   mpFisherMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherMatrix->setMode(CDataArray::Mode::STRINGS);
+  mpFisherMatrix->setMode(CDataArray::Mode::Strings);
 
   mpFisherEigenvaluesMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherEigenvalues);
   mpFisherEigenvaluesMatrix = new CDataArray("FIM Eigenvalues", this, mpFisherEigenvaluesMatrixInterface, false);
   mpFisherEigenvaluesMatrix->setDescription("FIM Eigenvalues");
   mpFisherEigenvaluesMatrix->setDimensionDescription(0, "Eigenvalues");
   mpFisherEigenvaluesMatrix->setDimensionDescription(1, "Result");
-  mpFisherEigenvaluesMatrix->setMode(CDataArray::Mode::NUMBERS);
+  mpFisherEigenvaluesMatrix->setMode(CDataArray::Mode::Numbers);
 
   mpFisherEigenvectorsMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherEigenvectors);
   mpFisherEigenvectorsMatrix = new CDataArray("FIM Eigenvectors", this, mpFisherEigenvectorsMatrixInterface, false);
   mpFisherEigenvectorsMatrix->setDescription("FIM Eigenvectors");
   mpFisherEigenvectorsMatrix->setDimensionDescription(0, "Eigenvectors");
   mpFisherEigenvectorsMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherEigenvectorsMatrix->setMode(0, CDataArray::Mode::NUMBERS);
-  mpFisherEigenvectorsMatrix->setMode(1, CDataArray::Mode::STRINGS);
+  mpFisherEigenvectorsMatrix->setMode(0, CDataArray::Mode::Numbers);
+  mpFisherEigenvectorsMatrix->setMode(1, CDataArray::Mode::Strings);
 
   mpFisherScaledMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaled);
   mpFisherScaledMatrix = new CDataArray("Fisher Information Matrix (scaled)", this, mpFisherScaledMatrixInterface, false);
   mpFisherScaledMatrix->setDescription("Fisher Information Matrix (scaled)");
   mpFisherScaledMatrix->setDimensionDescription(0, "Parameters");
   mpFisherScaledMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherScaledMatrix->setMode(CDataArray::Mode::STRINGS);
+  mpFisherScaledMatrix->setMode(CDataArray::Mode::Strings);
 
   mpFisherScaledEigenvaluesMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaledEigenvalues);
   mpFisherScaledEigenvaluesMatrix = new CDataArray("FIM Eigenvalues (scaled)", this, mpFisherScaledEigenvaluesMatrixInterface, false);
   mpFisherScaledEigenvaluesMatrix->setDescription("FIM Eigenvalues (scaled)");
   mpFisherScaledEigenvaluesMatrix->setDimensionDescription(0, "Eigenvalues");
   mpFisherScaledEigenvaluesMatrix->setDimensionDescription(1, "Result");
-  mpFisherScaledEigenvaluesMatrix->setMode(CDataArray::Mode::NUMBERS);
+  mpFisherScaledEigenvaluesMatrix->setMode(CDataArray::Mode::Numbers);
 
   mpFisherScaledEigenvectorsMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisherScaledEigenvectors);
   mpFisherScaledEigenvectorsMatrix = new CDataArray("FIM Eigenvectors (scaled)", this, mpFisherScaledEigenvectorsMatrixInterface, false);
   mpFisherScaledEigenvectorsMatrix->setDescription("FIM Eigenvectors (scaled)");
   mpFisherScaledEigenvectorsMatrix->setDimensionDescription(0, "Eigenvectors");
   mpFisherScaledEigenvectorsMatrix->setDimensionDescription(1, "Parameters");
-  mpFisherScaledEigenvectorsMatrix->setMode(0, CDataArray::Mode::NUMBERS);
-  mpFisherScaledEigenvectorsMatrix->setMode(1, CDataArray::Mode::STRINGS);
+  mpFisherScaledEigenvectorsMatrix->setMode(0, CDataArray::Mode::Numbers);
+  mpFisherScaledEigenvectorsMatrix->setMode(1, CDataArray::Mode::Strings);
 
   mpCorrelationMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mCorrelation);
   mpCorrelationMatrix = new CDataArray("Correlation Matrix", this, mpCorrelationMatrixInterface, false);
   mpCorrelationMatrix->setDescription("Correlation Matrix");
   mpCorrelationMatrix->setDimensionDescription(0, "Parameters");
   mpCorrelationMatrix->setDimensionDescription(1, "Parameters");
-  mpCorrelationMatrix->setMode(CDataArray::Mode::STRINGS);
+  mpCorrelationMatrix->setMode(CDataArray::Mode::Strings);
 }
 
 void CFitProblem::initializeParameter()

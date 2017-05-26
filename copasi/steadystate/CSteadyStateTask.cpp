@@ -91,21 +91,21 @@ void CSteadyStateTask::initObjects()
 {
   mpJacobianAnn = new CDataArray("Jacobian (complete system)", this,
                                  new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
-  mpJacobianAnn->setMode(CDataArray::Mode::OBJECTS);
+  mpJacobianAnn->setMode(CDataArray::Mode::Objects);
   mpJacobianAnn->setDescription("");
   mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent species");
   mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
 
   mpJacobianXAnn = new CDataArray("Jacobian (reduced system)", this,
                                   new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianReduced), true);
-  mpJacobianXAnn->setMode(CDataArray::Mode::OBJECTS);
+  mpJacobianXAnn->setMode(CDataArray::Mode::Objects);
   mpJacobianXAnn->setDescription("");
   mpJacobianXAnn->setDimensionDescription(0, "Independent variables of the system");
   mpJacobianXAnn->setDimensionDescription(1, "Independent variables of the system");
 
   mpEigenvaluesJacobianAnn = new CDataArray("Eigenvalues of Jacobian", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesMatrix), true);
-  mpEigenvaluesJacobianAnn->setMode(CDataArray::Mode::VECTOR);
+  mpEigenvaluesJacobianAnn->setMode(CDataArray::Mode::Vector);
   mpEigenvaluesJacobianAnn->setDescription("");
   mpEigenvaluesJacobianAnn->setDimensionDescription(0, "n-th value");
   mpEigenvaluesJacobianAnn->setDimensionDescription(1, "Real/Imaginary part");
@@ -113,7 +113,7 @@ void CSteadyStateTask::initObjects()
   mpEigenvaluesJacobianXAnn = new CDataArray("Eigenvalues of reduced system Jacobian", this,
       new CMatrixInterface<CMatrix<C_FLOAT64> >(&mEigenvaluesXMatrix), true);
 //  mpEigenvaluesJacobianXAnn->setMode(CArrayAnnotation::VECTOR);
-  mpEigenvaluesJacobianXAnn->setMode(CDataArray::Mode::OBJECTS);
+  mpEigenvaluesJacobianXAnn->setMode(CDataArray::Mode::Objects);
   mpEigenvaluesJacobianXAnn->setDescription("");
   mpEigenvaluesJacobianXAnn->setDimensionDescription(0, "n-th value");
   mpEigenvaluesJacobianXAnn->setDimensionDescription(1, "Real/Imaginary part");
