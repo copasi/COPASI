@@ -94,8 +94,8 @@ class example8
             // determined by an ODE or a reaction
             status = entity.getStatus();
 
-            if (status == CModelEntity.ODE ||
-                    (status == CModelEntity.REACTIONS && entity.isUsed()))
+            if (status == CModelEntity.Status_ODE ||
+                    (status == CModelEntity.Status_REACTIONS && entity.isUsed()))
             {
                 nameVector.Add(entity.getObjectName());
             }

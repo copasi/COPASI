@@ -34,7 +34,7 @@ class example4
         // create a new report definition object
         CReportDefinition report = reports.createReportDefinition("Report", "Output for timecourse");
         // set the task type for the report definition to timecourse
-        report.setTaskType(CTaskEnum.timeCourse);
+        report.setTaskType(CTaskEnum.Task_timeCourse);
         // we don't want a table
         report.setIsTable(false);
         // the entries in the output should be seperated by a ", "
@@ -57,7 +57,7 @@ class example4
             CMetab metab = model.getMetabolite(i);
             Debug.Assert(metab != null);
             // we don't want output for FIXED metabolites right now
-            if (metab.getStatus() != CModelEntity.FIXED)
+            if (metab.getStatus() != CModelEntity.Status_FIXED)
             {
                 // we want the concentration oin the output
                 // alternatively, we could use "Reference=Amount" to get the
@@ -81,7 +81,7 @@ class example4
         CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
         
         // run a stochastic time course
-        trajectoryTask.setMethodType(CTaskEnum.stochastic);
+        trajectoryTask.setMethodType(CTaskEnum.Method_stochastic);
 
         // pass a pointer of the model to the problem
         trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -125,7 +125,7 @@ class example4
         scanTask.getReport().setAppend(false);
 
         // tell the scan that we want to make a scan over a trajectory task
-        scanProblem.setSubtask(CTaskEnum.timeCourse);
+        scanProblem.setSubtask(CTaskEnum.Task_timeCourse);
 
         // we just want to run the timecourse task a number of times, so we
         // create a repeat item with 100 repeats

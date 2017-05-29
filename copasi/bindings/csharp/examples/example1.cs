@@ -42,7 +42,7 @@ class example1
      // concentration of 10 nanomol
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
-     CMetab glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CMetab.FIXED);
+     CMetab glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED);
      obj = glucose.getInitialValueReference();
      Debug.Assert(obj != null);
      changedObjects.Add(obj);
@@ -50,21 +50,21 @@ class example1
      Debug.Assert(model.getMetabolites().size() == 1);
      // create a second metabolite called glucose-6-phosphate with an initial
      // concentration of 0. This metabolite is to be changed by reactions
-     CMetab g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
+     CMetab g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS);
      Debug.Assert(g6p != null);
      obj = g6p.getInitialValueReference();
      Debug.Assert(obj != null);
      changedObjects.Add(obj);
      Debug.Assert(model.getMetabolites().size() == 2);
      // another metabolite for ATP, also fixed
-     CMetab atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CMetab.FIXED);
+     CMetab atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED);
      Debug.Assert(atp != null);
      obj = atp.getInitialValueReference();
      Debug.Assert(obj != null);
      changedObjects.Add(obj);
      Debug.Assert(model.getMetabolites().size() == 3);
      // and one for ADP
-     CMetab adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
+     CMetab adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS);
      Debug.Assert(adp != null);
      obj = adp.getInitialValueReference();
      Debug.Assert(obj != null);
@@ -183,7 +183,7 @@ class example1
      changedObjects.Add(obj);
      Debug.Assert(model.getModelValues().size() == 1);
      // set the status to assignment
-     modelValue.setStatus(CModelValue.ASSIGNMENT);
+     modelValue.setStatus(CModelEntity.Status_ASSIGNMENT);
      // the assignment does not have to make sense
      modelValue.setExpression("1.0 / 4.0 + 2.0");
 

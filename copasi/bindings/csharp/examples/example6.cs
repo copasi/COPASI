@@ -40,7 +40,7 @@ class example6
         CTrajectoryTask trajectoryTask = (CTrajectoryTask)dataModel.getTask("Time-Course");
 
         // run a deterministic time course
-        trajectoryTask.setMethodType(CTaskEnum.deterministic);
+        trajectoryTask.setMethodType(CTaskEnum.Method_deterministic);
 
         // pass a pointer of the model to the problem
         trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -197,7 +197,7 @@ class example6
         Debug.Assert(reaction.isLocalParameter(0));
         reaction.setParameterValue("k1",random);
 
-        CFitTask fitTask=(CFitTask)dataModel.addTask(CTaskEnum.parameterFitting);
+        CFitTask fitTask=(CFitTask)dataModel.addTask(CTaskEnum.Task_parameterFitting);
         Debug.Assert(fitTask != null);
         // the method in a fit task is an instance of COptMethod or a subclass of
         // it.
@@ -227,8 +227,8 @@ class example6
         Debug.Assert(experiment.getLastRow()==4001);
         experiment.setHeaderRow(1);
         Debug.Assert(experiment.getHeaderRow()==1);
-        experiment.setExperimentType(CTaskEnum.timeCourse);
-        Debug.Assert(experiment.getExperimentType()==CTaskEnum.timeCourse);
+        experiment.setExperimentType(CTaskEnum.Task_timeCourse);
+        Debug.Assert(experiment.getExperimentType()==CTaskEnum.Task_timeCourse);
         experiment.setNumColumns(4);
         Debug.Assert(experiment.getNumColumns()==4);
         CExperimentObjectMap objectMap=experiment.getObjectMap();

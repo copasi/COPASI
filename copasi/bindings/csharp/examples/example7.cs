@@ -42,7 +42,7 @@ class example7
      // concentration of 10 nanomol
      // the metabolite belongs to the compartment we created and is is to be
      // fixed
-     CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED);
+     CMetab S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED);
      obj = S.getInitialConcentrationReference();
      Debug.Assert((obj != null));
      changedObjects.Add(obj);
@@ -51,7 +51,7 @@ class example7
      Debug.Assert(model.getMetabolites().size() == 1);
      // create a second metabolite called P with an initial
      // concentration of 0. This metabolite is to be changed by reactions
-     CMetab P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS);
+     CMetab P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS);
      Debug.Assert(P != null);
      obj = P.getInitialConcentrationReference();
      Debug.Assert(obj != null);
@@ -77,7 +77,7 @@ class example7
 
      CModelValue MV = model.createModelValue("K", 42.0);
      // set the status to FIXED
-     MV.setStatus(CModelValue.FIXED);
+     MV.setStatus(CModelEntity.Status_FIXED);
      Debug.Assert(MV != null);
      obj = MV.getInitialValueReference();
      Debug.Assert(obj != null);
