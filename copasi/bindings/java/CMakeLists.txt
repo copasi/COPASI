@@ -108,6 +108,10 @@ add_custom_command(
          -outdir ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
          -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
          ${CMAKE_CURRENT_SOURCE_DIR}/java.i
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
+         -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+         -P "${CMAKE_CURRENT_SOURCE_DIR}/../common/patch-wrapper.cmake"
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/java.i
     DEPENDS ${SWIG_DEPENDENCIES}
     COMMENT "Swig Java source") 

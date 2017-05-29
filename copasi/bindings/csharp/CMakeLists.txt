@@ -123,11 +123,11 @@ add_custom_command(
          -outdir ${COPASI_CS_FILES}     
          -o ${COPASI_NATIVE_WRAPPER}
          ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i
-    #COMMAND "${SED_EXECUTABLE}"
-#    ARGS -i 
-#         -e 
-#         "'s/public const int \\([a-zA-Z]*_\\)\\([^ ]*\\) = \\([^_]*\\) + 1;/public const int \\1\\2 = \\1\\3 + 1; \\/\\/ FIXED/g'"
-#         ${SWIG_ENUM_FIX_FILES}
+         
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
+         -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+         -P "${CMAKE_CURRENT_SOURCE_DIR}/../common/patch-wrapper.cmake"
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i 
     DEPENDS ${SWIG_DEPENDENCIES}

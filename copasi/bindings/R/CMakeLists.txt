@@ -169,12 +169,19 @@ ADD_CUSTOM_COMMAND(
           ${SWIG_EXTRA_ARGS}     
           -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
           ${CMAKE_CURRENT_SOURCE_DIR}/R.i
-  COMMAND "${CMAKE_COMMAND}"
+    
+    COMMAND "${CMAKE_COMMAND}"
       -DSRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
       -DFILENAME=\"${CMAKE_CURRENT_BINARY_DIR}/COPASI.R\"
       -P "${CMAKE_CURRENT_SOURCE_DIR}/patch-swig-file.cmake"
+    
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
+         -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+         -P "${CMAKE_CURRENT_SOURCE_DIR}/../common/patch-wrapper.cmake"
+         
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/R.i
-  DEPENDS ${SWIG_DEPENDENCIES}
+    DEPENDS ${SWIG_DEPENDENCIES}
     COMMENT "Swig R source") 
 
 add_custom_target(binding_r_swig ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp)

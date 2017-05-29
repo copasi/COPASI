@@ -77,6 +77,11 @@ ADD_CUSTOM_COMMAND(
           -features autodoc,1
           -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
           ${CMAKE_CURRENT_SOURCE_DIR}/python.i
+          
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
+         -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+         -P "${CMAKE_CURRENT_SOURCE_DIR}/../common/patch-wrapper.cmake"
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/python.i
     DEPENDS ${SWIG_DEPENDENCIES}

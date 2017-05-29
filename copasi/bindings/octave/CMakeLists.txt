@@ -77,11 +77,17 @@ ADD_CUSTOM_COMMAND(
          -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
          ${CMAKE_CURRENT_SOURCE_DIR}/octave.i
 
-  COMMAND "${CMAKE_COMMAND}"
+    COMMAND "${CMAKE_COMMAND}"
 
       -DSRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
       -DFILENAME=\"${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp\"
       -P "${CMAKE_CURRENT_SOURCE_DIR}/patch-swig-file.cmake"
+      
+      
+    COMMAND "${CMAKE_COMMAND}"
+    ARGS -DBIN_DIRECTORY=\"${CMAKE_CURRENT_BINARY_DIR}\"
+         -DSRC_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+         -P "${CMAKE_CURRENT_SOURCE_DIR}/../common/patch-wrapper.cmake"
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/octave.i
 
