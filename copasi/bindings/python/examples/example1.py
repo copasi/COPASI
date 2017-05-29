@@ -15,13 +15,6 @@
 # All rights reserved. 
 
 
-
-
-
-
-
-
-
 # This is an example on how to build models with the COPASI backend API.
 
 from COPASI import *
@@ -62,7 +55,7 @@ def main():
   # concentration of 10 nanomol
   # the metabolite belongs to the compartment we created and is is to be
   # fixed
-  glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CMetab.FIXED)
+  glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED)
   assert glucose != None
   object = glucose.getInitialConcentrationReference()
   assert object != None
@@ -70,21 +63,21 @@ def main():
   assert model.getMetabolites().size() == 1
   # create a second metabolite called glucose-6-phosphate with an initial
   # concentration of 0. This metabolite is to be changed by reactions
-  g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CMetab.REACTIONS)
+  g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS)
   assert g6p != None
   object = g6p.getInitialConcentrationReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getMetabolites().size() == 2
   # another metabolite for ATP, also fixed
-  atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CMetab.FIXED)
+  atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED)
   assert atp != None
   object = atp.getInitialConcentrationReference()
   assert object != None
   changedObjects.push_back(object)
   assert model.getMetabolites().size() == 3
   # and one for ADP
-  adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CMetab.REACTIONS)
+  adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS)
   assert adp != None
   object = adp.getInitialConcentrationReference()
   assert object != None
@@ -195,7 +188,7 @@ def main():
   changedObjects.push_back(object)
   assert model.getModelValues().size() == 1
   # set the status to assignment
-  modelValue.setStatus(CModelValue.ASSIGNMENT)
+  modelValue.setStatus(CModelEntity.Status_ASSIGNMENT)
   # the assignment does not have to make sense
   modelValue.setExpression("1.0 / 4.0 + 2.0")
 

@@ -15,9 +15,6 @@
 # and The University of Manchester. 
 # All rights reserved. 
 
-
-
-
 # 
 # This is an example on how to run an parameter fitting task.
 # The example creates a simple model and runs a time course simulation on it.
@@ -121,7 +118,7 @@ def main():
    assert trajectoryTask != None
 
    # run a deterministic time course
-   trajectoryTask.setMethodType(CTaskEnum.deterministic)
+   trajectoryTask.setMethodType(CTaskEnum.Method_deterministic)
 
    # pass a pointer of the model to the problem
    trajectoryTask.getProblem().setModel(dataModel.getModel())
@@ -243,7 +240,7 @@ def main():
    assert reaction.isLocalParameter(0)
    reaction.setParameterValue("k1",rand)
 
-   fitTask=dataModel.addTask(CTaskEnum.parameterFitting)
+   fitTask=dataModel.addTask(CTaskEnum.Task_parameterFitting)
    assert fitTask != None
    # the method in a fit task is an instance of COptMethod or a subclass of
    # it.
@@ -273,8 +270,8 @@ def main():
    assert experiment.getLastRow()==4001
    experiment.setHeaderRow(1)
    assert experiment.getHeaderRow()==1
-   experiment.setExperimentType(CTaskEnum.timeCourse)
-   assert experiment.getExperimentType()==CTaskEnum.timeCourse
+   experiment.setExperimentType(CTaskEnum.Task_timeCourse)
+   assert experiment.getExperimentType()==CTaskEnum.Task_timeCourse
    experiment.setNumColumns(4)
    assert experiment.getNumColumns()==4
    objectMap=experiment.getObjectMap()

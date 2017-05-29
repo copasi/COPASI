@@ -97,7 +97,7 @@ def main():
             # determined by an ODE or a reaction
             status = entity.getStatus()
 
-            if (status == CModelEntity.ODE or (status == CModelEntity.REACTIONS and entity.isUsed())):
+            if (status == CModelEntity.Status_ODE or (status == CModelEntity.Status_REACTIONS and entity.isUsed())):
                 nameVector.append(entity.getObjectName())
 
         assert len(nameVector) == jacobian.numRows()

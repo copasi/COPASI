@@ -15,10 +15,6 @@
 # All rights reserved. 
 
 
-
-
-
-
 #
 # This is an example on how to create user defined kinetic functions with the COPASI API
 #
@@ -60,7 +56,7 @@ def main():
      # concentration of 10 nanomol
      # the metabolite belongs to the compartment we created and is is to be
      # fixed
-     S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CMetab.FIXED)
+     S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED)
      object = S.getObject(CCommonName("Reference=InitialConcentration"))
      assert object != None
      changedObjects.push_back(object)
@@ -69,7 +65,7 @@ def main():
      assert model.getMetabolites().size() == 1
      # create a second metabolite called P with an initial
      # concentration of 0. This metabolite is to be changed by reactions
-     P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CMetab.REACTIONS)
+     P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS)
      assert P != None
      object = P.getObject(CCommonName("Reference=InitialConcentration"))
      assert object != None
@@ -95,7 +91,7 @@ def main():
 
      MV = model.createModelValue("K", 42.0)
      # set the status to FIXED
-     MV.setStatus(CModelValue.FIXED)
+     MV.setStatus(CModelEntity.Status_FIXED)
      assert MV != None
      object = MV.getObject(CCommonName("Reference=InitialValue"))
      assert object != None

@@ -49,7 +49,7 @@ def main(args):
       # create a report definition object
       report = reports.createReportDefinition("Report", "Output for timecourse")
       # set the task type for the report definition to timecourse
-      report.setTaskType(CTaskEnum.timeCourse)
+      report.setTaskType(CTaskEnum.Task_timeCourse)
       # we don't want a table
       report.setIsTable(False)
       # the entries in the output should be seperated by a ", "
@@ -72,7 +72,7 @@ def main(args):
           metab = model.getMetabolite(i)
           assert metab != None
           # we don't want output for FIXED metabolites right now
-          if (metab.getStatus() != CModelEntity.FIXED):
+          if (metab.getStatus() != CModelEntity.Status_FIXED):
               # we want the concentration oin the output
               # alternatively, we could use "Reference=Amount" to get the
               # particle number
@@ -89,7 +89,7 @@ def main(args):
       trajectoryTask = dataModel.getTask("Time-Course")
 
       # run a deterministic time course
-      trajectoryTask.setMethodType(CTaskEnum.deterministic)
+      trajectoryTask.setMethodType(CTaskEnum.Method_deterministic)
 
       # pass a pointer of the model to the problem
       trajectoryTask.getProblem().setModel(dataModel.getModel())
