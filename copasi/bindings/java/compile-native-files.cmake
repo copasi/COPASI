@@ -1,3 +1,13 @@
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and The University 
+# of Manchester. 
+# All rights reserved. 
+
 ###############################################################################
 #
 # Description       : CMake build script for native java files
@@ -6,6 +16,33 @@
 ###############################################################################
 
 message("Creating: copasi.jar")
+
+# patch broken enums
+
+set (SWIG_ENUM_FIX_FILES 
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CTaskEnum.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CModelEntity.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CDataArray.java"
+     )
+
+foreach(broken_file ${SWIG_ENUM_FIX_FILES})
+  file(READ "${broken_file}" SOURCECODE)
+#  string(REGEX MATCH
+#   "public final static int ([a-zA-Z]*_)([_a-zA-Z0-9]*) = ([a-zA-Z]*) \\+ 1"  
+#    OUT
+#    ${SOURCECODE}
+#  )
+#  message(STATUS "${OUT} 1: ${CMAKE_MATCH_1} 2: ${CMAKE_MATCH_2} 3: ${CMAKE_MATCH_3}")
+
+  string(REGEX REPLACE 
+   "public final static int ([a-zA-Z]*_)([_a-zA-Z0-9]*) = ([a-zA-Z0-9]*) \\+ 1"
+   "public final static int \\1\\2 = \\1\\3 + 1; // FIXED" 
+   SOURCECODE "${SOURCECODE}")
+  file(WRITE "${broken_file}" "${SOURCECODE}")
+  get_filename_component(baseName ${broken_file} NAME)
+  message (STATUS "Patched ${baseName}")
+endforeach()
+
 
 # find all sources
 file(GLOB_RECURSE SOURCE_FILES RELATIVE ${BIN_DIRECTORY} ${BIN_DIRECTORY}/java-files/org/COPASI/*.java)

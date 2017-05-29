@@ -548,15 +548,6 @@ if (ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_PERL OR ENABLE_OCTAV
 
   find_package(SWIG REQUIRED)
   
-  if (ENABLE_CSHARP OR ENABLE_JAVA)
-    find_program(SED_EXECUTABLE sed)
-  
-    if (${SED_EXECUTABLE} MATCHES "SED_EXECUTABLE-NOTFOUND")
-      message(FATAL_ERROR "sed not found")
-    else ()
-      message(STATUS "Found sed: ${SED_EXECUTABLE}")
-    endif ()
-  endif()
 endif ()
 
 option (ENABLE_USE_SBMLUNIT "Enables extended unit support." OFF)

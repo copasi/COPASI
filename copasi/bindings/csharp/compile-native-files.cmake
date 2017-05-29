@@ -46,6 +46,20 @@ set(SOURCE_FILES ${SOURCE_FILES} ${BIN_DIRECTORY}/AssemblyInfo.cs)
 
 SET(PATCH_SWIG_FILES ON)
 
+####################################################################
+#
+# Fix swig enum code
+# 
+# Add broken swig generated files below
+#
+
+set (SWIG_ENUM_FIX_FILES 
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CTaskEnum.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModelEntity.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CDataArray.cs"
+     )
+
+
 # convert paths
 set(NATIVE_FILES)
 foreach(csFile ${SOURCE_FILES})
@@ -62,6 +76,19 @@ foreach(csFile ${SOURCE_FILES})
 
   
 endforeach()
+
+
+foreach(broken_file ${SWIG_ENUM_FIX_FILES})
+  file(READ "${broken_file}" SOURCECODE)
+  string(REGEX REPLACE 
+   "public const int ([a-zA-Z]*_)([_a-zA-Z0-9]*) = ([a-zA-Z0-9]*) \\+ 1"
+   "public const int \\1\\2 = \\1\\3 + 1; // FIXED" 
+   SOURCECODE "${SOURCECODE}")
+  file(WRITE "${broken_file}" "${SOURCECODE}")
+  get_filename_component(baseName ${broken_file} NAME)
+  message (STATUS "Patched ${baseName}")
+endforeach()
+
 
 # delete file if it exists
 if (EXISTS ${BIN_DIRECTORY}/copasicsP.dll)

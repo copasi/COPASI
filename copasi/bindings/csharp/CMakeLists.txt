@@ -33,7 +33,7 @@ configure_file (
 
 
 find_program(CSHARP_COMPILER
-        NAMES gmcs csc
+        NAMES gmcs csc mcs
         PATHS $ENV{CSHARP_DIR}/bin
               /Library/Frameworks/Mono.framework/Commands/
               C:/Windows/Microsoft.NET/Framework/v2.0.50727/ 
@@ -93,18 +93,6 @@ file(GLOB SWIG_DEPENDENCIES
 	${CMAKE_CURRENT_SOURCE_DIR}/../swig/*.i
 	${CMAKE_CURRENT_SOURCE_DIR}/../swig/*.h
 )
-####################################################################
-#
-# Fix swig enum code
-# 
-# Add broken swig generated files below
-#
-
-set (SWIG_ENUM_FIX_FILES 
-        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CTaskEnum.cs"
-        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModelEntity.cs"
-        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CDataArray.cs"
-     )
 
 make_directory(${CMAKE_CURRENT_BINARY_DIR}/csharp-files)
 add_custom_command(	
@@ -135,11 +123,11 @@ add_custom_command(
          -outdir ${COPASI_CS_FILES}     
          -o ${COPASI_NATIVE_WRAPPER}
          ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i
-    COMMAND "${SED_EXECUTABLE}"
-    ARGS -i 
-         -e 
-         "'s/public const int \\([a-zA-Z]*_\\)\\([^ ]*\\) = \\([^_]*\\) + 1;/public const int \\1\\2 = \\1\\3 + 1; \\/\\/ FIXED/g'"
-         ${SWIG_ENUM_FIX_FILES}
+    #COMMAND "${SED_EXECUTABLE}"
+#    ARGS -i 
+#         -e 
+#         "'s/public const int \\([a-zA-Z]*_\\)\\([^ ]*\\) = \\([^_]*\\) + 1;/public const int \\1\\2 = \\1\\3 + 1; \\/\\/ FIXED/g'"
+#         ${SWIG_ENUM_FIX_FILES}
 
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/csharp.i 
     DEPENDS ${SWIG_DEPENDENCIES}

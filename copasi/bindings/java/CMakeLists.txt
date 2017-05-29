@@ -79,19 +79,6 @@ endif()
 
 ####################################################################
 #
-# Fix swig enum code
-# 
-# Add broken swig generated files below
-#
-
-set (SWIG_ENUM_FIX_FILES 
-        "${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI/CTaskEnum.java"
-        "${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI/CModelEntity.java"
-        "${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI/CDataArray.java"
-     )
-     
-####################################################################
-#
 # Swig bindings
 #
 #
@@ -121,11 +108,6 @@ add_custom_command(
          -outdir ${CMAKE_CURRENT_BINARY_DIR}/java-files/org/COPASI
          -o ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp 
          ${CMAKE_CURRENT_SOURCE_DIR}/java.i
-    COMMAND "${SED_EXECUTABLE}"
-    ARGS -i 
-         -e 
-         "'s/public final static int \\([a-zA-Z]*_\\)\\([^ ]*\\) = \\([^_]*\\) + 1;/public final static int \\1\\2 = \\1\\3 + 1; \\/\\/ FIXED/g'"
-         ${SWIG_ENUM_FIX_FILES}
     MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/java.i
     DEPENDS ${SWIG_DEPENDENCIES}
     COMMENT "Swig Java source") 
