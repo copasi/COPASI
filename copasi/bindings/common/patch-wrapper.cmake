@@ -21,7 +21,9 @@ message(STATUS "Patching C++ wrapper")
 
 file(READ "${WRAPPER_FILE}" SOURCECODE)
 
+string(REPLACE "enum CTaskEnum::Method," "CTaskEnum::Method," SOURCECODE "${SOURCECODE}" )
 string(REPLACE "enum CTaskEnum::Method " "CTaskEnum::Method " SOURCECODE "${SOURCECODE}" )
 string(REPLACE "enum CTaskEnum::Task " "CTaskEnum::Task " SOURCECODE "${SOURCECODE}" )
+string(REPLACE "enum CTaskEnum::Task," "CTaskEnum::Task," SOURCECODE "${SOURCECODE}" )
 
 file(WRITE "${WRAPPER_FILE}" "${SOURCECODE}")
