@@ -36,7 +36,7 @@ changedObjects.push_back(object);
 % concentration of 10 nanomol
 % the metabolite belongs to the compartment we created and is is to be
 % fixed
-S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
+S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity_Status_FIXED);
 object = S.getInitialConcentrationReference();;
 %!assert( swig_this(object) != 0);
 changedObjects.push_back(object);
@@ -45,7 +45,7 @@ changedObjects.push_back(object);
 %!assert( model.getMetabolites().size() == 1);
 % create a second metabolite called P with an initial
 % concentration of 0. This metabolite is to be changed by reactions
-P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
+P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity_Status_REACTIONS);
 %!assert( swig_this(P) != 0);
 object = P.getInitialConcentrationReference();;
 %!assert( swig_this(object) != 0);
@@ -71,7 +71,7 @@ reaction.setReversible(false);
 
 MV = model.createModelValue("K", 42.0);
 % set the status to FIXED
-MV.setStatus(CModelEntity_FIXED);
+MV.setStatus(CModelEntity_Status_FIXED);
 %!assert( swig_this(MV) != 0);
 object = MV.getInitialValueReference();
 %!assert( swig_this(object) != 0);

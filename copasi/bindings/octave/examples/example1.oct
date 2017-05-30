@@ -35,7 +35,7 @@ changedObjects.push_back(object);
 % concentration of 10 nanomol
 % the metabolite belongs to the compartment we created and is is to be
 % fixed
-glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
+glucose = model.createMetabolite("glucose", compartment.getObjectName(), 10.0, CModelEntity_Status_FIXED);
 %! assert(swig_this(glucose) != 0);
 object = glucose.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
@@ -43,21 +43,21 @@ changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 1);
 % create a second metabolite called glucose-6-phosphate with an initial
 % concentration of 0. This metabolite is to be changed by reactions
-g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
+g6p = model.createMetabolite("glucose-6-phosphate", compartment.getObjectName(), 0.0, CModelEntity_Status_REACTIONS);
 %! assert(swig_this(g6p) != 0);
 object = g6p.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 2);
 % another metabolite for ATP, also fixed
-atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CModelEntity_FIXED);
+atp = model.createMetabolite("ATP", compartment.getObjectName(), 10.0, CModelEntity_Status_FIXED);
 %! assert(swig_this(atp) != 0);
 object = atp.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
 changedObjects.push_back(object);
 %! assert(model.getMetabolites().size() == 3);
 % and one for ADP
-adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CModelEntity_REACTIONS);
+adp = model.createMetabolite("ADP", compartment.getObjectName(), 0.0, CModelEntity_Status_REACTIONS);
 %! assert(swig_this(adp) != 0);
 object = adp.getInitialConcentrationReference();
 %! assert(swig_this(object) != 0);
@@ -173,7 +173,7 @@ object = modelValue.getInitialValueReference();
 changedObjects.push_back(object);
 %! assert(model.getModelValues().size() == 1);
 % set the status to assignment
-modelValue.setStatus(CModelEntity_ASSIGNMENT);
+modelValue.setStatus(CModelEntity_Status_ASSIGNMENT);
 % the assignment does not have to make sense
 modelValue.setExpression("1.0 / 4.0 + 2.0");
 

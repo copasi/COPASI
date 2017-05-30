@@ -84,7 +84,7 @@ if swig_this(model) != 0
     % determined by an ODE or a reaction
     status = entity.getStatus();
 
-    if ((status == CModelEntity_ODE) || (status == CModelEntity_REACTIONS && entity.isUsed()))
+    if ((status == CModelEntity_Status_ODE) || (status == CModelEntity_Status_REACTIONS && entity.isUsed()))
       nameVector{length(nameVector)+1} = entity.getObjectName();
     endif
   endfor

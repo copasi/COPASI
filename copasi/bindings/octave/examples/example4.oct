@@ -102,7 +102,7 @@ reports = dataModel.getReportDefinitionList();
 % create a report definition object
 report = reports.createReportDefinition("Report", "Output for timecourse");
 % set the task type for the report definition to timecourse
-report.setTaskType(CTaskEnum_timeCourse);
+report.setTaskType(CTaskEnum_Task_timeCourse);
 % we don't want a table
 report.setIsTable(false);
 % the entries in the output should be seperated by a ", "
@@ -124,7 +124,7 @@ for i = 0:iMax
   metab = model.getMetabolite(i);
   %!assert( swig_this(metab) != 0);
   % we don't want output for FIXED metabolites right now
-  if (metab.getStatus() != CModelEntity_FIXED)
+  if (metab.getStatus() != CModelEntity_Status_FIXED)
     % we want the concentration in the output
     % alternatively, we could use "Reference=Amount" to get the
     % particle number
@@ -155,7 +155,7 @@ if(swig_this(trajectoryTask) == 0)
 endif
 
 % run a stochastic time course
-trajectoryTask.setMethodType(CTaskEnum_stochastic);
+trajectoryTask.setMethodType(CTaskEnum_Method_stochastic);
 
 % pass a pointer of the model to the problem
 trajectoryTask.getProblem().setModel(dataModel.getModel());
@@ -207,7 +207,7 @@ scanTask.getReport().setTarget("example4.txt");
 scanTask.getReport().setAppend(false);
 
 % tell the scan that we want to make a scan over a trajectory task
-scanProblem.setSubtask(CTaskEnum_timeCourse);
+scanProblem.setSubtask(CTaskEnum_Task_timeCourse);
 
 % we just want to run the timecourse task a number of times, so we
 % create a repeat item with 100 repeats
