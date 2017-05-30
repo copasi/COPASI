@@ -66,7 +66,7 @@ C_FLOAT64 CEvaluationNodeFunction::min(const C_FLOAT64 & x1, const C_FLOAT64 & x
 }
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
-  CEvaluationNode(T_FUNCTION, S_INVALID, ""),
+  CEvaluationNode(MainType::FUNCTION, SubType::INVALID, ""),
   mpFunction(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
@@ -84,7 +84,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_FUNCTION, subType, data),
+  CEvaluationNode(MainType::FUNCTION, subType, data),
   mpFunction(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
@@ -97,155 +97,155 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
   mpArgValue3(NULL),
   mpArgValue4(NULL)
 {
-  mValueType = (mSubType != S_NOT) ? Number : Boolean;
+  mValueType = (mSubType != SubType::NOT) ? ValueType::Number : ValueType::Boolean;
 
   switch (subType)
     {
-      case S_LOG:
+      case SubType::LOG:
         mpFunction = log;
         break;
 
-      case S_LOG10:
+      case SubType::LOG10:
         mpFunction = log10;
         break;
 
-      case S_EXP:
+      case SubType::EXP:
         mpFunction = exp;
         break;
 
-      case S_SIN:
+      case SubType::SIN:
         mpFunction = sin;
         break;
 
-      case S_COS:
+      case SubType::COS:
         mpFunction = cos;
         break;
 
-      case S_TAN:
+      case SubType::TAN:
         mpFunction = tan;
         break;
 
-      case S_SEC:
+      case SubType::SEC:
         mpFunction = sec;
         break;
 
-      case S_CSC:
+      case SubType::CSC:
         mpFunction = csc;
         break;
 
-      case S_COT:
+      case SubType::COT:
         mpFunction = cot;
         break;
 
-      case S_SINH:
+      case SubType::SINH:
         mpFunction = sinh;
         break;
 
-      case S_COSH:
+      case SubType::COSH:
         mpFunction = cosh;
         break;
 
-      case S_TANH:
+      case SubType::TANH:
         mpFunction = tanh;
         break;
 
-      case S_SECH:
+      case SubType::SECH:
         mpFunction = sech;
         break;
 
-      case S_CSCH:
+      case SubType::CSCH:
         mpFunction = csch;
         break;
 
-      case S_COTH:
+      case SubType::COTH:
         mpFunction = coth;
         break;
 
-      case S_ARCSIN:
+      case SubType::ARCSIN:
         mpFunction = asin;
         break;
 
-      case S_ARCCOS:
+      case SubType::ARCCOS:
         mpFunction = acos;
         break;
 
-      case S_ARCTAN:
+      case SubType::ARCTAN:
         mpFunction = atan;
         break;
 
-      case S_ARCSEC:
+      case SubType::ARCSEC:
         mpFunction = arcsec;
         break;
 
-      case S_ARCCSC:
+      case SubType::ARCCSC:
         mpFunction = arccsc;
         break;
 
-      case S_ARCCOT:
+      case SubType::ARCCOT:
         mpFunction = arccot;
         break;
 
-      case S_ARCSINH:
+      case SubType::ARCSINH:
         mpFunction = asinh;
         break;
 
-      case S_ARCCOSH:
+      case SubType::ARCCOSH:
         mpFunction = acosh;
         break;
 
-      case S_ARCTANH:
+      case SubType::ARCTANH:
         mpFunction = atanh;
         break;
 
-      case S_ARCSECH:
+      case SubType::ARCSECH:
         mpFunction = asech;
         break;
 
-      case S_ARCCSCH:
+      case SubType::ARCCSCH:
         mpFunction = acsch;
         break;
 
-      case S_ARCCOTH:
+      case SubType::ARCCOTH:
         mpFunction = acoth;
         break;
 
-      case S_SIGN:
+      case SubType::SIGN:
         mpFunction = sign;
         break;
 
-      case S_SQRT:
+      case SubType::SQRT:
         mpFunction = sqrt;
         break;
 
-      case S_ABS:
+      case SubType::ABS:
         mpFunction = fabs;
         break;
 
-      case S_FLOOR:
+      case SubType::FLOOR:
         mpFunction = floor;
         break;
 
-      case S_CEIL:
+      case SubType::CEIL:
         mpFunction = ceil;
         break;
 
-      case S_FACTORIAL:
+      case SubType::FACTORIAL:
         mpFunction = factorial;
         break;
 
-      case S_MINUS:
+      case SubType::MINUS:
         mpFunction = minus;
         break;
 
-      case S_PLUS:
+      case SubType::PLUS:
         mpFunction = plus;
         break;
 
-      case S_NOT:
+      case SubType::NOT:
         mpFunction = copasiNot;
         break;
 
-      case S_RUNIFORM:
+      case SubType::RUNIFORM:
         mpFunction2 = runiform;
 
         if (!mpRandom)
@@ -253,7 +253,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case S_RNORMAL:
+      case SubType::RNORMAL:
         mpFunction2 = rnormal;
 
         if (!mpRandom)
@@ -261,7 +261,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case S_RPOISSON:
+      case SubType::RPOISSON:
         mpFunction = rpoisson;
 
         if (!mpRandom)
@@ -269,7 +269,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case S_RGAMMA:
+      case SubType::RGAMMA:
         mpFunction2 = rgamma;
 
         if (!mpRandom)
@@ -277,11 +277,11 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
         break;
 
-      case S_MAX:
+      case SubType::MAX:
         mpFunction2 = max;
         break;
 
-      case S_MIN:
+      case SubType::MIN:
         mpFunction2 = min;
         break;
 
@@ -372,21 +372,21 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
     switch (mSubType)
       {
-        case S_MINUS:
-        case S_PLUS:
+        case SubType::MINUS:
+        case SubType::PLUS:
           return handleSign(children[0]);
 
-        case S_RUNIFORM:
-        case S_RNORMAL:
-        case S_RGAMMA:
-        case S_MAX:
-        case S_MIN:
+        case SubType::RUNIFORM:
+        case SubType::RNORMAL:
+        case SubType::RGAMMA:
+        case SubType::MAX:
+        case SubType::MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
 
-        case S_RPOISSON:
+        case SubType::RPOISSON:
           return mData + "(" + children[0] + ")";
 
-        case S_NOT:
+        case SubType::NOT:
           return handleNot(children[0]);
 
         default:
@@ -402,21 +402,21 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
   if (const_cast<CEvaluationNodeFunction *>(this)->compile(NULL))
     switch (mSubType)
       {
-        case S_MINUS:
-        case S_PLUS:
+        case SubType::MINUS:
+        case SubType::PLUS:
           return handleSign(children[0]);
 
-        case S_RUNIFORM:
-        case S_RNORMAL:
-        case S_RGAMMA:
-        case S_MAX:
-        case S_MIN:
+        case SubType::RUNIFORM:
+        case SubType::RNORMAL:
+        case SubType::RGAMMA:
+        case SubType::MAX:
+        case SubType::MIN:
           return mData + "(" + children[0] + "," + children[1] + ")";
 
-        case S_RPOISSON:
+        case SubType::RPOISSON:
           return mData + "(" + children[0] + ")";
 
-        case S_NOT:
+        case SubType::NOT:
           return handleNot(children[0]);
 
         default:
@@ -435,166 +435,166 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
 
       switch ((SubType)this->subType())
         {
-          case S_LOG:
+          case SubType::LOG:
             data = "log";
             break;
 
-          case S_LOG10:
+          case SubType::LOG10:
             data = "log10";
             break;
 
-          case S_EXP:
+          case SubType::EXP:
             data = "exp";
             break;
 
-          case S_SIN:
+          case SubType::SIN:
             data = "sin";
             break;
 
-          case S_COS:
+          case SubType::COS:
             data = "cos";
             break;
 
-          case S_TAN:
+          case SubType::TAN:
             data = "tan";
             break;
 
-          case S_SINH:
+          case SubType::SINH:
             data = "sinh";
             break;
 
-          case S_COSH:
+          case SubType::COSH:
             data = "cosh";
             break;
 
-          case S_TANH:
+          case SubType::TANH:
             data = "tanh";
             break;
 
-          case S_ARCSIN:
+          case SubType::ARCSIN:
             data = "asin";
             break;
 
-          case S_ARCCOS:
+          case SubType::ARCCOS:
             data = "acos";
             break;
 
-          case S_ARCTAN:
+          case SubType::ARCTAN:
             data = "atan";
             break;
 
-          case S_ARCSINH:
+          case SubType::ARCSINH:
             data = "asinh";
             break;
 
-          case S_ARCCOSH:
+          case SubType::ARCCOSH:
             data = "acosh";
             break;
 
-          case S_ARCTANH:
+          case SubType::ARCTANH:
             data = "atanh";
             break;
 
-          case S_SQRT:
+          case SubType::SQRT:
             data = "sqrt";
             break;
 
-          case S_ABS:
+          case SubType::ABS:
             data = "abs";
             break;
 
-          case S_NOT:
+          case SubType::NOT:
             data = "!";
             break;
 
-          case S_MINUS:
+          case SubType::MINUS:
             data = "-";
             break;
 
-          case S_PLUS:
+          case SubType::PLUS:
             break;
 
-          case S_SEC:
+          case SubType::SEC:
             data = "sec";
             break;
 
-          case S_CSC:
+          case SubType::CSC:
             data = "csc";
             break;
 
-          case S_COT:
+          case SubType::COT:
             data = "cot";
             break;
 
-          case S_SECH:
+          case SubType::SECH:
             data = "sech";
             break;
 
-          case S_CSCH:
+          case SubType::CSCH:
             data = "csch";
             break;
 
-          case S_COTH:
+          case SubType::COTH:
             data = "coth";
             break;
 
-          case S_ARCSEC:
+          case SubType::ARCSEC:
             data = "arcsec";
             break;
 
-          case S_ARCCSC:
+          case SubType::ARCCSC:
             data = "arccsc";
             break;
 
-          case S_ARCCOT:
+          case SubType::ARCCOT:
             data = "arccot";
             break;
 
-          case S_ARCSECH:
+          case SubType::ARCSECH:
             data = "asech";
             break;
 
-          case S_ARCCSCH:
+          case SubType::ARCCSCH:
             data = "acsch";
             break;
 
-          case S_ARCCOTH:
+          case SubType::ARCCOTH:
             data = "acoth";
             break;
 
-          case S_FLOOR:
+          case SubType::FLOOR:
             data = "floor";
             break;
 
-          case S_CEIL:
+          case SubType::CEIL:
             data = "ceil";
             break;
 
-          case S_FACTORIAL:
+          case SubType::FACTORIAL:
             data = "factorial";
             break;
 
-          case S_RUNIFORM:
+          case SubType::RUNIFORM:
             data = "user_provided_uniform";
             break;
 
-          case S_RNORMAL:
+          case SubType::RNORMAL:
             data = "user_provided_normal";
             break;
 
-          case S_RGAMMA:
+          case SubType::RGAMMA:
             data = "user_provided_normal";
             break;
 
-          case S_RPOISSON:
+          case SubType::RPOISSON:
             data = "user_provided_normal";
             break;
 
-          case S_MAX:
+          case SubType::MAX:
             data = "max";
             break;
 
-          case S_MIN:
+          case SubType::MIN:
             data = "min";
             break;
 
@@ -605,20 +605,20 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
 
       switch (mSubType)
         {
-          case S_MINUS:
+          case SubType::MINUS:
             return "(" + data + children[0] + ")";
             break;
 
-          case S_PLUS:
+          case SubType::PLUS:
             //return handleSign(mpLeft->getDisplay_C_String(pTree));
             return children[0];
             break;
 
-          case S_RUNIFORM:
-          case S_RNORMAL:
-          case S_RGAMMA:
-          case S_MAX:
-          case S_MIN:
+          case SubType::RUNIFORM:
+          case SubType::RNORMAL:
+          case SubType::RGAMMA:
+          case SubType::MAX:
+          case SubType::MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
@@ -641,55 +641,55 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
 
       switch ((SubType)this->subType())
         {
-          case S_LOG:
-          case S_LOG10:
-          case S_EXP:
-          case S_SIN:
-          case S_COS:
-          case S_TAN:
-          case S_SINH:
-          case S_COSH:
-          case S_TANH:
-          case S_ARCSIN:
-          case S_ARCCOS:
-          case S_ARCTAN:
-          case S_ARCSINH:
-          case S_ARCCOSH:
-          case S_ARCTANH:
-          case S_SQRT:
-          case S_ABS:
-          case S_NOT:
+          case SubType::LOG:
+          case SubType::LOG10:
+          case SubType::EXP:
+          case SubType::SIN:
+          case SubType::COS:
+          case SubType::TAN:
+          case SubType::SINH:
+          case SubType::COSH:
+          case SubType::TANH:
+          case SubType::ARCSIN:
+          case SubType::ARCCOS:
+          case SubType::ARCTAN:
+          case SubType::ARCSINH:
+          case SubType::ARCCOSH:
+          case SubType::ARCTANH:
+          case SubType::SQRT:
+          case SubType::ABS:
+          case SubType::NOT:
             break;
 
-          case S_MINUS:
+          case SubType::MINUS:
             data = "-";
             break;
 
-          case S_PLUS:
+          case SubType::PLUS:
             data = "";
             break;
 
-          case S_SEC:
-          case S_CSC:
-          case S_COT:
-          case S_SECH:
-          case S_CSCH:
-          case S_COTH:
-          case S_ARCSEC:
-          case S_ARCCSC:
-          case S_ARCCOT:
-          case S_ARCSECH:
-          case S_ARCCSCH:
-          case S_ARCCOTH:
-          case S_FLOOR:
-          case S_CEIL:
-          case S_FACTORIAL:
-          case S_RUNIFORM:
-          case S_RNORMAL:
-          case S_RGAMMA:
-          case S_RPOISSON:
-          case S_MAX:
-          case S_MIN:
+          case SubType::SEC:
+          case SubType::CSC:
+          case SubType::COT:
+          case SubType::SECH:
+          case SubType::CSCH:
+          case SubType::COTH:
+          case SubType::ARCSEC:
+          case SubType::ARCCSC:
+          case SubType::ARCCOT:
+          case SubType::ARCSECH:
+          case SubType::ARCCSCH:
+          case SubType::ARCCOTH:
+          case SubType::FLOOR:
+          case SubType::CEIL:
+          case SubType::FACTORIAL:
+          case SubType::RUNIFORM:
+          case SubType::RNORMAL:
+          case SubType::RGAMMA:
+          case SubType::RPOISSON:
+          case SubType::MAX:
+          case SubType::MIN:
           default:
             data = "ILLEGAL FUNCTION";
             break;
@@ -697,20 +697,20 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
 
       switch (mSubType)
         {
-          case S_MINUS:
+          case SubType::MINUS:
             return "(" + data + children[0] + ")";
             break;
 
-          case S_PLUS:
+          case SubType::PLUS:
             //return handleSign(mpLeft->getDisplay_MMD_String(pTree));
             return children[0];
             break;
 
-          case S_RUNIFORM:
-          case S_RNORMAL:
-          case S_RGAMMA:
-          case S_MAX:
-          case S_MIN:
+          case SubType::RUNIFORM:
+          case SubType::RNORMAL:
+          case SubType::RGAMMA:
+          case SubType::MAX:
+          case SubType::MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
@@ -733,58 +733,58 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
 
       switch ((SubType)this->subType())
         {
-          case S_LOG:
-          case S_LOG10:
-          case S_EXP:
-          case S_SIN:
-          case S_COS:
-          case S_TAN:
-          case S_SINH:
-          case S_COSH:
-          case S_TANH:
-          case S_ARCSIN:
-          case S_ARCCOS:
-          case S_ARCTAN:
-          case S_SQRT:
-          case S_ABS:
-          case S_NOT:
-          case S_PLUS:
+          case SubType::LOG:
+          case SubType::LOG10:
+          case SubType::EXP:
+          case SubType::SIN:
+          case SubType::COS:
+          case SubType::TAN:
+          case SubType::SINH:
+          case SubType::COSH:
+          case SubType::TANH:
+          case SubType::ARCSIN:
+          case SubType::ARCCOS:
+          case SubType::ARCTAN:
+          case SubType::SQRT:
+          case SubType::ABS:
+          case SubType::NOT:
+          case SubType::PLUS:
             break;
 
-          case S_MINUS:
+          case SubType::MINUS:
             data = "-";
             break;
 
-          case S_FLOOR:
+          case SubType::FLOOR:
             data = "flr";
             break;
 
-          case S_CEIL:
+          case SubType::CEIL:
             data = "ceil";
             break;
 
-          case S_ARCSINH:
-          case S_ARCCOSH:
-          case S_ARCTANH:
-          case S_SEC:
-          case S_CSC:
-          case S_COT:
-          case S_SECH:
-          case S_CSCH:
-          case S_COTH:
-          case S_ARCSEC:
-          case S_ARCCSC:
-          case S_ARCCOT:
-          case S_ARCSECH:
-          case S_ARCCSCH:
-          case S_ARCCOTH:
-          case S_FACTORIAL:
-          case S_RUNIFORM:
-          case S_RNORMAL:
-          case S_RGAMMA:
-          case S_RPOISSON:
-          case S_MAX:
-          case S_MIN:
+          case SubType::ARCSINH:
+          case SubType::ARCCOSH:
+          case SubType::ARCTANH:
+          case SubType::SEC:
+          case SubType::CSC:
+          case SubType::COT:
+          case SubType::SECH:
+          case SubType::CSCH:
+          case SubType::COTH:
+          case SubType::ARCSEC:
+          case SubType::ARCCSC:
+          case SubType::ARCCOT:
+          case SubType::ARCSECH:
+          case SubType::ARCCSCH:
+          case SubType::ARCCOTH:
+          case SubType::FACTORIAL:
+          case SubType::RUNIFORM:
+          case SubType::RNORMAL:
+          case SubType::RGAMMA:
+          case SubType::RPOISSON:
+          case SubType::MAX:
+          case SubType::MIN:
           default:
             data = "@"; //TODO
             break;
@@ -792,19 +792,19 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
 
       switch (mSubType)
         {
-          case S_MINUS:
+          case SubType::MINUS:
             return "(" + data + children[0] + ")";
             break;
 
-          case S_PLUS:
+          case SubType::PLUS:
             return children[0];
             break;
 
-          case S_RUNIFORM:
-          case S_RNORMAL:
-          case S_RGAMMA:
-          case S_MAX:
-          case S_MIN:
+          case SubType::RUNIFORM:
+          case SubType::RNORMAL:
+          case SubType::RGAMMA:
+          case SubType::MAX:
+          case SubType::MIN:
             return data + "(" + children[0] + "," + children[1] + ")";
 
           default:
@@ -835,7 +835,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
       switch (iMax)
         {
           case 1:
-            pNode = new CEvaluationNodeFunction(S_SQRT, "sqrt");
+            pNode = new CEvaluationNodeFunction(SubType::SQRT, "sqrt");
             pNode->addChild(children[0]);
             break;
 
@@ -845,11 +845,11 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
              * operator since COPASI does not have the ROOT function.
              */
           {
-            pNode = new CEvaluationNodeOperator(S_POWER, "^");
+            pNode = new CEvaluationNodeOperator(SubType::POWER, "^");
             pNode->addChild(children[1]); // Value
-            CEvaluationNode * pExponent = new CEvaluationNodeOperator(S_DIVIDE, "/");
+            CEvaluationNode * pExponent = new CEvaluationNodeOperator(SubType::DIVIDE, "/");
             pNode->addChild(pExponent);
-            pExponent->addChild(new CEvaluationNodeNumber(S_DOUBLE, "1"));
+            pExponent->addChild(new CEvaluationNodeNumber(SubType::DOUBLE, "1"));
             pExponent->addChild(children[0]); // Degree
           }
           break;
@@ -865,10 +865,10 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
        * as the argument for the divisor LOG10 node.
        */
 
-      CEvaluationNode * pNode = new CEvaluationNodeOperator(S_DIVIDE, "/");
-      CEvaluationNode * pValue = new CEvaluationNodeFunction(S_LOG10, "log10");
+      CEvaluationNode * pNode = new CEvaluationNodeOperator(SubType::DIVIDE, "/");
+      CEvaluationNode * pValue = new CEvaluationNodeFunction(SubType::LOG10, "log10");
       pValue->addChild(children[1]);
-      CEvaluationNode * pBase = new CEvaluationNodeFunction(S_LOG10, "log10");
+      CEvaluationNode * pBase = new CEvaluationNodeFunction(SubType::LOG10, "log10");
       pBase->addChild(children[0]);
       pNode->addChild(pValue);
       pNode->addChild(pBase);
@@ -879,167 +879,167 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   switch (type)
     {
       case AST_FUNCTION_ABS:
-        subType = S_ABS;
+        subType = SubType::ABS;
         data = "abs";
         break;
 
       case AST_FUNCTION_ARCCOS:
-        subType = S_ARCCOS;
+        subType = SubType::ARCCOS;
         data = "acos";
         break;
 
       case AST_FUNCTION_ARCCOSH:
-        subType = S_ARCCOSH;
+        subType = SubType::ARCCOSH;
         data = "arccosh";
         break;
 
       case AST_FUNCTION_ARCCOT:
-        subType = S_ARCCOT;
+        subType = SubType::ARCCOT;
         data = "arccot";
         break;
 
       case AST_FUNCTION_ARCCOTH:
-        subType = S_ARCCOTH;
+        subType = SubType::ARCCOTH;
         data = "arccoth";
         break;
 
       case AST_FUNCTION_ARCCSC:
-        subType = S_ARCCSC;
+        subType = SubType::ARCCSC;
         data = "arccsc";
         break;
 
       case AST_FUNCTION_ARCCSCH:
-        subType = S_ARCCSCH;
+        subType = SubType::ARCCSCH;
         data = "arccsch";
         break;
 
       case AST_FUNCTION_ARCSEC:
-        subType = S_ARCSEC;
+        subType = SubType::ARCSEC;
         data = "arcsec";
         break;
 
       case AST_FUNCTION_ARCSECH:
-        subType = S_ARCSECH;
+        subType = SubType::ARCSECH;
         data = "arcsech";
         break;
 
       case AST_FUNCTION_ARCSIN:
-        subType = S_ARCSIN;
+        subType = SubType::ARCSIN;
         data = "asin";
         break;
 
       case AST_FUNCTION_ARCSINH:
-        subType = S_ARCSINH;
+        subType = SubType::ARCSINH;
         data = "arcsinh";
         break;
 
       case AST_FUNCTION_ARCTAN:
-        subType = S_ARCTAN;
+        subType = SubType::ARCTAN;
         data = "atan";
         break;
 
       case AST_FUNCTION_ARCTANH:
-        subType = S_ARCTANH;
+        subType = SubType::ARCTANH;
         data = "arctanh";
         break;
 
       case AST_FUNCTION_CEILING:
-        subType = S_CEIL;
+        subType = SubType::CEIL;
         data = "ceil";
         break;
 
       case AST_FUNCTION_COS:
-        subType = S_COS;
+        subType = SubType::COS;
         data = "cos";
         break;
 
       case AST_FUNCTION_COSH:
-        subType = S_COSH;
+        subType = SubType::COSH;
         data = "cosh";
         break;
 
       case AST_FUNCTION_COT:
-        subType = S_COT;
+        subType = SubType::COT;
         data = "cot";
         break;
 
       case AST_FUNCTION_COTH:
-        subType = S_COTH;
+        subType = SubType::COTH;
         data = "coth";
         break;
 
       case AST_FUNCTION_CSC:
-        subType = S_CSC;
+        subType = SubType::CSC;
         data = "csc";
         break;
 
       case AST_FUNCTION_CSCH:
-        subType = S_CSCH;
+        subType = SubType::CSCH;
         data = "csch";
         break;
 
       case AST_FUNCTION_EXP:
-        subType = S_EXP;
+        subType = SubType::EXP;
         data = "exp";
         break;
 
       case AST_FUNCTION_FACTORIAL:
-        subType = S_FACTORIAL;
+        subType = SubType::FACTORIAL;
         data = "factorial";
         break;
 
       case AST_FUNCTION_FLOOR:
-        subType = S_FLOOR;
+        subType = SubType::FLOOR;
         data = "floor";
         break;
 
       case AST_FUNCTION_LN:
-        subType = S_LOG;
+        subType = SubType::LOG;
         data = "log";
         break;
 
       case AST_FUNCTION_LOG:
-        subType = S_LOG10;
+        subType = SubType::LOG10;
         data = "log10";
         break;
 
       case AST_FUNCTION_SEC:
-        subType = S_SEC;
+        subType = SubType::SEC;
         data = "sec";
         break;
 
       case AST_FUNCTION_SECH:
-        subType = S_SECH;
+        subType = SubType::SECH;
         data = "sech";
         break;
 
       case AST_FUNCTION_SIN:
-        subType = S_SIN;
+        subType = SubType::SIN;
         data = "sin";
         break;
 
       case AST_FUNCTION_SINH:
-        subType = S_SINH;
+        subType = SubType::SINH;
         data = "sinh";
         break;
 
       case AST_FUNCTION_TAN:
-        subType = S_TAN;
+        subType = SubType::TAN;
         data = "tan";
         break;
 
       case AST_FUNCTION_TANH:
-        subType = S_TANH;
+        subType = SubType::TANH;
         data = "tanh";
         break;
 
       case AST_LOGICAL_NOT:
-        subType = S_NOT;
+        subType = SubType::NOT;
         data = "not";
         break;
 
       default:
-        subType = S_INVALID;
+        subType = SubType::INVALID;
         fatalError();
         break;
     }
@@ -1061,14 +1061,14 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
 
   switch (subType)
     {
-      case S_INVALID:
+      case SubType::INVALID:
         break;
 
-      case S_LOG:
+      case SubType::LOG:
         node->setType(AST_FUNCTION_LN);
         break;
 
-      case S_LOG10:
+      case SubType::LOG10:
       {
         // log 10 needs two children, the log and the base
         node->setType(AST_FUNCTION_LOG);
@@ -1081,142 +1081,142 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         break;
       }
 
-      case S_EXP:
+      case SubType::EXP:
         node->setType(AST_FUNCTION_EXP);
         break;
 
-      case S_SIN:
+      case SubType::SIN:
         node->setType(AST_FUNCTION_SIN);
         break;
 
-      case S_COS:
+      case SubType::COS:
         node->setType(AST_FUNCTION_COS);
         break;
 
-      case S_TAN:
+      case SubType::TAN:
         node->setType(AST_FUNCTION_TAN);
         break;
 
-      case S_SEC:
+      case SubType::SEC:
         node->setType(AST_FUNCTION_SEC);
         break;
 
-      case S_CSC:
+      case SubType::CSC:
         node->setType(AST_FUNCTION_CSC);
         break;
 
-      case S_COT:
+      case SubType::COT:
         node->setType(AST_FUNCTION_COT);
         break;
 
-      case S_SINH:
+      case SubType::SINH:
         node->setType(AST_FUNCTION_SINH);
         break;
 
-      case S_COSH:
+      case SubType::COSH:
         node->setType(AST_FUNCTION_COSH);
         break;
 
-      case S_TANH:
+      case SubType::TANH:
         node->setType(AST_FUNCTION_TANH);
         break;
 
-      case S_SECH:
+      case SubType::SECH:
         node->setType(AST_FUNCTION_SECH);
         break;
 
-      case S_CSCH:
+      case SubType::CSCH:
         node->setType(AST_FUNCTION_CSCH);
         break;
 
-      case S_COTH:
+      case SubType::COTH:
         node->setType(AST_FUNCTION_COTH);
         break;
 
-      case S_ARCSIN:
+      case SubType::ARCSIN:
         node->setType(AST_FUNCTION_ARCSIN);
         break;
 
-      case S_ARCCOS:
+      case SubType::ARCCOS:
         node->setType(AST_FUNCTION_ARCCOS);
         break;
 
-      case S_ARCTAN:
+      case SubType::ARCTAN:
         node->setType(AST_FUNCTION_ARCTAN);
         break;
 
-      case S_ARCSEC:
+      case SubType::ARCSEC:
         node->setType(AST_FUNCTION_ARCSEC);
         break;
 
-      case S_ARCCSC:
+      case SubType::ARCCSC:
         node->setType(AST_FUNCTION_ARCCSC);
         break;
 
-      case S_ARCCOT:
+      case SubType::ARCCOT:
         node->setType(AST_FUNCTION_ARCCOT);
         break;
 
-      case S_ARCSINH:
+      case SubType::ARCSINH:
         node->setType(AST_FUNCTION_ARCSINH);
         break;
 
-      case S_ARCCOSH:
+      case SubType::ARCCOSH:
         node->setType(AST_FUNCTION_ARCCOSH);
         break;
 
-      case S_ARCTANH:
+      case SubType::ARCTANH:
         node->setType(AST_FUNCTION_ARCTANH);
         break;
 
-      case S_ARCSECH:
+      case SubType::ARCSECH:
         node->setType(AST_FUNCTION_ARCSECH);
         break;
 
-      case S_ARCCSCH:
+      case SubType::ARCCSCH:
         node->setType(AST_FUNCTION_ARCCSCH);
         break;
 
-      case S_ARCCOTH:
+      case SubType::ARCCOTH:
         node->setType(AST_FUNCTION_ARCCOTH);
         break;
 
-      case S_SQRT:
+      case SubType::SQRT:
         node->setType(AST_FUNCTION_ROOT);
         break;
 
-      case S_ABS:
+      case SubType::ABS:
         node->setType(AST_FUNCTION_ABS);
         break;
 
-      case S_CEIL:
+      case SubType::CEIL:
         node->setType(AST_FUNCTION_CEILING);
         break;
 
-      case S_FLOOR:
+      case SubType::FLOOR:
         node->setType(AST_FUNCTION_FLOOR);
         break;
 
-      case S_FACTORIAL:
+      case SubType::FACTORIAL:
         node->setType(AST_FUNCTION_FACTORIAL);
         break;
 
-      case S_MINUS:
+      case SubType::MINUS:
         node->setType(AST_MINUS);
         break;
 
-      case S_PLUS:
+      case SubType::PLUS:
         // if this is the unary plus as I suspect,
         // the node will be replaced by its only child
         delete node;
         node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel);
         break;
 
-      case S_NOT:
+      case SubType::NOT:
         node->setType(AST_LOGICAL_NOT);
         break;
 
-      case S_RUNIFORM:
+      case SubType::RUNIFORM:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1228,7 +1228,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       }
       break;
 
-      case S_RNORMAL:
+      case SubType::RNORMAL:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1240,7 +1240,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       }
       break;
 
-      case S_RGAMMA:
+      case SubType::RGAMMA:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1252,7 +1252,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       }
       break;
 
-      case S_RPOISSON:
+      case SubType::RPOISSON:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1262,7 +1262,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       }
       break;
 
-      case S_MAX:
+      case SubType::MAX:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1274,7 +1274,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       }
       break;
 
-      case S_MIN:
+      case SubType::MIN:
       {
         needFirstArg = false;
         node->setType(AST_FUNCTION);
@@ -1285,18 +1285,18 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-      // :TODO: Bug 894: Implement me.
-      //fatalError();
+        // :TODO: Bug 894: Implement me.
+        //fatalError();
       break;
     }
 
-  if (subType != S_INVALID)
+  if (subType != SubType::INVALID)
     {
       // the following is a workaround for a bug in libsbml 3.1.1 and 3.2.0
       // where libsbml does not handle the case correctly that a root
       // function can have one or two children (MathML.cpp in function
       // writeFunctionRoot)
-      if (subType == S_SQRT)
+      if (subType == SubType::SQRT)
         {
           // add a degree node of value 2 as the first child
           ASTNode* pDegreeNode = new ASTNode();
@@ -1322,20 +1322,20 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
 
   switch (mSubType)
     {
-      case S_MINUS:
+      case SubType::MINUS:
       {
         switch (child1->mainType())
           {
-            case CEvaluationNode::T_OPERATOR:
+            case CEvaluationNode::MainType::OPERATOR:
             {
               switch (child1->subType())
                 {
-                  case S_DIVIDE:
+                  case SubType::DIVIDE:
                   {
                     // -(a/b) -> (-a)/b
                     // want to recognize a fraction in a sum easily
-                    CEvaluationNode *newnode = CEvaluationNode::create(T_OPERATOR, S_DIVIDE, "/");
-                    CEvaluationNode *newchild1 = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
+                    CEvaluationNode *newnode = CEvaluationNode::create(MainType::OPERATOR, SubType::DIVIDE, "/");
+                    CEvaluationNode *newchild1 = CEvaluationNode::create(MainType::FUNCTION, SubType::MINUS, "-");
                     CEvaluationNode *newchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
                     CEvaluationNode *grandchild = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
                     newnode->addChild(newchild1, NULL);
@@ -1345,13 +1345,13 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
                     return newnode;
                   }
 
-                  case S_PLUS:
+                  case SubType::PLUS:
                   {
                     // -(a+b) -> (-a)+(-b)
                     // negativity should be property of product
-                    CEvaluationNode *newnode = CEvaluationNode::create(T_OPERATOR, S_PLUS, "+");
-                    CEvaluationNode *newchild1 = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
-                    CEvaluationNode *newchild2 = CEvaluationNode::create(T_FUNCTION, S_MINUS, "-");
+                    CEvaluationNode *newnode = CEvaluationNode::create(MainType::OPERATOR, SubType::PLUS, "+");
+                    CEvaluationNode *newchild1 = CEvaluationNode::create(MainType::FUNCTION, SubType::MINUS, "-");
+                    CEvaluationNode *newchild2 = CEvaluationNode::create(MainType::FUNCTION, SubType::MINUS, "-");
                     CEvaluationNode *grandchild1 = dynamic_cast<CEvaluationNode*>(child1->getChild())->copyBranch();
                     CEvaluationNode *grandchild2 = dynamic_cast<CEvaluationNode*>(child1->getChild()->getSibling())->copyBranch();
                     newnode->addChild(newchild1, NULL);
@@ -1370,7 +1370,7 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
                 }
             }
 
-            case CEvaluationNode::T_FUNCTION:
+            case CEvaluationNode::MainType::FUNCTION:
             {
               if (child1->getData() == "-")
                 {
@@ -1385,11 +1385,11 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
               return newnode;
             }
 
-            case CEvaluationNode::T_NUMBER:
+            case CEvaluationNode::MainType::NUMBER:
             {
               std::stringstream tmp;
               tmp << *child1->getValuePointer() *(-1.0);
-              CEvaluationNode* newnode = CEvaluationNode::create(T_NUMBER, S_DOUBLE, tmp.str());
+              CEvaluationNode* newnode = CEvaluationNode::create(MainType::NUMBER, SubType::DOUBLE, tmp.str());
               delete child1;
               return newnode;
             }
@@ -1404,11 +1404,11 @@ CEvaluationNode* CEvaluationNodeFunction::simplifyNode(const std::vector<CEvalua
         break;
       }
 
-      case S_SQRT:
+      case SubType::SQRT:
       {
         // write as ^0.5
-        CEvaluationNode* newnode = CEvaluationNode::create(T_OPERATOR, S_POWER, "^");
-        CEvaluationNode* newchild2 = CEvaluationNode::create(T_NUMBER, S_DOUBLE, "0.5");
+        CEvaluationNode* newnode = CEvaluationNode::create(MainType::OPERATOR, SubType::POWER, "^");
+        CEvaluationNode* newchild2 = CEvaluationNode::create(MainType::NUMBER, SubType::DOUBLE, "0.5");
         newnode->addChild(child1, NULL);
         newnode->addChild(newchild2, child1);
         return newnode;
@@ -1428,13 +1428,13 @@ std::string CEvaluationNodeFunction::handleSign(const std::string & str) const
 
   MainType T = mpArgNode1->mainType();
 
-  if (T == T_OPERATOR)
+  if (T == MainType::OPERATOR)
     {
       Result = mData + "(" + str + ")";
     }
   else if (getParent() != NULL &&
-           static_cast< const CEvaluationNode * >(getParent())->mainType() == T_OPERATOR &&
-           static_cast< const CEvaluationNode * >(getParent())->subType() == S_POWER)
+           static_cast< const CEvaluationNode * >(getParent())->mainType() == MainType::OPERATOR &&
+           static_cast< const CEvaluationNode * >(getParent())->subType() == SubType::POWER)
     {
       Result = "(" + mData + str + ")";
     }
@@ -1452,7 +1452,7 @@ std::string CEvaluationNodeFunction::handleNot(const std::string & str) const
 
   MainType T = mpArgNode1->mainType();
 
-  if ((T & 0xFF000000) == T_LOGICAL)
+  if (T == MainType::LOGICAL)
     {
       Result += "(" + str + ")";
     }
@@ -1480,156 +1480,156 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
   std::string ldata = "";
   std::string rdata = "";
 
-  bool flag = ((mpArgNode1->mainType() == CEvaluationNode::T_NUMBER) ||
-               (mpArgNode1->mainType() == CEvaluationNode::T_VARIABLE) ||
-               (mpArgNode1->mainType() == CEvaluationNode::T_CONSTANT));
+  bool flag = ((mpArgNode1->mainType() == CEvaluationNode::MainType::NUMBER) ||
+               (mpArgNode1->mainType() == CEvaluationNode::MainType::VARIABLE) ||
+               (mpArgNode1->mainType() == CEvaluationNode::MainType::CONSTANT));
 
   bool flag1 = false;
 
   switch (mSubType)
     {
-      case S_INVALID:
+      case SubType::INVALID:
         data = "@";
         break;
 
-      case S_LOG:
+      case SubType::LOG:
         data = "ln";
         break;
 
-      case S_LOG10:
+      case SubType::LOG10:
         break;
 
-      case S_EXP:
+      case SubType::EXP:
         break;
 
-      case S_SIN:
+      case SubType::SIN:
         data = "sin";
         break;
 
-      case S_COS:
+      case SubType::COS:
         data = "cos";
         break;
 
-      case S_TAN:
+      case SubType::TAN:
         data = "tan";
         break;
 
-      case S_SEC:
+      case SubType::SEC:
         data = "sec";
         break;
 
-      case S_CSC:
+      case SubType::CSC:
         data = "csc";
         break;
 
-      case S_COT:
+      case SubType::COT:
         data = "cot";
         break;
 
-      case S_SINH:
+      case SubType::SINH:
         data = "sinh";
         break;
 
-      case S_COSH:
+      case SubType::COSH:
         data = "cosh";
         break;
 
-      case S_TANH:
+      case SubType::TANH:
         data = "tanh";
         break;
 
-      case S_SECH:
+      case SubType::SECH:
         data = "sech";
         break;
 
-      case S_CSCH:
+      case SubType::CSCH:
         data = "csch";
         break;
 
-      case S_COTH:
+      case SubType::COTH:
         data = "coth";
         break;
 
-      case S_ARCSIN:
+      case SubType::ARCSIN:
         data = "arcsin";
         break;
 
-      case S_ARCCOS:
+      case SubType::ARCCOS:
         data = "arccos";
         break;
 
-      case S_ARCTAN:
+      case SubType::ARCTAN:
         data = "arctan";
         break;
 
-      case S_ARCSEC:
+      case SubType::ARCSEC:
         data = "arcsec";
         break;
 
-      case S_ARCCSC:
+      case SubType::ARCCSC:
         data = "arccsc";
         break;
 
-      case S_ARCCOT:
+      case SubType::ARCCOT:
         data = "arccot";
         break;
 
-      case S_ARCSINH:
+      case SubType::ARCSINH:
         data = "arcsinh";
         break;
 
-      case S_ARCCOSH:
+      case SubType::ARCCOSH:
         data = "arccosh";
         break;
 
-      case S_ARCTANH:
+      case SubType::ARCTANH:
         data = "arctanh";
         break;
 
-      case S_ARCSECH:
+      case SubType::ARCSECH:
         data = "arcsech";
         break;
 
-      case S_ARCCSCH:
+      case SubType::ARCCSCH:
         data = "arccsch";
         break;
 
-      case S_ARCCOTH:
+      case SubType::ARCCOTH:
         data = "arccoth";
         break;
 
-      case S_SQRT:
+      case SubType::SQRT:
         ldata = "<msqrt>";
         rdata = "</msqrt>";
         break;
 
-      case S_ABS:
+      case SubType::ABS:
         ldata = "|";
         rdata = "|";
         break;
 
-      case S_SIGN:
+      case SubType::SIGN:
         data = "sign";
         break;
 
-      case S_CEIL:
+      case SubType::CEIL:
         data = "ceil";
         break;
 
-      case S_FLOOR:
+      case SubType::FLOOR:
         data = "floor";
         break;
 
-      case S_FACTORIAL:
+      case SubType::FACTORIAL:
         break;
 
-      case S_MINUS:
+      case SubType::MINUS:
         break;
 
-      case S_PLUS:
+      case SubType::PLUS:
         break;
 
-      case S_NOT:
+      case SubType::NOT:
         data = "!";
         break;
     }
@@ -1640,13 +1640,13 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
   switch (mSubType)
     {
-      case S_PLUS:
+      case SubType::PLUS:
       {
         size_t type = (mpArgNode1->mainType() | mpArgNode1->subType());
 
-        flag = ((type == (T_OPERATOR | S_PLUS))
-                || (type == (T_OPERATOR | S_MINUS))
-                || ((mpArgNode1->mainType() == T_CALL) && expand));
+        flag = ((type == (MainType::OPERATOR | SubType::PLUS))
+                || (type == (MainType::OPERATOR | SubType::MINUS))
+                || ((mpArgNode1->mainType() == MainType::CALL) && expand));
       }
 
       if (flag) out << "<mfenced>" << std::endl;
@@ -1657,16 +1657,14 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
       break;
 
-      case S_MINUS:
+      case SubType::MINUS:
 
         if (pParent != 0)
           {
-            MainType T = pParent->mainType();
-
-            flag1 = (T == T_OPERATOR &&
+            flag1 = (pParent->mainType() == MainType::OPERATOR &&
                      this == static_cast<const CEvaluationNode *>(pParent->getChild()->getSibling()));
 
-            flag1 |= (T == (T_OPERATOR | S_POWER));
+            flag1 |= ((pParent->mainType() | pParent->subType()) == (MainType::OPERATOR | SubType::POWER));
 
             if (flag1) out << "<mfenced>" << std::endl;
 
@@ -1687,7 +1685,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case S_FACTORIAL:
+      case SubType::FACTORIAL:
 
         if (!flag) out << "<mfenced>" << std::endl;
 
@@ -1699,8 +1697,8 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case S_SQRT:
-      case S_ABS:
+      case SubType::SQRT:
+      case SubType::ABS:
 
         out << ldata << std::endl;
 
@@ -1710,7 +1708,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case S_EXP:
+      case SubType::EXP:
 
         out << "<msup>" << std::endl;
         out << "<mo> e  </mo>" << std::endl;
@@ -1721,7 +1719,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case S_LOG10:
+      case SubType::LOG10:
 
         out << "<msub>" << std::endl;
         out << "<mo>" << "log" << "</mo>" << std::endl;
@@ -1740,8 +1738,8 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case S_CEIL:
-      case S_FLOOR:
+      case SubType::CEIL:
+      case SubType::FLOOR:
         out << "<mi> " << data << " </mi>" << std::endl;
 
         out << "<mfenced>" << std::endl;
@@ -1752,11 +1750,11 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
         break;
 
-      case S_RUNIFORM:
-      case S_RNORMAL:
-      case S_RGAMMA:
-      case S_MAX:
-      case S_MIN:
+      case SubType::RUNIFORM:
+      case SubType::RNORMAL:
+      case SubType::RGAMMA:
+      case SubType::MAX:
+      case SubType::MIN:
         out << "<mrow>" << std::endl;
 
         out << "<mi>" << mData << "</mi>" << std::endl;
@@ -1777,7 +1775,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
         out << "</mrow>" << std::endl;
         break;
 
-      case S_RPOISSON:
+      case SubType::RPOISSON:
         out << "<mrow>" << std::endl;
 
         out << "<mi>" << mData << "</mi>" << std::endl;
@@ -1822,56 +1820,56 @@ CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* contai
 
   switch ((SubType)this->subType())
     {
-      case S_LOG:
-      case S_LOG10:
-      case S_EXP:
-      case S_SIN:
-      case S_COS:
-      case S_TAN:
-      case S_SEC:
-      case S_CSC:
-      case S_COT:
-      case S_SINH:
-      case S_COSH:
-      case S_TANH:
-      case S_SECH:
-      case S_CSCH:
-      case S_COTH:
-      case S_ARCSIN:
-      case S_ARCCOS:
-      case S_ARCTAN:
-      case S_ARCSEC:
-      case S_ARCCSC:
-      case S_ARCCOT:
-      case S_ARCSINH:
-      case S_ARCCOSH:
-      case S_ARCTANH:
-      case S_ARCSECH:
-      case S_ARCCSCH:
-      case S_ARCCOTH:
-      case S_FACTORIAL:
-      case S_NOT:
+      case SubType::LOG:
+      case SubType::LOG10:
+      case SubType::EXP:
+      case SubType::SIN:
+      case SubType::COS:
+      case SubType::TAN:
+      case SubType::SEC:
+      case SubType::CSC:
+      case SubType::COT:
+      case SubType::SINH:
+      case SubType::COSH:
+      case SubType::TANH:
+      case SubType::SECH:
+      case SubType::CSCH:
+      case SubType::COTH:
+      case SubType::ARCSIN:
+      case SubType::ARCCOS:
+      case SubType::ARCTAN:
+      case SubType::ARCSEC:
+      case SubType::ARCCSC:
+      case SubType::ARCCOT:
+      case SubType::ARCSINH:
+      case SubType::ARCCOSH:
+      case SubType::ARCTANH:
+      case SubType::ARCSECH:
+      case SubType::ARCCSCH:
+      case SubType::ARCCOTH:
+      case SubType::FACTORIAL:
+      case SubType::NOT:
         Unit = CValidatedUnit::merge(Unit, units[0]);
         break;
 
-      case S_MAX:
-      case S_MIN:
-      case S_RUNIFORM:
-      case S_RNORMAL:
+      case SubType::MAX:
+      case SubType::MIN:
+      case SubType::RUNIFORM:
+      case SubType::RNORMAL:
         Unit = CValidatedUnit::merge(units[0], units[1]);
         break;
 
-      case S_MINUS:
-      case S_PLUS:
-      case S_FLOOR:
-      case S_CEIL:
-      case S_ABS:
-      case S_RPOISSON:
+      case SubType::MINUS:
+      case SubType::PLUS:
+      case SubType::FLOOR:
+      case SubType::CEIL:
+      case SubType::ABS:
+      case SubType::RPOISSON:
         Unit = units[0];
 
         break;
 
-      case S_RGAMMA:
+      case SubType::RGAMMA:
         // The unit of the gamma distribution is the inverse of the scale parameter (units[1])
         Unit = units[1].exponentiate(-1);
 
@@ -1883,7 +1881,7 @@ CValidatedUnit CEvaluationNodeFunction::getUnit(const CMathContainer & /* contai
 
         break;
 
-      case S_SQRT:
+      case SubType::SQRT:
       {
         // Exponentiate to 1/2.
         // Test if each component's exponent
@@ -1925,62 +1923,62 @@ CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container
 
   switch ((SubType)this->subType())
     {
-      case S_LOG:
-      case S_LOG10:
-      case S_EXP:
-      case S_SIN:
-      case S_COS:
-      case S_TAN:
-      case S_SEC:
-      case S_CSC:
-      case S_COT:
-      case S_SINH:
-      case S_COSH:
-      case S_TANH:
-      case S_SECH:
-      case S_CSCH:
-      case S_COTH:
-      case S_ARCSIN:
-      case S_ARCCOS:
-      case S_ARCTAN:
-      case S_ARCSEC:
-      case S_ARCCSC:
-      case S_ARCCOT:
-      case S_ARCSINH:
-      case S_ARCCOSH:
-      case S_ARCTANH:
-      case S_ARCSECH:
-      case S_ARCCSCH:
-      case S_ARCCOTH:
-      case S_FACTORIAL:
-      case S_NOT:
+      case SubType::LOG:
+      case SubType::LOG10:
+      case SubType::EXP:
+      case SubType::SIN:
+      case SubType::COS:
+      case SubType::TAN:
+      case SubType::SEC:
+      case SubType::CSC:
+      case SubType::COT:
+      case SubType::SINH:
+      case SubType::COSH:
+      case SubType::TANH:
+      case SubType::SECH:
+      case SubType::CSCH:
+      case SubType::COTH:
+      case SubType::ARCSIN:
+      case SubType::ARCCOS:
+      case SubType::ARCTAN:
+      case SubType::ARCSEC:
+      case SubType::ARCCSC:
+      case SubType::ARCCOT:
+      case SubType::ARCSINH:
+      case SubType::ARCCOSH:
+      case SubType::ARCTANH:
+      case SubType::ARCSECH:
+      case SubType::ARCCSCH:
+      case SubType::ARCCOTH:
+      case SubType::FACTORIAL:
+      case SubType::NOT:
         targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
         break;
 
-      case S_MAX:
-      case S_MIN:
-      case S_RUNIFORM:
-      case S_RNORMAL:
+      case SubType::MAX:
+      case SubType::MIN:
+      case SubType::RUNIFORM:
+      case SubType::RNORMAL:
         targetUnits[mpArgNode1] = Result;
         targetUnits[mpArgNode2] = Result;
         break;
 
-      case S_MINUS:
-      case S_PLUS:
-      case S_FLOOR:
-      case S_CEIL:
-      case S_ABS:
-      case S_RPOISSON:
+      case SubType::MINUS:
+      case SubType::PLUS:
+      case SubType::FLOOR:
+      case SubType::CEIL:
+      case SubType::ABS:
+      case SubType::RPOISSON:
         targetUnits[mpArgNode1] = Result;
         break;
 
-      case S_RGAMMA:
+      case SubType::RGAMMA:
         targetUnits[mpArgNode1] = CValidatedUnit(CBaseUnit::dimensionless, false);
         targetUnits[mpArgNode2] = Result.exponentiate(-1);
 
         break;
 
-      case S_SQRT:
+      case SubType::SQRT:
         targetUnits[mpArgNode1] = Result.exponentiate(2.0);
         break;
 

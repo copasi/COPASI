@@ -25,7 +25,7 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeChoice::CEvaluationNodeChoice():
-  CEvaluationNode(T_CHOICE, S_INVALID, ""),
+  CEvaluationNode(MainType::CHOICE, SubType::INVALID, ""),
   mpIfNode(NULL),
   mpTrueNode(NULL),
   mpFalseNode(NULL),
@@ -36,7 +36,7 @@ CEvaluationNodeChoice::CEvaluationNodeChoice():
 
 CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_CHOICE, subType, data),
+  CEvaluationNode(MainType::CHOICE, subType, data),
   mpIfNode(NULL),
   mpTrueNode(NULL),
   mpFalseNode(NULL),
@@ -46,7 +46,7 @@ CEvaluationNodeChoice::CEvaluationNodeChoice(const SubType & subType,
 {
   switch (subType)
     {
-      case S_IF:
+      case SubType::IF:
         break;
 
       default:
@@ -98,10 +98,10 @@ CIssue CEvaluationNodeChoice::compile(const CEvaluationTree * /* pTree */)
     return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 
   // True and false node must have the same type if either is known
-  if (mpTrueNode->getValueType() != Unknown)
+  if (mpTrueNode->getValueType() != ValueType::Unknown)
     return mpFalseNode->setValueType(mpTrueNode->getValueType());
 
-  if (mpFalseNode->getValueType() != Unknown)
+  if (mpFalseNode->getValueType() != ValueType::Unknown)
     return mpTrueNode->setValueType(mpFalseNode->getValueType());
 
   return CIssue::Success;
@@ -181,7 +181,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   if (iMax == 0)
     {
       // create a NaN node
-      return new CEvaluationNodeConstant(S_NAN, "NAN");
+      return new CEvaluationNodeConstant(SubType::NaN, "NAN");
     }
 
   if (iMax == 1)
@@ -200,12 +200,12 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   switch (pASTNode->getType())
     {
       case AST_FUNCTION_PIECEWISE:
-        subType = S_IF;
+        subType = SubType::IF;
         data = "if";
         break;
 
       default:
-        subType = S_INVALID;
+        subType = SubType::INVALID;
         break;
     }
 
@@ -226,7 +226,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
         {
           case 0:
             // We are missing the false value
-            pCurrent->addChild(new CEvaluationNodeConstant(S_NAN, "NAN"));
+            pCurrent->addChild(new CEvaluationNodeConstant(SubType::NaN, "NAN"));
             break;
 
           case 1:

@@ -25,60 +25,60 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeLogical::CEvaluationNodeLogical():
-  CEvaluationNode(T_LOGICAL, S_INVALID, ""),
+  CEvaluationNode(MainType::LOGICAL, SubType::INVALID, ""),
   mpLeftNode(NULL),
   mpRightNode(NULL),
   mpLeftValue(NULL),
   mpRightValue(NULL)
 {
-  mValueType = Boolean;
+  mValueType = ValueType::Boolean;
 }
 
 CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_LOGICAL, subType, data),
+  CEvaluationNode(MainType::LOGICAL, subType, data),
   mpLeftNode(NULL),
   mpRightNode(NULL),
   mpLeftValue(NULL),
   mpRightValue(NULL)
 {
-  mValueType = Boolean;
+  mValueType = ValueType::Boolean;
 
   switch (mSubType)
     {
-      case S_OR:
+      case SubType::OR:
         mPrecedence = PRECEDENCE_LOGIG_OR;
         break;
 
-      case S_XOR:
+      case SubType::XOR:
         mPrecedence = PRECEDENCE_LOGIG_XOR;
         break;
 
-      case S_AND:
+      case SubType::AND:
         mPrecedence = PRECEDENCE_LOGIG_AND;
         break;
 
-      case S_EQ:
+      case SubType::EQ:
         mPrecedence = PRECEDENCE_LOGIG_EQ;
         break;
 
-      case S_NE:
+      case SubType::NE:
         mPrecedence = PRECEDENCE_LOGIG_NE;
         break;
 
-      case S_GT:
+      case SubType::GT:
         mPrecedence = PRECEDENCE_LOGIG_GT;
         break;
 
-      case S_GE:
+      case SubType::GE:
         mPrecedence = PRECEDENCE_LOGIG_GE;
         break;
 
-      case S_LT:
+      case SubType::LT:
         mPrecedence = PRECEDENCE_LOGIG_LT;
         break;
 
-      case S_LE:
+      case SubType::LE:
         mPrecedence = PRECEDENCE_LOGIG_LE;
         break;
     }
@@ -116,29 +116,29 @@ CIssue CEvaluationNodeLogical::compile(const CEvaluationTree * /* pTree */)
   // The child nodes must have the same type
   switch (mSubType)
     {
-      case S_OR:
-      case S_XOR:
-      case S_AND:
-        Result &= mpLeftNode->setValueType(Boolean);
-        Result &= mpRightNode->setValueType(Boolean);
+      case SubType::OR:
+      case SubType::XOR:
+      case SubType::AND:
+        Result &= mpLeftNode->setValueType(ValueType::Boolean);
+        Result &= mpRightNode->setValueType(ValueType::Boolean);
         break;
 
-      case S_EQ:
-      case S_NE:
+      case SubType::EQ:
+      case SubType::NE:
 
-        if (mpLeftNode->getValueType() != Unknown)
+        if (mpLeftNode->getValueType() != ValueType::Unknown)
           Result &= mpRightNode->setValueType(mpLeftNode->getValueType());
-        else if (mpRightNode->getValueType() != Unknown)
+        else if (mpRightNode->getValueType() != ValueType::Unknown)
           Result &= mpLeftNode->setValueType(mpRightNode->getValueType());
 
         break;
 
-      case S_GT:
-      case S_GE:
-      case S_LT:
-      case S_LE:
-        Result &= mpLeftNode->setValueType(Number);
-        Result &= mpRightNode->setValueType(Number);
+      case SubType::GT:
+      case SubType::GE:
+      case SubType::LT:
+      case SubType::LE:
+        Result &= mpLeftNode->setValueType(ValueType::Number);
+        Result &= mpRightNode->setValueType(ValueType::Number);
         break;
     }
 
@@ -206,35 +206,35 @@ std::string CEvaluationNodeLogical::getCCodeString(const std::vector< std::strin
 
       switch ((SubType)this->subType())
         {
-          case S_AND:
+          case SubType::AND:
             data = "&&";
             break;
 
-          case S_OR:
+          case SubType::OR:
             data = "||";
             break;
 
-          case S_EQ:
+          case SubType::EQ:
             data = "==";
             break;
 
-          case S_GE:
+          case SubType::GE:
             data = ">=";
             break;
 
-          case S_GT:
+          case SubType::GT:
             data = ">";
             break;
 
-          case S_LE:
+          case SubType::LE:
             data = "<=";
             break;
 
-          case S_LT:
+          case SubType::LT:
             data = "<";
             break;
 
-          case S_NE:
+          case SubType::NE:
             data = "!=";
             break;
 
@@ -283,37 +283,37 @@ std::string CEvaluationNodeLogical::getBerkeleyMadonnaString(const std::vector< 
 
       switch ((SubType)this->subType())
         {
-          case S_AND:
+          case SubType::AND:
             data = "AND";
             break;
 
-          case S_OR:
+          case SubType::OR:
             data = "OR";
             break;
 
-            /* case S_XOR:
-               break; */
-          case S_EQ:
+          /* case S_XOR:
+             break; */
+          case SubType::EQ:
             data = "=";
             break;
 
-          case S_GE:
+          case SubType::GE:
             data = ">=";
             break;
 
-          case S_GT:
+          case SubType::GT:
             data = ">";
             break;
 
-          case S_LE:
+          case SubType::LE:
             data = "<=";
             break;
 
-          case S_LT:
+          case SubType::LT:
             data = "<";
             break;
 
-          case S_NE:
+          case SubType::NE:
             data = "<>";
             break;
 
@@ -350,35 +350,35 @@ std::string CEvaluationNodeLogical::getXPPString(const std::vector< std::string 
 
       switch ((SubType)this->subType())
         {
-          case S_AND:
+          case SubType::AND:
             data = "&";
             break;
 
-          case S_OR:
+          case SubType::OR:
             data = "|";
             break;
 
-          case S_EQ:
+          case SubType::EQ:
             data = "==";
             break;
 
-          case S_GE:
+          case SubType::GE:
             data = ">=";
             break;
 
-          case S_GT:
+          case SubType::GT:
             data = ">";
             break;
 
-          case S_LE:
+          case SubType::LE:
             data = "<=";
             break;
 
-          case S_LT:
+          case SubType::LT:
             data = "<";
             break;
 
-          case S_NE:
+          case SubType::NE:
             data = "!=";
             break;
 
@@ -415,9 +415,9 @@ CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* contain
 
   switch (mSubType)
     {
-      case S_OR:
-      case S_XOR:
-      case S_AND:
+      case SubType::OR:
+      case SubType::XOR:
+      case SubType::AND:
         if (!(units[0] == CBaseUnit::dimensionless) ||
             !(units[1] == CBaseUnit::dimensionless))
           {
@@ -426,12 +426,12 @@ CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* contain
 
         break;
 
-      case S_EQ:
-      case S_NE:
-      case S_GT:
-      case S_GE:
-      case S_LT:
-      case S_LE:
+      case SubType::EQ:
+      case SubType::NE:
+      case SubType::GT:
+      case SubType::GE:
+      case SubType::LT:
+      case SubType::LE:
       {
         CValidatedUnit Arguments = CValidatedUnit::merge(units[0], units[1]);
         Unit.setConflict(Arguments.conflict());
@@ -452,19 +452,19 @@ CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
 
   switch (mSubType)
     {
-      case S_OR:
-      case S_XOR:
-      case S_AND:
+      case SubType::OR:
+      case SubType::XOR:
+      case SubType::AND:
         targetUnits[mpLeftNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
         targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
         break;
 
-      case S_EQ:
-      case S_NE:
-      case S_GT:
-      case S_GE:
-      case S_LT:
-      case S_LE:
+      case SubType::EQ:
+      case SubType::NE:
+      case SubType::GT:
+      case SubType::GE:
+      case SubType::LT:
+      case SubType::LE:
       {
 
         CValidatedUnit Arguments = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNode * >(mpLeftNode))->second,
@@ -493,52 +493,52 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
   switch (pASTNode->getType())
     {
       case AST_LOGICAL_AND:
-        subType = S_AND;
+        subType = SubType::AND;
         data = "and";
         break;
 
       case AST_LOGICAL_OR:
-        subType = S_OR;
+        subType = SubType::OR;
         data = "or";
         break;
 
       case AST_LOGICAL_XOR:
-        subType = S_XOR;
+        subType = SubType::XOR;
         data = "xor";
         break;
 
       case AST_RELATIONAL_EQ:
-        subType = S_EQ;
+        subType = SubType::EQ;
         data = "eq";
         break;
 
       case AST_RELATIONAL_GEQ:
-        subType = S_GE;
+        subType = SubType::GE;
         data = "ge";
         break;
 
       case AST_RELATIONAL_GT:
-        subType = S_GT;
+        subType = SubType::GT;
         data = "gt";
         break;
 
       case AST_RELATIONAL_LEQ:
-        subType = S_LE;
+        subType = SubType::LE;
         data = "le";
         break;
 
       case AST_RELATIONAL_LT:
-        subType = S_LT;
+        subType = SubType::LT;
         data = "lt";
         break;
 
       case AST_RELATIONAL_NEQ:
-        subType = S_NE;
+        subType = SubType::NE;
         data = "ne";
         break;
 
       default:
-        subType = S_INVALID;
+        subType = SubType::INVALID;
         break;
     }
 
@@ -547,19 +547,19 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 
   switch (subType)
     {
-      case S_AND:
-      case S_OR:
-      case S_XOR:
+      case SubType::AND:
+      case SubType::OR:
+      case SubType::XOR:
 
         // The number of chidren may vary
         switch (iMax)
           {
             case 0:
 
-              if (subType == S_AND)
-                pNode = new CEvaluationNodeConstant(S_TRUE, "TRUE");
+              if (subType == SubType::AND)
+                pNode = new CEvaluationNodeConstant(SubType::True, "TRUE");
               else
-                pNode = new CEvaluationNodeConstant(S_FALSE, "FALSE");
+                pNode = new CEvaluationNodeConstant(SubType::False, "FALSE");
 
               break;
 
@@ -602,12 +602,12 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 
         break;
 
-      case S_EQ:
-      case S_NE:
-      case S_GE:
-      case S_GT:
-      case S_LE:
-      case S_LT:
+      case SubType::EQ:
+      case SubType::NE:
+      case SubType::GE:
+      case SubType::GT:
+      case SubType::LE:
+      case SubType::LT:
         // all these are binary
         assert(iMax == 2);
         pNode = new CEvaluationNodeLogical(subType, data);
@@ -615,7 +615,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
         pNode->addChild(children[1]);
         break;
 
-      case S_INVALID:
+      case SubType::INVALID:
         // do nothing
         break;
     }
@@ -630,51 +630,51 @@ ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
 
   switch (subType)
     {
-      case S_AND:
+      case SubType::AND:
         node->setType(AST_LOGICAL_AND);
         break;
 
-      case S_OR:
+      case SubType::OR:
         node->setType(AST_LOGICAL_OR);
         break;
 
-      case S_XOR:
+      case SubType::XOR:
         node->setType(AST_LOGICAL_XOR);
         break;
 
-      case S_EQ:
+      case SubType::EQ:
         node->setType(AST_RELATIONAL_EQ);
         break;
 
-      case S_NE:
+      case SubType::NE:
         node->setType(AST_RELATIONAL_NEQ);
         break;
 
-      case S_GT:
+      case SubType::GT:
         node->setType(AST_RELATIONAL_GT);
         break;
 
-      case S_GE:
+      case SubType::GE:
         node->setType(AST_RELATIONAL_GEQ);
         break;
 
-      case S_LT:
+      case SubType::LT:
         node->setType(AST_RELATIONAL_LT);
         break;
 
-      case S_LE:
+      case SubType::LE:
         node->setType(AST_RELATIONAL_LEQ);
         break;
 
-      case S_INVALID:
+      case SubType::INVALID:
         break;
 
       default:
-        subType = S_INVALID;
+        subType = SubType::INVALID;
         break;
     }
 
-  if (subType != S_INVALID)
+  if (subType != SubType::INVALID)
     {
       const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
       const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
@@ -701,39 +701,39 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
       switch ((SubType)this->subType())
         {
-          case S_AND:
+          case SubType::AND:
             data = " and ";
             break;
 
-          case S_OR:
+          case SubType::OR:
             data = " or ";
             break;
 
-          case S_XOR:
+          case SubType::XOR:
             data = " xor ";
             break;
 
-          case S_EQ:
+          case SubType::EQ:
             data = "=";
             break;
 
-          case S_GE:
+          case SubType::GE:
             data = "&gt;=";
             break;
 
-          case S_GT:
+          case SubType::GT:
             data = "&gt;";
             break;
 
-          case S_LE:
+          case SubType::LE:
             data = "&lt;=";
             break;
 
-          case S_LT:
+          case SubType::LT:
             data = "&lt;";
             break;
 
-          case S_NE:
+          case SubType::NE:
             data = "&NotEqual;";
             break;
 

@@ -30,24 +30,24 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeNumber::CEvaluationNodeNumber():
-  CEvaluationNode(T_NUMBER, S_INVALID, "")
+  CEvaluationNode(MainType::NUMBER, SubType::INVALID, "")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_NUMBER, subType, data)
+  CEvaluationNode(MainType::NUMBER, subType, data)
 {
   mPrecedence = PRECEDENCE_NUMBER;
-  mValueType = Number;
+  mValueType = ValueType::Number;
 
   const char * end;
   const char * str = mData.c_str();
 
   switch (subType)
     {
-      case S_DOUBLE:
-      case S_INTEGER:
-      case S_ENOTATION:
+      case SubType::DOUBLE:
+      case SubType::INTEGER:
+      case SubType::ENOTATION:
       {
         //mValue = strToDouble(str, NULL);
         std::istringstream in;
@@ -57,24 +57,24 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
       }
       break;
 
-      case S_RATIONALE:
+      case SubType::RATIONALE:
         str++; // Skip the '('
         mValue = strToDouble(str, &end);
         end++; // Skip the '/'
         mValue /= strToDouble(end, NULL);
         break;
 
-      case S_INVALID:
+      case SubType::INVALID:
         fatalError();
         break;
     }
 }
 
 CEvaluationNodeNumber::CEvaluationNodeNumber(const C_FLOAT64 & number):
-  CEvaluationNode(T_NUMBER, S_DOUBLE, "")
+  CEvaluationNode(MainType::NUMBER, SubType::DOUBLE, "")
 {
   mPrecedence = PRECEDENCE_NUMBER;
-  mValueType = Number;
+  mValueType = ValueType::Number;
 
   mValue = number;
 
@@ -110,11 +110,11 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
   switch (pASTNode->getType())
     {
       case AST_INTEGER:
-        subType = S_INTEGER;
+        subType = SubType::INTEGER;
 
         if (pASTNode->getInteger() < 0)
           {
-            pNode = new CEvaluationNodeFunction(S_MINUS, "-");
+            pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
 
             ss << abs(pASTNode->getInteger());
             data = ss.str();
@@ -130,24 +130,24 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
         break;
 
       case AST_REAL:
-        subType = S_DOUBLE;
+        subType = SubType::DOUBLE;
 
         if (pASTNode->getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
           {
-            pNode = new CEvaluationNodeConstant(S_INFINITY, "INFINITY");
+            pNode = new CEvaluationNodeConstant(SubType::Infinity, "INFINITY");
           }
         else if (pASTNode->getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
           {
-            pNode = new CEvaluationNodeFunction(S_MINUS, "-");
-            pNode->addChild(new CEvaluationNodeConstant(S_INFINITY, "INFINITY"));
+            pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
+            pNode->addChild(new CEvaluationNodeConstant(SubType::Infinity, "INFINITY"));
           }
         else if (isnan(pASTNode->getReal()))
           {
-            pNode = new CEvaluationNodeConstant(S_NAN, "NAN");
+            pNode = new CEvaluationNodeConstant(SubType::NaN, "NAN");
           }
         else if (pASTNode->getReal() < 0.0)
           {
-            pNode = new CEvaluationNodeFunction(S_MINUS, "-");
+            pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
 
             ss << fabs(pASTNode->getReal());
             data = ss.str();
@@ -163,24 +163,24 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
         break;
 
       case AST_REAL_E:
-        subType = S_ENOTATION;
+        subType = SubType::ENOTATION;
 
         if (pASTNode->getReal() == (std::numeric_limits<C_FLOAT64>::infinity()))
           {
-            pNode = new CEvaluationNodeConstant(S_INFINITY, "INFINITY");
+            pNode = new CEvaluationNodeConstant(SubType::Infinity, "INFINITY");
           }
         else if (pASTNode->getReal() == (-std::numeric_limits<C_FLOAT64>::infinity()))
           {
-            pNode = new CEvaluationNodeFunction(S_MINUS, "-");
-            pNode->addChild(new CEvaluationNodeConstant(S_INFINITY, "INFINITY"));
+            pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
+            pNode->addChild(new CEvaluationNodeConstant(SubType::Infinity, "INFINITY"));
           }
         else if (isnan(pASTNode->getReal()))
           {
-            pNode = new CEvaluationNodeConstant(S_NAN, "NAN");
+            pNode = new CEvaluationNodeConstant(SubType::NaN, "NAN");
           }
         else if (pASTNode->getReal() < 0.0)
           {
-            pNode = new CEvaluationNodeFunction(S_MINUS, "-");
+            pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
 
             ss << fabs(pASTNode->getReal());
             data = ss.str();
@@ -196,11 +196,11 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
         break;
 
       case AST_RATIONAL:
-        subType = S_RATIONALE;
+        subType = SubType::RATIONALE;
 
         if (pASTNode->getReal() < 0.0) // getReal returns the value of the node
           {
-            pNode = new CEvaluationNodeFunction(S_MINUS, "-");
+            pNode = new CEvaluationNodeFunction(SubType::MINUS, "-");
 
             ss << "(" << abs(pASTNode->getNumerator()) << "/" << abs(pASTNode->getDenominator()) << ")";
             data = ss.str();
@@ -216,7 +216,7 @@ CEvaluationNode * CEvaluationNodeNumber::fromAST(const ASTNode * pASTNode, const
         break;
 
       default:
-        subType = S_INVALID;
+        subType = SubType::INVALID;
         break;
     }
 
@@ -234,24 +234,24 @@ ASTNode* CEvaluationNodeNumber::toAST(const CDataModel* /* pDataModel */) const
 
   switch (subType)
     {
-      case S_DOUBLE:
+      case SubType::DOUBLE:
         node->setType(AST_REAL);
         node->setValue(*mpValue);
         break;
 
-      case S_INTEGER:
+      case SubType::INTEGER:
         node->setType(AST_INTEGER);
         node->setValue((long)*mpValue);
         break;
 
-      case S_ENOTATION:
+      case SubType::ENOTATION:
         node->setType(AST_REAL_E);
         num2 = floor(log10(*mpValue));
         num1 = pow(10.0, log10(*mpValue) - num2);
         node->setValue(num1, (long)num2);
         break;
 
-      case S_RATIONALE:
+      case SubType::RATIONALE:
         node->setType(AST_RATIONAL);
         str++; // Skip the '('
         num1 = strToDouble(str, &end);
@@ -260,7 +260,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CDataModel* /* pDataModel */) const
         node->setValue((long)num1, (long)num2);
         break;
 
-      case S_INVALID:
+      case SubType::INVALID:
         break;
     }
 

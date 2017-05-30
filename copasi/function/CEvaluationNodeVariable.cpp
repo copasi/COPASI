@@ -25,14 +25,14 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeVariable::CEvaluationNodeVariable():
-  CEvaluationNode(T_VARIABLE, S_INVALID, ""),
+  CEvaluationNode(MainType::VARIABLE, SubType::INVALID, ""),
   mpTree(NULL),
   mIndex(C_INVALID_INDEX)
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeVariable::CEvaluationNodeVariable(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_VARIABLE, subType, data),
+  CEvaluationNode(MainType::VARIABLE, subType, data),
   mpTree(NULL),
   mIndex(C_INVALID_INDEX)
 {mPrecedence = PRECEDENCE_NUMBER;}
@@ -69,7 +69,7 @@ void CEvaluationNodeVariable::calculate()
 // virtual
 CIssue CEvaluationNodeVariable::setValueType(const ValueType & valueType)
 {
-  if (mValueType == Unknown)
+  if (mValueType == ValueType::Unknown)
     {
       mValueType = valueType;
     }
@@ -85,7 +85,7 @@ CEvaluationNode * CEvaluationNodeVariable::fromAST(const ASTNode * pASTNode, con
 {
   assert(pASTNode->getNumChildren() == children.size());
 
-  return new CEvaluationNodeVariable(S_DEFAULT, pASTNode->getName());
+  return new CEvaluationNodeVariable(SubType::DEFAULT, pASTNode->getName());
 }
 
 // virtual

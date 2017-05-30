@@ -320,7 +320,7 @@ bool CMathEvent::CTrigger::CRootProcessor::compile(CEvaluationNode * pRootNode,
 #ifdef XXXX
   CMathExpression * pStateExpression = new CMathExpression("RootStateExpression", container);
 
-  CEvaluationNode * pStateExpressionNode = new CEvaluationNodeLogical(CEvaluationNode::S_GT, "GT");
+  CEvaluationNode * pStateExpressionNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GT, "GT");
   pStateExpressionNode->addChild(new CEvaluationNodeObject((C_FLOAT64 *) mpRoot->getValuePointer()));
   pStateExpressionNode->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, "0.0"));
 
@@ -587,7 +587,7 @@ size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
           case CNodeIteratorMode::Before:
 
             // Variables return always false we need to dig deeper.
-            if (itNode->mainType() == CEvaluationNode::T_VARIABLE ||
+            if (itNode->mainType() == CEvaluationNode::MainType::VARIABLE ||
                 itNode->isBoolean())
               {
                 continue;
@@ -608,19 +608,19 @@ size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
 
             switch (MainType)
               {
-                case CEvaluationNode::T_LOGICAL:
+                case CEvaluationNode::MainType::LOGICAL:
 
                   switch (SubType)
                     {
-                      case CEvaluationNode::S_EQ:
-                      case CEvaluationNode::S_NE:
+                      case CEvaluationNode::SubType::EQ:
+                      case CEvaluationNode::SubType::NE:
                         RootCount = countRootsEQ(*itNode, itNode.context());
                         break;
 
-                      case CEvaluationNode::S_LE:
-                      case CEvaluationNode::S_LT:
-                      case CEvaluationNode::S_GE:
-                      case CEvaluationNode::S_GT:
+                      case CEvaluationNode::SubType::LE:
+                      case CEvaluationNode::SubType::LT:
+                      case CEvaluationNode::SubType::GE:
+                      case CEvaluationNode::SubType::GT:
                         RootCount = 1;
                         break;
 
@@ -631,12 +631,12 @@ size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
 
                   break;
 
-                case CEvaluationNode::T_CALL:
+                case CEvaluationNode::MainType::CALL:
 
                   switch (SubType)
                     {
-                      case CEvaluationNode::S_FUNCTION:
-                      case CEvaluationNode::S_EXPRESSION:
+                      case CEvaluationNode::SubType::FUNCTION:
+                      case CEvaluationNode::SubType::EXPRESSION:
                         RootCount = countRootsFUNCTION(*itNode, itNode.context());
                         break;
 
@@ -647,11 +647,11 @@ size_t CMathEvent::CTrigger::countRoots(const CEvaluationNode * pNode,
 
                   break;
 
-                case CEvaluationNode::T_VARIABLE:
+                case CEvaluationNode::MainType::VARIABLE:
 
                   switch (SubType)
                     {
-                      case CEvaluationNode::S_DEFAULT:
+                      case CEvaluationNode::SubType::DEFAULT:
                         RootCount = countRootsVARIABLE(*itNode, variables);
                         break;
 
@@ -767,7 +767,7 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
           case CNodeIteratorMode::Before:
 
             // Variables return always false we need to dig deeper.
-            if (itNode->mainType() == CEvaluationNode::T_VARIABLE)
+            if (itNode->mainType() == CEvaluationNode::MainType::VARIABLE)
               {
                 size_t Index =
                   static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
@@ -791,7 +791,7 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
                   {
                     // Variables must not appear in mathematical expressions.
                     // We create an constant node with the variable name and value NaN.
-                    pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, itNode->getData());
+                    pNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, itNode->getData());
                   }
               }
             else if (!itNode->isBoolean())
@@ -813,42 +813,42 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
             // already processed
             switch (itNode->mainType() | itNode->subType())
               {
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_AND):
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_OR):
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_XOR):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::AND):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::OR):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::XOR):
                   pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_EQ):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::EQ):
                   pNode = compileEQ(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_NE):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::NE):
                   pNode = compileNE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_LE):
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_LT):
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_GE):
-                case (CEvaluationNode::T_LOGICAL | CEvaluationNode::S_GT):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::LE):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::LT):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::GE):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::GT):
                   pNode = compileLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_NOT):
+                case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::NOT):
                   pNode = compileNOT(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
-                case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
+                case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+                case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
                   pNode = compileFUNCTION(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_VARIABLE | CEvaluationNode::S_DEFAULT):
+                case (CEvaluationNode::MainType::VARIABLE | CEvaluationNode::SubType::DEFAULT):
                   pNode = compileVARIABLE(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
-                case (CEvaluationNode::T_CONSTANT | CEvaluationNode::S_TRUE):
-                case (CEvaluationNode::T_CONSTANT | CEvaluationNode::S_FALSE):
+                case (CEvaluationNode::MainType::CONSTANT | CEvaluationNode::SubType::True):
+                case (CEvaluationNode::MainType::CONSTANT | CEvaluationNode::SubType::False):
                 default:
                   pNode = itNode->copyNode(itNode.context());
                   break;
@@ -879,18 +879,18 @@ CEvaluationNode * CMathEvent::CTrigger::compileAND(const CEvaluationNode * pTrig
 {
   CEvaluationNode * pNode = NULL;
 
-  switch ((int) pTriggerNode->subType())
+  switch (pTriggerNode->subType())
     {
-      case CEvaluationNode::S_AND:
-        pNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND");
+      case CEvaluationNode::SubType::AND:
+        pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::AND, "AND");
         break;
 
-      case CEvaluationNode::S_OR:
-        pNode = new CEvaluationNodeLogical(CEvaluationNode::S_OR, "OR");
+      case CEvaluationNode::SubType::OR:
+        pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR, "OR");
         break;
 
-      case CEvaluationNode::S_XOR:
-        pNode = new CEvaluationNodeLogical(CEvaluationNode::S_XOR, "XOR");
+      case CEvaluationNode::SubType::XOR:
+        pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::XOR, "XOR");
         break;
 
       default:
@@ -919,9 +919,9 @@ CEvaluationNode * CMathEvent::CTrigger::compileEQ(const CEvaluationNode * pTrigg
   if (!static_cast< const CEvaluationNode * >(pTriggerNode->getChild())->isBoolean())
     {
       // We treat x EQ y as (x GE y) AND (y GE x)
-      pNode = new CEvaluationNodeLogical(CEvaluationNode::S_AND, "AND");
+      pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::AND, "AND");
 
-      CEvaluationNodeLogical GELeft(CEvaluationNode::S_GE, "GE");
+      CEvaluationNodeLogical GELeft(CEvaluationNode::SubType::GE, "GE");
       CEvaluationNode * pGELeft = compileLE(&GELeft, children, variables, pRoot, container);
       pNode->addChild(pGELeft);
 
@@ -930,13 +930,13 @@ CEvaluationNode * CMathEvent::CTrigger::compileEQ(const CEvaluationNode * pTrigg
       RightChildren.push_back(children[1]->copyBranch());
       RightChildren.push_back(children[0]->copyBranch());
 
-      CEvaluationNodeLogical GERight(CEvaluationNode::S_GE, "GE");
+      CEvaluationNodeLogical GERight(CEvaluationNode::SubType::GE, "GE");
       CEvaluationNode * pGERight = compileLE(&GERight, RightChildren, variables, pRoot, container);
       pNode->addChild(pGERight);
     }
   else
     {
-      pNode = new CEvaluationNodeLogical(CEvaluationNode::S_EQ, "EQ");
+      pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::EQ, "EQ");
       pNode->addChild(children[0]);
       pNode->addChild(children[1]);
     }
@@ -954,9 +954,9 @@ CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * pTrigg
   // We treat this as NOT and EQ.
   // For this we create a modified copy of the current node.
 
-  CEvaluationNode * pNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
+  CEvaluationNode * pNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT, "NOT");
 
-  CEvaluationNodeLogical EqNode(CEvaluationNode::S_EQ, "EQ");
+  CEvaluationNodeLogical EqNode(CEvaluationNode::SubType::EQ, "EQ");
 
   EqNode.addChild(children[0]->copyBranch());
   EqNode.addChild(children[1]->copyBranch());
@@ -978,32 +978,32 @@ CEvaluationNode * CMathEvent::CTrigger::compileLE(const CEvaluationNode * pTrigg
 
   // We need to compile the root finding structure
   // Create a root expression
-  CEvaluationNode * pRootNode = new CEvaluationNodeOperator(CEvaluationNode::S_MINUS, "-");
+  CEvaluationNode * pRootNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
 
   bool Equality = false;
 
   // We need to create a copy the left and right data nodes with the variables being replaced.
-  switch ((int) pTriggerNode->subType())
+  switch (pTriggerNode->subType())
     {
-      case CEvaluationNode::S_LE:
+      case CEvaluationNode::SubType::LE:
         pRootNode->addChild(children[1]);
         pRootNode->addChild(children[0]);
         Equality = true;
         break;
 
-      case CEvaluationNode::S_LT:
+      case CEvaluationNode::SubType::LT:
         pRootNode->addChild(children[1]);
         pRootNode->addChild(children[0]);
         Equality = false;
         break;
 
-      case CEvaluationNode::S_GE:
+      case CEvaluationNode::SubType::GE:
         pRootNode->addChild(children[0]);
         pRootNode->addChild(children[1]);
         Equality = true;
         break;
 
-      case CEvaluationNode::S_GT:
+      case CEvaluationNode::SubType::GT:
         pRootNode->addChild(children[0]);
         pRootNode->addChild(children[1]);
         Equality = false;
@@ -1028,7 +1028,7 @@ CEvaluationNode * CMathEvent::CTrigger::compileNOT(const CEvaluationNode * /* pT
 {
   CEvaluationNode * pNode = NULL;
 
-  pNode = new CEvaluationNodeFunction(CEvaluationNode::S_NOT, "NOT");
+  pNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT, "NOT");
   pNode->addChild(children[0]);
 
   return pNode;
@@ -1079,7 +1079,7 @@ CEvaluationNode * CMathEvent::CTrigger::compileVARIABLE(const CEvaluationNode * 
     {
       // Variables must not appear in mathematical expressions.
       // We create a constant node with the variable name and value NaN.
-      return new CEvaluationNodeConstant(CEvaluationNode::S_NAN, pTriggerNode->getData());
+      return new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, pTriggerNode->getData());
     }
 }
 

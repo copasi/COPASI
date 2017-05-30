@@ -1090,27 +1090,27 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
       switch (itNode->mainType())
         {
-          case CEvaluationNode::T_OPERATOR:
+          case CEvaluationNode::MainType::OPERATOR:
 
             switch (itNode->subType())
               {
-                case CEvaluationNode::S_MULTIPLY:
+                case CEvaluationNode::SubType::MULTIPLY:
                   Result = itNode.context()[0] * itNode.context()[1];
                   break;
 
-                case CEvaluationNode::S_DIVIDE:
+                case CEvaluationNode::SubType::DIVIDE:
                   Result = itNode.context()[0] / itNode.context()[1];
                   break;
 
-                case CEvaluationNode::S_PLUS:
+                case CEvaluationNode::SubType::PLUS:
                   Result = itNode.context()[0] + itNode.context()[1];
                   break;
 
-                case CEvaluationNode::S_MINUS:
+                case CEvaluationNode::SubType::MINUS:
                   Result = itNode.context()[0] - itNode.context()[1];
                   break;
 
-                case CEvaluationNode::S_POWER:
+                case CEvaluationNode::SubType::POWER:
                   Result = itNode.context()[0] ^ itNode.context()[1];
                   break;
 
@@ -1126,11 +1126,11 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
             break;
 
-          case CEvaluationNode::T_NUMBER:
+          case CEvaluationNode::MainType::NUMBER:
             Result = *itNode->getValuePointer();
             break;
 
-          case CEvaluationNode::T_VARIABLE:
+          case CEvaluationNode::MainType::VARIABLE:
           {
             const CEvaluationNodeVariable * pENV = static_cast<const CEvaluationNodeVariable*>(*itNode);
 
@@ -1146,11 +1146,11 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
           break;
 
-          case CEvaluationNode::T_FUNCTION:
+          case CEvaluationNode::MainType::FUNCTION:
 
             switch (itNode->subType())
               {
-                case CEvaluationNode::S_MINUS:
+                case CEvaluationNode::SubType::MINUS:
                   Result = itNode.context()[0].invert();
                   break;
 
@@ -1161,12 +1161,12 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
 
             break;
 
-          case CEvaluationNode::T_CHOICE:
+          case CEvaluationNode::MainType::CHOICE:
             //TODO: implement
             Result = CValue::unknown;
             break;
 
-          case CEvaluationNode::T_CALL:
+          case CEvaluationNode::MainType::CALL:
           {
             const CEvaluationNodeCall * pENCall = static_cast<const CEvaluationNodeCall*>(*itNode);
 
@@ -1191,7 +1191,7 @@ CFunctionAnalyzer::CValue CFunctionAnalyzer::evaluateNode(const CEvaluationNode 
           }
           break;
 
-          case CEvaluationNode::T_OBJECT:
+          case CEvaluationNode::MainType::OBJECT:
 
             if (mode == NOOBJECT)
               {

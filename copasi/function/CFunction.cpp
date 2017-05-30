@@ -128,16 +128,16 @@ CIssue CFunction::setInfix(const std::string & infix)
     {
       switch ((*it)->mainType())
         {
-          case CEvaluationNode::T_OBJECT:
-          case CEvaluationNode::T_DELAY:
+          case CEvaluationNode::MainType::OBJECT:
+          case CEvaluationNode::MainType::DELAY:
             mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
             mValidity.add(mIssue);
             return mIssue;
             break;
 
-          case CEvaluationNode::T_CALL:
+          case CEvaluationNode::MainType::CALL:
 
-            if ((*it)->subType() == CEvaluationNode::S_EXPRESSION)
+            if ((*it)->subType() == CEvaluationNode::SubType::EXPRESSION)
               {
                 mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
                 mValidity.add(mIssue);
@@ -277,7 +277,7 @@ CIssue CFunction::initVariables()
       std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
       for (; it != end; ++it)
-        if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
+        if ((*it)->mainType() == CEvaluationNode::MainType::VARIABLE)
           {
             mVariables.add((*it)->getData(),
                            CFunctionParameter::FLOAT64,
@@ -368,7 +368,7 @@ bool CFunction::completeFunctionList(std::vector< const CFunction * > & list,
 
       for (it = pTree->getNodeList().begin(), end = pTree->getNodeList().end(); it != end; ++it)
         {
-          if ((*it)->mainType() == CEvaluationNode::T_CALL &&
+          if ((*it)->mainType() == CEvaluationNode::MainType::CALL &&
               (Index = Functions.getIndex((*it)->getData())) != C_INVALID_INDEX &&
               list.end() == std::find(list.begin(), list.end(), &Functions[Index]))
             {

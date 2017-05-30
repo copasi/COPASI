@@ -26,20 +26,20 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeVector::CEvaluationNodeVector():
-  CEvaluationNode(T_VECTOR, S_INVALID, ""),
+  CEvaluationNode(MainType::VECTOR, SubType::INVALID, ""),
   mNodes(),
   mValues()
 {mPrecedence = PRECEDENCE_FUNCTION;}
 
 CEvaluationNodeVector::CEvaluationNodeVector(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_VECTOR, subType, data),
+  CEvaluationNode(MainType::VECTOR, subType, data),
   mNodes(),
   mValues()
 {
   switch (subType)
     {
-      case S_VECTOR:
+      case SubType::VECTOR:
         break;
 
       default:

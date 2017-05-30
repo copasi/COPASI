@@ -39,54 +39,54 @@
 #include "sbml/Reaction.h"
 
 CEvaluationNodeObject::CEvaluationNodeObject():
-  CEvaluationNode(T_OBJECT, S_INVALID, ""),
+  CEvaluationNode(MainType::OBJECT, SubType::INVALID, ""),
   mpObject(NULL),
   mRegisteredObjectCN("")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_OBJECT, subType, data),
+  CEvaluationNode(MainType::OBJECT, subType, data),
   mpObject(NULL),
   mRegisteredObjectCN()
 {
   mPrecedence = PRECEDENCE_NUMBER;
-  mValueType = Number;
+  mValueType = ValueType::Number;
 
   switch (subType)
     {
-      case S_INVALID:
+      case SubType::INVALID:
         break;
 
-      case S_CN:
+      case SubType::CN:
 
         if (mData == "<Reference=Avogadro Constant>")
           {
-            mSubType = S_AVOGADRO;
+            mSubType = SubType::AVOGADRO;
           }
 
         mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
 
         break;
 
-      case S_AVOGADRO:
+      case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
         mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
         break;
 
-      case S_POINTER:
+      case SubType::POINTER:
         mpValue = (const C_FLOAT64 *) stringToPointer(data);
         break;
     }
 }
 
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
-  CEvaluationNode(T_OBJECT, S_POINTER, "pointer"),
+  CEvaluationNode(MainType::OBJECT, SubType::POINTER, "pointer"),
   mpObject(NULL),
   mRegisteredObjectCN("")
 {
   mPrecedence = PRECEDENCE_NUMBER;
-  mValueType = Number;
+  mValueType = ValueType::Number;
 
   mpValue = pValue;
   mData = pointerToString(pValue);
@@ -111,7 +111,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
   switch (mSubType)
     {
-      case S_CN:
+      case SubType::CN:
       {
         mpObject = pTree->getNodeObject(mRegisteredObjectCN);
 
@@ -154,7 +154,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       }
       break;
 
-      case S_POINTER:
+      case SubType::POINTER:
         // We need to convert the data into a pointer
         mpValue = (const C_FLOAT64 *) stringToPointer(mData);
 
@@ -183,7 +183,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
         break;
 
-      case S_AVOGADRO:
+      case SubType::AVOGADRO:
       {
         CDataModel * pDataModel = pTree->getObjectDataModel();
 
@@ -217,7 +217,7 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
       }
       break;
 
-      case S_INVALID:
+      case SubType::INVALID:
         break;
     }
 
@@ -233,11 +233,11 @@ const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 
   switch (mSubType)
     {
-      case S_CN:
+      case SubType::CN:
         return data = "<" + mRegisteredObjectCN + ">";
         break;
 
-      case S_POINTER:
+      case SubType::POINTER:
         return mData;
         break;
     }
@@ -249,7 +249,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
 {
   mData = data;
 
-  if (mSubType == S_CN)
+  if (mSubType == SubType::CN)
     mRegisteredObjectCN = data.substr(1, data.length() - 2);
 
   return true;
@@ -260,11 +260,11 @@ std::string CEvaluationNodeObject::getInfix(const std::vector< std::string > & /
 {
   switch (mSubType)
     {
-      case S_CN:
+      case SubType::CN:
         return "<" + mRegisteredObjectCN + ">";
         break;
 
-      case S_POINTER:
+      case SubType::POINTER:
         return mData;
         break;
     }
@@ -328,11 +328,11 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
     {
       case AST_NAME:
       case AST_NAME_TIME:
-        pNode = new CEvaluationNodeObject(S_CN, CCommonName(std::string("<") + pASTNode->getName() + std::string(">")));
+        pNode = new CEvaluationNodeObject(SubType::CN, CCommonName(std::string("<") + pASTNode->getName() + std::string(">")));
         break;
 
       case AST_NAME_AVOGADRO:
-        pNode = new CEvaluationNodeObject(S_AVOGADRO, "");
+        pNode = new CEvaluationNodeObject(SubType::AVOGADRO, "");
 
       default:
         break;
@@ -462,10 +462,10 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
 {
   switch (mSubType)
     {
-      case S_CN:
+      case SubType::CN:
         break;
 
-      case S_POINTER:
+      case SubType::POINTER:
 
         if (mpValue != pObjectValue)
           {

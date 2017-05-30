@@ -34,38 +34,38 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeConstant::CEvaluationNodeConstant():
-  CEvaluationNode(T_CONSTANT, S_INVALID,  "")
+  CEvaluationNode(MainType::CONSTANT, SubType::INVALID,  "")
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeConstant::CEvaluationNodeConstant(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_CONSTANT, subType, data)
+  CEvaluationNode(MainType::CONSTANT, subType, data)
 {
-  mValueType = (mSubType != S_TRUE && mSubType != S_FALSE) ? Number : Boolean;
+  mValueType = (mSubType != SubType::True && mSubType != SubType::False) ? ValueType::Number : ValueType::Boolean;
 
   switch ((SubType) subType)
     {
-      case S_PI:
+      case SubType::PI:
         mValue = M_PI;
         break;
 
-      case S_EXPONENTIALE:
+      case SubType::EXPONENTIALE:
         mValue = M_E;
         break;
 
-      case S_TRUE:
+      case SubType::True:
         mValue = 1.0;
         break;
 
-      case S_FALSE:
+      case SubType::False:
         mValue = 0.0;
         break;
 
-      case S_INFINITY:
+      case SubType::Infinity:
         mValue = std::numeric_limits<C_FLOAT64>::infinity();
         break;
 
-      case S_NAN:
+      case SubType::NaN:
         mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
         break;
 
@@ -92,27 +92,27 @@ std::string CEvaluationNodeConstant::getCCodeString(const std::vector< std::stri
 
   switch (subType)
     {
-      case S_PI:
+      case SubType::PI:
         data = "PI";
         break;
 
-      case S_EXPONENTIALE:
+      case SubType::EXPONENTIALE:
         data = "EXPONENTIALE";
         break;
 
-      case S_TRUE:
+      case SubType::True:
         data = "TRUE";
         break;
 
-      case S_FALSE:
+      case SubType::False:
         data = "FALSE";
         break;
 
-      case S_INFINITY:
+      case SubType::Infinity:
         data = "INFINITY";
         break;
 
-      case S_NAN:
+      case SubType::NaN:
         data = "NaN";
         break;
 
@@ -134,15 +134,15 @@ std::string CEvaluationNodeConstant::getBerkeleyMadonnaString(const std::vector<
 
   switch (subType)
     {
-      case S_PI:
+      case SubType::PI:
         data = "PI";
         break;
 
-      case S_EXPONENTIALE:
-      case S_TRUE:
-      case S_FALSE:
-      case S_INFINITY:
-      case S_NAN:
+      case SubType::EXPONENTIALE:
+      case SubType::True:
+      case SubType::False:
+      case SubType::Infinity:
+      case SubType::NaN:
         DisplayString << mValue;
         data = DisplayString.str();
         break;
@@ -165,15 +165,15 @@ std::string CEvaluationNodeConstant::getXPPString(const std::vector< std::string
 
   switch (subType)
     {
-      case S_PI:
+      case SubType::PI:
         data = "pi";
         break;
 
-      case S_EXPONENTIALE:
-      case S_TRUE:
-      case S_FALSE:
-      case S_INFINITY:
-      case S_NAN:
+      case SubType::EXPONENTIALE:
+      case SubType::True:
+      case SubType::False:
+      case SubType::Infinity:
+      case SubType::NaN:
         DisplayString << mValue;
         data = DisplayString.str();
         break;
@@ -198,27 +198,27 @@ CEvaluationNode * CEvaluationNodeConstant::fromAST(const ASTNode * pASTNode, con
   switch (pASTNode->getType())
     {
       case AST_CONSTANT_E:
-        subType = S_EXPONENTIALE;
+        subType = SubType::EXPONENTIALE;
         data = "EXPONENTIALE";
         break;
 
       case AST_CONSTANT_PI:
-        subType = S_PI;
+        subType = SubType::PI;
         data = "PI";
         break;
 
       case AST_CONSTANT_TRUE:
-        subType = S_TRUE;
+        subType = SubType::True;
         data = "TRUE";
         break;
 
       case AST_CONSTANT_FALSE:
-        subType = S_FALSE;
+        subType = SubType::False;
         data = "FALSE";
         break;
 
       default:
-        subType = S_INVALID;
+        subType = SubType::INVALID;
         break;
     }
 
@@ -232,29 +232,29 @@ ASTNode* CEvaluationNodeConstant::toAST(const CDataModel* /*pDataModel*/) const
 
   switch (subType)
     {
-      case S_PI:
+      case SubType::PI:
         node->setType(AST_CONSTANT_PI);
         break;
 
-      case S_EXPONENTIALE:
+      case SubType::EXPONENTIALE:
         node->setType(AST_CONSTANT_E);
         break;
 
-      case S_TRUE:
+      case SubType::True:
         node->setType(AST_CONSTANT_TRUE);
         break;
 
-      case S_FALSE:
+      case SubType::False:
         node->setType(AST_CONSTANT_FALSE);
         break;
 
-      case S_INFINITY:
+      case SubType::Infinity:
         node->setType(AST_REAL);
         node->setValue(std::numeric_limits<C_FLOAT64>::infinity());
         break;
 
-      case S_NAN:
-      case S_INVALID:
+      case SubType::NaN:
+      case SubType::INVALID:
         node->setType(AST_REAL);
         node->setValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
         break;
@@ -276,27 +276,27 @@ std::string CEvaluationNodeConstant::getMMLString(const std::vector< std::string
 
   switch ((SubType)this->subType())
     {
-      case S_PI:
+      case SubType::PI:
         data = "&pi;";
         break;
 
-      case S_EXPONENTIALE:
+      case SubType::EXPONENTIALE:
         data = "e";
         break;
 
-      case S_TRUE:
+      case SubType::True:
         data = "true";
         break;
 
-      case S_FALSE:
+      case SubType::False:
         data = "false";
         break;
 
-      case S_INFINITY:
+      case SubType::Infinity:
         data = "&infin;";
         break;
 
-      case S_NAN:
+      case SubType::NaN:
         data = "NaN";
         break;
 

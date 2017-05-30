@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -31,19 +36,19 @@ CNormalItem * CNormalItem::createItem(const CEvaluationNode* node)
 {
   switch (node->mainType())
     {
-      case CEvaluationNode::T_VARIABLE:
+      case CEvaluationNode::MainType::VARIABLE:
       {
         CNormalItem* item = new CNormalItem(node->getInfix(), CNormalItem::VARIABLE);
         return item;
       }
 
-      case CEvaluationNode::T_CONSTANT:
+      case CEvaluationNode::MainType::CONSTANT:
       {
         CNormalItem* item = new CNormalItem(node->getInfix(), CNormalItem::CONSTANT);
         return item;
       }
 
-      case CEvaluationNode::T_FUNCTION:
+      case CEvaluationNode::MainType::FUNCTION:
       {
         CNormalItem * child = createItem(dynamic_cast<const CEvaluationNode*>(node->getChild()));
 
@@ -60,7 +65,7 @@ CNormalItem * CNormalItem::createItem(const CEvaluationNode* node)
         return item;
       }
 
-      case CEvaluationNode::T_OPERATOR:
+      case CEvaluationNode::MainType::OPERATOR:
       {
         if ((node->getData() == "^") || (node->getData() == "%"))
           {

@@ -32,7 +32,7 @@
 #include "copasi/core/CRootContainer.h"
 
 CEvaluationNodeCall::CEvaluationNodeCall():
-  CEvaluationNode(T_CALL, S_INVALID, ""),
+  CEvaluationNode(MainType::CALL, SubType::INVALID, ""),
   mpFunction(NULL),
   mpExpression(NULL),
   mCallNodes(),
@@ -43,7 +43,7 @@ CEvaluationNodeCall::CEvaluationNodeCall():
 
 CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_CALL, subType, data),
+  CEvaluationNode(MainType::CALL, subType, data),
   mpFunction(NULL),
   mpExpression(NULL),
   mCallNodes(),
@@ -67,8 +67,8 @@ CEvaluationNodeCall::CEvaluationNodeCall(const SubType & subType,
 
   switch (subType)
     {
-      case S_FUNCTION:
-      case S_EXPRESSION:
+      case SubType::FUNCTION:
+      case SubType::EXPRESSION:
         break;
 
       default:
@@ -98,11 +98,11 @@ void CEvaluationNodeCall::calculate()
 {
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
         mValue = mpFunction->calcValue(*mpCallParameters);
         break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         mValue = mpExpression->calcValue();
         break;
 
@@ -126,7 +126,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
 
         if (pObjectInterface != NULL)
           {
@@ -147,14 +147,14 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
         if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
 
         if (mpFunction->isBoolean())
-          issue &= setValueType(Boolean);
-        else if (mValueType == Boolean)
+          issue &= setValueType(ValueType::Boolean);
+        else if (mValueType == ValueType::Boolean)
           issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueTypeMismatch);
 
         mpCallParameters = buildParameters(mCallNodes);
         break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
 
         if (pObjectInterface != NULL)
           {
@@ -184,8 +184,8 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
             mRegisteredFunctionCN = mpFunction->getCN();
 
-            mMainType = T_CALL;
-            mSubType = S_FUNCTION;
+            mMainType = MainType::CALL;
+            mSubType = SubType::FUNCTION;
 
             issue = compile(pTree);
           }
@@ -208,7 +208,7 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 // virtual
 CIssue CEvaluationNodeCall::setValueType(const ValueType & valueType)
 {
-  if (mValueType == Unknown)
+  if (mValueType == ValueType::Unknown)
     {
       mValueType = valueType;
     }
@@ -300,7 +300,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
       {
         std::vector< std::string >::const_iterator it = children.begin();
         std::vector< std::string>::const_iterator end = children.end();
@@ -313,7 +313,7 @@ std::string CEvaluationNodeCall::getInfix(const std::vector< std::string > & chi
 
       break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         break;
 
       default:
@@ -340,7 +340,7 @@ std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
       {
         std::vector< std::string >::const_iterator it = children.begin();
         std::vector< std::string >::const_iterator end = children.end();
@@ -353,7 +353,7 @@ std::string CEvaluationNodeCall::getDisplayString(const std::vector< std::string
 
       break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         break;
 
       default:
@@ -387,7 +387,7 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
       {
 
         std::vector< std::string >::const_iterator it = children.begin();
@@ -401,7 +401,7 @@ std::string CEvaluationNodeCall::getCCodeString(const std::vector< std::string >
 
       break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         break;
 
       default:
@@ -451,7 +451,7 @@ CEvaluationNode * CEvaluationNodeCall::fromAST(const ASTNode * pASTNode, const s
 {
   assert(pASTNode->getNumChildren() == children.size());
 
-  SubType subType = S_FUNCTION;
+  SubType subType = SubType::FUNCTION;
   std::string data = pASTNode->getName();
 
   CEvaluationNodeCall * pNode = new CEvaluationNodeCall(subType, data);
@@ -534,7 +534,7 @@ CEvaluationNodeCall::buildParameters(const std::vector<CEvaluationNode *> & vect
 
   for (i = 0; it != end; ++it, i++)
     {
-      if ((*it)->mainType() == CEvaluationNode::T_VECTOR)
+      if ((*it)->mainType() == CEvaluationNode::MainType::VECTOR)
         (*pCallParameters)[i].vector = buildParameters(static_cast<const CEvaluationNodeVector *>(*it)->getNodes());
       else
         (*pCallParameters)[i].value = (*it)->getValuePointer();
@@ -556,7 +556,7 @@ CEvaluationNodeCall::clearParameters(CCallParameters< C_FLOAT64 > * pCallParamet
 
   for (i = 0; it != end; ++it, i++)
     {
-      if ((*it)->mainType() == CEvaluationNode::T_VECTOR)
+      if ((*it)->mainType() == CEvaluationNode::MainType::VECTOR)
         clearParameters((*pCallParameters)[i].vector,
                         static_cast<const CEvaluationNodeVector *>(*it)->getNodes());
     }
@@ -578,7 +578,7 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
 
   for (i = 0; it != end; ++it, i++)
     {
-      if (((*it)->mainType() == CEvaluationNode::T_VECTOR &&
+      if (((*it)->mainType() == CEvaluationNode::MainType::VECTOR &&
            functionParameters[i]->getType() != CFunctionParameter::VFLOAT64) ||
           functionParameters[i]->getType() == CFunctionParameter::VFLOAT64)
         return false;
@@ -591,8 +591,8 @@ const CFunction * CEvaluationNodeCall::getCalledTree() const
 {
   switch (mSubType)
     {
-      case S_FUNCTION:
-      case S_EXPRESSION:
+      case SubType::FUNCTION:
+      case SubType::EXPRESSION:
         return CRootContainer::getFunctionList()->findFunction(mData);
 
       default:
@@ -614,7 +614,7 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
       {
 
         if (!expand || !mpFunction)
@@ -668,7 +668,7 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
       }
       break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         break;
 
       default:
@@ -698,11 +698,11 @@ CValidatedUnit CEvaluationNodeCall::getUnit(const CMathContainer & math,
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
         pTree = mpFunction;
         break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         pTree = mpExpression;
         break;
 
@@ -726,11 +726,11 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
 
   switch (mSubType)
     {
-      case S_FUNCTION:
+      case SubType::FUNCTION:
         pTree = mpFunction;
         break;
 
-      case S_EXPRESSION:
+      case SubType::EXPRESSION:
         pTree = mpExpression;
         break;
 

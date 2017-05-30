@@ -58,7 +58,7 @@ void test_node_conversion::test_0001()
   CEvaluationNode* pResultNode = convertToCEvaluationNode(pSum);
   CEvaluationNodeOperator* pOperator = dynamic_cast<CEvaluationNodeOperator*>(pResultNode);
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_PLUS);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::SubType::PLUS);
   CEvaluationNodeVariable* pVariable = NULL;
 
   if (dynamic_cast<CEvaluationNodeOperator*>(pOperator->getChild()))
@@ -112,17 +112,17 @@ void test_node_conversion::test_0002()
   CEvaluationNode* pResultNode = convertToCEvaluationNode(pSum);
   CEvaluationNodeOperator* pOperator = dynamic_cast<CEvaluationNodeOperator*>(pResultNode);
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_PLUS);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::SubType::PLUS);
   pOperator = dynamic_cast<CEvaluationNodeOperator*>(pOperator->getChild());
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::SubType::MULTIPLY);
   CEvaluationNodeVariable* pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());
   CPPUNIT_ASSERT(pVariable != NULL);
   pOperator = dynamic_cast<CEvaluationNodeOperator*>(pOperator->getSibling());
   CPPUNIT_ASSERT(pOperator != NULL);
-  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOperator->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pOperator->getChild());
   CPPUNIT_ASSERT(pVariable != NULL);
   pVariable = dynamic_cast<CEvaluationNodeVariable*>(pVariable->getSibling());

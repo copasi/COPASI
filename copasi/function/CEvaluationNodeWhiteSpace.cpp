@@ -23,12 +23,12 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeWhiteSpace::CEvaluationNodeWhiteSpace():
-  CEvaluationNode(T_WHITESPACE, S_INVALID, "")
+  CEvaluationNode(MainType::WHITESPACE, SubType::INVALID, "")
 {}
 
 CEvaluationNodeWhiteSpace::CEvaluationNodeWhiteSpace(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_WHITESPACE, subType, data)
+  CEvaluationNode(MainType::WHITESPACE, subType, data)
 {}
 
 CEvaluationNodeWhiteSpace::CEvaluationNodeWhiteSpace(const CEvaluationNodeWhiteSpace & src):

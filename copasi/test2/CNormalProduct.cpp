@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -86,11 +91,11 @@ CNormalProduct * CNormalProduct::createProduct(const CEvaluationNode* node)
 
   switch (node->mainType())
     {
-      case CEvaluationNode::T_OPERATOR:  // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
+      case CEvaluationNode::MainType::OPERATOR:  // PLUS(->createSum), MINUS(translated as +(-..)) and DIVIDE(->createFraction) do not occur.
       {
         if (node->getData() == "^")
           {
-            if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::T_NUMBER)
+            if (CEvaluationNode::type(static_cast<const CEvaluationNode*>(node->getChild()->getSibling())->getType()) == CEvaluationNode::MainType::NUMBER)
               {
                 CNormalItemPower* power = CNormalItemPower::createItemPower(node);
                 product->multiply(*power);
@@ -124,13 +129,13 @@ CNormalProduct * CNormalProduct::createProduct(const CEvaluationNode* node)
         return product;
       }
 
-      case CEvaluationNode::T_NUMBER:
+      case CEvaluationNode::MainType::NUMBER:
       {
         product->multiply(node->value());
         return product;
       }
 
-      case CEvaluationNode::T_FUNCTION:
+      case CEvaluationNode::MainType::FUNCTION:
       {
         if (node->getData() == "-")
           {

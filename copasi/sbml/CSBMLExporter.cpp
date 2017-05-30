@@ -1846,7 +1846,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CDa
       this->mHandledSBMLObjects.insert(pInitialAssignment);
       const CEvaluationNode* pOrigNode = modelEntity.getInitialExpressionPtr()->getRoot();
 
-      if (pOrigNode->mainType() == CEvaluationNode::T_INVALID)
+      if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "initial assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
@@ -2147,7 +2147,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
       tree.setInfix(changedExpression);
       const CEvaluationNode* pOrigNode = tree.getRoot();
 
-      if (pOrigNode->mainType() == CEvaluationNode::T_INVALID)
+      if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "assignment", modelEntity.getObjectType().c_str(), modelEntity.getObjectName().c_str());
         }
@@ -2544,7 +2544,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
       const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(objectNodes[j]);
 
       if (pObjectNode == NULL ||
-          pObjectNode->mainType() != CEvaluationNode::T_OBJECT) continue;
+          pObjectNode->mainType() != CEvaluationNode::MainType::OBJECT) continue;
 
       const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(pObjectNode->getObjectCN()));
       assert(pObject);
@@ -3003,7 +3003,7 @@ void CSBMLExporter::checkForUnsupportedFunctionCalls(const CEvaluationNode& node
     const std::set<CEvaluationNode::SubType>& unsupportedFunctions,
     std::vector<SBMLIncompatibility>& result, const std::string& objectDescription)
 {
-  if (node.mainType() == CEvaluationNode::T_FUNCTION)
+  if (node.mainType() == CEvaluationNode::MainType::FUNCTION)
     {
       CEvaluationNode::SubType subtype = node.subType();
 
@@ -4185,11 +4185,11 @@ const std::set<CEvaluationNode::SubType> CSBMLExporter::createUnsupportedFunctio
       // the same. The only function that can not be correctly converted
       // is ARCCOTH since we would need a piecewise for that which is not
       // supported in Level 1
-      unsupportedFunctionTypes.insert(CEvaluationNode::S_ARCCOTH);
+      unsupportedFunctionTypes.insert(CEvaluationNode::SubType::ARCCOTH);
       //unsupportedFunctionTypes.insert(CEvaluationNode::S_RNORMAL);
       //unsupportedFunctionTypes.insert(CEvaluationNode::S_RUNIFORM);
-      unsupportedFunctionTypes.insert(CEvaluationNode::S_MAX);
-      unsupportedFunctionTypes.insert(CEvaluationNode::S_MIN);
+      unsupportedFunctionTypes.insert(CEvaluationNode::SubType::MAX);
+      unsupportedFunctionTypes.insert(CEvaluationNode::SubType::MIN);
     }
   else
     {
@@ -4624,7 +4624,7 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
 
   //const CEvaluationNode* pOrigNode = pExpression->getRoot();
 
-  if (pOrigNode->mainType() == CEvaluationNode::T_INVALID)
+  if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "trigger", "event", event.getObjectName().c_str());
     }
@@ -4721,7 +4721,7 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
       tree.setInfix(changedExpression);
       const CEvaluationNode* pOrigNode = tree.getRoot();
 
-      if (pOrigNode->mainType() == CEvaluationNode::T_INVALID)
+      if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
         {
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, "delay", "event", event.getObjectName().c_str());
         }
@@ -4983,7 +4983,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           tree.setInfix(changedExpression);
           const CEvaluationNode* pOrigNode = tree.getRoot();
 
-          if (pOrigNode->mainType() == CEvaluationNode::T_INVALID)
+          if (pOrigNode->mainType() == CEvaluationNode::MainType::INVALID)
             {
               CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 70, std::string("event assignment for variable with id \"" + sbmlId + "\"").c_str(), "event", event.getObjectName().c_str());
             }
@@ -5327,7 +5327,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
     }
   else
     {
-      CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNode::S_FUNCTION, pFun->getObjectName());
+      CEvaluationNodeCall* pFunctionCall = new CEvaluationNodeCall(CEvaluationNode::SubType::FUNCTION, pFun->getObjectName());
       this->mUsedFunctions.insert(pFun);
       size_t i, iMax = arguments.size();
       std::string cn;
@@ -5371,7 +5371,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
               cn = "<" + pObject->getCN() + ">";
             }
 
-          pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, cn));
+          pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, cn));
         }
 
       pResult = pFunctionCall;
@@ -5444,7 +5444,7 @@ void CSBMLExporter::findDirectlyUsedFunctions(const CEvaluationNode* pRootNode, 
 {
   if (pRootNode == NULL) return;
 
-  if (pRootNode->mainType() == CEvaluationNode::T_CALL)
+  if (pRootNode->mainType() == CEvaluationNode::MainType::CALL)
     {
       result.insert(pRootNode->getData());
     }
@@ -5718,7 +5718,7 @@ void CSBMLExporter::findModelEntityDependencies(const CEvaluationNode* pNode, co
 {
   if (pNode == NULL) return;
 
-  if (pNode->mainType() == CEvaluationNode::T_OBJECT)
+  if (pNode->mainType() == CEvaluationNode::MainType::OBJECT)
     {
       const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
       assert(pObjectNode != NULL);
@@ -6148,7 +6148,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CEvaluationNode& node, std:
 
   // no need to go through the children.
   // one incompatibility warning is enough
-  if (node.mainType() == CEvaluationNode::T_CHOICE)
+  if (node.mainType() == CEvaluationNode::MainType::CHOICE)
     {
       result.push_back(SBMLIncompatibility(8, objectType.c_str(), objectName.c_str()));
     }
@@ -6443,7 +6443,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
   std::vector<CEvaluationNode*> multiplicants;
   const CDataObject* pObject = CRootContainer::getKeyFactory()->get(arguments[0][0]);
   assert(pObject != NULL);
-  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ",Reference=Value>"));
+  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Value>"));
   std::vector<std::string>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
 
   while (it != endit)
@@ -6465,15 +6465,15 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 
           if (num == 1)
             {
-              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
             }
           else
             {
               std::ostringstream os;
               os << num;
-              CEvaluationNodeOperator* pOperator = new CEvaluationNodeOperator(CEvaluationNode::S_POWER, "^");
-              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
-              pOperator->addChild(new CEvaluationNodeNumber(CEvaluationNode::S_DOUBLE, os.str()));
+              CEvaluationNodeOperator* pOperator = new CEvaluationNodeOperator(CEvaluationNode::SubType::POWER, "^");
+              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              pOperator->addChild(new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE, os.str()));
               multiplicants.push_back(pOperator);
             }
         }
@@ -6492,7 +6492,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 
       while (rIt != rEndit)
         {
-          pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+          pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
           pTmpNode->addChild(*rIt);
           pTmpNode->addChild(pResult);
           pResult = pTmpNode;
@@ -6500,7 +6500,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
         }
     }
 
-  pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+  pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
   pTmpNode->addChild(*rIt);
   pTmpNode->addChild(pResult);
   pResult = pTmpNode;
@@ -6510,7 +6510,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
       std::vector<std::vector<std::string> > tmpV;
       tmpV.push_back(arguments[2]);
       tmpV.push_back(arguments[3]);
-      pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MINUS, "-");
+      pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
       pTmpNode->addChild(pResult);
       pTmpNode->addChild(CSBMLExporter::createMassActionExpression(tmpV, false));
       pResult = pTmpNode;
@@ -6597,14 +6597,14 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
   CEvaluationNode* pResult = NULL;
   double factor = dataModel.getModel()->getQuantity2NumberFactor();
 
-  if (pOrigNode->mainType() == CEvaluationNode::T_OBJECT)
+  if (pOrigNode->mainType() == CEvaluationNode::MainType::OBJECT)
     {
       const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(dynamic_cast<const CEvaluationNodeObject*>(pOrigNode)->getObjectCN()));
 
       if (pObject == NULL)
         {
           // this will be the object from the mInitialValueMap
-          pResult = new CEvaluationNodeObject(CEvaluationNode::S_CN, pOrigNode->getData());
+          pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, pOrigNode->getData());
           return pResult;
         }
 
@@ -6633,18 +6633,18 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       // hasOnlySubstanceUnits flag being set
                       const CCompartment* pCompartment = pMetab->getCompartment();
                       assert(pCompartment != NULL);
-                      pResult = new CEvaluationNodeOperator(CEvaluationNode::S_DIVIDE, "/");
+                      pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE, "/");
                       // copy branch should be fine since the object node does
                       // not have children
                       pResult->addChild(pOrigNode->copyBranch());
 
                       if (pObject->getObjectName() == "InitialConcentration")
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
                         }
                     }
                   else
@@ -6656,9 +6656,9 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
               else if (pObject->getObjectName() == "Rate")
                 {
                   std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
-                  pResult = new CEvaluationNodeObject(CEvaluationNode::S_INVALID, "<rateOf>");
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getObjectParent()->getObject(CCommonName("Reference=Concentration"))->getCN() + ">"));
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + id + ">"));
+                  pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getObjectParent()->getObject(CCommonName("Reference=Concentration"))->getCN() + ">"));
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
                 }
               else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
                 {
@@ -6693,11 +6693,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           this->mAvogadroCreated = true;
                         }
 
-                      pResult = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+                      pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
                       // copyBranch should be save here since object nodes can't
                       // have children
                       pResult->addChild(pOrigNode->copyBranch());
-                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
+                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
                     }
                   else
                     {
@@ -6712,16 +6712,16 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pCompartment->getDimensionality() != 0)
                         {
-                          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+                          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
                           pTmpNode->addChild(pResult);
 
                           if (pObject->getObjectName() == "InitialParticleNumber")
                             {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                             }
                           else
                             {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
                             }
 
                           pResult = pTmpNode;
@@ -6737,7 +6737,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
     }
   // check if there is a division by avogadros number and if so, just
   // drop the division instead of introducing a new multiplication
-  else if (pOrigNode->mainType() == CEvaluationNode::T_OPERATOR && (pOrigNode->subType()) == CEvaluationNode::S_DIVIDE)
+  else if (pOrigNode->mainType() == CEvaluationNode::MainType::OPERATOR && (pOrigNode->subType()) == CEvaluationNode::SubType::DIVIDE)
     {
       // check if one of the child nodes is a reference to a species
 
@@ -6746,7 +6746,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
       assert(pLeft != NULL);
       assert(pRight != NULL);
 
-      if (pLeft->mainType() == CEvaluationNode::T_OBJECT)
+      if (pLeft->mainType() == CEvaluationNode::MainType::OBJECT)
         {
           const CDataObject* pObject = CObjectInterface::DataObject(dataModel.getObjectFromCN(dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN()));
 
@@ -6760,9 +6760,9 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   // check if pRight is a number or a parameter that
                   // corresponds to avogadros number
-                  if (pRight->mainType() == CEvaluationNode::T_NUMBER &&
-                      ((pRight->subType()) == CEvaluationNode::S_DOUBLE ||
-                       (pRight->subType()) == CEvaluationNode::S_ENOTATION))
+                  if (pRight->mainType() == CEvaluationNode::MainType::NUMBER &&
+                      ((pRight->subType()) == CEvaluationNode::SubType::DOUBLE ||
+                       (pRight->subType()) == CEvaluationNode::SubType::ENOTATION))
                     {
                       double value = *dynamic_cast<const CEvaluationNodeNumber*>(pRight)->getValuePointer();
 
@@ -6773,7 +6773,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                           pResult = pLeft->copyBranch();
                         }
                     }
-                  else if (pRight->mainType() == CEvaluationNode::T_OBJECT)
+                  else if (pRight->mainType() == CEvaluationNode::MainType::OBJECT)
                     {
                       const CDataObject* pObject2 = CObjectInterface::DataObject(dataModel.getObjectFromCN(dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN()));
 
@@ -6797,7 +6797,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
               else
                 {
                   // Check if pRight is an object node
-                  if (pRight->mainType() == CEvaluationNode::T_OBJECT)
+                  if (pRight->mainType() == CEvaluationNode::MainType::OBJECT)
                     {
                       // check if pRight is a reference to a species
                       const CDataObject* pObject2 = CObjectInterface::DataObject(dataModel.getObjectFromCN(dynamic_cast<const CEvaluationNodeObject*>(pRight)->getObjectCN()));
@@ -6812,7 +6812,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                             {
                               // if yes, check if pLeft is a parameter that corresponds
                               // to Avogadros number
-                              if (pLeft->mainType() == CEvaluationNode::T_OBJECT)
+                              if (pLeft->mainType() == CEvaluationNode::MainType::OBJECT)
                                 {
                                   const CDataObject* pObject2 = CObjectInterface::DataObject(dataModel.getObjectFromCN(dynamic_cast<const CEvaluationNodeObject*>(pLeft)->getObjectCN()));
 
@@ -7637,7 +7637,7 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CDataMode
 
 void CSBMLExporter::setFunctionSBMLIds(const CEvaluationNode* pNode, CDataModel& dataModel)
 {
-  if (pNode->mainType() == CEvaluationNode::T_CALL)
+  if (pNode->mainType() == CEvaluationNode::MainType::CALL)
     {
       std::string funName = dynamic_cast<const CEvaluationNodeCall*>(pNode)->getData();
       CFunction* pFun = CRootContainer::getFunctionList()->findFunction(funName);
@@ -7866,7 +7866,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
             }
 
           // check if the expression only references allowed model entities
-          if (pExpression != NULL && pExpression->getRoot()->mainType() != CEvaluationNode::T_INVALID)
+          if (pExpression != NULL && pExpression->getRoot()->mainType() != CEvaluationNode::MainType::INVALID)
             {
 
               std::set<std::string> usedFunctionNames;
@@ -8220,13 +8220,13 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
       // first we check if this is thie reverse operation with the object
       // if so, we just drop the reverse operation, otherwise we apply the operation with the
       // object
-      if (pOrigNode->mainType() == CEvaluationNode::T_OPERATOR &&
-          pOrigNode->subType() == CEvaluationNode::S_DIVIDE)
+      if (pOrigNode->mainType() == CEvaluationNode::MainType::OPERATOR &&
+          pOrigNode->subType() == CEvaluationNode::SubType::DIVIDE)
         {
           // only the second child can be the object
           const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
 
-          if (pChild->mainType() == CEvaluationNode::T_OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
             {
 
               pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -8236,8 +8236,8 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
 
       if (reverse == false)
         {
-          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::S_CN, "<" + pObject->getCN() + ">");
-          pResult = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
+          pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
           pResult->addChild(pOrigNode->copyBranch());
           pResult->addChild(pVolumeNode);
         }

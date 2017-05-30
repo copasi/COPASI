@@ -96,7 +96,7 @@ CIssue CExpression::setInfix(const std::string & infix)
   std::vector< CEvaluationNode * >::const_iterator end = mpNodeList->end();
 
   for (; it != end; ++it)
-    if ((*it)->mainType() == CEvaluationNode::T_VARIABLE)
+    if ((*it)->mainType() == CEvaluationNode::MainType::VARIABLE)
       {
         mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableInExpression);
         mValidity.add(mIssue);

@@ -12,7 +12,7 @@
 #include "utilities/CValidatedUnit.h"
 
 CEvaluationNodeUnit::CEvaluationNodeUnit() :
-  CEvaluationNode(T_UNIT, S_INVALID, "[?]")
+  CEvaluationNode(MainType::UNIT, SubType::INVALID, "[?]")
 {
   mValue = 1.0;
   mPrecedence = PRECEDENCE_NUMBER;
@@ -20,7 +20,7 @@ CEvaluationNodeUnit::CEvaluationNodeUnit() :
 
 CEvaluationNodeUnit::CEvaluationNodeUnit(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_UNIT, subType, data)
+  CEvaluationNode(MainType::UNIT, subType, data)
 {
   mValue = 1.0;
   mPrecedence = PRECEDENCE_NUMBER;

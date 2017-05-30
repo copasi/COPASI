@@ -236,7 +236,7 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
           {
             switch (mpExpression->getRoot()->mainType() | mpExpression->getRoot()->subType())
               {
-                case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
+                case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
                 {
                   const CMathObject * pMathObject = dynamic_cast< const CMathObject * >(pObject);
 
@@ -250,11 +250,11 @@ bool CMathObject::isPrerequisiteForContext(const CObjectInterface * pObject,
                 }
                 break;
 
-                case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
+                case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
                   return false;
                   break;
 
-                case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
+                case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
                   return false;
                   break;
 
@@ -445,7 +445,7 @@ void CMathObject::appendDelays(CMath::DelayData & Delays) const
     {
       switch ((*it)->mainType())
         {
-          case CEvaluationNode::T_DELAY:
+          case CEvaluationNode::MainType::DELAY:
           {
             CEvaluationNode * pValueExpression = static_cast< CEvaluationNode * >((*it)->getChild());
             std::string Expression = static_cast< CEvaluationNode * >(pValueExpression->getSibling())->buildInfix();

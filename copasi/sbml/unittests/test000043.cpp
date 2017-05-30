@@ -135,11 +135,11 @@ void test000043::test_hasOnlySubstanceUnits()
   pNode = pKineticFunction->getRoot();
   const CEvaluationNodeCall* pCallNode = dynamic_cast<const CEvaluationNodeCall*>(pNode);
   CPPUNIT_ASSERT(pCallNode != NULL);
-  CPPUNIT_ASSERT((pCallNode->subType()) == CEvaluationNode::S_FUNCTION);
+  CPPUNIT_ASSERT((pCallNode->subType()) == CEvaluationNode::SubType::FUNCTION);
   CPPUNIT_ASSERT(pCallNode->getData() == std::string("Henri-Michaelis-Menten (irreversible)_2"));
   const CEvaluationNodeOperator* pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pCallNode->getChild());
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   const CEvaluationNodeVariable* pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getIndex() == 3);
@@ -160,10 +160,10 @@ void test000043::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pNode != NULL);
   pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::S_DIVIDE);
+  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::SubType::DIVIDE);
   const CEvaluationNodeOperator* pOperatorNode2 = dynamic_cast<const CEvaluationNodeOperator*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pOperatorNode2 != NULL);
-  CPPUNIT_ASSERT((pOperatorNode2->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOperatorNode2->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pOperatorNode2->getChild());
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getIndex() == 2);
@@ -172,7 +172,7 @@ void test000043::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pVariableNode->getIndex() == 0);
   pOperatorNode2 = dynamic_cast<const CEvaluationNodeOperator*>(pOperatorNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pOperatorNode2 != NULL);
-  CPPUNIT_ASSERT((pOperatorNode2->subType()) == CEvaluationNode::S_PLUS);
+  CPPUNIT_ASSERT((pOperatorNode2->subType()) == CEvaluationNode::SubType::PLUS);
   pVariableNode = dynamic_cast<const CEvaluationNodeVariable*>(pOperatorNode2->getChild());
   CPPUNIT_ASSERT(pVariableNode != NULL);
   CPPUNIT_ASSERT(pVariableNode->getIndex() == 1);

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -181,11 +186,11 @@ void CUnitValidator::getUnits()
         {
           switch (it->mainType())
             {
-              case CEvaluationNode::T_VARIABLE:
+              case CEvaluationNode::MainType::VARIABLE:
                 tmpUnit = it->getUnit(mMathContainer, mVariableUnits);
                 break;
 
-              case CEvaluationNode::T_OBJECT:
+              case CEvaluationNode::MainType::OBJECT:
               {
                 CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
                 std::vector< CValidatedUnit > ObjectUnit;
@@ -255,7 +260,7 @@ bool CUnitValidator::setUnits()
 
           switch (it->mainType())
             {
-              case CEvaluationNode::T_VARIABLE:
+              case CEvaluationNode::MainType::VARIABLE:
               {
                 size_t Index = static_cast< CEvaluationNodeVariable * >(*it)->getIndex();
 
@@ -273,7 +278,7 @@ bool CUnitValidator::setUnits()
               }
               break;
 
-              case CEvaluationNode::T_OBJECT:
+              case CEvaluationNode::MainType::OBJECT:
               {
                 CObjectInterface * pObject = const_cast< CObjectInterface * >(static_cast< CEvaluationNodeObject * >(*it)->getObjectInterfacePtr());
 

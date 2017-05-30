@@ -116,7 +116,7 @@ CMathExpression::CMathExpression(const CFunction & src,
               }
             else
               {
-                mpRootNode = new CEvaluationNodeOperator(CEvaluationNode::S_MINUS, "-");
+                mpRootNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
                 mpRootNode->addChild(pPart);
 
                 pK = it->value;
@@ -164,8 +164,8 @@ void CMathExpression::relocate(const CMathContainer * pContainer,
 
   for (; it != end; ++it)
     {
-      if (it->mainType() == CEvaluationNode::T_OBJECT &&
-          it->subType() == CEvaluationNode::S_POINTER)
+      if (it->mainType() == CEvaluationNode::MainType::OBJECT &&
+          it->subType() == CEvaluationNode::SubType::POINTER)
         {
           C_FLOAT64 * pPointer = (C_FLOAT64 *) stringToPointer(it->getData());
           pContainer->relocateValue(pPointer, relocations);
@@ -216,8 +216,8 @@ CIssue CMathExpression::compile()
       mValidity.add(NodeIssue);
       mIssue &= NodeIssue;
 
-      if ((*it)->mainType() == CEvaluationNode::T_OBJECT &&
-          (*it)->subType() == CEvaluationNode::S_POINTER)
+      if ((*it)->mainType() == CEvaluationNode::MainType::OBJECT &&
+          (*it)->subType() == CEvaluationNode::SubType::POINTER)
         {
           mPrerequisites.insert(static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr());
         }
@@ -253,8 +253,8 @@ bool CMathExpression::convertToInitialExpression()
 
   for (; it != end; ++it)
     {
-      if ((*it)->mainType() == CEvaluationNode::T_OBJECT &&
-          (*it)->subType() == CEvaluationNode::S_POINTER)
+      if ((*it)->mainType() == CEvaluationNode::MainType::OBJECT &&
+          (*it)->subType() == CEvaluationNode::SubType::POINTER)
         {
           CEvaluationNodeObject * pNode = static_cast< CEvaluationNodeObject *>(*it);
           const C_FLOAT64 * pValue = pNode->getObjectValuePtr();
@@ -307,7 +307,7 @@ CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataVa
   else
     {
       // We have an invalid value, i.e. NaN
-      pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, "NAN");
+      pNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, "NAN");
     }
 
   return pNode;
@@ -316,7 +316,7 @@ CEvaluationNode * CMathExpression::createNodeFromValue(const C_FLOAT64 * pDataVa
 CEvaluationNode * CMathExpression::createMassActionPart(const C_FLOAT64 * pK,
     const CCallParameters< C_FLOAT64 > * pSpecies)
 {
-  CEvaluationNode * pPart = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+  CEvaluationNode * pPart = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
   pPart->addChild(createNodeFromValue(pK));
 
   if (pSpecies->size() == 0)
@@ -328,7 +328,7 @@ CEvaluationNode * CMathExpression::createMassActionPart(const C_FLOAT64 * pK,
 
   for (; itSpecies != endSpecies - 1; ++itSpecies)
     {
-      CEvaluationNode * p = new CEvaluationNodeOperator(CEvaluationNode::S_MULTIPLY, "*");
+      CEvaluationNode * p = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
       p->addChild(createNodeFromValue(itSpecies->value));
       pNode->addChild(p);
       pNode = p;

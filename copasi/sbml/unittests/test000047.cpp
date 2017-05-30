@@ -82,7 +82,7 @@ void test000047::test_delay()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pB);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
 
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);

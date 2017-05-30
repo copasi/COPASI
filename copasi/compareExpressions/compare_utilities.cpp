@@ -454,7 +454,7 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
   // if the root node already is an object node, this has to be dealt with separately
   if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
     {
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
       delete pEvaluationNode;
       pEvaluationNode = pVariableNode;
     }
@@ -464,7 +464,7 @@ CNormalFraction* create_simplified_normalform(const ASTNode* pSource)
         {
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
             {
-              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
 
               if ((*treeIt).getParent())
                 {
@@ -506,7 +506,7 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
   // if the root node already is an object node, this has to be dealt with separately
   if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
     {
-      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+      CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
       delete pEvaluationNode;
       pEvaluationNode = pVariableNode;
     }
@@ -516,7 +516,7 @@ CNormalFraction* create_normalform(const ASTNode* pSource)
         {
           if (dynamic_cast<CEvaluationNodeObject*>(&(*treeIt)))
             {
-              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
+              CEvaluationNodeVariable* pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, (*treeIt).getData().substr(1, (*treeIt).getData().length() - 2));
 
               if ((*treeIt).getParent())
                 {

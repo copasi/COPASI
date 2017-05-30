@@ -102,12 +102,12 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_DELAY);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_DELAY);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::DELAY);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::DELAY);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_CN);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::OBJECT);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::CN);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCommonName objectCN = pObjectNode->getObjectCN();
@@ -121,7 +121,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pK1);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
@@ -131,12 +131,12 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_DELAY);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_DELAY);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::DELAY);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::DELAY);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_CN);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::OBJECT);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::CN);
   pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
@@ -148,7 +148,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pK1);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.2) / 0.2) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
@@ -193,7 +193,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pNode != NULL);
   const CEvaluationNodeOperator* pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   const CEvaluationNode* pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   const CEvaluationNodeVariable* pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -202,7 +202,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pVarNode->getSibling() == NULL);
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -210,7 +210,7 @@ void test000091::test_delay_in_kinetic_law()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[0]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -429,12 +429,12 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pExpr != NULL);
   const CEvaluationNode* pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_DELAY);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_DELAY);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::DELAY);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::DELAY);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_CN);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::OBJECT);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::CN);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCommonName objectCN = pObjectNode->getObjectCN();
@@ -448,7 +448,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pK1);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
@@ -458,12 +458,12 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_DELAY);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_DELAY);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::DELAY);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::DELAY);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_CN);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::OBJECT);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::CN);
   pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
@@ -475,7 +475,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pK1);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.2) / 0.2) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
@@ -485,12 +485,12 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_DELAY);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_DELAY);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::DELAY);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::DELAY);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_CN);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::OBJECT);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::CN);
   pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
@@ -502,7 +502,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pGlobalized1);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
@@ -512,12 +512,12 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pExpr != NULL);
   pNode = pExpr->getRoot();
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_DELAY);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_DELAY);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::DELAY);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::DELAY);
   pNode = dynamic_cast<const CEvaluationNode*>(pNode->getChild());
   CPPUNIT_ASSERT(pNode != NULL);
-  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::T_OBJECT);
-  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::S_CN);
+  CPPUNIT_ASSERT(pNode->mainType() == CEvaluationNode::MainType::OBJECT);
+  CPPUNIT_ASSERT((pNode->subType()) == CEvaluationNode::SubType::CN);
   pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pNode);
   CPPUNIT_ASSERT(pObjectNode != NULL);
   objectCN = pObjectNode->getObjectCN();
@@ -529,7 +529,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pObject->getObjectParent() == pGlobalized2);
   pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pObjectNode->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT((pNumberNode->subType()) == CEvaluationNode::SubType::DOUBLE);
   CPPUNIT_ASSERT(fabs((pNumberNode->getValue() - 0.5) / 0.5) < 1e-3);
   CPPUNIT_ASSERT(pNumberNode->getSibling() == NULL);
 
@@ -585,7 +585,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pNode != NULL);
   const CEvaluationNodeOperator* pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   const CEvaluationNode* pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   const CEvaluationNodeVariable* pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -594,7 +594,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getSibling() == NULL);
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -602,7 +602,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[2]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -610,7 +610,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[3]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -618,7 +618,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[2]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -626,7 +626,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[4]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -634,7 +634,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[6]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);
@@ -642,7 +642,7 @@ void test000091::test_delay_in_kinetic_law_local_parameter()
   CPPUNIT_ASSERT(pVarNode->getData() == funPars[0]->getObjectName());
   pOpNode = dynamic_cast<const CEvaluationNodeOperator*>(pOpNode->getChild());
   CPPUNIT_ASSERT(pOpNode != NULL);
-  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOpNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pNode2 = dynamic_cast<const CEvaluationNode*>(pOpNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNode2 != NULL);
   pVarNode = dynamic_cast<const CEvaluationNodeVariable*>(pNode2);

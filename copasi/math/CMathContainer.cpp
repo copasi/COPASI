@@ -1585,8 +1585,8 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
       switch (itNode->mainType() | itNode->subType())
         {
           // Handle object nodes which are of type CN and AVOGADRO
-          case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_AVOGADRO):
-          case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_CN):
+          case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::AVOGADRO):
+          case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
           {
             // We need to map the object to a math object if possible.
             const CObjectInterface * pObject =
@@ -1598,7 +1598,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle object nodes which are of type POINTER
-          case (CEvaluationNode::T_OBJECT | CEvaluationNode::S_POINTER):
+          case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::POINTER):
           {
             const CObjectInterface * pObject =
               getMathObject(static_cast< const CEvaluationNodeObject *>(*itNode)->getObjectValuePtr());
@@ -1612,7 +1612,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle variables
-          case (CEvaluationNode::T_VARIABLE | CEvaluationNode::S_DEFAULT):
+          case (CEvaluationNode::MainType::VARIABLE | CEvaluationNode::SubType::DEFAULT):
           {
             size_t Index =
               static_cast< const CEvaluationNodeVariable * >(*itNode)->getIndex();
@@ -1624,14 +1624,14 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
               }
             else
               {
-                pCopy = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, itNode->getData());
+                pCopy = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, itNode->getData());
               }
           }
           break;
 
           // Handle call nodes
-          case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
-          case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
           {
             const CEvaluationNode * pCalledNode =
               static_cast< const CEvaluationNodeCall * >(*itNode)->getCalledTree()->getRoot();
@@ -1650,11 +1650,11 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           break;
 
           // Handle discrete nodes
-          case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
-          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
-          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
-          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
-          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
+          case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
+          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
+          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
 
             if (replaceDiscontinuousNodes)
               {
@@ -2161,7 +2161,7 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
   if (pObject == NULL)
     {
       // We have an invalid value, i.e. NaN
-      pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, "NAN");
+      pNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, "NAN");
     }
   else
     {
@@ -2200,7 +2200,7 @@ CEvaluationNode * CMathContainer::createNodeFromValue(const C_FLOAT64 * pDataVal
   else
     {
       // We have an invalid value, i.e. NaN
-      pNode = new CEvaluationNodeConstant(CEvaluationNode::S_NAN, "NAN");
+      pNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN, "NAN");
     }
 
   return pNode;
@@ -4313,7 +4313,7 @@ CRandom & CMathContainer::getRandomGenerator() const
 
 void CMathContainer::createDiscontinuityEvents()
 {
-  CEvaluationNodeConstant VariableNode(CEvaluationNode::S_NAN, "NAN");
+  CEvaluationNodeConstant VariableNode(CEvaluationNode::SubType::NaN, "NAN");
   //size_t i, imax;
 
   // We need to create events for nodes which are capable of introducing
@@ -4349,18 +4349,18 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
 
       switch (itNode->mainType() | itNode->subType())
         {
-          case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
-          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
-          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
-          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
-          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
+          case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
+          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
+          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
             createDiscontinuityDataEvent(*itNode);
             break;
 
           // Call nodes and variables are eliminated.
-          case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
-          case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
-          case (CEvaluationNode::T_VARIABLE | CEvaluationNode::S_DEFAULT):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
+          case (CEvaluationNode::MainType::VARIABLE | CEvaluationNode::SubType::DEFAULT):
             fatalError();
             break;
 
@@ -4392,21 +4392,21 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
   // We need to define a data event for each discontinuity.
   switch (pNode->mainType() | pNode->subType())
     {
-      case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
+      case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
         TriggerInfix = static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         break;
 
-      case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
-      case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
+      case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
+      case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + ")) > 0";
         break;
 
-      case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
+      case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix();
         TriggerInfix += ")) > 0 || sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;
 
-      case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
+      case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + "/";
         TriggerInfix += static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;

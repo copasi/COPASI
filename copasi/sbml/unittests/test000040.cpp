@@ -78,13 +78,13 @@ void test000040::test_hasOnlySubstanceUnits()
   CPPUNIT_ASSERT(pNode != NULL);
   const CEvaluationNodeOperator* pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pNode);
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::SubType::MULTIPLY);
   const CEvaluationNodeNumber* pNumberNode = dynamic_cast<const CEvaluationNodeNumber*>(pOperatorNode->getChild()->getSibling());
   CPPUNIT_ASSERT(pNumberNode != NULL);
-  CPPUNIT_ASSERT(pNumberNode->subType() == CEvaluationNode::S_DOUBLE);
+  CPPUNIT_ASSERT(pNumberNode->subType() == CEvaluationNode::SubType::DOUBLE);
   pOperatorNode = dynamic_cast<const CEvaluationNodeOperator*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pOperatorNode != NULL);
-  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::S_DIVIDE);
+  CPPUNIT_ASSERT((pOperatorNode->subType()) == CEvaluationNode::SubType::DIVIDE);
   const CEvaluationNodeObject* pObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pOperatorNode->getChild());
   CPPUNIT_ASSERT(pObjectNode != NULL);
   CCommonName objectCN = pObjectNode->getObjectCN();

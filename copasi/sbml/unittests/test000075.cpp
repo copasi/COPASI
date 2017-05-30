@@ -111,18 +111,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   const CEvaluationNode* pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   const CEvaluationNodeCall* pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   const CEvaluationNode* pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   const CEvaluationNode* pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -138,18 +138,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -194,18 +194,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -221,18 +221,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -248,18 +248,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -275,19 +275,19 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   // the first child is a number node
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("indirectly_time_dependent"));
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
 
   // the second child is the time object
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -309,18 +309,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCFunction != NULL);
   pCRoot = pCFunction->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_VARIABLE);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::VARIABLE);
   // get the argument for this variable
   std::string variableName = pCChild2->getData();
   const std::vector<std::string>& parameterMapping = pCReaction->getParameterMapping(variableName);
@@ -341,23 +341,23 @@ void test000075::test_import_time_dependent_function_definition()
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
   // root must be the gt operator
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_LOGICAL);
-  CPPUNIT_ASSERT((pCRoot->subType()) == CEvaluationNode::S_GT);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::LOGICAL);
+  CPPUNIT_ASSERT((pCRoot->subType()) == CEvaluationNode::SubType::GT);
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCRoot->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
   // first child must be the changed call
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCChild1);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -370,7 +370,7 @@ void test000075::test_import_time_dependent_function_definition()
   // second child must be a number
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCRoot->getChild()->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::NUMBER);
 
   // event assignment
   CPPUNIT_ASSERT(pCEvent->getAssignments().size() == 1);
@@ -378,18 +378,18 @@ void test000075::test_import_time_dependent_function_definition()
   CPPUNIT_ASSERT(pCExpression != NULL);
   pCRoot = pCExpression->getRoot();
   CPPUNIT_ASSERT(pCRoot != NULL);
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCCallNode = dynamic_cast<const CEvaluationNodeCall*>(pCRoot);
   CPPUNIT_ASSERT(pCCallNode != NULL);
   CPPUNIT_ASSERT(pCCallNode->getData() == std::string("time_dependent"));
   // the first child is a number
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCCallNode->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_NUMBER);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::NUMBER);
   // the second node must be an object node that points to the model
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_OBJECT);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::OBJECT);
   pCObjectNode = dynamic_cast<const CEvaluationNodeObject*>(pCChild2);
   CPPUNIT_ASSERT(pCObjectNode != NULL);
   pCObjectName = &pCObjectNode->getObjectCN();
@@ -409,14 +409,14 @@ void test000075::test_import_time_dependent_function_definition()
   // should have two parameters instead of one
   CPPUNIT_ASSERT(pCFunction->getVariables().size() == 2);
   pCRoot = pCFunction->getRoot();
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_OPERATOR);
-  CPPUNIT_ASSERT((pCRoot->subType()) == CEvaluationNode::S_MULTIPLY);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::OPERATOR);
+  CPPUNIT_ASSERT((pCRoot->subType()) == CEvaluationNode::SubType::MULTIPLY);
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCRoot->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_VARIABLE);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::VARIABLE);
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_VARIABLE);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::VARIABLE);
   CPPUNIT_ASSERT(pCChild2->getSibling() == NULL);
 
   pCTree = pFunctionDB->findFunction("indirectly_time_dependent");
@@ -426,13 +426,13 @@ void test000075::test_import_time_dependent_function_definition()
   // should have two parameters instead of one
   CPPUNIT_ASSERT(pCFunction->getVariables().size() == 2);
   pCRoot = pCFunction->getRoot();
-  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::T_CALL);
+  CPPUNIT_ASSERT(pCRoot->mainType() == CEvaluationNode::MainType::CALL);
   pCChild1 = dynamic_cast<const CEvaluationNode*>(pCRoot->getChild());
   CPPUNIT_ASSERT(pCChild1 != NULL);
-  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::T_VARIABLE);
+  CPPUNIT_ASSERT(pCChild1->mainType() == CEvaluationNode::MainType::VARIABLE);
   pCChild2 = dynamic_cast<const CEvaluationNode*>(pCChild1->getSibling());
   CPPUNIT_ASSERT(pCChild2 != NULL);
-  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::T_VARIABLE);
+  CPPUNIT_ASSERT(pCChild2->mainType() == CEvaluationNode::MainType::VARIABLE);
   CPPUNIT_ASSERT(pCChild2->getSibling() == NULL);
 
   // make sure that the function definitions and all function calls in the

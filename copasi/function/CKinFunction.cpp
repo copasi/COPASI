@@ -147,7 +147,7 @@ void CKinFunction::createParameters()
               std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
               for (; it != end; ++it)
-                if ((*it)->mainType() == CEvaluationNode::T_CONSTANT &&
+                if ((*it)->mainType() == CEvaluationNode::MainType::CONSTANT &&
                     (*it)->getData() == OldName)
                   (*it)->setData(Name);
 

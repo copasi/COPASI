@@ -356,10 +356,10 @@ void CEvaluationTree::buildCalculationSequence()
     {
       switch (itNode->mainType())
         {
-          case CEvaluationNode::T_NUMBER:
-          case CEvaluationNode::T_CONSTANT:
-          case CEvaluationNode::T_OBJECT:
-          case CEvaluationNode::T_UNIT:
+          case CEvaluationNode::MainType::NUMBER:
+          case CEvaluationNode::MainType::CONSTANT:
+          case CEvaluationNode::MainType::OBJECT:
+          case CEvaluationNode::MainType::UNIT:
             break;
 
           default:
@@ -463,7 +463,7 @@ CIssue CEvaluationTree::compileNodes()
       for (it = mpNodeList->begin(); it != end; ++it)
         switch ((*it)->mainType())
           {
-            case CEvaluationNode::T_CALL:
+            case CEvaluationNode::MainType::CALL:
               mPrerequisits.insert(static_cast< CEvaluationNodeCall *>(*it)->getCalledTree());
               break;
 
@@ -791,7 +791,7 @@ bool CEvaluationTree::calls(std::set< std::string > & list) const
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
   for (it = mpNodeList->begin(); it != end; ++it)
-    if (((*it)->mainType()) == CEvaluationNode::T_CALL &&
+    if (((*it)->mainType()) == CEvaluationNode::MainType::CALL &&
         dynamic_cast<CEvaluationNodeCall *>(*it)->calls(list))
       {
         Calls = true;
@@ -815,17 +815,17 @@ bool CEvaluationTree::hasDiscontinuity() const
     {
       switch ((*it)->mainType() | (*it)->subType())
         {
-          case (CEvaluationNode::T_CHOICE | CEvaluationNode::S_IF):
-          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_FLOOR):
-          case (CEvaluationNode::T_FUNCTION | CEvaluationNode::S_CEIL):
-          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_MODULUS):
-          case (CEvaluationNode::T_OPERATOR | CEvaluationNode::S_REMAINDER):
+          case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
+          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
+          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
             // We found a discontinuity.
             return true;
             break;
 
-          case (CEvaluationNode::T_CALL | CEvaluationNode::S_FUNCTION):
-          case (CEvaluationNode::T_CALL | CEvaluationNode::S_EXPRESSION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
 
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree() != NULL &&

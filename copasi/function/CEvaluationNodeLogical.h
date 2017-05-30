@@ -67,42 +67,42 @@ public:
   {
     switch (mSubType)
       {
-        case S_OR:
+        case SubType::OR:
           mValue = (*mpLeftValue > 0.5 ||
                     *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
-        case S_XOR:
+        case SubType::XOR:
           mValue = ((*mpLeftValue > 0.5 && *mpRightValue < 0.5) ||
                     (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
           break;
 
-        case S_AND:
+        case SubType::AND:
           mValue = (*mpLeftValue > 0.5 &&
                     *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
-        case S_EQ:
+        case SubType::EQ:
           mValue = (*mpLeftValue == *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case S_NE:
+        case SubType::NE:
           mValue = (*mpLeftValue != *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case S_GT:
+        case SubType::GT:
           mValue = (*mpLeftValue > *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case S_GE:
+        case SubType::GE:
           mValue = (*mpLeftValue >= *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case S_LT:
+        case SubType::LT:
           mValue = (*mpLeftValue < *mpRightValue) ? 1.0 : 0.0;
           break;
 
-        case S_LE:
+        case SubType::LE:
           mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
           break;
       }

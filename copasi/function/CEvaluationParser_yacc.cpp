@@ -17,11 +17,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -997,7 +997,7 @@ yytnamerr(char *yyres, const char *yystr)
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
 
-              /* Fall through.  */
+            /* Fall through.  */
             default:
               if (yyres)
                 yyres[yyn] = *yyp;
@@ -1310,7 +1310,7 @@ yysetstate:
       {
         yytype_int16 *yyss1 = yyss;
         union yyalloc *yyptr =
-            (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
+          (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
 
         if (! yyptr)
           goto yyexhaustedlab;
@@ -1500,7 +1500,7 @@ yyreduce:
       case 7:
 #line 117 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
@@ -1664,7 +1664,7 @@ yyreduce:
 #line 211 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-7]);
-          (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-5])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
           (yyval)->addChild((yyvsp[-1]));
@@ -1703,7 +1703,7 @@ yyreduce:
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-3])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
@@ -1717,7 +1717,7 @@ yyreduce:
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-1])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
@@ -1728,7 +1728,7 @@ yyreduce:
       case 26:
 #line 252 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
@@ -1742,11 +1742,11 @@ yyreduce:
       case 27:
 #line 261 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-3])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
@@ -1757,11 +1757,11 @@ yyreduce:
       case 28:
 #line 271 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-7])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-1])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
@@ -1796,7 +1796,7 @@ yyreduce:
       case 31:
 #line 295 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[0])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));
@@ -1809,7 +1809,7 @@ yyreduce:
       case 32:
 #line 303 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-2])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-2])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));
@@ -1846,7 +1846,7 @@ yyreduce:
       case 35:
 #line 325 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[0])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));
@@ -1859,7 +1859,7 @@ yyreduce:
       case 36:
 #line 333 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-2])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-2])->setValueType(CEvaluationNode::ValueType::Boolean);
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));

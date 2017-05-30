@@ -25,30 +25,30 @@
 #include "sbml/math/ASTNode.h"
 
 CEvaluationNodeStructure::CEvaluationNodeStructure():
-  CEvaluationNode(T_STRUCTURE, S_INVALID, "")
+  CEvaluationNode(MainType::STRUCTURE, SubType::INVALID, "")
 {}
 
 CEvaluationNodeStructure::CEvaluationNodeStructure(const SubType & subType,
     const Data & data):
-  CEvaluationNode(T_STRUCTURE, subType, data)
+  CEvaluationNode(MainType::STRUCTURE, subType, data)
 {
   switch (subType)
     {
-      case S_OPEN:
-      case S_VECTOR_OPEN:
+      case SubType::OPEN:
+      case SubType::VECTOROPEN:
         mPrecedence = PRECEDENCE_STRUCTURE_OPEN;
         break;
 
-      case S_COMMA:
+      case SubType::COMMA:
         mPrecedence = PRECEDENCE_STRUCTURE_COMMA;
         break;
 
-      case S_CLOSE:
-      case S_VECTOR_CLOSE:
+      case SubType::CLOSE:
+      case SubType::VECTORCLOSE:
         mPrecedence = PRECEDENCE_STRUCTURE_CLOSE;
         break;
 
-      case S_INVALID:
+      case SubType::INVALID:
         fatalError();
         break;
     }

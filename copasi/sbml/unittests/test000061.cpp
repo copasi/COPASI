@@ -60,7 +60,7 @@ void test000061::test_bug_1044()
   CPPUNIT_ASSERT(pModelValue->getExpressionPtr() != NULL);
   const CEvaluationNode* pRoot = pModelValue->getExpressionPtr()->getRoot();
   CPPUNIT_ASSERT(pRoot != NULL);
-  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::T_INVALID);
+  CPPUNIT_ASSERT(pRoot->mainType() == CEvaluationNode::MainType::INVALID);
   const SBMLDocument* pDocument = pDataModel->getCurrentSBMLDocument();
   CPPUNIT_ASSERT(pDocument == NULL);
   // export the model to SBML
