@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <sstream>
 
@@ -83,18 +83,21 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
   switch (highestSeverity)
     {
       case CIssue::eSeverity::Error:
-        if(mSeverityFilter.isSet(CIssue::eSeverity::Error))
+        if (mSeverityFilter.isSet(CIssue::eSeverity::Error))
           issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
+
         break;
 
       case CIssue::eSeverity::Warning:
-        if(mSeverityFilter.isSet(CIssue::eSeverity::Warning))
+        if (mSeverityFilter.isSet(CIssue::eSeverity::Warning))
           issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
+
         break;
 
       case CIssue::eSeverity::Information:
-        if(mSeverityFilter.isSet(CIssue::eSeverity::Information))
+        if (mSeverityFilter.isSet(CIssue::eSeverity::Information))
           issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
+
         break;
 
       default:
@@ -714,10 +717,10 @@ void CQBrowserPaneDM::slotRefreshValidityFilters()
   CCopasiParameterGroup::index_iterator end =
     CRootContainer::getConfiguration()->getGroup("Display Issue Severity")->endIndex();
 
-  for (size_t i = 1; it != end && i < mSeverityFilter.size(); it++, i++) //skip the "success" flag
+  for (; it != end; it++) //skip the "success" flag
     {
       if ((*it)->getValue< bool >())
-        mSeverityFilter.set(i);
+        mSeverityFilter |= CIssue::severityNames.toEnum((*it)->getObjectName(), CIssue::eSeverity::__SIZE);
     }
 
   mKindFilter.reset();
@@ -725,10 +728,10 @@ void CQBrowserPaneDM::slotRefreshValidityFilters()
   it = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->beginIndex();
   end = CRootContainer::getConfiguration()->getGroup("Display Issue Kinds")->endIndex();
 
-  for (size_t i = 0; it != end && i < mKindFilter.size(); it++, i++)
+  for (; it != end; it++)
     {
       if ((*it)->getValue< bool >())
-        mKindFilter.set(i);
+        mKindFilter |= CIssue::kindNames.toEnum((*it)->getObjectName(), CIssue::eKind::__SIZE);
     }
 }
 

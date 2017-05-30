@@ -348,6 +348,9 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
   if (getObjectName() != rhs.getObjectName())
     setObjectName(rhs.getObjectName());
 
+  mUserInterfaceFlag = rhs.mUserInterfaceFlag;
+  mValidity = rhs.mValidity;
+
   switch (rhs.mType)
     {
       case CCopasiParameter::DOUBLE:
