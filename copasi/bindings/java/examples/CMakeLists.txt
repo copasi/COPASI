@@ -55,7 +55,7 @@ endforeach()
 add_test(NAME test_java_example1
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example1
 )
 
@@ -63,7 +63,7 @@ add_test(NAME test_java_example1
 add_test(NAME test_java_example2
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example2
          ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator.cps
 )
@@ -72,7 +72,7 @@ add_test(NAME test_java_example2
 add_test(NAME test_java_example3
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example3
          ${CMAKE_SOURCE_DIR}/TestSuite/distribution/brusselator-model.xml
 )
@@ -81,7 +81,7 @@ add_test(NAME test_java_example3
 add_test(NAME test_java_example4
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example4
 )
 
@@ -89,7 +89,7 @@ add_test(NAME test_java_example4
 add_test(NAME test_java_example5
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example5
 )
 
@@ -97,7 +97,7 @@ add_test(NAME test_java_example5
 add_test(NAME test_java_example6
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example6
 )
 
@@ -105,7 +105,7 @@ add_test(NAME test_java_example6
 add_test(NAME test_java_example7
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example7
 )
 
@@ -113,7 +113,7 @@ add_test(NAME test_java_example7
 add_test(NAME test_java_example8
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example8
 )
 
@@ -121,6 +121,6 @@ add_test(NAME test_java_example8
 add_test(NAME test_java_example9
          COMMAND ${Java_JAVA_EXECUTABLE} 
          -cp ".${FILE_SEP}${CURRENT_JAR}${FILE_SEP}"
-         -Djava.library.path=${LIBRARY_PATH}
+         -Djava.library.path=$<TARGET_FILE_DIR:binding_java_lib>
          example9
 )
