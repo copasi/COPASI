@@ -49,12 +49,13 @@ endif()
 file(TO_NATIVE_PATH ${SRC_DIR}/testsuite-core.jar JAR_FILE_TESTSUITE)
 file(TO_NATIVE_PATH ${SRC_DIR}/simple-xml-2.6.4.jar JAR_FILE_XML)
 
-if (NOT "${FILE_SEP}" STREQUAL ":")
+if (NOT "${FILE_SEP}" STREQUAL ":" AND NOT "${FILE_SEP}" STREQUAL "\":\"")
 set (FILE_SEP ";")
 endif()
 
 
 set(CLASSPATH ".${FILE_SEP}${JAR_FILE_XML}${FILE_SEP}${JAR_FILE_TESTSUITE}${FILE_SEP}.")
+string(REPLACE "\"" "" CLASSPATH "${CLASSPATH}")
 
 set(NAME "COPASI${VERSION}")
 if (NOT "${VERSION}" STREQUAL "")
