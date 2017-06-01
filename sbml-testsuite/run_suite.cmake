@@ -68,7 +68,7 @@ message(STATUS "initialize testsuite")
 execute_process(
   COMMAND "${JAVA_EXECUTABLE}"
     -cp "${CLASSPATH}"
-    initalizeSuite ${CASES_DIR} 0 0
+    initalizeSuite ${CASES_DIR} ${SBML_LEVEL} ${SBML_VERSION}
   WORKING_DIRECTORY "${SRC_DIR}"
   OUTPUT_QUIET
 )
