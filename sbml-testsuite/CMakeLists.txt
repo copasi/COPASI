@@ -57,6 +57,10 @@ if (NOT EXISTS ${SBML_TESTSUITE_CASES_DIR})
   message(FATAL_ERROR "Need to specify the cases/semantic directory in order to run the tests suite")
 endif()
 
+if (NOT Java_JAVA_EXECUTABLE)
+find_package(Java COMPONENTS Development REQUIRED)
+endif()
+
 add_test(
   NAME test_sbml_testsuite
   COMMAND "${CMAKE_COMMAND}"
