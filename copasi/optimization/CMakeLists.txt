@@ -36,14 +36,6 @@
 file(GLOB HEADERS_OPTIMIZATION optimization/*.h)
 file(GLOB SOURCES_OPTIMIZATION optimization/*.cpp)
 
-list(REMOVE_ITEM SOURCES_OPTIMIZATION 
-   ${CMAKE_CURRENT_SOURCE_DIR}/optimization/CGA.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/optimization/COptMethodEP2.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/optimization/COptMethodHGASA.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/optimization/CRandomSearchMaster.cpp
-)
-
-
 # create source group for IDEs
 source_group(optimization FILES ${SOURCES_OPTIMIZATION} ${HEADERS_OPTIMIZATION})
 

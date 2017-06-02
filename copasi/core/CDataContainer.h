@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 /*!
     \file CDataContainer.h
@@ -24,8 +24,10 @@
 #include <vector>
 
 #include "copasi/core/CDataObject.h"
-#include "copasi/core/CDataObjectReference.h"
 
+template <class CType> class CDataObjectReference;
+template <class CType> class CDataVectorReference;
+template <class CType> class CDataMatrixReference;
 class CUnit;
 
 class CDataContainer: public CDataObject
@@ -212,24 +214,38 @@ protected:
 
   template <class CType> CDataObjectReference< CType > * addObjectReference(const std::string & name,
       CType & reference,
-      const CFlags< Flag > & flag = CFlags< Flag >::None)
-  {
-    return new CDataObjectReference< CType >(name, this, reference, flag);
-  }
+      const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   template <class CType> CDataVectorReference< CType > * addVectorReference(const std::string & name,
       CType & reference,
-      const CFlags< Flag > & flag = CFlags< Flag >::None)
-  {
-    return new CDataVectorReference< CType >(name, this, reference, flag);
-  }
+      const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   template <class CType> CDataMatrixReference< CType > * addMatrixReference(const std::string & name,
       CType & reference,
-      const CFlags< Flag > & flag = CFlags< Flag >::None)
-  {
-    return new CDataMatrixReference< CType >(name, this, reference, flag);
-  }
+      const CFlags< Flag > & flag = CFlags< Flag >::None);
 };
+
+#include "copasi/core/CDataObjectReference.h"
+
+template <class CType> CDataObjectReference< CType > * CDataContainer::addObjectReference(const std::string & name,
+    CType & reference,
+    const CFlags< Flag > & flag)
+{
+  return new CDataObjectReference< CType >(name, this, reference, flag);
+}
+
+template <class CType> CDataVectorReference< CType > * CDataContainer::addVectorReference(const std::string & name,
+    CType & reference,
+    const CFlags< Flag > & flag)
+{
+  return new CDataVectorReference< CType >(name, this, reference, flag);
+}
+
+template <class CType> CDataMatrixReference< CType > * CDataContainer::addMatrixReference(const std::string & name,
+    CType & reference,
+    const CFlags< Flag > & flag)
+{
+  return new CDataMatrixReference< CType >(name, this, reference, flag);
+}
 
 #endif // COPASI_CDataContainer

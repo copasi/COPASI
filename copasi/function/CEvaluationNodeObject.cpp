@@ -333,6 +333,7 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
 
       case AST_NAME_AVOGADRO:
         pNode = new CEvaluationNodeObject(SubType::AVOGADRO, "");
+        break;
 
       default:
         break;

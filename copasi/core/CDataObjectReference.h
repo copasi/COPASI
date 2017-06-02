@@ -11,15 +11,16 @@
  * Copyright Stefan Hoops 2002
  */
 
+#ifndef COPASI_CDataContainer
+# include "copasi/core/CDataContainer.h"
+#endif
+
 #ifndef COPASI_CDataObjectReference
 #define COPASI_CDataObjectReference
 
 #include <assert.h>
 
-#include "copasi/core/CDataObject.h"
 #include "copasi/core/CRegisteredCommonName.h"
-
-class CDataContainer;
 
 template <class CType> class CDataObjectReference: public CDataObject
 {

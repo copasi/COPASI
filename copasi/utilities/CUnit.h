@@ -110,7 +110,7 @@ public:
    */
   CUnit& operator=(const CUnit & rightSide);
 
-  ~CUnit();
+  virtual ~CUnit();
 
   virtual CIssue setExpression(const std::string & expression);
 

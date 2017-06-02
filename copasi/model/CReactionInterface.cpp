@@ -39,6 +39,8 @@ CReactionInterface::CReactionInterface(CModel * pModel):
   mNameMap(),
   mValues(),
   mIsLocal(),
+  mHasNoise(false),
+  mNoiseExpression(),
   mKineticLawUnitType(CReaction::Default),
   mScalingCompartment()
 {
@@ -1368,6 +1370,8 @@ std::string CReactionInterface::getEffectiveKineticLawUnit() const
         return getConcentrationRateUnit();
         break;
     }
+
+  return "";
 }
 
 void CReactionInterface::setScalingCompartment(const std::string & scalingCompartment)

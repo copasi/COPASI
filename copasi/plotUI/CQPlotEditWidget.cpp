@@ -16,6 +16,7 @@
 
 CQPlotEditWidget::CQPlotEditWidget(QWidget* parent /*= NULL*/ , Qt::WindowFlags fl /*= 0*/)
   : QWidget(parent, fl)
+  , mpModel(NULL)
 {
 }
 

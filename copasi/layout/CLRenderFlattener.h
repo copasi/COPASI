@@ -18,8 +18,7 @@
 
 #include "copasi/layout/CLGlobalRenderInformation.h"
 #include "copasi/layout/CLLocalRenderInformation.h"
-
-#include "CLUnresolvedReferenceException.h"
+#include "copasi/layout/CLUnresolvedReferenceException.h"
 
 class CLLocalStyle;
 class CLGlobalStyle;
@@ -37,7 +36,7 @@ public:
    * If references can not be resolved, an unresolved_reference_exception is
    * thrown.
    */
-  static CLGlobalRenderInformation* flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException);
+  static CLGlobalRenderInformation* flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CDataVector<CLGlobalRenderInformation>& globalList);
 
   /**
    * static method that takes a const reference to a local render
@@ -47,7 +46,7 @@ public:
    * If references can not be resolved, an unresolved_reference_exception is
    * thrown.
    */
-  static CLLocalRenderInformation* flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CDataVector<CLLocalRenderInformation>& localList, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException);
+  static CLLocalRenderInformation* flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CDataVector<CLLocalRenderInformation>& localList, const CDataVector<CLGlobalRenderInformation>& globalList);
 
 protected:
   /**
@@ -58,7 +57,7 @@ protected:
    */
   static CLRenderInformationBase* flatten(const CLRenderInformationBase& renderInformation,
                                           const CDataVector<CLGlobalRenderInformation>& globalList,
-                                          const CDataVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException);
+                                          const CDataVector<CLLocalRenderInformation>& localList);
 
   /**
    * Method takes a global style object and converts it to a local style

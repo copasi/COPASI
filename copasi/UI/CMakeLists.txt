@@ -39,8 +39,6 @@ file(GLOB FORMS_UI   UI/*.ui )
 file(GLOB HEADERS_UI UI/*.h  )
 file(GLOB SOURCES_UI UI/*.cpp)
 
- 
-
 list(REMOVE_ITEM FORMS_UI 
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQMessageBox.ui
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQFileDialogBtnGrp.ui
@@ -54,45 +52,19 @@ list(REMOVE_ITEM FORMS_UI
   ${CMAKE_CURRENT_SOURCE_DIR}/CQCrossSectionTaskWidget.ui
 )
 
-
-list(REMOVE_ITEM HEADERS_UI 
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CPlotSelectionDialog.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQCompartment.ui.h        
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQProgressItemBar.ui.h    
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQReportDefinition.ui.h   
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CScanWidgetRepeat.ui.h    
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/SliderSettingsDialog.ui.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQPrintAsDialog.ui.h      
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQProgressItemText.ui.h   
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQTextDialog.ui.h         
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CScanWidgetScan.ui.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQProgressItem.ui.h       
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQRegistrationDialog.ui.h 
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CScanWidgetRandom.ui.h    
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CScanWidgetTask.ui.h  
-)
-
-list(REMOVE_ITEM SOURCES_UI 
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/MetabolitesWidget.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/FunctionWidget.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/ModelValuesWidget.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/TableDefinition.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/TSSWidget.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CQExpressionMmlWidgetStack.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CPlotSelectionDialog.cpp
-)
-
 include_directories(${MML_INCLUDE_DIR})
 
 set(SOURCES_RCC)
+
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.h)
-set (HEADERS_UI ${HEADERS_UI} ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.h)
-set (SOURCES_UI ${SOURCES_UI} ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.cpp)
-if (Qt5_FOUND)
-QT5_ADD_RESOURCES(COPASI_RCC_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/copasi.qrc)
-else()
-QT4_ADD_RESOURCES(COPASI_RCC_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/copasi.qrc)
-endif()
+  set (HEADERS_UI ${HEADERS_UI} ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.h)
+  set (SOURCES_UI ${SOURCES_UI} ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/CQIconResource.cpp)
+  
+  if (Qt5_FOUND)
+    QT5_ADD_RESOURCES(COPASI_RCC_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/copasi.qrc)
+  else()
+    QT4_ADD_RESOURCES(COPASI_RCC_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resourcesUI/copasi.qrc)
+  endif()
 endif()
 
 

@@ -30,7 +30,7 @@
  * If references can not be resolved, an unresolved_reference_exception is
  * thrown.
  */
-CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
+CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const CLGlobalRenderInformation& globalRenderInformation, const CDataVector<CLGlobalRenderInformation>& globalList)
 {
   CDataVector<CLLocalRenderInformation> empty;
 
@@ -45,7 +45,7 @@ CLGlobalRenderInformation* CLRenderFlattener::flatten_render_information(const C
  * If references can not be resolved, an unresolved_reference_exception is
  * thrown.
  */
-CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CDataVector<CLLocalRenderInformation>& localList, const CDataVector<CLGlobalRenderInformation>& globalList) throw(CLUnresolvedReferenceException)
+CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CLLocalRenderInformation& localRenderInformation, const CDataVector<CLLocalRenderInformation>& localList, const CDataVector<CLGlobalRenderInformation>& globalList)
 {
   return dynamic_cast<CLLocalRenderInformation*>(CLRenderFlattener::flatten(localRenderInformation, globalList, localList));
 }
@@ -56,7 +56,7 @@ CLLocalRenderInformation* CLRenderFlattener::flatten_render_information(const CL
  * If the object that is passed in is a global render information object,
  * the second list is not considered.
  */
-CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBase& renderInformation, const CDataVector<CLGlobalRenderInformation>& globalList, const CDataVector<CLLocalRenderInformation>& localList) throw(CLUnresolvedReferenceException)
+CLRenderInformationBase* CLRenderFlattener::flatten(const CLRenderInformationBase& renderInformation, const CDataVector<CLGlobalRenderInformation>& globalList, const CDataVector<CLLocalRenderInformation>& localList)
 {
   CLRenderInformationBase* pResult = NULL;
 

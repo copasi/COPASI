@@ -241,10 +241,10 @@ void SliderDialog::createNewSlider()
                   switch (result)
                     {
                       case QMessageBox::YesToAll:
-                        // set the flag
-                        yesToAll = true;
-
                       case QMessageBox::Yes:
+                        // set the flag
+                        yesToAll = (result == QMessageBox::YesToAll);
+
                         // reset the range
                         pEquivalentSlider->resetRange();
                         // update the slider widget

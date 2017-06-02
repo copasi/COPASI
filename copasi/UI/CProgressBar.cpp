@@ -62,6 +62,11 @@ CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::Windo
 CProgressBar::CProgressBar(QWidget* parent, const char* name, Qt::WindowModality windowModality):
   CQProgressDialog(parent, name, windowModality, Qt::WindowMinimizeButtonHint),
   CProcessReport(),
+  mSlotFinished(true),
+  mMutex(),
+  mWaitSlot(),
+  mWaitPause(),
+  mLastHItem(C_INVALID_INDEX),
   mProgressItemList(1),
   mNextEventProcessing(QDateTime::currentDateTime()),
   mpMainWidget(NULL)

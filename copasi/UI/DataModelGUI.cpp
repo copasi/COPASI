@@ -104,7 +104,11 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mSBMLVersion(4),
   mSBMLExportIncomplete(true),
   mSBMLExportCOPASIMIRIAM(true),
-  mExportFormat()
+  mExportFormat(),
+  mpMiriamResources(NULL),
+  mDownloadedBytes(0),
+  mDownloadedTotalBytes(0),
+  mUpdateItem(C_INVALID_INDEX)
 
 #ifdef COPASI_SEDML
   , mSEDMLImportString()

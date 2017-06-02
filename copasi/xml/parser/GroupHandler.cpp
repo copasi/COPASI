@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -55,6 +60,7 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
   switch (mCurrentElement.first)
     {
+      case Group:
         Transform = mpParser->getAttributeValue("transform", papszAttrs, false);
         Stroke = mpParser->getAttributeValue("stroke", papszAttrs, false);
         StrokeWidth = mpParser->getAttributeValue("stroke-width", papszAttrs, false);
@@ -204,7 +210,7 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
         assert(mpData->pGroup != NULL);
         break;
 
-        // a group can have many different children
+      // a group can have many different children
       case Curve:
       case RenderText:
       case Rectangle:

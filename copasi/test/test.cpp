@@ -74,12 +74,10 @@ C_INT32 TestCompartment(void);
 C_INT32 TestCopasiTree(void);
 C_INT32 TestException(void);
 C_INT32 TestDatum(void);
-C_INT32 TestMetab(void);
 C_INT32 TestMessage(void);
 C_INT32 TestReadSample(void);
 C_INT32 TestMoiety(void);
 C_INT32 TestKinFunction(void);
-C_INT32 TestFunctionDB(void);
 C_INT32 TestMassAction(void);
 C_INT32 TestBaseFunction(void);
 C_INT32 TestModel(void);
@@ -88,7 +86,6 @@ C_INT32 TestLU();
 C_INT32 TestLSODA(void (*f)(C_INT32, C_FLOAT64, C_FLOAT64 *, C_FLOAT64 *));
 C_INT32 TestTrajectory(void);
 C_INT32 TestTrajectoryTask(void);
-C_INT32 TestNewton(void);
 C_INT32 TestSSSolution(void);
 C_INT32 TestEigen(void);
 C_INT32 TestOptimization(void);     //yohe: new
@@ -97,22 +94,10 @@ C_INT32 Testr250(void);
 C_INT32 Testmt19937(void);
 C_INT32 TestCopasiObject(void);
 C_INT32 ConvertFunctionDB(void);
-C_INT32 MakeFunctionDB(void);
-C_INT32 MakeFunctionEntry(const string &name,
-                          const string &description,
-                          TriLogic reversible,
-                          vector < string > modifier,
-                          vector < string > parameter,
-                          CDataVectorNS <CKinFunction> &functions);
 
 vector < CMetab * >
-InitMetabolites(CDataVector < CCompartment > & compartment);
 C_INT32 TestMCA(void);
-C_INT32 TestOutputEvent(void);
 
-C_INT32 TestRandom(C_INT32 num_points, C_INT32 num_bins);
-C_INT32 TestDependencyGraph();
-C_INT32 TestIndexedPriorityQueue(C_INT32);
 C_INT32 TestSpec2Model();
 C_INT32 TestCopasiXML();
 
@@ -181,7 +166,7 @@ int main(int argc, char *argv[])
       //      TestCopasiXML();
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       cout << Exception.getMessage().getText() << endl;
     }
@@ -201,7 +186,7 @@ C_INT32 TestMessage(void)
       fatalError();
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       std::cout << Exception.getMessage().getText() << std::endl;
     }
@@ -218,7 +203,7 @@ C_INT32 TestException()
       cout << "Leaving exception test." << endl;
     }
 
-  catch (CCopasiException Exception)
+  catch (CCopasiException & Exception)
     {
       cout << "Entering fatal error handling." << endl;
       cout << Exception.getMessage().getText() << endl;

@@ -24,7 +24,6 @@
 #include <copasi/UI/CopasiSlider.h>
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/copasiWidget.h>
-#include <copasi/UI/CPlotSelectionDialog.h>
 #include <copasi/UI/CProgressBar.h>
 #include <copasi/UI/CProvenanceDialog.h>
 #include <copasi/UI/CQAnalyticsWidget.h>

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -27,7 +32,7 @@ class CQReportDefinition : public CopasiWidget, public Ui::CQReportDefinition
 
 public:
   CQReportDefinition(QWidget* parent = 0, const char* name = 0);
-  ~CQReportDefinition();
+  virtual ~CQReportDefinition();
 
   virtual bool leave();
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
@@ -73,7 +78,6 @@ private slots:
   void slotAddSeparator();
   void slotAddItem();
   void setDirty();
-
 };
 
 #endif // CQREPORTDEFINITION_H
