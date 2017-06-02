@@ -36,10 +36,11 @@ CBiologicalDescription * CBiologicalDescription::fromData(const CData & data)
 // virtual
 CData CBiologicalDescription::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::MIRIAM_PREDICATE, getPredicate());
+  Data.addProperty(CData::MIRIAM_RESOURCE, getResource());
+  Data.addProperty(CData::MIRIAM_ID, getId());
 
   return Data;
 }
@@ -47,10 +48,22 @@ CData CBiologicalDescription::toData() const
 // virtual
 bool CBiologicalDescription::applyData(const CData & data)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::MIRIAM_PREDICATE))
+    {
+      setPredicate(data.getProperty(CData::MIRIAM_PREDICATE).toString());
+    }
+
+  if (data.isSetProperty(CData::MIRIAM_RESOURCE))
+    {
+      setResource(data.getProperty(CData::MIRIAM_RESOURCE).toString());
+    }
+
+  if (data.isSetProperty(CData::MIRIAM_ID))
+    {
+      setId(data.getProperty(CData::MIRIAM_ID).toString());
+    }
 
   return success;
 }

@@ -87,7 +87,23 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   // REPORT_SHOW_TITLE,
   "Report show Title",
   // REPORT_PRECISION,
-  "Report Precision"
+  "Report Precision",
+  // MIRIAM_PREDICATE,
+  "MIRIAM Predicate",
+  // MIRIAM_RESOURCE,
+  "MIRIAM Resource",
+  // MIRIAM_ID,
+  "MIRIAM Id",
+  // DATE,
+  "Date",
+  // GIVEN_NAME,
+  "Given Name",
+  // FAMILY_NAME,
+  "Family Name",
+  // EMAIL,
+  "Email",
+  // ORGANIZATION,
+  "Organization"
 });
 
 CData::CData():

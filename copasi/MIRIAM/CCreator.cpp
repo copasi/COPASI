@@ -35,10 +35,12 @@ CCreator * CCreator::fromData(const CData & data)
 // virtual
 CData CCreator::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::GIVEN_NAME, getGivenName());
+  Data.addProperty(CData::FAMILY_NAME, getFamilyName());
+  Data.addProperty(CData::EMAIL, getEmail());
+  Data.addProperty(CData::ORGANIZATION, getORG());
 
   return Data;
 }
@@ -46,10 +48,27 @@ CData CCreator::toData() const
 // virtual
 bool CCreator::applyData(const CData & data)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::GIVEN_NAME))
+    {
+      setGivenName(data.getProperty(CData::GIVEN_NAME).toString());
+    }
+
+  if (data.isSetProperty(CData::FAMILY_NAME))
+    {
+      setFamilyName(data.getProperty(CData::FAMILY_NAME).toString());
+    }
+
+  if (data.isSetProperty(CData::EMAIL))
+    {
+      setEmail(data.getProperty(CData::EMAIL).toString());
+    }
+
+  if (data.isSetProperty(CData::ORGANIZATION))
+    {
+      setORG(data.getProperty(CData::ORGANIZATION).toString());
+    }
 
   return success;
 }

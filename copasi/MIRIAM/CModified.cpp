@@ -35,10 +35,9 @@ CModification * CModification::fromData(const CData & data)
 // virtual
 CData CModification::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::DATE, getDate());
 
   return Data;
 }
@@ -46,10 +45,12 @@ CData CModification::toData() const
 // virtual
 bool CModification::applyData(const CData & data)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::DATE))
+    {
+      setDate(data.getProperty(CData::DATE).toString());
+    }
 
   return success;
 }
