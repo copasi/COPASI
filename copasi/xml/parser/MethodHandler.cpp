@@ -60,7 +60,7 @@ CXMLHandler * MethodHandler::processStart(const XML_Char * pszName,
             // We use the default method for this task and issue a warning
             CCopasiMessage(CCopasiMessage::WARNING, MCXML + 18, sType.c_str(),
                            mpParser->getCurrentLineNumber(),
-                           CTaskEnum::MethodXML[mpData->pCurrentTask->getMethod()->getSubType()]);
+                           CTaskEnum::MethodXML[mpData->pCurrentTask->getMethod()->getSubType()].c_str());
           }
 
         mpData->pCurrentTask->getMethod()->setObjectName(name);
