@@ -24,8 +24,10 @@ CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt
   //ui->scrollAreaWidgetContents->setAutoFillBackground(true);
   //setAutoFillBackground(true);
   // sort the background of the control
+#ifndef DARWIN
   setStyleSheet("background-color:transparent;");
-
+#endif
+  
 #if QT_VERSION >= 0x050000
   ui->scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 #endif
