@@ -1004,10 +1004,10 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
                              QMessageBox::Ok, QMessageBox::Ok);
       mpDataModelGUI->createModel();
     }
-
+  QString Message = QString::null;
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
-      QString Message = "Problem while loading file " + mNewFile + QString("!\n\n");
+      Message = "Problem while loading file " + mNewFile + QString("!\n\n");
       Message += FROM_UTF8(msg.getText());
 
       msg = CCopasiMessage::getLastMessage();
@@ -1019,8 +1019,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
           msg = CCopasiMessage::getLastMessage();
         }
 
-      CQMessageBox::warning(this, QString("File Warning"), Message,
-                            QMessageBox::Ok, QMessageBox::Ok);
     }
 
   if (strcasecmp(CDirEntry::suffix(TO_UTF8(mNewFile)).c_str(), ".cps") == 0 &&
@@ -1057,6 +1055,12 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   refreshRecentFileMenu();
 
   mNewFile = "";
+  
+  if (!Message.isNull())
+    
+    CQMessageBox::warning(this, QString("File Warning"), Message,
+                          QMessageBox::Ok, QMessageBox::Ok);
+  
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
