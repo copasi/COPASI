@@ -31,6 +31,9 @@ CCopasiTimer::CCopasiTimer(const Type & type,
       case Type::THREAD:
         mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
+        
+      default:
+        break;
     }
 }
 
@@ -61,6 +64,9 @@ bool CCopasiTimer::start()
       case Type::THREAD:
         mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
+        
+      default:
+        break;
     }
 
   mElapsedTime = 0;
@@ -83,6 +89,9 @@ void CCopasiTimer::calculateValue()
 
       case Type::THREAD:
         mElapsedTime = CCopasiTimeVariable::getThreadTime() - mStartTime;
+        break;
+      
+      default:
         break;
     }
 

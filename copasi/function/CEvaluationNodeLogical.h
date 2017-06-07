@@ -105,6 +105,10 @@ public:
         case SubType::LE:
           mValue = (*mpLeftValue <= *mpRightValue) ? 1.0 : 0.0;
           break;
+          
+        default:
+          break;
+          
       }
   }
 

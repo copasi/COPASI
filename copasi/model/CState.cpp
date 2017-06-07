@@ -136,6 +136,9 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
             case CModelEntity::Status::TIME:
               assert(false);
               break;
+
+            case CModelEntity::Status::__SIZE:
+              break;
           }
       else
         Fixed++;

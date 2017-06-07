@@ -1531,6 +1531,9 @@ CNormalCall * createCall(const CEvaluationNode* node)
               case CEvaluationNode::SubType::INVALID:
                 pCall->setType(CNormalCall::INVALID);
                 break;
+
+              default:
+                break;
             }
         }
     }

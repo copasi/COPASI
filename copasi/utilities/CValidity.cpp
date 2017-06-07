@@ -206,6 +206,9 @@ void CValidity::remove(const CIssue & issue)
       case CIssue::eSeverity::Information:
         mInformation &= ~Kind(issue.getKind());
         break;
+        
+      case CIssue::eSeverity::__SIZE:
+        break;
     }
 }
 

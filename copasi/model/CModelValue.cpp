@@ -682,6 +682,9 @@ void CModelEntity::setStatus(const CModelEntity::Status & status)
 
             mUsed = false;
             break;
+            
+          case Status::__SIZE:
+            break;
         }
     }
 }

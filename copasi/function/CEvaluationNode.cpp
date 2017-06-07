@@ -217,6 +217,9 @@ CEvaluationNode * CEvaluationNode::create(const CEvaluationNode::MainType & main
 
       case MainType::MV_FUNCTION:
         break;
+        
+      case MainType::__SIZE:
+        break;
     }
 
   return pNode;
@@ -859,6 +862,9 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
       case MainType::VECTOR:
       case MainType::DELAY:
       case MainType::INVALID:
+        break;
+        
+      case MainType::__SIZE:
         break;
     }
 

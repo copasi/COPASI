@@ -2258,6 +2258,9 @@ CEvaluationNode* CNormalTranslation::newEvaluateNumbers(const CEvaluationNode* p
 
               case CEvaluationNode::SubType::INVALID:
                 break;
+
+              default:
+                break;
             }
         }
 

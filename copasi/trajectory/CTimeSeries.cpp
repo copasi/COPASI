@@ -214,6 +214,9 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
               }
 
             break;
+            
+          case CMath::SimulationType::__SIZE:
+            break;
         }
 
       const CDataObject * pDataObject = CObjectInterface::DataObject(pObject);

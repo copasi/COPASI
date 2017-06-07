@@ -150,6 +150,9 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
                       // We need to record the old and new concentrations for each species where new := old / factor
                       Data.addProperty(CData::INITIAL_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
                       break;
+                      
+                    case CCore::Framework::__SIZE:
+                      break;
                   }
 
                 undoData.addDependentData(Data);
