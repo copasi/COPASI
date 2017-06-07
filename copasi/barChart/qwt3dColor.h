@@ -13,6 +13,8 @@
 #ifndef BAR_COLOR_H
 #define BAR_COLOR_H
 
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 #include "qwt3d_plot.h"
 
 class QWT3D_EXPORT BarColor : public Qwt3D::Color

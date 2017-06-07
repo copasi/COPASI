@@ -90,6 +90,10 @@ const int CQGLLayoutPainter::MARGIN = 10;
 // function
 #undef max
 #endif // _WIN32
+
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+
 CQGLLayoutPainter::CQGLLayoutPainter(const QGLFormat& format, QWidget *parent)
   : QGLWidget(format, parent),
     mInitialized(false),

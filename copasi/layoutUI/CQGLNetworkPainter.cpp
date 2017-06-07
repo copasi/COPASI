@@ -73,6 +73,9 @@ C_FLOAT64 log2(const C_FLOAT64 __x)
 #include "layoutUI/CDataEntity.h"
 #include "layoutUI/BezierCurve.h"
 
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+
 // TODO check why the arrow heads are off when switching back from size
 // animation to rectangular view
 //

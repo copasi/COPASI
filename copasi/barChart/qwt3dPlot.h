@@ -15,11 +15,15 @@
 #ifndef PLOT3D_H
 #define PLOT3D_H
 
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 #include <QtCore/QString>
 #include <qwt3d_surfaceplot.h>
 
 #include "copasi/barChart/CQBaseWidget.h"
 #include "copasi/barChart/qwt3dBars.h"
+
+
 
 class QGridLayout;
 

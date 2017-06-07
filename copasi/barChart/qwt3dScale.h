@@ -17,6 +17,8 @@
 
 #include <QtCore/QString>
 
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 #include <qwt3d_scale.h>
 #include <qwt3d_types.h>
 #include <qwt3d_autoptr.h>

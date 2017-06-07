@@ -19,6 +19,8 @@
 
 #include <QBitmap>
 
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 #include <qwt3d_color.h>
 #include <qwt3d_plot.h>
 #include "qwt3dBars.h"
