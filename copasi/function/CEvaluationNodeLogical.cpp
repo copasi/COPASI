@@ -551,7 +551,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
       case SubType::OR:
       case SubType::XOR:
 
-        // The number of chidren may vary
+        // The number of children may vary
         switch (iMax)
           {
             case 0:

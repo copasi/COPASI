@@ -1026,7 +1026,7 @@ bool CRungeKutta::checkParameter(const size_t * pDim,
 
   if (rootCount < 0)
     {
-      mErrorMessage << "Root Number should be an non-negative integer!" << std::endl;
+      mErrorMessage << "Root Number should be a non-negative integer!" << std::endl;
       return false;
     }
 

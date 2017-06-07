@@ -206,6 +206,7 @@ BandedGraphWidget::buttonPressedX()
       mpEditX->setText(FROM_UTF8(mpObjectX->getObjectDisplayName()));
 
       if (mpObjectYone)
+      {
         if (mpObjectYtwo && (mpObjectYtwo != mpObjectYone))
           mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
                                          + "/"
@@ -213,10 +214,10 @@ BandedGraphWidget::buttonPressedX()
                                          + "|"
                                          + mpObjectX->getObjectDisplayName()));
         else
-          mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
+            mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
                                          + "|"
                                          + mpObjectX->getObjectDisplayName()));
-
+      }
       //TODO update tab title
     }
   else
@@ -237,6 +238,7 @@ BandedGraphWidget::buttonPressedYone()
       mpEditYone->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()));
 
       if (mpObjectX)
+      {
         if (mpObjectYtwo && (mpObjectYtwo != mpObjectYone))
           mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
                                          + "/"
@@ -247,7 +249,7 @@ BandedGraphWidget::buttonPressedYone()
           mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
                                          + "|"
                                          + mpObjectX->getObjectDisplayName()));
-
+      }
       //TODO update tab title
     }
   else
@@ -268,6 +270,7 @@ BandedGraphWidget::buttonPressedYtwo()
       mpEditYtwo->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()));
 
       if (mpObjectX)
+      {
         if (mpObjectYone && (mpObjectYone != mpObjectYtwo))
           mpEditTitle->setText(FROM_UTF8(mpObjectYone->getObjectDisplayName()
                                          + "/"
@@ -278,7 +281,7 @@ BandedGraphWidget::buttonPressedYtwo()
           mpEditTitle->setText(FROM_UTF8(mpObjectYtwo->getObjectDisplayName()
                                          + "|"
                                          + mpObjectX->getObjectDisplayName()));
-
+      }
       //TODO update tab title
     }
   else

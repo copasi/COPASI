@@ -215,7 +215,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
     {
       *pA = *pMatrix;
 
-      if (!finite(*pA) && !isnan(*pA))
+      if (!isfinite(*pA) && !isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();
@@ -306,7 +306,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
           at = mJacobianReduced[i][j];
 
-          if (!finite(at) && !isnan(at))
+          if (!isfinite(at) && !isnan(at))
             {
               if (at > 0)
                 at = std::numeric_limits< C_FLOAT64 >::max();

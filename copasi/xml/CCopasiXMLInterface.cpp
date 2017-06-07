@@ -236,7 +236,7 @@ std::ostream & operator << (std::ostream & os, const CCopasiXMLInterface::DBL & 
 
   if (isnan(dbl.mValue))
     os << "NaN";
-  else if (finite(dbl.mValue))
+  else if (isfinite(dbl.mValue))
     os << dbl.mValue;
   else if (dbl.mValue > 0.0)
     os << "INF";

@@ -265,7 +265,7 @@ void CEigen::calcEigenValues(const CMatrix< C_FLOAT64 > & matrix)
     {
       *pA = *pMatrix;
 
-      if (!finite(*pA) && !isnan(*pA))
+      if (!isfinite(*pA) && !isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();

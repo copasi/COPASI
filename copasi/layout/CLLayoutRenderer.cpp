@@ -92,6 +92,9 @@
 # endif // _WIN32
 #endif // __APPLE__
 
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+
 // specifies how many segments are used to approximate the rounded
 // corners of a rectangle
 const unsigned int CLLayoutRenderer::NUM_CORNER_SEGMENTS = 10;
@@ -1463,6 +1466,8 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
 }
+
+
 
 /**
  * Resize method that is called whenever the GL window is resized.

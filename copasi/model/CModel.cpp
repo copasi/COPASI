@@ -1717,37 +1717,37 @@ bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
            (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL) &&
           objects.find(pContainer) == objects.end())
         {
-          dependentReactions.insert(pContainer).second;
+          dependentReactions.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentMetabolites.insert(pContainer).second;
+          dependentMetabolites.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentCompartments.insert(pContainer).second;
+          dependentCompartments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentModelValues.insert(pContainer).second;
+          dependentModelValues.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentEventAssignments.insert(pContainer).second;
+          dependentEventAssignments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("Event")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentEvents.insert(pContainer).second;
+          dependentEvents.insert(pContainer);
         }
     }
 
@@ -1838,37 +1838,37 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
            (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL) &&
           objects.find(pContainer) == objects.end())
         {
-          dependentReactions.insert(pContainer).second;
+          dependentReactions.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentMetabolites.insert(pContainer).second;
+          dependentMetabolites.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentCompartments.insert(pContainer).second;
+          dependentCompartments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentModelValues.insert(pContainer).second;
+          dependentModelValues.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentEventAssignments.insert(pContainer).second;
+          dependentEventAssignments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
                 (pContainer = pDataObject->getObjectAncestor("Event")) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
-          dependentEvents.insert(pContainer).second;
+          dependentEvents.insert(pContainer);
         }
     }
 
