@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <cmath>
 #include <limits>
@@ -215,7 +215,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
     {
       *pA = *pMatrix;
 
-      if (!isfinite(*pA) && !isnan(*pA))
+      if (!std::isfinite(*pA) && !isnan(*pA))
         {
           if (*pA > 0)
             *pA = std::numeric_limits< C_FLOAT64 >::max();
@@ -306,7 +306,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
 
           at = mJacobianReduced[i][j];
 
-          if (!isfinite(at) && !isnan(at))
+          if (!std::isfinite(at) && !isnan(at))
             {
               if (at > 0)
                 at = std::numeric_limits< C_FLOAT64 >::max();
