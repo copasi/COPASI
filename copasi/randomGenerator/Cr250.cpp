@@ -6,7 +6,7 @@
    $Date: 2006/04/27 01:31:00 $
    End CVS Header */
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright ï¿½ 2005 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -111,7 +111,7 @@ C_FLOAT64 Cr250::getRandomOO()
 
 unsigned C_INT32 Cr250::r250(void)
 {
-  register C_INT16 j;
+  C_INT16 j;
 
   if (mIndex > 146)
     j = mIndex - 147;      /* Wrap pointer around */
@@ -130,7 +130,7 @@ unsigned C_INT32 Cr250::r250(void)
 
 unsigned C_INT32 Cr250::r250n(const unsigned C_INT16 & max)
 {
-  register unsigned C_INT16 limit;
+  unsigned C_INT16 limit;
 
   limit = (65535U / max) * max;
 

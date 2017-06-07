@@ -20,6 +20,8 @@
 
 #include "soapH.h"
 
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+
 SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.12 2009-01-22 20:17:15 GMT")
 
 #ifndef WITH_NOGLOBAL

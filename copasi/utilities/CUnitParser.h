@@ -11,6 +11,9 @@
 #ifndef COPASI_CUnitParser
 #define COPASI_CUnitParser
 
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+
+
 #include "copasi/utilities/CUnit.h"
 #include "copasi/utilities/CUnitDefinition.h"
 //#include <vector>

@@ -20,6 +20,8 @@
 #ifndef COPASI_CEvaluationLexer
 #define COPASI_CEvaluationLexer
 
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+
 #include <vector>
 
 #undef yyFlexLexer

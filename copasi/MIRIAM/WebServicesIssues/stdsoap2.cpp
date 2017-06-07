@@ -76,6 +76,9 @@ when locally allocated data exceeds 64K.
 
  */
 
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+
+
 #ifdef AS400
 # pragma convert(819) /* EBCDIC to ASCII */
 #endif
