@@ -408,7 +408,7 @@ void CQSpeciesDetail::save()
             bool wasNaN = mpMetab->getInitialConcentration() != mpMetab->getInitialConcentration();
             bool isNaN = mInitialConcentration != mInitialConcentration;
 
-            if (wasNaN != isNaN)
+            if (!isNaN || (wasNaN != isNaN))
               {
                 mpUndoStack->push(new SpeciesChangeCommand(
                                     CCopasiUndoCommand::SPECIES_INITAL_CONCENTRATION_CHANGE,
@@ -431,7 +431,7 @@ void CQSpeciesDetail::save()
             bool wasNaN = mpMetab->getInitialValue() != mpMetab->getInitialValue();
             bool isNaN = mInitialNumber != mInitialNumber;
 
-            if (wasNaN != isNaN)
+            if (!isNaN || (wasNaN != isNaN))
               {
                 mpUndoStack->push(new SpeciesChangeCommand(
                                     CCopasiUndoCommand::SPECIES_INITAL_PARTICLENUMBER_CHANGE,
