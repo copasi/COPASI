@@ -218,7 +218,6 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   CMathObject * pParticleFluxObjectEnd = pParticleFluxObject + numReacs;
   CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
   CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
-  CMathObject * pSpeciesObject;
 
   // mUnscaledElasticities.resize(numReacs, numMetabs);
   C_FLOAT64 * pElasticity;

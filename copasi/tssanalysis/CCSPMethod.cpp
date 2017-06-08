@@ -1147,7 +1147,7 @@ void CCSPMethod::start()
   mI = 0.0;
   mB = 0.0;
 
-  C_INT i, j;
+  C_INT i;
 
   for (i = 0; i < mDim; i++)
     mI(i, i) = 1.;

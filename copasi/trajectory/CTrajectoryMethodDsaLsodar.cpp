@@ -289,8 +289,6 @@ CTrajectoryMethodDsaLsodar::~CTrajectoryMethodDsaLsodar()
 
 void CTrajectoryMethodDsaLsodar::initializeParameter()
 {
-  CCopasiParameter *pParm;
-
   mpMaxSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 1000000);
   mpLowerLimit = assertParameter("Lower Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 800.0);
   mpUpperLimit = assertParameter("Upper Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
