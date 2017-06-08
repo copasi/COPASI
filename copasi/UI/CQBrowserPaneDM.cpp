@@ -68,7 +68,11 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  CDataObject * pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
+  const CDataObject * pObject = pNode->getObject();
+
+  // For now, this is still needed for the non-CDataVector CDataObjects
+  if (pObject == NULL)
+    pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
 
   CValidity validity;
 
@@ -386,6 +390,9 @@ void CQBrowserPaneDM::load()
   load(115); // Global Quantities
   load(116); // Events
 
+  // Still setting keys in here, rather than setObject(), for now because they may still be needed
+  // where keys are in use (e.g. listviews slotFolderChanged()
+
   findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getActiveModelParameterSet().getKey()); // Parameter Set
   findNodeFromId(119)->setKey(mpCopasiDM->getModel()->getKey());
   load(119); // Model Parameter Sets
@@ -479,6 +486,7 @@ void CQBrowserPaneDM::load(const size_t & id)
 
   // We need to compare the existing nodes with the COPASI data model objects.
   CNode * pParent = findNodeFromId(id);
+  pParent->setObject(pVector);
   CCopasiNode< CQBrowserPaneDM::SData > * pChildData = pParent->CCopasiNode< CQBrowserPaneDM::SData >::getChild();
   CDataVector< CDataObject >::const_iterator it = pVector->begin();
   CDataVector< CDataObject >::const_iterator end = pVector->end();
@@ -489,7 +497,8 @@ void CQBrowserPaneDM::load(const size_t & id)
     {
       CNode * pChild = static_cast< CNode *>(pChildData);
 
-      pChild->setKey(it->getKey());
+      pChild->setKey(it->getKey()); //Some things may currently still use key (e.g. listviews slotFolderChanged)
+      pChild->setObject(it);
 
       QString DisplayRole;
 
@@ -910,9 +919,19 @@ void CQBrowserPaneDM::CNode::setKey(const std::string & key)
   mData.mKey = key;
 }
 
+void CQBrowserPaneDM::CNode::setObject(const CDataObject * pObject)
+{
+  mData.mpObject = pObject;
+}
+
 const std::string & CQBrowserPaneDM::CNode::getKey() const
 {
   return mData.mKey;
+}
+
+const CDataObject * CQBrowserPaneDM::CNode::getObject() const
+{
+  return mData.mpObject;
 }
 
 int CQBrowserPaneDM::CNode::getRow() const

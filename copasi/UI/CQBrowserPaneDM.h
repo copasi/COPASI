@@ -35,6 +35,8 @@ public:
     std::string mKey;
 
     QString mDisplayRole;
+
+    const CDataObject * mpObject = NULL;
   };
 
   class CNode : public CCopasiNode< SData >
@@ -62,7 +64,11 @@ public:
 
     void setKey(const std::string & key);
 
+    void setObject(const CDataObject * pObject);
+
     const std::string & getKey() const;
+
+    const CDataObject * getObject() const;
 
     int getRow() const;
   };
