@@ -1222,7 +1222,7 @@ size_t yyFlexLexer::LexerInput(char* buf, size_t max_size)
   if (yyin->bad())
     return -1;
   else
-    return yyin->gcount();
+    return (size_t) yyin->gcount();
 
 #endif
 }

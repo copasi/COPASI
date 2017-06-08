@@ -1022,7 +1022,7 @@ SOAP_SOURCE_STAMP("@(#) stdsoap2.c ver 2.7.12 2008-10-01 00:00:00 GMT")
     if (soap->is)
       {
         if (soap->is->good())
-          return soap->is->read(s, (std::streamsize)n).gcount();
+          return (size_t) soap->is->read(s, (std::streamsize)n).gcount();
 
         return 0;
       }
