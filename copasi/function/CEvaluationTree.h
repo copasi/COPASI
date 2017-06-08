@@ -278,6 +278,11 @@ public:
    */
   bool hasDiscontinuity() const;
 
+  /**
+   * @return true if any of the given CN's us used by this expression
+   */
+  bool containsCN(const DataObjectSet& elements) const;
+
 protected:
   /**
    * Parse the description

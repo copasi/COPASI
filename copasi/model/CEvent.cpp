@@ -360,21 +360,21 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
   std::string Separator;
 
   if (mpTriggerExpression != NULL &&
-      mpTriggerExpression->prerequisitsContains(deletedObjects))
+      mpTriggerExpression->containsCN(deletedObjects))
     {
       Origin += Separator + "Trigger";
       Separator = "\n";
     }
 
   if (mpPriorityExpression != NULL &&
-      mpPriorityExpression->prerequisitsContains(deletedObjects))
+      mpPriorityExpression->containsCN(deletedObjects))
     {
       Origin += Separator + "Priority";
       Separator = "\n";
     }
 
   if (mpDelayExpression != NULL &&
-      mpDelayExpression->prerequisitsContains(deletedObjects))
+      mpDelayExpression->containsCN(deletedObjects))
     {
       Origin += Separator + "Delay";
       Separator = "\n";
@@ -388,17 +388,28 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
       const CEventAssignment& assignment = *itAssignment;
 
       if (assignment.getExpressionPtr() != NULL &&
-          assignment.getExpressionPtr()->prerequisitsContains(deletedObjects))
+          assignment.getExpressionPtr()->containsCN(deletedObjects))
         {
           Origin += Separator + "Expression";
           Separator = "\n";
         }
 
-      if (assignment.getTargetObject() != NULL &&
-          assignment.getTargetObject()->prerequisitsContains(deletedObjects))
+      if (assignment.getTargetObject() != NULL)
         {
-          Origin += Separator + "Target";
-          Separator = "\n";
+
+          auto setIt = deletedObjects.begin();
+          auto setEnd = deletedObjects.end();
+
+          for (; setIt != setEnd; ++setIt)
+            {
+              if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
+                {
+
+
+                  Origin += Separator + "Target";
+                  Separator = "\n";
+                }
+            }
         }
     }
 

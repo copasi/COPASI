@@ -37,6 +37,7 @@
 #include "utilities/CNodeIterator.h"
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/core/CDataObject.h"
 #include "math/CMathObject.h"
 
 const std::string CEvaluationTree::TypeName[] =
@@ -830,6 +831,50 @@ bool CEvaluationTree::hasDiscontinuity() const
             // If the called tree has a discontinuity so do we.
             if (static_cast< CEvaluationNodeCall * >(*it)->getCalledTree() != NULL &&
                 static_cast< CEvaluationNodeCall * >(*it)->getCalledTree()->hasDiscontinuity())
+              {
+                return true;
+              }
+
+            break;
+        }
+    }
+
+  return false;
+}
+
+bool CEvaluationTree::containsCN(const DataObjectSet& elements) const
+{
+  if (mpNodeList == NULL)
+    return false;
+
+  std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
+  std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
+
+  for (; it != end; ++it)
+    {
+      switch ((*it)->mainType() | (*it)->subType())
+        {
+          case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
+          {
+            // We found a discontinuity.
+            auto setIt = elements.begin();
+            auto setEnd = elements.end();
+
+            for (; setIt != setEnd; ++setIt)
+              {
+                if ((*setIt)->getCN() == static_cast<CEvaluationNodeObject*>(*it)->getObjectCN())
+                  return true;
+              }
+
+            break;
+          }
+
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
+
+            // If the called tree has a discontinuity so do we.
+            if (static_cast<CEvaluationNodeCall *>(*it)->getCalledTree() != NULL &&
+                static_cast<CEvaluationNodeCall *>(*it)->getCalledTree()->containsCN(elements))
               {
                 return true;
               }

@@ -104,7 +104,7 @@ CQDependencyWidget::getDetailsFor(const CDataObject *pObject, std::set< const CD
   if (pEntity != NULL)
     {
       if (pEntity->getExpressionPtr() != NULL &&
-          pEntity->getExpressionPtr()->prerequisitsContains(elements))
+          pEntity->getExpressionPtr()->containsCN(elements))
         {
           if (pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
             {
@@ -120,7 +120,7 @@ CQDependencyWidget::getDetailsFor(const CDataObject *pObject, std::set< const CD
         }
 
       if (pEntity->getInitialExpressionPtr() != NULL &&
-          pEntity->getInitialExpressionPtr()->prerequisitsContains(elements))
+          pEntity->getInitialExpressionPtr()->containsCN(elements))
         {
           Origin += Separator + "Initial Expression";
           Separator = "\n";
