@@ -92,7 +92,9 @@
 # endif // _WIN32
 #endif // __APPLE__
 
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 
 // specifies how many segments are used to approximate the rounded

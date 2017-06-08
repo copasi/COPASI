@@ -20,8 +20,9 @@
 #ifndef COPASI_CChemEqParser
 #define COPASI_CChemEqParser
 
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-register"
-
+#endif
 
 #include <vector>
 #include <string>

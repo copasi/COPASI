@@ -13,7 +13,9 @@
 
 #include <QtCore/QVariant>
 
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 #include "copasi/barChart/ui_CQBaseWidget.h"
 

@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/WebServicesIssues/soapC.cpp,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/04/21 16:17:18 $
-// End CVS Header
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -20,7 +22,9 @@
 
 #include "soapH.h"
 
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-register"
+#endif
 
 SOAP_SOURCE_STAMP("@(#) soapC.cpp ver 2.7.12 2009-01-22 20:17:15 GMT")
 
@@ -209,118 +213,173 @@ extern "C"
       {
         case SOAP_TYPE_byte:
           return soap_in_byte(soap, NULL, NULL, "xsd:byte");
+
         case SOAP_TYPE_int:
           return soap_in_int(soap, NULL, NULL, "xsd:int");
+
         case SOAP_TYPE_std__string:
           return soap_in_std__string(soap, NULL, NULL, "xsd:string");
+
         case SOAP_TYPE_ArrayOf_USCORExsd_USCOREstring:
           return soap_in_ArrayOf_USCORExsd_USCOREstring(soap, NULL, NULL, "xsd:string");
+
         case SOAP_TYPE_ns2__checkRegExp:
           return soap_in_ns2__checkRegExp(soap, NULL, NULL, "ns2:checkRegExp");
+
         case SOAP_TYPE_ns2__checkRegExpResponse:
           return soap_in_ns2__checkRegExpResponse(soap, NULL, NULL, "ns2:checkRegExpResponse");
+
         case SOAP_TYPE_ns2__getDataTypesId:
           return soap_in_ns2__getDataTypesId(soap, NULL, NULL, "ns2:getDataTypesId");
+
         case SOAP_TYPE_ns2__getDataTypesIdResponse:
           return soap_in_ns2__getDataTypesIdResponse(soap, NULL, NULL, "ns2:getDataTypesIdResponse");
+
         case SOAP_TYPE_ns2__getDataTypesName:
           return soap_in_ns2__getDataTypesName(soap, NULL, NULL, "ns2:getDataTypesName");
+
         case SOAP_TYPE_ns2__getDataTypesNameResponse:
           return soap_in_ns2__getDataTypesNameResponse(soap, NULL, NULL, "ns2:getDataTypesNameResponse");
+
         case SOAP_TYPE_ns2__getNames:
           return soap_in_ns2__getNames(soap, NULL, NULL, "ns2:getNames");
+
         case SOAP_TYPE_ns2__getNamesResponse:
           return soap_in_ns2__getNamesResponse(soap, NULL, NULL, "ns2:getNamesResponse");
+
         case SOAP_TYPE_ns2__getDataTypeSynonyms:
           return soap_in_ns2__getDataTypeSynonyms(soap, NULL, NULL, "ns2:getDataTypeSynonyms");
+
         case SOAP_TYPE_ns2__getDataTypeSynonymsResponse:
           return soap_in_ns2__getDataTypeSynonymsResponse(soap, NULL, NULL, "ns2:getDataTypeSynonymsResponse");
+
         case SOAP_TYPE_ns2__getResourceLocation:
           return soap_in_ns2__getResourceLocation(soap, NULL, NULL, "ns2:getResourceLocation");
+
         case SOAP_TYPE_ns2__getResourceLocationResponse:
           return soap_in_ns2__getResourceLocationResponse(soap, NULL, NULL, "ns2:getResourceLocationResponse");
+
         case SOAP_TYPE_ns2__getResourceInstitution:
           return soap_in_ns2__getResourceInstitution(soap, NULL, NULL, "ns2:getResourceInstitution");
+
         case SOAP_TYPE_ns2__getResourceInstitutionResponse:
           return soap_in_ns2__getResourceInstitutionResponse(soap, NULL, NULL, "ns2:getResourceInstitutionResponse");
+
         case SOAP_TYPE_ns2__getResourceInfo:
           return soap_in_ns2__getResourceInfo(soap, NULL, NULL, "ns2:getResourceInfo");
+
         case SOAP_TYPE_ns2__getResourceInfoResponse:
           return soap_in_ns2__getResourceInfoResponse(soap, NULL, NULL, "ns2:getResourceInfoResponse");
+
         case SOAP_TYPE_ns2__getDataTypePattern:
           return soap_in_ns2__getDataTypePattern(soap, NULL, NULL, "ns2:getDataTypePattern");
+
         case SOAP_TYPE_ns2__getDataTypePatternResponse:
           return soap_in_ns2__getDataTypePatternResponse(soap, NULL, NULL, "ns2:getDataTypePatternResponse");
+
         case SOAP_TYPE_ns2__getMiriamURI:
           return soap_in_ns2__getMiriamURI(soap, NULL, NULL, "ns2:getMiriamURI");
+
         case SOAP_TYPE_ns2__getMiriamURIResponse:
           return soap_in_ns2__getMiriamURIResponse(soap, NULL, NULL, "ns2:getMiriamURIResponse");
+
         case SOAP_TYPE_ns2__getOfficialDataTypeURI:
           return soap_in_ns2__getOfficialDataTypeURI(soap, NULL, NULL, "ns2:getOfficialDataTypeURI");
+
         case SOAP_TYPE_ns2__getOfficialDataTypeURIResponse:
           return soap_in_ns2__getOfficialDataTypeURIResponse(soap, NULL, NULL, "ns2:getOfficialDataTypeURIResponse");
+
         case SOAP_TYPE_ns2__isDeprecated:
           return soap_in_ns2__isDeprecated(soap, NULL, NULL, "ns2:isDeprecated");
+
         case SOAP_TYPE_ns2__isDeprecatedResponse:
           return soap_in_ns2__isDeprecatedResponse(soap, NULL, NULL, "ns2:isDeprecatedResponse");
+
         case SOAP_TYPE_ns2__getLocations_:
           return soap_in_ns2__getLocations_(soap, NULL, NULL, "ns2:getLocations");
+
         case SOAP_TYPE_ns2__getLocationsResponse_:
           return soap_in_ns2__getLocationsResponse_(soap, NULL, NULL, "ns2:getLocationsResponse");
+
         case SOAP_TYPE_ns2__getLocations:
           return soap_in_ns2__getLocations(soap, NULL, NULL, "ns2:getLocations");
+
         case SOAP_TYPE_ns2__getLocationsResponse:
           return soap_in_ns2__getLocationsResponse(soap, NULL, NULL, "ns2:getLocationsResponse");
+
         case SOAP_TYPE_ns2__getDataTypeDef:
           return soap_in_ns2__getDataTypeDef(soap, NULL, NULL, "ns2:getDataTypeDef");
+
         case SOAP_TYPE_ns2__getDataTypeDefResponse:
           return soap_in_ns2__getDataTypeDefResponse(soap, NULL, NULL, "ns2:getDataTypeDefResponse");
+
         case SOAP_TYPE_ns2__getDataTypeURIs:
           return soap_in_ns2__getDataTypeURIs(soap, NULL, NULL, "ns2:getDataTypeURIs");
+
         case SOAP_TYPE_ns2__getDataTypeURIsResponse:
           return soap_in_ns2__getDataTypeURIsResponse(soap, NULL, NULL, "ns2:getDataTypeURIsResponse");
+
         case SOAP_TYPE_ns2__getDataTypeURI:
           return soap_in_ns2__getDataTypeURI(soap, NULL, NULL, "ns2:getDataTypeURI");
+
         case SOAP_TYPE_ns2__getDataTypeURIResponse:
           return soap_in_ns2__getDataTypeURIResponse(soap, NULL, NULL, "ns2:getDataTypeURIResponse");
+
         case SOAP_TYPE_ns2__getJavaLibraryVersion:
           return soap_in_ns2__getJavaLibraryVersion(soap, NULL, NULL, "ns2:getJavaLibraryVersion");
+
         case SOAP_TYPE_ns2__getJavaLibraryVersionResponse:
           return soap_in_ns2__getJavaLibraryVersionResponse(soap, NULL, NULL, "ns2:getJavaLibraryVersionResponse");
+
         case SOAP_TYPE_ns2__getServicesVersion:
           return soap_in_ns2__getServicesVersion(soap, NULL, NULL, "ns2:getServicesVersion");
+
         case SOAP_TYPE_ns2__getServicesVersionResponse:
           return soap_in_ns2__getServicesVersionResponse(soap, NULL, NULL, "ns2:getServicesVersionResponse");
+
         case SOAP_TYPE_ns2__getServicesInfo:
           return soap_in_ns2__getServicesInfo(soap, NULL, NULL, "ns2:getServicesInfo");
+
         case SOAP_TYPE_ns2__getServicesInfoResponse:
           return soap_in_ns2__getServicesInfoResponse(soap, NULL, NULL, "ns2:getServicesInfoResponse");
+
         case SOAP_TYPE_ns2__getDataResources:
           return soap_in_ns2__getDataResources(soap, NULL, NULL, "ns2:getDataResources");
+
         case SOAP_TYPE_ns2__getDataResourcesResponse:
           return soap_in_ns2__getDataResourcesResponse(soap, NULL, NULL, "ns2:getDataResourcesResponse");
+
         case SOAP_TYPE_ns2__getURI:
           return soap_in_ns2__getURI(soap, NULL, NULL, "ns2:getURI");
+
         case SOAP_TYPE_ns2__getURIResponse:
           return soap_in_ns2__getURIResponse(soap, NULL, NULL, "ns2:getURIResponse");
+
         case SOAP_TYPE_ns2__getLocation:
           return soap_in_ns2__getLocation(soap, NULL, NULL, "ns2:getLocation");
+
         case SOAP_TYPE_ns2__getLocationResponse:
           return soap_in_ns2__getLocationResponse(soap, NULL, NULL, "ns2:getLocationResponse");
+
         case SOAP_TYPE_ns2__getName:
           return soap_in_ns2__getName(soap, NULL, NULL, "ns2:getName");
+
         case SOAP_TYPE_ns2__getNameResponse:
           return soap_in_ns2__getNameResponse(soap, NULL, NULL, "ns2:getNameResponse");
+
         case SOAP_TYPE_PointerToArrayOf_USCORExsd_USCOREstring:
           return soap_in_PointerToArrayOf_USCORExsd_USCOREstring(soap, NULL, NULL, "xsd:string");
+
         case SOAP_TYPE_PointerTostd__string:
           return soap_in_PointerTostd__string(soap, NULL, NULL, "xsd:string");
+
         case SOAP_TYPE_string:
         {
           char **s;
           s = soap_in_string(soap, NULL, NULL, "xsd:string");
           return s ? *s : NULL;
         }
+
         default:
         {
           const char *t = soap->type;
@@ -741,116 +800,171 @@ extern "C"
       {
         case SOAP_TYPE_byte:
           return soap_out_byte(soap, tag, id, (const char *)ptr, "xsd:byte");
+
         case SOAP_TYPE_int:
           return soap_out_int(soap, tag, id, (const int *)ptr, "xsd:int");
+
         case SOAP_TYPE_std__string:
           return soap_out_std__string(soap, tag, id, (const std::string *)ptr, "xsd:string");
+
         case SOAP_TYPE_ArrayOf_USCORExsd_USCOREstring:
           return ((ArrayOf_USCORExsd_USCOREstring *)ptr)->soap_out(soap, tag, id, "xsd:string");
+
         case SOAP_TYPE_ns2__checkRegExp:
           return soap_out_ns2__checkRegExp(soap, tag, id, (const struct ns2__checkRegExp *)ptr, "ns2:checkRegExp");
+
         case SOAP_TYPE_ns2__checkRegExpResponse:
           return soap_out_ns2__checkRegExpResponse(soap, tag, id, (const struct ns2__checkRegExpResponse *)ptr, "ns2:checkRegExpResponse");
+
         case SOAP_TYPE_ns2__getDataTypesId:
           return soap_out_ns2__getDataTypesId(soap, tag, id, (const struct ns2__getDataTypesId *)ptr, "ns2:getDataTypesId");
+
         case SOAP_TYPE_ns2__getDataTypesIdResponse:
           return soap_out_ns2__getDataTypesIdResponse(soap, tag, id, (const struct ns2__getDataTypesIdResponse *)ptr, "ns2:getDataTypesIdResponse");
+
         case SOAP_TYPE_ns2__getDataTypesName:
           return soap_out_ns2__getDataTypesName(soap, tag, id, (const struct ns2__getDataTypesName *)ptr, "ns2:getDataTypesName");
+
         case SOAP_TYPE_ns2__getDataTypesNameResponse:
           return soap_out_ns2__getDataTypesNameResponse(soap, tag, id, (const struct ns2__getDataTypesNameResponse *)ptr, "ns2:getDataTypesNameResponse");
+
         case SOAP_TYPE_ns2__getNames:
           return soap_out_ns2__getNames(soap, tag, id, (const struct ns2__getNames *)ptr, "ns2:getNames");
+
         case SOAP_TYPE_ns2__getNamesResponse:
           return soap_out_ns2__getNamesResponse(soap, tag, id, (const struct ns2__getNamesResponse *)ptr, "ns2:getNamesResponse");
+
         case SOAP_TYPE_ns2__getDataTypeSynonyms:
           return soap_out_ns2__getDataTypeSynonyms(soap, tag, id, (const struct ns2__getDataTypeSynonyms *)ptr, "ns2:getDataTypeSynonyms");
+
         case SOAP_TYPE_ns2__getDataTypeSynonymsResponse:
           return soap_out_ns2__getDataTypeSynonymsResponse(soap, tag, id, (const struct ns2__getDataTypeSynonymsResponse *)ptr, "ns2:getDataTypeSynonymsResponse");
+
         case SOAP_TYPE_ns2__getResourceLocation:
           return soap_out_ns2__getResourceLocation(soap, tag, id, (const struct ns2__getResourceLocation *)ptr, "ns2:getResourceLocation");
+
         case SOAP_TYPE_ns2__getResourceLocationResponse:
           return soap_out_ns2__getResourceLocationResponse(soap, tag, id, (const struct ns2__getResourceLocationResponse *)ptr, "ns2:getResourceLocationResponse");
+
         case SOAP_TYPE_ns2__getResourceInstitution:
           return soap_out_ns2__getResourceInstitution(soap, tag, id, (const struct ns2__getResourceInstitution *)ptr, "ns2:getResourceInstitution");
+
         case SOAP_TYPE_ns2__getResourceInstitutionResponse:
           return soap_out_ns2__getResourceInstitutionResponse(soap, tag, id, (const struct ns2__getResourceInstitutionResponse *)ptr, "ns2:getResourceInstitutionResponse");
+
         case SOAP_TYPE_ns2__getResourceInfo:
           return soap_out_ns2__getResourceInfo(soap, tag, id, (const struct ns2__getResourceInfo *)ptr, "ns2:getResourceInfo");
+
         case SOAP_TYPE_ns2__getResourceInfoResponse:
           return soap_out_ns2__getResourceInfoResponse(soap, tag, id, (const struct ns2__getResourceInfoResponse *)ptr, "ns2:getResourceInfoResponse");
+
         case SOAP_TYPE_ns2__getDataTypePattern:
           return soap_out_ns2__getDataTypePattern(soap, tag, id, (const struct ns2__getDataTypePattern *)ptr, "ns2:getDataTypePattern");
+
         case SOAP_TYPE_ns2__getDataTypePatternResponse:
           return soap_out_ns2__getDataTypePatternResponse(soap, tag, id, (const struct ns2__getDataTypePatternResponse *)ptr, "ns2:getDataTypePatternResponse");
+
         case SOAP_TYPE_ns2__getMiriamURI:
           return soap_out_ns2__getMiriamURI(soap, tag, id, (const struct ns2__getMiriamURI *)ptr, "ns2:getMiriamURI");
+
         case SOAP_TYPE_ns2__getMiriamURIResponse:
           return soap_out_ns2__getMiriamURIResponse(soap, tag, id, (const struct ns2__getMiriamURIResponse *)ptr, "ns2:getMiriamURIResponse");
+
         case SOAP_TYPE_ns2__getOfficialDataTypeURI:
           return soap_out_ns2__getOfficialDataTypeURI(soap, tag, id, (const struct ns2__getOfficialDataTypeURI *)ptr, "ns2:getOfficialDataTypeURI");
+
         case SOAP_TYPE_ns2__getOfficialDataTypeURIResponse:
           return soap_out_ns2__getOfficialDataTypeURIResponse(soap, tag, id, (const struct ns2__getOfficialDataTypeURIResponse *)ptr, "ns2:getOfficialDataTypeURIResponse");
+
         case SOAP_TYPE_ns2__isDeprecated:
           return soap_out_ns2__isDeprecated(soap, tag, id, (const struct ns2__isDeprecated *)ptr, "ns2:isDeprecated");
+
         case SOAP_TYPE_ns2__isDeprecatedResponse:
           return soap_out_ns2__isDeprecatedResponse(soap, tag, id, (const struct ns2__isDeprecatedResponse *)ptr, "ns2:isDeprecatedResponse");
+
         case SOAP_TYPE_ns2__getLocations_:
           return soap_out_ns2__getLocations_(soap, tag, id, (const struct ns2__getLocations_ *)ptr, "ns2:getLocations");
+
         case SOAP_TYPE_ns2__getLocationsResponse_:
           return soap_out_ns2__getLocationsResponse_(soap, tag, id, (const struct ns2__getLocationsResponse_ *)ptr, "ns2:getLocationsResponse");
+
         case SOAP_TYPE_ns2__getLocations:
           return soap_out_ns2__getLocations(soap, tag, id, (const struct ns2__getLocations *)ptr, "ns2:getLocations");
+
         case SOAP_TYPE_ns2__getLocationsResponse:
           return soap_out_ns2__getLocationsResponse(soap, tag, id, (const struct ns2__getLocationsResponse *)ptr, "ns2:getLocationsResponse");
+
         case SOAP_TYPE_ns2__getDataTypeDef:
           return soap_out_ns2__getDataTypeDef(soap, tag, id, (const struct ns2__getDataTypeDef *)ptr, "ns2:getDataTypeDef");
+
         case SOAP_TYPE_ns2__getDataTypeDefResponse:
           return soap_out_ns2__getDataTypeDefResponse(soap, tag, id, (const struct ns2__getDataTypeDefResponse *)ptr, "ns2:getDataTypeDefResponse");
+
         case SOAP_TYPE_ns2__getDataTypeURIs:
           return soap_out_ns2__getDataTypeURIs(soap, tag, id, (const struct ns2__getDataTypeURIs *)ptr, "ns2:getDataTypeURIs");
+
         case SOAP_TYPE_ns2__getDataTypeURIsResponse:
           return soap_out_ns2__getDataTypeURIsResponse(soap, tag, id, (const struct ns2__getDataTypeURIsResponse *)ptr, "ns2:getDataTypeURIsResponse");
+
         case SOAP_TYPE_ns2__getDataTypeURI:
           return soap_out_ns2__getDataTypeURI(soap, tag, id, (const struct ns2__getDataTypeURI *)ptr, "ns2:getDataTypeURI");
+
         case SOAP_TYPE_ns2__getDataTypeURIResponse:
           return soap_out_ns2__getDataTypeURIResponse(soap, tag, id, (const struct ns2__getDataTypeURIResponse *)ptr, "ns2:getDataTypeURIResponse");
+
         case SOAP_TYPE_ns2__getJavaLibraryVersion:
           return soap_out_ns2__getJavaLibraryVersion(soap, tag, id, (const struct ns2__getJavaLibraryVersion *)ptr, "ns2:getJavaLibraryVersion");
+
         case SOAP_TYPE_ns2__getJavaLibraryVersionResponse:
           return soap_out_ns2__getJavaLibraryVersionResponse(soap, tag, id, (const struct ns2__getJavaLibraryVersionResponse *)ptr, "ns2:getJavaLibraryVersionResponse");
+
         case SOAP_TYPE_ns2__getServicesVersion:
           return soap_out_ns2__getServicesVersion(soap, tag, id, (const struct ns2__getServicesVersion *)ptr, "ns2:getServicesVersion");
+
         case SOAP_TYPE_ns2__getServicesVersionResponse:
           return soap_out_ns2__getServicesVersionResponse(soap, tag, id, (const struct ns2__getServicesVersionResponse *)ptr, "ns2:getServicesVersionResponse");
+
         case SOAP_TYPE_ns2__getServicesInfo:
           return soap_out_ns2__getServicesInfo(soap, tag, id, (const struct ns2__getServicesInfo *)ptr, "ns2:getServicesInfo");
+
         case SOAP_TYPE_ns2__getServicesInfoResponse:
           return soap_out_ns2__getServicesInfoResponse(soap, tag, id, (const struct ns2__getServicesInfoResponse *)ptr, "ns2:getServicesInfoResponse");
+
         case SOAP_TYPE_ns2__getDataResources:
           return soap_out_ns2__getDataResources(soap, tag, id, (const struct ns2__getDataResources *)ptr, "ns2:getDataResources");
+
         case SOAP_TYPE_ns2__getDataResourcesResponse:
           return soap_out_ns2__getDataResourcesResponse(soap, tag, id, (const struct ns2__getDataResourcesResponse *)ptr, "ns2:getDataResourcesResponse");
+
         case SOAP_TYPE_ns2__getURI:
           return soap_out_ns2__getURI(soap, tag, id, (const struct ns2__getURI *)ptr, "ns2:getURI");
+
         case SOAP_TYPE_ns2__getURIResponse:
           return soap_out_ns2__getURIResponse(soap, tag, id, (const struct ns2__getURIResponse *)ptr, "ns2:getURIResponse");
+
         case SOAP_TYPE_ns2__getLocation:
           return soap_out_ns2__getLocation(soap, tag, id, (const struct ns2__getLocation *)ptr, "ns2:getLocation");
+
         case SOAP_TYPE_ns2__getLocationResponse:
           return soap_out_ns2__getLocationResponse(soap, tag, id, (const struct ns2__getLocationResponse *)ptr, "ns2:getLocationResponse");
+
         case SOAP_TYPE_ns2__getName:
           return soap_out_ns2__getName(soap, tag, id, (const struct ns2__getName *)ptr, "ns2:getName");
+
         case SOAP_TYPE_ns2__getNameResponse:
           return soap_out_ns2__getNameResponse(soap, tag, id, (const struct ns2__getNameResponse *)ptr, "ns2:getNameResponse");
+
         case SOAP_TYPE_PointerToArrayOf_USCORExsd_USCOREstring:
-          return soap_out_PointerToArrayOf_USCORExsd_USCOREstring(soap, tag, id, (ArrayOf_USCORExsd_USCOREstring *const*)ptr, "xsd:string");
+          return soap_out_PointerToArrayOf_USCORExsd_USCOREstring(soap, tag, id, (ArrayOf_USCORExsd_USCOREstring * const*)ptr, "xsd:string");
+
         case SOAP_TYPE_PointerTostd__string:
-          return soap_out_PointerTostd__string(soap, tag, id, (std::string *const*)ptr, "xsd:string");
+          return soap_out_PointerTostd__string(soap, tag, id, (std::string * const*)ptr, "xsd:string");
+
         case SOAP_TYPE__QName:
-          return soap_out_string(soap, "xsd:QName", id, (char*const*)&ptr, NULL);
+          return soap_out_string(soap, "xsd:QName", id, (char * const*)&ptr, NULL);
+
         case SOAP_TYPE_string:
-          return soap_out_string(soap, tag, id, (char*const*)&ptr, "xsd:string");
+          return soap_out_string(soap, tag, id, (char * const*)&ptr, "xsd:string");
       }
 
     return SOAP_OK;
@@ -876,164 +990,217 @@ extern "C"
         case SOAP_TYPE_std__string:
           soap_serialize_std__string(soap, (const std::string *)ptr);
           break;
+
         case SOAP_TYPE_ArrayOf_USCORExsd_USCOREstring:
           ((ArrayOf_USCORExsd_USCOREstring *)ptr)->soap_serialize(soap);
           break;
+
         case SOAP_TYPE_ns2__checkRegExp:
           soap_serialize_ns2__checkRegExp(soap, (const struct ns2__checkRegExp *)ptr);
           break;
+
         case SOAP_TYPE_ns2__checkRegExpResponse:
           soap_serialize_ns2__checkRegExpResponse(soap, (const struct ns2__checkRegExpResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypesId:
           soap_serialize_ns2__getDataTypesId(soap, (const struct ns2__getDataTypesId *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypesIdResponse:
           soap_serialize_ns2__getDataTypesIdResponse(soap, (const struct ns2__getDataTypesIdResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypesName:
           soap_serialize_ns2__getDataTypesName(soap, (const struct ns2__getDataTypesName *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypesNameResponse:
           soap_serialize_ns2__getDataTypesNameResponse(soap, (const struct ns2__getDataTypesNameResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getNames:
           soap_serialize_ns2__getNames(soap, (const struct ns2__getNames *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getNamesResponse:
           soap_serialize_ns2__getNamesResponse(soap, (const struct ns2__getNamesResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeSynonyms:
           soap_serialize_ns2__getDataTypeSynonyms(soap, (const struct ns2__getDataTypeSynonyms *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeSynonymsResponse:
           soap_serialize_ns2__getDataTypeSynonymsResponse(soap, (const struct ns2__getDataTypeSynonymsResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getResourceLocation:
           soap_serialize_ns2__getResourceLocation(soap, (const struct ns2__getResourceLocation *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getResourceLocationResponse:
           soap_serialize_ns2__getResourceLocationResponse(soap, (const struct ns2__getResourceLocationResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getResourceInstitution:
           soap_serialize_ns2__getResourceInstitution(soap, (const struct ns2__getResourceInstitution *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getResourceInstitutionResponse:
           soap_serialize_ns2__getResourceInstitutionResponse(soap, (const struct ns2__getResourceInstitutionResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getResourceInfo:
           soap_serialize_ns2__getResourceInfo(soap, (const struct ns2__getResourceInfo *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getResourceInfoResponse:
           soap_serialize_ns2__getResourceInfoResponse(soap, (const struct ns2__getResourceInfoResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypePattern:
           soap_serialize_ns2__getDataTypePattern(soap, (const struct ns2__getDataTypePattern *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypePatternResponse:
           soap_serialize_ns2__getDataTypePatternResponse(soap, (const struct ns2__getDataTypePatternResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getMiriamURI:
           soap_serialize_ns2__getMiriamURI(soap, (const struct ns2__getMiriamURI *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getMiriamURIResponse:
           soap_serialize_ns2__getMiriamURIResponse(soap, (const struct ns2__getMiriamURIResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getOfficialDataTypeURI:
           soap_serialize_ns2__getOfficialDataTypeURI(soap, (const struct ns2__getOfficialDataTypeURI *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getOfficialDataTypeURIResponse:
           soap_serialize_ns2__getOfficialDataTypeURIResponse(soap, (const struct ns2__getOfficialDataTypeURIResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__isDeprecated:
           soap_serialize_ns2__isDeprecated(soap, (const struct ns2__isDeprecated *)ptr);
           break;
+
         case SOAP_TYPE_ns2__isDeprecatedResponse:
           soap_serialize_ns2__isDeprecatedResponse(soap, (const struct ns2__isDeprecatedResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getLocations_:
           soap_serialize_ns2__getLocations_(soap, (const struct ns2__getLocations_ *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getLocationsResponse_:
           soap_serialize_ns2__getLocationsResponse_(soap, (const struct ns2__getLocationsResponse_ *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getLocations:
           soap_serialize_ns2__getLocations(soap, (const struct ns2__getLocations *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getLocationsResponse:
           soap_serialize_ns2__getLocationsResponse(soap, (const struct ns2__getLocationsResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeDef:
           soap_serialize_ns2__getDataTypeDef(soap, (const struct ns2__getDataTypeDef *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeDefResponse:
           soap_serialize_ns2__getDataTypeDefResponse(soap, (const struct ns2__getDataTypeDefResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeURIs:
           soap_serialize_ns2__getDataTypeURIs(soap, (const struct ns2__getDataTypeURIs *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeURIsResponse:
           soap_serialize_ns2__getDataTypeURIsResponse(soap, (const struct ns2__getDataTypeURIsResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeURI:
           soap_serialize_ns2__getDataTypeURI(soap, (const struct ns2__getDataTypeURI *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataTypeURIResponse:
           soap_serialize_ns2__getDataTypeURIResponse(soap, (const struct ns2__getDataTypeURIResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getJavaLibraryVersion:
           soap_serialize_ns2__getJavaLibraryVersion(soap, (const struct ns2__getJavaLibraryVersion *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getJavaLibraryVersionResponse:
           soap_serialize_ns2__getJavaLibraryVersionResponse(soap, (const struct ns2__getJavaLibraryVersionResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getServicesVersion:
           soap_serialize_ns2__getServicesVersion(soap, (const struct ns2__getServicesVersion *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getServicesVersionResponse:
           soap_serialize_ns2__getServicesVersionResponse(soap, (const struct ns2__getServicesVersionResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getServicesInfo:
           soap_serialize_ns2__getServicesInfo(soap, (const struct ns2__getServicesInfo *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getServicesInfoResponse:
           soap_serialize_ns2__getServicesInfoResponse(soap, (const struct ns2__getServicesInfoResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataResources:
           soap_serialize_ns2__getDataResources(soap, (const struct ns2__getDataResources *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getDataResourcesResponse:
           soap_serialize_ns2__getDataResourcesResponse(soap, (const struct ns2__getDataResourcesResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getURI:
           soap_serialize_ns2__getURI(soap, (const struct ns2__getURI *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getURIResponse:
           soap_serialize_ns2__getURIResponse(soap, (const struct ns2__getURIResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getLocation:
           soap_serialize_ns2__getLocation(soap, (const struct ns2__getLocation *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getLocationResponse:
           soap_serialize_ns2__getLocationResponse(soap, (const struct ns2__getLocationResponse *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getName:
           soap_serialize_ns2__getName(soap, (const struct ns2__getName *)ptr);
           break;
+
         case SOAP_TYPE_ns2__getNameResponse:
           soap_serialize_ns2__getNameResponse(soap, (const struct ns2__getNameResponse *)ptr);
           break;
+
         case SOAP_TYPE_PointerToArrayOf_USCORExsd_USCOREstring:
-          soap_serialize_PointerToArrayOf_USCORExsd_USCOREstring(soap, (ArrayOf_USCORExsd_USCOREstring *const*)ptr);
+          soap_serialize_PointerToArrayOf_USCORExsd_USCOREstring(soap, (ArrayOf_USCORExsd_USCOREstring * const*)ptr);
           break;
+
         case SOAP_TYPE_PointerTostd__string:
-          soap_serialize_PointerTostd__string(soap, (std::string *const*)ptr);
+          soap_serialize_PointerTostd__string(soap, (std::string * const*)ptr);
           break;
+
         case SOAP_TYPE__QName:
-          soap_serialize_string(soap, (char*const*)&ptr);
+          soap_serialize_string(soap, (char * const*)&ptr);
           break;
+
         case SOAP_TYPE_string:
-          soap_serialize_string(soap, (char*const*)&ptr);
+          soap_serialize_string(soap, (char * const*)&ptr);
           break;
       }
   }
@@ -1049,121 +1216,175 @@ SOAP_FMAC3 void * SOAP_FMAC4 soap_instantiate(struct soap *soap, int t, const ch
     {
       case SOAP_TYPE_std__string:
         return (void*)soap_instantiate_std__string(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ArrayOf_USCORExsd_USCOREstring:
         return (void*)soap_instantiate_ArrayOf_USCORExsd_USCOREstring(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getNameResponse:
         return (void*)soap_instantiate_ns2__getNameResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getName:
         return (void*)soap_instantiate_ns2__getName(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getLocationResponse:
         return (void*)soap_instantiate_ns2__getLocationResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getLocation:
         return (void*)soap_instantiate_ns2__getLocation(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getURIResponse:
         return (void*)soap_instantiate_ns2__getURIResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getURI:
         return (void*)soap_instantiate_ns2__getURI(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataResourcesResponse:
         return (void*)soap_instantiate_ns2__getDataResourcesResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataResources:
         return (void*)soap_instantiate_ns2__getDataResources(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getServicesInfoResponse:
         return (void*)soap_instantiate_ns2__getServicesInfoResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getServicesInfo:
         return (void*)soap_instantiate_ns2__getServicesInfo(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getServicesVersionResponse:
         return (void*)soap_instantiate_ns2__getServicesVersionResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getServicesVersion:
         return (void*)soap_instantiate_ns2__getServicesVersion(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getJavaLibraryVersionResponse:
         return (void*)soap_instantiate_ns2__getJavaLibraryVersionResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getJavaLibraryVersion:
         return (void*)soap_instantiate_ns2__getJavaLibraryVersion(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeURIResponse:
         return (void*)soap_instantiate_ns2__getDataTypeURIResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeURI:
         return (void*)soap_instantiate_ns2__getDataTypeURI(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeURIsResponse:
         return (void*)soap_instantiate_ns2__getDataTypeURIsResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeURIs:
         return (void*)soap_instantiate_ns2__getDataTypeURIs(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeDefResponse:
         return (void*)soap_instantiate_ns2__getDataTypeDefResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeDef:
         return (void*)soap_instantiate_ns2__getDataTypeDef(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getLocationsResponse:
         return (void*)soap_instantiate_ns2__getLocationsResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getLocations:
         return (void*)soap_instantiate_ns2__getLocations(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getLocationsResponse_:
         return (void*)soap_instantiate_ns2__getLocationsResponse_(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getLocations_:
         return (void*)soap_instantiate_ns2__getLocations_(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__isDeprecatedResponse:
         return (void*)soap_instantiate_ns2__isDeprecatedResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__isDeprecated:
         return (void*)soap_instantiate_ns2__isDeprecated(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getOfficialDataTypeURIResponse:
         return (void*)soap_instantiate_ns2__getOfficialDataTypeURIResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getOfficialDataTypeURI:
         return (void*)soap_instantiate_ns2__getOfficialDataTypeURI(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getMiriamURIResponse:
         return (void*)soap_instantiate_ns2__getMiriamURIResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getMiriamURI:
         return (void*)soap_instantiate_ns2__getMiriamURI(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypePatternResponse:
         return (void*)soap_instantiate_ns2__getDataTypePatternResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypePattern:
         return (void*)soap_instantiate_ns2__getDataTypePattern(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getResourceInfoResponse:
         return (void*)soap_instantiate_ns2__getResourceInfoResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getResourceInfo:
         return (void*)soap_instantiate_ns2__getResourceInfo(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getResourceInstitutionResponse:
         return (void*)soap_instantiate_ns2__getResourceInstitutionResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getResourceInstitution:
         return (void*)soap_instantiate_ns2__getResourceInstitution(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getResourceLocationResponse:
         return (void*)soap_instantiate_ns2__getResourceLocationResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getResourceLocation:
         return (void*)soap_instantiate_ns2__getResourceLocation(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeSynonymsResponse:
         return (void*)soap_instantiate_ns2__getDataTypeSynonymsResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypeSynonyms:
         return (void*)soap_instantiate_ns2__getDataTypeSynonyms(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getNamesResponse:
         return (void*)soap_instantiate_ns2__getNamesResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getNames:
         return (void*)soap_instantiate_ns2__getNames(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypesNameResponse:
         return (void*)soap_instantiate_ns2__getDataTypesNameResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypesName:
         return (void*)soap_instantiate_ns2__getDataTypesName(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypesIdResponse:
         return (void*)soap_instantiate_ns2__getDataTypesIdResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__getDataTypesId:
         return (void*)soap_instantiate_ns2__getDataTypesId(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__checkRegExpResponse:
         return (void*)soap_instantiate_ns2__checkRegExpResponse(soap, -1, type, arrayType, n);
+
       case SOAP_TYPE_ns2__checkRegExp:
         return (void*)soap_instantiate_ns2__checkRegExp(soap, -1, type, arrayType, n);
 #ifndef WITH_NOGLOBAL
+
       case SOAP_TYPE_SOAP_ENV__Header:
         return (void*)soap_instantiate_SOAP_ENV__Header(soap, -1, type, arrayType, n);
 #endif
 #ifndef WITH_NOGLOBAL
+
       case SOAP_TYPE_SOAP_ENV__Code:
         return (void*)soap_instantiate_SOAP_ENV__Code(soap, -1, type, arrayType, n);
 #endif
 #ifndef WITH_NOGLOBAL
+
       case SOAP_TYPE_SOAP_ENV__Detail:
         return (void*)soap_instantiate_SOAP_ENV__Detail(soap, -1, type, arrayType, n);
 #endif
 #ifndef WITH_NOGLOBAL
+
       case SOAP_TYPE_SOAP_ENV__Reason:
         return (void*)soap_instantiate_SOAP_ENV__Reason(soap, -1, type, arrayType, n);
 #endif
 #ifndef WITH_NOGLOBAL
+
       case SOAP_TYPE_SOAP_ENV__Fault:
         return (void*)soap_instantiate_SOAP_ENV__Fault(soap, -1, type, arrayType, n);
 #endif
@@ -1184,6 +1405,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](std::string*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ArrayOf_USCORExsd_USCOREstring:
 
         if (p->size < 0)
@@ -1192,6 +1414,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](ArrayOf_USCORExsd_USCOREstring*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getNameResponse:
 
         if (p->size < 0)
@@ -1200,6 +1423,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getNameResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getName:
 
         if (p->size < 0)
@@ -1208,6 +1432,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getName*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getLocationResponse:
 
         if (p->size < 0)
@@ -1216,6 +1441,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getLocationResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getLocation:
 
         if (p->size < 0)
@@ -1224,6 +1450,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getLocation*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getURIResponse:
 
         if (p->size < 0)
@@ -1232,6 +1459,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getURIResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getURI:
 
         if (p->size < 0)
@@ -1240,6 +1468,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getURI*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataResourcesResponse:
 
         if (p->size < 0)
@@ -1248,6 +1477,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataResourcesResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataResources:
 
         if (p->size < 0)
@@ -1256,6 +1486,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataResources*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getServicesInfoResponse:
 
         if (p->size < 0)
@@ -1264,6 +1495,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getServicesInfoResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getServicesInfo:
 
         if (p->size < 0)
@@ -1272,6 +1504,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getServicesInfo*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getServicesVersionResponse:
 
         if (p->size < 0)
@@ -1280,6 +1513,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getServicesVersionResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getServicesVersion:
 
         if (p->size < 0)
@@ -1288,6 +1522,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getServicesVersion*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getJavaLibraryVersionResponse:
 
         if (p->size < 0)
@@ -1296,6 +1531,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getJavaLibraryVersionResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getJavaLibraryVersion:
 
         if (p->size < 0)
@@ -1304,6 +1540,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getJavaLibraryVersion*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeURIResponse:
 
         if (p->size < 0)
@@ -1312,6 +1549,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeURIResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeURI:
 
         if (p->size < 0)
@@ -1320,6 +1558,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeURI*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeURIsResponse:
 
         if (p->size < 0)
@@ -1328,6 +1567,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeURIsResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeURIs:
 
         if (p->size < 0)
@@ -1336,6 +1576,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeURIs*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeDefResponse:
 
         if (p->size < 0)
@@ -1344,6 +1585,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeDefResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeDef:
 
         if (p->size < 0)
@@ -1352,6 +1594,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeDef*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getLocationsResponse:
 
         if (p->size < 0)
@@ -1360,6 +1603,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getLocationsResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getLocations:
 
         if (p->size < 0)
@@ -1368,6 +1612,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getLocations*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getLocationsResponse_:
 
         if (p->size < 0)
@@ -1376,6 +1621,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getLocationsResponse_*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getLocations_:
 
         if (p->size < 0)
@@ -1384,6 +1630,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getLocations_*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__isDeprecatedResponse:
 
         if (p->size < 0)
@@ -1392,6 +1639,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__isDeprecatedResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__isDeprecated:
 
         if (p->size < 0)
@@ -1400,6 +1648,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__isDeprecated*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getOfficialDataTypeURIResponse:
 
         if (p->size < 0)
@@ -1408,6 +1657,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getOfficialDataTypeURIResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getOfficialDataTypeURI:
 
         if (p->size < 0)
@@ -1416,6 +1666,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getOfficialDataTypeURI*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getMiriamURIResponse:
 
         if (p->size < 0)
@@ -1424,6 +1675,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getMiriamURIResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getMiriamURI:
 
         if (p->size < 0)
@@ -1432,6 +1684,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getMiriamURI*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypePatternResponse:
 
         if (p->size < 0)
@@ -1440,6 +1693,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypePatternResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypePattern:
 
         if (p->size < 0)
@@ -1448,6 +1702,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypePattern*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getResourceInfoResponse:
 
         if (p->size < 0)
@@ -1456,6 +1711,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getResourceInfoResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getResourceInfo:
 
         if (p->size < 0)
@@ -1464,6 +1720,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getResourceInfo*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getResourceInstitutionResponse:
 
         if (p->size < 0)
@@ -1472,6 +1729,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getResourceInstitutionResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getResourceInstitution:
 
         if (p->size < 0)
@@ -1480,6 +1738,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getResourceInstitution*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getResourceLocationResponse:
 
         if (p->size < 0)
@@ -1488,6 +1747,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getResourceLocationResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getResourceLocation:
 
         if (p->size < 0)
@@ -1496,6 +1756,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getResourceLocation*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeSynonymsResponse:
 
         if (p->size < 0)
@@ -1504,6 +1765,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeSynonymsResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypeSynonyms:
 
         if (p->size < 0)
@@ -1512,6 +1774,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypeSynonyms*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getNamesResponse:
 
         if (p->size < 0)
@@ -1520,6 +1783,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getNamesResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getNames:
 
         if (p->size < 0)
@@ -1528,6 +1792,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getNames*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypesNameResponse:
 
         if (p->size < 0)
@@ -1536,6 +1801,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypesNameResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypesName:
 
         if (p->size < 0)
@@ -1544,6 +1810,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypesName*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypesIdResponse:
 
         if (p->size < 0)
@@ -1552,6 +1819,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypesIdResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__getDataTypesId:
 
         if (p->size < 0)
@@ -1560,6 +1828,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__getDataTypesId*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__checkRegExpResponse:
 
         if (p->size < 0)
@@ -1568,6 +1837,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__checkRegExpResponse*)p->ptr;
 
         break;
+
       case SOAP_TYPE_ns2__checkRegExp:
 
         if (p->size < 0)
@@ -1576,6 +1846,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct ns2__checkRegExp*)p->ptr;
 
         break;
+
       case SOAP_TYPE_SOAP_ENV__Header:
 
         if (p->size < 0)
@@ -1584,6 +1855,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct SOAP_ENV__Header*)p->ptr;
 
         break;
+
       case SOAP_TYPE_SOAP_ENV__Code:
 
         if (p->size < 0)
@@ -1592,6 +1864,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct SOAP_ENV__Code*)p->ptr;
 
         break;
+
       case SOAP_TYPE_SOAP_ENV__Detail:
 
         if (p->size < 0)
@@ -1600,6 +1873,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct SOAP_ENV__Detail*)p->ptr;
 
         break;
+
       case SOAP_TYPE_SOAP_ENV__Reason:
 
         if (p->size < 0)
@@ -1608,6 +1882,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct SOAP_ENV__Reason*)p->ptr;
 
         break;
+
       case SOAP_TYPE_SOAP_ENV__Fault:
 
         if (p->size < 0)
@@ -1616,6 +1891,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_fdelete(struct soap_clist *p)
           delete[](struct SOAP_ENV__Fault*)p->ptr;
 
         break;
+
       default: return SOAP_ERR;
     }
 
@@ -1767,16 +2043,16 @@ SOAP_FMAC1 std::string * SOAP_FMAC2 soap_in_std__string(struct soap *soap, const
       s = (std::string*)soap_class_id_enter(soap, soap->id, s, SOAP_TYPE_std__string, sizeof(std::string), soap->type, soap->arrayType);
 
       if (s)
-      {
-        if ((t = soap_string_in(soap, 1, -1, -1)))
         {
-          s->assign(t);
+          if ((t = soap_string_in(soap, 1, -1, -1)))
+            {
+              s->assign(t);
+            }
+          else
+            {
+              return NULL;
+            }
         }
-        else
-        {
-          return NULL;
-        }
-      }
     }
   else
     s = (std::string*)soap_id_forward(soap, soap->href, soap_class_id_enter(soap, soap->id, s, SOAP_TYPE_std__string, sizeof(std::string), soap->type, soap->arrayType), 0, SOAP_TYPE_std__string, 0, sizeof(std::string), 0, soap_copy_std__string);
@@ -2118,7 +2394,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_SOAP_ENV__Fault(struct soap *soap, const char
   if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_SOAP_ENV__Fault), type))
     return soap->error;
 
-  if (soap_out__QName(soap, "faultcode", -1, (char*const*)&soap_tmp_faultcode, ""))
+  if (soap_out__QName(soap, "faultcode", -1, (char * const*)&soap_tmp_faultcode, ""))
     return soap->error;
 
   if (soap_out_string(soap, "faultstring", -1, &a->faultstring, ""))
@@ -2659,7 +2935,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_SOAP_ENV__Code(struct soap *soap, const char 
   if (soap_element_begin_out(soap, tag, soap_embedded_id(soap, id, a, SOAP_TYPE_SOAP_ENV__Code), type))
     return soap->error;
 
-  if (soap_out__QName(soap, "SOAP-ENV:Value", -1, (char*const*)&soap_tmp_SOAP_ENV__Value, ""))
+  if (soap_out__QName(soap, "SOAP-ENV:Value", -1, (char * const*)&soap_tmp_SOAP_ENV__Value, ""))
     return soap->error;
 
   if (soap_out_PointerToSOAP_ENV__Code(soap, "SOAP-ENV:Subcode", -1, &a->SOAP_ENV__Subcode, ""))

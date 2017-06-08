@@ -20,7 +20,9 @@
 #ifndef COPASI_CEvaluationLexer
 #define COPASI_CEvaluationLexer
 
+#ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-register"
+#endif
 
 #include <vector>
 
