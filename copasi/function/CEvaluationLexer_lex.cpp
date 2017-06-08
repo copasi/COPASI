@@ -52,7 +52,7 @@
 
 /* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
 
-#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#if _MSC_VER > 1800 || ( defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
  * if you want the limit (max/min) macros for int types.
@@ -973,7 +973,7 @@ do_action:  /* This label is used only to access EOF actions. */
 
       switch (yy_act)
         {
-          /* beginning of action switch */
+            /* beginning of action switch */
           case 0: /* must back up */
             /* undo the effects of YY_DO_BEFORE_ACTION */
             *yy_cp = (yy_hold_char);
@@ -2557,7 +2557,7 @@ int yyFlexLexer::yyinput()
                 /* Reset buffer status. */
                 yyrestart(yyin);
 
-              /*FALLTHROUGH*/
+                /*FALLTHROUGH*/
 
               case EOB_ACT_END_OF_FILE:
               {
