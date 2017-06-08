@@ -89,7 +89,9 @@ CMetab::CMetab(const std::string & name,
   mTT(0.0),
   mpCompartment(NULL),
   mpMoiety(NULL),
-  mIsInitialConcentrationChangeAllowed(true)
+  mIsInitialConcentrationChangeAllowed(true),
+  mIsInitialParticleNumberChangeAllowed(true)
+
 {
   //mKey = CRootContainer::getKeyFactory()->add("Metabolite", this);
   initObjects();
@@ -117,7 +119,8 @@ CMetab::CMetab(const CMetab & src,
   mTT(src.mTT),
   mpCompartment(NULL),
   mpMoiety(src.mpMoiety),
-  mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed)
+  mIsInitialConcentrationChangeAllowed(src.mIsInitialConcentrationChangeAllowed),
+  mIsInitialParticleNumberChangeAllowed(src.mIsInitialParticleNumberChangeAllowed)
 {
   //mKey = CRootContainer::getKeyFactory()->add("Metabolite", this);
 
@@ -622,7 +625,9 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
     mStatus = CModelEntity::Status::REACTIONS;
 
   // sanity check
-  if ((static_cast< int >(mStatus) < 0) || (7 < static_cast< int >(mStatus) < 0))
+  Status = static_cast<C_INT32>(mStatus);
+
+  if ((Status < 0) || (7 < Status))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a non-existing type "
@@ -632,7 +637,7 @@ C_INT32 CMetabOld::load(CReadConfig &configbuffer)
     }
 
   // sanity check
-  if ((static_cast< int >(mStatus) != METAB_MOIETY) && (mIConc < 0.0))
+  if ((Status != METAB_MOIETY) && (mIConc < 0.0))
     {
       CCopasiMessage(CCopasiMessage::WARNING,
                      "The file specifies a negative concentration "
