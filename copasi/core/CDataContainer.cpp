@@ -392,7 +392,8 @@ CDataContainer::CDataContainer(const std::string & name,
 CDataContainer::CDataContainer(const CDataContainer & src,
                                const CDataContainer * pParent):
   CDataObject(src, pParent),
-  mObjects()
+  mObjects(),
+  mValidityRefreshNeeded(true)
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CDataContainer::~CDataContainer()
