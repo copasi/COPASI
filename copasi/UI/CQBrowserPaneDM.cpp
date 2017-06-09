@@ -838,10 +838,10 @@ QString CQBrowserPaneDM::getObjectIssueMessages(const CNode * pNode) const
   if (pObject == NULL)
     pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
 
-  CValidity validity;
+  if (pObject == NULL)
+    return objectIssueMessages;
 
-  if (pObject != NULL)
-    validity = pObject->getValidity();
+  CValidity validity = pObject->getValidity();;
 
   if (mKindFilter != mKindFilter.None)
     objectIssueMessages = QString(FROM_UTF8(validity.getIssueMessages(mSeverityFilter, mKindFilter)));
@@ -851,21 +851,22 @@ QString CQBrowserPaneDM::getObjectIssueMessages(const CNode * pNode) const
 
 QIcon CQBrowserPaneDM::getObjectIssueIcon(const CNode * pNode) const
 {
+  QIcon highestSeveryityIcon;
+
   const CDataObject * pObject = pNode->getObject();
 
   // For now, this is still needed for the non-CDataVector CDataObjects
   if (pObject == NULL)
     pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
 
-  CValidity validity;
+  if (pObject == NULL)
+    return highestSeveryityIcon;
 
-  if (pObject != NULL)
-    validity = pObject->getValidity();
+  CValidity validity = pObject->getValidity();
 
   CIssue::eSeverity highestSeverity = validity.getHighestSeverity(mSeverityFilter, mKindFilter);
 
   QCommonStyle * tmpStyle = new QCommonStyle;
-  QIcon highestSeveryityIcon;
 
   switch (highestSeverity)
     {
