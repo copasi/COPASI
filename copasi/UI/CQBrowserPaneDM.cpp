@@ -828,7 +828,7 @@ void CQBrowserPaneDM::clear()
   findNodeFromId(6)->deleteChildren(); // Units
 }
 
-QString CQBrowserPaneDM::getObjectIssueMessages(CNode * pNode) const
+QString CQBrowserPaneDM::getObjectIssueMessages(const CNode * pNode) const
 {
   QString objectIssueMessages;
 
@@ -849,7 +849,7 @@ QString CQBrowserPaneDM::getObjectIssueMessages(CNode * pNode) const
   return objectIssueMessages;
 }
 
-QIcon CQBrowserPaneDM::getObjectIssueIcon(CNode * pNode) const
+QIcon CQBrowserPaneDM::getObjectIssueIcon(const CNode * pNode) const
 {
   const CDataObject * pObject = pNode->getObject();
 

@@ -143,9 +143,9 @@ private:
 
   void clear();
 
-  QString getObjectIssueMessages(CNode * pNode) const;
+  QString getObjectIssueMessages(const CNode * pNode) const;
 
-  QIcon getObjectIssueIcon(CNode * pNode) const;
+  QIcon getObjectIssueIcon(const CNode *pNode) const;
 
   CNode * mpRoot;
 
