@@ -68,57 +68,17 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
 
   if (pNode == NULL) return QVariant();
 
-  const CDataObject * pObject = pNode->getObject();
-
-  // For now, this is still needed for the non-CDataVector CDataObjects
-  if (pObject == NULL)
-    pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
-
-  CValidity validity;
-
-  if (pObject != NULL)
-    validity = pObject->getValidity();
-
-  CIssue::eSeverity highestSeverity = validity.getHighestSeverity(mSeverityFilter, mKindFilter);
-
-  QCommonStyle * tmpStyle = new QCommonStyle;
-  QIcon issueIcon;
-
-  switch (highestSeverity)
-    {
-      case CIssue::eSeverity::Error:
-        if (mSeverityFilter.isSet(CIssue::eSeverity::Error))
-          issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
-
-        break;
-
-      case CIssue::eSeverity::Warning:
-        if (mSeverityFilter.isSet(CIssue::eSeverity::Warning))
-          issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
-
-        break;
-
-      case CIssue::eSeverity::Information:
-        if (mSeverityFilter.isSet(CIssue::eSeverity::Information))
-          issueIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
-
-        break;
-
-      default:
-        break;
-    }
-
   switch (role)
     {
       case Qt::DecorationRole:
         if (mKindFilter != mKindFilter.None)
-          return issueIcon;
+          return getObjectIssueIcon(pNode);
 
         break;
 
       case Qt::ToolTipRole:
         if (mKindFilter != mKindFilter.None)
-          return QVariant(QString(FROM_UTF8(validity.getIssueMessages(mSeverityFilter, mKindFilter))));
+          return getObjectIssueMessages(pNode);
 
         break;
 
@@ -151,8 +111,6 @@ QVariant CQBrowserPaneDM::data(const QModelIndex & index, int role) const
         return QVariant(pNode->getSortRole());
         break;
     }
-
-  delete tmpStyle;
 
   return QVariant();
 }
@@ -868,6 +826,74 @@ void CQBrowserPaneDM::clear()
   findNodeFromId(43)->deleteChildren(); // Report Specifications
   findNodeFromId(5)->deleteChildren(); // Functions
   findNodeFromId(6)->deleteChildren(); // Units
+}
+
+QString CQBrowserPaneDM::getObjectIssueMessages(CNode * pNode) const
+{
+  QString objectIssueMessages;
+
+  const CDataObject * pObject = pNode->getObject();
+
+  // For now, this is still needed for the non-CDataVector CDataObjects
+  if (pObject == NULL)
+    pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
+
+  CValidity validity;
+
+  if (pObject != NULL)
+    validity = pObject->getValidity();
+
+  if (mKindFilter != mKindFilter.None)
+    objectIssueMessages = QString(FROM_UTF8(validity.getIssueMessages(mSeverityFilter, mKindFilter)));
+
+  return objectIssueMessages;
+}
+
+QIcon CQBrowserPaneDM::getObjectIssueIcon(CNode * pNode) const
+{
+  const CDataObject * pObject = pNode->getObject();
+
+  // For now, this is still needed for the non-CDataVector CDataObjects
+  if (pObject == NULL)
+    pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
+
+  CValidity validity;
+
+  if (pObject != NULL)
+    validity = pObject->getValidity();
+
+  CIssue::eSeverity highestSeverity = validity.getHighestSeverity(mSeverityFilter, mKindFilter);
+
+  QCommonStyle * tmpStyle = new QCommonStyle;
+  QIcon highestSeveryityIcon;
+
+  switch (highestSeverity)
+    {
+      case CIssue::eSeverity::Error:
+        if (mSeverityFilter.isSet(CIssue::eSeverity::Error))
+          highestSeveryityIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxCritical);
+
+        break;
+
+      case CIssue::eSeverity::Warning:
+        if (mSeverityFilter.isSet(CIssue::eSeverity::Warning))
+          highestSeveryityIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxWarning);
+
+        break;
+
+      case CIssue::eSeverity::Information:
+        if (mSeverityFilter.isSet(CIssue::eSeverity::Information))
+          highestSeveryityIcon = tmpStyle->standardIcon(QStyle::SP_MessageBoxInformation);
+
+        break;
+
+      default:
+        break;
+    }
+
+  delete tmpStyle;
+
+  return highestSeveryityIcon;
 }
 
 CQBrowserPaneDM::CNode::CNode():

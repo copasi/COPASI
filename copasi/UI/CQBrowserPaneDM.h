@@ -143,6 +143,10 @@ private:
 
   void clear();
 
+  QString getObjectIssueMessages(CNode * pNode) const;
+
+  QIcon getObjectIssueIcon(CNode * pNode) const;
+
   CNode * mpRoot;
 
   const CDataModel * mpCopasiDM;
