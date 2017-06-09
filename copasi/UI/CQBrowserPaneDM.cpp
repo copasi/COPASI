@@ -311,13 +311,15 @@ void CQBrowserPaneDM::rename(const std::string & key, const QString & displayRol
   if (pNode->getDisplayRole() != displayRole)
     {
       pNode->setDisplayRole(displayRole);
+    }
 
+  if (mEmitDataChanged)
+    {
       QModelIndex Index = index(pNode);
+      emit dataChanged(Index, Index);
 
-      if (mEmitDataChanged)
-        {
-          emit dataChanged(Index, Index);
-        }
+      Index = index(static_cast< CNode * >(pNode->getParent()));
+      emit dataChanged(Index, Index);
     }
 }
 
@@ -338,10 +340,12 @@ void CQBrowserPaneDM::add(const size_t & id,
   CNode * pNode = new CNode(id, key, displayRole, pParent);
   endInsertRows();
 
-  QModelIndex Index = index(pNode);
-
   if (mEmitDataChanged)
     {
+      QModelIndex Index = index(pNode);
+      emit dataChanged(Index, Index);
+
+      Index = index(static_cast< CNode * >(pNode->getParent()));
       emit dataChanged(Index, Index);
     }
 }

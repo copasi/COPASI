@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "CValidity.h"
 
@@ -132,7 +132,7 @@ bool CIssue::isSuccess() const
 
 CValidity CValidity::operator | (const CValidity & rhs) const
 {
-  CValidity result;
+  CValidity result(*this);
 
   result.mErrors |= rhs.mErrors;
   result.mWarnings |= rhs.mWarnings;

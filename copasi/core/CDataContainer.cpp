@@ -605,8 +605,10 @@ CDataObject * CDataContainer::insert(const CData & data)
 //virtual
 void CDataContainer::refreshValidity() const
 {
-  if(mValidityRefreshNeeded)
+  if( mValidityRefreshNeeded)
   {
+    mValidity.clear();
+
     objectMap::const_iterator it = mObjects.begin();
     objectMap::const_iterator end = mObjects.end();
 
