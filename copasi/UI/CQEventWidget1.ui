@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
  <class>CQEventWidget1</class>
  <widget class="CopasiWidget" name="CQEventWidget1">
@@ -7,8 +22,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>230</height>
+    <width>477</width>
+    <height>246</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,7 +35,7 @@
   <property name="caption" stdset="0">
    <string>Event Widget</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="mpLabelTrigger">
      <property name="sizePolicy">
@@ -61,6 +76,12 @@
    </item>
    <item row="1" column="2">
     <widget class="QCheckBox" name="mpTriggerPersistent">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Trigger must remain true</string>
      </property>
@@ -193,7 +214,7 @@
    <item row="5" column="1" colspan="2">
     <widget class="QListWidget" name="mpLBTarget">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>4</verstretch>
       </sizepolicy>
