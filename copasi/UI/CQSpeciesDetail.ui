@@ -35,7 +35,7 @@
   <property name="caption" stdset="0">
    <string>Metabolite</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,1,0">
    <item row="10" column="2" colspan="2">
     <widget class="QTableWidget" name="mpReactionTable">
      <property name="alternatingRowColors">
@@ -105,7 +105,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mpLblCompartment">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -134,7 +134,7 @@
    <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="mpLblType">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -160,7 +160,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mpLblExpression">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -213,7 +213,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="mpLblNoiseExpression">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -268,7 +268,7 @@ Expression</string>
    <item row="5" column="0" colspan="2">
     <widget class="QLabel" name="mpLblInitialExpression">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -307,7 +307,7 @@ Expression</string>
    <item row="8" column="0">
     <widget class="QLabel" name="mpLblRate">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -339,7 +339,7 @@ Expression</string>
    <item row="7" column="0">
     <widget class="QLabel" name="mpLblValue">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -358,7 +358,7 @@ Expression</string>
    <item row="9" column="0" colspan="2">
     <widget class="QLabel" name="mpLblTransitionTime">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -390,7 +390,7 @@ Expression</string>
    <item row="10" column="0" colspan="2">
     <widget class="QLabel" name="mpLblReactions">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>

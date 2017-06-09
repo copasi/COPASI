@@ -26,7 +26,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
+    <width>399</width>
     <height>419</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
   <property name="caption" stdset="0">
    <string>Compartment</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0">
    <item row="3" column="1" colspan="3">
     <widget class="CQExpressionMmlStackedWidget" name="mpNoiseExpressionWidget">
      <property name="sizePolicy">

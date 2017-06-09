@@ -39,7 +39,7 @@
   <property name="caption" stdset="0">
    <string>Global Quantity</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
    <item row="7" column="0">
     <widget class="QLabel" name="mpLblValue">
      <property name="sizePolicy">

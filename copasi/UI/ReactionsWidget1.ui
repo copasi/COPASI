@@ -26,7 +26,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>526</width>
+    <width>569</width>
     <height>280</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
   <property name="caption" stdset="0">
    <string>Metabolite</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0,0">
    <item row="0" column="0">
     <widget class="QLabel" name="TextLabel5">
      <property name="sizePolicy">
@@ -403,6 +403,12 @@ Expression</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>CQExpressionMmlStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>CQExpressionMmlStackedWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>MyLineEdit</class>
    <extends>QLineEdit</extends>
    <header>copasi/UI/MyLineEdit.h</header>
@@ -411,12 +417,6 @@ Expression</string>
    <class>ParameterTable</class>
    <extends>QTableWidget</extends>
    <header>copasi/UI/parametertable.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CQExpressionMmlStackedWidget</class>
-   <extends>QStackedWidget</extends>
-   <header>CQExpressionMmlStackedWidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
