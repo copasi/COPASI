@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and University of </comment>
-<comment> of Connecticut School of Medicine. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and The University </comment>
-<comment> of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
  <comment> All rights reserved. </comment>
  <class>CQModelWidget</class>
  <widget class="CopasiWidget" name="CQModelWidget">
@@ -18,13 +8,13 @@
     <x>0</x>
     <y>0</y>
     <width>347</width>
-    <height>186</height>
+    <height>190</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,1">
    <item row="5" column="0" colspan="4">
     <widget class="Line" name="mpLine">
      <property name="orientation">
