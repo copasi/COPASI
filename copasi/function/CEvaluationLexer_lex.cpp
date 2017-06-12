@@ -25,8 +25,8 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 1
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -52,7 +52,7 @@
 
 /* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
 
-#if _MSC_VER > 1800 || ( defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
  * if you want the limit (max/min) macros for int types.
@@ -117,25 +117,13 @@ typedef unsigned int flex_uint32_t;
 #include <cstring>
 /* end standard C++ headers. */
 
-#ifdef __cplusplus
-
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else /* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif  /* defined (__STDC__) */
-#endif  /* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* Returned upon end-of-file. */
@@ -191,6 +179,11 @@ typedef unsigned int flex_uint32_t;
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #endif
 
+#ifndef YY_TYPEDEF_YY_SIZE_T
+#define YY_TYPEDEF_YY_SIZE_T
+typedef size_t yy_size_t;
+#endif
+
 extern int yyleng;
 
 #define EOB_ACT_CONTINUE_SCAN 0
@@ -198,6 +191,7 @@ extern int yyleng;
 #define EOB_ACT_LAST_MATCH 2
 
 #define YY_LESS_LINENO(n)
+#define YY_LINENO_REWIND_TO(ptr)
 
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -215,17 +209,12 @@ extern int yyleng;
 
 #define unput(c) yyunput(c, (yytext_ptr))
 
-#ifndef YY_TYPEDEF_YY_SIZE_T
-#define YY_TYPEDEF_YY_SIZE_T
-typedef size_t yy_size_t;
-#endif
-
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
 struct yy_buffer_state
 {
 
-  std::istream* yy_input_file;
+  std::streambuf* yy_input_file;
 
   char *yy_ch_buf;    /* input buffer */
   char *yy_buf_pos;   /* current position in input buffer */
@@ -233,7 +222,7 @@ struct yy_buffer_state
   /* Size of input buffer in bytes, not including room for EOB
    * characters.
    */
-  yy_size_t yy_buf_size;
+  int yy_buf_size;
 
   /* Number of characters read into yy_ch_buf, not including EOB
    * characters.
@@ -292,8 +281,8 @@ struct yy_buffer_state
  * Returns the top of the stack, or NULL.
  */
 #define YY_CURRENT_BUFFER ((yy_buffer_stack) \
-                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
-                           : NULL)
+                            ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
+                            : NULL)
 
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
@@ -341,7 +330,7 @@ typedef unsigned char YY_CHAR;
  */
 #define YY_DO_BEFORE_ACTION \
   (yytext_ptr) = yy_bp; \
-  yyleng = (size_t) (yy_cp - yy_bp); \
+  yyleng = (int) (yy_cp - yy_bp); \
   (yy_hold_char) = *yy_cp; \
   *yy_cp = '\0'; \
   (yy_c_buf_p) = yy_cp;
@@ -402,7 +391,7 @@ static yyconst flex_int16_t yy_accept[391] =
   78,   78,   78,   78,   53,   78,   78,   78,    2,    0
 };
 
-static yyconst flex_int32_t yy_ec[256] =
+static yyconst YY_CHAR yy_ec[256] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
@@ -435,7 +424,7 @@ static yyconst flex_int32_t yy_ec[256] =
   1,    1,    1,    1,    1
 };
 
-static yyconst flex_int32_t yy_meta[72] =
+static yyconst YY_CHAR yy_meta[72] =
 {
   0,
   1,    1,    1,    1,    1,    1,    1,    2,    1,    1,
@@ -448,7 +437,7 @@ static yyconst flex_int32_t yy_meta[72] =
   1
 };
 
-static yyconst flex_int16_t yy_base[396] =
+static yyconst flex_uint16_t yy_base[396] =
 {
   0,
   0,    0,    0,    0,   71,    0,  139,  140,  830,  831,
@@ -544,7 +533,7 @@ static yyconst flex_int16_t yy_def[396] =
   390,  390,  390,  390,  390
 };
 
-static yyconst flex_int16_t yy_nxt[903] =
+static yyconst flex_uint16_t yy_nxt[903] =
 {
   0,
   10,   11,   12,   13,   14,   10,   10,   15,   16,   10,
@@ -785,7 +774,7 @@ static yyconst flex_int16_t yy_chk[903] =
   mPosition += yyleng;\
   mpNodeList->push_back(mpNode);
 
-#line 767 "<stdout>"
+#line 756 "<stdout>"
 
 #define INITIAL 0
 #define sSIGNorVALUE 1
@@ -836,7 +825,7 @@ static int yy_flex_strlen(yyconst char *);
 #ifndef YY_INPUT
 #define YY_INPUT(buf,result,max_size) \
   \
-  if ((result = LexerInput((char *) buf, max_size )) < 0 ) \
+  if ((int)(result = LexerInput((char *) buf, max_size )) < 0 ) \
     YY_FATAL_ERROR("input in flex scanner failed" );
 
 #endif
@@ -878,7 +867,7 @@ static int yy_flex_strlen(yyconst char *);
 
 /* Code executed at the end of each rule. */
 #ifndef YY_BREAK
-#define YY_BREAK break;
+#define YY_BREAK /*LINTED*/break;
 #endif
 
 #define YY_RULE_SETUP \
@@ -888,13 +877,9 @@ static int yy_flex_strlen(yyconst char *);
  */
 YY_DECL
 {
-  register yy_state_type yy_current_state;
-  register char * yy_cp, *yy_bp;
-  register int yy_act;
-
-#line 36 "function/CEvaluationLexer.lpp"
-
-#line 877 "<stdout>"
+  yy_state_type yy_current_state;
+  char *yy_cp, *yy_bp;
+  int yy_act;
 
   if (!(yy_init))
     {
@@ -908,10 +893,10 @@ YY_DECL
         (yy_start) = 1; /* first start state */
 
       if (! yyin)
-        yyin = & std::cin;
+        yyin.rdbuf(std::cin.rdbuf());
 
       if (! yyout)
-        yyout = & std::cout;
+        yyout.rdbuf(std::cout.rdbuf());
 
       if (! YY_CURRENT_BUFFER)
         {
@@ -923,1274 +908,1299 @@ YY_DECL
       yy_load_buffer_state();
     }
 
-  while (1)      /* loops until end-of-file is reached */
-    {
-      yy_cp = (yy_c_buf_p);
+  {
+#line 36 "function/CEvaluationLexer.lpp"
 
-      /* Support of yytext. */
-      *yy_cp = (yy_hold_char);
+#line 893 "<stdout>"
 
-      /* yy_bp points to the position in yy_ch_buf of the start of
-       * the current run.
-       */
-      yy_bp = yy_cp;
+    while (/*CONSTCOND*/1)     /* loops until end-of-file is reached */
+      {
+        yy_cp = (yy_c_buf_p);
 
-      yy_current_state = (yy_start);
+        /* Support of yytext. */
+        *yy_cp = (yy_hold_char);
+
+        /* yy_bp points to the position in yy_ch_buf of the start of
+         * the current run.
+         */
+        yy_bp = yy_cp;
+
+        yy_current_state = (yy_start);
 yy_match:
 
-      do
-        {
-          register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+        do
+          {
+            YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
 
-          if (yy_accept[yy_current_state])
-            {
-              (yy_last_accepting_state) = yy_current_state;
-              (yy_last_accepting_cpos) = yy_cp;
-            }
+            if (yy_accept[yy_current_state])
+              {
+                (yy_last_accepting_state) = yy_current_state;
+                (yy_last_accepting_cpos) = yy_cp;
+              }
 
-          while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state)
-            {
-              yy_current_state = (int) yy_def[yy_current_state];
+            while (yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state)
+              {
+                yy_current_state = (int) yy_def[yy_current_state];
 
-              if (yy_current_state >= 391)
-                yy_c = yy_meta[(unsigned int) yy_c];
-            }
+                if (yy_current_state >= 391)
+                  yy_c = yy_meta[(unsigned int) yy_c];
+              }
 
-          yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-          ++yy_cp;
-        }
-      while (yy_current_state != 390);
+            yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
+            ++yy_cp;
+          }
+        while (yy_current_state != 390);
 
-      yy_cp = (yy_last_accepting_cpos);
-      yy_current_state = (yy_last_accepting_state);
+        yy_cp = (yy_last_accepting_cpos);
+        yy_current_state = (yy_last_accepting_state);
 
 yy_find_action:
-      yy_act = yy_accept[yy_current_state];
+        yy_act = yy_accept[yy_current_state];
 
-      YY_DO_BEFORE_ACTION;
+        YY_DO_BEFORE_ACTION;
 
 do_action:  /* This label is used only to access EOF actions. */
 
-      switch (yy_act)
-        {
+        switch (yy_act)
+          {
             /* beginning of action switch */
-          case 0: /* must back up */
-            /* undo the effects of YY_DO_BEFORE_ACTION */
-            *yy_cp = (yy_hold_char);
-            yy_cp = (yy_last_accepting_cpos);
-            yy_current_state = (yy_last_accepting_state);
-            goto yy_find_action;
+            case 0: /* must back up */
+              /* undo the effects of YY_DO_BEFORE_ACTION */
+              *yy_cp = (yy_hold_char);
+              yy_cp = (yy_last_accepting_cpos);
+              yy_current_state = (yy_last_accepting_state);
+              goto yy_find_action;
 
-          case 1:
-            YY_RULE_SETUP
+            case 1:
+              YY_RULE_SETUP
 #line 37 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE,
-                                               yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE,
+                                                 yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 2:
-            YY_RULE_SETUP
+            case 2:
+              YY_RULE_SETUP
 #line 45 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::EXPONENTIALE,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::EXPONENTIALE,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 3:
-            YY_RULE_SETUP
+            case 3:
+              YY_RULE_SETUP
 #line 53 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::PI,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::PI,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 4:
-            YY_RULE_SETUP
+            case 4:
+              YY_RULE_SETUP
 #line 61 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::True,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_VALUE;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::True,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_VALUE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 5:
-            YY_RULE_SETUP
+            case 5:
+              YY_RULE_SETUP
 #line 69 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::False,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_VALUE;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::False,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_VALUE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 6:
-            YY_RULE_SETUP
+            case 6:
+              YY_RULE_SETUP
 #line 77 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::Infinity,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::Infinity,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 7:
-            YY_RULE_SETUP
+            case 7:
+              YY_RULE_SETUP
 #line 85 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeConstant(CEvaluationNode::SubType::NaN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 8:
-            YY_RULE_SETUP
+            case 8:
+              YY_RULE_SETUP
 #line 93 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sVALUE);
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_NOT;
+              BEGIN(sVALUE);
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_NOT;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 9:
-            YY_RULE_SETUP
+            case 9:
+              YY_RULE_SETUP
 #line 101 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::LE,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_LE;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::LE,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_LE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 10:
-            YY_RULE_SETUP
+            case 10:
+              YY_RULE_SETUP
 #line 109 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::LT,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_LT;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::LT,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_LT;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 11:
-            YY_RULE_SETUP
+            case 11:
+              YY_RULE_SETUP
 #line 117 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GE,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_GE;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GE,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_GE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 12:
-            YY_RULE_SETUP
+            case 12:
+              YY_RULE_SETUP
 #line 125 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GT,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_GT;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::GT,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_GT;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 13:
-            YY_RULE_SETUP
+            case 13:
+              YY_RULE_SETUP
 #line 133 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::NE,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_NE;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::NE,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_NE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 14:
-            YY_RULE_SETUP
+            case 14:
+              YY_RULE_SETUP
 #line 141 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::EQ,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_EQ;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::EQ,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_EQ;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 15:
-            YY_RULE_SETUP
+            case 15:
+              YY_RULE_SETUP
 #line 149 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::AND,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_AND;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::AND,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_AND;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 16:
-            YY_RULE_SETUP
+            case 16:
+              YY_RULE_SETUP
 #line 157 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::XOR,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_XOR;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::XOR,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_XOR;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 17:
-            YY_RULE_SETUP
+            case 17:
+              YY_RULE_SETUP
 #line 165 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR,
-                                                yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_OR;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR,
+                                                  yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_OR;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 18:
-            /* rule 18 can match eol */
-            YY_RULE_SETUP
+            case 18:
+              /* rule 18 can match eol */
+              YY_RULE_SETUP
 #line 173 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeUnit(CEvaluationNode::SubType::DEFAULT,
-                                             yytext);
-            COMMON_ACTION;
-            return TOKEN_UNIT;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeUnit(CEvaluationNode::SubType::DEFAULT,
+                                               yytext);
+              COMMON_ACTION;
+              return TOKEN_UNIT;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 19:
-            /* rule 19 can match eol */
-            YY_RULE_SETUP
+            case 19:
+              /* rule 19 can match eol */
+              YY_RULE_SETUP
 #line 181 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN,
-                                               yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN,
+                                                 yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 20:
-            YY_RULE_SETUP
+            case 20:
+              YY_RULE_SETUP
 #line 189 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeObject(CEvaluationNode::SubType::POINTER,
-                                               yytext);
-            COMMON_ACTION;
-            return TOKEN_NUMBER;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeObject(CEvaluationNode::SubType::POINTER,
+                                                 yytext);
+              COMMON_ACTION;
+              return TOKEN_NUMBER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 21:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 21:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 197 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 22:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 22:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 204 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG10,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::LOG10,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 23:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 23:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 211 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::EXP,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::EXP,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 24:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 24:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 218 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SIN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SIN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 25:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 25:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 225 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 26:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 26:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 232 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::TAN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::TAN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 27:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 27:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 239 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SEC,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SEC,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 28:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 28:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 246 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CSC,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CSC,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 29:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 29:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 253 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COT,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COT,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 30:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 30:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 260 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SINH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SINH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 31:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 31:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 267 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COSH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COSH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 32:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 32:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 274 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::TANH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::TANH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 33:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 33:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 281 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SECH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SECH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 34:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 34:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 288 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CSCH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CSCH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 35:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 35:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 295 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COTH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::COTH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 36:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 36:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 302 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSIN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSIN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 37:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 37:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 309 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 38:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 38:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 316 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCTAN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCTAN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 39:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 39:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 323 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSEC,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSEC,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 40:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 40:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 330 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCSC,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCSC,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 41:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 41:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 337 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOT,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOT,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 42:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 42:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 344 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSINH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSINH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 43:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 43:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 351 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOSH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOSH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 44:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 44:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 358 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCTANH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCTANH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 45:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 45:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 365 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSECH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCSECH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 46:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 46:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 372 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCSCH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCSCH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 47:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 47:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 379 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOTH,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ARCCOTH,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 48:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 48:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 386 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SIGN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SIGN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 49:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 49:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 393 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SQRT,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::SQRT,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 50:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 50:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 400 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ABS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::ABS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 51:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 51:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 407 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::FLOOR,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::FLOOR,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 52:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 52:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 414 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CEIL,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::CEIL,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 53:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 53:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 421 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::FACTORIAL,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::FACTORIAL,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 54:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 54:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 428 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RUNIFORM,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION_2;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RUNIFORM,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION_2;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 55:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 55:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 435 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RGAMMA,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION_2;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RGAMMA,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION_2;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 56:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 56:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 442 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RPOISSON,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RPOISSON,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 57:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 57:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 449 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RNORMAL,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION_2;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::RNORMAL,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION_2;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 58:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 58:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 456 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MAX,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION_2;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MAX,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION_2;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 59:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 59:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 463 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MIN,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION_2;
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MIN,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION_2;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 60:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 60:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 470 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeDelay(CEvaluationNode::SubType::DELAY,
-                                              yytext);
-            COMMON_ACTION;
-            return TOKEN_FUNCTION_2;
+              mpNode = new CEvaluationNodeDelay(CEvaluationNode::SubType::DELAY,
+                                                yytext);
+              COMMON_ACTION;
+              return TOKEN_FUNCTION_2;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 61:
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 61:
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 477 "function/CEvaluationLexer.lpp"
 
-            mpNode = new CEvaluationNodeChoice(CEvaluationNode::SubType::IF,
-                                               yytext);
-            COMMON_ACTION;
-            return TOKEN_LOGICAL_CHOICE;
+              mpNode = new CEvaluationNodeChoice(CEvaluationNode::SubType::IF,
+                                                 yytext);
+              COMMON_ACTION;
+              return TOKEN_LOGICAL_CHOICE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 62:
-            /* rule 62 can match eol */
-            *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
-            (yy_c_buf_p) = yy_cp -= 1;
-            YY_DO_BEFORE_ACTION; /* set up yytext again */
-            YY_RULE_SETUP
+            case 62:
+              /* rule 62 can match eol */
+              *yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+              YY_LINENO_REWIND_TO(yy_cp - 1);
+              (yy_c_buf_p) = yy_cp -= 1;
+              YY_DO_BEFORE_ACTION; /* set up yytext again */
+              YY_RULE_SETUP
 #line 484 "function/CEvaluationLexer.lpp"
 
-            {
-              std::string tmp(yytext);
-              mpNode = new CEvaluationNodeCall(CEvaluationNode::SubType::EXPRESSION,
-              tmp.substr(0, tmp.length() - 1));
-            }
-            COMMON_ACTION;
-            return TOKEN_CALL;
+              {
+                std::string tmp(yytext);
+                mpNode = new CEvaluationNodeCall(CEvaluationNode::SubType::EXPRESSION,
+                tmp.substr(0, tmp.length() - 1));
+              }
+              COMMON_ACTION;
+              return TOKEN_CALL;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 63:
-            /* rule 63 can match eol */
-            YY_RULE_SETUP
+            case 63:
+              /* rule 63 can match eol */
+              YY_RULE_SETUP
 #line 494 "function/CEvaluationLexer.lpp"
 
-            {
-              std::string tmp(yytext);
-              mpNode = new CEvaluationNodeCall(CEvaluationNode::SubType::FUNCTION,
-              tmp.substr(0, tmp.length() - 1));
-            }
-            COMMON_ACTION;
-            return TOKEN_CALL;
+              {
+                std::string tmp(yytext);
+                mpNode = new CEvaluationNodeCall(CEvaluationNode::SubType::FUNCTION,
+                tmp.substr(0, tmp.length() - 1));
+              }
+              COMMON_ACTION;
+              return TOKEN_CALL;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 64:
-            YY_RULE_SETUP
+            case 64:
+              YY_RULE_SETUP
 #line 504 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sVALUE);
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MINUS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_SIGN;
+              BEGIN(sVALUE);
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::MINUS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_SIGN;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 65:
-            YY_RULE_SETUP
+            case 65:
+              YY_RULE_SETUP
 #line 512 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sVALUE);
-            mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::PLUS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_SIGN;
+              BEGIN(sVALUE);
+              mpNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::PLUS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_SIGN;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 66:
-            YY_RULE_SETUP
+            case 66:
+              YY_RULE_SETUP
 #line 520 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::POWER,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_POWER;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::POWER,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_POWER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 67:
-            YY_RULE_SETUP
+            case 67:
+              YY_RULE_SETUP
 #line 528 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_MULTIPLY;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_MULTIPLY;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 68:
-            YY_RULE_SETUP
+            case 68:
+              YY_RULE_SETUP
 #line 536 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_MULTIPLY;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_MULTIPLY;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 69:
-            YY_RULE_SETUP
+            case 69:
+              YY_RULE_SETUP
 #line 544 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MODULUS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_MODULUS;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MODULUS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_MODULUS;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 70:
-            YY_RULE_SETUP
+            case 70:
+              YY_RULE_SETUP
 #line 552 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::REMAINDER,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_REMAINDER;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::REMAINDER,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_REMAINDER;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 71:
-            YY_RULE_SETUP
+            case 71:
+              YY_RULE_SETUP
 #line 560 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::PLUS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_PLUS;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::PLUS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_PLUS;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 72:
-            YY_RULE_SETUP
+            case 72:
+              YY_RULE_SETUP
 #line 568 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_OPERATOR_PLUS;
+              BEGIN(sSIGNorVALUE);
+              mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_OPERATOR_PLUS;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 73:
-            YY_RULE_SETUP
+            case 73:
+              YY_RULE_SETUP
 #line 576 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mPosition += yyleng;
-            // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_OPEN,
-            //                                       yytext);
-            // COMMON_ACTION;
-            return TOKEN_STRUCTURE_OPEN;
+              BEGIN(sSIGNorVALUE);
+              mPosition += yyleng;
+              // mpNode = new CEvaluationNodeStructure(CEvaluationNode::SubType::OPEN,
+              //                                       yytext);
+              // COMMON_ACTION;
+              return TOKEN_STRUCTURE_OPEN;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 74:
-            YY_RULE_SETUP
+            case 74:
+              YY_RULE_SETUP
 #line 585 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mPosition += yyleng;
-            // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_VECTOR_OPEN,
-            //                                       yytext);
-            // COMMON_ACTION;
-            return TOKEN_STRUCTURE_VECTOR_OPEN;
+              BEGIN(sSIGNorVALUE);
+              mPosition += yyleng;
+              // mpNode = new CEvaluationNodeStructure(CEvaluationNode::SubType::VECTOR_OPEN,
+              //                                       yytext);
+              // COMMON_ACTION;
+              return TOKEN_STRUCTURE_VECTOR_OPEN;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 75:
-            YY_RULE_SETUP
+            case 75:
+              YY_RULE_SETUP
 #line 594 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sSIGNorVALUE);
-            mPosition += yyleng;
-            // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_COMMA,
-            //                                       yytext);
-            // COMMON_ACTION;
-            return TOKEN_STRUCTURE_COMMA;
+              BEGIN(sSIGNorVALUE);
+              mPosition += yyleng;
+              // mpNode = new CEvaluationNodeStructure(CEvaluationNode::SubType::COMMA,
+              //                                       yytext);
+              // COMMON_ACTION;
+              return TOKEN_STRUCTURE_COMMA;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 76:
-            YY_RULE_SETUP
+            case 76:
+              YY_RULE_SETUP
 #line 603 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mPosition += yyleng;
-            // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_CLOSE,
-            //                                       yytext);
-            // COMMON_ACTION;
-            return TOKEN_STRUCTURE_CLOSE;
+              BEGIN(sOPERATOR);
+              mPosition += yyleng;
+              // mpNode = new CEvaluationNodeStructure(CEvaluationNode::SubType::CLOSE,
+              //                                       yytext);
+              // COMMON_ACTION;
+              return TOKEN_STRUCTURE_CLOSE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 77:
-            YY_RULE_SETUP
+            case 77:
+              YY_RULE_SETUP
 #line 612 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mPosition += yyleng;
-            // mpNode = new CEvaluationNodeStructure(CEvaluationNode::S_VECTOR_CLOSE,
-            //                                       yytext);
-            // COMMON_ACTION;
-            return TOKEN_STRUCTURE_VECTOR_CLOSE;
+              BEGIN(sOPERATOR);
+              mPosition += yyleng;
+              // mpNode = new CEvaluationNodeStructure(CEvaluationNode::SubType::VECTOR_CLOSE,
+              //                                       yytext);
+              // COMMON_ACTION;
+              return TOKEN_STRUCTURE_VECTOR_CLOSE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 78:
-            /* rule 78 can match eol */
-            YY_RULE_SETUP
+            case 78:
+              /* rule 78 can match eol */
+              YY_RULE_SETUP
 #line 621 "function/CEvaluationLexer.lpp"
 
-            BEGIN(sOPERATOR);
-            mpNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT,
-                                                 yytext);
-            COMMON_ACTION;
-            return TOKEN_VARIABLE;
+              BEGIN(sOPERATOR);
+              mpNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT,
+                                                   yytext);
+              COMMON_ACTION;
+              return TOKEN_VARIABLE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 79:
-            /* rule 79 can match eol */
-            YY_RULE_SETUP
+            case 79:
+              /* rule 79 can match eol */
+              YY_RULE_SETUP
 #line 629 "function/CEvaluationLexer.lpp"
 
-            mPosition += yyleng;
-            // mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNode::S_DEFAULT,
-            //                                        yytext);
-            // COMMON_ACTION;
+              mPosition += yyleng;
+              // mpNode = new CEvaluationNodeWhiteSpace(CEvaluationNode::SubType::DEFAULT,
+              //                                        yytext);
+              // COMMON_ACTION;
 
-            YY_BREAK
+              YY_BREAK
 
-          case YY_STATE_EOF(INITIAL):
-          case YY_STATE_EOF(sSIGNorVALUE):
-          case YY_STATE_EOF(sOPERATOR):
-          case YY_STATE_EOF(sVALUE):
+            case YY_STATE_EOF(INITIAL):
+            case YY_STATE_EOF(sSIGNorVALUE):
+            case YY_STATE_EOF(sOPERATOR):
+            case YY_STATE_EOF(sVALUE):
 #line 636 "function/CEvaluationLexer.lpp"
-            return 0;
-            YY_BREAK
+              return 0;
+              YY_BREAK
 
-          case 80:
-            YY_RULE_SETUP
+            case 80:
+              YY_RULE_SETUP
 #line 638 "function/CEvaluationLexer.lpp"
 
-            CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
-            return YYERRCODE;
+              CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 2, mPosition);
+              return YYERRCODE;
 
-            YY_BREAK
+              YY_BREAK
 
-          case 81:
-            YY_RULE_SETUP
+            case 81:
+              YY_RULE_SETUP
 #line 643 "function/CEvaluationLexer.lpp"
-            ECHO;
-            YY_BREAK
-#line 1944 "<stdout>"
+              ECHO;
+              YY_BREAK
+#line 1935 "<stdout>"
 
-          case YY_END_OF_BUFFER:
-          {
-            /* Amount of text matched not including the EOB char. */
-            int yy_amount_of_matched_text = (int)(yy_cp - (yytext_ptr)) - 1;
+            case YY_END_OF_BUFFER:
+            {
+              /* Amount of text matched not including the EOB char. */
+              int yy_amount_of_matched_text = (int)(yy_cp - (yytext_ptr)) - 1;
 
-            /* Undo the effects of YY_DO_BEFORE_ACTION. */
-            *yy_cp = (yy_hold_char);
-            YY_RESTORE_YY_MORE_OFFSET
+              /* Undo the effects of YY_DO_BEFORE_ACTION. */
+              *yy_cp = (yy_hold_char);
+              YY_RESTORE_YY_MORE_OFFSET
 
-            if (YY_CURRENT_BUFFER_LVALUE->yy_buffer_status == YY_BUFFER_NEW)
-              {
-                /* We're scanning a new file or input source.  It's
-                 * possible that this happened because the user
-                 * just pointed yyin at a new source and called
-                 * yylex().  If so, then we have to assure
-                 * consistency between YY_CURRENT_BUFFER and our
-                 * globals.  Here is the right place to do so, because
-                 * this is the first action (other than possibly a
-                 * back-up) that will match for the new input source.
-                 */
-                (yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
-                YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin;
-                YY_CURRENT_BUFFER_LVALUE->yy_buffer_status = YY_BUFFER_NORMAL;
-              }
-
-            /* Note that here we test for yy_c_buf_p "<=" to the position
-             * of the first EOB in the buffer, since yy_c_buf_p will
-             * already have been incremented past the NUL character
-             * (since all states make transitions on EOB to the
-             * end-of-buffer state).  Contrast this with the test
-             * in input().
-             */
-            if ((yy_c_buf_p) <= &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)])
-              {
-                /* This was really a NUL. */
-                yy_state_type yy_next_state;
-
-                (yy_c_buf_p) = (yytext_ptr) + yy_amount_of_matched_text;
-
-                yy_current_state = yy_get_previous_state();
-
-                /* Okay, we're now positioned to make the NUL
-                 * transition.  We couldn't have
-                 * yy_get_previous_state() go ahead and do it
-                 * for us because it doesn't know how to deal
-                 * with the possibility of jamming (and we don't
-                 * want to build jamming into it because then it
-                 * will run more slowly).
-                 */
-
-                yy_next_state = yy_try_NUL_trans(yy_current_state);
-
-                yy_bp = (yytext_ptr) + YY_MORE_ADJ;
-
-                if (yy_next_state)
-                  {
-                    /* Consume the NUL. */
-                    yy_cp = ++(yy_c_buf_p);
-                    yy_current_state = yy_next_state;
-                    goto yy_match;
-                  }
-
-                else
-                  {
-                    yy_cp = (yy_last_accepting_cpos);
-                    yy_current_state = (yy_last_accepting_state);
-                    goto yy_find_action;
-                  }
-              }
-
-            else switch (yy_get_next_buffer())
+              if (YY_CURRENT_BUFFER_LVALUE->yy_buffer_status == YY_BUFFER_NEW)
                 {
-                  case EOB_ACT_END_OF_FILE:
-                  {
-                    (yy_did_buffer_switch_on_eof) = 0;
-
-                    if (yywrap())
-                      {
-                        /* Note: because we've taken care in
-                         * yy_get_next_buffer() to have set up
-                         * yytext, we can now set up
-                         * yy_c_buf_p so that if some total
-                         * hoser (like flex itself) wants to
-                         * call the scanner after we return the
-                         * YY_NULL, it'll still work - another
-                         * YY_NULL will get returned.
-                         */
-                        (yy_c_buf_p) = (yytext_ptr) + YY_MORE_ADJ;
-
-                        yy_act = YY_STATE_EOF(YY_START);
-                        goto do_action;
-                      }
-
-                    else
-                      {
-                        if (!(yy_did_buffer_switch_on_eof))
-                          YY_NEW_FILE;
-                      }
-
-                    break;
-                  }
-
-                  case EOB_ACT_CONTINUE_SCAN:
-                    (yy_c_buf_p) =
-                      (yytext_ptr) + yy_amount_of_matched_text;
-
-                    yy_current_state = yy_get_previous_state();
-
-                    yy_cp = (yy_c_buf_p);
-                    yy_bp = (yytext_ptr) + YY_MORE_ADJ;
-                    goto yy_match;
-
-                  case EOB_ACT_LAST_MATCH:
-                    (yy_c_buf_p) =
-                      &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)];
-
-                    yy_current_state = yy_get_previous_state();
-
-                    yy_cp = (yy_c_buf_p);
-                    yy_bp = (yytext_ptr) + YY_MORE_ADJ;
-                    goto yy_find_action;
+                  /* We're scanning a new file or input source.  It's
+                   * possible that this happened because the user
+                   * just pointed yyin at a new source and called
+                   * yylex().  If so, then we have to assure
+                   * consistency between YY_CURRENT_BUFFER and our
+                   * globals.  Here is the right place to do so, because
+                   * this is the first action (other than possibly a
+                   * back-up) that will match for the new input source.
+                   */
+                  (yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
+                  YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin.rdbuf();
+                  YY_CURRENT_BUFFER_LVALUE->yy_buffer_status = YY_BUFFER_NORMAL;
                 }
 
-            break;
-          }
+              /* Note that here we test for yy_c_buf_p "<=" to the position
+               * of the first EOB in the buffer, since yy_c_buf_p will
+               * already have been incremented past the NUL character
+               * (since all states make transitions on EOB to the
+               * end-of-buffer state).  Contrast this with the test
+               * in input().
+               */
+              if ((yy_c_buf_p) <= &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)])
+                {
+                  /* This was really a NUL. */
+                  yy_state_type yy_next_state;
 
-          default:
-            YY_FATAL_ERROR(
-              "fatal flex scanner internal error--no action found");
-        } /* end of action switch */
-    } /* end of scanning one token */
+                  (yy_c_buf_p) = (yytext_ptr) + yy_amount_of_matched_text;
+
+                  yy_current_state = yy_get_previous_state();
+
+                  /* Okay, we're now positioned to make the NUL
+                   * transition.  We couldn't have
+                   * yy_get_previous_state() go ahead and do it
+                   * for us because it doesn't know how to deal
+                   * with the possibility of jamming (and we don't
+                   * want to build jamming into it because then it
+                   * will run more slowly).
+                   */
+
+                  yy_next_state = yy_try_NUL_trans(yy_current_state);
+
+                  yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+
+                  if (yy_next_state)
+                    {
+                      /* Consume the NUL. */
+                      yy_cp = ++(yy_c_buf_p);
+                      yy_current_state = yy_next_state;
+                      goto yy_match;
+                    }
+
+                  else
+                    {
+                      yy_cp = (yy_last_accepting_cpos);
+                      yy_current_state = (yy_last_accepting_state);
+                      goto yy_find_action;
+                    }
+                }
+
+              else switch (yy_get_next_buffer())
+                  {
+                    case EOB_ACT_END_OF_FILE:
+                    {
+                      (yy_did_buffer_switch_on_eof) = 0;
+
+                      if (yywrap())
+                        {
+                          /* Note: because we've taken care in
+                           * yy_get_next_buffer() to have set up
+                           * yytext, we can now set up
+                           * yy_c_buf_p so that if some total
+                           * hoser (like flex itself) wants to
+                           * call the scanner after we return the
+                           * YY_NULL, it'll still work - another
+                           * YY_NULL will get returned.
+                           */
+                          (yy_c_buf_p) = (yytext_ptr) + YY_MORE_ADJ;
+
+                          yy_act = YY_STATE_EOF(YY_START);
+                          goto do_action;
+                        }
+
+                      else
+                        {
+                          if (!(yy_did_buffer_switch_on_eof))
+                            YY_NEW_FILE;
+                        }
+
+                      break;
+                    }
+
+                    case EOB_ACT_CONTINUE_SCAN:
+                      (yy_c_buf_p) =
+                        (yytext_ptr) + yy_amount_of_matched_text;
+
+                      yy_current_state = yy_get_previous_state();
+
+                      yy_cp = (yy_c_buf_p);
+                      yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+                      goto yy_match;
+
+                    case EOB_ACT_LAST_MATCH:
+                      (yy_c_buf_p) =
+                        &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)];
+
+                      yy_current_state = yy_get_previous_state();
+
+                      yy_cp = (yy_c_buf_p);
+                      yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+                      goto yy_find_action;
+                  }
+
+              break;
+            }
+
+            default:
+              YY_FATAL_ERROR(
+                "fatal flex scanner internal error--no action found");
+          } /* end of action switch */
+      } /* end of scanning one token */
+  } /* end of user's declarations */
 } /* end of yylex */
 
 /* The contents of this function are C++ specific, so the () macro is not used.
+ * This constructor simply maintains backward compatibility.
+ * DEPRECATED
  */
-yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout)
+yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout):
+  yyin(arg_yyin ? arg_yyin->rdbuf() : std::cin.rdbuf()),
+  yyout(arg_yyout ? arg_yyout->rdbuf() : std::cout.rdbuf())
 {
-  yyin = arg_yyin;
-  yyout = arg_yyout;
+  ctor_common();
+}
+
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
+yyFlexLexer::yyFlexLexer(std::istream& arg_yyin, std::ostream& arg_yyout):
+  yyin(arg_yyin.rdbuf()),
+  yyout(arg_yyout.rdbuf())
+{
+  ctor_common();
+}
+
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
+void yyFlexLexer::ctor_common()
+{
   yy_c_buf_p = 0;
   yy_init = 0;
   yy_start = 0;
@@ -2207,7 +2217,7 @@ yyFlexLexer::yyFlexLexer(std::istream* arg_yyin, std::ostream* arg_yyout)
   yy_start_stack_ptr = yy_start_stack_depth = 0;
   yy_start_stack = NULL;
 
-  yy_buffer_stack = 0;
+  yy_buffer_stack = NULL;
   yy_buffer_stack_top = 0;
   yy_buffer_stack_max = 0;
 
@@ -2226,52 +2236,67 @@ yyFlexLexer::~yyFlexLexer()
 
 /* The contents of this function are C++ specific, so the () macro is not used.
  */
+void yyFlexLexer::switch_streams(std::istream& new_in, std::ostream& new_out)
+{
+  // was if(new_in)
+  yy_delete_buffer(YY_CURRENT_BUFFER);
+  yy_switch_to_buffer(yy_create_buffer(new_in, YY_BUF_SIZE));
+
+  // was if(new_out)
+  yyout.rdbuf(new_out.rdbuf());
+}
+
+/* The contents of this function are C++ specific, so the () macro is not used.
+ */
 void yyFlexLexer::switch_streams(std::istream* new_in, std::ostream* new_out)
 {
-  if (new_in)
+  if (! new_in)
     {
-      yy_delete_buffer(YY_CURRENT_BUFFER);
-      yy_switch_to_buffer(yy_create_buffer(new_in, YY_BUF_SIZE));
+      new_in = &yyin;
     }
 
-  if (new_out)
-    yyout = new_out;
+  if (! new_out)
+    {
+      new_out = &yyout;
+    }
+
+  switch_streams(*new_in, *new_out);
 }
 
 #ifdef YY_INTERACTIVE
-size_t yyFlexLexer::LexerInput(char* buf, size_t /* max_size */)
+int yyFlexLexer::LexerInput(char* buf, int /* max_size */)
 #else
-size_t yyFlexLexer::LexerInput(char* buf, size_t max_size)
+int yyFlexLexer::LexerInput(char* buf, int max_size)
 #endif
 {
-  if (yyin->eof() || yyin->fail())
+  if (yyin.eof() || yyin.fail())
     return 0;
 
 #ifdef YY_INTERACTIVE
-  yyin->get(buf[0]);
+  yyin.get(buf[0]);
 
-  if (yyin->eof())
+  if (yyin.eof())
     return 0;
 
-  if (yyin->bad())
+  if (yyin.bad())
     return -1;
 
   return 1;
 
 #else
-  (void) yyin->read(buf, max_size);
+  (void) yyin.read(buf, max_size);
 
-  if (yyin->bad())
+  if (yyin.bad())
     return -1;
   else
-    return (size_t) yyin->gcount();
+    return yyin.gcount();
 
 #endif
 }
 
-void yyFlexLexer::LexerOutput(const char* buf, size_t size)
+void yyFlexLexer::LexerOutput(const char* buf, int size)
 {
-  (void) yyout->write(buf, size);
+  (void) yyout.write(buf, size);
 }
 
 /* yy_get_next_buffer - try to read in a new buffer
@@ -2283,9 +2308,9 @@ void yyFlexLexer::LexerOutput(const char* buf, size_t size)
  */
 int yyFlexLexer::yy_get_next_buffer()
 {
-  register char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-  register char *source = (yytext_ptr);
-  register int number_to_move, i;
+  char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
+  char *source = (yytext_ptr);
+  yy_size_t number_to_move, i;
   int ret_val;
 
   if ((yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1])
@@ -2315,7 +2340,7 @@ int yyFlexLexer::yy_get_next_buffer()
   /* Try to read more data. */
 
   /* First move last chars to start of buffer. */
-  number_to_move = (int)((yy_c_buf_p) - (yytext_ptr)) - 1;
+  number_to_move = (yy_size_t)((yy_c_buf_p) - (yytext_ptr)) - 1;
 
   for (i = 0; i < number_to_move; ++i)
     *(dest++) = *(source++);
@@ -2336,7 +2361,7 @@ int yyFlexLexer::yy_get_next_buffer()
           /* Not enough room in the buffer - grow it. */
 
           /* just a shorter name for the current buffer */
-          YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
+          YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
           int yy_c_buf_p_offset =
             (int)((yy_c_buf_p) - b->yy_ch_buf);
@@ -2356,7 +2381,7 @@ int yyFlexLexer::yy_get_next_buffer()
             }
           else
             /* Can't grow it, we don't own it. */
-            b->yy_ch_buf = 0;
+            b->yy_ch_buf = NULL;
 
           if (! b->yy_ch_buf)
             YY_FATAL_ERROR(
@@ -2373,7 +2398,7 @@ int yyFlexLexer::yy_get_next_buffer()
 
       /* Read in more data. */
       YY_INPUT((&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move]),
-               (yy_n_chars), (size_t) num_to_read);
+               (yy_n_chars), num_to_read);
 
       YY_CURRENT_BUFFER_LVALUE->yy_n_chars = (yy_n_chars);
     }
@@ -2397,10 +2422,10 @@ int yyFlexLexer::yy_get_next_buffer()
   else
     ret_val = EOB_ACT_CONTINUE_SCAN;
 
-  if ((yy_size_t)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
+  if ((int)((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size)
     {
       /* Extend the array by 50%, plus the number we really need. */
-      yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+      int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
       YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) CEvaluationrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, new_size);
 
       if (! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
@@ -2420,14 +2445,14 @@ int yyFlexLexer::yy_get_next_buffer()
 
 yy_state_type yyFlexLexer::yy_get_previous_state()
 {
-  register yy_state_type yy_current_state;
-  register char *yy_cp;
+  yy_state_type yy_current_state;
+  char *yy_cp;
 
   yy_current_state = (yy_start);
 
   for (yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp)
     {
-      register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+      YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
 
       if (yy_accept[yy_current_state])
         {
@@ -2443,7 +2468,7 @@ yy_state_type yyFlexLexer::yy_get_previous_state()
             yy_c = yy_meta[(unsigned int) yy_c];
         }
 
-      yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+      yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
     }
 
   return yy_current_state;
@@ -2456,10 +2481,10 @@ yy_state_type yyFlexLexer::yy_get_previous_state()
  */
 yy_state_type yyFlexLexer::yy_try_NUL_trans(yy_state_type yy_current_state)
 {
-  register int yy_is_jam;
-  register char *yy_cp = (yy_c_buf_p);
+  int yy_is_jam;
+  char *yy_cp = (yy_c_buf_p);
 
-  register YY_CHAR yy_c = 1;
+  YY_CHAR yy_c = 1;
 
   if (yy_accept[yy_current_state])
     {
@@ -2475,15 +2500,16 @@ yy_state_type yyFlexLexer::yy_try_NUL_trans(yy_state_type yy_current_state)
         yy_c = yy_meta[(unsigned int) yy_c];
     }
 
-  yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+  yy_current_state = yy_nxt[yy_base[yy_current_state] + (flex_int16_t) yy_c];
   yy_is_jam = (yy_current_state == 390);
 
   return yy_is_jam ? 0 : yy_current_state;
 }
 
-void yyFlexLexer::yyunput(int c, register char* yy_bp)
+#ifndef YY_NO_UNPUT
+void yyFlexLexer::yyunput(int c, char* yy_bp)
 {
-  register char *yy_cp;
+  char *yy_cp;
 
   yy_cp = (yy_c_buf_p);
 
@@ -2494,10 +2520,10 @@ void yyFlexLexer::yyunput(int c, register char* yy_bp)
     {
       /* need to shift things up to make room */
       /* +2 for EOB chars. */
-      register int number_to_move = (yy_n_chars) + 2;
-      register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
-                              YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-      register char *source =
+      int number_to_move = (yy_n_chars) + 2;
+      char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
+                     YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
+      char *source =
         &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
       while (source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf)
@@ -2506,7 +2532,7 @@ void yyFlexLexer::yyunput(int c, register char* yy_bp)
       yy_cp += (int)(dest - source);
       yy_bp += (int)(dest - source);
       YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-        (yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+        (yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
       if (yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2)
         YY_FATAL_ERROR("flex scanner push-back overflow");
@@ -2518,6 +2544,7 @@ void yyFlexLexer::yyunput(int c, register char* yy_bp)
   (yy_hold_char) = *yy_cp;
   (yy_c_buf_p) = yy_cp;
 }
+#endif
 
 int yyFlexLexer::yyinput()
 {
@@ -2557,12 +2584,12 @@ int yyFlexLexer::yyinput()
                 /* Reset buffer status. */
                 yyrestart(yyin);
 
-                /*FALLTHROUGH*/
+              /*FALLTHROUGH*/
 
               case EOB_ACT_END_OF_FILE:
               {
                 if (yywrap())
-                  return EOF;
+                  return 0;
 
                 if (!(yy_did_buffer_switch_on_eof))
                   YY_NEW_FILE;
@@ -2593,7 +2620,7 @@ int yyFlexLexer::yyinput()
  *
  * @note This function does not reset the start condition to @c INITIAL .
  */
-void yyFlexLexer::yyrestart(std::istream* input_file)
+void yyFlexLexer::yyrestart(std::istream& input_file)
 {
 
   if (! YY_CURRENT_BUFFER)
@@ -2605,6 +2632,16 @@ void yyFlexLexer::yyrestart(std::istream* input_file)
 
   yy_init_buffer(YY_CURRENT_BUFFER, input_file);
   yy_load_buffer_state();
+}
+
+/** Delegate to the new version that takes an istream reference.
+ * @param input_file A readable stream.
+ *
+ * @note This function does not reset the start condition to @c INITIAL .
+ */
+void yyFlexLexer::yyrestart(std::istream* input_file)
+{
+  yyrestart(*input_file);
 }
 
 /** Switch to a different input buffer.
@@ -2647,7 +2684,7 @@ void yyFlexLexer::yy_load_buffer_state()
 {
   (yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
   (yytext_ptr) = (yy_c_buf_p) = YY_CURRENT_BUFFER_LVALUE->yy_buf_pos;
-  yyin = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
+  yyin.rdbuf(YY_CURRENT_BUFFER_LVALUE->yy_input_file);
   (yy_hold_char) = *(yy_c_buf_p);
 }
 
@@ -2657,7 +2694,7 @@ void yyFlexLexer::yy_load_buffer_state()
  *
  * @return the allocated buffer state.
  */
-YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream* file, int size)
+YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream& file, int size)
 {
   YY_BUFFER_STATE b;
 
@@ -2666,7 +2703,7 @@ YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream* file, int size)
   if (! b)
     YY_FATAL_ERROR("out of dynamic memory in yy_create_buffer()");
 
-  b->yy_buf_size = size;
+  b->yy_buf_size = (yy_size_t)size;
 
   /* yy_ch_buf has to be 2 characters longer than the size given because
    * we need to put in 2 end-of-buffer characters.
@@ -2681,6 +2718,17 @@ YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream* file, int size)
   yy_init_buffer(b, file);
 
   return b;
+}
+
+/** Delegate creation of buffers to the new version that takes an istream reference.
+ * @param file A readable stream.
+ * @param size The character buffer size in bytes. When in doubt, use @c YY_BUF_SIZE.
+ *
+ * @return the allocated buffer state.
+ */
+YY_BUFFER_STATE yyFlexLexer::yy_create_buffer(std::istream* file, int size)
+{
+  return yy_create_buffer(*file, size);
 }
 
 /** Destroy the buffer.
@@ -2706,14 +2754,14 @@ void yyFlexLexer::yy_delete_buffer(YY_BUFFER_STATE b)
  * This function is sometimes called more than once on the same buffer,
  * such as during a yyrestart() or at EOF.
  */
-void yyFlexLexer::yy_init_buffer(YY_BUFFER_STATE b, std::istream* file)
+void yyFlexLexer::yy_init_buffer(YY_BUFFER_STATE b, std::istream& file)
 
 {
   int oerrno = errno;
 
   yy_flush_buffer(b);
 
-  b->yy_input_file = file;
+  b->yy_input_file = file.rdbuf();
   b->yy_fill_buffer = 1;
 
   /* If b is the current buffer, then yy_init_buffer was _probably_
@@ -2826,7 +2874,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
        * scanner will even need a stack. We use 2 instead of 1 to avoid an
        * immediate realloc on the next call.
            */
-      num_to_alloc = 1;
+      num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
       (yy_buffer_stack) = (struct yy_buffer_state**)CEvaluationalloc
                           (num_to_alloc * sizeof(struct yy_buffer_state*)
                           );
@@ -2845,7 +2893,7 @@ void yyFlexLexer::yyensure_buffer_stack(void)
     {
 
       /* Increase the buffer to prepare for a possible push. */
-      int grow_size = 8 /* arbitrary grow size */;
+      yy_size_t grow_size = 8 /* arbitrary grow size */;
 
       num_to_alloc = (yy_buffer_stack_max) + grow_size;
       (yy_buffer_stack) = (struct yy_buffer_state**)CEvaluationrealloc
@@ -2862,14 +2910,14 @@ void yyFlexLexer::yyensure_buffer_stack(void)
     }
 }
 
-void yyFlexLexer::yy_push_state(int new_state)
+void yyFlexLexer::yy_push_state(int _new_state)
 {
   if ((yy_start_stack_ptr) >= (yy_start_stack_depth))
     {
       yy_size_t new_size;
 
       (yy_start_stack_depth) += YY_START_STACK_INCR;
-      new_size = (yy_start_stack_depth) * sizeof(int);
+      new_size = (yy_size_t)(yy_start_stack_depth) * sizeof(int);
 
       if (!(yy_start_stack))
         (yy_start_stack) = (int *) CEvaluationalloc(new_size);
@@ -2883,7 +2931,7 @@ void yyFlexLexer::yy_push_state(int new_state)
 
   (yy_start_stack)[(yy_start_stack_ptr)++] = YY_START;
 
-  BEGIN(new_state);
+  BEGIN(_new_state);
 }
 
 void yyFlexLexer::yy_pop_state()
@@ -2903,7 +2951,7 @@ int yyFlexLexer::yy_top_state()
 #define YY_EXIT_FAILURE 2
 #endif
 
-void yyFlexLexer::LexerError(yyconst char msg[])
+void yyFlexLexer::LexerError(yyconst char* msg)
 {
   std::cerr << msg << std::endl;
   exit(YY_EXIT_FAILURE);
@@ -2935,7 +2983,8 @@ void yyFlexLexer::LexerError(yyconst char msg[])
 #ifndef yytext_ptr
 static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
 {
-  register int i;
+
+  int i;
 
   for (i = 0; i < n; ++i)
     s1[i] = s2[i];
@@ -2945,7 +2994,7 @@ static void yy_flex_strncpy(char* s1, yyconst char * s2, int n)
 #ifdef YY_NEED_STRLEN
 static int yy_flex_strlen(yyconst char * s)
 {
-  register int n;
+  int n;
 
   for (n = 0; s[n]; ++n)
     ;
@@ -2956,11 +3005,12 @@ static int yy_flex_strlen(yyconst char * s)
 
 void *CEvaluationalloc(yy_size_t  size)
 {
-  return (void *) malloc(size);
+  return malloc(size);
 }
 
 void *CEvaluationrealloc(void * ptr, yy_size_t  size)
 {
+
   /* The cast to (char *) in the following accommodates both
    * implementations that use char* generic pointers, and those
    * that use void* generic pointers.  It works with the latter
@@ -2968,7 +3018,7 @@ void *CEvaluationrealloc(void * ptr, yy_size_t  size)
    * any pointer type to void*, and deal with argument conversions
    * as though doing an assignment.
    */
-  return (void *) realloc((char *) ptr, size);
+  return realloc(ptr, size);
 }
 
 void CEvaluationfree(void * ptr)

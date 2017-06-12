@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -30,8 +35,6 @@ ${FLEX}  -t $SOURCE_FILE | \
   ${SED} -e 's?<FlexLexer.h>?"copasi/FlexLexer.h"?' \
          -e 's/include <fstream>/include <iostream>/' \
          -e 's/using std::istream;/using namespace std;/' \
-         -e 's/int yyFlexLexer::LexerInput( char. buf, int/size_t yyFlexLexer::LexerInput( char* buf, size_t/' \
-         -e 's/void yyFlexLexer::LexerOutput( const char. buf, int size )/void yyFlexLexer::LexerOutput( const char* buf, size_t size )/' \
          -e '/using std::ostream;/d' \
          -e '/#define yy_current_buffer YY_CURRENT_BUFFER/d' \
          -e '/#include <unistd.h>/d' \

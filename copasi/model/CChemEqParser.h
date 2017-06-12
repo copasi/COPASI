@@ -113,37 +113,41 @@ class CChemEqParser: public FlexLexer, public yyYaccParser
 public:
   // arg_yyin and arg_yyout default to the cin and cout, but we
   // only make that assignment when initializing in yylex().
-  CChemEqParser(std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
+  yyFlexLexer(std::istream& arg_yyin, std::ostream& arg_yyout);
+  yyFlexLexer(std::istream* arg_yyin = 0, std::ostream* arg_yyout = 0);
+private:
+  void ctor_common();
 
-  virtual ~CChemEqParser();
+public:
 
-  void yy_switch_to_buffer(struct yy_buffer_state* new_buffer);
+  virtual ~yyFlexLexer();
 
-  struct yy_buffer_state* yy_create_buffer(std::istream* s, int size);
-
-  void yy_delete_buffer(struct yy_buffer_state* b);
+  void yy_switch_to_buffer(yy_buffer_state* new_buffer);
+  yy_buffer_state* yy_create_buffer(std::istream* s, int size);
+  yy_buffer_state* yy_create_buffer(std::istream& s, int size);
+  void yy_delete_buffer(yy_buffer_state* b);
   void yyrestart(std::istream* s);
+  void yyrestart(std::istream& s);
 
-  void yypush_buffer_state(struct yy_buffer_state* new_buffer);
-  void yypop_buffer_state(void);
+  void yypush_buffer_state(yy_buffer_state* new_buffer);
+  void yypop_buffer_state();
 
   virtual int yylex();
-  virtual void switch_streams(std::istream* new_in, std::ostream* new_out);
+  virtual void switch_streams(std::istream& new_in, std::ostream& new_out);
+  virtual void switch_streams(std::istream* new_in = 0, std::ostream* new_out = 0);
   virtual int yywrap();
 
 protected:
-  virtual size_t LexerInput(char* buf, size_t max_size);
-  virtual void LexerOutput(const char* buf, size_t size);
+  virtual int LexerInput(char* buf, int max_size);
+  virtual void LexerOutput(const char* buf, int size);
   virtual void LexerError(const char* msg);
 
   void yyunput(int c, char* buf_ptr);
   int yyinput();
 
   void yy_load_buffer_state();
-
-  void yy_init_buffer(struct yy_buffer_state* b, std::istream* s);
-
-  void yy_flush_buffer(struct yy_buffer_state* b);
+  void yy_init_buffer(yy_buffer_state* b, std::istream& s);
+  void yy_flush_buffer(yy_buffer_state* b);
 
   int yy_start_stack_ptr;
   int yy_start_stack_depth;
@@ -157,10 +161,8 @@ protected:
   yy_state_type yy_try_NUL_trans(yy_state_type current_state);
   int yy_get_next_buffer();
 
-  std::istream* yyin; // input source for default LexerInput
-  std::ostream* yyout; // output sink for default LexerOutput
-
-  struct yy_buffer_state* yy_current_buffer;
+  std::istream yyin;  // input source for default LexerInput
+  std::ostream yyout; // output sink for default LexerOutput
 
   // yy_hold_char holds the character lost when yytext is formed.
   char yy_hold_char;
@@ -171,8 +173,8 @@ protected:
   // Points to current character in buffer.
   char* yy_c_buf_p;
 
-  int yy_init;  // whether we need to initialize
-  int yy_start;  // start state number
+  int yy_init;                // whether we need to initialize
+  int yy_start;               // start state number
 
   // Flag which is used to allow yywrap()'s to do buffer switches
   // instead of setting up a fresh yyin.  A bit of a hack ...
@@ -180,7 +182,7 @@ protected:
 
   size_t yy_buffer_stack_top; /**< index of top of stack. */
   size_t yy_buffer_stack_max; /**< capacity of stack. */
-  struct yy_buffer_state ** yy_buffer_stack; /**< Stack as an array. */
+  yy_buffer_state ** yy_buffer_stack; /**< Stack as an array. */
   void yyensure_buffer_stack(void);
 
   // The following are not always needed, but may be depending
