@@ -2401,7 +2401,7 @@ void CopasiUI3Window::setApplicationFont()
 #include "UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()
 {
-  CQExpandModelData *widget = new CQExpandModelData;
+  CQExpandModelData *widget = new CQExpandModelData(this);
   widget->exec();
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
@@ -2415,7 +2415,7 @@ void CopasiUI3Window::slotMergeModels()
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
   assert(mpDataModel != NULL);
   CModel *pModel = mpDataModel->getModel();
-  CQMergingData *widget = new CQMergingData(NULL, NULL, 0);
+  CQMergingData *widget = new CQMergingData(NULL, pModel, 0);
   widget->exec();
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }
