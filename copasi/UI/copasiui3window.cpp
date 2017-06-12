@@ -417,10 +417,10 @@ void CopasiUI3Window::createActions()
 #endif
   //     QAction* mpaObjectBrowser;
 #ifdef WITH_MERGEMODEL
-  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add ...", this);
+  mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
   mpaAddModel->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_A);
   connect(mpaAddModel, SIGNAL(triggered()), this, SLOT(slotAddFileOpen()));
-  mpaMergeModels = new QAction("&Merge ...", this);
+  mpaMergeModels = new QAction("&Merge added model...", this);
   mpaMergeModels->setShortcut(Qt::SHIFT + Qt::CTRL + Qt::Key_M);
   connect(mpaMergeModels, SIGNAL(triggered()), this, SLOT(slotMergeModels()));
 #endif
@@ -552,6 +552,10 @@ void CopasiUI3Window::createMenuBar()
 #endif
   pFileMenu->addAction(mpaSave);
   pFileMenu->addAction(mpaSaveAs);
+#ifdef WITH_MERGEMODEL
+  pFileMenu->addAction(mpaAddModel);
+  //pFileMenu->addAction(mpaMergeModels);
+#endif
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaImportSBML);
   pFileMenu->addAction(mpaExportSBML);
@@ -569,10 +573,6 @@ void CopasiUI3Window::createMenuBar()
   mpMenuSEDMLSupport->addAction(mpaExportSEDML);
   mpMenuRecentSEDMLFiles = mpMenuSEDMLSupport->addMenu("Recent SED-ML Files");
   refreshRecentSEDMLFileMenu();
-#endif
-#ifdef WITH_MERGEMODEL
-  pFileMenu->addAction(mpaAddModel);
-  //pFileMenu->addAction(mpaMergeModels);
 #endif
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaFunctionDBLoad);

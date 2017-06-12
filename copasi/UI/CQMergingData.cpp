@@ -252,7 +252,7 @@ void CQMergingData::load()
   assert(mpModel != NULL);
 
   fillTree(mpTree1, mpModel, mItemMap1, true, true, mpModel->getObjectDataModel()->mLastAddedObjects, true);
-  fillTree(mpTree1, mpModel, mItemMap1, true, true, mpModel->getObjectDataModel()->mLastAddedObjects, false);
+  fillTree(mpTree2, mpModel, mItemMap2, true, true, mpModel->getObjectDataModel()->mLastAddedObjects, false);
 
   treeSelectionChanged();
 }
