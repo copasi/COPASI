@@ -137,7 +137,7 @@ public:
   virtual int yylex();
   virtual void switch_streams(std::istream& new_in, std::ostream& new_out);
   virtual void switch_streams(std::istream* new_in = 0, std::ostream* new_out = 0);
-  virtual int yywrap() {return 0;}
+  virtual int yywrap() {return 1;}
 
 protected:
   virtual int LexerInput(char* buf, int max_size);
