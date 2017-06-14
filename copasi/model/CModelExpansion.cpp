@@ -117,13 +117,15 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
 {
   if (!pModel) return;
 
-  //create a combined set of all elements we know are to be copied
+  //create a combined set of all elements in the SetOfModelElements and their direct descendents.
+  //this set is the basis for determining all object that depend on the objects in the SetOfModelElements.
   CDataObject::DataObjectSet Descendants;
 
   std::set< const CCompartment * >::const_iterator itComp;
 
   for (itComp = mCompartments.begin(); itComp != mCompartments.end(); ++itComp)
     {
+      Descendants.insert(*itComp);
       (*itComp)->getDescendants(Descendants);
     }
 
@@ -131,6 +133,7 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
 
   for (itMetab = mMetabs.begin(); itMetab != mMetabs.end(); ++itMetab)
     {
+      Descendants.insert(*itMetab);
       (*itMetab)->getDescendants(Descendants);
     }
 
@@ -138,6 +141,7 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
 
   for (itReac = mReactions.begin(); itReac != mReactions.end(); ++itReac)
     {
+      Descendants.insert(*itReac);
       (*itReac)->getDescendants(Descendants);
     }
 
@@ -145,6 +149,7 @@ void CModelExpansion::SetOfModelElements::fillDependencies(const CModel* pModel)
 
   for (itQuant = mGlobalQuantities.begin(); itQuant != mGlobalQuantities.end(); ++itQuant)
     {
+      Descendants.insert(*itQuant);
       (*itQuant)->getDescendants(Descendants);
     }
 
@@ -578,6 +583,10 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source, const std
   newObj->setInitialExpression(source->getInitialExpression());
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
 
+  //noise expression
+  newObj->setNoiseExpression(source->getNoiseExpression());
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
+
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
 }
@@ -640,6 +649,10 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
+
+  //noise expression
+  newObj->setNoiseExpression(source->getNoiseExpression());
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
@@ -865,6 +878,10 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const s
   //initial expression
   newObj->setInitialExpression(source->getInitialExpression());
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
+
+  //noise expression
+  newObj->setNoiseExpression(source->getNoiseExpression());
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
 
   newObj->setNotes(source->getNotes());
   newObj->setMiriamAnnotation(source->getMiriamAnnotation(), newObj->getKey(), source->getKey());
@@ -1274,6 +1291,9 @@ void CModelExpansion::replaceInModelEntity(CModelEntity* pX, const ElementsMap &
 
   //initial expression
   replaceInExpression(pX->getInitialExpressionPtr(), emap);
+  
+  //noise expression
+  replaceInExpression(pX->getNoiseExpressionPtr(), emap);
 }
 
 void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
