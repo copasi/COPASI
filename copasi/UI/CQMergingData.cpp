@@ -246,7 +246,7 @@ void CQMergingData::load()
   mpModel = CCopasiRootContainer::getDatamodelList()->operator[](0).getModel();
 
   fillTree(mpTree1, mpModel, mItemMap1, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, true);
-  fillTree(mpTree1, mpModel, mItemMap1, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, false);
+  fillTree(mpTree2, mpModel, mItemMap2, true, true, CCopasiRootContainer::getDatamodelList()->operator[](0).mLastAddedObjects, false);
 
   treeSelectionChanged();
 }
