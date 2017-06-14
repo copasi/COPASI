@@ -907,7 +907,7 @@ void ReactionsWidget1::deleteReaction()
   if (pReaction == NULL) return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, "reaction",
+    CQMessageBox::confirmDelete(this, "reaction",
                                 FROM_UTF8(pReaction->getObjectName()),
                                 pReaction);
 

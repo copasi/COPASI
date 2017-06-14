@@ -759,7 +759,7 @@ void FunctionWidget1::slotBtnDelete()
     return;
 
   QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(NULL, "function",
+    CQMessageBox::confirmDelete(this, "function",
                                 FROM_UTF8(pFunction->getObjectName()),
                                 pFunction);
 
