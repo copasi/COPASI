@@ -1026,8 +1026,9 @@ private:
 
     for (; Range.first != Range.second && isInserAllowed; ++Range.first)
       {
-        if (dynamic_cast< CType * >(*Range.first) != NULL)
-          isInserAllowed = (CDataVector< CType >::getIndex(src) == C_INVALID_INDEX);
+        isInserAllowed = (dynamic_cast< CType * >(*Range.first) == NULL ||
+                          (dynamic_cast< CType * >(*Range.first) == src &&
+                           getIndex(src->getObjectName()) == C_INVALID_INDEX));
       }
 
     return isInserAllowed;
