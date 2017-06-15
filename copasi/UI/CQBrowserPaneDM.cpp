@@ -310,19 +310,16 @@ void CQBrowserPaneDM::add(const size_t & id,
 
 void CQBrowserPaneDM::setCopasiDM(const CDataModel * pDataModel)
 {
-  if (mpCopasiDM != pDataModel)
-    {
-      mpCopasiDM = pDataModel;
+  mpCopasiDM = pDataModel;
 
-      mEmitDataChanged = false;
+  mEmitDataChanged = false;
 
-      clear();
-      load();
+  clear();
+  load();
 
-      dataChanged(index(0, 0), index(0, 0));
+  dataChanged(index(0, 0), index(0, 0));
 
-      mEmitDataChanged = true;
-    }
+  mEmitDataChanged = true;
 }
 
 void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
@@ -816,16 +813,15 @@ void CQBrowserPaneDM::createStaticDM()
 
 void CQBrowserPaneDM::clear()
 {
-  findNodeFromId(111)->deleteChildren(); // Compartment
-  findNodeFromId(112)->deleteChildren(); // Species
-  findNodeFromId(114)->deleteChildren(); // Reactions
-  findNodeFromId(115)->deleteChildren(); // Global Quantities
-  findNodeFromId(116)->deleteChildren(); // Events
-  findNodeFromId(119)->deleteChildren(); // Model Parameter Sets
-  findNodeFromId(42)->deleteChildren(); // Plot Specifications
-  findNodeFromId(43)->deleteChildren(); // Report Specifications
-  findNodeFromId(5)->deleteChildren(); // Functions
-  findNodeFromId(6)->deleteChildren(); // Units
+  static const size_t NodeIndex[] = {111, 112, 114, 115, 116, 119, 42, 43, 5, 6, C_INVALID_INDEX};
+
+  for (const size_t * pNodeIndex = NodeIndex; *pNodeIndex != C_INVALID_INDEX; ++pNodeIndex)
+    {
+      CNode * pNode = findNodeFromId(*pNodeIndex);
+
+      removeRows(0, pNode->getNumChildren(), index(pNode));
+      pNode->setObject(NULL);
+    }
 }
 
 QString CQBrowserPaneDM::getObjectIssueMessages(const CNode * pNode) const
