@@ -76,6 +76,16 @@
    <item>
     <layout class="QHBoxLayout" name="_2">
      <item>
+      <widget class="QLabel" name="mpLowerLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string> </string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
