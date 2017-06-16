@@ -709,10 +709,6 @@ const CEvaluationNode * CEvaluationNode::findTopMinus(const std::vector<CFunctio
           continue;
         }
 
-#ifdef COPASI_DEBUG
-      std::cout << itNode->getData() << std::endl;
-#endif
-
       switch (itNode.processingMode())
         {
           case CNodeIteratorMode::Before:

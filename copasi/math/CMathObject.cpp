@@ -317,7 +317,7 @@ void CMathObject::calculateValue()
 
   *mpValue = mpExpression->value();
 
-#ifdef COPASI_DEBUG
+#ifdef COPASI_DEBUG_TRACE
 
   // Check for NaN
   if (isnan(*mpValue) && mpExpression->getInfix() != "")
@@ -325,7 +325,7 @@ void CMathObject::calculateValue()
       std::cout << "NaN Value for: " << getCN() << std::endl;
     }
 
-#endif // COPASI_DEBUG
+#endif // COPASI_DEBUG_TRACE
 
   // For an extensive transient value of a dependent species we have 2
   // possible assignments depending on the context.
