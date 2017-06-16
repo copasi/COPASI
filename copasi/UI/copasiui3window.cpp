@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sbml/SBMLDocument.h>
 
@@ -426,6 +426,8 @@ void CopasiUI3Window::createActions()
 #endif
   mpaCloseAllWindows = new QAction("Close all windows below:", this);
   connect(mpaCloseAllWindows, SIGNAL(triggered()), this, SLOT(slotCloseAllWindows()));
+  mpaShowDebugInfo = new QAction("Display Debug Information", this);
+  connect(mpaShowDebugInfo, SIGNAL(triggered()), this, SLOT(slotShowDebugInfo()));
   mpaFunctionDBLoad =  new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Load Function DB...", this);
   connect(mpaFunctionDBLoad, SIGNAL(triggered()), this, SLOT(slotFunctionDBLoad()));
   mpaFunctionDBSave =  new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save Function DB...", this);
@@ -455,6 +457,14 @@ void
 CopasiUI3Window::slotLoadParameterEstimationProtocol()
 {
   CQParameterEstimationResult *dlg = new CQParameterEstimationResult(this, mpDataModel);
+  dlg->exec();
+  dlg->deleteLater();
+}
+
+#include <UI/objectdebug.h>
+void CopasiUI3Window::slotShowDebugInfo()
+{
+  ObjectDebug* dlg = new ObjectDebug(this);
   dlg->exec();
   dlg->deleteLater();
 }
@@ -611,10 +621,13 @@ void CopasiUI3Window::createMenuBar()
 #endif
   mpTools->addSeparator();
   mpTools->addAction(mpaExpandModel);
+
 #ifdef COPASI_DEBUG
   mpTools->addAction(mpaObjectBrowser);
+  mpTools->addAction(mpaShowDebugInfo);
   mpTools->addSeparator();
 #endif // COPASI_DEBUG
+
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
 #ifdef WITH_PE_EVENT_CREATION
@@ -1041,7 +1054,9 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
                              QMessageBox::Ok, QMessageBox::Ok);
       mpDataModelGUI->createModel();
     }
+
   QString Message = QString::null;
+
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
       Message = "Problem while loading file " + mNewFile + QString("!\n\n");
@@ -1087,12 +1102,12 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
   refreshRecentFileMenu();
   mNewFile = "";
-  
+
   if (!Message.isNull())
-    
+
     CQMessageBox::warning(this, QString("File Warning"), Message,
                           QMessageBox::Ok, QMessageBox::Ok);
-  
+
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)

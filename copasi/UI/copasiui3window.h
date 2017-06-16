@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_UI3_WINDOW_H
 #define COPASI_UI3_WINDOW_H
@@ -131,9 +131,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -277,6 +277,9 @@ protected slots:
 #endif
 
   void slotLoadParameterEstimationProtocol();
+
+  void slotShowDebugInfo();
+
 private:
   CopasiUI3Window();
 
@@ -323,6 +326,7 @@ private:
   QAction* mpaParameterEstimationResult;
 
   QAction* mpaCloseAllWindows;
+  QAction* mpaShowDebugInfo;
 
 #ifdef WITH_COMBINE_ARCHIVE
   QAction* mpaImportCombine;
