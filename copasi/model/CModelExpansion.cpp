@@ -584,6 +584,7 @@ void CModelExpansion::duplicateCompartment(const CCompartment* source, const std
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
 
   //noise expression
+  newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
   updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
 
@@ -651,6 +652,7 @@ void CModelExpansion::duplicateMetab(const CMetab* source, const std::string & i
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
 
   //noise expression
+  newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
   updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
 
@@ -787,7 +789,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
           break;
 
           case CFunctionParameter::TIME:
-            newObj->setParameterMapping(i, source->getParameterMappings()[i][0]);
+            newObj->setParameterMapping(i, mpModel->getKey());
             break;
 
           case CFunctionParameter::VOLUME:
@@ -810,7 +812,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
             break;
 
           case CFunctionParameter::PARAMETER:
-            if (newObj->isLocalParameter(i))
+            if (source->isLocalParameter(i))
               {
                 //just copy the value
                 newObj->setParameterValue(newObj->getFunctionParameters()[i]->getObjectName(),
@@ -840,6 +842,31 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
           default:
             break;
         }
+    }
+
+  //noise expression
+  newObj->setHasNoise(source->hasNoise());
+  newObj->setNoiseExpression(source->getNoiseExpression());
+  updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
+
+  newObj->setFast(source->isFast());
+  
+  newObj->setKineticLawUnitType(source->getKineticLawUnitType());
+
+  //Scaling Compartment
+  if (sourceSet.contains(source->getScalingCompartment()))
+    {
+      //create copy if it doesn't exist yet
+      if (!emap.exists(source->getScalingCompartment()))
+        {
+          duplicateCompartment(source->getScalingCompartment(), index, sourceSet, emap);
+        }
+      //use copy
+      newObj->setScalingCompartment(dynamic_cast<const CCompartment*>(emap.getDuplicatePtr(source->getScalingCompartment())));
+    }
+  else //use original
+    {
+      newObj->setScalingCompartment(source->getScalingCompartment());
     }
 
   newObj->setNotes(source->getNotes());
@@ -880,6 +907,7 @@ void CModelExpansion::duplicateGlobalQuantity(const CModelValue* source, const s
   updateExpression(newObj->getInitialExpressionPtr(), index, sourceSet, emap);
 
   //noise expression
+  newObj->setHasNoise(source->hasNoise());
   newObj->setNoiseExpression(source->getNoiseExpression());
   updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
 
@@ -896,7 +924,9 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
   CEvent* newObj = NULL;
 
   if (expressionContainsObject(source->getTriggerExpressionPtr(), sourceSet)
-      || expressionContainsObject(source->getDelayExpressionPtr(), sourceSet))
+      || expressionContainsObject(source->getDelayExpressionPtr(), sourceSet)
+      || expressionContainsObject(source->getPriorityExpressionPtr(), sourceSet)
+      || mpModel != source->getObjectAncestor("Model"))
     {
       //we need to duplicate the event itself (because the trigger refers to a duplicated object)
 
@@ -926,6 +956,12 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
       updateExpression(newObj->getDelayExpressionPtr(), index, sourceSet, emap);
 
       newObj->setDelayAssignment(source->getDelayAssignment());
+      newObj->setFireAtInitialTime(source->getFireAtInitialTime());
+      newObj->setPersistentTrigger(source->getPersistentTrigger());
+    
+      //priority
+      newObj->setPriorityExpression(source->getPriorityExpression());
+      updateExpression(newObj->getPriorityExpressionPtr(), index, sourceSet, emap);
     }
   else
     {
