@@ -399,7 +399,7 @@ void CopasiUI3Window::createActions()
   connect(mpaUpdateInitialState, SIGNAL(triggered()), this, SLOT(slotUpdateInitialState()));
   mpaCapture = new QAction(CQIconResource::icon(CQIconResource::captureImage), "Capture the main window", this);
   connect(mpaCapture, SIGNAL(triggered()), this, SLOT(slotCapture()));
-  mpaExpandModel = new QAction("Create array of compartments (debug version)", this);
+  mpaExpandModel = new QAction("Create array of compartments", this);
   connect(mpaExpandModel, SIGNAL(triggered()), this, SLOT(slotExpandModel()));
   mpaFontSelectionDialog = new QAction("Select the Application Font", this);
   connect(mpaFontSelectionDialog, SIGNAL(triggered()), this, SLOT(slotFontSelection()));
