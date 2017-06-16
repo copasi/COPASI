@@ -50,7 +50,7 @@ CData CCompartment::toData() const
 {
   CData Data = CModelEntity::toData();
 
-  Data.addProperty(CData::DIMENSIONALITY, mDimensionality);
+  Data.addProperty(CData::SPATIAL_DIMENSION, mDimensionality);
 
   return Data;
 }
@@ -60,9 +60,9 @@ bool CCompartment::applyData(const CData & data)
 {
   bool success = CModelEntity::applyData(data);
 
-  if (data.isSetProperty(CData::DIMENSIONALITY))
+  if (data.isSetProperty(CData::SPATIAL_DIMENSION))
     {
-      success &= setDimensionality(data.getProperty(CData::DIMENSIONALITY).toUint());
+      success &= setDimensionality(data.getProperty(CData::SPATIAL_DIMENSION).toUint());
     }
 
   return success;
@@ -73,11 +73,11 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
 {
   switch (undoData.getType())
     {
-      case CUndoData::INSERT:
+      case CUndoData::Type::INSERT:
         // Nothing to append
         break;
 
-      case CUndoData::REMOVE:
+      case CUndoData::Type::REMOVE:
         // We need to add all contained species and reactions;
       {
         DataObjectSet dependentReactions;
@@ -96,7 +96,7 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
 
         for (; it != end; ++it)
           {
-            DependentData.push_back(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
           }
 
         undoData.addDependentData(DependentData, true);
@@ -107,7 +107,7 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
 
         for (; it != end; ++it)
           {
-            DependentData.push_back(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
           }
 
         undoData.addDependentData(DependentData, true);
@@ -118,7 +118,7 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
 
         for (; it != end; ++it)
           {
-            DependentData.push_back(CUndoData(CUndoData::REMOVE, *it, undoData.getAuthorID()));
+            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
           }
 
         undoData.addDependentData(DependentData, true);
@@ -126,7 +126,7 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
 
       break;
 
-      case CUndoData::CHANGE:
+      case CUndoData::Type::CHANGE:
 
         if (undoData.isSetProperty(CData::INITIAL_VALUE))
           {
@@ -137,7 +137,7 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
 
             for (; it != end; ++it)
               {
-                CUndoData Data(CUndoData::CHANGE, &*it, undoData.getAuthorID());
+                CUndoData Data(CUndoData::Type::CHANGE, &*it, undoData.getAuthorID());
 
                 switch (framework)
                   {
@@ -150,7 +150,7 @@ void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framew
                       // We need to record the old and new concentrations for each species where new := old / factor
                       Data.addProperty(CData::INITIAL_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
                       break;
-                      
+
                     case CCore::Framework::__SIZE:
                       break;
                   }

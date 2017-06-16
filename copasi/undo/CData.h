@@ -68,6 +68,7 @@ public:
   static const CEnumAnnotation< std::string, Property > PropertyName;
 
   typedef CDataValue::Type Type;
+  typedef std::map< std::string, CDataValue >::const_iterator const_iterator;
 
   friend std::ostream & operator << (std::ostream & os, const CData & o);
 
@@ -78,6 +79,8 @@ public:
   ~CData();
 
   CData & operator = (const CData & rhs);
+
+  bool operator == (const CData & rhs) const;
 
   const CDataValue & getProperty(const std::string & name) const;
 
@@ -106,6 +109,10 @@ public:
   bool isSetProperty(const Property & property) const;
 
   bool empty() const;
+
+  const_iterator begin() const;
+
+  const_iterator end() const;
 };
 
 #endif // CData

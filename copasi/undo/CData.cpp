@@ -75,9 +75,9 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   // AVOGADRO_NUMBER,
   "Avogadro's Number",
   // DIMENSIONALITY,
-  "Dimensionality"
+  "Dimensionality",
   // ARRAY_ELEMENT_INDEX,
-  "Array Element Index"
+  "Array Element Index",
   // COMMENT,
   "Comment",
   // REPORT_SEPARATOR,
@@ -125,6 +125,11 @@ CData & CData::operator = (const CData & rhs)
     }
 
   return *this;
+}
+
+bool CData::operator == (const CData & rhs) const
+{
+  return *static_cast< const std::map< std::string, CDataValue > * >(this) == *static_cast< const std::map< std::string, CDataValue > * >(&rhs);
 }
 
 const CDataValue & CData::getProperty(const std::string & name) const
@@ -185,10 +190,11 @@ bool CData::setProperty(const Property & property, const CDataValue & value)
 
 bool CData::addProperty(const std::string & name, const CDataValue & value)
 {
-  std::map< std::string, CDataValue >::const_iterator found = find(name);
+  std::map< std::string, CDataValue >::iterator found = find(name);
 
   if (found != end())
     {
+      found->second = value;
       return false;
     }
 
@@ -247,6 +253,16 @@ bool CData::isSetProperty(const Property & property) const
 bool CData::empty() const
 {
   return std::map< std::string, CDataValue >::empty();
+}
+
+CData::const_iterator CData::begin() const
+{
+  return std::map< std::string, CDataValue >::begin();
+}
+
+CData::const_iterator CData::end() const
+{
+  return std::map< std::string, CDataValue >::end();
 }
 
 std::ostream & operator << (std::ostream & os, const CData & o)

@@ -1918,6 +1918,14 @@ void CDataModel::deleteOldData()
 const CModel * CDataModel::getModel() const
 {return mData.pModel;}
 
+CUndoStack * CDataModel::getUndoStack()
+{
+  if (mData.isValid())
+    return mData.mpUndoStack;
+
+  return mOldData.mpUndoStack;
+}
+
 CModel * CDataModel::getModel()
 {
   if (mData.isValid())
@@ -2055,7 +2063,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2084,7 +2092,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2101,7 +2109,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2118,7 +2126,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2135,7 +2143,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2152,7 +2160,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2435,6 +2443,7 @@ bool CDataModel::CContent::isValid() const
           pReportDefinitionList != NULL &&
           pPlotDefinitionList != NULL &&
           pListOfLayouts != NULL &&
+          mpUndoStack != NULL &&
           (pGUI != NULL || mWithGUI == false));
 }
 
@@ -2637,7 +2646,9 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
 void CDataModel::applyData(const CUndoData & data)
 {
-  data.apply(*this);
+  // TODO CRITICAL Fix me!
+  // To avoid interaction with the existing undo we avoid applying any changes
+  // data.apply(*this);
   recordData(data);
 }
 

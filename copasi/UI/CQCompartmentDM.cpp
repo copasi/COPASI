@@ -44,6 +44,7 @@
 #include "model/CCompartment.h"
 #include "model/CModel.h"
 #include "function/CExpression.h"
+#include "copasi/undo/CUndoData.h"
 
 CQCompartmentDM::CQCompartmentDM(QObject *parent)
   : CQBaseDataModel(parent, NULL)
@@ -272,7 +273,8 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
   if (data == value)
     return false;
 
-  if (index.column() == COL_TYPE_COMPARTMENTS &&  data.toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
+  if (index.column() == COL_TYPE_COMPARTMENTS &&
+      data.toString() == QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[value.toInt()]])))
     return false;
 
   bool defaultRow = isDefaultRow(index);
@@ -283,6 +285,39 @@ bool CQCompartmentDM::setData(const QModelIndex &index, const QVariant &value,
     }
   else if (role == Qt::EditRole)
     {
+      CCompartment & Compartment = mpCompartments->operator[](index.row());
+      const CExpression * pExpression = NULL;
+
+      CUndoData Data(CUndoData::Type::CHANGE, &Compartment);
+      bool changed = false;
+
+      switch (index.column())
+        {
+          case COL_NAME_COMPARTMENTS:
+            changed = Data.addProperty(CData::OBJECT_NAME,
+                                       Compartment.getObjectName(),
+                                       TO_UTF8(value.toString()));
+            break;
+
+          case COL_TYPE_COMPARTMENTS:
+            changed = Data.addProperty(CData::SIMULATION_TYPE,
+                                       (unsigned C_INT32) Compartment.getStatus(),
+                                       (unsigned C_INT32) mItemToType[value.toInt()]);
+            break;
+
+          case COL_IVOLUME:
+            changed = Data.addProperty(CData::INITIAL_VALUE,
+                                       Compartment.getInitialValue(),
+                                       value.toDouble());
+            break;
+        }
+
+      if (changed)
+        {
+          mpDataModel->applyData(Data);
+          mpDataModel->changed();
+        }
+
       mpUndoStack->push(new CompartmentDataChangeCommand(index, value, this));
     }
 
@@ -415,6 +450,9 @@ void CQCompartmentDM::insertNewCompartmentRow(int position, int rows, const QMod
       if (pComp == NULL)
         continue;
 
+      mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pComp));
+      mpDataModel->changed();
+
       emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, pComp->getKey());
 
       if (index.isValid())
@@ -482,6 +520,7 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
   QList <CCompartment *>::const_iterator j;
 
   QModelIndexList lst;
+  QList< CCompartment * > ToBeDeleted;
 
   for (j = pCompartments.begin(); j != pCompartments.end(); ++j)
     {
@@ -502,8 +541,15 @@ bool CQCompartmentDM::removeCompartmentRows(QModelIndexList& rows, const QModelI
         {
           //
           lst.append(index((int) delRow, 0));
+          ToBeDeleted.append(pCompartment);
           //removeRow((int)delRow);
         }
+    }
+
+  for (j = ToBeDeleted.begin(); j != ToBeDeleted.end(); ++j)
+    {
+      mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, *j));
+      mpDataModel->changed();
     }
 
   //

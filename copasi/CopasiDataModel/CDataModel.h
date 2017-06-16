@@ -245,6 +245,7 @@ public:
 
   void deleteOldData();
 
+  CUndoStack * getUndoStack();
   CModel * getModel();
   const CModel * getModel() const;
   CDataVectorN< CCopasiTask > * getTaskList();

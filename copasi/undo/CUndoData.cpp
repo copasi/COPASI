@@ -13,13 +13,22 @@
 #include "copasi/core/CDataVector.h"
 #include "model/CMetab.h"
 
+// static
+const CEnumAnnotation< std::string, CUndoData::Type > CUndoData::TypeName(
+{
+  "Insert",
+  "Change",
+  "Remove"
+});
+
 CUndoData::CUndoData():
-  mType(CUndoData::CHANGE),
+  mType(CUndoData::Type::CHANGE),
   mOldData(),
   mNewData(),
   mDependentData(),
   mTime(),
-  mAuthorID(C_INVALID_INDEX)
+  mAuthorID(C_INVALID_INDEX),
+  mChangedProperties()
 {
   time(&mTime);
 }
@@ -30,7 +39,8 @@ CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_
   mNewData(),
   mDependentData(),
   mTime(),
-  mAuthorID(authorId)
+  mAuthorID(authorId),
+  mChangedProperties()
 {
   assert(pObject != NULL);
 
@@ -38,18 +48,27 @@ CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_
 
   switch (mType)
     {
-      case INSERT:
-        // Sanity Check
-        assert(pObject->hasFlag(CDataObject::Container));
+      case Type::INSERT:
+        mNewData = pObject->toData();
 
-        mNewData.addProperty(CData::OBJECT_PARENT_CN, pObject->getCN());
+        for (CData::const_iterator it = mNewData.begin(), end = mNewData.end(); it != end; ++it)
+          {
+            mChangedProperties.insert(it->first);
+          }
+
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         mOldData = pObject->toData();
+
+        for (CData::const_iterator it = mOldData.begin(), end = mOldData.end(); it != end; ++it)
+          {
+            mChangedProperties.insert(it->first);
+          }
+
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         assert(pObject->getObjectParent() != NULL);
 
         mOldData.addProperty(CData::OBJECT_PARENT_CN, pObject->getObjectParent()->getCN());
@@ -70,7 +89,8 @@ CUndoData::CUndoData(const CUndoData & src):
   mNewData(src.mNewData),
   mDependentData(src.mDependentData),
   mTime(src.mTime),
-  mAuthorID(src.mAuthorID)
+  mAuthorID(src.mAuthorID),
+  mChangedProperties(src.mChangedProperties)
 {}
 
 CUndoData::~CUndoData()
@@ -92,15 +112,17 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & value)
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         success &= mNewData.addProperty(name, value);
+        mChangedProperties.insert(name);
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         success &= mOldData.addProperty(name, value);
+        mChangedProperties.insert(name);
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         success = false;
         break;
     }
@@ -119,17 +141,28 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         success = false;
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         success = false;
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         success &= mOldData.addProperty(name, oldValue);
         success &= mNewData.addProperty(name, newValue);
+
+        if (oldValue != newValue)
+          {
+            mChangedProperties.insert(name);
+          }
+        else
+          {
+            mChangedProperties.erase(name);
+            success = false;
+          }
+
         break;
     }
 
@@ -147,15 +180,15 @@ bool CUndoData::isSetProperty(const std::string & name) const
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         isSet &= mNewData.isSetProperty(name);
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         isSet &= mOldData.isSetProperty(name);
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         isSet &= mNewData.isSetProperty(name);
         isSet &= mOldData.isSetProperty(name);
         break;
@@ -170,15 +203,15 @@ bool CUndoData::appendData(const CData & data)
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         success &= mNewData.appendData(data);
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         success &= mOldData.appendData(data);
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         success = false;
         break;
     }
@@ -192,15 +225,15 @@ bool CUndoData::appendData(const CData & oldData, const CData & newData)
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         success = false;
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         success = false;
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         success &= mOldData.appendData(oldData);
         success &= mNewData.appendData(newData);
         break;
@@ -248,21 +281,26 @@ std::vector< CUndoData > & CUndoData::getDependentData()
   return mDependentData;
 }
 
+const std::set< std::string > & CUndoData::getChangedProperties() const
+{
+  return mChangedProperties;
+}
+
 bool CUndoData::apply(const CDataModel & dataModel) const
 {
   bool success = true;
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         success &= insert(dataModel, true);
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         success &= remove(dataModel, true);
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         success &= change(dataModel, true);
         break;
     }
@@ -276,15 +314,15 @@ bool CUndoData::undo(const CDataModel & dataModel) const
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
         success &= remove(dataModel, false);
         break;
 
-      case REMOVE:
+      case Type::REMOVE:
         success &= insert(dataModel, false);
         break;
 
-      case CHANGE:
+      case Type::CHANGE:
         success &= change(dataModel, false);
         break;
     }
@@ -312,13 +350,77 @@ const size_t CUndoData::getAuthorID() const
   return mAuthorID;
 }
 
+std::string CUndoData::getObjectDisplayName() const
+{
+  std::string DisplayName("Unknown");
+
+  switch (mType)
+    {
+      case Type::INSERT:
+        DisplayName = mNewData.getProperty(CData::OBJECT_NAME).toString();
+        break;
+
+      case Type::REMOVE:
+      case Type::CHANGE:
+        DisplayName = mOldData.getProperty(CData::OBJECT_NAME).toString();
+        break;
+    }
+
+  // Species will always have the name of the parent compartment appended.
+  if (getObjectType() == "Metabolite")
+    {
+      CCommonName CN;
+
+      switch (mType)
+        {
+          case Type::INSERT:
+            CN = mNewData.getProperty(CData::OBJECT_PARENT_CN).toString();
+            break;
+
+          case Type::REMOVE:
+          case Type::CHANGE:
+            CN = mOldData.getProperty(CData::OBJECT_TYPE).toString();
+            break;
+        }
+
+      while (!CN.empty() && CN.getObjectType() != "Compartment")
+        {
+          CN = CN.getRemainder();
+        }
+
+      if (!CN.empty())
+        {
+          DisplayName += "{" + CN.getObjectName() + "}";
+        }
+    }
+
+  return DisplayName;
+}
+
+std::string CUndoData::getObjectType() const
+{
+  switch (mType)
+    {
+      case Type::INSERT:
+        return mNewData.getProperty(CData::OBJECT_TYPE).toString();
+        break;
+
+      case Type::REMOVE:
+      case Type::CHANGE:
+        return mOldData.getProperty(CData::OBJECT_TYPE).toString();
+        break;
+    }
+
+  return "Unknown";
+}
+
 bool CUndoData::operator < (const CUndoData & rhs) const
 {
   if (mType != rhs.mType) return mType < rhs.mType;
 
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
       {
         const std::string & CN = mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
         const std::string & RhsCN = rhs.mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
@@ -327,7 +429,7 @@ bool CUndoData::operator < (const CUndoData & rhs) const
       }
       break;
 
-      case REMOVE:
+      case Type::REMOVE:
       {
         const std::string & CN = mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
         const std::string & RhsCN = rhs.mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
@@ -336,7 +438,7 @@ bool CUndoData::operator < (const CUndoData & rhs) const
       }
       break;
 
-      case CHANGE:
+      case Type::CHANGE:
       {
         const std::string & CN = mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
         const std::string & RhsCN = rhs.mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
@@ -356,7 +458,7 @@ bool CUndoData::operator < (const CUndoData & rhs) const
   // At the point the data is of the same point and type now we sort by the index
   switch (mType)
     {
-      case INSERT:
+      case Type::INSERT:
       {
         const unsigned C_INT32 & Index = mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
         const unsigned C_INT32 & RhsIndex = rhs.mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
@@ -365,7 +467,7 @@ bool CUndoData::operator < (const CUndoData & rhs) const
       }
       break;
 
-      case REMOVE:
+      case Type::REMOVE:
       {
         const unsigned C_INT32 & Index = mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
         const unsigned C_INT32 & RhsIndex = rhs.mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
@@ -374,7 +476,7 @@ bool CUndoData::operator < (const CUndoData & rhs) const
       }
       break;
 
-      case CHANGE:
+      case Type::CHANGE:
       {
         const unsigned C_INT32 & Index = mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
         const unsigned C_INT32 & RhsIndex = rhs.mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
@@ -500,10 +602,25 @@ bool CUndoData::processDependentData(const CDataModel & dataModel, const bool & 
 
 const CData & CUndoData::getData(const bool & apply) const
 {
-  if (apply)
-    return mNewData;
+  switch (mType)
+    {
+      case Type::CHANGE:
+        if (apply)
+          return mNewData;
+        else
+          return mOldData;
 
-  return mOldData;
+        break;
+
+      case Type::INSERT:
+        return mNewData;
+
+      case Type::REMOVE:
+        return mOldData;
+    }
+
+  // This will never be reached. It is there to satisfy the compiler.
+  return mNewData;
 }
 
 // static

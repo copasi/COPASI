@@ -29,6 +29,7 @@
 
 #ifdef COPASI_UNDO
 #include "CQUndoHistoryDialog.h"
+#include "copasi/undoUI/CQUndoDialog.h"
 #endif
 
 #include <QtCore/QEvent>
@@ -1069,7 +1070,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
           Message += FROM_UTF8(msg.getText());
           msg = CCopasiMessage::getLastMessage();
         }
-
     }
 
   if (strcasecmp(CDirEntry::suffix(TO_UTF8(mNewFile)).c_str(), ".cps") == 0 &&
@@ -1107,7 +1107,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
 
     CQMessageBox::warning(this, QString("File Warning"), Message,
                           QMessageBox::Ok, QMessageBox::Ok);
-
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
@@ -3476,6 +3475,9 @@ void CopasiUI3Window::slotUndoHistory()
   CQUndoHistoryDialog *undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);
   undoDialog->setWindowTitle("Undo History");
   undoDialog->exec();
+
+  CQUndoDialog * pDialog = new CQUndoDialog(mpDataModel, this);
+  pDialog->exec();
 }
 #endif
 

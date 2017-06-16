@@ -452,7 +452,7 @@ void CQCompartment::save()
 
   mIgnoreUpdates = true;
 
-  CUndoData Data(CUndoData::CHANGE, mpCompartment);
+  CUndoData Data(CUndoData::Type::CHANGE, mpCompartment);
 
 #ifdef COPASI_EXTUNIT
 
@@ -736,6 +736,9 @@ void CQCompartment::createNewCompartment()
       name += TO_UTF8(QString::number(i));
     }
 
+  mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpCompartment));
+  mpDataModel->changed();
+
   std::string key = mpCompartment->getKey();
 
   protectedNotify(ListViews::COMPARTMENT, ListViews::ADD, key);
@@ -755,6 +758,9 @@ void CQCompartment::deleteCompartment()
     {
       case QMessageBox::Ok:
       {
+        mpDataModel->recordData(CUndoData(CUndoData::Type::REMOVE, mpCompartment));
+        mpDataModel->changed();
+
         mpUndoStack->push(new DeleteCompartmentCommand(this));
         break;
       }

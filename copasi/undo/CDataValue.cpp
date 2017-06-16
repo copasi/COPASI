@@ -57,6 +57,13 @@ CDataValue::CDataValue(const std::string & value):
   assignData(value);
 }
 
+CDataValue::CDataValue(const char * value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(std::string(value));
+}
+
 CDataValue::CDataValue(const void * pVoidPointer):
   mType(CDataValue::INVALID),
   mpData(NULL)
@@ -226,6 +233,98 @@ const void * CDataValue::toVoidPointer() const
 const CDataValue::Type & CDataValue::getType() const
 {
   return mType;
+}
+
+bool CDataValue::operator == (const CDataValue & rhs) const
+{
+  if (mType != rhs.mType) return false;
+
+  switch (mType)
+    {
+      case DOUBLE:
+        return (toDouble() == rhs.toDouble());
+        break;
+
+      case INT:
+        return (toInt() == rhs.toInt());
+        break;
+
+      case UINT:
+        return (toUint() == rhs.toUint());
+        break;
+
+      case BOOL:
+        return (toBool() == rhs.toBool());
+        break;
+
+      case STRING:
+        return (toString() == rhs.toString());
+        break;
+
+      case DATA_VALUES:
+        return (toDataValues() == rhs.toDataValues());
+        break;
+
+      case DATA_VECTOR:
+        return (toDataVector() == rhs.toDataVector());
+        break;
+
+      case VOID_POINTER:
+        return (toVoidPointer() == rhs.toVoidPointer());
+        break;
+
+      case INVALID:
+        return false;
+        break;
+    }
+
+  return false;
+}
+
+bool CDataValue::operator != (const CDataValue & rhs) const
+{
+  if (mType != rhs.mType) return true;
+
+  switch (mType)
+    {
+      case DOUBLE:
+        return (toDouble() != rhs.toDouble());
+        break;
+
+      case INT:
+        return (toInt() != rhs.toInt());
+        break;
+
+      case UINT:
+        return (toUint() != rhs.toUint());
+        break;
+
+      case BOOL:
+        return (toBool() != rhs.toBool());
+        break;
+
+      case STRING:
+        return (toString() != rhs.toString());
+        break;
+
+      case DATA_VALUES:
+        return (toDataValues() != rhs.toDataValues());
+        break;
+
+      case DATA_VECTOR:
+        return (toDataVector() != rhs.toDataVector());
+        break;
+
+      case VOID_POINTER:
+        return (toVoidPointer() != rhs.toVoidPointer());
+        break;
+
+      case INVALID:
+        return true;
+        break;
+    }
+
+  return true;
 }
 
 void CDataValue::allocateData(const CDataValue::Type & type)

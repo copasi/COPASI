@@ -7,6 +7,7 @@
 #define COPASI_CUndoData
 
 #include <ctime>
+#include <set>
 
 #include "CData.h"
 
@@ -23,12 +24,15 @@ private:
   CUndoData();
 
 public:
-  enum Type
+  enum struct Type
   {
     INSERT = 0,
     CHANGE,
-    REMOVE
+    REMOVE,
+    __SIZE
   };
+
+  static const CEnumAnnotation< std::string, Type > TypeName;
 
   CUndoData(const Type & type, const CDataObject * pObject, const size_t & authorId = C_INVALID_INDEX);
 
@@ -60,6 +64,8 @@ public:
 
   std::vector< CUndoData > & getDependentData();
 
+  const std::set< std::string > & getChangedProperties() const;
+
   bool apply(const CDataModel & dataModel) const;
 
   bool undo(const CDataModel & dataModel) const;
@@ -71,6 +77,10 @@ public:
   std::tm * getUTCTime() const;
 
   const size_t getAuthorID() const;
+
+  std::string getObjectDisplayName() const;
+
+  std::string getObjectType() const;
 
   bool operator < (const CUndoData & rhs) const;
 
@@ -102,6 +112,8 @@ private:
   std::time_t mTime;
 
   size_t mAuthorID;
+
+  std::set< std::string > mChangedProperties;
 };
 
 #endif // COPASI_CUndoData

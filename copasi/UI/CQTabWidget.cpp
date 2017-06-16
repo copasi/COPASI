@@ -37,6 +37,8 @@
 #include "commandline/CConfigurationFile.h"
 #endif
 
+#include "copasi/undo/CUndoData.h"
+
 CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget * pCopasiWidget,
                          QWidget * parent, Qt::WindowFlags f) :
   CopasiWidget(parent, NULL, f),
@@ -63,7 +65,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-        // The break statement is intentionally missing
+      // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -199,7 +201,6 @@ void CQTabWidget::load()
           mpBtnDelete->setEnabled(!readOnly);
         }
 
-
 #ifdef COPASI_Provenance
 
       if (mObjectType == ListViews::METABOLITE ||
@@ -218,13 +219,11 @@ void CQTabWidget::load()
         }
 
 #endif
-
     }
   else
     {
       mpEditName->setText("");
     }
-
 }
 
 bool CQTabWidget::save()
@@ -243,6 +242,12 @@ bool CQTabWidget::save()
 
   if (mpObject->getObjectName() != TO_UTF8(mpEditName->text()))
     {
+      CUndoData Data(CUndoData::Type::CHANGE, mpObject);
+      Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), TO_UTF8(mpEditName->text()));
+
+      mpDataModel->applyData(Data);
+      mpDataModel->changed();
+
       mpUndoStack->push(new EntityRenameCommand(mpObject,
                         mpObject->getObjectName(),
                         TO_UTF8(mpEditName->text()),

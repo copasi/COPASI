@@ -37,6 +37,7 @@ public:
   CDataValue(const unsigned C_INT32 & value);
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
+  CDataValue(const char * value);
   CDataValue(const std::vector< CDataValue > & value);
   CDataValue(const std::vector< CData > & value);
   CDataValue(const void * pVoidPointer);
@@ -63,6 +64,9 @@ public:
   const void * toVoidPointer() const;
 
   const Type & getType() const;
+
+  bool operator == (const CDataValue & rhs) const;
+  bool operator != (const CDataValue & rhs) const;
 
 private:
 
