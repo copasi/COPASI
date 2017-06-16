@@ -33,14 +33,14 @@ class CQExpandModelData : public QDialog, public Ui::CQExpandModelData
   Q_OBJECT
 
 public:
-  CQExpandModelData(QWidget* parent = 0, Qt::WindowFlags fl = 0);
+  CQExpandModelData(QWidget* parent, CModel* pModel);
   ~CQExpandModelData();
 
 protected:
 
   std::map<QTreeWidgetItem*, const CCompartment*> mItemCompartmentMap;
   std::map<QTreeWidgetItem*, const CMetab*> mItemMetabMap;
-  CModel* pModel;
+  CModel* mpModel;
 
 protected slots:
 

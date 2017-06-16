@@ -2401,7 +2401,7 @@ void CopasiUI3Window::setApplicationFont()
 #include "UI/CQExpandModelData.h"
 void CopasiUI3Window::slotExpandModel()
 {
-  CQExpandModelData *widget = new CQExpandModelData(this);
+  CQExpandModelData *widget = new CQExpandModelData(this, mpDataModel->getModel());
   widget->exec();
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
 }

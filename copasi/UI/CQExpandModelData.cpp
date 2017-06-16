@@ -26,10 +26,12 @@
 #include "UI/qtUtilities.h"
 #include "model/CModel.h"
 
-CQExpandModelData::CQExpandModelData(QWidget* parent, Qt::WindowFlags fl)
-  : QDialog(parent, fl)
+CQExpandModelData::CQExpandModelData(QWidget* parent, CModel* pModel)
+  : QDialog(parent)
 {
   setupUi(this);
+  
+  mpModel = pModel;
 
   mpLineEditSizeX->setValidator(new QIntValidator(1, 10000, this));
   mpLineEditSizeY->setValidator(new QIntValidator(1, 10000, this));
@@ -44,19 +46,19 @@ CQExpandModelData::~CQExpandModelData()
 
 void CQExpandModelData::load()
 {
-  CDataModel* pDataModel = ListViews::dataModel(parent());
-  assert(pDataModel != NULL);
+  //CDataModel* pDataModel = ListViews::dataModel(parent());
+  //assert(pDataModel != NULL);
 
-  pModel = pDataModel->getModel();
+  //pModel = pDataModel->getModel();
 
-  size_t i, imax = pModel->getCompartments().size();
+  size_t i, imax = mpModel->getCompartments().size();
 
   for (i = 0; i < imax; ++i)
     {
       QTreeWidgetItem * pItem = new QTreeWidgetItem((QTreeWidget*)NULL, 1000);
-      pItem->setText(0,  FROM_UTF8(pModel->getCompartments()[i].getObjectName()));
+      pItem->setText(0,  FROM_UTF8(mpModel->getCompartments()[i].getObjectName()));
       pItem->setCheckState(0, Qt::Unchecked);
-      mItemCompartmentMap[pItem] = &pModel->getCompartments()[i];
+      mItemCompartmentMap[pItem] = &mpModel->getCompartments()[i];
       mpTreeWidget->addTopLevelItem(pItem);
     }
 
@@ -141,8 +143,8 @@ void CQExpandModelData::slotOK()
         }
     }
 
-  CModelExpansion me(pModel);
-  modelelements.fillDependencies(pModel);
+  CModelExpansion me(mpModel);
+  modelelements.fillDependencies(mpModel);
 
   int multx, multy;
   multx = mpLineEditSizeX->text().toInt();
