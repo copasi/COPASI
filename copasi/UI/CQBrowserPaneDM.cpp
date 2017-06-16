@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include <sstream>
 
@@ -181,6 +181,9 @@ bool CQBrowserPaneDM::removeRows(int row, int count, const QModelIndex & parent)
   if (pParent == NULL) return false;
 
   CNode * pNode = static_cast< CNode * >(pParent->getChild(row));
+
+  // if there is nothing to delete, don't
+  if (row + count - 1 < row) return false;
 
   beginRemoveRows(parent, row, row + count - 1);
 
