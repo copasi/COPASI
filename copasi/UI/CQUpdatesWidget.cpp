@@ -370,6 +370,23 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
 void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
 {
+  mpTableMathState->setColumnCount(5);
+  mpTableMathState->setRowCount(0);
+  
+  mpTableMathState->setHorizontalHeaderItem(0, new QTableWidgetItem("User order"));
+  mpTableMathState->setHorizontalHeaderItem(1, new QTableWidgetItem("status"));
+  mpTableMathState->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
+  mpTableMathState->setHorizontalHeaderItem(3, new QTableWidgetItem("Reduced system"));
+  mpTableMathState->setHorizontalHeaderItem(4, new QTableWidgetItem("status"));
+  
+  size_t i, imax;
+  imax = MC.getValues().size();
+  mpTableMathState->setRowCount(imax);
+  for (i=0; i<imax; ++i)
+  {
+    QTableWidgetItem* tmpItem = new QTableWidgetItem(QString::number(MC.getValues()[i]));
+    mpTableMathState->setItem(i, 3, tmpItem);
+  }
 
 }
   
