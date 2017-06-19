@@ -339,9 +339,9 @@ bool CReaction::setFunction(const std::string & functionName)
 
 bool CReaction::setFunction(CFunction * pFunction)
 {
-  mPrerequisits.erase(pFunction);
+  mPrerequisits.erase(mpFunction);
 
-  if (!pFunction)
+  if (pFunction == NULL)
     mpFunction = CRootContainer::getUndefinedFunction();
   else
     mpFunction = pFunction;
@@ -771,9 +771,6 @@ bool CReaction::compile()
     {
       mPrerequisits.insert(it->getMetabolite());
     }
-
-  it = mChemEq.getModifiers().begin();
-  end = mChemEq.getModifiers().end();
 
   setScalingFactor();
 

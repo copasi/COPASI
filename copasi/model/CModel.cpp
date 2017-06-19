@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //
 
@@ -1835,37 +1835,37 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
       const CDataContainer * pContainer = NULL;
 
       if (((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
-           (pContainer = pDataObject->getObjectAncestor("Reaction")) != NULL) &&
+           (pContainer = dynamic_cast< const CReaction * >(pDataObject->getObjectParent())) != NULL) &&
           objects.find(pContainer) == objects.end())
         {
           dependentReactions.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
-                (pContainer = pDataObject->getObjectAncestor("Metabolite")) != NULL) &&
+                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
           dependentMetabolites.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
-                (pContainer = pDataObject->getObjectAncestor("Compartment")) != NULL) &&
+                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
           dependentCompartments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
-                (pContainer = pDataObject->getObjectAncestor("ModelValue")) != NULL) &&
+                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
           dependentModelValues.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
-                (pContainer = pDataObject->getObjectAncestor("EventAssignment")) != NULL) &&
+                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
           dependentEventAssignments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
-                (pContainer = pDataObject->getObjectAncestor("Event")) != NULL) &&
+                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
                objects.find(pContainer) == objects.end())
         {
           dependentEvents.insert(pContainer);

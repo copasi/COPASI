@@ -163,7 +163,6 @@ bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
   if (mpExpression != NULL)
     {
       success &= mpExpression->compile(listOfContainer);
-      mPrerequisits = mpExpression->getPrerequisites();
     }
   else
     {
