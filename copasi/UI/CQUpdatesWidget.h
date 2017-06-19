@@ -32,6 +32,7 @@ class QTableWidget;
 class CModel;
 class CObjectInterface;
 class CMathUpdateSequence;
+class CMathContainer;
 
 /**
  * This widget displays tables representing the refresh lists. It will probably only
@@ -57,6 +58,8 @@ protected:
 
   void loadOneTable(QTableWidget * pTable, const CMathUpdateSequence & list);
   void loadObjectsTable(CModel* pModel);
+  
+  void loadMathContainer(const CMathContainer& MC);
 
   QGridLayout* mWidgetLayout;
 
@@ -65,7 +68,7 @@ protected:
   QTabWidget* mpMainTab;
   QTabWidget* mpTab;
   QTabWidget* mpTab2;
-
+  
   QTableWidget * mpTable0;
   QTableWidget * mpTable1;
   QTableWidget * mpTable2;
@@ -73,6 +76,9 @@ protected:
 
   QTableWidget * mpTableObj;
   QTableWidget * mpTableState;
+  
+  QTabWidget* mpTabMath;
+  QTableWidget * mpTableMathState;
 };
 
 #endif
