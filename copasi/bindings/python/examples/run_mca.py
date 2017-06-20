@@ -52,7 +52,8 @@ def print_annotated_matrix(title, annotated_matrix):
     pass
 
 
-def run_mca(fileName):
+def run_mca(file_name):
+    # type: (str) -> None
     """ This function runs the MCA task on the given SBML file"""
 
     global dataModel
@@ -60,8 +61,14 @@ def run_mca(fileName):
         dataModel = CCopasiRootContainer.addDatamodel()
         assert (isinstance(dataModel, CCopasiDataModel))
 
+    # load COPASI file
+    if file_name.endswith('.cps'):
+        if not dataModel.loadModel(file_name):
+            print("Could not load COPASI file due to:")
+            print(CCopasiMessage.getAllMessageText())
+            sys.exit(1)
     # load sbml file
-    if not dataModel.importSBML(fileName):
+    elif not dataModel.importSBML(file_name):
         print("Could not load SBML file due to:")
         print(CCopasiMessage.getAllMessageText())
         sys.exit(1)
@@ -99,7 +106,7 @@ def run_mca(fileName):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("usage: run_mca <sbml file>")
+        print("usage: run_mca <sbml file | copasi file>")
         sys.exit(1)
     else:
         run_mca(sys.argv[1])
