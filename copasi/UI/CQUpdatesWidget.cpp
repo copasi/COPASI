@@ -28,6 +28,7 @@
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
 #include "math/CMathUpdateSequence.h"
+#include "math/CMathExpression.h"
 
 /**
  *  Constructs a CQUpdatesWidget which is a child of 'parent', with the
@@ -370,22 +371,118 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
 void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
 {
-  mpTableMathState->setColumnCount(5);
+  mpTableMathState->setColumnCount(8);
   mpTableMathState->setRowCount(0);
   
-  mpTableMathState->setHorizontalHeaderItem(0, new QTableWidgetItem("User order"));
-  mpTableMathState->setHorizontalHeaderItem(1, new QTableWidgetItem("status"));
-  mpTableMathState->setHorizontalHeaderItem(2, new QTableWidgetItem(""));
-  mpTableMathState->setHorizontalHeaderItem(3, new QTableWidgetItem("Reduced system"));
-  mpTableMathState->setHorizontalHeaderItem(4, new QTableWidgetItem("status"));
+  mpTableMathState->setHorizontalHeaderItem(0, new QTableWidgetItem("Name"));
+  mpTableMathState->setHorizontalHeaderItem(1, new QTableWidgetItem("Value T"));
+  mpTableMathState->setHorizontalHeaderItem(2, new QTableWidgetItem("Simulation T"));
+  mpTableMathState->setHorizontalHeaderItem(3, new QTableWidgetItem("Entity T"));
+  mpTableMathState->setHorizontalHeaderItem(4, new QTableWidgetItem("Value"));
   
   size_t i, imax;
   imax = MC.getValues().size();
   mpTableMathState->setRowCount(imax);
   for (i=0; i<imax; ++i)
   {
-    QTableWidgetItem* tmpItem = new QTableWidgetItem(QString::number(MC.getValues()[i]));
-    mpTableMathState->setItem(i, 3, tmpItem);
+    QTableWidgetItem* tmpItem;
+    CMathObject* pMO = MC.getMathObject(&MC.getValues()[i]);
+    if (pMO)
+    {
+    
+        tmpItem = new QTableWidgetItem(FROM_UTF8(pMO->getObjectDisplayName()));
+        mpTableMathState->setItem(i, 0, tmpItem);
+        
+        QString s = FROM_UTF8(CMath::ValueTypeName[pMO->getValueType()]);
+        tmpItem = new QTableWidgetItem(s);
+        mpTableMathState->setItem(i, 1, tmpItem);
+        
+        s = FROM_UTF8(CMath::SimulationTypeName[pMO->getSimulationType()]);
+        tmpItem = new QTableWidgetItem(s);
+        mpTableMathState->setItem(i, 2, tmpItem);
+        
+        s = FROM_UTF8(CMath::EntityTypeName[pMO->getEntityType()]);
+        tmpItem = new QTableWidgetItem(s);
+        mpTableMathState->setItem(i, 3, tmpItem);
+        
+        const CMathExpression* pMExp = pMO->getExpressionPtr();
+        if (pMExp)
+          s = FROM_UTF8(pMExp->getInfix());
+        else
+          s = "";
+        tmpItem = new QTableWidgetItem(s);
+        mpTableMathState->setItem(i, 5, tmpItem);
+        
+        /*switch (pMO->getValueType())
+        {
+          case CMath::ValueType::Undefined:
+            s = "";
+            case CMath::ValueType::Value:
+            s = "";
+            break;
+            case CMath::ValueType::Rate:
+            s = "";
+            break;
+            case CMath::ValueType::ParticleFlux:
+            s = "";
+            break;
+            case CMath::ValueType::Flux:
+            s = "";
+            break;
+            case CMath::ValueType::Propensity:
+            s = "";
+            break;
+            case CMath::ValueType::Noise:
+            s = "";
+            break;
+            case CMath::ValueType::ParticleNoise:
+            s = "";
+            break;
+            case CMath::ValueType::TotalMass:
+            s = "";
+            break;
+            case CMath::ValueType::DependentMass:
+            s = "";
+            break;
+            case CMath::ValueType::Discontinuous:
+            s = "";
+            break;
+            case CMath::ValueType::EventDelay:
+            s = "";
+            break;
+            case CMath::ValueType::EventPriority:
+            s = "";
+            break;
+            case CMath::ValueType::EventAssignment:
+            s = "";
+            break;
+            case CMath::ValueType::EventTrigger:
+            s = "";
+            break;
+            case CMath::ValueType::EventRoot:
+            s = "";
+            break;
+            case CMath::ValueType::EventRootState:
+            s = "";
+            break;
+            case CMath::ValueType::DelayValue:
+            s = "";
+            break;
+            case CMath::ValueType::DelayLag:
+            s = "";
+            break;
+            case CMath::ValueType::TransitionTime:
+            s = "";
+            break;
+            case CMath::ValueType::__SIZE:
+            s = "";
+            break;
+            }*/
+    }
+            
+            
+    tmpItem = new QTableWidgetItem(QString::number(MC.getValues()[i]));
+    mpTableMathState->setItem(i, 4, tmpItem);
   }
 
 }

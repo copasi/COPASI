@@ -13,7 +13,8 @@
 
 #include <map>
 #include <vector>
-
+#include <string>
+#include "copasi/core/CEnumAnnotation.h"
 #include "copasi/core/CFlags.h"
 
 class CDataObject;
@@ -177,7 +178,9 @@ public:
     TransitionTime,
     __SIZE
   };
-
+  
+  static const CEnumAnnotation< std::string, ValueType > ValueTypeName;
+  
   enum struct SimulationType
   {
     Undefined,
@@ -191,7 +194,9 @@ public:
     Conversion,
     __SIZE
   };
-
+  
+  static const CEnumAnnotation< std::string, SimulationType > SimulationTypeName;
+  
   enum struct EntityType
   {
     Undefined,
@@ -208,7 +213,9 @@ public:
     Delay,
     __SIZE
   };
-
+  
+  static const CEnumAnnotation< std::string, EntityType > EntityTypeName;
+  
   enum struct eStateChange
   {
     FixedEventTarget,
