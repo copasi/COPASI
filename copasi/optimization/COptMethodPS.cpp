@@ -570,6 +570,7 @@ bool COptMethodPS::optimise()
 
 
       Improved = false;
+      size_t oldIndex = mBestIndex;
 
       for (i = 0; i < mPopulationSize && mContinue; i++)
         Improved |= move(i);
@@ -581,7 +582,8 @@ bool COptMethodPS::optimise()
           if (reachedStdDeviation())
             break;
 
-          Stalled = 0;
+          if (oldIndex != mBestIndex)
+            Stalled = 0;
         }
 
 
