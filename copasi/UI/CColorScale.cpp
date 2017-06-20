@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,6 +50,7 @@ QColor CColorScaleSimple::getColor(const C_FLOAT64 & number) const
 {
   //scale to 0..1
   C_FLOAT64 tmp;
+
   if (mLog)
     tmp = (log(number) - log(mMin)) / (log(mMax) - log(mMin));
   else
@@ -92,10 +98,10 @@ void CColorScaleSimple::startAutomaticParameterCalculation()
 void CColorScaleSimple::passValue(const C_FLOAT64 & number)
 {
   //if (number != number) return; //NaN
-  
+
   if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max()) return; //Inf or max
 
-  
+
   if (number > mMax) mMax = number;
 
   if (number < mMin) mMin = number;
@@ -147,6 +153,7 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 {
   //scale to 0..1
   C_FLOAT64 tmp;
+
   if (mLog)
     tmp = (log(number) - log(mMin)) / (log(mMax) - log(mMin));
   else
@@ -154,7 +161,7 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 
   if (tmp > 1) tmp = 1;
 
-  if (tmp < 0) tmp = 0;
+  if (tmp < 0 || tmp != tmp) tmp = 0;
 
   int r = (int)(mColorMin.red() * (1 - tmp) + mColorMax.red() * tmp);
   int g = (int)(mColorMin.green() * (1 - tmp) + mColorMax.green() * tmp);
@@ -168,8 +175,8 @@ QColor CColorScaleAdvanced::getColor(const C_FLOAT64 & number) const
 //**************************
 
 CColorScaleAuto::CColorScaleAuto()
-: CColorScaleAdvanced(),
- mData()
+  : CColorScaleAdvanced(),
+    mData()
 {
   mColorMax = QColor(255, 0, 0, 80);
   mColorMin = QColor(0, 255, 0, 80);
@@ -185,28 +192,28 @@ void CColorScaleAuto::startAutomaticParameterCalculation()
 //virtual
 void CColorScaleAuto::passValue(const C_FLOAT64 & number)
 {
- CColorScaleSimple::passValue(number);
- mData.push_back(number);
+  CColorScaleSimple::passValue(number);
+  mData.push_back(number);
 }
 
 //virtual
 void CColorScaleAuto::finishAutomaticParameterCalculation()
 {
   CColorScaleSimple::finishAutomaticParameterCalculation();
-  
-  if (mData.size()>=5)
-  {
-    C_INT32 q = mData.size() / 5;
 
-    std::nth_element(mData.begin(), mData.end() - q -1, mData.end());
-    mMax = *(mData.end() - q -1);
-  }
-  
-  if (mMin>0 && mMax>0 && mMax/mMin>100)
-  {
-    mLog=true;
-  }
-    
+  if (mData.size() >= 5)
+    {
+      C_INT32 q = mData.size() / 5;
+
+      std::nth_element(mData.begin(), mData.end() - q - 1, mData.end());
+      mMax = *(mData.end() - q - 1);
+    }
+
+  if (mMin > 0 && mMax > 0 && mMax / mMin > 100)
+    {
+      mLog = true;
+    }
+
 }
 
 
