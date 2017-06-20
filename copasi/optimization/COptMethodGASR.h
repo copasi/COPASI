@@ -195,6 +195,12 @@ private:
   C_FLOAT64 mMutationVarians;
 
   /**
+  * if no improvement was made after # stalled generations
+  * stop
+  */
+  unsigned C_INT32 mStopAfterStalledGenerations;
+
+  /**
    * The value of the last evaluation.
    */
   C_FLOAT64 mEvaluationValue;

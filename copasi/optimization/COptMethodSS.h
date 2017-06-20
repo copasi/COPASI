@@ -261,6 +261,12 @@ private:
   C_FLOAT64 mEvaluationValue;
 
   /**
+  * if no improvement was made after # stalled generations
+  * stop
+  */
+  unsigned C_INT32 mStopAfterStalledGenerations;
+
+  /**
    * The best value so far
    */
   C_FLOAT64 mBestValue;

@@ -40,6 +40,7 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
   mpPermutation(NULL),
   mWins(0),
   mMutationVarians(0.1),
+  mStopAfterStalledGenerations(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX)
@@ -49,6 +50,11 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
+
+#ifdef COPASI_DEBUG
+  addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+#endif
 
   initObjects();
 }
@@ -61,6 +67,7 @@ COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
   mpPermutation(NULL),
   mWins(0),
   mMutationVarians(0.1),
+  mStopAfterStalledGenerations(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX)
@@ -120,7 +127,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
     {
       C_FLOAT64 & mut = individual[j];
 
-      // calculate the mutatated parameter
+      // calculate the mutated parameter
       mut *= mpRandom->getRandomNormal(1, mMutationVarians);
 
       // for SR do not force to be within bounds
@@ -320,7 +327,7 @@ size_t COptMethodGASR::fittest()
   return BestIndex;
 }
 
-// initialise the population
+// initialize the population
 bool COptMethodGASR::creation(size_t first,
                               size_t last)
 {
@@ -421,8 +428,20 @@ bool COptMethodGASR::initialize()
 
   mWins.resize(2 * mPopulationSize);
 
-  // initialise the variance for mutations
+  // initialize the variance for mutations
   mMutationVarians = 0.1;
+#if COPASI_DEBUG
+  mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+  if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+    {
+      mMutationVarians = 0.1;
+      setValue("Mutation Variance", mMutationVarians);
+    }
+
+  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+
+#endif
 
   return true;
 }
@@ -453,7 +472,7 @@ bool COptMethodGASR::optimise()
 
   size_t i;
 
-  // initialise the population
+  // initialize the population
   // first individual is the initial guess
   for (i = 0; i < mVariableSize; i++)
     (*mIndividuals[0])[i] = (*mpOptItem)[i]->getStartValue();
@@ -501,6 +520,14 @@ bool COptMethodGASR::optimise()
        mCurrentGeneration <= mGenerations && Continue;
        mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
+
+#endif
+
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {

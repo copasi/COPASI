@@ -38,12 +38,17 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   mLosses(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mStopAfterStalledGenerations(0),
   mVariance(0)
 {
   addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+#ifdef COPASI_DEBUG
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+#endif
 
   initObjects();
 }
@@ -55,6 +60,7 @@ COptMethodEP::COptMethodEP(const COptMethodEP & src,
     mLosses(0),
     mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
     mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+    mStopAfterStalledGenerations(0),
     mVariance(0)
 {initObjects();}
 
@@ -100,9 +106,22 @@ bool COptMethodEP::optimise()
       return true;
     }
 
+  size_t Stalled = 0;
+
   // iterate over Generations
-  for (mCurrentGeneration = 2; mCurrentGeneration <= mGenerations && Continue; mCurrentGeneration++)
+  for (mCurrentGeneration = 2;
+       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration++, Stalled++)
     {
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
+
+#endif
+
+
       // replicate the individuals
       Continue = replicate();
 
@@ -115,6 +134,7 @@ bool COptMethodEP::optimise()
       if (mBestIndex != C_INVALID_INDEX &&
           mValues[mBestIndex] < mBestValue)
         {
+          Stalled = 0;
           mBestValue = mValues[mBestIndex];
 
           Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[mBestIndex]);
@@ -178,6 +198,10 @@ bool COptMethodEP::initialize()
   // Initialize the parameters to update the variances
   tau1 = 1.0 / sqrt(2 * double(mVariableSize));
   tau2 = 1.0 / sqrt(2 * sqrt(double(mVariableSize)));
+
+#if COPASI_DEBUG
+  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+#endif
 
   return true;
 }

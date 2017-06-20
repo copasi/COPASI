@@ -31,6 +31,7 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
   mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mMutationVarians(0.1),
+  mStopAfterStalledGenerations(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX)
 
@@ -39,6 +40,11 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 10);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+#ifdef COPASI_DEBUG
+  addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+#endif
 
   initObjects();
 }
@@ -49,6 +55,7 @@ COptMethodDE::COptMethodDE(const COptMethodDE & src,
   mpPermutation(NULL),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mMutationVarians(0.1),
+  mStopAfterStalledGenerations(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX)
 {initObjects();}
@@ -346,6 +353,18 @@ bool COptMethodDE::initialize()
   mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mMutationVarians = 0.1;
+#if COPASI_DEBUG
+  mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+  if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+    {
+      mMutationVarians = 0.1;
+      setValue("Mutation Variance", mMutationVarians);
+    }
+
+  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+
+#endif
 
   return true;
 }
@@ -441,6 +460,13 @@ bool COptMethodDE::optimise()
        mCurrentGeneration <= mGenerations && Continue;
        mCurrentGeneration++, Stalled++)
     {
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
+
+#endif
+
       if (Stalled > 10)
         {
           Continue &= creation((size_t) 0.4 * mPopulationSize, (size_t) 0.8 * mPopulationSize);

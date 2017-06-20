@@ -40,6 +40,7 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
   mPoolVal(0),
   mPoolSize(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mStopAfterStalledGenerations(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX),
   mpOptProblemLocal(NULL),
@@ -51,6 +52,7 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
 #ifdef COPASI_DEBUG
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif
 
   initObjects();
@@ -63,6 +65,7 @@ COptMethodSS::COptMethodSS(const COptMethodSS & src,
   mPoolVal(0),
   mPoolSize(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
+  mStopAfterStalledGenerations(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX),
   mpOptProblemLocal(NULL),
@@ -253,6 +256,11 @@ bool COptMethodSS::initialize()
   // initialized at 0
   mProb.resize(4);
   mProb = 0.0;
+
+#if COPASI_DEBUG
+  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+#endif
+
 
   return true;
 }
@@ -1103,9 +1111,21 @@ bool COptMethodSS::optimise()
   // reset the counter for local minimisation
   mLocalIter = 1;
 
+  size_t Stalled = 0;
+
   // run the mIterations (and count the creation as being the first)
-  for (mCurrentGeneration = 1; mCurrentGeneration < mGenerations && Running; mCurrentGeneration++)
+  for (mCurrentGeneration = 1;
+       mCurrentGeneration < mGenerations && Running;
+       mCurrentGeneration++, Stalled++)
     {
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
+
+#endif
+
       // check for stagnation or similarity
       needsort = false;
 
@@ -1184,6 +1204,8 @@ bool COptMethodSS::optimise()
       // have we made any progress?
       if (mValues[0] < mBestValue)
         {
+          Stalled = 0;
+
           // and store that value
           mBestValue = mValues[0];
           Running &= mpOptProblem->setSolution(mBestValue, *mIndividuals[0]);

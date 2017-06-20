@@ -154,6 +154,12 @@ private :
   C_FLOAT64 mEvaluationValue;
 
   /**
+  * if no improvement was made after # stalled generations
+  * stop
+  */
+  unsigned C_INT32 mStopAfterStalledGenerations;
+
+  /**
    * for array of variances w/ variance values for the parameters
    */
   std::vector< CVector < C_FLOAT64 > * > mVariance;

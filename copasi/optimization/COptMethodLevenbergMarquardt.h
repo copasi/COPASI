@@ -184,6 +184,13 @@ private:
   C_FLOAT64 mEvaluationValue;
 
   /**
+  * if no improvement was made after # stalled iterations
+  * stop
+  */
+  unsigned C_INT32 mStopAfterStalledIterations;
+
+
+  /**
    * Flag indicating whether the computation shall continue
    */
   bool mContinue;

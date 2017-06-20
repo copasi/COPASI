@@ -49,6 +49,7 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
   mLosses(0),
   mPivot(0),
   mMutationVarians(0.1),
+  mStopAfterStalledGenerations(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX)
 
@@ -57,6 +58,12 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
   addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+#ifdef COPASI_DEBUG
+  addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+#endif
+
 
   initObjects();
 }
@@ -71,6 +78,7 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
   mLosses(0),
   mPivot(0),
   mMutationVarians(0.1),
+  mStopAfterStalledGenerations(0),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestIndex(C_INVALID_INDEX)
 {initObjects();}
@@ -438,6 +446,19 @@ bool COptMethodGA::initialize()
 
   // Initialize the variance for mutations
   mMutationVarians = 0.1;
+#if COPASI_DEBUG
+  mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+  if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+    {
+      mMutationVarians = 0.1;
+      setValue("Mutation Variance", mMutationVarians);
+    }
+
+  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+
+
+#endif
 
   return true;
 }
@@ -544,6 +565,15 @@ bool COptMethodGA::optimise()
        mCurrentGeneration <= mGenerations && Continue;
        mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
+
+#endif
+
+
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)
         {

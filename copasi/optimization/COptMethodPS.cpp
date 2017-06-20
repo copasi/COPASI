@@ -46,6 +46,7 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   mNumInformed(0),
   mBestIndex(0),
   mEvaluationValue(0),
+  mStopAfterStalledIterations(0),
   mContinue(true)
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
@@ -53,6 +54,11 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   addParameter("Std. Deviation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
+#ifdef COPASI_DEBUG
+  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+#endif
+
 
   initObjects();
 }
@@ -362,6 +368,11 @@ bool COptMethodPS::initialize()
 
   mContinue = true;
 
+#if COPASI_DEBUG
+  mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+#endif
+
+
   return mContinue;
 }
 
@@ -545,8 +556,19 @@ bool COptMethodPS::optimise()
 
   bool Improved;
 
-  for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++)
+  size_t Stalled = 0;
+
+  for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++, Stalled++)
     {
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
+        break;
+
+#endif
+
+
       Improved = false;
 
       for (i = 0; i < mPopulationSize && mContinue; i++)
@@ -554,8 +576,14 @@ bool COptMethodPS::optimise()
 
       if (!Improved)
         buildInformants();
-      else if (reachedStdDeviation())
-        break;
+      else
+        {
+          if (reachedStdDeviation())
+            break;
+
+          Stalled = 0;
+        }
+
 
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhGenerations);

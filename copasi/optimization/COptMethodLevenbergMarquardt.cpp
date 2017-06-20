@@ -55,6 +55,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   mTemp(),
   mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mStopAfterStalledIterations(0),
   mContinue(true),
   mHaveResiduals(false),
   mResidualJacobianT()
@@ -64,6 +65,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
 
 #ifdef COPASI_DEBUG
   addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
+  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif // COPASI_DEBUG
 
   initObjects();
@@ -87,6 +89,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLeven
   mTemp(),
   mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::infinity()),
+  mStopAfterStalledIterations(0),
   mContinue(true),
   mHaveResiduals(false),
   mResidualJacobianT()
@@ -181,8 +184,20 @@ bool COptMethodLevenbergMarquardt::optimise()
   calc_hess = true;
   starts = 1;
 
-  for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && mContinue; mIteration++)
+  size_t Stalled = 0;
+
+  for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && mContinue;
+       mIteration++, Stalled++)
     {
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
+        break;
+
+#endif
+
+
       // calculate gradient and Hessian
       if (calc_hess) hessian();
 
@@ -319,6 +334,9 @@ bool COptMethodLevenbergMarquardt::optimise()
 
       if (mEvaluationValue < mBestValue)
         {
+
+          Stalled = 0;
+
           // keep this value
           mBestValue = mEvaluationValue;
 
@@ -447,6 +465,11 @@ bool COptMethodLevenbergMarquardt::initialize()
     }
   else
     mHaveResiduals = false;
+
+#if COPASI_DEBUG
+  mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
+#endif
+
 
   return true;
 }

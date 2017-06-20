@@ -41,6 +41,7 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType):
   COptPopulationMethod(pParent, methodType, taskType),
+  mStopAfterStalledGenerations(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max())
 
@@ -51,12 +52,18 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
 
+#ifdef COPASI_DEBUG
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+#endif
+
+
   initObjects();
 }
 
 COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
                                const CDataContainer * pParent):
   COptPopulationMethod(src, pParent),
+  mStopAfterStalledGenerations(0),
   mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
   mBestValue(std::numeric_limits< C_FLOAT64 >::max())
 {initObjects();}
@@ -553,6 +560,11 @@ bool COptMethodSRES::initialize()
       mTau = mTauPrime = 1;
     }
 
+#if COPASI_DEBUG
+  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
+#endif
+
+
   return true;
 }
 
@@ -613,6 +625,7 @@ bool COptMethodSRES::optimise()
   bool Continue = true;
   size_t BestIndex = C_INVALID_INDEX;
 
+  size_t Stalled = 0;
 #ifdef RANDOMIZE
   // Counters to determine whether the optimization process has stalled
   // They count the number of generations without advances.
@@ -658,7 +671,7 @@ bool COptMethodSRES::optimise()
 
   for (mCurrentGeneration = 2;
        mCurrentGeneration <= mGenerations && Continue;
-       mCurrentGeneration++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
+       mCurrentGeneration++, Stalled++, Stalled10++, Stalled20++, Stalled40++, Stalled80++)
     {
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
@@ -686,9 +699,18 @@ bool COptMethodSRES::optimise()
 
   for (mCurrentGeneration = 2;
        mCurrentGeneration <= mGenerations && Continue;
-       mCurrentGeneration++)
+       mCurrentGeneration++, Stalled++)
     {
 #endif // RANDOMIZE
+
+#ifdef COPASI_DEBUG
+
+      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+        break;
+
+#endif
+
+
       Continue = replicate();
 
       // select the most fit
@@ -701,8 +723,11 @@ bool COptMethodSRES::optimise()
           mValues[BestIndex] < mBestValue)
         {
 #ifdef RANDOMIZE
-          Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
+          Stalled = Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
+#else
+          Stalled = 0;
 #endif // RANDOMIZE
+
           mBestValue = mValues[BestIndex];
 
           Continue = mpOptProblem->setSolution(mBestValue, *mIndividuals[BestIndex]);
