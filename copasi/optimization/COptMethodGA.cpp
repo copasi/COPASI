@@ -432,7 +432,7 @@ bool COptMethodGA::initialize()
 
   mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
 
-  mGenerations = (unsigned C_INT32)getValue< C_FLOAT64 >("Number of Generations");
+  mGenerations = (unsigned C_INT32)getValue< unsigned C_INT32 >("Number of Generations");
   mCurrentGeneration = 0;
 
   for (i = 0; i < 2 * mPopulationSize; i++)
