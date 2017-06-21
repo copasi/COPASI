@@ -386,15 +386,16 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
   for (i=0; i<imax; ++i)
   {
     QTableWidgetItem* tmpItem;
+    //QColor c;
     CMathObject* pMO = MC.getMathObject(&MC.getValues()[i]);
     if (pMO)
     {
-    
         tmpItem = new QTableWidgetItem(FROM_UTF8(pMO->getObjectDisplayName()));
         mpTableMathState->setItem(i, 0, tmpItem);
         
         QString s = FROM_UTF8(CMath::ValueTypeName[pMO->getValueType()]);
         tmpItem = new QTableWidgetItem(s);
+        tmpItem->setBackgroundColor(pMO->isInitialValue() ? QColor(255,255,200): QColor(200,200,250));
         mpTableMathState->setItem(i, 1, tmpItem);
         
         s = FROM_UTF8(CMath::SimulationTypeName[pMO->getSimulationType()]);
@@ -403,6 +404,7 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
         
         s = FROM_UTF8(CMath::EntityTypeName[pMO->getEntityType()]);
         tmpItem = new QTableWidgetItem(s);
+        tmpItem->setBackgroundColor(pMO->isIntensiveProperty() ? QColor(255,220,220): QColor(220,255,220));
         mpTableMathState->setItem(i, 3, tmpItem);
         
         const CMathExpression* pMExp = pMO->getExpressionPtr();
