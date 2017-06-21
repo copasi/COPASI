@@ -490,6 +490,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   // In rare occasions the concentration might not be updated
   mpContainer->updateTransientDataValues();
 
+  // We need to advance pScaled to adjust for the summation error column
   for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++pScaled)
     {
       C_FLOAT64 alt = fabs(*(C_FLOAT64 *)pSpeciesObject->getCorrespondingProperty()->getValuePointer());
@@ -514,6 +515,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   pUnscaled = mUnscaledFluxCC.array();
   pScaled = mScaledFluxCC.array();
 
+  // We need to advance pScaled to adjust for the summation error column
   for (pFlux = mpContainer->getFluxes().array(); pFlux != pFluxEnd; ++pFlux, ++pReaction, ++pScaled)
     {
       CMathObject * pCompartment = mpContainer->getLargestReactionCompartment(pReaction);
@@ -525,7 +527,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
 
       // We use the summation theorem to verify the scaling
       C_FLOAT64 *pSum = pUnscaled;
-      C_FLOAT64 *pSumEnd = pSum + mScaledFluxCC.numCols();
+      C_FLOAT64 *pSumEnd = pSum + mUnscaledFluxCC.numCols();
 
       const C_FLOAT64 * pColFlux = mpContainer->getFluxes().array();
 
@@ -535,7 +537,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
           eq += fabs(*pSum);
         }
 
-      eq /= mScaledFluxCC.numCols();
+      eq /= mUnscaledFluxCC.numCols();
 
       if (fabs(tmp) < Resolution && eq >= Resolution)
         {
