@@ -38,6 +38,7 @@
 #include <string>
 
 #include "utilities/CCopasiMethod.h"
+#include "COptLog.h"
 
 class COptProblem;
 class COptItem;
@@ -76,7 +77,18 @@ protected:
   /**
    * A vector of pointers to the functional constraints
    */
+
   const std::vector< COptItem * > * mpOptContraints;
+
+  /**
+   * Define the current verbosity for the log
+   */
+  unsigned C_INT32 mLogVerbosity;
+
+  /**
+  * The Log created during parameter estimation
+  */
+  COptLog mMethodLog;
 
   // Operations
 private:
@@ -134,6 +146,16 @@ public:
    * @return bool suitability of the method
    */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  /**
+   * Returns the maximum verbosity (0 - Basic; 1 - Iterative; 2 - Detailed) at which the method can log.
+   */
+  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+
+  /**
+   * Retrieve the log of the solution
+   */
+  const COptLog &getMethodLog() const;
 
 protected:
   /**

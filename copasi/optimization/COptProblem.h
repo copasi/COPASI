@@ -331,6 +331,18 @@ public:
   void resetEvaluations();
 
   /**
+   * Retrieve the counter of failed Evaluations (Exception)
+   * @return const unsigned C_INT32 & failedEvaluationsExc
+   */
+  const unsigned C_INT32 & getFailedEvaluationsExc() const;
+
+  /**
+   * Retrieve the counter of failed Evaluations (NaN)
+   * @return const unsigned C_INT32 & failedEvaluationsNaN
+   */
+  const unsigned C_INT32 & getFailedEvaluationsNaN() const;
+
+  /**
    * Retrieve the objective function.
    * @return const C_FLOAT64 & executionTime
    */
@@ -503,9 +515,14 @@ protected:
   unsigned C_INT32 mCounter;
 
   /**
-   * Counter of failed evaluations
+   * Counter of failed evaluations (throwing Exception)
    */
-  unsigned C_INT32 mFailedCounter;
+  unsigned C_INT32 mFailedCounterException;
+
+  /**
+   * Counter of failed evaluations (result NaN)
+   */
+  unsigned C_INT32 mFailedCounterNaN;
 
   /**
    * Counter of constraint checks

@@ -30,12 +30,22 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
+#include "optimization/COptTask.h"
+#include "optimization/COptProblem.h"
+#include "optimization/COptItem.h"
+#include "optimization/COptMethod.h"
+#include "optimization/COptLog.h"
+#include "core/CRootContainer.h"
+#include "commandline/CLocaleString.h"
+#include "model/CModel.h"
+#include "math/CMathContainer.h"
+
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQOptimizationResult::CQOptimizationResult(QWidget* parent, const char* name)
-  : CopasiWidget(parent, name)
+CQOptimizationResult::CQOptimizationResult(QWidget* parent, const char* name):
+  CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -88,6 +98,10 @@ bool CQOptimizationResult::enterProtected()
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
   mpEditCPUTime->setText(QString::number(ExecutionTime));
   mpEditSpeed->setText(QString::number(FunctionEvaluations / ExecutionTime));
+  const unsigned C_INT32 & FailedEvaluationsExc = mpProblem->getFailedEvaluationsExc();
+  mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
+  const unsigned C_INT32 & FailedEvaluationsNaN = mpProblem->getFailedEvaluationsNaN();
+  mpEditFailedEvaluationsNaN->setText(QString::number(FailedEvaluationsNaN));
 
   size_t i, imax;
 
@@ -170,7 +184,60 @@ bool CQOptimizationResult::enterProtected()
   mpParameters->resizeRowsToContents();
   mpParameters->setSortingEnabled(true);
 
+  // clear log
+  mpLogTree->clear();
+
   return true;
+}
+
+
+void CQOptimizationResult::loadTab(int index)
+{
+  if (index != mpTabWidget->indexOf(mpLogPage))
+    return;
+
+  const COptMethod* pMethod = dynamic_cast<const COptMethod*>(mpTask->getMethod());
+
+  if (pMethod == NULL)
+    return;
+
+  if (mpLogTree->topLevelItemCount() != 0)
+    return;
+
+  loadLog(pMethod);
+}
+
+void CQOptimizationResult::loadLog(const COptMethod * pMethod)
+{
+  mpLogTree->clear();
+
+  if (pMethod == NULL)
+    {
+      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpLogPage), false);
+      return;
+    }
+
+  mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpLogPage), true);
+
+  const COptLog &log = pMethod->getMethodLog();
+
+  auto it = log.begin();
+
+  for (; it != log.end(); ++it)
+    {
+      QTreeWidgetItem* item = new QTreeWidgetItem(mpLogTree->invisibleRootItem(), QStringList() << FROM_UTF8(it->getHeader()));
+
+      if (!it->getSubtext().empty())
+        {
+          QTreeWidgetItem* subTextItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getSubtext()));
+        }
+
+      if (!it->getStatusDetails().empty())
+        {
+          QTreeWidgetItem* statusDetailItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getStatusDetails()));
+        }
+    }
+
 }
 
 void CQOptimizationResult::slotSave(void)
@@ -224,6 +291,22 @@ void CQOptimizationResult::slotSave(void)
       file << TO_UTF8(mpParameters->item((int) i, 3)->text()) << "\t";
       file << TO_UTF8(mpParameters->item((int) i, 4)->text()) << "\t";
       file << TO_UTF8(mpParameters->item((int) i, 5)->text()) << std::endl;
+    }
+
+  // log
+  const COptMethod * pMethod = dynamic_cast<const COptMethod *>(mpTask->getMethod());
+
+  if (pMethod)
+    {
+
+      file << std::endl;
+
+      // Set up log output
+      file << "Method Log:" << std::endl;
+
+      file << pMethod->getMethodLog().getPlainLog().c_str();
+
+      file << std::endl;
     }
 
   file << std::endl;

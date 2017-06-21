@@ -44,6 +44,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   mTolerance(1.e-006),
   mModulation(1.e-006),
   mIteration(0),
+  mParameterOutOfBounds(0),
   mhIteration(C_INVALID_INDEX),
   mVariableSize(0),
   mCurrent(),
@@ -68,6 +69,8 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif // COPASI_DEBUG
 
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
   initObjects();
 }
 
@@ -78,6 +81,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLeven
   mTolerance(src.mTolerance),
   mModulation(src.mModulation),
   mIteration(0),
+  mParameterOutOfBounds(0),
   mhIteration(C_INVALID_INDEX),
   mVariableSize(0),
   mCurrent(),
@@ -117,6 +121,8 @@ bool COptMethodLevenbergMarquardt::optimise()
       return false;
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Levenberg.Marquardt"));
+
   C_INT dim, starts, info, nrhs;
   C_INT one = 1;
 
@@ -141,6 +147,8 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
+  bool pointInParameterDomain = true;
+
   for (i = 0; i < mVariableSize; i++)
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
@@ -149,10 +157,12 @@ bool COptMethodLevenbergMarquardt::optimise()
         {
           case -1:
             mCurrent[i] = *OptItem.getLowerBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 1:
             mCurrent[i] = *OptItem.getUpperBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 0:
@@ -162,6 +172,8 @@ bool COptMethodLevenbergMarquardt::optimise()
 
       *mContainerVariables[i] = mCurrent[i];
     }
+
+  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 
   // keep the current parameter for later
   mBest = mCurrent;
@@ -227,6 +239,8 @@ bool COptMethodLevenbergMarquardt::optimise()
       // if Hessian is positive definite solve Hess * h = -grad
       if (info == 0)
         {
+          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_hess_pos_def).iter(mIteration));
+
           // SUBROUTINE DPOTRS(UPLO, N, NRHS, A, LDA, B, LDB, INFO)
           dpotrs_(&UPLO, &dim, &one, mHessianLM.array(), &dim, mStep.array(), &dim, &info);
 
@@ -236,6 +250,8 @@ bool COptMethodLevenbergMarquardt::optimise()
         }
       else
         {
+          if (mLogVerbosity >= 1 && info > 0) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_hess_not_pos_def).iter(mIteration).with(info));
+
           // We are in a concave region. Thus the current step is an over estimation.
           // We reduce it by dividing by lambda
           for (i = 0; i < mVariableSize; i++)
@@ -252,6 +268,8 @@ bool COptMethodLevenbergMarquardt::optimise()
       // Force the parameters to stay within the defined boundaries.
       // Forcing the parameters gives better solution than forcing the steps.
       // It gives same results with Gepasi.
+      pointInParameterDomain = true;
+
       for (i = 0; i < mVariableSize; i++)
         {
           mCurrent[i] = mBest[i] + mStep[i];
@@ -262,16 +280,20 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               case - 1:
                 mCurrent[i] = *OptItem.getLowerBoundValue() + std::numeric_limits< C_FLOAT64 >::epsilon();
+                pointInParameterDomain = false;
                 break;
 
               case 1:
                 mCurrent[i] = *OptItem.getUpperBoundValue() - std::numeric_limits< C_FLOAT64 >::epsilon();
+                pointInParameterDomain = false;
                 break;
 
               case 0:
                 break;
             }
         }
+
+      if (!pointInParameterDomain) mParameterOutOfBounds++;
 
 // This is the Gepasi code, which would do the truncation along the search line
 
@@ -356,13 +378,18 @@ bool COptMethodLevenbergMarquardt::optimise()
             {
               if (starts < 3)
                 {
+                  mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_fval_and_param_change_lower_than_tol).iter(mIteration).with(starts));
+
                   // let's restart with lambda=1
                   LM_lambda = 1.0;
                   starts++;
                 }
               else
-                // signal the end
-                nu = 0.0;
+                {
+                  mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_fval_and_param_change_lower_than_tol_termination).iter(mIteration).with(starts));
+                  // signal the end
+                  nu = 0.0;
+                }
             }
         }
       else
@@ -374,9 +401,16 @@ bool COptMethodLevenbergMarquardt::optimise()
             *mContainerVariables[i] = mCurrent[i];
 
           // if lambda too high terminate
-          if (LM_lambda > LAMBDA_MAX) nu = 0.0;
+          if (LM_lambda > LAMBDA_MAX)
+            {
+              mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_lambda_max_termination).iter(mIteration));
+
+              nu = 0.0;
+            }
           else
             {
+              if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_inc_lambda).iter(mIteration));
+
               // increase lambda
               LM_lambda *= nu * 2;
               // don't recalculate the Hessian
@@ -389,6 +423,9 @@ bool COptMethodLevenbergMarquardt::optimise()
       if (mpCallBack)
         mContinue &= mpCallBack->progressItem(mhIteration);
     }
+
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::LM_count_edge_of_param_domain).with(mParameterOutOfBounds));
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mIteration).with(mIterationLimit));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhIteration);
@@ -429,6 +466,7 @@ bool COptMethodLevenbergMarquardt::initialize()
   mModulation = 0.001;
   mIterationLimit = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
 
 #ifdef COPASI_DEBUG
   mModulation = getValue< C_FLOAT64 >("Modulation");
@@ -664,4 +702,9 @@ void COptMethodLevenbergMarquardt::hessian()
   for (i = 0; i < mVariableSize; i++)
     for (j = i + 1; j < mVariableSize; j++)
       mHessian[i][j] = mHessian[j][i];
+}
+
+unsigned C_INT32 COptMethodLevenbergMarquardt::getMaxLogVerbosity() const
+{
+  return 1;
 }

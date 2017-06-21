@@ -35,7 +35,12 @@
 #include "parameterFitting/CFitItem.h"
 #include "parameterFitting/CExperimentSet.h"
 #include "parameterFitting/CExperiment.h"
+
 #include "copasi/core/CRootContainer.h"
+
+#include "optimization/COptMethod.h"
+#include "optimization/COptLog.h"
+
 #include "commandline/CLocaleString.h"
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
@@ -46,8 +51,8 @@
  *  Constructs a CQFittingResult which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
-  : CopasiWidget(parent, name)
+CQFittingResult::CQFittingResult(QWidget* parent, const char* name):
+  CopasiWidget(parent, name)
 {
   setupUi(this);
 
@@ -441,7 +446,58 @@ bool CQFittingResult::enterProtected()
   mpCrossValidationValues->resizeRowsToContents();
   mpCrossValidationValues->setSortingEnabled(true);
 
+  mpLogTree->clear();
+
   return true;
+}
+
+void CQFittingResult::loadTab(int index)
+{
+  if (index != mpTabWidget->indexOf(mpLogPage))
+    return;
+
+  const COptMethod* pMethod = dynamic_cast<const COptMethod*>(mpTask->getMethod());
+
+  if (pMethod == NULL)
+    return;
+
+  if (mpLogTree->topLevelItemCount() != 0)
+    return;
+
+  loadLog(pMethod);
+}
+
+void CQFittingResult::loadLog(const COptMethod * pMethod)
+{
+  mpLogTree->clear();
+
+  if (pMethod == NULL)
+    {
+      mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpLogPage), false);
+      return;
+    }
+
+  mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpLogPage), true);
+
+  const COptLog &log = pMethod->getMethodLog();
+
+  auto it = log.begin();
+
+  for (; it != log.end(); ++it)
+    {
+      QTreeWidgetItem* item = new QTreeWidgetItem(mpLogTree->invisibleRootItem(), QStringList() << FROM_UTF8(it->getHeader()));
+
+      if (!it->getSubtext().empty())
+        {
+          QTreeWidgetItem* subTextItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getSubtext()));
+        }
+
+      if (!it->getStatusDetails().empty())
+        {
+          QTreeWidgetItem* statusDetailItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getStatusDetails()));
+        }
+    }
+
 }
 
 void CQFittingResult::slotSave(void)

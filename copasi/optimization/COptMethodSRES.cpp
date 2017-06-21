@@ -56,6 +56,7 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif
 
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -320,6 +321,8 @@ bool COptMethodSRES::creation(size_t first)
       pVariance = (*itVariance)->array();
       pMaxVariance = mMaxVariance.array();
 
+      bool pointInParameterDomain = true;
+
       for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
@@ -341,6 +344,8 @@ bool COptMethodSRES::creation(size_t first)
                       mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
 
+                pointInParameterDomain = false;
+
                 break;
 
               case 1:
@@ -354,6 +359,8 @@ bool COptMethodSRES::creation(size_t first)
                       mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
                   }
 
+                pointInParameterDomain = false;
+
                 break;
             }
 
@@ -364,6 +371,8 @@ bool COptMethodSRES::creation(size_t first)
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
         }
+
+      if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 
       Continue = evaluate(**it);
       *pValue++ = mEvaluationValue;
@@ -502,12 +511,29 @@ bool COptMethodSRES::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+
+  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
+  mCurrentGeneration = 0;
+
+  if (mpCallBack)
+    mhGenerations =
+      mpCallBack->addItem("Current Generation",
+                          mCurrentGeneration,
+                          & mGenerations);
+
+  mCurrentGeneration++;
+
+  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+
   mPf = getValue< C_FLOAT64 >("Pf");
 
   if (mPf < 0.0 || 1.0 < mPf)
     {
       mPf = 0.475;
       setValue("Pf", mPf);
+
+      mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_usrdef_error_pf).with(mPf));
     }
 
   mIndividuals.resize(childrate * mPopulationSize);
@@ -641,6 +667,8 @@ bool COptMethodSRES::optimise()
       return false;
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Evolutionary.Strategy.SRES"));
+
   // initialise the population
   Continue = creation(0);
 
@@ -659,6 +687,8 @@ bool COptMethodSRES::optimise()
 
   if (!Continue)
     {
+      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
 
@@ -676,24 +706,32 @@ bool COptMethodSRES::optimise()
       // perturb the population if we have stalled for a while
       if (Stalled80 > 80)
         {
-          Continue = creation((size_t)(mPopulationSize * 0.2));
-          Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
-        }
-      else if (Stalled40 > 40)
+          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(80);
+
+                Continue = creation((size_t)(mPopulationSize * 0.2));
+                Stalled10 = Stalled20 = Stalled40 = Stalled80 = 0;
+          }
+          else if (Stalled40 > 40)
         {
-          Continue = creation((size_t)(mPopulationSize * 0.6));
-          Stalled10 = Stalled20 = Stalled40 = 0;
-        }
-      else if (Stalled20 > 20)
+          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(40);
+
+                Continue = creation((size_t)(mPopulationSize * 0.6));
+                Stalled10 = Stalled20 = Stalled40 = 0;
+          }
+          else if (Stalled20 > 20)
         {
-          Continue = creation((size_t)(mPopulationSize * 0.8));
-          Stalled10 = Stalled20 = 0;
-        }
-      else if (Stalled10 > 10)
+          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(20);
+
+                Continue = creation((size_t)(mPopulationSize * 0.8));
+                Stalled10 = Stalled20 = 0;
+          }
+          else if (Stalled10 > 10)
         {
-          Continue = creation((size_t)(mPopulationSize * 0.9));
-          Stalled10 = 0;
-        }
+          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SRES_fittest_not_changed_x_random_generated).iter(mGeneration).with(Stalled80 - 1).with(10);
+
+                Continue = creation((size_t)(mPopulationSize * 0.9));
+                Stalled10 = 0;
+          }
 
 #else
 
@@ -705,8 +743,8 @@ bool COptMethodSRES::optimise()
 
 #ifdef COPASI_DEBUG
 
-      if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
-        break;
+          if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
+            break;
 
 #endif
 
@@ -743,8 +781,15 @@ bool COptMethodSRES::optimise()
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
 
   return true;
+}
+
+unsigned C_INT32 COptMethodSRES::getMaxLogVerbosity() const
+{
+  return 1;
 }

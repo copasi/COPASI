@@ -48,6 +48,8 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
   initObjects();
 }
 
@@ -74,6 +76,8 @@ bool COptMethodSA::optimise()
       return false;
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Simulated.Annealing"));
+
   size_t i, j, k, m;
 
   size_t h, a;
@@ -83,6 +87,8 @@ bool COptMethodSA::optimise()
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
+  bool pointInParameterDomain = true;
+
   for (i = 0; i < mVariableSize; i++)
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
@@ -91,10 +97,12 @@ bool COptMethodSA::optimise()
         {
           case - 1:
             mCurrent[i] = *OptItem.getLowerBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 1:
             mCurrent[i] = *OptItem.getUpperBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 0:
@@ -107,6 +115,8 @@ bool COptMethodSA::optimise()
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
     }
+
+  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 
   mCurrentValue = evaluate();
 
@@ -130,6 +140,8 @@ bool COptMethodSA::optimise()
   nt = (C_FLOAT64)(5 * mVariableSize);
 
   if (nt < 100) nt = 100;
+
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_steps_per_temp).with(nt));
 
   // no temperature reductions yet
   k = 0;
@@ -249,8 +261,13 @@ bool COptMethodSA::optimise()
               fk[STORED - 1] = mCurrentValue;
             }
           // check the termination criterion of not much larger than last optimal
-          else if (fabs(mCurrentValue - mBestValue) > mTolerance)
-            ready = false;
+          else
+            {
+              if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_fval_progress_lower_than_tol).iter(k).with(STORED).with(mTemperature));
+
+              if (fabs(mCurrentValue - mBestValue) > mTolerance)
+                ready = false;
+            }
         }
 
       if (!ready)
@@ -264,6 +281,8 @@ bool COptMethodSA::optimise()
 
           mCurrentValue = mBestValue;
         }
+      else
+        mMethodLog.enterLogItem(COptLogItem(COptLogItem::SA_fval_tol_termination).iter(k).with(mTemperature));
 
       // update the temperature
       mTemperature *= mCoolingFactor;
@@ -272,6 +291,8 @@ bool COptMethodSA::optimise()
         mContinue &= mpCallBack->progressItem(mhTemperature);
     }
   while (!ready && mContinue);
+
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_temp_info).iter(k).with(mTemperature));
 
   if (mpCallBack)
     mpCallBack->finishItem(mhTemperature);
@@ -309,6 +330,7 @@ bool COptMethodSA::initialize()
   mTemperature = getValue< C_FLOAT64 >("Start Temperature");
   mCoolingFactor = getValue< C_FLOAT64 >("Cooling Factor");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
   mpRandom =
     CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
                              getValue< unsigned C_INT32 >("Seed"));
@@ -328,4 +350,9 @@ bool COptMethodSA::initialize()
   mAccepted.resize(mVariableSize);
 
   return true;
+}
+
+unsigned C_INT32 COptMethodSA::getMaxLogVerbosity() const
+{
+  return 1;
 }

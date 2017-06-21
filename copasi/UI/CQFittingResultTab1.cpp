@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -80,6 +85,10 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
   mpEditCPUTime->setText(QString::number(ExecutionTime));
 
   mpEditSpeed->setText(QString::number(FunctionEvaluations / ExecutionTime));
+  const unsigned C_INT32 & FailedEvaluationsExc = pProblem->getFailedEvaluationsExc();
+  mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
+  const unsigned C_INT32 & FailedEvaluationsNaN = pProblem->getFailedEvaluationsNaN();
+  mpEditFailedEvaluationsNaN->setText(QString::number(FailedEvaluationsNaN));
 }
 
 void CQFittingResultTab1::init()

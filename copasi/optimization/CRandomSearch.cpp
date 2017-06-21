@@ -52,6 +52,8 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
   initObjects();
 }
 
@@ -85,6 +87,8 @@ bool CRandomSearch::initialize()
 
   if (!COptMethod::initialize()) return false;
 
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+
   mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
   mpRandom = & mpContainer->getRandomGenerator();
   mpRandom->initialize(getValue< unsigned C_INT32 >("Seed"));
@@ -109,9 +113,13 @@ bool CRandomSearch::optimise()
 
   if (!initialize()) return false;
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Random.Search"));
+
   unsigned C_INT32 j;
 
   // current value is the initial guess
+  bool pointInParameterDomain = true;
+
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = mIndividual[j];
@@ -124,10 +132,12 @@ bool CRandomSearch::optimise()
         {
           case - 1:
             mut = *OptItem.getLowerBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 1:
             mut = *OptItem.getUpperBoundValue();
+            pointInParameterDomain = false;
             break;
         }
 
@@ -135,6 +145,8 @@ bool CRandomSearch::optimise()
       // account of the value.
       *mContainerVariables[j] = (mut);
     }
+
+  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 
   Continue = evaluate(mIndividual);
   mBestValue = mValue;
@@ -203,6 +215,8 @@ bool CRandomSearch::optimise()
         }
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mCurrentIteration).with(mIterations));
+
   return true;
 }
 
@@ -224,4 +238,9 @@ bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
     mValue = mpOptProblem->getCalculateValue();
 
   return Continue;
+}
+
+unsigned C_INT32 CRandomSearch::getMaxLogVerbosity() const
+{
+  return 0;
 }

@@ -66,6 +66,11 @@ public:
    */
   virtual bool optimise();
 
+  /**
+   * Returns the maximum verbosity at which the method can log.
+   */
+  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+
 private:
   /**
    * Default Constructor
@@ -127,6 +132,11 @@ private:
    * The number of iterations
    */
   unsigned C_INT32 mIteration;
+
+  /**
+   * Count of algorithm leaving parameter space
+   */
+  unsigned C_INT32 mParameterOutOfBounds;
 
   /**
    * Handle to the process report item "Current Iteration"

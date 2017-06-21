@@ -59,6 +59,7 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif
 
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -329,6 +330,7 @@ bool COptMethodPS::initialize()
 
   mGenerations = getValue< unsigned C_INT32 >("Iteration Limit");
   mCurrentGeneration = 0;
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
 
   if (mpCallBack)
     mhGenerations =
@@ -340,8 +342,12 @@ bool COptMethodPS::initialize()
 
   if (mPopulationSize < 5)
     {
+
       mPopulationSize = 5;
       setValue("Swarm Size", mPopulationSize);
+
+      mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_usrdef_error_swarm_size).with(5));
+
     }
 
   mVariance = getValue< C_FLOAT64 >("Std. Deviation");
@@ -363,6 +369,11 @@ bool COptMethodPS::initialize()
 
   mNumInformedMin = std::max<size_t>(mPopulationSize / 10, 5) - 1;
   mNumInformed = mNumInformedMin;
+
+  mpPermutation = new CPermutation(mpRandom, mPopulationSize);
+
+
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_info_informants).with(mNumInformedMin).with(mPopulationSize));
 
   mpPermutation = new CPermutation(mpRandom, mPopulationSize);
 
@@ -426,6 +437,25 @@ bool COptMethodPS::reachedStdDeviation()
   C_FLOAT64 * pValue = mValues.array();
   C_FLOAT64 * pEnd = pValue + mPopulationSize;
 
+  if (calcFValVariance() > mVariance)
+    return false;
+
+  // The variance of the function value is smaller than required. We now
+  // Check the variance of the flock positions.
+
+  for (size_t i = 0; i < mVariableSize; ++i)
+    {
+      if (calcVariableVariance(i) > mVariance) return false;
+    }
+
+  return true;
+}
+
+C_FLOAT64 COptMethodPS::calcFValVariance() const
+{
+  const C_FLOAT64 * pValue = mValues.array();
+  const C_FLOAT64 * pEnd = pValue + mPopulationSize;
+
   C_FLOAT64 Delta;
 
   C_FLOAT64 Mean = 0.0;
@@ -446,47 +476,28 @@ bool COptMethodPS::reachedStdDeviation()
 
   Variance /= (N - 1);
 
-  if (Variance > mVariance)
-    return false;
+  return Variance;
+}
 
-  // The variance of the function value is smaller than required. We now
-  // Check the variance of the flock positions.
-  CVector< C_FLOAT64 > FirstMoments(mVariableSize);
-  CVector< C_FLOAT64 > SecondMoments(mVariableSize);
-  FirstMoments = 0.0;
-  SecondMoments = 0.0;
+C_FLOAT64 COptMethodPS::calcVariableVariance(const size_t & variable) const
+{
+  C_FLOAT64 FirstMoment = 0.0;
+  C_FLOAT64 SecondMoment = 0.0;
 
-  std::vector<CVector< C_FLOAT64 > *>::iterator pIndividual = mIndividuals.begin();
-  std::vector<CVector< C_FLOAT64 > *>::iterator pIndividualEnd = mIndividuals.end();
+  const C_FLOAT64 * pValue;
 
-  C_FLOAT64 * pFirstMoment;
-  C_FLOAT64 * pSecondMoment;
-  pEnd = FirstMoments.array() + mVariableSize;
+  std::vector<CVector< C_FLOAT64 > *>::const_iterator pIndividual = mIndividuals.begin();
+  std::vector<CVector< C_FLOAT64 > *>::const_iterator pIndividualEnd = mIndividuals.end();
 
   for (; pIndividual != pIndividualEnd; ++pIndividual)
     {
-      pFirstMoment = FirstMoments.array();
-      pSecondMoment = SecondMoments.array();
-      pValue = (*pIndividual)->array();
-
-      for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment, ++pValue)
-        {
-          *pFirstMoment += *pValue;
-          *pSecondMoment += *pValue **pValue;
-        }
+      pValue = (*pIndividual)->array() + variable;
+      FirstMoment += *pValue;
+      SecondMoment += *pValue **pValue;
     }
 
-  pFirstMoment = FirstMoments.array();
-  pSecondMoment = SecondMoments.array();
+  return (SecondMoment - FirstMoment * FirstMoment / mPopulationSize) / (mPopulationSize - 1);
 
-  for (; pFirstMoment != pEnd; ++pFirstMoment, ++pSecondMoment)
-    {
-      Variance = (*pSecondMoment - *pFirstMoment **pFirstMoment / mPopulationSize) / (mPopulationSize - 1);
-
-      if (Variance > mVariance) return false;
-    }
-
-  return true;
 }
 
 bool COptMethodPS::optimise()
@@ -501,6 +512,8 @@ bool COptMethodPS::optimise()
       return false;
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Particle.Swarm"));
+
   C_FLOAT64 * pIndividual = mIndividuals[0]->array();
   C_FLOAT64 * pEnd = pIndividual + mVariableSize;
   C_FLOAT64 * pVelocity = mVelocities[0];
@@ -510,6 +523,8 @@ bool COptMethodPS::optimise()
 
   // initialise the population
   // first individual is the initial guess
+  bool pointInParameterDomain = true;
+
   for (; pIndividual != pEnd;
        ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable)
     {
@@ -522,10 +537,12 @@ bool COptMethodPS::optimise()
         {
           case - 1:
             *pIndividual = *OptItem.getLowerBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 1:
             *pIndividual = *OptItem.getUpperBoundValue();
+            pointInParameterDomain = false;
             break;
         }
 
@@ -536,6 +553,8 @@ bool COptMethodPS::optimise()
       // account of the value.
       **ppContainerVariable = *pIndividual;
     }
+
+  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 
   // calculate its fitness
   mBestValues[0] = mValues[0] = evaluate();
@@ -576,11 +595,18 @@ bool COptMethodPS::optimise()
         Improved |= move(i);
 
       if (!Improved)
-        buildInformants();
+        {
+          buildInformants();
+
+          if (mLogVerbosity >= 1) mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_no_particle_improved, dumpStatus()).iter(mCurrentGeneration).with(mNumInformed));
+        }
       else
         {
           if (reachedStdDeviation())
-            break;
+            {
+              mMethodLog.enterLogItem(COptLogItem(COptLogItem::PS_stddev_lower_than_tol_termination, dumpStatus()).iter(mCurrentGeneration));
+              break;
+            }
 
           if (oldIndex != mBestIndex)
             Stalled = 0;
@@ -597,7 +623,49 @@ bool COptMethodPS::optimise()
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter, dumpStatus()).iter(mCurrentGeneration).with(mGenerations));
+
   cleanup();
 
   return true;
+}
+
+unsigned C_INT32 COptMethodPS::getMaxLogVerbosity() const
+{
+  return 2;
+}
+
+std::string COptMethodPS::dumpStatus() const
+{
+  if (mLogVerbosity >= 2)
+    {
+      std::stringstream status;
+
+      status << "Current Best Individual:" << std::endl;
+      status << "  FVal: " << mValues[mBestIndex] << std::endl;
+
+      const CVector < C_FLOAT64 >& bestIndividual = *mIndividuals[mBestIndex];
+
+      for (size_t i = 0; i < mVariableSize; ++i)
+        {
+          auto& current = bestIndividual[i];
+          status << "  Param " << i << ": " << current << std::endl;
+        }
+
+      status << std::endl;
+
+      status << "Current Swarm Variances:" << std::endl;
+      status << "  FVal: " << calcFValVariance() << std::endl;
+
+      for (size_t i = 0; i < mVariableSize; ++i)
+        {
+          status << "  Param " << i << ": " << calcVariableVariance(i) << std::endl;
+        }
+
+      status << std::endl;
+
+      return status.str();
+    }
+  else
+    return "";
 }

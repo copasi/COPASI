@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -61,7 +66,21 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="mpEditFailedEvaluationsExc">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QLineEdit" name="mpEditFailedEvaluationsNaN">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
       <widget class="QLabel" name="mpLblCPUTime">
        <property name="text">
         <string>CPU Time [s]</string>
@@ -121,14 +140,34 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="2">
+     <item row="4" column="1">
+      <widget class="QLabel" name="mpLblFailedEvaluationsExc">
+       <property name="text">
+        <string>Failed Eval. (Exception)</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLabel" name="mpLblFailedEvaluationsNaN">
+       <property name="text">
+        <string>Failed Eval. (NaN)</string>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="2">
       <widget class="QLineEdit" name="mpEditSpeed">
        <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="7" column="1">
       <widget class="QLineEdit" name="mpEditCPUTime">
        <property name="readOnly">
         <bool>true</bool>
@@ -173,7 +212,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
+     <item row="6" column="2">
       <widget class="QLabel" name="mpLblSpeed">
        <property name="text">
         <string>Evaluations/second [1/s]</string>

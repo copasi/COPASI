@@ -95,6 +95,9 @@ bool COptMethod::initialize()
       !mpReport->getStream())
     mpReport = NULL;*/
 
+  //new log
+  mMethodLog = COptLog();
+
   return true;
 }
 
@@ -115,4 +118,14 @@ bool COptMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   return true;
+}
+
+unsigned C_INT32 COptMethod::getMaxLogVerbosity() const
+{
+  return 0;
+}
+
+const COptLog &COptMethod::getMethodLog() const
+{
+  return mMethodLog;
 }

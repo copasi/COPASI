@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +31,7 @@
 
 class CFitTask;
 class CFitProblem;
+class COptMethod;
 
 class CQFittingResult : public CopasiWidget, public Ui::CQFittingResult
 {
@@ -40,6 +46,7 @@ public:
 
 protected:
   virtual bool enterProtected();
+  void loadLog(const COptMethod * pMethod);
 
 protected slots:
 
@@ -51,6 +58,7 @@ private:
 
 private slots:
   void slotSave(void);
+  void loadTab(int);
   void slotUpdateModel();
 };
 

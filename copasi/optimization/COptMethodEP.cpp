@@ -50,6 +50,8 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 #endif
 
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
   initObjects();
 }
 
@@ -79,6 +81,8 @@ bool COptMethodEP::optimise()
       return false;
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Evolutionary.Programming"));
+
   bool Continue = true;
 
   // Initialize the population
@@ -99,6 +103,8 @@ bool COptMethodEP::optimise()
 
   if (!Continue)
     {
+      mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_early_stop));
+
       if (mpCallBack)
         mpCallBack->finishItem(mhGenerations);
 
@@ -151,6 +157,8 @@ bool COptMethodEP::optimise()
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_gener).iter(mCurrentGeneration - 1).with(mGenerations));
+
   if (mpCallBack)
     mpCallBack->finishItem(mhGenerations);
 
@@ -180,7 +188,30 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
+
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
+
+  mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
+  mCurrentGeneration = 0;
+
+  if (mpCallBack)
+    mhGenerations =
+      mpCallBack->addItem("Current Generation",
+                          mCurrentGeneration,
+                          & mGenerations);
+
+  mCurrentGeneration++;
+
+  mPopulationSize = getValue< unsigned C_INT32 >("Population Size");
+  mpRandom =
+    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                             getValue< unsigned C_INT32 >("Seed"));
+
+  mVariableSize = mpOptItem->size();
+
+
   mIndividuals.resize(2 * mPopulationSize);
+
   mVariance.resize(2 * mPopulationSize);
 
   for (i = 0; i < 2 * mPopulationSize; i++)
@@ -242,6 +273,7 @@ bool COptMethodEP::creation()
   bool Continue = true;
 
   // set the first individual to the initial guess
+  bool pointInParameterDomain = true;
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -264,6 +296,8 @@ bool COptMethodEP::creation()
                   mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
               }
 
+            pointInParameterDomain = false;
+
             break;
 
           case 1:
@@ -277,6 +311,8 @@ bool COptMethodEP::creation()
                   mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
               }
 
+            pointInParameterDomain = false;
+
             break;
         }
 
@@ -288,8 +324,13 @@ bool COptMethodEP::creation()
       (*mVariance[0])[i] = fabs(mut) * 0.5;
     }
 
+
+
+  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
+
   Continue = evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;
+
   //candx[0] = evaluate(0);
 
   // and copy it to the rest
@@ -561,4 +602,9 @@ bool COptMethodEP::mutate(size_t i)
   mValues[i] = mEvaluationValue;
 
   return Continue;
+}
+
+unsigned C_INT32 COptMethodEP::getMaxLogVerbosity() const
+{
+  return 0;
 }

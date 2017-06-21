@@ -45,6 +45,9 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
 {
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 100);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1e-6);
+
+  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
@@ -72,12 +75,16 @@ bool COptMethodSteepestDescent::optimise()
 {
   if (!initialize()) return false;
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_start).with("OD.Steepest.Descent"));
+
   size_t i, k;
   C_FLOAT64 tmp, x0, alpha, mn, mx, fmn, fmx;
   bool calc_grad;
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
+  bool pointInParameterDomain = true;
+
   for (i = 0; i < mVariableSize; i++)
     {
       const COptItem & OptItem = *(*mpOptItem)[i];
@@ -86,10 +93,12 @@ bool COptMethodSteepestDescent::optimise()
         {
           case - 1:
             mIndividual[i] = *OptItem.getLowerBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 1:
             mIndividual[i] = *OptItem.getUpperBoundValue();
+            pointInParameterDomain = false;
             break;
 
           case 0:
@@ -99,6 +108,8 @@ bool COptMethodSteepestDescent::optimise()
 
       *mContainerVariables[i] = mIndividual[i];
     }
+
+  if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 
   fmx = mBestValue = evaluate();
 
@@ -199,6 +210,8 @@ bool COptMethodSteepestDescent::optimise()
         }
     }
 
+  mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_finish_x_of_max_iter).iter(mCurrentIteration).with(mIterations));
+
   return true;
 }
 
@@ -213,6 +226,8 @@ bool COptMethodSteepestDescent::initialize()
   cleanup();
 
   if (!COptMethod::initialize()) return false;
+
+  mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
 
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
@@ -294,4 +309,9 @@ const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
 void COptMethodSteepestDescent::initObjects()
 {
   addObjectReference("Current Iteration", mCurrentIteration, CDataObject::ValueInt);
+}
+
+unsigned C_INT32 COptMethodSteepestDescent::getMaxLogVerbosity() const
+{
+  return 0;
 }

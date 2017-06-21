@@ -863,7 +863,7 @@ bool CFitProblem::calculate()
 
                     if (!Continue)
                       {
-                        mFailedCounter++;
+                        mFailedCounterException++;
                         mCalculateValue = mWorstValue;
                         break;
                       }
@@ -991,7 +991,7 @@ bool CFitProblem::calculate()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mFailedCounter++;
+      mFailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1001,7 +1001,7 @@ bool CFitProblem::calculate()
 
   catch (...)
     {
-      mFailedCounter++;
+      mFailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1010,7 +1010,10 @@ bool CFitProblem::calculate()
     }
 
   if (isnan(mCalculateValue))
-    mCalculateValue = mWorstValue;
+    {
+      mFailedCounterNaN++;
+      mCalculateValue = mWorstValue;
+    }
 
   if (mpCallBack) return mpCallBack->progressItem(mhCounter);
 
@@ -2032,7 +2035,7 @@ bool CFitProblem::calculateCrossValidation()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mFailedCounter++;
+      mFailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2042,7 +2045,7 @@ bool CFitProblem::calculateCrossValidation()
 
   catch (...)
     {
-      mFailedCounter++;
+      mFailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2051,7 +2054,10 @@ bool CFitProblem::calculateCrossValidation()
     }
 
   if (isnan(CalculateValue))
-    CalculateValue = mWorstValue;
+    {
+      mFailedCounterNaN++;
+      CalculateValue = mWorstValue;
+    }
 
   if (!checkFunctionalConstraints())
     CalculateValue = mWorstValue;
