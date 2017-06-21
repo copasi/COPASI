@@ -276,10 +276,15 @@ bool CModelEntity::setExpression(const std::string & expression)
 {
   if (isFixed()) return false;
 
+  if ((mpExpression == NULL &&
+       expression.empty()) ||
+      (mpExpression != NULL &&
+       mpExpression->getInfix() == expression)) return true;
+
   if (mpExpression == NULL)
     mpExpression = new CExpression("Expression", this);
 
-  if (mpModel)
+  if (mpModel != NULL)
     mpModel->setCompileFlag(true);
 
   if (!mpExpression->setInfix(expression)) return false;

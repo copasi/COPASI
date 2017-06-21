@@ -34,8 +34,9 @@ CompartmentChangeCommand::CompartmentChangeCommand(CCopasiUndoCommand::Type type
   : CCopasiUndoCommand("Compartment", type, "Change", "", TO_UTF8(newValue.toString()), TO_UTF8(oldValue.toString()), pObject->getObjectName())
   , mOld(oldValue)
   , mNew(newValue)
-  , mpWidget(pWidget)
   , mIValue(iValue)
+  , mpObject(pObject)
+  , mpWidget(pWidget)
   , mpUndoData(NULL)
 {
   mKey = pObject->getKey();
