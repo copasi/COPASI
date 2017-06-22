@@ -27,6 +27,13 @@ CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
     {
       mpDataModel = ListViews::dataModel(this);
     }
+
+  ListViews * pListView = ListViews::ancestor(this);
+
+  if (pListView != NULL)
+    {
+      connect(pListView, SIGNAL(signalResetCache()), this, SLOT(resetCache()));
+    }
 }
 
 Qt::ItemFlags CQBaseDataModel::flags(const QModelIndex &index) const
