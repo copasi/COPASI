@@ -1530,7 +1530,9 @@ CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & 
 
   for (; pValue != pValueEnd; ++pValue, ++ppTarget)
     {
-      if (2.0 * fabs(**ppTarget - *pValue) > (fabs(**ppTarget) + fabs(*pValue)) * std::numeric_limits< C_FLOAT64 >::epsilon())
+      if (2.0 * fabs(**ppTarget - *pValue) > (fabs(**ppTarget) + fabs(*pValue)) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
+          (fabs(**ppTarget) == std::numeric_limits< C_FLOAT64 >::infinity() && *pValue != **ppTarget) ||
+          (fabs(*pValue) == std::numeric_limits< C_FLOAT64 >::infinity() && *pValue != **ppTarget))
         {
           ValuesChanged = true;
           **ppTarget = *pValue;
