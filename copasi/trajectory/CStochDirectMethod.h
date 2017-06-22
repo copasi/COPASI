@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -234,6 +239,11 @@ protected:
    * Pointer to the vector holding the newly calculated roots
    */
   CVector< C_FLOAT64 > *mpRootValueNew;
+
+  /**
+   * The last time dependent root time
+   */
+  C_FLOAT64 mLastRootTime;
 };
 
 #endif // COPASI_CStochDirectMethod
