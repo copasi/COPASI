@@ -58,17 +58,22 @@ void CMathReaction::initialize(const CReaction * pReaction, CMathContainer & con
 
   for (; it != end; ++it)
     {
-      CMathObject * pParticleNumber = container.getMathObject(it->getMetabolite()->getValueReference());
+      const CMetab * pMetab = it->getMetabolite();
 
-      if (pParticleNumber->getSimulationType() == CMath::SimulationType::Independent ||
-          pParticleNumber->getSimulationType() == CMath::SimulationType::Dependent)
+      if (pMetab != NULL)
         {
-          mChangedSpecies.insert(pParticleNumber);
-          mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(pParticleNumber, it->getMultiplicity()));
-          pStepUpdate->first = (C_FLOAT64 *) pParticleNumber->getValuePointer();
-          pStepUpdate->second = it->getMultiplicity();
+          CMathObject * pParticleNumber = container.getMathObject(pMetab->getValueReference());
 
-          ++pStepUpdate;
+          if (pParticleNumber->getSimulationType() == CMath::SimulationType::Independent ||
+              pParticleNumber->getSimulationType() == CMath::SimulationType::Dependent)
+            {
+              mChangedSpecies.insert(pParticleNumber);
+              mObjectBalance.insert(std::pair < const CMathObject *, C_FLOAT64 >(pParticleNumber, it->getMultiplicity()));
+              pStepUpdate->first = (C_FLOAT64 *) pParticleNumber->getValuePointer();
+              pStepUpdate->second = it->getMultiplicity();
+
+              ++pStepUpdate;
+            }
         }
     }
 

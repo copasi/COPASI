@@ -57,3 +57,5 @@ copasi/copasi.pro.user
 /.vs
 CMakeSettings.json
 StructuralDependencies\.dot
+
+AppendAllDependents\.dot

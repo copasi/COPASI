@@ -1834,39 +1834,39 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
 
       const CDataContainer * pContainer = NULL;
 
-      if (((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
-           (pContainer = dynamic_cast< const CReaction * >(pDataObject->getObjectParent())) != NULL) &&
-          objects.find(pContainer) == objects.end())
+      if ((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
+          (pContainer = dynamic_cast< const CReaction * >(pDataObject->getObjectParent())) != NULL)
         {
           dependentReactions.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CMetab * >(pDataObject)) != NULL ||
                 (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) == objects.end())
+               (static_cast< const CMetab * >(pContainer)->getStatus() != CModelEntity::Status::REACTIONS ||
+                (pDataObject->getObjectName() != "ParticleNumberRate" &&
+                 pDataObject->getObjectName() != "Rate" &&
+                 pDataObject->getObjectName() != "Noise" &&
+                 pDataObject->getObjectName() != "IntensiveNoise" &&
+                 pDataObject->getObjectName() != "TransitionTime")))
         {
           dependentMetabolites.insert(pContainer);
         }
-      else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
-                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) == objects.end())
+      else if ((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
+               (pContainer = dynamic_cast< const CCompartment * >(pDataObject->getObjectParent())) != NULL)
         {
           dependentCompartments.insert(pContainer);
         }
-      else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
-                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) == objects.end())
+      else if ((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
+               (pContainer = dynamic_cast< const CModelValue * >(pDataObject->getObjectParent())) != NULL)
         {
           dependentModelValues.insert(pContainer);
         }
-      else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
-                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) == objects.end())
+      else if ((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
+               (pContainer = dynamic_cast< const CEventAssignment * >(pDataObject->getObjectParent())) != NULL)
         {
           dependentEventAssignments.insert(pContainer);
         }
-      else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
-                (pContainer = dynamic_cast< const CMetab * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) == objects.end())
+      else if ((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
+               (pContainer = dynamic_cast< const CEvent * >(pDataObject->getObjectParent())) != NULL)
         {
           dependentEvents.insert(pContainer);
         }

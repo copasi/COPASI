@@ -36,6 +36,8 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
   , mOld(oldValue)
   , mNew(newValue)
   , mKey(pObject->getKey())
+  , mIValue()
+  , mpObject(pObject)
   , mpWidget(pWidget)
   , mOldExpression(oldExpression)
   , mNewExpression(newExpression)
@@ -64,7 +66,6 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
         mOldExpression = pObject->getCN();
         mNew = FROM_UTF8(mOldExpression);
 
-
         setProperty("Event Assignment");
         setText(": Added event assignment");
         break;
@@ -74,7 +75,12 @@ EventChangeCommand::EventChangeCommand(CCopasiUndoCommand::Type type,
       {
         std::string targetKey = TO_UTF8(oldValue.toString());
         CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetKey);
-        mNewExpression = pObject->getCN();
+
+        if (pObject != NULL)
+          {
+            mNewExpression = pObject->getCN();
+          }
+
         mOld = FROM_UTF8(mNewExpression);
 
         setProperty("Event Assignment");

@@ -831,11 +831,7 @@ QString CQBrowserPaneDM::getObjectIssueMessages(const CNode * pNode) const
 {
   QString objectIssueMessages;
 
-  const CDataObject * pObject = pNode->getObject();
-
-  // For now, this is still needed for the non-CDataVector CDataObjects
-  if (pObject == NULL)
-    pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
+  const CDataObject * pObject = (pNode->getKey().empty()) ? pNode->getObject() : CRootContainer::getKeyFactory()->get(pNode->getKey());
 
   if (pObject == NULL)
     return objectIssueMessages;
@@ -852,11 +848,7 @@ QIcon CQBrowserPaneDM::getObjectIssueIcon(const CNode * pNode) const
 {
   QIcon highestSeveryityIcon;
 
-  const CDataObject * pObject = pNode->getObject();
-
-  // For now, this is still needed for the non-CDataVector CDataObjects
-  if (pObject == NULL)
-    pObject = CRootContainer::getKeyFactory()->get(pNode->getKey());
+  const CDataObject * pObject = (pNode->getKey().empty()) ? pNode->getObject() : CRootContainer::getKeyFactory()->get(pNode->getKey());
 
   if (pObject == NULL)
     return highestSeveryityIcon;

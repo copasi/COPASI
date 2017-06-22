@@ -439,6 +439,14 @@ bool CMathDependencyGraph::appendAllDependents(const CObjectInterface::ObjectSet
         }
     }
 
+#ifdef DEBUG_OUTPUT
+  {
+    std::ofstream AppendAllDependents("AppendAllDependents.dot");
+    exportDOTFormat(AppendAllDependents, "AppendAllDependents");
+    AppendAllDependents.close();
+  }
+#endif // DEBUG_OUTPUT
+
   const_iterator itCheck = mObjects2Nodes.begin();
   const_iterator endCheck = mObjects2Nodes.end();
 

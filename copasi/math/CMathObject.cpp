@@ -550,7 +550,7 @@ bool CMathObject::compile(CMathContainer & container)
         // which is executed after the object compile. It is therefore
         // correct to leave the object in its default state.
         break;
-        
+
       case CMath::ValueType::__SIZE:
         break;
     }
@@ -612,7 +612,7 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
           case CMath::SimulationType::Undefined:
             success = false;
             break;
-            
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -650,6 +650,7 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
           case CMath::SimulationType::Dependent:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -709,6 +710,7 @@ bool CMathObject::compileValue(CMathContainer & container)
           case CMath::SimulationType::Dependent:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -759,6 +761,7 @@ bool CMathObject::compileValue(CMathContainer & container)
           case CMath::SimulationType::Undefined:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -807,6 +810,7 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::SimulationType::Conversion:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -857,6 +861,7 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::SimulationType::Conversion:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -979,6 +984,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::SimulationType::Conversion:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -1029,6 +1035,7 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::SimulationType::Conversion:
             success = false;
             break;
+
           case CMath::SimulationType::__SIZE:
             break;
         }
@@ -1153,7 +1160,8 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
           for (; itSubstrate != endSubstrate; ++itSubstrate)
             {
-              const std::string NumberPointer = pointerToString(container.getMathObject(itSubstrate->getMetabolite()->getValueReference())->getValuePointer());
+              const CMetab * pMetab = itSubstrate->getMetabolite();
+              const std::string NumberPointer = pointerToString((pMetab != NULL) ? container.getMathObject(pMetab->getValueReference())->getValuePointer() : &CMathObject::InvalidValue);
 
               C_FLOAT64 Multiplicity = itSubstrate->getMultiplicity();
 
