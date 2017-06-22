@@ -432,8 +432,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
 #endif // DEBUG_FLOW
               }
 
-            // The break statement is intentionally missing since we
-            // have to continue to check the root masking state.
+          // The break statement is intentionally missing since we
+          // have to continue to check the root masking state.
           default:
 
             switch (mRootMasking)
@@ -852,13 +852,22 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 C_INT * pRoot = mRootsFound.array();
                 C_INT * pRootEnd = pRoot + mRootsFound.size();
                 C_INT * pCombinedRoot = CombinedRootsFound.array();
+                bool FoundNewRoot = false;
 
                 for (; pRoot != pRootEnd; ++pRoot, ++pCombinedRoot)
                   {
+                    if (*pCombinedRoot > 0) continue;
+
                     if (*pRoot > 0)
                       {
                         *pCombinedRoot = 1;
+                        FoundNewRoot = true;
                       }
+                  }
+
+                if (!FoundNewRoot)
+                  {
+                    createRootMask();
                   }
 
 #ifdef DEBUG_NUMERICS
