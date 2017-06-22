@@ -294,6 +294,8 @@ CIssue CFunction::initVariables()
   for (i = mVariables.size() - 1; i != C_INVALID_INDEX; i--)
     if (NewVariables.findParameterByName(mVariables[i]->getObjectName()) == C_INVALID_INDEX)
       mVariables.remove(mVariables[i]->getObjectName());
+    else
+      mVariables[i]->setIsUsed(true);
 
   return CIssue::Success;
 }
