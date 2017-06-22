@@ -114,10 +114,10 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
         {
-          //if (Species.isInitialValueChangeAllowed(CCore::Framework::Concentration))
-          return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
-          //else
-          //  return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
+          if (Species.isInitialValueChangeAllowed(CCore::Framework::Concentration))
+            return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+          else
+            return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
         }
     }
   else if (index.column() == COL_INUMBER)
@@ -129,10 +129,10 @@ Qt::ItemFlags CQSpecieDM::flags(const QModelIndex &index) const
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
       else
         {
-          //if (Species.isInitialValueChangeAllowed(CCore::Framework::ParticleNumbers))
-          return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
-          //else
-          //  return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
+          if (Species.isInitialValueChangeAllowed(CCore::Framework::ParticleNumbers))
+            return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+          else
+            return QAbstractItemModel::flags(index) & ~Qt::ItemIsEditable & ~Qt::ItemIsEnabled;
         }
     }
   else
