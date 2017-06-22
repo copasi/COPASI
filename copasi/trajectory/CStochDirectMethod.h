@@ -239,6 +239,11 @@ protected:
    * Pointer to the vector holding the newly calculated roots
    */
   CVector< C_FLOAT64 > *mpRootValueNew;
+
+  /**
+   * The last time dependent root time
+   */
+  C_FLOAT64 mLastRootTime;
 };
 
 #endif // COPASI_CStochDirectMethod
