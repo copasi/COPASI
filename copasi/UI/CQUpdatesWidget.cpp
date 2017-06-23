@@ -409,77 +409,23 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
         
         const CMathExpression* pMExp = pMO->getExpressionPtr();
         if (pMExp)
-          s = FROM_UTF8(pMExp->getInfix());
+        {
+          std::vector< std::vector< std::string > > tmp;
+          s = FROM_UTF8(pMExp->getRoot()->buildMMLString(false, tmp));
+        }
         else
           s = "";
         tmpItem = new QTableWidgetItem(s);
+      /*
+      QtMmlWidget* tmpmml = new QtMmlWidget();
+      tmpmml->setBaseFontPointSize(qApp->font().pointSize() - 2);
+      tmpmml->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+      tmpmml->setContent(tmpstring2.c_str());
+      pTable->setCellWidget(j, i, tmpmml);
+      
+      */
         mpTableMathState->setItem(i, 5, tmpItem);
         
-        /*switch (pMO->getValueType())
-        {
-          case CMath::ValueType::Undefined:
-            s = "";
-            case CMath::ValueType::Value:
-            s = "";
-            break;
-            case CMath::ValueType::Rate:
-            s = "";
-            break;
-            case CMath::ValueType::ParticleFlux:
-            s = "";
-            break;
-            case CMath::ValueType::Flux:
-            s = "";
-            break;
-            case CMath::ValueType::Propensity:
-            s = "";
-            break;
-            case CMath::ValueType::Noise:
-            s = "";
-            break;
-            case CMath::ValueType::ParticleNoise:
-            s = "";
-            break;
-            case CMath::ValueType::TotalMass:
-            s = "";
-            break;
-            case CMath::ValueType::DependentMass:
-            s = "";
-            break;
-            case CMath::ValueType::Discontinuous:
-            s = "";
-            break;
-            case CMath::ValueType::EventDelay:
-            s = "";
-            break;
-            case CMath::ValueType::EventPriority:
-            s = "";
-            break;
-            case CMath::ValueType::EventAssignment:
-            s = "";
-            break;
-            case CMath::ValueType::EventTrigger:
-            s = "";
-            break;
-            case CMath::ValueType::EventRoot:
-            s = "";
-            break;
-            case CMath::ValueType::EventRootState:
-            s = "";
-            break;
-            case CMath::ValueType::DelayValue:
-            s = "";
-            break;
-            case CMath::ValueType::DelayLag:
-            s = "";
-            break;
-            case CMath::ValueType::TransitionTime:
-            s = "";
-            break;
-            case CMath::ValueType::__SIZE:
-            s = "";
-            break;
-            }*/
     }
             
             
