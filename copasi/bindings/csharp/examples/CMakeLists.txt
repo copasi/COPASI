@@ -17,7 +17,7 @@ foreach( example
 	exampleMathExport
 	exampleParameterSets
 	printUnsupportedAnnotation
-	
+	run_mca
 )
 
 	ADD_CUSTOM_COMMAND(	
