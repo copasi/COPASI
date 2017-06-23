@@ -103,12 +103,12 @@ public:
   /**
    * Save the time series to a file
    * @param const std::string & fileName
-   * @param bool writeConcentrations (default: false)
+   * @param bool writeParticleNumbers (default: false)
    * @param const std::string& separator (default: "\t")
    * @return int retcode
    */
   int save(const std::string& fileName,
-           bool writeConcentrations = false,
+           bool writeParticleNumbers = false,
            const std::string& separator = "\t") const;
 
   /**
