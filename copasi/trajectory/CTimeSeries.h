@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -98,12 +103,12 @@ public:
   /**
    * Save the time series to a file
    * @param const std::string & fileName
-   * @param bool writeConcentrations (default: false)
+   * @param bool writeParticleNumbers (default: false)
    * @param const std::string& separator (default: "\t")
    * @return int retcode
    */
   int save(const std::string& fileName,
-           bool writeConcentrations = false,
+           bool writeParticleNumbers = false,
            const std::string& separator = "\t") const;
 
   /**
