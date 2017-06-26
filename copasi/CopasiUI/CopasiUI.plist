@@ -47,6 +47,10 @@
 	<true/>
 	<key>LSRequiresCarbon</key>
 	<true/>
+	<key>NSPrincipalClass</key>
+  <string>NSApplication</string>
+  <key>NSHighResolutionCapable</key>
+  <string>True</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 </dict>
