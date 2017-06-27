@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -75,7 +80,6 @@ public:
    * @return the index for the CN with the given column if found, an
    *         invalid index otherwise.
    */
-  QModelIndex getIndexFor(const std::string& cn, int column) const;
   bool parameterOverviewDataChange(const std::string& cn,
                                    const QVariant &value,
                                    const std::string& parameterSetKey, int column);
@@ -85,7 +89,7 @@ signals:
   void signalCloseEditor(const QModelIndex &) const;
 
 private:
-  QModelIndex index(CModelParameter * pNode) const;
+  QModelIndex index(CModelParameter * pNode, int column) const;
 
   static int getRow(const CModelParameter * pNode);
 
