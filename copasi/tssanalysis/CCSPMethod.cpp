@@ -2210,15 +2210,14 @@ bool CCSPMethod::setAnnotationM(size_t step)
 
   // fill pSlowParticipationIndexAnn
 
-  //mSlowParticipationIndexTab.resize(Model.getReactions().size(),1);
+  mSlowParticipationIndexTab.resize(Model.getReactions().size(),1);
   mSlowParticipationIndexTab = mVec_mSlowParticipationIndex[step];
+  pSlowParticipationIndexAnn->resize();
 
-  //pSlowParticipationIndexAnn->resize();
-
-  //sstr << "   ";
-  //str = sstr.str();
-  //pSlowParticipationIndexAnn->setAnnotationString(1, 0, str);
-  //pSlowParticipationIndexAnn->setCopasiVector(0, &Model.getReactions());
+  sstr << "   ";
+  str = sstr.str();
+  pSlowParticipationIndexAnn->setAnnotationString(1, 0, str);
+  pSlowParticipationIndexAnn->setCopasiVector(0, Model.getReactions());
 
   // fill pmImportanceIndexAnn
   mImportanceIndexTab.resize(mVec_mImportanceIndex[step].numCols(),
