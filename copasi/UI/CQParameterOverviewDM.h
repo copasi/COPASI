@@ -80,7 +80,6 @@ public:
    * @return the index for the CN with the given column if found, an
    *         invalid index otherwise.
    */
-  QModelIndex getIndexFor(const std::string& cn, int column) const;
   bool parameterOverviewDataChange(const std::string& cn,
                                    const QVariant &value,
                                    const std::string& parameterSetKey, int column);
@@ -90,7 +89,7 @@ signals:
   void signalCloseEditor(const QModelIndex &) const;
 
 private:
-  QModelIndex index(CModelParameter * pNode) const;
+  QModelIndex index(CModelParameter * pNode, int column) const;
 
   static int getRow(const CModelParameter * pNode);
 

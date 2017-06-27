@@ -251,7 +251,7 @@ void CQParameterOverviewDM::setFramework(const int & framework)
   endResetModel();
 }
 
-QModelIndex CQParameterOverviewDM::index(CModelParameter * pNode) const
+QModelIndex CQParameterOverviewDM::index(CModelParameter * pNode, int column) const
 {
   if (pNode == NULL)
     {
@@ -263,9 +263,9 @@ QModelIndex CQParameterOverviewDM::index(CModelParameter * pNode) const
       return index(0, 0, QModelIndex());
     }
 
-  QModelIndex Parent = index(static_cast< CModelParameter * >(pNode->getParent()));
+  QModelIndex Parent = index(static_cast< CModelParameter * >(pNode->getParent()), 0);
 
-  return index(getRow(pNode), 0, Parent);
+  return index(getRow(pNode), column, Parent);
 }
 
 // static
@@ -576,14 +576,12 @@ CQParameterOverviewDM::parameterOverviewDataChange(const std::string &cn,
       switchToWidget(C_INVALID_INDEX, parameterSetKey);
     }
 
-  QModelIndex _index = getIndexFor(cn, column);
-  CModelParameter * pNode = nodeFromIndex(_index);
-
+  CModelParameter * pNode = mpModelParameterSet->getModelParameter(cn);
   bool success = false;
 
   if (pNode == NULL) return false;
 
-  switch (_index.column())
+  switch (column)
     {
       case COL_VALUE:
         pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
@@ -611,7 +609,8 @@ CQParameterOverviewDM::parameterOverviewDataChange(const std::string &cn,
         break;
     }
 
-  emit dataChanged(_index, _index);
+  QModelIndex Index = index(pNode, column);
+  emit dataChanged(Index, Index);
 
   return true;
 }
@@ -624,38 +623,4 @@ void CQParameterOverviewDM::setUndoStack(QUndoStack* undoStack)
 QUndoStack* CQParameterOverviewDM::getUndoStack()
 {
   return mpUndoStack;
-}
-
-QModelIndex CQParameterOverviewDM::getIndexFor(const std::string &cn, int column) const
-{
-  int max = rowCount();
-
-  for (int i = 0; i < max; ++i)
-    {
-      QModelIndex current = index(i, 1);
-      CModelParameter* param = nodeFromIndex(current);
-
-      if (param == NULL) continue;
-
-      CModelParameterGroup* group = dynamic_cast<CModelParameterGroup*>(param);
-
-      if (group != NULL && hasChildren(current))
-        {
-          int currentMax = rowCount(current);
-
-          for (int j = 0; j < currentMax; ++j)
-            {
-              QModelIndex childIndex = current.child(j, 0);
-              CModelParameter* param1 = nodeFromIndex(childIndex);
-
-              if (param1->getCN() == cn)
-                return current.child(j, column);
-            }
-        }
-
-      if (param->getCN() == cn)
-        return index(i, column);
-    }
-
-  return QModelIndex();
 }
