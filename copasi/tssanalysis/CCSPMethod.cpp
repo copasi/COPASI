@@ -1992,12 +1992,8 @@ bool CCSPMethod::setAnnotationM(size_t step)
     }
 
   //TEST : if (step == 0) return false;
-
   //if (mVec_SlowModes.size() == 0) return false;
-
   //if (step > mVec_SlowModes.size()) return false;
-
-  // TEST : step -= 1;
 
   if (mVec_SlowModes.size() <= step)
     {
@@ -2006,41 +2002,10 @@ bool CCSPMethod::setAnnotationM(size_t step)
 
   M = mVec_SlowModes[step];
 
-  // fill pAmplitudeAnn
 
-#if 0
-  mAmplitudeTab.resize(mVec_mAmplitude[step].numRows(), 1);
-
-  for (i = 0; i < mVec_mAmplitude[step].numRows(); i++)
-    mAmplitudeTab(i, 0) = mVec_mAmplitude[step][i][0];
-
-  pAmplitudeAnn->resize();
-
-  for (i = 0; i < mVec_mAmplitude[step].numRows(); i++)
-    {
-      timeScale = mVec_TimeScale[step][i];
-
-      if (i < M)
-        sstr << "Fast: ";
-      else
-        sstr << "Slow: ";
-
-      sstr << timeScale;
-      str = sstr.str();
-      pAmplitudeAnn->setAnnotationString(0, i, str);
-      sstr.str("");
-      sstr.clear();
-    }
-
-  sstr.str("");
-  str = sstr.str();
-  pAmplitudeAnn->setAnnotationString(1, 0, str);
-
-#endif
-
-  // fill pRadicalPointerAnn
-  mRadicalPointerTab.resize(mVec_mRadicalPointer[step].numCols(),
-                            mVec_mRadicalPointer[step].numRows());
+  //3**** fill pRadicalPointerAnn
+  //mRadicalPointerTab.resize(mVec_mRadicalPointer[step].numCols(),
+  //                          mVec_mRadicalPointer[step].numRows());
   mRadicalPointerTab = mVec_mRadicalPointer[step];
   pRadicalPointerAnn->resize();
 
@@ -2251,7 +2216,8 @@ bool CCSPMethod::setAnnotationM(size_t step)
 void CCSPMethod::setVectorsToNaN()
 {
 
-  mVec_TimeScale.push_back(mCurrentStep);
+  //1
+  mVec_TimeScale.resize(mCurrentStep+1);
   mVec_TimeScale[mCurrentStep].resize(mDim);
   C_INT i, r, m, fast;
   C_INT reacs_size = (C_INT) mpContainer->getReactions().size();
@@ -2261,10 +2227,12 @@ void CCSPMethod::setVectorsToNaN()
   for (i = 0; i < mDim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
-  mVec_SlowModes.push_back(mCurrentStep);
+  //2
+  mVec_SlowModes.resize(mCurrentStep+1);
   mVec_SlowModes[mCurrentStep] = 0;
 
-  mVec_mRadicalPointer.push_back(mCurrentStep);
+  //3
+  mVec_mRadicalPointer.resize(mCurrentStep+1);
 
   mVec_mRadicalPointer[mCurrentStep].resize(mDim, fast);
 
@@ -2272,7 +2240,8 @@ void CCSPMethod::setVectorsToNaN()
     for (i = 0; i < mDim; i++)
       mVec_mRadicalPointer[mCurrentStep][i][m] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mFastReactionPointer.push_back(mCurrentStep);
+  //4
+  mVec_mFastReactionPointer.resize(mCurrentStep+1);
 
   mVec_mFastReactionPointer[mCurrentStep].resize(reacs_size, fast);
 
@@ -2280,7 +2249,8 @@ void CCSPMethod::setVectorsToNaN()
     for (i = 0; i < fast; i++)
       mVec_mFastReactionPointer[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mFastReactionPointerNormed.push_back(mCurrentStep);
+  //5
+  mVec_mFastReactionPointerNormed.resize(mCurrentStep+1);
 
   mVec_mFastReactionPointerNormed[mCurrentStep].resize(reacs_size, fast);
 
@@ -2288,63 +2258,72 @@ void CCSPMethod::setVectorsToNaN()
     for (i = 0; i < fast; i++)
       mVec_mFastReactionPointerNormed[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();;
 
-  mVec_mParticipationIndex.push_back(mCurrentStep);
+  //6
+  mVec_mParticipationIndex.resize(mCurrentStep+1);
   mVec_mParticipationIndex[mCurrentStep].resize(reacs_size, mDim);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < fast; i++)
       mVec_mParticipationIndex[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mFastParticipationIndex.push_back(mCurrentStep);
+  //7
+  mVec_mFastParticipationIndex.resize(mCurrentStep+1);
   mVec_mFastParticipationIndex[mCurrentStep].resize(reacs_size, 1);
 
   for (i = 0; i < reacs_size; i++)
     mVec_mFastParticipationIndex[mCurrentStep][i][0] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mSlowParticipationIndex.push_back(mCurrentStep);
+  //8
+  mVec_mSlowParticipationIndex.resize(mCurrentStep+1);
   mVec_mSlowParticipationIndex[mCurrentStep].resize(reacs_size, 1);
 
   for (i = 0; i < reacs_size; i++)
     mVec_mSlowParticipationIndex[mCurrentStep][i][0] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mParticipationIndexNormedColumn.push_back(mCurrentStep);
+  //9
+  mVec_mParticipationIndexNormedColumn.resize(mCurrentStep+1);
   mVec_mParticipationIndexNormedColumn[mCurrentStep].resize(reacs_size, mDim);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < fast; i++)
       mVec_mParticipationIndexNormedColumn[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mParticipationIndexNormedRow.push_back(mCurrentStep);
+  //10
+  mVec_mParticipationIndexNormedRow.resize(mCurrentStep+1);
   mVec_mParticipationIndexNormedRow[mCurrentStep].resize(reacs_size, mDim);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < fast; i++)
       mVec_mParticipationIndexNormedRow[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mImportanceIndex.push_back(mCurrentStep);
+  //11
+  mVec_mImportanceIndex.resize(mCurrentStep+1);
   mVec_mImportanceIndex[mCurrentStep].resize(reacs_size, mDim);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < mDim; i++)
       mVec_mImportanceIndex[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mVec_mImportanceIndexNormedRow.push_back(mCurrentStep);
+  //12
+  mVec_mImportanceIndexNormedRow.resize(mCurrentStep+1);
   mVec_mImportanceIndexNormedRow[mCurrentStep].resize(reacs_size, mDim);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < mDim; i++)
       mVec_mImportanceIndexNormedRow[mCurrentStep][r][i] = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  mCurrentTime.push_back(mCurrentStep);
+  //13
+  mCurrentTime.resize(mCurrentStep+1);
   mCurrentTime[mCurrentStep] = *mpContainerStateTime;
 }
+
 /**
  *upgrade all vectors with values from actually calculation for current step
  **/
 void CCSPMethod::setVectors(int fast)
 {
-
-  mVec_TimeScale.push_back(mCurrentStep);
+  //1*********************
+  mVec_TimeScale.resize(mCurrentStep+1);
   mVec_TimeScale[mCurrentStep].resize(mDim);
   C_INT i, r, m;
   C_INT reacs_size = (C_INT) mpContainer->getReactions().size();
@@ -2352,82 +2331,70 @@ void CCSPMethod::setVectors(int fast)
   for (i = 0; i < mDim; i++)
     mVec_TimeScale[mCurrentStep][i] = -1 / mR(i, i);
 
-  mVec_SlowModes.push_back(mCurrentStep);
+  //2*********************
+  mVec_SlowModes.resize(mCurrentStep+1);
   mVec_SlowModes[mCurrentStep] = fast;
 
-#if 0
-  mVec_mAmplitude.push_back(mCurrentStep);
-  //mVec_mAmplitude[mCurrentStep].resize(mAmplitude.size(), 1);
-  mVec_mAmplitude[mCurrentStep].resize(fast, 1);
-
-  for (i = 0; i < fast; i++)
-    mVec_mAmplitude[mCurrentStep][i][0] = mAmplitude[i];
-
-#endif
-
-  mVec_mRadicalPointer.push_back(mCurrentStep);
-  //mVec_mRadicalPointer[mCurrentStep].resize(mRadicalPointer.numCols(), mRadicalPointer.numRows());
-  //mVec_mRadicalPointer[mCurrentStep] = mRadicalPointer;
-
+  //3************
+  mVec_mRadicalPointer.resize(mCurrentStep+1);
   mVec_mRadicalPointer[mCurrentStep].resize(mDim, fast);
 
   for (m = 0; m < fast; m++)
     for (i = 0; i < mDim; i++)
       mVec_mRadicalPointer[mCurrentStep][i][m] = mRadicalPointer(i, m);
 
-  mVec_mFastReactionPointer.push_back(mCurrentStep);
-  //mVec_mFastReactionPointer[mCurrentStep].resize(mFastReactionPointer.numCols(), mFastReactionPointer.numRows());
-  //mVec_mFastReactionPointer[mCurrentStep] = mFastReactionPointer;
-
+  //4************
+  mVec_mFastReactionPointer.resize(mCurrentStep+1);
   mVec_mFastReactionPointer[mCurrentStep].resize(reacs_size, fast);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < fast; i++)
       mVec_mFastReactionPointer[mCurrentStep][r][i] = mFastReactionPointer(r, i);
 
-  mVec_mFastReactionPointerNormed.push_back(mCurrentStep);
-  //mVec_mFastReactionPointerNormed[mCurrentStep].resize(mFastReactionPointerNormed.numCols(), mFastReactionPointerNormed.numRows());
-  //mVec_mFastReactionPointerNormed[mCurrentStep] = mFastReactionPointerNormed;
-
+  //5************
+  mVec_mFastReactionPointerNormed.resize(mCurrentStep+1);
   mVec_mFastReactionPointerNormed[mCurrentStep].resize(reacs_size, fast);
 
   for (r = 0; r < reacs_size; r++)
     for (i = 0; i < fast; i++)
       mVec_mFastReactionPointerNormed[mCurrentStep][r][i] = mFastReactionPointerNormed(r, i);
 
-  mVec_mParticipationIndex.push_back(mCurrentStep);
-  mVec_mParticipationIndex[mCurrentStep].resize(mParticipationIndex.numCols(), mParticipationIndex.numRows());
+  //6************
+  mVec_mParticipationIndex.resize(mCurrentStep+1);
   mVec_mParticipationIndex[mCurrentStep] = mParticipationIndex;
 
-  mVec_mFastParticipationIndex.push_back(mCurrentStep);
+  //7************
+  mVec_mFastParticipationIndex.resize(mCurrentStep+1);
   mVec_mFastParticipationIndex[mCurrentStep].resize(mFastParticipationIndex.size(), 1);
 
   for (i = 0; i < reacs_size; i++)
     mVec_mFastParticipationIndex[mCurrentStep][i][0] = mFastParticipationIndex[i];
 
-  mVec_mSlowParticipationIndex.push_back(mCurrentStep);
+  //8************
+  mVec_mSlowParticipationIndex.resize(mCurrentStep+1);
   mVec_mSlowParticipationIndex[mCurrentStep].resize(mSlowParticipationIndex.size(), 1);
 
   for (i = 0; i < reacs_size; i++)
     mVec_mSlowParticipationIndex[mCurrentStep][i][0] = mSlowParticipationIndex[i];
 
-  mVec_mParticipationIndexNormedColumn.push_back(mCurrentStep);
-  mVec_mParticipationIndexNormedColumn[mCurrentStep].resize(mParticipationIndexNormedColumn.numCols(), mParticipationIndexNormedColumn.numRows());
+  //9************
+  mVec_mParticipationIndexNormedColumn.resize(mCurrentStep+1);
   mVec_mParticipationIndexNormedColumn[mCurrentStep] = mParticipationIndexNormedColumn;
 
-  mVec_mParticipationIndexNormedRow.push_back(mCurrentStep);
-  mVec_mParticipationIndexNormedRow[mCurrentStep].resize(mParticipationIndexNormedRow.numCols(), mParticipationIndexNormedRow.numRows());
+  //10************
+  mVec_mParticipationIndexNormedRow.resize(mCurrentStep+1);
   mVec_mParticipationIndexNormedRow[mCurrentStep] = mParticipationIndexNormedRow;
 
-  mVec_mImportanceIndex.push_back(mCurrentStep);
-  mVec_mImportanceIndex[mCurrentStep].resize(mImportanceIndex.numCols(), mImportanceIndex.numRows());
+  //11************
+  mVec_mImportanceIndex.resize(mCurrentStep+1);
   mVec_mImportanceIndex[mCurrentStep] = mImportanceIndex;
 
-  mVec_mImportanceIndexNormedRow.push_back(mCurrentStep);
-  mVec_mImportanceIndexNormedRow[mCurrentStep].resize(mImportanceIndexNormedRow.numCols(), mImportanceIndexNormedRow.numRows());
+  //12************
+  mVec_mImportanceIndexNormedRow.resize(mCurrentStep+1);
   mVec_mImportanceIndexNormedRow[mCurrentStep] = mImportanceIndexNormedRow;
 
-  mCurrentTime.push_back(mCurrentStep);
+  //13************
+  mCurrentTime.resize(mCurrentStep+1);
   mCurrentTime[mCurrentStep] = *mpContainerStateTime;
 }
 
@@ -2439,23 +2406,20 @@ void CCSPMethod::emptyVectors()
 {
 
   mCurrentStep = 0;
-  mVec_TimeScale.erase(mVec_TimeScale.begin(), mVec_TimeScale.end());
-  mVec_SlowModes.erase(mVec_SlowModes.begin(), mVec_SlowModes.end());
+  mVec_TimeScale.clear(); //1
+  mVec_SlowModes.clear(); //2
 
-#if 0
-  mVec_mAmplitude.erase(mVec_mAmplitude.begin(), mVec_mAmplitude.end());
-#endif
-
-  mVec_mRadicalPointer.erase(mVec_mRadicalPointer.begin(), mVec_mRadicalPointer.end());
-  mVec_mFastReactionPointer.erase(mVec_mFastReactionPointer.begin(), mVec_mFastReactionPointer.end());
-  mVec_mFastReactionPointerNormed.erase(mVec_mFastReactionPointerNormed.begin(), mVec_mFastReactionPointerNormed.end());
-  mVec_mParticipationIndexNormedRow.erase(mVec_mParticipationIndexNormedRow.begin(), mVec_mParticipationIndexNormedRow.end());
-  mVec_mParticipationIndexNormedColumn.erase(mVec_mParticipationIndexNormedColumn.begin(), mVec_mParticipationIndexNormedColumn.end());
-  mVec_mParticipationIndex.erase(mVec_mParticipationIndex.begin(), mVec_mParticipationIndex.end());
-  mVec_mFastParticipationIndex.erase(mVec_mFastParticipationIndex.begin(), mVec_mFastParticipationIndex.end());
-  mVec_mSlowParticipationIndex.erase(mVec_mSlowParticipationIndex.begin(), mVec_mSlowParticipationIndex.end());
-  mVec_mImportanceIndex.erase(mVec_mImportanceIndex.begin(), mVec_mImportanceIndex.end());
-  mVec_mImportanceIndexNormedRow.erase(mVec_mImportanceIndexNormedRow.begin(), mVec_mImportanceIndexNormedRow.end());
+  mVec_mRadicalPointer.clear(); //3
+  mVec_mFastReactionPointer.clear(); //4
+  mVec_mFastReactionPointerNormed.clear(); //5
+  mVec_mParticipationIndex.clear(); //6
+  mVec_mFastParticipationIndex.clear(); //7
+  mVec_mSlowParticipationIndex.clear(); //8
+  mVec_mParticipationIndexNormedColumn.clear(); //9
+  mVec_mParticipationIndexNormedRow.clear(); //10
+  mVec_mImportanceIndex.clear(); //11
+  mVec_mImportanceIndexNormedRow.clear(); //12
+  mCurrentTime.clear(); //13
 }
 
 void CCSPMethod::printResult(std::ostream * ostream) const

@@ -326,7 +326,7 @@ public:
   /**
    *vectors contain whole data for all calculation steps
    **/
-  std::vector< CMatrix<C_FLOAT64> > mVec_mAmplitude;
+  //std::vector< CMatrix<C_FLOAT64> > mVec_mAmplitude;
   std::vector< CMatrix<C_FLOAT64> > mVec_mRadicalPointer;
   std::vector< CMatrix<C_FLOAT64> > mVec_mFastReactionPointer;
   std::vector< CMatrix<C_FLOAT64> > mVec_mFastReactionPointerNormed;
@@ -347,7 +347,7 @@ public:
     std::vector<std::string>  tableNames;
   */
 
-  CDataArray* pAmplitudeAnn;
+  //CDataArray* pAmplitudeAnn;
   CDataArray* pRadicalPointerAnn;
   CDataArray* pFastReactionPointerAnn;
   CDataArray* pFastReactionPointerNormedAnn;
@@ -363,7 +363,7 @@ public:
   *input for every CArraAnnotations
   *contain data for single stepcalculation
   **/
-  CMatrix<C_FLOAT64> mAmplitudeTab;
+  //CMatrix<C_FLOAT64> mAmplitudeTab;
   CMatrix<C_FLOAT64> mRadicalPointerTab;
   CMatrix<C_FLOAT64> mFastReactionPointerTab;
   CMatrix<C_FLOAT64> mFastReactionPointerNormedTab;
@@ -386,8 +386,8 @@ public:
     {return tableNames;}
   */
 
-  const CDataArray* getAmplitudeAnn() const
-  {return pAmplitudeAnn;}
+//  const CDataArray* getAmplitudeAnn() const
+//  {return pAmplitudeAnn;}
   const CDataArray* getRadicalPointerAnn() const
   {return pRadicalPointerAnn;}
   const CDataArray* getFastReactionPointerAnn() const
