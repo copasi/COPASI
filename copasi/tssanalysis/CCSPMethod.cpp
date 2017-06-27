@@ -1415,11 +1415,11 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
 {
   C_INT i, r, j;
   C_INT reacs_size = (C_INT) mpContainer->getReactions().size();
-  const CVector< CMathReaction > & reacs = mpContainer->getReactions();
+  const CVector< double > & reac_fluxes = mpContainer->getParticleFluxes();
   const CMatrix< C_FLOAT64 > & redStoi = mpContainer->getStoichiometry(mReducedModel);
 
-  CVector<C_FLOAT64> flux;
-  flux.resize(reacs_size);
+  //CVector<C_FLOAT64> flux;
+  //flux.resize(reacs_size);
 
   CMatrix<C_FLOAT64> P;
   P.resize(N, reacs_size);
@@ -1430,8 +1430,8 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
   CVector<C_FLOAT64> ampl;
   ampl.resize(N);
 
-  for (r = 0; r < reacs_size; ++r)
-    flux[r] = * (C_FLOAT64 *) reacs[r].getParticleFluxObject()->getValuePointer();
+  //for (r = 0; r < reacs_size; ++r)
+  //  flux[r] = * (C_FLOAT64 *) reacs[r].getParticleFluxObject()->getValuePointer();
 
   for (i = 0; i < N; ++i)
     {
@@ -1445,7 +1445,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
           for (j = 0; j < N; ++j)
             P(i, r) += B0(i, j) * redStoi(j, r);
 
-          ampl[i] += fabs(P(i, r) * flux[r]);
+          ampl[i] += fabs(P(i, r) * reac_fluxes[r]);
         }
 
       C_FLOAT64 tmp = 0.0;
@@ -1463,7 +1463,7 @@ void CCSPMethod::CSPParticipationIndex(C_INT & N, C_INT & M, C_FLOAT64 & tauM1, 
 
       for (r = 0; r < reacs_size; ++r)
         {
-          P(i, r) *= flux[r] / (ampl[i] + estim[i]);
+          P(i, r) *= reac_fluxes[r] / (ampl[i] + estim[i]);
 
           mParticipationIndex(r, i) = P(i, r);
         }
@@ -1530,11 +1530,11 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 
   C_INT i, r;
   C_INT reacs_size = (C_INT) mpContainer->getReactions().size();
-  const CVector< CMathReaction > & reacs = mpContainer->getReactions();
+  const CVector< double > & reac_fluxes = mpContainer->getParticleFluxes();
   const CMatrix< C_FLOAT64 > & redStoi = mpContainer->getStoichiometry(mReducedModel);
 
-  CVector<C_FLOAT64> flux;
-  flux.resize(reacs_size);
+  //CVector<C_FLOAT64> flux;
+  //flux.resize(reacs_size);
 
   CMatrix<C_FLOAT64> S0;
   S0.resize(N, reacs_size);
@@ -1555,15 +1555,15 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 
   smmult(Q, S, S0, N, N, reacs_size);
 
-  for (r = 0; r < reacs_size; ++r)
-    flux[r] = * (C_FLOAT64 *) reacs[r].getParticleFluxObject()->getValuePointer();
+  //for (r = 0; r < reacs_size; ++r)
+  //  flux[r] = * (C_FLOAT64 *) reacs[r].getParticleFluxObject()->getValuePointer();
 
   for (i = 0; i < N; ++i)
     {
       g[i] = 0;
 
       for (r = 0; r < reacs_size; ++r)
-        g[i] += fabs(S0(i, r) * flux[r]);
+        g[i] += fabs(S0(i, r) * reac_fluxes[r]);
 
       estim[i] = fabs(mYerror[i] / tauM1);
     }
@@ -1573,7 +1573,7 @@ void CCSPMethod::CSPImportanceIndex(C_INT & N, C_FLOAT64 & tauM1, CMatrix< C_FLO
 
       for (r = 0; r < reacs_size; ++r)
         {
-          I(i, r) = S0(i, r) * flux[r] / (g[i] + estim[i]);
+          I(i, r) = S0(i, r) * reac_fluxes[r] / (g[i] + estim[i]);
 
           mImportanceIndex(r, i) = I(i, r);
         }
