@@ -1006,7 +1006,7 @@ bool CRungeKutta::checkParameter(const size_t * pDim,
       return false;
     }
 
-  if (pMaxSteps != NULL && pMaxSteps <= 0)
+  if (pMaxSteps != NULL && *pMaxSteps <= 0)
     {
       mErrorMessage << "The max step size must be positive" << std::endl;
       return false;
