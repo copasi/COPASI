@@ -17,8 +17,6 @@
 #include "copasi/core/CVector.h"
 #include "copasi/trajectory/CTrajectoryMethod.h"
 #include "copasi/trajectory/CRootFinder.h"
-#include "copasi/odepack++/CLSODA.h"
-#include "copasi/odepack++/CLSODAR.h"
 #include "copasi/model/CState.h"
 
 class CModel;
@@ -96,7 +94,7 @@ public:
 
 private:
   /**
-   *  This evaluates the derivativesmRootMasking
+   *  This evaluates the derivatives
    */
   void evalRate(C_FLOAT64 * rates);
 

@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask(pDataModel->getTaskList());
       // use LSODAR from now on since we will have events pretty soon
-      pTrajectoryTask->setMethodType(CTaskEnum::LSODAR);
+      pTrajectoryTask->setMethodType(CTaskEnum::LSODA2);
       pTrajectoryTask->getProblem()->setMathContainer(&pDataModel->getModel()->getMathContainer());
 
       pTrajectoryTask->setScheduled(true);

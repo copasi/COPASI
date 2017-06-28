@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,10 +50,10 @@ public:
   void saveState();
   void resetState();
 
-protected:
   C_INT dintdy_(double *t, const C_INT *k, double *yh,
                 C_INT *nyh, double *dky, C_INT *iflag);
 
+protected:
   C_INT dprja_(C_INT *neq, double *y, double *yh,
                C_INT *nyh, double *ewt, double *ftem, double *savf,
                double *wm, C_INT *iwm, evalF f, evalJ jac);

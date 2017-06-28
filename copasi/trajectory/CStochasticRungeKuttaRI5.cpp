@@ -976,7 +976,6 @@ void CStochasticRungeKuttaRI5::createRootMask()
 
 void CStochasticRungeKuttaRI5::destroyRootMask()
 {
-
   mpContainer->updateSimulatedValues(false);
 
   C_FLOAT64 RootLimit = (1.0 + std::numeric_limits< C_FLOAT64 >::epsilon()) * fabs(mRootFinder.getRootError()) + 100.0 * std::numeric_limits< C_FLOAT64 >::min();

@@ -79,7 +79,7 @@ public:
     TruncatedNewton,
     Newton,
     deterministic,
-    LSODAR,
+    LSODA2,
     directMethod,
     stochastic,
     tauLeap,
