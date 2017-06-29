@@ -51,7 +51,16 @@ CDataObject::CDataObject(const std::string & name,
   mPrerequisits(),
   mValidity()
 {
-  setObjectName(name);
+  if (CRegisteredCommonName::isEnabled())
+    {
+      CRegisteredCommonName::setEnabled(false);
+      setObjectName(name);
+      CRegisteredCommonName::setEnabled(true);
+    }
+  else
+    {
+      setObjectName(name);
+    }
 
   if (mpObjectParent != NULL &&
       mpObjectParent->hasFlag(Container))
