@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -264,6 +269,12 @@ bool CCopasiTask::restore()
         {
           mpContainer->updateSimulatedValues(false);
           mpContainer->setInitialState(mpContainer->getState(false));
+
+          if (mpContainer->isAutonomous())
+            {
+              // Set the initial time to 0
+              mpContainer->getInitialState()[mpContainer->getCountFixed() + mpContainer->getCountFixedEventTargets()] = 0;
+            }
         }
       else
         {
