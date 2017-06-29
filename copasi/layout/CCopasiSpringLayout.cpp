@@ -657,6 +657,10 @@ double CCopasiSpringLayout::potGeneralEdge(const CLReferenceGlyph & e, const CLG
   double dist = 30;
 
   const CLGraphicalObject * pMG = e.getTargetGlyph();
+
+  if (pMG == NULL)
+    return 0.0;
+
   double tmp = distance(pMG->getX() + pMG->getWidth() / 2, pMG->getY() + pMG->getHeight() / 2,
                         r.getX() + r.getWidth() / 2, r.getY() + r.getHeight() / 2);
 
