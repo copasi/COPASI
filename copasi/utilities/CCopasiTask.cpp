@@ -305,6 +305,12 @@ bool CCopasiTask::restore()
         {
           mpContainer->updateSimulatedValues(false);
           mpContainer->setInitialState(mpContainer->getState(false));
+
+          if (mpContainer->isAutonomous())
+            {
+              // Set the initial time to 0
+              mpContainer->getInitialState()[mpContainer->getCountFixed() + mpContainer->getCountFixedEventTargets()] = 0;
+            }
         }
       else
         {
