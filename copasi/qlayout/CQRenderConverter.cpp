@@ -610,6 +610,8 @@ void applyRotationalMapping(QPainterPath& linePath, const CLLineEnding* ending, 
 
 void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, const CLGroup* group, const CLRenderResolver* resolver, QPointF point, QPointF second, QGraphicsItemGroup* itemGroup)
 {
+  if (ending == NULL) return;
+
   const CLGroup* lineGroup = ending->getGroup();
 
   for (size_t i = 0; i < lineGroup->getNumElements(); ++i)
@@ -945,7 +947,15 @@ void fillItemFromImage(QGraphicsItemGroup *item, const CLBoundingBox *pBB, const
   if (!fileName->exists())
     {
       delete fileName;
-      std::string file = resolver->getObjectDataModel()->getReferenceDirectory() + "/" + pImage->getImageReference();
+      CDataModel* pDataModel = pImage->getObjectDataModel();
+
+      if (pDataModel == NULL)
+        pDataModel = resolver->getObjectDataModel();
+
+      if (pDataModel == NULL)
+        pDataModel = &(*CRootContainer::getDatamodelList())[0];
+
+      std::string file = pDataModel->getReferenceDirectory() + "/" + pImage->getImageReference();
       fileName = new QFile(file.c_str());
     }
 
