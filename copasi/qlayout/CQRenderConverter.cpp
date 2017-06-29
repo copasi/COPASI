@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -578,7 +583,7 @@ QPointF normalizePoint(const QPointF& vector)
 
 void applyRotationalMapping(QPainterPath& linePath, const CLLineEnding* ending, QPointF point, QPointF second)
 {
-  if (!ending->getIsEnabledRotationalMapping())
+  if (ending == NULL || !ending->getIsEnabledRotationalMapping())
     return;
 
   QPointF directionVector(point.x() - second.x(), point.y() - second.y());
@@ -605,6 +610,9 @@ void applyRotationalMapping(QPainterPath& linePath, const CLLineEnding* ending, 
 
 void addLineEndingToItem(QGraphicsPathItem* item, const CLLineEnding* ending, const CLGroup* group, const CLRenderResolver* resolver, QPointF point, QPointF second, QGraphicsItemGroup* itemGroup)
 {
+  if (ending == NULL)
+    return;
+
   const CLGroup* lineGroup = ending->getGroup();
 
   for (size_t i = 0; i < lineGroup->getNumElements(); ++i)
