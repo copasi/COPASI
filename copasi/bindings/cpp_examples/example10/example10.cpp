@@ -38,6 +38,67 @@
 #include "copasi/steadystate/CSteadyStateTask.h"
 #include "copasi/steadystate/CSteadyStateMethod.h"
 
+/// <summary>
+/// Utility function printing an annotated matrix
+/// </summary>
+/// <param name="title"></param>
+/// <param name="annotated_matrix"></param>
+void print_annotated_matrix(const std::string & title, const CDataArray & annotated_matrix)
+{
+  std::cout << title << std::endl;
+  std::cout << "==========" << std::endl;
+
+  CDataArray::index_type size = annotated_matrix.size();
+
+  if (size.size() != 2)
+    {
+      std::cout << "  This simple function only deals with two dimensional matrices" << std::endl;
+      return;
+    }
+
+  size_t rows = size[0];
+  size_t columns = size[1];
+
+  std::cout << "Size of the matrix is: " << rows << " rows x " << columns << " columns" << std::endl;
+
+  const std::vector< std::string > & row_headers = annotated_matrix.getAnnotationsString(0);
+  const std::vector< std::string > & col_headers = annotated_matrix.getAnnotationsString(1);
+
+  // print column headers
+  std::cout << "\t\t";
+
+  for (size_t i = 0; i < columns; ++i)
+    std::cout << col_headers[i] << "\t";
+
+  std::cout  << std::endl;
+
+  for (size_t j = 0; j < rows; ++j)
+    {
+      for (size_t i = 0; i < columns; ++i)
+        {
+          if (i == 0)
+            std::cout << row_headers[j] << "\t";
+
+          const CDataObject * pObject = CObjectInterface::DataObject(annotated_matrix.getObject(StringPrint("[%d][%d]", j, i)));
+
+          if (pObject != NULL)
+            {
+              pObject->print(&std::cout);
+            }
+          else
+            {
+              std::cout << "NaN";
+            }
+
+          std::cout << "\t";
+        }
+
+      std::cout << std::endl;
+    }
+
+  std::cout << std::endl;
+}
+
 int main(int argc, char** argv)
 {
   // initialize the backend library
@@ -206,7 +267,7 @@ int main(int argc, char** argv)
           case CSteadyStateMethod::notFound:
           case CSteadyStateMethod::foundEquilibrium:
 
-            // we are also not interested in steady states with negative concentrations
+          // we are also not interested in steady states with negative concentrations
           case CSteadyStateMethod::foundNegative:
             std::cerr << "Could not find a steady state with non-negative concentrations, so I can't output control coefficients." << std::endl;
             CRootContainer::destroy();
@@ -228,68 +289,9 @@ int main(int argc, char** argv)
       // as well as a method that returns a normal float matrix
       // The method that returns the annotated matrix end with Ann and the method that
       // returns a double matrix doesn't have the Ann.
-      const CDataArray* pCCC = pMCAMethod->getScaledFluxCCAnn();
-      assert(pCCC != NULL);
-
-      if (pCCC != NULL)
-        {
-          // since this matrix is probably very large, we will only output the flux control coefficient for
-          // the last reaction in the model
-          unsigned int numReactions = pDataModel->getModel()->getReactions().size();
-
-          if (numReactions == 0)
-            {
-              std::cerr << "There are no reactions in the model, can't output a flux control coefficient." << std::endl;
-              CRootContainer::destroy();
-              return 1;
-            }
-
-          const CReaction* pReaction = &pDataModel->getModel()->getReactions()[numReactions - 1];
-
-          assert(pReaction != NULL);
-
-          // first the array annotation can tell us how many dimensions it has.
-          // Since the matrix is a 2D array, it should have 2 dimensions
-          assert(pCCC->dimensionality() == 2);
-
-          // since the matrix has a dimensionality of 2, the index for the underlaying abstract array
-          // object is a vector with two unsigned int elements
-          // First element is the index for the outer dimension and the second element is the index
-          // for the inner dimension
-          std::vector<size_t> index(2);
-
-          // since the rows and columns have the same annotation for the flux control coefficients, it doesn't matter
-          // for which dimension we get the annotations
-          // In this example, we get the annotations that contain the common names.
-          // Alternatively, we could have used getAnnatationsString as in example 8 to get the annotations
-          // that contain the display names.
-          // In this case working with the common names is easier.
-          const std::vector<CRegisteredCommonName>& annotations = pCCC->getAnnotationsCN(1);
-
-          std::cout << "Flux Control Coefficient for Reaction \"" << pReaction->getObjectName() << "\" with itself:";
-
-          unsigned int i = 0;
-
-          // find the annotation for the last reaction
-          for (; i < annotations.size(); ++i)
-            {
-              // if the annotation string is the common name of our reaction
-              // we can stop because we have found the correct index
-              if (annotations[i] == pReaction->getCN())
-                {
-                  break;
-                }
-            }
-
-          assert(i != annotations.size());
-          // set the 2D index that we want to get from the annotated array
-          // In this case we want the control coefficient for the reaction with itself, so
-          // the index for both dimensions is the same (i)
-          index[0] = i;
-          index[1] = i;
-          std::cout << std::setprecision(8);
-          std::cout << (*pCCC->array())[index] << std::endl;
-        }
+      print_annotated_matrix("Scaled Concentration Control Coefficients", *pMCAMethod->getScaledConcentrationCCAnn());
+      print_annotated_matrix("Scaled Flux Control Coefficients", *pMCAMethod->getScaledFluxCCAnn());
+      print_annotated_matrix("Scaled Elasticities", *pMCAMethod->getScaledElasticitiesAnn());
     }
   else
     {
