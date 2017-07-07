@@ -1267,6 +1267,16 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
           sourceElement->setMetabolite(pMetab->getKey());
         }
     }
+ for (i = 0; i < pX->getChemEq().getBalances().size(); ++i)
+  {
+    CChemEqElement * sourceElement = const_cast< CChemEqElement * >(&pX->getChemEq().getBalances()[i]);
+    const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+    
+    if (pMetab)
+    {
+      sourceElement->setMetabolite(pMetab->getKey());
+    }
+  }
 
   for (i = 0; i < pX->getChemEq().getProducts().size(); ++i)
     {
@@ -1318,6 +1328,7 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
             break;
         }
     }
+  pX->compile();
 }
 
 void CModelExpansion::replaceInModelEntity(CModelEntity* pX, const ElementsMap & emap)
