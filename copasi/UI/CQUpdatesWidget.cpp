@@ -16,6 +16,8 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QTabWidget>
+#include <qtmmlwidget.h>
+
 
 #include "copasi.h"
 
@@ -416,15 +418,12 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
         else
           s = "";
         tmpItem = new QTableWidgetItem(s);
-      /*
-      QtMmlWidget* tmpmml = new QtMmlWidget();
-      tmpmml->setBaseFontPointSize(qApp->font().pointSize() - 2);
-      tmpmml->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
-      tmpmml->setContent(tmpstring2.c_str());
-      pTable->setCellWidget(j, i, tmpmml);
-      
-      */
-        mpTableMathState->setItem(i, 5, tmpItem);
+        QtMmlWidget* tmpmml = new QtMmlWidget();
+        tmpmml->setBaseFontPointSize(this->font().pointSize() - 3);
+        //tmpmml->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
+        tmpmml->setContent(s);
+        //mpTableMathState->setItem(i, 5, tmpItem);
+        mpTableMathState->setCellWidget(i,5,tmpmml);
         
     }
             
