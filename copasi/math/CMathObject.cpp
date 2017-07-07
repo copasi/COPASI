@@ -468,7 +468,7 @@ void CMathObject::appendDelays(CMath::DelayData & Delays) const
 
 bool CMathObject::compile(CMathContainer & container)
 {
-
+  mPrerequisites.clear();
   bool success = true;
 
   switch (mValueType)
