@@ -44,6 +44,10 @@ string(REGEX REPLACE "vaccessors = c\\('([a-zA-Z0-9_]*)', ?'(get|set)[a-zA-Z0-9_
 string(REGEX REPLACE "vaccessors = c\\('', ?" "vaccessors = c(" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "vaccessors = c('')" "vaccessors = c()" SOURCECODE "${SOURCECODE}" )
 
+# Remove broken print function for ExternalReference
+string(REPLACE "setAs('ExternalReference', 'character',\nfunction(from) {if (!is.null(from\$\"__str__\")) from\$\"__str__\"()})" "" SOURCECODE "${SOURCECODE}" )
+string(REPLACE "suppressMessages(suppressWarnings(setMethod('print', 'ExternalReference',\nfunction(x) {print(as(x, \"character\"))})))" "" SOURCECODE "${SOURCECODE}" )
+
 # remove enumFrom/ToInteger code
 SET(NEW_CODE "
 enumToInteger <- function(name,type)
