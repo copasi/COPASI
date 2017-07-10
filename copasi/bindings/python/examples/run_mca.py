@@ -17,6 +17,9 @@ def print_annotated_matrix(title, annotated_matrix):
     # type: (str, CArrayAnnotation) -> None
     """ Utility function printing an annotated matrix"""
 
+    #print(annotated_matrix.printToString())
+    #return
+    
     print(title)
     print('==========')
 
@@ -42,10 +45,7 @@ def print_annotated_matrix(title, annotated_matrix):
         for i in range(columns):
             if i == 0:
                 print("{0}\t".format(row_headers[j]), end='')
-
-            current_object = annotated_matrix.getObject(CCopasiObjectName("[{0}][{1}]".format(j, i)))
-            assert (isinstance(current_object, CCopasiObject))
-            current = current_object.printToString()
+            current = annotated_matrix.get(j,i)
             print("{0}\t".format(current), end='')
         print()
     print()
@@ -62,16 +62,21 @@ def run_mca(file_name):
         assert (isinstance(dataModel, CCopasiDataModel))
 
     # load COPASI file
-    if file_name.endswith('.cps'):
-        if not dataModel.loadModel(file_name):
-            print("Could not load COPASI file due to:")
-            print(CCopasiMessage.getAllMessageText())
-            sys.exit(1)
-    # load sbml file
-    elif not dataModel.importSBML(file_name):
-        print("Could not load SBML file due to:")
-        print(CCopasiMessage.getAllMessageText())
-        sys.exit(1)
+    try: 
+      if file_name.endswith('.cps'):
+          if not dataModel.loadModel(file_name):
+              print("Could not load COPASI file due to:")
+              print(CCopasiMessage.getAllMessageText())
+              sys.exit(1)
+      # load sbml file
+      elif not dataModel.importSBML(file_name):
+          print("Could not load SBML file due to:")
+          print(CCopasiMessage.getAllMessageText())
+          sys.exit(1)
+    except:
+      print("Could not load file due to:")
+      print(CCopasiMessage.getAllMessageText())
+      sys.exit(1)
 
     # setup mca task
     task = dataModel.getTask("Metabolic Control Analysis")

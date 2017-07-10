@@ -402,6 +402,11 @@ const CArrayAnnotation::data_type & CArrayAnnotation::operator[](const CArrayAnn
   return mpArray->operator[](cnToIndex(nameIndex));
 }
 
+CCopasiAbstractArray * CArrayAnnotation::getArray() const
+{
+  return mpArray;
+}
+
 CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::vector< std::string > & DisplayNames) const
 {
   assert(DisplayNames.size() == dimensionality()
