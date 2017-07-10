@@ -42,6 +42,33 @@
 %include "core/CMatrix.h"
 
 %extend CMatrixInterface {
+
+  CCopasiAbstractArray::data_type get(int index1)
+  {
+    CCopasiAbstractArray::index_type index;
+    index.push_back(index1);
+    return (*($self->getArray()))[index];
+  }
+  
+  CCopasiAbstractArray::data_type get(int index1, int index2)
+  {
+    CArrayAnnotation::index_type index;
+    index.push_back(index1);
+    index.push_back(index2);
+    return (*($self->getArray()))[index];
+  }
+  
+  CCopasiAbstractArray::data_type get(int index1, int index2, int index3)
+  {
+    CCopasiAbstractArray::index_type index;
+    index.push_back(index1);
+    index.push_back(index2);
+    index.push_back(index3);
+    return (*($self->getArray()))[index];
+  }
+}
+
+%extend CCopasiMatrixInterface {
    /* convert the operator[] to get methods */
    virtual CArrayInterface::data_type& get(const CArrayInterface::index_type & index)
    {

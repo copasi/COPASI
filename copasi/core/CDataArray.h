@@ -227,6 +227,9 @@ public:
 
   data_type & operator[](const name_index_type & nameIndex);
   const data_type & operator[](const name_index_type & nameIndex) const;
+
+  CArrayInterface * getArray() const;
+
   name_index_type displayNamesToCN(const std::vector< std::string > & DisplayNames) const;
   index_type cnToIndex(const name_index_type & cnIndex) const;
 private:

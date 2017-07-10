@@ -391,6 +391,11 @@ const CDataArray::data_type & CDataArray::operator[](const CDataArray::name_inde
   return mpArray->operator[](cnToIndex(nameIndex));
 }
 
+CArrayInterface * CDataArray::getArray() const
+{
+  return mpArray;
+}
+
 CDataArray::name_index_type CDataArray::displayNamesToCN(const std::vector< std::string > & DisplayNames) const
 {
   assert(DisplayNames.size() == dimensionality()
