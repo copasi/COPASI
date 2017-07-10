@@ -1675,7 +1675,7 @@ void CQFittingItemWidget::slotReset()
         COptProblem * pProblem = dynamic_cast< COptProblem * >(mpItems->getObjectParent());
         const CVector< C_FLOAT64 > & Solution = pProblem->getSolutionVariables();
 
-        if (Solution.size() == mpItems->size())
+        if (Solution.size() > 0 && Solution.size() == mpItems->size())
           for (; it != end; ++it)
             {
               (*mpItemsCopy)[*it]->setStartValue(Solution[*it]);
