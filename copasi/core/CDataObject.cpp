@@ -32,8 +32,7 @@ CDataObject::CDataObject():
   mpObjectDisplayName(NULL),
   mObjectFlag(),
   mReferences(),
-  mPrerequisits(),
-  mValidity()
+  mPrerequisits()
 {}
 
 CDataObject::CDataObject(const std::string & name,
@@ -48,8 +47,7 @@ CDataObject::CDataObject(const std::string & name,
   mpObjectDisplayName(NULL),
   mObjectFlag(flag),
   mReferences(),
-  mPrerequisits(),
-  mValidity()
+  mPrerequisits()
 {
   if (CRegisteredCommonName::isEnabled())
     {
@@ -81,8 +79,7 @@ CDataObject::CDataObject(const CDataObject & src,
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag),
   mReferences(),
-  mPrerequisits(),
-  mValidity(src.mValidity)
+  mPrerequisits()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -556,6 +553,12 @@ const CValidity & CDataObject::getValidity() const
 {
   refreshValidity();
   return mValidity;
+}
+
+// virtual
+void CDataObject::validityChanged()
+{
+  // TODO CRITICAL Implement me!
 }
 
 //virtual

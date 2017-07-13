@@ -137,6 +137,11 @@ public:
   virtual const CValidity & getValidity() const;
 
   /**
+   * This method is called whenever the validity object changes.
+   */
+  virtual void validityChanged();
+
+  /**
    * Calculate the objects value
    */
   virtual void calculateValue();
@@ -482,8 +487,6 @@ private:
    * A pointer to the data object
    */
   const CDataObject * mpDataObject;
-
-  CValidity mValidity;
 };
 
 std::ostream &operator<<(std::ostream &os, const CMathObject & o);

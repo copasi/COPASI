@@ -1,14 +1,15 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CValidity.h"
+#include "copasi/core/CObjectInterface.h"
 
 // static
 const CIssue CIssue::Success(CIssue::eSeverity::Success);
@@ -141,6 +142,20 @@ CValidity CValidity::operator | (const CValidity & rhs) const
   return result;
 }
 
+CValidity & CValidity::operator = (const CValidity & rhs)
+{
+  mErrors = rhs.mErrors;
+  mWarnings = rhs.mWarnings;
+  mInformation = rhs.mInformation;
+
+  if (mpObjectInterface != NULL)
+    {
+      mpObjectInterface->validityChanged();
+    }
+
+  return *this;
+}
+
 const CIssue::eSeverity & CIssue::getSeverity() const
 {
   return mSeverity;
@@ -151,23 +166,32 @@ const CIssue::eKind & CIssue::getKind() const
   return mKind;
 }
 
-CValidity::CValidity():
+CValidity::CValidity(CObjectInterface * pObjectInterface):
   mErrors(),
   mWarnings(),
-  mInformation()
+  mInformation(),
+  mpObjectInterface(pObjectInterface)
 {}
 
-CValidity::CValidity(const CValidity & src):
+CValidity::CValidity(const CValidity & src, CObjectInterface * pObjectInterface):
   mErrors(src.mErrors),
   mWarnings(src.mWarnings),
-  mInformation(src.mInformation)
+  mInformation(src.mInformation),
+  mpObjectInterface(pObjectInterface)
 {}
 
 void CValidity::clear()
 {
+  bool Changed = 0 < mErrors.count() + mWarnings.count() + mInformation.count();
+
   mErrors.reset();
   mWarnings.reset();
   mInformation.reset();
+
+  if (Changed && mpObjectInterface != NULL)
+    {
+      mpObjectInterface->validityChanged();
+    }
 }
 
 void CValidity::add(const CIssue & issue)
@@ -189,32 +213,54 @@ void CValidity::add(const CIssue & issue)
       default:
         break;
     }
+
+  if (mpObjectInterface != NULL)
+    {
+      mpObjectInterface->validityChanged();
+    }
 }
 
 void CValidity::remove(const CIssue & issue)
 {
+  size_t Count = 0;
+  bool Changed = false;
+
   switch (issue.getSeverity())
     {
       case CIssue::eSeverity::Error:
+        Count = mErrors.count();
         mErrors &= ~Kind(issue.getKind());
+        Changed = Count > mErrors.count();
         break;
 
       case CIssue::eSeverity::Warning:
+        Count = mWarnings.count();
         mWarnings &= ~Kind(issue.getKind());
+        Changed = Count > mWarnings.count();
         break;
 
       case CIssue::eSeverity::Information:
+        Count = mInformation.count();
         mInformation &= ~Kind(issue.getKind());
+        Changed = Count > mInformation.count();
         break;
-        
+
       case CIssue::eSeverity::__SIZE:
         break;
+    }
+
+  if (Changed &&
+      mpObjectInterface != NULL)
+    {
+      mpObjectInterface->validityChanged();
     }
 }
 
 void CValidity::remove(const CValidity::Severity & severity,
                        const CValidity::Kind & kind)
 {
+  size_t Count = mErrors.count() + mWarnings.count() + mInformation.count();
+
   if (severity.isSet(CIssue::eSeverity::Error))
     mErrors &= ~kind;
 
@@ -223,6 +269,12 @@ void CValidity::remove(const CValidity::Severity & severity,
 
   if (severity.isSet(CIssue::eSeverity::Information))
     mInformation &= ~kind;
+
+  if (mpObjectInterface != NULL &&
+      Count > mErrors.count() + mWarnings.count() + mInformation.count())
+    {
+      mpObjectInterface->validityChanged();
+    }
 }
 
 CIssue::eSeverity CValidity::getHighestSeverity(const CValidity::Severity & filterSeverity,

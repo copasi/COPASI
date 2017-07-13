@@ -57,8 +57,7 @@ CMathObject::CMathObject():
   mIsIntensiveProperty(false),
   mIsInitialValue(false),
   mpCorrespondingProperty(NULL),
-  mpDataObject(NULL),
-  mValidity()
+  mpDataObject(NULL)
 {}
 
 CMathObject::CMathObject(const CMathObject & src):
@@ -72,8 +71,7 @@ CMathObject::CMathObject(const CMathObject & src):
   mIsIntensiveProperty(src.mIsIntensiveProperty),
   mIsInitialValue(src.mIsInitialValue),
   mpCorrespondingProperty(src.mpCorrespondingProperty),
-  mpDataObject(src.mpDataObject),
-  mValidity(src.mValidity)
+  mpDataObject(src.mpDataObject)
 {}
 
 // virtual
@@ -924,7 +922,7 @@ bool CMathObject::compileFlux(CMathContainer & container)
                                      !mIsInitialValue);
 
   if (pReaction->getScalingCompartment() != NULL &&
-      pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+      pReaction->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);
 
@@ -1101,7 +1099,7 @@ bool CMathObject::compileReactionNoise(CMathContainer & container)
                                          !mIsInitialValue);
 
       if (pReaction->getScalingCompartment() != NULL &&
-          pReaction->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+          pReaction->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
         {
           CExpression Tmp(mpExpression->getObjectName(), &container);
 
@@ -2105,4 +2103,10 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 const CValidity & CMathObject::getValidity() const
 {
   return mValidity;
+}
+
+// virtual
+void CMathObject::validityChanged()
+{
+  // TODO CRITICAL Implement me!
 }

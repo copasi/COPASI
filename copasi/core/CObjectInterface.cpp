@@ -100,10 +100,12 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
   return const_cast< CObjectInterface * >(pObject);
 }
 
-CObjectInterface::CObjectInterface()
+CObjectInterface::CObjectInterface():
+  mValidity(this)
 {}
 
-CObjectInterface::CObjectInterface(const CObjectInterface & src)
+CObjectInterface::CObjectInterface(const CObjectInterface & src):
+  mValidity(src.mValidity, this)
 {}
 
 // virtual

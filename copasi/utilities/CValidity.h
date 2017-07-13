@@ -114,9 +114,9 @@ public:
   typedef CFlags< CIssue::eSeverity > Severity;
   typedef CFlags< CIssue::eKind > Kind;
 
-  CValidity();
+  CValidity(CObjectInterface * pObjectInterface = NULL);
 
-  CValidity(const CValidity & src);
+  CValidity(const CValidity & src, CObjectInterface * pObjectInterface = NULL);
 
   // convenience function to reset CValidity
   void clear();
@@ -137,10 +137,13 @@ public:
 
   CValidity operator | (const CValidity & rhs) const;
 
+  CValidity & operator = (const CValidity & rhs);
+
 private:
   Kind mErrors;
   Kind mWarnings;
   Kind mInformation;
+  CObjectInterface * mpObjectInterface;
 
   const std::string generateIssueMessages(const CIssue::eSeverity & severity) const;
 };

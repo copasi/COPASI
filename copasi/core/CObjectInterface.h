@@ -11,11 +11,11 @@
 #include <set>
 
 #include "copasi/core/CCore.h"
+#include "copasi/utilities/CValidity.h"
 
 class CDataObject;
 class CDataContainer;
 class CCommonName;
-class CValidity;
 
 //********************************************************************************
 
@@ -114,6 +114,15 @@ public:
    * @return const CValidity & validity
    */
   virtual const CValidity & getValidity() const = 0;
+
+  /**
+   * This method is called whenever the validity object changes.
+   */
+  virtual void validityChanged() = 0;
+
+protected:
+
+  mutable CValidity mValidity;
 };
 
 #endif // COPASI_CObjectInterface

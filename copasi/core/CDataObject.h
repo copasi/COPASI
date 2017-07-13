@@ -183,6 +183,11 @@ public:
   virtual const CValidity & getValidity() const;
 
   /**
+   * This method is called whenever the validity object changes.
+   */
+  virtual void validityChanged();
+
+  /**
    * Set the name of the object.
    * Note: An attempt set the name to "" results in the name
    *       being set to "No Name".
@@ -254,8 +259,6 @@ private:
 
 protected:
   ObjectSet mPrerequisits;
-
-  mutable CValidity mValidity;
 };
 
 #endif // COPASI_CDataObject
