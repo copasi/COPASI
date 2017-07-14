@@ -121,6 +121,8 @@ public:
   // convenience function to reset CValidity
   void clear();
 
+  bool empty() const;
+
   void add(const CIssue & issue);
 
   void remove(const CIssue & issue);

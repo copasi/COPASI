@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CValidity.h"
 #include "copasi/core/CObjectInterface.h"
@@ -183,19 +183,24 @@ CValidity::CValidity(const CValidity & src, CObjectInterface * pObjectInterface)
 void CValidity::clear()
 {
   // Only need to reset, if anything is set (i.e. not already clear)
-  if(0 < mErrors.count() + mWarnings.count() + mInformation.count())
-  {
-    mErrors.reset();
-    mWarnings.reset();
-    mInformation.reset();
-
-    // Given something changed, notify the parent
-    // to do it's thing, if it exists.
-    if (mpObjectInterface != NULL)
+  if (0 < mErrors.count() + mWarnings.count() + mInformation.count())
     {
-      mpObjectInterface->validityChanged();
+      mErrors.reset();
+      mWarnings.reset();
+      mInformation.reset();
+
+      // Given something changed, notify the parent
+      // to do it's thing, if it exists.
+      if (mpObjectInterface != NULL)
+        {
+          mpObjectInterface->validityChanged();
+        }
     }
-  }
+}
+
+bool CValidity::empty() const
+{
+  return mErrors.count() + mWarnings.count() + mInformation.count() == 0;
 }
 
 void CValidity::add(const CIssue & issue)

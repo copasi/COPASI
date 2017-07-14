@@ -558,7 +558,10 @@ const CValidity & CDataObject::getValidity() const
 // virtual
 void CDataObject::validityChanged()
 {
-  // TODO CRITICAL Implement me!
+  if (mpObjectParent != NULL)
+    {
+      mpObjectParent->validityChanged();
+    }
 }
 
 //virtual

@@ -1,7 +1,7 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 /*!
     \file CDataContainer.cpp
@@ -542,7 +542,10 @@ bool CDataContainer::add(CDataObject * pObject,
   else
     pObject->addReference(this);
 
-  mValidity = mValidity | pObject->getValidity();
+  if (!pObject->getValidity().empty())
+    {
+      validityChanged();
+    }
 
   return true;
 }
@@ -552,7 +555,7 @@ bool CDataContainer::remove(CDataObject * pObject)
 {
   if (pObject != NULL)
     {
-      setValidityRefreshNeeded(true);
+      validityChanged();
       pObject->removeReference(this);
     }
 
@@ -606,21 +609,23 @@ CDataObject * CDataContainer::insert(const CData & data)
 //virtual
 void CDataContainer::refreshValidity() const
 {
-  if( mValidityRefreshNeeded)
-  {
-    mValidity.clear();
+  if (mValidityRefreshNeeded)
+    {
+      mValidity.clear();
 
-    objectMap::const_iterator it = mObjects.begin();
-    objectMap::const_iterator end = mObjects.end();
+      objectMap::const_iterator it = mObjects.begin();
+      objectMap::const_iterator end = mObjects.end();
 
-    for (; it != end; ++it)
-      mValidity = mValidity | it->getValidity();
-  }
+      for (; it != end; ++it)
+        mValidity = mValidity | it->getValidity();
+    }
 
   mValidityRefreshNeeded = false;
 }
 
-void CDataContainer::setValidityRefreshNeeded(const bool & needed)
+// virtual
+void CDataContainer::validityChanged()
 {
-  mValidityRefreshNeeded = needed;
+  mValidityRefreshNeeded = true;
+  CDataObject::validityChanged();
 }

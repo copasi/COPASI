@@ -207,7 +207,10 @@ public:
    */
   void getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive = false) const;
 
-  void setValidityRefreshNeeded(const bool & needed);
+  /**
+   * This method is called whenever the validity object changes.
+   */
+  virtual void validityChanged();
 
 protected:
   void initObjects();
