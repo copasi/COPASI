@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include "CValidity.h"
 #include "copasi/core/CObjectInterface.h"
@@ -240,19 +240,19 @@ void CValidity::add(const CIssue & issue)
     {
       case CIssue::eSeverity::Error:
         Count = mErrors.count();
-        mErrors |= ~Kind(issue.getKind());
+        mErrors |= issue.getKind();
         Changed = Count < mErrors.count();
         break;
 
       case CIssue::eSeverity::Warning:
         Count = mWarnings.count();
-        mWarnings |= ~Kind(issue.getKind());
+        mWarnings |= issue.getKind();
         Changed = Count < mWarnings.count();
         break;
 
       case CIssue::eSeverity::Information:
         Count = mInformation.count();
-        mInformation |= ~Kind(issue.getKind());
+        mInformation |= issue.getKind();
         Changed = Count < mInformation.count();
         break;
 
