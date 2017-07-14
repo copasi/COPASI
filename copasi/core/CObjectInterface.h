@@ -117,8 +117,9 @@ public:
 
   /**
    * This method is called whenever the validity object changes.
+   * @param const CValidity & changedValidity
    */
-  virtual void validityChanged() = 0;
+  virtual void validityChanged(const CValidity & changedValidity) = 0;
 
 protected:
 

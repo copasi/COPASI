@@ -32,7 +32,9 @@ CDataObject::CDataObject():
   mpObjectDisplayName(NULL),
   mObjectFlag(),
   mReferences(),
-  mPrerequisits()
+  mPrerequisits(),
+  mReferencedValidities(),
+  mAgregateValidity()
 {}
 
 CDataObject::CDataObject(const std::string & name,
@@ -47,7 +49,9 @@ CDataObject::CDataObject(const std::string & name,
   mpObjectDisplayName(NULL),
   mObjectFlag(flag),
   mReferences(),
-  mPrerequisits()
+  mPrerequisits(),
+  mReferencedValidities(),
+  mAgregateValidity()
 {
   if (CRegisteredCommonName::isEnabled())
     {
@@ -79,7 +83,9 @@ CDataObject::CDataObject(const CDataObject & src,
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag),
   mReferences(),
-  mPrerequisits()
+  mPrerequisits(),
+  mReferencedValidities(),
+  mAgregateValidity()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -551,22 +557,44 @@ CDataModel * CDataObject::getObjectDataModel() const
 
 const CValidity & CDataObject::getValidity() const
 {
-  refreshValidity();
-  return mValidity;
+  return mAgregateValidity;
 }
 
 // virtual
-void CDataObject::validityChanged()
+void CDataObject::validityChanged(const CValidity & changedValidity)
 {
-  if (mpObjectParent != NULL)
+  bool ValidityRefreshNeeded = false;
+
+  if (changedValidity.empty())
     {
-      mpObjectParent->validityChanged();
+      ValidityRefreshNeeded = (mReferencedValidities.erase(&changedValidity) > 0);
+    }
+  else
+    {
+      mReferencedValidities.insert(& changedValidity);
+      ValidityRefreshNeeded = true;
+    }
+
+  if (ValidityRefreshNeeded)
+    {
+      mAgregateValidity.clear();
+      std::set< const CValidity * >::const_iterator it = mReferencedValidities.begin();
+      std::set< const CValidity * >::const_iterator end = mReferencedValidities.end();
+
+      for (; it != end; ++it)
+        {
+          mAgregateValidity |= **it;
+        }
+
+      std::set< CDataContainer * >::iterator itReference = mReferences.begin();
+      std::set< CDataContainer * >::iterator endReference = mReferences.end();
+
+      for (; itReference != endReference; ++itReference)
+        {
+          (*itReference)->validityChanged(mAgregateValidity);
+        }
     }
 }
-
-//virtual
-void CDataObject::refreshValidity() const
-{}
 
 void CDataObject::calculateValue()
 {}

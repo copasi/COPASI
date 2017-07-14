@@ -81,7 +81,7 @@ std::string CUnit::replaceSymbol(const std::string & expression,
                                  const std::string & oldSymbol,
                                  const std::string & newSymbol)
 {
-  if (oldSymbol == newSymbol || expression.empty())
+  if (oldSymbol == newSymbol || expression.empty() || expression == "?")
     return expression;
 
   std::istringstream buffer(expression);
@@ -195,13 +195,16 @@ CUnit::~CUnit()
 //virtual
 CIssue CUnit::setExpression(const std::string & expression)
 {
-  if (expression.empty())
+  if (expression != mExpression)
     {
-      *this = CBaseUnit::undefined;
-      return CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
-    }
+      if (expression.empty())
+        {
+          *this = CBaseUnit::undefined;
+          return CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
+        }
 
-  mExpression = expression;
+      mExpression = expression;
+    }
 
   return compile();
 }

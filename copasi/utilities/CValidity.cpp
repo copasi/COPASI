@@ -131,26 +131,51 @@ bool CIssue::isSuccess() const
   return (mSeverity != CIssue::eSeverity::Error);
 }
 
-CValidity CValidity::operator | (const CValidity & rhs) const
+CValidity & CValidity::operator |= (const CValidity & rhs)
 {
-  CValidity result(*this);
+  size_t Count = mErrors.count() + mWarnings.count() + mInformation.count();
 
-  result.mErrors |= rhs.mErrors;
-  result.mWarnings |= rhs.mWarnings;
-  result.mInformation |= rhs.mInformation;
+  if (this != &rhs)
+    {
+      mErrors |= rhs.mErrors;
+      mWarnings |= rhs.mWarnings;
+      mInformation |= rhs.mInformation;
+    }
 
-  return result;
+  if (mpObjectInterface != NULL &&
+      Count < mErrors.count() + mWarnings.count() + mInformation.count())
+    {
+      mpObjectInterface->validityChanged(*this);
+    }
+
+  return *this;
 }
 
 CValidity & CValidity::operator = (const CValidity & rhs)
 {
-  mErrors = rhs.mErrors;
-  mWarnings = rhs.mWarnings;
-  mInformation = rhs.mInformation;
+  bool Changed = false;
 
-  if (mpObjectInterface != NULL)
+  if (mErrors != rhs.mErrors)
     {
-      mpObjectInterface->validityChanged();
+      mErrors = rhs.mErrors;
+      Changed = true;
+    }
+
+  if (mWarnings != rhs.mWarnings)
+    {
+      mWarnings = rhs.mWarnings;
+      Changed = true;
+    }
+
+  if (mInformation != rhs.mInformation)
+    {
+      mInformation = rhs.mInformation;
+      Changed = true;
+    }
+
+  if (mpObjectInterface != NULL && Changed)
+    {
+      mpObjectInterface->validityChanged(*this);
     }
 
   return *this;
@@ -180,6 +205,9 @@ CValidity::CValidity(const CValidity & src, CObjectInterface * pObjectInterface)
   mpObjectInterface(pObjectInterface)
 {}
 
+CValidity::~CValidity()
+{}
+
 void CValidity::clear()
 {
   // Only need to reset, if anything is set (i.e. not already clear)
@@ -193,7 +221,7 @@ void CValidity::clear()
       // to do it's thing, if it exists.
       if (mpObjectInterface != NULL)
         {
-          mpObjectInterface->validityChanged();
+          mpObjectInterface->validityChanged(*this);
         }
     }
 }
@@ -205,27 +233,37 @@ bool CValidity::empty() const
 
 void CValidity::add(const CIssue & issue)
 {
+  size_t Count = 0;
+  bool Changed = false;
+
   switch (issue.getSeverity())
     {
       case CIssue::eSeverity::Error:
-        mErrors |= issue.getKind();
+        Count = mErrors.count();
+        mErrors |= ~Kind(issue.getKind());
+        Changed = Count < mErrors.count();
         break;
 
       case CIssue::eSeverity::Warning:
-        mWarnings |= issue.getKind();
+        Count = mWarnings.count();
+        mWarnings |= ~Kind(issue.getKind());
+        Changed = Count < mWarnings.count();
         break;
 
       case CIssue::eSeverity::Information:
-        mInformation |= issue.getKind();
+        Count = mInformation.count();
+        mInformation |= ~Kind(issue.getKind());
+        Changed = Count < mInformation.count();
         break;
 
-      default:
+      case CIssue::eSeverity::__SIZE:
         break;
     }
 
-  if (mpObjectInterface != NULL)
+  if (Changed &&
+      mpObjectInterface != NULL)
     {
-      mpObjectInterface->validityChanged();
+      mpObjectInterface->validityChanged(*this);
     }
 }
 
@@ -261,7 +299,7 @@ void CValidity::remove(const CIssue & issue)
   if (Changed &&
       mpObjectInterface != NULL)
     {
-      mpObjectInterface->validityChanged();
+      mpObjectInterface->validityChanged(*this);
     }
 }
 
@@ -282,7 +320,7 @@ void CValidity::remove(const CValidity::Severity & severity,
   if (mpObjectInterface != NULL &&
       Count > mErrors.count() + mWarnings.count() + mInformation.count())
     {
-      mpObjectInterface->validityChanged();
+      mpObjectInterface->validityChanged(*this);
     }
 }
 

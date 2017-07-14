@@ -376,8 +376,7 @@ bool CDataContainer::applyData(const CData & data)
 
 CDataContainer::CDataContainer() :
   CDataObject(),
-  mObjects(),
-  mValidityRefreshNeeded(true)
+  mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CDataContainer::CDataContainer(const std::string & name,
@@ -385,15 +384,13 @@ CDataContainer::CDataContainer(const std::string & name,
                                const std::string & type,
                                const CFlags< Flag > & flag):
   CDataObject(name, pParent, type, flag | CDataObject::Container),
-  mObjects(),
-  mValidityRefreshNeeded(true)
+  mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CDataContainer::CDataContainer(const CDataContainer & src,
                                const CDataContainer * pParent):
   CDataObject(src, pParent),
-  mObjects(),
-  mValidityRefreshNeeded(true)
+  mObjects()
 {addObjectReference("Name", *const_cast<std::string *>(&getObjectName()));}
 
 CDataContainer::~CDataContainer()
@@ -542,10 +539,7 @@ bool CDataContainer::add(CDataObject * pObject,
   else
     pObject->addReference(this);
 
-  if (!pObject->getValidity().empty())
-    {
-      validityChanged();
-    }
+  validityChanged(pObject->getValidity());
 
   return true;
 }
@@ -555,7 +549,7 @@ bool CDataContainer::remove(CDataObject * pObject)
 {
   if (pObject != NULL)
     {
-      validityChanged();
+      validityChanged(pObject->getValidity());
       pObject->removeReference(this);
     }
 
@@ -604,28 +598,4 @@ std::string CDataContainer::getChildObjectUnits(const CDataObject * /* pObject *
 CDataObject * CDataContainer::insert(const CData & data)
 {
   return NULL;
-}
-
-//virtual
-void CDataContainer::refreshValidity() const
-{
-  if (mValidityRefreshNeeded)
-    {
-      mValidity.clear();
-
-      objectMap::const_iterator it = mObjects.begin();
-      objectMap::const_iterator end = mObjects.end();
-
-      for (; it != end; ++it)
-        mValidity = mValidity | it->getValidity();
-    }
-
-  mValidityRefreshNeeded = false;
-}
-
-// virtual
-void CDataContainer::validityChanged()
-{
-  mValidityRefreshNeeded = true;
-  CDataObject::validityChanged();
 }

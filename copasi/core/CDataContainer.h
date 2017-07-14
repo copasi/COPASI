@@ -134,10 +134,6 @@ private:
   // Operations
   CDataContainer();
 
-  virtual void refreshValidity() const;
-
-  mutable bool mValidityRefreshNeeded;
-
 protected:
   CDataContainer(const CDataContainer & src);
 
@@ -206,11 +202,6 @@ public:
    * @param const bool & recursive (default: false)
    */
   void getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive = false) const;
-
-  /**
-   * This method is called whenever the validity object changes.
-   */
-  virtual void validityChanged();
 
 protected:
   void initObjects();

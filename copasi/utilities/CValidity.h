@@ -118,6 +118,8 @@ public:
 
   CValidity(const CValidity & src, CObjectInterface * pObjectInterface = NULL);
 
+  ~CValidity();
+
   // convenience function to reset CValidity
   void clear();
 
@@ -137,9 +139,9 @@ public:
 
   const std::string getIssueMessages(const Severity & severityFilter = Severity::All, const Kind & kindFilter = Kind::All) const;
 
-  CValidity operator | (const CValidity & rhs) const;
-
   CValidity & operator = (const CValidity & rhs);
+
+  CValidity & operator |= (const CValidity & rhs);
 
 private:
   Kind mErrors;

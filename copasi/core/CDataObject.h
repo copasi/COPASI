@@ -184,8 +184,9 @@ public:
 
   /**
    * This method is called whenever the validity object changes.
+   * @param const CValidity & changedValidity
    */
-  virtual void validityChanged();
+  void validityChanged(const CValidity & changedValidity);
 
   /**
    * Set the name of the object.
@@ -237,13 +238,6 @@ public:
 
 private:
 
-  /**
-   * To be reimplemented for where the validity aggregate
-   * will need to be cleared and recollected for
-   * groups of objects. e.g. CDataVector::remove(___)
-   */
-  virtual void refreshValidity() const;
-
   std::string mObjectName;
 
   std::string mObjectType;
@@ -256,6 +250,9 @@ private:
   CFlags< Flag > mObjectFlag;
 
   std::set< CDataContainer * > mReferences;
+
+  std::set< const CValidity * > mReferencedValidities;
+  CValidity mAgregateValidity;
 
 protected:
   ObjectSet mPrerequisits;

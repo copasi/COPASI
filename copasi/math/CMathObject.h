@@ -138,8 +138,9 @@ public:
 
   /**
    * This method is called whenever the validity object changes.
+   * @param const CValidity & changedValidity
    */
-  virtual void validityChanged();
+  void validityChanged(const CValidity & changedValidity);
 
   /**
    * Calculate the objects value

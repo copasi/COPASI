@@ -2106,7 +2106,10 @@ const CValidity & CMathObject::getValidity() const
 }
 
 // virtual
-void CMathObject::validityChanged()
+void CMathObject::validityChanged(const CValidity & changedValidity)
 {
-  // TODO CRITICAL Implement me!
+  if (mpDataObject != NULL)
+    {
+      const_cast< CDataObject * >(mpDataObject)->validityChanged(changedValidity);
+    }
 }

@@ -218,23 +218,28 @@ void CEvaluationTree::setType(const CEvaluationTree::Type & type)
 
 CIssue CEvaluationTree::setInfix(const std::string & infix)
 {
-  mValidity.clear();
+  mIssue = CIssue::Success;
 
-  // We assume until proven otherwise that the tree is not usable
-  mIssue = CIssue(CIssue::Error);
-
-  // Assume whatever (non null) string which was there before,
-  // is still ok.
-  if (infix == mInfix &&
-      infix != "")
+  if (infix != mInfix)
     {
-      mIssue = CIssue::Success;
-      return mIssue;
+      mValidity.clear();
+
+      // We assume until proven otherwise that the tree is not usable
+      mIssue = CIssue::Error;
+
+      // Assume whatever (non null) string which was there before,
+      // is still ok.
+      if (infix == mInfix &&
+          infix != "")
+        {
+          mIssue = CIssue::Success;
+          return mIssue;
+        }
+
+      mInfix = infix;
+
+      mIssue = parse();
     }
-
-  mInfix = infix;
-
-  mIssue = parse();
 
   return mIssue;
 }
