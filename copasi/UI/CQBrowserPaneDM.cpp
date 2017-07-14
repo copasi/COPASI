@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
 #include <sstream>
 
@@ -356,7 +356,6 @@ void CQBrowserPaneDM::load()
   // where keys are in use (e.g. listviews slotFolderChanged()
 
   findNodeFromId(118)->setKey(mpCopasiDM->getModel()->getActiveModelParameterSet().getKey()); // Parameter Set
-  findNodeFromId(119)->setKey(mpCopasiDM->getModel()->getKey());
   load(119); // Model Parameter Sets
 
   findNodeFromId(21)->setKey(mpCopasiDM->getTaskList()->operator[]("Steady-State").getKey());
