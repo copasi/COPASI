@@ -137,6 +137,17 @@
       return self->Warning;
     }
   
+    bool initializeRaw(int outputFlags)
+    {
+        bool success;
+        CDataModel* pDataModel=self->getObjectDataModel();
+        assert(pDataModel!=NULL);
+
+        // Initialize the task
+        success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL);
+
+        return success;
+    }
 
     bool initialize(int outputFlags)
     {
@@ -166,6 +177,22 @@
         return success;
     }
   
+    bool processRaw(bool useInitialValues)
+    {
+        bool success;
+        CDataModel* pDataModel=self->getObjectDataModel();
+        assert(pDataModel!=NULL);
+
+        // Process the task
+        success = self->process(useInitialValues);
+
+        self->restore();
+
+        pDataModel->finish();
+
+        return success;
+    }
+
     bool processWithOutputFlags(bool useInitialValues, int outputFlags) 
       {
         bool success = true;
