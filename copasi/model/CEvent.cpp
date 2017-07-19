@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include "copasi.h"
 
@@ -124,11 +124,12 @@ bool CEventAssignment::setObjectParent(const CDataContainer * pParent)
   return success;
 }
 
-bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
+CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
 {
   mPrerequisits.clear();
 
-  bool success = true;
+  mValidity.clear();
+  CIssue firstWorstIssue, issue;
 
   mpTarget = NULL;
 
@@ -149,27 +150,39 @@ bool CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer)
            pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
+      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::EventAlreadyHasAssignment);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
     }
   else if (pEntity == NULL)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': object does not exist.", getObjectName().c_str());
+      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ObjectNotFound);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
     }
 
   if (mpTarget == NULL)
     {
-      success = false;
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
     }
 
   if (mpExpression != NULL)
     {
-      success &= mpExpression->compile(listOfContainer);
+      issue = mpExpression->compile(listOfContainer);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
     }
   else
     {
-      success = false;
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::CExpressionNotFound);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
     }
 
-  return success;
+  return firstWorstIssue;
 }
 
 const std::string & CEventAssignment::getKey() const
@@ -415,9 +428,10 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
   return Origin.empty() ? "Unused" : Origin;
 }
 
-bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)
+CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
 {
-  bool success = true;
+  mValidity.clear();
+  CIssue firstWorstIssue, issue;
 
   // Clear the old direct dependencies.
   mPrerequisits.clear();
@@ -425,21 +439,27 @@ bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   // Compile the trigger expression
   if (mpTriggerExpression != NULL)
     {
-      success &= mpTriggerExpression->compile(listOfContainer);
+      firstWorstIssue &= mpTriggerExpression->compile(listOfContainer);
       mPrerequisits.insert(mpTriggerExpression);
+    }
+  else
+    {
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventMissingTriggerExpression);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
     }
 
   // Compile the delay expression
   if (mpDelayExpression != NULL)
     {
-      success &= mpDelayExpression->compile(listOfContainer);
+      firstWorstIssue &= mpDelayExpression->compile(listOfContainer);
       mPrerequisits.insert(mpDelayExpression);
     }
 
   // Compile the delay expression
   if (mpPriorityExpression != NULL)
     {
-      success &= mpPriorityExpression->compile(listOfContainer);
+      firstWorstIssue &= mpPriorityExpression->compile(listOfContainer);
       mPrerequisits.insert(mpPriorityExpression);
     }
 
@@ -447,13 +467,20 @@ bool CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   CDataVectorN< CEventAssignment >::iterator itAssignment = mAssignments.begin();
   CDataVectorN< CEventAssignment >::iterator endAssignment = mAssignments.end();
 
+  if(itAssignment == endAssignment)
+    {
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventMissingAssignment);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
+    }
+
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      success &= itAssignment->compile(listOfContainer);
+      firstWorstIssue &= itAssignment->compile(listOfContainer);
       mPrerequisits.insert(itAssignment);
     }
 
-  return success;
+  return firstWorstIssue;
 }
 
 void CEvent::initObjects()

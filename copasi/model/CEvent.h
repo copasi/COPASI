@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*!
  \file CEvent.h
@@ -89,9 +89,9 @@ public:
   /**
    * Compile the event assignment.
    * @param CObjectInterface::ContainerList listOfContainer
-   * @return bool success
+   * @return CIssue issue
    */
-  bool compile(CObjectInterface::ContainerList listOfContainer);
+  CIssue compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Retrieve the key
@@ -277,9 +277,9 @@ public:
   /**
    * Compile the event.
    * @param CObjectInterface::ContainerList listOfContainer
-   * @return bool success
+   * @return CIssue issue
    */
-  bool compile(CObjectInterface::ContainerList listOfContainer);
+  CIssue compile(CObjectInterface::ContainerList listOfContainer);
 
   /**
    * Sets the SBMLId.
