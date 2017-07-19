@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 
@@ -149,8 +149,8 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   else if (pEntity != NULL &&
            pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
-      CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
-      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::EventAlreadyHasAssignment);
+      CCopasiMessage(CCopasiMessage::ERROR, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventAlreadyHasAssignment);
       mValidity.add(issue);
       firstWorstIssue &= issue;
     }
@@ -162,22 +162,14 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
       firstWorstIssue &= issue;
     }
 
-  if (mpTarget == NULL)
-    {
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
-      mValidity.add(issue);
-      firstWorstIssue &= issue;
-    }
-
   if (mpExpression != NULL)
     {
       issue = mpExpression->compile(listOfContainer);
-      mValidity.add(issue);
       firstWorstIssue &= issue;
     }
   else
     {
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::CExpressionNotFound);
+      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::CExpressionNotFound);
       mValidity.add(issue);
       firstWorstIssue &= issue;
     }
@@ -417,7 +409,6 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
               if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
                 {
 
-
                   Origin += Separator + "Target";
                   Separator = "\n";
                 }
@@ -467,9 +458,9 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   CDataVectorN< CEventAssignment >::iterator itAssignment = mAssignments.begin();
   CDataVectorN< CEventAssignment >::iterator endAssignment = mAssignments.end();
 
-  if(itAssignment == endAssignment)
+  if (mAssignments.empty())
     {
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventMissingAssignment);
+      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::EventMissingAssignment);
       mValidity.add(issue);
       firstWorstIssue &= issue;
     }
