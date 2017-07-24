@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #ifndef COPASI_CValidity
 #define COPASI_CValidity
@@ -90,6 +90,8 @@ public:
    */
   bool isSuccess() const;
 
+  bool operator == (const CIssue & rhs) const;
+
   /**
    * Utility method for language bindings where the bool operator is not
    * available. This method returns a flag indicating whether this issue
@@ -144,11 +146,14 @@ public:
 
   CValidity & operator |= (const CValidity & rhs);
 
+  const CIssue & getFirstWorstIssue() const;
+
 private:
   Kind mErrors;
   Kind mWarnings;
   Kind mInformation;
   CObjectInterface * mpObjectInterface;
+  CIssue mFirstWorstIssue;
 
   const std::string generateIssueMessages(const CIssue::eSeverity & severity) const;
 };

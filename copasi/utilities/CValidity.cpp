@@ -1,12 +1,12 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 #include "CValidity.h"
 #include "copasi/core/CObjectInterface.h"
@@ -123,6 +123,14 @@ CIssue & CIssue::operator &= (const CIssue & rhs)
   return *this;
 }
 
+bool CIssue::operator == (const CIssue & rhs) const
+{
+  if (mSeverity == rhs.mSeverity && mKind == rhs.mKind)
+    return true;
+  else
+    return false;
+}
+
 bool CIssue::isError() const
 {
   return !isSuccess();
@@ -151,6 +159,11 @@ CValidity & CValidity::operator |= (const CValidity & rhs)
     }
 
   return *this;
+}
+
+const CIssue & CValidity::getFirstWorstIssue() const
+{
+  return mFirstWorstIssue;
 }
 
 CValidity & CValidity::operator = (const CValidity & rhs)
@@ -197,14 +210,16 @@ CValidity::CValidity(CObjectInterface * pObjectInterface):
   mErrors(),
   mWarnings(),
   mInformation(),
-  mpObjectInterface(pObjectInterface)
+  mpObjectInterface(pObjectInterface),
+  mFirstWorstIssue()
 {}
 
 CValidity::CValidity(const CValidity & src, CObjectInterface * pObjectInterface):
   mErrors(src.mErrors),
   mWarnings(src.mWarnings),
   mInformation(src.mInformation),
-  mpObjectInterface(pObjectInterface)
+  mpObjectInterface(pObjectInterface),
+  mFirstWorstIssue(src.mFirstWorstIssue)
 {}
 
 CValidity::~CValidity()
@@ -215,6 +230,9 @@ void CValidity::clear()
   // Only need to reset, if anything is set (i.e. not already clear)
   if (0 < mErrors.count() + mWarnings.count() + mInformation.count())
     {
+
+      mFirstWorstIssue = CIssue::Success;
+
       mErrors.reset();
       mWarnings.reset();
       mInformation.reset();
@@ -235,6 +253,8 @@ bool CValidity::empty() const
 
 void CValidity::add(const CIssue & issue)
 {
+  mFirstWorstIssue &= issue;
+
   size_t Count = 0;
   bool Changed = false;
 
@@ -271,6 +291,9 @@ void CValidity::add(const CIssue & issue)
 
 void CValidity::remove(const CIssue & issue)
 {
+  if (mFirstWorstIssue == issue)
+    mFirstWorstIssue = CIssue::Success;
+
   size_t Count = 0;
   bool Changed = false;
 
