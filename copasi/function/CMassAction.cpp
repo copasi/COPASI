@@ -103,14 +103,17 @@ const C_FLOAT64 & CMassAction::calcValue(const CCallParameters<C_FLOAT64> & call
 
 CIssue CMassAction::setInfix(const std::string & infix)
 {
-  mIssue = CIssue::Error;
+  mValidity.clear();
 
   if (infix == "k1*PRODUCT<substrate_i>-k2*PRODUCT<product_j>")
     setReversible(TriTrue);
   else if (infix == "k1*PRODUCT<substrate_i>")
     setReversible(TriFalse);
   else
-    return mIssue;
+    {
+      mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionInvalid));
+      return mValidity.getFirstWorstIssue();
+    }
 
   CFunction::setInfix(infix);
   getVariables().cleanup();
@@ -132,14 +135,12 @@ CIssue CMassAction::setInfix(const std::string & infix)
                          CFunctionParameter::PRODUCT);
     }
 
-  mIssue = CIssue::Success;
-
-  return mIssue;
+  return mValidity.getFirstWorstIssue();
 }
 
 CIssue CMassAction::compile()
 {
-  return mIssue;
+  return mValidity.getFirstWorstIssue();
 }
 
 #include "utilities/copasimathml.h"
