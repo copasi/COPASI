@@ -558,7 +558,7 @@ const CObjectInterface * CReaction::getObject(const CCommonName & cn) const
 
   const CDataContainer * pParent = pObject->getObjectParent();
 
-  while (pParent != this)
+  while (pParent != this && pParent != NULL)
     {
       if (pParent->getObjectParent() == &mParameters)
         {

@@ -538,6 +538,9 @@ bool CMathObject::compile(CMathContainer & container)
         break;
 
       case CMath::ValueType::Discontinuous:
+        compileExpression();
+        break;
+
       case CMath::ValueType::EventDelay:
       case CMath::ValueType::EventPriority:
       case CMath::ValueType::EventAssignment:
