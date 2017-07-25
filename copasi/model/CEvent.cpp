@@ -129,7 +129,7 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   mPrerequisits.clear();
 
   mValidity.clear();
-  CIssue firstWorstIssue, issue;
+  CIssue firstWorstIssue;
 
   mpTarget = NULL;
 
@@ -150,28 +150,24 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
            pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventAlreadyHasAssignment);
-      mValidity.add(issue);
-      firstWorstIssue &= issue;
+      mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventAlreadyHasAssignment));
+      firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
   else if (pEntity == NULL)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': object does not exist.", getObjectName().c_str());
-      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ObjectNotFound);
-      mValidity.add(issue);
-      firstWorstIssue &= issue;
+      mValidity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ObjectNotFound));
+      firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
 
   if (mpExpression != NULL)
     {
-      issue = mpExpression->compile(listOfContainer);
-      firstWorstIssue &= issue;
+      firstWorstIssue &= mpExpression->compile(listOfContainer);
     }
   else
     {
-      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::CExpressionNotFound);
-      mValidity.add(issue);
-      firstWorstIssue &= issue;
+      mValidity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::CExpressionNotFound));
+      firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
 
   return firstWorstIssue;
@@ -422,7 +418,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
 CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
 {
   mValidity.clear();
-  CIssue firstWorstIssue, issue;
+  CIssue firstWorstIssue;
 
   // Clear the old direct dependencies.
   mPrerequisits.clear();
@@ -435,9 +431,8 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
     }
   else
     {
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventMissingTriggerExpression);
-      mValidity.add(issue);
-      firstWorstIssue &= issue;
+      mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventMissingTriggerExpression));
+      firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
 
   // Compile the delay expression
@@ -460,9 +455,8 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
 
   if (mAssignments.empty())
     {
-      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::EventMissingAssignment);
-      mValidity.add(issue);
-      firstWorstIssue &= issue;
+      mValidity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::EventMissingAssignment));
+      firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
 
   for (; itAssignment != endAssignment; ++itAssignment)
