@@ -37,17 +37,22 @@ const std::string CRDFPredicate::PredicateURI[] =
   // "http://www.copasi.org/RDF/MiriamTerms#modification", // copasi_modification
   "http://biomodels.net/biology-qualifiers/encodes", // bqbiol_encodes
   "http://biomodels.net/biology-qualifiers/hasPart", // bqbiol_hasPart
+  "http://biomodels.net/biology-qualifiers/hasProperty", // bqbiol_hasProperty
   "http://biomodels.net/biology-qualifiers/hasVersion", // bqbiol_hasVersion
   "http://biomodels.net/biology-qualifiers/is", // bqbiol_is
   "http://biomodels.net/biology-qualifiers/isDescribedBy", // bqbiol_isDescribedBy
   "http://biomodels.net/biology-qualifiers/isEncodedBy", // bqbiol_isEncodedBy
   "http://biomodels.net/biology-qualifiers/isHomologTo", // bqbiol_isHomologTo
   "http://biomodels.net/biology-qualifiers/isPartOf", // bqbiol_isPartOf
+  "http://biomodels.net/biology-qualifiers/isPropertyOf", // bqbiol_isPropertyOf
   "http://biomodels.net/biology-qualifiers/isVersionOf", // bqbiol_isVersionOf
   "http://biomodels.net/biology-qualifiers/occursIn", // copasi_occursIn
+  "http://biomodels.net/biology-qualifiers/hasTaxon", // copasi_hasTaxon
   "http://biomodels.net/model-qualifiers/is", // bqmodel_is
   "http://biomodels.net/model-qualifiers/isDerivedFrom", // bqmodel_isDerivedFrom
   "http://biomodels.net/model-qualifiers/isDescribedBy", // bqmodel_isDescribedBy
+  "http://biomodels.net/model-qualifiers/isInstanceOf", // bqmodel_isInstanceOf
+  "http://biomodels.net/model-qualifiers/isDescribedBy", // bqmodel_hasInstance
   "http://purl.org/dc/elements/1.1/creator", // dc_creator
   "http://purl.org/dc/terms/creator", // dcterms_creator
   "http://purl.org/dc/terms/bibliographicCitation", // dcterms_bibliographicCitation
@@ -116,17 +121,22 @@ const std::string CRDFPredicate::PredicateDisplayName[] =
   // "modification", // copasi_modification
   "encodes", // bqbiol_encodes
   "has part", // bqbiol_hasPart
+  "has property", // bqbiol_hasProperty
   "has version", // bqbiol_hasVersion
   "is", // bqbiol_is
   "is described by", // bqbiol_isDescribedBy
   "is encoded by", // bqbiol_isEncodedBy
   "is homolog to", // bqbiol_isHomologTo
   "is part of", // bqbiol_isPartOf
+  "is property of", // bqbiol_isPropertyOf
   "is version of", // bqbiol_isVersionOf
   "occurs in", // bqbiol_occursIn
+  "has taxon", // bqbiol_hasTaxon
   "is", // bqmodel_is
   "is derived from", // bqmodel_isDerivedFrom
   "is described by", // bqmodel_isDescribedBy
+  "is instance of", // bqmodel_isInstanceOf
+  "has instance", // bqmodel_hasInstance
   "creator", // dc_creator
   "creator", // dcterms_creator
   "bibliographic citation", // dcterms_bibliographicCitation
@@ -248,6 +258,9 @@ void CRDFPredicate::createAllowedLocationsRelative()
   // bqbiol_hasPart:
   Predicate2AllowedLocationsRelative[bqbiol_hasPart] = AboutUnboundedResource;
 
+  // bqbiol_hasProperty:
+  Predicate2AllowedLocationsRelative[bqbiol_hasProperty] = AboutUnboundedResource;
+
   // bqbiol_hasVersion:
   Predicate2AllowedLocationsRelative[bqbiol_hasVersion] = AboutUnboundedResource;
 
@@ -263,11 +276,17 @@ void CRDFPredicate::createAllowedLocationsRelative()
   // bqbiol_isHomologTo:
   Predicate2AllowedLocationsRelative[bqbiol_isHomologTo] = AboutUnboundedResource;
 
+  // bqbiol_isPropertyOf:
+  Predicate2AllowedLocationsRelative[bqbiol_isPropertyOf] = AboutUnboundedResource;
+
   // bqbiol_isPartOf:
   Predicate2AllowedLocationsRelative[bqbiol_isPartOf] = AboutUnboundedResource;
 
   // bqbiol_isVersionOf:
   Predicate2AllowedLocationsRelative[bqbiol_isVersionOf] = AboutUnboundedResource;
+
+  // bqbiol_hasTaxon:
+  Predicate2AllowedLocationsRelative[bqbiol_hasTaxon] = AboutUnboundedResource;
 
   // bqbiol_occursIn:
   Predicate2AllowedLocationsRelative[bqbiol_occursIn] = AboutUnboundedResource;
@@ -280,6 +299,12 @@ void CRDFPredicate::createAllowedLocationsRelative()
 
   // bqmodel_isDescribedBy:
   Predicate2AllowedLocationsRelative[bqmodel_isDescribedBy] = AboutUnboundedResource;
+
+  // bqmodel_isInstanceOf:
+  Predicate2AllowedLocationsRelative[bqmodel_isInstanceOf] = AboutUnboundedResource;
+
+  // bqmodel_hasInstance:
+  Predicate2AllowedLocationsRelative[bqmodel_hasInstance] = AboutUnboundedResource;
 
   // dc_creator:
   Predicate2AllowedLocationsRelative[dc_creator] = AboutUnboundedResource;

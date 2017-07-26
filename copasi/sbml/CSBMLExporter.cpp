@@ -7053,6 +7053,46 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CCopasiObject* pCOPASIObject, S
 
             break;
 
+          case CRDFPredicate::bqbiol_hasProperty:
+            cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setModelQualifierType(BQM_UNKNOWN);
+            cvTerm.setBiologicalQualifierType(BQB_HAS_PROPERTY);
+            break;
+
+          case CRDFPredicate::bqbiol_isPropertyOf:
+            cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setModelQualifierType(BQM_UNKNOWN);
+            cvTerm.setBiologicalQualifierType(BQB_IS_PROPERTY_OF);
+            break;
+
+          case CRDFPredicate::bqbiol_hasTaxon:
+            cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setModelQualifierType(BQM_UNKNOWN);
+            cvTerm.setBiologicalQualifierType(BQB_HAS_TAXON);
+            break;
+
+          case CRDFPredicate::bqmodel_isInstanceOf:
+            cvTerm.setQualifierType(MODEL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+            cvTerm.setModelQualifierType(BQM_IS_INSTANCE_OF);
+            break;
+
+          case CRDFPredicate::bqmodel_hasInstance:
+            cvTerm.setQualifierType(MODEL_QUALIFIER);
+            // libsbml does not reset the model qualifier type and the
+            // biological qualifier type if the qualifier type is set
+            cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
+            cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
+            break;
+
           // IS DESCRIBED BY is handled in the references below
           //case bqmodel_isDescribedBy:
           //    break;

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -562,6 +567,8 @@ void CRDFGraph::updateNamespaces()
   addNameSpace("dcterms", "http://purl.org/dc/terms/");
   addNameSpace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
   addNameSpace("vCard", "http://www.w3.org/2001/vcard-rdf/3.0#");
+  addNameSpace("bqbiol", "http://biomodels.net/biology-qualifiers/");
+  addNameSpace("bqmodel", "http://biomodels.net/model-qualifiers/");
 
   std::vector< bool > Used(mPrefix2Namespace.size(), false);
   std::vector< bool >::iterator itUsed;
