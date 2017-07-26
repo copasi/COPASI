@@ -70,20 +70,29 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
   // Build the list of supported predicates
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::unknown)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_encodes)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_hasInstance)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasPart)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasProperty)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_hasTaxon)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasVersion)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_is)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isDerivedFrom))),
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isEncodedBy)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isInstanceOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
+  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqbiol_isPropertyOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isVersionOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_occursIn)));
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isDerivedFrom))),
-                        mpPredicateDelegate->setItems(-1, mPredicates);
+
+  mpPredicateDelegate->setItems(-1, mPredicates);
+
   std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView *>::const_iterator end = mWidgets.end();
+
   std::vector<CQBaseDataModel *>::const_iterator itDM = mDMs.begin();
   std::vector<CQBaseDataModel *>::const_iterator endDM = mDMs.end();
+
   std::vector<CQSortFilterProxyModel *>::const_iterator itPDM = mProxyDMs.begin();
   std::vector<CQSortFilterProxyModel *>::const_iterator endPDM = mProxyDMs.end();
 
