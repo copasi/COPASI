@@ -65,20 +65,21 @@ void CExpression::setIsBoolean(const bool & isBoolean)
 
 CIssue CExpression::setInfix(const std::string & infix)
 {
-  mIssue = CEvaluationTree::setInfix(infix);
-  mValidity.add(mIssue);
+  CIssue firstWorstIssue, issue;
+  firstWorstIssue = CEvaluationTree::setInfix(infix);
+  mValidity.add(firstWorstIssue);
 
-  if (!mIssue || mpNodeList == NULL)
-    return mIssue;
+  if (!firstWorstIssue || mpNodeList == NULL)
+    return firstWorstIssue;
 
   // Check whether the expression has the expected type.
   if (mpRootNode != NULL)
     {
       if (mIsBoolean && !mpRootNode->isBoolean())
         {
-          mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionDataTypeInvalid);
-          mValidity.add(mIssue);
-          return mIssue;
+          issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionDataTypeInvalid);
+          mValidity.add(issue);
+          return firstWorstIssue &= issue;
         }
 
       // We wrap a boolean expression in an if construct for
@@ -86,8 +87,9 @@ CIssue CExpression::setInfix(const std::string & infix)
       if (!mIsBoolean && mpRootNode->isBoolean())
         {
           std::string Infix = "if(" + infix + ", 1, 0)";
-          mIssue = CEvaluationTree::setInfix(Infix);
-          mValidity.add(mIssue);
+          issue = CEvaluationTree::setInfix(Infix);
+          mValidity.add(issue);
+          firstWorstIssue &= issue;
         }
     }
 
@@ -98,12 +100,12 @@ CIssue CExpression::setInfix(const std::string & infix)
   for (; it != end; ++it)
     if ((*it)->mainType() == CEvaluationNode::MainType::VARIABLE)
       {
-        mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableInExpression);
-        mValidity.add(mIssue);
-        return mIssue;
+        issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableInExpression);
+        mValidity.add(issue);
+        return firstWorstIssue &= issue;
       }
 
-  return mIssue;
+  return firstWorstIssue;
 }
 
 CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
@@ -117,9 +119,11 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
   mValidity.remove(CValidity::Severity::All,
                    ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency | CIssue::eKind::ExpressionDataTypeInvalid));
 
-  if ((mIssue = compileNodes()))
+  CIssue issue;
+
+  if ((issue = compileNodes()))
     {
-      mValidity.add(mIssue);
+      mValidity.add(issue);
     }
 
   if (mpRootNode)
@@ -135,7 +139,7 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
 
   mpListOfContainer = NULL;
 
-  return mIssue;
+  return issue;
 }
 
 const C_FLOAT64 & CExpression::calcValue()
@@ -165,13 +169,13 @@ const CObjectInterface::ContainerList & CExpression::getListOfContainer() const
 
 bool CExpression::updateInfix()
 {
-  mIssue = CIssue::Success;
+  CIssue issue; // Default: CIssue::Success
 
   if (mpNodeList == NULL)
     {
-      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-      mValidity.add(mIssue);
-      return mIssue;
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+      mValidity.add(issue);
+      return issue;
     }
 
   // Clear any infix-determined flags, assuming
@@ -181,7 +185,7 @@ bool CExpression::updateInfix()
 
   mInfix = mpRootNode->buildInfix();
 
-  return mIssue;
+  return issue;
 }
 
 const std::string & CExpression::getDisplayString() const
