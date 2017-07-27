@@ -324,8 +324,12 @@ void SBMLDocumentLoader::convertLayoutObjectIds(CLLocalStyle& style, const std::
   while (it != endit)
     {
       pos = idToKeyMap.find(*it);
-      assert(pos != idToKeyMap.end());
-      keys.insert(pos->second);
+
+      if (pos != idToKeyMap.end())
+        {
+          keys.insert(pos->second);
+        }
+
       ++it;
     }
 

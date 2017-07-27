@@ -190,6 +190,12 @@ void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
           mItems[obj->getCN()] = item;
         }
 
+      // if we have a z position, use it
+      double z = go->getPosition().getZ();
+
+      if (z == z && z != 0)
+        item->setZValue(z);
+
       addItem(item);
     }
 
