@@ -195,26 +195,24 @@ CIssue CMathExpression::compile()
 {
   mPrerequisites.clear();
   mValidity.clear();
-  mIssue = CIssue::Success;
+  CIssue firstWorstIssue, issue;
 
-  if (!(mIssue = updateTree()))
+  if (!(firstWorstIssue = updateTree()))
     {
       mCalculationSequence.resize(0);
 
-      return mIssue;
+      return firstWorstIssue;
     }
 
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
-  CIssue NodeIssue;
-
   for (; it != end; ++it)
     {
-      NodeIssue = (*it)->compile(this);
+      issue = (*it)->compile(this);
 
-      mValidity.add(NodeIssue);
-      mIssue &= NodeIssue;
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
 
       if ((*it)->mainType() == CEvaluationNode::MainType::OBJECT &&
           (*it)->subType() == CEvaluationNode::SubType::POINTER)
@@ -227,12 +225,12 @@ CIssue CMathExpression::compile()
 
   if (mInfix == "@")
     {
-      mIssue = CIssue::Success;
+      firstWorstIssue = CIssue::Success;
     }
 
   buildCalculationSequence();
 
-  return mIssue;
+  return firstWorstIssue;
 }
 
 bool CMathExpression::convertToInitialExpression()
