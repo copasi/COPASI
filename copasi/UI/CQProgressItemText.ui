@@ -120,13 +120,10 @@
   <customwidget>
    <class>CQProgressItem</class>
    <extends>QWidget</extends>
-   <header>CQProgressItem.h</header>
+   <header>copasi/UI/CQProgressItem.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local">CQProgressItem.h</include>
- </includes>
  <resources/>
  <connections/>
 </ui>

@@ -360,7 +360,7 @@ Expression</string>
   <customwidget>
    <class>CQExpressionMmlStackedWidget</class>
    <extends>QStackedWidget</extends>
-   <header>CQExpressionMmlStackedWidget.h</header>
+   <header>copasi/UI/CQExpressionMmlStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -368,12 +373,12 @@
   <customwidget>
    <class>TaskWidget</class>
    <extends>QWidget</extends>
-   <header>TaskWidget.h</header>
+   <header>copasi/UI/TaskWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">TaskWidget.h</include>
+  <include location="local">copasi/UI/TaskWidget.h</include>
  </includes>
  <resources/>
  <connections>

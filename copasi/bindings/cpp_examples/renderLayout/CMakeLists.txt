@@ -48,6 +48,6 @@ include(${CMAKE_SOURCE_DIR}/copasi/CMakeUIApp.cmake)
 
 add_executable(renderLayout ${SOURCES} ${HEADERS})
 add_dependencies(renderLayout ${SE_DEPENDENCIES}) 
-target_link_libraries(renderLayout ${SE_EXTERNAL_LIBS} ${SE_LIBS} libCOPASIUI)
+target_link_libraries(renderLayout libCOPASIUI ${SE_LIBS} ${SE_EXTERNAL_LIBS})
 
 endif(BUILD_GUI)

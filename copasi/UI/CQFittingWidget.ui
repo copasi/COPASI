@@ -1,5 +1,10 @@
 <ui version="4.0" >
-<comment> Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -130,10 +135,6 @@
   <tabstop>mpBtnCrossValidation</tabstop>
   <tabstop>mpTabWidget</tabstop>
  </tabstops>
- <includes>
-  <include location="local" >TaskWidget.h</include>
-  <include location="local" >TaskWidget.h</include>
- </includes>
  <resources/>
  <connections>
   <connection>

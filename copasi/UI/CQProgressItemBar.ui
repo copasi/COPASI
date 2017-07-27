@@ -116,7 +116,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <includes>
-  <include location="local">CQProgressItem.h</include>
+  <include location="local">copasi/UI/CQProgressItem.h</include>
  </includes>
  <resources/>
  <connections/>

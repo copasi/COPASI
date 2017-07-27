@@ -598,7 +598,7 @@
   <customwidget>
    <class>CQArrayAnnotationsWidget</class>
    <extends>QWidget</extends>
-   <header>CQArrayAnnotationsWidget.h</header>
+   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
   </customwidget>
  </customwidgets>
  <includes>

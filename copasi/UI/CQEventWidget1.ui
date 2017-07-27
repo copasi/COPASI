@@ -348,7 +348,7 @@
   <customwidget>
    <class>CQExpressionMmlStackedWidget</class>
    <extends>QStackedWidget</extends>
-   <header>CQExpressionMmlStackedWidget.h</header>
+   <header>copasi/UI/CQExpressionMmlStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -362,7 +362,7 @@
   <include location="global">string</include>
   <include location="global">vector</include>
   <include location="local">copasi/UI/copasiWidget.h</include>
-  <include location="local">MyLineEdit.h</include>
+  <include location="local">copasi/UI/MyLineEdit.h</include>
  </includes>
  <resources/>
  <connections>

@@ -487,19 +487,14 @@
   <customwidget>
    <class>CQArrayAnnotationsWidget</class>
    <extends>QWidget</extends>
-   <header>CQArrayAnnotationsWidget.h</header>
+   <header>copasi/UI/CQArrayAnnotationsWidget.h</header>
   </customwidget>
   <customwidget>
    <class>CQFittingResultTab1</class>
    <extends>QWidget</extends>
-   <header>CQFittingResultTab1.h</header>
+   <header>copasi/UI/CQFittingResultTab1.h</header>
   </customwidget>
  </customwidgets>
- <includes>
-  <include location="local">copasi/UI/copasiWidget.h</include>
-  <include location="local">CQFittingResultTab1.h</include>
-  <include location="local">CQArrayAnnotationsWidget.h</include>
- </includes>
  <resources/>
  <connections>
   <connection>
