@@ -218,30 +218,29 @@ void CEvaluationTree::setType(const CEvaluationTree::Type & type)
 
 CIssue CEvaluationTree::setInfix(const std::string & infix)
 {
-  mIssue = CIssue::Success;
+  CIssue issue;
 
   if (infix != mInfix)
     {
       mValidity.clear();
 
       // We assume until proven otherwise that the tree is not usable
-      mIssue = CIssue::Error;
+      issue = CIssue::Error;
 
       // Assume whatever (non null) string which was there before,
       // is still ok.
       if (infix == mInfix &&
           infix != "")
         {
-          mIssue = CIssue::Success;
-          return mIssue;
+          return issue = CIssue::Success;
         }
 
       mInfix = infix;
 
-      mIssue = parse();
+      issue = parse();
     }
 
-  return mIssue;
+  return issue;
 }
 
 const std::string & CEvaluationTree::getInfix() const
@@ -277,11 +276,16 @@ CIssue CEvaluationTree::parse()
   // clean up
   clearNodes();
 
+  // Clear all mValidity flags which might be set here.
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency);
+
   if (mType == MassAction)
     {
-      mIssue = CIssue::Success;
-      return mIssue;
+      return CIssue::Success;
     }
+
+  CIssue lastIssue; // Default: CIssue::Success
 
   if (mInfix == "")
     {
@@ -291,21 +295,19 @@ CIssue CEvaluationTree::parse()
       mValue = *mpRootValue;
       mpNodeList->push_back(mpRootNode);
 
-      mIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
-      mValidity.add(mIssue);
-      return mIssue;
+      lastIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+      mValidity.add(lastIssue);
+      return lastIssue;
     }
 
   // parse the description into a linked node tree
   std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
 
-  if (Parser.yyparse() == 0)
-    mIssue = CIssue::Success;
-  else
+  if (Parser.yyparse() != 0)
     {
-      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionInvalid);
-      mValidity.add(mIssue);
+      lastIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionInvalid);
+      mValidity.add(lastIssue);
     }
 
   mpNodeList = Parser.getNodeList();
@@ -323,20 +325,19 @@ CIssue CEvaluationTree::parse()
     }
 
   // clean up if parsing failed
-  if (!mIssue)
+  if (!lastIssue)
     {
       mErrorPosition = Parser.getErrorPosition();
       clearNodes();
     }
-
-  if (mIssue && hasCircularDependency())
+  else if (hasCircularDependency())
     {
-      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::HasCircularDependency);
-      mValidity.add(mIssue);
+      lastIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::HasCircularDependency);
+      mValidity.add(lastIssue);
       CCopasiMessage(CCopasiMessage::ERROR, MCFunction + 4, mErrorPosition);
     }
 
-  return mIssue;
+  return lastIssue;
 }
 
 CIssue CEvaluationTree::compile()
@@ -394,40 +395,36 @@ CIssue CEvaluationTree::compileNodes()
   // Clear all mValidity flags, except those only set via setInfix
   mValidity.remove(CValidity::Severity::All,
                    ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency));
-  mIssue = CIssue::Success;
 
   if (mInfix == "")
     {
-      mIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::NaNissue);
-      mValidity.add(mIssue);
-      return mIssue;
+      mValidity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::NaNissue));
+      return mValidity.getFirstWorstIssue();
     }
 
   if (mpNodeList == NULL)
     {
-      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-      mValidity.add(mIssue);
-      return mIssue;
+      mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid));
+      return mValidity.getFirstWorstIssue();
     }
 
   // The compile order must be child first.
   CNodeIterator< CEvaluationNode > itNode(mpRootNode);
   CEvaluationNode *pErrorNode = NULL;
 
-  CIssue NodeIssue;
+  CIssue firstWorstIssue, nodeIssue;
 
   while (itNode.next() != itNode.end())
-    if (*itNode != NULL &&
-        !(NodeIssue = itNode->compile(this)))
+    if (*itNode != NULL)
       {
-        mValidity.add(NodeIssue);
+        nodeIssue = itNode->compile(this);
+        mValidity.add(nodeIssue);
 
-        if (mIssue) // . . . if it was OkNoKind, before this, . . .
-          {
-            // Set mIssue to this first encountered Error.
-            mIssue = NodeIssue;
-            pErrorNode = *itNode;
-          }
+        // Set the first encountered node error.
+        if (firstWorstIssue && !nodeIssue)
+          pErrorNode = *itNode;
+
+        firstWorstIssue &= nodeIssue;
       }
 
   // Compile may change the value pointer of the root node.
@@ -437,7 +434,7 @@ CIssue CEvaluationTree::compileNodes()
   std::vector< CEvaluationNode * >::iterator it;
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
 
-  if (!mIssue)
+  if (!firstWorstIssue)
     {
       // Find the error node in the node list
       for (it = mpNodeList->begin(); it != end; ++it)
@@ -480,7 +477,7 @@ CIssue CEvaluationTree::compileNodes()
       buildCalculationSequence();
     }
 
-  return mIssue;
+  return firstWorstIssue;
 }
 
 void CEvaluationTree::calculate()
@@ -552,14 +549,14 @@ bool CEvaluationTree::setRoot(CEvaluationNode* pRootNode)
 
 CIssue CEvaluationTree::updateTree()
 {
-  mIssue = CIssue::Success;
+  CIssue issue; //Default: CIssue::Success
 
   if (mpRootNode == NULL)
     {
       clearNodes();
-      mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-      mValidity.add(mIssue);
-      return mIssue;
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+      mValidity.add(issue);
+      return issue;
     }
 
   mpRootValue = mpRootNode->getValuePointer();
@@ -588,12 +585,12 @@ CIssue CEvaluationTree::updateTree()
 
   if (mInfix == "")
     {
-      mIssue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
-      mValidity.add(mIssue);
-      return mIssue;
+      issue = CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ExpressionEmpty);
+      mValidity.add(issue);
+      return issue;
     }
 
-  return mIssue;
+  return issue;
 }
 
 // virtual
