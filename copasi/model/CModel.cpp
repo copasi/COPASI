@@ -679,7 +679,9 @@ void CModel::buildStoi()
 
       // Since we are stepping through the reactions we can check whether
       // the kinetic functions are usable.
-      if (!itStep->getFunction()->getIssue())
+      CIssue issue = itStep->getFunction()->getValidity().getFirstWorstIssue();
+
+      if (!issue)
         CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 11,
                        itStep->getObjectName().c_str(),
                        itStep->getFunction()->getObjectName().c_str());

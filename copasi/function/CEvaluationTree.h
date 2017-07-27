@@ -191,14 +191,6 @@ public:
   virtual CIssue compile();
 
   /**
-   * Get any key issue with this function.
-   * A CIssue cast to bool will return true if there
-   * are NOT any error level issues.
-   * @return CIssue mIssue
-   */
-  CIssue getIssue() const;
-
-  /**
    * Check whether this function evaluates to a boolean value.
    * @return bool isBoolean
    */
@@ -336,12 +328,6 @@ protected:
    * The infix representation of the expression
    */
   std::string mInfix;
-
-  /**
-   * Save any key issue which might indicate a function
-   * should not be used in the model.
-   */
-  CIssue mIssue;
 
 private:
   /**

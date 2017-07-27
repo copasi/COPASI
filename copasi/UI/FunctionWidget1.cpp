@@ -508,7 +508,8 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   // application table
   loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
 
-  isValid = mpFunction->getIssue();
+  CIssue issue = mpFunction->getValidity().getFirstWorstIssue();
+  isValid = issue;
 
   flagChanged = false;
 

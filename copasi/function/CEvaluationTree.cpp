@@ -172,7 +172,6 @@ CEvaluationTree::CEvaluationTree(const std::string & name,
   CDataContainer(name, pParent, "Function"),
   mType(type),
   mInfix(),
-  mIssue(CIssue::Error),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
   mpRootNode(NULL),
@@ -190,7 +189,6 @@ CEvaluationTree::CEvaluationTree(const CEvaluationTree & src,
   CDataContainer(src, pParent),
   mType(src.mType),
   mInfix(),
-  mIssue(CIssue::Error),
   mErrorPosition(std::string::npos),
   mpNodeList(NULL),
   mpRootNode(NULL),
@@ -342,9 +340,6 @@ CIssue CEvaluationTree::parse()
 
 CIssue CEvaluationTree::compile()
 {return compileNodes();}
-
-CIssue CEvaluationTree::getIssue() const
-{return mIssue;}
 
 bool CEvaluationTree::isBoolean() const
 {
