@@ -2005,7 +2005,6 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
     }
 
   pFun->setTree(*root.getChild(iMax), true);
-  pFun->updateTree();
 
   if (!pFun->compile())
     {

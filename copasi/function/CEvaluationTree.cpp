@@ -410,16 +410,17 @@ CIssue CEvaluationTree::compileNodes()
   CIssue firstWorstIssue, nodeIssue;
 
   while (itNode.next() != itNode.end())
-    if (*itNode != NULL)
+    if (*itNode != NULL &&
+        !(nodeIssue = itNode->compile(this)))
       {
-        nodeIssue = itNode->compile(this);
         mValidity.add(nodeIssue);
+        firstWorstIssue &= nodeIssue;
 
         // Set the first encountered node error.
-        if (firstWorstIssue && !nodeIssue)
-          pErrorNode = *itNode;
-
-        firstWorstIssue &= nodeIssue;
+        if (pErrorNode == NULL)
+          {
+            pErrorNode = *itNode;
+          }
       }
 
   // Compile may change the value pointer of the root node.
@@ -596,7 +597,60 @@ const CObjectInterface * CEvaluationTree::getNodeObject(const CCommonName & CN) 
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
 {
-  return setRoot(CEvaluationTree::fromAST(&pRootNode, isFunction));
+  bool success = setRoot(CEvaluationTree::fromAST(&pRootNode, isFunction));
+
+  // The compile order must be child first.
+  CNodeIterator< CEvaluationNode > itNode(mpRootNode);
+  CEvaluationNode *pErrorNode = NULL;
+
+  bool UpdateTree = false;
+
+  while (itNode.next() != itNode.end())
+    if (*itNode != NULL &&
+        itNode->compile(this) == CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueTypeMismatch))
+      {
+        // Attempt to convert child nodes to the appropriate type;
+        CEvaluationNode::ValueType TargetType = itNode->getValueType();
+        CEvaluationNode * pNode = static_cast< CEvaluationNode * >(itNode->getChild());
+
+        while (pNode != NULL)
+          {
+            if (!pNode->setValueType(TargetType))
+              {
+                switch (TargetType)
+                  {
+                    case CEvaluationNode::ValueType::Number:
+                    {
+                      CEvaluationNode * pBoolean = pNode;
+                      pNode = new CEvaluationNodeChoice(CEvaluationNode::SubType::IF, "if");
+                      itNode->addChild(pNode, pBoolean);
+                      itNode->removeChild(pBoolean);
+
+                      pNode->addChild(pBoolean);
+                      pNode->addChild(new CEvaluationNodeNumber(1.0));
+                      pNode->addChild(new CEvaluationNodeNumber(0.0));
+
+                      UpdateTree = true;
+                    }
+                    break;
+
+                    case CEvaluationNode::ValueType::Boolean:
+                    case CEvaluationNode::ValueType::Unknown:
+                      // We do not convert to these type yet
+                      break;
+                  }
+              }
+
+            pNode = static_cast< CEvaluationNode * >(pNode->getSibling());
+          }
+      }
+
+  if (UpdateTree)
+    {
+      success &= updateTree();
+    }
+
+  return success;
 }
 
 CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunction)
