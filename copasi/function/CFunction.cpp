@@ -115,9 +115,10 @@ const std::string& CFunction::getSBMLId() const
 
 CIssue CFunction::setInfix(const std::string & infix)
 {
-  mIssue = CEvaluationTree::setInfix(infix);
+  CIssue firstWorstIssue, issue;
+  issue = CEvaluationTree::setInfix(infix);
 
-  if (!mIssue || mpNodeList == NULL) return mIssue;
+  if (!issue || mpNodeList == NULL) return issue;
 
   // We need to check that the function does not contain any objects, calls to expression
   // or delay nodes.
@@ -130,18 +131,18 @@ CIssue CFunction::setInfix(const std::string & infix)
         {
           case CEvaluationNode::MainType::OBJECT:
           case CEvaluationNode::MainType::DELAY:
-            mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-            mValidity.add(mIssue);
-            return mIssue;
+            issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+            mValidity.add(issue);
+            return firstWorstIssue &= issue;
             break;
 
           case CEvaluationNode::MainType::CALL:
 
             if ((*it)->subType() == CEvaluationNode::SubType::EXPRESSION)
               {
-                mIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-                mValidity.add(mIssue);
-                return mIssue;
+                issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+                mValidity.add(issue);
+                return firstWorstIssue &= issue;
               }
 
             break;
@@ -151,14 +152,15 @@ CIssue CFunction::setInfix(const std::string & infix)
         }
     }
 
-  mIssue = initVariables();
-  mValidity.add(mIssue);
+  issue = initVariables();
+  mValidity.add(issue);
+  firstWorstIssue &= issue;
 
-  if (!mIssue) return mIssue;
+  if (!firstWorstIssue) return firstWorstIssue;
 
-  compileNodes();
+  firstWorstIssue &= compileNodes();
 
-  return mIssue;
+  return firstWorstIssue;
 }
 
 // virtual
