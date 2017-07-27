@@ -24,6 +24,18 @@
 ###############################################################################
 
 # we need at least cmake 2.8 for the FindLAPACK functions
+if(POLICY CMP0020)
+  cmake_policy(SET CMP0020 OLD)
+endif(POLICY CMP0020)
+
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 OLD)
+endif(POLICY CMP0048)
+
+if(POLICY CMP0043)
+  cmake_policy(SET CMP0043 OLD)
+endif(POLICY CMP0043)
+
 cmake_minimum_required (VERSION 2.8)
 project (COPASI)
 

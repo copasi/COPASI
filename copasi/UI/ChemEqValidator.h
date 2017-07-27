@@ -21,7 +21,8 @@
 #define CHEMEQVAL
 
 #include <QValidator>
-#include "model/CChemEqInterface.h"
+#include <copasi/UI/qtUtilities.h>
+#include <copasi/model/CChemEqInterface.h>
 
 class ChemEqValidator : public QValidator
 {
