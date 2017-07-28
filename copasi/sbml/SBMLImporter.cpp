@@ -1991,7 +1991,6 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
     }
 
   pFun->setTree(*root.getChild(iMax), true);
-  pFun->updateTree();
 
   if (!pFun->compile())
     {
@@ -3504,7 +3503,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
