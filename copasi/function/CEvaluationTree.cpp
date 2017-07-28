@@ -547,10 +547,10 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
               {
                 switch (TargetType)
                   {
-                    case CEvaluationNode::ValueType::Number:
+                    case CEvaluationNode::Number:
                     {
                       CEvaluationNode * pBoolean = pNode;
-                      pNode = new CEvaluationNodeChoice(CEvaluationNode::SubType::S_IF, "if");
+                      pNode = new CEvaluationNodeChoice(CEvaluationNode::S_IF, "if");
                       itNode->addChild(pNode, pBoolean);
                       itNode->removeChild(pBoolean);
 
@@ -562,8 +562,8 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
                     }
                     break;
 
-                    case CEvaluationNode::ValueType::Boolean:
-                    case CEvaluationNode::ValueType::Unknown:
+                    case CEvaluationNode::Boolean:
+                    case CEvaluationNode::Unknown:
                       // We do not convert to these type yet
                       break;
                   }
