@@ -208,7 +208,6 @@ bool CModelEntity::compile()
 {
   bool success = true;
 
-  std::set< const CDataObject * > NoDependencies;
   CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
   CDataModel* pDataModel = NULL;
