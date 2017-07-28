@@ -19,6 +19,8 @@
 
 %{
 
+#include "optimization/COptLogItem.h"
+#include "optimization/COptLog.h"
 #include "optimization/COptMethod.h"
 #include "optimization/COptPopulationMethod.h"
 
@@ -26,6 +28,12 @@
 
 %newobject COptMethod::createMethod(CTaskEnum::Method& subType);
 
+%ignore COptLogItem::getTimestamp;
+%ignore COptLogItem::MsgIDSubtext;
+%ignore COptLogItem::MsgIDHeader;
+
+%include "optimization/COptLogItem.h"
+%include "optimization/COptLog.h"
 %include "optimization/COptMethod.h"
 %include "optimization/COptPopulationMethod.h"
 
