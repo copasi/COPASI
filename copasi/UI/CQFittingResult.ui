@@ -529,6 +529,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mpTabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>CQFittingResult</receiver>
+   <slot>loadTab(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>270</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>270</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>loadTab(int)</slot>
