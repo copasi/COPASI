@@ -169,23 +169,12 @@ const CObjectInterface::ContainerList & CExpression::getListOfContainer() const
 
 bool CExpression::updateInfix()
 {
-  CIssue issue; // Default: CIssue::Success
-
-  if (mpNodeList == NULL)
+  if (mpRootNode != NULL)
     {
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-      mValidity.add(issue);
-      return issue;
+      mInfix = mpRootNode->buildInfix();
     }
 
-  // Clear any infix-determined flags, assuming
-  // buildInfix does/uses the right things.
-  mValidity.remove(CValidity::Severity::All,
-                   CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency | CIssue::eKind::ExpressionDataTypeInvalid);
-
-  mInfix = mpRootNode->buildInfix();
-
-  return issue;
+  return true;
 }
 
 const std::string & CExpression::getDisplayString() const

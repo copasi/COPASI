@@ -550,8 +550,13 @@ CIssue CEvaluationTree::updateTree()
   if (mpRootNode == NULL)
     {
       clearNodes();
-      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
-      mValidity.add(issue);
+
+      if (!mInfix.empty())
+        {
+          issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
+          mValidity.add(issue);
+        }
+
       return issue;
     }
 

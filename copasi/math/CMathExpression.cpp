@@ -197,7 +197,8 @@ CIssue CMathExpression::compile()
   mValidity.clear();
   CIssue firstWorstIssue, issue;
 
-  if (!(firstWorstIssue = updateTree()))
+  if (!(firstWorstIssue = updateTree()) ||
+      mpNodeList == NULL)
     {
       mCalculationSequence.resize(0);
 
