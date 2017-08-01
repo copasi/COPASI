@@ -248,9 +248,9 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
   return;
 }
 
-bool CMetab::compile()
+CIssue CMetab::compile()
 {
-  bool success = true;
+  CIssue firstWorstIssue, issue;
 
   // Prepare the compilation
   CObjectInterface::ContainerList listOfContainer;
@@ -271,7 +271,9 @@ bool CMetab::compile()
 
       case Status::ASSIGNMENT:
         // Concentration
-        success = mpExpression->compile(listOfContainer);
+        issue = mpExpression->compile(listOfContainer);
+        mValidity.add(issue);
+        firstWorstIssue &= issue;
 
         // Implicit initial expression
         pdelete(mpInitialExpression);
@@ -290,12 +292,16 @@ bool CMetab::compile()
         // Concentration
 
         // Rate (particle number rate)
-        success = mpExpression->compile(listOfContainer);
+        issue = mpExpression->compile(listOfContainer);
+        mValidity.add(issue);
+        firstWorstIssue &= issue;
 
         if (mpNoiseExpression != NULL)
           {
             // Noise (particle number rate)
-            success = mpNoiseExpression->compile(listOfContainer);
+            issue = mpNoiseExpression->compile(listOfContainer);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
           }
 
         break;
@@ -308,14 +314,14 @@ bool CMetab::compile()
     }
 
   // The initial values
-  success &= compileInitialValueDependencies();
+  firstWorstIssue &= compileInitialValueDependencies();
 
-  return success;
+  return firstWorstIssue;
 }
 
-bool CMetab::compileInitialValueDependencies()
+CIssue CMetab::compileInitialValueDependencies()
 {
-  bool success = true;
+  CIssue issue; //Default: Success
 
   CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(getObjectAncestor("Model"));
@@ -326,12 +332,12 @@ bool CMetab::compileInitialValueDependencies()
        mpInitialExpression->getInfix() != ""))
     {
       // Initial concentration
-      success &= mpInitialExpression->compile(listOfContainer);
-
-      return success;
+      issue &= mpInitialExpression->compile(listOfContainer);
+      mValidity.add(issue);
+      return issue;
     }
 
-  return success;
+  return issue;
 }
 
 void CMetab::compileIsInitialValueChangeAllowed()

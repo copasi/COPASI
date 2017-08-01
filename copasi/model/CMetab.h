@@ -214,15 +214,15 @@ public:
 
   /**
    * Compile the model value.
-   * @return bool success
+   * @return CIssue firstWorstIssue
    */
-  virtual bool compile();
+  virtual CIssue compile();
 
   /**
    * Compile the initial particle number and initial concentration dependencies.
-   * @return bool success
+   * @return CIssue issue
    */
-  bool compileInitialValueDependencies();
+  CIssue compileInitialValueDependencies();
 
   /**
    * Determine whether changing the initial concentration is allowed

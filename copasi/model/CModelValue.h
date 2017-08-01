@@ -136,9 +136,9 @@ public:
 
   /**
    * Compile the model value. This is only needed for status ASIGNMENT and ODE.
-   * @return bool success
+   * @return CIssue issue
    */
-  virtual bool compile();
+  virtual CIssue compile();
 
   /**
    * Calculate the value or the rate depending whether we have an ASIGNMENT or ODE
@@ -308,9 +308,9 @@ public:
   /**
    * Set the expression for non FIXED model values
    * @param const std::string & expression
-   * @return bool success
+   * @return CIssue issue
    */
-  bool setExpression(const std::string & expression);
+  CIssue setExpression(const std::string & expression);
 
   /**
    * Retrieve the expression for non FIXED model values.
@@ -321,9 +321,9 @@ public:
   /**
    * Set the expression for ODE or REACTION model values
    * @param const std::string & expression
-   * @return bool success
+   * @return CIssue issue
    */
-  bool setInitialExpression(const std::string & expression);
+  CIssue setInitialExpression(const std::string & expression);
 
   /**
    * Retrieve the expression for ODE or REACTION model values.

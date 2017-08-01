@@ -58,7 +58,9 @@ const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindNames(
   "unfound CExpression",
   "unfound CFunction",
   "mismatched variables",
-  "inconsistent value types"
+  "inconsistent value types",
+  "initial expression with assignment",
+  "setting fixed expression"
 });
 
 // static
@@ -87,7 +89,9 @@ const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindDescriptions(
   "CExpression not found.",
   "CFunction not found.",
   "Variables are mismatched.",
-  "Inconsistent value types encountered."
+  "Inconsistent value types encountered.",
+  "Initial expressions prohibited with assignment.",
+  "Changing fixed expression prohibited"
 });
 
 CIssue::CIssue(const CIssue::eSeverity & severity,

@@ -1076,7 +1076,7 @@ public:
 
 private:
 
-  bool compile();
+  CIssue compile();
 
   /**
    * Handles unused metabolites and moves them to the end of mMetabolites.
@@ -1114,9 +1114,9 @@ private:
 
   /**
    * Compile the events
-   * @return bool success
+   * @return CIssue issue
    */
-  bool compileEvents();
+  CIssue compileEvents();
 
   /**
    * Replace the old string with the new string in all expressions in the model

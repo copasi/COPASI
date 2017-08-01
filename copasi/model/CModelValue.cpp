@@ -204,9 +204,9 @@ const C_FLOAT64 & CModelEntity::getInitialValue() const
 
 const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
-bool CModelEntity::compile()
+CIssue CModelEntity::compile()
 {
-  bool success = true;
+  CIssue firstWorstIssue, issue;
 
   CObjectInterface::ContainerList listOfContainer;
   listOfContainer.push_back(mpModel);
@@ -215,7 +215,9 @@ bool CModelEntity::compile()
   switch (mStatus)
     {
       case Status::ASSIGNMENT:
-        success &= mpExpression->compile(listOfContainer);
+        issue = mpExpression->compile(listOfContainer);
+        mValidity.add(issue);
+        firstWorstIssue &= issue;
 
         pdelete(mpInitialExpression);
         pDataModel = getObjectDataModel();
@@ -226,11 +228,15 @@ bool CModelEntity::compile()
         break;
 
       case Status::ODE:
-        success &= mpExpression->compile(listOfContainer);
+        issue = mpExpression->compile(listOfContainer);
+        mValidity.add(issue);
+        firstWorstIssue &= issue;
 
         if (mHasNoise && mpNoiseExpression != NULL)
           {
-            success &= mpNoiseExpression->compile(listOfContainer);
+            issue = mpNoiseExpression->compile(listOfContainer);
+            mValidity.add(issue);
+            firstWorstIssue &= issue;
           }
 
         break;
@@ -243,17 +249,21 @@ bool CModelEntity::compile()
   if (mpInitialExpression != NULL &&
       mpInitialExpression->getInfix() != "")
     {
-      success &= mpInitialExpression->compile(listOfContainer);
+      issue = mpInitialExpression->compile(listOfContainer);
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
 
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
-      CIssue issue = mpInitialExpression->getValidity().getFirstWorstIssue();
+      issue = mpInitialExpression->getValidity().getFirstWorstIssue();
+      mValidity.add(issue);
+      firstWorstIssue &= issue;
 
       if (issue)
         mIValue = mpInitialExpression->calcValue();
     }
 
-  return success;
+  return firstWorstIssue;
 }
 
 void CModelEntity::calculate()
@@ -273,14 +283,24 @@ void CModelEntity::calculate()
     }
 }
 
-bool CModelEntity::setExpression(const std::string & expression)
+CIssue CModelEntity::setExpression(const std::string & expression)
 {
-  if (isFixed()) return false;
+  CIssue issue;
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::SettingFixedExpression));
+
+  if (isFixed())
+    {
+      issue = CIssue(CIssue::eSeverity::Error,
+                     CIssue::eKind::SettingFixedExpression);
+      mValidity.add(issue);
+      return issue;
+    }
 
   if ((mpExpression == NULL &&
        expression.empty()) ||
       (mpExpression != NULL &&
-       mpExpression->getInfix() == expression)) return true;
+       mpExpression->getInfix() == expression)) return issue;
 
   if (mpExpression == NULL)
     mpExpression = new CExpression("Expression", this);
@@ -288,9 +308,12 @@ bool CModelEntity::setExpression(const std::string & expression)
   if (mpModel != NULL)
     mpModel->setCompileFlag(true);
 
-  if (!mpExpression->setInfix(expression)) return false;
+  issue = mpExpression->setInfix(expression);
+  mValidity.add(issue);
 
-  return compile();
+  if (!issue) return issue;
+
+  return issue &= compile();
 }
 
 std::string CModelEntity::getExpression() const
@@ -496,14 +519,23 @@ bool CModelEntity::setInitialExpressionPtr(CExpression* pExpression)
   return false;
 }
 
-bool CModelEntity::setInitialExpression(const std::string & expression)
+CIssue CModelEntity::setInitialExpression(const std::string & expression)
 {
-  if (mStatus == Status::ASSIGNMENT) return false;
+  CIssue issue;
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::InitialExpressionWithAssignment));
+
+  if (mStatus == Status::ASSIGNMENT)
+    {
+      issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::InitialExpressionWithAssignment);
+      mValidity.add(issue);
+      return issue;
+    }
 
   if ((mpInitialExpression == NULL &&
        expression.empty()) ||
       (mpInitialExpression != NULL &&
-       mpInitialExpression->getInfix() == expression)) return true;
+       mpInitialExpression->getInfix() == expression)) return issue;
 
   if (mpInitialExpression == NULL)
     {
@@ -512,7 +544,7 @@ bool CModelEntity::setInitialExpression(const std::string & expression)
 
   if (mpModel) mpModel->setCompileFlag(true);
 
-  if (!mpInitialExpression->setInfix(expression)) return false;
+  if (!(issue = mpInitialExpression->setInfix(expression))) return issue;
 
   return compile();
 }

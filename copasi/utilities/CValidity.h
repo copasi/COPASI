@@ -49,6 +49,8 @@ public:
     CFunctionNotFound,
     VariablesMismatch,
     ValueTypeMismatch,
+    InitialExpressionWithAssignment,
+    SettingFixedExpression,
     __SIZE
   };
 

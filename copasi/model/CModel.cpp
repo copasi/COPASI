@@ -416,9 +416,10 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   return Fail;
 }
 
-bool CModel::compile()
+CIssue CModel::compile()
 {
   bool success = true;
+  CIssue firstWorstIssue;
   bool RenameHandlerEnabled = CRegisteredCommonName::isEnabled();
 
   CRegisteredCommonName::setEnabled(false);
@@ -439,7 +440,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -448,7 +449,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -457,7 +458,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -466,7 +467,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -475,7 +476,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -484,7 +485,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -492,7 +493,7 @@ bool CModel::compile()
 
   if (mpCompileHandler && !mpCompileHandler->progressItem(hCompileStep))
     {
-      success = false;
+      firstWorstIssue = CIssue::Error;
       goto finish;
     }
 
@@ -513,10 +514,10 @@ bool CModel::compile()
   //update annotations
   updateMatrixAnnotations();
 
-  success &= compileEvents();
+  firstWorstIssue &= compileEvents();
   // success &= mpMathModel->compile(this);
 
-  if (!success)
+  if (!firstWorstIssue)
     {
       mIsAutonomous = false;
     }
@@ -553,9 +554,9 @@ finish:
       CRegisteredCommonName::setEnabled(true);
     }
 
-  mCompileIsNecessary = !success;
+  mCompileIsNecessary = !firstWorstIssue;
 
-  return success;
+  return firstWorstIssue;
 }
 
 bool CModel::buildDependencyGraphs()
@@ -3111,9 +3112,9 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
   return TreesWithDiscontinuities;
 }
 
-bool CModel::compileEvents()
+CIssue CModel::compileEvents()
 {
-  bool success = true;
+  CIssue issue; //Default: Success
 
   CObjectInterface::ContainerList ListOfContainer;
 
@@ -3122,10 +3123,10 @@ bool CModel::compileEvents()
 
   for (; it != end; ++ it)
     {
-      success &= it->compile(ListOfContainer);
+      issue &= it->compile(ListOfContainer);
     }
 
-  return success;
+  return issue;
 }
 
 void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects)
