@@ -46,7 +46,7 @@ public:
   void setRi(CReactionInterface *mpRi);
 
   const std::vector<std::string>& getAdditionalKeys() const;
-  void setAdditionalKeys(const std::vector<std::string> &additionalKeys);
+  void setAdditionalKeys(CReaction * reaction, const std::vector<std::string> &additionalKeys);
 
 private:
   /**

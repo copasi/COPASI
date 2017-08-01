@@ -56,6 +56,7 @@ UndoDependentData::initializeFrom(const CReaction* pObject)
 {
   CDataObject::DataObjectSet Descendants;
   pObject->getDescendants(Descendants, true);
+  Descendants.insert(pObject);
   initializeFrom(Descendants);
 }
 
@@ -391,34 +392,39 @@ void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoCompartme
 void
 UndoDependentData::freeUndoData()
 {
-  foreach(UndoCompartmentData * data, mCompartmentData)
-  {
-    delete data;
-  }
+  foreach (UndoCompartmentData * data, mCompartmentData)
+    {
+      delete data;
+    }
+
   mCompartmentData.clear();
 
-  foreach(UndoSpeciesData * data, mSpeciesData)
-  {
-    delete data;
-  }
+  foreach (UndoSpeciesData * data, mSpeciesData)
+    {
+      delete data;
+    }
+
   mSpeciesData.clear();
 
-  foreach(UndoGlobalQuantityData * data, mParameterData)
-  {
-    delete data;
-  }
+  foreach (UndoGlobalQuantityData * data, mParameterData)
+    {
+      delete data;
+    }
+
   mParameterData.clear();
 
-  foreach(UndoReactionData * data, mReactionData)
-  {
-    delete data;
-  }
+  foreach (UndoReactionData * data, mReactionData)
+    {
+      delete data;
+    }
+
   mReactionData.clear();
 
-  foreach(UndoEventData * data, mEventData)
-  {
-    delete data;
-  }
+  foreach (UndoEventData * data, mEventData)
+    {
+      delete data;
+    }
+
   mEventData.clear();
 }
 

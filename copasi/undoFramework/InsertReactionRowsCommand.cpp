@@ -138,5 +138,5 @@ void InsertReactionRowsCommand::initializeUndoData(CReaction * reaction, const s
 {
   pdelete(mpReactionData);
   mpReactionData = new UndoReactionData(reaction);
-  mpReactionData->setAdditionalKeys(createdKeys);
+  mpReactionData->setAdditionalKeys(reaction, createdKeys);
 }

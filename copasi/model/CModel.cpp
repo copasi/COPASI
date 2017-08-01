@@ -1839,7 +1839,7 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
 
       if (((pContainer = dynamic_cast< const CReaction * >(pDataObject)) != NULL ||
            (pContainer = dynamic_cast< const CReaction * >(pDataObject->getObjectParent())) != NULL) &&
-          objects.find(pContainer) != objects.end())
+          objects.find(pContainer) == objects.end())
         {
           dependentReactions.insert(pContainer);
         }
@@ -1851,31 +1851,31 @@ bool CModel::appendAllDependents(const ObjectSet & objects,
                  pDataObject->getObjectName() != "Noise" &&
                  pDataObject->getObjectName() != "IntensiveNoise" &&
                  pDataObject->getObjectName() != "TransitionTime")) &&
-               objects.find(pContainer) != objects.end())
+               objects.find(pContainer) == objects.end())
         {
           dependentMetabolites.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CCompartment * >(pDataObject)) != NULL ||
                 (pContainer = dynamic_cast< const CCompartment * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) != objects.end())
+               objects.find(pContainer) == objects.end())
         {
           dependentCompartments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CModelValue * >(pDataObject)) != NULL ||
                 (pContainer = dynamic_cast< const CModelValue * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) != objects.end())
+               objects.find(pContainer) == objects.end())
         {
           dependentModelValues.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEventAssignment * >(pDataObject)) != NULL ||
                 (pContainer = dynamic_cast< const CEventAssignment * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) != objects.end())
+               objects.find(pContainer) == objects.end())
         {
           dependentEventAssignments.insert(pContainer);
         }
       else if (((pContainer = dynamic_cast< const CEvent * >(pDataObject)) != NULL ||
                 (pContainer = dynamic_cast< const CEvent * >(pDataObject->getObjectParent())) != NULL) &&
-               objects.find(pContainer) != objects.end())
+               objects.find(pContainer) == objects.end())
         {
           dependentEvents.insert(pContainer);
         }

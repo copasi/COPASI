@@ -123,7 +123,7 @@ const std::vector<std::string>& UndoReactionData::getAdditionalKeys() const
 }
 
 void
-UndoReactionData::setAdditionalKeys(const std::vector<std::string> &additionalKeys)
+UndoReactionData::setAdditionalKeys(CReaction * reaction, const std::vector<std::string> &additionalKeys)
 {
   mAdditionalKeys = additionalKeys;
 
@@ -141,6 +141,7 @@ UndoReactionData::setAdditionalKeys(const std::vector<std::string> &additionalKe
 
   if (!AdditionalObjects.empty())
     {
+      AdditionalObjects.insert(reaction);
       mpData->initializeFrom(AdditionalObjects);
     }
 }
