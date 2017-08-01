@@ -33,7 +33,7 @@ string(REPLACE "if ( &&" "if (" SOURCECODE "${SOURCECODE}" )
 string(REPLACE "if ()" "if(TRUE)" SOURCECODE "${SOURCECODE}" )
 
 # Fixes for swig 3.0.12
-string(REPLACE "ans <- new(\"_p_size_t\", ref=ans) ;" "" SOURCECODE "${SOURCECODE}" )
+string(REPLACE "if (capture.output(ans) %in% c(\"<pointer: 0x0>\", \"<pointer: (nil)>\")) return()\n  ans <- new(\"_p_size_t\", ref=ans)" "" SOURCECODE "${SOURCECODE}" )
 
 # Changes $ operator of Copasi S4 classes to disable partial matching which can mess up calls to inherited methods.
 string(REPLACE "idx = pmatch(name, names(accessorFuns));" "idx = match(name, names(accessorFuns));" SOURCECODE "${SOURCECODE}" )
