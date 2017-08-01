@@ -126,4 +126,21 @@ void
 UndoReactionData::setAdditionalKeys(const std::vector<std::string> &additionalKeys)
 {
   mAdditionalKeys = additionalKeys;
+
+  std::vector<std::string>::const_iterator it = additionalKeys.begin();
+  std::vector<std::string>::const_iterator end = additionalKeys.end();
+
+  CDataObject::DataObjectSet AdditionalObjects;
+
+  for (; it != end; ++it)
+    {
+      AdditionalObjects.insert(CRootContainer::getKeyFactory()->get(*it));
+    }
+
+  AdditionalObjects.erase(NULL);
+
+  if (!AdditionalObjects.empty())
+    {
+      mpData->initializeFrom(AdditionalObjects);
+    }
 }
