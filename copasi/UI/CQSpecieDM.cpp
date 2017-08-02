@@ -773,6 +773,11 @@ bool CQSpecieDM::insertSpecieRows(QList <UndoSpeciesData *>& pData)
       if (pSpecies == NULL)
         continue;
 
+      if (data->getCreatedCompartment())
+        {
+          emit notifyGUI(ListViews::COMPARTMENT, ListViews::ADD, static_cast< CMetab * >(pSpecies)->getCompartment()->getKey());
+        }
+
       beginInsertRows(QModelIndex(), 1, 1);
       emit notifyGUI(ListViews::METABOLITE, ListViews::ADD, pSpecies->getKey());
       endInsertRows();
