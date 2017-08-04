@@ -73,7 +73,7 @@ public:
       return getObjectParent()->getObjectDisplayName();
 
     // Special treatment of species children
-    if (getObjectParent()->getObjectType() == "Metabolite")
+    if (getObjectParent() && getObjectParent()->getObjectType() == "Metabolite")
       {
         if (getObjectName() == "Concentration")
           {
