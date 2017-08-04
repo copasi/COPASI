@@ -38,16 +38,7 @@ CQReportListItem::CQReportListItem(const CDataObject * pObject):
   QListWidgetItem(),
   mCN("")
 {
-  if (pObject)
-    {
-      setText(FROM_UTF8(pObject->getObjectDisplayName()));
-      mCN = pObject->getCN();
-    }
-  else
-    {
-      setText(QString("Not found"));
-      mCN = CDataString("NotFound").getCN();
-    }
+  setObject(pObject);
 }
 
 CQReportListItem::~CQReportListItem() {}
@@ -58,7 +49,8 @@ CQReportListItem::getCN() const
   return mCN;
 }
 
-void CQReportListItem::setObject(const CDataObject * pObject)
+void
+CQReportListItem::setObject(const CDataObject * pObject)
 {
   if (pObject)
     {
