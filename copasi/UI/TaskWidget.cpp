@@ -338,7 +338,7 @@ bool TaskWidget::commonAfterRunTask()
   // Update all values shown in the GUI
   CMathContainer * pContainer = mpTask->getMathContainer();
 
-  pContainer->updateSimulatedValues(true);
+  pContainer->updateSimulatedValues(false);
   pContainer->updateTransientDataValues();
   pContainer->pushAllTransientValues();
 
