@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -77,6 +82,17 @@ private:
   CNewtonMethod();
 
 public:
+  /**
+   * Solve A * X = B for X and returns the rank deficiency of matrix.
+   * @param const CMatrix< C_FLOAT64 > & A
+   * @param CVector< C_FLOAT64 > & X
+   * @param const CVectorCore< const C_FLOAT64 > & B
+   * @return size_t rankDeficiency
+   */
+  static size_t solveAxEqB(const CMatrix< C_FLOAT64 > & A,
+                           CVector< C_FLOAT64 > & X,
+                           const CVectorCore< const C_FLOAT64 > & B);
+
   /**
    * Specific constructor
    * @param const CCopasiContainer * pParent
@@ -180,13 +196,5 @@ private:
   bool containsNaN() const;
 
   void cleanup();
-
-  /**
-   * Solve JacobiabX * X = B
-   * @param CVector< C_FLOAT64 > & X
-   * @param const CVectorCore< const C_FLOAT64 > & B
-   * @return C_FLOAT64 error
-   */
-  C_FLOAT64 solveJacobianXeqB(CVector< C_FLOAT64 > & X, const CVectorCore< const C_FLOAT64 > & B) const;
 };
 #endif // COPASI_CNewtonMethod
