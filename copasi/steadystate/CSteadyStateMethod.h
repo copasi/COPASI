@@ -71,7 +71,7 @@ protected:
   /**
    * The jacobian of the steadystate
    */
-  CMatrix< C_FLOAT64 > * mpJacobianX;
+  CMatrix< C_FLOAT64 > * mpJacobian;
 
   /**
    * The concentration rate that is considered zero
@@ -217,7 +217,7 @@ protected:
    */
   bool allPositive();
 
-  void calculateJacobianX(const C_FLOAT64 & oldMaxRate);
+  void calculateJacobian(const C_FLOAT64 & oldMaxRate, const bool & reduced);
 };
 
 #include "CNewtonMethod.h"

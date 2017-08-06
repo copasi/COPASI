@@ -125,7 +125,7 @@ CSteadyStateMethod::process(CVectorCore< C_FLOAT64 > & State,
   assert(mpParentTask);
 
   mSteadyState.initialize(State);
-  mpJacobianX = & jacobianX;
+  mpJacobian = & jacobianX;
   mpCallBack = handler;
 
   return processInternal();
@@ -272,10 +272,18 @@ C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
   return *pTmp;
 }
 
-void CSteadyStateMethod::calculateJacobianX(const C_FLOAT64 & oldMaxRate)
+void CSteadyStateMethod::calculateJacobian(const C_FLOAT64 & oldMaxRate, const bool & reduced)
 {
-  mpContainer->setState(mContainerStateReduced);
-  mpContainer->calculateJacobian(*mpJacobianX, std::min(*mpDerivationFactor, oldMaxRate), true);
+  if (reduced)
+    {
+      mpContainer->setState(mContainerStateReduced);
+    }
+  else
+    {
+      mpContainer->setState(mContainerState);
+    }
+
+  mpContainer->calculateJacobian(*mpJacobian, std::min(*mpDerivationFactor, oldMaxRate), reduced);
 }
 
 std::string CSteadyStateMethod::getMethodLog() const
