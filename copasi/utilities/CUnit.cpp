@@ -197,16 +197,12 @@ CIssue CUnit::setExpression(const std::string & expression)
 {
   if (expression != mExpression)
     {
-      if (expression.empty())
-        {
-          *this = CBaseUnit::undefined;
-          return CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
-        }
-
       mExpression = expression;
+
+      return compile();
     }
 
-  return compile();
+  return CIssue::Success;
 }
 
 CIssue CUnit::compile()
@@ -214,6 +210,13 @@ CIssue CUnit::compile()
   mComponents.clear();
   mUsedSymbols.clear();
   mpDimensionless = NULL;
+
+  if (mExpression.empty())
+    {
+      *this = CBaseUnit::undefined;
+
+      return CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitUndefined);
+    }
 
   std::istringstream buffer(mExpression);
   CUnitParser Parser(&buffer);

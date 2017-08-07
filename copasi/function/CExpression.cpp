@@ -117,7 +117,10 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
 
   // Reset all compile related issues
   mValidity.remove(CValidity::Severity::All,
-                   ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency | CIssue::eKind::ExpressionDataTypeInvalid));
+                   (CValidity::Kind(CIssue::eKind::ExpressionInvalid) |
+                    CIssue::eKind::ExpressionEmpty |
+                    CIssue::eKind::HasCircularDependency |
+                    CIssue::eKind::ExpressionDataTypeInvalid));
 
   CIssue issue;
 

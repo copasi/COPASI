@@ -389,11 +389,13 @@ CIssue CEvaluationTree::compileNodes()
 
   // Clear all mValidity flags, except those only set via setInfix
   mValidity.remove(CValidity::Severity::All,
-                   ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) | CIssue::eKind::ExpressionEmpty | CIssue::eKind::HasCircularDependency));
+                   ~(CValidity::Kind(CIssue::eKind::ExpressionInvalid) |
+                     CIssue::eKind::ExpressionEmpty |
+                     CIssue::eKind::HasCircularDependency |
+                     CIssue::eKind::ExpressionDataTypeInvalid));
 
   if (mInfix == "")
     {
-      mValidity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::NaNissue));
       return mValidity.getFirstWorstIssue();
     }
 

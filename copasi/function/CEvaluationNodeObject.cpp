@@ -147,6 +147,10 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
           {
             mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
             mpValue = &mValue;
+
+            if (mpObject == NULL)
+              return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
 
@@ -204,6 +208,9 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
               {
                 mValue = std::numeric_limits<C_FLOAT64>::quiet_NaN();
                 mpValue = &mValue;
+
+                if (mpObject == NULL)
+                  return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
 
                 return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
               }

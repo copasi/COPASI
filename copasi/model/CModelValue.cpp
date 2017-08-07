@@ -206,6 +206,8 @@ const CModelEntity::Status & CModelEntity::getStatus() const {return mStatus;}
 
 CIssue CModelEntity::compile()
 {
+  mValidity.clear();
+
   CIssue firstWorstIssue, issue;
 
   CObjectInterface::ContainerList listOfContainer;
@@ -216,7 +218,6 @@ CIssue CModelEntity::compile()
     {
       case Status::ASSIGNMENT:
         issue = mpExpression->compile(listOfContainer);
-        mValidity.add(issue);
         firstWorstIssue &= issue;
 
         pdelete(mpInitialExpression);
@@ -229,13 +230,11 @@ CIssue CModelEntity::compile()
 
       case Status::ODE:
         issue = mpExpression->compile(listOfContainer);
-        mValidity.add(issue);
         firstWorstIssue &= issue;
 
         if (mHasNoise && mpNoiseExpression != NULL)
           {
             issue = mpNoiseExpression->compile(listOfContainer);
-            mValidity.add(issue);
             firstWorstIssue &= issue;
           }
 
@@ -250,13 +249,11 @@ CIssue CModelEntity::compile()
       mpInitialExpression->getInfix() != "")
     {
       issue = mpInitialExpression->compile(listOfContainer);
-      mValidity.add(issue);
       firstWorstIssue &= issue;
 
       // If we have a valid initial expression, we update the initial value.
       // In case the expression is constant this suffices other are updated lated again.
       issue = mpInitialExpression->getValidity().getFirstWorstIssue();
-      mValidity.add(issue);
       firstWorstIssue &= issue;
 
       if (issue)

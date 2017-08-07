@@ -690,13 +690,7 @@ void DataModelGUI::refreshInitialValues()
   for (; it != end; ++it)
     {
       CModel * pModel = (*it)->getDataModel()->getModel();
-
-      if (!pModel->updateInitialValues(static_cast< CCore::Framework >(mFramework)))
-        {
-          CQMessageBox::warning(NULL, "Model Compile Warning",
-                                CCopasiMessage::getAllMessageText().c_str(),
-                                QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-        }
+      pModel->updateInitialValues(static_cast< CCore::Framework >(mFramework));
     }
 }
 

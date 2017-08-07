@@ -102,6 +102,8 @@ CDataObject::CDataObject(const CDataObject & src,
 
 CDataObject::~CDataObject()
 {
+  mAgregateValidity.clear();
+
   if (mpObjectParent)
     {
       mpObjectParent->remove(this);

@@ -53,7 +53,8 @@ CIssue CEvaluationNodeVariable::compile(const CEvaluationTree * pTree)
 
   mIndex = pTree->getVariableIndex(mData);
 
-  if (mIndex == C_INVALID_INDEX) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
+  if (mIndex == C_INVALID_INDEX)
+    return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
 
   if (getChild() == NULL) // We must not have any children.
     return CIssue::Success;
