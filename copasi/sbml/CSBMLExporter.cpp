@@ -2675,7 +2675,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
 
           if (pLocalParameter == NULL)
             {
-              result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str() , pObject->getObjectName().c_str()));
+              result.push_back(SBMLIncompatibility(1, "value", pObject->getObjectType().c_str(), pObject->getObjectName().c_str()));
             }
         }
     }
@@ -2800,7 +2800,7 @@ void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataMod
                                       case 0:
                                         // the species is not allowed to have a
                                         // spatialDimensionsUnit attribute
-                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83 , pSBMLSpecies->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 83, pSBMLSpecies->getId().c_str());
                                         break;
 
                                       case 1:
@@ -2816,7 +2816,7 @@ void CSBMLExporter::check_for_spatial_size_units(const CCopasiDataModel& dataMod
                                         break;
 
                                       default:
-                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82 , pCompartment->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 82, pCompartment->getId().c_str());
                                         break;
                                     }
                                 }
@@ -3449,6 +3449,10 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
 
       switch (component.getKind())
         {
+          case CBaseUnit::avogadro:
+            pUnit->setKind(UNIT_KIND_AVOGADRO);
+            break;
+
           case CBaseUnit::dimensionless:
             pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
             break;
@@ -3482,8 +3486,15 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
             break;
 
           default:
-            fatalError();
+          {
+            pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
+            std::stringstream str;
+            str << "An unsupported UnitKind was encountered while exporting '"
+                << unit.getExpression()
+                << "', it was replaced by dimensionless.";
+            CCopasiMessage(CCopasiMessage::WARNING, str.str().c_str());
             break;
+          }
         }
     }
 
