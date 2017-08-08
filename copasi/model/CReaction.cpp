@@ -55,7 +55,7 @@
 // static
 const char * CReaction::KineticLawUnitTypeName[] =
 {
-  "Default" ,
+  "Default",
   "AmountPerTime",
   "ConcentrationPerTime",
   NULL
@@ -1409,7 +1409,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
 
   const CEvaluationNode * pOrigNode = expression.getRoot();
 
-  std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> > replacementMap = std::map<std::string , std::pair<CDataObject*, CFunctionParameter*> >();
+  std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> > replacementMap = std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >();
 
   CEvaluationNode* copy = pOrigNode->copyBranch();
   CEvaluationNode* pFunctionTree = objects2variables(copy, replacementMap, copasi2sbmlmap);
@@ -1717,7 +1717,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
 
   if (!pObject)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , key.c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, key.c_str());
     }
 
   pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
@@ -1872,4 +1872,44 @@ void CReaction::setScalingCompartment(const CCompartment * pCompartment)
 const CCompartment * CReaction::getScalingCompartment() const
 {
   return mpScalingCompartment;
+}
+
+/**
+ * @return the reaction scheme of this reaction
+ */
+std::string
+CReaction::getReactionScheme() const
+{
+  CDataModel* pModel = getObjectDataModel();
+  CReactionInterface reactionInterface(pModel == NULL ? NULL : pModel->getModel());
+  reactionInterface.initFromReaction(this);
+  return reactionInterface.getChemEqString();
+}
+
+/**
+ * Initializes this reaction from the specified reaction scheme
+ */
+bool
+CReaction::setReactionScheme(const std::string& scheme,
+                             const std::string& newFunction /*= ""*/,
+                             bool createMetabolites /*= true*/,
+                             bool createOther /*= true*/)
+{
+  CDataModel* pModel = getObjectDataModel();
+  CReactionInterface reactionInterface(pModel == NULL ? NULL : pModel->getModel());
+  reactionInterface.initFromReaction(this);
+  reactionInterface.setChemEqString(scheme, newFunction);
+
+  if (createMetabolites)
+    reactionInterface.createMetabolites();
+
+  if (createOther)
+    reactionInterface.createOtherObjects();
+
+  bool result =  reactionInterface.writeBackToReaction(this);
+
+  if (pModel != NULL && pModel->getModel() != NULL)
+    result &= pModel->getModel()->compileIfNecessary(NULL);
+
+  return result;
 }
