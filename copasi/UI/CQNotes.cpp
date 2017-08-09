@@ -215,6 +215,11 @@ void CQNotes::slotBtnCopy()
 // virtual
 bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
+
   switch (action)
     {
       case ListViews::CHANGE:

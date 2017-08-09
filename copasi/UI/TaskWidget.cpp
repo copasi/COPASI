@@ -476,7 +476,10 @@ CCopasiTask* TaskWidget::getTask()
 
 bool TaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & C_UNUSED(key))
 {
-  if (mIgnoreUpdates) return true;
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
 
   switch (objectType)
     {

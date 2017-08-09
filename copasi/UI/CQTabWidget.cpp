@@ -144,7 +144,10 @@ bool CQTabWidget::enterProtected()
 
 bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates) return true;
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
 
   if (objectType == mObjectType &&
       key == mKey)

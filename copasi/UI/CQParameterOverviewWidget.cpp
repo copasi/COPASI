@@ -73,7 +73,7 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 // virtual
 bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates)
+  if (mIgnoreUpdates || !isVisible())
     {
       return true;
     }

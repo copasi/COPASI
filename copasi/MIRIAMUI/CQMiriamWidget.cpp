@@ -77,7 +77,7 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_hasVersion)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_is)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isDerivedFrom))),
-  mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isEncodedBy)));
+                        mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isEncodedBy)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::bqmodel_isInstanceOf)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isHomologTo)));
   mPredicates.push_back(FROM_UTF8(CRDFPredicate::getDisplayName(CRDFPredicate::copasi_isPartOf)));
@@ -293,8 +293,10 @@ void CQMiriamWidget::slotBtnClearClicked()
 
 bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &key)
 {
-  if (getIgnoreUpdates())
-    return true;
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
 
   if (objectType != ListViews::MIRIAM)
     return true;

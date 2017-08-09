@@ -445,6 +445,11 @@ void CQTrajectoryWidget::updateIntervals()
 // virtual
 bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
 {
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
+
   switch (objectType)
     {
       case ListViews::MODEL:
