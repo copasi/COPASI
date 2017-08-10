@@ -806,7 +806,7 @@ bool CQReportDefinition::save()
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
-    Separator = TO_UTF8(mpSeparator->text());
+    Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
   mpReportDefinition->setSeparator(Separator);
 
