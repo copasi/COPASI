@@ -87,18 +87,18 @@
     result = false;\
     CCopasiMessage(CCopasiMessage::WARNING_FILTERED, str.str().c_str());\
   }\
-   
+
 #define COULD_NOT_CREATE(result)\
   {\
     FAIL_WITH_ERROR(result, "could not create element");\
   }\
-   
+
 #define FAIL_WITH_ERROR_AND_RETURN(result, message)\
   {\
     FAIL_WITH_ERROR(result, message);\
     return result;\
   }\
-   
+
 /**
  * Constructor that takes a pointer to an
  * SBMLDocument.
@@ -9978,7 +9978,6 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           // calculate the angle and rotate the connectPoint around
                           // that angle to get the real points
                           double angle = CCellDesignerImporter::angle(tmpP);
-                          assert(angle == angle);
 
                           if (angle == angle)
                             {
