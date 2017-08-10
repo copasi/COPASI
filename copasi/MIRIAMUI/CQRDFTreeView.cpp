@@ -162,7 +162,7 @@ bool CQRDFTreeView::enterProtected()
       pObjectItem->setTriplet(*it);
     }
 
-  mpTreeWidget->setFocus();
+  //mpTreeWidget->setFocus();
 
   return true;
 }
