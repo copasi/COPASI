@@ -680,7 +680,7 @@ bool CQReportDefinition::update(ListViews::ObjectType objectType,
 
 bool CQReportDefinition::leave()
 {
-  mpBtnCommit->setFocus();
+  //mpBtnCommit->setFocus();
 
   save();
 

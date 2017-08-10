@@ -257,7 +257,7 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
 // virtual
 bool CQNotes::leave()
 {
-  mpBtnToggleEdit->setFocus();
+  //mpBtnToggleEdit->setFocus();
 
   mpObject = CRootContainer::getKeyFactory()->get(mKey);
 
