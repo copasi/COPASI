@@ -136,8 +136,8 @@ public slots:
   /** creates a new species and stores it in mpSpecies */
   void createSpecies();
 
-
-
+  /** track focus changes */
+  void focusChange(QWidget * old, QWidget * now);
 
 private:
   QApplication* mpApp;
@@ -181,8 +181,6 @@ private:
   CEvent*           mpEvent;
   CEventAssignment* mpEventAssignment;
   CReaction*        mpReaction;
-
 };
-
 
 #endif // CQ_UNDO_TESTER_H

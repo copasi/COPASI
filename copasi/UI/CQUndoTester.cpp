@@ -93,6 +93,12 @@ void CQUndoTester::test()
 
   if (options.isEmpty()) options = "all";
 
+  if (options.contains("focus"))
+    {
+      mpApp->connect(mpApp, SIGNAL(focusChanged(QWidget*, QWidget*)),
+                     this, SLOT(focusChange(QWidget*, QWidget*)));
+    }
+
   if (options.contains("all") || options.contains("model"))
     testModelDetail();
 
@@ -821,4 +827,13 @@ void CQUndoTester::deleteSpecies()
   );
 
   mpSpecies = NULL;
+}
+
+void CQUndoTester::focusChange(QWidget *old, QWidget *now)
+{
+  if (!old || !now)
+    return;
+
+  std::cerr << "Focus changed from " << old->objectName().toStdString()
+            << " to " << now->objectName().toStdString() << std::endl;
 }
