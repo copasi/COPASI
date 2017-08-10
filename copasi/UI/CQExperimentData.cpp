@@ -1585,6 +1585,46 @@ void CQExperimentData::slotCheckFrom(bool checked)
       mpValidatorFirst->saved();
       mpValidatorLast->saved();
     }
+  else if (checked && Current != C_INVALID_INDEX && mpExperimentSetCopy->getExperimentCount() > 0)
+    {
+      if (mpBoxFile->currentRow() > 0)
+        {
+          std::string prevFile = mFileMap[TO_UTF8(mpBoxFile->item(mpBoxFile->currentRow() - 1)->text())];
+          std::string currentFile = mFileMap[TO_UTF8(mpBoxFile->currentItem()->text())];
+
+          CExperiment* pLast = NULL;
+
+          for (int i = (int)mpExperimentSetCopy->getExperimentCount() - 1; i >= 0; --i)
+            {
+              pLast = mpExperimentSetCopy->getExperiment(i);
+
+              if (pLast->getFileName() == prevFile)
+                break;
+
+              pLast = NULL;
+            }
+
+          if (pLast != NULL)
+            {
+              unsigned C_INT32 OldWeightMethod = mOldWeightMethod;
+              loadExperiment(pLast);
+              mOldWeightMethod = OldWeightMethod;
+
+              // Load the experiment individual information.
+              mpEditName->setText(FROM_UTF8(mpExperiment->getObjectName()));
+              QString Row = (mpExperiment->getFirstRow() == InvalidIndex) ?
+                            "" : QString::number(mpExperiment->getFirstRow());
+              mpEditFirst->setText(Row);
+              Row = (mpExperiment->getLastRow() == InvalidIndex) ?
+                    "" : QString::number(mpExperiment->getLastRow());
+              mpEditLast->setText(Row);
+
+              mpValidatorName->saved();
+              mpValidatorFirst->saved();
+              mpValidatorLast->saved();
+            }
+        }
+    }
   else
     {
       loadExperiment(mpExperiment);
