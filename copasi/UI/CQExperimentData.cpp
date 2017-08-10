@@ -1499,7 +1499,7 @@ void CQExperimentData::slotSeparator()
   if (mpCheckTab->isChecked())
     mpExperiment->setSeparator("\t");
   else
-    mpExperiment->setSeparator(TO_UTF8(mpEditSeparator->text()));
+    mpExperiment->setSeparator(TO_UTF8_UNTRIMMED(mpEditSeparator->text()));
 
   mpExperiment->setNumColumns((unsigned C_INT32) mpExperiment->guessColumnNumber());
   mpExperiment->readColumnNames();
