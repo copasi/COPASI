@@ -1067,7 +1067,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
   if (mpCheckTab->isChecked())
     pExperiment->setSeparator("\t");
   else
-    pExperiment->setSeparator(TO_UTF8(mpEditSeparator->text()));
+    pExperiment->setSeparator(TO_UTF8_UNTRIMMED(mpEditSeparator->text()));
 
   value = mpEditFirst->text();
   pos = value.length();
