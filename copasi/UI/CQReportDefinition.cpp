@@ -238,7 +238,7 @@ void CQReportDefinition::btnSeparatorClicked()
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
-    Separator = TO_UTF8(mpSeparator->text());
+    Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
   static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(Separator.getCN(), mpDataModel));
 
@@ -594,7 +594,7 @@ void CQReportDefinition::slotAddSeparator()
   if (mpTabCheck->isChecked())
     Separator = "\t";
   else
-    Separator = TO_UTF8(mpSeparator->text());
+    Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
   QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
 
