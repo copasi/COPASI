@@ -60,10 +60,10 @@ void CCSPMethod::initializeParameter()
 {
   CTSSAMethod::initializeParameter();
 
-  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) false);//->getValue().pBOOL;
-  assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-2);
-  assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-5);
-  assertParameter("Maximum Absolute Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-10);
+  assertParameter("Integrate Reduced Model", CCopasiParameter::BOOL, (bool) true);//->getValue().pBOOL;
+  assertParameter("Ratio of Modes Separation", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.9);
+  assertParameter("Maximum Relative Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-3);
+  assertParameter("Maximum Absolute Error", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
   assertParameter("Refinement Iterations Number", CCopasiParameter::UINT, (unsigned C_INT32) 1000);
 
   //createAnnotationsM();

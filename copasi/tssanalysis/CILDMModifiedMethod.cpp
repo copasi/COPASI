@@ -48,7 +48,7 @@ void CILDMModifiedMethod::initializeParameter()
   addObjectReference("Number of slow variables", mSlow, CCopasiObject::ValueInt);
   addMatrixReference("Contribution of Species to Slow Space", mVslow, CCopasiObject::ValueDbl);
 
-  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-4);
 
   createAnnotationsM();
   emptyVectors();
