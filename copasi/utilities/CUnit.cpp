@@ -845,6 +845,7 @@ void CUnit::buildExpression()
 
   stringReplace(mExpression, "^2", "\xc2\xb2");
   stringReplace(mExpression, "^3", "\xc2\xb3");
+  stringReplace(mExpression, "0.001*m\xc2\xb3", "l");
 }
 
 bool CUnit::isUnitType(UnitType type) const
