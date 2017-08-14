@@ -134,6 +134,12 @@ private:
 
   QWidget* mpWebView;
 
+  /**
+   * This string is the text last loaded into the text edit, this makes it easy
+   * to recognize whether changes have been made to the element or not.
+   */
+  QString mLoadedText;
+
 };
 
 #endif // COPASI_CQNotes

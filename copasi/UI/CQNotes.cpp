@@ -375,6 +375,8 @@ void CQNotes::load()
       static_cast<QWebEngineView*>(mpWebView)->setHtml(Notes);
 #endif
       mpEdit->setPlainText(Notes);
+      mLoadedText = mpEdit->toPlainText();
+
       mpValidatorXML->saved();
       slotValidateXML();
 
@@ -411,9 +413,13 @@ void CQNotes::save()
       notes = pReportDefinition->getComment();
     }
 
+  QString currentPlainText = mpEdit->toPlainText();
   std::string plainText = TO_UTF8(mpEdit->toPlainText());
 
   if (plainText == notes)
+    return;
+
+  if (mLoadedText == currentPlainText)
     return;
 
   if (mpValidatorXML->needsWrap())
