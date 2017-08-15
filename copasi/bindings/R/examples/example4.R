@@ -21,73 +21,73 @@ MODEL_STRING <- '<?xml version="1.0" encoding="UTF-8"?><!-- Created by COPASI ve
 stopifnot(!is.null(CRootContainer_getRoot()))
 # create a datamodel
 dataModel <- CRootContainer_addDatamodel()
-stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
+stopifnot(CRootContainer_getDatamodelList()$size() == 1)
 # the only argument to the main routine should be the name of an SBML file
-tryCatch(CDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(dataModel$importSBMLFromString(MODEL_STRING), error = function(e) {
   write("Error while importing the model from given string.", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
 
-model <- CDataModel_getModel(dataModel)
+model <- dataModel$getModel()
 stopifnot(!is.null(model))
 # create a report with the correct filename and all the species against
 # time.
-reports <- CDataModel_getReportDefinitionList(dataModel)
+reports <- dataModel$getReportDefinitionList()
 # create a report definition object
-report <- CReportDefinitionVector_createReportDefinition(reports,"Report", "Output for timecourse")
+report <- reports$createReportDefinition("Report", "Output for timecourse")
 # set the task type for the report definition to timecourse
-invisible(CReportDefinition_setTaskType(report,"timeCourse"))
+invisible(report$setTaskType("timeCourse"))
 # we don't want a table
-invisible(CReportDefinition_setIsTable(report,FALSE))
+invisible(report$setIsTable(FALSE))
 # the entries in the output should be seperated by a ", "
-invisible(CReportDefinition_setSeparator(report,CCopasiReportSeparator(", ")))
+invisible(report$setSeparator(CCopasiReportSeparator(", ")))
 
 # we need a handle to the header and the body
 # the header will display the ids of the metabolites and "time" for
 # the first column
 # the body will contain the actual timecourse data
-sep <- CReportDefinition_getSeparator(report)
-sep_string <- CCommonName_getString(CDataObject_getCN(sep))
-header <- CReportDefinition_getHeaderAddr(report)
-body <- CReportDefinition_getBodyAddr(report)
-time_string <- CCommonName_getString(CCommonName(paste(CCommonName_getString(CDataObject_getCN(model)), ",Reference=Time", sep = "")))
-invisible(ReportItemVector_push_back(body,CRegisteredCommonName(time_string)))
-invisible(ReportItemVector_push_back(body,CRegisteredCommonName(sep_string)))
-time_string <- CCommonName_getString(CDataObject_getCN(CDataString("time")))
-invisible(ReportItemVector_push_back(header,CRegisteredCommonName(time_string)))
-invisible(ReportItemVector_push_back(header,CRegisteredCommonName(sep_string)))
+sep <- report$getSeparator()
+sep_string <- sep$getCN()$getString()
+header <- report$getHeaderAddr()
+body <- report$getBodyAddr()
+time_string <- CCommonName(paste(model$getCN()$getString(), ",Reference=Time", sep = ""))$getString()
+invisible(body$push_back(CRegisteredCommonName(time_string)))
+invisible(body$push_back(CRegisteredCommonName(sep_string)))
+time_string <- CDataString("time")$getCN()$getString()
+invisible(header$push_back(CRegisteredCommonName(time_string)))
+invisible(header$push_back(CRegisteredCommonName(sep_string)))
 
-iMax <- MetabVector_size(CModel_getMetabolites(model))
+iMax <- model$getMetabolites()$size()
 i <- 0
 while (i < iMax) {
-    metab <- CModel_getMetabolite(model,i)
+    metab <- model$getMetabolite(i)
     stopifnot(!is.null(metab))
     # we don't want output for FIXED metabolites right now
-    if (CModelEntity_getStatus(metab) != "FIXED") {
+    if (metab$getStatus() != "FIXED") {
         # we want the concentration in the output
         # alternatively, we could use "Reference=Amount" to get the
         # particle number
-        conc <- CDataContainer_getObject(metab, CCommonName("Reference=Concentration"))
-        conc_string <- CCommonName_getString(CDataObject_getCN(conc))
-        invisible(ReportItemVector_push_back(body,CRegisteredCommonName(conc_string)))
+        conc <- metab$getObject(CCommonName("Reference=Concentration"))
+        conc_string <- conc$getCN()$getString()
+        invisible(body$push_back(CRegisteredCommonName(conc_string)))
         # add the corresponding id to the header
-        sbml_id <- CModelEntity_getSBMLId(metab)
-        sbml_string <- CCommonName_getString(CDataObject_getCN(CDataString(sbml_id)))
-        invisible(ReportItemVector_push_back(header,CRegisteredCommonName(sbml_string)))
+        sbml_id <- metab$getSBMLId()
+        sbml_string <- CDataString(sbml_id)$getCN()$getString()
+        invisible(header$push_back(CRegisteredCommonName(sbml_string)))
         
         if (i != iMax-1) {
           # after each entry, we need a seperator
-          invisible(ReportItemVector_push_back(body,CRegisteredCommonName(sep_string)))
+          invisible(body$push_back(CRegisteredCommonName(sep_string)))
 
           # and a seperator
-          invisible(ReportItemVector_push_back(header,CRegisteredCommonName(sep_string)))
+          invisible(header$push_back(CRegisteredCommonName(sep_string)))
         }
     }
     i <- i + 1
 }
 
 # get the trajectory task object
-trajectoryTask <- CDataModel_getTask(dataModel,"Time-Course")
+trajectoryTask <- dataModel$getTask("Time-Course")
 stopifnot(!is.null(trajectoryTask))
 # if there isn't one
 if (is.null(trajectoryTask)) {
@@ -96,34 +96,34 @@ if (is.null(trajectoryTask)) {
     # add the time course task to the task list
     # this method makes sure the object is now owned by the list
     # and that SWIG does not delete it
-    invisible(CCopasiTaskList_addAndOwn(CDataModel_getTaskList(dataModel), trajectoryTask))
+    invisible(dataModel$getTaskList()$addAndOwn(trajectoryTask))
 }
 
 
 # run a stochastic time course
-invisible(CTrajectoryTask_setMethodType(trajectoryTask,"stochastic"))
+invisible(trajectoryTask$setMethodType("stochastic"))
 
 # get the problem for the task to set some parameters
-problem <- CCopasiTask_getProblem(trajectoryTask)
+problem <- as(trajectoryTask$getProblem(), "_p_CTrajectoryProblem")
 
 # pass a pointer of the model to the problem
-invisible(CCopasiProblem_setModel(problem,model))
+invisible(problem$setModel(model))
 
 # we don't want the trajectory task to run by itself, but we want to
 # run it from a scan, so we deactivate the standalone trajectory task
-invisible(CCopasiTask_setScheduled(trajectoryTask,FALSE))
+invisible(trajectoryTask$setScheduled(FALSE))
 
 # simulate 100 steps
-invisible(CTrajectoryProblem_setStepNumber(problem,100))
+invisible(problem$setStepNumber(100))
 # start at time 0
-invisible(CModel_setInitialTime(model,0.0))
+invisible(model$setInitialTime(0.0))
 # simulate a duration of 10 time units
-invisible(CTrajectoryProblem_setDuration(problem,10))
+invisible(problem$setDuration(10))
 # tell the problem to actually generate time series data
-invisible(CTrajectoryProblem_setTimeSeriesRequested(problem,TRUE))
+invisible(problem$setTimeSeriesRequested(TRUE))
 
 # now we set up the scan
-scanTask <- CDataModel_getTask(dataModel,"Scan")
+scanTask <- dataModel$getTask("Scan")
 stopifnot(!is.null(scanTask))
 if (is.null(scanTask)) {
     # create a scan task
@@ -131,44 +131,44 @@ if (is.null(scanTask)) {
     # add the scan task
     # this method makes sure the object is now owned by the list
     # and that SWIG does not delete it
-    invisible(CCopasiTaskList_addAndOwn(CDataModel_getTaskList(dataModel),scanTask))
+    invisible(dataModel$getTaskList()$addAndOwn(scanTask))
 }
 
 # get the problem
-scanProblem <- CCopasiTask_getProblem(scanTask)
+scanProblem <- as(scanTask$getProblem(), "_p_CScanProblem")
 stopifnot(!is.null(scanProblem))
 
 # set the model for the problem
-invisible(CCopasiProblem_setModel(scanProblem,model))
+invisible(scanProblem$setModel(model))
 
 # activate the task so that is is run
 # if the model is saved and passed to CopasiSE
-invisible(CCopasiTask_setScheduled(scanTask,TRUE))
+invisible(scanTask$setScheduled(TRUE))
 
 # set the report for the task
-invisible(CReport_setReportDefinition(CCopasiTask_getReport(scanTask), report))
+invisible(scanTask$getReport()$setReportDefinition(report))
 
 # set the output file for the report
-invisible(CReport_setTarget(CCopasiTask_getReport(scanTask), "example4.txt"))
+invisible(scanTask$getReport()$setTarget("example4.txt"))
 # don't append to an existing file, but overwrite
-invisible(CReport_setAppend(CCopasiTask_getReport(scanTask,),FALSE))
+invisible(scanTask$getReport()$setAppend(FALSE))
 
 # tell the scan that we want to make a scan over a trajectory task
-invisible(CScanProblem_setSubtask(scanProblem,"timeCourse"))
+invisible(scanProblem$setSubtask("timeCourse"))
 
 # we just want to run the timecourse task a number of times, so we
 # create a repeat item with 100 repeats
 invisible(scanProblem <- as(scanProblem, '_p_CScanProblem'))
-invisible(CScanProblem_addScanItem(scanProblem,"SCAN_REPEAT", 100))
+invisible(scanProblem$addScanItem("SCAN_REPEAT", 100))
 
 # we want the output from the trajectory task
-invisible(CScanProblem_setOutputInSubtask(scanProblem,TRUE))
+invisible(scanProblem$setOutputInSubtask(TRUE))
 
 # we don't want to set the initial conditions of the model to the end
 # state of the last run
-invisible(CScanProblem_setContinueFromCurrentState(scanProblem,FALSE))
+invisible(scanProblem$setContinueFromCurrentState(FALSE))
 
-tryCatch(CCopasiTask_process(scanTask,TRUE), error = function(e) {
+tryCatch(scanTask$process(TRUE), error = function(e) {
   write("Error. Running the scan failed.", stderr())
   # check if there are additional error messages
   if (CCopasiMessage_size() > 0) {
