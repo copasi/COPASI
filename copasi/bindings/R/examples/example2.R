@@ -16,7 +16,7 @@ cacheMetaData(1)
 stopifnot(!is.null(CRootContainer_getRoot()))
 # create a datamodel
 dataModel <- CRootContainer_addDatamodel()
-stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
+stopifnot(CRootContainer_getDatamodelList()$size() == 1)
 # the only argument to the main routine should be the name of a CPS file
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 1) {
@@ -24,46 +24,46 @@ if (length(args) == 1) {
     # load the model without progress report
    
     # I have no clue how exception handling in R works
-    tryCatch(CDataModel_loadModel(dataModel,filename), error = function(e) {
+    tryCatch(dataModel$loadModel(filename), error = function(e) {
       write(paste("Error while loading the model from file named \"" , filename , "\"."), stderr())
       quit(save = "default", status = 1, runLast = TRUE)
     } )
 
-    model <- CDataModel_getModel(dataModel)
+    model <- dataModel$getModel()
     stopifnot(!is.null(model))
-    cat('Model statistics for model "' , CDataObject_getObjectName(model) , '".\n', sep="")
+    cat('Model statistics for model "' , model$getObjectName() , '".\n', sep="")
 
     # output number and names of all compartments
-    iMax <- CompartmentVector_size(CModel_getCompartments(model))
+    iMax <- model$getCompartments()$size()
     cat("Number of Compartments: " , iMax, "\n", sep="")
     cat("Compartments: \n")
     i <- 0
     while ( i < iMax) {
-        compartment <- CModel_getCompartment(model,i)
+        compartment <- model$getCompartment(i)
         stopifnot(!is.null(compartment))
-        cat("    " , CDataObject_getObjectName(compartment), "\n", sep = "")
+        cat("    " , compartment$getObjectName(), "\n", sep = "")
         i <- i + 1
     }
     # output number and names of all metabolites
-    iMax <- MetabVector_size(CModel_getMetabolites(model))
+    iMax <- model$getMetabolites()$size()
     cat("Number of Metabolites: " , iMax, "\n", sep = "")
     cat("Metabolites: \n")
     i <- 0
     while (i < iMax) {
-        metab <- CModel_getMetabolite(model,i)
+        metab <- model$getMetabolite(i)
         stopifnot(!is.null(metab))
-        cat("    " , CDataObject_getObjectName(metab), "\n", sep="")
+        cat("    " , metab$getObjectName(), "\n", sep="")
         i <- i + 1
     }
     # output number and names of all reactions
-    iMax <- ReactionVector_size(CModel_getReactions(model))
+    iMax <- model$getReactions()$size()
     cat("Number of Reactions: " , iMax, "\n", sep = "")
     cat("Reactions: \n")
     i <- 0
     while ( i < iMax) {
-        reaction <- CModel_getReaction(model,i)
+        reaction <- model$getReaction(i)
         stopifnot(!is.null(reaction))
-        cat("    " , CDataObject_getObjectName(reaction) , "\n", sep="")
+        cat("    " , reaction$getObjectName() , "\n", sep="")
         i <- i + 1
     }
 } else {

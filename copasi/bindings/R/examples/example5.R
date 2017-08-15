@@ -17,154 +17,154 @@ cacheMetaData(1)
 stopifnot(!is.null(CRootContainer_getRoot()))
 # create a new datamodel
 dataModel <- CRootContainer_addDatamodel()
-stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
+stopifnot(CRootContainer_getDatamodelList()$size() == 1)
 # get the model from the datamodel
-model <- CDataModel_getModel(dataModel)
+model <- dataModel$getModel()
 stopifnot(!is.null(model))
-invisible(CModel_setVolumeUnit(model,"fl"))
-invisible(CModel_setTimeUnit(model,"s"))
-invisible(CModel_setQuantityUnit(model,"fMol"))
-fixedModelValue <- CModel_createModelValue(model,"F")
+invisible(model$setVolumeUnit("fl"))
+invisible(model$setTimeUnit("s"))
+invisible(model$setQuantityUnit("fMol"))
+fixedModelValue <- model$createModelValue("F")
 stopifnot(!is.null(fixedModelValue))
-invisible(CModelEntity_setStatus(fixedModelValue,"FIXED"))
-invisible(CModelEntity_setInitialValue(fixedModelValue,3.0))
-variableModelValue <- CModel_createModelValue(model,"V")
+invisible(fixedModelValue$setStatus("FIXED"))
+invisible(fixedModelValue$setInitialValue(3.0))
+variableModelValue <- model$createModelValue("V")
 stopifnot(!is.null(variableModelValue))
-invisible(CModelEntity_setStatus(variableModelValue,"ASSIGNMENT"))
+invisible(variableModelValue$setStatus("ASSIGNMENT"))
 # we create a very simple assignment that is easy on the optimization
 # a parabole with the minimum at x=6 should do just fine
-s <- CDataContainer_getObject(fixedModelValue,CCommonName("Reference=Value"))
-s <- paste("(<", CCommonName_getString(CDataObject_getCN(s)), "> - 6.0)^2", sep = "")
-invisible(CModelEntity_setExpression(variableModelValue,s))
+s <- fixedModelValue$getObject(CCommonName("Reference=Value"))
+s <- paste("(<", s$getCN()$getString(), "> - 6.0)^2", sep = "")
+invisible(variableModelValue$setExpression(s))
 # now we compile the model and tell COPASI which values have changed so
 # that COPASI can update the values that depend on those
-invisible(CModel_compileIfNecessary(model))
+invisible(model$compileIfNecessary())
 changedObjects <- ObjectStdVector()
-invisible(ObjectStdVector_push_back(changedObjects,CDataContainer_getObject(fixedModelValue,CCommonName("Reference=InitialValue"))))
-invisible(ObjectStdVector_push_back(changedObjects,CDataContainer_getObject(variableModelValue,CCommonName("Reference=InitialValue"))))
-invisible(CModel_updateInitialValues(model,changedObjects))
+invisible(changedObjects$push_back(fixedModelValue$getObject(CCommonName("Reference=InitialValue"))))
+invisible(changedObjects$push_back(variableModelValue$getObject(CCommonName("Reference=InitialValue"))))
+invisible(model$updateInitialValues(changedObjects))
 
 # now we set up the optimization
 
 # we want to do an optimization for the time course
 # so we have to set up the time course task first
-timeCourseTask <- CDataModel_getTask(dataModel,"Time-Course")
+timeCourseTask <- dataModel$getTask("Time-Course")
 stopifnot(!is.null(timeCourseTask))
 # since for this example it really doesn't matter how long we run the time course 
 # we run for 1 second and calculate 10 steps
 # run a deterministic time course
-invisible(CTrajectoryTask_setMethodType(timeCourseTask,"deterministic"))
+invisible(timeCourseTask$setMethodType("deterministic"))
 
 # get the problem for the task to set some parameters
-problem <- CCopasiTask_getProblem(timeCourseTask)
+problem <- as(timeCourseTask$getProblem(), "_p_CTrajectoryProblem")
 # pass a pointer of the model to the problem
-invisible(CCopasiProblem_setModel(problem,model))
+invisible(problem$setModel(model))
 stopifnot(!is.null(problem))
 
 # simulate 10 steps
-invisible(CTrajectoryProblem_setStepNumber(problem,10))
+invisible(problem$setStepNumber(10))
 # start at time 0
-invisible(CModel_setInitialTime(model, 0.0))
+invisible(model$setInitialTime(0.0))
 # simulate a duration of 1 time units
-invisible(CTrajectoryProblem_setDuration(problem,1))
+invisible(problem$setDuration(1))
 # tell the problem to actually generate time series data
-invisible(CTrajectoryProblem_setTimeSeriesRequested(problem,TRUE))
+invisible(problem$setTimeSeriesRequested(TRUE))
 
 # get the optimization task
-optTask <- CDataModel_getTask(dataModel,"Optimization")
+optTask <- dataModel$getTask("Optimization")
 stopifnot(!is.null(optTask))
 # we want to use Levenberg-Marquardt as the optimization method
-invisible(COptTask_setMethodType(optTask,"LevenbergMarquardt"))
+invisible(optTask$setMethodType("LevenbergMarquardt"))
 
 # next we need to set subtask type on the problem
-optProblem <- CCopasiTask_getProblem(optTask)
+optProblem <- as(optTask$getProblem(), "_p_COptProblem")
 stopifnot(!is.null(optProblem))
-invisible(COptProblem_setSubtaskType(optProblem,"timeCourse"))
+invisible(optProblem$setSubtaskType("timeCourse"))
 
 # we create the objective function
 # we want to minimize the value of the variable model value at the end of
 # the simulation
 # the objective function is normally minimized
-objectiveFunction <- CDataContainer_getObject(variableModelValue,CCommonName("Reference=Value"))
+objectiveFunction <- variableModelValue$getObject(CCommonName("Reference=Value"))
 # we need to put the angled brackets around the common name of the object
-objectiveFunction <- paste("<", CCommonName_getString(CDataObject_getCN(objectiveFunction)) ,">", sep = "")
+objectiveFunction <- paste("<", objectiveFunction$getCN()$getString() ,">", sep = "")
 # now we set the objective function in the problem
-invisible(COptProblem_setObjectiveFunction(optProblem,objectiveFunction))
+invisible(optProblem$setObjectiveFunction(objectiveFunction))
 
 # now we create the optimization items
 # i.e. the model elements that have to be changed during the optimization
 # in order to get to the optimal solution
-optItem <- COptProblem_addOptItem(optProblem,CDataObject_getCN((CDataObject_getObject(fixedModelValue,CCommonName("Reference=InitialValue")))))
+optItem <- optProblem$addOptItem(fixedModelValue$getObject(CCommonName("Reference=InitialValue"))$getCN())
 # we want to change the fixed model value from -100 to +100 with a start
 # value of 50
-invisible(COptItem_setStartValue(optItem,50.0))
-invisible(COptItem_setLowerBound(optItem,CCommonName("-100")))
-invisible(COptItem_setUpperBound(optItem,CCommonName("100")))
+invisible(optItem$setStartValue(50.0))
+invisible(optItem$setLowerBound(CCommonName("-100")))
+invisible(optItem$setUpperBound(CCommonName("100")))
 
 # now we set some parameters on the method
 # these parameters are specific to the method type we set above
 # (in this case Levenberg-Marquardt)
-optMethod <- CCopasiTask_getMethod(optTask)
+optMethod <- optTask$getMethod()
 stopifnot(!is.null(optMethod))
 
 # now we set some method parameters for the optimization method
 # iteration limit
-parameter <- CCopasiParameterGroup_getParameter(optMethod,"Iteration Limit")
+parameter <- optMethod$getParameter("Iteration Limit")
 stopifnot(!is.null(parameter))
-invisible(CCopasiParameter_setIntValue(parameter,2000))
+invisible(parameter$setIntValue(2000))
 # tolerance
-parameter <- CCopasiParameterGroup_getParameter(optMethod,"Tolerance")
+parameter <- optMethod$getParameter("Tolerance")
 stopifnot(!is.null(parameter))
-invisible(CCopasiParameter_setDblValue(parameter,1.0e-5))
+invisible(parameter$setDblValue(1.0e-5))
 
 # create a report with the correct filename and all the species against
 # time.
-reports <- CDataModel_getReportDefinitionList(dataModel)
+reports <- dataModel$getReportDefinitionList()
 # create a report definition object
-report <- CReportDefinitionVector_createReportDefinition(reports,"Report", "Output for optimization")
+report <- reports$createReportDefinition("Report", "Output for optimization")
 # set the task type for the report definition to timecourse
-invisible(CReportDefinition_setTaskType(report,"optimization"))
+invisible(report$setTaskType("optimization"))
 # we don't want a table
-invisible(CReportDefinition_setIsTable(report,FALSE))
+invisible(report$setIsTable(FALSE))
 # the entries in the output should be seperated by a ", "
-invisible(CReportDefinition_setSeparator(report,CCopasiReportSeparator(", ")))
+invisible(report$setSeparator(CCopasiReportSeparator(", ")))
 
 # we need a handle to the header and the body
 # the header will display the ids of the metabolites and "time" for
 # the first column
 # the body will contain the actual timecourse data
-header <- CReportDefinition_getHeaderAddr(report)
-body <- CReportDefinition_getBodyAddr(report)
+header <- report$getHeaderAddr()
+body <- report$getBodyAddr()
 
-sep <- CReportDefinition_getSeparator(report)
-sep_string <- CCommonName_getString(CDataObject_getCN(sep))
+sep <- report$getSeparator()
+sep_string <- sep$getCN()$getString()
 # in the report header we write two strings and a separator
-s <- CCommonName_getString(CDataObject_getCN(CDataString("best value of objective function")))
-invisible(ReportItemVector_push_back(header, CRegisteredCommonName(s)))
-invisible(ReportItemVector_push_back(header, CRegisteredCommonName(sep_string)))
-s <- CCommonName_getString(CDataObject_getCN(CDataString("initial value of F")))
-invisible(ReportItemVector_push_back(header, CRegisteredCommonName(s)))
+s <- CDataString("best value of objective function")$getCN()$getString()
+invisible(header$push_back(CRegisteredCommonName(s)))
+invisible(header$push_back(CRegisteredCommonName(sep_string)))
+s <- CDataString("initial value of F")$getCN()$getString()
+invisible(header$push_back(CRegisteredCommonName(s)))
 # in the report body we write the best value of the objective function and
 # the initial value of the fixed parameter separated by a komma
-o <- CDataContainer_getObject(optProblem,CCommonName("Reference=Best Value"))
-s <- CCommonName_getString(CDataObject_getCN(o))
-invisible(ReportItemVector_push_back(body, CRegisteredCommonName(s)))
-invisible(ReportItemVector_push_back(body, CRegisteredCommonName(sep_string)))
-o <- CDataContainer_getObject(fixedModelValue,CCommonName("Reference=InitialValue"))
-s <- CCommonName_getString(CDataObject_getCN(o))
-invisible(ReportItemVector_push_back(body, CRegisteredCommonName(s)))
+o <- optProblem$getObject(CCommonName("Reference=Best Value"))
+s <- o$getCN()$getString()
+invisible(body$push_back(CRegisteredCommonName(s)))
+invisible(body$push_back(CRegisteredCommonName(sep_string)))
+o <- fixedModelValue$getObject(CCommonName("Reference=InitialValue"))
+s <- o$getCN()$getString()
+invisible(body$push_back(CRegisteredCommonName(s)))
 
 
 # set the report for the task
-rep <- CCopasiTask_getReport(optTask)
-invisible(CReport_setReportDefinition(rep,report))
+rep <- optTask$getReport()
+invisible(rep$setReportDefinition(report))
 # set the output filename
-invisible(CReport_setTarget(rep, "example5.txt"))
+invisible(rep$setTarget("example5.txt"))
 # don't append output if the file exists, but overwrite the file
-invisible(CReport_setAppend(rep, FALSE))
+invisible(rep$setAppend(FALSE))
 
 result <- FALSE
-tryCatch(result <- CCopasiTask_process(optTask,TRUE), error = function(e) {
+tryCatch(result <- optTask$process(TRUE), error = function(e) {
   write("Running the optimization failed." , stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
@@ -176,11 +176,11 @@ if(!result) {
 # now we check if the optimization actually got the correct result
 # the best value it should have is 0 and the best parameter value for
 # that result should be 6 for the initial value of the fixed parameter
-bestValue <- COptProblem_getSolutionValue(optProblem)
+bestValue <- optProblem$getSolutionValue()
 stopifnot(abs(bestValue) < 1e-3)
 # we should only have one solution variable since we only have one
 # optimization item
-stopifnot(FloatVectorCore_size(COptProblem_getSolutionVariables(optProblem)) == 1)
-solution <- FloatVectorCore_get(COptProblem_getSolutionVariables(optProblem),0)
+stopifnot(optProblem$getSolutionVariables()$size() == 1)
+solution <- optProblem$getSolutionVariables()$get(0)
 stopifnot(abs((solution-6.0)/6.0) < 1e-3)
 

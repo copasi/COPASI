@@ -14,17 +14,17 @@ stopifnot(!is.null(CRootContainer_getRoot()))
 # create a new datamodel
 dataModel <- CRootContainer_addDatamodel()
 datamodel_list <- CRootContainer_getDatamodelList()
-stopifnot(DataModelVector_size(datamodel_list) == 1)
+stopifnot(datamodel_list$size() == 1)
 # get the model from the datamodel
-model <- CDataModel_getModel(dataModel)
+model <- dataModel$getModel()
 stopifnot(!is.null(model))
 # set the units for the model
 # we want seconds as the time unit
 # microliter as the volume units
 # and nanomole as the substance units
-invisible(CModel_setTimeUnit(model,'s'))
-invisible(CModel_setVolumeUnit(model,'microl'))
-invisible(CModel_setQuantityUnit(model,'nMol'))
+invisible(model$setTimeUnit('s'))
+invisible(model$setVolumeUnit('microl'))
+invisible(model$setQuantityUnit('nMol'))
 
 # we have to keep a set of all the initial values that are changed during
 # the model building process
@@ -34,64 +34,64 @@ changedObjects <- ObjectStdVector()
 
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
-compartment <- CModel_createCompartment(model,"cell", 5.0)
-object <- CDataObject_getObject(compartment,CCommonName("Reference=InitialVolume"))
+compartment <- model$createCompartment("cell", 5.0)
+object <- compartment$getObject(CCommonName("Reference=InitialVolume"))
 stopifnot(!is.null(object))
-invisible(ObjectStdVector_push_back(changedObjects,object))
+invisible(changedObjects$push_back(object))
 stopifnot(!is.null(compartment))
-stopifnot(CompartmentVector_size(CModel_getCompartments(model)) == 1)
+stopifnot(model$getCompartments()$size() == 1)
 # create a new metabolite with the name glucose and an inital
 # concentration of 10 nanomol
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
-glucose <- CModel_createMetabolite(model,"glucose", CDataObject_getObjectName(compartment), 10.0, "FIXED")
+glucose <- model$createMetabolite("glucose", compartment$getObjectName(), 10.0, "FIXED")
 stopifnot(!is.null(glucose))
-object <- CDataObject_getObject(glucose,CCommonName("Reference=InitialConcentration"))
+object <- glucose$getObject(CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
-invisible(ObjectStdVector_push_back(changedObjects,object))
-stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 1)
+invisible(changedObjects$push_back(object))
+stopifnot(model$getMetabolites()$size() == 1)
 # create a second metabolite called glucose-6-phosphate with an initial
 # concentration of 0. This metabolite is to be changed by reactions
-g6p <- CModel_createMetabolite(model,"glucose-6-phosphate", CDataObject_getObjectName(compartment), 0.0, "REACTIONS")
+g6p <- model$createMetabolite("glucose-6-phosphate", compartment$getObjectName(), 0.0, "REACTIONS")
 stopifnot(!is.null(g6p))
-object <- CDataObject_getObject(g6p,CCommonName("Reference=InitialConcentration"))
+object <- g6p$getObject(CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
-invisible(ObjectStdVector_push_back(changedObjects,object))
-stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 2)
+invisible(changedObjects$push_back(object))
+stopifnot(model$getMetabolites()$size() == 2)
 # another metabolite for ATP, also fixed
-atp <- CModel_createMetabolite(model,"ATP", CDataObject_getObjectName(compartment), 10.0, "FIXED")
+atp <- model$createMetabolite("ATP", compartment$getObjectName(), 10.0, "FIXED")
 stopifnot(!is.null(atp))
-object <- CDataObject_getObject(atp,CCommonName("Reference=InitialConcentration"))
+object <- atp$getObject(CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
-invisible(ObjectStdVector_push_back(changedObjects,object))
-stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 3)
+invisible(changedObjects$push_back(object))
+stopifnot(model$getMetabolites()$size() == 3)
 # and one for ADP
-adp <- CModel_createMetabolite(model,"ADP", CDataObject_getObjectName(compartment), 0.0, "REACTIONS")
+adp <- model$createMetabolite("ADP", compartment$getObjectName(), 0.0, "REACTIONS")
 stopifnot(!is.null(adp))
-object <- CDataObject_getObject(adp,CCommonName("Reference=InitialConcentration"))
+object <- adp$getObject(CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
-invisible(ObjectStdVector_push_back(changedObjects,object))
-stopifnot(MetabVector_size(CModel_getMetabolites(model)) == 4)
+invisible(changedObjects$push_back(object))
+stopifnot(model$getMetabolites()$size() == 4)
 # now we create a reaction
-reaction <- CModel_createReaction(model,"hexokinase")
+reaction <- model$createReaction("hexokinase")
 stopifnot(!is.null(reaction))
-stopifnot(ReactionVector_size(CModel_getReactions(model)) == 1)
+stopifnot(model$getReactions()$size() == 1)
 # hexokinase converts glucose and ATP to glucose-6-phosphate and ADP
 # we can set these on the chemical equation of the reaction
-chemEq <- CReaction_getChemEq(reaction)
+chemEq <- reaction$getChemEq()
 # glucose is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(glucose), 1.0, "SUBSTRATE"))
+invisible(chemEq$addMetabolite(glucose$getKey(), 1.0, "SUBSTRATE"))
 # ATP is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(atp), 1.0, "SUBSTRATE"))
+invisible(chemEq$addMetabolite(atp$getKey(), 1.0, "SUBSTRATE"))
 # glucose-6-phosphate is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(g6p), 1.0, "PRODUCT"))
+invisible(chemEq$addMetabolite(g6p$getKey(), 1.0, "PRODUCT"))
 # ADP is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(adp), 1.0, "PRODUCT"))
-stopifnot(CChemEqElementVector_size(CChemEq_getSubstrates(chemEq)) == 2)
-stopifnot(CChemEqElementVector_size(CChemEq_getProducts(chemEq)) == 2)
+invisible(chemEq$addMetabolite(adp$getKey(), 1.0, "PRODUCT"))
+stopifnot(chemEq$getSubstrates()$size() == 2)
+stopifnot(chemEq$getProducts()$size() == 2)
 # this reaction is to be irreversible
-invisible(CReaction_setReversible(reaction,FALSE))
-stopifnot(CReaction_isReversible(reaction) == FALSE)
+invisible(reaction$setReversible(FALSE))
+stopifnot(reaction$isReversible() == FALSE)
 # now we ned to set a kinetic law on the reaction
 # maybe constant flux would be OK
 # we need to get the function from the function database
@@ -100,20 +100,20 @@ stopifnot(!is.null(funDB))
 # it should be in the list of suitable functions
 # lets get all suitable functions for an irreversible reaction with  2 substrates
 # and 2 products
-suitableFunctions <- CFunctionDB_suitableFunctions(funDB,2, 2, "TriFalse")
+suitableFunctions <- funDB$suitableFunctions(2, 2, "TriFalse")
 stopifnot(length(suitableFunctions) > 0)
 fun <- NULL
 
 index <- 0
-maxIndex <- CFunctionStdVector_size(suitableFunctions)
+maxIndex <- suitableFunctions$size()
 while (index < maxIndex){
     # we just assume that the only suitable function with Constant in
     # it's name is the one we want
 
     # using the ___getitem__ function looks awkward, but I have not found out how else
     # I can get to the elements of wrapped std::vector instances
-    temp_fun <- CFunctionStdVector___getitem__(suitableFunctions,index)
-    name=CDataObject_getObjectName(temp_fun)
+    temp_fun <- suitableFunctions[index][[1]]
+    name=temp_fun$getObjectName()
     if (length(grep("Constant",name)) != 0) {
         fun <- temp_fun
         break
@@ -124,24 +124,24 @@ if (!is.null(fun)){
     # we set the function
     # the method should be smart enough to associate the reaction entities
     # with the correct function parameters
-    invisible(CReaction_setFunction(reaction,fun))
-    stopifnot(!is.null(CReaction_getFunction(reaction)))
+    invisible(reaction$setFunction(fun))
+    stopifnot(!is.null(reaction$getFunction()))
     # constant flux has only one function parameter
-    invisible(CReaction_getFunctionParameters(reaction))
-    stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) == 1)
+    invisible(reaction$getFunctionParameters())
+    stopifnot(reaction$getFunctionParameters()$size() == 1)
     # so there should be only one entry in the parameter mapping as well
-    stopifnot(length(CReaction_getParameterMappings(reaction)) == 1)
-    parameterGroup <- CReaction_getParameters(reaction)
-    stopifnot(CCopasiParameterGroup_size(parameterGroup) == 1)
-    parameter <- CCopasiParameterGroup_getParameter(parameterGroup, 0)
+    stopifnot(length(reaction$getParameterMappings()) == 1)
+    parameterGroup <- reaction$getParameters()
+    stopifnot(parameterGroup$size() == 1)
+    parameter <- parameterGroup$getParameter(0)
     # make sure the parameter is a local parameter
-    stopifnot(CReaction_isLocalParameter(reaction,CDataObject_getObjectName(parameter)))
-    stopifnot(CCopasiParameter_getType(parameter) == "DOUBLE")
+    stopifnot(reaction$isLocalParameter(parameter$getObjectName()))
+    stopifnot(parameter$getType() == "DOUBLE")
     # now we set the value of the parameter to 0.5
-    invisible(CCopasiParameter_setDblValue(parameter,0.5))
-    object <- CDataObject_getObject(parameter,CCommonName("Reference=Value"))
+    invisible(parameter$setDblValue(0.5))
+    object <- parameter$getObject(CCommonName("Reference=Value"))
     stopifnot(!is.null(object))
-    invisible(ObjectStdVector_push_back(changedObjects,object))
+    invisible(changedObjects$push_back(object))
 } else{
     write("Error. Could not find a kientic law that contains the term \"Constant\"." , stderr())
     quit(save = "default", status = 1, runLast = TRUE)
@@ -149,85 +149,85 @@ if (!is.null(fun)){
 # now we also create a separate reaction for the backwards reaction and
 # set the kinetic law to irreversible mass action
 # now we create a reaction
-reaction <- CModel_createReaction(model,"hexokinase-backwards")
+reaction <- model$createReaction("hexokinase-backwards")
 stopifnot(!is.null(reaction))
-stopifnot(ReactionVector_size(CModel_getReactions(model)) == 2)
-chemEq <- CReaction_getChemEq(reaction)
+stopifnot(model$getReactions()$size() == 2)
+chemEq <- reaction$getChemEq()
 # glucose is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(glucose), 1.0, "PRODUCT"))
+invisible(chemEq$addMetabolite(glucose$getKey(), 1.0, "PRODUCT"))
 # ATP is a product with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(atp), 1.0, "PRODUCT"))
+invisible(chemEq$addMetabolite(atp$getKey(), 1.0, "PRODUCT"))
 # glucose-6-phosphate is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(g6p), 1.0, "SUBSTRATE"))
+invisible(chemEq$addMetabolite(g6p$getKey(), 1.0, "SUBSTRATE"))
 # ADP is a substrate with stoichiometry 1
-invisible(CChemEq_addMetabolite(chemEq,CDataObject_getKey(adp), 1.0, "SUBSTRATE"))
-stopifnot(CChemEqElementVector_size(CChemEq_getSubstrates(chemEq)) == 2)
-stopifnot(CChemEqElementVector_size(CChemEq_getProducts(chemEq)) == 2)
+invisible(chemEq$addMetabolite(adp$getKey(), 1.0, "SUBSTRATE"))
+stopifnot(chemEq$getSubstrates()$size() == 2)
+stopifnot(chemEq$getProducts()$size() == 2)
 # this reaction is to be irreversible
-invisible(CReaction_setReversible(reaction,FALSE))
-stopifnot(CReaction_isReversible(reaction) == FALSE)
+invisible(reaction$setReversible(FALSE))
+stopifnot(reaction$isReversible() == FALSE)
 # now we ned to set a kinetic law on the reaction
-massAction <- CFunctionDB_findFunction(funDB,"Mass action (irreversible)")
+massAction <- funDB$findFunction("Mass action (irreversible)")
 stopifnot(!is.null(massAction))
 # we set the function
 # the method should be smart enough to associate the reaction entities
 # with the correct function parameters
 
-invisible(CReaction_setFunction(reaction,massAction))
-stopifnot(!is.null(CReaction_getFunction(reaction)))
-stopifnot(CFunctionParameters_size(CReaction_getFunctionParameters(reaction)) == 2)
+invisible(reaction$setFunction(massAction))
+stopifnot(!is.null(reaction$getFunction()))
+stopifnot(reaction$getFunctionParameters()$size() == 2)
 # so there should be two entries in the parameter mapping as well
 ###### Somehow this test fails miserably
 ###### The length function returns 1 as the result and if I use StringStdVector_size
 ###### instead of length I get 6 as the result.
-###### stopifnot(length(CReaction_getParameterMappings(reaction)) == 2)
+###### stopifnot(length(reaction$getParameterMappings()) == 2)
 # mass action is a special case since the parameter mappings for the
 # substrates (and products) are in a vector
 
 # Let us create a global parameter that is determined by an assignment
 # and that is used as the rate constant of the mass action kinetics
 # it gets the name rateConstant and an initial value of 1.56
-modelValue <- CModel_createModelValue(model,"rateConstant", 1.56)
+modelValue <- model$createModelValue("rateConstant", 1.56)
 stopifnot(!is.null(modelValue))
-object <- CDataObject_getObject(modelValue,CCommonName("Reference=InitialValue"))
+object <- modelValue$getObject(CCommonName("Reference=InitialValue"))
 stopifnot(!is.null(object))
-invisible(ObjectStdVector_push_back(changedObjects,object))
-stopifnot(ModelValueVector_size(CModel_getModelValues(model)) == 1)
+invisible(changedObjects$push_back(object))
+stopifnot(model$getModelValues()$size() == 1)
 # set the status to assignment
-invisible(CModelEntity_setStatus(modelValue,"ASSIGNMENT"))
+invisible(modelValue$setStatus("ASSIGNMENT"))
 # the assignment does not have to make sense
-invisible(CModelEntity_setExpression(modelValue,"1.0 / 4.0 + 2.0"))
+invisible(modelValue$setExpression("1.0 / 4.0 + 2.0"))
 
 # now we have to adjust the parameter mapping in the reaction so
 # that the kinetic law uses the global parameter we just created instead
 # of the local one that is created by default
 # The first parameter is the one for the rate constant, so we point it to
 # the key of out model value
-invisible(CReaction_setParameterMapping(reaction,0, CDataObject_getKey(modelValue)))
+invisible(reaction$setParameterMapping(0, modelValue$getKey()))
 # now we have to set the parameter mapping for the substrates
-invisible(CReaction_addParameterMapping(reaction,"substrate", CDataObject_getKey(g6p)))
-invisible(CReaction_addParameterMapping(reaction,"substrate", CDataObject_getKey(adp)))
+invisible(reaction$addParameterMapping("substrate", g6p$getKey()))
+invisible(reaction$addParameterMapping("substrate", adp$getKey()))
 
 # finally compile the model
 # compile needs to be done before updating all initial values for
 # the model with the refresh sequence
-invisible(CModel_compileIfNecessary(model))
+invisible(model$compileIfNecessary())
 
 # now that we are done building the model, we have to make sure all
 # initial values are updated according to their dependencies
-invisible(CModel_updateInitialValues(model,changedObjects))
+invisible(model$updateInitialValues(changedObjects))
 
 # save the model to a COPASI file
 # we save to a file named example1.cps, we don't want a progress report
 # and we want to overwrite any existing file with the same name
 # Default tasks are automatically generated and will always appear in cps
 # file unless they are explicitley deleted before saving.
-invisible(CDataModel_saveModel(dataModel,"example1.cps", TRUE))
+invisible(dataModel$saveModel("example1.cps", TRUE))
 
 # export the model to an SBML file
 # we save to a file named example1.xml, we want to overwrite any
 # existing file with the same name and we want SBML L2V3
-invisible(CDataModel_exportSBML(dataModel,"example1.xml", TRUE, 2, 3))
+invisible(dataModel$exportSBML("example1.xml", TRUE, 2, 3))
 
 
 

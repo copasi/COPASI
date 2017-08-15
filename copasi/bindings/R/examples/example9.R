@@ -30,13 +30,13 @@ stopifnot(!is.null(CRootContainer_getRoot()))
 # create a new datamodel
 dataModel <- CRootContainer_addDatamodel()
 stopifnot(!is.null(dataModel))
-stopifnot(DataModelVector_size(CRootContainer_getDatamodelList()) == 1)
+stopifnot(CRootContainer_getDatamodelList()$size() == 1)
 # next we import a simple SBML model from a string
 
 # clear the message queue so that we only have error messages from the import in the queue
 invisible(CCopasiMessage_clearDeque())
 result <- TRUE
-tryCatch(result <- CDataModel_importSBMLFromString(dataModel,MODEL_STRING), error = function(e) {
+tryCatch(result <- dataModel$importSBMLFromString(MODEL_STRING), error = function(e) {
   write("An exception has occured during the import of the SBML model", stderr())
   quit(save = "default", status = 1, runLast = TRUE)
 } )
@@ -59,19 +59,19 @@ if (result != TRUE && any(errorList,mostSevere)) {
 }
 
 # get the trajectory task object
-task <- CDataModel_getTask(dataModel,"Steady-State")
+task <- as(dataModel$getTask("Steady-State"), "_p_CSteadyStateTask")
 
 # if there isn't one
 if (is.null(task)) {
     # create a new one
     task <- CSteadyStateTask()
     # add the new task to the task list
-    invisible(CCopasiTaskList_addAndOwn(CDataModel_getTaskList(dataModel),task))
+    invisible(dataModel$getTaskList()$addAndOwn(task))
 }
 
 invisible(CCopasiMessage_clearDeque())
 
-tryCatch(invisible(CCopasiTask_process(task,TRUE)), error = function(e) {
+tryCatch(invisible(task$process(TRUE)), error = function(e) {
   write("Error. Running the scan failed.", stderr())
   # check if there are additional error messages
   if (CCopasiMessage_size() > 0) {
@@ -87,7 +87,7 @@ tryCatch(invisible(CCopasiTask_process(task,TRUE)), error = function(e) {
 # here we can either get the jacobian as we did in example 8 as a matrix with
 # getJacobian, or we can use getJacobianAnnotated to get an annotated matrix
 # Corresponding methods for the reduced jacobian are getJacobianX and getJacobianXAnnotated
-aj <- CSteadyStateTask_getJacobianAnnotated(task)
+aj <- task$getJacobianAnnotated()
 stopifnot(!is.null(aj))
 
 if (!is.null(aj)) {
@@ -96,31 +96,31 @@ if (!is.null(aj)) {
 
     # first the array annotation can tell us how many dimensions it has.
     # Since the matrix is a 2D array, it should have 2 dimensions
-    stopifnot(CDataArray_dimensionality(aj) == 2)
+    stopifnot(aj$dimensionality() == 2)
 
     # since the rows and columns have the same annotation for the jacobian, it doesn't matter
     # for which dimension we get the annotations
-    annotations <- CDataArray_getAnnotationsString(aj,1)
+    annotations <- aj$getAnnotationsString(1)
     cat("Jacobian Matrix:\n")
     cat("\n")
     cat(format(" ", width = 7))
     
-    arr <- CDataArray_array(aj);            
+    arr <- aj$array();            
 
     i <- 0
-    while (i < StringStdVector_size(annotations)) {
+    while (i < annotations$size()) {
         cat(format(annotations[i], width = 7))
         i <- i + 1
     }
     cat("\n")
     
     i <- 0
-    while (i < StringStdVector_size(annotations)) {
+    while (i < annotations$size()) {
         cat(format(annotations[i], width = 7))
         
         j <- 0
-        while (j < StringStdVector_size(annotations)) {
-            cat(format(CArrayInterface_get(arr,i,j), width = 7, digits = 3))
+        while (j < annotations$size()) {
+            cat(format(arr$get(i,j), width = 7, digits = 3))
             j <- j + 1
         }
         cat("\n")
