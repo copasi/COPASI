@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2012 - 2013 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
@@ -12,7 +17,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
+    <width>404</width>
     <height>180</height>
    </rect>
   </property>
@@ -20,7 +25,16 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>6</number>
+   </property>
+   <property name="rightMargin">
+    <number>6</number>
+   </property>
+   <property name="bottomMargin">
     <number>6</number>
    </property>
    <item>
@@ -71,14 +85,14 @@
      <item>
       <widget class="QPushButton" name="mpBtnCommit">
        <property name="text">
-        <string>Commit</string>
+        <string>Commi&amp;t</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="mpBtnRevert">
        <property name="text">
-        <string>Revert</string>
+        <string>&amp;Revert</string>
        </property>
       </widget>
      </item>
@@ -98,21 +112,21 @@
      <item>
       <widget class="QPushButton" name="mpBtnNew">
        <property name="text">
-        <string>New</string>
+        <string>&amp;New</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="mpBtnCopy">
        <property name="text">
-        <string>Copy</string>
+        <string>&amp;Copy</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="mpBtnDelete">
        <property name="text">
-        <string>Delete</string>
+        <string>&amp;Delete</string>
        </property>
       </widget>
      </item>
@@ -194,21 +208,21 @@
     </hint>
    </hints>
   </connection>
-   <connection>
-     <sender>mpBtnCopy</sender>
-     <signal>clicked()</signal>
-     <receiver>CQTabWidget</receiver>
-     <slot>slotBtnCopy()</slot>
-     <hints>
-       <hint type="sourcelabel">
-         <x>238</x>
-         <y>165</y>
-       </hint>
-       <hint type="destinationlabel">
-         <x>184</x>
-         <y>96</y>
-       </hint>
-     </hints>
-   </connection>
+  <connection>
+   <sender>mpBtnCopy</sender>
+   <signal>clicked()</signal>
+   <receiver>CQTabWidget</receiver>
+   <slot>slotBtnCopy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>238</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>184</x>
+     <y>96</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

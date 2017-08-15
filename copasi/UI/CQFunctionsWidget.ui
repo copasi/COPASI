@@ -1,21 +1,24 @@
-<ui version="4.0" >
-<comment> Begin CVS Header </comment>
-<comment>   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/UI/CQFunctionsWidget.ui,v $ </comment>
-<comment>   $Revision: 1.5 $ </comment>
-<comment>   $Name:  $ </comment>
-<comment>   $Author: shoops $ </comment>
-<comment>   $Date: 2011/09/16 12:57:39 $ </comment>
-<comment> End CVS Header </comment>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
 
-<comment> Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+<comment> Copyright (C) 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
  <class>CQFunctionsWidget</class>
- <widget class="CopasiWidget" name="CQFunctionsWidget" >
-  <property name="geometry" >
+ <widget class="CopasiWidget" name="CQFunctionsWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -23,18 +26,18 @@
     <height>456</height>
    </rect>
   </property>
-  <property name="caption" stdset="0" >
+  <property name="caption" stdset="0">
    <string>Functions</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="8" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+  <layout class="QGridLayout">
+   <item row="8" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <spacer name="horizontalSpacerLeft" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacerLeft">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -43,38 +46,38 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnNew" >
-       <property name="text" >
-        <string>New</string>
+      <widget class="QPushButton" name="mpBtnNew">
+       <property name="text">
+        <string>&amp;New</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnDelete" >
-       <property name="focusPolicy" >
+      <widget class="QPushButton" name="mpBtnDelete">
+       <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
-       <property name="text" >
-        <string>Delete</string>
+       <property name="text">
+        <string>&amp;Delete</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="mpBtnClear" >
-       <property name="focusPolicy" >
+      <widget class="QPushButton" name="mpBtnClear">
+       <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
        </property>
-       <property name="text" >
-        <string>Delete All</string>
+       <property name="text">
+        <string>Delete &amp;All</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacerRight" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacerRight">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -84,45 +87,45 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="2" >
-    <widget class="CQTableView" name="mpTblFunctions" >
-     <property name="editTriggers" >
+   <item row="6" column="0" colspan="2">
+    <widget class="CQTableView" name="mpTblFunctions">
+     <property name="editTriggers">
       <set>QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
-     <property name="alternatingRowColors" >
+     <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <property name="selectionMode" >
+     <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="selectionBehavior" >
+     <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="horizontalScrollMode" >
+     <property name="horizontalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
-     <property name="sortingEnabled" >
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item rowspan="3" row="3" column="0" colspan="2" >
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+   <item row="3" column="0" rowspan="3" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Search:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="mpLEFilter" />
+      <widget class="QLineEdit" name="mpLEFilter"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>CopasiWidget</class>
@@ -142,8 +145,8 @@
   <tabstop>mpBtnClear</tabstop>
  </tabstops>
  <includes>
-  <include location="global" >vector</include>
-  <include location="local" >copasi/UI/copasiWidget.h</include>
+  <include location="global">vector</include>
+  <include location="local">copasi/UI/copasiWidget.h</include>
  </includes>
  <resources/>
  <connections>
@@ -153,11 +156,11 @@
    <receiver>CQFunctionsWidget</receiver>
    <slot>slotBtnClearClicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>334</x>
      <y>443</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -169,11 +172,11 @@
    <receiver>CQFunctionsWidget</receiver>
    <slot>slotBtnDeleteClicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>253</x>
      <y>443</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -185,11 +188,11 @@
    <receiver>CQFunctionsWidget</receiver>
    <slot>slotDoubleClicked(QModelIndex)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>270</x>
      <y>212</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>270</x>
      <y>227</y>
     </hint>
@@ -201,11 +204,11 @@
    <receiver>CQFunctionsWidget</receiver>
    <slot>slotBtnNewClicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>189</x>
      <y>434</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>270</x>
      <y>227</y>
     </hint>
