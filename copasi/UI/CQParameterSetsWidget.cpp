@@ -166,21 +166,25 @@ bool CQParameterSetsWidget::enterProtected()
 void CQParameterSetsWidget::updateDeleteBtns()
 {
   bool selected = false;
-  QModelIndexList selRows = mpTblParameterSets->selectionModel()->selectedRows();
 
-  if (selRows.size() == 0)
-    selected = false;
-  else
+  if (mpTblParameterSets->selectionModel() != NULL)
     {
-      if (selRows.size() == 1)
+      QModelIndexList selRows = mpTblParameterSets->selectionModel()->selectedRows();
+
+      if (selRows.size() == 0)
+        selected = false;
+      else
         {
-          if (mpParameterSetsDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
+          if (selRows.size() == 1)
+            {
+              if (mpParameterSetsDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
+                selected = false;
+              else
+                selected = true;
+            }
           else
             selected = true;
         }
-      else
-        selected = true;
     }
 
   mpBtnDelete->setEnabled(selected);
