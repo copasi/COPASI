@@ -603,129 +603,6 @@ void CQExpressionWidget::setExpression(const std::string &expression)
   return;
 }
 
-const CDataObject *findObjectByDisplayName(const CDataModel *dataModel, const std::string displayString)
-{
-  if (dataModel == NULL || displayString.empty()) return NULL;
-
-  const CModel *model = dataModel->getModel();
-
-  if (displayString == "Time") return model;
-
-  if (displayString == "Avogadro Constant") return dynamic_cast<const CDataObject * >(model->getObject("Reference=" + displayString));
-
-  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CDataObject * >(model->getObject("Reference=" + displayString));
-
-  size_t pos = displayString.find("Compartments[");
-
-  if (pos != std::string::npos)
-    {
-      const CDataVectorN< CCompartment > &compartments = model->getCompartments();
-
-      for (CDataVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
-        {
-          const CCompartment *current = it;
-
-          if (current->getObjectDisplayName() == displayString)
-            {
-              return current;
-            }
-          else if (current->getInitialValueReference() != NULL &&
-                   current->getInitialValueReference()->getObjectDisplayName() == displayString)
-            {
-              return current->getInitialValueReference();
-            }
-          else if (current->getValueReference() != NULL &&
-                   current->getValueReference()->getObjectDisplayName() == displayString)
-            {
-              return current->getValueReference();
-            }
-          else if (current->getRateReference() != NULL &&
-                   current->getRateReference()->getObjectDisplayName() == displayString)
-            {
-              return current->getRateReference();
-            }
-        }
-    }
-
-  pos = displayString.find("Values[");
-
-  if (pos != std::string::npos)
-    {
-      const CDataVectorN< CModelValue > &values = model->getModelValues();
-
-      for (CDataVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
-        {
-          const CModelValue *current = it;
-
-          if (current->getObjectDisplayName() == displayString)
-            {
-              return current;
-            }
-          else if (current->getInitialValueReference() != NULL &&
-                   current->getInitialValueReference()->getObjectDisplayName() == displayString)
-            {
-              return current->getInitialValueReference();
-            }
-          else if (current->getValueReference() != NULL &&
-                   current->getValueReference()->getObjectDisplayName() == displayString)
-            {
-              return current->getValueReference();
-            }
-          else if (current->getRateReference() != NULL &&
-                   current->getRateReference()->getObjectDisplayName() == displayString)
-            {
-              return current->getRateReference();
-            }
-        }
-    }
-
-  // no reasonable check for metabolites, so lets just go through them
-  {
-    const CDataVector< CMetab > &metabs = model->getMetabolites();
-
-    for (CDataVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
-      {
-        const CMetab *current = it;
-
-        if (current->getObjectDisplayName() == displayString)
-          {
-            return current;
-          }
-        else if (current->getInitialValueReference() != NULL &&
-                 current->getInitialValueReference()->getObjectDisplayName() == displayString)
-          {
-            return current->getInitialValueReference();
-          }
-        else if (current->getInitialConcentrationReference() != NULL &&
-                 current->getInitialConcentrationReference()->getObjectDisplayName() == displayString)
-          {
-            return current->getInitialConcentrationReference();
-          }
-        else if (current->getValueReference() != NULL &&
-                 current->getValueReference()->getObjectDisplayName() == displayString)
-          {
-            return current->getValueReference();
-          }
-        else if (current->getConcentrationReference() != NULL &&
-                 current->getConcentrationReference()->getObjectDisplayName() == displayString)
-          {
-            return current->getConcentrationReference();
-          }
-        else if (current->getRateReference() != NULL &&
-                 current->getRateReference()->getObjectDisplayName() == displayString)
-          {
-            return current->getRateReference();
-          }
-        else if (current->getConcentrationRateReference() != NULL &&
-                 current->getConcentrationRateReference()->getObjectDisplayName() == displayString)
-          {
-            return current->getConcentrationRateReference();
-          }
-      }
-  }
-  return NULL;
-}
-
 std::string CQExpressionWidget::getExpression() const
 {
   QString Infix;
@@ -774,10 +651,11 @@ std::string CQExpressionWidget::getExpression() const
 
           // here we don't have an object recognized, what we ought to do is to find it in the model
           CDataModel *pDataModel = ListViews::dataModel(parent());
-          assert(pDataModel != NULL);
-          const CDataObject *object = findObjectByDisplayName(
-                                        mpCurrentObject != NULL ? mpCurrentObject->getObjectDataModel() : pDataModel,
-                                        DisplayName);
+
+          if (mpCurrentObject != NULL)
+            pDataModel = mpCurrentObject->getObjectDataModel();
+
+          const CDataObject *object = pDataModel ->findObjectByDisplayName(DisplayName);
 
           if (object != NULL)
             {

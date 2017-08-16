@@ -206,6 +206,15 @@ public:
   bool exportMathModel(const std::string & fileName, CProcessReport* pProcessReport,
                        const std::string & filter, bool overwriteFile = false);
 
+  /**
+   * Resolves the provided display string and returns a data object for it if it can be found
+   *
+   * @param displayString the display name of the object to find
+   *
+   * @return the data object for the display name if found, NULL otherwise
+   */
+  const CDataObject *findObjectByDisplayName(const std::string& displayString) const;
+
 #ifdef WITH_COMBINE_ARCHIVE
   /**
    * Moves the experimental data referenced in the model to the specified

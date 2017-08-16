@@ -2063,7 +2063,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2092,7 +2092,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2109,7 +2109,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2126,7 +2126,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2143,7 +2143,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2160,7 +2160,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2659,3 +2659,130 @@ void CDataModel::recordData(const CUndoData & data)
       mData.mpUndoStack->record(data);
     }
 }
+
+
+const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displayString) const
+{
+  const CDataModel *dataModel = this;
+
+  if (dataModel == NULL || displayString.empty()) return NULL;
+
+  const CModel *model = dataModel->getModel();
+
+  if (displayString == "Time") return model;
+
+  if (displayString == "Avogadro Constant") return dynamic_cast<const CDataObject *>(model->getObject("Reference=" + displayString));
+
+  if (displayString == "Quantity Conversion Factor") return dynamic_cast<const CDataObject *>(model->getObject("Reference=" + displayString));
+
+  size_t pos = displayString.find("Compartments[");
+
+  if (pos != std::string::npos)
+    {
+      const CDataVectorN< CCompartment > &compartments = model->getCompartments();
+
+      for (CDataVectorN< CCompartment >::const_iterator it = compartments.begin(); it != compartments.end(); ++it)
+        {
+          const CCompartment *current = it;
+
+          if (current->getObjectDisplayName() == displayString)
+            {
+              return current;
+            }
+          else if (current->getInitialValueReference() != NULL &&
+                   current->getInitialValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getInitialValueReference();
+            }
+          else if (current->getValueReference() != NULL &&
+                   current->getValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getValueReference();
+            }
+          else if (current->getRateReference() != NULL &&
+                   current->getRateReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getRateReference();
+            }
+        }
+    }
+
+  pos = displayString.find("Values[");
+
+  if (pos != std::string::npos)
+    {
+      const CDataVectorN< CModelValue > &values = model->getModelValues();
+
+      for (CDataVectorN< CModelValue >::const_iterator it = values.begin(); it != values.end(); ++it)
+        {
+          const CModelValue *current = it;
+
+          if (current->getObjectDisplayName() == displayString)
+            {
+              return current;
+            }
+          else if (current->getInitialValueReference() != NULL &&
+                   current->getInitialValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getInitialValueReference();
+            }
+          else if (current->getValueReference() != NULL &&
+                   current->getValueReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getValueReference();
+            }
+          else if (current->getRateReference() != NULL &&
+                   current->getRateReference()->getObjectDisplayName() == displayString)
+            {
+              return current->getRateReference();
+            }
+        }
+    }
+
+  // no reasonable check for metabolites, so lets just go through them
+  {
+    const CDataVector< CMetab > &metabs = model->getMetabolites();
+
+    for (CDataVector< CMetab >::const_iterator it = metabs.begin(); it != metabs.end(); ++it)
+      {
+        const CMetab *current = it;
+
+        if (current->getObjectDisplayName() == displayString)
+          {
+            return current;
+          }
+        else if (current->getInitialValueReference() != NULL &&
+                 current->getInitialValueReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getInitialValueReference();
+          }
+        else if (current->getInitialConcentrationReference() != NULL &&
+                 current->getInitialConcentrationReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getInitialConcentrationReference();
+          }
+        else if (current->getValueReference() != NULL &&
+                 current->getValueReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getValueReference();
+          }
+        else if (current->getConcentrationReference() != NULL &&
+                 current->getConcentrationReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getConcentrationReference();
+          }
+        else if (current->getRateReference() != NULL &&
+                 current->getRateReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getRateReference();
+          }
+        else if (current->getConcentrationRateReference() != NULL &&
+                 current->getConcentrationRateReference()->getObjectDisplayName() == displayString)
+          {
+            return current->getConcentrationRateReference();
+          }
+      }
+  }
+  return NULL;
+}
+
