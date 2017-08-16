@@ -3403,7 +3403,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CDataModel& da
   CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
 }
 
-int convertBaseUnit(CBaseUnit::Kind unit)
+size_t convertBaseUnit(CBaseUnit::Kind unit)
 {
   switch (unit)
     {
@@ -3440,7 +3440,7 @@ int convertBaseUnit(CBaseUnit::Kind unit)
     }
 }
 
-int convertSymbol(const std::string& unit)
+size_t convertSymbol(const std::string& unit)
 {
   if (unit == "A")
     return UNIT_KIND_AMPERE;
@@ -3550,8 +3550,6 @@ int convertSymbol(const std::string& unit)
   return C_INVALID_INDEX;
 }
 
-
-
 Unit* addCUnitComponentToUnitDefinition(UnitDefinition* result, const CUnitComponent &component, const std::string& unitExpression)
 {
   Unit* pUnit = result->createUnit();
@@ -3560,7 +3558,7 @@ Unit* addCUnitComponentToUnitDefinition(UnitDefinition* result, const CUnitCompo
   pUnit->setScale((int)component.getScale());
   pUnit->setMultiplier(component.getMultiplier());
 
-  int unitKind = convertBaseUnit(component.getKind());
+  size_t unitKind = convertBaseUnit(component.getKind());
 
   if (unitKind == C_INVALID_INDEX)
     {
@@ -3611,7 +3609,6 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
       possibleUnit = "s";
     }
 
-
   int unitKind = convertSymbol(possibleUnit);
   int scale = 0;
 
@@ -3654,7 +3651,6 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
       pUnit->setKind(static_cast<UnitKind_t>(unitKind));
     }
 }
-
 
 UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
 {
@@ -3715,7 +3711,6 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
     }
 
 #endif
-
 
   return result;
 }
@@ -7220,9 +7215,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7260,7 +7255,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             break;
 #if LIBSBML_VERSION >= 40100
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7323,9 +7318,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
