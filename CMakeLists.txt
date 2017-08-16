@@ -332,6 +332,25 @@ include_directories(BEFORE ${RAPTOR_INCLUDE_DIR})
 find_package(LIBSBML REQUIRED)
 include_directories(BEFORE ${LIBSBML_INCLUDE_DIR})
 
+set(EXTRA_DEFS "" CACHE STRING
+"additional definitions to be used." )
+set(EXTRA_LIBS "" CACHE STRING
+"List of additional libraries to link against.  Separate multiple names using semicolons." )
+set(EXTRA_INCLUDE_DIRS "" CACHE STRING
+"List of additional include directories to use during compilation. Separate multiple directories using semicolons." )
+
+if(EXTRA_DEFS)
+add_definitions(${EXTRA_DEFS})
+endif(EXTRA_DEFS)
+
+
+if(EXTRA_INCLUDE_DIRS)
+foreach(dir ${EXTRA_INCLUDE_DIRS})
+include_directories(BEFORE ${dir})
+endforeach()
+endif()
+
+
 # TODO find libsedml, version
 # Option for the COPASI support for SEDML
 option (ENABLE_COPASI_SEDML "Enables SEDML support." ON)
