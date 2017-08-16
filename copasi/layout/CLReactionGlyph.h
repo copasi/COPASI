@@ -31,10 +31,8 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class SpeciesReferenceGlyph;
 class ReactionGlyph;
 
-#if LIBSBML_VERSION >= 50800
 class ReferenceGlyph;
 class GeneralGlyph;
-#endif // LIBSBML_VERSION >= 50800
 LIBSBML_CPP_NAMESPACE_END
 
 class CLGlyphWithCurve : public CLGraphicalObject
@@ -123,7 +121,6 @@ public:
   CLReferenceGlyph(const CLReferenceGlyph & src,
                    const CDataContainer * pParent);
 
-#if LIBSBML_VERSION >= 50800
   /**
    * constructor from libsbml object
    */
@@ -131,7 +128,6 @@ public:
                    const std::map<std::string, std::string> & modelmap,
                    std::map<std::string, std::string> & layoutmap,
                    const CDataContainer * pParent = NO_PARENT);
-#endif // LIBSBML_VERSION >= 50800
 
   /**
    * assignment operator.
@@ -150,7 +146,6 @@ public:
 
   virtual CLGraphicalObject* clone() const;
 
-#if LIBSBML_VERSION >= 50800
   /**
    * This method writes the information of the COPASI layout object into the
    * corresponding SBML object
@@ -161,7 +156,6 @@ public:
                             const std::map<const CDataObject*, SBase*> & copasimodelmap,
                             std::map<std::string, const SBase*>& sbmlIDs,
                             const std::map<const CLBase*, const SBase*> & layoutmap) const;
-#endif // LIBSBML_VERSION >= 50800
 
   /**
    * insert operator

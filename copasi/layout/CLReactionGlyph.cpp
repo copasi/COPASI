@@ -24,14 +24,12 @@
 #include <sbml/packages/layout/sbml/ReactionGlyph.h>
 #include <sbml/packages/layout/sbml/SpeciesReferenceGlyph.h>
 
-#if LIBSBML_VERSION >= 50800
 #include <sbml/packages/layout/sbml/GraphicalObject.h>
 #include <sbml/packages/layout/sbml/Layout.h>
 #include <sbml/packages/layout/sbml/SpeciesGlyph.h>
 #include <sbml/packages/layout/sbml/CompartmentGlyph.h>
 #include <sbml/packages/layout/sbml/GeneralGlyph.h>
 #include <sbml/packages/layout/sbml/ReferenceGlyph.h>
-#endif
 
 #include "copasi.h"
 
@@ -58,7 +56,6 @@ CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml,
   : CLGraphicalObject(sbml, layoutmap, pParent),
     mCurve() //initialized in the body below
 {
-#if LIBSBML_VERSION >= 50800
   const GeneralGlyph* general = dynamic_cast<const GeneralGlyph *>(&sbml);
 
   if (general && general->isSetCurve())
@@ -75,7 +72,6 @@ CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml,
       mCurve = copy;
     }
 
-#endif // LIBSBML_VERSION >= 50800
 }
 
 CLGlyphWithCurve & CLGlyphWithCurve::operator= (const CLGlyphWithCurve & rhs)
@@ -170,7 +166,6 @@ CLReferenceGlyph::CLReferenceGlyph(const CLReferenceGlyph & src,
   , mRole(src.mRole)
 {}
 
-#if LIBSBML_VERSION >= 50800
 CLReferenceGlyph::CLReferenceGlyph(const ReferenceGlyph & sbml,
                                    const std::map<std::string, std::string> & modelmap,
                                    std::map<std::string, std::string> & layoutmap,
@@ -201,7 +196,6 @@ CLReferenceGlyph::CLReferenceGlyph(const ReferenceGlyph & sbml,
     mRole = sbml.getRole();
 }
 
-#endif // LIBSBML_VERSION >= 50800
 
 CLReferenceGlyph & CLReferenceGlyph::operator= (const CLReferenceGlyph & rhs)
 {
@@ -603,8 +597,6 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
   , mvReferences("ListOfReferenceGlyphs", this)
   , mvSubglyphs("ListOfSubglyphs", this)
 {
-#if LIBSBML_VERSION >= 50800
-
   const GeneralGlyph* general = dynamic_cast<const GeneralGlyph *>(&sbml);
 
   if (!general)
@@ -655,7 +647,6 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
         addSubglyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
     }
 
-#endif // LIBSBML_VERSION >= 50800
 }
 
 CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
@@ -746,10 +737,8 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
 {
   if (!g) return;
 
-  //call the coresponding method of the base class
+  //call the corresponding method of the base class
   CLGraphicalObject::exportToSBML(g, copasimodelmap, sbmlIDs);
-
-#if LIBSBML_VERSION >= 50800
 
   GeneralGlyph *general = dynamic_cast<GeneralGlyph *>(g);
 
@@ -859,7 +848,6 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
     }
 
-#endif // LIBSBML_VERSION >= 50800
 }
 
 std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g)

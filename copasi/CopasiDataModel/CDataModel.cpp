@@ -887,8 +887,6 @@ std::string CDataModel::exportSBMLToString(CProcessReport* pExportHandler, int s
   CCopasiMessage::clearDeque();
   SBMLDocument* pOrigSBMLDocument = NULL;
 
-#if LIBSBML_VERSION >= 40100
-
   // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
   // about the current sbml document because libsbml does not support the conversion
   // so we need to make sure that all model elements are created from scratch from the corresponding COPASI elements
@@ -902,7 +900,6 @@ std::string CDataModel::exportSBMLToString(CProcessReport* pExportHandler, int s
       this->mData.pCurrentSBMLDocument = NULL;
     }
 
-#endif // LIBSBML_VERSION
   CCopasiMessage::clearDeque();
   static std::string failedCompile("The model cannot be exported, as it failed to compile. \n%s");
 
@@ -1042,8 +1039,6 @@ CDataModel::exportSBML(const std::string & fileName,
   exporter.setExportCOPASIMIRIAM(exportCOPASIMIRIAM);
   SBMLDocument* pOrigSBMLDocument = NULL;
 
-#if LIBSBML_VERSION >= 40100
-
   // if we export an L2 model to L3 or vice versa, we have to throw away any prior information
   // about the current sbml document because libsbml does not support the conversion
   // so we need to make sure that all model elements are created from scratch from the corresponding COPASI elements
@@ -1056,8 +1051,6 @@ CDataModel::exportSBML(const std::string & fileName,
       pOrigSBMLDocument = this->mData.pCurrentSBMLDocument;
       this->mData.pCurrentSBMLDocument = NULL;
     }
-
-#endif // LIBSBML_VERSION
 
   //exporter.setExportHandler(pExportHandler);
   if (!exporter.exportModel(*this, FileName, sbmlLevel, sbmlVersion, overwriteFile)) return false;

@@ -1,7 +1,12 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2008 - 2009 by Sven Sahle and University of Heidelberg
 // All rights reserved.
@@ -10,20 +15,18 @@
 #include <assert.h>
 
 CSBMLunit::CSBMLunit(unsigned int sbmlLevel, unsigned int sbmlVersion)
-    : mUD(UnitDefinition(sbmlLevel, sbmlVersion)),
+  : mUD(UnitDefinition(sbmlLevel, sbmlVersion)),
     mSymExp(),
     mSymExpExp(0)
 {
   Unit *tmp = mUD.createUnit();
   tmp->setKind(UNIT_KIND_DIMENSIONLESS);
 
-#if LIBSBML_VERSION > 40100
   tmp->initDefaults();
-#endif
 }
 
 CSBMLunit::CSBMLunit(const CSBMLunit & src)
-    : mUD(src.mUD),
+  : mUD(src.mUD),
     mSymExp(src.mSymExp),
     mSymExpExp(src.mSymExpExp)
 {
@@ -31,7 +34,7 @@ CSBMLunit::CSBMLunit(const CSBMLunit & src)
 }
 
 CSBMLunit::CSBMLunit(const UnitDefinition* ud)
-    : mUD(*ud),
+  : mUD(*ud),
     mSymExp(),
     mSymExpExp(0)
 {
@@ -115,7 +118,7 @@ void CSBMLunit::applyExponent(double exp)
 
   for (i = 0; i < imax; ++i)
     {
-      mUD.getUnit(i)->setExponent(floor(0.5 + exp*(double)mUD.getUnit(i)->getExponent()));
+      mUD.getUnit(i)->setExponent(floor(0.5 + exp * (double)mUD.getUnit(i)->getExponent()));
     }
 }
 
@@ -180,28 +183,28 @@ bool CSBMLunit::isDimensionless() const
 //************************************************
 
 CSBMLunitInformation::CSBMLunitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion)
-    : CSBMLunit(sbmlLevel, sbmlVersion),
+  : CSBMLunit(sbmlLevel, sbmlVersion),
     mInfo(UNKNOWN),
     mConflict(false)
 {
 }
 
 CSBMLunitInformation::CSBMLunitInformation(unsigned int sbmlLevel, unsigned int sbmlVersion, INFO info, bool conflict)
-    : CSBMLunit(sbmlLevel, sbmlVersion),
+  : CSBMLunit(sbmlLevel, sbmlVersion),
     mInfo(info),
     mConflict(conflict)
 {
 }
 
 CSBMLunitInformation::CSBMLunitInformation(const CSBMLunit& u, INFO info, bool conflict)
-    : CSBMLunit(u),
+  : CSBMLunit(u),
     mInfo(info),
     mConflict(conflict)
 {
 }
 
 CSBMLunitInformation::CSBMLunitInformation(const UnitDefinition* ud, INFO info, bool conflict)
-    : CSBMLunit(ud),
+  : CSBMLunit(ud),
     mInfo(info),
     mConflict(conflict)
 {
@@ -216,15 +219,19 @@ std::string CSBMLunitInformation::getDisplayString() const
       case UNKNOWN:
         sss += "unknown";
         break;
+
       case DEFAULT:
         sss += "default:  " + CSBMLunit::getDisplayString();
         break;
+
       case GLOBAL:
         sss += "global:  " + CSBMLunit::getDisplayString();
         break;
+
       case PROVIDED:
         sss += "provided:  " + CSBMLunit::getDisplayString();
         break;
+
       case DERIVED:
         sss += "derived:  " + CSBMLunit::getDisplayString();
         break;

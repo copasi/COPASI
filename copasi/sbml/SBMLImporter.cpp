@@ -41,7 +41,6 @@
 #include <sbml/Reaction.h>
 #include <sbml/LocalParameter.h>
 
-#if LIBSBML_VERSION >= 50400
 #include <sbml/SBMLTransforms.h>
 #include "IdList.h" // this file is missing from the libSBML distribution!
 #include <sbml/conversion/ConversionProperties.h>
@@ -50,11 +49,6 @@
   {\
     element.initDefaults();\
   }
-#else
-#define INIT_DEFAULTS(element) \
-  {\
-  }
-#endif // LIBSBML_VERSION
 
 #include <sbml/KineticLaw.h>
 #include <sbml/math/FormulaFormatter.h>
@@ -106,7 +100,7 @@
 #include <copasi/MIRIAM/CBiologicalDescription.h>
 #include <copasi/MIRIAM/CModelMIRIAMInfo.h>
 
-#if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
+#if LIBSBML_HAS_PACKAGE_COMP
 
 #include <sbml/util/PrefixTransformer.h>
 #include <sbml/packages/comp/extension/CompModelPlugin.h>
@@ -3285,7 +3279,6 @@ SBMLImporter::SBMLImporter():
   mUsedSBMLIdsPopulated(false),
   mAvogadroSet(false),
   mKnownCustomUserDefinedFunctions(),
-#if LIBSBML_VERSION >= 40100
   mpModelConversionFactor(NULL),
   mChemEqElementSpeciesIdMap(),
   mSpeciesConversionParameterMap(),
@@ -3294,7 +3287,6 @@ SBMLImporter::SBMLImporter():
   mRateRuleForSpeciesReferenceIgnored(false),
   mEventAssignmentForSpeciesReferenceIgnored(false),
   mConversionFactorFound(false),
-#endif // LIBSBML_VERSION >= 40100
   mCompartmentMap(),
   mParameterFluxMap(),
   mChangedObjects(),
@@ -3420,15 +3412,11 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   else
     sbmlDoc->setApplicableValidators(AllChecksON & UnitsCheckOFF & SBOCheckOFF);
 
-#if LIBSBML_VERSION > 50800
   // libSBML is validating comp models after 5.8.0 this would throw an
   // error in case external references can't be resolved.
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
-#endif
 
   unsigned int checkResult = sbmlDoc->getNumErrors(LIBSBML_SEV_ERROR) + sbmlDoc->checkConsistency();
-
-#if LIBSBML_VERSION > 50800
 
   sbmlDoc->setLocationURI(mpDataModel->getReferenceDirectory());
 
@@ -3437,7 +3425,6 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
   // though the layout code has been written to anticipate all these possible
   // error sources). Thus downgrade these error messages
   sbmlDoc->getErrorLog()->changeErrorSeverity(LIBSBML_SEV_ERROR, LIBSBML_SEV_WARNING, "layout");
-#endif
 
   if (checkResult != 0)
     {
@@ -3486,21 +3473,17 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_WARNING:
 
-#if LIBSBML_VERSION > 50800
-
                 // filter layout warnings always
                 if (pSBMLError->getPackage() == "layout")
                   messageType = CCopasiMessage::WARNING_FILTERED;
+                else if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                  {
+                    messageType = CCopasiMessage::WARNING_FILTERED;
+                  }
                 else
-#endif
-                  if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
-                    {
-                      messageType = CCopasiMessage::WARNING_FILTERED;
-                    }
-                  else
-                    {
-                      messageType = CCopasiMessage::WARNING;
-                    }
+                  {
+                    messageType = CCopasiMessage::WARNING;
+                  }
 
                 CCopasiMessage(messageType, MCSBML + 40, "WARNING", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                 break;
@@ -3517,7 +3500,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-              // treat unknown as fatal
+                // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -3586,8 +3569,6 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
         }
     }
 
-#if LIBSBML_VERSION >= 50700
-
   if (sbmlDoc->getPlugin("comp") != NULL && sbmlDoc->isSetPackageRequired("comp"))
     {
 
@@ -3604,7 +3585,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
           CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
         }
 
-#if LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
+#if LIBSBML_HAS_PACKAGE_COMP
       // apply the name transformer
       CompModelPlugin* mPlug = dynamic_cast<CompModelPlugin*>(sbmlDoc->getModel()->getPlugin("comp"));
       CPrefixNameTransformer trans;
@@ -3614,7 +3595,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
           mPlug->setTransformer(&trans);
         }
 
-#endif //LIBSBML_VERSION >= 50903 && LIBSBML_HAS_PACKAGE_COMP
+#endif //LIBSBML_HAS_PACKAGE_COMP
 
       // the sbml comp package is used, and the required flag is set, so it stands to reason
       // that we need to flatten the document
@@ -3640,7 +3621,6 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
         }
     }
 
-#endif
   finishCurrentStep();
   return false;
 }

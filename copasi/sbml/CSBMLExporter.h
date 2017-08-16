@@ -239,13 +239,11 @@ public:
                                           bool addIndexForFirst,
                                           const std::string & separator = "_");
 
-#if LIBSBML_VERSION >= 40001
   /**
    * Method to create a valid XHTML node from a CModels comments string.
    * This method is declared public so that I can call it from the unit tests.
    */
   static XMLNode* createSBMLNotes(const std::string& notes_string);
-#endif // LIBSBML_VERSION
 
   bool exportLayout(unsigned int sbmlLevel, CDataModel& dataModel);
 protected:

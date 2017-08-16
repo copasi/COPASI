@@ -134,7 +134,6 @@ protected:
   std::map<std::string, std::string> mKnownInitalValues;
   std::map<const UnitDefinition*, std::string> mUnitExpressions;
 
-#if LIBSBML_VERSION >= 40100
   // this map is used for storing the parameters that are used as factors that have to be applied to the multiplicities
   // of the chemical equation elements
   const CModelValue* mpModelConversionFactor;
@@ -154,7 +153,6 @@ protected:
   bool mRateRuleForSpeciesReferenceIgnored;
   bool mEventAssignmentForSpeciesReferenceIgnored;
   bool mConversionFactorFound;
-#endif // LIBSBML_VERSION >= 40100
 
   std::map<std::string, CCompartment*> mCompartmentMap;
   std::map<std::string, CModelValue*> mParameterFluxMap;
@@ -794,7 +792,6 @@ public:
    */
   static bool importNotes(CAnnotation* pAnno, const SBase* pSBase);
 
-#if LIBSBML_VERSION >= 40100
   /**
    * This method check if a unit has been set on a number node.
    * If such a node is found in the tree, true is returned.
@@ -812,7 +809,6 @@ public:
    */
   static void updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::string, double>& ids);
 
-#endif // LIBSBML_VERSION
 };
 
 #endif // SBMLIMPORTER_H__

@@ -396,8 +396,6 @@ ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
 
       if (pModel != NULL)
         {
-#if LIBSBML_VERSION >= 40100
-
           if (pOrigObject->getObjectName() == "Avogadro Constant")
             {
               node->setType(AST_NAME_AVOGADRO);
@@ -405,7 +403,6 @@ ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
             }
           else
             {
-#endif // LIBSBML_VERSION >= 40100
               node->setType(AST_NAME_TIME);
               node->setName("time");
 
@@ -414,10 +411,8 @@ ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
                   CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 1);
                 }
 
-#if LIBSBML_VERSION >= 40100
             }
 
-#endif // LIBSBML_VERSION >= 40100
         }
       else
         {

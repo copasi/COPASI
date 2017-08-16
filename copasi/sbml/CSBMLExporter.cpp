@@ -29,11 +29,7 @@
 #include "copasi/utilities/CUnit.h"
 #include "sbml/SBMLDocument.h"
 #include "sbml/Compartment.h"
-#if LIBSBML_VERSION >= 40100
 #include "sbml/LocalParameter.h"
-#endif // LIBSBML_VERSION
-
-#if LIBSBML_VERSION >= 50400
 
 #include <sbml/packages/layout/extension/LayoutModelPlugin.h>
 #include <sbml/packages/layout/extension/LayoutExtension.h>
@@ -48,14 +44,6 @@
   {\
     element.initDefaults();\
   }
-
-#else
-
-#define INIT_DEFAULTS(element) \
-  {\
-  }
-
-#endif // LIBSBML VERSION
 
 #include "sbml/Model.h"
 #include "sbml/Species.h"
@@ -551,14 +539,11 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
     }
 
 // if we write an SBML L3 document, we have to explicitely set the units on the model
-#if LIBSBML_VERSION >= 40100
-
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setTimeUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION
 }
 
 /**
@@ -654,14 +639,11 @@ void CSBMLExporter::createVolumeUnit(const CDataModel& dataModel)
     }
 
 // if we write an SBML L3 document, we have to explicitely set the units on the model
-#if LIBSBML_VERSION >= 40100
-
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setVolumeUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION
 }
 
 /**
@@ -757,7 +739,6 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
     }
 
 // if we write an SBML L3 document, we have to explicitely set the units on the model
-#if LIBSBML_VERSION >= 40100
 
   if (this->mSBMLLevel > 2)
     {
@@ -767,7 +748,6 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
       pSBMLModel->setExtentUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION
 }
 
 /**
@@ -868,15 +848,13 @@ void CSBMLExporter::createLengthUnit(const CDataModel& dataModel)
         }
     }
 
-// if we write an SBML L3 document, we have to explicitely set the units on the model
-#if LIBSBML_VERSION >= 40100
+// if we write an SBML L3 document, we have to explicitly set the units on the model
 
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setLengthUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION
 }
 
 /**
@@ -982,14 +960,11 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
     }
 
 // if we write an SBML L3 document, we have to explicitely set the units on the model
-#if LIBSBML_VERSION >= 40100
-
   if (this->mSBMLLevel > 2)
     {
       pSBMLModel->setAreaUnits(uDef.getId());
     }
 
-#endif // LIBSBML_VERSION
 }
 
 /**
@@ -1223,16 +1198,12 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
         }
       else
         {
-#if LIBSBML_VERSION >= 40100
-
           if (this->mSBMLLevel > 2)
             {
               pSBMLSpecies->unsetConversionFactor();
               // we have to remove the conversionFactor because on import we multiplied the stoichiometries
               // with this factor
             }
-
-#endif // LIBSBML_VERSION
 
           // clear the spatialSizeUnits attribute if there is any
           if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 3))
@@ -1632,12 +1603,10 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
         }
 
       INIT_DEFAULTS((*sRef));
-#if LIBSBML_VERSION > 40100
 
       if (this->mSBMLLevel > 2)
         sRef->setConstant(true);
 
-#endif
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
       usedReferences.insert(sRef->getSpecies());
@@ -1670,12 +1639,9 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
         }
 
       INIT_DEFAULTS((*sRef));
-#if LIBSBML_VERSION > 40100
 
       if (this->mSBMLLevel > 2)
         sRef->setConstant(true);
-
-#endif
 
       sRef->setStoichiometry(element->getMultiplicity());
       sRef->setDenominator(1);
@@ -3795,8 +3761,6 @@ CSBMLExporter::exportLayout(unsigned int sbmlLevel, CDataModel& dataModel)
           dataModel.getListOfLayouts()->exportToSBML(lmPlugin->getListOfLayouts(),
               this->mCOPASI2SBMLMap, mIdMap, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
 
-#if LIBSBML_VERSION >= 50400
-
           // also ensure ther is one global render information object
           if (lmPlugin->getNumLayouts() > 0 && getNumDefaultStyles() > 0)
             {
@@ -3812,7 +3776,6 @@ CSBMLExporter::exportLayout(unsigned int sbmlLevel, CDataModel& dataModel)
                 }
             }
 
-#endif // LIBSBML_VERSION >= 50400
         }
     }
 
@@ -3927,15 +3890,7 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
   writer->setProgramName("COPASI");
   writer->setProgramVersion(CVersion::VERSION.getVersion().c_str());
 
-#if LIBSBML_VERSION <= 51104
-  char* d = writer->writeToString(this->mpSBMLDocument);
-  std::string returnValue = d;
-
-  if (d) free(d);
-
-#else
   std::string returnValue = writer->writeSBMLToStdString(this->mpSBMLDocument);
-#endif
 
   pdelete(writer);
 
@@ -3945,18 +3900,6 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
   // the workaround is no longer necessary, as the libSBML > 5.11.4 will include
   // a converter that not only converts to l1v1 but also inlines the compartment
   // sizes and changes pow implementation as needed by Gepasi
-#if LIBSBML_VERSION <= 51104
-
-  // actually most of the work seems to be done by
-  // libsbml already, so the following method doesn't have to
-  // do much and most of the code is obsolete, at least for now
-  if (sbmlLevel == 1 && sbmlVersion == 1)
-    {
-      // if there is an exception in the routine, we hand it up to the calling routine
-      convert_to_l1v1(returnValue);
-    }
-
-#endif
 
   finishExport();
 
@@ -4019,7 +3962,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 
   if (this->mpSBMLDocument == NULL) fatalError();
 
-#if LIBSBML_VERSION >= 50000
   const std::string uri = (this->mSBMLLevel < 3 ? LayoutExtension::getXmlnsL2() : LayoutExtension::getXmlnsL3V1V1());
   this->mpSBMLDocument->enablePackage(uri, "layout", true);
 
@@ -4032,7 +3974,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
   if (this->mSBMLLevel > 2)
     this->mpSBMLDocument->setPackageRequired("render", false);
 
-#endif
 
   if (this->mpSBMLDocument->getModel() == NULL)
     {
@@ -4073,7 +4014,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 
   // update the MIRIAM annotation on the model
   CSBMLExporter::updateMIRIAMAnnotation(pModel, this->mpSBMLDocument->getModel(), this->mMetaIdMap);
-#if LIBSBML_VERSION >= 40100
 
   if (this->mSBMLLevel > 2)
     {
@@ -4081,8 +4021,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
       // with this factor
       this->mpSBMLDocument->getModel()->unsetConversionFactor();
     }
-
-#endif // LIBSBML_VERSION
 
   // create units, compartments, species, parameters, reactions, initial
   // assignment, assignments, (event) and function definitions
@@ -4268,9 +4206,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
       if (pSBMLModel != NULL)
         {
           unsigned int i = 0, iMax = this->mExportedFunctions.size();
-#if LIBSBML_VERSION >= 40100
           int result;
-#endif // LIBSBML_VERSION >= 40100
           FunctionDefinition* pFunDef = NULL;
           std::map<const FunctionDefinition*, const CDataObject*>::const_iterator funPos;
 
@@ -4280,14 +4216,9 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
               assert(pFunDef != NULL);
               // match the namespaces to those of the model
               pFunDef->setSBMLNamespaces(pSBMLModel->getSBMLNamespaces());
-// add methods only return a value starting with libsbml 4
-#if LIBSBML_VERSION >= 40100
+              // add methods only return a value starting with libsbml 4
               result = pSBMLModel->addFunctionDefinition(pFunDef);
               assert(result == LIBSBML_OPERATION_SUCCESS);
-#else
-              pSBMLModel->addFunctionDefinition(pFunDef);
-              assert(pSBMLModel->getFunctionDefinition(pFunDef->getId()) != NULL);
-#endif // LIBSBML_VERSION >= 40100
               // now we need to add the newly created FunctionDefinition to the copasi2sbml map
               funPos = this->mFunctionMap.find(pFunDef);
               assert(funPos != this->mFunctionMap.end());
@@ -4313,8 +4244,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
           finishExport();
           return false;
         }
-
-#if LIBSBML_VERSION >= 50400
 
       SBMLNamespaces targetNs(mSBMLLevel, mSBMLVersion); // use reference, as the ns gets cloned
 
@@ -4344,9 +4273,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
           mpSBMLDocument->convert(prop);
         }
 
-#else
-      this->mpSBMLDocument->setLevelAndVersion(this->mSBMLLevel, this->mSBMLVersion);
-#endif
     }
 
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
@@ -4775,8 +4701,6 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
       pSBMLEvent->setUseValuesFromTriggerTime(event.getDelayAssignment());
     }
 
-#if LIBSBML_VERSION >= 40200
-
   // if the event came from an SBML L3 model, we have to make sure that the
   // priority is not set when we export the event, otherwise the exported model
   // and the COPASI model will not behave the same.
@@ -4784,8 +4708,6 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
     {
       pSBMLEvent->setPriority(NULL);
     }
-
-#endif  // LIBSBML_VERSION >= 40200
 
   // if the name doesn't consists of whitespace only, we set the name
   if (event.getObjectName().find_first_not_of("\t\r\n ") != std::string::npos)
@@ -4868,7 +4790,6 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
     {
       Trigger* pTrigger = pSBMLEvent->createTrigger();
       pTrigger->setMath(pNode);
-#if LIBSBML_VERSION >= 40200
 
       // we need to make sure that the initial value of the trigger is set to true
       // as well as the persistent flag
@@ -4880,7 +4801,6 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
           pTrigger->setPersistent(event.getPersistentTrigger());
         }
 
-#endif  // LIBSBML_VERSION >= 40200
       delete pNode;
     }
   else
@@ -5363,7 +5283,6 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
                   // Actually here we could probably have gotten away with the old code, but
                   // better safe than sorry
                   Parameter* pSBMLPara = NULL;
-#if LIBSBML_VERSION >= 40100
 
                   if (this->mSBMLLevel > 2)
                     {
@@ -5371,13 +5290,10 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
                     }
                   else
                     {
-#endif // LIBSBML_VERSION
                       pSBMLPara = pKLaw->createParameter();
-#if LIBSBML_VERSION >= 40100
                     }
 
                   pSBMLPara->setId(pPara->getObjectName().c_str());
-#endif // LIBSBML_VERSION
 
                   // don't call setName on level 1 objects because this will also
                   // change the id
@@ -7253,7 +7169,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
-#if LIBSBML_VERSION >= 40100
 
           // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
@@ -7264,7 +7179,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_UNKNOWN);
             cvTerm.setBiologicalQualifierType(BQB_OCCURS_IN);
             break;
-#endif // LIBSBML_VERSION
 
           case CRDFPredicate::bqmodel_is:
             cvTerm.setQualifierType(MODEL_QUALIFIER);
@@ -7447,10 +7361,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   // if it is the model, we have to set the model history
   // in addition to the normal CVTerms
   if ((pModel != NULL && this->mSBMLLevel < 3)
-#if LIBSBML_VERSION >= 40100
-// actually this preprocessor directive is not really necessary, but better safe then sorry
+      // actually this preprocessor directive is not really necessary, but better safe then sorry
       || this->mSBMLLevel > 2
-#endif // LIBSBML_VERSION
      )
     {
       // the model history consists of the creators, the creation time and the
@@ -7545,8 +7457,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
           CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no modification date has been defined.");
         }
 
-#if LIBSBML_VERSION >= 40100
-
       if (this->mSBMLLevel > 2)
         {
           // set the model history on the sbml object
@@ -7566,7 +7476,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
         }
       else
         {
-#endif // LIBSBML_VERSION
           // set the model history on the model
           Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
           assert(pSBMLModel != NULL);
@@ -7584,10 +7493,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
               pSBMLModel->setModelHistory(&modelHistory);
             }
 
-#if LIBSBML_VERSION >= 40100
         }
 
-#endif // LIBSBML_VERSION
     }
 
   if (this->mExportCOPASIMIRIAM == true)
@@ -7663,14 +7570,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
               // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
               // in libsbml it creates a dummy node and in libsbml 4 it doesn't
               pCOPASIAnnotation = XMLNode::convertStringToXMLNode("<COPASI xmlns=\"http://www.copasi.org/static/sbml\"></COPASI>");
-              // now we have to make an additional copy since otherwise we would
-              // need a const_cast later on.
-              // This is due to a limitation in the libsbml API.
-#if LIBSBML_VERSION < 40001
-              XMLNode* pTmpNode = pCOPASIAnnotation->getChild(0).clone();
-              delete pCOPASIAnnotation;
-              pCOPASIAnnotation = pTmpNode;
-#endif // LIBSBML_VERSION < 40001
               // calling unsetEnd is necessary for libsbml 3.1.1 and 3.2.0,
               // otherwise libsbml will write the opening COPASI element as a
               // closing element and add another closing element later on which is
@@ -7681,11 +7580,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
               // we add the first child of the MIRIAM node since it was created
               // with convertStrngToXMLNode which creates a dummy node as the
               // root node
-#if LIBSBML_VERSION < 40001
-              pCOPASIAnnotation->addChild(pMIRIAMNode->getChild(0));
-#else
               pCOPASIAnnotation->addChild(*pMIRIAMNode);
-#endif // LIBSBML_VERSION < 40001
               // delete the MIRIAM node since addChild made a copy
               delete pMIRIAMNode;
             }
@@ -8523,19 +8418,9 @@ bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
 
   if ((!pAnno->getNotes().empty()) && !(pAnno->getNotes().find_first_not_of(" \n\t\r") == std::string::npos))
     {
-#if LIBSBML_VERSION >= 40100
       // the new method to create notes does not add the notes tag around the notes any
       // more because libsbml 4 checks if it is there and adds it if it isn't
       XMLNode* pNotes = CSBMLExporter::createSBMLNotes(pAnno->getNotes());
-#else
-      // if we are compiling agains libsbml 3, we use the old way of setting the notes
-      std::string comments = "<notes>" + pAnno->getNotes() + "</notes>";
-      // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
-      // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-      // somehow this never did affect the notes because they were exported correctly with
-      // libsbml 3 already
-      XMLNode* pNotes = XMLNode::convertStringToXMLNode(comments);
-#endif // LIBSBML_VERSION
 
       if (pNotes != NULL)
         {
@@ -8670,7 +8555,6 @@ bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
   return result;
 }
 
-#if LIBSBML_VERSION >= 40001
 /**
  * Method to create a valid XHTML node from a CModels comments string.
  */
@@ -8961,5 +8845,3 @@ void CSBMLExporter::convert_to_l1v1(std::string& l1v2_string)
       start_pos = l1v2_string.find("</species>", start_pos);
     }
 }
-
-#endif // LIBSBML_VERSION
