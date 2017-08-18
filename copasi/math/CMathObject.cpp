@@ -1387,22 +1387,34 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
 
                 if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
                   {
-                    PositiveFlux << "infinity";
-                    NegativeFlux << "infinity";
+                    PositiveFlux << "infinity*";
+                    NegativeFlux << "infinity*";
                   }
                 else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
                   {
-                    PositiveFlux << "-infinity";
-                    NegativeFlux << "-infinity";
+                    PositiveFlux << "-infinity*";
+                    NegativeFlux << "-infinity*";
+                  }
+                // Remove multiplying with -1.0
+                else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                         Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                  {
+                    PositiveFlux << "-";
+                    NegativeFlux << "-";
+                  }
+                // Remove multiplying with 1.0
+                else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                         Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                  {
+                    // PositiveFlux << "+";
+                    // NegativeFlux << "+";
                   }
                 else
                   {
-                    PositiveFlux << Multiplicity;
-                    NegativeFlux << Multiplicity;
+                    PositiveFlux << Multiplicity << "*";
+                    NegativeFlux << Multiplicity << "*";
                   }
 
-                PositiveFlux << "*";
-                NegativeFlux << "*";
                 PositiveFlux << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
                 NegativeFlux << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
 
@@ -1680,32 +1692,49 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
             {
               if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
                 {
-                  Infix << "infinity";
+                  Infix << "infinity*";
                 }
               else if (Multiplicity == -std::numeric_limits< C_FLOAT64 >::infinity())
                 {
-                  Infix << "-infinity";
+                  Infix << "-infinity*";
+                }
+              // Remove multiplying with -1.0
+              else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                       Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  Infix << "-";
+                }
+              // Remove multiplying with 1.0
+              else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                       Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  // Infix << "+";
                 }
               else
                 {
-                  Infix << Multiplicity;
+                  Infix << Multiplicity << "*";
                 }
             }
           else
             {
               if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
                 {
-                  Infix << "+infinity";
+                  Infix << "+infinity*";
+                }
+              // Remove multiplying with 1.0
+              else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                       Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  Infix << "+";
                 }
               else
                 {
-                  Infix << "+" << Multiplicity;
+                  Infix << "+" << Multiplicity << "*";
                 }
             }
 
           First = false;
 
-          Infix << "*";
           Infix << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
         }
     }
