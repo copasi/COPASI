@@ -26,6 +26,8 @@ class CUnit
 {
   friend std::ostream &operator<<(std::ostream &os, const CUnit & o);
 
+public:
+
   typedef struct
   {
     std::string symbol;
@@ -33,8 +35,6 @@ class CUnit
     int scale;
     double exponent;
   } SymbolComponent;
-
-public:
 
   static C_FLOAT64 Avogadro;
 

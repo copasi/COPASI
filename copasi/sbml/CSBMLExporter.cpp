@@ -3401,6 +3401,255 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CCopasiDataMod
   CSBMLExporter::updateMIRIAMAnnotation(&function, pFunDef, this->mMetaIdMap);
 }
 
+int convertBaseUnit(CBaseUnit::Kind unit)
+{
+  switch (unit)
+    {
+      case CBaseUnit::dimensionless:
+        return UNIT_KIND_DIMENSIONLESS;
+
+      case CBaseUnit::meter:
+        return UNIT_KIND_METRE;
+
+      case CBaseUnit::gram:
+        return UNIT_KIND_GRAM;
+
+      case CBaseUnit::second:
+        return UNIT_KIND_SECOND;
+
+      case CBaseUnit::ampere:
+        return UNIT_KIND_AMPERE;
+
+      case CBaseUnit::kelvin:
+        return UNIT_KIND_KELVIN;
+
+      case CBaseUnit::item:
+        return UNIT_KIND_ITEM;
+
+      case CBaseUnit::candela:
+        return UNIT_KIND_CANDELA;
+
+      case CBaseUnit::avogadro:
+        return UNIT_KIND_AVOGADRO;
+
+      case CBaseUnit::undefined:
+      default:
+        return C_INVALID_INDEX;
+    }
+}
+
+int convertSymbol(const std::string& unit)
+{
+  if (unit == "A")
+    return UNIT_KIND_AMPERE;
+
+  if (unit == "Avogadro")
+    return UNIT_KIND_AVOGADRO;
+
+  if (unit == "Bq")
+    return UNIT_KIND_BECQUEREL;
+
+  if (unit == "cd")
+    return UNIT_KIND_CANDELA;
+
+  if (unit == "C")
+    return UNIT_KIND_COULOMB;
+
+  if (unit == "d")
+    return C_INVALID_INDEX;            // unsupported
+
+  if (unit == "1")
+    return UNIT_KIND_DIMENSIONLESS;
+
+  if (unit == "F")
+    return UNIT_KIND_FARAD;
+
+  if (unit == "g")
+    return UNIT_KIND_GRAM;
+
+  if (unit == "Gy")
+    return UNIT_KIND_GRAY;
+
+  if (unit == "H")
+    return UNIT_KIND_HENRY;
+
+  if (unit == "Hz")
+    return UNIT_KIND_HERTZ;
+
+  if (unit == "h")                     // unsupported
+    return C_INVALID_INDEX;
+
+  if (unit == "#")
+    return UNIT_KIND_ITEM;
+
+  if (unit == "J")
+    return UNIT_KIND_JOULE;
+
+  if (unit == "kat")
+    return UNIT_KIND_KATAL;
+
+  if (unit == "K")
+    return UNIT_KIND_KELVIN;
+
+  if (unit == "l")
+    return UNIT_KIND_LITRE;
+
+  if (unit == "lm")
+    return UNIT_KIND_LUMEN;
+
+  if (unit == "lx")
+    return UNIT_KIND_LUX;
+
+  if (unit == "m")
+    return UNIT_KIND_METRE;
+
+  if (unit == "min")                   // unsupported
+    return C_INVALID_INDEX;
+
+  if (unit == "mol")
+    return UNIT_KIND_MOLE;
+
+  if (unit == "N")
+    return UNIT_KIND_NEWTON;
+
+  if (unit == "ohm" || unit == "\xCE\xA9")
+    return UNIT_KIND_OHM;
+
+  if (unit == "Pa")
+    return UNIT_KIND_PASCAL;
+
+  if (unit == "rad")
+    return UNIT_KIND_RADIAN;
+
+  if (unit == "s")
+    return UNIT_KIND_SECOND;
+
+  if (unit == "S")
+    return UNIT_KIND_SIEMENS;
+
+  if (unit == "Sv")
+    return UNIT_KIND_SIEVERT;
+
+  if (unit == "sr")
+    return UNIT_KIND_STERADIAN;
+
+  if (unit == "T")
+    return UNIT_KIND_TESLA;
+
+  if (unit == "V")
+    return UNIT_KIND_VOLT;
+
+  if (unit == "W")
+    return UNIT_KIND_WATT;
+
+  if (unit == "Wb")
+    return UNIT_KIND_WEBER;
+
+  return C_INVALID_INDEX;
+}
+
+Unit* addCUnitComponentToUnitDefinition(UnitDefinition* result, const CUnitComponent &component, const std::string& unitExpression)
+{
+  Unit* pUnit = result->createUnit();
+
+  pUnit->setExponent(component.getExponent());
+  pUnit->setScale((int)component.getScale());
+  pUnit->setMultiplier(component.getMultiplier());
+
+  int unitKind = convertBaseUnit(component.getKind());
+
+  if (unitKind == C_INVALID_INDEX)
+    {
+      std::stringstream str;
+      str << "An unsupported UnitKind was encountered while exporting '"
+          << unitExpression
+          << "', it was replaced by dimensionless.";
+      CCopasiMessage(CCopasiMessage::WARNING, str.str().c_str());
+      pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
+    }
+  else
+    {
+      pUnit->setKind(static_cast<UnitKind_t>(unitKind));
+    }
+
+  return pUnit;
+}
+
+void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolComponent& component, const std::string& unitExpression)
+{
+  std::string symbol = component.symbol;
+
+  if (symbol.empty())
+    return;
+
+  double multiplier = component.multiplier;
+  std::string possibleScale = symbol.substr(0, 1);
+  std::string possibleUnit = symbol.substr(1);
+
+  // need to deal with unsupported time units differently
+  // just replace them by their multiplier * s
+  if (symbol == "h" || possibleUnit == "h")
+    {
+      multiplier *= 3600;
+      symbol = "s";
+      possibleUnit = "s";
+    }
+  else if (symbol == "min" || possibleUnit == "min")
+    {
+      multiplier *= 60;
+      symbol = "s";
+      possibleUnit = "s";
+    }
+  else if (symbol == "d" || possibleUnit == "d")
+    {
+      multiplier *= 86400;
+      symbol = "s";
+      possibleUnit = "s";
+    }
+
+  int unitKind = convertSymbol(possibleUnit);
+  int scale = 0;
+
+  if (unitKind != C_INVALID_INDEX)
+    scale = static_cast<int>(CBaseUnit::scaleFromPrefix(possibleScale));
+  else
+    unitKind = convertSymbol(symbol);
+
+  if (unitKind == C_INVALID_INDEX)
+    {
+      // no compound unitkind exists, so use the basic ones
+
+      CUnit unit = CUnit(symbol);
+      std::set< CUnitComponent >::const_iterator it = unit.getComponents().begin();
+
+      for (; it != unit.getComponents().end(); ++it)
+        {
+          CUnitComponent baseComponent = *it;
+
+          if (component.exponent != 1.0)
+            baseComponent.setExponent(baseComponent.getExponent()*component.exponent);
+
+          if (component.scale != 0.0)
+            baseComponent.setScale(baseComponent.getScale() + component.scale);
+
+          if (component.multiplier != 1.0)
+            {
+              baseComponent.setMultiplier(baseComponent.getMultiplier()*multiplier);
+            }
+
+          addCUnitComponentToUnitDefinition(result, baseComponent, unitExpression);
+        }
+    }
+  else
+    {
+      Unit* pUnit = result->createUnit();
+      pUnit->setExponent(component.exponent);
+      pUnit->setScale((int)component.scale + scale);
+      pUnit->setMultiplier(multiplier);
+      pUnit->setKind(static_cast<UnitKind_t>(unitKind));
+    }
+}
+
 UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
 {
   if (mpSBMLDocument == NULL || unit.isUndefined()) return NULL;
@@ -3434,69 +3683,32 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
 
   result->setId(id);
   mIdMap.insert(std::make_pair(result->getId(), result));
-  result->setName(unit.getExpression());
+  std::string unitExpression = unit.getExpression();
+  result->setName(unitExpression);
 
+  std::vector< CUnit::SymbolComponent > symbolComponents = unit.getSymbolComponents();
+
+  std::vector<CUnit::SymbolComponent >::iterator symbolIt = symbolComponents.begin();
+
+  for (; symbolIt != symbolComponents.end(); ++symbolIt)
+    {
+      CUnit::SymbolComponent& current = *symbolIt;
+      addSymbolComponentToUnitDefinition(result, current, unitExpression);
+    }
+
+#if 0
+  // while this code works, it does write out base units only, that won't help our users
+  // much ... moreover, since avogadro is only supported starting with SBML Level 3,
+  // we would have to prohibit all previous versions of SBML export with units
   std::set< CUnitComponent >::const_iterator it = unit.getComponents().begin();
 
   for (; it != unit.getComponents().end(); ++it)
     {
       const CUnitComponent& component = *it;
-      Unit* pUnit = pModel->createUnit();
-
-      pUnit->setExponent(component.getExponent());
-      pUnit->setScale(component.getScale());
-      pUnit->setMultiplier(component.getMultiplier());
-
-      switch (component.getKind())
-        {
-          case CBaseUnit::avogadro:
-            pUnit->setKind(UNIT_KIND_AVOGADRO);
-            break;
-
-          case CBaseUnit::dimensionless:
-            pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
-            break;
-
-          case CBaseUnit::meter:
-            pUnit->setKind(UNIT_KIND_METRE);
-            break;
-
-          case CBaseUnit::gram:
-            pUnit->setKind(UNIT_KIND_GRAM);
-            break;
-
-          case CBaseUnit::second:
-            pUnit->setKind(UNIT_KIND_SECOND);
-            break;
-
-          case CBaseUnit::ampere:
-            pUnit->setKind(UNIT_KIND_AMPERE);
-            break;
-
-          case CBaseUnit::kelvin:
-            pUnit->setKind(UNIT_KIND_KELVIN);
-            break;
-
-          case CBaseUnit::item:
-            pUnit->setKind(UNIT_KIND_ITEM);
-            break;
-
-          case CBaseUnit::candela:
-            pUnit->setKind(UNIT_KIND_CANDELA);
-            break;
-
-          default:
-          {
-            pUnit->setKind(UNIT_KIND_DIMENSIONLESS);
-            std::stringstream str;
-            str << "An unsupported UnitKind was encountered while exporting '"
-                << unit.getExpression()
-                << "', it was replaced by dimensionless.";
-            CCopasiMessage(CCopasiMessage::WARNING, str.str().c_str());
-            break;
-          }
-        }
+      addCUnitComponentToUnitDefinition(result, component, unitExpression);
     }
+
+#endif
 
   return result;
 }
