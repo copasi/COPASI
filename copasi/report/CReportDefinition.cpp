@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -182,7 +187,14 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
   // Determine column title
   if (pObject->getObjectParent())
     {
-      Title = pObject->getCN() + ",Property=DisplayName";
+      if (pObject->getObjectType() == "Separator")
+        {
+          Title = "Separator=" + pObject->getCN().getObjectName();
+        }
+      else
+        {
+          Title = pObject->getCN() + ",Property=DisplayName";
+        }
     }
   else
     Title =
@@ -191,7 +203,14 @@ void CReportDefinition::addTableElement(const CCopasiObject * pObject)
   if (mbTitle)
     mHeaderVector.push_back(Title);
 
-  mBodyVector.push_back(pObject->getCN());
+  if (pObject->getObjectType() == "Separator")
+    {
+      mBodyVector.push_back("Separator=" + pObject->getCN().getObjectName());
+    }
+  else
+    {
+      mBodyVector.push_back(pObject->getCN());
+    }
 
   return;
 }

@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -39,5 +44,12 @@ CQTextDialog::~CQTextDialog()
   // no need to delete child widgets, Qt does it all for us
 }
 
-QString CQTextDialog::getText()
-{return mpTextEdit->toPlainText();}
+void CQTextDialog::setText(const QString & text)
+{
+  mpTextEdit->setPlainText(text);
+}
+
+QString CQTextDialog::getText() const
+{
+  return mpTextEdit->toPlainText();
+}

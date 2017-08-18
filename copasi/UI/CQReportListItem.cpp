@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -46,7 +51,25 @@ CQReportListItem::CQReportListItem(const CCopasiObject * pObject):
 
 CQReportListItem::~CQReportListItem() {}
 
-const CCopasiObjectName & CQReportListItem::getCN() const {return mCN;};
+const CCopasiObjectName &
+CQReportListItem::getCN() const
+{
+  return mCN;
+}
+
+void CQReportListItem::setObject(const CCopasiObject * pObject)
+{
+  if (pObject)
+    {
+      setText(FROM_UTF8(pObject->getObjectDisplayName()));
+      mCN = pObject->getCN();
+    }
+  else
+    {
+      setText(QString("Not found"));
+      mCN = CCopasiStaticString("NotFound").getCN();
+    }
+}
 
 void CQReportListItem::refreshText()
 {
