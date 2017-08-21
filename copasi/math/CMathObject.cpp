@@ -1369,7 +1369,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   Infix << "*";
   Infix << container.getModel().getNumber2QuantityFactor();
 
-  if (pSpecies->getCompartment()->getStatus() != CModelEntity::Status::FIXED)
+  if (pSpecies->getCompartment()->getStatus() != CModelEntity::FIXED)
     {
       Infix << "-";
       Infix << pointerToString(container.getMathObject(pSpecies->getConcentrationReference())->getValuePointer());
