@@ -137,7 +137,7 @@ public:
     return;
   }
 
-  void setAnnotationCN(size_t d, size_t i, const std::string cn);
+  void setAnnotation(size_t d, size_t i, const CDataObject * pObject);
   void setAnnotationString(size_t d, size_t i, const std::string s);
 
   /**

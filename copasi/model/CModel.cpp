@@ -876,22 +876,18 @@ void CModel::updateMatrixAnnotations()
 
   for (j = 0; it != end; ++it, j++)
     {
-      CN = it->getCN();
-
-      mpStoiAnnotation->setAnnotationCN(0, j, CN);
-      mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
-      mpLinkMatrixAnnotation->setAnnotationCN(1, j, CN);
-      mpRedStoiAnnotation->setAnnotationCN(0, j, CN);
+      mpStoiAnnotation->setAnnotation(0, j, &*it);
+      mpLinkMatrixAnnotation->setAnnotation(0, j, &*it);
+      mpLinkMatrixAnnotation->setAnnotation(1, j, &*it);
+      mpRedStoiAnnotation->setAnnotation(0, j, &*it);
     }
 
   end += MNumMetabolitesReactionDependent;
 
   for (; it != end; ++it, j++)
     {
-      CN = it->getCN();
-
-      mpStoiAnnotation->setAnnotationCN(0, j, CN);
-      mpLinkMatrixAnnotation->setAnnotationCN(0, j, CN);
+      mpStoiAnnotation->setAnnotation(0, j, &*it);
+      mpLinkMatrixAnnotation->setAnnotation(0, j, &*it);
     }
 
   mpStoiAnnotation->setCopasiVector(1, mSteps);

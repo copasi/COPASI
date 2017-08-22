@@ -487,10 +487,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-        /*    case CSensProblem::LyapunovExp:
-              mpSubTask = dynamic_cast<CCopasiTask*>
-                          (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
-              break;*/
+      /*    case CSensProblem::LyapunovExp:
+            mpSubTask = dynamic_cast<CCopasiTask*>
+                        (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+            break;*/
 
       case CSensProblem::ParameterEstimation:
         mpSubTask = dynamic_cast<CCopasiTask*>
@@ -643,8 +643,8 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
       for (j = 0; j < mTargetValuePointers.size(); ++j, ++itDataObject)
         {
-          mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
-          mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
+          mpProblem->getResultAnnotated()->setAnnotation(dim, j, *itDataObject);
+          mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, *itDataObject);
         }
 
       ++dim;
@@ -670,11 +670,11 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
           for (j = 0; j < mLocalData[i].mInitialStateVariables.size(); ++j, ++itDataObject)
             {
-              mpProblem->getResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
-              mpProblem->getScaledResultAnnotated()->setAnnotationCN(dim, j, (*itDataObject)->getCN());
+              mpProblem->getResultAnnotated()->setAnnotation(dim, j, *itDataObject);
+              mpProblem->getScaledResultAnnotated()->setAnnotation(dim, j, *itDataObject);
 
               if (mpProblem->collapsRequested())
-                mpProblem->getCollapsedResultAnnotated()->setAnnotationCN(dim2, j, (*itDataObject)->getCN());
+                mpProblem->getCollapsedResultAnnotated()->setAnnotation(dim2, j, *itDataObject);
             }
 
           ++dim;
