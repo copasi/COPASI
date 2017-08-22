@@ -180,23 +180,23 @@ bool CSteadyStateTask::updateMatrices()
 
   for (i = 0; pObject != pObjectEnd; ++pObject, ++i)
     {
-      const CCopasiObject * pObject = pObject->getDataObject()->getObjectParent();
+      const CCopasiObject * pDataObject = pObject->getDataObject()->getObjectParent();
 
-      mpJacobianXAnn->setAnnotation(0 , i, pObject);
-      mpJacobianXAnn->setAnnotation(1 , i, pObject);
+      mpJacobianXAnn->setAnnotation(0 , i, pDataObject);
+      mpJacobianXAnn->setAnnotation(1 , i, pDataObject);
 
-      mpJacobianAnn->setAnnotation(0 , i, pObject);
-      mpJacobianAnn->setAnnotation(1 , i, pObject);
+      mpJacobianAnn->setAnnotation(0 , i, pDataObject);
+      mpJacobianAnn->setAnnotation(1 , i, pDataObject);
     }
 
   pObjectEnd += size - sizeReduced;
 
   for (; pObject != pObjectEnd; ++pObject, ++i)
     {
-      const CCopasiObject * pObject = pObject->getDataObject()->getObjectParent();
+      const CCopasiObject * pDataObject = pObject->getDataObject()->getObjectParent();
 
-      mpJacobianAnn->setAnnotation(0 , i, pObject);
-      mpJacobianAnn->setAnnotation(1 , i, pObject);
+      mpJacobianAnn->setAnnotation(0 , i, pDataObject);
+      mpJacobianAnn->setAnnotation(1 , i, pDataObject);
     }
 
   // initial dimension of Eigenvalues of Jacobian
