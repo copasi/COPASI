@@ -78,15 +78,23 @@ size_t CArrayAnnotation::dimensionality() const
   return mModes.size();
 }
 
-void CArrayAnnotation::setAnnotationCN(size_t d, size_t i, const std::string cn)
+void CArrayAnnotation::setAnnotation(size_t d, size_t i, const CCopasiObject * pObject)
 {
   assert(d < dimensionality());
 
   resizeOneDimension(d);
   assert(i < mAnnotationsCN[d].size());
 
-  mAnnotationsCN[d][i] = cn;
-  mAnnotationsString[d][i] = createDisplayName(cn);
+  if (pObject != NULL)
+    {
+      mAnnotationsCN[d][i] = pObject->getCN();
+      mAnnotationsString[d][i] = pObject->getObjectDisplayName();
+    }
+  else
+    {
+      mAnnotationsCN[d][i] = std::string("");
+      mAnnotationsString[d][i] = "";
+    }
 }
 
 void CArrayAnnotation::setAnnotationString(size_t d, size_t i, const std::string s)
