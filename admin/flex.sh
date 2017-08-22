@@ -35,6 +35,7 @@ ${FLEX}  -t $SOURCE_FILE | \
   ${SED} -e 's?<FlexLexer.h>?"copasi/FlexLexer.h"?' \
          -e 's/include <fstream>/include <iostream>/' \
          -e 's/using std::istream;/using namespace std;/' \
+         -e 's/FLEX_STD /std::/g' \
          -e '/using std::ostream;/d' \
          -e '/#define yy_current_buffer YY_CURRENT_BUFFER/d' \
          -e '/#include <unistd.h>/d' \
