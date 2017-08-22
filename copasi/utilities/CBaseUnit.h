@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -40,7 +45,9 @@ public:
   //http://physics.nist.gov/cuu/Units/prefixes.html
   enum Scale
   {
-    // SCALE    [afpnumcdhkMGTP]
+    // SCALE    [yzafpnumcdhkMGTPEZY]
+    yocto = -24,
+    zepto = -21,
     atto = -18,
     femto = -15,
     pico = -12,
@@ -55,7 +62,10 @@ public:
     mega = 6,
     giga = 9,
     tera = 12,
-    peta = 15
+    peta = 15,
+    exa = 18,
+    zetta = 21,
+    yotta = 24
   };
 
   static Scale scaleFromPrefix(const std::string & prefix);

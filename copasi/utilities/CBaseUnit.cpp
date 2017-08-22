@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -87,6 +92,10 @@ CBaseUnit::Kind CBaseUnit::fromSymbol(const std::string & symbol)
 // static (because CBaseUnit is not meant to be constructed)
 CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
 {
+  if (prefix == "y") return yocto;
+
+  if (prefix == "z") return zepto;
+
   if (prefix == "a") return atto;
 
   if (prefix == "f") return femto;
@@ -115,6 +124,12 @@ CBaseUnit::Scale CBaseUnit::scaleFromPrefix(const std::string & prefix)
 
   if (prefix == "P") return peta;
 
+  if (prefix == "E") return exa;
+
+  if (prefix == "Z") return zetta;
+
+  if (prefix == "Y") return yotta;
+
   return zero;
 }
 
@@ -123,6 +138,13 @@ std::string CBaseUnit::prefixFromScale(int scale)
 {
   switch (scale)
     {
+
+      case yocto:
+        return "y";
+
+      case zepto:
+        return "z";
+
       case atto:
         return "a";
 
@@ -167,6 +189,15 @@ std::string CBaseUnit::prefixFromScale(int scale)
 
       case peta:
         return "P";
+
+      case exa:
+        return "E";
+
+      case zetta:
+        return "Z";
+
+      case yotta:
+        return "Y";
 
       default:
         return "unknown";

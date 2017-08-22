@@ -37,7 +37,7 @@
     
 %}
 
-SCALE    ([afpnumcdhkMGTP]|\xc2\xb5)
+SCALE    ([yzafpnumcdhkMGTPEZY]|\xc2\xb5)
 KIND     ([mgsAK#1\?]|cd|Avogadro)
 SI_UNIT  (Hz|N|Pa|J|W|C|V|F|\xCE\xA9|S|Wb|T|H|lm|lx|Bq|Gy|Sv|kat|l|mol|min|h|d)
 QUOTED   \"([^\\\"]|\\.)*\"
