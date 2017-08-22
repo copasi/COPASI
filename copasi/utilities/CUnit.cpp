@@ -19,6 +19,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
 #include "copasi/utilities/CUnitParser.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 
 #include "CCopasiException.h"
 
@@ -748,7 +749,17 @@ void CUnit::buildExpression()
               numerator << it->multiplier << "*";
             }
 
-          numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+          if (CCopasiRootContainer::getUnitList()->containsSymbol(it->symbol))
+            {
+              numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
+          else
+            {
+              if (fabs(1.0 - it->multiplier * pow(10.0, it->scale)) > 100 * std::numeric_limits< double >::epsilon())
+                numerator << it->multiplier * pow(10.0, it->scale) << "*";
+
+              numerator << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
 
           if (it->exponent > 1.0)
             {
@@ -769,7 +780,17 @@ void CUnit::buildExpression()
               DenominatorCount++;
             }
 
-          denominator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+          if (CCopasiRootContainer::getUnitList()->containsSymbol(it->symbol))
+            {
+              denominator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
+          else
+            {
+              if (fabs(1.0 - it->multiplier * pow(10.0, it->scale)) > 100 * std::numeric_limits< double >::epsilon())
+                denominator << it->multiplier * pow(10.0, it->scale) << "*";
+
+              denominator << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
 
           if (it->exponent < -1.0)
             {
@@ -785,7 +806,18 @@ void CUnit::buildExpression()
               numerator << it->multiplier << "*";
             }
 
-          numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+          if (CCopasiRootContainer::getUnitList()->containsSymbol(it->symbol))
+            {
+              numerator << CBaseUnit::prefixFromScale(it->scale) << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
+          else
+            {
+              if (fabs(1.0 - it->multiplier * pow(10.0, it->scale)) > 100 * std::numeric_limits< double >::epsilon())
+                numerator << it->multiplier * pow(10.0, it->scale) << "*";
+
+              numerator << CCopasiRootContainer::quoteUnitDefSymbol(it->symbol);
+            }
+
           NumeratorCount++;
         }
     }
