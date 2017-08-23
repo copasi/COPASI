@@ -78,9 +78,15 @@ CXMLHandler * MetaboliteHandler::processStart(const XML_Char * pszName,
         pCompartment =
           dynamic_cast< CCompartment* >(mpData->mKeyMap.get(Compartment));
 
-        if (!pCompartment) fatalError();
+        if (!pCompartment)
+          fatalError();
 
-        pCompartment->addMetabolite(mpMetabolite);
+        if (!pCompartment->addMetabolite(mpMetabolite))
+          fatalError();
+
+        if (!mpMetabolite->getCompartment())
+          fatalError();
+
         mpData->pModel->getMetabolites().add(mpMetabolite, false);
         break;;
 
