@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -37,15 +42,12 @@
 class CTSSAProblem;
 class CLsodaMethod;
 
+/**
+ * @brief The CTSSAMethod class is the base class for all time scale separation analysis methods
+ */
 class CTSSAMethod : public CCopasiMethod
 {
-protected:
-  /**
-   *  A pointer to the time scale separation analysis problem.
-   */
-  CTSSAProblem * mpProblem;
 
-  // Operations
 private:
   /**
    * Default constructor.
@@ -74,24 +76,20 @@ public:
   /**
    *  Destructor.
    */
-  ~CTSSAMethod();
+  virtual ~CTSSAMethod();
 
-  std::map< std::string, CArrayAnnotation* > mapTableToName;
-  std::vector<std::string>  tableNames;
+  const std::vector<std::string>& getTableNames() const;
 
-  const std::vector<std::string> getTableName() const
-  {return tableNames;}
+  const CArrayAnnotation* getTable(const std::string& name);
 
-  const CArrayAnnotation* getTable(std::string name)
-  {return mapTableToName[name];}
-
-  //virtual void setAnnotationM(int s) = 0;
   virtual bool setAnnotationM(size_t s) = 0;
 
   /**
-  * Predefine the CArrayAnnotation for plots
-  */
-  virtual void predifineAnnotation();
+   * initialize output for the result elements, this method
+   * initializes the output elements so that an output handler
+   * can be used afterwards
+   **/
+  virtual void initializeOutput();
 
   /**
    *  Set a pointer to the problem.
@@ -126,119 +124,45 @@ public:
    */
   virtual void initializeParameter();
 
-  /************ The following concerns the both ILDM Methods *******************************/
+  /**
+   * Retrieve the current step
+   */
+  const int & getCurrentStep() const;
+
+  /**
+   * @return mVec_TimeScale for visualization in ILDM-tab
+   * in the CQTSSAResultSubWidget
+   **/
+  CVector< C_FLOAT64> getVec_TimeScale(int step);
+
+  /**
+   * @return required time-value from timevector
+   **/
+  C_FLOAT64 getTimeForStep(int step) const;
+
+  /**
+   * upgrade all vectors with values from actually calculalion for current step
+   **/
+  void setVectors(int slowMode);
+
+  /**
+   * empty every vector to be able to fill them with new values for a
+   * new calculation also nullify the step counter
+   **/
+  void emptyVectors();
+
+  /**
+   * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+   * input for each CArraAnnotations is a seperate CMatrix
+   **/
+  virtual void createAnnotationsM();
 
 protected:
-  CLsodaMethod * mpLsodaMethod;
-
-  C_INT mDim;
 
   /**
-   *
+   * stores the current time in the time vector
    */
-  CVector< C_FLOAT64 > mY_initial;
-
-  /**
-   *  Jacobian matrix
-   */
-  CMatrix <C_FLOAT64> mJacobian;
-
-  /**
-   *  Jacobian matrix at initial point
-   */
-  CMatrix <C_FLOAT64> mJacobian_initial;
-
-  /**
-   *
-   */
-  CMatrix <C_FLOAT64> mQ;
-  CMatrix <C_FLOAT64> mQ_desc;
-  /**
-   *
-   */
-  CMatrix <C_FLOAT64> mR;
-  CMatrix <C_FLOAT64> mR_desc;
-  /**
-   *
-   */
-  CMatrix <C_FLOAT64> mTd;
-
-  /**
-   *
-   */
-  CMatrix <C_FLOAT64> mTdInverse;
-
-  /**
-   *
-   */
-  CMatrix <C_FLOAT64> mQz;
-
-  /**
-   *
-   */
-  CMatrix <C_FLOAT64> mTd_save;
-  /**
-       *
-       */
-  CMatrix <C_FLOAT64> mTdInverse_save;
-
-  /**
-   *
-   */
-
-  CVector<C_FLOAT64> mCfast;
-
-  /**
-    *
-    */
-
-  CVector<C_FLOAT64> mY_cons;
-
-  /**
-   *
-   */
-  CMatrix<C_FLOAT64> mVslow;
-
-  /**
-   *
-   */
-  CMatrix<C_FLOAT64> mVslow_metab;
-
-  /**
-   *
-   */
-  CVector<C_FLOAT64> mVslow_space;
-
-  /**
-     *
-     */
-  CVector<C_FLOAT64> mVfast_space;
-
-  /**
-   *
-   */
-  C_INT mSlow;
-
-  /**
-   *  Tolerance for Deuflhard criterium
-   */
-  C_FLOAT64 mDtol;
-
-  /**
-   *
-   */
-  C_FLOAT64 mEPS;
-
-  C_FLOAT64 mNumber2Concentration;
-  C_FLOAT64 mConcentration2Number;
-
-  CVectorCore< C_FLOAT64 > mContainerState;
-  C_FLOAT64 * mpContainerStateTime;
-
-  C_FLOAT64 *mpFirstSpecies;
-  const C_FLOAT64 *mpFirstSpeciesRate;
-
-  // Operations
+  virtual void updateCurrentTime();
 
   /**
    * This methods must be called to elevate subgroups to
@@ -316,55 +240,141 @@ protected:
   void mat_anal_fast_space(C_INT & slow);
   void mat_anal_fast_space_thomas(C_INT & slow);
   /**
-       *
-     **/
+   *
+   **/
   double orthog(C_INT & number1, C_INT & number2);
 
+  /************ The following concerns the both ILDM Methods *******************************/
+
+protected:
   /**
-    *vectors contain whole data for all calculationsteps
-    **/
+   *  A pointer to the time scale separation analysis problem.
+   */
+  CTSSAProblem * mpProblem;
+  std::map< std::string, CArrayAnnotation* > mapTableToName;
+  std::vector<std::string>  tableNames;
+
+  CLsodaMethod * mpLsodaMethod;
+
+  C_INT mDim;
+
+  /**
+   *
+   */
+  CVector< C_FLOAT64 > mY_initial;
+
+  /**
+   *  Jacobian matrix
+   */
+  CMatrix <C_FLOAT64> mJacobian;
+
+  /**
+   *  Jacobian matrix at initial point
+   */
+  CMatrix <C_FLOAT64> mJacobian_initial;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mQ;
+  CMatrix <C_FLOAT64> mQ_desc;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mR;
+  CMatrix <C_FLOAT64> mR_desc;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTd;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTdInverse;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mQz;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTd_save;
+
+  /**
+   *
+   */
+  CMatrix <C_FLOAT64> mTdInverse_save;
+
+  /**
+   *
+   */
+  CVector<C_FLOAT64> mCfast;
+
+  /**
+   *
+   */
+  CVector<C_FLOAT64> mY_cons;
+
+  /**
+   *
+   */
+  CMatrix<C_FLOAT64> mVslow;
+
+  /**
+   *
+   */
+  CMatrix<C_FLOAT64> mVslow_metab;
+
+  /**
+   *
+   */
+  CVector<C_FLOAT64> mVslow_space;
+
+  /**
+   *
+   */
+  CVector<C_FLOAT64> mVfast_space;
+
+  /**
+   *
+   */
+  C_INT mSlow;
+
+  /**
+   *  Tolerance for Deuflhard criterium
+   */
+  C_FLOAT64 mDtol;
+
+  /**
+   *
+   */
+  C_FLOAT64 mEPS;
+
+  C_FLOAT64 mNumber2Concentration;
+  C_FLOAT64 mConcentration2Number;
+
+  CVectorCore< C_FLOAT64 > mContainerState;
+  C_FLOAT64 * mpContainerStateTime;
+
+  C_FLOAT64 *mpFirstSpecies;
+  const C_FLOAT64 *mpFirstSpeciesRate;
+
+  /**
+   * vectors contain whole data for all calculationsteps
+   **/
   std::vector< C_INT > mVec_SlowModes;
   std::vector< C_FLOAT64 > mCurrentTime;
   std::vector< CVector<C_FLOAT64> > mVec_TimeScale;
 
   /**
-  * stepcounter
-  **/
-  int mCurrentStep;
-
-public:
-  /**
-   * Retrieve the current step
-   */
-  const int & getCurrentStep() const;
-
-  /**
-  * return mVec_TimeScale for visualization in ILDM-tab
-  * in the CQTSSAResultSubWidget
-  **/
-  CVector< C_FLOAT64> getVec_TimeScale(int step);
-
-  /**
-  *return required time-value from timevector
-  **/
-  C_FLOAT64 returnCurrentTime(int step);
-
-  /**
-  * upgrade all vectors with values from actually calculalion for current step
-  **/
-  void setVectors(int slowMode);
-
-  /**
-  * empty every vector to be able to fill them with new values for a
-  * new calculation also nullify the step counter
-  **/
-  void emptyVectors();
-
-  /**
-   * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
-   * input for each CArraAnnotations is a seperate CMatrix
+   * stepcounter
    **/
-  void createAnnotationsM();
+  int mCurrentStep;
 };
 
 #endif // COPASI_CTSSAMethod

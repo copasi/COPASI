@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -39,6 +44,8 @@ CILDMMethod::CILDMMethod(const CCopasiContainer * pParent,
   CTSSAMethod(pParent, methodType, taskType)
 {
   initializeParameter();
+
+  createAnnotationsM();
 }
 
 CILDMMethod::CILDMMethod(const CILDMMethod & src,
@@ -46,6 +53,8 @@ CILDMMethod::CILDMMethod(const CILDMMethod & src,
   CTSSAMethod(src, pParent)
 {
   initializeParameter();
+
+  createAnnotationsM();
 }
 
 CILDMMethod::~CILDMMethod()
@@ -61,9 +70,6 @@ void CILDMMethod::initializeParameter()
   assertParameter("Deuflhard Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-4);
 
   //mDim = mpState->getNumIndependent();
-
-  createAnnotationsM();
-  emptyVectors();
 }
 
 void CILDMMethod::step(const double & deltaT)
@@ -588,7 +594,9 @@ integration:
   // new entry for every entry contains the current data of currently step
   setVectors(slow);
 
-  // set the stepcounter
+  updateCurrentTime();
+
+  // set the step counter
   mCurrentStep += 1;
 
   return;
@@ -1029,6 +1037,30 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   return;
 }
 
+const CArrayAnnotation *CILDMMethod::getVslowPrintAnn() const
+{return pVslowPrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getVslowSpacePrintAnn() const
+{return pVslowSpacePrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getVfastSpacePrintAnn() const
+{return pVfastSpacePrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getVslowMetabPrintAnn() const
+{return pVslowMetabPrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getReacSlowSpacePrintAnn() const
+{return pReacSlowSpacePrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getTMP1PrintAnn() const
+{return pTMP1PrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getTMP2PrintAnn() const
+{return pTMP2PrintAnn;}
+
+const CArrayAnnotation *CILDMMethod::getTMP3PrintAnn() const
+{return pTMP3PrintAnn;}
+
 /**
  * Empty every vector to be able to fill them with new values for a new calculation.
  * Also nullify the step counter.
@@ -1050,7 +1082,7 @@ void CILDMMethod::emptyVectors()
 }
 
 /**
- *upgrade all vectors with values from actually calculalion for current step
+ *upgrade all vectors with values from actually calculation for current step
  **/
 void CILDMMethod::setVectors(int slowMode)
 {
@@ -1083,9 +1115,6 @@ void CILDMMethod::setVectors(int slowMode)
 
   mVec_SlowModes.push_back(mCurrentStep);
   mVec_SlowModes[mCurrentStep] = slowMode;
-
-  mCurrentTime.push_back(mCurrentStep);
-  mCurrentTime[mCurrentStep] = *mpContainerStateTime;
 
   // NEW TAB
 
@@ -1243,19 +1272,21 @@ void CILDMMethod::createAnnotationsM()
 
   mapTableToName[name] = pTMP3PrintAnn;
 }
+
+void
+CILDMMethod::initializeOutput()
+{
+}
 /**
  * Set the every CArrayAnnotation for the requested step.
- * Set also the desription of CArayAnnotation for both dimensions:
+ * Set also the description of CArayAnnotation for both dimensions:
  *    - dimension description could consists of some std::srings
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-//void CILDMMethod::setAnnotationM(int step)
 bool CILDMMethod::setAnnotationM(size_t step)
 {
   const CModel & Model = mpContainer->getModel();
-
-  if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
 
@@ -1263,7 +1294,7 @@ bool CILDMMethod::setAnnotationM(size_t step)
 
   if (step > mVec_SlowModes.size()) return false;
 
-  step -= 1;
+  ///step -= 1; // already done
   double timeScale;
   std::string str;
   std::stringstream sstr;
@@ -1439,7 +1470,10 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
     {
 
       os << std::endl;
-      os << "****************  Time step " << istep + 1 << " **************************  " << std::endl;
+      os << "**************** Time step " << istep + 1
+         << ": " << getTimeForStep(istep)
+         << " " << Model.getTimeUnitName()
+         <<  " **************************  " << std::endl;
 
       os << std::endl;
 

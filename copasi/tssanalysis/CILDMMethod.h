@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -21,14 +26,14 @@
 
 #include "CTSSAMethod.h"
 
-//#include "odepack++/CLSODA.h"
-
-//#include "utilities/CMatrix.h"
-//#include "utilities/CAnnotatedMatrix.h"
-
 class CModel;
 class CState;
 
+/**
+ * @brief The CILDMMethod class implements the ILDM method
+ *
+ * More information under: http://copasi.org/Support/User_Manual/Methods/Time_Scale_Separation_Methods/ILDM_Deuflhard/
+ */
 class CILDMMethod : public CTSSAMethod
 {
   // Operations
@@ -60,10 +65,10 @@ public:
   /**
    *  Destructor.
    */
-  ~CILDMMethod();
+  virtual ~CILDMMethod();
 
   /**
-   *  Intialize the method parameter
+   *  Initialize the method parameters
    */
   virtual void initializeParameter();
 
@@ -75,7 +80,7 @@ public:
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
    */
-  virtual void  step(const double & deltaT);
+  virtual void step(const double & deltaT);
 
   /**
    *  This instructs the method to prepare for integration
@@ -84,22 +89,74 @@ public:
   virtual void start();
 
   /**
+   * @return CArrayAnnotation for visualization in ILDM-tab
+   * in the CQTSSAResultSubWidget
+   **/
+  const CArrayAnnotation* getVslowPrintAnn() const;
+  const CArrayAnnotation* getVslowSpacePrintAnn() const;
+  const CArrayAnnotation* getVfastSpacePrintAnn() const;
+  const CArrayAnnotation* getVslowMetabPrintAnn() const;
+  const CArrayAnnotation* getReacSlowSpacePrintAnn() const;
+
+  /* temporary tabs */
+  const CArrayAnnotation* getTMP1PrintAnn() const;
+  const CArrayAnnotation* getTMP2PrintAnn() const;
+  const CArrayAnnotation* getTMP3PrintAnn() const;
+
+  /* temporary tabs */
+
+  /**
+   * upgrade all vectors with values from actually calculalion for current step
+   **/
+  void setVectors(int slowMode);
+
+  /**
+   * empty every vector to be able to fill them with new values for a
+   * new calculation also nullify the step counter
+   **/
+  void emptyVectors();
+
+  /**
+   * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+   * input for each CArraAnnotations is a seperate CMatrix
+   **/
+  virtual void createAnnotationsM();
+
+  /**
+   * initialize output for the result elements, this method
+   * initializes the output elements so that an output handler
+   * can be used afterwards
+   **/
+  virtual void initializeOutput();
+
+  /**
+   * set the every CArrayAnnotation for the requested step
+   * set the description of CArayAnnotation for both dimensions
+   **/
+  virtual bool setAnnotationM(size_t step);
+
+  /**
+   *  print of the standard report sequence for ILDM Method
+   *  @param std::ostream * ostream
+   **/
+  virtual void printResult(std::ostream * ostream) const;
+
+protected:
+  /**
    *
    **/
   void newton(C_FLOAT64 *ys, C_INT & slow, C_INT & info);
 
   /**
-     *
-     **/
-
+   *
+   **/
   void transformation_norm(C_INT & slow, C_INT & info);
 
   void deuflhard(C_INT & slow, C_INT & info);
 
   /**
-     *vectors contain whole data for all calculation steps
-     **/
-
+   * vectors contain whole data for all calculation steps
+   **/
   CVector<C_FLOAT64> mReacSlowSpace; // NEW TAB
 
   /* temporary tabs */
@@ -120,14 +177,8 @@ public:
   std::vector< CMatrix<C_FLOAT64> > mVec_mTMP3;
 
   /**
-   *CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
+   * CArrayAnnotation for every ILDM-tab in the CQTSSAResultSubWidget
    **/
-
-  /*
-    std::map< std::string, CArrayAnnotation* > mapTableToName;
-    std::vector<std::string>  tableNames;
-  */
-
   CArrayAnnotation* pVslowPrintAnn;
   CArrayAnnotation* pVslowMetabPrintAnn;
   CArrayAnnotation* pVslowSpacePrintAnn;
@@ -170,69 +221,5 @@ public:
   CMatrix<C_FLOAT64> mTMP1Print;
   CMatrix<C_FLOAT64> mTMP2Print;
   CMatrix<C_FLOAT64> mTMP3Print;
-
-  /**
-  * return CArrayAnnotation for visualization in ILDM-tab
-  * in the CQTSSAResultSubWidget
-  **/
-
-  /*
-    const std::vector<std::string> getTableName() const
-    {return tableNames;}
-
-    const CArrayAnnotation* getTable(std::string name)
-    {return mapTableToName[name];}
-  */
-
-  const CArrayAnnotation* getVslowPrintAnn() const
-  {return pVslowPrintAnn;}
-  const CArrayAnnotation* getVslowSpacePrintAnn() const
-  {return pVslowSpacePrintAnn;}
-  const CArrayAnnotation* getVfastSpacePrintAnn() const
-  {return pVfastSpacePrintAnn;}
-  const CArrayAnnotation* getVslowMetabPrintAnn() const
-  {return pVslowMetabPrintAnn;}
-  const CArrayAnnotation* getReacSlowSpacePrintAnn() const
-  {return pReacSlowSpacePrintAnn;}
-
-  /* temporary tabs */
-  const CArrayAnnotation* getTMP1PrintAnn() const
-  {return pTMP1PrintAnn;}
-  const CArrayAnnotation* getTMP2PrintAnn() const
-  {return pTMP2PrintAnn;}
-  const CArrayAnnotation* getTMP3PrintAnn() const
-  {return pTMP3PrintAnn;}
-
-  /* temporary tabs */
-
-  /**
-  * upgrade all vectors with values from actually calculalion for current step
-  **/
-  void setVectors(int slowMode);
-
-  /**
-  * empty every vector to be able to fill them with new values for a
-  * new calculation also nullify the step counter
-  **/
-  void emptyVectors();
-
-  /**
-   * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
-   * input for each CArraAnnotations is a seperate CMatrix
-   **/
-  void createAnnotationsM();
-
-  /**
-  * set the every CArrayAnnotation for the requested step
-  * set the desription of CArayAnnotation for both dimensions
-  **/
-  //void setAnnotationM(int step);
-  virtual bool setAnnotationM(size_t step);
-
-  /**
-   *  print of the standart report sequence for ILDM Method
-   *  @param std::ostream * ostream
-   **/
-  void printResult(std::ostream * ostream) const;
 };
 #endif // COPASI_CILDMMethod

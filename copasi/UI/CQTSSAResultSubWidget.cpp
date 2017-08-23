@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -129,10 +134,7 @@ void CQTSSAResultSubWidget::slotTimeAndStepChanged()
 
   int s = mpSlider->value();
 
-  if (s > 1)
-    mpLabelTime->setNum((double)pMethod->returnCurrentTime(s - 1));
-  else
-    mpLabelTime->setNum(0);
+  mpLabelTime->setNum((double)pMethod->getTimeForStep(s - 1));
 
   mpLabelStep->setNum(s);
 }
@@ -223,9 +225,9 @@ void CQTSSAResultSubWidget::displayResult()
 
   unsigned C_INT i;
 
-  for (i = 0; i <  pMethod->getTableName().size(); i++)
+  for (i = 0; i <  pMethod->getTableNames().size(); i++)
     {
-      mpBox1->insertItem(0, FROM_UTF8(pMethod->getTableName()[i]));
+      mpBox1->insertItem(0, FROM_UTF8(pMethod->getTableNames()[i]));
     }
 
   mpArrayWidget->switchToTable();

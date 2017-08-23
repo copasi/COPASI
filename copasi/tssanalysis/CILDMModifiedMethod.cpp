@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -157,7 +162,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
         mTdInverse(i, j) = 0;
       }
 
-  /** Schur  Decomposition of Jacobian (reordered).
+  /* Schur  Decomposition of Jacobian (reordered).
   Output:  mQ - transformation matrix mR - block upper triangular matrix (with ordered eigenvalues) */
 
   C_INT failed = 0;
@@ -196,7 +201,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
   CVector<C_INT> index_metab;
   index_metab.resize(dim);
 
-  /** Schur transformation of Jacobian */
+  /* Schur transformation of Jacobian */
   schur(info_schur);
 
   if (info_schur)
@@ -263,8 +268,8 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   //end of iterations to determine the number of slow metabolites
 
-  /** end of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
-  /** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /* end of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /*  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
 
 integration:
 
@@ -304,7 +309,7 @@ integration:
   mat_anal_fast_space(slow);
 
   // This block proves which metabolite could be considered as QSS. In development
-  /** Begin of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /* Begin of the block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
 
   C_INT flag_dev;
   flag_dev = 1;
@@ -422,8 +427,8 @@ integration:
         }
     }
 
-  /** end of the of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
-  /** %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /* end of the of block %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
+  /*  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  */
 
   mpContainer->updateSimulatedValues(true);
   // TO REMOVE : Model.applyAssignments();
@@ -435,7 +440,9 @@ integration:
   // new entry for every entry contains the current data of currently step
   setVectors(slow);
 
-  // set the stepcounter
+  updateCurrentTime();
+
+  // set the step counter
   mCurrentStep += 1;
 
   return;
@@ -471,7 +478,19 @@ void CILDMModifiedMethod::evalsort(C_FLOAT64 *reval, C_INT *index, const C_INT &
   return;
 }
 
-/**
+const CArrayAnnotation *CILDMModifiedMethod::getVslowPrintAnn() const
+{return pVslowPrintAnn;}
+
+const CArrayAnnotation *CILDMModifiedMethod::getVslowSpacePrintAnn() const
+{return pVslowSpacePrintAnn;}
+
+const CArrayAnnotation *CILDMModifiedMethod::getVfastSpacePrintAnn() const
+{return pVfastSpacePrintAnn;}
+
+const CArrayAnnotation *CILDMModifiedMethod::getVslowMetabPrintAnn() const
+{return pVslowMetabPrintAnn;}
+
+/*
   Deuflhard Iteration:  Prove Deuflhard criteria, find consistent initial value for DAE
   output:  info - if Deuflhard is satisfied
  */
@@ -815,11 +834,10 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
   return;
 }
 
-/**
-NEWTON for "postprove": Prove of "fast" varibles
-Output:  y_consistent, info
+/*
+ * NEWTON for "postprove": Prove of "fast" varibles
+ * Output:  y_consistent, info
  */
-
 void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64 & y_consistent, C_INT & info)
 {
   C_INT i, iter, itermax, flag_newton;
@@ -926,9 +944,6 @@ void CILDMModifiedMethod::setVectors(int slowMode)
 
   mVec_SlowModes.push_back(mCurrentStep);
   mVec_SlowModes[mCurrentStep] = slowMode;
-
-  mCurrentTime.push_back(mCurrentStep);
-  mCurrentTime[mCurrentStep] = *mpContainerStateTime;
 }
 
 /**
@@ -1002,19 +1017,21 @@ void CILDMModifiedMethod::createAnnotationsM()
 
   mapTableToName[name] = pVfastSpacePrintAnn;
 }
+
+void
+CILDMModifiedMethod::initializeOutput()
+{
+}
 /**
  * Set the every CArrayAnnotation for the requested step.
- * Set also the desription of CArayAnnotation for both dimensions:
+ * Set also the description of CArayAnnotation for both dimensions:
  *    - dimension description could consists of some std::srings
  *      some strings contain the Time Scale values for requested step
  *    - dimension description could consists of arrays of CommonNames
  **/
-//void CILDMModifiedMethod::setAnnotationM(int step)
 bool CILDMModifiedMethod::setAnnotationM(size_t step)
 {
   const CModel & Model = mpContainer->getModel();
-
-  if (step == 0) return false;
 
   if (mVec_mVslow.size() == 0) return false;
 
@@ -1022,7 +1039,7 @@ bool CILDMModifiedMethod::setAnnotationM(size_t step)
 
   if (step > mVec_SlowModes.size()) return false;
 
-  step -= 1;
+  // step -= 1; already done
   double timeScale;
   std::string str;
   std::stringstream sstr;
@@ -1122,11 +1139,14 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
   //stepNumber = pProblem->getStepNumber();
   stepNumber = mVec_SlowModes.size();
 
-  for (istep = 0; istep < stepNumber; istep++)
+  for (istep = 0; istep < stepNumber; ++istep)
     {
 
       os << std::endl;
-      os << "**************** Time step " << istep + 1 << " **************************  " << std::endl;
+      os << "**************** Time step " << istep + 1
+         << ": " << getTimeForStep(istep)
+         << " " << Model.getTimeUnitName()
+         <<  " **************************  " << std::endl;
 
       os << std::endl;
 
