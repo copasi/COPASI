@@ -82,7 +82,7 @@
 #include "copasi/utilities/CVersion.h"
 #include "model/CModelExpansion.h"
 #include "copasi/UI/CQCheckModelWindow.h"
-
+#include <copasi/UI/CQBrowserPane.h>
 #ifdef WITH_MERGEMODEL
 #include "model/CModelExpansion.h"
 #endif
@@ -304,6 +304,7 @@ CopasiUI3Window::CopasiUI3Window():
   setApplicationFont();
   // drop acceptance
   setAcceptDrops(true);
+  mpListView->mpTreeView->setFocus();
 }
 
 CopasiUI3Window::~CopasiUI3Window()
