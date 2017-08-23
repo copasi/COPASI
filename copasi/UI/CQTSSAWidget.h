@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -31,7 +36,7 @@ class CQTSSAWidget : public TaskWidget, public Ui::CQTSSAWidget
 
 public:
   CQTSSAWidget(QWidget* parent = 0, const char* name = 0);
-  ~CQTSSAWidget();
+  virtual ~CQTSSAWidget();
 
   virtual bool runTask();
 

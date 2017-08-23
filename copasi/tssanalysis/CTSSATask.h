@@ -106,7 +106,7 @@ public:
   /**
    * Destructor
    */
-  ~CTSSATask();
+  virtual ~CTSSATask();
 
   /**
    * Resizes result matrices and updates array annotations for a specific task.

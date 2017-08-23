@@ -183,10 +183,9 @@ void CTSSAMethod::start()
 
   mpLsodaMethod->setMathContainer(mpContainer);
 
-  return;
 }
 
-void CTSSAMethod::predifineAnnotation()
+void CTSSAMethod::initializeOutput()
 {
   return;
 }
@@ -279,12 +278,12 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
-C_FLOAT64 CTSSAMethod::returnCurrentTime(int step)
+C_FLOAT64 CTSSAMethod::getTimeForStep(int step) const
 {
   if ((int) mCurrentTime.size() > step)
     return mCurrentTime[step];
-  else
-    return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
+  return 0;
 };
 
 void CTSSAMethod::initializeParameter()
@@ -1882,3 +1881,15 @@ void CTSSAMethod::setVectors(int /* slowMode */)
  **/
 void CTSSAMethod::createAnnotationsM()
 {}
+
+void CTSSAMethod::updateCurrentTime()
+{
+  mCurrentTime.push_back(mCurrentStep);
+  mCurrentTime[mCurrentStep] = *mpContainerStateTime;
+}
+
+const std::vector<std::string>& CTSSAMethod::getTableNames() const
+{return tableNames;}
+
+const CDataArray *CTSSAMethod::getTable(const std::string &name)
+{return mapTableToName[name];}

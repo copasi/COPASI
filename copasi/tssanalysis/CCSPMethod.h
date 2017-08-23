@@ -31,121 +31,13 @@
 class CModel;
 class CState;
 
+/**
+ * @brief The CCSPMethod class implements the CSP method
+ *
+ * more information under: http://copasi.org/Support/User_Manual/Methods/Time_Scale_Separation_Methods/CSP/
+ */
 class CCSPMethod : public CTSSAMethod
 {
-public:
-
-  /**
-   *  CSP related staff
-   */
-
-  /**
-   *
-   */
-  bool mReducedModel;
-
-  /**
-   * Unit matrix
-   */
-  CMatrix<C_FLOAT64> mI;
-
-  /**
-   *  A value related to a measure of the time scale separation of the fast and slow modes
-   */
-  C_FLOAT64 mEps;
-
-  /**
-   *  An alternative  value related to a mesure of the time scale separation of the fast and slow modes
-   */
-  C_FLOAT64 mTsc;
-
-  /**
-   *  A maximux relative error
-   */
-  C_FLOAT64 mRerror;
-
-  /**
-   *  A maximux absolute error
-   */
-  C_FLOAT64 mAerror;
-
-  /**
-   *  Max number of the refinement iterations
-   */
-  C_INT mIter;
-
-  /**
-   *
-   */
-  CVectorCore< C_FLOAT64 > mY;
-
-  /**
-   *  A vector of the current right hand side
-   */
-  CVectorCore< const C_FLOAT64 > mG;
-
-  /**
-   *  An error vector build on the basis of the solution vector
-   */
-  CVector<C_FLOAT64> mYerror;
-
-  /**
-  *  The basis vectors B from the time step (T - delta T)
-  */
-  CMatrix<C_FLOAT64> mB;
-
-  C_INT mTStep;
-  /**
-  *  indicates whether the basis vectors B were computed on the time step (T - delta T)
-  */
-  C_INT mCSPbasis;
-
-  /**
-   * CSP Output
-   */
-
-  C_INT mSetVectors;
-
-  /**
-   *  Amplitudes of  reaction modes (column vector);
-   **/
-
-  CVector<C_FLOAT64> mAmplitude;
-
-  /**
-   *  Radical Pointer: whenever is not a small number, species k is said to be CSP radical
-   **/
-
-  CMatrix<C_FLOAT64> mRadicalPointer;
-
-  /**
-  *  Fast Reaction Pointer of the m-th reaction mode : whenever is not a small number,
-  *  the r-th reaction is said to be a fast reaction
-  **/
-
-  CMatrix<C_FLOAT64> mFastReactionPointer;
-  CMatrix<C_FLOAT64> mFastReactionPointerNormed;
-
-  /**
-   * Participation Index : is a mesure of participation of the r-th elementary reaction
-   * to the balancing act of the i-th mode (matrix)
-   **/
-
-  CMatrix<C_FLOAT64> mParticipationIndex;
-  CMatrix<C_FLOAT64> mParticipationIndexNormedRow;
-  CMatrix<C_FLOAT64> mParticipationIndexNormedColumn;
-  CVector<C_FLOAT64> mFastParticipationIndex;
-  CVector<C_FLOAT64> mSlowParticipationIndex;
-
-  /**
-   * Importance Index: is a measure of relative importance of the contribution of r-th elementary
-   * reaction to the current reaction rate of i-th species
-   **/
-
-  CMatrix<C_FLOAT64> mImportanceIndex;
-  CMatrix<C_FLOAT64> mImportanceIndexNormedRow;
-
-  // Operations
 private:
   /**
    * Default constructor.
@@ -174,7 +66,7 @@ public:
   /**
    *  Destructor.
    */
-  ~CCSPMethod();
+  virtual ~CCSPMethod();
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -196,6 +88,79 @@ public:
    * Intialize the method parameter
    */
   void initializeParameter();
+
+  /**
+  * return CArrayAnnotation for visualization
+  * in the CQTSSAResultSubWidget
+  **/
+
+  const CDataArray* getRadicalPointerAnn() const;
+
+  const CDataArray* getFastReactionPointerAnn() const;
+
+  const CDataArray* getFastReactionPointerNormedAnn() const;
+
+  const CDataArray* getParticipationIndexAnn() const;
+
+  const CDataArray* getParticipationIndexNormedRowAnn() const;
+
+  const CDataArray* getParticipationIndexNormedColumnAnn() const;
+
+  const CDataArray* getFastParticipationIndexAnn() const;
+
+  const CDataArray* getSlowParticipationIndexAnn() const;
+
+  const CDataArray* getImportanceIndexAnn() const;
+
+  const CDataArray* getImportanceIndexNormedRowAnn() const;
+
+  /**
+   *  CSP output
+  **/
+
+  void CSPOutput(C_INT & N, C_INT & M, C_INT & R);
+  /**
+   * upgrade all vectors with values from actually calculalion for current step
+   **/
+  void setVectors(int fast);
+
+  /**
+   *  set vectors to NaN when the reduction was not possible
+   **/
+  void setVectorsToNaN();
+
+  /**
+  * empty every vector to be able to fill them with new values for a
+  * new calculation also nullify the step counter
+  **/
+  void emptyVectors();
+
+  /**
+   * create the CArraAnnotations for every table in the CQTSSAResultSubWidget
+   * input for each CArraAnnotations is a seperate CMatrix
+   **/
+  virtual void createAnnotationsM();
+
+  /**
+   * initialize output for the result elements, this method
+   * initializes the output elements so that an output handler
+   * can be used afterwards
+   **/
+  virtual void initializeOutput();
+
+  /**
+  * set the every CArrayAnnotation for the requested step
+  * set the desription of CArayAnnotation for both dimensions
+  **/
+  virtual bool setAnnotationM(size_t step);
+
+  /**
+   *  print of the standart report sequence for ILDM Method
+   *  @param std::ostream * ostream
+   **/
+  virtual void printResult(std::ostream * ostream) const;
+
+protected:
 
   /**
    *  CSP related staff
@@ -317,11 +282,119 @@ public:
 
   void emptyOutputData(C_INT & N, C_INT & M, C_INT & R);
 
+
+protected:
+
   /**
-   *  CSP output
+   *  CSP related staff
+   */
+
+  /**
+   *
+   */
+  bool mReducedModel;
+
+  /**
+   * Unit matrix
+   */
+  CMatrix<C_FLOAT64> mI;
+
+  /**
+   *  A value related to a measure of the time scale separation of the fast and slow modes
+   */
+  C_FLOAT64 mEps;
+
+  /**
+   *  An alternative  value related to a mesure of the time scale separation of the fast and slow modes
+   */
+  C_FLOAT64 mTsc;
+
+  /**
+   *  A maximux relative error
+   */
+  C_FLOAT64 mRerror;
+
+  /**
+   *  A maximux absolute error
+   */
+  C_FLOAT64 mAerror;
+
+  /**
+   *  Max number of the refinement iterations
+   */
+  C_INT mIter;
+
+  /**
+   *
+   */
+  CVectorCore< C_FLOAT64 > mY;
+
+  /**
+   *  A vector of the current right hand side
+   */
+  CVectorCore< const C_FLOAT64 > mG;
+
+  /**
+   *  An error vector build on the basis of the solution vector
+   */
+  CVector<C_FLOAT64> mYerror;
+
+  /**
+  *  The basis vectors B from the time step (T - delta T)
+  */
+  CMatrix<C_FLOAT64> mB;
+
+  C_INT mTStep;
+  /**
+  *  indicates whether the basis vectors B were computed on the time step (T - delta T)
+  */
+  C_INT mCSPbasis;
+
+  /**
+   * CSP Output
+   */
+
+  C_INT mSetVectors;
+
+  /**
+   *  Amplitudes of  reaction modes (column vector);
+   **/
+
+  CVector<C_FLOAT64> mAmplitude;
+
+  /**
+   *  Radical Pointer: whenever is not a small number, species k is said to be CSP radical
+   **/
+
+  CMatrix<C_FLOAT64> mRadicalPointer;
+
+  /**
+  *  Fast Reaction Pointer of the m-th reaction mode : whenever is not a small number,
+  *  the r-th reaction is said to be a fast reaction
   **/
 
-  void CSPOutput(C_INT & N, C_INT & M, C_INT & R);
+  CMatrix<C_FLOAT64> mFastReactionPointer;
+  CMatrix<C_FLOAT64> mFastReactionPointerNormed;
+
+  /**
+   * Participation Index : is a mesure of participation of the r-th elementary reaction
+   * to the balancing act of the i-th mode (matrix)
+   **/
+
+  CMatrix<C_FLOAT64> mParticipationIndex;
+  CMatrix<C_FLOAT64> mParticipationIndexNormedRow;
+  CMatrix<C_FLOAT64> mParticipationIndexNormedColumn;
+  CVector<C_FLOAT64> mFastParticipationIndex;
+  CVector<C_FLOAT64> mSlowParticipationIndex;
+
+  /**
+   * Importance Index: is a measure of relative importance of the contribution of r-th elementary
+   * reaction to the current reaction rate of i-th species
+   **/
+
+  CMatrix<C_FLOAT64> mImportanceIndex;
+  CMatrix<C_FLOAT64> mImportanceIndexNormedRow;
+
 
   /**
    *vectors contain whole data for all calculation steps
@@ -341,11 +414,6 @@ public:
   /**
    *CArraAnnotations for  CQTSSAResultSubWidget
    **/
-
-  /*
-    std::map< std::string, CArrayAnnotation* > mapTableToName;
-    std::vector<std::string>  tableNames;
-  */
 
   //CDataArray* pAmplitudeAnn;
   CDataArray* pRadicalPointerAnn;
@@ -376,78 +444,5 @@ public:
   CMatrix<C_FLOAT64>  mFastParticipationIndexTab;
   CMatrix<C_FLOAT64>  mSlowParticipationIndexTab;
 
-  /**
-  * return CArrayAnnotation for visualization
-  * in the CQTSSAResultSubWidget
-  **/
-
-  /*
-   const std::vector<std::string> getTableName() const
-    {return tableNames;}
-  */
-
-//  const CDataArray* getAmplitudeAnn() const
-//  {return pAmplitudeAnn;}
-  const CDataArray* getRadicalPointerAnn() const
-  {return pRadicalPointerAnn;}
-  const CDataArray* getFastReactionPointerAnn() const
-  {return pFastReactionPointerAnn;}
-  const CDataArray* getFastReactionPointerNormedAnn() const
-  {return pFastReactionPointerNormedAnn;}
-  const CDataArray* getParticipationIndexAnn() const
-  {return pParticipationIndexAnn;}
-  const CDataArray* getParticipationIndexNormedRowAnn() const
-  {return pParticipationIndexNormedRowAnn;}
-  const CDataArray* getParticipationIndexNormedColumnAnn() const
-  {return pParticipationIndexNormedColumnAnn;}
-  const CDataArray* getFastParticipationIndexAnn() const
-  {return pFastParticipationIndexAnn;}
-  const CDataArray* getSlowParticipationIndexAnn() const
-  {return pSlowParticipationIndexAnn;}
-  const CDataArray* getImportanceIndexAnn() const
-  {return pImportanceIndexAnn;}
-  const CDataArray* getImportanceIndexNormedRowAnn() const
-  {return pImportanceIndexNormedRowAnn;}
-
-  /**
-   * upgrade all vectors with values from actually calculalion for current step
-   **/
-  void setVectors(int fast);
-
-  /**
-   *  set vectors to NaN when the reduction was not possible
-   **/
-  void setVectorsToNaN();
-
-  /**
-  * empty every vector to be able to fill them with new values for a
-  * new calculation also nullify the step counter
-  **/
-  void emptyVectors();
-
-  /**
-   * create the CArraAnnotations for every table in the CQTSSAResultSubWidget
-   * input for each CArraAnnotations is a seperate CMatrix
-   **/
-  void createAnnotationsM();
-
-  /**
-  * Predefine the CArrayAnnotation for plots
-  **/
-
-  virtual void predefineAnnotation();
-
-  /**
-  * set the every CArrayAnnotation for the requested step
-  * set the desription of CArayAnnotation for both dimensions
-  **/
-  //void setAnnotationM(int step);
-  virtual bool setAnnotationM(size_t step);
-
-  /**
-   *  print of the standart report sequence for ILDM Method
-   *  @param std::ostream * ostream
-   **/
-  void printResult(std::ostream * ostream) const;
 };
 #endif // COPASI_CCSPMethod

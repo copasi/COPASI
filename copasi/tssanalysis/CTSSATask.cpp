@@ -126,7 +126,7 @@ bool CTSSATask::updateMatrices()
 
   if (!pMethod) return false;
 
-  pMethod->predifineAnnotation();
+  pMethod->initializeOutput();
 
   return true;
 }
@@ -170,7 +170,7 @@ bool CTSSATask::initialize(const OutputFlag & of,
         }
     }
 
-  mpTSSAMethod->predifineAnnotation();
+  mpTSSAMethod->initializeOutput();
 
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
 
