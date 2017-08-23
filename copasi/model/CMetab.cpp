@@ -250,7 +250,7 @@ void CMetab::setInitialConcentration(const C_FLOAT64 & initialConcentration)
 
 CIssue CMetab::compile()
 {
-  CIssue firstWorstIssue, issue;
+  CIssue firstWorstIssue;
 
   // Prepare the compilation
   CObjectInterface::ContainerList listOfContainer;
@@ -271,9 +271,7 @@ CIssue CMetab::compile()
 
       case Status::ASSIGNMENT:
         // Concentration
-        issue = mpExpression->compile(listOfContainer);
-        mValidity.add(issue);
-        firstWorstIssue &= issue;
+        firstWorstIssue &= mpExpression->compile(listOfContainer);
 
         // Implicit initial expression
         pdelete(mpInitialExpression);
@@ -292,16 +290,12 @@ CIssue CMetab::compile()
         // Concentration
 
         // Rate (particle number rate)
-        issue = mpExpression->compile(listOfContainer);
-        mValidity.add(issue);
-        firstWorstIssue &= issue;
+        firstWorstIssue &= mpExpression->compile(listOfContainer);
 
         if (mpNoiseExpression != NULL)
           {
             // Noise (particle number rate)
-            issue = mpNoiseExpression->compile(listOfContainer);
-            mValidity.add(issue);
-            firstWorstIssue &= issue;
+            firstWorstIssue &= mpNoiseExpression->compile(listOfContainer);
           }
 
         break;
@@ -333,7 +327,7 @@ CIssue CMetab::compileInitialValueDependencies()
     {
       // Initial concentration
       issue &= mpInitialExpression->compile(listOfContainer);
-      mValidity.add(issue);
+
       return issue;
     }
 
