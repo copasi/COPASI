@@ -288,25 +288,13 @@ bool CCopasiObject::setObjectName(const std::string & name)
 
   if (!isStaticString())
     {
-      // We need to ensure that the name does not include any whitespace character except ' ' (space),
-      // i.e., we convert '\t' (tab), '\n' (newline) and '\r' (return) to ' ' (space).
+      // We need to ensure that the name does not include any control character (below 0x20),
+      // e.g. we convert '\t' (tab), '\n' (newline) and '\r' (return) to ' ' (space 0x20).
       std::string::iterator it = Name.begin();
       std::string::iterator end = Name.end();
 
       for (; it != end; ++it)
-        {
-          switch (*it)
-            {
-              case '\t':
-              case '\n':
-              case '\r':
-                *it = ' ';
-                break;
-
-              default:
-                break;
-            }
-        }
+        if (0x00 <= *it && *it < 0x20) *it = 0x20;
     }
 
   if (Name == mObjectName) return true;
