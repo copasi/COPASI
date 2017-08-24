@@ -1131,14 +1131,9 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
   double timeScale;
   C_INT i, j, istep = 0;
 
-  this->print(&os);
-
-  C_INT32 stepNumber;
-
   assert(getObjectDataModel() != NULL);
 
-  //stepNumber = pProblem->getStepNumber();
-  stepNumber = mVec_SlowModes.size();
+  C_INT32 stepNumber = mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; ++istep)
     {
@@ -1153,12 +1148,12 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       os << "Contribution of species to modes" << std::endl;
 
-      os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
+      os << "Rows: contribution to  mode (TS - corresponding timescale)" << std::endl;
       os << "Columns: species  ";
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j].getObjectName() << "   ";
+          os << "   " << Model.getMetabolitesX()[j].getObjectName();
         }
 
       os << std::endl;
@@ -1168,9 +1163,9 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
           timeScale = mVec_TimeScale[istep][i];
 
           if (i < mVec_SlowModes[istep])
-            os << "Slow (";
+            os << "  Slow (";
           else
-            os << "Fast (";
+            os << "  Fast (";
 
           os << timeScale << "): ";
 
@@ -1184,30 +1179,29 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       os << "Modes distribution for species" << std::endl;
 
-      os << "Rows : Mode distribution for each species" << std::endl;
-      os << "Columns: Modes (TS - corresponding  timescale) ";
-      os << std::endl;
+      os << "Rows: Mode distribution for each species" << std::endl;
+      os << "Columns: Modes (TS - corresponding  timescale)" << std::endl;
 
       for (i = 0; i < mDim; i++)
         {
           timeScale = mVec_TimeScale[istep][i];
 
           if (i < mVec_SlowModes[istep])
-            os << "Slow (";
+            os << "  Slow (";
           else
-            os << "Fast (";
+            os << "  Fast (";
 
-          os << timeScale << ")  ";
+          os << timeScale << ")";
         }
 
       os << std::endl;
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
+          os << "  " << Model.getMetabolitesX()[j].getObjectName();
 
           for (i = 0; i < mDim; i++)
-            os << mVec_mVslowMetab[istep][j][i] << "  ";
+            os << "  " << mVec_mVslowMetab[istep][j][i];
 
           os << std::endl;
         }
@@ -1216,11 +1210,10 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       os << "Slow space" << std::endl;
 
-      os << "Rows : Species" << std::endl;
-      os << "Column: Contribution to slow space ";
-      os << std::endl;
+      os << "Rows: Species" << std::endl;
+      os << "Column: Contribution to slow space" << std::endl;
 
-      os << mVec_SlowModes[istep];
+      os << "  " << mVec_SlowModes[istep];
       os << " slow; ";
 
       os << mDim - mVec_SlowModes[istep];
@@ -1229,8 +1222,8 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
-          os << mVec_mVslowSpace[istep][j] << "  ";
+          os  << "  " << Model.getMetabolitesX()[j].getObjectName();
+          os  << "  " << mVec_mVslowSpace[istep][j];
 
           os << std::endl;
         }
@@ -1238,11 +1231,10 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
       os << std::endl;
       os << "Fast space" << std::endl;
 
-      os << "Rows : Species" << std::endl;
-      os << "Column: Contribution to fast space ";
-      os << std::endl;
+      os << "Rows: Species" << std::endl;
+      os << "Column: Contribution to fast space " << std::endl;
 
-      os << mVec_SlowModes[istep];
+      os << "  " << mVec_SlowModes[istep];
       os << " slow; ";
 
       os << mDim - mVec_SlowModes[istep];
@@ -1251,8 +1243,8 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
       for (j = 0; j < mDim; j++)
         {
-          os << Model.getMetabolitesX()[j].getObjectName() << "  ";
-          os << mVec_mVfastSpace[istep][j] << "  ";
+          os << "  " << Model.getMetabolitesX()[j].getObjectName();
+          os << "  " << mVec_mVfastSpace[istep][j];
 
           os << std::endl;
         }
