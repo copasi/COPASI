@@ -260,8 +260,6 @@ bool CQTSSAWidget::taskFinishedEvent()
       return false;
     }
 
-  success &= pResult->loadFromBackend();
-
   pTSSResultSubWidget = pResult->getSubWidget();
 
   if (!pTSSResultSubWidget)

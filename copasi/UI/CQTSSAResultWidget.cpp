@@ -55,77 +55,27 @@ CQTSSAResultWidget::CQTSSAResultWidget(QWidget* parent, const char* name, Qt::Wi
   mCentralWidget->setObjectName("CQTSSAResultSubWidget");
   mWidgetLayout->addWidget(mCentralWidget, 0, 0);
 
-  /*commitChanges = new QPushButton(this, "commitChanges");
-  commitChanges->setText(trUtf8("Commit"));
-  Layout5->addWidget(commitChanges);
-
-  cancelChanges = new QPushButton(this, "cancelChanges");
-  cancelChanges->setText(trUtf8("Revert"));
-  Layout5->addWidget(cancelChanges);*/
-
-  // signals and slots connections
-  //connect(commitChanges, SIGNAL(clicked()), this, SLOT(slotBtnOKClicked()));
-  //connect(cancelChanges, SIGNAL(clicked()), this, SLOT(slotBtnCancelClicked()));
 }
 
 /*
  *  Destroys the object and frees any allocated resources
  */
 CQTSSAResultWidget::~CQTSSAResultWidget()
-{}
-
-bool CQTSSAResultWidget::loadFromBackend()
 {
 
-#if 0
-  mCentralWidget->displayOptimizationTab(false);
-  CDataModel* pDataModel = getDataModel();
-  assert(pDataModel != NULL);
-  mCentralWidget->table()->setTimeSeries(dynamic_cast<CTSSATask *>(&pDataModel->getTaskList()->operator[]("Time Scale Separation Analysis"))->getTimeSeries());
-#endif
-
-  return true;
 }
 
-bool CQTSSAResultWidget::saveToBackend()
+CQTSSAResultSubWidget *
+CQTSSAResultWidget::getSubWidget()
 {
-  return true;
-}
-
-/*void CQTSSAResultWidget::slotBtnCancelClicked()
-{
-  enter(objKey); // reload
-}*/
-
-/*void CQTSSAResultWidget::slotBtnOKClicked()
-{
-  saveToCompartment();
-}*/
-
-bool CQTSSAResultWidget::update(ListViews::ObjectType /* objectType */,
-                                ListViews::Action /* action */,
-                                const std::string & /* key */)
-{
-
-#if 0
-
-  if (objectType == ListViews::MODEL &&
-      action == ListViews::ADD)
-    mCentralWidget->table()->setTimeSeries(CTimeSeries());
-
-#endif
-
-  return true;
-}
-
-bool CQTSSAResultWidget::leave()
-{
-  //return saveToCompartment();
-  return true;
+  return mCentralWidget;
 }
 
 bool CQTSSAResultWidget::enterProtected()
 {
+  if (!isVisible())
+    return true;
+
   CDataModel* pDataModel = getDataModel();
   assert(pDataModel != NULL);
   pTask =
@@ -134,22 +84,8 @@ bool CQTSSAResultWidget::enterProtected()
 
   if (!pTSSILDM->getCurrentStep())
     {
-#if 0
-      mCentralWidget->setStepSelectionDisabled(true);
-#endif
       mCentralWidget->discardOldResults();
     }
 
-#if 0
-  else
-    mCentralWidget->setStepSelectionDisabled(false);
-
-#endif
-
-  return loadFromBackend();
-  /*objKey = key;
-  CCompartment* comp = dynamic_cast< CCompartment * >(CRootContainer::getKeyFactory()->get(key));
-
-  if (comp) return loadFromCompartment(comp);
-  else return false;*/
+  return true;
 }

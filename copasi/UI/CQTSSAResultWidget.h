@@ -33,17 +33,9 @@ public:
   CQTSSAResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~CQTSSAResultWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
-  CQTSSAResultSubWidget* getSubWidget() {return mCentralWidget;};
+  CQTSSAResultSubWidget* getSubWidget();
 
 protected slots:
-  //virtual void slotBtnCancelClicked();
-  //virtual void slotBtnOKClicked();
-
-public:
-  bool loadFromBackend();
-  bool saveToBackend();
 
 protected:
   virtual bool enterProtected();
