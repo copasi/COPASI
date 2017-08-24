@@ -73,9 +73,6 @@ CQTSSAResultWidget::getSubWidget()
 
 bool CQTSSAResultWidget::enterProtected()
 {
-  if (!isVisible())
-    return true;
-
   CDataModel* pDataModel = getDataModel();
   assert(pDataModel != NULL);
   pTask =
