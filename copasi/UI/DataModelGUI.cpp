@@ -203,6 +203,7 @@ void DataModelGUI::addModelFinished()
       //notify(ListViews::MODEL, ListViews::CHANGE, "");
 
       CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->save();
       //linkDataModelToGUI();
     }
 
@@ -256,6 +257,7 @@ void DataModelGUI::loadModelFinished()
   if (mSuccess)
     {
       CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->save();
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -296,7 +298,10 @@ void DataModelGUI::saveModelRun()
 void DataModelGUI::saveModelFinished()
 {
   if (mSuccess)
-    CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+    {
+      CRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->save();
+    }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
 
@@ -398,6 +403,7 @@ void DataModelGUI::importSBMLFinished()
     {
       this->importCellDesigner();
       CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->save();
 
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
@@ -493,7 +499,10 @@ void DataModelGUI::exportSBMLRun()
 void DataModelGUI::exportSBMLFinished()
 {
   if (mSuccess)
-    CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+    {
+      CRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->save();
+    }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
 
@@ -995,7 +1004,7 @@ void DataModelGUI::importSEDMLFinished()
   if (mSuccess)
     {
       CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
-
+      CRootContainer::getConfiguration()->save();
       mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -1025,7 +1034,10 @@ void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile,
 void DataModelGUI::exportSEDMLFinished()
 {
   if (mSuccess)
-    CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+    {
+      CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+      CRootContainer::getConfiguration()->save();
+    }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
 
