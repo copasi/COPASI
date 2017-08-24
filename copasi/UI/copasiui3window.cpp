@@ -2190,7 +2190,7 @@ void CopasiUI3Window::slotCheckModel()
 
 void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotUpdateMIRIAMFinished(bool)));
   QCursor oldCursor = cursor();
   setCursor(Qt::WaitCursor);
 
