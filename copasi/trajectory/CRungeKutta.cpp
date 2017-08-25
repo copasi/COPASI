@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -197,14 +202,14 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       return mMethodStatus;
     }
 
+  mTEnd = *pEndTime;
+
   assert(mContinueFromInterpolation || mTLeft == *pTime);
 
   C_FLOAT64 Tolerance = 100.0 * (fabs(mTEnd) * std::numeric_limits< C_FLOAT64 >::epsilon() + std::numeric_limits< C_FLOAT64 >::min());
 
   if (mContinueFromInterpolation)
     {
-      assert(mTEnd == *pEndTime);
-
       // Complete the interrupted step.
       checkRoots();
 
@@ -227,10 +232,6 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       // (5) Advance New Step //
       //~~~~~~~~~~~~~~~~~~~~~~//
       advanceStep();
-    }
-  else
-    {
-      mTEnd = *pEndTime;
     }
 
   unsigned C_INT32 StepCounter = 0;
