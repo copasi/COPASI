@@ -52,8 +52,8 @@ public:
    * @param const CTaskEnum::Task & taskType (default: tssAnalysis)
    */
   CCSPMethod(const CCopasiContainer * pParent,
-             const CTaskEnum::Method & methodType = CTaskEnum::Method::tssCSP,
-             const CTaskEnum::Task & taskType = CTaskEnum::Task::tssAnalysis);
+             const CTaskEnum::Method & methodType = CTaskEnum::tssCSP,
+             const CTaskEnum::Task & taskType = CTaskEnum::tssAnalysis);
 
   /**
    * Copy constructor.
