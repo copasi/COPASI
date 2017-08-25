@@ -636,7 +636,7 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
                          const C_INT *  nr, C_FLOAT64 * r)
 {
   *mpContainerStateTime = *t;
-  mpContainer->updateSimulatedValues(*mpReducedModel);
+  mpContainer->updateRootValues(*mpReducedModel);
 
   CVectorCore< C_FLOAT64 > RootValues(*nr, r);
   RootValues = mpContainer->getRoots();
@@ -692,7 +692,7 @@ void CLsodaMethod::createRootMask()
   CVector< C_FLOAT64 > RootDerivatives;
   RootDerivatives.resize(NumRoots);
 
-  mpContainer->updateSimulatedValues(*mpReducedModel);
+  mpContainer->updateRootValues(*mpReducedModel);
   RootValues = mpContainer->getRoots();
   mpContainer->calculateRootDerivatives(RootDerivatives);
 

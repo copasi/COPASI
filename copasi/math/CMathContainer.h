@@ -339,6 +339,12 @@ public:
   void updateSimulatedValues(const bool & useMoieties);
 
   /**
+   * Calculate all roots based on the current state
+   * @param const bool & useMoieties
+   */
+  void updateRootValues(const bool & useMoieties);
+
+  /**
    * Calculate all transient data values. The simulated values need to be calculated beforehand.
    */
   void updateTransientDataValues();
@@ -1120,6 +1126,18 @@ private:
    * on the assumption that all state values may have changed
    */
   CObjectInterface::UpdateSequence mSimulationValuesSequenceReduced;
+
+  /**
+   * The sequence of updates needed to calculate all roots
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mRootSequence;
+
+  /**
+   * The sequence of updates needed to calculate all roots
+   * on the assumption that all state values may have changed
+   */
+  CObjectInterface::UpdateSequence mRootSequenceReduced;
 
   /**
    * The sequence of updates needed to calculate all priorities

@@ -251,6 +251,8 @@ CMathContainer::CMathContainer():
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mRootSequence(),
+  mRootSequenceReduced(),
   mPrioritySequence(),
   mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
@@ -336,6 +338,8 @@ CMathContainer::CMathContainer(CModel & model):
   mApplyInitialValuesSequence(),
   mSimulationValuesSequence(),
   mSimulationValuesSequenceReduced(),
+  mRootSequence(),
+  mRootSequenceReduced(),
   mPrioritySequence(),
   mTransientDataObjectSequence(),
   mInitialStateValueExtensive(),
@@ -431,6 +435,8 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   mApplyInitialValuesSequence(src.mApplyInitialValuesSequence),
   mSimulationValuesSequence(src.mSimulationValuesSequence),
   mSimulationValuesSequenceReduced(src.mSimulationValuesSequenceReduced),
+  mRootSequence(src.mRootSequence),
+  mRootSequenceReduced(src.mRootSequenceReduced),
   mPrioritySequence(src.mPrioritySequence),
   mTransientDataObjectSequence(src.mTransientDataObjectSequence),
   mInitialStateValueExtensive(src.mInitialStateValueExtensive),
@@ -915,6 +921,18 @@ void CMathContainer::updateSimulatedValues(const bool & useMoieties)
   else
     {
       applyUpdateSequence(mSimulationValuesSequence);
+    }
+}
+
+void CMathContainer::updateRootValues(const bool & useMoieties)
+{
+  if (useMoieties)
+    {
+      applyUpdateSequence(mRootSequenceReduced);
+    }
+  else
+    {
+      applyUpdateSequence(mRootSequence);
     }
 }
 
@@ -2445,15 +2463,6 @@ void CMathContainer::createUpdateSimulationValuesSequence()
       ReducedSimulationRequiredValues.insert(pObject);
     }
 
-  pObject = mObjects.array() + (mEventRoots.array() - mValues.array());
-  pObjectEnd = mObjects.array() + (mEventRootStates.array() - mValues.array());
-
-  for (; pObject != pObjectEnd; ++pObject)
-    {
-      mSimulationRequiredValues.insert(pObject);
-      ReducedSimulationRequiredValues.insert(pObject);
-    }
-
   pObject = mObjects.array() + (mDelayLags.array() - mValues.array());
   pObjectEnd = pObject + mDelayLags.size();
 
@@ -2467,9 +2476,24 @@ void CMathContainer::createUpdateSimulationValuesSequence()
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequence, CMath::Default, mStateValues, mSimulationRequiredValues);
   mTransientDependencies.getUpdateSequence(mSimulationValuesSequenceReduced, CMath::UseMoieties, mReducedStateValues, ReducedSimulationRequiredValues);
 
-  // Determine whether the model is autonomous, i.e., no simulation required value depends on time.
+  // Build the update sequence used to calculate the roots.
+  CObjectInterface::ObjectSet RootRequiredValues;
+  pObject = mObjects.array() + (mEventRoots.array() - mValues.array());
+  pObjectEnd = mObjects.array() + (mEventRootStates.array() - mValues.array());
+
+  for (; pObject != pObjectEnd; ++pObject)
+    {
+      RootRequiredValues.insert(pObject);
+    }
+
+  mTransientDependencies.getUpdateSequence(mRootSequence, CMath::Default, mStateValues, RootRequiredValues);
+  mTransientDependencies.getUpdateSequence(mRootSequenceReduced, CMath::UseMoieties, mReducedStateValues, RootRequiredValues);
+
+  // Determine whether the model is autonomous, i.e., no simulation required value or root depends on time.
   // We need to additionally add the event assignments to the simulation required values as they may time dependent
   CObjectInterface::ObjectSet TimeDependentValues = mSimulationRequiredValues;
+  TimeDependentValues.insert(RootRequiredValues.begin(), RootRequiredValues.end());
+
   pObject = getMathObject(mEventAssignments.array());
   pObjectEnd = pObject + mEventAssignments.size();
 
@@ -2588,7 +2612,7 @@ void CMathContainer::analyzeRoots()
 
 void CMathContainer::calculateRootDerivatives(CVector< C_FLOAT64 > & rootDerivatives)
 {
-  updateSimulatedValues(false);
+  updateRootValues(false);
 
   CMatrix< C_FLOAT64 > Jacobian;
   calculateRootJacobian(Jacobian);
@@ -2675,11 +2699,11 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
         }
 
       *pX = X1;
-      updateSimulatedValues(false);
+      updateRootValues(false);
       Y1 = mEventRoots;
 
       *pX = X2;
-      updateSimulatedValues(false);
+      updateRootValues(false);
       Y2 = mEventRoots;
 
       *pX = Store;
@@ -2693,7 +2717,7 @@ void CMathContainer::calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian)
     }
 
   // Undo the changes.
-  updateSimulatedValues(false);
+  updateRootValues(false);
 }
 
 void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,

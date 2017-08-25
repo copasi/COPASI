@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -498,6 +503,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
           case CTrajectoryMethod::ROOT:
             mpContainer->setState(mContainerState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
+            mpContainer->updateRootValues(mUpdateMoieties);
 
             mpContainer->processRoots(true, mpTrajectoryMethod->getRoots());
 
