@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -24,6 +29,8 @@ class CMathObject: public CObjectInterface
   friend std::ostream &operator<<(std::ostream &os, const CMathObject & o);
 
 public:
+  typedef void (CMathObject::*calculate)();
+
   /**
    * Default Constructor
    */
@@ -124,6 +131,16 @@ public:
   virtual void calculateValue();
 
   /**
+   * Retrieve the value of the object;
+   */
+  const C_FLOAT64 & getValue() const;
+
+  /**
+   * Check whether the object can calculate its value
+   */
+  bool canCalculateValue() const;
+
+  /**
    * Initialize a single mathematical object and advance relevant pointers
    * @param CMathObject *& pObject
    * @param C_FLOAT64 *& pValue
@@ -199,6 +216,12 @@ public:
   const CMathObject * getCorrespondingProperty() const;
 
   /**
+   * Retrieve the compartment
+   * @return const CMathObject * compartment
+   */
+  const CMathObject * getCompartment() const;
+
+  /**
    * Set the expression's infix  and compile the object.
    * @param const std::string & infix,
    * @param const bool & isBoolean,
@@ -238,6 +261,11 @@ public:
   void appendDelays(CMath::DelayData & Delays) const;
 
 private:
+  void calculateExpression();
+  void calculateExtensiveValue();
+  void calculateIntensiveValue();
+  void calculateParticleFlux();
+
   /**
    * Compile initial value objects
    * @param CMathContainer & container
@@ -409,6 +437,21 @@ private:
    * A pointer to the corresponding intensive or extensive property if it exists otherwise NULL
    */
   const CMathObject * mpCorrespondingProperty;
+
+  /**
+   * A pointer to the associated compartment (NULL if no association).
+   */
+  const CMathObject * mpCompartment;
+
+  /**
+   * A pointer to the associated compartment (NULL if no association).
+   */
+  const CObjectInterface * mpQuantity2Number;
+
+  /**
+   * A pointer to the member function use to calculate the value
+   */
+  calculate mpCalculate;
 
   /**
    * A pointer to the data object

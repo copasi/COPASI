@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -269,7 +274,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CMath::SimulationContextFlag
                   {
                     // Only Math Objects with expressions can be updated.
                     if (pMathObject != NULL &&
-                        pMathObject->getExpressionPtr() != NULL)
+                        pMathObject->canCalculateValue())
                       {
                         updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));
                       }

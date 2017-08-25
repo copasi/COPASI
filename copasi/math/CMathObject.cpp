@@ -44,6 +44,9 @@ void CMathObject::initialize(CMathObject *& pObject,
 
   pdelete(pObject->mpExpression);
   pObject->mpCorrespondingProperty = NULL;
+  pObject->mpCompartment = NULL;
+  pObject->mpQuantity2Number = NULL;
+  pObject->mpCalculate = NULL;
 
   pObject++;
   pValue++;
@@ -60,6 +63,9 @@ CMathObject::CMathObject():
   mIsIntensiveProperty(false),
   mIsInitialValue(false),
   mpCorrespondingProperty(NULL),
+  mpCompartment(NULL),
+  mpQuantity2Number(NULL),
+  mpCalculate(NULL),
   mpDataObject(NULL)
 {}
 
@@ -74,6 +80,9 @@ CMathObject::CMathObject(const CMathObject & src):
   mIsIntensiveProperty(src.mIsIntensiveProperty),
   mIsInitialValue(src.mIsInitialValue),
   mpCorrespondingProperty(src.mpCorrespondingProperty),
+  mpCompartment(src.mpCompartment),
+  mpQuantity2Number(src.mpQuantity2Number),
+  mpCalculate(src.mpCalculate),
   mpDataObject(src.mpDataObject)
 {}
 
@@ -103,6 +112,8 @@ void CMathObject::relocate(const CMathContainer * pContainer,
 {
   pContainer->relocateValue(mpValue, relocations);
   pContainer->relocateObject(mpCorrespondingProperty, relocations);
+  pContainer->relocateObject(mpCompartment, relocations);
+  pContainer->relocateObject(mpQuantity2Number, relocations);
 
   if (mpExpression != NULL)
     {
@@ -307,11 +318,9 @@ void * CMathObject::getValuePointer() const
 // virtual
 void CMathObject::calculateValue()
 {
-  // This method should only be called if there is something to calculate, i.e.
-  // mpExpression != NULL
-  assert(mpExpression != NULL);
+  assert(mpCalculate != NULL);
 
-  *mpValue = mpExpression->value();
+  (this->*mpCalculate)();
 
 #ifdef COPASI_DEBUG
 
@@ -331,6 +340,38 @@ void CMathObject::calculateValue()
   // The solution is that the moiety automatically updates the value in conjunction
   // with the dependency graph omitting the value in the update sequence if the context
   // is CMath::UseMoieties.
+}
+
+const C_FLOAT64 & CMathObject::getValue() const
+{
+  return *mpValue;
+}
+
+bool CMathObject::canCalculateValue() const
+{
+  return mpCalculate != NULL;
+}
+
+void CMathObject::calculateExpression()
+{
+  assert(mpExpression != NULL);
+
+  *mpValue = mpExpression->value();
+}
+
+void CMathObject::calculateExtensiveValue()
+{
+  *mpValue = mpCorrespondingProperty->getValue() * mpCompartment->getValue() * *static_cast< const C_FLOAT64 * >(mpQuantity2Number->getValuePointer());
+}
+
+void CMathObject::calculateIntensiveValue()
+{
+  *mpValue = mpCorrespondingProperty->getValue() / (mpCompartment->getValue() * *static_cast< const C_FLOAT64 * >(mpQuantity2Number->getValuePointer()));
+}
+
+void CMathObject::calculateParticleFlux()
+{
+  *mpValue = mpCorrespondingProperty->getValue() * *static_cast< const C_FLOAT64 * >(mpQuantity2Number->getValuePointer());
 }
 
 const CMath::ValueType & CMathObject::getValueType() const
@@ -371,6 +412,11 @@ const bool & CMathObject::isInitialValue() const
 const CMathObject * CMathObject::getCorrespondingProperty() const
 {
   return mpCorrespondingProperty;
+}
+
+const CMathObject * CMathObject::getCompartment() const
+{
+  return mpCompartment;
 }
 
 bool CMathObject::setExpression(const std::string & infix,
@@ -566,6 +612,9 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
         {
           mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialConcentrationReference());
         }
+
+      mpCompartment = container.getMathObject(pSpecies->getCompartment()->getInitialValueReference());
+      mpQuantity2Number = container.getQuantity2NumberFactorObject();
     }
 
   if (mIsIntensiveProperty)
@@ -660,6 +709,9 @@ bool CMathObject::compileValue(CMathContainer & container)
         {
           mpCorrespondingProperty = container.getMathObject(pSpecies->getConcentrationReference());
         }
+
+      mpCompartment = container.getMathObject(pSpecies->getCompartment()->getValueReference());
+      mpQuantity2Number = container.getQuantity2NumberFactorObject();
     }
 
   if (mIsIntensiveProperty)
@@ -845,13 +897,22 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
   //   mParticleFlux = *mUnitScalingFactor * mFlux;
   //   mUnitScalingFactor = & pModel->getQuantity2NumberFactor();
 
+  mpCorrespondingProperty = container.getMathObject(pReaction->getFluxReference());
+
+  if (mIsInitialValue)
+    {
+      mpCorrespondingProperty = container.getInitialValueObject(mpCorrespondingProperty);
+    }
+
+  mpQuantity2Number = container.getQuantity2NumberFactorObject();
+
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << container.getModel().getQuantity2NumberFactor();
+  Infix << pointerToString(mpQuantity2Number->getValuePointer());
   Infix << "*";
-  Infix << pointerToString(container.getMathObject(pReaction->getFluxReference())->getValuePointer());
+  Infix << pointerToString(mpCorrespondingProperty->getValuePointer());
 
   CExpression E("ParticleFluxExpression", &container);
 
@@ -860,6 +921,8 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
   pdelete(mpExpression);
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
+
+  mpCalculate = &CMathObject::calculateParticleFlux;
 
   return success;
 }
@@ -1241,8 +1304,10 @@ void CMathObject::compileExpression()
 
   if (mPrerequisites.empty())
     {
-      calculateValue();
+      calculateExpression();
     }
+
+  mpCalculate = &CMathObject::calculateExpression;
 }
 
 bool CMathObject::createConvertedExpression(const CExpression * pExpression,
@@ -1271,31 +1336,18 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
 {
   bool success = true;
 
-  // mConc = *mpValue / mpCompartment->getValue() * mpModel->getNumber2QuantityFactor();
-  CObjectInterface * pNumber = NULL;
-  CObjectInterface * pCompartment = NULL;
-
-  if (mIsInitialValue)
-    {
-      pNumber = pSpecies->getInitialValueReference();
-      pCompartment = pSpecies->getCompartment()->getInitialValueReference();
-    }
-  else
-    {
-      pNumber = pSpecies->getValueReference();
-      pCompartment = pSpecies->getCompartment()->getValueReference();
-    }
+  // mConc = *mpValue / (mpCompartment->getValue() * mpModel->getNumber2QuantityFactor());
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << container.getModel().getNumber2QuantityFactor();
+  Infix << pointerToString(mpCorrespondingProperty->getValuePointer());
+  Infix << "/(";
+  Infix << pointerToString(mpCompartment->getValuePointer());
   Infix << "*";
-  Infix << pointerToString(container.getMathObject(pNumber)->getValuePointer());
-  Infix << "/";
-  Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());;
-
+  Infix << pointerToString(mpQuantity2Number->getValuePointer());
+  Infix << ")";
   CExpression E("IntensiveValueExpression", &container);
 
   success &= E.setInfix(Infix.str());
@@ -1303,6 +1355,8 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   pdelete(mpExpression);
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
+
+  mpCalculate = &CMathObject::calculateIntensiveValue;
 
   return success;
 }
@@ -1314,29 +1368,15 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
 
   // mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
 
-  CObjectInterface * pDensity = NULL;
-  CObjectInterface * pCompartment = NULL;
-
-  if (mIsInitialValue)
-    {
-      pDensity = pSpecies->getInitialConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getInitialValueReference();
-    }
-  else
-    {
-      pDensity = pSpecies->getConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getValueReference();
-    }
-
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << container.getModel().getQuantity2NumberFactor();
+  Infix << pointerToString(mpCorrespondingProperty->getValuePointer());
   Infix << "*";
-  Infix << pointerToString(container.getMathObject(pDensity)->getValuePointer());
+  Infix << pointerToString(mpCompartment->getValuePointer());
   Infix << "*";
-  Infix << pointerToString(container.getMathObject(pCompartment)->getValuePointer());
+  Infix << pointerToString(mpQuantity2Number->getValuePointer());
 
   CExpression E("ExtensiveValueExpression", &container);
 
@@ -1345,6 +1385,8 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   pdelete(mpExpression);
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
+
+  mpCalculate = &CMathObject::calculateExtensiveValue;
 
   return success;
 }
@@ -1694,6 +1736,15 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
   if (o.mpCorrespondingProperty != NULL)
     {
       os << o.mpCorrespondingProperty->getCN() << std::endl;
+    }
+  else
+    {
+      os << "NULL" << std::endl;
+    }
+
+  if (o.mpCompartment != NULL)
+    {
+      os << o.mpCompartment->getCN() << std::endl;
     }
   else
     {
