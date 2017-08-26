@@ -44,8 +44,11 @@ void CMathObject::initialize(CMathObject *& pObject,
 
   pdelete(pObject->mpExpression);
   pObject->mpCorrespondingProperty = NULL;
-  pObject->mpCompartment = NULL;
-  pObject->mpQuantity2Number = NULL;
+  pObject->mpCorrespondingPropertyValue = NULL;
+  pObject->mpCompartmentValue = NULL;
+  pObject->mpQuantity2NumberValue = NULL;
+  pObject->mStoichiometryVector.resize(0);
+  pObject->mRateVector.resize(0);
   pObject->mpCalculate = NULL;
 
   pObject++;
@@ -63,8 +66,11 @@ CMathObject::CMathObject():
   mIsIntensiveProperty(false),
   mIsInitialValue(false),
   mpCorrespondingProperty(NULL),
-  mpCompartment(NULL),
-  mpQuantity2Number(NULL),
+  mpCorrespondingPropertyValue(NULL),
+  mpCompartmentValue(NULL),
+  mpQuantity2NumberValue(NULL),
+  mStoichiometryVector(),
+  mRateVector(),
   mpCalculate(NULL),
   mpDataObject(NULL)
 {}
@@ -80,8 +86,11 @@ CMathObject::CMathObject(const CMathObject & src):
   mIsIntensiveProperty(src.mIsIntensiveProperty),
   mIsInitialValue(src.mIsInitialValue),
   mpCorrespondingProperty(src.mpCorrespondingProperty),
-  mpCompartment(src.mpCompartment),
-  mpQuantity2Number(src.mpQuantity2Number),
+  mpCorrespondingPropertyValue(src.mpCorrespondingPropertyValue),
+  mpCompartmentValue(src.mpCompartmentValue),
+  mpQuantity2NumberValue(src.mpQuantity2NumberValue),
+  mStoichiometryVector(src.mStoichiometryVector),
+  mRateVector(src.mRateVector),
   mpCalculate(src.mpCalculate),
   mpDataObject(src.mpDataObject)
 {}
@@ -112,12 +121,21 @@ void CMathObject::relocate(const CMathContainer * pContainer,
 {
   pContainer->relocateValue(mpValue, relocations);
   pContainer->relocateObject(mpCorrespondingProperty, relocations);
-  pContainer->relocateObject(mpCompartment, relocations);
-  pContainer->relocateObject(mpQuantity2Number, relocations);
+  pContainer->relocateValue(mpCorrespondingPropertyValue, relocations);
+  pContainer->relocateValue(mpCompartmentValue, relocations);
+  pContainer->relocateValue(mpQuantity2NumberValue, relocations);
 
   if (mpExpression != NULL)
     {
       mpExpression->relocate(pContainer, relocations);
+    }
+
+  const C_FLOAT64 ** ppRate = mRateVector.begin();
+  const C_FLOAT64 ** ppRateEnd = mRateVector.end();
+
+  for (; ppRate != ppRateEnd; ++ppRate)
+    {
+      pContainer->relocateValue(*ppRate, relocations);
     }
 
   pContainer->relocateObjectSet(mPrerequisites, relocations);
@@ -361,17 +379,32 @@ void CMathObject::calculateExpression()
 
 void CMathObject::calculateExtensiveValue()
 {
-  *mpValue = mpCorrespondingProperty->getValue() * mpCompartment->getValue() * *static_cast< const C_FLOAT64 * >(mpQuantity2Number->getValuePointer());
+  *mpValue = *mpCorrespondingPropertyValue * *mpCompartmentValue * *mpQuantity2NumberValue;
 }
 
 void CMathObject::calculateIntensiveValue()
 {
-  *mpValue = mpCorrespondingProperty->getValue() / (mpCompartment->getValue() * *static_cast< const C_FLOAT64 * >(mpQuantity2Number->getValuePointer()));
+  *mpValue = *mpCorrespondingPropertyValue / (*mpCompartmentValue * *mpQuantity2NumberValue);
 }
 
 void CMathObject::calculateParticleFlux()
 {
-  *mpValue = mpCorrespondingProperty->getValue() * *static_cast< const C_FLOAT64 * >(mpQuantity2Number->getValuePointer());
+  *mpValue = *mpCorrespondingPropertyValue * *mpQuantity2NumberValue;
+}
+
+void CMathObject::calculateExtensiveReactionRate()
+
+{
+  *mpValue = 0.0;
+
+  const C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+  const C_FLOAT64 ** ppRate = mRateVector.begin();
+  const C_FLOAT64 ** ppRateEnd = mRateVector.end();
+
+  for (; ppRate != ppRateEnd; ++ppRate, ++pStoi)
+    {
+      *mpValue += *pStoi * **ppRate;
+    }
 }
 
 const CMath::ValueType & CMathObject::getValueType() const
@@ -414,9 +447,9 @@ const CMathObject * CMathObject::getCorrespondingProperty() const
   return mpCorrespondingProperty;
 }
 
-const CMathObject * CMathObject::getCompartment() const
+const C_FLOAT64 * CMathObject::getCompartmentValue() const
 {
-  return mpCompartment;
+  return mpCompartmentValue;
 }
 
 bool CMathObject::setExpression(const std::string & infix,
@@ -603,18 +636,21 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
   if (mEntityType == CMath::Species)
     {
       pSpecies = static_cast< const CMetab * >(pEntity);
+      const CCompartment * pComparment = pSpecies->getCompartment();
 
       if (mIsIntensiveProperty)
         {
           mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialValueReference());
+          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pComparment->getInitialValueReference())->getValuePointer());
         }
       else
         {
           mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialConcentrationReference());
+          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pComparment->getValueReference())->getValuePointer());
         }
 
-      mpCompartment = container.getMathObject(pSpecies->getCompartment()->getInitialValueReference());
-      mpQuantity2Number = container.getQuantity2NumberFactorObject();
+      mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
+      mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
   if (mIsIntensiveProperty)
@@ -710,8 +746,9 @@ bool CMathObject::compileValue(CMathContainer & container)
           mpCorrespondingProperty = container.getMathObject(pSpecies->getConcentrationReference());
         }
 
-      mpCompartment = container.getMathObject(pSpecies->getCompartment()->getValueReference());
-      mpQuantity2Number = container.getQuantity2NumberFactorObject();
+      mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
+      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getInitialValueReference())->getValuePointer());
+      mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
   if (mIsIntensiveProperty)
@@ -904,15 +941,16 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
       mpCorrespondingProperty = container.getInitialValueObject(mpCorrespondingProperty);
     }
 
-  mpQuantity2Number = container.getQuantity2NumberFactorObject();
+  mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
+  mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << pointerToString(mpQuantity2Number->getValuePointer());
+  Infix << pointerToString(mpQuantity2NumberValue);
   Infix << "*";
-  Infix << pointerToString(mpCorrespondingProperty->getValuePointer());
+  Infix << pointerToString(mpCorrespondingPropertyValue);
 
   CExpression E("ParticleFluxExpression", &container);
 
@@ -1342,11 +1380,11 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << pointerToString(mpCorrespondingProperty->getValuePointer());
+  Infix << pointerToString(mpCorrespondingPropertyValue);
   Infix << "/(";
-  Infix << pointerToString(mpCompartment->getValuePointer());
+  Infix << pointerToString(mpCompartmentValue);
   Infix << "*";
-  Infix << pointerToString(mpQuantity2Number->getValuePointer());
+  Infix << pointerToString(mpQuantity2NumberValue);
   Infix << ")";
   CExpression E("IntensiveValueExpression", &container);
 
@@ -1372,11 +1410,11 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   Infix.imbue(std::locale::classic());
   Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
-  Infix << pointerToString(mpCorrespondingProperty->getValuePointer());
+  Infix << pointerToString(mpCorrespondingPropertyValue);
   Infix << "*";
-  Infix << pointerToString(mpCompartment->getValuePointer());
+  Infix << pointerToString(mpCompartmentValue);
   Infix << "*";
-  Infix << pointerToString(mpQuantity2Number->getValuePointer());
+  Infix << pointerToString(mpQuantity2NumberValue);
 
   CExpression E("ExtensiveValueExpression", &container);
 
@@ -1483,6 +1521,8 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   CCopasiVectorN< CReaction >::const_iterator it = container.getModel().getReactions().begin();
   CCopasiVectorN< CReaction >::const_iterator end = container.getModel().getReactions().end();
 
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > RateCalculationVector;
+
   for (; it != end; ++it)
     {
       const CCopasiVector< CChemEqElement > &Balances =
@@ -1546,6 +1586,15 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
           First = false;
 
           Infix << pointerToString(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
+
+          const C_FLOAT64 * pRate = static_cast< const C_FLOAT64 * >(container.getMathObject(it->getParticleFluxReference())->getValuePointer());
+
+          if (mIsInitialValue)
+            {
+              pRate = container.getInitialValuePointer(pRate);
+            }
+
+          RateCalculationVector.push_back(std::make_pair(Multiplicity, pRate));
         }
     }
 
@@ -1556,6 +1605,21 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
   pdelete(mpExpression);
   mpExpression = new CMathExpression(E, container, !mIsInitialValue);
   compileExpression();
+
+  mStoichiometryVector.resize(RateCalculationVector.size());
+  mRateVector.resize(RateCalculationVector.size());
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = RateCalculationVector.begin();
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = RateCalculationVector.end();
+  C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+  const C_FLOAT64 **ppRate = mRateVector.begin();
+
+  for (; itPair != endPair; ++itPair, ++pStoi, ++ppRate)
+    {
+      *pStoi = itPair->first;
+      *ppRate = itPair->second;
+    }
+
+  mpCalculate = &CMathObject::calculateExtensiveReactionRate;
 
   return success;
 }
@@ -1736,15 +1800,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
   if (o.mpCorrespondingProperty != NULL)
     {
       os << o.mpCorrespondingProperty->getCN() << std::endl;
-    }
-  else
-    {
-      os << "NULL" << std::endl;
-    }
-
-  if (o.mpCompartment != NULL)
-    {
-      os << o.mpCompartment->getCN() << std::endl;
     }
   else
     {
