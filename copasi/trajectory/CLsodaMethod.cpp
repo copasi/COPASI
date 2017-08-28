@@ -281,7 +281,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
     {
       if (mSavedState.Status != FAILURE)
         {
-          resetState();
+          resetState(mTargetTime);
         }
 
       if (mLsodaStatus != 3)
@@ -313,8 +313,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
           // We reset short before we reach the internal step limit.
 #ifdef DEBUG_FLOW
           std::cout << "mTime = " << mTime << ", EndTime = " << EndTime << ", mTask = " << mTask << ", mLsodaStatus = " << mLsodaStatus << ", mRootCounter = " << mRootCounter << std::endl;
-          std::cout << "mDWork = " << CVectorCore< C_FLOAT64 >(22, mDWork.array()) << std::endl;
-          std::cout << "mIWork = " << CVectorCore< C_INT >(20, mIWork.array()) << std::endl;
+          std::cout << "mDWork = " << mDWork << std::endl;
+          std::cout << "mIWork = " << mIWork << std::endl;
 #endif // DEBUG_FLOW
 
           if (mLsodaStatus == 3 &&
@@ -515,7 +515,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
       if (mLsodaStatus <= 0 ||
           !mpContainer->isStateValid())
         {
-          if (mTask == 4 || mTask == 5)
+          if (!final || mTask == 4 || mTask == 5)
             {
               Status = FAILURE;
               mPeekAheadMode = false;
@@ -902,8 +902,13 @@ void CLsodaMethod::saveState()
   mLSODAR.saveState();
 }
 
-void CLsodaMethod::resetState()
+void CLsodaMethod::resetState(const C_FLOAT64 & targetTime)
 {
+  if (targetTime < mSavedState.ContainerState[mpContainer->getCountFixedEventTargets()])
+    {
+      return;
+    }
+
   if (mSavedState.Status == ROOT)
     {
       mLsodaStatus = 3;
