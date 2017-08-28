@@ -315,7 +315,7 @@ private:
   CTrajectoryMethod::Status peekAhead();
 
   void saveState();
-  void resetState();
+  void resetState(const C_FLOAT64 & targetTime);
 
 protected:
   /**
