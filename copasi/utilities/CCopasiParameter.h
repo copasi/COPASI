@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 
+#include "copasi/copasi.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CFlags.h"
