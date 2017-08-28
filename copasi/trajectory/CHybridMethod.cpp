@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -135,7 +140,8 @@ bool CHybridMethod::elevateChildren()
   return true;
 }
 
-CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT,
+    const bool & /* final */)
 {
   // write the current state to the model
   //  mpProblem->getModel()->setState(mpCurrentState); // is that correct?

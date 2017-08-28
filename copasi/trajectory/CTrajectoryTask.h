@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -97,9 +102,10 @@ public:
   /**
    * Integrates one step
    * @param const C_FLOAT64 & nextTime
+   * @param const bool & final (default: false)
    * @return bool success;
    */
-  bool processStep(const C_FLOAT64 & nextTime);
+  bool processStep(const C_FLOAT64 & nextTime, const bool & final = false);
 
 #ifndef SWIG
 

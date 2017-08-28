@@ -87,10 +87,11 @@ public:
    *  step.
    *  The new state (after deltaT) is expected in the current state.
    *  The return value is the actual timestep taken.
-   *  @param "const double &" deltaT
+   *  @param const double & deltaT
+   *  @param const bool & final (default: false)
    *  @return Status status
    */
-  virtual Status step(const double & deltaT);
+  virtual Status step(const double & deltaT, const bool & final = false);
 
   /**
    *  This instructs the method to prepare for integration
