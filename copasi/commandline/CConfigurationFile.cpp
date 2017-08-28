@@ -282,7 +282,7 @@ bool CConfigurationFile::load()
       if (XMLMIRIAMResource.CCopasiXMLInterface::load(MIRIAMResourceFile,
           MIRIAMResourceFile))
         {
-          const CCopasiParameterGroup* group = XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resoures");
+          const CCopasiParameterGroup* group = XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
 
           if (group == NULL) return false;
 
