@@ -1,21 +1,21 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include "copasi.h"
 
@@ -200,14 +200,19 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Recent Files");
   assertGroup("Recent SBML Files");
   assertGroup("Recent SEDML Files");
-  mpDisplayIssueSeverity = assertGroup("Display Issue Severity");
-  mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
+  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
+  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
+  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
+  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
+  mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
   getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
 
   assertGroup("MIRIAM Resources")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::basic));
 
+  mpDisplayIssueSeverity = assertGroup("Display Issue Severity");
+  mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
 
   for (size_t i = 1; i < CIssue::severityNames.size(); i++) //skip the "success" flag
@@ -220,11 +225,6 @@ void CConfigurationFile::initializeParameter()
       mpDisplayIssueKinds->assertParameter(std::string(CIssue::kindNames[i]), CCopasiParameter::BOOL, true);
     }
 
-  mpUseOpenGL = assertParameter("Use OpenGL", CCopasiParameter::BOOL, false);
-  mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
-  mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
-  mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
-  mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
   mpWorkingDirectory = assertParameter("Working Directory", CCopasiParameter::STRING, std::string(""));
   getParameter("Working Directory")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
 
@@ -304,6 +304,11 @@ const CConfigurationFile & CConfigurationFile::operator=(const CCopasiParameterG
   initializeParameter();
 
   return *this;
+}
+
+const CConfigurationFile & CConfigurationFile::operator=(const CConfigurationFile & rhs)
+{
+  return CConfigurationFile::operator=(static_cast<const CCopasiParameterGroup&>(rhs));
 }
 
 CRecentFiles & CConfigurationFile::getRecentFiles()
