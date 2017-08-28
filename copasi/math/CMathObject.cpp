@@ -641,15 +641,14 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
       if (mIsIntensiveProperty)
         {
           mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialValueReference());
-          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pComparment->getInitialValueReference())->getValuePointer());
         }
       else
         {
           mpCorrespondingProperty = container.getMathObject(pSpecies->getInitialConcentrationReference());
-          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pComparment->getValueReference())->getValuePointer());
         }
 
       mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
+      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pComparment->getInitialValueReference())->getValuePointer());
       mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
@@ -747,7 +746,7 @@ bool CMathObject::compileValue(CMathContainer & container)
         }
 
       mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
-      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getInitialValueReference())->getValuePointer());
+      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
       mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
