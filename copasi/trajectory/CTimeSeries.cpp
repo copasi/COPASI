@@ -131,6 +131,9 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
       pContainer = dynamic_cast< const CMathContainer * >(*itContainer);
     }
 
+  if (pContainer == NULL)
+    return false;
+
   assert(pContainer != NULL);
 
   // We store all extensive values of the system.
@@ -214,7 +217,7 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
               }
 
             break;
-            
+
           case CMath::SimulationType::__SIZE:
             break;
         }

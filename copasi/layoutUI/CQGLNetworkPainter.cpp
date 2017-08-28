@@ -2037,11 +2037,10 @@ bool CQGLNetworkPainter::createDataSets()
         {
           // create a dummy time series from the current state
           dummyTimeSeries.allocate(1);
-          assert(CRootContainer::getDatamodelList()->size() > 0);
           CObjectInterface::ContainerList tmpV;
+          tmpV.push_back(pDataModel);
           dummyTimeSeries.compile(tmpV);
           dummyTimeSeries.output(COutputInterface::DURING);
-          assert(dummyTimeSeries.getRecordedSteps() == 1);
           pTimeSer = &dummyTimeSeries; // point to the dummy time series
         }
 
@@ -2153,9 +2152,6 @@ bool CQGLNetworkPainter::createDataSets()
             }
 
           loadDataSuccessful = true;
-        }
-      else
-        {
         }
     }
 
