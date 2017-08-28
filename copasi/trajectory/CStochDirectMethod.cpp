@@ -128,7 +128,8 @@ bool CStochDirectMethod::elevateChildren()
   return true;
 }
 
-CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CStochDirectMethod::step(const double & deltaT,
+    const bool & /* final */)
 {
   C_FLOAT64 EndTime = *mpContainerStateTime + deltaT;
 

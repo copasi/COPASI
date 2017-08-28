@@ -102,9 +102,10 @@ public:
   /**
    * Integrates one step
    * @param const C_FLOAT64 & nextTime
+   * @param const bool & final (default: false)
    * @return bool success;
    */
-  bool processStep(const C_FLOAT64 & nextTime);
+  bool processStep(const C_FLOAT64 & nextTime, const bool & final = false);
 
 #ifndef SWIG
 

@@ -498,7 +498,8 @@ void CHybridMethodODE45::determineIntegrationType()
  *  @param "const double &" deltaT
  *  @return Status status
  */
-CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT)
+CTrajectoryMethod::Status CHybridMethodODE45::step(const double & deltaT,
+    const bool & /* final */)
 {
   // do several steps
   C_FLOAT64 time    = *mpContainerStateTime;

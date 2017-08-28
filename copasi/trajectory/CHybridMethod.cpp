@@ -140,7 +140,8 @@ bool CHybridMethod::elevateChildren()
   return true;
 }
 
-CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT,
+    const bool & /* final */)
 {
   // write the current state to the model
   //  mpProblem->getModel()->setState(mpCurrentState); // is that correct?

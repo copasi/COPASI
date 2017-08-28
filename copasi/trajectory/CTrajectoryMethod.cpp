@@ -135,7 +135,8 @@ void CTrajectoryMethod::stateChange(const CMath::StateChange & change)
  *  The return value is the actual timestep taken.
  *  @param "const double &" deltaT
  */
-CTrajectoryMethod::Status CTrajectoryMethod::step(const double & C_UNUSED(deltaT))
+CTrajectoryMethod::Status CTrajectoryMethod::step(const double & /* deltaT */,
+    const bool & /* final */)
 {return FAILURE;}
 
 void CTrajectoryMethod::start()

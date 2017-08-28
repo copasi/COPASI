@@ -230,7 +230,8 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
     }
 }
 
-CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
+    const bool & final)
 {
   if (mData.dim == 1 && mNumRoots == 0) //just do nothing if there are no variables except time
     {
@@ -328,7 +329,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT)
           if ((mLsodaStatus <= 0 && mLsodaStatus != -33) ||
               !mpContainer->isStateValid())
             {
-              if (mTask == 4 || mTask == 5)
+              if (!final || mTask == 4 || mTask == 5)
                 {
 #ifdef DEBUG_FLOW
                   std::cout << "FAILURE: Attempt to prevent over shooting failed." << std::endl;

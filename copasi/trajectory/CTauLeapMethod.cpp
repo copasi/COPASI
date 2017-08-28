@@ -149,7 +149,8 @@ bool CTauLeapMethod::elevateChildren()
   return true;
 }
 
-CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CTauLeapMethod::step(const double & deltaT,
+    const bool & /* final */)
 {
   // do several steps
   C_FLOAT64 Time = *mpContainerStateTime;

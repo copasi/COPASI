@@ -328,7 +328,7 @@ bool CTrajectoryTask::process(const bool & useInitialValues)
           NextTimeToReport =
             StartTime + (EndTime - StartTime) * StepCounter++ / StepNumber;
 
-          flagProceed &= processStep(NextTimeToReport);
+          flagProceed &= processStep(NextTimeToReport, NextTimeToReport == EndTime);
 
           if (hProcess != C_INVALID_INDEX)
             {
@@ -417,7 +417,7 @@ void CTrajectoryTask::processStart(const bool & useInitialValues)
   return;
 }
 
-bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
+bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
 {
   CMath::StateChange StateChange = CMath::StateChange::None;
 
@@ -445,7 +445,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
       // std::min suffices since events are only supported in forward integration.
       NextTime = std::min(endTime, mpContainer->getProcessQueueExecutionTime());
 
-      switch (mpTrajectoryMethod->step(NextTime - *mpContainerStateTime))
+      switch (mpTrajectoryMethod->step(NextTime - *mpContainerStateTime, final))
         {
           case CTrajectoryMethod::NORMAL:
             mpContainer->setState(mContainerState);

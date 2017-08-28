@@ -151,15 +151,16 @@ public:
   virtual bool elevateChildren();
 
   /**
-   * This instructs the method to calculate a time step of deltaT
-   * starting with the current state, i.e., the result of the previous
-   * step.
-   * The new state (after deltaT) is expected in the current state.
-   * The return value is the actual time step taken.
-   * @param "const double &" deltaT
-   * @return Status status
+   *  This instructs the method to calculate a time step of deltaT
+   *  starting with the current state, i.e., the result of the previous
+   *  step.
+   *  The new state (after deltaT) is expected in the current state.
+   *  The return value is the actual timestep taken.
+   *  @param const double & deltaT
+   *  @param const bool & final (default: false)
+   *  @return Status status
    */
-  virtual Status step(const double & deltaT);
+  virtual Status step(const double & deltaT, const bool & final = false);
 
   /**
    * Inform the trajectory method that the state has changed outside

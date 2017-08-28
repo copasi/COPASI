@@ -139,7 +139,8 @@ bool CStochMethod::elevateChildren()
   return true;
 }
 
-CTrajectoryMethod::Status CStochMethod::step(const double & deltaT)
+CTrajectoryMethod::Status CStochMethod::step(const double & deltaT,
+    const bool & /* final */)
 {
   // write the current state to the model:
   //mpProblem->getModel()->setState(mpCurrentState); //?

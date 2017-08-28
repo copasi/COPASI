@@ -323,7 +323,8 @@ void CTrajectoryMethodDsaLsodar::stateChange(const CMath::StateChange & change)
 }
 
 // virtual
-CTrajectoryMethod::Status CTrajectoryMethodDsaLsodar::step(const double & deltaT)
+CTrajectoryMethod::Status CTrajectoryMethodDsaLsodar::step(const double & deltaT,
+    const bool & /* final */)
 {
   // do several steps:
   C_FLOAT64 Time = *mpContainerStateTime;
