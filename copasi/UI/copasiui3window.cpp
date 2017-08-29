@@ -1005,7 +1005,9 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
                              QMessageBox::Ok, QMessageBox::Ok);
       mpDataModelGUI->createModel();
     }
+
   QString Message = QString::null;
+
   if (msg.getNumber() != MCCopasiMessage + 1)
     {
       Message = "Problem while loading file " + mNewFile + QString("!\n\n");
@@ -1019,7 +1021,6 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
           Message += FROM_UTF8(msg.getText());
           msg = CCopasiMessage::getLastMessage();
         }
-
     }
 
   if (strcasecmp(CDirEntry::suffix(TO_UTF8(mNewFile)).c_str(), ".cps") == 0 &&
@@ -1056,12 +1057,11 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   refreshRecentFileMenu();
 
   mNewFile = "";
-  
+
   if (!Message.isNull())
-    
+
     CQMessageBox::warning(this, QString("File Warning"), Message,
                           QMessageBox::Ok, QMessageBox::Ok);
-  
 }
 
 void CopasiUI3Window::slotFileExamplesCopasiFiles(QString file)
@@ -1376,9 +1376,18 @@ void CopasiUI3Window::slotObjectBrowserDialogWasClosed()
 void CopasiUI3Window::slotPreferences()
 {
   CQPreferenceDialog * preferenceDialog = new CQPreferenceDialog(this, 0, false);
+  connect(preferenceDialog, SIGNAL(accepted()), this, SLOT(slotPreferencesAccepted()));
+
   preferenceDialog->setAttribute(Qt::WA_DeleteOnClose);
   preferenceDialog->setModal(true);
   preferenceDialog->show();
+}
+
+void CopasiUI3Window::slotPreferencesAccepted()
+{
+  emit signalPreferenceUpdated();
+  // save settings
+  CCopasiRootContainer::getConfiguration()->save();
 }
 
 void CopasiUI3Window::slotTutorialWizard()

@@ -278,6 +278,11 @@ const CConfigurationFile & CConfigurationFile::operator=(const CCopasiParameterG
   return *this;
 }
 
+const CConfigurationFile & CConfigurationFile::operator=(const CConfigurationFile & rhs)
+{
+  return CConfigurationFile::operator=(static_cast<const CCopasiParameterGroup&>(rhs));
+}
+
 CRecentFiles & CConfigurationFile::getRecentFiles()
 {return *mpRecentFiles;}
 
