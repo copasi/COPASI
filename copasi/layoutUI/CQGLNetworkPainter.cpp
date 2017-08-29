@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -2078,11 +2083,10 @@ bool CQGLNetworkPainter::createDataSets()
         {
           // create a dummy time series from the current state
           dummyTimeSeries.allocate(1);
-          assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
           CObjectInterface::ContainerList tmpV;
+          tmpV.push_back(&CCopasiRootContainer::getDatamodelList()->operator[](0));
           dummyTimeSeries.compile(tmpV);
           dummyTimeSeries.output(COutputInterface::DURING);
-          assert(dummyTimeSeries.getRecordedSteps() == 1);
           pTimeSer = &dummyTimeSeries; // point to the dummy time series
         }
 
@@ -2194,9 +2198,6 @@ bool CQGLNetworkPainter::createDataSets()
             }
 
           loadDataSuccessful = true;
-        }
-      else
-        {
         }
     }
 

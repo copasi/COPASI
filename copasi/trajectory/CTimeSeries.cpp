@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -125,6 +130,9 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
     {
       pContainer = dynamic_cast< const CMathContainer * >(*itContainer);
     }
+
+  if (pContainer == NULL)
+    return false;
 
   assert(pContainer != NULL);
 
