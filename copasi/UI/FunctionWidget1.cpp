@@ -723,7 +723,11 @@ void FunctionWidget1::slotBtnDelete()
 //! Function to update the COPASI widgets
 bool FunctionWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates) return true;
+
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
 
   switch (objectType)
     {

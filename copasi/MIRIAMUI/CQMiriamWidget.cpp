@@ -303,8 +303,10 @@ void CQMiriamWidget::slotBtnClearClicked()
 
 bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string & key)
 {
-  if (getIgnoreUpdates())
-    return true;
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
 
   if (objectType != ListViews::MIRIAM)
     return true;

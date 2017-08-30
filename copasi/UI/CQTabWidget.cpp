@@ -57,7 +57,7 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
         mpBtnNew->setText("Apply");
         mpBtnNew->setToolTip("Apply the current parameters to the model.");
 
-        // The break statement is intentionally missing
+      // The break statement is intentionally missing
 
       default:
         CQNotes* pNotes = new CQNotes(mpTabWidget);
@@ -119,7 +119,10 @@ bool CQTabWidget::enterProtected()
 
 bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
 {
-  if (mIgnoreUpdates) return true;
+  if (mIgnoreUpdates || !isVisible())
+    {
+      return true;
+    }
 
   if (objectType == mObjectType &&
       key == mKey)
