@@ -2369,6 +2369,9 @@ void CopasiUI3Window::slotFontSelection()
 
   if (ok)
     {
+      CRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(Font.toString()));
+      CRootContainer::getConfiguration()->save();
+
       qApp->setFont(Font);
       // The stylesheet (set in CQCopasiApplication.cpp) is apparently overriding
       // in newer versions of Qt
@@ -2376,7 +2379,7 @@ void CopasiUI3Window::slotFontSelection()
       // Two calls so that the tabwidget labels are correct
       qApp->setStyleSheet(" * {font : }");
       qApp->setStyleSheet(" * {font : }");
-      CRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(Font.toString()));
+
       TaskWidget *pTaskWidget = dynamic_cast< TaskWidget * >(mpListView->getCurrentWidget());
 
       if (pTaskWidget != NULL)
