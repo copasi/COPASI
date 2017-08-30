@@ -13,12 +13,12 @@
 
 #include <cmath>
 
-#include "copasi.h"
-#include "CUnitParser.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CUnitParser.h"
 
-#include "report/CCopasiRootContainer.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/core/CRootContainer.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #undef yyparse
 #define yyparse CUnitParserBase::yyparse
@@ -141,20 +141,20 @@ compound_unit: unit
            }
 unit:    KIND
            {
-             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
+             mpCurrentUnitDef = CRootContainer::getUnitDefFromSymbol($1.text);
              $$.pUnit = new CUnit(CBaseUnit::fromSymbol($1.text));
              mSymbols.insert($1.text);
            }
          | SI_UNIT
            {
-             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
+             mpCurrentUnitDef = CRootContainer::getUnitDefFromSymbol($1.text);
              $$.pUnit = new CUnit(CUnitDefinition::getSIUnit($1.text));
              mSymbols.insert($1.text);
              mSymbols.insert($$.pUnit->getUsedSymbols().begin(), $$.pUnit->getUsedSymbols().end());
            }
          | USER_DEFINED_UNIT
            {
-             mpCurrentUnitDef = CCopasiRootContainer::getUnitDefFromSymbol($1.text);
+             mpCurrentUnitDef = CRootContainer::getUnitDefFromSymbol($1.text);
              
              if (mpCurrentUnitDef == NULL)
                {
