@@ -173,12 +173,12 @@ QModelIndex CQParameterOverviewDM::index(int row, int column, const QModelIndex 
 {
   CModelParameterGroup * pParent = static_cast< CModelParameterGroup *>(nodeFromIndex(parent));
 
-  if (pParent == NULL)
+  if (pParent == NULL && row < (int)mpModelParameterSet->size())
     {
       return createIndex(row, column, *(mpModelParameterSet->begin() + row));
     }
 
-  if (row < (int) pParent->size())
+  if (pParent != NULL && row < (int) pParent->size())
     return createIndex(row, column, *(pParent->begin() + row));
   else
     return QModelIndex();
