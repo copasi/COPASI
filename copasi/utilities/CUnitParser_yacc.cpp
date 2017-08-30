@@ -8,11 +8,11 @@
 // of Manchester.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -91,12 +91,12 @@
 
 #include <cmath>
 
-#include "copasi.h"
-#include "CUnitParser.h"
+#include "copasi/copasi.h"
+#include "copasi/utilities/CUnitParser.h"
 
 #include "copasi/core/CRootContainer.h"
-#include "utilities/CCopasiMessage.h"
-#include "utilities/utility.h"
+#include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/utility.h"
 
 #undef yyparse
 #define yyparse CUnitParserBase::yyparse
@@ -825,7 +825,7 @@ yytnamerr(char *yyres, const char *yystr)
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
 
-              /* Fall through.  */
+            /* Fall through.  */
             default:
               if (yyres)
                 yyres[yyn] = *yyp;
@@ -1138,7 +1138,7 @@ yysetstate:
       {
         yytype_int16 *yyss1 = yyss;
         union yyalloc *yyptr =
-            (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
+          (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
 
         if (! yyptr)
           goto yyexhaustedlab;
@@ -1296,7 +1296,7 @@ yyreduce:
 #line 72 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit();
-          *(yyval).pUnit = *(yyvsp[-2]).pUnit **(yyvsp[0]).pUnit;
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit * *(yyvsp[0]).pUnit;
           pdelete((yyvsp[-2]).pUnit);
           pdelete((yyvsp[0]).pUnit);
           mpUnit = (yyval).pUnit;
@@ -1309,7 +1309,7 @@ yyreduce:
 #line 80 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit();
-          *(yyval).pUnit = *(yyvsp[-2]).pUnit **(yyvsp[0]).pUnit;
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit * *(yyvsp[0]).pUnit;
           pdelete((yyvsp[-2]).pUnit);
           pdelete((yyvsp[0]).pUnit);
           mpUnit = (yyval).pUnit;
@@ -1322,7 +1322,7 @@ yyreduce:
 #line 88 "CUnitParser.ypp" /* yacc.c:1646  */
         {
           (yyval).pUnit = new CUnit();
-          *(yyval).pUnit = *(yyvsp[-2]).pUnit **(yyvsp[0]).pUnit;
+          *(yyval).pUnit = *(yyvsp[-2]).pUnit * *(yyvsp[0]).pUnit;
           pdelete((yyvsp[-2]).pUnit);
           pdelete((yyvsp[0]).pUnit);
           mpUnit = (yyval).pUnit;
