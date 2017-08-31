@@ -601,7 +601,7 @@ void CQModelValue::deleteGlobalQuantity()
         break;
     }
 
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITIES, "");
 }
 
 void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
@@ -618,7 +618,7 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
   protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
   protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
 
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 }
 
 void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)

@@ -381,7 +381,7 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
         return false;
     }
 
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   CModelValue & GQ = mpGlobalQuantities->operator [](index.row());
 
@@ -430,7 +430,7 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   size_t index = mpGlobalQuantities->getIndex(pGlobalQuantityData->getName());
 
@@ -442,7 +442,7 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobal
 
 void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
   CDataObject *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(mpDataModel->getModel());
@@ -458,7 +458,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
   if (rows.isEmpty())
     return false;
 
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   //Build the list of pointers to items to be deleted
   //before actually deleting any item.
@@ -525,14 +525,14 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
       endInsertRows();
     }
 
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   return true;
 }
 
 void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pData)
 {
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   QList <UndoGlobalQuantityData *>::const_iterator j;
 
