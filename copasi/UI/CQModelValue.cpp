@@ -610,8 +610,6 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITYIES, "");
-
   std::string key = pGlobalQuantityData->getKey();
   pModel->removeModelValue(key);
   mpModelValue = NULL;
@@ -619,6 +617,8 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
 #undef DELETE
   protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
   protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
 }
 
 void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)

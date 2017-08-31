@@ -958,7 +958,8 @@ void ReactionsWidget1::deleteReaction(UndoReactionData *pReactionData)
 
   protectedNotify(ListViews::REACTION, ListViews::DELETE, key);
   protectedNotify(ListViews::REACTION, ListViews::DELETE, "");//Refresh all as there may be dependencies.
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::REACTIONS, "");
+
+  switchToWidget(CCopasiUndoCommand::REACTIONS);
 }
 
 bool ReactionsWidget1::changeReaction(
