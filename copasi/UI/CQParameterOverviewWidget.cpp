@@ -129,6 +129,11 @@ bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListVie
   return true;
 }
 
+CQBaseDataModel * CQParameterOverviewWidget::getCqDataModel()
+{
+  return mpParameterSetDM;
+}
+
 // virtual
 bool CQParameterOverviewWidget::leave()
 {

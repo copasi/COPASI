@@ -1,4 +1,9 @@
-// Copyright (C) 2012 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2012 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -26,6 +31,11 @@ public:
   virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual void setFramework(int framework);
+  /**
+  * This method returns the data model from all the overview widgets.
+  * @return data model of this widget (or NULL if it does not have one)
+  */
+  virtual CQBaseDataModel* getCqDataModel();
 
 private:
   virtual bool enterProtected();

@@ -26,12 +26,14 @@ class CQSpeciesWidget;
 class CQGlobalQuantitiesWidget;
 class CQEventsWidget;
 class CQReactionsWidget;
+class CQParameterOverviewWidget;
 
 class CQCompartmentDM;
 class CQSpecieDM;
 class CQGlobalQuantityDM;
 class CQEventDM;
 class CQReactionDM;
+class CQParameterOverviewDM;
 
 class CCompartment;
 class CMetab;
@@ -106,6 +108,11 @@ public slots:
    */
   void testReactionDM(int repetitions = 1);
 
+  /**
+   * create some reactions and then changes the model parameters
+   */
+  void testOverviewWidget();
+
   /** deletes the compartment stored in mpCompartment */
   void deleteCompartment();
 
@@ -161,18 +168,20 @@ private:
   ReactionsWidget1* mpDetailReaction;
 
   // data model widgets
-  CQCompartmentsWidget*     mpDmWidgetComp;
-  CQSpeciesWidget*          mpDmWidgetSpecies;
-  CQGlobalQuantitiesWidget* mpDmWidgetModelValues;
-  CQEventsWidget*           mpDmWidgetEvents;
-  CQReactionsWidget*        mpDmWidgetReactions;
+  CQCompartmentsWidget*      mpDmWidgetComp;
+  CQSpeciesWidget*           mpDmWidgetSpecies;
+  CQGlobalQuantitiesWidget*  mpDmWidgetModelValues;
+  CQEventsWidget*            mpDmWidgetEvents;
+  CQReactionsWidget*         mpDmWidgetReactions;
+  CQParameterOverviewWidget* mpDmWidgetOverview;
 
   // actual data models
-  CQCompartmentDM*    mpDmCompartments;
-  CQSpecieDM*         mpDmSpecies;
-  CQGlobalQuantityDM* mpDmModelValues;
-  CQEventDM*          mpDmEvents;
-  CQReactionDM*       mpDmReactions;
+  CQCompartmentDM*       mpDmCompartments;
+  CQSpecieDM*            mpDmSpecies;
+  CQGlobalQuantityDM*    mpDmModelValues;
+  CQEventDM*             mpDmEvents;
+  CQReactionDM*          mpDmReactions;
+  CQParameterOverviewDM* mpDmOverview;
 
   // elements
   CCompartment*     mpCompartment;

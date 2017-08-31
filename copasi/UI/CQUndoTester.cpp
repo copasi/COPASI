@@ -35,11 +35,13 @@ CQUndoTester::CQUndoTester(QApplication* app,
   , mpDmWidgetModelValues(NULL)
   , mpDmWidgetEvents(NULL)
   , mpDmWidgetReactions(NULL)
+  , mpDmWidgetOverview(NULL)
   , mpDmCompartments(NULL)
   , mpDmSpecies(NULL)
   , mpDmModelValues(NULL)
   , mpDmEvents(NULL)
   , mpDmReactions(NULL)
+  , mpDmOverview(NULL)
   , mpCompartment(NULL)
   , mpSpecies(NULL)
   , mpModelValue(NULL)
@@ -69,12 +71,14 @@ CQUndoTester::CQUndoTester(QApplication* app,
   mpDmWidgetModelValues = qobject_cast<CQGlobalQuantitiesWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::GLOBALQUANTITYIES));
   mpDmWidgetEvents = qobject_cast<CQEventsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::EVENTS));
   mpDmWidgetReactions = qobject_cast<CQReactionsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::REACTIONS));
+  mpDmWidgetOverview = qobject_cast<CQParameterOverviewWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::PARAMETER_OVERVIEW));
 
   mpDmCompartments = dynamic_cast<CQCompartmentDM*>(mpDmWidgetComp->getCqDataModel());
   mpDmSpecies = dynamic_cast<CQSpecieDM*>(mpDmWidgetSpecies->getCqDataModel());
   mpDmModelValues = dynamic_cast<CQGlobalQuantityDM*>(mpDmWidgetModelValues->getCqDataModel());
   mpDmEvents = dynamic_cast<CQEventDM*>(mpDmWidgetEvents->getCqDataModel());
   mpDmReactions = dynamic_cast<CQReactionDM*>(mpDmWidgetReactions->getCqDataModel());
+  mpDmOverview = dynamic_cast<CQParameterOverviewDM*>(mpDmWidgetOverview->getCqDataModel());
 }
 
 CQUndoTester::~CQUndoTester()
@@ -125,6 +129,9 @@ void CQUndoTester::test()
       testEventDM();
       testReactionDM();
     }
+
+  if (options.contains("all") || options.contains("overview"))
+    testOverviewWidget();
 
   if (options.contains("repeat"))
     {
@@ -667,22 +674,86 @@ void CQUndoTester::testEventDM(int repetitions)
     }
 }
 
+
+void CQUndoTester::testOverviewWidget()
+{
+  // create 8 reactions
+  testReactionDM(7);
+
+  CModel * pModel = mpDmWidgetOverview->getDataModel()->getModel();
+
+  {
+    // change species initial values
+    CDataVector< CMetab >& metabs = pModel->getMetabolites();
+    CDataVector< CMetab >::iterator it = metabs.begin();
+
+    for (; it != metabs.end(); ++it)
+      {
+        mpUndoStack->push(
+          new ParameterOverviewDataChangeCommand(
+            it->getCN(),
+            it->getObjectName(),
+            "2", // new value
+            "1", // old value
+            mpDmOverview,
+            "", // parameter set key
+            COL_VALUE   // column
+          )
+        );
+      }
+  }
+
+  {
+    // change all reaction parameters
+    CDataVectorNS < CReaction >& reactions = pModel->getReactions();
+    CDataVectorNS < CReaction >::iterator it = reactions.begin();
+
+    for (; it != reactions.end(); ++it)
+      {
+        mpUndoStack->push(
+          new ParameterOverviewDataChangeCommand(
+            it->getCN() +  std::string(",ParameterGroup=Parameters,Parameter=k1"),
+            "k1",
+            "2", // new value
+            "0.1", // old value
+            mpDmOverview,
+            "", // parameter set key
+            COL_VALUE   // column
+          )
+        );
+      }
+  }
+
+}
+
+
 void CQUndoTester::testReactionDM(int repetitions)
 {
   // add by name
+  CModel * pModel = mpDmWidgetReactions->getDataModel()->getModel();
+  int numReactions = pModel->getReactions().size();
   int currentRow = mpDmReactions->rowCount();
+  bool isDefaultRow = numReactions == (mpDmReactions->rowCount() - 1);
+
+  if (isDefaultRow)
+    currentRow -= 1;
+
+  // create new reaction
   mpUndoStack->push(new InsertReactionRowsCommand(
                       currentRow, 1, mpDmReactions, mpDmReactions->index(currentRow, COL_NAME_REACTIONS), "r1")
                    );
-  mpUndoStack->push(new ReactionDataChangeCommand(
-                      mpDmReactions->index(currentRow - 1, COL_REACTION_EQUATION), QString("S1 -> S2"), mpDmReactions)
-                   );
 
-  CModel * pModel = mpDmWidgetReactions->getDataModel()->getModel();
+  // change reaction scheme
+  mpUndoStack->push(new ReactionDataChangeCommand(
+                      mpDmReactions->index(currentRow, COL_EQUATION), QString("S1 -> S2"), mpDmReactions)
+                   );
 
   for (int i = 0; i < repetitions; ++i)
     {
       {
+        // increment row
+        ++currentRow;
+
         // add by name
         mpUndoStack->push(new InsertReactionRowsCommand(
                             currentRow, 1, mpDmReactions, mpDmReactions->index(currentRow, COL_NAME_REACTIONS),

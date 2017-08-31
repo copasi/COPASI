@@ -71,12 +71,14 @@ ParameterOverviewDataChangeCommand::ParameterOverviewDataChangeCommand(
 void
 ParameterOverviewDataChangeCommand::redo()
 {
-  mpParameterOverviewDM->parameterOverviewDataChange(mCN, mNew, mParametersetKey, mColumn);
+  if (mpParameterOverviewDM != NULL)
+    mpParameterOverviewDM->parameterOverviewDataChange(mCN, mNew, mParametersetKey, mColumn);
 }
 
 void ParameterOverviewDataChangeCommand::undo()
 {
-  mpParameterOverviewDM->parameterOverviewDataChange(mCN, mOld, mParametersetKey, mColumn);
+  if (mpParameterOverviewDM != NULL)
+    mpParameterOverviewDM->parameterOverviewDataChange(mCN, mOld, mParametersetKey, mColumn);
 }
 
 bool ParameterOverviewDataChangeCommand::matches(

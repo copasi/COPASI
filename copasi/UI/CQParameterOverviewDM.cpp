@@ -29,14 +29,13 @@
 #define COL_NAME       0
 #define COL_DIFF       1
 #define COL_TYPE       2
-#define COL_VALUE      3
 #define COL_UNIT       4
 #define COL_ASSIGNMENT 5
 
 #define COLUMN_COUNT   6
 
 CQParameterOverviewDM::CQParameterOverviewDM(QObject * pParent)
-  : QAbstractItemModel(pParent)
+  : CQBaseDataModel(pParent, NULL)
   , mpModelParameterSet(NULL)
   , mFramework(0)
   , mpUndoStack(NULL)
@@ -576,6 +575,9 @@ CQParameterOverviewDM::parameterOverviewDataChange(const std::string &cn,
       switchToWidget(C_INVALID_INDEX, parameterSetKey);
     }
 
+  if (mpModelParameterSet == NULL)
+    return false;
+
   CModelParameter * pNode = mpModelParameterSet->getModelParameter(cn);
   bool success = false;
 
@@ -624,3 +626,14 @@ QUndoStack* CQParameterOverviewDM::getUndoStack()
 {
   return mpUndoStack;
 }
+
+bool CQParameterOverviewDM::insertRows(int /*position*/, int /*rows*/, const QModelIndex & /*source*/)
+{
+  return false;
+}
+
+bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/)
+{
+  return false;
+}
+

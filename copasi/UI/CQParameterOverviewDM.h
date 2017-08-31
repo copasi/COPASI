@@ -14,6 +14,7 @@
 #include <QSortFilterProxyModel>
 
 #include "copasi/UI/listviews.h"
+#include "copasi/UI/CQBaseDataModel.h"
 
 #include "copasi/undoFramework/ParameterOverviewDataChangeCommand.h"
 
@@ -26,7 +27,10 @@ class QUndoStack;
 #include <QPair>
 #include <QMap>
 
-class CQParameterOverviewDM : public QAbstractItemModel
+#define COL_VALUE      3
+
+
+class CQParameterOverviewDM : public CQBaseDataModel
 {
   Q_OBJECT
 
@@ -83,6 +87,9 @@ public:
   bool parameterOverviewDataChange(const std::string& cn,
                                    const QVariant &value,
                                    const std::string& parameterSetKey, int column);
+
+  virtual bool insertRows(int position, int rows, const QModelIndex & source);
+  virtual bool removeRows(int position, int rows);
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;
