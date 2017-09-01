@@ -1889,7 +1889,11 @@ void CTSSAMethod::updateCurrentTime()
 }
 
 const std::vector<std::string>& CTSSAMethod::getTableNames() const
-{return tableNames;}
+{
+  return tableNames;
+}
 
 const CDataArray *CTSSAMethod::getTable(const std::string &name)
-{return mapTableToName[name];}
+{
+  return mapTableToName[name];
+}
