@@ -120,6 +120,9 @@ bool CTSSATask::updateMatrices()
 
   assert(dynamic_cast<CTSSAProblem *>(mpProblem) != NULL);
 
+  
+  mpMethod->setMathContainer(mpContainer);
+  
   if (!mpMethod->isValidProblem(mpProblem)) return false;
 
   CTSSAMethod * pMethod = dynamic_cast<CTSSAMethod*>(mpMethod);
