@@ -386,7 +386,9 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
     {
       pdelete(mpFunction);
       mpFunction = dynamic_cast<CFunction *>(CEvaluationTree::copy(*func));
-      flagChanged = false;
+
+      flagChanged = !mKeyToCopy.empty();
+      mKeyToCopy = "";
     }
 
   if (mpFunction == NULL)
@@ -445,8 +447,6 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   loadUsageTable(/*pFunction->getVariables().getUsageRanges()*/);
 
   isValid = mpFunction->isUsable();
-
-  flagChanged = false;
 
   return true;
 }
@@ -969,7 +969,6 @@ bool FunctionWidget1::enterProtected()
   if (mKeyToCopy != "")
     {
       func = dynamic_cast<CFunction*>(CCopasiRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
     }
   else
     {
