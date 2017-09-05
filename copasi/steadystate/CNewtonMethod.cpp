@@ -71,7 +71,7 @@ void CNewtonMethod::initializeParameter()
 
   assertParameter("Use Newton", CCopasiParameter::BOOL, true);
   assertParameter("Use Integration", CCopasiParameter::BOOL, true);
-  assertParameter("Use Back Integration", CCopasiParameter::BOOL, true);
+  assertParameter("Use Back Integration", CCopasiParameter::BOOL, false);
   assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
   assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
   assertParameter("Maximum duration for forward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e9);
