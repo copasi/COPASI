@@ -34,7 +34,7 @@ CDataObject::CDataObject():
   mReferences(),
   mPrerequisits(),
   mReferencedValidities(),
-  mAgregateValidity()
+  mAggregateValidity()
 {}
 
 CDataObject::CDataObject(const std::string & name,
@@ -51,7 +51,7 @@ CDataObject::CDataObject(const std::string & name,
   mReferences(),
   mPrerequisits(),
   mReferencedValidities(),
-  mAgregateValidity()
+  mAggregateValidity()
 {
   if (CRegisteredCommonName::isEnabled())
     {
@@ -85,7 +85,7 @@ CDataObject::CDataObject(const CDataObject & src,
   mReferences(),
   mPrerequisits(),
   mReferencedValidities(),
-  mAgregateValidity()
+  mAggregateValidity()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -102,7 +102,7 @@ CDataObject::CDataObject(const CDataObject & src,
 
 CDataObject::~CDataObject()
 {
-  mAgregateValidity.clear();
+  mAggregateValidity.clear();
 
   if (mpObjectParent)
     {
@@ -549,7 +549,7 @@ CDataModel * CDataObject::getObjectDataModel() const
 
 const CValidity & CDataObject::getValidity() const
 {
-  return mAgregateValidity;
+  return mAggregateValidity;
 }
 
 // virtual
@@ -569,22 +569,37 @@ void CDataObject::validityChanged(const CValidity & changedValidity)
 
   if (ValidityRefreshNeeded)
     {
-      mAgregateValidity.clear();
-      std::set< const CValidity * >::const_iterator it = mReferencedValidities.begin();
-      std::set< const CValidity * >::const_iterator end = mReferencedValidities.end();
+      refreshAggregateValidity();
+    }
+}
 
-      for (; it != end; ++it)
-        {
-          mAgregateValidity |= **it;
-        }
+void CDataObject::validityRemoved(const CValidity & changedValidity)
+{
+  bool ValidityRefreshNeeded = (mReferencedValidities.erase(&changedValidity) > 0);
 
-      std::set< CDataContainer * >::iterator itReference = mReferences.begin();
-      std::set< CDataContainer * >::iterator endReference = mReferences.end();
+  if (ValidityRefreshNeeded)
+    {
+      refreshAggregateValidity();
+    }
+}
 
-      for (; itReference != endReference; ++itReference)
-        {
-          (*itReference)->validityChanged(mAgregateValidity);
-        }
+void CDataObject::refreshAggregateValidity()
+{
+  mAggregateValidity.clear();
+  std::set< const CValidity * >::const_iterator it = mReferencedValidities.begin();
+  std::set< const CValidity * >::const_iterator end = mReferencedValidities.end();
+
+  for (; it != end; ++it)
+    {
+      mAggregateValidity |= **it;
+    }
+
+  std::set< CDataContainer * >::iterator itReference = mReferences.begin();
+  std::set< CDataContainer * >::iterator endReference = mReferences.end();
+
+  for (; itReference != endReference; ++itReference)
+    {
+      (*itReference)->validityChanged(mAggregateValidity);
     }
 }
 

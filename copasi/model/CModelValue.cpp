@@ -306,7 +306,6 @@ CIssue CModelEntity::setExpression(const std::string & expression)
     mpModel->setCompileFlag(true);
 
   issue = mpExpression->setInfix(expression);
-  mValidity.add(issue);
 
   if (!issue) return issue;
 

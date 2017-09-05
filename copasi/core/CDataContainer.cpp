@@ -549,7 +549,7 @@ bool CDataContainer::remove(CDataObject * pObject)
 {
   if (pObject != NULL)
     {
-      validityChanged(pObject->getValidity());
+      validityRemoved(pObject->getValidity());
       pObject->removeReference(this);
     }
 

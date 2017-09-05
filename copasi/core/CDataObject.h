@@ -183,10 +183,16 @@ public:
   virtual const CValidity & getValidity() const;
 
   /**
-   * This method is called whenever the validity object changes.
+   * This method is called whenever the validity of the object or a contained object changes.
    * @param const CValidity & changedValidity
    */
   void validityChanged(const CValidity & changedValidity);
+
+  /**
+   * This method is called whenever the validity of a contained object is removed.
+   * @param const CValidity & changedValidity
+   */
+  void validityRemoved(const CValidity & changedValidity);
 
   /**
    * Set the name of the object.
@@ -237,6 +243,7 @@ public:
   const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
 
 private:
+  void refreshAggregateValidity();
 
   std::string mObjectName;
 
@@ -252,7 +259,7 @@ private:
   std::set< CDataContainer * > mReferences;
 
   std::set< const CValidity * > mReferencedValidities;
-  CValidity mAgregateValidity;
+  CValidity mAggregateValidity;
 
 protected:
   ObjectSet mPrerequisits;
