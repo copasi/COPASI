@@ -82,7 +82,7 @@ public:
 
   /**
    */
-  bool process(CProcessReport * handler);
+  bool process();
 
   /**
    * initializes the subtask, creates the internal data structures of the method,
@@ -103,6 +103,13 @@ public:
    * @return bool suitability of the method
    */
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
+
+  /**
+   * Set the call back of the problem
+   * @param CProcessReport * pCallBack
+   * @result bool succes
+   */
+  virtual bool setCallBack(CProcessReport * pCallBack);
 
   /**
    * estimate how many calls to the subtask are necessary. Works only after

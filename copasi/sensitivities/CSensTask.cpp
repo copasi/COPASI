@@ -111,7 +111,7 @@ bool CSensTask::process(const bool & useInitialValues)
 
   mReport.output(COutputInterface::BEFORE);
 
-  bool success = pMethod->process(mpCallBack);
+  bool success = pMethod->process();
 
   mReport.output(COutputInterface::DURING);
   mReport.output(COutputInterface::AFTER);

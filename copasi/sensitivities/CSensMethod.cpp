@@ -713,7 +713,7 @@ size_t CSensMethod::getNumberOfSubtaskCalculations()
   return ret;
 }
 
-bool CSensMethod::process(CProcessReport * handler)
+bool CSensMethod::process()
 {
   // Reset the evaluation counter
   mCounter = 0;
@@ -721,8 +721,11 @@ bool CSensMethod::process(CProcessReport * handler)
 
   if (!mLocalData.size()) return false;
 
-  //initialize progress bar
-  mpCallBack = handler;
+  // initialize progress bar for the case that the task was not initialized prior to setCallBack
+  if (mpSubTask)
+    {
+      mpSubTask->setCallBack(mpCallBack);
+    }
 
   if (mpCallBack)
     {
@@ -732,9 +735,6 @@ bool CSensMethod::process(CProcessReport * handler)
       mProgressHandler = mpCallBack->addItem("Completion",
                                              mProgress,
                                              &max);
-
-      if (mpSubTask)
-        mpSubTask->setCallBack(mpCallBack);
     }
 
   if (!calculate_one_level(mLocalData.size() - 1, mpProblem->getResult())) return false;
@@ -747,9 +747,6 @@ bool CSensMethod::process(CProcessReport * handler)
 
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 8, mFailedCounter, mCounter);
-
-  if (mpSubTask)
-    mpSubTask->setCallBack(NULL);
 
   return true;
 }
@@ -774,4 +771,13 @@ bool CSensMethod::isValidProblem(const CCopasiProblem * pProblem)
   //dimension of variables 0 or 1
 
   //if target is scan make sure the scan subtask is not sens.
+}
+
+// virtual
+bool CSensMethod::setCallBack(CProcessReport * pCallBack)
+{
+  if (mpSubTask)
+    mpSubTask->setCallBack(pCallBack);
+
+  CCopasiMethod::setCallBack(pCallBack);
 }

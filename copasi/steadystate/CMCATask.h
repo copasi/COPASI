@@ -109,6 +109,13 @@ public:
    */
   virtual bool process(const bool & useInitialValues);
 
+  /**
+   * Set the call back of the task
+   * @param CProcessReport * pCallBack
+   * @result bool success
+   */
+  virtual bool setCallBack(CProcessReport * pCallBack);
+
 #ifndef SWIG
   /**
    * Retrieve the list of valid methods
