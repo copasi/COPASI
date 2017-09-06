@@ -162,12 +162,21 @@ bool CMCATask::process(const bool & useInitialValues)
   CCopasiTask::output(COutputInterface::DURING);
   CCopasiTask::output(COutputInterface::AFTER);
 
-  if (pSubTask)
-  {
-    pSubTask->setCallBack(NULL);
-  }
-
   return success;
+}
+
+// virtual
+bool CMCATask::setCallBack(CProcessReport * pCallBack)
+{
+  CSteadyStateTask *pSubTask =
+    dynamic_cast<CMCAProblem *>(mpProblem)->getSubTask();
+
+  if (pSubTask)
+    {
+      pSubTask->setCallBack(pCallBack);
+    }
+
+  return CCopasiTask::setCallBack(pCallBack);
 }
 
 // virtual
