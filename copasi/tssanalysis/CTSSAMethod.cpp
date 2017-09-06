@@ -207,7 +207,7 @@ bool CTSSAMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   if (Model.getMetabolites().size() == 0)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, MCCopasiMethod + 3);
+      CCopasiMessage(CCopasiMessage::ERROR, MCTSSAMethod + 18);
       return false;
     }
 
