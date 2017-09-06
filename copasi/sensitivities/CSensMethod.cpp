@@ -748,6 +748,9 @@ bool CSensMethod::process(CProcessReport * handler)
   if (mFailedCounter * 20 > mCounter) // > 5% failure rate
     CCopasiMessage(CCopasiMessage::WARNING, MCCopasiTask + 8, mFailedCounter, mCounter);
 
+  if (mpSubTask)
+    mpSubTask->setCallBack(NULL);
+
   return true;
 }
 
