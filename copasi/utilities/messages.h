@@ -429,6 +429,7 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f': there are negative time scales. "},
   {MCTSSAMethod + 16, "CTSSAMethod (16): This method is not applicable for a system with more than one compartment. "},
   {MCTSSAMethod + 17, "CTSSAMethod (17): In this version of Copasi the CSP Method only supports  compartments with equal size  "},
+  { MCTSSAMethod + 18, "CTSSAMethod (18): TSSA requires metabolites to be present." },
 
   // CTSSAProblem
   {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},
