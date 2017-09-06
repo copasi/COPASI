@@ -125,7 +125,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (!mpEditReactionScheme->isValid())
     {
-      CQMessageBox::warning(0, "Uknown value detected", "One or more of the metabolites, global parameters, or compartments has not been set (UNKNOWN). The current reaction rate law will be reverted to the previous one. Unsaved changes will be lost!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::warning(0, "Unknown value detected", "One or more of the metabolites, global parameters, or compartments has not been set (UNKNOWN). The current reaction rate law will be reverted to the previous one. Unsaved changes will be lost!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       return false;
     }
 
@@ -133,7 +133,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (!mpRi->isValid())
     {
-      CQMessageBox::warning(0, "Uknown value detected", "One or more of the metabolites, global parameters, or compartments has not been set (UNKNOWN). The current reaction rate law will be reverted to the previous one. Unsaved changes will be lost!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
+      CQMessageBox::warning(0, "Unknown value detected", "One or more of the metabolites, global parameters, or compartments has not been set (UNKNOWN). The current reaction rate law will be reverted to the previous one. Unsaved changes will be lost!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
       return false;
     }
 
