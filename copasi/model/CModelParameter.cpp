@@ -101,6 +101,8 @@ CModelParameter::~CModelParameter()
     {
       mpParent->remove(this);
     }
+
+  pdelete(mpInitialExpression);
 }
 
 void CModelParameter::setParent(CModelParameterGroup * pParent)
