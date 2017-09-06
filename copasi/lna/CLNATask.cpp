@@ -172,6 +172,10 @@ bool CLNATask::process(const bool & useInitialValues)
   CCopasiTask::output(COutputInterface::DURING);
   CCopasiTask::output(COutputInterface::AFTER);
 
+  if (pSubTask)
+    pSubTask->setCallBack(NULL);
+
+
   return success;
 }
 
