@@ -71,8 +71,6 @@ CQTSSAResultWidget::getSubWidget()
 
 bool CQTSSAResultWidget::enterProtected()
 {
-  if (!isVisible())
-    return true;
 
   pTask =
     dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
