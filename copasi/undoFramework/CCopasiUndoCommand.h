@@ -34,11 +34,9 @@ class UndoReactionData;
 class UndoGlobalQuantityData;
 class UndoEventData;
 
-
 class CCopasiUndoCommand : public QUndoCommand
 {
 public:
-
 
   /**
    * rather than using integers to refer to widgets,
@@ -52,7 +50,7 @@ public:
     COMPARTMENTS = 111, // compartment overview
     SPECIES = 112, // species overview
     REACTIONS = 114, // reactions overview
-    GLOBALQUANTITYIES = 115, // global quantity dn
+    GLOBALQUANTITIES = 115, // global quantity dn
     EVENTS = 116, // events overview
     PARAMETER_OVERVIEW = 118, // parameter oveview widget
     PARAMETER_SETS = 119, // parameter set overview

@@ -331,8 +331,7 @@ bool CQGlobalQuantityDM::globalQuantityDataChange(const QModelIndex &index, cons
     }
 
   GET_MODEL_OR(pModel, return false);
-
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   CModelValue *pGQ = &pModel->getModelValues()[index.row()];
 
@@ -384,8 +383,7 @@ void CQGlobalQuantityDM::insertNewGlobalQuantityRow(int position, int rows, cons
 void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
   GET_MODEL_OR_RETURN(pModel);
-
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   size_t index = pModel->getModelValues().getIndex(pGlobalQuantityData->getName());
 
@@ -398,8 +396,7 @@ void CQGlobalQuantityDM::deleteGlobalQuantityRow(UndoGlobalQuantityData *pGlobal
 void CQGlobalQuantityDM::addGlobalQuantityRow(UndoGlobalQuantityData *pGlobalQuantityData)
 {
   GET_MODEL_OR_RETURN(pModel);
-
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   beginInsertRows(QModelIndex(), 1, 1);
   CModelValue *pGlobalQuantity = pGlobalQuantityData->restoreObjectIn(pModel);
@@ -416,8 +413,7 @@ bool CQGlobalQuantityDM::removeGlobalQuantityRows(QModelIndexList rows, const QM
     return false;
 
   GET_MODEL_OR(pModel, return false);
-
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   //Build the list of pointers to items to be deleted
   //before actually deleting any item.
@@ -486,7 +482,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
       endInsertRows();
     }
 
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   return true;
 }
@@ -494,8 +490,7 @@ bool CQGlobalQuantityDM::insertGlobalQuantityRows(QList <UndoGlobalQuantityData 
 void CQGlobalQuantityDM::deleteGlobalQuantityRows(QList <UndoGlobalQuantityData *>& pData)
 {
   GET_MODEL_OR_RETURN(pModel);
-
-  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITYIES);
+  switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 
   QList <UndoGlobalQuantityData *>::const_iterator j;
 
