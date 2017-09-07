@@ -122,7 +122,7 @@ public:
 
   /**
    * this method tries to find out if the REACTION involves several compartments
-   * It only takes into account the metabs that
+   * It only takes into account the metabolites that
    * actually exist in the model. A non existing metabolite is assumed
    * not to be in a different compartment
    */
@@ -141,7 +141,7 @@ public:
   void reverse(bool rev, const std::string & newFunction);
 
   /**
-   * This produces a list of metab names (from the chem eq) for use in
+   * This produces a list of metabolite names (from the chem eq) for use in
    * the combo boxes. The role must be given like a usage, e.g. "SUBSTRATE".
    */
   const std::vector<std::string> & getListOfMetabs(CFunctionParameter::Role role) const;
@@ -159,47 +159,120 @@ public:
    */
   void setFunctionAndDoMapping(const std::string & fn);
 
+  /**
+   * @return the function name
+   */
   const std::string & getFunctionName() const;
 
+  /**
+  * @return the function description
+  */
   const std::string & getFunctionDescription() const;
 
+  /**
+   * @return the function pointer
+   */
   const CFunction * getFunction() const;
 
+  /**
+   * @return a vector of possible functions for the specified number substrates / products and reversibility
+   */
   std::vector< std::string > getListOfPossibleFunctions() const;
 
-  //query information about the function variables
-
+  /**
+   * @return number of function parameter
+   */
   size_t size() const;
 
+  /**
+   * Tests whether the parameter at the given index is of type vector
+   *
+   * @param index the index
+   * @return true, if the function parameter at the given index is a vector false otherwise
+   */
   bool isVector(size_t index) const;
 
+  /**
+   * returns the function parameter role for the parameter with given index
+   *
+   * @param index the index
+   * @return the role of that function parameter
+   */
   CFunctionParameter::Role getUsage(size_t index) const;
+
+  /**
+   * Returns the name of the parameter with given index
+   *
+   * @param index the index
+   * @return the name of the parameter if found, or an empty string
+   */
 
   std::string getParameterName(size_t index) const;
 
-  // set/get the mapping
-
+  /**
+   * Sets the mapping of the parameter with given index
+   *
+   * @param index the index
+   * @param mn the mapping
+   */
   void setMapping(size_t index, std::string mn);
 
-  void removeMapping(size_t index, std::string mn);
+  /**
+   * returns all mappings for the given index
+   *
+   * @param index the index
+   * @return the string vector of all mappings for the given index
+   */
 
   const std::vector< std::string > & getMappings(size_t index) const;
 
+  /**
+   * return the first mapping for the given index
+   *
+   * @param index the index
+   * @return the first mapping for the given index
+   */
   const std::string & getMapping(size_t index) const;
 
   std::vector< std::string > getUnitVector(size_t index) const;
 
   std::string getUnit(size_t index) const;
 
+  /**
+   * Specifies that the parameter with given index should be a local
+   * parameter and specifies the value
+
+   *
+   * @param index the index of the parameter
+   * @param value the new value of the parameter
+   */
   void setLocalValue(size_t index, C_FLOAT64 value);
 
+  /**
+   * Specified that the parameter with given index should be a local parameter
+   *
+   * @param index the index
+   */
   void setLocal(size_t index);
 
+  /**
+   * Return the local parameter value of the parameter with given index
+   *
+   * @param index the index of the parameter
+   *
+   * @return the value of the parameter with given index
+   */
   const C_FLOAT64 & getLocalValue(size_t index) const;
 
+  /**
+   * tests whether the parameter with given index is a local parameter
+   *
+   * @param index the index
+   * @return true, if the parameter with given index is local, false otherwise
+   */
   bool isLocalValue(size_t index) const;
 
-  /**
+  /*
    *  associate the function parameter referenced by "index" with the global
    *  parameter named pn. Only valid if the role for this function parameter is "PARAMETER".
    *  returns success
@@ -212,8 +285,22 @@ public:
 
   //const std::string & getCompartment(size_t index) const;
 
+  /**
+   * Initializes this object from the reaction with given key
+   * @param key the key of the reaction to initialize from
+   */
   void initFromReaction(const std::string & key);
+
+  /**
+   * Initializes this object from the reaction with given index
+   * @param index the index of the reaction to initialize from
+   */
   void initFromReaction(const C_INT32 index);
+
+  /**
+   * Initializes this object from the given reaction
+   * @param rea the reaction to initialize from
+   */
   void initFromReaction(const CReaction* rea);
 
   /**
@@ -255,11 +342,14 @@ public:
    */
   bool createOtherObjects(std::vector<std::string>& createdKeys) const;
 
+  /**
+   * @return boolean indicating whether this reaction is valid
+   */
   bool isValid() const;
 
   /**
    * Is the mapping of this parameter locked?
-   * The bahaviour of this method is different for different roles:
+   * The behavior of this method is different for different roles:
    * SUBSTRATE, PRODUCT: according to the chemical equation
    * MODIFIER: always unlocked
    * TIME: always locked
@@ -269,8 +359,28 @@ public:
    * in the chemical equation that are then created automatically.
    * Compartments and global parameters can only be chosen from those
    * existing in the model.
+   *
+   * @param index the index of the parameter
+   * @return boolean indicating whether the parameter is locked or not
    */
   bool isLocked(size_t index) const;
+
+  /**
+   * Is the mapping of this parameter locked?
+   * The behavior of this method is different for different roles:
+   * SUBSTRATE, PRODUCT: according to the chemical equation
+   * MODIFIER: always unlocked
+   * TIME: always locked
+   * VOLUME, PARAMETER: according to the model
+   *
+   * The idea is that in the reaction GUI new species can be entered
+   * in the chemical equation that are then created automatically.
+   * Compartments and global parameters can only be chosen from those
+   * existing in the model.
+   *
+   * @param usage the usage of the parameter
+   * @return boolean indicating whether the parameter with given usage should be locked
+   */
   bool isLocked(CFunctionParameter::Role usage) const;
 
   /**
@@ -279,14 +389,46 @@ public:
    */
   std::set< const CDataObject * > getDeletedParameters() const;
 
+  /**
+   * Sets the kinetic law unit type
+   * @param kineticLawUnitType the type to set
+   */
   void setKineticLawUnitType(const CReaction::KineticLawUnit & kineticLawUnitType);
+
+  /**
+   * @return the currently set unit type
+   */
   const CReaction::KineticLawUnit & getKineticLawUnitType() const;
+
+  /**
+   * @return the effective unit type in case the default is selected
+   */
   CReaction::KineticLawUnit getEffectiveKineticLawUnitType() const;
+
+  /**
+   * @return the concentration rate unit display name
+   */
   std::string getConcentrationRateUnit() const;
+
+  /**
+   * @return the amount rate unit display name
+   */
   std::string getAmountRateUnit() const;
-  std::string getEffectiveKineticLawUnit() const;
+
+  /**
+   * Sets the scaling compartment to be used for this reaction
+   * @param scalingCompartment
+   */
   void setScalingCompartment(const std::string & scalingCompartment);
+
+  /**
+   * @return the specified scaling compartment
+   */
   const std::string & getScalingCompartment() const;
+
+  /**
+   * @return the default scaling compartment
+   */
   std::string getDefaultScalingCompartment() const;
 
 #ifdef COPASI_DEBUG
@@ -350,6 +492,9 @@ private:
    */
   void updateModifiersInChemEq();
 
+  /**
+   * resets the function settings
+   */
   void clearFunction();
 
   /**
@@ -360,10 +505,15 @@ private:
 
   /**
    * returns a list of metabolites (from the chemical equation). Species can occur
-   * several times according to theit multiplicity
+   * several times according to the multiplicity
    */
   std::vector<std::string> getExpandedMetabList(CFunctionParameter::Role role) const;
 
+  /**
+   * Loads mapping and values from the specified reaction
+   * @param rea the reaction
+   * @return true if successful, false otherwise
+   */
   bool loadMappingAndValues(const CReaction & rea);
 };
 
