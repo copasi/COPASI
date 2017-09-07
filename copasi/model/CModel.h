@@ -404,6 +404,11 @@ public:
   const CMatrix < C_FLOAT64 > & getRedStoi() const;
 
   /**
+   * @return Get the matrix annotation to the reduced stoichiometry matrix.
+   */
+  const CDataArray * getRedStoiAnnotation() const;
+
+  /**
    *  Get the stoichiometry matrix of this model
    */
   const CMatrix < C_FLOAT64 > & getStoi() const;
@@ -444,6 +449,11 @@ public:
    * @return const CLinkMatrixView L
    */
   const CLinkMatrixView & getL() const;
+
+  /**
+   * @return get the annotated link matrix
+   */
+  const CDataArray * getLAnnotation() const;
 
   /**
    * Get the relevant portion of the link matrix L.

@@ -1155,6 +1155,12 @@ const CDataVectorNS < CCompartment > & CModel::getCompartments() const
 const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 {return mRedStoi;}
 
+const CDataArray *
+CModel::getRedStoiAnnotation() const
+{
+  return mpRedStoiAnnotation;
+}
+
 /**
  *  Get the reordered stoichiometry matrix of this model
  */
@@ -1172,6 +1178,11 @@ const CDataVector < CMoiety > & CModel::getMoieties() const
 
 const CLinkMatrixView & CModel::getL() const
 {return mLView;}
+
+const CDataArray * CModel::getLAnnotation() const
+{
+  return mpLinkMatrixAnnotation;
+}
 
 const CLinkMatrix & CModel::getL0() const
 {return mL;}
@@ -2309,7 +2320,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-#pragma region   //find_experiment
+  #pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2359,7 +2370,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-#pragma endregion //find_experiment
+  #pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -3062,7 +3073,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
