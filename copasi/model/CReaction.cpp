@@ -689,6 +689,16 @@ bool CReaction::compile()
               mMap.clearCallParameter(paramName);
               jmax = mMetabKeyMap[i].size();
 
+              if (jmax == 0)
+                {
+                  CReactionInterface RI(dynamic_cast< CModel * >(getObjectAncestor("Model")));
+                  RI.initFromReaction(this);
+                  RI.setFunctionAndDoMapping(mpFunction->getObjectName());
+                  RI.writeBackToReaction(this, false);
+
+                  jmax = mMetabKeyMap[i].size();
+                }
+
               for (j = 0; j < jmax; ++j)
                 if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                   {
@@ -1017,9 +1027,7 @@ bool CReaction::setNoiseExpression(const std::string & expression)
       mpNoiseExpression = new CExpression("NoiseExpression", this);
     }
 
-  if (!mpNoiseExpression->setInfix(expression)) return false;
-
-  return compile();
+  return mpNoiseExpression->setInfix(expression);
 }
 
 std::string CReaction::getNoiseExpression() const
