@@ -705,9 +705,9 @@ void CQEventWidget1::deleteEvent()
 
 void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 {
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
-
-  GET_MODEL_OR_RETURN(pModel);
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
 
   CEvent* pEvent = &pModel->getEvents()[pEventData->getName()];
 
@@ -721,6 +721,8 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
 #undef DELETE
   protectedNotify(ListViews::EVENT, ListViews::DELETE, key);
   protectedNotify(ListViews::EVENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+
+  switchToWidget(CCopasiUndoCommand::EVENTS);
 }
 
 void CQEventWidget1::addEvent(UndoEventData *pData)

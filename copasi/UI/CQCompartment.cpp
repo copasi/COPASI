@@ -670,9 +670,8 @@ void CQCompartment::deleteCompartment()
 
 void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 {
-  switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
-
-  CModel * pModel = mpDataModel->getModel();
+  CModel * pModel = mpCompartment != NULL ? dynamic_cast< CModel * >(mpCompartment->getObjectAncestor("Model"))
+                    : mpDataModel->getModel();
 
   assert(pModel != NULL);
 
@@ -687,6 +686,8 @@ void CQCompartment::deleteCompartment(UndoCompartmentData *pCompartmentData)
 #undef DELETE
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, key);
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+
+  switchToWidget(CCopasiUndoCommand::COMPARTMENTS);
 }
 
 void CQCompartment::addCompartment(UndoCompartmentData *pData)

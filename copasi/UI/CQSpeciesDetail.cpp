@@ -805,11 +805,10 @@ void CQSpeciesDetail::deleteSpecies()
 
 void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 {
-  GET_MODEL_OR_RETURN(pModel);
-
-  switchToWidget(CCopasiUndoCommand::SPECIES);
-
-  CMetab * pSpecies = dynamic_cast< CMetab * >(pSData->getObject(pModel));
+  assert(mpDataModel != NULL);
+  CModel *pModel = mpDataModel->getModel();
+  assert(pModel != NULL);
+  CMetab *pSpecies = dynamic_cast< CMetab * >(pSData->getObject(pModel));
 
   if (pSpecies == NULL) return;
 
@@ -828,6 +827,8 @@ void CQSpeciesDetail::deleteSpecies(UndoSpeciesData *pSData)
 
   pModel->removeCompartment(compKey);
   protectedNotify(ListViews::COMPARTMENT, ListViews::DELETE, compKey);
+
+  switchToWidget(CCopasiUndoCommand::SPECIES);
 }
 
 void CQSpeciesDetail::addSpecies(UndoSpeciesData *pSData)
