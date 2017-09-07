@@ -2545,26 +2545,12 @@ CCSPMethod::printResult(std::ostream * ostream) const
 
       os << "Radical Pointer:" << std::endl;
       {
-        CMatrix<C_FLOAT64> RP;
-        RP.resize(mDim, mDim);
         M = mVec_SlowModes[istep];
-
-        for (m = 0; m < M; m++)
-          {
-            for (i = 0; i < mDim; i++)
-              RP(i, m) = mVec_mRadicalPointer[istep][i][m];
-          }
-
-        for (m = M; m < mDim; m++)
-          {
-            for (i = 0; i < mDim; i++)
-              RP(i, m) = 0;
-          }
 
         for (i = 0; i < mDim; i++)
           {
-            for (m = 0; m < mDim; m++)
-              os << "   " << RP(i, m);
+            for (m = 0; m < M; m++)
+              os << "   " << mVec_mRadicalPointer[istep][i][m];
 
             os << std::endl;
           }

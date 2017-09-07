@@ -1242,7 +1242,7 @@ void CILDMMethod::createAnnotationsM()
 
   mapTableToName[name] = pTMP1PrintAnn;
 
-  name = "Reactions distribution between modes ";
+  name = "Reactions distribution between modes";
   tableNames.push_back(name);
 
   CArrayAnnotation *

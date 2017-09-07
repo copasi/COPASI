@@ -1888,7 +1888,9 @@ void CTSSAMethod::updateCurrentTime()
 }
 
 const std::vector<std::string>& CTSSAMethod::getTableNames() const
-{return tableNames;}
+{
+  return tableNames;
+}
 
 const CArrayAnnotation *CTSSAMethod::getTable(const std::string &name)
 {return mapTableToName[name];}
