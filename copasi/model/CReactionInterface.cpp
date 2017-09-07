@@ -90,21 +90,23 @@ size_t CReactionInterface::size() const
 
 bool CReactionInterface::isVector(size_t index) const
 {
-  if (mpFunction) return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
+  if (mpFunction && index < size()) 
+    return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
 
-  return (false);
+  return false;
 }
 
 CFunctionParameter::Role CReactionInterface::getUsage(size_t index) const
 {
-  if (mpFunction) return (*mpParameters)[index]->getUsage();
+  if (mpFunction&& index < size()) 
+    return (*mpParameters)[index]->getUsage();
 
   return CFunctionParameter::VARIABLE;
 }
 
 std::string CReactionInterface::getParameterName(size_t index) const
 {
-  if (mpFunction)
+  if (mpFunction && index < size())
     return (*mpParameters)[index]->getObjectName();
 
   return emptyString;
@@ -116,7 +118,6 @@ void CReactionInterface::initFromReaction(const std::string & key)
 
   const CReaction *rea;
   rea = dynamic_cast< CReaction *>(CCopasiRootContainer::getKeyFactory()->get(key));
-  assert(rea);
   initFromReaction(rea);
 }
 
@@ -125,12 +126,13 @@ void CReactionInterface::initFromReaction(const C_INT32 index)
   const CReaction *rea = &mpModel->getReactions()[index];
 
   mReactionReferenceKey = rea->getKey();
-  assert(rea);
   initFromReaction(rea);
 }
 
 void CReactionInterface::initFromReaction(const CReaction *rea)
 {
+  if (!rea) 
+    return;
   //chemical equation
   mChemEqI.loadFromChemEq(rea->getChemEq());
 
@@ -985,7 +987,7 @@ CReactionInterface::getMapping(size_t index) const
 }
 
 void
-CReactionInterface::setLocalValue(size_t index, double value)
+CReactionInterface::setLocalValue(size_t index, C_FLOAT64 value)
 {
   mValues[index] = value;
   mIsLocal[index] = true;
@@ -1006,6 +1008,9 @@ CReactionInterface::getLocalValue(size_t index) const
 bool
 CReactionInterface::isLocalValue(size_t index) const
 {
+  if (index >= size())
+    return false;
+
   return mIsLocal[index];
 }
 

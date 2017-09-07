@@ -12,25 +12,9 @@
 // Properties, Inc. and EML Research, gGmbH. 
 // All rights reserved. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 %{
 
+#include "model/CReactionInterface.h"
 #include "model/CReaction.h"
 
 %}
@@ -191,4 +175,5 @@
 
 %ignore CReaction::getParameterIndex;
 %include "model/CReaction.h"
+%include "model/CReactionInterface.h"
 
