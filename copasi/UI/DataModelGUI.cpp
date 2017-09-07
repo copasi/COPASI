@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -198,6 +203,7 @@ void DataModelGUI::addModelFinished()
       //notify(ListViews::MODEL, ListViews::CHANGE, "");
 
       CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CCopasiRootContainer::getConfiguration()->save();
       //linkDataModelToGUI();
     }
 
@@ -251,6 +257,7 @@ void DataModelGUI::loadModelFinished()
   if (mSuccess)
     {
       CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CCopasiRootContainer::getConfiguration()->save();
 
       mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
@@ -291,7 +298,10 @@ void DataModelGUI::saveModelRun()
 void DataModelGUI::saveModelFinished()
 {
   if (mSuccess)
-    CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+    {
+      CCopasiRootContainer::getConfiguration()->getRecentFiles().addFile(mFileName);
+      CCopasiRootContainer::getConfiguration()->save();
+    }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
 
@@ -393,6 +403,7 @@ void DataModelGUI::importSBMLFinished()
     {
       this->importCellDesigner();
       CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+      CCopasiRootContainer::getConfiguration()->save();
 
       mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
@@ -488,7 +499,10 @@ void DataModelGUI::exportSBMLRun()
 void DataModelGUI::exportSBMLFinished()
 {
   if (mSuccess)
-    CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+    {
+      CCopasiRootContainer::getConfiguration()->getRecentSBMLFiles().addFile(mFileName);
+      CCopasiRootContainer::getConfiguration()->save();
+    }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
 
@@ -912,7 +926,7 @@ void DataModelGUI::importSEDMLFinished()
   if (mSuccess)
     {
       CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
-
+      CCopasiRootContainer::getConfiguration()->save();
       mpOutputHandlerPlot->setOutputDefinitionVector(CCopasiRootContainer::getDatamodelList()->operator[](0).getPlotDefinitionList());
       linkDataModelToGUI();
     }
@@ -942,7 +956,10 @@ void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile,
 void DataModelGUI::exportSEDMLFinished()
 {
   if (mSuccess)
-    CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+    {
+      CCopasiRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(mFileName);
+      CCopasiRootContainer::getConfiguration()->save();
+    }
 
   disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
 
