@@ -24,11 +24,11 @@
 
 #include "copasi/UI/ui_CQTSSAWidget.h"
 
+class CTSSATask;
 class CTSSAProblem;
+class CTSSAMethod;
 class CQValidatorInt;
 class CQValidatorDouble;
-
-#define TSSAMAX 10000000
 
 class CQTSSAWidget : public TaskWidget, public Ui::CQTSSAWidget
 {
@@ -53,11 +53,15 @@ protected:
 protected slots:
 
 private:
-  CTSSAProblem * mpTSSAProblem;
-  CQValidatorDouble * mpValidatorDuration;
-  CQValidatorDouble * mpValidatorIntervalSize;
-  CQValidatorDouble * mpValidatorDelay;
-  CQValidatorInt * mpValidatorIntervals;
+  CTSSATask* mpCTSSATask;
+  CTSSAProblem* mpTSSAProblem;
+  CTSSAMethod* mpTSSMethod;
+  CQTSSAResultSubWidget* mpTSSResultSubWidget;
+
+  CQValidatorDouble* mpValidatorDuration;
+  CQValidatorDouble* mpValidatorIntervalSize;
+  CQValidatorDouble* mpValidatorDelay;
+  CQValidatorInt* mpValidatorIntervals;
 
   void init();
   void destroy();

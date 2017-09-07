@@ -62,17 +62,6 @@ CQTSSAWidget::~CQTSSAWidget()
   // no need to delete child widgets, Qt does it all for us
 }
 
-CTSSAMethod* pTSSMethod;
-
-CILDMMethod *pILDM_Method;
-CILDMModifiedMethod *pILDMModiMethod;
-
-CQTSSAResultSubWidget* pTSSResultSubWidget;
-CTSSATask * pCTSSATask;
-
-class mpTSSResultSubWidget;
-class QTabWidget;
-
 void CQTSSAWidget::init()
 {
   mpTSSAProblem = NULL;
@@ -169,25 +158,27 @@ bool CQTSSAWidget::saveTask()
   saveCommon();
   saveMethod();
 
-  CTSSAProblem* tssaproblem =
+  CTSSAProblem* pTssaProblem =
     dynamic_cast<CTSSAProblem *>(pTask->getProblem());
-  assert(tssaproblem);
+
+  if (!pTssaProblem)
+    return false;
 
   //numbers
-  if (tssaproblem->getStepSize() != mpEditIntervalSize->text().toDouble())
+  if (pTssaProblem->getStepSize() != mpEditIntervalSize->text().toDouble())
     {
-      tssaproblem->setStepSize(mpEditIntervalSize->text().toDouble());
+      pTssaProblem->setStepSize(mpEditIntervalSize->text().toDouble());
       mChanged = true;
     }
-  else if (tssaproblem->getStepNumber() != mpEditIntervals->text().toULong())
+  else if (pTssaProblem->getStepNumber() != mpEditIntervals->text().toULong())
     {
-      tssaproblem->setStepNumber(mpEditIntervals->text().toLong());
+      pTssaProblem->setStepNumber(mpEditIntervals->text().toLong());
       mChanged = true;
     }
 
-  if (tssaproblem->getDuration() != mpEditDuration->text().toDouble())
+  if (pTssaProblem->getDuration() != mpEditDuration->text().toDouble())
     {
-      tssaproblem->setDuration(mpEditDuration->text().toDouble());
+      pTssaProblem->setDuration(mpEditDuration->text().toDouble());
       mChanged = true;
     }
 
@@ -207,16 +198,18 @@ bool CQTSSAWidget::loadTask()
   loadCommon();
   loadMethod();
 
-  CTSSAProblem * tssaproblem = dynamic_cast<CTSSAProblem *>(pTask->getProblem());
-  assert(tssaproblem);
+  CTSSAProblem * pTssaProblem = dynamic_cast<CTSSAProblem *>(pTask->getProblem());
+
+  if (!pTssaProblem)
+    return false;
 
   pdelete(mpTSSAProblem);
-  mpTSSAProblem = new CTSSAProblem(*tssaproblem, NO_PARENT);
+  mpTSSAProblem = new CTSSAProblem(*pTssaProblem, NO_PARENT);
 
   //numbers
-  mpEditIntervalSize->setText(QString::number(tssaproblem->getStepSize()));
-  mpEditIntervals->setText(QString::number(tssaproblem->getStepNumber()));
-  mpEditDuration->setText(QString::number(tssaproblem->getDuration()));
+  mpEditIntervalSize->setText(QString::number(pTssaProblem->getStepSize()));
+  mpEditIntervals->setText(QString::number(pTssaProblem->getStepNumber()));
+  mpEditDuration->setText(QString::number(pTssaProblem->getDuration()));
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
@@ -227,15 +220,15 @@ bool CQTSSAWidget::loadTask()
 bool CQTSSAWidget::runTask()
 {
   assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  pCTSSATask =
+  mpCTSSATask =
     dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
 
-  if (!pCTSSATask) return false;
+  if (!mpCTSSATask) return false;
 
-  pTSSMethod = dynamic_cast<CTSSAMethod*>(pCTSSATask->getMethod());
+  mpTSSMethod = dynamic_cast<CTSSAMethod*>(mpCTSSATask->getMethod());
 
-  if (!pTSSMethod)
-    pTSSMethod->emptyVectors();
+  if (!mpTSSMethod)
+    mpTSSMethod->emptyVectors();
 
   if (!commonBeforeRunTask()) return false;
 
@@ -248,7 +241,6 @@ bool CQTSSAWidget::runTask()
 
 bool CQTSSAWidget::taskFinishedEvent()
 {
-  bool success = true;
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTSSAResultWidget * pResult =
@@ -259,20 +251,15 @@ bool CQTSSAWidget::taskFinishedEvent()
       return false;
     }
 
-  pTSSResultSubWidget = pResult->getSubWidget();
+  mpTSSResultSubWidget = pResult->getSubWidget();
 
-  if (!pTSSResultSubWidget)
+  if (!mpTSSResultSubWidget)
     return false;
 
-  pTSSResultSubWidget->discardOldResults();
+  mpTSSResultSubWidget->discardOldResults();
 
-  if (success)
-    {
+  mpTSSResultSubWidget->displayResult();
+  mpListView->switchToOtherWidget(271, ""); //change to the results window
 
-      pTSSResultSubWidget->displayResult();
-
-      mpListView->switchToOtherWidget(271, ""); //change to the results window
-    }
-
-  return success;
+  return true;
 }
