@@ -147,16 +147,17 @@ void CQTSSAResultSubWidget::changeContents()
     {
 
       mpTimeScaleWidget->show();
-      mpArrayWidget->hide();
-      mpBox1->hide();
-      mpButton->setText("Show Tables");
+      //mpArrayWidget->hide();
+      //mpBox1->hide();
+      //mpButton->setText("Show Tables");
+      mpButton->setText("Hide Time scales");
       mpIndex = 1;
     }
   else
     {
       mpTimeScaleWidget->hide();
-      mpBox1->show();
-      mpArrayWidget->show();
+      //mpBox1->show();
+      //mpArrayWidget->show();
       mpButton->setText("Show Time scales");
       mpIndex = 0;
     }
@@ -232,6 +233,7 @@ void CQTSSAResultSubWidget::displayResult()
 
   mpArrayWidget->switchToTable();
   mpSlider->setDisabled(false);
+  mpSlider->setFocus();
 
   changeInterval();
 }
@@ -260,7 +262,7 @@ void CQTSSAResultSubWidget::changeInterval()
 
   if (pMethod->setAnnotationM(s - 1))
     {
-      std::string name  =  static_cast<std::string >(mpBox1->currentText().toUtf8());
+      std::string name = TO_UTF8(mpBox1->currentText());
       pResult = pMethod->getTable(name);
 
       mpArrayWidget->setArrayAnnotation(pResult);

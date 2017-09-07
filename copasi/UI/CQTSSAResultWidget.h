@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,17 +33,9 @@ public:
   CQTSSAResultWidget(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0);
   ~CQTSSAResultWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
-  virtual bool leave();
-  CQTSSAResultSubWidget* getSubWidget() {return mCentralWidget;};
+  CQTSSAResultSubWidget* getSubWidget();
 
 protected slots:
-  //virtual void slotBtnCancelClicked();
-  //virtual void slotBtnOKClicked();
-
-public:
-  bool loadFromBackend();
-  bool saveToBackend();
 
 protected:
   virtual bool enterProtected();
