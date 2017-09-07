@@ -416,6 +416,11 @@ public:
   std::string getAmountRateUnit() const;
 
   /**
+   * @return the effective kinetic law unit
+   */
+  std::string CReactionInterface::getEffectiveKineticLawUnit() const;
+
+  /**
    * Sets the scaling compartment to be used for this reaction
    * @param scalingCompartment
    */
