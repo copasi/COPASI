@@ -269,7 +269,7 @@ bool CMathDependencyNode::buildUpdateSequence(const CCore::SimulationContextFlag
                   {
                     // Only Math Objects with expressions can be updated.
                     if (pMathObject != NULL &&
-                        pMathObject->getExpressionPtr() != NULL)
+                        pMathObject->canCalculateValue())
                       {
                         updateSequence.push_back(const_cast< CObjectInterface * >(itNode->getObject()));
                       }

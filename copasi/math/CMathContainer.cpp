@@ -708,6 +708,11 @@ const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
   return *(const C_FLOAT64 *)mpQuantity2NumberFactor->getValuePointer();
 }
 
+const CObjectInterface * CMathContainer::getQuantity2NumberFactorObject() const
+{
+  return mpQuantity2NumberFactor;
+}
+
 const CMathHistoryCore & CMathContainer::getHistory(const bool & reduced) const
 {
   if (reduced)
@@ -3670,6 +3675,11 @@ C_FLOAT64 * CMathContainer::getInitialValuePointer(const C_FLOAT64 * pValue) con
     }
 
   return const_cast< C_FLOAT64 * >(pInitialValue);
+}
+
+CMathObject * CMathContainer::getInitialValueObject(const CMathObject * pObject) const
+{
+  return getMathObject(getInitialValuePointer(&pObject->getValue()));
 }
 
 CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Entity< CDataObject > & entity,

@@ -259,6 +259,12 @@ public:
   const C_FLOAT64 & getQuantity2NumberFactor() const;
 
   /**
+   * Retrieve the Quantity to Number conversion factor
+   * @return const CObjectInterface * quantity2NumberFactorObject
+   */
+  const CObjectInterface * getQuantity2NumberFactorObject() const;
+
+  /**
    * Retrieves the state values, i.e., all values of objects of
    * simulation type EventTarget, Time, ODE, Dependent, and Independent. It includes only
    * extensive values for species.
@@ -770,6 +776,13 @@ public:
    * @return C_FLOAT64 * pInitialvalue
    */
   C_FLOAT64 * getInitialValuePointer(const C_FLOAT64 * pValue) const;
+
+  /**
+   * Retrieve the pointer to the corresponding initial value
+   * @param const CMathObject * pObject
+   * @return CMathObject * pInitialValueObject
+   */
+  CMathObject * getInitialValueObject(const CMathObject * pObject) const;
 
   /**
    * Add an entity to the container
