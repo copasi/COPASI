@@ -1451,24 +1451,6 @@ void CMathEvent::createUpdateSequences()
 
   mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CCore::SimulationContext::UpdateMoieties, EventTargets, ExtendedStateValues);
 
-  // We need to remove the event roots from the simulation values
-  CObjectInterface::ObjectSet ContinuousSimulationValues;
-  CObjectInterface::ObjectSet DiscreteSimulationValues;
-  CObjectInterface::ObjectSet::const_iterator it = SimulationValues.begin();
-  CObjectInterface::ObjectSet::const_iterator end = SimulationValues.end();
-
-  for (; it != end; ++it)
-    {
-      if (static_cast< const CMathObject * >(*it)->getEntityType() != CMath::EntityType::Event)
-        {
-          ContinuousSimulationValues.insert(*it);
-        }
-      else
-        {
-          DiscreteSimulationValues.insert(*it);
-        }
-    }
-
   CCore::CUpdateSequence StateEffects;
   mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CCore::SimulationContext::Default, EventTargets, ExtendedStateValues);
 
@@ -1478,11 +1460,21 @@ void CMathEvent::createUpdateSequences()
     }
 
   CCore::CUpdateSequence ContiousSimulationEffects;
-  mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CCore::SimulationContext::Default, EventTargets, ContinuousSimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CCore::SimulationContext::Default, EventTargets, SimulationValues);
 
   if (!ContiousSimulationEffects.empty())
     {
       mEffectsSimulation |=  CMath::eStateChange::ContinuousSimulation;
+    }
+
+  // We need to check whether root values have been changed.
+  CObjectInterface::ObjectSet DiscreteSimulationValues;
+  const CMathObject * pRoot = mpContainer->getMathObject(mpContainer->getRoots().begin());
+  const CMathObject * pRootEnd = pRoot + mpContainer->getRoots().size();
+
+  for (; pRoot != pRootEnd; ++pRoot)
+    {
+      DiscreteSimulationValues.insert(pRoot);
     }
 
   CCore::CUpdateSequence DiscreteSimulationEffects;
@@ -1563,6 +1555,7 @@ CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & 
     {
       mpContainer->applyUpdateSequence(mPostAssignmentSequence);
       mpContainer->updateSimulatedValues(false);
+      mpContainer->updateRootValues(false);
       StateChange = mEffectsSimulation;
     }
 

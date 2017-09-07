@@ -497,6 +497,7 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime)
           case CTrajectoryMethod::ROOT:
             mpContainer->setState(mContainerState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
+            mpContainer->updateRootValues(mUpdateMoieties);
 
             mpContainer->processRoots(true, mpTrajectoryMethod->getRoots());
 

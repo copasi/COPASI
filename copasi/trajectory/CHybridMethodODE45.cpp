@@ -613,7 +613,9 @@ void CHybridMethodODE45::fireReaction()
   mA0 = -log(mpRandomGenerator->getRandomOO());
 
   // Update all values needed for simulation.
+  // TODO PERFORMANCE Use a reaction dependent update sequence.
   mpContainer->updateSimulatedValues(false);
+  mpContainer->updateRootValues(false);
 
   destroyRootMask();
   mEventProcessing = checkRoots();
@@ -903,7 +905,7 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
   memcpy(mpContainerStateTime, y, mCountContainerVariables * sizeof(C_FLOAT64));
   *mpContainerStateTime = *t;
 
-  mpContainer->updateSimulatedValues(false);
+  mpContainer->updateRootValues(false);
 
   CVectorCore< C_FLOAT64 > RootValues;
 
@@ -1015,7 +1017,7 @@ void CHybridMethodODE45::createRootMask()
   CVector< C_FLOAT64 > RootDerivatives;
   RootDerivatives.resize(NumRoots);
 
-  mpContainer->updateSimulatedValues(false);
+  mpContainer->updateRootValues(false);
   RootValues = mpContainer->getRoots();
   mpContainer->calculateRootDerivatives(RootDerivatives);
 

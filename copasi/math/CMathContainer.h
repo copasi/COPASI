@@ -371,6 +371,12 @@ public:
   void updateSimulatedValues(const bool & useMoieties);
 
   /**
+   * Calculate all roots based on the current state
+   * @param const bool & useMoieties
+   */
+  void updateRootValues(const bool & useMoieties);
+
+  /**
    * Calculate all noise valuse based on the current state
    * @param const bool & useMoieties
    */
@@ -1192,6 +1198,18 @@ private:
    * on the assumption that all state values may have changed
    */
   CCore::CUpdateSequence mSimulationValuesSequenceReduced;
+
+  /**
+   * The sequence of updates needed to calculate all roots
+   * on the assumption that all state values may have changed
+   */
+  CCore::CUpdateSequence mRootSequence;
+
+  /**
+   * The sequence of updates needed to calculate all roots
+   * on the assumption that all state values may have changed
+   */
+  CCore::CUpdateSequence mRootSequenceReduced;
 
   /**
    * The sequence of updates needed to calculate all noise values based
