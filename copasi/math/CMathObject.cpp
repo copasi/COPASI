@@ -774,7 +774,7 @@ bool CMathObject::compileValue(CMathContainer & container)
         }
 
       mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
-      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      mpCompartmentValue = static_cast< const C_FLOAT64 * >(mpCompartmentValue);
       mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
@@ -1165,7 +1165,7 @@ bool CMathObject::compileReactionParticleNoise(CMathContainer & container)
 
   if (pReaction->hasNoise())
     {
-      std::string Infix = pointerToString(&container.getQuantity2NumberFactor());
+      std::string Infix = pointerToString(mpQuantity2NumberValue);
       Infix += "*" + pointerToString(container.getMathObject(pReaction->getNoiseReference())->getValuePointer());
 
       mpExpression = new CMathExpression("ReactionParticleNoiseExpression", container);
@@ -1602,8 +1602,6 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   bool success = true;
 
   // mConc = *mpValue / (mpModel->getQuantity2NumberFactor() * mpCompartment->getValue());
-  CObjectInterface * pNumber = NULL;
-  CObjectInterface * pCompartment = NULL;
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1636,20 +1634,6 @@ bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
   bool success = true;
 
   // mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
-
-  CObjectInterface * pIntensiveValue = NULL;
-  CObjectInterface * pCompartment = NULL;
-
-  if (mIsInitialValue)
-    {
-      pIntensiveValue = pSpecies->getInitialConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getInitialValueReference();
-    }
-  else
-    {
-      pIntensiveValue = pSpecies->getConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getValueReference();
-    }
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1693,18 +1677,18 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   Infix << "(";
   Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
   Infix << "/";
-  Infix << pointerToString(&container.getQuantity2NumberFactor());
+  Infix << pointerToString(mpQuantity2NumberValue);
 
   if (pSpecies->getCompartment()->getStatus() != CModelEntity::Status::FIXED)
     {
       Infix << "-";
-      Infix << pointerToString(container.getMathObject(pSpecies->getConcentrationReference())->getValuePointer());
+      Infix << pointerToString(mpCorrespondingPropertyValue);
       Infix << "*";
       Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getRateReference())->getValuePointer());
     }
 
   Infix << ")/";
-  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+  Infix << pointerToString(mpCompartmentValue);
 
   if (mpExpression == NULL)
     {
@@ -1734,9 +1718,9 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 
   if (!pSpecies->getExpression().empty())
     {
-      Infix << pointerToString(&container.getQuantity2NumberFactor());
+      Infix << pointerToString(mpQuantity2NumberValue);
       Infix << "*";
-      Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      Infix << pointerToString(mpCompartmentValue);
       Infix << "*(";
       Infix << pSpecies->getExpression();
       Infix << ")";
@@ -1914,8 +1898,8 @@ bool CMathObject::createExtensiveNoiseExpression(const CMetab * pSpecies,
        */
 
       std::string Infix;
-      Infix = pointerToString(&container.getQuantity2NumberFactor());
-      Infix += "*" + pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      Infix = pointerToString(mpQuantity2NumberValue);
+      Infix += "*" + pointerToString(mpCompartmentValue);
       Infix += "*(" + pSpecies->getNoiseExpression() + ")";
 
       CExpression E("ExtensiveNoiseExpression", &container);
@@ -1947,7 +1931,7 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
-  Infix.precision(16);
+  Infix.precision(std::numeric_limits<double>::digits10 + 2);
 
   std::string Key = pSpecies->getKey();
   bool First = true;
@@ -1984,6 +1968,18 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
                 {
                   Infix << "-infinity";
                 }
+              // Remove multiplying with -1.0
+              else if (-1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                       Multiplicity < -1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  Infix << "-";
+                }
+              // Remove multiplying with 1.0
+              else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                       Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  // Infix << "+";
+                }
               else
                 {
                   Infix << Multiplicity;
@@ -1994,6 +1990,12 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
               if (Multiplicity == std::numeric_limits< C_FLOAT64 >::infinity())
                 {
                   Infix << "+infinity";
+                }
+              // Remove multiplying with 1.0
+              else if (1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() < Multiplicity &&
+                       Multiplicity < 1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  Infix << "+";
                 }
               else
                 {
