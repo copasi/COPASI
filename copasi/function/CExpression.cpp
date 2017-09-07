@@ -122,12 +122,8 @@ CIssue CExpression::compile(CObjectInterface::ContainerList listOfContainer)
                     CIssue::eKind::HasCircularDependency |
                     CIssue::eKind::ExpressionDataTypeInvalid));
 
-  CIssue issue;
-
-  if ((issue = compileNodes()))
-    {
-      mValidity.add(issue);
-    }
+  CIssue issue = compileNodes();
+  mValidity.add(issue);
 
   if (mpRootNode)
     {
