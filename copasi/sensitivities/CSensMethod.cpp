@@ -487,10 +487,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-      /*    case CSensProblem::LyapunovExp:
-            mpSubTask = dynamic_cast<CCopasiTask*>
-                        (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
-            break;*/
+        /*    case CSensProblem::LyapunovExp:
+              mpSubTask = dynamic_cast<CCopasiTask*>
+                          (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+              break;*/
 
       case CSensProblem::ParameterEstimation:
         mpSubTask = dynamic_cast<CCopasiTask*>
@@ -779,5 +779,5 @@ bool CSensMethod::setCallBack(CProcessReport * pCallBack)
   if (mpSubTask)
     mpSubTask->setCallBack(pCallBack);
 
-  CCopasiMethod::setCallBack(pCallBack);
+  return CCopasiMethod::setCallBack(pCallBack);
 }
