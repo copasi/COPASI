@@ -2487,19 +2487,6 @@ CCSPMethod::printResult(std::ostream * ostream) const
   std::ostream & os = *ostream;
   C_INT M, i, m, r, istep = 0;
 
-  C_INT32 stepNumber;
-  //double timeScale;
-
-  assert(CCopasiRootContainer::getDatamodelList()->size() > 0);
-  CTSSATask* pTask =
-    dynamic_cast<CTSSATask *>(&CCopasiRootContainer::getDatamodelList()->operator[](0).getTaskList()->operator[]("Time Scale Separation Analysis"));
-
-  CTSSAProblem* pProblem = dynamic_cast<CTSSAProblem*>(pTask->getProblem());
-
-  stepNumber = (int)mVec_SlowModes.size();
-
-  this->print(&os);
-
   const CCopasiVector< CReaction > & reacs = Model.getReactions();
 
   os << std::endl;
@@ -2518,143 +2505,97 @@ CCSPMethod::printResult(std::ostream * ostream) const
   os << " reaction to the current reaction rate of i-th species   " << std::endl;
   os << std::endl;
 
-  os << " Species : " << std::endl;
+  os << " Species:" << std::endl;
 
   for (i = 0; i < mDim; i++)
-    os << Model.getStateTemplate().beginIndependent()[i]->getObjectName() << std::endl;
+    os << "    " << Model.getStateTemplate().beginIndependent()[i]->getObjectName() << std::endl;
 
   os << std::endl;
 
-  os << " Reactions : " << std::endl;
+  os << " Reactions:" << std::endl;
 
-  for (r = 0; r < (C_INT) reacs.size(); r++)
-    os << reacs[r].getObjectName() << std::endl;
+  for (r = 0; r < (C_INT)reacs.size(); r++)
+    os << "    " << reacs[r].getObjectName() << std::endl;
 
   os << std::endl;
 
-  os << "%%% Number of fast modes:  " << std::endl;
+  C_INT32 stepNumber = (int)mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; istep++)
     {
 
-      M = mVec_SlowModes[istep];
-
       os << std::endl;
-      os << "%%%  Time step " << istep + 1  << std::endl;
+      os << "**************** Time step " << istep + 1
+         << ": " << getTimeForStep(istep)
+         << " " << Model.getTimeUnitName()
+         << " **************************  " << std::endl;
       os << std::endl;
 
-      os << M  << std::endl;
-
+      os << "Number of fast modes: " << mVec_SlowModes[istep] << std::endl;
       os << std::endl;
-    }
 
-  os << std::endl;
-  os << "%%% Time scales:  " << std::endl;
-
-  for (istep = 0; istep < stepNumber; istep++)
-    {
-
-      M = mVec_SlowModes[istep];
-
-      os << std::endl;
-      os << "%%%  Time step " << istep + 1  << std::endl;
-      os << std::endl;
+      os << "Time scales:" << std::endl;
 
       for (i = 0; i < mDim; i++)
         {
-          os  << mVec_TimeScale[istep][i] << " ";
+          os << "   " << mVec_TimeScale[istep][i];
         }
 
-      os << std::endl;
-    }
+      os << std::endl << std::endl;
 
-  os << std::endl;
-  os << "% Radical Pointer   " << std::endl;
+      os << "Radical Pointer:" << std::endl;
+      {
+        CMatrix<C_FLOAT64> RP;
+        RP.resize(mDim, mDim);
+        M = mVec_SlowModes[istep];
 
-  CMatrix<C_FLOAT64> RP;
-  RP.resize(mDim, mDim);
+        for (m = 0; m < M; m++)
+          {
+            for (i = 0; i < mDim; i++)
+              RP(i, m) = mVec_mRadicalPointer[istep][i][m];
+          }
 
-  for (istep = 0; istep < stepNumber; istep++)
-    {
+        for (m = M; m < mDim; m++)
+          {
+            for (i = 0; i < mDim; i++)
+              RP(i, m) = 0;
+          }
 
-      M = mVec_SlowModes[istep];
+        for (i = 0; i < mDim; i++)
+          {
+            for (m = 0; m < mDim; m++)
+              os << "   " << RP(i, m);
 
-      os << std::endl;
-      os << "%%%  Time step " << istep + 1  << std::endl;
-      os << std::endl;
+            os << std::endl;
+          }
 
-      for (m = 0; m < M; m++)
+        os << std::endl;
+      }
+
+      os << "Participation Index:" << std::endl;
+
+      for (r = 0; r < (C_INT)reacs.size(); r++)
         {
+
           for (i = 0; i < mDim; i++)
-            RP(i, m) = mVec_mRadicalPointer[istep][i][m];
-        }
+            os << "   " << mVec_mParticipationIndex[istep][r][i];
 
-      for (m = M; m < mDim; m++)
-        {
-          for (i = 0; i < mDim; i++)
-            RP(i, m) = 0;
+          os << std::endl;
         }
 
       os << std::endl;
 
-      for (i = 0; i <  mDim; i++)
+      os << "Importance Index:" << std::endl;
+
+      for (r = 0; r < (C_INT)reacs.size(); r++)
         {
-          for (m = 0; m < mDim; m++)
-            os << RP(i, m) << " ";
+
+          for (i = 0; i < mDim; i++)
+            os << "   " << mVec_mImportanceIndex[istep][r][i];
 
           os << std::endl;
         }
 
       os << std::endl;
     }
-
-  os << std::endl;
-  os << "%%%% Participation Index : " << std::endl;
-
-  for (istep = 0; istep < stepNumber; istep++)
-    {
-
-      M = mVec_SlowModes[istep];
-
-      os << std::endl;
-      os << "%%%  Time step " << istep + 1  << std::endl;
-      os << std::endl;
-
-      //  os <<  istep + 1 << " ";
-
-      for (r = 0; r < (C_INT) reacs.size(); r++)
-        {
-
-          for (i = 0; i < mDim; i++)
-            os << mVec_mParticipationIndex[istep][r][i] << "   ";
-
-          os << std::endl;
-        }
-
-      os << std::endl;
-    }
-
-  os << std::endl;
-  os << "%%% Importance Index " << std::endl;
-
-  for (istep = 0; istep < stepNumber; istep++)
-    {
-
-      M = mVec_SlowModes[istep];
-
-      os << std::endl;
-      os << "%%%  Time step " << istep + 1  << std::endl;
-      os << std::endl;
-
-      for (r = 0; r < (C_INT) reacs.size(); r++)
-        {
-
-          for (i = 0; i < mDim; i++)
-            os << mVec_mImportanceIndex[istep][r][i] << "   ";
-
-          os << std::endl;
-        }
-    }
-
-  return;
 }
