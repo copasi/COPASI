@@ -15,6 +15,7 @@
 #include <map>
 
 #include "copasi/core/CDataObject.h"
+#include "copasi/core/CVector.h"
 #include "copasi/math/CMathEnum.h"
 #include "copasi/utilities/CValidity.h"
 
@@ -235,10 +236,10 @@ public:
   const CMathObject * getCorrespondingProperty() const;
 
   /**
-   * Retrieve the compartment
+   * Retrieve the compartment value
    * @return const CMathObject * compartment
    */
-  const CMathObject * getCompartment() const;
+  const C_FLOAT64 * getCompartmentValue() const;
 
   /**
    * Set the expression's infix  and compile the object.
@@ -284,6 +285,7 @@ private:
   void calculateExtensiveValue();
   void calculateIntensiveValue();
   void calculateParticleFlux();
+  void calculateExtensiveReactionRate();
 
   /**
    * Compile initial value objects
@@ -503,19 +505,34 @@ private:
   bool mIsInitialValue;
 
   /**
-   * A pointer to the corresponding intensive or extensive property if it exists otherwise NULL
+   * A pointer to the corresponding intensive or extensive property value if it exists otherwise NULL
    */
   const CMathObject * mpCorrespondingProperty;
 
   /**
-   * A pointer to the associated compartment (NULL if no association).
+   * A pointer to the corresponding intensive or extensive property value if it exists otherwise NULL
    */
-  const CMathObject * mpCompartment;
+  const C_FLOAT64 * mpCorrespondingPropertyValue;
 
   /**
-   * A pointer to the associated compartment (NULL if no association).
+   * A pointer to the associated compartment value (NULL if no association).
    */
-  const CObjectInterface * mpQuantity2Number;
+  const C_FLOAT64 * mpCompartmentValue;
+
+  /**
+   * A pointer to the quantity to number conversion factor.
+   */
+  const C_FLOAT64 * mpQuantity2NumberValue;
+
+  /**
+   * A vector conaining the stoichiometry values for the reactions modifying a species
+   */
+  CVector< C_FLOAT64 > mStoichiometryVector;
+
+  /**
+   * A vector conaining the pointers to the rates for the reactions modifying a species
+   */
+  CVector< const C_FLOAT64 * > mRateVector;
 
   /**
    * A pointer to the member function use to calculate the value
