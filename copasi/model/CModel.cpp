@@ -1067,6 +1067,11 @@ const CCopasiVectorNS < CCompartment > & CModel::getCompartments() const
 const CMatrix < C_FLOAT64 >& CModel::getRedStoi() const
 {return mRedStoi;}
 
+const CArrayAnnotation * CModel::getRedStoiAnnotation() const
+{
+  return mpRedStoiAnnotation;
+}
+
 /**
  *  Get the reordered stoichiometry matrix of this model
  */
@@ -1084,6 +1089,11 @@ const CCopasiVector < CMoiety > & CModel::getMoieties() const
 
 const CLinkMatrixView & CModel::getL() const
 {return mLView;}
+
+const CArrayAnnotation * CModel::getLAnnotation() const
+{
+  return mpLinkMatrixAnnotation;
+}
 
 const CLinkMatrix & CModel::getL0() const
 {return mL;}
