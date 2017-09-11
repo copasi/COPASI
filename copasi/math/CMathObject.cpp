@@ -409,6 +409,28 @@ void CMathObject::calculateExtensiveReactionRate()
     }
 }
 
+void CMathObject::calculatePropensity()
+{
+  *mpValue = std::max(0.0, *mpCorrespondingPropertyValue);
+}
+
+void CMathObject::calculateCorrectedPropensity()
+{
+  *mpValue = std::max(0.0, *mpCorrespondingPropertyValue);
+
+  const C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+  const C_FLOAT64 ** ppRate = mRateVector.begin();
+  const C_FLOAT64 ** ppRateEnd = mRateVector.end();
+
+  for (; ppRate != ppRateEnd; ++ppRate, ++pStoi)
+    {
+      for (C_FLOAT64 m = *pStoi; m > 0.1; m -= 1.0)
+        {
+          *mpValue = std::max(0.0, *mpValue * (1.0 - m / **ppRate));
+        }
+    }
+}
+
 const CMath::ValueType & CMathObject::getValueType() const
 {
   return mValueType;
@@ -552,6 +574,28 @@ bool CMathObject::compile(CMathContainer & container)
   mPrerequisites.clear();
   bool success = true;
 
+  mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
+
+  if (mpDataObject != NULL)
+    {
+      if (mEntityType == CMath::EntityType::Species)
+        {
+          const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
+          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+        }
+      else if (mEntityType == CMath::EntityType::Reaction)
+        {
+          const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+        }
+
+      if (mIsInitialValue &&
+          mpCompartmentValue != NULL)
+        {
+          mpCompartmentValue = container.getInitialValuePointer(mpCompartmentValue);
+        }
+    }
+
   switch (mValueType)
     {
       case CMath::ValueType::Undefined:
@@ -670,8 +714,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
         }
 
       mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
-      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pComparment->getInitialValueReference())->getValuePointer());
-      mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
   if (mIsIntensiveProperty)
@@ -774,8 +816,6 @@ bool CMathObject::compileValue(CMathContainer & container)
         }
 
       mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
-      mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
-      mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
     }
 
   if (mIsIntensiveProperty)
@@ -981,7 +1021,6 @@ bool CMathObject::compileParticleFlux(CMathContainer & container)
     }
 
   mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
-  mpQuantity2NumberValue = static_cast< const C_FLOAT64 * >(container.getQuantity2NumberFactorObject()->getValuePointer());
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1029,7 +1068,7 @@ bool CMathObject::compileFlux(CMathContainer & container)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);
 
-      std::string Infix = pointerToString(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer()) + "*(" + mpExpression->getInfix() + ")";
+      std::string Infix = pointerToString(mpCompartmentValue) + "*(" + mpExpression->getInfix() + ")";
       success &= Tmp.setInfix(Infix);
       success &= Tmp.compile();
 
@@ -1165,7 +1204,7 @@ bool CMathObject::compileReactionParticleNoise(CMathContainer & container)
 
   if (pReaction->hasNoise())
     {
-      std::string Infix = pointerToString(&container.getQuantity2NumberFactor());
+      std::string Infix = pointerToString(mpQuantity2NumberValue);
       Infix += "*" + pointerToString(container.getMathObject(pReaction->getNoiseReference())->getValuePointer());
 
       mpExpression = new CMathExpression("ReactionParticleNoiseExpression", container);
@@ -1206,7 +1245,7 @@ bool CMathObject::compileReactionNoise(CMathContainer & container)
         {
           CExpression Tmp(mpExpression->getObjectName(), &container);
 
-          std::string Infix = pointerToString(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+          std::string Infix = pointerToString(mpCompartmentValue);
           Infix += "*(" + mpExpression->getInfix() + ")";
 
           success &= Tmp.setInfix(Infix);
@@ -1232,6 +1271,9 @@ bool CMathObject::compilePropensity(CMathContainer & container)
   *mpValue = InvalidValue;
 
   const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
+  mpCorrespondingProperty = container.getMathObject(pReaction->getParticleFluxReference());
+  mpCorrespondingPropertyValue = static_cast< const C_FLOAT64 * >(mpCorrespondingProperty->getValuePointer());
+  std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CorrectedPropensityCalculationVector;
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1244,8 +1286,8 @@ bool CMathObject::compilePropensity(CMathContainer & container)
     }
   else
     {
-      // Propensity is the same as the flux, but it must not be negative.
-      Infix << "max(0," << pointerToString(container.getMathObject(pReaction->getParticleFluxReference())->getValuePointer());
+      // Propensity is the same as the particle flux, but it must not be negative.
+      Infix << "max(0," << pointerToString(mpCorrespondingPropertyValue);
 
       // Apply correction for deterministic models
       if (container.getModel().getModelType() == CModel::deterministic)
@@ -1262,7 +1304,8 @@ bool CMathObject::compilePropensity(CMathContainer & container)
           for (; itSubstrate != endSubstrate; ++itSubstrate)
             {
               const CMetab * pMetab = itSubstrate->getMetabolite();
-              const std::string NumberPointer = pointerToString((pMetab != NULL) ? container.getMathObject(pMetab->getValueReference())->getValuePointer() : &CMathObject::InvalidValue);
+              const C_FLOAT64 * pNumber = static_cast< const C_FLOAT64 * >((pMetab != NULL) ? container.getMathObject(pMetab->getValueReference())->getValuePointer() : &CMathObject::InvalidValue);
+              const std::string NumberPointer = pointerToString(pNumber);
 
               C_FLOAT64 Multiplicity = itSubstrate->getMultiplicity();
 
@@ -1289,6 +1332,11 @@ bool CMathObject::compilePropensity(CMathContainer & container)
                   Divisor << NumberPointer;
                 }
 
+              if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
+                {
+                  CorrectedPropensityCalculationVector.push_back(std::make_pair(Multiplicity, pNumber));
+                }
+
               while (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
                 {
                   Infix << "*(" << NumberPointer << "-" << Multiplicity << ")";
@@ -1313,6 +1361,31 @@ bool CMathObject::compilePropensity(CMathContainer & container)
   success &= mpExpression->setInfix(Infix.str());
   success &= mpExpression->compile();
   compileExpression();
+
+  if (!pReaction->isReversible())
+    {
+      if (CorrectedPropensityCalculationVector.empty())
+        {
+          mpCalculate = &CMathObject::calculatePropensity;
+        }
+      else
+        {
+          mStoichiometryVector.resize(CorrectedPropensityCalculationVector.size());
+          mRateVector.resize(CorrectedPropensityCalculationVector.size());
+          std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator itPair = CorrectedPropensityCalculationVector.begin();
+          std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> >::const_iterator endPair = CorrectedPropensityCalculationVector.end();
+          C_FLOAT64 * pStoi = mStoichiometryVector.begin();
+          const C_FLOAT64 **ppRate = mRateVector.begin();
+
+          for (; itPair != endPair; ++itPair, ++pStoi, ++ppRate)
+            {
+              *pStoi = itPair->first;
+              *ppRate = itPair->second;
+            }
+
+          mpCalculate = &CMathObject::calculateCorrectedPropensity;
+        }
+    }
 
   return success;
 }
@@ -1693,7 +1766,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
   Infix << "(";
   Infix << pointerToString(container.getMathObject(pSpecies->getRateReference())->getValuePointer());
   Infix << "/";
-  Infix << pointerToString(&container.getQuantity2NumberFactor());
+  Infix << pointerToString(mpQuantity2NumberValue);
 
   if (pSpecies->getCompartment()->getStatus() != CModelEntity::Status::FIXED)
     {
@@ -1704,7 +1777,7 @@ bool CMathObject::createIntensiveRateExpression(const CMetab * pSpecies,
     }
 
   Infix << ")/";
-  Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+  Infix << pointerToString(mpCompartmentValue);
 
   if (mpExpression == NULL)
     {
@@ -1734,9 +1807,9 @@ bool CMathObject::createExtensiveODERateExpression(const CMetab * pSpecies,
 
   if (!pSpecies->getExpression().empty())
     {
-      Infix << pointerToString(&container.getQuantity2NumberFactor());
+      Infix << pointerToString(mpQuantity2NumberValue);
       Infix << "*";
-      Infix << pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      Infix << pointerToString(mpCompartmentValue);
       Infix << "*(";
       Infix << pSpecies->getExpression();
       Infix << ")";
@@ -1914,8 +1987,8 @@ bool CMathObject::createExtensiveNoiseExpression(const CMetab * pSpecies,
        */
 
       std::string Infix;
-      Infix = pointerToString(&container.getQuantity2NumberFactor());
-      Infix += "*" + pointerToString(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+      Infix = pointerToString(mpQuantity2NumberValue);
+      Infix += "*" + pointerToString(mpCompartmentValue);
       Infix += "*(" + pSpecies->getNoiseExpression() + ")";
 
       CExpression E("ExtensiveNoiseExpression", &container);

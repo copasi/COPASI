@@ -286,6 +286,8 @@ private:
   void calculateIntensiveValue();
   void calculateParticleFlux();
   void calculateExtensiveReactionRate();
+  void calculatePropensity();
+  void calculateCorrectedPropensity();
 
   /**
    * Compile initial value objects
