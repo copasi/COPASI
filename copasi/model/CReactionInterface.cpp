@@ -235,8 +235,10 @@ bool CReactionInterface::loadMappingAndValues(const CReaction & rea)
 
               case CFunctionParameter::VOLUME:
                 pObj = dynamic_cast<const CCompartment*>(CRootContainer::getKeyFactory()->get(*(it->begin())));
-                assert(pObj);
-                SubList[0] = pObj->getObjectName();
+
+                if (pObj != NULL)
+                  SubList[0] = pObj->getObjectName();
+
                 break;
 
               case CFunctionParameter::TIME:
@@ -294,7 +296,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
 
   if (rea == NULL) return false;
 
-  if (!isValid()) return false; // do nothing
+  if (!isValid()) compile = false;
 
   if (mpFunction == NULL) return false;
 
@@ -332,6 +334,8 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
             break;
 
           case CFunctionParameter::VOLUME:
+            if (mNameMap[i][0] == "unknown" || mNameMap[i][0] == "") break;
+
             rea->setParameterMapping(i, mpModel->getCompartments()[mNameMap[i][0]].getKey());
             break;
 
@@ -369,7 +373,6 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
 
   rea->setHasNoise(mHasNoise);
 
-  rea->setNoiseExpression(mNoiseExpression);
   rea->setKineticLawUnitType(mKineticLawUnitType);
 
   std::string ScalingCompartmentCN;
@@ -385,6 +388,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
 
   if (compile)
     {
+      rea->setNoiseExpression(mNoiseExpression);
       rea->compile();
       mpModel->setCompileFlag(); //TODO: check if really necessary
     }
@@ -1278,7 +1282,7 @@ CReactionInterface::isValid() const
   size_t j, jmax = size();
 
   for (j = 0; j < jmax; ++j)
-    if ((mNameMap[j].size() == 0 ||  mNameMap[j][0] == "unknown") && (!mIsLocal[j]))
+    if ((mNameMap[j].size() == 0 ||  mNameMap[j][0] == "unknown" ||  mNameMap[j][0] == "") && (!mIsLocal[j]))
       return false;
 
   return true;
