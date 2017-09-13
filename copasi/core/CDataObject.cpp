@@ -199,9 +199,13 @@ void CDataObject::sanitizeObjectName(std::string & name)
   std::string::iterator end = name.end();
 
   for (; it != end; ++it)
-    {
-      if (0x00 <= *it && *it < 0x20) *it = 0x20;
-    }
+    if (0x00 <= *it && *it < 0x20)
+      {
+        *it = 0x20;
+      }
+
+  name.erase(name.begin(), name.begin() + name.find_first_not_of(0x20));
+  name.erase(name.begin() + name.find_last_not_of(0x20) + 1, name.end());
 }
 
 bool CDataObject::setObjectName(const std::string & name)
