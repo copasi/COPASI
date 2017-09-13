@@ -90,7 +90,7 @@ size_t CReactionInterface::size() const
 
 bool CReactionInterface::isVector(size_t index) const
 {
-  if (mpFunction && index < size()) 
+  if (mpFunction && index < size())
     return ((*mpParameters)[index]->getType() == CFunctionParameter::VFLOAT64);
 
   return false;
@@ -98,7 +98,7 @@ bool CReactionInterface::isVector(size_t index) const
 
 CFunctionParameter::Role CReactionInterface::getUsage(size_t index) const
 {
-  if (mpFunction&& index < size()) 
+  if (mpFunction && index < size())
     return (*mpParameters)[index]->getUsage();
 
   return CFunctionParameter::VARIABLE;
@@ -131,8 +131,9 @@ void CReactionInterface::initFromReaction(const C_INT32 index)
 
 void CReactionInterface::initFromReaction(const CReaction *rea)
 {
-  if (!rea) 
+  if (!rea)
     return;
+
   //chemical equation
   mChemEqI.loadFromChemEq(rea->getChemEq());
 
@@ -862,7 +863,10 @@ CReactionInterface::setFunctionAndDoMapping(const std::string & fn)
   mpFunction = dynamic_cast<CFunction *>
                (CCopasiRootContainer::getFunctionList()->findLoadFunction(fn));
 
-  if (!mpFunction) fatalError();
+  if (!mpFunction)
+    {
+      mpFunction = CCopasiRootContainer::getUndefinedFunction();
+    }
 
   copyMapping();
   connectNonMetabolites();
