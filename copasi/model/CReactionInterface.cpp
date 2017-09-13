@@ -868,7 +868,10 @@ CReactionInterface::setFunctionAndDoMapping(const std::string & fn)
   mpFunction = dynamic_cast<CFunction *>
                (CRootContainer::getFunctionList()->findLoadFunction(fn));
 
-  if (!mpFunction) fatalError();
+  if (!mpFunction)
+    {
+      mpFunction = CRootContainer::getUndefinedFunction();
+    }
 
   copyMapping();
   connectNonMetabolites();
