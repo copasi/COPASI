@@ -358,11 +358,12 @@ CFunction * CFunctionDB::findFunction(const std::string & functionName)
 
 CFunction * CFunctionDB::findLoadFunction(const std::string & functionName)
 {
-  size_t i;
+  size_t Index = mLoadedFunctions.getIndex(functionName);
 
-  for (i = 0; i < mLoadedFunctions.size(); i++)
-    if (functionName == mLoadedFunctions[i].getObjectName())
-      return &mLoadedFunctions[i];
+  if (Index < mLoadedFunctions.size())
+    {
+      return &mLoadedFunctions[Index];
+    }
 
   return NULL;
 }
