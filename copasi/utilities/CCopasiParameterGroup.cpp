@@ -607,7 +607,7 @@ bool CCopasiParameterGroup::removeParameter(const size_t & index)
 bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
 {
   index_iterator it = static_cast< elements * >(mpValue)->begin();
-  index_iterator end = static_cast< elements * >(mpValue)->begin();
+  index_iterator end = static_cast< elements * >(mpValue)->end();
 
   for (; it != end; ++it)
     if (*it == pParameter)

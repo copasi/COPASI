@@ -215,6 +215,25 @@ void CConfigurationFile::initializeParameter()
   mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
   mpValidateUnits = assertParameter("Validate Units", CCopasiParameter::BOOL, false);
 
+  // Remove display issue kinds which can no longer be mapped;
+  CCopasiParameterGroup::elements::const_iterator itKind = mpDisplayIssueKinds->beginIndex();
+  CCopasiParameterGroup::elements::const_iterator endKind = mpDisplayIssueKinds->endIndex();
+  std::vector< CCopasiParameter * > ToBeRemoved;
+
+  for (; itKind != endKind; ++itKind)
+    if (CIssue::kindNames.toEnum((*itKind)->getObjectName(), CIssue::eKind::__SIZE) == CIssue::eKind::__SIZE)
+      {
+        ToBeRemoved.push_back(*itKind);
+      }
+
+  std::vector< CCopasiParameter * >::const_iterator itToBeRemoved = ToBeRemoved.begin();
+  std::vector< CCopasiParameter * >::const_iterator endToBeRemoved = ToBeRemoved.end();
+
+  for (; itToBeRemoved != endToBeRemoved; ++itToBeRemoved)
+    {
+      mpDisplayIssueKinds->removeParameter(*itToBeRemoved);
+    }
+
   for (size_t i = 1; i < CIssue::severityNames.size(); i++) //skip the "success" flag
     {
       mpDisplayIssueSeverity->assertParameter(std::string(CIssue::severityNames[i]), CCopasiParameter::BOOL, true);
