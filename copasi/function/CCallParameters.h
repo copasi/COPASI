@@ -124,12 +124,12 @@ public:
   /**
    * Sets a specific parameter. Works only if the parameter is no vector
    */
-  bool setCallParameter(const std::string paramName, const CDataObject* obj);
+  CIssue setCallParameter(const std::string paramName, const CDataObject* obj);
 
   /**
    * Adds an object to a specific parameter vector. Works only if the parameter is a vector
    */
-  bool addCallParameter(const std::string paramName, const CDataObject* obj);
+  CIssue addCallParameter(const std::string paramName, const CDataObject* obj);
 
   /**
    * Removes an object from a specific parameter vector. Works only if the parameter is a vector

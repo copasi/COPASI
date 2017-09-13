@@ -55,12 +55,13 @@ const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindNames(
   "circular dependency",
   "invalid expression data type",
   "variable in expression",
-  "unfound CExpression",
-  "unfound CFunction",
+  "unfound expression",
+  "unfound function",
   "mismatched variables",
   "inconsistent value types",
   "initial expression with assignment",
-  "setting fixed expression"
+  "setting fixed expression",
+  "reaction kinetics not defined"
 });
 
 // static
@@ -91,7 +92,8 @@ const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindDescriptions(
   "Variables are mismatched.",
   "Inconsistent value types encountered.",
   "Initial expressions prohibited with assignment.",
-  "Changing fixed expression prohibited"
+  "Changing fixed expression prohibited",
+  "Reaction kinetics are not defined"
 });
 
 CIssue::CIssue(const CIssue::eSeverity & severity,

@@ -146,7 +146,7 @@ void CFunctionParameterMap::checkCallParameters() const
     }
 }
 
-bool CFunctionParameterMap::setCallParameter(const std::string paramName, const CDataObject* obj)
+CIssue CFunctionParameterMap::setCallParameter(const std::string paramName, const CDataObject* obj)
 {
   const CFunctionParameter * pFunctionParameter;
   size_t index = findParameterByName(paramName, &pFunctionParameter);
@@ -189,10 +189,10 @@ bool CFunctionParameterMap::setCallParameter(const std::string paramName, const 
         break;
     }
 
-  return success;
+  return success ? CIssue() : CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
 }
 
-bool CFunctionParameterMap::addCallParameter(const std::string paramName, const CDataObject* obj)
+CIssue CFunctionParameterMap::addCallParameter(const std::string paramName, const CDataObject* obj)
 {
   const CFunctionParameter * pFunctionParameter;
   size_t index = findParameterByName(paramName, &pFunctionParameter);
@@ -235,7 +235,7 @@ bool CFunctionParameterMap::addCallParameter(const std::string paramName, const 
         break;
     }
 
-  return success;
+  return success ? CIssue() : CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
 }
 
 void CFunctionParameterMap::clearCallParameter(const std::string paramName)

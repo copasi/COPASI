@@ -51,6 +51,7 @@ public:
     ValueTypeMismatch,
     InitialExpressionWithAssignment,
     SettingFixedExpression,
+    KineticsUndefined,
     __SIZE
   };
 

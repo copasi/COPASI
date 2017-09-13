@@ -652,11 +652,15 @@ const CFunctionParameters & CReaction::getFunctionParameters() const
   return mMap.getFunctionParameters();
 }
 
-bool CReaction::compile()
+CIssue CReaction::compile()
 {
-  bool success = true;
+  CIssue Issue;
 
   mPrerequisits.clear();
+
+  // Clear all mValidity flags which might be set here.
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::KineticsUndefined) | CIssue::eKind::VariablesMismatch | CIssue::eKind::ObjectNotFound);
 
   std::set< const CDataObject * > Dependencies;
 
@@ -670,6 +674,8 @@ bool CReaction::compile()
         }
       else
         {
+          Issue &= CIssue(CIssue::eSeverity::Warning, CIssue::eKind::KineticsUndefined);
+          mValidity.add(Issue);
           mFlux = 0.0;
           mParticleFlux = 0.0;
         }
@@ -678,9 +684,7 @@ bool CReaction::compile()
       size_t imax = mMap.getFunctionParameters().size();
       std::string paramName;
 
-      bool success = true;
-
-      for (i = 0; i < imax && success; ++i)
+      for (i = 0; i < imax; ++i)
         {
           paramName = getFunctionParameters()[i]->getObjectName();
 
@@ -691,40 +695,43 @@ bool CReaction::compile()
 
               if (jmax == 0)
                 {
-                  CReactionInterface RI(dynamic_cast< CModel * >(getObjectAncestor("Model")));
-                  RI.initFromReaction(this);
-                  RI.setFunctionAndDoMapping(mpFunction->getObjectName());
-                  RI.writeBackToReaction(this, false);
-
-                  jmax = mMetabKeyMap[i].size();
+                  Issue = CIssue::Error;
+                  break;
                 }
 
               for (j = 0; j < jmax; ++j)
                 if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                   {
-                    success &= mMap.addCallParameter(paramName, pObject);
+                    Issue &= mMap.addCallParameter(paramName, pObject);
+                    mValidity.add(Issue);
                     Dependencies.insert(pObject->getValueObject());
                   }
                 else
                   {
-                    success = false;
+                    Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+                    mValidity.add(Issue);
                     mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
                   }
             }
           else if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
             {
-              success = mMap.setCallParameter(paramName, pObject);
+              Issue &= mMap.setCallParameter(paramName, pObject);
+              mValidity.add(Issue);
               Dependencies.insert(pObject->getValueObject());
             }
           else
             {
-              success = false;
+              Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+              mValidity.add(Issue);
               mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
             }
         }
 
-      if (!success)
+      if (Issue.isError())
         {
+          mValidity.remove(CValidity::Severity::All,
+                           CValidity::Kind(CIssue::eKind::VariablesMismatch) | CIssue::eKind::ObjectNotFound);
+
           CReactionInterface Interface(static_cast<CModel *>(getObjectAncestor("Model")));
           Interface.initFromReaction(this);
           Interface.setFunctionAndDoMapping(mpFunction->getObjectName());
@@ -745,21 +752,27 @@ bool CReaction::compile()
                   for (j = 0; j < jmax; ++j)
                     if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
                       {
-                        mMap.addCallParameter(paramName, pObject);
+                        Issue &= mMap.addCallParameter(paramName, pObject);
+                        mValidity.add(Issue);
                         Dependencies.insert(pObject->getValueObject());
                       }
                     else
                       {
+                        Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+                        mValidity.add(Issue);
                         mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
                       }
                 }
               else if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
                 {
-                  mMap.setCallParameter(paramName, pObject);
+                  Issue &= mMap.setCallParameter(paramName, pObject);
+                  mValidity.add(Issue);
                   Dependencies.insert(pObject->getValueObject());
                 }
               else
                 {
+                  Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+                  mValidity.add(Issue);
                   mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
                 }
             }
@@ -792,12 +805,12 @@ bool CReaction::compile()
       if (pModel != NULL)
         listOfContainer.push_back(pModel);
 
-      success &= mpNoiseExpression->compile(listOfContainer);
+      Issue &= mpNoiseExpression->compile(listOfContainer);
     }
 
   mPrerequisits.erase(NULL);
 
-  return success;
+  return Issue;
 }
 
 bool CReaction::loadOneRole(CReadConfig & configbuffer,

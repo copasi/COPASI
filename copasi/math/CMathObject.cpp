@@ -586,7 +586,11 @@ bool CMathObject::compile(CMathContainer & container)
       else if (mEntityType == CMath::EntityType::Reaction)
         {
           const CReaction * pReaction = static_cast< const CReaction * >(mpDataObject->getObjectParent());
-          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+
+          if (pReaction->getScalingCompartment() != NULL)
+            {
+              mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+            }
         }
 
       if (mIsInitialValue &&
@@ -1063,7 +1067,7 @@ bool CMathObject::compileFlux(CMathContainer & container)
                                      container,
                                      !mIsInitialValue);
 
-  if (pReaction->getScalingCompartment() != NULL &&
+  if (mpCompartmentValue != NULL &&
       pReaction->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
     {
       CExpression Tmp(mpExpression->getObjectName(), &container);

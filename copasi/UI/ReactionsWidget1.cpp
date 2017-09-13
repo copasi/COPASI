@@ -123,24 +123,7 @@ bool ReactionsWidget1::saveToReaction()
 
   if (reac == NULL) return true;
 
-  if (!mpEditReactionScheme->isValid())
-    {
-      CQMessageBox::warning(0, "Unknown value detected", "One or more of the metabolites, global parameters, or compartments has not been set (UNKNOWN). The current reaction rate law will be reverted to the previous one. Unsaved changes will be lost!", QMessageBox::Ok | QMessageBox::Default, QMessageBox::NoButton);
-      return false;
-    }
-
   mpEditReactionScheme->slotForceUpdate();
-
-  CValidity Validity;
-
-  if (!mpRi->isValid())
-    {
-      CIssue Issue;
-      Issue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariableNotfound);
-      Validity.add(Issue);
-    }
-
-  reac->validityChanged(Validity);
 
   assert(mpDataModel != NULL);
 

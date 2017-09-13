@@ -364,7 +364,7 @@ public:
    *  and the reaction only hold the names of the metabolites).
    *  @return bool success
    */
-  bool compile();
+  CIssue compile();
 
   /**
    * Retrieve object referencing the particle flux
