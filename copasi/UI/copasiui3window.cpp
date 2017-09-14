@@ -183,6 +183,45 @@ CopasiUI3Window::CopasiUI3Window():
   mpDataModel(NULL),
   mpListView(NULL),
   mpBoxSelectFramework(NULL),
+  mpMainToolbar(NULL),
+  FixedTitle(),
+  mpaNew(NULL),
+  mpaOpen(NULL),
+  mpaOpenCopasiFiles(NULL),
+  mpaOpenSBMLFiles(NULL),
+  mpaSave(NULL),
+  mpaSaveAs(NULL),
+  mpaFunctionDBSave(NULL),
+  mpaFunctionDBLoad(NULL),
+  mpaImportSBML(NULL),
+  mpaExportSBML(NULL),
+  mpaExportODE(NULL),
+  mpaQuit(NULL),
+  mpaObjectBrowser(NULL),
+  mpaSliders(NULL),
+  mpaDependencies(NULL),
+  mpaCheckModel(NULL),
+  mpaHideMainToolbar(NULL),
+  mpaApplyInitialState(NULL),
+  mpaUpdateInitialState(NULL),
+  mpaCapture(NULL),
+  mpaUpdateMIRIAM(NULL),
+  mpaExpandModel(NULL),
+  mpaFontSelectionDialog(NULL),
+  mpaParameterEstimationResult(NULL),
+  mpaCloseAllWindows(NULL),
+  mpaShowDebugInfo(NULL),
+
+#ifdef WITH_COMBINE_ARCHIVE
+  mpaImportCombine(NULL),
+  mpaExportCombine(NULL),
+#endif
+
+#ifdef WITH_MERGEMODEL
+  mpaAddModel(NULL),
+  mpaMergeModels(NULL),
+#endif
+
   mpSliders(NULL),
   mpDependencies(NULL),
   mpObjectBrowser(NULL),
@@ -250,7 +289,7 @@ CopasiUI3Window::CopasiUI3Window():
   //mLastSavedParentOfCurrentModel = QString("");
 #endif
   createActions();
-  mainTb = createToolBar(); // creates a tool bar
+  mpMainToolbar = createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
   setIconSize(QSize(18, 20));
   mpaSave->setEnabled(false);
@@ -375,9 +414,9 @@ void CopasiUI3Window::createActions()
   mpaSliders = new QAction(CQIconResource::icon(CQIconResource::slider), "Show sliders", this);
   mpaSliders->setCheckable(true);
   connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
-  mpaShowHideMainToolbar = new QAction("Show/Hide Main Toolbar", this);
-  mpaShowHideMainToolbar->setCheckable(true);
-  connect(mpaShowHideMainToolbar, SIGNAL(toggled(bool)), this, SLOT(slotShowHideMainToolbar(bool)));
+  mpaHideMainToolbar = new QAction("Hide Main Toolbar", this);
+  mpaHideMainToolbar->setCheckable(true);
+  connect(mpaHideMainToolbar, SIGNAL(toggled(bool)), this, SLOT(slotHideMainToolbar(bool)));
   mpaDependencies = new QAction("Show dependencies", this);
   mpaDependencies->setCheckable(true);
   connect(mpaDependencies, SIGNAL(toggled(bool)), this, SLOT(slotShowDependencies(bool)));
@@ -654,7 +693,9 @@ void CopasiUI3Window::createMenuBar()
 #endif
   //****** windows menu **************
   mpWindowsMenu =  menuBar()->addMenu("&Window");
+  connect(mpWindowsMenu, SIGNAL(aboutToShow()), this, SLOT(slotUpdateHideMainToolbarAction()));
   refreshWindowsMenu();
+
   //*******  help menu *****************
   menuBar()->addSeparator();
   QMenu *help = menuBar()->addMenu("&Help");
@@ -1869,12 +1910,21 @@ void CopasiUI3Window::slotShowSliders(bool flag)
     removeWindow(this->mpSliders);
 }
 
-void CopasiUI3Window::slotShowHideMainToolbar(bool flag)
+void CopasiUI3Window::slotUpdateHideMainToolbarAction()
 {
-  if (mainTb->isVisible())
-    mainTb->hide();
+  if (mpMainToolbar != NULL &&
+      mpaHideMainToolbar != NULL)
+    {
+      mpaHideMainToolbar->setChecked(mpMainToolbar->isHidden());
+    }
+}
+
+void CopasiUI3Window::slotHideMainToolbar(bool flag)
+{
+  if (flag)
+    mpMainToolbar->hide();
   else
-    mainTb->show();
+    mpMainToolbar->show();
 }
 
 void CopasiUI3Window::slotShowDependencies(bool flag)
@@ -2224,7 +2274,7 @@ void CopasiUI3Window::refreshWindowsMenu()
     }
 
   mpWindowsMenu->addSeparator();
-  mpWindowsMenu->addAction(mpaShowHideMainToolbar);
+  mpWindowsMenu->addAction(mpaHideMainToolbar);
 }
 
 void CopasiUI3Window::slotCloseAllWindows()
