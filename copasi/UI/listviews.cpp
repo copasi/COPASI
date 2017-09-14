@@ -989,6 +989,10 @@ void ListViews::switchToOtherWidget(const size_t & id, const std::string & key)
 {
   if (!mpDataModelGUI) return;
 
+  // do not switch if we are there already
+  if (id == C_INVALID_INDEX && !key.empty() && key == mCurrentItemKey)
+    return;
+
   QModelIndex Index = mpTreeDM->index(id, key);
   QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
