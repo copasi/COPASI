@@ -91,7 +91,7 @@ void CDataArray::setAnnotationString(size_t d, size_t i, const std::string s)
   assert(d < dimensionality());
   assert(i < mAnnotationsString[d].size());
 
-  mAnnotationsCN[d][i] = "String=" + s;
+  mAnnotationsCN[d][i] = "String=" + CCommonName::escape(s);
   mAnnotationsString[d][i] = s;
 }
 
@@ -494,8 +494,10 @@ std::string CDataArray::createDisplayName(const std::string & cn) const
 {
   const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(cn));
 
-  if (pObject)
-    return pObject->getObjectDisplayName();
+  if (pObject != NULL)
+    {
+      return pObject->hasFlag(CDataObject::StaticString) ? pObject->getObjectName() : pObject->getObjectDisplayName();
+    }
 
   return "not found";
 }
