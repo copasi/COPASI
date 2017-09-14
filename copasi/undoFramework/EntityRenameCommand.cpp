@@ -82,7 +82,10 @@ void EntityRenameCommand::redo()
         dynamic_cast<const CDataObject*>(mpTabWidget->getDataModel()->getObject(mName));
 
       if (pObject != NULL)
-        mpTabWidget->renameEntity(pObject->getKey(), mNewValue);
+        {
+          mpTabWidget->renameEntity(pObject->getKey(), mNewValue);
+          return;
+        }
     }
 
   mpTabWidget->renameEntity(mKey, mNewValue);
@@ -96,7 +99,10 @@ void EntityRenameCommand::undo()
         dynamic_cast<const CDataObject*>(mpTabWidget->getDataModel()->getObject(mName));
 
       if (pObject != NULL)
-        mpTabWidget->renameEntity(pObject->getKey(), mOldValue);
+        {
+          mpTabWidget->renameEntity(pObject->getKey(), mOldValue);
+          return;
+        }
     }
 
   mpTabWidget->renameEntity(mKey, mOldValue);
