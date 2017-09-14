@@ -1328,9 +1328,11 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   if (ValidDataCount > imax)
     mSD = sqrt(mSolutionValue / (ValidDataCount - imax));
 
+  mStoreResults = true;
   calculateCrossValidation();
 
   mpCrossValidationSet->calculateStatistics();
+  mStoreResults = false;
 
   size_t lmax = this->mCrossValidationDependentValues.size();
 
