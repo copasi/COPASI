@@ -250,7 +250,7 @@ CopasiUI3Window::CopasiUI3Window():
   //mLastSavedParentOfCurrentModel = QString("");
 #endif
   createActions();
-  createToolBar(); // creates a tool bar
+  mainTb = createToolBar(); // creates a tool bar
   createMenuBar();  // creates a menu bar
   setIconSize(QSize(18, 20));
   mpaSave->setEnabled(false);
@@ -375,6 +375,9 @@ void CopasiUI3Window::createActions()
   mpaSliders = new QAction(CQIconResource::icon(CQIconResource::slider), "Show sliders", this);
   mpaSliders->setCheckable(true);
   connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
+  mpaShowHideMainToolbar = new QAction("Show/Hide Main Toolbar", this);
+  mpaShowHideMainToolbar->setCheckable(true);
+  connect(mpaShowHideMainToolbar, SIGNAL(toggled(bool)), this, SLOT(slotShowHideMainToolbar(bool)));
   mpaDependencies = new QAction("Show dependencies", this);
   mpaDependencies->setCheckable(true);
   connect(mpaDependencies, SIGNAL(toggled(bool)), this, SLOT(slotShowDependencies(bool)));
@@ -522,7 +525,7 @@ void CopasiUI3Window::slotFunctionDBLoad(QString dbFile)
     }
 }
 
-void CopasiUI3Window::createToolBar()
+QToolBar *CopasiUI3Window::createToolBar()
 {
   QToolBar *tb = addToolBar("MainToolBar");
   tb->addAction(mpaNew);
@@ -549,6 +552,7 @@ void CopasiUI3Window::createToolBar()
   tb->addWidget(mpBoxSelectFramework);
   connect(mpBoxSelectFramework, SIGNAL(activated(int)), this, SLOT(slotFrameworkChanged(int)));
   setUnifiedTitleAndToolBarOnMac(true);
+  return tb;
 }
 
 void CopasiUI3Window::createMenuBar()
@@ -1865,6 +1869,14 @@ void CopasiUI3Window::slotShowSliders(bool flag)
     removeWindow(this->mpSliders);
 }
 
+void CopasiUI3Window::slotShowHideMainToolbar(bool flag)
+{
+  if (mainTb->isVisible())
+    mainTb->hide();
+  else
+    mainTb->show();
+}
+
 void CopasiUI3Window::slotShowDependencies(bool flag)
 {
   mpaDependencies->setChecked(flag);
@@ -2210,6 +2222,9 @@ void CopasiUI3Window::refreshWindowsMenu()
           menu->addAction(pAction);
         }
     }
+
+  mpWindowsMenu->addSeparator();
+  mpWindowsMenu->addAction(mpaShowHideMainToolbar);
 }
 
 void CopasiUI3Window::slotCloseAllWindows()

@@ -131,9 +131,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -168,6 +168,7 @@ protected:
 public slots:
   void slotShowSliders(bool flag);
   void slotShowDependencies(bool flag);
+  void slotShowHideMainToolbar(bool flag);
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -284,7 +285,7 @@ private:
   CopasiUI3Window();
 
   void createActions();
-  void createToolBar();
+  QToolBar * createToolBar();
   void createMenuBar();
 
   void CleanUp();
@@ -298,6 +299,7 @@ private:
 
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
+  QToolBar *mainTb;
 
   QString FixedTitle;
 
@@ -317,6 +319,7 @@ private:
   QAction* mpaSliders;
   QAction* mpaDependencies;
   QAction* mpaCheckModel;
+  QAction* mpaShowHideMainToolbar;
   QAction* mpaApplyInitialState;
   QAction* mpaUpdateInitialState;
   QAction* mpaCapture;
