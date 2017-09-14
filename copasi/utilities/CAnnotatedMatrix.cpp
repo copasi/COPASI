@@ -102,7 +102,7 @@ void CArrayAnnotation::setAnnotationString(size_t d, size_t i, const std::string
   assert(d < dimensionality());
   assert(i < mAnnotationsString[d].size());
 
-  mAnnotationsCN[d][i] = "String=" + s;
+  mAnnotationsCN[d][i] = "String=" + CCopasiObjectName::escape(s);
   mAnnotationsString[d][i] = s;
 }
 
@@ -505,8 +505,10 @@ std::string CArrayAnnotation::createDisplayName(const std::string & cn) const
 {
   const CCopasiObject * pObject = CObjectInterface::DataObject(getObjectFromCN(cn));
 
-  if (pObject)
-    return pObject->getObjectDisplayName();
+  if (pObject != NULL)
+    {
+      return pObject->isStaticString() ? pObject->getObjectName() : pObject->getObjectDisplayName();
+    }
 
   return "not found";
 }
