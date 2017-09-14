@@ -36,20 +36,13 @@ CCommonName::~CCommonName()
 {}
 
 CCommonName CCommonName::getPrimary() const
-{
-  std::string::size_type pos = findEx(",");
-
-  if (pos != std::string::npos && findEx("String=") == 0)
-    return *this;
-
-  return substr(0, findEx(","));
-}
+{return substr(0, findEx(","));}
 
 CCommonName CCommonName::getRemainder() const
 {
   std::string::size_type pos = findEx(",");
 
-  if (pos == std::string::npos || findEx("String=") == 0) return CCommonName();
+  if (pos == std::string::npos) return CCommonName();
 
   return substr(pos + 1);
 }
