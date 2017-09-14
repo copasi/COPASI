@@ -146,7 +146,8 @@ protected:
 
 public slots:
   void slotShowSliders(bool flag);
-  void slotShowHideMainToolbar(bool flag);
+  void slotUpdateHideMainToolbarAction();
+  void slotHideMainToolbar(bool flag);
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -258,7 +259,7 @@ private:
 
   ListViews *mpListView;
   QComboBox * mpBoxSelectFramework;
-  QToolBar *mainTb;
+  QToolBar *mpMainToolbar;
 
   QString FixedTitle;
 
@@ -277,7 +278,7 @@ private:
   QAction* mpaObjectBrowser;
   QAction* mpaSliders;
   QAction* mpaCheckModel;
-  QAction* mpaShowHideMainToolbar;
+  QAction* mpaHideMainToolbar;
   QAction* mpaApplyInitialState;
   QAction* mpaUpdateInitialState;
   QAction* mpaCapture;
