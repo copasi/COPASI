@@ -25,7 +25,11 @@
 
 cmake_minimum_required (VERSION 2.6)
 
-project (bindings)
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif(POLICY CMP0048)
+
+project (bindings VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
 if (BUILD_CXX_EXAMPLES)
   add_subdirectory(cpp_examples)

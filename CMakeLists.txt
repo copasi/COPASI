@@ -24,36 +24,21 @@
 ###############################################################################
 
 # we need at least cmake 2.8 for the FindLAPACK functions
-if(POLICY CMP0020)
-  cmake_policy(SET CMP0020 OLD)
-endif(POLICY CMP0020)
-
+cmake_minimum_required (VERSION 2.8)
 if(POLICY CMP0048)
-  cmake_policy(SET CMP0048 OLD)
+  cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
 
 if(POLICY CMP0043)
   cmake_policy(SET CMP0043 OLD)
 endif(POLICY CMP0043)
 
-cmake_minimum_required (VERSION 2.8)
-project (COPASI)
-
-# preferably link against the static versions
-# as compared to the dynamic ones
-
-option(PREFER_STATIC "Preferably link against the static library versions" ON)
-
-if (NOT WIN32 AND PREFER_STATIC)
- SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
-endif()
-
 # add an option to override the version
 set(COPASI_OVERRIDE_VERSION "" CACHE STRING "Version String to override the version parsed from the header" )
 mark_as_advanced(COPASI_OVERRIDE_VERSION)
 
 # if the header file is not present, then set the override version to this one
-if (NOT EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h" AND NOT COPASI_OVERRIDE_VERSION)
   set(COPASI_OVERRIDE_VERSION "4.12.65")
 endif()
 
@@ -79,11 +64,27 @@ if (COPASI_OVERRIDE_VERSION)
 
   # configure file
   configure_file (
-    "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h.in"
-    "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h"
   )
 
 endif()
+
+set(COPASI_VERSION)
+# the CopasiVersion file only exists when the git tools have been configured
+# and used. if that is not the case, we default to the canned version.
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+
+endif()
+if (COPASI_VERSION)
+  string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
+  string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
+endif()
+
+project (COPASI VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
+
 
 include (CMakeTestCCompiler)
 include (CheckCSourceCompiles)
@@ -96,17 +97,13 @@ include (CheckCSourceRuns)
 include (CheckSymbolExists)
 include (CheckTypeSize)
 
-set(COPASI_VERSION)
-# the CopasiVersion file only exists when the git tools have been configured
-# and used. if that is not the case, we default to the canned version.
-if (EXISTS "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h")
-  file(READ "${COPASI_SOURCE_DIR}/copasi/CopasiVersion.h" COPASI_VERSION)
+# preferably link against the static versions
+# as compared to the dynamic ones
 
-endif()
-if (COPASI_VERSION)
-  string(REGEX REPLACE ".*COPASI_VERSION_MAJOR ([0-9]+).*" "\\1" COPASI_VERSION_MAJOR "${COPASI_VERSION}")
-  string(REGEX REPLACE ".*COPASI_VERSION_MINOR ([0-9]+).*" "\\1" COPASI_VERSION_MINOR "${COPASI_VERSION}")
-  string(REGEX REPLACE ".*COPASI_VERSION_BUILD ([0-9]+).*" "\\1" COPASI_VERSION_BUILD "${COPASI_VERSION}")
+option(PREFER_STATIC "Preferably link against the static library versions" ON)
+
+if (NOT WIN32 AND PREFER_STATIC)
+ SET(CMAKE_FIND_LIBRARY_SUFFIXES .a ${CMAKE_FIND_LIBRARY_SUFFIXES})
 endif()
 
 if (CMAKE_MAJOR_VERSION LESS 3 OR CMAKE_MINOR_VERSION LESS 1)

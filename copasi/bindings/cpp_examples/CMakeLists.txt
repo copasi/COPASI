@@ -25,7 +25,11 @@
 
 cmake_minimum_required (VERSION 2.6)
 
-project (cpp_examples)
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif(POLICY CMP0048)
+
+project (examples VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
 # discover all subdirectories that include a cmakelists file 
 MACRO(SUBDIRLIST result curdir)

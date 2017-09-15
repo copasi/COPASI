@@ -23,15 +23,6 @@
 #
 ###############################################################################
 
-# cmake_minimum_required (VERSION 2.6)
-# project (crosssection)
-# 
-# include_directories(
-#   "${PROJECT_SOURCE_DIR}/.." 
-#   "${PROJECT_SOURCE_DIR}/../.." 
-#   "${PROJECT_SOURCE_DIR}"
-# )
-
 file(GLOB HEADERS_AN analytics/*.h)
 file(GLOB SOURCES_AN analytics/*.cpp)
 
@@ -41,17 +32,5 @@ source_group(analytics FILES ${SOURCES_AN} ${HEADERS_AN})
 # add files to main COPASI sources
 set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_AN})
 set(COPASI_HEADERS ${COPASI_HEADERS} ${HEADERS_AN})
-
-
-# set(HEADERS ${HEADERS} CCrossSectionMethod.h)
-# set(HEADERS ${HEADERS} CCrossSectionProblem.h)
-# set(HEADERS ${HEADERS} CCrossSectionTask.h)
-# 
-# set(SOURCES ${SOURCES} CCrossSectionMethod.cpp)
-# set(SOURCES ${SOURCES} CCrossSectionProblem.cpp)
-# set(SOURCES ${SOURCES} CCrossSectionTask.cpp)
-# 
-# 
-#add_library(crosssection STATIC ${SOURCES} ${HEADERS})
 
 

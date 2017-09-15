@@ -25,7 +25,13 @@
 
 if (ENABLE_COPASI_SEDML)
 cmake_minimum_required (VERSION 2.6)
-project (runSedML)
+
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif(POLICY CMP0048)
+
+project (runSedML VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
+
 include_directories("${PROJECT_SOURCE_DIR}/../../.." "${PROJECT_SOURCE_DIR}/../../../.." "${PROJECT_SOURCE_DIR}")
 
 set(SOURCES ${SOURCES} runSedML.cpp)

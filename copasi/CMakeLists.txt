@@ -32,10 +32,6 @@ endif(POLICY CMP0048)
 project (COPASI)
 cmake_policy(SET CMP0011 NEW)
 
-if(POLICY CMP0020)
-  cmake_policy(SET CMP0020 OLD)
-endif(POLICY CMP0020)
-
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 OLD)
 endif(POLICY CMP0048)
