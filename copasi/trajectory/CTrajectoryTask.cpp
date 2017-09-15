@@ -175,6 +175,7 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   mpTrajectoryMethod->setProblem(mpTrajectoryProblem);
 
+  mpMethod->setMathContainer(mpContainer);
   bool success = mpMethod->isValidProblem(mpProblem);
 
   mUpdateMoieties = static_cast< CTrajectoryMethod * >(mpMethod)->integrateReducedModel();
