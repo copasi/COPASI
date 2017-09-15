@@ -185,7 +185,6 @@ bool CTrajectoryTask::initialize(const OutputFlag & of,
 
   mpTrajectoryMethod->setProblem(mpTrajectoryProblem);
 
-  mpMethod->setMathContainer(mpContainer);
   bool success = mpMethod->isValidProblem(mpProblem);
 
   CCopasiParameter * pParameter = mpMethod->getParameter("Integrate Reduced Model");
