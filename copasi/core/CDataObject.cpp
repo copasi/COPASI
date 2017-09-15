@@ -204,8 +204,19 @@ void CDataObject::sanitizeObjectName(std::string & name)
         *it = 0x20;
       }
 
-  name.erase(name.begin(), name.begin() + name.find_first_not_of(0x20));
-  name.erase(name.begin() + name.find_last_not_of(0x20) + 1, name.end());
+  std::string::size_type pos = name.find_first_not_of(0x20);
+
+  if (pos == std::string::npos)
+    return;
+
+  name.erase(name.begin(), name.begin() + pos);
+
+  pos = name.find_last_not_of(0x20);
+
+  if (pos == std::string::npos)
+    return;
+
+  name.erase(name.begin() + pos + 1, name.end());
 }
 
 bool CDataObject::setObjectName(const std::string & name)
