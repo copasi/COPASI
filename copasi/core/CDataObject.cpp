@@ -207,7 +207,9 @@ void CDataObject::sanitizeObjectName(std::string & name)
   std::string::size_type pos = name.find_first_not_of(0x20);
 
   if (pos == std::string::npos)
-    return;
+    name.clear();
+
+  return;
 
   name.erase(name.begin(), name.begin() + pos);
 
