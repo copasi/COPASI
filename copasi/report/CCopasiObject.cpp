@@ -299,8 +299,13 @@ bool CCopasiObject::setObjectName(const std::string & name)
             *it = 0x20;
           }
 
-      Name.erase(Name.begin(), Name.begin() + Name.find_first_not_of(0x20));
-      Name.erase(Name.begin() + Name.find_last_not_of(0x20) + 1, Name.end());
+      std::string::size_type pos = Name.find_first_not_of(0x20);
+      if (pos != std::string::npos)
+        Name.erase(Name.begin(), Name.begin() + pos);
+      
+      pos = Name.find_last_not_of(0x20);
+      if (pos != std::string::npos)
+        Name.erase(Name.begin() + pos + 1, Name.end());
     }
 
   if (Name == mObjectName) return true;
