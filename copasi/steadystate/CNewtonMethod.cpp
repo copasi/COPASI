@@ -791,7 +791,7 @@ bool CNewtonMethod::initialize(const CSteadyStateProblem * pProblem)
 
 size_t CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
                                  CVector< C_FLOAT64 > & X,
-                                 const CVectorCore< const C_FLOAT64 > & B)
+                                 const CVectorCore< const C_FLOAT64 > & B) const
 {
   assert(B.size() == jacobian.numCols());
 
@@ -993,6 +993,71 @@ size_t CNewtonMethod::solveAxEqB(const CMatrix< C_FLOAT64 > & jacobian,
   if (INFO < 0)
     {
       return M;
+    }
+
+  C_FLOAT64 Error = 0;
+
+  if (RANK != M)
+    {
+      // We need to check whether the || Ax - b || is sufficiently small.
+      // Calculate Ax
+      char T = 'N';
+      C_INT One = 1;
+      C_FLOAT64 Alpha = 1.0;
+      C_FLOAT64 Beta = 0.0;
+
+      CVector< C_FLOAT64 > Ax = * reinterpret_cast<const CVectorCore< C_FLOAT64 > * >(&B);
+
+      dgemm_(&T, &T, &One, &N, &N, &Alpha, X.array(), &One,
+             const_cast< C_FLOAT64 * >(jacobian.array()), &N, &Beta, Ax.array(), &One);
+
+      // Calculate absolute and relative error
+      C_FLOAT64 *pAx = Ax.array();
+      C_FLOAT64 *pAxEnd = pAx + Ax.size();
+      const C_FLOAT64 *pB = B.array();
+      C_FLOAT64 * pCurrentState = mpX;
+      const C_FLOAT64 * pAtol = mAtol.array();
+
+      // Assure that all values are updated.
+      mpContainer->updateSimulatedValues(true);
+      mpContainer->applyUpdateSequence(mUpdateConcentrations);
+
+      const CMathObject * pMathObject = mpContainer->getMathObject(mpContainerStateTime + 1);
+      C_FLOAT64 * const * ppCompartmentVolume = mCompartmentVolumes.array();
+      C_FLOAT64 Number2Quantity = mpContainer->getModel().getNumber2QuantityFactor();
+
+      C_FLOAT64 AbsoluteDistance = 0.0; // Largest relative distance
+      C_FLOAT64 RelativeDistance = 0.0; // Total relative distance
+
+      C_FLOAT64 tmp;
+
+      for (; pAx != pAxEnd; ++pAx, ++pB, ++pCurrentState, ++pAtol, ++pMathObject, ++ppCompartmentVolume)
+        {
+          // Prevent division by 0
+          tmp = fabs(*pAx - *pB) / std::max(fabs(*pCurrentState), *pAtol);
+          RelativeDistance += tmp * tmp;
+
+          tmp = fabs(*pAx - *pB);
+
+          if (pMathObject->getEntityType() == CMath::Species)
+            {
+              tmp /= mpContainer->getQuantity2NumberFactor() ***ppCompartmentVolume;
+            }
+
+          AbsoluteDistance += tmp * tmp;
+        }
+
+      RelativeDistance =
+        isnan(RelativeDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(RelativeDistance);
+      AbsoluteDistance =
+        isnan(AbsoluteDistance) ? std::numeric_limits< C_FLOAT64 >::infinity() : sqrt(AbsoluteDistance);
+
+      Error = std::max(RelativeDistance, AbsoluteDistance);
+
+      if (Error > *mpSSResolution)
+        {
+          RANK = 0;
+        }
     }
 
   return M - RANK;
