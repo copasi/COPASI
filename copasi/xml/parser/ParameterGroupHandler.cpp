@@ -31,10 +31,10 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
 
   mNonUniqueParameters["ScanItems"].insert("ScanItem");
 
-  mNonUniqueParameters["OptimizationItemList"].insert("OptItem");
+  mNonUniqueParameters["OptimizationItemList"].insert("OptimizationItem");
   mNonUniqueParameters["OptimizationItemList"].insert("FitItem");
 
-  mNonUniqueParameters["OptimizationConstraintList"].insert("OptItem");
+  mNonUniqueParameters["OptimizationConstraintList"].insert("OptimizationItem");
   mNonUniqueParameters["OptimizationConstraintList"].insert("FitItem");
 
   mNonUniqueParameters["Affected Experiments"].insert("Experiment Key");
