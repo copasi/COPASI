@@ -62,7 +62,9 @@ void InsertSpecieRowsCommand::redo()
 
   setUndoState(true);
   setAction("Add to list");
-  setName(mpSpeciesData[0]->getName());
+
+  if (!mpSpeciesData.empty())
+    setName(mpSpeciesData[0]->getName());
 }
 
 void InsertSpecieRowsCommand::undo()
