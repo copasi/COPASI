@@ -276,6 +276,7 @@ std::string CModelParameter::getInitialExpression() const
       return "";
     }
 
+  mpInitialExpression->updateInfix();
   return mpInitialExpression->getInfix();
 }
 

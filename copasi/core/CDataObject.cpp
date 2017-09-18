@@ -238,7 +238,8 @@ bool CDataObject::setObjectName(const std::string & name)
 
   std::string OldName = mObjectName;
 
-  if (mpObjectParent != NULL)
+  if (CRegisteredCommonName::isEnabled() &&
+      mpObjectParent != NULL)
     {
       std::string oldCN = this->getCN();
       mObjectName = Name;
