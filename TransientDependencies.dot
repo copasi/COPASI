@@ -1,0 +1,3 @@
+digraph TransientDependencies {
+rankdir=LR;
+}

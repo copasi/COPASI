@@ -89,9 +89,9 @@ public:
    * @param const CVectorCore< const C_FLOAT64 > & B
    * @return size_t rankDeficiency
    */
-  static size_t solveAxEqB(const CMatrix< C_FLOAT64 > & A,
-                           CVector< C_FLOAT64 > & X,
-                           const CVectorCore< const C_FLOAT64 > & B);
+  size_t solveAxEqB(const CMatrix< C_FLOAT64 > & A,
+                    CVector< C_FLOAT64 > & X,
+                    const CVectorCore< const C_FLOAT64 > & B) const;
 
   /**
    * Specific constructor
