@@ -704,8 +704,6 @@ void CopasiUI3Window::createMenuBar()
 
 void CopasiUI3Window::slotFileSaveAs(QString str)
 {
-  mpDataModelGUI->commit();
-
   C_INT32 Answer = QMessageBox::No;
   QString tmp;
 
@@ -736,6 +734,8 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
 
   if (mpDataModelGUI && !tmp.isNull())
     {
+      mpDataModelGUI->commit();
+
       setCursor(Qt::WaitCursor);
 
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
@@ -1221,8 +1221,6 @@ void CopasiUI3Window::slotFileSave()
       return slotFileSaveAs(FROM_UTF8(FileName));
     }
 
-  mpDataModelGUI->commit();
-
   std::ifstream File(CLocaleString::fromUtf8(FileName).c_str());
   std::string Line;
   File >> Line;
@@ -1262,6 +1260,8 @@ void CopasiUI3Window::slotFileSave()
 
   if (mpDataModelGUI)
     {
+      mpDataModelGUI->commit();
+
       setCursor(Qt::WaitCursor);
 
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));

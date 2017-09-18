@@ -300,16 +300,18 @@ bool CCopasiObject::setObjectName(const std::string & name)
           }
 
       std::string::size_type pos = Name.find_first_not_of(0x20);
+
       if (pos != std::string::npos)
-      {
-        Name.erase(Name.begin(), Name.begin() + pos);
-      }
+        {
+          Name.erase(Name.begin(), Name.begin() + pos);
+        }
       else
-      {
-        Name.clear();
-      }
-      
+        {
+          Name.clear();
+        }
+
       pos = Name.find_last_not_of(0x20);
+
       if (pos != std::string::npos)
         Name.erase(Name.begin() + pos + 1, Name.end());
     }
@@ -323,7 +325,7 @@ bool CCopasiObject::setObjectName(const std::string & name)
 
   std::string OldName = mObjectName;
 
-  if (smpRenameHandler && mpObjectParent)
+  if (smpRenameHandler && smpRenameHandler->isEnabled() && mpObjectParent)
     {
       std::string oldCN = this->getCN();
       mObjectName = Name;
