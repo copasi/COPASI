@@ -22,6 +22,7 @@ class CQParameterEstimationResult;
 
 class ResultData;
 class CDataModel;
+class DataModelGUI;
 class CheckPointModel;
 
 class QSortFilterProxyModel;
@@ -31,7 +32,7 @@ class CQParameterEstimationResult : public QDialog
   Q_OBJECT
 
 public:
-  explicit CQParameterEstimationResult(QWidget *parent = 0, CDataModel* dataModel = NULL);
+  explicit CQParameterEstimationResult(QWidget *parent, CDataModel* dataModel);
   ~CQParameterEstimationResult();
 
 protected:
@@ -54,6 +55,7 @@ private:
   Ui::CQParameterEstimationResult *ui;
   std::vector<ResultData*> mResultData;
   CDataModel* mpDataModel;
+  DataModelGUI * mpDataModelGUI;
   CheckPointModel* mpCheckPointModel;
   QSortFilterProxyModel* mpProxy;
   bool mInitializing;
