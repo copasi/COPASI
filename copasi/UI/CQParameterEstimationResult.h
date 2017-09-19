@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -17,6 +22,7 @@ class CQParameterEstimationResult;
 
 class ResultData;
 class CCopasiDataModel;
+class DataModelGUI;
 class CheckPointModel;
 
 class QSortFilterProxyModel;
@@ -26,7 +32,7 @@ class CQParameterEstimationResult : public QDialog
   Q_OBJECT
 
 public:
-  explicit CQParameterEstimationResult(QWidget *parent = 0, CCopasiDataModel* dataModel = NULL);
+  explicit CQParameterEstimationResult(QWidget *parent, CCopasiDataModel* dataModel);
   ~CQParameterEstimationResult();
 
 protected:
@@ -49,6 +55,7 @@ private:
   Ui::CQParameterEstimationResult *ui;
   std::vector<ResultData*> mResultData;
   CCopasiDataModel* mpDataModel;
+  DataModelGUI * mpDataModelGUI;
   CheckPointModel* mpCheckPointModel;
   QSortFilterProxyModel* mpProxy;
   bool mInitializing;

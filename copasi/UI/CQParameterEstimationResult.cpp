@@ -1,4 +1,9 @@
-// Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -24,6 +29,9 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
+#include <copasi/UI/copasiui3window.h>
+#include <copasi/UI/listviews.h>
+#include <copasi/UI/DataModelGUI.h>
 #include <copasi/CopasiDataModel/CCopasiDataModel.h>
 #include <copasi/model/CModel.h>
 
@@ -132,11 +140,19 @@ CQParameterEstimationResult::CQParameterEstimationResult(QWidget *parent,
   , ui(new Ui::CQParameterEstimationResult)
   , mResultData()
   , mpDataModel(dataModel)
+  , mpDataModelGUI(NULL)
   , mpCheckPointModel(NULL)
   , mpProxy(NULL)
   , mInitializing(true)
 {
   ui->setupUi(this);
+
+  CopasiUI3Window * pMainWindow = dynamic_cast< CopasiUI3Window * >(parent);
+
+  if (pMainWindow != NULL)
+    {
+      mpDataModelGUI = pMainWindow->getDataModel();
+    }
 
   QCompleter* completer = new QCompleter(this);
   completer->setCompletionMode(QCompleter::PopupCompletion);
@@ -318,6 +334,12 @@ CQParameterEstimationResult::applyToModelState()
     }
 
   data->applyToModelState(select->selectedRows().at(0).row(), experiments);
+
+  if (mpDataModelGUI != NULL &&
+      mpDataModel != NULL)
+    {
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, mpDataModel->getModel()->getKey());
+    }
 }
 
 void
