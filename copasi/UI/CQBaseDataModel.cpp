@@ -12,6 +12,8 @@
 
 #include "copasi.h"
 #include "CQBaseDataModel.h"
+#include <copasi/utilities/utility.h>
+#include <copasi/UI/qtUtilities.h>
 
 CQBaseDataModel::CQBaseDataModel(QObject *parent)
   : QAbstractTableModel(parent)
@@ -67,7 +69,13 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
   for (unsigned C_INT32 i = 1;; ++i)
     {
       for (j = 0; j < jmax; ++j)
-        if (index(j, nameCol).data() == nname) break;
+        {
+          QString curName = index(j, nameCol).data().toString();
+          std::string unQuoted = unQuote(TO_UTF8(nname));
+
+          if (curName == nname ||
+              unQuote(TO_UTF8(curName)) == unQuoted) break;
+        }
 
       if (j == jmax) break;
 
