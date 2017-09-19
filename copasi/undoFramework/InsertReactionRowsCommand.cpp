@@ -75,7 +75,9 @@ InsertReactionRowsCommand::redo()
 
   setUndoState(true);
   setAction("Add to list");
-  setName(mpReactionData->getName());
+
+  if (mpReactionData != NULL)
+    setName(mpReactionData->getName());
 }
 
 void
