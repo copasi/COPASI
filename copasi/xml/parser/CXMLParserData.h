@@ -289,7 +289,6 @@ public:
   CLRectangle * pRectangle;
   CLEllipse * pEllipse;
   CLImage * pImage;
-  CLText * pRenderText;
   bool LocalRenderInformation;
 
   /**

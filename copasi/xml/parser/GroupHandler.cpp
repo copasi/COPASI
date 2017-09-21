@@ -56,7 +56,6 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
   const char * VTextAnchor;
   const char * StartHead;
   const char * EndHead;
-  CLGroup* pGroup = NULL;
 
   switch (mCurrentElement.first)
     {
@@ -81,28 +80,28 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
         if (Transform != NULL)
           {
-            pGroup->parseTransformation(Transform);
+            mpData->pGroup->parseTransformation(Transform);
           }
 
         if (Stroke != NULL)
           {
-            pGroup->setStroke(Stroke);
+            mpData->pGroup->setStroke(Stroke);
           }
 
         if (StrokeWidth != NULL)
           {
             double width = strToDouble(StrokeWidth, NULL);
-            pGroup->setStrokeWidth(width);
+            mpData->pGroup->setStrokeWidth(width);
           }
 
         if (StrokeDashArray != NULL)
           {
-            pGroup->parseDashArray(StrokeDashArray);
+            mpData->pGroup->parseDashArray(StrokeDashArray);
           }
 
         if (Fill != NULL)
           {
-            pGroup->setFillColor(Fill);
+            mpData->pGroup->setFillColor(Fill);
           }
 
         if (FillRule != NULL)
@@ -111,26 +110,26 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
             if (f == "nonzero")
               {
-                pGroup->setFillRule(CLGraphicalPrimitive2D::NONZERO);
+                mpData->pGroup->setFillRule(CLGraphicalPrimitive2D::NONZERO);
               }
             else if (f == "evenodd")
               {
-                pGroup->setFillRule(CLGraphicalPrimitive2D::EVENODD);
+                mpData->pGroup->setFillRule(CLGraphicalPrimitive2D::EVENODD);
               }
             else
               {
-                pGroup->setFillRule(CLGraphicalPrimitive2D::INHERIT);
+                mpData->pGroup->setFillRule(CLGraphicalPrimitive2D::INHERIT);
               }
           }
 
         if (FontFamily != NULL)
           {
-            pGroup->setFontFamily(FontFamily);
+            mpData->pGroup->setFontFamily(FontFamily);
           }
 
         if (FontSize != NULL)
           {
-            pGroup->setFontSize(CLRelAbsVector(FontSize));
+            mpData->pGroup->setFontSize(CLRelAbsVector(FontSize));
           }
 
         if (FontStyle != NULL)
@@ -139,11 +138,11 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
             if (s == "normal")
               {
-                pGroup->setFontStyle(CLText::STYLE_NORMAL);
+                mpData->pGroup->setFontStyle(CLText::STYLE_NORMAL);
               }
             else if (s == "italic")
               {
-                pGroup->setFontStyle(CLText::STYLE_ITALIC);
+                mpData->pGroup->setFontStyle(CLText::STYLE_ITALIC);
               }
           }
 
@@ -153,11 +152,11 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
             if (s == "normal")
               {
-                pGroup->setFontWeight(CLText::WEIGHT_NORMAL);
+                mpData->pGroup->setFontWeight(CLText::WEIGHT_NORMAL);
               }
             else if (s == "bold")
               {
-                pGroup->setFontWeight(CLText::WEIGHT_BOLD);
+                mpData->pGroup->setFontWeight(CLText::WEIGHT_BOLD);
               }
           }
 
@@ -167,15 +166,15 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
             if (s == "start")
               {
-                pGroup->setTextAnchor(CLText::ANCHOR_START);
+                mpData->pGroup->setTextAnchor(CLText::ANCHOR_START);
               }
             else if (s == "middle")
               {
-                pGroup->setTextAnchor(CLText::ANCHOR_MIDDLE);
+                mpData->pGroup->setTextAnchor(CLText::ANCHOR_MIDDLE);
               }
             else if (s == "end")
               {
-                pGroup->setTextAnchor(CLText::ANCHOR_END);
+                mpData->pGroup->setTextAnchor(CLText::ANCHOR_END);
               }
           }
 
@@ -185,32 +184,32 @@ CXMLHandler * GroupHandler::processStart(const XML_Char * pszName,
 
             if (s == "top")
               {
-                pGroup->setVTextAnchor(CLText::ANCHOR_TOP);
+                mpData->pGroup->setVTextAnchor(CLText::ANCHOR_TOP);
               }
             else if (s == "middle")
               {
-                pGroup->setVTextAnchor(CLText::ANCHOR_MIDDLE);
+                mpData->pGroup->setVTextAnchor(CLText::ANCHOR_MIDDLE);
               }
             else if (s == "bottom")
               {
-                pGroup->setVTextAnchor(CLText::ANCHOR_BOTTOM);
+                mpData->pGroup->setVTextAnchor(CLText::ANCHOR_BOTTOM);
               }
           }
 
         if (StartHead != NULL)
           {
-            pGroup->setStartHead(StartHead);
+            mpData->pGroup->setStartHead(StartHead);
           }
 
         if (EndHead != NULL)
           {
-            pGroup->setEndHead(EndHead);
+            mpData->pGroup->setEndHead(EndHead);
           }
 
         assert(mpData->pGroup != NULL);
         break;
 
-      // a group can have many different children
+        // a group can have many different children
       case Curve:
       case RenderText:
       case Rectangle:
@@ -274,9 +273,9 @@ bool GroupHandler::processEnd(const XML_Char * pszName)
         break;
 
       case RenderText:
-        mpData->pGroup->addChildElement(mpData->pRenderText);
+        mpData->pGroup->addChildElement(mpData->pText);
         // delete the text element again since the add method made a copy
-        pdelete(mpData->pRenderText);
+        pdelete(mpData->pText);
         break;
 
       case Image:
