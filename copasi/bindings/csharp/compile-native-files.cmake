@@ -57,6 +57,7 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CTaskEnum.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CModelEntity.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CDataArray.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CCore.cs"
      )
 
 

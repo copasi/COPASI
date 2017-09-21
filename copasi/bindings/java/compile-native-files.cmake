@@ -23,6 +23,7 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CTaskEnum.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CModelEntity.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CDataArray.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CCore.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})

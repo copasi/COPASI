@@ -76,6 +76,8 @@
 
 #include "local.cpp"
 
+#include <copasi/core/CCore.h>
+
 /**
  * This method is used to get the C_INVALID_INDEX
  * value in an architecture independent way.
@@ -94,6 +96,7 @@ size_t INVALID_INDEX() {
 %ignore DebugFile;
 
 %include "copasi.h"
+%include <copasi/core/CCore.h>
 
 // warp method to get C_INVALID_INDEX
 size_t INVALID_INDEX();
