@@ -186,7 +186,7 @@ bool RenderTextHandler::processEnd(const XML_Char * pszName)
   switch (mCurrentElement.first)
     {
       case RenderText:
-        mpData->pText->setText(mpParser->getCharacterData("\x0a\x0d\t ", ""));
+        mpData->pText->setText(mpData->CharacterData);
         finished = true;
         break;
 
@@ -205,7 +205,7 @@ CXMLHandler::sProcessLogic * RenderTextHandler::getProcessLogic() const
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {RenderText, HANDLER_COUNT}},
-    {"Text", RenderText, RenderText, {AFTER, HANDLER_COUNT}},
+    {"Text", RenderText, CharacterData, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };
 

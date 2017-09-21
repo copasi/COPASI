@@ -906,6 +906,9 @@ RenderGroup* CLGroup::toSBML(unsigned int level, unsigned int version) const
         }
       else if (dynamic_cast<const CLText*>(pObject))
         {
+          if (static_cast<const CLText*>(pObject)->getText().empty())
+            continue;
+
           pChild = static_cast<const CLText*>(pObject)->toSBML(level, version);
         }
       else if (dynamic_cast<const CLImage*>(pObject))
