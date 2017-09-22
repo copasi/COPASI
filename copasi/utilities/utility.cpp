@@ -350,6 +350,11 @@ double strToDouble(const char * str,
 
   in >> Value;
 
+  if (in.fail())
+  {
+    Value =std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
+  
   if (pTail != NULL && !isnan(Value))
     {
       *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));
