@@ -247,6 +247,7 @@ void CQTSSAResultSubWidget::discardOldResults()
   mpArrayWidget->setArrayAnnotation(NULL);
   mpArrayWidget->clearWidget();
   mpTimeScaleWidget->clearWidget();
+  mpSlider->setDisabled(true);
 }
 
 /**
@@ -256,6 +257,8 @@ void CQTSSAResultSubWidget::discardOldResults()
 
 void CQTSSAResultSubWidget::changeInterval()
 {
+  // ensure we always have a valid method
+  pMethod = dynamic_cast<CTSSAMethod*>(pTSSATask->getMethod());
 
   slotTimeAndStepChanged();
 
