@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -27,12 +32,17 @@
 #ifndef COPASI_CMetabNameInterface
 #define COPASI_CMetabNameInterface
 
+#include <copasi/copasi.h>
+#include <copasi/model/CMetab.h>
+
 #include <string>
+#include <utility>
 
 class CModel;
-class CMetab;
 
 /**
+ * @class CMetabNameInterface
+ *
  * This class handles the display names of metabolites. It converts "Species" to
  * "Species {Compartment}" if the metabolite name is not unique. If it is unique
  * (that means it occurs in only one compartment) then the "{Compartment}" is not added.
@@ -41,14 +51,12 @@ class CMetab;
 class CMetabNameInterface
 {
 public:
-  CMetabNameInterface();
-
-  ~CMetabNameInterface();
 
   /**
    * This returns a name to use for display in the GUI. If the name of the
    * metabolite is unique it is used unaltered. If it is not then the compartment
    * is added to the name to make it unique.
+   *
    */
   static std::string getDisplayName(const CModel* model, const std::string & key, const bool & quoted);
 
@@ -68,6 +76,28 @@ public:
                                     const std::string & metabolite,
                                     const std::string & compartment,
                                     const bool & quoted);
+
+  /**
+   * Returns the unique display name in the form metabolite{compartment}
+   *
+   * @param metabolite the metabolite name
+   * @param compartment the compartment name
+   *
+   * @return the unique display name in the form metabolite{compartment}
+   */
+  static std::string createUniqueDisplayName(const std::string& metabolite,
+      const std::string& compartment,
+      const bool & quoted);
+
+  /**
+  * Returns the unique display name in the form metabolite{compartment}
+  *
+  * @param metab the metabolite
+  *
+  * @return the unique display name in the form metabolite{compartment}
+  */
+  static std::string createUniqueDisplayName(const CMetab& metab,
+      const bool & quoted);
 
   /**
    * This tries to find the metabolite with the given name. If the name is not unique and

@@ -40,10 +40,8 @@
 #include "report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 
-CMetabNameInterface::~CMetabNameInterface()
-{}
-
-std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key, const bool & quoted)
+std::string
+CMetabNameInterface::getDisplayName(const CModel* model, const std::string & key, const bool & quoted)
 {
   CMetab * metab = dynamic_cast< CMetab * >(CRootContainer::getKeyFactory()->get(key));
 
@@ -53,19 +51,21 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model, const std::
     return "";
 }
 
-std::string CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab, const bool & quoted)
+std::string
+CMetabNameInterface::getDisplayName(const CModel* model, const CMetab & metab, const bool & quoted)
 {
   return getDisplayName(model, metab.getObjectName(), metab.getCompartment()->getObjectName(), quoted);
 }
 
-std::string CMetabNameInterface::getDisplayName(const CModel* model,
-    const std::string & metabolite,
-    const std::string & compartment,
-    const bool & quoted)
+std::string
+CMetabNameInterface::getDisplayName(const CModel* model,
+                                    const std::string & metabolite,
+                                    const std::string & compartment,
+                                    const bool & quoted)
 {
   std::string DefaultCompartment;
 
-  if (model->getCompartments().size() == 0)
+  if (model == NULL || model->getCompartments().size() == 0)
     DefaultCompartment = "compartment";
   else
     DefaultCompartment = model->getCompartments()[0].getObjectName();
@@ -81,6 +81,13 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
        compartment == DefaultCompartment))
     return Metabolite;
 
+  return createUniqueDisplayName(Metabolite, compartment, quoted);
+
+}
+
+std::string
+CMetabNameInterface::createUniqueDisplayName(const std::string & Metabolite, const std::string & compartment, const bool & quoted)
+{
   std::string Compartment = quoted ? quote(compartment, "{}") : compartment;
 
   if ((quoted && isNumber(Compartment)) ||
@@ -90,9 +97,16 @@ std::string CMetabNameInterface::getDisplayName(const CModel* model,
   return Metabolite + '{' + Compartment + '}';
 }
 
-std::string CMetabNameInterface::getMetaboliteKey(const CModel* model,
-    const std::string & metabolite,
-    const std::string & compartment)
+std::string
+CMetabNameInterface::createUniqueDisplayName(const CMetab & metab, const bool & quoted)
+{
+  return createUniqueDisplayName(metab.getObjectName(), metab.getCompartment()->getObjectName(), quoted);
+}
+
+std::string
+CMetabNameInterface::getMetaboliteKey(const CModel* model,
+                                      const std::string & metabolite,
+                                      const std::string & compartment)
 {
   CMetab * metab = getMetabolite(model, metabolite, compartment);
 
@@ -102,11 +116,15 @@ std::string CMetabNameInterface::getMetaboliteKey(const CModel* model,
     return "";
 }
 
-CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
-    const std::string & metabolite,
-    const std::string & compartment)
+CMetab *
+CMetabNameInterface::getMetabolite(const CModel* model,
+                                   const std::string & metabolite,
+                                   const std::string & compartment)
 {
   size_t Index;
+
+  if (model == NULL)
+    return NULL;
 
   if (compartment != "")
     {
@@ -128,8 +146,12 @@ CMetab * CMetabNameInterface::getMetabolite(const CModel* model,
   return model->findMetabByName(metabolite);
 }
 
-bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
+bool
+CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
 {
+  if (model == NULL)
+    return true;
+
   CDataContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(name);
   CMetab * pSpecies = NULL;
   bool Found = false;
@@ -145,10 +167,14 @@ bool CMetabNameInterface::isUnique(const CModel* model, const std::string & name
   return true;
 }
 
-bool CMetabNameInterface::doesExist(const CModel* model,
-                                    const std::string & metabolite,
-                                    const std::string & compartment)
+bool
+CMetabNameInterface::doesExist(const CModel* model,
+                               const std::string & metabolite,
+                               const std::string & compartment)
 {
+  if (model == NULL)
+    return false;
+
   CDataContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
   CMetab * pSpecies = NULL;
 
@@ -163,7 +189,8 @@ bool CMetabNameInterface::doesExist(const CModel* model,
 }
 
 // static
-std::pair< std::string, std::string > CMetabNameInterface::splitDisplayName(const std::string & name)
+std::pair< std::string, std::string >
+CMetabNameInterface::splitDisplayName(const std::string & name)
 {
   // parse the description into a linked node tree
   std::stringstream buffer((name.find('"') != std::string::npos ? name :  quote(name)) + " ->");
@@ -187,7 +214,8 @@ std::pair< std::string, std::string > CMetabNameInterface::splitDisplayName(cons
 }
 
 // static
-std::string CMetabNameInterface::unQuote(const std::string & displayName)
+std::string
+CMetabNameInterface::unQuote(const std::string & displayName)
 {
   // parse the description into a linked node tree
   std::stringstream buffer(displayName + " ->");
