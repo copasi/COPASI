@@ -22,6 +22,7 @@
 #include "commandline/CLocaleString.h"
 #include "function/CFunctionDB.h"
 #include "model/CModel.h"
+#include "model/CMetabNameInterface.h"
 #include "utilities/CTaskFactory.h"
 #include "plot/COutputDefinitionVector.h"
 #include "report/CKeyFactory.h"
@@ -2740,7 +2741,7 @@ const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displa
       {
         const CMetab *current = it;
 
-        if (current->getObjectDisplayName() == displayString)
+        if (current->getObjectDisplayName() == displayString || CMetabNameInterface::createUniqueDisplayName(*current, true) == displayString)
           {
             return current;
           }
