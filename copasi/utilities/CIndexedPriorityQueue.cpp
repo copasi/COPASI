@@ -32,11 +32,15 @@ CIndexedPriorityQueue::~CIndexedPriorityQueue()
 
 C_FLOAT64 CIndexedPriorityQueue::topKey() const
 {
+  if (mHeap.empty()) return std::numeric_limits<C_FLOAT64>::quiet_NaN();
+
   return mHeap[0].mKey;
 }
 
 size_t CIndexedPriorityQueue::topIndex() const
 {
+  if (mHeap.empty())
+    return C_INVALID_INDEX;
   return mHeap[0].mIndex;
 }
 
