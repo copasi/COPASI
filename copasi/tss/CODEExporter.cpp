@@ -866,10 +866,13 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
 
       for (j = 0; j < params_size; ++j)
         {
-          if (reacs[i].isLocalParameter(j))
+          const CCopasiParameter * current = reacs[i].getParameters().getParameter(j);
+
+          if (reacs[i].isLocalParameter(current->getObjectName()))
             {
-              NameMap[reacs[i].getParameters().getParameter(j)->getKey()] =
-                translateObjectName(reacs[i].getParameters().getParameter(j)->getObjectName());
+              std::string name = translateObjectName(current->getObjectName());
+              NameMap[current->getKey()] = name;
+
             }
         }
     }
