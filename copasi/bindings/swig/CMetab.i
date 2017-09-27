@@ -47,8 +47,12 @@
 
 %include "model/CMetab.h"
 
+#ifndef SWIGR
 %include <std_pair.i>
 %include <std_string.i>
 %template(StringPair) std::pair<std::string,std::string>;
+#else
+%ignore CMetabNameInterface::splitDisplayName;
+#endif // SWIGR
 %include "model/CMetabNameInterface.h"
 
