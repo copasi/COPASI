@@ -190,7 +190,8 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 
   pSpectogram->attach(this);
   pSpectogram->setRenderHint(QwtPlotItem::RenderAntialiased);
-  pSpectogram->setDefaultContourPen(QPen(0.5));
+  QPen pen; pen.setWidthF(0.5);
+  pSpectogram->setDefaultContourPen(pen);
 
   std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
 
