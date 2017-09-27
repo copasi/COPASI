@@ -120,7 +120,7 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
     {
 
       reac = &reacs[i];
-      num_params = reac->getParameters().size();
+      num_params = reac->getFunctionParameters().size();
 
       for (j = 0; j < num_params; ++j)
         {
@@ -1048,42 +1048,16 @@ std::string CODEExporterC::KineticFunction2ODEmember(const CReaction *reac)
 
           CDataObject * obj = CRootContainer::getKeyFactory()->get(keyMap[k][0]);
 
-          if ((role == CFunctionParameter::SUBSTRATE)
-              || (role == CFunctionParameter::PRODUCT)
-              || (role == CFunctionParameter::MODIFIER))
+          if (role == CFunctionParameter::TIME)
+            {
+              name = "T";
+            }
+          else
             {
               if (obj)
                 name = NameMap[obj->getKey()];
               else
                 name = "unknown";
-            }
-
-          if (role == CFunctionParameter::PARAMETER)
-            {
-              if (!(reac->isLocalParameter(k)))
-                {
-                  CModelValue* modval;
-                  modval = dynamic_cast< CModelValue * >(obj);
-                  name = NameMap[modval->getKey()];
-                }
-              else
-                {
-                  CCopasiParameter* param;
-                  param = dynamic_cast< CCopasiParameter * >(obj);
-                  name = NameMap[param->getKey()];
-                }
-            }
-
-          if (role == CFunctionParameter::VOLUME)
-            {
-              CCompartment* comp;
-              comp = dynamic_cast< CCompartment * >(obj);
-              name = NameMap[comp->getKey()];
-            }
-
-          if (role == CFunctionParameter::TIME)
-            {
-              name = "T";
             }
 
           if (name.empty())
