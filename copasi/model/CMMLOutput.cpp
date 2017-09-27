@@ -175,7 +175,6 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
                     name = "unknown";
                   }
 
-                //params[i][0] = "<mi>"+ CMathMl::fixName(name)+"</mi>";
                 params[i][0] = "<mi>[" + CMathMl::fixName(name) + "]</mi>";
               }
             else if (functionParams[i]->getType() == CFunctionParameter::VFLOAT64)
@@ -195,6 +194,7 @@ void CMMLOutput::createParameterMapping(const CReaction* pReac,
             break;
 
           case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::VARIABLE:
 
             if (pReac->isLocalParameter(i))
               {
