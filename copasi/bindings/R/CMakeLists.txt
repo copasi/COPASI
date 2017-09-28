@@ -221,7 +221,22 @@ if (UNIX)
   set_target_properties (binding_r_lib PROPERTIES SUFFIX ".so")
 endif()
 
-target_link_libraries(binding_r_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS}   ${R_LIB})
+
+if(APPLE OR UNIX)
+  option (R_USE_DYNAMIC_LOOKUP
+  "Do not actually link against the r library, instead use the undefined lookup mechanism." OFF)
+  mark_as_advanced(R_USE_DYNAMIC_LOOKUP)
+endif(APPLE OR UNIX)
+
+if (R_USE_DYNAMIC_LOOKUP)
+  if (APPLE)
+    set_target_properties (binding_r_lib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+  endif()
+  target_link_libraries(binding_r_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS})
+else()
+  target_link_libraries(binding_r_lib ${SE_LIBS} ${SE_EXTERNAL_LIBS} ${R_LIB})
+endif()
+
 
 ####################################################################
 #
