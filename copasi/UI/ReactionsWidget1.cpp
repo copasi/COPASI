@@ -859,7 +859,7 @@ void ReactionsWidget1::setFramework(int framework)
 
       case 1:
         Units = " [" + ((pModel != NULL) ? FROM_UTF8(CUnit::prettyPrint("1/(" + pModel->getTimeUnit() + ")")) : "?") + "]";
-        TextLabel8->setText("Particle Flux" + Units);
+        TextLabel8->setText("Number Flux" + Units);
 
         if (pReaction != NULL)
           mpEditFlux->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));

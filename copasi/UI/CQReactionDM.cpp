@@ -177,7 +177,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
 
             QString FrequencyUnits = "\n[" + FROM_UTF8("1/(" + pModel->getTimeUnit() + ")") + "]";
 
-            return QVariant("Flux" + FrequencyUnits);
+            return QVariant("Number Flux" + FrequencyUnits);
           }
 
 #ifdef WITH_SDE_SUPPORT

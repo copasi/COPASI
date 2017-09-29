@@ -321,13 +321,13 @@ void StateSubwidget::showUnits()
   mpTblCompartments->horizontalHeaderItem(3)->setText("Rate" + VolumeRateUnits);
 
   mpTblMetabolites->horizontalHeaderItem(2)->setText("Concentration" + ConcentrationUnits);
-  mpTblMetabolites->horizontalHeaderItem(3)->setText("Particle Numbers");
+  mpTblMetabolites->horizontalHeaderItem(3)->setText("Number");
   mpTblMetabolites->horizontalHeaderItem(4)->setText("Rate" + ConcentrationRateUnits);
-  mpTblMetabolites->horizontalHeaderItem(5)->setText("Rate" + FrequencyUnits);
+  mpTblMetabolites->horizontalHeaderItem(5)->setText("Number Rate" + FrequencyUnits);
   mpTblMetabolites->horizontalHeaderItem(6)->setText("Transition Time" + TimeUnits);
 
   mpTblReactions->horizontalHeaderItem(1)->setText("Flux" + QuantityRateUnits);
-  mpTblReactions->horizontalHeaderItem(2)->setText("Particle Flux" + FrequencyUnits);
+  mpTblReactions->horizontalHeaderItem(2)->setText("Number Flux" + FrequencyUnits);
 }
 
 bool StateSubwidget::loadAll(const CSteadyStateTask * pTask)

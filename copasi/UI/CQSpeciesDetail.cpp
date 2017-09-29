@@ -189,7 +189,7 @@ void CQSpeciesDetail::setFramework(int framework)
         break;
 
       case 1:
-        mpLblInitialValue->setText("Initial Particle Number " + ParticleNumberUnits);
+        mpLblInitialValue->setText("Initial Number " + ParticleNumberUnits);
         mpLblInitialExpression->setText("Initial Expression " + ConcentrationUnits);
 
         if (mpMetab->getStatus() == CModelEntity::Status::ASSIGNMENT)
@@ -197,8 +197,8 @@ void CQSpeciesDetail::setFramework(int framework)
         else
           mpLblExpression->setText("Expression" + ConcentrationRateUnits);
 
-        mpLblValue->setText("Particle Number " + ParticleNumberUnits);
-        mpLblRate->setText("Rate " + ParticleNumberRateUnits);
+        mpLblValue->setText("Number " + ParticleNumberUnits);
+        mpLblRate->setText("Number Rate " + ParticleNumberRateUnits);
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
         mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
         mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
