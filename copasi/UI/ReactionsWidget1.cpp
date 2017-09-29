@@ -814,7 +814,7 @@ void ReactionsWidget1::setFramework(int framework)
         if (Units != "none")
           Units = " (" + Units + ")";
 
-        mpLblFlux->setText("Particle Flux" + Units);
+        mpLblFlux->setText("Number Flux" + Units);
 
         if (pReaction != NULL)
           mpEditFlux->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));

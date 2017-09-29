@@ -181,7 +181,7 @@ QVariant CQReactionDM::headerData(int section, Qt::Orientation orientation,
             if (FrequencyUnits != "none")
               FrequencyUnits = "\n(" + FrequencyUnits + ")";
 
-            return QVariant("Flux" + FrequencyUnits);
+            return QVariant("Number Flux" + FrequencyUnits);
           }
 
           default:

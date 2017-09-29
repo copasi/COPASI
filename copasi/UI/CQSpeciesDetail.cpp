@@ -222,7 +222,7 @@ void CQSpeciesDetail::setFramework(int framework)
         break;
 
       case 1:
-        mpLblInitialValue->setText("Initial Particle Number");
+        mpLblInitialValue->setText("Initial Number");
 
         ValueUnits.replace(0, 1, '\n'); // Line break instead of space
         mpLblInitialExpression->setText("Initial Expression" + ValueUnits);
@@ -233,8 +233,8 @@ void CQSpeciesDetail::setFramework(int framework)
         else
           mpLblExpression->setText("Expression" + RateUnits);
 
-        mpLblValue->setText("Particle Number");
-        mpLblRate->setText("Rate" + FrequencyUnits);
+        mpLblValue->setText("Number");
+        mpLblRate->setText("Number Rate" + FrequencyUnits);
 
         mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
         mpEditInitialValue->setReadOnly(false);
