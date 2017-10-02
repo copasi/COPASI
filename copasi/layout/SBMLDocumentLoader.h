@@ -141,7 +141,10 @@ public:
         if (pRI->getReferenceRenderInformationId().find_first_not_of(" \t\n\r") != std::string::npos)
           {
             pos = keyToIdMap.find(pRI->getReferenceRenderInformationId());
-            assert(pos != keyToIdMap.end());
+
+            if (pos == keyToIdMap.end())
+              continue;
+
             pRI->setReferenceRenderInformationId(pos->second);
           }
       }

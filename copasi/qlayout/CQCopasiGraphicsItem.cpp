@@ -1,4 +1,9 @@
-// Copyright (C) 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -14,6 +19,7 @@ CQCopasiGraphicsItem::~CQCopasiGraphicsItem()
 CQCopasiGraphicsItem::CQCopasiGraphicsItem(const CLRenderResolver* resolver, const CLStyle* style)
   : mpStyle(style)
   , mpResolver(resolver)
+  , mIsValid(true)
 {
 }
 
@@ -35,4 +41,9 @@ void CQCopasiGraphicsItem::setStyle(const CLStyle* style)
 const CLStyle* CQCopasiGraphicsItem::getStyle() const
 {
   return mpStyle;
+}
+
+bool CQCopasiGraphicsItem::isValid() const
+{
+  return mIsValid;
 }
