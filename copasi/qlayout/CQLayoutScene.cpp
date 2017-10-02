@@ -175,6 +175,12 @@ void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
       item = new CQStyledGraphicsItem(go, mpResolver == NULL ? NULL : mpResolver.data());
     }
 
+  if (item != NULL && !dynamic_cast<CQCopasiGraphicsItem*>(item)->isValid())
+    {
+      delete item;
+      item = NULL;
+    }
+
   if (item != NULL)
     {
       CCopasiObject* obj = go->getModelObject();

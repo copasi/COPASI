@@ -211,6 +211,9 @@ QSharedPointer<QFont> getFont(const CLText *item, const CLGroup *group, const CL
   else if (group != NULL && group->isSetFontSize())
     fontSize = group->getFontSize().getAbsoluteValue() + group->getFontSize().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
+  if (fontSize == 0)
+    return NULL;
+
   if (item != NULL && item->isSetFontWeight())
     switch (item->getFontWeight())
       {
@@ -1051,16 +1054,16 @@ void fillItemFromGroup(QGraphicsItemGroup *item, const CLBoundingBox *bounds, co
   transform(item, group, NULL);
 }
 
-void CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver, QGraphicsItemGroup* itemGroup)
+bool CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox* bounds, const CLGroup *group, const CLRenderResolver* resolver, QGraphicsItemGroup* itemGroup)
 {
   if (resolver == NULL || group == NULL || bounds == NULL || item == NULL)
-    return;
+    return false;
 
   QSharedPointer<QPen> pen = getPen(NULL, group, resolver, bounds);
   item->setPen(*pen);
 
   if (item->path().elementCount() < 2)
-    return;
+    return false;
 
   QPointF start = item->path().elementAt(0);
   QPointF second = item->path().elementAt(1);
@@ -1078,22 +1081,26 @@ void CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox*
       const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
       addLineEndingToItem(item, line, group, resolver, end, secondLast, itemGroup);
     }
+
+  return true;
 }
 
-void CQRenderConverter::applyStyle(QGraphicsItemGroup *group, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
+bool CQRenderConverter::applyStyle(QGraphicsItemGroup *group, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
 {
   if (resolver == NULL || style == NULL || bounds == NULL || group == NULL)
-    return;
+    return true;
 
   for (int i = 0; i < group->childItems().size(); ++i)
     {
     }
+
+  return true;
 }
 
-void CQRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
+bool CQRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox* bounds, const CLGroup *style, const CLRenderResolver* resolver)
 {
   if (resolver == NULL || style == NULL || bounds == NULL || item == NULL)
-    return;
+    return false;
 
   if (style->isSetStroke())
     item->setDefaultTextColor(getColor(style->getStroke(), resolver));
@@ -1105,7 +1112,10 @@ void CQRenderConverter::applyStyle(QGraphicsTextItem *item, const CLBoundingBox*
       item->setFont(*font);
 
       adjustPosition(item, bounds, NULL, style);
+      return true;
     }
+
+  return false;
 }
 
 void CQRenderConverter::fillGroupFromStyle(QGraphicsItemGroup *group, const CLBoundingBox *bounds, const CLStyle *style, const CLRenderResolver* resolver)

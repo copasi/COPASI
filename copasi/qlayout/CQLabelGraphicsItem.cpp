@@ -20,7 +20,7 @@ CQLabelGraphicsItem::CQLabelGraphicsItem(const CLTextGlyph* textGlyph, const CLR
   setPos(textGlyph->getBoundingBox().getPosition().getX(),
          textGlyph->getBoundingBox().getPosition().getY());
 
-  CQRenderConverter::applyStyle(this, &textGlyph->getBoundingBox(), mpStyle == NULL ? NULL : mpStyle->getGroup(), mpResolver);
+  mIsValid = CQRenderConverter::applyStyle(this, &textGlyph->getBoundingBox(), mpStyle == NULL ? NULL : mpStyle->getGroup(), mpResolver);
 }
 
 CQLabelGraphicsItem::~CQLabelGraphicsItem()
