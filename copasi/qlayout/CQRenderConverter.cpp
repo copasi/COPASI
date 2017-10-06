@@ -212,7 +212,7 @@ QSharedPointer<QFont> getFont(const CLText *item, const CLGroup *group, const CL
     fontSize = group->getFontSize().getAbsoluteValue() + group->getFontSize().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight();
 
   if (fontSize == 0)
-    return NULL;
+    return QSharedPointer<QFont>(NULL);
 
   if (item != NULL && item->isSetFontWeight())
     switch (item->getFontWeight())
