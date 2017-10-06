@@ -478,7 +478,7 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
         {
           XMLOutputStream_startElement(stream, "prov:entity");
           XMLOutputStream_writeAttributeChars(stream, "prov:id",  EntityInfo[i][0].toUtf8());
-          XMLOutputStream_writeAttributeChars(stream, "Mian_Type",  EntityInfo[i][1].toUtf8());
+          XMLOutputStream_writeAttributeChars(stream, "Main_Type",  EntityInfo[i][1].toUtf8());
           XMLOutputStream_writeAttributeChars(stream, "Entity_Type",  EntityInfo[i][2].toUtf8());
           XMLOutputStream_writeAttributeChars(stream, "Initial_name",  EntityInfo[i][3].toUtf8());
           XMLOutputStream_endElement(stream, "prov:entity");
@@ -546,7 +546,7 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
             }
         }
 
-      //Prov Agenet
+      //Prov Agent
       //First check whether the agent of current session has been reported bofre
       QMapIterator<QString, QString> ProvenanceAuthorMapIterator(mProvenanceAuthorNameMap);
       bool AuthorHasWrittenBefore = false;
@@ -555,7 +555,7 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
         {
           ProvenanceAuthorMapIterator.next();
 
-          if (ProvenanceAuthorMapIterator.value() == (QString::fromUtf8(configFile->getParameter("Given Name")->getValue< std::string >().c_str()) + QString::fromUtf8(configFile->getParameter("Famliy Name")->getValue< std::string >().c_str())))
+          if (ProvenanceAuthorMapIterator.value() == (QString::fromUtf8(configFile->getParameter("Given Name")->getValue< std::string >().c_str()) + QString::fromUtf8(configFile->getParameter("Family Name")->getValue< std::string >().c_str())))
             {
               AuthorHasWrittenBefore  = true;
               AuthorID = ProvenanceAuthorMapIterator.key();
@@ -567,14 +567,14 @@ void CProvenanceXMLWriter::updateCurrentSessionProvenance()
       //If it is a new adgent:
       if (!AuthorHasWrittenBefore)
         {
-          AuthorID = QString("Agenet_") + QString::number(mProvenanceTotalAgentNumber + 1);
+          AuthorID = QString("Agent_") + QString::number(mProvenanceTotalAgentNumber + 1);
         }
 
       XMLOutputStream_startElement(stream, "prov:agent");
       XMLOutputStream_writeAttributeChars(stream, "prov:id",  AuthorID.toUtf8());
       pParameter = configFile->getParameter("Given Name");
       XMLOutputStream_writeAttributeChars(stream, "GivenName",  pParameter->getValue< std::string >().c_str());
-      pParameter = configFile->getParameter("Famliy Name");
+      pParameter = configFile->getParameter("Family Name");
       XMLOutputStream_writeAttributeChars(stream, "FamilyName",  pParameter->getValue< std::string >().c_str());
       pParameter = configFile->getParameter("Organization");
       XMLOutputStream_writeAttributeChars(stream, "Organization",  pParameter->getValue< std::string >().c_str());
@@ -666,7 +666,7 @@ void CProvenanceXMLWriter::updateOrigionOfProvenance(QString OrigionalFile)
           XMLOutputStream_writeAttributeChars(stream, "xmlns:xsd",  "http://www.w3.org/2001/XMLSchema");
           XMLOutputStream_startElement(stream, "prov:entity");
           XMLOutputStream_writeAttributeChars(stream, "prov:id",  "Entity_0");
-          XMLOutputStream_writeAttributeChars(stream, "Mian_Type",  "Document");
+          XMLOutputStream_writeAttributeChars(stream, "Main_Type",  "Document");
           XMLOutputStream_writeAttributeChars(stream, "Entity_Type",  "Document");
           XMLOutputStream_writeAttributeChars(stream, "Initial_name",  OrigionalFile.toUtf8());
           XMLOutputStream_endElement(stream, "prov:entity");
@@ -700,10 +700,10 @@ void CProvenanceXMLWriter::updateOrigionOfProvenance(QString OrigionalFile)
             }
 
           XMLOutputStream_startElement(stream, "prov:agent");
-          XMLOutputStream_writeAttributeChars(stream, "prov:id",  "Agenet_1");
+          XMLOutputStream_writeAttributeChars(stream, "prov:id",  "Agent_1");
           pParameter = configFile->getParameter("Given Name");
           XMLOutputStream_writeAttributeChars(stream, "GivenName",  pParameter->getValue< std::string >().c_str());
-          pParameter = configFile->getParameter("Famliy Name");
+          pParameter = configFile->getParameter("Family Name");
           XMLOutputStream_writeAttributeChars(stream, "FamilyName",  pParameter->getValue< std::string >().c_str());
           pParameter = configFile->getParameter("Organization");
           XMLOutputStream_writeAttributeChars(stream, "Organization",  pParameter->getValue< std::string >().c_str());
@@ -716,7 +716,7 @@ void CProvenanceXMLWriter::updateOrigionOfProvenance(QString OrigionalFile)
           XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Entity_0");
           XMLOutputStream_endElement(stream, "prov:entity");
           XMLOutputStream_startElement(stream, "prov:agent");
-          XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Agenet_1");
+          XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Agent_1");
           XMLOutputStream_endElement(stream, "prov:agent");
           XMLOutputStream_endElement(stream, "prov:wasAttributedTo");
 
@@ -725,7 +725,7 @@ void CProvenanceXMLWriter::updateOrigionOfProvenance(QString OrigionalFile)
           XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Activity_0");
           XMLOutputStream_endElement(stream, "prov:activity");
           XMLOutputStream_startElement(stream, "prov:agent");
-          XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Agenet_1");
+          XMLOutputStream_writeAttributeChars(stream, "prov:ref",  "Agent_1");
           XMLOutputStream_endElement(stream, "prov:agent");
           XMLOutputStream_endElement(stream, "prov:wasAssociatedWith");
 
@@ -828,14 +828,14 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                       XMLToken xmlEntity = stream.next();
                       QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                      QString MianType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
+                      QString MianType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
                       QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
 
                       ProvenanceEntityList << EntityID;
 
                       XMLOutputStream_startElement(stream3, "prov:entity");
                       XMLOutputStream_writeAttributeChars(stream3, "prov:id",  EntityID.toUtf8());
-                      XMLOutputStream_writeAttributeChars(stream3, "Mian_Type",  MianType.toUtf8());
+                      XMLOutputStream_writeAttributeChars(stream3, "Main_Type",  MianType.toUtf8());
                       XMLOutputStream_writeAttributeChars(stream3, "Entity_Type",  EntityType.toUtf8());
                       XMLOutputStream_writeAttributeChars(stream3, "Initial_name",  EntityName.toUtf8());
                       XMLOutputStream_endElement(stream3, "prov:entity");
@@ -1172,7 +1172,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                       XMLToken xmlEntity = stream2.next();
                       QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                      QString MianType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
+                      QString MianType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
                       QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
 
                       //ProvenanceEntityList<<EntityID;
@@ -1180,7 +1180,7 @@ void CProvenanceXMLWriter::mergeProvenanceFiles(QString SourceFile1, QString Sou
                         {
                           XMLOutputStream_startElement(stream3, "prov:entity");
                           XMLOutputStream_writeAttributeChars(stream3, "prov:id",  EntityID.toUtf8());
-                          XMLOutputStream_writeAttributeChars(stream3, "Mian_Type",  MianType.toUtf8());
+                          XMLOutputStream_writeAttributeChars(stream3, "Main_Type",  MianType.toUtf8());
                           XMLOutputStream_writeAttributeChars(stream3, "Entity_Type",  EntityType.toUtf8());
                           XMLOutputStream_writeAttributeChars(stream3, "Initial_name",  EntityName.toUtf8());
                           XMLOutputStream_endElement(stream3, "prov:entity");

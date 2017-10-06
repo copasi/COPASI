@@ -140,7 +140,7 @@ void CProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
   QString EntityType, Name, Action, Property, NewValue, Time, Author, GivenName, FamilyName;
   pParameter = configFile->getParameter("Given Name");
   GivenName = FROM_UTF8(pParameter->getValue< std::string >());
-  pParameter = configFile->getParameter("Famliy Name");
+  pParameter = configFile->getParameter("Family Name");
   FamilyName = FROM_UTF8(pParameter->getValue< std::string >());
 
   if (pParameter != NULL)
@@ -285,7 +285,7 @@ void CProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                   XMLToken xmlEntity = stream.next();
                   QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                   QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                  QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
+                  QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
                   QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
                   QList<QString> EntityInformation;
                   EntityInformation.append(EntityName);
@@ -639,7 +639,7 @@ void CProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                       XMLToken xmlEntity = stream.next();
                       QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                       QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                      QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
+                      QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
                       QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
 
                       QList<QString> EntityInformation;
@@ -1000,7 +1000,7 @@ void CProvenanceDialog::ProvXMLFiles2ProvenanceTable()
                   XMLToken xmlEntity = stream.next();
                   QString EntityID = QString::fromStdString(xmlEntity.getAttrValue(0)); // The first attribute is prov:id
                   QString EntityName = QString::fromStdString(xmlEntity.getAttrValue("Initial_name"));
-                  QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Mian_Type"));
+                  QString MainType = QString::fromStdString(xmlEntity.getAttrValue("Main_Type"));
                   QString EntityType = QString::fromStdString(xmlEntity.getAttrValue("Entity_Type"));
                   QList<QString> EntityInformation;
                   EntityInformation.append(EntityName);

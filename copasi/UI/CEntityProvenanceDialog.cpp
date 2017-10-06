@@ -1153,7 +1153,7 @@ void CEntityProvenanceDialog::CurrentSessionEdits2ProvenanceTable()
   QString Name, Action, Property, NewValue, Time, Author, GivenName, FamilyName;
   pParameter = configFile->getParameter("Given Name");
   GivenName = FROM_UTF8(pParameter->getValue< std::string >());
-  pParameter = configFile->getParameter("Famliy Name");
+  pParameter = configFile->getParameter("Family Name");
   FamilyName = FROM_UTF8(pParameter->getValue< std::string >());
 
   if (pParameter != NULL)

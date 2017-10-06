@@ -253,7 +253,15 @@ void CConfigurationFile::initializeParameter()
   mpProxyPass = assertParameter("Proxy Password", CCopasiParameter::STRING, std::string(""));
 
   mpCurrentAuthorGivenName = assertParameter("Given Name", CCopasiParameter::STRING, std::string("Anonymous"));
-  mpCurrentAuthorFamilyName = assertParameter("Famliy Name", CCopasiParameter::STRING, std::string("Anonymous"));
+  mpCurrentAuthorFamilyName = assertParameter("Family Name", CCopasiParameter::STRING, std::string("Anonymous"));
+
+  if (getParameter("Famliy Name") != NULL)
+    {
+      CCopasiParameter *pParameter = getParameter("Famliy Name");
+      *mpCurrentAuthorFamilyName = pParameter->getValue<std::string>();
+      delete pParameter;
+    }
+
   mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::STRING, std::string(""));
   mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::STRING, std::string("An.other@mailinator.com"));
 

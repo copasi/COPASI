@@ -42,7 +42,7 @@ CCreateModelVersionDialog::CCreateModelVersionDialog(QWidget *parent) :
       mGivenName = FROM_UTF8(pParameter->getValue< std::string >());
     }
 
-  pParameter = configFile->getParameter("Famliy Name");
+  pParameter = configFile->getParameter("Family Name");
 
   if (pParameter != NULL)
     {
