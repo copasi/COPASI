@@ -4893,9 +4893,8 @@ void SBMLImporter::restoreFunctionDB()
   while (it2 != endIt2)
     {
       CEvaluationTree* pTree = this->functionDB->findFunction(*it2);
-      assert(pTree);
 
-      if (pTree->getType() == CEvaluationTree::UserDefined)
+      if (pTree != NULL && pTree->getType() == CEvaluationTree::UserDefined)
         {
           this->functionDB->removeFunction(pTree->getKey());
         }
