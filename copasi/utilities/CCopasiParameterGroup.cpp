@@ -287,7 +287,7 @@ CDataObject * CCopasiParameterGroup::insert(const CData & data)
   CCopasiParameter * pNew = CCopasiParameter::fromData(data);
 
   elements * pElements = static_cast< elements * >(mpValue);
-  pElements->insert(pElements->begin() + data.getProperty(CData::OBJECT_INDEX).toUint(), pNew);
+  pElements->insert(pElements->begin() + std::min((size_t) data.getProperty(CData::OBJECT_INDEX).toUint(), pElements->size()), pNew);
 
   CCopasiParameter::add(pNew, true);
 
@@ -439,7 +439,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
 
       // Add the parameter to the proper location
       elements * pElements = static_cast< elements * >(mpValue);
-      pElements->insert(pElements->begin() + itToBeAdded->first, pParameter);
+      pElements->insert(pElements->begin() + std::min(itToBeAdded->first, pElements->size()), pParameter);
     }
 
   return *this;
