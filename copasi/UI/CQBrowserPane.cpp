@@ -41,7 +41,7 @@ CQBrowserPane::~CQBrowserPane()
 // virtual
 void CQBrowserPane::currentChanged(const QModelIndex & current, const QModelIndex & /* previous */)
 {
-  static_cast< ListViews * >(parent())->slotFolderChanged(current);
+  qobject_cast< ListViews * >(parent())->slotFolderChanged(current);
 }
 
 void CQBrowserPane::slotUpdateScrollBar(const QModelIndex & index)
