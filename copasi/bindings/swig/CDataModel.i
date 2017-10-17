@@ -76,8 +76,8 @@
 %catches(CCopasiException) CDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
 %catches(CCopasiException) CDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
 %catches(CCopasiException) CDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException) CDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
-%catches(CCopasiException) CDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException, SBMLConstructorException) CDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
+%catches(CCopasiException, SBMLConstructorException) CDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
 
 #if SWIGPYTHON
 %exception importSBML {
@@ -137,7 +137,14 @@
 
     std::string exportSBMLToString(int sbmlLevel, int sbmlVersion)
     {
+      try
+      {
         return $self->exportSBMLToString(NULL,sbmlLevel,sbmlVersion);
+      }
+      catch (...)
+      {
+        return "";
+      }
     }
 
     /* this is for backwards compatibility. */
