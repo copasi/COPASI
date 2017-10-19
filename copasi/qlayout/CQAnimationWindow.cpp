@@ -329,7 +329,7 @@ void CQAnimationWindow::slotExportImage()
 {
   QString fileName = QFileDialog::getSaveFileName(this, tr("Export Image"),
                      "",
-                     tr("PDF files (*.pdf);;Images (*.png *.xpm *.jpg);;All files (*.*)"));
+                     tr("PDF files (*.pdf);;SVG files (*.svg);;Images (*.png *.xpm *.jpg);;All files (*.*)"));
   graphicsView->slotSaveToFile(fileName);
 }
 

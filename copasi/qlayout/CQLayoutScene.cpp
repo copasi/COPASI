@@ -13,6 +13,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPrinter>
+#include <QSvgGenerator>
 #include <QImage>
 #include <QGraphicsEffect>
 
@@ -40,6 +41,7 @@
 #include <copasi/model/CMetab.h>
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CChemEq.h>
+#include <copasi/utilities/CVersion.h>
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -92,6 +94,20 @@ void CQLayoutScene::saveToFile(const std::string& fileName, const std::string& f
       painter.setRenderHints(
         QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
       render(&painter, QRect(), itemsBoundingRect());
+      painter.end();
+    }
+  else if (fileType == "svg")
+    {
+      QRectF rect = itemsBoundingRect();
+      QSvgGenerator generator;
+      generator.setTitle(getCurrentLayout()->getObjectName().c_str());
+      generator.setDescription(QString("Exported using COPASI: %1").arg(CVersion::VERSION.getVersion().c_str()));
+      generator.setFileName(fileName.c_str());
+      generator.setViewBox(rect);
+      generator.setSize(QSize(rect.width(), rect.height()));
+      QPainter painter;
+      painter.begin(&generator);
+      render(&painter);
       painter.end();
     }
   else
