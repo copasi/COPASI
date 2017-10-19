@@ -144,7 +144,17 @@
         assert(pDataModel!=NULL);
 
         // Initialize the task
-        success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL);
+        try
+        {
+          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL);
+        }
+        
+        catch (CCopasiException &)
+        {
+          success = false;
+        }
+        
+        catch (...) {}
 
         return success;
     }
@@ -184,7 +194,17 @@
         assert(pDataModel!=NULL);
 
         // Process the task
-        success = self->process(useInitialValues);
+        try
+        {
+          success = self->process(useInitialValues);
+        }
+        
+        catch (CCopasiException &)
+        {
+          success = false;
+        }
+        
+        catch (...) {}
 
         self->restore();
 
