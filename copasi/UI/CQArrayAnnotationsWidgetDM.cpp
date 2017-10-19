@@ -83,9 +83,11 @@ QVariant CQArrayAnnotationsWidgetDM::headerData(int section, Qt::Orientation ori
 
   if (orientation == Qt::Vertical)
     {
-      if (mRow == C_INVALID_INDEX ||
-          section < 0 ||
-          (C_INT32)mpArray->size()[mRow] <= section)
+      if (mRow == C_INVALID_INDEX
+          || section < 0
+          || (C_INT32)mpArray->size()[mRow] <= section
+          || (C_INT32)mHeaderData[orientation].size() <= section
+         )
         {
           return QVariant();
         }
@@ -94,9 +96,11 @@ QVariant CQArrayAnnotationsWidgetDM::headerData(int section, Qt::Orientation ori
     }
   else
     {
-      if (mColumn == C_INVALID_INDEX ||
-          section < 0 ||
-          (C_INT32)mpArray->size()[mColumn] <= section)
+      if (mColumn == C_INVALID_INDEX
+          || section < 0
+          || (C_INT32)mpArray->size()[mColumn] <= section
+          || (C_INT32)mHeaderData[orientation].size() <= section
+         )
         {
           return QVariant();
         }
