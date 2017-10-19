@@ -59,12 +59,12 @@ public:
   /**
    * returns the color coding algorithm
    */
-  CColorScale * getColorCoding() const {return mpColorScale;};
+  CColorScale * getColorCoding() const;
 
   /**
    * if true the parameters for the color coding are determined automatically
    */
-  void setColorScalingAutomatic(bool s) {mAutomaticColorScaling = s;};
+  void setColorScalingAutomatic(bool s);
 
   /**
    * Enable or disable the display of the dimensions annotation (the upper table)
