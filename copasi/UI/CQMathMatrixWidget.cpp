@@ -25,6 +25,8 @@
 
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/core/CArray.h"
+#include "copasi/math/CMathContainer.h"
 #include "model/CModel.h"
 #include "function/CExpression.h"
 
@@ -37,6 +39,12 @@
  */
 CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
   : CopasiWidget(parent)
+  , mLabelTitle(NULL)
+  , mJacobian()
+  , mJacobianRed()
+  , eigenValues()
+  , mpJacobianAnn(NULL)
+  , mpJacobianAnnRed(NULL)
 {
   setupUi(this);
 
@@ -63,6 +71,30 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
     mpTabWidget->removeTab(mpTabWidget->count() - 1);
 
 #endif
+
+
+  mpJacobianAnn = new CDataArray("Jacobian (complete system)", NULL,
+                                 new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobian), true);
+  mpJacobianAnn->setMode(CDataArray::Mode::Objects);
+  mpJacobianAnn->setDescription("");
+  mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent species");
+  mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
+
+  mpJacobianAnnotationWidget->setColorCoding(new CColorScaleBiLog());
+  mpJacobianAnnotationWidget->setColorScalingAutomatic(true);
+  mpJacobianAnnotationWidget->setLegendEnabled(false);
+
+  mpJacobianAnnRed = new CDataArray("Jacobian (reduced system)", NULL,
+                                    new CMatrixInterface<CMatrix<C_FLOAT64> >(&mJacobianRed), true);
+  mpJacobianAnnRed->setMode(CDataArray::Mode::Objects);
+  mpJacobianAnnRed->setDescription("");
+  mpJacobianAnnRed->setDimensionDescription(0, "Independent variables of the system");
+  mpJacobianAnnRed->setDimensionDescription(1, "Independent variables of the system");
+
+  mpRedJacobianAnnotationWidget->setColorCoding(new CColorScaleBiLog());
+  mpRedJacobianAnnotationWidget->setColorScalingAutomatic(true);
+  mpRedJacobianAnnotationWidget->setLegendEnabled(false);
+
 }
 
 /*
@@ -90,6 +122,51 @@ void CQMathMatrixWidget::loadMatrices()
   tmp = dynamic_cast<const CDataArray *>
         (pModel->getObject(CCommonName("Array=Link matrix(ann)")));
   mpArrayWidget3->setArrayAnnotation(tmp);
+
+}
+
+void CQMathMatrixWidget::updateJacobianAnnotation(const CModel* pModel)
+{
+  const CMathContainer& container = pModel->getMathContainer();
+
+
+  size_t sizeReduced = container.getState(true).size() - container.getCountFixedEventTargets() - 1;
+  mJacobianRed.resize(sizeReduced, sizeReduced);
+  mJacobianRed = std::numeric_limits<double>::quiet_NaN();
+  size_t size = container.getState(false).size() - container.getCountFixedEventTargets() - 1;
+  mJacobian.resize(size, size);
+  mJacobian = std::numeric_limits<double>::quiet_NaN();
+
+  mpJacobianAnn->resize();
+  mpJacobianAnn->setObjectParent(mpDataModel);
+  mpJacobianAnnRed->resize();
+  mpJacobianAnnRed->setObjectParent(mpDataModel);
+
+  const CMathObject * pObject = container.getMathObject(container.getState(false).array() + container.getCountFixedEventTargets() + 1);
+  const CMathObject * pObjectEnd = pObject + sizeReduced;
+
+  size_t i;
+
+  for (i = 0; pObject != pObjectEnd; ++pObject, ++i)
+    {
+      const CDataObject * pDatabject = pObject->getDataObject()->getObjectParent();
+
+      mpJacobianAnn->setAnnotation(0, i, pDatabject);
+      mpJacobianAnn->setAnnotation(1, i, pDatabject);
+
+      mpJacobianAnnRed->setAnnotation(0, i, pDatabject);
+      mpJacobianAnnRed->setAnnotation(1, i, pDatabject);
+    }
+
+  pObjectEnd += size - sizeReduced;
+
+  for (; pObject != pObjectEnd; ++pObject, ++i)
+    {
+      const CDataObject * pDataObject = pObject->getDataObject()->getObjectParent();
+
+      mpJacobianAnn->setAnnotation(0, i, pDataObject);
+      mpJacobianAnn->setAnnotation(1, i, pDataObject);
+    }
 }
 
 void CQMathMatrixWidget::clearArrays()
@@ -97,6 +174,8 @@ void CQMathMatrixWidget::clearArrays()
   mpArrayWidget1->setArrayAnnotation(NULL);
   mpArrayWidget2->setArrayAnnotation(NULL);
   mpArrayWidget3->setArrayAnnotation(NULL);
+  mpJacobianAnnotationWidget->setArrayAnnotation(NULL);
+  mpRedJacobianAnnotationWidget->setArrayAnnotation(NULL);
 }
 
 //*************************************
@@ -105,6 +184,7 @@ bool CQMathMatrixWidget::update(ListViews::ObjectType C_UNUSED(objectType), List
                                 C_UNUSED(action), const std::string & C_UNUSED(key))
 {
   clearArrays();
+  updateJacobianIfTabSelected();
   return true;
 }
 
@@ -195,3 +275,72 @@ void CQMathMatrixWidget::slotDerivButtonPressed()
   pTable->resizeRowsToContents();
 #endif
 }
+
+void CQMathMatrixWidget::slotActiveTabChanged(int index)
+{
+  updateJacobianIfTabSelected();
+}
+
+void CQMathMatrixWidget::updateJacobianIfTabSelected()
+{
+  if (mpDataModel == NULL)
+    return;
+
+  CModel* pModel = mpDataModel->getModel();
+
+  if (pModel == NULL)
+    return;
+
+  updateJacobianAnnotation(pModel);
+
+  CMathContainer& container = pModel->getMathContainer();
+
+  if (mpTabWidget->currentWidget() == mpTabWidgetJac)
+    {
+      calculateJacobian(mJacobian, &container, tableEigenValues, false, 1e-6);
+      mpJacobianAnnotationWidget->setArrayAnnotation(mpJacobianAnn);
+    }
+  else if (mpTabWidget->currentWidget() == mpTabWidgetJacRed)
+    {
+      calculateJacobian(mJacobianRed, &container, tableEigenValuesRed, true, 1e-6);
+      mpRedJacobianAnnotationWidget->setArrayAnnotation(mpJacobianAnnRed);
+    }
+}
+
+void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
+    CMathContainer* pContainer,
+    QTableWidget* eigenValuesWidget,
+    bool reduced,
+    C_FLOAT64 derivationFactor)
+{
+  QTableWidgetItem * pItem;
+
+  //Eigenvalues...
+  pContainer->calculateJacobian(matrix, derivationFactor, reduced);
+
+  eigenValues.calcEigenValues(matrix);
+  const CVector< C_FLOAT64 > & eigen_r = eigenValues.getR();
+  const CVector< C_FLOAT64 > & eigen_i = eigenValues.getI();
+
+  eigenValuesWidget->clearContents();
+  eigenValuesWidget->setSortingEnabled(reduced);
+
+  size_t i, imax = eigen_i.size();
+  eigenValuesWidget->setRowCount((int)imax);
+
+  for (i = 0; i < imax; ++i)
+    {
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, eigen_r[i]);
+      eigenValuesWidget->setItem((int)i, 0, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, eigen_i[i]);
+      eigenValuesWidget->setItem((int)i, 1, pItem);
+    }
+
+  eigenValuesWidget->resizeColumnsToContents();
+  eigenValuesWidget->resizeRowsToContents();
+  eigenValuesWidget->setSortingEnabled(true);
+}
+

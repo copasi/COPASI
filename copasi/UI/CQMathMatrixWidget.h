@@ -24,8 +24,10 @@
 
 #include "copasi/UI/ui_CQMathMatrixWidget.h"
 #include "copasi/UI/copasiWidget.h"
+#include "copasi/steadystate/CEigen.h"
 
 class CDataArray;
+class CMathContainer;
 
 class CQMathMatrixWidget : public CopasiWidget, public Ui::CQMathMatrixWidget
 {
@@ -43,16 +45,55 @@ protected slots:
   /// This contains code for displaying test results for symbolic differentiation
   void slotDerivButtonPressed();
 
+  /// activated when tab changes
+  void slotActiveTabChanged(int);
+
+
 protected:
   virtual bool enterProtected();
+
+  /**
+   * loads the matrices (except Jacobian) into the widget
+   */
   void loadMatrices();
+
+  /**
+   * clears all arrays
+   */
   void clearArrays();
+
+  /**
+  * updates the Jacobian from the current model in case the Jacobian or reduced
+  * Jacobian tab is selected
+  */
+  void updateJacobianIfTabSelected();
+
+  /**
+  * updates the labels of the Jacobian matrices
+  */
+  void updateJacobianAnnotation(const CModel* pModel);
+
+  /**
+   * @brief calculates the current Jacobian and updates the widget with the eigenvalues
+   * @param matrix the storage for the Jacobian matrix
+   * @param pContainer the math container
+   * @param eigenValuesWidget the table widget in which to place the eigenvalues
+   * @param reduced boolean indicating whether the full or reduced system ought to be used
+   * @param derivationFactor the derivation factor for calculation of the Jacobian
+   */
+  void calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
+                         CMathContainer* pContainer,
+                         QTableWidget* eigenValuesWidget,
+                         bool reduced,
+                         double derivationFactor);
 
   QLabel* mLabelTitle;
 
-  const CDataArray * mpArrayAnn1;
-  const CDataArray * mpArrayAnn2;
-  const CDataArray * mpArrayAnn3;
+  CMatrix< C_FLOAT64 > mJacobian;
+  CMatrix< C_FLOAT64 > mJacobianRed;
+  CEigen eigenValues;
+  CDataArray* mpJacobianAnn;
+  CDataArray* mpJacobianAnnRed;
 };
 
 #endif // COPASI_CQMathMatrixWidget
