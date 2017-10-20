@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -45,7 +50,7 @@ public:
   yyYaccParser():
     mpNode(NULL),
     mpRootNode(NULL),
-    mBoolean(false),
+    mValueType(CEvaluationNode::Unknown),
     mpNodeList(NULL),
     mPosition(0)
   {}
@@ -72,14 +77,14 @@ public:
 
   CEvaluationNode * getRootNode() {return mpRootNode;}
 
-  bool isBoolean() const {return mBoolean;}
+  const CEvaluationNode::ValueType & getValueType() const {return mValueType;}
 
   size_t getErrorPosition() {return mPosition;}
 
 protected:
   CEvaluationNode * mpNode;
   CEvaluationNode * mpRootNode;
-  bool mBoolean;
+  CEvaluationNode::ValueType mValueType;
   std::vector< CEvaluationNode * > * mpNodeList;
   size_t mPosition;
 

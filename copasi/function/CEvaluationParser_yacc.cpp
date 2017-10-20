@@ -17,11 +17,11 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -427,18 +427,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  29
+#define YYFINAL  31
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   478
+#define YYLAST   496
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  31
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  9
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  60
+#define YYNRULES  68
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  155
+#define YYNSTATES  161
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -487,13 +487,13 @@ static const yytype_uint8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-  0,    86,    86,    91,    97,   102,   107,   115,   125,   130,
-  135,   142,   149,   156,   163,   170,   175,   181,   188,   194,
-  202,   212,   217,   225,   234,   243,   252,   262,   272,   279,
-  286,   294,   302,   309,   316,   324,   332,   339,   346,   353,
-  360,   367,   374,   381,   386,   393,   398,   404,   410,   416,
-  420,   425,   429,   434,   439,   444,   450,   454,   459,   464,
-  469
+  0,    86,    86,    91,    96,   102,   107,   112,   120,   130,
+  135,   141,   148,   155,   162,   169,   176,   181,   187,   194,
+  200,   209,   219,   229,   239,   250,   262,   267,   275,   285,
+  295,   305,   316,   327,   334,   342,   349,   357,   365,   372,
+  380,   387,   395,   403,   410,   417,   424,   431,   438,   445,
+  452,   457,   463,   471,   476,   482,   488,   494,   498,   503,
+  507,   512,   517,   522,   528,   532,   537,   542,   547
 };
 #endif
 
@@ -529,12 +529,12 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -44
+#define YYPACT_NINF -50
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-44)))
+  (!!((Yystate) == (-50)))
 
-#define YYTABLE_NINF -35
+#define YYTABLE_NINF -53
 
 #define yytable_value_is_error(Yytable_value) \
   0
@@ -543,22 +543,23 @@ static const yytype_uint16 yytoknum[] =
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-  219,   -44,   -44,   -26,   -18,    -9,   247,    27,   -44,   219,
-  219,    26,     8,   353,   182,   -44,   190,   -44,   247,   247,
-  53,   247,   -44,    56,   219,   353,    47,   278,   367,   -44,
-  219,   219,   247,   247,   247,   247,   247,   247,   247,   247,
-  247,   247,   247,   219,   219,   219,   219,   219,   104,   -14,
-  257,   362,    74,   119,    25,   310,   219,    62,    -8,   416,
-  -44,   -44,    69,   -44,    56,    56,    52,   106,    30,   358,
-  358,   358,   358,   358,   358,   238,    77,    47,     4,    69,
-  59,   -44,   -44,   358,   -44,   -44,   -44,   -44,   -44,   -44,
-  -44,   -44,   -44,   204,   -44,   -44,   247,    73,   421,   219,
-  219,   358,   -44,   116,   247,   247,    93,   304,   433,   112,
-  324,   438,   -44,    64,   330,    78,   344,   219,   247,   219,
-  219,   247,   219,    -3,    -3,    -2,   380,   159,    31,   385,
-  37,   398,   283,    60,   403,   111,   113,   117,   -44,   -44,
-  -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,   219,   115,
-  450,    -3,    -3,    64,    78
+  208,   -50,   -50,    -9,    -2,    20,   224,    35,   -50,   208,
+  208,    75,     2,   375,   465,   -50,   180,   -50,   224,   224,
+  59,   224,   -50,    82,   208,    49,   375,    10,    38,   272,
+  353,   -50,   208,   208,   224,   224,   224,   224,   224,   224,
+  224,   224,   224,   224,   224,   208,   208,   208,   208,   208,
+  109,   -17,   251,   312,    36,   -23,    16,   149,   208,    77,
+  112,   430,   -50,   -50,   380,    81,   397,   -50,    82,    82,
+  243,    72,   428,   479,   479,   479,   479,   479,   479,   475,
+  -6,    10,    55,    81,   101,   -50,   -50,   479,   -50,   -50,
+  -50,   -50,   -50,   -50,   -50,   -50,   -50,   194,   -50,   -50,
+  224,   189,   442,   208,   208,   479,   -50,   135,   224,   224,
+  198,   335,   447,   453,   355,   459,   -50,    83,   230,    98,
+  341,   208,   224,   208,   208,   224,   208,   224,   224,   -12,
+  293,   394,   102,   236,    31,   407,    33,   314,   412,   105,
+  257,    78,   425,   108,   278,   123,   299,   -50,   -50,   -50,
+  -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,   -50,
+  -50
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -566,34 +567,35 @@ static const yytype_int16 yypact[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-  0,     8,     5,    56,     0,     0,     0,     0,    21,     0,
-  0,     0,     9,     2,     3,     4,     0,    51,     0,     0,
-  0,     0,     9,    18,     0,     0,    44,     0,     0,     1,
+  0,     9,     6,    64,     0,     0,     0,     0,    26,     0,
+  0,     0,    10,     2,     3,     5,     0,    59,     0,     0,
+  0,     0,    10,    19,     0,    10,     0,    51,    10,     0,
+  0,     1,     0,     0,     0,     0,     0,     0,     0,     0,
   0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-  0,     0,     0,     0,     0,     0,     0,     0,     0,     9,
-  0,     0,     0,     0,     0,     0,     0,     0,     9,     0,
-  15,    43,    31,    35,    14,    13,    11,    12,    10,    28,
-  32,    37,    36,    39,    38,    40,    41,    42,     9,    29,
-  9,    33,    45,    47,    48,    57,    52,    58,    53,    59,
-  54,    60,    55,     0,    46,    16,     0,     9,     0,     0,
-  0,    49,    50,     0,     0,     0,     9,     0,     0,     9,
-  0,     0,    17,     9,     0,     9,     0,     0,     0,     0,
-  0,     0,     0,     0,     0,     9,     0,     0,     9,     0,
-  9,     0,     0,     9,     0,     0,     0,     0,     7,    26,
-  20,    27,    25,     6,    23,    19,    24,    22,     0,     9,
-  0,     0,     0,     0,     0
+  0,    10,     0,     0,     0,     0,     0,     0,     0,     0,
+  10,     0,    16,    50,    34,    37,    39,    42,    15,    14,
+  12,    13,    11,    33,    38,    44,    43,    46,    45,    47,
+  48,    49,    10,    35,    10,    40,    53,    55,    56,    65,
+  60,    66,    61,    67,    62,    68,    63,     0,    54,    17,
+  0,    10,     0,     0,     0,    57,    58,     0,     0,     0,
+  10,     0,     0,    10,     0,     0,    18,    10,     0,    10,
+  0,     0,     0,     0,     0,     0,     0,     0,     0,    10,
+  0,     0,    10,     0,    10,     0,    10,     0,     0,    10,
+  0,    10,     0,    10,     0,    10,     0,     8,    24,    31,
+  25,    23,    32,    30,     7,    21,    28,    22,    20,    29,
+  27
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-  -44,   -44,     0,   144,    39,   -43,   -44,   -44,   -44
+  -50,   -50,    47,     0,   133,   -49,   -50,   -50,   -50
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-  -1,    11,    22,    25,    14,    52,    53,    15,    16
+  -1,    11,    22,    26,    14,    54,    55,    15,    16
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -601,106 +603,110 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-  12,     2,     3,    17,   -30,    84,    30,    31,    18,    12,
-  12,   135,    30,    31,    85,    86,    49,    19,    30,    31,
-  99,   -30,   -30,   -30,    58,    31,    29,   138,    30,    31,
-  12,    12,   -30,   -30,    32,    33,    34,    35,    36,    32,
-  33,    34,    35,    12,    12,    12,    78,    80,    26,    28,
-  102,    30,    31,    24,    95,    51,    97,    30,    31,   -34,
-  141,    32,    33,    59,    35,    32,   143,    46,    47,    62,
-  63,    32,    33,    34,    35,    36,   -34,   -34,   -34,    56,
-  30,    31,    75,    76,    77,    79,    81,   -34,   -34,   146,
-  47,    60,   123,    30,    31,    98,    45,    46,    47,   106,
-  109,   104,    91,    92,   113,   115,   124,     1,     2,     3,
-  4,     5,     6,    30,    31,    32,    33,   125,    20,   128,
-  130,   117,   133,   136,   137,    32,    33,    34,    35,    36,
-  21,    48,    30,    31,    82,    30,    31,   148,   108,   111,
-  120,     0,   138,   151,    13,   112,   143,    93,   149,    94,
-  23,   153,   154,     0,    27,     0,   126,     0,   129,   131,
-  50,   134,    54,    55,     0,    57,     0,     0,    32,    33,
-  34,    35,    36,     0,     0,     0,    64,    65,    66,    67,
-  68,    69,    70,    71,    72,    73,    74,   150,   140,     0,
-  0,     0,    83,     1,     2,     3,     4,     5,     6,    43,
-  44,    45,    46,    47,     7,     8,     9,     1,     2,     3,
-  4,     5,     6,     0,     0,     0,    10,    48,    20,     0,
-  0,     0,     1,     2,     3,     4,     5,     6,     0,     0,
-  21,    48,     0,     7,     8,     9,     0,   101,     0,     0,
-  103,     0,     0,   107,   110,    10,     0,     0,   114,   116,
-  1,     2,     3,     4,     5,     6,    44,    45,    46,    47,
-  0,    20,   127,     0,     0,   132,    32,    33,    34,    35,
-  36,     0,     0,    21,     0,     0,     0,    37,    38,    39,
-  40,    41,    42,     0,     0,    87,    88,    32,    33,    34,
-  35,    36,    32,    33,    34,    35,    36,     0,    37,    38,
-  39,    40,    41,    42,     0,     0,     0,    60,     0,     0,
-  0,     0,   145,    32,    33,    34,    35,    36,     0,    32,
-  33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-  0,     0,   118,    32,    33,    34,    35,    36,    96,    32,
-  33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-  0,     0,   121,    32,    33,    34,    35,    36,   118,     0,
-  0,     0,    32,    33,    34,    35,    36,    32,    33,    34,
-  35,    36,   121,    37,    38,    39,    40,    41,    42,    43,
-  44,    45,    46,    47,    43,    44,    45,    46,    47,     0,
-  89,    90,     0,     0,     0,     0,    61,    43,    44,    45,
-  46,    47,    43,    44,    45,    46,    47,     0,     0,   139,
-  0,     0,     0,     0,   142,    43,    44,    45,    46,    47,
-  43,    44,    45,    46,    47,     0,     0,   144,     0,     0,
-  0,     0,   147,    43,    44,    45,    46,    47,    43,    44,
-  45,    46,    47,     0,   100,     0,     0,     0,     0,   105,
-  43,    44,    45,    46,    47,    43,    44,    45,    46,    47,
-  0,   119,     0,     0,     0,     0,   122,    43,    44,    45,
-  46,    47,     0,     0,     0,     0,     0,     0,   152
+  13,    88,    -4,    32,    33,    97,    23,    98,    32,    33,
+  29,    89,    90,    47,    48,    49,    52,   147,    56,    57,
+  17,    59,    32,    33,    18,    34,    35,    36,    37,    38,
+  48,    49,    64,    66,    68,    69,    70,    71,    72,    73,
+  74,    75,    76,    77,    78,    99,    19,    12,   106,   -52,
+  87,    32,    33,    32,    33,   -36,    25,    28,    32,    33,
+  152,    24,   154,    51,    95,    96,   -52,   -52,   -52,    32,
+  33,    60,   -36,   -36,   -36,    31,    33,   -52,   -52,    28,
+  28,    34,    35,   -36,   -36,    58,    34,    35,    36,    37,
+  38,    34,    28,    28,    28,    82,    84,   105,    32,    33,
+  107,   -41,    49,   111,   114,   101,    62,   159,   118,   120,
+  0,   127,     1,     2,     3,     4,     5,     6,   -41,   -41,
+  -41,   130,   133,    20,   137,   140,   128,   144,   146,   -41,
+  -41,   150,    32,    33,   157,    21,    50,   147,     0,    86,
+  103,     0,    27,    30,    34,    35,    36,    37,    38,    53,
+  110,   113,   154,     0,     0,   117,   119,    61,    34,    35,
+  36,    37,    38,     0,   116,    65,    67,     0,   129,   132,
+  134,   136,   139,   141,   143,   145,     0,   100,    79,    80,
+  81,    83,    85,     1,     2,     3,     4,     5,     6,     0,
+  0,   102,     0,     0,     7,     8,     9,     1,     2,     3,
+  4,     5,     6,     0,     0,     0,    10,    50,    20,    32,
+  33,     1,     2,     3,     4,     5,     6,   108,    32,    33,
+  21,    50,     7,     8,     9,     0,   121,     1,     2,     3,
+  4,     5,     6,     0,    10,     0,   112,   115,    20,    34,
+  35,    36,    37,    38,     0,    34,    35,    36,    37,    38,
+  21,     0,    34,    35,   131,    37,   135,   138,   122,   142,
+  34,    35,    36,    37,    38,   151,    34,    35,    36,    37,
+  38,    39,    40,    41,    42,    43,    44,     0,     0,    91,
+  92,    34,    35,    36,    37,    38,   158,    34,    35,    36,
+  37,    38,    39,    40,    41,    42,    43,    44,     0,     0,
+  0,    62,    34,    35,    36,    37,    38,   148,    34,    35,
+  36,    37,    38,    39,    40,    41,    42,    43,    44,     0,
+  0,     0,   148,    34,    35,    36,    37,    38,   155,    45,
+  46,    47,    48,    49,    39,    40,    41,    42,    43,    44,
+  93,    94,     0,   155,    34,    35,    36,    37,    38,     0,
+  34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+  44,     0,     0,   122,    34,    35,    36,    37,    38,   125,
+  45,    46,    47,    48,    49,    39,    40,    41,    42,    43,
+  44,     0,    63,   125,    34,    35,    36,    37,    38,    34,
+  35,    36,    37,    38,     0,    39,    40,    41,    42,    43,
+  44,    40,    41,    42,    43,    44,    34,    35,    36,    37,
+  38,    45,    46,    47,    48,    49,     0,     0,     0,    41,
+  42,    43,    44,   149,    45,    46,    47,    48,    49,    45,
+  46,    47,    48,    49,     0,     0,   153,    34,    35,    36,
+  37,   156,    45,    46,    47,    48,    49,    45,    46,    47,
+  48,    49,     0,     0,   160,     0,     0,     0,   104,    45,
+  46,    47,    48,    49,    45,    46,    47,    48,    49,     0,
+  109,     0,     0,    32,    33,   123,    45,    46,    47,    48,
+  49,   124,    45,    46,    47,    48,    49,   126,    34,    35,
+  36,    37,    38,    46,    47,    48,    49
 };
 
 static const yytype_int16 yycheck[] =
 {
-  0,     4,     5,    29,     0,    48,    20,    21,    26,     9,
-  10,    14,    20,    21,    28,    29,    16,    26,    20,    21,
-  28,    17,    18,    19,    24,    21,     0,    29,    20,    21,
-  30,    31,    28,    29,     9,    10,    11,    12,    13,     9,
-  10,    11,    12,    43,    44,    45,    46,    47,     9,    10,
-  93,    20,    21,    26,    29,    16,    56,    20,    21,     0,
-  29,     9,    10,    24,    12,     9,    29,    20,    21,    30,
-  31,     9,    10,    11,    12,    13,    17,    18,    19,    26,
-  20,    21,    43,    44,    45,    46,    47,    28,    29,    29,
-  21,    29,    28,    20,    21,    56,    19,    20,    21,    99,
-  100,    28,    28,    29,   104,   105,    28,     3,     4,     5,
-  6,     7,     8,    20,    21,     9,    10,   117,    14,   119,
-  120,    28,   122,   123,   124,     9,    10,    11,    12,    13,
-  26,    27,    20,    21,    30,    20,    21,    26,    99,   100,
-  28,    -1,    29,    28,     0,    29,    29,    28,   148,    30,
-  6,   151,   152,    -1,    10,    -1,   117,    -1,   119,   120,
-  16,   122,    18,    19,    -1,    21,    -1,    -1,     9,    10,
-  11,    12,    13,    -1,    -1,    -1,    32,    33,    34,    35,
-  36,    37,    38,    39,    40,    41,    42,   148,    29,    -1,
-  -1,    -1,    48,     3,     4,     5,     6,     7,     8,    17,
-  18,    19,    20,    21,    14,    15,    16,     3,     4,     5,
-  6,     7,     8,    -1,    -1,    -1,    26,    27,    14,    -1,
-  -1,    -1,     3,     4,     5,     6,     7,     8,    -1,    -1,
-  26,    27,    -1,    14,    15,    16,    -1,    93,    -1,    -1,
-  96,    -1,    -1,    99,   100,    26,    -1,    -1,   104,   105,
-  3,     4,     5,     6,     7,     8,    18,    19,    20,    21,
-  -1,    14,   118,    -1,    -1,   121,     9,    10,    11,    12,
-  13,    -1,    -1,    26,    -1,    -1,    -1,    20,    21,    22,
-  23,    24,    25,    -1,    -1,    28,    29,     9,    10,    11,
-  12,    13,     9,    10,    11,    12,    13,    -1,    20,    21,
-  22,    23,    24,    25,    -1,    -1,    -1,    29,    -1,    -1,
-  -1,    -1,    29,     9,    10,    11,    12,    13,    -1,     9,
-  10,    11,    12,    13,    20,    21,    22,    23,    24,    25,
-  -1,    -1,    28,     9,    10,    11,    12,    13,    28,     9,
-  10,    11,    12,    13,    20,    21,    22,    23,    24,    25,
-  -1,    -1,    28,     9,    10,    11,    12,    13,    28,    -1,
-  -1,    -1,     9,    10,    11,    12,    13,     9,    10,    11,
-  12,    13,    28,    20,    21,    22,    23,    24,    25,    17,
+  0,    50,     0,    20,    21,    28,     6,    30,    20,    21,
+  10,    28,    29,    19,    20,    21,    16,    29,    18,    19,
+  29,    21,    20,    21,    26,     9,    10,    11,    12,    13,
+  20,    21,    32,    33,    34,    35,    36,    37,    38,    39,
+  40,    41,    42,    43,    44,    29,    26,     0,    97,     0,
+  50,    20,    21,    20,    21,     0,     9,    10,    20,    21,
+  29,    26,    29,    16,    28,    29,    17,    18,    19,    20,
+  21,    24,    17,    18,    19,     0,    21,    28,    29,    32,
+  33,     9,    10,    28,    29,    26,     9,    10,    11,    12,
+  13,     9,    45,    46,    47,    48,    49,    97,    20,    21,
+  100,     0,    21,   103,   104,    58,    29,    29,   108,   109,
+  -1,    28,     3,     4,     5,     6,     7,     8,    17,    18,
+  19,   121,   122,    14,   124,   125,    28,   127,   128,    28,
+  29,    29,    20,    21,    29,    26,    27,    29,    -1,    30,
+  28,    -1,     9,    10,     9,    10,    11,    12,    13,    16,
+  103,   104,    29,    -1,    -1,   108,   109,    24,     9,    10,
+  11,    12,    13,    -1,    29,    32,    33,    -1,   121,   122,
+  123,   124,   125,   126,   127,   128,    -1,    28,    45,    46,
+  47,    48,    49,     3,     4,     5,     6,     7,     8,    -1,
+  -1,    58,    -1,    -1,    14,    15,    16,     3,     4,     5,
+  6,     7,     8,    -1,    -1,    -1,    26,    27,    14,    20,
+  21,     3,     4,     5,     6,     7,     8,    28,    20,    21,
+  26,    27,    14,    15,    16,    -1,    28,     3,     4,     5,
+  6,     7,     8,    -1,    26,    -1,   103,   104,    14,     9,
+  10,    11,    12,    13,    -1,     9,    10,    11,    12,    13,
+  26,    -1,     9,    10,   121,    12,   123,   124,    28,   126,
+  9,    10,    11,    12,    13,    29,     9,    10,    11,    12,
+  13,    20,    21,    22,    23,    24,    25,    -1,    -1,    28,
+  29,     9,    10,    11,    12,    13,    29,     9,    10,    11,
+  12,    13,    20,    21,    22,    23,    24,    25,    -1,    -1,
+  -1,    29,     9,    10,    11,    12,    13,    29,     9,    10,
+  11,    12,    13,    20,    21,    22,    23,    24,    25,    -1,
+  -1,    -1,    29,     9,    10,    11,    12,    13,    29,    17,
+  18,    19,    20,    21,    20,    21,    22,    23,    24,    25,
+  28,    29,    -1,    29,     9,    10,    11,    12,    13,    -1,
+  9,    10,    11,    12,    13,    20,    21,    22,    23,    24,
+  25,    -1,    -1,    28,     9,    10,    11,    12,    13,    28,
+  17,    18,    19,    20,    21,    20,    21,    22,    23,    24,
+  25,    -1,    29,    28,     9,    10,    11,    12,    13,     9,
+  10,    11,    12,    13,    -1,    20,    21,    22,    23,    24,
+  25,    21,    22,    23,    24,    25,     9,    10,    11,    12,
+  13,    17,    18,    19,    20,    21,    -1,    -1,    -1,    22,
+  23,    24,    25,    29,    17,    18,    19,    20,    21,    17,
+  18,    19,    20,    21,    -1,    -1,    29,     9,    10,    11,
+  12,    29,    17,    18,    19,    20,    21,    17,    18,    19,
+  20,    21,    -1,    -1,    29,    -1,    -1,    -1,    28,    17,
   18,    19,    20,    21,    17,    18,    19,    20,    21,    -1,
-  28,    29,    -1,    -1,    -1,    -1,    29,    17,    18,    19,
-  20,    21,    17,    18,    19,    20,    21,    -1,    -1,    29,
-  -1,    -1,    -1,    -1,    29,    17,    18,    19,    20,    21,
-  17,    18,    19,    20,    21,    -1,    -1,    29,    -1,    -1,
-  -1,    -1,    29,    17,    18,    19,    20,    21,    17,    18,
-  19,    20,    21,    -1,    28,    -1,    -1,    -1,    -1,    28,
-  17,    18,    19,    20,    21,    17,    18,    19,    20,    21,
-  -1,    28,    -1,    -1,    -1,    -1,    28,    17,    18,    19,
-  20,    21,    -1,    -1,    -1,    -1,    -1,    -1,    28
+  28,    -1,    -1,    20,    21,    28,    17,    18,    19,    20,
+  21,    28,    17,    18,    19,    20,    21,    28,     9,    10,
+  11,    12,    13,    18,    19,    20,    21
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -709,44 +715,45 @@ static const yytype_uint8 yystos[] =
 {
   0,     3,     4,     5,     6,     7,     8,    14,    15,    16,
   26,    32,    33,    34,    35,    38,    39,    29,    26,    26,
-  14,    26,    33,    34,    26,    34,    35,    34,    35,     0,
-  20,    21,     9,    10,    11,    12,    13,    20,    21,    22,
-  23,    24,    25,    17,    18,    19,    20,    21,    27,    33,
-  34,    35,    36,    37,    34,    34,    26,    34,    33,    35,
-  29,    29,    35,    35,    34,    34,    34,    34,    34,    34,
-  34,    34,    34,    34,    34,    35,    35,    35,    33,    35,
-  33,    35,    30,    34,    36,    28,    29,    28,    29,    28,
-  29,    28,    29,    28,    30,    29,    28,    33,    35,    28,
-  28,    34,    36,    34,    28,    28,    33,    34,    35,    33,
-  34,    35,    29,    33,    34,    33,    34,    28,    28,    28,
-  28,    28,    28,    28,    28,    33,    35,    34,    33,    35,
-  33,    35,    34,    33,    35,    14,    33,    33,    29,    29,
-  29,    29,    29,    29,    29,    29,    29,    29,    26,    33,
-  35,    28,    28,    33,    33
+  14,    26,    33,    34,    26,    33,    34,    35,    33,    34,
+  35,     0,    20,    21,     9,    10,    11,    12,    13,    20,
+  21,    22,    23,    24,    25,    17,    18,    19,    20,    21,
+  27,    33,    34,    35,    36,    37,    34,    34,    26,    34,
+  33,    35,    29,    29,    34,    35,    34,    35,    34,    34,
+  34,    34,    34,    34,    34,    34,    34,    34,    34,    35,
+  35,    35,    33,    35,    33,    35,    30,    34,    36,    28,
+  29,    28,    29,    28,    29,    28,    29,    28,    30,    29,
+  28,    33,    35,    28,    28,    34,    36,    34,    28,    28,
+  33,    34,    35,    33,    34,    35,    29,    33,    34,    33,
+  34,    28,    28,    28,    28,    28,    28,    28,    28,    33,
+  34,    35,    33,    34,    33,    35,    33,    34,    35,    33,
+  34,    33,    35,    33,    34,    33,    34,    29,    29,    29,
+  29,    29,    29,    29,    29,    29,    29,    29,    29,    29,
+  29
 };
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-  0,    31,    32,    32,    33,    33,    33,    33,    34,    34,
+  0,    31,    32,    32,    32,    33,    33,    33,    33,    34,
   34,    34,    34,    34,    34,    34,    34,    34,    34,    34,
-  34,    35,    35,    35,    35,    35,    35,    35,    35,    35,
+  34,    34,    34,    34,    34,    34,    35,    35,    35,    35,
   35,    35,    35,    35,    35,    35,    35,    35,    35,    35,
-  35,    35,    35,    35,    35,    36,    36,    37,    37,    37,
-  37,    38,    38,    38,    38,    38,    39,    39,    39,    39,
-  39
+  35,    35,    35,    35,    35,    35,    35,    35,    35,    35,
+  35,    35,    35,    36,    36,    37,    37,    37,    37,    38,
+  38,    38,    38,    38,    39,    39,    39,    39,    39
 };
 
 /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-  0,     2,     1,     1,     1,     1,     8,     8,     1,     1,
-  3,     3,     3,     3,     3,     3,     4,     6,     2,     8,
-  8,     1,     8,     8,     8,     8,     8,     8,     3,     3,
+  0,     2,     1,     1,     1,     1,     1,     8,     8,     1,
+  1,     3,     3,     3,     3,     3,     3,     4,     6,     2,
+  8,     8,     8,     8,     8,     8,     1,     8,     8,     8,
+  8,     8,     8,     3,     3,     3,     3,     3,     3,     3,
   3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-  3,     3,     3,     3,     2,     2,     2,     2,     2,     3,
-  3,     2,     3,     3,     3,     3,     1,     3,     3,     3,
-  3
+  3,     2,     2,     2,     2,     2,     2,     3,     3,     2,
+  3,     3,     3,     3,     1,     3,     3,     3,     3
 };
 
 #define yyerrok         (yyerrstatus = 0)
@@ -996,7 +1003,7 @@ yytnamerr(char *yyres, const char *yystr)
               if (*++yyp != '\\')
                 goto do_not_strip_quotes;
 
-              /* Fall through.  */
+            /* Fall through.  */
             default:
               if (yyres)
                 yyres[yyn] = *yyp;
@@ -1309,7 +1316,7 @@ yysetstate:
       {
         yytype_int16 *yyss1 = yyss;
         union yyalloc *yyptr =
-            (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
+          (union yyalloc *) YYSTACK_ALLOC(YYSTACK_BYTES(yystacksize));
 
         if (! yyptr)
           goto yyexhaustedlab;
@@ -1446,31 +1453,31 @@ yyreduce:
       case 2:
 #line 87 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          mBoolean = false;
+          mValueType = CEvaluationNode::Number;
           mpRootNode = (yyval);
         }
 
-#line 1421 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1428 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 3:
 #line 92 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          mBoolean = true;
+          mValueType = CEvaluationNode::Boolean;
           mpRootNode = (yyval);
         }
 
-#line 1430 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1437 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 4:
-#line 98 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 97 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyval) = (yyvsp[0]);
+          mValueType = CEvaluationNode::Unknown;
           mpRootNode = (yyval);
         }
 
-#line 1439 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1446 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 5:
@@ -1480,11 +1487,21 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1448 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1455 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 6:
 #line 108 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[0]);
+          mpRootNode = (yyval);
+        }
+
+#line 1464 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 7:
+#line 113 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
@@ -1493,11 +1510,11 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1460 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1476 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 7:
-#line 116 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 8:
+#line 121 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
           (yyval) = (yyvsp[-7]);
@@ -1507,17 +1524,7 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1473 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 8:
-#line 126 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
-        }
-
-#line 1482 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1489 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 9:
@@ -1527,23 +1534,22 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1491 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1498 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 10:
 #line 136 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
+          (yyvsp[0])->setValueType(CEvaluationNode::Number);
+          (yyval) = (yyvsp[0]);
           mpRootNode = (yyval);
         }
 
-#line 1502 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1508 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 11:
-#line 143 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 142 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1551,11 +1557,11 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1513 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1519 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 12:
-#line 150 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 149 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1563,11 +1569,11 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1524 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1530 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 13:
-#line 157 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 156 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1575,11 +1581,11 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1535 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1541 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 14:
-#line 164 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 163 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1587,32 +1593,44 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1546 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1552 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 15:
-#line 171 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 170 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1563 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 16:
+#line 177 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           mpRootNode = (yyval);
         }
 
-#line 1555 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1572 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 16:
-#line 176 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 17:
+#line 182 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-3]);
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
 
-#line 1565 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1582 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 17:
-#line 182 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 18:
+#line 188 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-5]);
           (yyval)->addChild((yyvsp[-3]));
@@ -1620,23 +1638,24 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1576 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1593 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 18:
-#line 189 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 19:
+#line 195 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1586 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1603 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 19:
-#line 195 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 20:
+#line 201 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
+          (yyvsp[-7])->setValueType(CEvaluationNode::Number);
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
@@ -1644,12 +1663,43 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1598 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1616 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 20:
-#line 203 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 21:
+#line 210 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
+          (yyvsp[-7])->setValueType(CEvaluationNode::Number);
+          (yyval) = (yyvsp[-7]);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyvsp[-3])->setValueType(CEvaluationNode::Number);
+          (yyval)->addChild((yyvsp[-3]));
+          (yyval)->addChild((yyvsp[-1]));
+          mpRootNode = (yyval);
+        }
+
+#line 1630 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 22:
+#line 220 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyvsp[-7])->setValueType(CEvaluationNode::Number);
+          (yyval) = (yyvsp[-7]);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyval)->addChild((yyvsp[-3]));
+          (yyvsp[-1])->setValueType(CEvaluationNode::Number);
+          (yyval)->addChild((yyvsp[-1]));
+          mpRootNode = (yyval);
+        }
+
+#line 1644 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 23:
+#line 230 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyvsp[-7])->setValueType(CEvaluationNode::Number);
           (yyval) = (yyvsp[-7]);
           (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
           (yyval)->addChild((yyvsp[-5]));
@@ -1658,91 +1708,81 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1611 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 21:
-#line 213 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[0]);
-          mpRootNode = (yyval);
-        }
-
-#line 1620 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 22:
-#line 218 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
-        }
-
-#line 1632 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 23:
-#line 226 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::Boolean);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
-        }
-
-#line 1645 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 24:
-#line 235 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-7]);
-          (yyval)->addChild((yyvsp[-5]));
-          (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-1])->setValueType(CEvaluationNode::Boolean);
-          (yyval)->addChild((yyvsp[-1]));
-          mpRootNode = (yyval);
-        }
-
 #line 1658 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 25:
-#line 244 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 24:
+#line 240 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyvsp[-7])->setValueType(CEvaluationNode::Number);
           (yyval) = (yyvsp[-7]);
+          (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
           (yyval)->addChild((yyvsp[-5]));
+          (yyvsp[-3])->setValueType(CEvaluationNode::Number);
           (yyval)->addChild((yyvsp[-3]));
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
 
-#line 1671 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1673 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 25:
+#line 251 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyvsp[-7])->setValueType(CEvaluationNode::Number);
+          (yyval) = (yyvsp[-7]);
+          (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyval)->addChild((yyvsp[-3]));
+          (yyvsp[-1])->setValueType(CEvaluationNode::Number);
+          (yyval)->addChild((yyvsp[-1]));
+          mpRootNode = (yyval);
+        }
+
+#line 1688 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 26:
-#line 253 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 263 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyval) = (yyvsp[0]);
+          mpRootNode = (yyval);
+        }
+
+#line 1697 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 27:
+#line 268 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
           (yyval) = (yyvsp[-7]);
           (yyval)->addChild((yyvsp[-5]));
           (yyval)->addChild((yyvsp[-3]));
-          (yyvsp[-3])->setValueType(CEvaluationNode::Boolean);
           (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
 
-#line 1685 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1709 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 27:
-#line 263 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 28:
+#line 276 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyval) = (yyvsp[-7]);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyvsp[-3])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-3]));
+          (yyval)->addChild((yyvsp[-1]));
+          mpRootNode = (yyval);
+        }
+
+#line 1723 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 29:
+#line 286 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
           (yyval) = (yyvsp[-7]);
@@ -1753,73 +1793,58 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1699 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 28:
-#line 273 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
-        }
-
-#line 1710 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 29:
-#line 280 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
-          mpRootNode = (yyval);
-        }
-
-#line 1721 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1737 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 30:
-#line 287 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 296 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
+          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyval) = (yyvsp[-7]);
+          (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyval)->addChild((yyvsp[-3]));
+          (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
 
-#line 1733 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1751 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 31:
-#line 295 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 306 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-2])->setValueType(CEvaluationNode::Boolean);
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
+          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyval) = (yyvsp[-7]);
+          (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyvsp[-3])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-3]));
+          (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
 
-#line 1745 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1766 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 32:
-#line 303 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 317 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyval) = (yyvsp[-1]);
-          (yyval)->addChild((yyvsp[-2]));
-          (yyval)->addChild((yyvsp[0]));
+          (yyvsp[-7])->setValueType(CEvaluationNode::Boolean);
+          (yyval) = (yyvsp[-7]);
+          (yyvsp[-5])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-5]));
+          (yyval)->addChild((yyvsp[-3]));
+          (yyvsp[-1])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-1]));
           mpRootNode = (yyval);
         }
 
-#line 1756 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1781 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 33:
-#line 310 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 328 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1827,61 +1852,62 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1767 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1792 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 34:
-#line 317 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 335 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
           (yyval) = (yyvsp[-1]);
+          (yyvsp[-2])->setValueType(CEvaluationNode::Number);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1779 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1804 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 35:
-#line 325 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 343 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyvsp[-2])->setValueType(CEvaluationNode::Boolean);
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1791 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1815 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 36:
-#line 333 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 350 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
+          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1802 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1827 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 37:
-#line 340 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 358 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
+          (yyvsp[-2])->setValueType(CEvaluationNode::Boolean);
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1813 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1839 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 38:
-#line 347 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 366 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1889,23 +1915,24 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1824 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1850 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 39:
-#line 354 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 373 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
+          (yyvsp[-2])->setValueType(CEvaluationNode::Number);
           (yyval)->addChild((yyvsp[-2]));
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1835 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1862 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 40:
-#line 361 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 381 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1913,23 +1940,37 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1846 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1873 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 41:
-#line 368 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 388 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
+          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1857 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1885 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 42:
-#line 375 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 396 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyvsp[-2])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1897 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 43:
+#line 404 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[-2]));
@@ -1937,188 +1978,272 @@ yyreduce:
           mpRootNode = (yyval);
         }
 
-#line 1868 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 43:
-#line 382 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-1]);
-          mpRootNode = (yyval);
-        }
-
-#line 1877 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1908 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 44:
-#line 387 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 411 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1919 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 45:
+#line 418 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1930 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 46:
+#line 425 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1941 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 47:
+#line 432 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1952 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 48:
+#line 439 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1963 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 49:
+#line 446 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          (yyval)->addChild((yyvsp[-2]));
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
+        }
+
+#line 1974 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 50:
+#line 453 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+          mpRootNode = (yyval);
+        }
+
+#line 1983 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 51:
+#line 458 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-1]);
           (yyval)->addChild((yyvsp[0]));
           mpRootNode = (yyval);
         }
 
-#line 1887 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 45:
-#line 394 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = new CEvaluationNodeVector();
-          mpNodeList->push_back((yyval));
-        }
-
-#line 1896 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 46:
-#line 399 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-1]);
-        }
-
-#line 1904 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 47:
-#line 405 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = new CEvaluationNodeVector();
-          mpNodeList->push_back((yyval));
-          (yyval)->addChild((yyvsp[0]));
-        }
-
-#line 1914 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 48:
-#line 411 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = new CEvaluationNodeVector();
-          mpNodeList->push_back((yyval));
-          (yyval)->addChild((yyvsp[0]));
-        }
-
-#line 1924 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 49:
-#line 417 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval)->addChild((yyvsp[0]));
-        }
-
-#line 1932 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 50:
-#line 421 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval)->addChild((yyvsp[0]));
-        }
-
-#line 1940 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
-        break;
-
-      case 51:
-#line 426 "CEvaluationParser.ypp" /* yacc.c:1646  */
-        {
-          (yyval) = (yyvsp[-1]);
-        }
-
-#line 1948 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 1993 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 52:
-#line 430 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 464 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          (yyval) = (yyvsp[-1]);
+          (yyvsp[0])->setValueType(CEvaluationNode::Boolean);
+          (yyval)->addChild((yyvsp[0]));
+          mpRootNode = (yyval);
         }
 
-#line 1957 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2004 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 53:
-#line 435 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 472 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          (yyval) = new CEvaluationNodeVector();
+          mpNodeList->push_back((yyval));
         }
 
-#line 1966 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2013 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 54:
-#line 440 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 477 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
-          (yyval) = (yyvsp[-2]);
-          (yyval)->addChild((yyvsp[-1]));
+          (yyval) = (yyvsp[-1]);
         }
 
-#line 1975 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2021 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
       case 55:
-#line 445 "CEvaluationParser.ypp" /* yacc.c:1646  */
+#line 483 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = new CEvaluationNodeVector();
+          mpNodeList->push_back((yyval));
+          (yyval)->addChild((yyvsp[0]));
+        }
+
+#line 2031 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 56:
+#line 489 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = new CEvaluationNodeVector();
+          mpNodeList->push_back((yyval));
+          (yyval)->addChild((yyvsp[0]));
+        }
+
+#line 2041 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 57:
+#line 495 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval)->addChild((yyvsp[0]));
+        }
+
+#line 2049 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 58:
+#line 499 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval)->addChild((yyvsp[0]));
+        }
+
+#line 2057 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 59:
+#line 504 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-1]);
+        }
+
+#line 2065 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 60:
+#line 508 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-2]);
           (yyval)->addChild((yyvsp[-1]));
         }
 
-#line 1984 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2074 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 56:
-#line 451 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 61:
+#line 513 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-2]);
+          (yyval)->addChild((yyvsp[-1]));
+        }
+
+#line 2083 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 62:
+#line 518 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-2]);
+          (yyval)->addChild((yyvsp[-1]));
+        }
+
+#line 2092 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 63:
+#line 523 "CEvaluationParser.ypp" /* yacc.c:1646  */
+        {
+          (yyval) = (yyvsp[-2]);
+          (yyval)->addChild((yyvsp[-1]));
+        }
+
+#line 2101 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+        break;
+
+      case 64:
+#line 529 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[0]);
         }
 
-#line 1992 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2109 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 57:
-#line 455 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 65:
+#line 533 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-2]);
           (yyval)->addChild((yyvsp[-1]));
         }
 
-#line 2001 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2118 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 58:
-#line 460 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 66:
+#line 538 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-2]);
           (yyval)->addChild((yyvsp[-1]));
         }
 
-#line 2010 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2127 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 59:
-#line 465 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 67:
+#line 543 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-2]);
           (yyval)->addChild((yyvsp[-1]));
         }
 
-#line 2019 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2136 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-      case 60:
-#line 470 "CEvaluationParser.ypp" /* yacc.c:1646  */
+      case 68:
+#line 548 "CEvaluationParser.ypp" /* yacc.c:1646  */
         {
           (yyval) = (yyvsp[-2]);
           (yyval)->addChild((yyvsp[-1]));
         }
 
-#line 2028 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2145 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
         break;
 
-#line 2032 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
+#line 2149 "CEvaluationParser_yacc.cpp" /* yacc.c:1646  */
 
       default: break;
     }
@@ -2357,4 +2482,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 476 "CEvaluationParser.ypp" /* yacc.c:1906  */
+#line 554 "CEvaluationParser.ypp" /* yacc.c:1906  */

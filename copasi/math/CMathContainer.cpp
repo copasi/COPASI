@@ -1793,7 +1793,7 @@ void CMathContainer::allocate()
   // We need to create events for nodes which are capable of introducing
   // discontinuous changes.
   createDiscontinuityEvents();
-  Size.nDiscontinuities += mDiscontinuityEvents.size();
+  Size.nDiscontinuities = mDiscontinuityEvents.size();
   Size.nEvents += Size.nDiscontinuities;
 
   // User defined events
