@@ -53,6 +53,12 @@ public:
   CEvaluationNodeObject(const C_FLOAT64 * pValue);
 
   /**
+   * Specific constructor
+   * @param const Data & data
+   */
+  CEvaluationNodeObject(const bool * pValue);
+
+  /**
    * Copy constructor
    * @param const CEvaluationNodeObject & src
    */

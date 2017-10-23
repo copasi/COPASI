@@ -54,7 +54,7 @@ public:
   yyYaccParser():
     mpNode(NULL),
     mpRootNode(NULL),
-    mBoolean(false),
+    mValueType(CEvaluationNode::ValueType::Unknown),
     mpNodeList(NULL),
     mPosition(0)
   {}
@@ -81,14 +81,14 @@ public:
 
   CEvaluationNode * getRootNode() {return mpRootNode;}
 
-  bool isBoolean() const {return mBoolean;}
+  const CEvaluationNode::ValueType & getValueType() const {return mValueType;}
 
   size_t getErrorPosition() {return mPosition;}
 
 protected:
   CEvaluationNode * mpNode;
   CEvaluationNode * mpRootNode;
-  bool mBoolean;
+  CEvaluationNode::ValueType mValueType;
   std::vector< CEvaluationNode * > * mpNodeList;
   size_t mPosition;
 

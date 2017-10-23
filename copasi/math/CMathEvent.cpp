@@ -339,7 +339,7 @@ void CMathEvent::CTrigger::CRootProcessor::setDataObject(const CDataObject * pDa
 // static
 CEvaluationNode * CMathEvent::CTrigger::CRootProcessor::createTriggerExpressionNode() const
 {
-  return  new CEvaluationNodeObject((C_FLOAT64 *) mpRootState->getValuePointer());
+  return  new CEvaluationNodeObject((bool *) mpRootState->getValuePointer());
 }
 
 CMathEvent::CTrigger::CTrigger():

@@ -144,7 +144,10 @@ CIssue CEvaluationNodeCall::compile(const CEvaluationTree * pTree)
 
         // We need to check whether the provided arguments match the one needed by the
         // function;
-        if (!verifyParameters(mCallNodes, mpFunction->getVariables())) return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
+        if (!verifyParameters(mCallNodes, mpFunction->getVariables()))
+          {
+            return CIssue(CIssue::eSeverity::Error, CIssue::eKind::VariablesMismatch);
+          }
 
         if (mpFunction->isBoolean())
           issue &= setValueType(ValueType::Boolean);

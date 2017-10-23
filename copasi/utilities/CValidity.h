@@ -25,34 +25,34 @@ class CIssue
 public:
   enum struct eKind
   {
-    Unknown,
-    ExpressionInvalid,
-    ExpressionEmpty,
-    MissingInitialValue,
-    CalculationIssue,
-    EventMissingAssignment,
-    EventAlreadyHasAssignment,
-    EventMissingTriggerExpression,
-    UnitUndefined,
-    UnitConflict,
-    UnitInvalid,
-    NaNissue,
-    ObjectNotFound,
-    ValueNotFound,
-    VariableNotfound,
-    StructureInvalid,
-    TooManyArguments,
-    HasCircularDependency,
-    ExpressionDataTypeInvalid,
-    VariableInExpression,
-    CExpressionNotFound,
-    CFunctionNotFound,
-    VariablesMismatch,
-    ValueTypeMismatch,
-    InitialExpressionWithAssignment,
-    SettingFixedExpression,
-    KineticsUndefined,
-    __SIZE
+    Unknown, // 0
+    ExpressionInvalid, // 1
+    ExpressionEmpty, // 2
+    MissingInitialValue, // 3
+    CalculationIssue, //  4
+    EventMissingAssignment, //  5
+    EventAlreadyHasAssignment, // 6
+    EventMissingTriggerExpression, // 7
+    UnitUndefined, // 8
+    UnitConflict, //  9
+    UnitInvalid, // 10
+    NaNissue, //  11
+    ObjectNotFound, //  12
+    ValueNotFound, // 13
+    VariableNotfound, //  14
+    StructureInvalid, //  15
+    TooManyArguments, //  16
+    HasCircularDependency, // 17
+    ExpressionDataTypeInvalid, // 18
+    VariableInExpression, //  19
+    CExpressionNotFound, // 20
+    CFunctionNotFound, // 21
+    VariablesMismatch, // 22
+    ValueTypeMismatch, // 23
+    InitialExpressionWithAssignment, // 24
+    SettingFixedExpression, // 25
+    KineticsUndefined, // 26
+    __SIZE // 27
   };
 
   enum struct eSeverity

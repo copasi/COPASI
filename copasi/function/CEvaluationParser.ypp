@@ -86,12 +86,17 @@
 %%
 result:   exp
           {
-            mBoolean = false;
+            mValueType = CEvaluationNode::ValueType::Number;
             mpRootNode = $$; 
           }
         | bool
           {
-            mBoolean = true;
+            mValueType = CEvaluationNode::ValueType::Boolean;
+            mpRootNode = $$; 
+          }
+        | d_or_b
+          {
+            mValueType = CEvaluationNode::ValueType::Unknown;
             mpRootNode = $$; 
           }
 
@@ -130,6 +135,7 @@ exp:      TOKEN_NUMBER
           }
         | d_or_b
           {
+            $1->setValueType(CEvaluationNode::ValueType::Number);
             $$ = $1;
             mpRootNode = $$; 
           }
@@ -201,18 +207,62 @@ exp:      TOKEN_NUMBER
           }
         | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
           {
+            $1->setValueType(CEvaluationNode::ValueType::Number); 
             $$ = $1;
             $$->addChild($3); 
             $$->addChild($5); 
             $$->addChild($7); 
             mpRootNode = $$; 
           }
+        | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA d_or_b TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
+          {
+            $1->setValueType(CEvaluationNode::ValueType::Number); 
+            $$ = $1;
+            $$->addChild($3); 
+            $5->setValueType(CEvaluationNode::ValueType::Number); 
+            $$->addChild($5);
+            $$->addChild($7); 
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA d_or_b TOKEN_STRUCTURE_CLOSE
+          {
+            $1->setValueType(CEvaluationNode::ValueType::Number); 
+            $$ = $1;
+            $$->addChild($3); 
+            $$->addChild($5); 
+            $7->setValueType(CEvaluationNode::ValueType::Number); 
+            $$->addChild($7); 
+            mpRootNode = $$; 
+          }
         | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN d_or_b TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
           {
+            $1->setValueType(CEvaluationNode::ValueType::Number); 
             $$ = $1;
             $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3); 
             $$->addChild($5); 
+            $$->addChild($7); 
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN d_or_b TOKEN_STRUCTURE_COMMA d_or_b TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_CLOSE
+          {
+            $1->setValueType(CEvaluationNode::ValueType::Number); 
+            $$ = $1;
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
+            $$->addChild($3); 
+            $5->setValueType(CEvaluationNode::ValueType::Number); 
+            $$->addChild($5); 
+            $$->addChild($7); 
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN d_or_b TOKEN_STRUCTURE_COMMA exp TOKEN_STRUCTURE_COMMA d_or_b TOKEN_STRUCTURE_CLOSE
+          {
+            $1->setValueType(CEvaluationNode::ValueType::Number); 
+            $$ = $1;
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
+            $$->addChild($3); 
+            $$->addChild($5); 
+            $7->setValueType(CEvaluationNode::ValueType::Number); 
             $$->addChild($7); 
             mpRootNode = $$; 
           }
@@ -232,15 +282,17 @@ bool:     TOKEN_LOGICAL_VALUE
           }
         | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA d_or_b TOKEN_STRUCTURE_COMMA bool TOKEN_STRUCTURE_CLOSE
           {
+            $1->setValueType(CEvaluationNode::ValueType::Boolean); 
             $$ = $1;
             $$->addChild($3); 
-            $$->addChild($5); 
             $5->setValueType(CEvaluationNode::ValueType::Boolean);
+            $$->addChild($5); 
             $$->addChild($7); 
             mpRootNode = $$; 
           }
         | TOKEN_LOGICAL_CHOICE TOKEN_STRUCTURE_OPEN bool TOKEN_STRUCTURE_COMMA bool TOKEN_STRUCTURE_COMMA d_or_b TOKEN_STRUCTURE_CLOSE
           {
+            $1->setValueType(CEvaluationNode::ValueType::Boolean); 
             $$ = $1;
             $$->addChild($3); 
             $$->addChild($5); 
@@ -252,6 +304,7 @@ bool:     TOKEN_LOGICAL_VALUE
           {
             $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $1;
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3); 
             $$->addChild($5); 
             $$->addChild($7); 
@@ -261,9 +314,10 @@ bool:     TOKEN_LOGICAL_VALUE
           {
             $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $1;
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3); 
-            $$->addChild($5); 
             $5->setValueType(CEvaluationNode::ValueType::Boolean);
+            $$->addChild($5); 
             $$->addChild($7); 
             mpRootNode = $$; 
           }
@@ -271,6 +325,7 @@ bool:     TOKEN_LOGICAL_VALUE
           {
             $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $1;
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3); 
             $$->addChild($5); 
             $7->setValueType(CEvaluationNode::ValueType::Boolean);
@@ -284,6 +339,14 @@ bool:     TOKEN_LOGICAL_VALUE
             $$->addChild($3);
             mpRootNode = $$; 
           }
+        | d_or_b TOKEN_LOGICAL_EQ exp
+          {
+            $$ = $2;
+            $1->setValueType(CEvaluationNode::ValueType::Number);
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
         | bool TOKEN_LOGICAL_EQ bool
           {
             $$ = $2;
@@ -293,23 +356,31 @@ bool:     TOKEN_LOGICAL_VALUE
           }
         | bool TOKEN_LOGICAL_EQ d_or_b
           {
-            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $2;
             $$->addChild($1); 
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3);
             mpRootNode = $$; 
           }
         | d_or_b TOKEN_LOGICAL_EQ bool
           {
-            $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $2;
             $$->addChild($1); 
+            $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3);
             mpRootNode = $$; 
           }
         | exp TOKEN_LOGICAL_NE exp
           {
             $$ = $2;
+            $$->addChild($1); 
+            $$->addChild($3);
+            mpRootNode = $$; 
+          }
+        | d_or_b TOKEN_LOGICAL_NE exp
+          {
+            $$ = $2;
+            $1->setValueType(CEvaluationNode::ValueType::Number);
             $$->addChild($1); 
             $$->addChild($3);
             mpRootNode = $$; 
@@ -323,16 +394,16 @@ bool:     TOKEN_LOGICAL_VALUE
           }
         | bool TOKEN_LOGICAL_NE d_or_b
           {
-            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $2;
             $$->addChild($1); 
+            $3->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($3);
             mpRootNode = $$; 
           }
         | d_or_b TOKEN_LOGICAL_NE bool
           {
-            $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$ = $2;
+            $1->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($1); 
             $$->addChild($3);
             mpRootNode = $$; 
@@ -394,6 +465,13 @@ bool:     TOKEN_LOGICAL_VALUE
         | TOKEN_LOGICAL_NOT bool
           {
             $$ = $1;
+            $$->addChild($2);
+            mpRootNode = $$; 
+          }
+        | TOKEN_LOGICAL_NOT d_or_b
+          {
+            $$ = $1;
+            $2->setValueType(CEvaluationNode::ValueType::Boolean);
             $$->addChild($2);
             mpRootNode = $$; 
           }
