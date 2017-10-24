@@ -1,15 +1,21 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
 #include <QtCore/QCoreApplication>
-#include <QtGui/QGraphicsScene>
-#include <QtGui/QGraphicsItem>
-#include <QtGui/QPainter>
-#include <QtGui/QPrinter>
-#include <QtGui/QImage>
-#include <QtGui/QGraphicsEffect>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QPainter>
+#include <QPrinter>
+#include <QSvgGenerator>
+#include <QImage>
+#include <QGraphicsEffect>
 
 #include "copasi.h"
 
@@ -35,6 +41,7 @@
 #include <copasi/model/CMetab.h>
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CChemEq.h>
+#include <copasi/utilities/CVersion.h>
 
 #include "CopasiDataModel/CCopasiDataModel.h"
 #include "copasi/report/CCopasiRootContainer.h"
@@ -87,6 +94,20 @@ void CQLayoutScene::saveToFile(const std::string& fileName, const std::string& f
       painter.setRenderHints(
         QPainter::Antialiasing | QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
       render(&painter, QRect(), itemsBoundingRect());
+      painter.end();
+    }
+  else if (fileType == "svg")
+    {
+      QRectF rect = itemsBoundingRect();
+      QSvgGenerator generator;
+      generator.setTitle(getCurrentLayout()->getObjectName().c_str());
+      generator.setDescription(QString("Exported using COPASI: %1").arg(CVersion::VERSION.getVersion().c_str()));
+      generator.setFileName(fileName.c_str());
+      generator.setViewBox(rect);
+      generator.setSize(QSize(rect.width(), rect.height()));
+      QPainter painter;
+      painter.begin(&generator);
+      render(&painter);
       painter.end();
     }
   else

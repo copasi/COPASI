@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -324,7 +329,7 @@ void CQAnimationWindow::slotExportImage()
 {
   QString fileName = QFileDialog::getSaveFileName(this, tr("Export Image"),
                      "",
-                     tr("PDF files (*.pdf);;Images (*.png *.xpm *.jpg);;All files (*.*)"));
+                     tr("PDF files (*.pdf);;SVG files (*.svg);;Images (*.png *.xpm *.jpg);;All files (*.*)"));
   graphicsView->slotSaveToFile(fileName);
 }
 
