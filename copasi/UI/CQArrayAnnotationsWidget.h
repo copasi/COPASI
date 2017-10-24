@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -54,12 +59,12 @@ public:
   /**
    * returns the color coding algorithm
    */
-  CColorScale * getColorCoding() const {return mpColorScale;};
+  CColorScale * getColorCoding() const;
 
   /**
    * if true the parameters for the color coding are determined automatically
    */
-  void setColorScalingAutomatic(bool s) {mAutomaticColorScaling = s;};
+  void setColorScalingAutomatic(bool s);
 
   /**
    * Enable or disable the display of the dimensions annotation (the upper table)

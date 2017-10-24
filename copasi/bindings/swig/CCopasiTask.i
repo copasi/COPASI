@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -133,6 +138,28 @@
     }
   
 
+    bool initializeRaw(int outputFlags)
+    {
+        bool success;
+        CCopasiDataModel* pDataModel=self->getObjectDataModel();
+        assert(pDataModel!=NULL);
+        
+        // Initialize the task
+        try
+        {
+          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL);
+        }
+        
+        catch (CCopasiException &)
+        {
+          success = false;
+        }
+        
+        catch (...) {}
+
+        return success;
+    }
+
     bool initialize(int outputFlags)
     {
          bool success = true;
@@ -161,6 +188,32 @@
         return success;
     }
   
+    bool processRaw(bool useInitialValues)
+    {
+        bool success;
+        CCopasiDataModel* pDataModel=self->getObjectDataModel();
+        assert(pDataModel!=NULL);
+
+        // Process the task
+        try
+        {
+          success = self->process(useInitialValues);
+        }
+        
+        catch (CCopasiException &)
+        {
+          success = false;
+        }
+        
+        catch (...) {}
+
+        self->restore();
+
+        pDataModel->finish();
+
+        return success;
+    }
+
     bool processWithOutputFlags(bool useInitialValues, int outputFlags) 
       {
         bool success = true;

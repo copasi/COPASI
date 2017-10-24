@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -130,6 +135,18 @@ void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
   if (cs) cs->setIsUsed(true);
 }
 
+CColorScale *
+CQArrayAnnotationsWidget::getColorCoding() const
+{
+  return mpColorScale;
+}
+
+void
+CQArrayAnnotationsWidget::setColorScalingAutomatic(bool s)
+{
+  mAutomaticColorScaling = s;
+}
+
 void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArray)
 {
 #ifdef DEBUG_UI
@@ -227,10 +244,11 @@ void CQArrayAnnotationsWidget::setArrayAnnotation(const CArrayAnnotation * pArra
         mpComboRows->show();
         mpLblColumns->show();
         mpComboColumns->show();
-        mpLblOther->hide();
-        mpSelectionTable->hide();
+        mpLblOther->show();
+        mpSelectionTable->show();
 
         // TODO CRITICAL We need to fill the selection table.
+        initSelectionTable();
         slotRowSelectionChanged(0);
         break;
     }
@@ -251,6 +269,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
     {
 
       QTableWidgetItem *pItem = new QTableWidgetItem(FROM_UTF8(mpArray->getDimensionDescription(i)));
+      pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
       mpSelectionTable->setItem((int) i, 0, pItem);
 
       //combo box
@@ -258,8 +277,9 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       vectorOfStrings2QStringList(mpArray->getAnnotationsString(i), ComboEntries);
 
       pItem = new QTableWidgetItem(ComboEntries[mSelectionIndex[i]]);
-      pItem->setData(Qt::EditRole, ComboEntries);
-      mpSelectionTable->setItem((int) i, 1, pItem);
+      pItem->setData(Qt::UserRole, ComboEntries);
+      pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+      mpSelectionTable->setItem((int)i, 1, pItem);
     }
 
   mpSelectionTable->resizeColumnsToContents();
