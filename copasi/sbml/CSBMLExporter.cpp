@@ -4008,7 +4008,18 @@ bool CSBMLExporter::createSBMLDocument(CCopasiDataModel& dataModel)
 
   if (pOldSBMLDocument == NULL)
     {
-      this->mpSBMLDocument = new SBMLDocument(this->mSBMLLevel, this->mSBMLVersion);
+      try
+        {
+          this->mpSBMLDocument = new SBMLDocument(this->mSBMLLevel, this->mSBMLVersion);
+        }
+      catch (const SBMLConstructorException& ex)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, ex.what());
+        }
+      catch (...)
+        {
+          fatalError();
+        }
     }
   else
     {

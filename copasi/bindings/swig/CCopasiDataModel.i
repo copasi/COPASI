@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and The University 
 // of Manchester. 
@@ -85,8 +90,8 @@
 %catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string& sbmlDocumentText,CProcessReport* pImportHandler = NULL,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::importSBML(const std::string&,CProcessReport*,const bool& deleteOldData = true);
 %catches(CCopasiException) CCopasiDataModel::importSBMLFromString(const std::string&,CProcessReport*,const bool& deleteOldData = true);
-%catches(CCopasiException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion);
-%catches(CCopasiException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL);
+%catches(CCopasiException, SBMLConstructorException) CCopasiDataModel::exportSBMLToString(CProcessReport* pExportHandler , int sbmlLevel,int sbmlVersion); 
+%catches(CCopasiException, SBMLConstructorException) CCopasiDataModel::exportSBML(const std::string& fileName, bool overwriteFile=false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM, CProcessReport* pExportHandler = NULL); 
 
 #if SWIGPYTHON
 %exception importSBML {
@@ -144,10 +149,17 @@
         return $self->saveModel(fileName,NULL,overwriteFile,false);
     }
 
-    std::string exportSBMLToString(int sbmlLevel, int sbmlVersion)
-    {
-        return $self->exportSBMLToString(NULL,sbmlLevel,sbmlVersion);
-    }
+    std::string exportSBMLToString(int sbmlLevel, int sbmlVersion) 
+    { 
+      try 
+      { 
+        return $self->exportSBMLToString(NULL,sbmlLevel,sbmlVersion); 
+      } 
+      catch (...) 
+      { 
+        return ""; 
+      } 
+    } 
 
     /* this is for backwards compatibility. */
     std::string exportSBMLToString()
