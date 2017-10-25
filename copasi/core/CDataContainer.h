@@ -176,6 +176,11 @@ public:
 
   virtual bool add(CDataObject * pObject, const bool & adopt = true);
 
+  /**
+   * Removes the pointer to the object, from the vector
+   * @param CDataObject * pObject
+   * @return bool success
+   */
   virtual bool remove(CDataObject * pObject);
 
   void objectRenamed(CDataObject * pObject, const std::string & oldName);

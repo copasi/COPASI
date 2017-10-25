@@ -231,6 +231,13 @@ public:
   }
 
   /**
+   * Removes the pointer to the object, from the vector
+   * @param CDataObject * pObject
+   * @return bool success
+   */
+  virtual bool remove(CDataObject * pObject);
+
+  /**
    * Add a subgroup to the group
    * @param const std::string & name
    * @return bool success
@@ -593,9 +600,13 @@ ElevateTo * elevate(CCopasiParameter * pParm)
         }
 
       pTo = new ElevateTo(*pFrom, NO_PARENT);
-      delete pParm;
 
-      pGrp->CDataContainer::add(pTo, true);
+      // We do not want the parameter to be removed from the group which would happen during deletion.
+      // To prevent this we remove it manually from the parent class.
+      pGrp->CCopasiParameter::remove(pParm);
+      delete pParm;
+      pGrp->CCopasiParameter::add(pTo, true);
+
       *it = pTo;
     }
   else

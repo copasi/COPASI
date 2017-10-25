@@ -230,9 +230,7 @@ CCopasiParameterGroup::CCopasiParameterGroup(const std::string & name,
 {}
 
 CCopasiParameterGroup::~CCopasiParameterGroup()
-{
-  clear();
-}
+{}
 
 // virtual
 CData CCopasiParameterGroup::toData() const
@@ -586,19 +584,14 @@ CCopasiParameterGroup * CCopasiParameterGroup::assertGroup(const std::string & n
 
 bool CCopasiParameterGroup::removeParameter(const std::string & name)
 {
-  return removeParameter(getIndex(name));
+  return removeParameter(getParameter(name));
 }
 
 bool CCopasiParameterGroup::removeParameter(const size_t & index)
 {
   if (index < size())
     {
-      index_iterator it = static_cast< elements * >(mpValue)->begin() + index;
-
-      pdelete(*it);
-      static_cast< elements * >(mpValue)->erase(it, it + 1);
-
-      return true;
+      return removeParameter(static_cast< elements * >(mpValue)->at(index));
     }
 
   return false;
@@ -606,19 +599,37 @@ bool CCopasiParameterGroup::removeParameter(const size_t & index)
 
 bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
 {
-  index_iterator it = static_cast< elements * >(mpValue)->begin();
-  index_iterator end = static_cast< elements * >(mpValue)->end();
-
-  for (; it != end; ++it)
-    if (*it == pParameter)
-      {
-        pdelete(*it);
-        static_cast< elements * >(mpValue)->erase(it, it + 1);
-
-        return true;
-      }
+  if (pParameter != NULL &&
+      pParameter->getObjectParent() == this)
+    {
+      delete pParameter;
+      return true;
+    }
 
   return false;
+}
+
+// virtual
+bool CCopasiParameterGroup::remove(CDataObject * pObject)
+{
+  bool success = CCopasiParameter::remove(pObject);
+
+  if (success)
+    {
+      CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(pObject);
+
+      index_iterator it = static_cast< elements * >(mpValue)->begin();
+      index_iterator end = static_cast< elements * >(mpValue)->end();
+
+      for (; it != end; ++it)
+        if (*it == pParameter)
+          {
+            static_cast< elements * >(mpValue)->erase(it, it + 1);
+            break;
+          }
+    }
+
+  return success;
 }
 
 CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name)
@@ -767,12 +778,16 @@ void CCopasiParameterGroup::clear()
 {
   if (mpValue != NULL)
     {
-      index_iterator it = static_cast< elements * >(mpValue)->begin();
-      index_iterator end = static_cast< elements * >(mpValue)->end();
-
-      for (; it != end; ++it) pdelete(*it);
-
+      elements Elements = *static_cast< elements * >(mpValue);
       static_cast< elements * >(mpValue)->clear();
+
+      index_iterator it = Elements.begin();
+      index_iterator end = Elements.end();
+
+      for (; it != end; ++it)
+        {
+          pdelete(*it);
+        }
     }
 }
 
