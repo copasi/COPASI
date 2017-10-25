@@ -88,14 +88,14 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
 
   if (index.column() == COL_VALUE)
     {
-      if (pNode->getType() == CCopasiParameter::BOOL)
+      if (pNode->getType() == CCopasiParameter::Type::BOOL)
         return Flags | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
 
       if (pNode->hasValidValues())
         {
           emit signalCreateComboBox(index);
         }
-      else if (pNode->getType() == CCopasiParameter::GROUP &&
+      else if (pNode->getType() == CCopasiParameter::Type::GROUP &&
                static_cast< CCopasiParameterGroup * >(pNode)->haveTemplate())
         {
           emit signalCreatePushButton(index);
@@ -105,7 +105,7 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
           emit signalCloseEditor(index);
         }
 
-      if (pNode->getType() == CCopasiParameter::CN)
+      if (pNode->getType() == CCopasiParameter::Type::CN)
         {
           return (Flags | Qt::ItemIsEnabled) & ~Qt::ItemIsEditable;
         }
@@ -251,7 +251,7 @@ int CQParameterGroupDM::rowCount(const QModelIndex & parent) const
 
   switch (pParent->getType())
     {
-      case CCopasiParameter::GROUP:
+      case CCopasiParameter::Type::GROUP:
         return (int) static_cast< CCopasiParameterGroup * >(pParent)->size(Flag);
         break;
 
@@ -452,7 +452,7 @@ QVariant CQParameterGroupDM::nameData(const CCopasiParameter * pNode, int role)
 // static
 QVariant CQParameterGroupDM::typeData(const CCopasiParameter * pNode, int role)
 {
-  return QVariant(pNode->getType());
+  return QVariant(static_cast< int >(pNode->getType()));
 }
 
 QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
@@ -464,20 +464,20 @@ QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
 
         switch (pNode->getType())
           {
-            case CCopasiParameter::DOUBLE:
-            case CCopasiParameter::UDOUBLE:
+            case CCopasiParameter::Type::DOUBLE:
+            case CCopasiParameter::Type::UDOUBLE:
               return QVariant(convertToQString(pNode->getValue< C_FLOAT64 >()));
               break;
 
-            case CCopasiParameter::INT:
+            case CCopasiParameter::Type::INT:
               return QVariant(QString::number(pNode->getValue< C_INT32 >()));
               break;
 
-            case CCopasiParameter::UINT:
+            case CCopasiParameter::Type::UINT:
               return QVariant(QString::number(pNode->getValue< unsigned C_INT32 >()));
               break;
 
-            case CCopasiParameter::BOOL:
+            case CCopasiParameter::Type::BOOL:
 
               if (role == Qt::DisplayRole)
                 return QVariant();
@@ -486,7 +486,7 @@ QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
 
               break;
 
-            case CCopasiParameter::GROUP:
+            case CCopasiParameter::Type::GROUP:
 
               if (static_cast< const CCopasiParameterGroup * >(pNode)->haveTemplate())
                 {
@@ -496,13 +496,13 @@ QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
               return QVariant();
               break;
 
-            case CCopasiParameter::STRING:
-            case CCopasiParameter::FILE:
-            case CCopasiParameter::EXPRESSION:
-            case CCopasiParameter::KEY:
+            case CCopasiParameter::Type::STRING:
+            case CCopasiParameter::Type::FILE:
+            case CCopasiParameter::Type::EXPRESSION:
+            case CCopasiParameter::Type::KEY:
               return QVariant(FROM_UTF8(pNode->getValue< std::string >()));
 
-            case CCopasiParameter::CN:
+            case CCopasiParameter::Type::CN:
             {
               const CObjectInterface * pObject = pNode->getObjectFromCN(pNode->getValue< CRegisteredCommonName >());
 
@@ -524,7 +524,7 @@ QVariant CQParameterGroupDM::valueData(const CCopasiParameter * pNode, int role)
 
       case Qt::CheckStateRole:
 
-        if (pNode->getType() == CCopasiParameter::BOOL)
+        if (pNode->getType() == CCopasiParameter::Type::BOOL)
           {
             return pNode->getValue< bool >() ? Qt::Checked : Qt::Unchecked;
           }

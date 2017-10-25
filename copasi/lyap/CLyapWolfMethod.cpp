@@ -58,11 +58,11 @@ CLyapWolfMethod::~CLyapWolfMethod()
 
 void CLyapWolfMethod::initializeParameter()
 {
-  assertParameter("Orthonormalization Interval", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0);
-  assertParameter("Overall time", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
-  assertParameter("Relative Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  assertParameter("Absolute Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.0e-12);
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
+  assertParameter("Orthonormalization Interval", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
+  assertParameter("Overall time", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1000.0);
+  assertParameter("Relative Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
+  assertParameter("Absolute Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-12);
+  assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
 
   // Check whether we have an (obsolete) parameter "Use Default Absolute Tolerance"
   CCopasiParameter *pParm;

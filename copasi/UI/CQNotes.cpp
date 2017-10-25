@@ -174,7 +174,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mChanged(false),
   mpValidatorXML(NULL),
   mValidity(QValidator::Acceptable),
-  mKeyToCopy("")
+  mObjectCNToCopy()
   , mpUndoStack(NULL)
   , mpWebView(NULL)
 
@@ -209,11 +209,11 @@ CQNotes::~CQNotes()
 
 void CQNotes::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }
 
 // virtual
-bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -224,7 +224,7 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
     {
       case ListViews::CHANGE:
 
-        if (key == mKey)
+        if (cn == mObjectCN)
           {
             load();
           }
@@ -233,10 +233,10 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
 
       case ListViews::DELETE:
 
-        if (key == mKey || objectType == ListViews::MODEL)
+        if (cn == mObjectCN || objectType == ListViews::MODEL)
           {
             mpObject = NULL;
-            mKey = "";
+            mObjectCN.clear();
           }
 
         break;
@@ -257,18 +257,13 @@ bool CQNotes::update(ListViews::ObjectType objectType, ListViews::Action action,
 // virtual
 bool CQNotes::leave()
 {
-  //mpBtnToggleEdit->setFocus();
-
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject != NULL)
     {
       save();
     }
   else
     {
-      mKey = "";
-      mpDataModel = NULL;
+      mObjectCN.clear();
     }
 
   return true;
@@ -277,17 +272,21 @@ bool CQNotes::leave()
 // virtual
 bool CQNotes::enterProtected()
 {
-  if (mKeyToCopy == "")
+  if (mObjectCNToCopy == "")
     {
       load();
     }
   else
     {
-      mpObject = CRootContainer::getKeyFactory()->get(mKeyToCopy);
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy)));
       load();
-      mpObject = CRootContainer::getKeyFactory()->get(mKey);
+      mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCN)));
       save();
-      mKeyToCopy = "";
+      mObjectCN.clear();
     }
 
   return true;
@@ -347,8 +346,6 @@ void CQNotes::slotValidateXML()
 
 void CQNotes::load()
 {
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject != NULL)
     {
       QString Notes;
@@ -450,8 +447,9 @@ void CQNotes::slotOpenUrl(const QUrl & url)
   return;
 }
 
-void CQNotes::changeNotes(const std::string& key, const std::string& notes)
+void CQNotes::changeNotes(const std::string & key, const std::string & notes)
 {
+  /*
   if (mpListView->getCurrentItemKey() != mKey || key != mKey)
     {
       mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
@@ -485,4 +483,5 @@ void CQNotes::changeNotes(const std::string& key, const std::string& notes)
   protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
 
   mChanged = false;
+  */
 }

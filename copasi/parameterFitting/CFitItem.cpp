@@ -187,7 +187,7 @@ bool CFitItem::addExperiment(const std::string & key)
   for (i = 0; i < imax; i++)
     if (mpGrpAffectedExperiments->getValue< std::string >(i) == key) return false; // The key already exists.
 
-  return mpGrpAffectedExperiments->addParameter("Experiment Key", CCopasiParameter::KEY, key);
+  return mpGrpAffectedExperiments->addParameter("Experiment Key", CCopasiParameter::Type::KEY, key);
 }
 
 const std::string & CFitItem::getExperiment(const size_t & index) const
@@ -237,7 +237,7 @@ bool CFitItem::addCrossValidation(const std::string & key)
   for (i = 0; i < imax; i++)
     if (mpGrpAffectedCrossValidations->getValue< std::string >(i) == key) return false; // The key already exists.
 
-  return mpGrpAffectedCrossValidations->addParameter("Experiment Key", CCopasiParameter::KEY, key);
+  return mpGrpAffectedCrossValidations->addParameter("Experiment Key", CCopasiParameter::Type::KEY, key);
 }
 
 const std::string & CFitItem::getCrossValidation(const size_t & index) const

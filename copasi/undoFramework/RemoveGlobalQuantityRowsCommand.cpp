@@ -26,7 +26,6 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 #include "UndoGlobalQuantityData.h"
-#include "UndoReactionData.h"
 #include "RemoveGlobalQuantityRowsCommand.h"
 
 RemoveGlobalQuantityRowsCommand::RemoveGlobalQuantityRowsCommand(
@@ -74,10 +73,10 @@ void RemoveGlobalQuantityRowsCommand::undo()
 RemoveGlobalQuantityRowsCommand::~RemoveGlobalQuantityRowsCommand()
 {
   // freeing the memory allocated above
-  foreach(UndoGlobalQuantityData * data, mpGlobalQuantityData)
-  {
-    pdelete(data);
-  }
+  foreach (UndoGlobalQuantityData * data, mpGlobalQuantityData)
+    {
+      pdelete(data);
+    }
 
   mpGlobalQuantityData.clear();
 }

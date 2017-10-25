@@ -137,12 +137,12 @@ bool CQTabWidget::enterProtected()
   std::vector< CopasiWidget * >::iterator end = mPages.end();
 
   for (; it != end; ++it)
-    (*it)->enter(mKey);
+    (*it)->enter(mObjectCN);
 
   return true;
 }
 
-bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -150,7 +150,7 @@ bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action act
     }
 
   if (objectType == mObjectType &&
-      key == mKey)
+      cn == mObjectCN)
     {
       switch (action)
         {
@@ -160,6 +160,7 @@ bool CQTabWidget::update(ListViews::ObjectType objectType, ListViews::Action act
 
           case ListViews::DELETE:
             mpObject = NULL;
+            mObjectCN.clear();
             break;
 
           default:
@@ -178,9 +179,6 @@ void CQTabWidget::selectTab(int index) const
 
 void CQTabWidget::load()
 {
-  // mpObject can not be trusted
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject != NULL)
     {
       mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
@@ -231,9 +229,6 @@ void CQTabWidget::load()
 
 bool CQTabWidget::save()
 {
-  // mpObject can not be trusted
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
-
   if (mpObject == NULL) return false;
 
   // We need to tell the sub-widgets to ignore all notifications
@@ -337,6 +332,7 @@ void CQTabWidget::slotBtnCopy()
 
 bool CQTabWidget::renameEntity(const std::string& key, const std::string& newName)
 {
+  /*
   mKey = key;
   load();
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
@@ -367,7 +363,7 @@ bool CQTabWidget::renameEntity(const std::string& key, const std::string& newNam
     {
       mpDataModel->changed();
     }
-
+  */
   return true;
 }
 

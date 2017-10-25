@@ -34,20 +34,17 @@
 #include "copasi/function/CExpression.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/math/CMathContainer.h"
+#include "copasi/undo/CUndoData.h"
 
 #define METAB_MOIETY 7
 
 //static
-C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration,
-                                  const CCompartment & compartment,
-                                  const CModel & model)
-{return concentration * compartment.getInitialValue() * model.getQuantity2NumberFactor();}
+C_FLOAT64 CMetab::convertToNumber(const C_FLOAT64 & concentration, const CCompartment & compartment)
+{return concentration * compartment.getInitialValue() * compartment.getModel()->getQuantity2NumberFactor();}
 
 //static
-C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number,
-    const CCompartment & compartment,
-    const CModel & model)
-{return number / compartment.getInitialValue() * model.getNumber2QuantityFactor();}
+C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number, const CCompartment & compartment)
+{return number / compartment.getInitialValue() * compartment.getModel()->getNumber2QuantityFactor();}
 
 // static
 CMetab * CMetab::fromData(const CData & data)
@@ -59,10 +56,9 @@ CMetab * CMetab::fromData(const CData & data)
 // virtual
 CData CMetab::toData() const
 {
-  CData Data;
+  CData Data = CModelEntity::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::INITIAL_INTENSIVE_VALUE, mIConc);
 
   return Data;
 }
@@ -70,12 +66,37 @@ CData CMetab::toData() const
 // virtual
 bool CMetab::applyData(const CData & data)
 {
-  bool success = true;
+  bool success = CModelEntity::applyData(data);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::INITIAL_INTENSIVE_VALUE))
+    {
+      mIConc = data.getProperty(CData::INITIAL_INTENSIVE_VALUE).toDouble();
+    }
 
   return success;
+}
+
+// virtual
+void CMetab::createUndoData(CUndoData & undoData,
+                            const CUndoData::Type & type,
+                            const CData & oldData,
+                            const CCore::Framework & framework) const
+{
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::INITIAL_INTENSIVE_VALUE, oldData.getProperty(CData::INITIAL_INTENSIVE_VALUE), mIConc);
+
+  if (undoData.isChangedProperty(CData::OBJECT_PARENT_CN))
+    {
+      // TODO CRITICAL All reactions may change from single to multiple compartment
+    }
+
+  return;
 }
 
 CMetab::CMetab(const std::string & name,
@@ -138,7 +159,7 @@ CMetab &CMetab::operator=(const CMetabOld & RHS)
 
   // We need to set the initial particle number since that is the expected for the initial state
   C_FLOAT64 InitialParticleNumber =
-    CMetab::convertToNumber(RHS.mIConc, *mpCompartment, *mpModel);
+    CMetab::convertToNumber(RHS.mIConc, *mpCompartment);
   setInitialValue(InitialParticleNumber);
 
   mRate = 0.0;

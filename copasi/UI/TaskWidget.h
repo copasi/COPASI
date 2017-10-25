@@ -61,11 +61,6 @@ public:
 
   ~TaskWidget();
 
-  //the TaskWidget interface
-  virtual bool update(ListViews::ObjectType objectType,
-                      ListViews::Action action,
-                      const std::string & key);
-
   virtual bool leave();
 
   virtual bool runTask() = 0;
@@ -89,6 +84,7 @@ public slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
   virtual bool loadTask() = 0;
 

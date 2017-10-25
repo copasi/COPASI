@@ -7,8 +7,10 @@
 #define COPASI_CUndoStack
 
 #include <vector>
+#include <map>
 
-class CUndoData;
+#include <copasi/undo/CUndoData.h>
+
 class CDataModel;
 
 class CUndoStack : private std::vector< CUndoData * >
@@ -24,15 +26,18 @@ public:
 
   ~CUndoStack();
 
-  const CUndoData & operator [](const size_t & index) const;
-  size_t setCurrent(const size_t & index);
   size_t size() const;
+  const CUndoData & operator [](const size_t & index) const;
+
+  CUndoData::ChangeSet setCurrentIndex(const size_t & index, const bool & execute = true);
   size_t currentIndex() const;
-  size_t record(const CUndoData & data);
+  CUndoData::ChangeSet record(const CUndoData & data, const bool & execute);
 
   const_iterator begin() const;
   const_iterator end() const;
   const_iterator current() const;
+
+  CUndoData::ChangeSet getChangeSet(const size_t & index) const;
 
 private:
   CDataModel * mpDataModel;

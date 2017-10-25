@@ -45,7 +45,7 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpCompartmentDM->getTypes());
+  mpTypeDelegate = new CQComboDelegate(this, mpCompartmentDM->getTypes());
   mpTblCompartments->setItemDelegateForColumn(COL_TYPE_COMPARTMENTS, mpTypeDelegate);
 #if QT_VERSION >= 0x050000
   mpTblCompartments->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -55,8 +55,8 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   mpTblCompartments->verticalHeader()->hide();
   mpTblCompartments->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpCompartmentDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpCompartmentDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
   connect(mpCompartmentDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -123,7 +123,7 @@ void CQCompartmentsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQCompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQCompartmentsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -141,6 +141,13 @@ bool CQCompartmentsWidget::update(ListViews::ObjectType objectType, ListViews::A
 bool CQCompartmentsWidget::leave()
 {
   return true;
+}
+
+// virtual
+void CQCompartmentsWidget::setFramework(int framework)
+{
+  CopasiWidget::setFramework(framework);
+  mpCompartmentDM->setFramework(framework);
 }
 
 CQBaseDataModel * CQCompartmentsWidget::getCqDataModel()
@@ -226,10 +233,9 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (pModel == NULL)
     return;
 
-  std::string key = pModel->getCompartments()[index.row()].getKey();
+  CCommonName CN = pModel->getCompartments()[index.row()].getCN();
 
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)

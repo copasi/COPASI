@@ -94,9 +94,7 @@ void CQMoietiesTaskResult::init()
   mpReducedStoichiometry->setLegendEnabled(true);
 }
 
-bool CQMoietiesTaskResult::update(ListViews::ObjectType objectType,
-                                  ListViews::Action action,
-                                  const std::string & /* key */)
+bool CQMoietiesTaskResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // :TODO:
   switch (objectType)
@@ -106,6 +104,7 @@ bool CQMoietiesTaskResult::update(ListViews::ObjectType objectType,
         switch (action)
           {
             case ListViews::ADD:
+            case ListViews::DELETE:
               clear();
               break;
 

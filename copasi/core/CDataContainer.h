@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataObjectMap.h"
 
 template <class CType> class CDataObjectReference;
 template <class CType> class CDataVectorReference;
@@ -34,98 +35,9 @@ class CDataContainer: public CDataObject
 {
   //Attributes
 public:
-  class CObjectMap: private std::map< std::string, std::set< CDataObject * > >
-  {
-  public:
-    class iterator
-    {
-    public:
-      iterator();
-
-      iterator(const CObjectMap & map,
-               const bool & begin);
-
-      iterator(const iterator & src);
-
-      ~iterator();
-
-      CDataObject * operator*() const;
-
-      CDataObject * operator->() const;
-
-      iterator & operator++();
-
-      iterator operator++(int);
-
-      bool operator != (const iterator & rhs) const;
-
-    private:
-      const std::map< std::string, std::set< CDataObject * > > * mpMap;
-      bool mNameEnd;
-      std::map< std::string, std::set< CDataObject * > >::iterator mName;
-      bool mObjectEnd;
-      std::set< CDataObject * >::iterator mObject;
-    };
-
-    class const_iterator
-    {
-    public:
-      const_iterator();
-
-      const_iterator(const CObjectMap & map,
-                     const bool & begin);
-
-      const_iterator(const const_iterator & src);
-
-      ~const_iterator();
-
-      CDataObject * operator*() const;
-
-      CDataObject * operator->() const;
-
-      const_iterator & operator++();
-
-      const_iterator operator++(int);
-
-      bool operator != (const const_iterator & rhs) const;
-
-    private:
-      const std::map< std::string, std::set< CDataObject * > > * mpMap;
-      bool mNameEnd;
-      std::map< std::string, std::set< CDataObject * > >::iterator mName;
-      bool mObjectEnd;
-      std::set< CDataObject * >::iterator mObject;
-    };
-
-  public:
-    typedef std::map< std::string, std::set< CDataObject * > > data;
-    typedef std::pair< std::set< CDataObject * >::const_iterator, std::set< CDataObject * >::const_iterator > range;
-
-    CObjectMap();
-
-    CObjectMap(const CObjectMap & src);
-
-    ~CObjectMap();
-
-    std::pair< std::set< CDataObject * >::iterator, bool > insert(CDataObject * pObject);
-    bool erase(CDataObject * pObject);
-    void clear();
-
-    bool contains(CDataObject * pObject) const;
-    void objectRenamed(CDataObject * pObject, const std::string & oldName);
-
-    std::pair< std::set< CDataObject * >::const_iterator, std::set< CDataObject * >::const_iterator > equal_range(const std::string & name) const;
-
-    iterator begin();
-    iterator end();
-
-    const_iterator begin() const;
-    const_iterator end() const;
-  };
-
   static const CObjectInterface::ContainerList EmptyList;
 
-  typedef CObjectMap objectMap;
+  typedef CDataObjectMap objectMap;
 
 protected:
   objectMap mObjects;
@@ -158,6 +70,27 @@ public:
    */
   virtual bool applyData(const CData & data);
 
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+
+  /**
+   * Append all required dependent undo data
+   * @param CUndoData & undoData
+   * @return bool dataAppended
+   */
+  virtual bool appendDeletedDependentData(CUndoData & undoData) const;
+
   CDataContainer(const std::string & name,
                  const CDataContainer * pParent = NO_PARENT,
                  const std::string & type = "CN",
@@ -173,6 +106,7 @@ public:
   virtual const CDataObject * getValueObject() const;
 
   virtual const objectMap & getObjects() const;
+  virtual objectMap & getObjects();
 
   virtual bool add(CDataObject * pObject, const bool & adopt = true);
 
@@ -198,6 +132,8 @@ public:
   virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
 
   virtual size_t getIndex(const CDataObject * pObject) const;
+
+  virtual void updateIndex(const size_t & index, const CDataObject * pObject);
 
   virtual CDataObject * insert(const CData & data);
 

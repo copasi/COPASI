@@ -193,7 +193,7 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
   QPen pen; pen.setWidthF(0.5);
   pSpectogram->setDefaultContourPen(pen);
 
-  std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::STRING, std::string("Default"));
+  std::string colorMap = *const_cast< CPlotItem * >(plotItem)->assertParameter("colorMap", CCopasiParameter::Type::STRING, std::string("Default"));
 
 #if QWT_VERSION > 0x060000
   pSpectogram->setRenderThreadCount(0);
@@ -254,7 +254,7 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
 
 #endif
 
-  QString contours = FROM_UTF8(* const_cast< CPlotItem * >(plotItem)->assertParameter("contours", CCopasiParameter::STRING, std::string("")));
+  QString contours = FROM_UTF8(* const_cast< CPlotItem * >(plotItem)->assertParameter("contours", CCopasiParameter::Type::STRING, std::string("")));
 
   int levels = contours.toInt(&flag);
 

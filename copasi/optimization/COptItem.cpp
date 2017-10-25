@@ -97,10 +97,10 @@ COptItem::~COptItem()
 
 void COptItem::initializeParameter()
 {
-  mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::CN, CCommonName(""));
-  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::CN, CCommonName("1e-06"));
-  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::CN, CCommonName("1e+06"));
-  mpParmStartValue = assertParameter("StartValue", CCopasiParameter::DOUBLE, NaN);
+  mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::Type::CN, CCommonName("1e-06"));
+  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::Type::CN, CCommonName("1e+06"));
+  mpParmStartValue = assertParameter("StartValue", CCopasiParameter::Type::DOUBLE, NaN);
 }
 
 bool COptItem::setObjectCN(const CCommonName & objectCN)

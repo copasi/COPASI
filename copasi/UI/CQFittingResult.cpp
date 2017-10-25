@@ -85,9 +85,7 @@ void CQFittingResult::init()
   mpFisherInformationScaledEigenvectors->setLegendEnabled(false);
 }
 
-bool CQFittingResult::update(ListViews::ObjectType objectType,
-                             ListViews::Action action,
-                             const std::string & /* key */)
+bool CQFittingResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (objectType == ListViews::MODEL && action == ListViews::DELETE)
     {
@@ -550,5 +548,5 @@ void CQFittingResult::slotUpdateModel()
   const_cast< CFitProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }

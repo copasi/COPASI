@@ -34,7 +34,7 @@ public:
   virtual ~CQCrossSectionTaskWidget();
 
   virtual bool runTask();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected:
   void commitInput();

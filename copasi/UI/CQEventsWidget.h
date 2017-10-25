@@ -36,7 +36,6 @@ public:
   CQEventsWidget(QWidget* parent = 0, const char* name = 0);
   ~CQEventsWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual CQBaseDataModel* getCqDataModel();
 
@@ -49,6 +48,7 @@ private:
 protected:
   virtual void keyPressEvent(QKeyEvent* ev);
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected slots:
   virtual void slotBtnNewClicked();
@@ -61,7 +61,6 @@ protected slots:
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
-
 };
 
 #endif // CQEventsWidget_h

@@ -66,9 +66,7 @@ CQOptimizationResult::~CQOptimizationResult()
 void CQOptimizationResult::init()
 {}
 
-bool CQOptimizationResult::update(ListViews::ObjectType objectType,
-                                  ListViews::Action action,
-                                  const std::string & /* key */)
+bool CQOptimizationResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
   if (objectType == ListViews::MODEL && action == ListViews::DELETE)
@@ -136,7 +134,6 @@ bool CQOptimizationResult::enterProtected()
   return true;
 }
 
-
 void CQOptimizationResult::loadTab(int index)
 {
   if (index != mpTabWidget->indexOf(mpLogPage))
@@ -183,7 +180,6 @@ void CQOptimizationResult::loadLog(const COptMethod * pMethod)
           QTreeWidgetItem* statusDetailItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getStatusDetails()));
         }
     }
-
 }
 
 void CQOptimizationResult::slotSave(void)
@@ -250,5 +246,5 @@ void CQOptimizationResult::slotUpdateModel()
   const_cast< COptProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }

@@ -32,8 +32,6 @@
 #include "undoFramework/RemoveAllGlobalQuantityRowsCommand.h"
 #include "undoFramework/GlobalQuantityDataChangeCommand.h"
 #include "undoFramework/UndoGlobalQuantityData.h"
-#include "undoFramework/UndoReactionData.h"
-#include "undoFramework/UndoSpeciesData.h"
 #include "undoFramework/UndoEventData.h"
 #include "undoFramework/UndoEventAssignmentData.h"
 #include <copasi/UI/CQCopasiApplication.h>
@@ -311,19 +309,19 @@ void CQGlobalQuantityDM::resetCache()
   mUnitCache.clear();// data() will add to the unit cache, as needed
 }
 
-bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQGlobalQuantityDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   mpUndoStack->push(new InsertGlobalQuantityRowsCommand(position, rows, this));
 
   return true;
 }
 
-bool CQGlobalQuantityDM::removeRows(int position, int rows)
+bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
   std::vector< std::string > DeletedKeys;
   DeletedKeys.resize(rows);
@@ -342,7 +340,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows)
     {
       mpDataModel->getModel()->removeModelValue(*itDeletedKey);
       emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, *itDeletedKey);
-      emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, ""); //Refresh all as there may be dependencies.
+      emit notifyGUI(ListViews::MODELVALUE, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
     }
 
   endRemoveRows();

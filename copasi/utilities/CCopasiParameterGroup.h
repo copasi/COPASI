@@ -39,38 +39,8 @@ class CCopasiParameterGroup: public CCopasiParameter
 public:
   typedef std::vector< CCopasiParameter * > elements;
   typedef elements::iterator index_iterator;
-
-  class name_iterator
-  {
-  public:
-    name_iterator();
-
-    name_iterator(const CCopasiParameterGroup & group,
-                  const bool & begin);
-
-    name_iterator(const name_iterator & src);
-
-    ~name_iterator();
-
-    CDataObject * operator*() const;
-
-    CDataObject * operator->() const;
-
-    name_iterator & operator++();
-
-    name_iterator operator++(int);
-
-    bool operator != (const name_iterator & rhs) const;
-
-  private:
-    const CCopasiParameterGroup * mpGroup;
-    bool mNameEnd;
-    std::map< std::string, std::set< CDataObject * > >::iterator mName;
-    bool mObjectEnd;
-    std::set< CDataObject * >::iterator mObject;
-    bool mParameterEnd;
-    std::vector< CCopasiParameter * >::iterator mParameter;
-  };
+  typedef CDataObjectMap::type_iterator< CCopasiParameter > name_iterator;
+  typedef CDataObjectMap::const_type_iterator< CCopasiParameter > const_name_iterator;
 
   // Operations
 protected:
@@ -105,8 +75,32 @@ public:
    */
   virtual ~CCopasiParameterGroup();
 
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
   virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
   virtual bool applyData(const CData & data);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   virtual const CObjectInterface * getObject(const CCommonName & cn) const;
 
@@ -127,16 +121,28 @@ public:
   /**
    * Retrieve the begin of unsorted iterator
    * Note: the swap function may be used to change the order
-   * @return name_iterator begin
+   * @return index_iterator begin
    */
   index_iterator beginIndex() const;
 
   /**
    * Retrieve the end of unsorted iterator
    * Note: the swap function may be used to change the order
-   * @return name_iterator end
+   * @return index_iterator end
    */
   index_iterator endIndex() const;
+
+  /**
+   * Retrieve the start iterator going through the parameters sorted by name
+   * @return const_name_iterator begin
+   */
+  const_name_iterator beginName() const;
+
+  /**
+   * Retrieve the end iterator going through the parameters sorted by name
+   * @return const_name_iterator end
+   */
+  const_name_iterator endName() const;
 
   /**
    * Add a parameter
@@ -168,7 +174,7 @@ public:
   {
     CCopasiParameter * pParameter;
 
-    if (type == GROUP)
+    if (type == Type::GROUP)
       {
         // Create a temporary group with the correct name
         CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
@@ -493,6 +499,8 @@ public:
   void clear();
 
   virtual size_t getIndex(const CDataObject * pObject) const;
+
+  virtual void updateIndex(const size_t & index, const CDataObject * pObject);
 
   virtual CDataObject * insert(const CData & data);
 

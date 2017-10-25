@@ -12,10 +12,7 @@
 
 #include "UndoDependentData.h"
 #include "CCopasiUndoCommand.h"
-#include "UndoCompartmentData.h"
-#include "UndoSpeciesData.h"
 #include "UndoGlobalQuantityData.h"
-#include "UndoReactionData.h"
 #include "UndoEventData.h"
 
 #include "copasi/core/CDataObject.h"
@@ -112,24 +109,6 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoReactio
 {
   if (pModel == NULL || reactionData == NULL || reactionData->empty())
     return;
-
-  QList <UndoReactionData *>::const_iterator j;
-
-  for (j = reactionData->begin(); j != reactionData->end(); ++j)
-    {
-
-      UndoReactionData * rData = *j;
-
-      //need to make sure reaction doesn't exist in the model already
-      if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
-        continue;
-
-      CDataObject *pRea = rData->createObjectIn(pModel);
-
-      if (pRea == NULL) continue;
-
-      updateGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-    }
 }
 
 void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoEventData *> *pEventData)
@@ -155,42 +134,12 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoSpecies
 {
   if (pModel == NULL || pSpeciesData == NULL || pSpeciesData->empty())
     return;
-
-  //reaction may further has dependencies, these must be taken care of
-  QList <UndoSpeciesData *>::const_iterator rs;
-
-  for (rs = pSpeciesData->begin(); rs != pSpeciesData->end(); ++rs)
-    {
-      UndoSpeciesData * data = *rs;
-
-      CDataObject* pSpecies = data->createObjectIn(pModel);
-
-      if (pSpecies == NULL)
-        continue;
-
-      updateGUI(ListViews::METABOLITE, ListViews::ADD, pSpecies->getKey());
-    }
 }
 
 void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoCompartmentData *> *pCompartmentData)
 {
   if (pModel == NULL || pCompartmentData == NULL || pCompartmentData->empty())
     return;
-
-  //reaction may further has dependencies, these must be taken care of
-  QList <UndoCompartmentData *>::const_iterator rs;
-
-  for (rs = pCompartmentData->begin(); rs != pCompartmentData->end(); ++rs)
-    {
-      UndoCompartmentData * data = *rs;
-
-      CDataObject* pCompartment = data->createObjectIn(pModel);
-
-      if (pCompartment == NULL)
-        continue;
-
-      updateGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
-    }
 }
 
 void UndoDependentData::restoreDependentObjects(CModel *pModel,
@@ -219,24 +168,6 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoReacti
 {
   if (pModel == NULL || reactionData == NULL || reactionData->empty())
     return;
-
-  QList <UndoReactionData *>::const_iterator j;
-
-  for (j = reactionData->begin(); j != reactionData->end(); ++j)
-    {
-
-      UndoReactionData * rData = *j;
-
-      //need to make sure reaction doesn't exist in the model already
-      if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
-        continue;
-
-      CDataObject *pRea = rData->restoreObjectIn(pModel);
-
-      rData->restoreDependentObjects(pModel);
-
-      updateGUI(ListViews::REACTION, ListViews::ADD, pRea->getKey());
-    }
 }
 
 void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoEventData *> *pEventData)
@@ -264,46 +195,12 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoSpecie
 {
   if (pModel == NULL || pSpeciesData == NULL || pSpeciesData->empty())
     return;
-
-  //reaction may further has dependencies, these must be taken care of
-  QList <UndoSpeciesData *>::const_iterator rs;
-
-  for (rs = pSpeciesData->begin(); rs != pSpeciesData->end(); ++rs)
-    {
-      UndoSpeciesData * data = *rs;
-
-      CDataObject * pSpecies = data->restoreObjectIn(pModel);
-
-      if (pSpecies == NULL)
-        continue;
-
-      data->restoreDependentObjects(pModel);
-
-      updateGUI(ListViews::METABOLITE, ListViews::ADD, pSpecies->getKey());
-    }
 }
 
 void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoCompartmentData *> *pCompartmentData)
 {
   if (pModel == NULL || pCompartmentData == NULL || pCompartmentData->empty())
     return;
-
-  //reaction may further has dependencies, these must be taken care of
-  QList <UndoCompartmentData *>::const_iterator rs;
-
-  for (rs = pCompartmentData->begin(); rs != pCompartmentData->end(); ++rs)
-    {
-      UndoCompartmentData * data = *rs;
-
-      CDataObject* pCompartment = data->restoreObjectIn(pModel);
-
-      if (pCompartment == NULL)
-        continue;
-
-      data->restoreDependentObjects(pModel);
-
-      updateGUI(ListViews::COMPARTMENT, ListViews::ADD, pCompartment->getKey());
-    }
 }
 
 void UndoDependentData::fillDependentObjects(CModel *pModel,
@@ -326,20 +223,6 @@ void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoReactionD
 {
   if (pModel == NULL || reactionData == NULL || reactionData->empty())
     return;
-
-  QList <UndoReactionData *>::const_iterator j;
-
-  for (j = reactionData->begin(); j != reactionData->end(); ++j)
-    {
-
-      UndoReactionData * rData = *j;
-
-      //need to make sure reaction doesn't exist in the model already
-      if (pModel->getReactions().getIndex(rData->getName()) != C_INVALID_INDEX)
-        continue;
-
-      rData->fillObject(pModel);
-    }
 }
 
 void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoEventData *> *pEventData)
@@ -358,51 +241,18 @@ void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoEventData
 }
 
 void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoSpeciesData *> *pSpeciesData)
-{
-  if (pModel == NULL || pSpeciesData == NULL || pSpeciesData->empty())
-    return;
-
-  //reaction may further has dependencies, these must be taken care of
-  QList <UndoSpeciesData *>::const_iterator rs;
-
-  for (rs = pSpeciesData->begin(); rs != pSpeciesData->end(); ++rs)
-    {
-      UndoSpeciesData * data = *rs;
-
-      data->fillObject(pModel);
-    }
-}
+{}
 
 void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoCompartmentData *> *pCompartmentData)
 {
   if (pModel == NULL || pCompartmentData == NULL || pCompartmentData->empty())
     return;
-
-  //reaction may further has dependencies, these must be taken care of
-  QList <UndoCompartmentData *>::const_iterator rs;
-
-  for (rs = pCompartmentData->begin(); rs != pCompartmentData->end(); ++rs)
-    {
-      UndoCompartmentData * data = *rs;
-
-      data->fillObject(pModel);
-    }
 }
 
 void
 UndoDependentData::freeUndoData()
 {
-  foreach (UndoCompartmentData * data, mCompartmentData)
-    {
-      delete data;
-    }
-
   mCompartmentData.clear();
-
-  foreach (UndoSpeciesData * data, mSpeciesData)
-    {
-      delete data;
-    }
 
   mSpeciesData.clear();
 
@@ -412,11 +262,6 @@ UndoDependentData::freeUndoData()
     }
 
   mParameterData.clear();
-
-  foreach (UndoReactionData * data, mReactionData)
-    {
-      delete data;
-    }
 
   mReactionData.clear();
 
@@ -514,58 +359,6 @@ UndoDependentData::initializeFrom(const std::set< const CDataObject * > &deleted
       CDataObject::DataObjectSet EventAssignments;
 
       pModel->appendAllDependents(DeletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
-
-      if (Reactions.size() > 0)
-        {
-          std::set< const CDataObject * >::const_iterator it = Reactions.begin();
-          std::set< const CDataObject * >::const_iterator end = Reactions.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Reactions data
-              const CReaction * pRea = dynamic_cast<const CReaction*>(*it);
-
-              if (pRea == NULL) continue;
-
-              UndoReactionData *data = new UndoReactionData(pRea, false);
-              mReactionData.append(data);
-            }
-        }
-
-      if (Metabolites.size() > 0)
-        {
-          std::set< const CDataObject * >::const_iterator it = Metabolites.begin();
-          std::set< const CDataObject * >::const_iterator end = Metabolites.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Metabolites data
-              const CMetab * pMetab = dynamic_cast<const CMetab*>(*it);
-
-              if (pMetab == NULL) continue;
-
-              UndoSpeciesData *data = new UndoSpeciesData(pMetab, false);
-              mSpeciesData.append(data);
-            }
-        }
-
-      if (Compartments.size() > 0)
-        {
-          std::set< const CDataObject * >::const_iterator it = Compartments.begin();
-          std::set< const CDataObject * >::const_iterator end = Compartments.end();
-
-          for (; it != end; ++it)
-            {
-              const CCompartment * pCompartment = dynamic_cast<const CCompartment*>(*it);
-
-              if (pCompartment == NULL)
-                continue;
-
-              //store the Global Quantity data
-              UndoCompartmentData *data = new UndoCompartmentData(pCompartment, false);
-              mCompartmentData.append(data);
-            }
-        }
 
       if (Values.size() > 0)
         {

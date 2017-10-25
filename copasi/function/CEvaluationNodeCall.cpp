@@ -582,8 +582,8 @@ CEvaluationNodeCall::verifyParameters(const std::vector<CEvaluationNode *> & vec
   for (i = 0; it != end; ++it, i++)
     {
       if (((*it)->mainType() == CEvaluationNode::MainType::VECTOR &&
-           functionParameters[i]->getType() != CFunctionParameter::VFLOAT64) ||
-          functionParameters[i]->getType() == CFunctionParameter::VFLOAT64)
+           functionParameters[i]->getType() != CFunctionParameter::DataType::VFLOAT64) ||
+          functionParameters[i]->getType() == CFunctionParameter::DataType::VFLOAT64)
         return false;
     }
 

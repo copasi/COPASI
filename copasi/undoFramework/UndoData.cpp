@@ -19,10 +19,7 @@
 
 #include "copasi/copasi.h"
 
-#include "UndoCompartmentData.h"
-#include "UndoSpeciesData.h"
 #include "UndoEventData.h"
-#include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoDependentData.h"
 

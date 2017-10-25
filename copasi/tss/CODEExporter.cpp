@@ -1263,7 +1263,7 @@ bool CODEExporter::exportReacParamsAndFuncs(const CModel* copasiModel)
 
               jequation << KineticFunction2ODEmember(reac);
 
-              if (reac->getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime) jequation << "*" << NameMap[metabs[ode_size + j].getCompartment()->getKey()];
+              if (reac->getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime) jequation << "*" << NameMap[metabs[ode_size + j].getCompartment()->getKey()];
 
               equations[metabs[ode_size + j].getKey()] += jequation.str();
             }
@@ -1378,7 +1378,7 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
       CFunction* tmpfunc;
       tmpfunc = new CFunction(*func, NO_PARENT);
 
-      const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
+      const std::vector< std::vector< const CDataObject * > > & ObjectMap = reac->getParameterObjects();
       CCopasiTree< CEvaluationNode>::iterator treeIt = tmpfunc->getRoot();
 
       modifyTreeForMassAction(tmpfunc);
@@ -1397,11 +1397,11 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
               index = tmpfunc->getVariableIndex(name);
               role = tmpfunc->getVariables()[index]->getUsage();
 
-              CDataObject * obj = CRootContainer::getKeyFactory()->get(keyMap[index][0]);
+              const CDataObject * obj = ObjectMap[index][0];
 
-              if ((role == CFunctionParameter::SUBSTRATE)
-                  || (role == CFunctionParameter::PRODUCT)
-                  || (role == CFunctionParameter::MODIFIER))
+              if ((role == CFunctionParameter::Role::SUBSTRATE)
+                  || (role == CFunctionParameter::Role::PRODUCT)
+                  || (role == CFunctionParameter::Role::MODIFIER))
                 {
                   if (obj)
                     tmpname = NameMap[obj->getKey()];
@@ -1409,30 +1409,30 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
                     tmpname = "unknown";
                 }
 
-              if (role == CFunctionParameter::PARAMETER)
+              if (role == CFunctionParameter::Role::PARAMETER)
                 {
                   if (!(reac->isLocalParameter(index)))
                     {
-                      CModelValue* modval;
-                      modval = dynamic_cast< CModelValue * >(obj);
+                      const CModelValue* modval;
+                      modval = dynamic_cast< const CModelValue * >(obj);
                       tmpname = NameMap[modval ->getKey()];
                     }
                   else
                     {
-                      CCopasiParameter* param;
-                      param = dynamic_cast< CCopasiParameter * >(obj);
+                      const CCopasiParameter* param;
+                      param = dynamic_cast< const CCopasiParameter * >(obj);
                       tmpname = NameMap[param->getKey()];
                     }
                 }
 
-              if (role == CFunctionParameter::VOLUME)
+              if (role == CFunctionParameter::Role::VOLUME)
                 {
-                  CCompartment* comp;
-                  comp = dynamic_cast< CCompartment * >(obj);
+                  const CCompartment* comp;
+                  comp = dynamic_cast< const CCompartment * >(obj);
                   tmpname = NameMap[comp->getKey()];
                 }
 
-              if (role == CFunctionParameter::TIME)
+              if (role == CFunctionParameter::Role::TIME)
                 tmpname = NameMap[timeKey];
 
               treeIt->setData(tmpname);
@@ -1452,8 +1452,8 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
 
       const CDataVector<CChemEqElement> & substrs = reac->getChemEq().getSubstrates();
       const CDataVector<CChemEqElement> & prods = reac->getChemEq().getProducts();
-      const std::vector<std::vector<std::string> > & keyMap = reac->getParameterMappings();
-      CDataObject * obj;
+      const std::vector< std::vector< const CDataObject * > > & ObjectMap = reac->getParameterObjects();
+      const CDataObject * obj;
 
       size_t substrs_size = substrs.size(), prods_size = prods.size();
       size_t k, m, mult;
@@ -1463,18 +1463,18 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
 
       const CMassAction & cMassAction = *static_cast<const CMassAction*>(reac->getFunction());
 
-      obj = CRootContainer::getKeyFactory()->get(keyMap[0][0]);
+      obj = ObjectMap[0][0];
 
       if (!(reac->isLocalParameter(0)))
         {
-          CModelValue* modval;
-          modval = dynamic_cast< CModelValue * >(obj);
+          const CModelValue* modval;
+          modval = dynamic_cast< const CModelValue * >(obj);
           expression << NameMap[modval ->getKey()];
         }
       else
         {
-          CCopasiParameter * param;
-          param = dynamic_cast< CCopasiParameter * >(obj);
+          const CCopasiParameter * param;
+          param = dynamic_cast< const CCopasiParameter * >(obj);
           expression << NameMap[param->getKey()];
         }
 
@@ -1494,18 +1494,18 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
         {
           expression << "-";
 
-          obj = CRootContainer::getKeyFactory()->get(keyMap[2][0]);
+          obj = ObjectMap[2][0];
 
           if (!(reac->isLocalParameter(2)))
             {
-              CModelValue * modval;
-              modval = dynamic_cast< CModelValue * >(obj);
+              const CModelValue * modval;
+              modval = dynamic_cast< const CModelValue * >(obj);
               expression << NameMap[modval ->getKey()];
             }
           else
             {
-              CCopasiParameter * param;
-              param = dynamic_cast< CCopasiParameter * >(obj);
+              const CCopasiParameter * param;
+              param = dynamic_cast< const CCopasiParameter * >(obj);
               expression << NameMap[param->getKey()];
             }
 

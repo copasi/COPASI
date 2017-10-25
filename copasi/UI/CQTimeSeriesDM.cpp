@@ -115,7 +115,7 @@ bool CQTimeSeriesDM::insertRows(int /* position */, int /* rows */, const QModel
 }
 
 // virtual
-bool CQTimeSeriesDM::removeRows(int /* position */, int /* rows */)
+bool CQTimeSeriesDM::removeRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
 {
   return false;
 }

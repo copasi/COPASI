@@ -35,7 +35,7 @@
 CLNAProblem::CLNAProblem(const CDataContainer * pParent):
   CCopasiProblem(CTaskEnum::Task::lna, pParent)
 {
-  addParameter("Steady-State", CCopasiParameter::KEY, std::string(""));
+  addParameter("Steady-State", CCopasiParameter::Type::KEY, std::string(""));
   CONSTRUCTOR_TRACE;
 }
 

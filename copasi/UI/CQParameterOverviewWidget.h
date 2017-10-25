@@ -28,7 +28,6 @@ public:
   CQParameterOverviewWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQParameterOverviewWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual void setFramework(int framework);
   /**
@@ -41,6 +40,7 @@ private:
   virtual bool enterProtected();
   void buildSelectionList();
 protected:
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected slots:
   virtual void slotBtnRevert();

@@ -148,10 +148,9 @@ bool CQLyapResultWidget::loadFromBackend()
   return true;
 }
 
-bool CQLyapResultWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action
-                                C_UNUSED(action), const std::string & C_UNUSED(key))
+bool CQLyapResultWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
-  if (this->isVisible())
+  if (isVisible())
     return loadFromBackend();
   else
     return true;

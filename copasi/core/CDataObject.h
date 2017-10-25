@@ -22,7 +22,7 @@
 
 #include "copasi/core/CObjectInterface.h"
 #include "copasi/core/CFlags.h"
-
+#include "copasi/undo/CUndoData.h"
 #include "copasi/utilities/CValidity.h"
 
 class CDataObject;
@@ -30,8 +30,6 @@ class CDataContainer;
 class CModel;
 class CDataModel;
 class CUnit;
-class CData;
-class CUndoData;
 
 template <class CType> class CDataObjectReference;
 
@@ -99,11 +97,18 @@ public:
   virtual bool applyData(const CData & data);
 
   /**
-   * Append all required dependent undo data
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
    * @param CUndoData & undoData
-   * @param const CCore::Framework & framework
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
    */
-  virtual void appendDependentData(CUndoData & undoData, const CCore::Framework & framework);
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   static void sanitizeObjectName(std::string & name);
 

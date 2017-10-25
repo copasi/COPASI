@@ -33,7 +33,6 @@
 #include "copasi/core/CRootContainer.h"
 #include "model/CModel.h"
 #include "utilities/CCopasiException.h"
-#include "report/CKeyFactory.h"
 
 #include "crosssection/CCrossSectionTask.h"
 #include "crosssection/CCrossSectionProblem.h"
@@ -536,7 +535,7 @@ void CQCrossSectionTaskWidget::updateValues()
 }
 
 // virtual
-bool CQCrossSectionTaskWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
+bool CQCrossSectionTaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {

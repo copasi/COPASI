@@ -1008,17 +1008,17 @@ void CFunctionAnalyzer::constructCallParameters(const CFunctionParameters & fp, 
 
       switch (role)
         {
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
-          case CFunctionParameter::VOLUME:
+          case CFunctionParameter::Role::SUBSTRATE:
+          case CFunctionParameter::Role::PRODUCT:
+          case CFunctionParameter::Role::MODIFIER:
+          case CFunctionParameter::Role::VOLUME:
             callParameters[i] = CValue::positive;
             break;
 
-          case CFunctionParameter::TIME:
-          case CFunctionParameter::PARAMETER:
-          case CFunctionParameter::VARIABLE:
-          case CFunctionParameter::TEMPORARY:
+          case CFunctionParameter::Role::TIME:
+          case CFunctionParameter::Role::PARAMETER:
+          case CFunctionParameter::Role::VARIABLE:
+          case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = posi ? CValue::positive : CValue::unknown;
             break;
         }
@@ -1040,13 +1040,13 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
 
       switch (role)
         {
-          case CFunctionParameter::SUBSTRATE:
-          case CFunctionParameter::PRODUCT:
-          case CFunctionParameter::MODIFIER:
-          case CFunctionParameter::VOLUME:
-          case CFunctionParameter::PARAMETER:
+          case CFunctionParameter::Role::SUBSTRATE:
+          case CFunctionParameter::Role::PRODUCT:
+          case CFunctionParameter::Role::MODIFIER:
+          case CFunctionParameter::Role::VOLUME:
+          case CFunctionParameter::Role::PARAMETER:
             callParameters[i] = CValue::unknown;
-            pME = dynamic_cast<const CModelEntity*>(CRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
+            pME = dynamic_cast<const CModelEntity*>(reaction->getParameterObjects(i)[0]);
 
             if (pME)
               {
@@ -1056,7 +1056,7 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
                   callParameters[i] = CValue::positive;
               }
 
-            pCP = dynamic_cast<const CCopasiParameter*>(CRootContainer::getKeyFactory()->get(reaction->getParameterMappings()[i][0]));
+            pCP = dynamic_cast<const CCopasiParameter*>(reaction->getParameterObjects(i)[0]);
 
             if (pCP)
               {
@@ -1065,9 +1065,9 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
 
             break;
 
-          case CFunctionParameter::TIME:
-          case CFunctionParameter::VARIABLE:
-          case CFunctionParameter::TEMPORARY:
+          case CFunctionParameter::Role::TIME:
+          case CFunctionParameter::Role::VARIABLE:
+          case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = CValue::unknown;
             break;
         }
@@ -1232,7 +1232,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
   if (dynamic_cast<const CMassAction*>(f)) return;
 
   if (f->isReversible() == TriFalse)
-    if (f->getVariables().getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) > 0)
+    if (f->getVariables().getNumberOfParametersByUsage(CFunctionParameter::Role::PRODUCT) > 0)
       {
         // An irreversible kinetics should not depend on products.
         mResult.mIrreversibleKineticsWithProducts = true;
@@ -1271,7 +1271,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
 
   for (i = 0; i < imax; ++i)
     {
-      if (f->getVariables()[i]->getUsage() == CFunctionParameter::SUBSTRATE)
+      if (f->getVariables()[i]->getUsage() == CFunctionParameter::Role::SUBSTRATE)
         {
           tmpValueVector.clear();
 
@@ -1307,7 +1307,7 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
           mResult.mOriginalFunction.mSubstrateZero.push_back(std::pair<std::pair<size_t, std::string>, std::vector<CValue> >(std::pair<size_t, std::string>(i, f->getVariables()[i]->getObjectName()), tmpValueVector));
         }
 
-      if (f->getVariables()[i]->getUsage() == CFunctionParameter::PRODUCT)
+      if (f->getVariables()[i]->getUsage() == CFunctionParameter::Role::PRODUCT)
         {
           tmpValueVector.clear();
 

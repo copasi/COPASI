@@ -655,7 +655,7 @@ bool CQParameterOverviewDM::insertRows(int /*position*/, int /*rows*/, const QMo
   return false;
 }
 
-bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/)
+bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/, const QModelIndex & /* parent */)
 {
   return false;
 }

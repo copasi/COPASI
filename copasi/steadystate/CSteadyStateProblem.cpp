@@ -42,8 +42,8 @@ CSteadyStateProblem::CSteadyStateProblem(const CDataContainer * pParent):
   //mInitialState(),
   //mHasInitialState(false)
 {
-  addParameter("JacobianRequested", CCopasiParameter::BOOL, true);
-  addParameter("StabilityAnalysisRequested", CCopasiParameter::BOOL, true);
+  addParameter("JacobianRequested", CCopasiParameter::Type::BOOL, true);
+  addParameter("StabilityAnalysisRequested", CCopasiParameter::Type::BOOL, true);
   CONSTRUCTOR_TRACE;
 }
 

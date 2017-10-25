@@ -139,9 +139,9 @@ void CMCAMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Modulation Factor", CCopasiParameter::UDOUBLE, 1.0e-009);
-  mpUseReder = assertParameter("Use Reder", CCopasiParameter::BOOL, true);
-  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::BOOL, true);
+  assertParameter("Modulation Factor", CCopasiParameter::Type::UDOUBLE, 1.0e-009);
+  mpUseReder = assertParameter("Use Reder", CCopasiParameter::Type::BOOL, true);
+  mpUseSmallbone = assertParameter("Use Smallbone", CCopasiParameter::Type::BOOL, true);
 
   if ((pParm = getParameter("MCA.ModulationFactor")) != NULL)
     {

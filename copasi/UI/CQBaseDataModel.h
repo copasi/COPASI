@@ -20,6 +20,9 @@
 
 #include "copasi/UI/listviews.h"
 
+#include "copasi/core/CCore.h"
+#include "copasi/undo/CUndoStack.h"
+
 class QUndoStack;
 class CDataModel;
 
@@ -41,7 +44,7 @@ public:
   bool removeRow(int position);
   virtual bool clear();
   virtual bool isDefaultRow(const QModelIndex& i) const;
-
+  virtual void setFramework(int framework);
   QString createNewName(const QString name, const int nameCol);
 
   void setDataModel(CDataModel * pDataModel);
@@ -53,14 +56,16 @@ public slots:
   virtual void resetCache();
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & source) = 0;
-  virtual bool removeRows(int position, int rows) = 0;
+  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
+  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
 
   QUndoStack *mpUndoStack;
   CDataModel * mpDataModel;
+  int mFramework;
 
 signals:
-  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key = "");
+  void notifyGUI(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  void signalNotifyChanges(const CUndoData::ChangeSet & changes);
 };
 
 #endif //CQBaseDataModel_H

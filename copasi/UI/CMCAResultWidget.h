@@ -34,7 +34,6 @@ public:
   CMCAResultWidget(QWidget *parent = 0, const char *name = 0, Qt::WindowFlags fl = 0);
   ~CMCAResultWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key);
   virtual bool leave();
   bool loadFromBackend();
 
@@ -42,6 +41,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   bool saveToBackend();
 
   QGridLayout *mWidgetLayout;

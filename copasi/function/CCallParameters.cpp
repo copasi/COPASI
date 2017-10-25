@@ -39,7 +39,7 @@ CFunctionParameterMap::CFunctionParameterMap():
       C_FLOAT64 InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
       pUnmappedObject =
-        new CCopasiParameter("unknown", CCopasiParameter::DOUBLE, & InvalidValue);
+        new CCopasiParameter("unknown", CCopasiParameter::Type::DOUBLE, & InvalidValue);
     }
 };
 
@@ -51,7 +51,7 @@ CFunctionParameterMap::CFunctionParameterMap(const CFunctionParameterMap & src):
   size_t i, imax = mpFunctionParameters->size();
 
   for (i = 0; i < imax; ++i)
-    if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
+    if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::DataType::VINT32)
       {
         mPointers[i].vector = new CCallParameters<C_FLOAT64>(*src.mPointers[i].vector);
         mObjects[i].vector = new CCallParameters<CDataObject>(*src.mObjects[i].vector);
@@ -82,7 +82,7 @@ void CFunctionParameterMap::clearCallParameters()
 
       for (i = 0; i < imax; i++)
         {
-          if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
+          if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::DataType::VINT32)
             {
               if (mObjects[i].vector)
                 delete mObjects[i].vector;
@@ -108,7 +108,7 @@ void CFunctionParameterMap::initCallParameters()
 
   for (i = 0; i < imax; i++)
     {
-      if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::VINT32)
+      if ((*mpFunctionParameters)[i]->getType() >= CFunctionParameter::DataType::VINT32)
         {
           mObjects[i].vector = new CCallParameters<CDataObject>;
           mPointers[i].vector = new CCallParameters<C_FLOAT64>;
@@ -129,7 +129,7 @@ void CFunctionParameterMap::checkCallParameters() const
       if (mObjects[i].vector == NULL)
         fatalError();
 
-      if ((*mpFunctionParameters)[i]->getType() < CFunctionParameter::VINT32)
+      if ((*mpFunctionParameters)[i]->getType() < CFunctionParameter::DataType::VINT32)
         continue;
 
       jmax = mPointers[i].vector->size();
@@ -153,7 +153,7 @@ CIssue CFunctionParameterMap::setCallParameter(const std::string paramName, cons
 
   if (index == C_INVALID_INDEX ||
       pFunctionParameter == NULL ||
-      pFunctionParameter->getType() >= CFunctionParameter::VINT32) fatalError(); // is a vector
+      pFunctionParameter->getType() >= CFunctionParameter::DataType::VINT32) fatalError(); // is a vector
 
   assert(obj->getValuePointer());
   assert(obj->hasFlag(CDataObject::ValueDbl));
@@ -165,27 +165,27 @@ CIssue CFunctionParameterMap::setCallParameter(const std::string paramName, cons
 
   switch (pFunctionParameter->getUsage())
     {
-      case CFunctionParameter::SUBSTRATE:
-      case CFunctionParameter::PRODUCT:
-      case CFunctionParameter::MODIFIER:
+      case CFunctionParameter::Role::SUBSTRATE:
+      case CFunctionParameter::Role::PRODUCT:
+      case CFunctionParameter::Role::MODIFIER:
         success = dynamic_cast< const CMetab * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::PARAMETER:
+      case CFunctionParameter::Role::PARAMETER:
         success = dynamic_cast< const CCopasiParameter * >(obj) != NULL ||
                   dynamic_cast< const CModelValue * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::VOLUME:
+      case CFunctionParameter::Role::VOLUME:
         success = dynamic_cast< const CCompartment * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::TIME:
+      case CFunctionParameter::Role::TIME:
         success = dynamic_cast< const CModel * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::VARIABLE:
-      case CFunctionParameter::TEMPORARY:
+      case CFunctionParameter::Role::VARIABLE:
+      case CFunctionParameter::Role::TEMPORARY:
         break;
     }
 
@@ -199,7 +199,7 @@ CIssue CFunctionParameterMap::addCallParameter(const std::string paramName, cons
 
   if (index == C_INVALID_INDEX ||
       pFunctionParameter == NULL ||
-      pFunctionParameter->getType() < CFunctionParameter::VINT32) fatalError(); // is not a vector
+      pFunctionParameter->getType() < CFunctionParameter::DataType::VINT32) fatalError(); // is not a vector
 
   assert(obj->getValuePointer());
   assert(obj->hasFlag(CDataObject::ValueDbl));
@@ -211,27 +211,27 @@ CIssue CFunctionParameterMap::addCallParameter(const std::string paramName, cons
 
   switch (pFunctionParameter->getUsage())
     {
-      case CFunctionParameter::SUBSTRATE:
-      case CFunctionParameter::PRODUCT:
-      case CFunctionParameter::MODIFIER:
+      case CFunctionParameter::Role::SUBSTRATE:
+      case CFunctionParameter::Role::PRODUCT:
+      case CFunctionParameter::Role::MODIFIER:
         success = dynamic_cast< const CMetab * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::PARAMETER:
+      case CFunctionParameter::Role::PARAMETER:
         success = dynamic_cast< const CCopasiParameter * >(obj) != NULL ||
                   dynamic_cast< const CModelValue * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::VOLUME:
+      case CFunctionParameter::Role::VOLUME:
         success = dynamic_cast< const CCompartment * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::TIME:
+      case CFunctionParameter::Role::TIME:
         success = dynamic_cast< const CModel * >(obj) != NULL;
         break;
 
-      case CFunctionParameter::VARIABLE:
-      case CFunctionParameter::TEMPORARY:
+      case CFunctionParameter::Role::VARIABLE:
+      case CFunctionParameter::Role::TEMPORARY:
         break;
     }
 
@@ -245,7 +245,7 @@ void CFunctionParameterMap::clearCallParameter(const std::string paramName)
 
   if (index == C_INVALID_INDEX ||
       pFunctionParameter == NULL ||
-      pFunctionParameter->getType() < CFunctionParameter::VINT32)
+      pFunctionParameter->getType() < CFunctionParameter::DataType::VINT32)
     fatalError(); // is not a vector
 
   // TODO: check type of object
@@ -275,7 +275,7 @@ std::vector< const CDataObject * > CFunctionParameterMap::getObjects(const size_
 
   if (index != C_INVALID_INDEX)
     {
-      if ((*mpFunctionParameters)[index]->getType() < CFunctionParameter::VINT32)
+      if ((*mpFunctionParameters)[index]->getType() < CFunctionParameter::DataType::VINT32)
         Objects.push_back(mObjects[index].value);
       else
         {

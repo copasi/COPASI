@@ -47,7 +47,7 @@ public:
   ~CQModelValue();
 
   virtual bool leave();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected:
   virtual bool enterProtected();
@@ -65,7 +65,7 @@ private:
   void destroy();
   void load();
   void save();
-  std::string mKeyToCopy;
+  CCommonName mObjectCNToCopy;
 
   //additional functions for UNDO framework
   void deleteGlobalQuantity();

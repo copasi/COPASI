@@ -38,7 +38,6 @@ public:
   virtual ~CQTabWidget();
 
   virtual bool leave();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
 
   void selectTab(int index) const;
 
@@ -56,6 +55,7 @@ public:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
   void load();
 

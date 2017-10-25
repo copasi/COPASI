@@ -44,9 +44,7 @@
 #include "copasi/undoFramework/CreateNewGlobalQuantityCommand.h"
 //#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
 #include "copasi/undoFramework/UndoGlobalQuantityData.h"
-#include "copasi/undoFramework/UndoReactionData.h"
 #include "copasi/undoFramework/UndoEventData.h"
-#include "copasi/undoFramework/UndoSpeciesData.h"
 #include "copasi/undoFramework/UndoEventAssignmentData.h"
 
 #include "copasi/undoFramework/GlobalQuantityChangeCommand.h"
@@ -57,7 +55,7 @@
  */
 CQModelValue::CQModelValue(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
-    mKeyToCopy(""),
+    mObjectCNToCopy(""),
     mpModelValue(NULL),
     mpDependencies(NULL)
 {
@@ -92,7 +90,7 @@ void CQModelValue::slotBtnNew()
 
 void CQModelValue::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }
 
 void CQModelValue::slotBtnDelete()
@@ -207,18 +205,16 @@ void CQModelValue::init()
 void CQModelValue::destroy()
 {}
 
-bool CQModelValue::update(ListViews::ObjectType  objectType,
-                          ListViews::Action action,
-                          const std::string & key)
+bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   switch (objectType)
     {
       case ListViews::MODEL:
 
         // For a new model we need to remove references to no longer existing modelvalue
-        if (action == ListViews::ADD)
+        if (action != ListViews::CHANGE)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
             mpModelValue = NULL;
           }
@@ -228,9 +224,9 @@ bool CQModelValue::update(ListViews::ObjectType  objectType,
       case ListViews::MODELVALUE:
 
         // If the currently displayed modelvalue is deleted we need to remove its references.
-        if (action == ListViews::DELETE && mKey == key)
+        if (action == ListViews::DELETE && mObjectCN == cn)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
             mpModelValue = NULL;
           }
@@ -274,10 +270,14 @@ bool CQModelValue::enterProtected()
 {
   mpModelValue = NULL;
 
-  if (mKeyToCopy != "")
+  if (mObjectCNToCopy != "")
     {
-      mpModelValue = dynamic_cast<CModelValue *>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      mpModelValue = dynamic_cast<CModelValue *>(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy))));
+      mObjectCNToCopy.clear();
     }
   else
     {
@@ -286,7 +286,7 @@ bool CQModelValue::enterProtected()
 
   if (!mpModelValue)
     {
-      mpListView->switchToOtherWidget(115, "");
+      mpListView->switchToOtherWidget(115, std::string());
       return false;
     }
 
@@ -503,7 +503,7 @@ void CQModelValue::save()
   if (mChanged)
     {
       mpDataModel->changed();
-      protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
+      protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mObjectCN);
 
       load();
     }
@@ -584,9 +584,9 @@ void CQModelValue::createNewGlobalQuantity()
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = mpModelValue->getKey();
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  CCommonName CN = mpModelValue->getKey();
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, CN);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 void CQModelValue::deleteGlobalQuantity()
@@ -612,7 +612,7 @@ void CQModelValue::deleteGlobalQuantity()
         break;
     }
 
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITIES, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::GLOBALQUANTITIES, std::string());
 }
 
 void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityData)
@@ -626,8 +626,8 @@ void CQModelValue::deleteGlobalQuantity(UndoGlobalQuantityData *pGlobalQuantityD
   mpModelValue = NULL;
 
 #undef DELETE
-  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, key);
-  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, mObjectCN);
+  protectedNotify(ListViews::MODELVALUE, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
 
   switchToWidget(CCopasiUndoCommand::GLOBALQUANTITIES);
 }
@@ -643,9 +643,9 @@ void CQModelValue::addGlobalQuantity(UndoGlobalQuantityData *pData)
   if (pGlobalQuantity == NULL)
     return;
 
-  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
+  protectedNotify(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getCN());
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pGlobalQuantity->getCN());
 }
 
 bool
@@ -654,6 +654,7 @@ CQModelValue::changeValue(const std::string& key,
                           const QVariant& newValue,
                           double iValue /* = std::numeric_limits<double>::quiet_NaN()*/)
 {
+  /*
   if (!mIgnoreUpdates)
     {
       mKey = key;
@@ -720,6 +721,6 @@ CQModelValue::changeValue(const std::string& key,
   protectedNotify(ListViews::MODELVALUE, ListViews::CHANGE, mKey);
 
   load();
-
+  */
   return true;
 }

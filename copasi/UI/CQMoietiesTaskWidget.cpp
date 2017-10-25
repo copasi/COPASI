@@ -74,7 +74,7 @@ bool CQMoietiesTaskWidget::taskFinishedEvent()
   bool success = true;
 
   if (success && isVisible())
-    mpListView->switchToOtherWidget(2221, ""); //change to the results window
+    mpListView->switchToOtherWidget(2221, std::string()); //change to the results window
 
   return success;
 }

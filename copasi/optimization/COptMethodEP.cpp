@@ -41,16 +41,15 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   mStopAfterStalledGenerations(0),
   mVariance(0)
 {
-  addParameter("Number of Generations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Population Size", CCopasiParameter::UINT, (unsigned C_INT32) 20);
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  addParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
+  addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
+  addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   if (mEnableAdditionalParameters)
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
-
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }
@@ -183,7 +182,6 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-
   mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
 
   mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
@@ -203,7 +201,6 @@ bool COptMethodEP::initialize()
                              getValue< unsigned C_INT32 >("Seed"));
 
   mVariableSize = mpOptItem->size();
-
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -317,8 +314,6 @@ bool COptMethodEP::creation()
       // Set the variance for this parameter.
       (*mVariance[0])[i] = fabs(mut) * 0.5;
     }
-
-
 
   if (!pointInParameterDomain) mMethodLog.enterLogItem(COptLogItem(COptLogItem::STD_initial_point_out_of_domain));
 

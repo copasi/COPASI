@@ -149,8 +149,8 @@ void CSensProblem::createParametersInGroup(CCopasiParameterGroup *pg)
 {
   if (!pg) return;
 
-  pg->assertParameter("SingleObject", CCopasiParameter::CN, CCommonName(""));
-  pg->assertParameter("ObjectListType", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CCommonName(""));
+  pg->assertParameter("ObjectListType", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 }
 
 //static
@@ -254,7 +254,7 @@ void CSensProblem::initObjects()
 
 void CSensProblem::initializeParameter()
 {
-  mpSubTaskType = (CSensProblem::SubTaskType *) assertParameter("SubtaskType", CCopasiParameter::UINT, (unsigned C_INT32) SteadyState);
+  mpSubTaskType = (CSensProblem::SubTaskType *) assertParameter("SubtaskType", CCopasiParameter::Type::UINT, (unsigned C_INT32) SteadyState);
   mpTargetFunctions = assertGroup("TargetFunctions");
   mpVariablesGroup = assertGroup("ListOfVariables");
 

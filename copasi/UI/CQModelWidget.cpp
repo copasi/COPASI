@@ -346,7 +346,7 @@ void CQModelWidget::save()
           mpDataModel->changed();
         }
 
-      protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
+      protectedNotify(ListViews::MODEL, ListViews::CHANGE, mObjectCN);
 
       load();
     }
@@ -365,15 +365,14 @@ void CQModelWidget::slotBtnOKClicked()
   load();
 }
 
-bool CQModelWidget::update(ListViews::ObjectType objectType,
-                           ListViews::Action C_UNUSED(action), const std::string & key)
+bool CQModelWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates) return true;
 
   switch (objectType)
     {
       case ListViews::MODEL:
-        enter(key);
+        enter(cn);
         break;
 
       default:
@@ -401,7 +400,7 @@ bool CQModelWidget::enterProtected()
 
   load();
 
-  mpNotes->enter(mKey);
+  mpNotes->enter(mObjectCN);
 
   return true;
 }
@@ -409,7 +408,7 @@ bool CQModelWidget::enterProtected()
 bool
 CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue)
 {
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mObjectCN);
 
   if (mpModel == NULL)
     {
@@ -472,7 +471,7 @@ CQModelWidget::changeValue(CCopasiUndoCommand::Type type, const QVariant& newVal
       mpDataModel->changed();
     }
 
-  protectedNotify(ListViews::MODEL, ListViews::CHANGE, mKey);
+  protectedNotify(ListViews::MODEL, ListViews::CHANGE, mObjectCN);
 
   load();
 

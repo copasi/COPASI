@@ -282,11 +282,11 @@ CIssue CFunction::initVariables()
         if ((*it)->mainType() == CEvaluationNode::MainType::VARIABLE)
           {
             mVariables.add((*it)->getData(),
-                           CFunctionParameter::FLOAT64,
-                           CFunctionParameter::VARIABLE);
+                           CFunctionParameter::DataType::FLOAT64,
+                           CFunctionParameter::Role::VARIABLE);
             NewVariables.add((*it)->getData(),
-                             CFunctionParameter::FLOAT64,
-                             CFunctionParameter::VARIABLE);
+                             CFunctionParameter::DataType::FLOAT64,
+                             CFunctionParameter::Role::VARIABLE);
           }
     }
 
@@ -316,14 +316,14 @@ bool CFunction::isSuitable(const size_t noSubstrates,
     return false;
 
   //check substrates
-  if (mVariables.isVector(CFunctionParameter::SUBSTRATE))
+  if (mVariables.isVector(CFunctionParameter::Role::SUBSTRATE))
     {
       if (noSubstrates == 0 || noSubstrates == C_INVALID_INDEX)
         return false;
     }
   else //is no vector
     {
-      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::SUBSTRATE) != noSubstrates &&
+      if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::Role::SUBSTRATE) != noSubstrates &&
           noSubstrates != C_INVALID_INDEX)
         return false;
     }
@@ -331,21 +331,21 @@ bool CFunction::isSuitable(const size_t noSubstrates,
   //check products
   if (reversible == TriTrue)
     {
-      if (mVariables.isVector(CFunctionParameter::PRODUCT))
+      if (mVariables.isVector(CFunctionParameter::Role::PRODUCT))
         {
           if (noProducts == 0 || noProducts == C_INVALID_INDEX)
             return false;
         }
       else //is no vector
         {
-          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::PRODUCT) != noProducts &&
+          if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::Role::PRODUCT) != noProducts &&
               noProducts != C_INVALID_INDEX)
             return false;
         }
     }
 
   //no VARIABLE variables allowed for kinetic functions
-  if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::VARIABLE) != 0)
+  if (mVariables.getNumberOfParametersByUsage(CFunctionParameter::Role::VARIABLE) != 0)
     return false;
 
   return true;
@@ -543,18 +543,18 @@ std::pair<CFunction *, CFunction *> CFunction::splitFunction(const CEvaluationNo
 
   for (i = 0; i < imax; ++i)
     {
-      if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
-        newFunction1->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+      if (newFunction1->mVariables[i]->getUsage() == CFunctionParameter::Role::PRODUCT)
+        newFunction1->mVariables[i]->setUsage(CFunctionParameter::Role::MODIFIER);
     }
 
   imax = newFunction2->mVariables.size();
 
   for (i = 0; i < imax; ++i)
     {
-      if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::PRODUCT)
-        newFunction2->mVariables[i]->setUsage(CFunctionParameter::SUBSTRATE);
-      else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::SUBSTRATE)
-        newFunction2->mVariables[i]->setUsage(CFunctionParameter::MODIFIER);
+      if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::Role::PRODUCT)
+        newFunction2->mVariables[i]->setUsage(CFunctionParameter::Role::SUBSTRATE);
+      else if (newFunction2->mVariables[i]->getUsage() == CFunctionParameter::Role::SUBSTRATE)
+        newFunction2->mVariables[i]->setUsage(CFunctionParameter::Role::MODIFIER);
     }
 
   newFunction1->compile();

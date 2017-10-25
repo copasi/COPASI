@@ -17,6 +17,7 @@
 
 #include "copasi.h"
 #include "CCommonName.h"
+#include "copasi/utilities/utility.h"
 
 using std::string;
 
@@ -40,11 +41,22 @@ CCommonName CCommonName::getPrimary() const
 
 CCommonName CCommonName::getRemainder() const
 {
-  std::string::size_type pos = findEx(",");
+  if (empty()) return CCommonName();
+
+  std::string Separator = ",";
+
+  if (at(0) != '[')
+    {
+      Separator += "[";
+    }
+
+  std::string::size_type pos = findEx(Separator);
 
   if (pos == std::string::npos) return CCommonName();
 
-  return substr(pos + 1);
+  if (at(pos) == ',') pos++;
+
+  return substr(pos);
 }
 
 std::string CCommonName::getObjectType() const
@@ -71,23 +83,16 @@ std::string CCommonName::getObjectName() const
   return CCommonName::unescape(tmp);
 }
 
-size_t
-CCommonName::getElementIndex(const size_t & pos) const
+size_t CCommonName::getElementIndex(const size_t & pos) const
 {
-  std::string Index = getElementName(pos);
-  std::stringstream tmp(Index);
+  size_t Index = C_INVALID_INDEX;
 
-  size_t index = C_INVALID_INDEX;
+  if (strToIndex(getElementName(pos), Index))
+    {
+      return Index;
+    }
 
-  tmp >> index;
-
-  if (tmp.fail()) return C_INVALID_INDEX;
-
-  tmp << index;
-
-  if (Index != tmp.str()) return C_INVALID_INDEX;
-
-  return index;
+  return C_INVALID_INDEX;
 }
 
 std::string CCommonName::getElementName(const size_t & pos,

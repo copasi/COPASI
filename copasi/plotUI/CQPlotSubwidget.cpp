@@ -871,7 +871,7 @@ void CQPlotSubwidget::removeCurve()
 void CQPlotSubwidget::commitPlot()
 {
   saveToPlotSpec();
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(mpObject));
 }
 
 //-----------------------------------------------------------------------------
@@ -884,23 +884,24 @@ void CQPlotSubwidget::deletePlot()
   if (!mpDataModel->getModel())
     return;
 
-  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(CRootContainer::getKeyFactory()->get(mKey));
+  CPlotSpecification *pspec = dynamic_cast< CPlotSpecification * >(mpObject);
 
   if (!pspec) return;
 
-  Index =
-    mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
-  mpDataModel->getPlotDefinitionList()->removePlotSpec(mKey);
-  std::string deletedKey = mKey;
+  Index = mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
+  mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::remove(Index);
+
+  std::string deletedObjectCN = mObjectCN;
+
   Size = mpDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
-    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).CCopasiParameter::getKey());
+    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).getCN());
   else
-    enter("");
+    enter(std::string());
 
   //ListViews::
-  protectedNotify(ListViews::PLOT, ListViews::DELETE, deletedKey);
+  protectedNotify(ListViews::PLOT, ListViews::DELETE, mObjectCN);
 }
 
 //-----------------------------------------------------------------------------
@@ -912,7 +913,7 @@ void CQPlotSubwidget::copyPlot()
 
   if (pDataModel == NULL) return;
 
-  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)), NO_PARENT);
+  CPlotSpecification *pPl = new CPlotSpecification(*dynamic_cast<CPlotSpecification *>(mpObject), NO_PARENT);
   std::string baseName = pPl->getObjectName() + "_copy";
   std::string name = baseName;
   int i = 1;
@@ -962,7 +963,7 @@ void CQPlotSubwidget::addPlot()
 
 void CQPlotSubwidget::resetPlot()
 {
-  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
+  loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(mpObject));
 }
 
 #include <QInputDialog>
@@ -1108,7 +1109,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   if (pspec->getTitle() != TO_UTF8(titleLineEdit->text()))
     {
       pspec->setTitle(TO_UTF8(titleLineEdit->text()));
-      protectedNotify(ListViews::PLOT, ListViews::RENAME, mKey);
+      protectedNotify(ListViews::PLOT, ListViews::RENAME, mObjectCN);
     }
 
   //active?
@@ -1160,7 +1161,7 @@ bool CQPlotSubwidget::enterProtected()
 
   if (!pspec)
     {
-      mpListView->switchToOtherWidget(42, "");
+      mpListView->switchToOtherWidget(42, std::string());
       return false;
     }
 
@@ -1221,19 +1222,20 @@ void CQPlotSubwidget::itemSelectionChanged()
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key)
+bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || isHidden()) return true;
 
   switch (objectType)
     {
-        //TODO: check list:
+      //TODO: check list:
       case ListViews::MODEL:
         switch (action)
           {
             case ListViews::DELETE:
+            case ListViews::ADD:
               mpObject = NULL;
-              mKey = "";
+              mObjectCN.clear();
               return enterProtected();
               break;
 
@@ -1244,13 +1246,13 @@ bool CQPlotSubwidget::update(ListViews::ObjectType objectType, ListViews::Action
         break;
 
       case ListViews::PLOT:
-        if (key == mKey)
+        if (cn == mObjectCN)
           {
             switch (action)
               {
                 case ListViews::DELETE:
                   mpObject = NULL;
-                  mKey = "";
+                  mObjectCN.clear();
                   return enterProtected();
                   break;
 

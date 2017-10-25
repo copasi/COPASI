@@ -44,7 +44,6 @@
 #include "copasi/core/CDataVector.h"
 #include "utilities/CDirEntry.h"
 #include "xml/CCopasiXML.h"
-#include "undo/CUndoStack.h"
 #include "undo/CUndoData.h"
 #include "steadystate/CSteadyStateTask.h"
 #include "trajectory/CTrajectoryTask.h"
@@ -2652,20 +2651,27 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     }
 }
 
-void CDataModel::applyData(const CUndoData & data)
+CUndoData::ChangeSet CDataModel::applyData(const CUndoData & data)
 {
-  // TODO CRITICAL Fix me!
-  // To avoid interaction with the existing undo we avoid applying any changes
-  // data.apply(*this);
-  recordData(data);
+  if (mData.mpUndoStack != NULL &&
+      !data.empty())
+    {
+      changed();
+      return mData.mpUndoStack->record(data, true);
+    }
+
+  return CUndoData::ChangeSet();
 }
 
-void CDataModel::recordData(const CUndoData & data)
+CUndoData::ChangeSet CDataModel::recordData(const CUndoData & data)
 {
-  if (mData.mpUndoStack != NULL)
+  if (mData.mpUndoStack != NULL &&
+      !data.empty())
     {
-      mData.mpUndoStack->record(data);
+      return mData.mpUndoStack->record(data, false);
     }
+
+  return CUndoData::ChangeSet();
 }
 
 const CDataObject *CDataModel::findObjectByDisplayName(const std::string& displayString) const

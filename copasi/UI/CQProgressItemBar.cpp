@@ -86,8 +86,8 @@ bool CQProgressItemBar::reset()
 {
   switch (mpItem->getType())
     {
-      case CCopasiParameter::DOUBLE:
-      case CCopasiParameter::UDOUBLE:
+      case CCopasiParameter::Type::DOUBLE:
+      case CCopasiParameter::Type::UDOUBLE:
 
         if (mpStart == NULL)
           mpStart = new C_FLOAT64;
@@ -97,7 +97,7 @@ bool CQProgressItemBar::reset()
         mpSetValue = & CQProgressItemBar::setValueFromDOUBLE;
         break;
 
-      case CCopasiParameter::INT:
+      case CCopasiParameter::Type::INT:
 
         if (mpStart == NULL)
           mpStart = new C_INT32;
@@ -107,7 +107,7 @@ bool CQProgressItemBar::reset()
         mpSetValue = & CQProgressItemBar::setValueFromINT;
         break;
 
-      case CCopasiParameter::UINT:
+      case CCopasiParameter::Type::UINT:
 
         if (mpStart == NULL)
           mpStart = new unsigned C_INT32;

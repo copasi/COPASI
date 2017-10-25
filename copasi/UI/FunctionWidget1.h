@@ -39,7 +39,6 @@ public:
   FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WindowFlags f = 0);
   virtual ~FunctionWidget1();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
 protected slots:
@@ -54,6 +53,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   bool loadFromFunction(const CFunction* = NULL);
   bool loadParameterTable();
   bool loadUsageTable(/*const CDataVectorN<CUsageRange>& usages*/);
@@ -75,7 +75,7 @@ private:
 
   bool mReadOnly;
 
-  std::string mKeyToCopy;
+  CCommonName mObjectCNToCopy;
 };
 
 #endif // FunctionWidget1

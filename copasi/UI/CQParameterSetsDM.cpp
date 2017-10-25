@@ -150,7 +150,7 @@ bool CQParameterSetsDM::isDefaultRow(const QModelIndex & /* index */) const
   return false;
 }
 
-bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
+bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   if (mpListOfParameterSets == NULL) return false;
 
@@ -160,7 +160,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
 
   if (pModel == NULL) return false;
 
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -180,13 +180,13 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
   return true;
 }
 
-bool CQParameterSetsDM::removeRows(int position, int rows)
+bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0) return true;
 
   if (mpListOfParameterSets == NULL) return false;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
   std::vector< CModelParameterSet * > DeletedModelParameterSets;
   DeletedModelParameterSets.resize(rows);
   std::vector< CModelParameterSet * >::iterator itDeletedModelParameterSet;

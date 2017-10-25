@@ -156,12 +156,12 @@ void CKinFunction::createParameters()
             }
 
           pParameter = new CFunctionParameter(Name);
-          pParameter->setType(CFunctionParameter::FLOAT64);
+          pParameter->setType(CFunctionParameter::DataType::FLOAT64);
 
           switch (mNodes[i]->getSubtype())
             {
               case N_SUBSTRATE:
-                pParameter->setUsage(CFunctionParameter::SUBSTRATE);
+                pParameter->setUsage(CFunctionParameter::Role::SUBSTRATE);
 
                 if (Substrates.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                   Substrates.add(pParameter, false);
@@ -171,7 +171,7 @@ void CKinFunction::createParameters()
                 break;
 
               case N_PRODUCT:
-                pParameter->setUsage(CFunctionParameter::PRODUCT);
+                pParameter->setUsage(CFunctionParameter::Role::PRODUCT);
 
                 if (Products.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                   Products.add(pParameter, false);
@@ -181,7 +181,7 @@ void CKinFunction::createParameters()
                 break;
 
               case N_MODIFIER:
-                pParameter->setUsage(CFunctionParameter::MODIFIER);
+                pParameter->setUsage(CFunctionParameter::Role::MODIFIER);
 
                 if (Modifiers.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                   Modifiers.add(pParameter, false);
@@ -192,7 +192,7 @@ void CKinFunction::createParameters()
 
               case N_KCONSTANT:
               case N_NOP:
-                pParameter->setUsage(CFunctionParameter::PARAMETER);
+                pParameter->setUsage(CFunctionParameter::Role::PARAMETER);
 
                 if (Parameters.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                   Parameters.add(pParameter, false);
@@ -202,7 +202,7 @@ void CKinFunction::createParameters()
                 break;
 
               case N_VOLUME:
-                pParameter->setUsage(CFunctionParameter::VOLUME);
+                pParameter->setUsage(CFunctionParameter::Role::VOLUME);
 
                 if (Volumes.getIndex(pParameter->getObjectName()) == C_INVALID_INDEX)
                   Volumes.add(pParameter, false);

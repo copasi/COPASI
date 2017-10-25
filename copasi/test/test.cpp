@@ -819,8 +819,8 @@ C_INT32 TestKinFunction()
 
   f.setName("test");
   f.setDescription("(a-b)*(a+b)/<laber>");
-  f.getParameters().add("a", CFunctionParameter::FLOAT64, "UNKNOWN");
-  f.getParameters().add("b", CFunctionParameter::FLOAT64, "UNKNOWN");
+  f.getParameters().add("a", CFunctionParameter::DataType::FLOAT64, "UNKNOWN");
+  f.getParameters().add("b", CFunctionParameter::DataType::FLOAT64, "UNKNOWN");
 
   f.compile();
   cout << "f(a,b) = (a-b)*(a+b)/5" << endl;

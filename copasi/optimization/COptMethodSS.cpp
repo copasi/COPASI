@@ -46,15 +46,15 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
   mpOptProblemLocal(NULL),
   mpLocalMinimizer(NULL)
 {
-  addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
+  addParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
 // we no longer give the user choice of rng, we use the mersenne twister!
 // but in DEBUG versions we should still have access to it
 
   if (mEnableAdditionalParameters)
   {
-    addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-    addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+    addParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937);
+    addParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
+    addParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
   }
 
   initObjects();

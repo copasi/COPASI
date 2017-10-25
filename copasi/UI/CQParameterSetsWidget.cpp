@@ -47,8 +47,8 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   mpTblParameterSets->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpParameterSetsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpParameterSetsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpParameterSetsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -113,7 +113,7 @@ void CQParameterSetsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &C_UNUSED(key))
+bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
   if (objectType == ListViews::MODEL &&
@@ -122,7 +122,7 @@ bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::
   {
     mpDataModel = NULL;
     mpObject = NULL;
-    mKey = "";
+    mObjectCN.clear();
   }
 
   if (mIgnoreUpdates || !isVisible())
@@ -156,7 +156,7 @@ bool CQParameterSetsWidget::enterProtected()
                  this, SLOT(slotSelectionChanged(const QItemSelection &, const QItemSelection &)));
     }
 
-  mpParameterSetsDM->setListOfModelParameterSets(&static_cast< CModel * >(mpObject)->getModelParameterSets());
+  mpParameterSetsDM->setListOfModelParameterSets(dynamic_cast< CDataVectorN< CModelParameterSet > * >(mpObject));
   mpProxyModel->setSourceModel(mpParameterSetsDM);
   //Set Model for the TableView
   mpTblParameterSets->setModel(NULL);

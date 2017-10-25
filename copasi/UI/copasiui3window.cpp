@@ -23,15 +23,9 @@
 #include <sedml/SedDocument.h>
 #endif
 
-#include <QUndoStack>
 #include <QMimeData>
 #include <QSettings>
 #include <QClipboard>
-
-#ifdef COPASI_UNDO
-#include "CQUndoHistoryDialog.h"
-#include "copasi/undoUI/CQUndoDialog.h"
-#endif
 
 #include <QtCore/QEvent>
 #include <QMenuBar>
@@ -67,6 +61,13 @@
 #include "TaskWidget.h"
 #include "resourcesUI/CQIconResource.h"
 
+#ifdef COPASI_UNDO
+# include <QUndoStack>
+# include "copasi/undoUI/CQUndoDialog.h"
+# include "copasi/core/CCore.h"
+# include "copasi/undo/CUndoStack.h"
+#endif
+
 #include "CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "utilities/CCopasiException.h"
@@ -77,7 +78,6 @@
 #include "commandline/CConfigurationFile.h"
 #include "commandline/CLocaleString.h"
 #include "wizard/wizard.h"
-#include "report/CKeyFactory.h"
 #include "sbml/SBMLIncompatibility.h"
 #include "MIRIAM/CConstants.h"
 #include "copasi/utilities/CVersion.h"
@@ -322,7 +322,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   resize(mainWindowSize);
   show();
-  mpListView->switchToOtherWidget(0, "");
+  mpListView->switchToOtherWidget(0, std::string());
   // Assure that the changed flag is still false;
   assert(mpDataModel != NULL);
   mpDataModel->changed(false);
@@ -486,10 +486,12 @@ void CopasiUI3Window::createActions()
   connect(mpaFunctionDBSave, SIGNAL(triggered()), this, SLOT(slotFunctionDBSave()));
   //TODO UNDO framework
 #ifdef COPASI_UNDO
-  mpaUndo = mpUndoStack->createUndoAction(this);
+  mpaUndo = new QAction("Undo", this);
   mpaUndo->setShortcut(QKeySequence::Undo);
-  mpaRedo = mpUndoStack->createRedoAction(this);
+  connect(mpaUndo, SIGNAL(triggered()), this, SLOT(slotUndo()));
+  mpaRedo = new QAction("Redo", this);
   mpaRedo->setShortcut(QKeySequence::Redo);
+  connect(mpaRedo, SIGNAL(triggered()), this, SLOT(slotRedo()));
   mpaUndoHistory = new QAction("&Undo History", this);
   connect(mpaUndoHistory, SIGNAL(triggered()), this, SLOT(slotUndoHistory()));
   mpaClearUndoHistory = new QAction("&Clear Undo History", this);
@@ -870,15 +872,15 @@ void CopasiUI3Window::newDoc()
   //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
   //#endif
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                         mpDataModel->getModel()->getKey());
-  mpListView->switchToOtherWidget(0, "");
+                         mpDataModel->getModel()->getCN());
+  mpListView->switchToOtherWidget(0, std::string());
 
   // delete the old sliders
   if (this->mpSliders) this->mpSliders->reset();
 
   mpDataModelGUI->createModel();
   this->mpSliders->setChanged(false);
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, mpDataModel->getModel()->getKey());
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD, mpDataModel->getModel()->getCN());
   //if (!mbObject_browser_open)
   //mpFileMenu->setItemEnabled(nobject_browser, true);
   mpaSave->setEnabled(true);
@@ -889,7 +891,7 @@ void CopasiUI3Window::newDoc()
   mpaExportSEDML->setEnabled(true);
 #endif
   updateTitle();
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1012,9 +1014,9 @@ void CopasiUI3Window::slotFileOpen(QString file)
       //mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getKey());
+                             mpDataModel->getModel()->getCN());
       mpListView->clearCurrentWidget();
-      mpListView->switchToOtherWidget(0, "");
+      mpListView->switchToOtherWidget(0, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -1142,7 +1144,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getKey());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
@@ -1151,7 +1153,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpaExportSEDML->setEnabled(true);
 #endif
   updateTitle();
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1201,7 +1203,7 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
   if (!newFile.isNull())
     {
       assert(CRootContainer::getDatamodelList()->size() > 0);
-      //mpListView->switchToOtherWidget(0, "");
+      //mpListView->switchToOtherWidget(0, std::string());
       this->setCursor(Qt::WaitCursor);
       CCopasiMessage::clearDeque();
       mNewFile = newFile;
@@ -1255,7 +1257,7 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 #endif
   refreshRecentFileMenu();
   mNewFile = "";
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 
 #endif
@@ -1542,8 +1544,8 @@ void CopasiUI3Window::importSBMLFromString(const std::string &sbmlDocumentText)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getKey());
-      mpListView->switchToOtherWidget(0, "");
+                             mpDataModel->getModel()->getCN());
+      mpListView->switchToOtherWidget(0, std::string());
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
       mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
@@ -1586,12 +1588,12 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getKey());
+                         mpDataModel->getModel()->getCN());
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1662,8 +1664,8 @@ void CopasiUI3Window::slotImportSBML(QString file)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getKey());
-      mpListView->switchToOtherWidget(0, "");
+                             mpDataModel->getModel()->getCN());
+      mpListView->switchToOtherWidget(0, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -1703,12 +1705,12 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getKey());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -1857,7 +1859,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   if (pModel == NULL) return;
 
   mpDataModelGUI->commit();
-  mpListView->switchToOtherWidget(116, "");
+  mpListView->switchToOtherWidget(116, std::string());
   CCopasiMessage::clearDeque();
 
   if (!pModel->createEventsForTimeseries())
@@ -1882,7 +1884,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 #endif
 
@@ -1894,7 +1896,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
   if (!pModel) return;
 
   mpDataModelGUI->commit();
-  mpListView->switchToOtherWidget(114, "");
+  mpListView->switchToOtherWidget(114, std::string());
   CCopasiMessage::clearDeque();
 
   if (!pModel->convert2NonReversible())
@@ -1908,7 +1910,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
@@ -2399,7 +2401,7 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
     }
 
   CCopasiMessage::clearDeque();
-  mpListView->switchToOtherWidget(0, "");
+  mpListView->switchToOtherWidget(0, std::string());
   setCursor(oldCursor);
 }
 
@@ -2430,7 +2432,7 @@ void CopasiUI3Window::slotApplyInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, pModel->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, pModel->getCN());
     }
 }
 
@@ -2444,7 +2446,7 @@ void CopasiUI3Window::slotUpdateInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->stateToIntialState();
-      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, mpDataModel->getModel()->getKey());
+      mpDataModelGUI->notify(ListViews::STATE, ListViews::CHANGE, mpDataModel->getModel()->getCN());
     }
 }
 
@@ -2538,7 +2540,7 @@ void CopasiUI3Window::slotExpandModel()
 {
   CQExpandModelData *widget = new CQExpandModelData(this, mpDataModel->getModel());
   widget->exec();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 
 #ifdef WITH_MERGEMODEL
@@ -2547,12 +2549,12 @@ void CopasiUI3Window::slotExpandModel()
 
 void CopasiUI3Window::slotMergeModels()
 {
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
   assert(mpDataModel != NULL);
   CModel *pModel = mpDataModel->getModel();
   CQMergingData *widget = new CQMergingData(NULL, pModel, 0);
   widget->exec();
-  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, "");
+  mpDataModelGUI->notify(ListViews::MODEL, ListViews::CHANGE, std::string());
 }
 #endif
 
@@ -3085,12 +3087,12 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getKey());
+                         mpDataModel->getModel()->getCN());
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -3129,12 +3131,12 @@ void CopasiUI3Window::slotImportSEDMLFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getKey());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSEDML->setEnabled(true);
   //  mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -3206,8 +3208,8 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getKey());
-      mpListView->switchToOtherWidget(0, "");
+                             mpDataModel->getModel()->getCN());
+      mpListView->switchToOtherWidget(0, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -3415,8 +3417,8 @@ void CopasiUI3Window::slotImportCombine(QString file)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getKey());
-      mpListView->switchToOtherWidget(0, "");
+                             mpDataModel->getModel()->getCN());
+      mpListView->switchToOtherWidget(0, std::string());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -3455,12 +3457,12 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getKey());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(1, "");
+  mpListView->switchToOtherWidget(1, std::string());
   CQTabWidget *widget = dynamic_cast<CQTabWidget *>(mpListView->getCurrentWidget());
 
   if (widget != NULL)
@@ -3590,15 +3592,26 @@ void CopasiUI3Window::slotClearUndoHistory()
       mpUndoStack->clear();
     }
 }
+void CopasiUI3Window::slotUndo()
+{
+  mpDataModelGUI->notifyChanges(mpDataModel->getUndoStack()->setCurrentIndex(mpDataModel->getUndoStack()->currentIndex() - 1));
+}
+
+void CopasiUI3Window::slotRedo()
+{
+  mpDataModelGUI->notifyChanges(mpDataModel->getUndoStack()->setCurrentIndex(mpDataModel->getUndoStack()->currentIndex() + 1));
+}
 
 void CopasiUI3Window::slotUndoHistory()
 {
-  CQUndoHistoryDialog *undoDialog = new CQUndoHistoryDialog(this, mpUndoStack); //, "Undo History Dialog", 76, 30);
-  undoDialog->setWindowTitle("Undo History");
-  undoDialog->exec();
+  CQUndoDialog * pDialog = new CQUndoDialog(mpDataModel, this);
 
-//  CQUndoDialog * pDialog = new CQUndoDialog(mpDataModel, this);
-//  pDialog->exec();
+  if (pDialog->exec() == QDialog::Accepted)
+    {
+      mpDataModelGUI->notifyChanges(pDialog->getChangeSet());
+    }
+
+  delete pDialog;
 }
 #endif
 

@@ -31,6 +31,7 @@
 
 #include "CopasiDataModel/CDataModel.h"
 #include "model/CModel.h"
+
 #include "model/CEvent.h"
 #include "report/CKeyFactory.h"
 #include "utilities/CCopasiMessage.h"
@@ -59,7 +60,7 @@ CQEventWidget1::CQEventWidget1(QWidget * parent, const char * name)
   , mAssignmentKey("")
   , mCurrentTarget(C_INVALID_INDEX)
   , mAssignments()
-  , mKeyToCopy("")
+  , mObjectCNToCopy()
 {
   setupUi(this);
 
@@ -91,7 +92,7 @@ void CQEventWidget1::slotBtnNew()
 
 void CQEventWidget1::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }
 
 /*! */
@@ -267,7 +268,6 @@ CQEventWidget1::loadFromEvent()
 void CQEventWidget1::saveToEvent()
 {
   // need to update object reference
-  mpObject = CRootContainer::getKeyFactory()->get(mKey);
   mpEvent = dynamic_cast<CEvent*>(mpObject);
 
   if (mpEvent == NULL) return;
@@ -474,14 +474,14 @@ void CQEventWidget1::saveToEvent()
     {
       assert(mpDataModel != NULL);
       mpDataModel->changed();
-      protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
+      protectedNotify(ListViews::EVENT, ListViews::CHANGE, mObjectCN);
     }
 
   mChanged = false;
 }
 
 /*! The slot to update the active event widget */
-bool CQEventWidget1::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 
   switch (objectType)
@@ -489,9 +489,9 @@ bool CQEventWidget1::update(ListViews::ObjectType objectType, ListViews::Action 
       case ListViews::MODEL:
 
         // For a new model we need to remove references to no longer existing metabolites
-        if (action == ListViews::ADD)
+        if (action != ListViews::CHANGE)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
             mpEvent = NULL;
           }
@@ -501,9 +501,9 @@ bool CQEventWidget1::update(ListViews::ObjectType objectType, ListViews::Action 
       case ListViews::EVENT:
 
         // If the currently displayed metabolite is deleted we need to remove its references.
-        if (action == ListViews::DELETE && mKey == key)
+        if (action == ListViews::DELETE && mObjectCN == cn)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
             mpEvent = NULL;
           }
@@ -529,10 +529,14 @@ bool CQEventWidget1::enterProtected()
 {
   bool success = true;
 
-  if (mKeyToCopy != "")
+  if (mObjectCNToCopy != "")
     {
-      mpEvent = dynamic_cast<CEvent*>(CRootContainer::getKeyFactory()->get(mKeyToCopy));
-      mKeyToCopy = "";
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      mpEvent = dynamic_cast<CEvent *>(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy))));
+      mObjectCNToCopy.clear();
     }
   else
     {
@@ -550,7 +554,7 @@ bool CQEventWidget1::enterProtected()
 
   if (!success)
     {
-      mpListView->switchToOtherWidget(116, ""); //TODO
+      mpListView->switchToOtherWidget(116, std::string()); //TODO
     }
 
   return success;
@@ -686,24 +690,24 @@ void CQEventWidget1::createNewEvent()
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string key = mpDataModel->getModel()->getEvents()[name].getKey();
-  protectedNotify(ListViews::EVENT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  CCommonName CN = mpDataModel->getModel()->getEvents()[name].getCN();
+  protectedNotify(ListViews::EVENT, ListViews::ADD, CN);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 void CQEventWidget1::deleteEvent()
 {
-  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, "");
+  mpListView->switchToOtherWidget(CCopasiUndoCommand::EVENTS, std::string());
 
   assert(mpDataModel != NULL);
   CModel * pModel = mpDataModel->getModel();
   assert(pModel != NULL);
 
-  pModel->removeEvent(mKey);
+  pModel->removeEvent(mpEvent);
 
   mpEvent = NULL;
 
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, mObjectCN);
 }
 
 void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
@@ -722,8 +726,8 @@ void CQEventWidget1::deleteEvent(UndoEventData *pEventData)
   mpEvent = NULL;
 
 #undef DELETE
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, key);
-  protectedNotify(ListViews::EVENT, ListViews::DELETE, "");//Refresh all as there may be dependencies.
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, mObjectCN);
+  protectedNotify(ListViews::EVENT, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
 
   switchToWidget(CCopasiUndoCommand::EVENTS);
 }
@@ -740,9 +744,9 @@ void CQEventWidget1::addEvent(UndoEventData *pData)
     return;
 
   pData->setKey(pEvent->getKey());
-  protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
+  protectedNotify(ListViews::EVENT, ListViews::ADD, pEvent->getCN());
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pEvent->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pEvent->getCN());
 }
 
 bool
@@ -751,6 +755,7 @@ CQEventWidget1::changeValue(const std::string &key,
                             const QVariant &newValue,
                             const std::string &expression)
 {
+  /*
   if (!mIgnoreUpdates)
     {
       mKey = key;
@@ -876,6 +881,6 @@ CQEventWidget1::changeValue(const std::string &key,
   protectedNotify(ListViews::EVENT, ListViews::CHANGE, mKey);
 
   loadFromEvent();
-
+  */
   return true;
 }

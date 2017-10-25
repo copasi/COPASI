@@ -37,9 +37,6 @@ class CReactionInterface;
 class ParameterTable;
 class MyLineEdit;
 
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-class ReactionChangeCommand;
-
 class ReactionsWidget1 : public CopasiWidget, public Ui::ReactionsWidget1
 {
   Q_OBJECT
@@ -51,7 +48,6 @@ public:
   ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0);
   ~ReactionsWidget1();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual void setFramework(int framework);
   void copy();
@@ -77,6 +73,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   bool loadFromReaction(const CReaction* reaction);
   bool saveToReaction();
   void FillWidgetFromRI();
@@ -86,16 +83,7 @@ protected:
   //additional functions for UNDO framework
   void deleteReaction();
   void addReaction(std::string & reaObjectName, CReactionInterface *pRi);
-  void addReaction(UndoReactionData *pData);
   void createNewReaction();
-  void deleteReaction(UndoReactionData *pData);
-public:
-  bool changeReaction(const std::string& key,
-                      CCopasiUndoCommand::Type type,
-                      const QVariant& newValue,
-                      const QVariant& newSecondValueValue,
-                      ReactionChangeCommand* command
-                     );
 };
 
 #endif // REACTIONSWIDGET1_H

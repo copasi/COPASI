@@ -87,7 +87,7 @@ public:
                                    const std::string& parameterSetKey, int column);
 
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;

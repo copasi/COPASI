@@ -872,8 +872,8 @@ bool CCopasiXML::saveModel()
               if ((jmax = pReaction->getFunctionParameters().size()))
                 {
                   startSaveElement("ListOfCallParameters");
-                  const std::vector< std::vector<std::string> > & rMap =
-                    pReaction->getParameterMappings();
+                  const std::vector< std::vector< const CDataObject * > > & rMap =
+                    pReaction->getParameterObjects();
 
                   for (j = 0; j < jmax; j++)
                     {
@@ -888,7 +888,7 @@ bool CCopasiXML::saveModel()
 
                       for (k = 0, kmax = rMap[j].size(); k < kmax; k++)
                         {
-                          Attr.setValue(0, rMap[j][k]);
+                          Attr.setValue(0, rMap[j][k]->getKey());
                           saveElement("SourceParameter", Attr);
                         }
 
@@ -2157,7 +2157,7 @@ void CCopasiXML::fixBuild113()
 
           if (Compartments.size() == 1)
             {
-              it->setKineticLawUnitType(CReaction::ConcentrationPerTime);
+              it->setKineticLawUnitType(CReaction::KineticLawUnit::ConcentrationPerTime);
             }
         }
     }

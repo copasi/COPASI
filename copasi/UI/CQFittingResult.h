@@ -43,11 +43,11 @@ public:
   CQFittingResult(QWidget* parent = 0, const char* name = 0);
   ~CQFittingResult();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void loadLog(const COptMethod * pMethod);
 
   void loadExperimentTab();

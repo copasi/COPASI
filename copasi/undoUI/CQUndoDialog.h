@@ -8,6 +8,9 @@
 
 #include "copasi/undoUI/ui_CQUndoDialog.h"
 
+#include "copasi/core/CCore.h"
+#include "copasi/undo/CUndoStack.h"
+
 class CDataModel;
 class CQUndoDM;
 
@@ -20,8 +23,15 @@ public:
 
   virtual ~CQUndoDialog();
 
+  const CUndoData::ChangeSet & getChangeSet() const;
+
+public slots:
+  void accept();
+
 private:
+  CDataModel *mpDataModel;
   CQUndoDM * mpUndoDM;
+  CUndoData::ChangeSet mChangeSet;
 };
 
 #endif // COPASI_CQUndoDialog

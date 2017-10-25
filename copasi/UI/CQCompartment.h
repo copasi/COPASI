@@ -20,8 +20,6 @@
 #ifndef CQCOMPARTMENT_H
 #define CQCOMPARTMENT_H
 
-class UndoCompartmentData;
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
 #include <limits>
 
 #include <QtCore/QVariant>
@@ -45,16 +43,15 @@ public:
   ~CQCompartment();
 
   virtual bool leave();
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   void copy();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected slots:
 
 private:
-  std::vector< int > mItemToType;
   CCompartment * mpCompartment;
   bool mChanged;
   bool mExpressionValid;
@@ -72,7 +69,7 @@ private slots:
   void slotBtnNew();
   void slotBtnCopy(); //dummy, to bypass warnings from TabWidget connections
   void slotBtnDelete();
-  void slotTypeChanged(int type);
+  void slotTypeChanged(const QString & type);
   void slotAddNoiseChanged(bool hasNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotMetaboliteTableCurrentChanged(int row, int col);
@@ -80,14 +77,7 @@ private slots:
 
   //additional functions for UNDO framework
   void deleteCompartment();
-  void addCompartment(UndoCompartmentData *pSData);
   void createNewCompartment();
-  void deleteCompartment(UndoCompartmentData *pSData);
-  bool changeValue(const std::string& key,
-                   CCopasiUndoCommand::Type type,
-                   const QVariant& newValue,
-                   double iValue = std::numeric_limits<double>::quiet_NaN(),
-                   UndoCompartmentData *pUndoData = NULL);
 };
 
 #endif // CQCOMPARTMENT_H

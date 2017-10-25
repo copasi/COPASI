@@ -50,7 +50,6 @@ class CQCompartmentDM : public CQBaseDataModel
 public:
   CQCompartmentDM(QObject *parent = 0);
   const QStringList& getTypes();
-  const std::vector< unsigned C_INT32 >& getItemToType();
   virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
   virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -60,35 +59,22 @@ public:
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
 
-  bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
-
-  //TODO Undo
-  bool compartmentDataChange(const QModelIndex& index,
-                             const QVariant &value,
-                             UndoCompartmentData *pUndoData);
-
-  void insertNewCompartmentRow(int position, int rows, const QModelIndex& index,
-                               const QVariant& value);
-  void addCompartmentRow(UndoCompartmentData *pCompartmentData);
-  void deleteCompartmentRow(UndoCompartmentData *pCompartmentData);
-  bool removeCompartmentRows(QModelIndexList& rows, const QModelIndex&);
-  bool insertCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
-  void deleteCompartmentRows(QList <UndoCompartmentData *>& pCompartmentData);
-  bool removeAllCompartmentRows();
+  bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
   bool clear();
+
+private:
+  void insertNewRows(int position, int rows,
+                     int column = COL_NAME_COMPARTMENTS,
+                     const QVariant & value = "compartment");
 
 public slots:
   virtual void resetCache();
 
 protected:
-  QStringList mTypes;
-  /**
-    * A vector mapping the item index to a model value type
-    */
-  std::vector< unsigned C_INT32 > mItemToType;
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows);
+  virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 
+  QStringList mTypes;
   QStringList mUnits;
   CDataVectorNS< CCompartment > * mpCompartments;
 };

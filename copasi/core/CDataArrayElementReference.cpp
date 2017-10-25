@@ -12,9 +12,9 @@ CArrayElementReference * CArrayElementReference::fromData(const CData & data)
 {
   std::vector< std::string > Index;
 
-  if (data.isSetProperty(CData::Property::ARRAY_ELEMENT_INDEX))
+  if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
-      const std::vector< CDataValue > & DataIndex = data.getProperty(CData::Property::ARRAY_ELEMENT_INDEX).toDataValues();
+      const std::vector< CDataValue > & DataIndex = data.getProperty(CData::ARRAY_ELEMENT_INDEX).toDataValues();
       Index.resize(DataIndex.size());
 
       std::vector< CDataValue >::const_iterator it = DataIndex.begin();
@@ -35,7 +35,7 @@ CData CArrayElementReference::toData() const
 {
   CData Data = CDataObject::toData();
 
-  Data.addProperty(CData::Property::ARRAY_ELEMENT_INDEX, std::vector< CDataValue >(mIndex.begin(), mIndex.end()));
+  Data.addProperty(CData::ARRAY_ELEMENT_INDEX, std::vector< CDataValue >(mIndex.begin(), mIndex.end()));
 
   return Data;
 }
@@ -45,9 +45,9 @@ bool CArrayElementReference::applyData(const CData & data)
 {
   bool success = CDataObject::applyData(data);
 
-  if (data.isSetProperty(CData::Property::ARRAY_ELEMENT_INDEX))
+  if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
-      const std::vector< CDataValue > & Index = data.getProperty(CData::Property::ARRAY_ELEMENT_INDEX).toDataValues();
+      const std::vector< CDataValue > & Index = data.getProperty(CData::ARRAY_ELEMENT_INDEX).toDataValues();
       mIndex.resize(Index.size());
 
       std::vector< CDataValue >::const_iterator it = Index.begin();

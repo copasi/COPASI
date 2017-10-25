@@ -24,6 +24,7 @@ CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
   : QAbstractTableModel(parent)
   , mpUndoStack(NULL)
   , mpDataModel(pDataModel)
+  , mFramework(0)
 {
   if (mpDataModel == NULL)
     {
@@ -82,6 +83,12 @@ bool CQBaseDataModel::isDefaultRow(const QModelIndex& i) const
     }
 
   return (i.row() == rowCount() - 1);
+}
+
+// virtual
+void CQBaseDataModel::setFramework(int framework)
+{
+  mFramework = framework;
 }
 
 QString CQBaseDataModel::createNewName(const QString name, const int nameCol)

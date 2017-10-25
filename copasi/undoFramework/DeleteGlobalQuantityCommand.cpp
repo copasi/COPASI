@@ -24,7 +24,6 @@
 #include "UI/CQModelValue.h"
 
 #include "UndoGlobalQuantityData.h"
-#include "UndoReactionData.h"
 
 #include "DeleteGlobalQuantityCommand.h"
 

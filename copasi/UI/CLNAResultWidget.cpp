@@ -62,9 +62,9 @@ bool CLNAResultWidget::saveToBackend()
   return true;
 }
 
-bool CLNAResultWidget::update(ListViews::ObjectType objectType,
-                              ListViews::Action action,
-                              const std::string &C_UNUSED(key))
+bool CLNAResultWidget::updateProtected(ListViews::ObjectType objectType,
+                                       ListViews::Action action,
+                                       const CCommonName & cn)
 {
   if (objectType == ListViews::MODEL && action == ListViews::ADD)
     mCentralWidget->loadAll(NULL);

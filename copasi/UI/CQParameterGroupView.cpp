@@ -129,7 +129,7 @@ void CQParameterGroupView::slotPushButtonClicked(const QModelIndex & index)
 
   CCopasiParameter * pParameter = CQParameterGroupDM::nodeFromIndex(Source);
 
-  if (pParameter->getType() != CCopasiParameter::GROUP) return;
+  if (pParameter->getType() != CCopasiParameter::Type::GROUP) return;
 
   CCopasiParameterGroup * pGroup = static_cast< CCopasiParameterGroup * >(pParameter);
 
@@ -140,7 +140,7 @@ void CQParameterGroupView::slotPushButtonClicked(const QModelIndex & index)
     {
       switch ((*it)->getType())
         {
-          case CCopasiParameter::CN:
+          case CCopasiParameter::Type::CN:
             modifySelectCNs(*pGroup, **it);
             break;
 
@@ -197,7 +197,7 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   for (; itNew != endNew; ++itNew)
     {
-      group.addParameter("Reaction", CCopasiParameter::CN, (*itNew)->getCN());
+      group.addParameter("Reaction", CCopasiParameter::Type::CN, (*itNew)->getCN());
     }
 
   mpParameterGroupDM->endResetModel();

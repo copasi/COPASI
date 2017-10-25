@@ -34,6 +34,7 @@ class CModelValue;
 class CExpression;
 class CEvent;
 class CDataObject;
+class CCommonName;
 
 class CModelExpansion
 {
@@ -94,10 +95,10 @@ public:
     void add(const CDataObject* source, const CDataObject* copy);
 
     ///find the pointer of the duplicated object from the pointer to the source object (if it exists)
-    const CDataObject* getDuplicatePtr(const CDataObject* source) const;
+    const CDataObject* getDuplicateFromObject(const CDataObject* source) const;
 
     ///find the key of the duplicated object from the source object (if it exists)
-    std::string getDuplicateKey(const std::string & sourceKey) const;
+    CCommonName getDuplicateFromCN(const CCommonName & cn) const;
 
     const std::map<const CDataObject*, const CDataObject*> & getMap() const;
 
@@ -111,19 +112,19 @@ public:
   void setModel(CModel* pModel);
 
   //just a simple method to call during development (as an example for how to use the other methods)
-  void simpleCall(const CCompartment* source, std::vector< std::string  > listOfMetabolites, int mult, bool diff);
+  void simpleCall(const CCompartment* source, std::vector< const CDataObject *  > listOfMetabolites, int mult, bool diff);
 
   /**
    * creates n copies of the objects in souce. Diffusion reactions are created for each of
    * the metabs in listOfMetabolites, so that a linear chain is formed.
    */
-  void createLinearArray(const SetOfModelElements & source, size_t n, const std::set< std::string  > & setOfMetabolites);
+  void createLinearArray(const SetOfModelElements & source, size_t n, const std::set< const CDataObject * > & setOfMetabolites);
 
   /**
    * creates nx*ny copies of the objects in souce. Diffusion reactions are created for each of
    * the metabs in listOfMetabolites, so that a rectangular array is formed.
    */
-  void createRectangularArray(const SetOfModelElements & source, size_t nx, size_t ny, const std::set< std::string  > & setOfMetabolites);
+  void createRectangularArray(const SetOfModelElements & source, size_t nx, size_t ny, const std::set< const CDataObject * > & setOfMetabolites);
 
   /**
    * adds the contents of the source model to the current model.
@@ -162,8 +163,8 @@ public:
    * a global quantity that is used as a rate constant.
    */
   void createDiffusionReaction(const std::string & name,
-                               const std::string & metabkey1, const std::string & metabkey2,
-                               const std::string & parameterkey);
+                               const CDataObject * pSubstrate, const CDataObject * pProduct,
+                               const CDataObject * pParameter);
 
   void replaceInModel(const ElementsMap & emap, bool remove);
 

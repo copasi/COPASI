@@ -41,28 +41,6 @@ CChemEqElement * CChemEqElement::fromData(const CData & data)
                             NO_PARENT);
 }
 
-// virtual
-CData CChemEqElement::toData() const
-{
-  CData Data;
-
-  // TODO CRITICAL Implement me!
-  fatalError();
-
-  return Data;
-}
-
-// virtual
-bool CChemEqElement::applyData(const CData & data)
-{
-  bool success = true;
-
-  // TODO CRITICAL Implement me!
-  fatalError();
-
-  return success;
-}
-
 CChemEqElement::CChemEqElement(const std::string & name,
                                const CDataContainer * pParent):
   CDataContainer(name, pParent, "Chemical Equation Element"),

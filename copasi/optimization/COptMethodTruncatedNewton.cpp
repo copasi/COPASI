@@ -35,7 +35,7 @@ COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CDataContainer * pPar
   mpCTruncatedNewton(new CTruncatedNewton())
 {
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }

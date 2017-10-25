@@ -50,9 +50,7 @@ void CQSteadyStateResult::init()
   mUpToDate = false;
 }
 
-bool CQSteadyStateResult::update(ListViews::ObjectType objectType,
-                                 ListViews::Action /* action */,
-                                 const std::string & /* key */)
+bool CQSteadyStateResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (objectType != ListViews::STATE)
     mUpToDate = false;
@@ -135,6 +133,6 @@ void CQSteadyStateResult::slotUpdateModel()
           mpTask->setUpdateModel(false);
         }
 
-      protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getKey());
+      protectedNotify(ListViews::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
     }
 }

@@ -454,9 +454,9 @@ Expression</string>
   </connection>
   <connection>
    <sender>mpComboBoxType</sender>
-   <signal>activated(int)</signal>
+   <signal>currentIndexChanged(const QString &amp;)</signal>
    <receiver>CQSpeciesDetail</receiver>
-   <slot>slotTypeChanged(int)</slot>
+   <slot>slotTypeChanged(const QString &amp;)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>173</x>

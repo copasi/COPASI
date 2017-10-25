@@ -99,9 +99,9 @@ CMIRIAMResources::CMIRIAMResources(const CCopasiParameterGroup & group,
 
 void CMIRIAMResources::initializeParameter()
 {
-  mpLastUpdateDate = assertParameter("LastUpdateDate", CCopasiParameter::UINT,
+  mpLastUpdateDate = assertParameter("LastUpdateDate", CCopasiParameter::Type::UINT,
                                      (unsigned C_INT32) getActDateInSeconds());
-  mpUpdateFrequency = assertParameter("Frequency", CCopasiParameter::UINT,
+  mpUpdateFrequency = assertParameter("Frequency", CCopasiParameter::Type::UINT,
                                       (unsigned C_INT32) 604800);
   mpMIRIAMResources = assertGroup("Resources");
 
@@ -553,10 +553,10 @@ CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
 
 void CMIRIAMResource::initializeParameter()
 {
-  mpDisplayName = assertParameter("DisplayName", CCopasiParameter::STRING, (std::string) "");
-  mpURI = assertParameter("URI", CCopasiParameter::STRING, (std::string) "");
-  mpPattern = assertParameter("Pattern", CCopasiParameter::STRING, (std::string) "");
-  mpCitation = assertParameter("Citation", CCopasiParameter::BOOL, false);
+  mpDisplayName = assertParameter("DisplayName", CCopasiParameter::Type::STRING, (std::string) "");
+  mpURI = assertParameter("URI", CCopasiParameter::Type::STRING, (std::string) "");
+  mpPattern = assertParameter("Pattern", CCopasiParameter::Type::STRING, (std::string) "");
+  mpCitation = assertParameter("Citation", CCopasiParameter::Type::BOOL, false);
   mpDeprecated = assertGroup("Deprecated");
 }
 
@@ -616,7 +616,7 @@ const bool & CMIRIAMResource::getMIRIAMCitation() const
 {return * mpCitation;}
 
 void CMIRIAMResource::addDeprecatedURL(const std::string & URL)
-{mpDeprecated->addParameter("URL", CCopasiParameter::STRING, URL);}
+{mpDeprecated->addParameter("URL", CCopasiParameter::Type::STRING, URL);}
 
 const CCopasiParameterGroup & CMIRIAMResource::getMIRIAMDeprecated() const
 {return * mpDeprecated;}

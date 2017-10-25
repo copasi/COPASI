@@ -105,6 +105,8 @@ class CQLayoutsWidget;
 class CQPlotSubwidget;
 class CDataModel;
 
+#include "copasi/core/CRegisteredCommonName.h"
+
 //********************************************************************************
 
 class ListViews : public QSplitter
@@ -126,22 +128,30 @@ public:
 #endif
   // CHANGE does not include RENAME
   enum Action {CHANGE = 0, ADD, DELETE, RENAME};
-  enum ObjectType {METABOLITE = 0
-                                , COMPARTMENT
-                   , REACTION
-                   , FUNCTION
-                   , MODEL
-                   , STATE
-                   , REPORT
-                   , PLOT
-                   , MODELVALUE
-                   , EVENT
-                   , MIRIAM
-                   , LAYOUT
-                   , PARAMETEROVERVIEW
-                   , MODELPARAMETERSET
-                   , UNIT
-                  };
+  enum ObjectType
+  {
+    METABOLITE
+    , COMPARTMENT
+    , REACTION
+    , FUNCTION
+    , MODEL
+    , STATE
+    , REPORT
+    , PLOT
+    , MODELVALUE
+    , EVENT
+    , MIRIAM
+    , LAYOUT
+    , MODELPARAMETERSET
+    , TASK
+    , RESULT
+    , UNIT
+    , VECTOR
+    , PARAMETEROVERVIEW
+    , __SIZE
+  };
+
+  static const CEnumAnnotation< std::string, ObjectType > DataObjectType;
 
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();
@@ -153,7 +163,7 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
-  void switchToOtherWidget(const size_t & id, const std::string & key);
+  void switchToOtherWidget(const size_t & id, const CCommonName & cn);
 
   size_t getCurrentItemId();
   CopasiWidget* findWidgetFromId(const size_t & id) const;
@@ -197,15 +207,15 @@ public slots:
   void slotFolderChanged(const QModelIndex & index);
 
 private slots:
-  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, std::string key = "");
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void slotSort(const QModelIndex & index1, const QModelIndex & index2);
 
 private:
-  bool updateCurrentWidget(ObjectType objectType, Action action, const std::string & key = "");
+  bool updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn);
 
   void notifyChildWidgets(ObjectType objectType,
                           Action action,
-                          const std::string & key);
+                          const CCommonName & cn);
 
   DataModelGUI * mpDataModelGUI;
   CDataModel * mpDataModel;
@@ -214,7 +224,7 @@ private:
   QSortFilterProxyModel * mpTreeSortDM;
   CMathModel *mpMathModel;
   CopasiWidget* mpCurrentWidget;
-  std::string mCurrentItemKey;
+  CRegisteredCommonName mCurrentItemCN;
 
   //the widgets
   CQBrowserPane *mpTreeView;

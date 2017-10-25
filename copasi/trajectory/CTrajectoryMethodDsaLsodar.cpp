@@ -294,11 +294,11 @@ CTrajectoryMethodDsaLsodar::~CTrajectoryMethodDsaLsodar()
 
 void CTrajectoryMethodDsaLsodar::initializeParameter()
 {
-  mpMaxSteps = assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 1000000);
-  mpLowerLimit = assertParameter("Lower Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 800.0);
-  mpUpperLimit = assertParameter("Upper Limit", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1000.0);
-  mpPartitioningInterval = assertParameter("Partitioning Interval", CCopasiParameter::UINT, (unsigned C_INT32) 1);
-  mpPartitioningSteps = assertParameter("Partitioning Stepsize", CCopasiParameter::UDOUBLE, (C_FLOAT64) 0.001);
+  mpMaxSteps = assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1000000);
+  mpLowerLimit = assertParameter("Lower Limit", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 800.0);
+  mpUpperLimit = assertParameter("Upper Limit", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1000.0);
+  mpPartitioningInterval = assertParameter("Partitioning Interval", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1);
+  mpPartitioningSteps = assertParameter("Partitioning Stepsize", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.001);
 }
 
 // virtual

@@ -45,7 +45,6 @@ public:
   CQEventWidget1(QWidget* parent = 0, const char* name = 0);
   ~CQEventWidget1();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
   /**
@@ -62,6 +61,7 @@ public:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected slots:
 
@@ -80,7 +80,7 @@ private:
   bool loadFromEvent();
   void saveToEvent();
   void showDelayExpression(bool display);
-  std::string mKeyToCopy;
+  CCommonName mObjectCNToCopy;
 
 private slots:
   void slotBtnNew();

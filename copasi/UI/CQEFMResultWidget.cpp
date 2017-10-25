@@ -107,9 +107,9 @@ bool CQEFMResultWidget::leave()
 }
 
 // virtual
-bool CQEFMResultWidget::update(ListViews::ObjectType objectType,
-                               ListViews::Action action,
-                               const std::string & /* key */)
+bool CQEFMResultWidget::updateProtected(ListViews::ObjectType objectType,
+                                        ListViews::Action action,
+                                        const CCommonName & cn)
 {
   // We need to update the task when a new model is loaded.
   switch (objectType)

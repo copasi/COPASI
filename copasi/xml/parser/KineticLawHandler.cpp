@@ -44,7 +44,7 @@ CXMLHandler * KineticLawHandler::processStart(const XML_Char * pszName,
     {
       case KineticLaw:
         Function = mpParser->getAttributeValue("function", papszAttrs);
-        KineticLawUnitType = toEnum(mpParser->getAttributeValue("unitType", papszAttrs, "Default"), CReaction::KineticLawUnitTypeName, CReaction::Default);
+        KineticLawUnitType = CReaction::KineticLawUnitTypeName.toEnum(mpParser->getAttributeValue("unitType", papszAttrs, "Default"), CReaction::KineticLawUnit::Default);
         ScalingCompartment = mpParser->getAttributeValue("scalingCompartment", papszAttrs, "");
 
         mpData->pFunction =
@@ -91,17 +91,17 @@ bool KineticLawHandler::processEnd(const XML_Char * pszName)
         mpData->pReaction->setFunction(dynamic_cast< CFunction * >(mpData->pFunction));
 
         {
-          std::map< std::string, std::vector< std::string > >::const_iterator it
-            = mpData->SourceParameterKeys.begin();
-          std::map< std::string, std::vector< std::string > >::const_iterator end
-            = mpData->SourceParameterKeys.end();
+          std::map< std::string, std::vector< const CDataObject * > >::const_iterator it
+            = mpData->SourceParameterObjects.begin();
+          std::map< std::string, std::vector< const CDataObject * > >::const_iterator end
+            = mpData->SourceParameterObjects.end();
 
           for (; it != end; ++it)
             if (it->second.size() > 0)
-              mpData->pReaction->setParameterMappingVector(it->first, it->second);
+              mpData->pReaction->setParameterObjects(it->first, it->second);
         }
 
-        mpData->SourceParameterKeys.clear();
+        mpData->SourceParameterObjects.clear();
 
         break;
 

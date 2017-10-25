@@ -162,7 +162,7 @@ bool CQEFMSpeciesDM::insertRows(int /* position */, int /* rows */, const QModel
 }
 
 // virtual
-bool CQEFMSpeciesDM::removeRows(int /* position */, int /* rows */)
+bool CQEFMSpeciesDM::removeRows(int /* position */, int /* rows */, const QModelIndex & /* index */)
 {
   return false;
 }

@@ -805,6 +805,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendDirectDependents(const CDataContainer & container,
@@ -813,7 +814,8 @@ public:
                               DataObjectSet & dependentCompartments,
                               DataObjectSet & dependentModelValues,
                               DataObjectSet & dependentEvents,
-                              DataObjectSet & dependentEventAssignments) const;
+                              DataObjectSet & dependentEventAssignments,
+                              const bool & onlyStructural = false) const;
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
@@ -826,6 +828,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendDirectDependents(const ObjectSet & objects,
@@ -834,7 +837,8 @@ public:
                               DataObjectSet & dependentCompartments,
                               DataObjectSet & dependentModelValues,
                               DataObjectSet & dependentEvents,
-                              DataObjectSet & dependentEventAssignments) const;
+                              DataObjectSet & dependentEventAssignments,
+                              const bool & onlyStructural = false) const;
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
@@ -847,6 +851,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendAllDependents(const CDataContainer & container,
@@ -855,7 +860,8 @@ public:
                            DataObjectSet & dependentCompartments,
                            DataObjectSet & dependentModelValues,
                            DataObjectSet & dependentEvents,
-                           DataObjectSet & dependentEventAssignments) const;
+                           DataObjectSet & dependentEventAssignments,
+                           const bool & onlyStructural = false) const;
 
   /**
    * Appends pointers to compartments, species, model values, reactions, events, and event assignments
@@ -868,6 +874,7 @@ public:
    * @param CDataObject::DataObjectSet & dependentModelValues
    * @param CDataObject::DataObjectSet & dependentEvents
    * @param CDataObject::DataObjectSet & dependentEventAssignments
+   * @param const bool & onlyStructural (default: false)
    * @return bool objectsAppended
    */
   bool appendAllDependents(const ObjectSet & objects,
@@ -876,14 +883,17 @@ public:
                            DataObjectSet & dependentCompartments,
                            DataObjectSet & dependentModelValues,
                            DataObjectSet & dependentEvents,
-                           DataObjectSet & dependentEventAssignments) const;
+                           DataObjectSet & dependentEventAssignments,
+                           const bool & onlyStructural = false) const;
 
 public:
   /**
    * Remove all model objects which depend on the deleted objects
    * @param const CDataObject::ObjectSet & deletedObjects
+   * @param const bool & onlyStructural (default: false)
    */
-  void removeDependentModelObjects(const ObjectSet & deletedObjects);
+  void removeDependentModelObjects(const ObjectSet & deletedObjects,
+                                   const bool & onlyStructural = false);
 
   /**
    * Add a compartment to the model

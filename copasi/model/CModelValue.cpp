@@ -73,7 +73,7 @@ CData CModelEntity::toData() const
 {
   CData Data = CDataContainer::toData();
 
-  Data.addProperty(CData::SIMULATION_TYPE, (unsigned C_INT32) mStatus);
+  Data.addProperty(CData::SIMULATION_TYPE, StatusName[mStatus]);
   Data.addProperty(CData::INITIAL_VALUE, mIValue);
   Data.addProperty(CData::INITIAL_EXPRESSION, getInitialExpression());
   Data.addProperty(CData::EXPRESSION, getExpression());
@@ -90,7 +90,7 @@ bool CModelEntity::applyData(const CData & data)
 
   if (data.isSetProperty(CData::SIMULATION_TYPE))
     {
-      setStatus((Status) data.getProperty(CData::SIMULATION_TYPE).toUint());
+      setStatus(StatusName.toEnum(data.getProperty(CData::SIMULATION_TYPE).toString()));
     }
 
   if (data.isSetProperty(CData::INITIAL_VALUE))
@@ -118,7 +118,30 @@ bool CModelEntity::applyData(const CData & data)
       success &= setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
     }
 
-  return false;
+  return success;
+}
+
+// virtual
+void CModelEntity::createUndoData(CUndoData & undoData,
+                                  const CUndoData::Type & type,
+                                  const CData & oldData,
+                                  const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::SIMULATION_TYPE, oldData.getProperty(CData::SIMULATION_TYPE), StatusName[mStatus]);
+  undoData.addProperty(CData::INITIAL_VALUE, oldData.getProperty(CData::INITIAL_VALUE), mIValue);
+  undoData.addProperty(CData::INITIAL_EXPRESSION, oldData.getProperty(CData::INITIAL_EXPRESSION), getInitialExpression());
+  undoData.addProperty(CData::EXPRESSION, oldData.getProperty(CData::EXPRESSION), getExpression());
+  undoData.addProperty(CData::ADD_NOISE, oldData.getProperty(CData::ADD_NOISE), mHasNoise);
+  undoData.addProperty(CData::NOISE_EXPRESSION, oldData.getProperty(CData::NOISE_EXPRESSION), getNoiseExpression());
+
+  return;
 }
 
 // the "variable" keyword is used for compatibility reasons. It actually means "this metab is part

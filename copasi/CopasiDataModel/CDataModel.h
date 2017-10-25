@@ -13,6 +13,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CTaskEnum.h"
+#include "copasi/undo/CUndoStack.h"
 
 class CInfo;
 class CModel;
@@ -30,7 +31,6 @@ class CProcessReport;
 class CConfigurationFile;
 class SBMLIncompatibility;
 class CListOfLayouts;
-class CUndoStack;
 class CUndoData;
 class CCopasiTask;
 
@@ -337,8 +337,8 @@ public:
 
 #endif
 
-  void applyData(const CUndoData & data);
-  void recordData(const CUndoData & data);
+  CUndoData::ChangeSet applyData(const CUndoData & data);
+  CUndoData::ChangeSet recordData(const CUndoData & data);
 
 protected:
   void pushData();

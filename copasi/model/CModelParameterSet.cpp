@@ -202,11 +202,11 @@ void CModelParameterSet::createFromModel()
           else
             {
               pParameter->setSimulationType(CModelEntity::Status::ASSIGNMENT);
-              const std::vector<std::string> ModelValue = itReaction->getParameterMapping((*itParameter)->getObjectName());
+              const std::vector< const CDataObject * > & ModelValue = itReaction->getParameterObjects((*itParameter)->getObjectName());
 
               if (ModelValue.size() != 1) fatalError();
 
-              const CModelValue * pModelValue = static_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(ModelValue[0]));
+              const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
 
               if (pModelValue == NULL) fatalError();
 

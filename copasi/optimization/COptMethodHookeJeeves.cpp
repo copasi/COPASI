@@ -40,11 +40,11 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-005);
-  addParameter("Rho", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.2);
+  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-005);
+  addParameter("Rho", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.2);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }

@@ -172,7 +172,7 @@ bool CQOptimizationWidget::runTask()
   // ----
 
   COptTask * pTask =
-    dynamic_cast< COptTask * >(CRootContainer::getKeyFactory()->get(mKey));
+    dynamic_cast< COptTask * >(mpObject);
 
   if (!pTask) return false;
 

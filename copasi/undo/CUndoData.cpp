@@ -5,13 +5,14 @@
 
 #include "copasi.h"
 
-#include "CUndoData.h"
+#include "copasi/undo/CUndoData.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "core/CRegisteredCommonName.h"
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataVector.h"
-#include "model/CMetab.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CMetab.h"
+#include "copasi/utilities/CCopasiParameterGroup.h"
 
 // static
 const CEnumAnnotation< std::string, CUndoData::Type > CUndoData::TypeName(
@@ -25,7 +26,8 @@ CUndoData::CUndoData():
   mType(CUndoData::Type::CHANGE),
   mOldData(),
   mNewData(),
-  mDependentData(),
+  mPreProcessData(),
+  mPostProcessData(),
   mTime(),
   mAuthorID(C_INVALID_INDEX),
   mChangedProperties()
@@ -37,7 +39,8 @@ CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_
   mType(type),
   mOldData(),
   mNewData(),
-  mDependentData(),
+  mPreProcessData(),
+  mPostProcessData(),
   mTime(),
   mAuthorID(authorId),
   mChangedProperties()
@@ -74,10 +77,61 @@ CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_
         mOldData.addProperty(CData::OBJECT_PARENT_CN, pObject->getObjectParent()->getCN());
         mOldData.addProperty(CData::OBJECT_TYPE, pObject->getObjectType());
         mOldData.addProperty(CData::OBJECT_NAME, pObject->getObjectName());
+        mOldData.addProperty(CData::OBJECT_INDEX, pObject->getObjectParent()->getIndex(pObject));
 
         mNewData.addProperty(CData::OBJECT_PARENT_CN, pObject->getObjectParent()->getCN());
         mNewData.addProperty(CData::OBJECT_TYPE, pObject->getObjectType());
         mNewData.addProperty(CData::OBJECT_NAME, pObject->getObjectName());
+        mNewData.addProperty(CData::OBJECT_INDEX, pObject->getObjectParent()->getIndex(pObject));
+
+        break;
+    }
+}
+
+CUndoData::CUndoData(const Type & type, const CData & data, const size_t & authorId):
+  mType(CUndoData::Type::CHANGE),
+  mOldData(),
+  mNewData(),
+  mPreProcessData(),
+  mPostProcessData(),
+  mTime(),
+  mAuthorID(C_INVALID_INDEX),
+  mChangedProperties()
+{
+  time(&mTime);
+
+  switch (mType)
+    {
+      case Type::INSERT:
+        mNewData = data;
+
+        for (CData::const_iterator it = mNewData.begin(), end = mNewData.end(); it != end; ++it)
+          {
+            mChangedProperties.insert(it->first);
+          }
+
+        break;
+
+      case Type::REMOVE:
+        mOldData = data;
+
+        for (CData::const_iterator it = mOldData.begin(), end = mOldData.end(); it != end; ++it)
+          {
+            mChangedProperties.insert(it->first);
+          }
+
+        break;
+
+      case Type::CHANGE:
+        mOldData.addProperty(CData::OBJECT_PARENT_CN, data.getProperty(CData::OBJECT_PARENT_CN));
+        mOldData.addProperty(CData::OBJECT_TYPE, data.getProperty(CData::OBJECT_TYPE));
+        mOldData.addProperty(CData::OBJECT_NAME, data.getProperty(CData::OBJECT_NAME));
+        mOldData.addProperty(CData::OBJECT_INDEX, data.getProperty(CData::OBJECT_INDEX));
+
+        mNewData.addProperty(CData::OBJECT_PARENT_CN, data.getProperty(CData::OBJECT_PARENT_CN));
+        mNewData.addProperty(CData::OBJECT_TYPE, data.getProperty(CData::OBJECT_TYPE));
+        mNewData.addProperty(CData::OBJECT_NAME, data.getProperty(CData::OBJECT_NAME));
+        mNewData.addProperty(CData::OBJECT_INDEX, data.getProperty(CData::OBJECT_INDEX));
 
         break;
     }
@@ -87,7 +141,8 @@ CUndoData::CUndoData(const CUndoData & src):
   mType(src.mType),
   mOldData(src.mOldData),
   mNewData(src.mNewData),
-  mDependentData(src.mDependentData),
+  mPreProcessData(src.mPreProcessData),
+  mPostProcessData(src.mPostProcessData),
   mTime(src.mTime),
   mAuthorID(src.mAuthorID),
   mChangedProperties(src.mChangedProperties)
@@ -137,30 +192,35 @@ bool CUndoData::addProperty(const CData::Property & property, const CDataValue &
 
 bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue)
 {
-  bool success = true;
+  bool success = false;
 
   switch (mType)
     {
       case Type::INSERT:
-        success = false;
-        break;
-
       case Type::REMOVE:
-        success = false;
         break;
 
       case Type::CHANGE:
-        success &= mOldData.addProperty(name, oldValue);
-        success &= mNewData.addProperty(name, newValue);
-
         if (oldValue != newValue)
           {
+            success &= mOldData.addProperty(name, oldValue);
+            success &= mNewData.addProperty(name, newValue);
             mChangedProperties.insert(name);
+            success = true;
           }
         else
           {
+            // These are required to retrieve the object and must not be removed.
+            if (name != "Object Name" &&
+                name != "Object Parent CN" &&
+                name != "Object Type" &&
+                name != "Object Index")
+              {
+                mOldData.removeProperty(name);
+                mNewData.removeProperty(name);
+              }
+
             mChangedProperties.erase(name);
-            success = false;
           }
 
         break;
@@ -199,21 +259,16 @@ bool CUndoData::isSetProperty(const std::string & name) const
 
 bool CUndoData::appendData(const CData & data)
 {
+  if (mType == Type::CHANGE) return false;
+
   bool success = true;
 
-  switch (mType)
+  CData::const_iterator it = data.begin();
+  CData::const_iterator end = data.end();
+
+  for (; it != end; ++it)
     {
-      case Type::INSERT:
-        success &= mNewData.appendData(data);
-        break;
-
-      case Type::REMOVE:
-        success &= mOldData.appendData(data);
-        break;
-
-      case Type::CHANGE:
-        success = false;
-        break;
+      success &= addProperty(it->first, it->second);
     }
 
   return success;
@@ -221,42 +276,46 @@ bool CUndoData::appendData(const CData & data)
 
 bool CUndoData::appendData(const CData & oldData, const CData & newData)
 {
+  if (mType != Type::CHANGE) return false;
+
   bool success = true;
 
-  switch (mType)
+  CData::const_iterator itOld = oldData.begin();
+  CData::const_iterator endOld = oldData.end();
+  CData::const_iterator itNew = newData.begin();
+
+  for (; itOld != endOld; ++itOld, ++itNew)
     {
-      case Type::INSERT:
-        success = false;
-        break;
-
-      case Type::REMOVE:
-        success = false;
-        break;
-
-      case Type::CHANGE:
-        success &= mOldData.appendData(oldData);
-        success &= mNewData.appendData(newData);
-        break;
+      success &= addProperty(itOld->first, itOld->second, itNew->second);
     }
 
   return success;
 }
 
-bool CUndoData::addDependentData(const CUndoData & dependentData)
+bool CUndoData::addPreProcessData(const CUndoData & dependentData)
 {
-  mDependentData.push_back(dependentData);
+  mPreProcessData.push_back(dependentData);
 
   return true;
 }
 
-bool CUndoData::addDependentData(std::vector< CUndoData > & dependentData, bool sort)
+bool CUndoData::addPreProcessData(std::vector< CUndoData > & dependentData)
 {
-  if (sort)
-    {
-      std::sort(dependentData.begin(), dependentData.end());
-    }
+  mPreProcessData.insert(mPreProcessData.end(), dependentData.begin(), dependentData.end());
 
-  mDependentData.insert(mDependentData.end(), dependentData.begin(), dependentData.end());
+  return true;
+}
+
+bool CUndoData::addPostProcessData(const CUndoData & dependentData)
+{
+  mPostProcessData.push_back(dependentData);
+
+  return true;
+}
+
+bool CUndoData::addPostProcessData(std::vector< CUndoData > & dependentData)
+{
+  mPostProcessData.insert(mPostProcessData.end(), dependentData.begin(), dependentData.end());
 
   return true;
 }
@@ -271,14 +330,24 @@ const CData & CUndoData::getNewData() const
   return mNewData;
 }
 
-const std::vector< CUndoData > & CUndoData::getDependentData() const
+const std::vector< CUndoData > & CUndoData::getPreProcessData() const
 {
-  return mDependentData;
+  return mPreProcessData;
 }
 
-std::vector< CUndoData > & CUndoData::getDependentData()
+std::vector< CUndoData > & CUndoData::getPreProcessData()
 {
-  return mDependentData;
+  return mPreProcessData;
+}
+
+const std::vector< CUndoData > & CUndoData::getPostProcessData() const
+{
+  return mPostProcessData;
+}
+
+std::vector< CUndoData > & CUndoData::getPostProcessData()
+{
+  return mPostProcessData;
 }
 
 const std::set< std::string > & CUndoData::getChangedProperties() const
@@ -286,44 +355,56 @@ const std::set< std::string > & CUndoData::getChangedProperties() const
   return mChangedProperties;
 }
 
-bool CUndoData::apply(const CDataModel & dataModel) const
+bool CUndoData::isChangedProperty(const CData::Property & property) const
+{
+  return isChangedProperty(CData::PropertyName[property]);
+}
+
+bool CUndoData::isChangedProperty(const std::string & name) const
+{
+  return mChangedProperties.find(name) != mChangedProperties.end();
+}
+
+bool CUndoData::apply(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const
 {
   bool success = true;
+
+  std::cout << *this << std::endl;
 
   switch (mType)
     {
       case Type::INSERT:
-        success &= insert(dataModel, true);
+        success &= insert(dataModel, true, changes, execute);
         break;
 
       case Type::REMOVE:
-        success &= remove(dataModel, true);
+        success &= remove(dataModel, true, changes, execute);
         break;
 
       case Type::CHANGE:
-        success &= change(dataModel, true);
+        success &= change(dataModel, true, changes, execute);
         break;
     }
 
   return success;
 }
 
-bool CUndoData::undo(const CDataModel & dataModel) const
+bool CUndoData::undo(const CDataModel & dataModel, ChangeSet & changes, const bool & execute) const
 {
   bool success = true;
 
   switch (mType)
     {
       case Type::INSERT:
-        success &= remove(dataModel, false);
+        success &= remove(dataModel, false, changes, execute);
         break;
 
       case Type::REMOVE:
-        success &= insert(dataModel, false);
+        success &= insert(dataModel, false, changes, execute);
         break;
 
       case Type::CHANGE:
-        success &= change(dataModel, false);
+        success &= change(dataModel, false, changes, execute);
         break;
     }
 
@@ -397,6 +478,36 @@ std::string CUndoData::getObjectDisplayName() const
   return DisplayName;
 }
 
+std::string CUndoData::getObjectCN(const bool & apply) const
+{
+  const CData & Data = getData(!apply);
+
+  // This does not work if the object parent is a vector or array, i.e., we expect an index operator
+  CCommonName CN = Data.getProperty(CData::OBJECT_PARENT_CN).toString();
+
+  // Determine the object type of the parent;
+  CCommonName Primary;
+  CCommonName Remainder = CN;
+
+  while (!Remainder.empty())
+    {
+      Primary = Remainder.getPrimary();
+      Remainder = Remainder.getRemainder();
+    }
+
+  if (Primary.getObjectType() == "Vector")
+    {
+      CN += "[" + CCommonName::escape(Data.getProperty(CData::OBJECT_NAME).toString()) + "]";
+    }
+  else
+    {
+      CN += "," + CCommonName::escape(Data.getProperty(CData::OBJECT_TYPE).toString())
+            + "=" + CCommonName::escape(Data.getProperty(CData::OBJECT_NAME).toString());
+    }
+
+  return CN;
+}
+
 std::string CUndoData::getObjectType() const
 {
   switch (mType)
@@ -422,8 +533,8 @@ bool CUndoData::operator < (const CUndoData & rhs) const
     {
       case Type::INSERT:
       {
-        const std::string & CN = mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
-        const std::string & RhsCN = rhs.mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & CN = mNewData.getProperty(CData::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mNewData.getProperty(CData::OBJECT_PARENT_CN).toString();
 
         if (CN != RhsCN) return CN < RhsCN;
       }
@@ -431,8 +542,8 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
       case Type::REMOVE:
       {
-        const std::string & CN = mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
-        const std::string & RhsCN = rhs.mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & CN = mOldData.getProperty(CData::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mOldData.getProperty(CData::OBJECT_PARENT_CN).toString();
 
         if (CN != RhsCN) return CN > RhsCN;
       }
@@ -440,15 +551,15 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
       case Type::CHANGE:
       {
-        const std::string & CN = mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
-        const std::string & RhsCN = rhs.mNewData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & CN = mNewData.getProperty(CData::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mNewData.getProperty(CData::OBJECT_PARENT_CN).toString();
 
         if (CN != RhsCN) return CN < RhsCN;
       }
 
       {
-        const std::string & CN = mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
-        const std::string & RhsCN = rhs.mOldData.getProperty(CData::Property::OBJECT_PARENT_CN).toString();
+        const std::string & CN = mOldData.getProperty(CData::OBJECT_PARENT_CN).toString();
+        const std::string & RhsCN = rhs.mOldData.getProperty(CData::OBJECT_PARENT_CN).toString();
 
         if (CN != RhsCN) return CN > RhsCN;
       }
@@ -460,8 +571,8 @@ bool CUndoData::operator < (const CUndoData & rhs) const
     {
       case Type::INSERT:
       {
-        const unsigned C_INT32 & Index = mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
-        const unsigned C_INT32 & RhsIndex = rhs.mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const size_t & Index = mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        const size_t & RhsIndex = rhs.mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index < RhsIndex;
       }
@@ -469,8 +580,8 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
       case Type::REMOVE:
       {
-        const unsigned C_INT32 & Index = mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
-        const unsigned C_INT32 & RhsIndex = rhs.mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const size_t & Index = mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        const size_t & RhsIndex = rhs.mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index > RhsIndex;
       }
@@ -478,15 +589,15 @@ bool CUndoData::operator < (const CUndoData & rhs) const
 
       case Type::CHANGE:
       {
-        const unsigned C_INT32 & Index = mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
-        const unsigned C_INT32 & RhsIndex = rhs.mNewData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const size_t & Index = mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        const size_t & RhsIndex = rhs.mNewData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index < RhsIndex;
       }
 
       {
-        const unsigned C_INT32 & Index = mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
-        const unsigned C_INT32 & RhsIndex = rhs.mOldData.getProperty(CData::Property::OBJECT_INDEX).toUint();
+        const size_t & Index = mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
+        const size_t & RhsIndex = rhs.mOldData.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (Index != RhsIndex) return Index > RhsIndex;
       }
@@ -497,29 +608,62 @@ bool CUndoData::operator < (const CUndoData & rhs) const
   return this < &rhs;
 }
 
+bool CUndoData::empty() const
+{
+  return mChangedProperties.empty();
+}
+
+void CUndoData::clear()
+{
+  mOldData.clear();
+  mNewData.clear();
+  time(&mTime);
+  mPreProcessData.clear();
+  mPostProcessData.clear();
+  mChangedProperties.clear();
+}
+
 // static
-bool CUndoData::insert(const CDataModel & dataModel, const bool & apply) const
+bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
 {
   const CData & Data = getData(apply);
+
+  bool success = executePreProcessData(dataModel, apply, changes, execute);
 
   CDataContainer * pParent = getParent(dataModel, Data);
 
   if (pParent == NULL)
-    return false;
+    {
+      executePreProcessData(dataModel, !apply, changes, execute);
+      changes.clear();
 
-  CDataObject * pObject = pParent->insert(Data);
+      return false;
+    }
 
-  if (pObject == NULL)
-    return false;
+  if (execute)
+    {
+      CDataObject * pObject = pParent->insert(Data);
 
-  bool success = pObject->applyData(Data);
-  success &= processDependentData(dataModel, apply);
+      if (pObject == NULL)
+        {
+          success = executePreProcessData(dataModel, !apply, changes, execute);
+          changes.clear();
+
+          return false;
+        }
+
+      success &= pObject->applyData(Data);
+    }
+
+  changes[getObjectCN(apply)] = {CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()};
+
+  success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;
 }
 
 // static
-bool CUndoData::remove(const CDataModel & dataModel, const bool & apply) const
+bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
 {
   const CData & Data = getData(apply);
 
@@ -528,13 +672,22 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply) const
   if (pObject == NULL)
     return false;
 
-  delete pObject;
+  bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  return processDependentData(dataModel, apply);
+  changes[getObjectCN(apply)] = {CUndoData::Type::REMOVE, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()};
+
+  if (execute)
+    {
+      delete pObject;
+    }
+
+  success &= executePostProcessData(dataModel, apply, changes, execute);
+
+  return success;
 }
 
 // static
-bool CUndoData::change(const CDataModel & dataModel, const bool & apply) const
+bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
 {
   const CData & OldData = getData(!apply);
   const CData & NewData = getData(apply);
@@ -545,55 +698,88 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply) const
   if (pObject == NULL)
     return false;
 
-  bool success = true;
+  bool success = executePreProcessData(dataModel, apply, changes, execute);
 
-  // A special case is that the ParentCN has changed, i.e., the object has moved
-
-  if (OldData.getProperty(CData::OBJECT_PARENT_CN).toString() != NewData.getProperty(CData::OBJECT_PARENT_CN).toString())
+  if (execute)
     {
-      // We need to move
-      CDataContainer * pContainer = pObject->getObjectParent();
+      // A special case is that the ParentCN has changed, i.e., the object has moved
+      if (OldData.getProperty(CData::OBJECT_PARENT_CN).toString() != NewData.getProperty(CData::OBJECT_PARENT_CN).toString())
+        {
+          // We need to move
+          CDataContainer * pContainer = pObject->getObjectParent();
 
-      if (pContainer != NULL)
-        pContainer->remove(pObject);
+          if (pContainer != NULL)
+            pContainer->remove(pObject);
 
-      pContainer = getParent(dataModel, NewData);
+          pContainer = getParent(dataModel, NewData);
 
-      if (pContainer != NULL)
-        pContainer->add(pObject, true);
+          if (pContainer != NULL)
+            pContainer->add(pObject, true);
+        }
+
+      success &= pObject->applyData(NewData);
     }
 
-  success &= pObject->applyData(NewData);
-  success &= processDependentData(dataModel, apply);
+  changes[getObjectCN(apply)] = {CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()};
+  success &= executePostProcessData(dataModel, apply, changes, execute);
 
   return success;
 }
 
-bool CUndoData::processDependentData(const CDataModel & dataModel, const bool & apply) const
+bool CUndoData::executePreProcessData(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
 {
   bool success = true;
 
-  // The order of processing of dependent data
   if (apply)
     {
-      std::vector< CUndoData >::const_iterator it = mDependentData.begin();
-      std::vector< CUndoData >::const_iterator end = mDependentData.end();
+      std::vector< CUndoData >::const_iterator it = mPreProcessData.begin();
+      std::vector< CUndoData >::const_iterator end = mPreProcessData.end();
 
       for (; it != end; ++it)
         {
           // If we are here we have dependent data, e.g. particle number changes
-          success &= it->apply(dataModel);
+          success &= it->apply(dataModel, changes, execute);
         }
     }
   else
     {
-      std::vector< CUndoData >::const_reverse_iterator it = mDependentData.rbegin();
-      std::vector< CUndoData >::const_reverse_iterator end = mDependentData.rend();
+      std::vector< CUndoData >::const_reverse_iterator it = mPostProcessData.rbegin();
+      std::vector< CUndoData >::const_reverse_iterator end = mPostProcessData.rend();
 
       for (; it != end; ++it)
         {
           // If we are here we have dependent data, e.g. particle number changes
-          success &= it->undo(dataModel);
+          success &= it->undo(dataModel, changes, execute);
+        }
+    }
+
+  return success;
+}
+
+bool CUndoData::executePostProcessData(const CDataModel & dataModel, const bool & apply, ChangeSet & changes, const bool & execute) const
+{
+  bool success = true;
+
+  if (apply)
+    {
+      std::vector< CUndoData >::const_iterator it = mPostProcessData.begin();
+      std::vector< CUndoData >::const_iterator end = mPostProcessData.end();
+
+      for (; it != end; ++it)
+        {
+          // If we are here we have dependent data, e.g. particle number changes
+          success &= it->apply(dataModel, changes, execute);
+        }
+    }
+  else
+    {
+      std::vector< CUndoData >::const_reverse_iterator it = mPreProcessData.rbegin();
+      std::vector< CUndoData >::const_reverse_iterator end = mPreProcessData.rend();
+
+      for (; it != end; ++it)
+        {
+          // If we are here we have dependent data, e.g. particle number changes
+          success &= it->undo(dataModel, changes, execute);
         }
     }
 
@@ -641,8 +827,29 @@ CDataObject * CUndoData::getObject(const CDataModel & dataModel, const CData & d
   CDataContainer * pParent = getParent(dataModel, data);
 
   if (pParent != NULL)
-    pObject =
-      dynamic_cast< const CDataObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
+    {
+      size_t Index = 0;
+      CCopasiParameterGroup * pGroup = NULL;
+
+      if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(pParent)) != NULL &&
+          (Index = data.getProperty(CData::OBJECT_INDEX).toSizeT()) < pGroup->size())
+        {
+          pObject = pGroup->getParameter(data.getProperty(CData::OBJECT_INDEX).toSizeT());
+        }
+      else
+        {
+          pObject = dynamic_cast< const CDataObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
+        }
+    }
 
   return const_cast< CDataObject * >(pObject);
+}
+
+std::ostream & operator << (std::ostream & os, const CUndoData & o)
+{
+  os << "Type: " << CUndoData::TypeName[o.mType] << std::endl;
+  os << "Old:  " << std::endl << o.mOldData << std::endl;
+  os << "New:  " << std::endl << o.mNewData << std::endl;
+
+  return os;
 }

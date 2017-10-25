@@ -32,30 +32,38 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/undo/CData.h"
 
-//static
-const std::string CFunctionParameter::DataTypeName[] =
-{"Integer", "Double", "Vector of Integer", "Vector of Double", ""};
-
-//static
-const std::string CFunctionParameter::RoleNameXML[] =
-{"substrate", "product", "modifier", "constant", "volume", "time", "variable", ""};
-
-//static
-const std::string CFunctionParameter::RoleNameDisplay[] =
-{"Substrate", "Product", "Modifier", "Parameter", "Volume", "Time", "Variable", ""};
-
-//static
-CFunctionParameter::Role CFunctionParameter::xmlRole2Enum(const std::string & xmlrole)
+// static
+const CEnumAnnotation< std::string, CFunctionParameter::Role > CFunctionParameter::RoleNameXML(
 {
-  C_INT32 i;
+  "substrate",
+  "product",
+  "modifier",
+  "constant",
+  "volume",
+  "time",
+  "variable"
+});
 
-  for (i = 0; (RoleNameXML[i] != "") && (RoleNameXML[i] != xmlrole); ++i) {};
+// static
+const CEnumAnnotation< std::string, CFunctionParameter::Role > CFunctionParameter::RoleNameDisplay(
+{
+  "Substrate",
+  "Product",
+  "Modifier",
+  "Parameter",
+  "Volume",
+  "Time",
+  "Variable"
+});
 
-  if (RoleNameXML[i] == "")
-    return VARIABLE; //default for invalid XML string
-  else
-    return (Role)i;
-}
+// static
+const CEnumAnnotation< std::string, CFunctionParameter::DataType > CFunctionParameter::DataTypeName(
+{
+  "Integer",
+  "Double",
+  "Vector of Integer",
+  "Vector of Double"
+});
 
 // static
 CFunctionParameter * CFunctionParameter::fromData(const CData & data)
@@ -67,10 +75,11 @@ CFunctionParameter * CFunctionParameter::fromData(const CData & data)
 // virtual
 CData CFunctionParameter::toData() const
 {
-  CData Data;
+  CData Data = CDataContainer::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::PARAMETER_TYPE, CFunctionParameter::DataTypeName[mType]);
+  Data.addProperty(CData::PARAMETER_ROLE, CFunctionParameter::RoleNameXML[mUsage]);
+  Data.addProperty(CData::PARAMETER_USED, mIsUsed);
 
   return Data;
 }
@@ -78,10 +87,22 @@ CData CFunctionParameter::toData() const
 // virtual
 bool CFunctionParameter::applyData(const CData & data)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::PARAMETER_TYPE))
+    {
+      mType = DataTypeName.toEnum(data.getProperty(CData::PARAMETER_TYPE).toString());
+    }
+
+  if (data.isSetProperty(CData::PARAMETER_ROLE))
+    {
+      mUsage = RoleNameXML.toEnum(data.getProperty(CData::PARAMETER_ROLE).toString());
+    }
+
+  if (data.isSetProperty(CData::PARAMETER_USED))
+    {
+      mIsUsed = data.getProperty(CData::PARAMETER_USED).toBool();
+    }
 
   return success;
 }
@@ -91,9 +112,9 @@ CFunctionParameter::CFunctionParameter(const std::string & name,
   CDataContainer(name, pParent, "Variable"),
   mKey(CRootContainer::getKeyFactory()->add("FunctionParameter", this)),
   mType((CFunctionParameter::DataType) - 1),
-  mUsage(VARIABLE),
+  mUsage(CFunctionParameter::Role::VARIABLE),
   mIsUsed(true)
-{CONSTRUCTOR_TRACE;}
+{}
 
 CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
                                        const CDataContainer * pParent):
@@ -102,7 +123,7 @@ CFunctionParameter::CFunctionParameter(const CFunctionParameter & src,
   mType(src.mType),
   mUsage(src.mUsage),
   mIsUsed(src.mIsUsed)
-{CONSTRUCTOR_TRACE;}
+{}
 
 CFunctionParameter::CFunctionParameter(const std::string &name,
                                        const enum CFunctionParameter::DataType &type,
@@ -113,12 +134,11 @@ CFunctionParameter::CFunctionParameter(const std::string &name,
   mType(type),
   mUsage(usage),
   mIsUsed(true)
-{CONSTRUCTOR_TRACE;}
+{}
 
 CFunctionParameter::~CFunctionParameter()
 {
   CRootContainer::getKeyFactory()->remove(mKey);
-  DESTRUCTOR_TRACE;
 }
 
 void CFunctionParameter::cleanup() {}
@@ -133,14 +153,25 @@ void CFunctionParameter::load(CReadConfig & configbuffer,
   configbuffer.getVariable("Usage", "string", &mUsage);
 }
 
-const std::string & CFunctionParameter::getKey() const {return mKey;}
+const std::string & CFunctionParameter::getKey() const
+{
+  return mKey;
+}
 
-void CFunctionParameter::setUsage(Role usage) {mUsage = usage;}
+void CFunctionParameter::setUsage(Role usage)
+{
+  mUsage = usage;
+}
 
-CFunctionParameter::Role CFunctionParameter::getUsage() const {return mUsage;}
+CFunctionParameter::Role CFunctionParameter::getUsage() const
+{
+  return mUsage;
+}
 
 void CFunctionParameter::setType(const CFunctionParameter::DataType & type)
-{mType = type;}
+{
+  mType = type;
+}
 
 const CFunctionParameter::DataType &
 
@@ -150,21 +181,21 @@ CFunctionParameter::getType() const
 }
 
 void CFunctionParameter::setIsUsed(const bool & isUsed)
-{mIsUsed = isUsed;}
+{
+  mIsUsed = isUsed;
+}
 
-/**
- * Retrieve whether the parameter is used within a function
- * @return const bool & isUsed
- */
 const bool & CFunctionParameter::isUsed() const
-{return mIsUsed;}
+{
+  return mIsUsed;
+}
 
 std::ostream& operator<<(std::ostream &os, const CFunctionParameter & d)
 {
   //os << "CFunctionParameter: "
   os << d.getObjectName();
 
-  if (d.mType != 1) os << " mType " << d.mType;
+  os << " mType " << static_cast< size_t >(d.mType);
 
   os << " [" << CFunctionParameter::RoleNameDisplay[d.mUsage] << "]";
 

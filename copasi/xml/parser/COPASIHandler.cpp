@@ -159,7 +159,7 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
               dynamic_cast< CCopasiParameter * >(CRootContainer::getKeyFactory()->get(*it));
 
             if (pParameter != NULL &&
-                pParameter->getType() == CCopasiParameter::KEY)
+                pParameter->getType() == CCopasiParameter::Type::KEY)
               {
                 CDataObject * pObject =
                   mpData->mKeyMap.get(pParameter->getValue< std::string >());

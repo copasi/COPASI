@@ -61,16 +61,16 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   mHaveResiduals(false),
   mResidualJacobianT()
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
-  addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
+  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
+  addParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
 
   if (mEnableAdditionalParameters)
   {
-    addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
-    addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+    addParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
+    addParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
   }
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }

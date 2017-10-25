@@ -443,7 +443,7 @@ void CQTrajectoryWidget::updateIntervals()
 }
 
 // virtual
-bool CQTrajectoryWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & /* key */)
+bool CQTrajectoryWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {

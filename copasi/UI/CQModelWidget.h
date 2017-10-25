@@ -20,7 +20,7 @@
 
 #include <QWidget>
 #include <QtCore/QVariant>
- #include <QStringListModel>
+#include <QStringListModel>
 
 #include "copasi/UI/ui_CQModelWidget.h"
 
@@ -39,7 +39,6 @@ public:
   CQModelWidget(QWidget* parent = 0, const char* name = 0);
   ~CQModelWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
   bool changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue);
@@ -54,6 +53,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 private:
   void load();

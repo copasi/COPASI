@@ -59,7 +59,7 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
         Order = (unsigned C_INT32) atoi(order);
 
         role = mpParser->getAttributeValue("role", papszAttrs);
-        Role = CFunctionParameter::xmlRole2Enum(role);
+        Role = CFunctionParameter::RoleNameXML.toEnum(role, CFunctionParameter::Role::VARIABLE);
         //if (Role == "") fatalError();
 
         minOccurs = mpParser->getAttributeValue("minOccurs", papszAttrs, "1");
@@ -89,7 +89,7 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
               {
                 // We add the missing parameter and mark it as unused.
                 pFunction->getVariables().add(Name,
-                                              CFunctionParameter::FLOAT64,
+                                              CFunctionParameter::DataType::FLOAT64,
                                               Role);
 
                 Index = pFunction->getVariables().findParameterByName(Name);
@@ -104,8 +104,8 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
                 std::string NewName = StringPrint("TMP_%d", Counter++);
 
                 while (!pFunction->getVariables().add(NewName,
-                                                      CFunctionParameter::FLOAT64,
-                                                      CFunctionParameter::TEMPORARY)) {};
+                                                      CFunctionParameter::DataType::FLOAT64,
+                                                      CFunctionParameter::Role::TEMPORARY)) {};
 
                 NewName = StringPrint("TMP_%d", Counter++);
               }
@@ -120,9 +120,9 @@ CXMLHandler * ParameterDescriptionHandler::processStart(const XML_Char * pszName
             pParm->setIsUsed(isUsed);
 
             if (MaxOccurs == 1 && MinOccurs == 1)
-              pParm->setType(CFunctionParameter::FLOAT64);
+              pParm->setType(CFunctionParameter::DataType::FLOAT64);
             else
-              pParm->setType(CFunctionParameter::VFLOAT64);
+              pParm->setType(CFunctionParameter::DataType::VFLOAT64);
 
             mpData->mFunctionParameterKeyMap[Order] = Key;
           }

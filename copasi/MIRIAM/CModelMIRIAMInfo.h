@@ -37,11 +37,13 @@
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CDataContainer.h"
 
+class CAnnotation;
+
 class CMIRIAMInfo : public CDataContainer
 {
   // Attributes
 private:
-  std::string mKey;
+  CAnnotation * mpAnnotation;
   CDataVector <CCreator> mCreators;
   CDataVector <CReference> mReferences;
   CDataVector <CModification> mModifications;
@@ -55,7 +57,7 @@ private:
 public:
   CMIRIAMInfo();
   ~CMIRIAMInfo();
-  void load(const std::string& key = "");
+  void load(CDataObject * pObject);
   bool save();
   CRDFGraph* getRDFGraph();
 

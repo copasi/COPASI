@@ -36,7 +36,6 @@ public:
 
   void newResult();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
 protected slots:
@@ -45,6 +44,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void clearArrays();
 
   const CDataArray * mpResult;

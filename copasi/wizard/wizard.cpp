@@ -144,17 +144,17 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
   if (name == "Model Settings")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(1, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(1, std::string());
     }
   else if (name == "Reaction Overview")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(114, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(114, std::string());
     }
   else if (name == "Report Definition")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(43, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(43, std::string());
     }
   else if (name == "Step 1")
     {
@@ -164,12 +164,12 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
   else if (name == "Time Course")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(23, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(23, std::string());
     }
   else if (name == "Plot Definition Overview")
     {
       if (pMainWindow)
-        pMainWindow->getMainWidget()->switchToOtherWidget(42, "");
+        pMainWindow->getMainWidget()->switchToOtherWidget(42, std::string());
     }
   else
     {

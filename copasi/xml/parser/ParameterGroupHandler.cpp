@@ -140,7 +140,7 @@ bool ParameterGroupHandler::processEnd(const XML_Char * pszName)
           if (mpData->UnmappedKeyParameters.size() > 0 &&
               mpData->UnmappedKeyParameters[mpData->UnmappedKeyParameters.size() - 1] == mpData->pCurrentParameter->getKey())
             {
-              if (OriginalType == CCopasiParameter::KEY)
+              if (OriginalType == CCopasiParameter::Type::KEY)
                 {
                   mpData->UnmappedKeyParameters[mpData->UnmappedKeyParameters.size() - 1] = pParameter->getKey();
                 }

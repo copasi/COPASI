@@ -30,10 +30,8 @@
 #include "qtUtilities.h"
 
 #include "undoFramework/CCopasiUndoCommand.h"
-#include "undoFramework/CreateNewCompartmentCommand.h"
 #include "undoFramework/CreateNewEventCommand.h"
 #include "undoFramework/UndoData.h"
-#include "undoFramework/UndoCompartmentData.h"
 #include "undoFramework/UndoEventData.h"
 
 /*

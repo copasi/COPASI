@@ -69,15 +69,15 @@ void CNewtonMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Use Newton", CCopasiParameter::BOOL, true);
-  assertParameter("Use Integration", CCopasiParameter::BOOL, true);
-  assertParameter("Use Back Integration", CCopasiParameter::BOOL, false);
-  assertParameter("Accept Negative Concentrations", CCopasiParameter::BOOL, false);
-  assertParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 50);
-  assertParameter("Maximum duration for forward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e9);
-  assertParameter("Maximum duration for backward integration", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1e6);
-  //assertParameter("Force additional Newton step", CCopasiParameter::BOOL, true);
-  //assertParameter("Keep Protocol", CCopasiParameter::BOOL, true);
+  assertParameter("Use Newton", CCopasiParameter::Type::BOOL, true);
+  assertParameter("Use Integration", CCopasiParameter::Type::BOOL, true);
+  assertParameter("Use Back Integration", CCopasiParameter::Type::BOOL, true);
+  assertParameter("Accept Negative Concentrations", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
+  assertParameter("Maximum duration for forward integration", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e9);
+  assertParameter("Maximum duration for backward integration", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1e6);
+  //assertParameter("Force additional Newton step", CCopasiParameter::Type::BOOL, true);
+  //assertParameter("Keep Protocol", CCopasiParameter::Type::BOOL, true);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("Newton.UseNewton")) != NULL)

@@ -27,7 +27,7 @@
 #include "copasi/core/CVector.h"
 
 CProcessReportItem::CProcessReportItem():
-  CCopasiParameter("NoName", CCopasiParameter::DOUBLE),
+  CCopasiParameter("NoName", CCopasiParameter::Type::DOUBLE),
   mpEndValue(NULL),
   mHasEndValue(false)
 {
@@ -94,28 +94,28 @@ size_t CProcessReport::addItem(const std::string & name,
                                const std::string & value,
                                const std::string * pEndValue)
 {
-  return addItem(name, CCopasiParameter::STRING, &value, pEndValue);
+  return addItem(name, CCopasiParameter::Type::STRING, &value, pEndValue);
 }
 
 size_t CProcessReport::addItem(const std::string & name,
                                const C_INT32 & value,
                                const C_INT32 * pEndValue)
 {
-  return addItem(name, CCopasiParameter::INT, &value, pEndValue);
+  return addItem(name, CCopasiParameter::Type::INT, &value, pEndValue);
 }
 
 size_t CProcessReport::addItem(const std::string & name,
                                const unsigned C_INT32 & value,
                                const unsigned C_INT32 * pEndValue)
 {
-  return addItem(name, CCopasiParameter::UINT, &value, pEndValue);
+  return addItem(name, CCopasiParameter::Type::UINT, &value, pEndValue);
 }
 
 size_t CProcessReport::addItem(const std::string & name,
                                const C_FLOAT64 & value,
                                const C_FLOAT64 * pEndValue)
 {
-  return addItem(name, CCopasiParameter::DOUBLE, &value, pEndValue);
+  return addItem(name, CCopasiParameter::Type::DOUBLE, &value, pEndValue);
 }
 
 size_t CProcessReport::addItem(const std::string & name,

@@ -37,7 +37,6 @@ public:
   CQMathMatrixWidget(QWidget* parent = 0);
   ~CQMathMatrixWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
 
 protected slots:
@@ -51,6 +50,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
   /**
    * loads the matrices (except Jacobian) into the widget

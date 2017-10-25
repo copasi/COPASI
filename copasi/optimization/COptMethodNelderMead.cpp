@@ -37,11 +37,11 @@ COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
     const CTaskEnum::Task & taskType):
   COptMethod(pParent, methodType, taskType)
 {
-  addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 200);
-  addParameter("Tolerance", CCopasiParameter::UDOUBLE, (C_FLOAT64) 1.e-005);
-  addParameter("Scale", CCopasiParameter::UDOUBLE, (C_FLOAT64) 10.0);
+  addParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
+  addParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-005);
+  addParameter("Scale", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 10.0);
 
-  addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  addParameter("#LogVerbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 
   initObjects();
 }

@@ -132,11 +132,37 @@ const std::string ListViews::ObjectTypeName[] =
   "Event", // EVENT
   "Annotation", //  MIRIAM
   "Layout", // LAYOUT
-  "Parameter Overview", // PARAMETEROVERVIEW
   "Parameter Set", // MODELPARAMETERSET
+  "Task", // TASK
+  "Result", //RESULT
   "Unit", //UNIT
+  "Vector", // VECTOR
+  "Parameter Overview", // PARAMETEROVERVIEW
   ""
 };
+
+// static
+const CEnumAnnotation< std::string, ListViews::ObjectType > ListViews::DataObjectType(
+{
+  "Metabolite" // METABOLITE
+  , "Compartment" // COMPARTMENT
+  , "Reaction" // REACTION
+  , "Function" // FUNCTION
+  , "Model" // MODEL
+  , "State" // STATE (Such an object does not exist)
+  , "ReportDefinition" // REPORT
+  , "PlotItem" // PLOT
+  , "ModelValue" // MODELVALUE
+  , "Event" // EVENT
+  , "MIRIAM" // MIRIAM (These are several different objects which will be handled through there parent)
+  , "Layout" // LAYOUT
+  , "ModelParameterSet" // MODELPARAMETERSET
+  , "Task" // TASK
+  , "Result" //RESULT
+  , "Unit" // UNIT
+  , "Vector" // VECTOR
+  , "ParameterOverView" // PARAMETEROVERVIEW (Such an object does not exist)
+});
 
 // static
 ListViews * ListViews::ancestor(QObject * qObject)
@@ -190,7 +216,7 @@ ListViews::ListViews(QWidget *parent,
   mpTreeSortDM(NULL),
   mpMathModel(NULL),
   mpCurrentWidget(NULL),
-  mCurrentItemKey(),
+  mCurrentItemCN(),
   mpCMCAResultWidget(NULL),
   mpCQMCAWidget(NULL),
   mpCQLNAWidget(NULL),
@@ -289,7 +315,7 @@ ListViews::ListViews(QWidget *parent,
   mpStackedWidget->addWidget(defaultWidget);
 
   mpCurrentWidget = defaultWidget; // keeps track of the mpCurrentWidget in use
-  mCurrentItemKey = "";
+  mCurrentItemCN.clear();
   mpStackedWidget->setCurrentWidget(defaultWidget);
 
   QList<int> Sizes = sizes();
@@ -314,8 +340,8 @@ ListViews::~ListViews()
 void ListViews::resetCache()
 {
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
-  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, std::string)),
-             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, std::string)));
+  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
 
   mpTreeDM->setGuiDM(mpDataModelGUI);
   mpTreeDM->setCopasiDM(mpDataModel);
@@ -323,8 +349,8 @@ void ListViews::resetCache()
 
   emit signalResetCache();
 
-  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const std::string &)),
-          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const std::string &)));
+  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
 }
 
 /***********ListViews::ConstructNodeWidgets()---------------------------->
@@ -970,10 +996,10 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (!newWidget) return; //do nothing
 
-  std::string itemKey = mpTreeDM->getKeyFromIndex(index);
+  const CCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
 
   if (newWidget == mpCurrentWidget)
-    if (itemKey == mCurrentItemKey) return; //do nothing
+    if (itemCN == mCurrentItemCN) return; //do nothing
 
   // leave old widget
   if (mpCurrentWidget)
@@ -993,13 +1019,13 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   // enter new widget
   if (newWidget)
-    ((CopasiWidget*)newWidget)->enter(itemKey);
+    ((CopasiWidget*)newWidget)->enter(itemCN);
 
   // fall back
   if (!newWidget)
     {newWidget = defaultWidget;}
 
-  mCurrentItemKey = itemKey;
+  mCurrentItemCN = itemCN;
 
   // we emit the signal after the old widget has saved
   // the changes
@@ -1011,13 +1037,13 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   mpTreeView->scrollTo(index);
 }
 
-void ListViews::switchToOtherWidget(const size_t & id, const std::string & key)
+void ListViews::switchToOtherWidget(const size_t & id, const CCommonName & cn)
 {
   // do not switch if we are there already
-  if (id == C_INVALID_INDEX && !key.empty() && key == mCurrentItemKey)
+  if (id == C_INVALID_INDEX && !cn.empty() && cn == mCurrentItemCN)
     return;
 
-  QModelIndex Index = mpTreeDM->index(id, key);
+  QModelIndex Index = mpTreeDM->index(id, cn);
   QModelIndex SortIndex = mpTreeSortDM->mapFromSource(Index);
 
   mpTreeView->setCurrentIndex(SortIndex);
@@ -1038,7 +1064,7 @@ size_t ListViews::getCurrentItemId()
 
 //static members **************************
 
-bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key)
+bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonName & cn)
 {
   if (objectType != MODEL 
       && objectType != STATE 
@@ -1060,9 +1086,9 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key
       mpLayoutsWidget->deleteLayoutWindows();
     }
 
-  if (!updateCurrentWidget(objectType, action, key)) success = false;
+  if (!updateCurrentWidget(objectType, action, cn)) success = false;
 
-  notifyChildWidgets(objectType, action, key);
+  notifyChildWidgets(objectType, action, cn);
 
   return success;
 }
@@ -1072,12 +1098,12 @@ void ListViews::slotSort(const QModelIndex & /* index1 */, const QModelIndex & /
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 }
 
-bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const std::string & key)
+bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn)
 {
   bool success = true;
 
   if (mpCurrentWidget)
-    mpCurrentWidget->update(objectType, action, key);
+    mpCurrentWidget->update(objectType, action, cn);
 
   return success;
 }
@@ -1092,7 +1118,7 @@ void ListViews::clearCurrentWidget()
 
 const std::string& ListViews::getCurrentItemKey() const
 {
-  return mCurrentItemKey;
+  return mCurrentItemCN;
 }
 
 void ListViews::commit()
@@ -1103,7 +1129,7 @@ void ListViews::commit()
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
                                    Action action,
-                                   const std::string & key)
+                                   const CCommonName & cn)
 {
   QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
   QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets
@@ -1113,7 +1139,7 @@ void ListViews::notifyChildWidgets(ObjectType objectType,
     {
       if ((pCopasiWidget = it.next()) != NULL)
         {
-          pCopasiWidget->update(objectType, action, key);
+          pCopasiWidget->update(objectType, action, cn);
         }
     }
 }

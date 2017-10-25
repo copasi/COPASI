@@ -28,7 +28,6 @@
 
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "function/CFunction.h"
-#include "report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 #include <copasi/CopasiDataModel/CDataModel.h>
 #include "commandline/CConfigurationFile.h"
@@ -39,7 +38,8 @@
  */
 CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
   : CopasiWidget(parent, name),
-    mKeyToCopy(""),
+    mObjectCNToCopy(""),
+    mpAnnotation(NULL),
     mMessage(""),
     mMessageType(-1)
 {
@@ -108,8 +108,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
 #endif
       (*it)->verticalHeader()->hide();
       (*it)->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
-      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
               this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
     }
@@ -291,26 +291,22 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
 }
 
-bool CQMiriamWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &key)
+bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
+      // Assure that the pointer is still valid;
+      mpAnnotation = CAnnotation::castObject(mpObject);
+
       return true;
     }
 
-  if (objectType != ListViews::MIRIAM)
-    return true;
+  if (cn == mObjectCN)
+    {
+      return enterProtected();
+    }
 
-  if (key == "" || key != mpMIRIAMInfo->getKey())
-    return true;
-
-  bool success = true;
-  mpMIRIAMInfo->load(key);
-
-  if (mpMIRIAMInfo->getCreatedDT() != "")
-    mpDTCreated->setDateTime(QDateTime::fromString(FROM_UTF8(mpMIRIAMInfo->getCreatedDT()), Qt::ISODate));
-
-  return success;
+  return true;
 }
 
 void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
@@ -333,26 +329,33 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 
 bool CQMiriamWidget::enterProtected()
 {
-  if (mKey == "")
-    return false;
+  if (mpObject == NULL) return false;
+
+  mpAnnotation = CAnnotation::castObject(mpObject);
+
+  if (mpAnnotation == NULL) return false;
 
   CCopasiMessage::clearDeque();
 
-  if (mKeyToCopy != "")
+  if (mObjectCNToCopy != "")
     {
-      CAnnotation *pAnnotation = CAnnotation::castObject(dynamic_cast<CDataObject *>(CRootContainer::getKeyFactory()->get(mKeyToCopy)));
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // This will check the current data model and the root container for the object;
+      const CDataObject * pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCNToCopy));
+      const CAnnotation *pAnnotation = CAnnotation::castObject(pObject);
 
       if (pAnnotation != NULL)
         {
           std::string pMiriamAnnotation = pAnnotation->getMiriamAnnotation();
-          pAnnotation = CAnnotation::castObject(mpObject);
-          pAnnotation->setMiriamAnnotation(pMiriamAnnotation, mKey, mKeyToCopy);
+          mpAnnotation->setMiriamAnnotation(pMiriamAnnotation, mpObject->getKey(), pObject->getKey());
         }
 
-      mKeyToCopy = "";
+      mObjectCNToCopy.clear();
     }
 
-  mpMIRIAMInfo->load(mKey);
+  mpMIRIAMInfo->load(mpObject);
   //Set Models for the 4 TableViews
   std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView *>::const_iterator end = mWidgets.end();
@@ -552,5 +555,5 @@ void CQMiriamWidget::slotCopyEvent()
 
 void CQMiriamWidget::slotBtnCopy()
 {
-  mKeyToCopy = mKey;
+  mObjectCNToCopy = mObjectCN;
 }

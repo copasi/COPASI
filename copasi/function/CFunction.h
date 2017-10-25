@@ -172,8 +172,8 @@ public:
    * @return bool success
    */
   bool addVariable(const std::string & name,
-                   CFunctionParameter::Role usage = CFunctionParameter::VARIABLE,
-                   const CFunctionParameter::DataType & type = CFunctionParameter::FLOAT64);
+                   CFunctionParameter::Role usage = CFunctionParameter::Role::VARIABLE,
+                   const CFunctionParameter::DataType & type = CFunctionParameter::DataType::FLOAT64);
 
   /**
    * Function to load an object with data coming from a CReadConfig object.

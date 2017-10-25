@@ -41,7 +41,7 @@
 
 CMIRIAMInfo::CMIRIAMInfo() :
   CDataContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
-  mKey(""),
+  mpAnnotation(NULL),
   mCreators("Creators", this),
   mReferences("References", this),
   mModifications("Modifieds", this),
@@ -426,26 +426,16 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
     }
 }
 
-void CMIRIAMInfo::load(const std::string& key)
+void CMIRIAMInfo::load(CDataObject * pObject)
 {
   pdelete(mpRDFGraph);
 
-  mKey = key;
-  CDataObject * pCopasiObject = dynamic_cast< CDataObject * >(CRootContainer::getKeyFactory()->get(mKey));
+  mpAnnotation = CAnnotation::castObject(pObject);
 
-  if (pCopasiObject != NULL)
+  if (mpAnnotation != NULL &&
+      !mpAnnotation->getMiriamAnnotation().empty())
     {
-      const std::string * pMiriamAnnotation = NULL;
-
-      CAnnotation * pAnnotation = CAnnotation::castObject(pCopasiObject);
-
-      if (pAnnotation != NULL)
-        {
-          pMiriamAnnotation = &pAnnotation->getMiriamAnnotation();
-        }
-
-      if (pMiriamAnnotation && *pMiriamAnnotation != "")
-        mpRDFGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
+      mpRDFGraph = CRDFParser::graphFromXml(mpAnnotation->getMiriamAnnotation());
     }
 
   if (mpRDFGraph == NULL)
@@ -453,8 +443,8 @@ void CMIRIAMInfo::load(const std::string& key)
 
   // We make sure that we always have an about node.
 
-  if (pCopasiObject != NULL)
-    mTriplet.pObject = mpRDFGraph->createAboutNode(pCopasiObject->getKey());
+  if (pObject != NULL)
+    mTriplet.pObject = mpRDFGraph->createAboutNode(pObject->getKey());
   else
     mTriplet.pObject = mpRDFGraph->createAboutNode("");
 
@@ -478,23 +468,12 @@ void CMIRIAMInfo::load(const std::string& key)
 
 bool CMIRIAMInfo::save()
 {
-  CDataObject * pCopasiObject = dynamic_cast< CDataObject * >(CRootContainer::getKeyFactory()->get(mKey));
-
-  if (pCopasiObject && mpRDFGraph)
+  if (mpAnnotation && mpRDFGraph)
     {
       mpRDFGraph->clean();
       mpRDFGraph->updateNamespaces();
 
-      std::string XML = CRDFWriter::xmlFromGraph(mpRDFGraph);
-
-      CAnnotation * pAnnotation = CAnnotation::castObject(pCopasiObject);
-
-      if (pAnnotation == NULL)
-        {
-          return false;
-        }
-
-      pAnnotation->setMiriamAnnotation(XML, pAnnotation->getKey(), pAnnotation->getKey());
+      mpAnnotation->setMiriamAnnotation(CRDFWriter::xmlFromGraph(mpRDFGraph), mpAnnotation->getKey(), mpAnnotation->getKey());
 
       return true;
     }
@@ -502,5 +481,13 @@ bool CMIRIAMInfo::save()
   return false;
 }
 
+// virtual
 const std::string & CMIRIAMInfo::getKey() const
-{return mKey;}
+{
+  if (mpAnnotation != NULL)
+    {
+      return mpAnnotation->getKey();
+    }
+
+  return CDataContainer::getKey();
+}

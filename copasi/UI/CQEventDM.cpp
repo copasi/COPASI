@@ -228,19 +228,19 @@ bool CQEventDM::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-bool CQEventDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQEventDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
   mpUndoStack->push(new InsertEventRowsCommand(position, rows, this));
 
   return true;
 }
 
-bool CQEventDM::removeRows(int position, int rows)
+bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
   CModel * pModel = mpDataModel->getModel();
 

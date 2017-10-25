@@ -55,8 +55,7 @@ public:
    * @return C_FLOAT64 number
    */
   static C_FLOAT64 convertToNumber(const C_FLOAT64 & concentration,
-                                   const CCompartment & compartment,
-                                   const CModel & model);
+                                   const CCompartment & compartment);
 
   /**
    * Converts the number to concentration
@@ -66,8 +65,7 @@ public:
    * @return C_FLOAT64 concentration
    */
   static C_FLOAT64 convertToConcentration(const C_FLOAT64 & number,
-                                          const CCompartment & compartment,
-                                          const CModel & model);
+                                          const CCompartment & compartment);
 
   // Attributes
 private:
@@ -140,6 +138,20 @@ public:
    * @return bool success
    */
   virtual bool applyData(const CData & data);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
    * Default constructor

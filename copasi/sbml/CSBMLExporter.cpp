@@ -553,7 +553,6 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
     {
       pSBMLModel->setTimeUnits(uDef.getId());
     }
-
 }
 
 /**
@@ -653,7 +652,6 @@ void CSBMLExporter::createVolumeUnit(const CDataModel& dataModel)
     {
       pSBMLModel->setVolumeUnits(uDef.getId());
     }
-
 }
 
 /**
@@ -757,7 +755,6 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
       // because COPASI does not know about different extent units
       pSBMLModel->setExtentUnits(uDef.getId());
     }
-
 }
 
 /**
@@ -864,7 +861,6 @@ void CSBMLExporter::createLengthUnit(const CDataModel& dataModel)
     {
       pSBMLModel->setLengthUnits(uDef.getId());
     }
-
 }
 
 /**
@@ -974,7 +970,6 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
     {
       pSBMLModel->setAreaUnits(uDef.getId());
     }
-
 }
 
 /**
@@ -3785,7 +3780,6 @@ CSBMLExporter::exportLayout(unsigned int sbmlLevel, CDataModel& dataModel)
                     }
                 }
             }
-
         }
     }
 
@@ -4008,7 +4002,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 
   if (this->mSBMLLevel > 2)
     this->mpSBMLDocument->setPackageRequired("render", false);
-
 
   if (this->mpSBMLDocument->getModel() == NULL)
     {
@@ -4328,7 +4321,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 
           mpSBMLDocument->convert(prop);
         }
-
     }
 
   if (this->mpSBMLDocument->getLevel() != this->mSBMLLevel || this->mpSBMLDocument->getVersion() != this->mSBMLVersion)
@@ -5330,21 +5322,21 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
       // if the reaction calls a general function, all call parameters have a usage of VARIABLE
       // So local parameters will also have a usage of VARIABLE instead of PARAMETER
 
-      if (pPara->getUsage() == CFunctionParameter::PARAMETER ||
+      if (pPara->getUsage() == CFunctionParameter::Role::PARAMETER ||
           (reaction.getFunction() != NULL &&
            reaction.getFunction()->isReversible() == TriUnspecified &&
-           pPara->getUsage() == CFunctionParameter::VARIABLE))
+           pPara->getUsage() == CFunctionParameter::Role::VARIABLE))
         {
           // only create a parameter if it is a local parameter,
           // and if it is not in the replacement map
           // otherwise the parameter already has been created
           if (reaction.isLocalParameter(i))
             {
-              std::vector<std::string> v = reaction.getParameterMapping(pPara->getObjectName());
+              std::vector< const CDataObject * > v = reaction.getParameterObjects(pPara->getObjectName());
               assert(v.size() == 1);
-              CDataObject* pTmpObject = CRootContainer::getKeyFactory()->get(v[0]);
+              const CDataObject * pTmpObject = v[0];
               assert(pTmpObject != NULL);
-              CCopasiParameter* pLocalParameter = dynamic_cast<CCopasiParameter*>(pTmpObject);
+              const CCopasiParameter * pLocalParameter = dynamic_cast< const CCopasiParameter * >(pTmpObject);
               assert(pLocalParameter != NULL);
 
               if (this->mParameterReplacementMap.find(pLocalParameter->getCN()) == this->mParameterReplacementMap.end())
@@ -5390,7 +5382,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
   // it is a reference to an amount or a reference to a concentration.
   // Other factors that influence this replacement are if the model
   // contains variable volumes or if the quantity units are set to CUnit::number
-  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterMappings());
+  CEvaluationNode* pExpression = CSBMLExporter::createKineticExpression(const_cast<CFunction*>(reaction.getFunction()), reaction.getParameterObjects());
 
   if (pExpression == NULL)
     {
@@ -5415,7 +5407,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
       delete pOrigNode;
       assert(pNode != NULL);
 
-      if (reaction.getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+      if (reaction.getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
         {
           const CCompartment* compartment = reaction.getScalingCompartment() != NULL ? reaction.getScalingCompartment() :
                                             (!reaction.getChemEq().getSubstrates().empty()) ? (reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
@@ -5526,7 +5518,7 @@ ASTNode* CSBMLExporter::isDividedByVolume(const ASTNode* pRootNode, const std::s
   return pResult;
 }
 
-CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<std::string> >& arguments)
+CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const std::vector<std::vector<const CDataObject *> >& arguments)
 {
   if (!pFun || pFun->getVariables().size() != arguments.size()) fatalError();
 
@@ -5547,7 +5539,7 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
         {
           if (arguments[i].size() != 1) fatalError(); // we can't have arrays here.
 
-          const CDataObject* pObject = CRootContainer::getKeyFactory()->get(arguments[i][0]);
+          const CDataObject* pObject = arguments[i][0];
 
           if (!pObject) fatalError();
 
@@ -6644,18 +6636,18 @@ void CSBMLExporter::removeUnusedObjects()
     }
 }
 
-CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<std::string> >& arguments, bool isReversible)
+CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std::vector<const CDataObject *> >& arguments, bool isReversible)
 {
   assert((isReversible && arguments.size() == 4) || arguments.size() == 2);
   assert(arguments[0].size() == 1 && arguments[1].size() > 0);
   // create a multiplication of all items in arguments[1] and multiply that
   // with item arguments[0][0]
-  std::set<std::string> finishedElements;
+  std::set<const CDataObject *> finishedElements;
   std::vector<CEvaluationNode*> multiplicants;
-  const CDataObject* pObject = CRootContainer::getKeyFactory()->get(arguments[0][0]);
+  const CDataObject* pObject = arguments[0][0];
   assert(pObject != NULL);
   multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Value>"));
-  std::vector<std::string>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
+  std::vector<const CDataObject *>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
 
   while (it != endit)
     {
@@ -6671,7 +6663,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 #endif  // __SUNPRO_CC
           assert(num != 0);
           finishedElements.insert(*it);
-          pObject = CRootContainer::getKeyFactory()->get(*it);
+          pObject = *it;
           assert(pObject != NULL);
 
           if (num == 1)
@@ -6718,7 +6710,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 
   if (isReversible)
     {
-      std::vector<std::vector<std::string> > tmpV;
+      std::vector<std::vector<const CDataObject *> > tmpV;
       tmpV.push_back(arguments[2]);
       tmpV.push_back(arguments[3]);
       pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
@@ -7112,39 +7104,14 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
   if (pCOPASIObject == NULL || pSBMLObject == NULL) return false;
 
-  const CModelEntity* pModelEntity = dynamic_cast<const CModelEntity*>(pCOPASIObject);
-  const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
-  const CFunction* pFunction = dynamic_cast<const CFunction*>(pCOPASIObject);
-  const CReaction* pReaction = dynamic_cast<const CReaction*>(pCOPASIObject);
-  const CEvent* pEvent = dynamic_cast<const CEvent*>(pCOPASIObject);
-  CMIRIAMInfo miriamInfo;
-  std::string miriamAnnotationString;
+  const CAnnotation * pAnnotation = CAnnotation::castObject(pCOPASIObject);
 
-  if (pModelEntity != NULL)
-    {
-      miriamInfo.load(pModelEntity->getKey());
-      miriamAnnotationString = pModelEntity->getMiriamAnnotation();
-    }
-  else if (pReaction != NULL)
-    {
-      miriamInfo.load(pReaction->getKey());
-      miriamAnnotationString = pReaction->getMiriamAnnotation();
-    }
-  else if (pFunction != NULL)
-    {
-      miriamInfo.load(pFunction->getKey());
-      miriamAnnotationString = pFunction->getMiriamAnnotation();
-    }
-  else if (pEvent != NULL)
-    {
-      miriamInfo.load(pEvent->getKey());
-      miriamAnnotationString = pEvent->getMiriamAnnotation();
-    }
-  else
-    {
-      // we should never end up here
-      fatalError();
-    }
+  if (pAnnotation == NULL) return false;
+
+  CMIRIAMInfo miriamInfo;
+  miriamInfo.load(const_cast< CDataObject * >(pCOPASIObject));
+
+  std::string miriamAnnotationString = pAnnotation->getMiriamAnnotation();
 
   // first we clear the old CVTerms on the object
   pSBMLObject->unsetCVTerms();
@@ -7444,6 +7411,8 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   //
   // if it is the model, we have to set the model history
   // in addition to the normal CVTerms
+  const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
+
   if ((pModel != NULL && this->mSBMLLevel < 3)
       // actually this preprocessor directive is not really necessary, but better safe then sorry
       || this->mSBMLLevel > 2
@@ -7576,9 +7545,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             {
               pSBMLModel->setModelHistory(&modelHistory);
             }
-
         }
-
     }
 
   if (this->mExportCOPASIMIRIAM == true)

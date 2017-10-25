@@ -32,12 +32,12 @@ public:
   CQGlobalQuantitiesWidget(QWidget* parent = 0, const char* name = 0);
   ~CQGlobalQuantitiesWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual CQBaseDataModel* getCqDataModel();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 private:
   CQGlobalQuantityDM* mpGlobalQuantityDM;
@@ -59,7 +59,6 @@ protected slots:
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
-
 };
 
 #endif // CQGlobalQuantitiesWidget_h

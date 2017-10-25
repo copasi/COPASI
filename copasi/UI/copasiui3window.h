@@ -266,6 +266,8 @@ protected slots:
 #endif
 
 #ifdef COPASI_UNDO
+  void slotUndo();
+  void slotRedo();
   void slotUndoHistory();
   void slotClearUndoHistory();
 #endif

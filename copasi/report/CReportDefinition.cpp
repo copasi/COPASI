@@ -51,12 +51,12 @@ CData CReportDefinition::toData() const
 {
   CData Data = CDataObject::toData();
 
-  Data.addProperty(CData::Property::COMMENT, mComment);
-  Data.addProperty(CData::Property::TASK_TYPE, CTaskEnum::TaskName[mTaskType]);
-  Data.addProperty(CData::Property::REPORT_SEPARATOR, mSeparator.getStaticString());
-  Data.addProperty(CData::Property::REPORT_IS_TABLE, mTable);
-  Data.addProperty(CData::Property::REPORT_SHOW_TITLE, mbTitle);
-  Data.addProperty(CData::Property::REPORT_PRECISION, mPrecision);
+  Data.addProperty(CData::COMMENT, mComment);
+  Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mTaskType]);
+  Data.addProperty(CData::REPORT_SEPARATOR, mSeparator.getStaticString());
+  Data.addProperty(CData::REPORT_IS_TABLE, mTable);
+  Data.addProperty(CData::REPORT_SHOW_TITLE, mbTitle);
+  Data.addProperty(CData::REPORT_PRECISION, mPrecision);
 
   return Data;
 }

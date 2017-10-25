@@ -210,6 +210,7 @@ void CQUndoTester::testModelDetail()
 
 void CQUndoTester::testCompartmentDetail()
 {
+#ifdef XXXX
   createCompartment();
 
   // rename
@@ -265,10 +266,12 @@ void CQUndoTester::testCompartmentDetail()
   );
 
   deleteCompartment();
+#endif
 }
 
 void CQUndoTester::testSpeciesDetail()
 {
+#ifdef XXXX
   createSpecies();
 
   // rename species
@@ -335,6 +338,8 @@ void CQUndoTester::testSpeciesDetail()
   );
 
   deleteSpecies();
+
+#endif
 }
 
 void CQUndoTester::testModelValueDetail()
@@ -507,6 +512,7 @@ void CQUndoTester::testEventDetail()
 
 void CQUndoTester::testReactionDetail()
 {
+#ifdef XXXX
   createReaction();
 
   // rename
@@ -550,10 +556,13 @@ void CQUndoTester::testReactionDetail()
                     ));
 
   deleteReaction();
+
+#endif // XXXX
 }
 
 void CQUndoTester::testCompartmentDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmCompartments->rowCount();
   mpUndoStack->push(new InsertCompartmentRowsCommand(
@@ -586,10 +595,12 @@ void CQUndoTester::testCompartmentDM(int repetitions)
   //  lst.append(mpDmCompartments->index(i + 1, COL_NAME_COMPARTMENTS));
   //}
   //mpUndoStack->push(new RemoveCompartmentRowsCommand(lst, mpDmCompartments));
+#endif
 }
 
 void CQUndoTester::testSpeciesDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmSpecies->rowCount();
   mpUndoStack->push(new InsertSpecieRowsCommand(
@@ -614,6 +625,8 @@ void CQUndoTester::testSpeciesDM(int repetitions)
       lst.append(mpDmSpecies->index(currentRow, COL_NAME_SPECIES));
       mpUndoStack->push(new RemoveSpecieRowsCommand(lst, mpDmSpecies));
     }
+
+#endif
 }
 
 void CQUndoTester::testModelValueDM(int repetitions)
@@ -729,6 +742,7 @@ void CQUndoTester::testOverviewWidget()
 
 void CQUndoTester::testReactionDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   CModel * pModel = mpDmWidgetReactions->getDataModel()->getModel();
   int numReactions = pModel->getReactions().size();
@@ -791,13 +805,17 @@ void CQUndoTester::testReactionDM(int repetitions)
         //mpUndoStack->push(new RemoveReactionRowsCommand(lst, mpDmReactions));
       }
     }
+
+#endif // XXXX
 }
 
 void CQUndoTester::createCompartment()
 {
+#ifdef XXXX
   // add compartment
   mpUndoStack->push(new CreateNewCompartmentCommand(mpDetailComp));
   mpCompartment = dynamic_cast<CCompartment*>(const_cast<CDataObject*>(mpDetailComp->getObject()));
+#endif
 }
 
 void CQUndoTester::createEvent()
@@ -818,22 +836,28 @@ void CQUndoTester::createModelValue()
 
 void CQUndoTester::createReaction()
 {
+#ifdef XXXX
   // add reaction
   mpUndoStack->push(new CreateNewReactionCommand(mpDetailReaction));
   mpReaction = dynamic_cast<CReaction*>(const_cast<CDataObject*>(mpDetailReaction->getObject()));
+#endif
 }
 
 void CQUndoTester::createSpecies()
 {
+#ifdef XXXX
   // add species
   mpUndoStack->push(
     new CreateNewSpeciesCommand(mpDetailSpecies)
   );
   mpSpecies = mpDetailSpecies->getCurrentMetab();
+#endif
 }
 
 void CQUndoTester::deleteCompartment()
 {
+#ifdef XXXX
+
   if (mpCompartment == NULL) return;
 
   mpListViews->switchToOtherWidget(C_INVALID_INDEX, mpCompartment->getKey());
@@ -843,6 +867,7 @@ void CQUndoTester::deleteCompartment()
   );
 
   mpCompartment = NULL;
+#endif
 }
 
 void CQUndoTester::deleteEvent()
@@ -874,6 +899,8 @@ void CQUndoTester::deleteModelValue()
 
 void CQUndoTester::deleteReaction()
 {
+#ifdef XXXX
+
   if (mpReaction == NULL)
     return;
 
@@ -884,10 +911,13 @@ void CQUndoTester::deleteReaction()
   );
 
   mpReaction = NULL;
+#endif
 }
 
 void CQUndoTester::deleteSpecies()
 {
+#ifdef XXXX
+
   if (mpSpecies == NULL)
     return;
 
@@ -898,6 +928,7 @@ void CQUndoTester::deleteSpecies()
   );
 
   mpSpecies = NULL;
+#endif
 }
 
 void CQUndoTester::focusChange(QWidget *old, QWidget *now)

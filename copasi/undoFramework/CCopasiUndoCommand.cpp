@@ -25,11 +25,9 @@
 #include "model/CModel.h"
 #include "function/CFunctionDB.h"
 
-#include "UndoReactionData.h"
 #include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
 #include "UndoEventAssignmentData.h"
-#include "UndoSpeciesData.h"
 #include "UndoData.h"
 
 #include "CCopasiUndoCommand.h"

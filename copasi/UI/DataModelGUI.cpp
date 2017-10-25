@@ -369,7 +369,7 @@ void  DataModelGUI::loadFunctionDB(const std::string & fileName)
   if (pFunctionDB == NULL) return;
 
   if (pFunctionDB->load(fileName))
-    emit notify(ListViews::FUNCTION, ListViews::DELETE, "");
+    emit notify(ListViews::FUNCTION, ListViews::DELETE, std::string());
 }
 
 void DataModelGUI::importSBML(const std::string & fileName)
@@ -660,7 +660,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
 //************Model-View Architecture*****************************************
 
-bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
   // until then.
@@ -674,9 +674,48 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
       refreshInitialValues();
     }
 
-  emit notifyView(objectType, action, key);
+  emit notifyView(objectType, action, cn);
 
   return true;
+}
+
+void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
+{
+  // The GUI is inactive whenever a progress bar exist. We wait with updates
+  // until then.
+  if (mpProgressBar == NULL)
+    {
+      CObjectInterface::ContainerList List;
+      List.push_back(mpDataModel);
+
+      // We loop through all the changes and call notify
+      CUndoData::ChangeSet::const_iterator it = changes.begin();
+      CUndoData::ChangeSet::const_iterator end = changes.end();
+
+      ListViews::Action Action = ListViews::Action::CHANGE;
+
+      for (; it != end; ++it)
+        {
+          switch (it->second.type)
+            {
+              case CUndoData::Type::INSERT:
+                Action = ListViews::Action::ADD;
+                break;
+
+              case CUndoData::Type::CHANGE:
+                Action = ListViews::Action::CHANGE;
+                break;
+
+              case CUndoData::Type::REMOVE:
+                Action = ListViews::Action::DELETE;
+                break;
+            }
+
+          ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->second.objectType, ListViews::ObjectType::STATE);
+
+          notify(ObjectType, Action, it->first);
+        }
+    }
 }
 
 void DataModelGUI::registerListView(ListViews * pListView)

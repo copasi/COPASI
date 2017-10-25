@@ -542,14 +542,16 @@ bool CModelParameter::updateModel()
                 pParameter->setValue(* (C_FLOAT64 *) pObject->getValuePointer());
 
                 // We map the parameter to the global quantity
-                pReaction->setParameterMapping(pParameter->getObjectName(), pObject->getObjectParent()->getKey());
+                std::vector< const CDataObject * > Objects(1, pObject->getObjectParent());
+                pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
               }
             else
               {
                 pParameter->setValue(mValue);
 
                 // We need to remove the existing mapping to a global quantity1.
-                pReaction->setParameterMapping(pParameter->getObjectName(), pParameter->getKey());
+                std::vector< const CDataObject * > Objects(1, pParameter);
+                pReaction->setParameterObjects(pParameter->getObjectName(), Objects);
               }
           }
           break;
@@ -639,11 +641,11 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
                 else
                   {
                     mSimulationType = CModelEntity::Status::ASSIGNMENT;
-                    const std::vector<std::string> ModelValue = pReaction->getParameterMapping(getName());
+                    const std::vector< const CDataObject * > ModelValue = pReaction->getParameterObjects(getName());
 
                     assert(ModelValue.size() == 1);
 
-                    CModelValue * pModelValue = static_cast< CModelValue * >(CRootContainer::getKeyFactory()->get(ModelValue[0]));
+                    const CModelValue * pModelValue = static_cast< const CModelValue * >(ModelValue[0]);
                     static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue->getInitialValueReference()->getCN());
                   }
               }

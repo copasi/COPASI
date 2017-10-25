@@ -102,10 +102,10 @@ void CStochMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Max Internal Steps", CCopasiParameter::INT, (C_INT32) 1000000);
-  assertParameter("Subtype", CCopasiParameter::UINT, (unsigned C_INT32) 2);
-  assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
-  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+  assertParameter("Max Internal Steps", CCopasiParameter::Type::INT, (C_INT32) 1000000);
+  assertParameter("Subtype", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2);
+  assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("STOCH.MaxSteps")) != NULL)

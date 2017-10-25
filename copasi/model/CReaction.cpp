@@ -53,13 +53,12 @@
 #include "sbml/SBMLImporter.h"
 
 // static
-const char * CReaction::KineticLawUnitTypeName[] =
+CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawUnitTypeName(
 {
   "Default",
   "AmountPerTime",
-  "ConcentrationPerTime",
-  NULL
-};
+  "ConcentrationPerTime"
+});
 
 // static
 CReaction * CReaction::fromData(const CData & data)
@@ -71,10 +70,72 @@ CReaction * CReaction::fromData(const CData & data)
 // virtual
 CData CReaction::toData() const
 {
-  CData Data;
+  CData Data(CDataContainer::toData());
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  CChemEqInterface EqInterface;
+  EqInterface.init(mChemEq);
+
+  Data.addProperty(CData::CHEMICAL_EQUATION, EqInterface.getChemEqString(false));
+  Data.addProperty(CData::KINETIC_LAW, mpFunction != NULL ? mpFunction->getObjectName() : "undefined");
+
+  CCopasiParameterGroup::index_iterator itLocalParameter = mParameters.beginIndex();
+  CCopasiParameterGroup::index_iterator endLocalParameter = mParameters.endIndex();
+  std::map< std::string, CData > LocalParameterSet;
+
+  for (size_t i = 0; itLocalParameter != endLocalParameter; ++itLocalParameter, ++i)
+    if (isLocalParameter(i))
+      {
+        LocalParameterSet.insert(std::make_pair((*itLocalParameter)->getObjectName(), (*itLocalParameter)->toData()));
+      }
+
+  std::map< std::string, CData >::const_iterator itSet = LocalParameterSet.begin();
+  std::map< std::string, CData >::const_iterator endSet = LocalParameterSet.end();
+  std::vector< CData > LocalParameters;
+
+  for (; itSet != endSet; ++itSet)
+    {
+      LocalParameters.push_back(itSet->second);
+    }
+
+  Data.addProperty(CData::LOCAL_REACTION_PARAMETERS, LocalParameters);
+
+  std::vector< CData > ParameterMapping;
+  std::vector< std::vector< CRegisteredCommonName > >::const_iterator itCNs = mParameterIndexToCNs.begin();
+  std::vector< std::vector< CRegisteredCommonName > >::const_iterator endCNs = mParameterIndexToCNs.end();
+  CFunctionParameters::const_iterator itParameter = mpFunction->getVariables().begin();
+
+  for (; itCNs != endCNs; ++itCNs, ++itParameter)
+    {
+      CData Map;
+      Map.addProperty(CData::OBJECT_NAME, itParameter->getObjectName());
+
+      std::vector< CRegisteredCommonName >::const_iterator it = itCNs->begin();
+      std::vector< CRegisteredCommonName >::const_iterator end = itCNs->end();
+      std::vector< CDataValue > ParameterSource;
+
+      for (; it != end; ++it)
+        {
+          ParameterSource.push_back(*it);
+        }
+
+      Map.addProperty(CData::PARAMETER_VALUE, ParameterSource);
+      ParameterMapping.push_back(Map);
+    }
+
+  if (!ParameterMapping.empty())
+    {
+      Data.addProperty(CData::KINEITC_LAW_VARIABLE_MAPPING, ParameterMapping);
+    }
+
+  Data.addProperty(CData::KINETIC_LAW_UNIT_TYPE, CReaction::KineticLawUnitTypeName[mKineticLawUnit]);
+
+  if (!mScalingCompartmentCN.empty())
+    {
+      Data.addProperty(CData::SCALING_COMPARTMENT, mScalingCompartmentCN);
+    }
+
+  Data.addProperty(CData::ADD_NOISE, mHasNoise);
+  Data.addProperty(CData::NOISE_EXPRESSION, mpNoiseExpression != NULL ? mpNoiseExpression->getInfix() : "");
 
   return Data;
 }
@@ -82,12 +143,218 @@ CData CReaction::toData() const
 // virtual
 bool CReaction::applyData(const CData & data)
 {
-  bool success = true;
+  bool Success = CDataContainer::applyData(data);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::CHEMICAL_EQUATION))
+    {
+      CChemEqInterface EqInterface;
+      EqInterface.init(mChemEq);
+      Success &= EqInterface.setChemEqString(data.getProperty(CData::CHEMICAL_EQUATION).toString());
+      EqInterface.writeToChemEq();
+    }
 
-  return success;
+  if (data.isSetProperty(CData::KINETIC_LAW))
+    {
+      // This will also create and remove local reaction parameters and mappings
+      setFunction(data.getProperty(CData::KINETIC_LAW).toString());
+    }
+
+  if (data.isSetProperty(CData::LOCAL_REACTION_PARAMETERS))
+    {
+      const std::vector< CData > & Value = data.getProperty(CData::LOCAL_REACTION_PARAMETERS).toDataVector();
+
+      std::vector< CData >::const_iterator it = Value.begin();
+      std::vector< CData >::const_iterator end = Value.end();
+
+      for (; it != end; ++it)
+        {
+          CCopasiParameter * pParameter = mParameters.getParameter(it->getProperty(CData::OBJECT_NAME).toString());
+
+          if (pParameter != NULL)
+            {
+              pParameter->applyData(*it);
+            }
+        }
+    }
+
+  if (data.isSetProperty(CData::KINEITC_LAW_VARIABLE_MAPPING))
+    {
+      // Note, this does not remove unused parameter mappings. However these are cleared when setting the function above.
+      const std::vector< CData > & ParameterMapping = data.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+
+      std::vector< CData >::const_iterator itMapping = ParameterMapping.begin();
+      std::vector< CData >::const_iterator endMapping = ParameterMapping.end();
+
+      for (; itMapping != endMapping; ++itMapping)
+        {
+          const std::string & Name = itMapping->getProperty(CData::OBJECT_NAME).toString();
+          const std::vector< CDataValue > & ParameterSource = itMapping->getProperty(CData::PARAMETER_VALUE).toDataValues();
+          std::vector< CDataValue >::const_iterator it = ParameterSource.begin();
+          std::vector< CDataValue >::const_iterator end = ParameterSource.end();
+          std::vector< CRegisteredCommonName > CNs;
+
+          for (; it != end; ++it)
+            {
+              CNs.push_back(it->toString());
+            }
+
+          Success &= setParameterCNs(Name, CNs);
+        }
+    }
+
+  if (data.isSetProperty(CData::KINETIC_LAW_UNIT_TYPE))
+    {
+      setKineticLawUnitType(CReaction::KineticLawUnitTypeName.toEnum(data.getProperty(CData::KINETIC_LAW_UNIT_TYPE).toString()));
+    }
+
+  if (data.isSetProperty(CData::SCALING_COMPARTMENT))
+    {
+      setScalingCompartmentCN(data.getProperty(CData::SCALING_COMPARTMENT).toString());
+    }
+
+  if (data.isSetProperty(CData::ADD_NOISE))
+    {
+      mHasNoise = data.getProperty(CData::ADD_NOISE).toBool();
+    }
+
+  if (data.isSetProperty(CData::NOISE_EXPRESSION))
+    {
+      setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
+    }
+
+  return Success;
+}
+
+// virtual
+void CReaction::createUndoData(CUndoData & undoData,
+                               const CUndoData::Type & type,
+                               const CData & oldData,
+                               const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  assert(mpFunction != NULL);
+
+  CChemEqInterface EqInterface;
+  EqInterface.init(mChemEq);
+
+  undoData.addProperty(CData::CHEMICAL_EQUATION, oldData.getProperty(CData::CHEMICAL_EQUATION), EqInterface.getChemEqString(false));
+  undoData.addProperty(CData::KINETIC_LAW, oldData.getProperty(CData::KINETIC_LAW), mpFunction->getObjectName());
+
+  CCopasiParameterGroup::const_name_iterator itNewParameter = mParameters.beginName();
+  CCopasiParameterGroup::const_name_iterator endNewParameter = mParameters.endName();
+  std::vector< CData >::const_iterator itOldParameter = oldData.getProperty(CData::LOCAL_REACTION_PARAMETERS).toDataVector().begin();
+  std::vector< CData >::const_iterator endOldParameter = oldData.getProperty(CData::LOCAL_REACTION_PARAMETERS).toDataVector().end();
+  std::vector< CData > OldReactionParameters;
+  std::vector< CData > NewReactionParameters;
+
+  while (itNewParameter != endNewParameter && itOldParameter != endOldParameter)
+    {
+      const std::string & OldName = itOldParameter->getProperty(CData::OBJECT_NAME).toString();
+
+      if (itNewParameter->getObjectName() == OldName)
+        {
+          if (itNewParameter->getValue<C_FLOAT64>() != itOldParameter->getProperty(CData::PARAMETER_VALUE).toDouble())
+            {
+              NewReactionParameters.push_back(itNewParameter->toData());
+              OldReactionParameters.push_back(*itOldParameter);
+            }
+
+          ++itNewParameter;
+          ++itOldParameter;
+        }
+      else if (itNewParameter->getObjectName() < OldName)
+        {
+          NewReactionParameters.push_back(itNewParameter->toData());
+          ++itNewParameter;
+        }
+      else
+        {
+          OldReactionParameters.push_back(*itOldParameter);
+          ++itOldParameter;
+        }
+    }
+
+  for (; itNewParameter != endNewParameter; ++itNewParameter)
+    {
+      NewReactionParameters.push_back(itNewParameter->toData());
+    }
+
+  for (; itOldParameter != endOldParameter; ++itOldParameter)
+    {
+      OldReactionParameters.push_back(*itOldParameter);
+    }
+
+  undoData.addProperty(CData::LOCAL_REACTION_PARAMETERS, OldReactionParameters, NewReactionParameters);
+
+  // Note, we do not need to remove unused parameter mappings. These are cleared when setting the function above.
+  CFunctionParameters::const_iterator itParameter = mpFunction->getVariables().begin();
+  std::vector< std::vector< CRegisteredCommonName > >::const_iterator itCNs = mParameterIndexToCNs.begin();
+  std::vector< std::vector< CRegisteredCommonName > >::const_iterator endCNs = mParameterIndexToCNs.end();
+  const std::vector< CData > & OldVariableMapping = oldData.getProperty(CData::KINEITC_LAW_VARIABLE_MAPPING).toDataVector();
+  std::vector< CData >::const_iterator itOldVariable = OldVariableMapping.begin();
+  std::vector< CData >::const_iterator endOldVariable = OldVariableMapping.end();
+  std::vector< CData > OldParameterMapping;
+  std::vector< CData > NewParameterMapping;
+
+  for (; itCNs != endCNs && itOldVariable != endOldVariable; ++itCNs, ++itOldVariable, ++itParameter)
+    {
+      CData NewMap;
+      NewMap.addProperty(CData::OBJECT_NAME, itParameter->getObjectName());
+
+      std::vector< CRegisteredCommonName >::const_iterator it = itCNs->begin();
+      std::vector< CRegisteredCommonName >::const_iterator end = itCNs->end();
+      std::vector< CDataValue > ParameterSource;
+
+      for (; it != end; ++it)
+        {
+          ParameterSource.push_back(*it);
+        }
+
+      NewMap.addProperty(CData::PARAMETER_VALUE, ParameterSource);
+
+      if (NewMap != *itOldVariable)
+        {
+          OldParameterMapping.push_back(*itOldVariable);
+          NewParameterMapping.push_back(NewMap);
+        }
+    }
+
+  for (; itCNs != endCNs; ++itCNs, ++itParameter)
+    {
+      CData NewMap;
+      NewMap.addProperty(CData::OBJECT_NAME, itParameter->getObjectName());
+
+      std::vector< CRegisteredCommonName >::const_iterator it = itCNs->begin();
+      std::vector< CRegisteredCommonName >::const_iterator end = itCNs->end();
+      std::vector< CDataValue > ParameterSource;
+
+      for (; it != end; ++it)
+        {
+          ParameterSource.push_back(*it);
+        }
+
+      NewMap.addProperty(CData::PARAMETER_VALUE, ParameterSource);
+      NewParameterMapping.push_back(NewMap);
+    }
+
+  for (; itOldVariable != endOldVariable; ++itOldVariable)
+    {
+      OldParameterMapping.push_back(*itOldVariable);
+    }
+
+  undoData.addProperty(CData::KINEITC_LAW_VARIABLE_MAPPING, OldParameterMapping, NewParameterMapping);
+  undoData.addProperty(CData::KINETIC_LAW_UNIT_TYPE, oldData.getProperty(CData::KINETIC_LAW_UNIT_TYPE), CReaction::KineticLawUnitTypeName[mKineticLawUnit]);
+  undoData.addProperty(CData::SCALING_COMPARTMENT, oldData.getProperty(CData::SCALING_COMPARTMENT), mScalingCompartmentCN);
+  undoData.addProperty(CData::ADD_NOISE, oldData.getProperty(CData::ADD_NOISE), mHasNoise);
+  undoData.addProperty(CData::NOISE_EXPRESSION, oldData.getProperty(CData::NOISE_EXPRESSION), mpNoiseExpression != NULL ? mpNoiseExpression->getInfix() : "");
+
+  return;
 }
 
 CReaction::CReaction(const std::string & name,
@@ -109,11 +376,13 @@ CReaction::CReaction(const std::string & name,
   mPropensity(0),
   mpPropensityReference(NULL),
   mMap(),
-  mMetabKeyMap(),
+  mParameterNameToIndex(),
+  mParameterIndexToCNs(),
+  mParameterIndexToObjects(),
   mParameters("Parameters", this),
   mSBMLId(),
   mFast(false),
-  mKineticLawUnit(CReaction::Default),
+  mKineticLawUnit(CReaction::KineticLawUnit::Default),
   mScalingCompartmentCN(),
   mpScalingCompartment(NULL)
 {
@@ -143,7 +412,9 @@ CReaction::CReaction(const CReaction & src,
   mPropensity(src.mPropensity),
   mpPropensityReference(NULL),
   mMap(src.mMap),
-  mMetabKeyMap(src.mMetabKeyMap),
+  mParameterNameToIndex(src.mParameterNameToIndex),
+  mParameterIndexToCNs(src.mParameterIndexToCNs),
+  mParameterIndexToObjects(src.mParameterIndexToObjects),
   mParameters(src.mParameters, this),
   mSBMLId(src.mSBMLId),
   mFast(src.mFast),
@@ -198,8 +469,11 @@ std::string CReaction::getChildObjectUnits(const CDataObject * pObject) const
 void CReaction::cleanup()
 {
   mChemEq.cleanup();
-  mMetabKeyMap.clear();
-  setFunction(CRootContainer::getUndefinedFunction());
+  mParameterNameToIndex.clear(),
+                              mParameterIndexToCNs.clear(),
+                              mParameterIndexToObjects.clear(),
+
+                              setFunction(CRootContainer::getUndefinedFunction());
   mpScalingCompartment = NULL;
   mScalingCompartmentCN = CRegisteredCommonName("");
   // TODO: mMap.cleanup();
@@ -230,9 +504,8 @@ C_INT32 CReaction::load(CReadConfig & configbuffer)
   if ((Fail = configbuffer.getVariable("Equation", "string", &ChemEq)))
     return Fail;
 
-  CModel * pModel
-    = dynamic_cast< CModel * >(getObjectAncestor("Model"));
-  CChemEqInterface::setChemEqFromString(pModel, *this, ChemEq);
+  if (!CChemEqInterface::setChemEqFromString(*this, ChemEq))
+    return Fail;
 
   if ((Fail = configbuffer.getVariable("KineticType", "string", &tmp)))
     return Fail;
@@ -349,7 +622,7 @@ bool CReaction::setFunction(CFunction * pFunction)
   mPrerequisits.insert(mpFunction);
 
   mMap.initializeFromFunctionParameters(mpFunction->getVariables());
-  initializeMetaboliteKeyMap(); //needs to be called before initializeParamters();
+  initializeParameterMapping(); //needs to be called before initializeParamters();
   initializeParameters();
 
   return true;
@@ -370,33 +643,41 @@ size_t CReaction::getParameterIndex(const std::string & parameterName,
 }
 
 void CReaction::setParameterValue(const std::string & parameterName,
-                                  const C_FLOAT64 & value,
-                                  const bool & updateStatus)
+                                  const C_FLOAT64 & value)
 {
   if (!mpFunction) fatalError();
 
-  mParameters.setValue(parameterName, value);
+  CCopasiParameter * pParameter = mParameters.getParameter(parameterName);
 
-  if (!updateStatus) return;
+  if (pParameter == NULL) return;
 
-  //make sure that this local parameter is actually used:
+  std::map< std::string, size_t >::iterator found = mParameterNameToIndex.find(parameterName);
 
-  //first find index
-  size_t index = getParameterIndex(parameterName);
+  if (found == mParameterNameToIndex.end()) return;
 
-  if (index == C_INVALID_INDEX) return;
+  const CFunctionParameter * pFunctionParameter = NULL;
 
-  if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
+  mpFunction->getVariables().findParameterByName(parameterName, &pFunctionParameter);
 
-  //set the key map
-  mMetabKeyMap[index][0] = mParameters.getParameter(parameterName)->getKey();
+  if (pFunctionParameter == NULL ||
+      pFunctionParameter->getType() != CFunctionParameter::DataType::FLOAT64 ||
+      mParameterIndexToCNs[found->second].size() != 1) return;
+
+  mParameterIndexToCNs[found->second][0] = pParameter->getCN();
 }
 
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
 {
-  if (!mpFunction) fatalError();
+  const CCopasiParameter * pParameter = mParameters.getParameter(parameterName);
 
-  return mParameters.getValue< C_FLOAT64 >(parameterName);
+  if (pParameter != NULL)
+    {
+      return pParameter->getValue< C_FLOAT64 >();
+    }
+
+  static const C_FLOAT64 InvalidValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  return InvalidValue;
 }
 
 const CCopasiParameterGroup & CReaction::getParameters() const
@@ -405,126 +686,16 @@ const CCopasiParameterGroup & CReaction::getParameters() const
 CCopasiParameterGroup & CReaction::getParameters()
 {return mParameters;}
 
-void CReaction::setParameterMapping(const size_t & index, const std::string & key)
-{
-  if (!mpFunction) fatalError();
-
-  if (getFunctionParameters()[index]->getType() != CFunctionParameter::FLOAT64) fatalError(); //wrong data type
-
-  mMetabKeyMap[index][0] = key;
-}
-
-void CReaction::addParameterMapping(const size_t & index, const std::string & key)
-{
-  if (!mpFunction) fatalError();
-
-  if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
-
-  mMetabKeyMap[index].push_back(key);
-}
-
-bool CReaction::setParameterMapping(const std::string & parameterName, const std::string & key)
-{
-  if (!mpFunction) fatalError();
-
-  const CFunctionParameter * pFunctionParameter;
-  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
-
-  if (C_INVALID_INDEX == index)
-    return false;
-
-  if (pFunctionParameter == NULL ||
-      pFunctionParameter->getType() != CFunctionParameter::FLOAT64) fatalError();
-
-  mMetabKeyMap[index][0] = key;
-
-  return true;
-}
-
-void CReaction::addParameterMapping(const std::string & parameterName, const std::string & key)
-{
-  if (!mpFunction) fatalError();
-
-  const CFunctionParameter * pFunctionParameter;
-  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
-
-  if (C_INVALID_INDEX == index)
-    return;
-
-  if (pFunctionParameter == NULL ||
-      pFunctionParameter->getType() != CFunctionParameter::VFLOAT64) fatalError();
-
-  mMetabKeyMap[index].push_back(key);
-}
-
-void CReaction::setParameterMappingVector(const std::string & parameterName,
-    const std::vector<std::string> & keys)
-{
-  if (!mpFunction) fatalError();
-
-  const CFunctionParameter * pFunctionParameter;
-  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
-
-  if (C_INVALID_INDEX == index)
-    return;
-
-  if (pFunctionParameter == NULL ||
-      (pFunctionParameter->getType() == CFunctionParameter::FLOAT64 &&
-       keys.size() != 1)) fatalError();
-
-  mMetabKeyMap[index] = keys;
-}
-
-void CReaction::clearParameterMapping(const std::string & parameterName)
-{
-  if (!mpFunction) fatalError();
-
-  const CFunctionParameter * pFunctionParameter;
-  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
-
-  if (C_INVALID_INDEX == index)
-    return;
-
-  if (pFunctionParameter == NULL ||
-      pFunctionParameter->getType() != CFunctionParameter::VFLOAT64) fatalError(); //wrong data type
-
-  mMetabKeyMap[index].clear();
-}
-
-void CReaction::clearParameterMapping(const size_t & index)
-{
-  if (!mpFunction) fatalError();
-
-  if (getFunctionParameters()[index]->getType() != CFunctionParameter::VFLOAT64) fatalError();
-
-  mMetabKeyMap[index].clear();
-}
-
-const std::vector<std::string> & CReaction::getParameterMapping(const size_t & index) const
-{
-  if (!mpFunction) fatalError();
-
-  if (C_INVALID_INDEX == index || index >= mMetabKeyMap.size())
-    return mMetabKeyMap[0]; //TODO this is kind of ugly!
-
-  return mMetabKeyMap[index];
-}
-
-const std::vector<std::string> & CReaction::getParameterMapping(const std::string & parameterName) const
-{
-  size_t index = getParameterIndex(parameterName);
-
-  return getParameterMapping(index);
-}
-
 bool CReaction::isLocalParameter(const size_t & index) const
 {
-  size_t i, imax = mParameters.size();
+  const std::vector< const CDataObject * > & Objects = mParameterIndexToObjects[index];
 
-  for (i = 0; i < imax; ++i)
+  if (Objects.size() == 1)
     {
-      if (mParameters.getParameter(i)->getKey() == mMetabKeyMap[index][0])
-        return true;
+      const CDataObject * pObject = mParameterIndexToObjects[index][0];
+
+      return (pObject != NULL &&
+              pObject->getObjectParent() == &mParameters);
     }
 
   return false;
@@ -532,18 +703,14 @@ bool CReaction::isLocalParameter(const size_t & index) const
 
 bool CReaction::isLocalParameter(const std::string & parameterName) const
 {
-  if (!mpFunction) fatalError();
+  std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(parameterName);
 
-  const CFunctionParameter * pFunctionParameter;
-  size_t index = getParameterIndex(parameterName, &pFunctionParameter);
+  if (found != mParameterNameToIndex.end())
+    {
+      return isLocalParameter(found->second);
+    }
 
-  if (C_INVALID_INDEX == index)
-    return false;
-
-  if (pFunctionParameter == NULL ||
-      pFunctionParameter->getType() != CFunctionParameter::FLOAT64) fatalError();
-
-  return isLocalParameter(index);
+  return false;
 }
 //***********************************************************************************************
 
@@ -583,7 +750,7 @@ void CReaction::initializeParameters()
   if (!mpFunction) fatalError();
 
   size_t i;
-  size_t imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER);
+  size_t imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::Role::PARAMETER);
   size_t pos;
   std::string name;
 
@@ -593,18 +760,22 @@ void CReaction::initializeParameters()
   /* Add missing parameters with default value 1.0. */
   for (i = 0, pos = 0; i < imax; ++i)
     {
-      name = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos)->getObjectName();
+      name = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::Role::PARAMETER, pos)->getObjectName();
 
-      //      param.setName(name);
-      if (!mParameters.getParameter(name))
+      CCopasiParameter * pParameter = mParameters.getParameter(name);
+
+      if (pParameter == NULL)
         {
           mParameters.addParameter(name,
-                                   CCopasiParameter::DOUBLE,
+                                   CCopasiParameter::Type::DOUBLE,
                                    (C_FLOAT64) 1.0);
+
+          pParameter = mParameters.getParameter(name);
         }
 
-      CCopasiParameter * tmpPar = mParameters.getParameter(name);
-      mMetabKeyMap[pos - 1][0] = tmpPar->getKey();
+      mParameterNameToIndex[name] = pos - 1;
+      mParameterIndexToCNs[pos - 1][0] = pParameter->getCN();
+      mParameterIndexToObjects[pos - 1][0] = pParameter;
     }
 
   /* Remove parameters not fitting current function */
@@ -627,21 +798,33 @@ void CReaction::initializeParameters()
     mParameters.removeParameter(*itToBeDeleted);
 }
 
-void CReaction::initializeMetaboliteKeyMap()
+void CReaction::initializeParameterMapping()
 {
   if (!mpFunction) fatalError();
 
   size_t i;
   size_t imax = mMap.getFunctionParameters().size();
 
-  mMetabKeyMap.resize(imax);
+  mParameterNameToIndex.clear();
+  mParameterIndexToCNs.resize(imax);
+  mParameterIndexToObjects.resize(imax);
 
   for (i = 0; i < imax; ++i)
     {
-      if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
-        mMetabKeyMap[i].resize(0);
+      const CFunctionParameter * pFunctionParameter = mMap.getFunctionParameters()[i];
+
+      if (pFunctionParameter->getType() >= CFunctionParameter::DataType::VINT32)
+        {
+          mParameterIndexToCNs[i].clear();
+          mParameterIndexToObjects[i].clear();
+        }
       else
-        mMetabKeyMap[i].resize(1);
+        {
+          mParameterIndexToCNs[i].resize(1);
+          mParameterIndexToObjects[i].resize(1);
+        }
+
+      mParameterNameToIndex[pFunctionParameter->getObjectName()] = i;
     }
 }
 
@@ -664,7 +847,7 @@ CIssue CReaction::compile()
 
   std::set< const CDataObject * > Dependencies;
 
-  CDataObject * pObject;
+  const CDataObject * pObject;
 
   if (mpFunction)
     {
@@ -680,102 +863,14 @@ CIssue CReaction::compile()
           mParticleFlux = 0.0;
         }
 
-      size_t i, j, jmax;
-      size_t imax = mMap.getFunctionParameters().size();
-      std::string paramName;
-
-      for (i = 0; i < imax; ++i)
+      if (!compileFunctionParameters(Dependencies))
         {
-          paramName = getFunctionParameters()[i]->getObjectName();
-
-          if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
-            {
-              mMap.clearCallParameter(paramName);
-              jmax = mMetabKeyMap[i].size();
-
-              if (jmax == 0)
-                {
-                  Issue = CIssue::Error;
-                  break;
-                }
-
-              for (j = 0; j < jmax; ++j)
-                if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
-                  {
-                    Issue &= mMap.addCallParameter(paramName, pObject);
-                    mValidity.add(Issue);
-                    Dependencies.insert(pObject->getValueObject());
-                  }
-                else
-                  {
-                    Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
-                    mValidity.add(Issue);
-                    mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
-                  }
-            }
-          else if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
-            {
-              Issue &= mMap.setCallParameter(paramName, pObject);
-              mValidity.add(Issue);
-              Dependencies.insert(pObject->getValueObject());
-            }
-          else
-            {
-              Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
-              mValidity.add(Issue);
-              mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
-            }
-        }
-
-      if (Issue.isError())
-        {
-          mValidity.remove(CValidity::Severity::All,
-                           CValidity::Kind(CIssue::eKind::VariablesMismatch) | CIssue::eKind::ObjectNotFound);
-
-          CReactionInterface Interface(static_cast<CModel *>(getObjectAncestor("Model")));
-          Interface.initFromReaction(this);
+          CReactionInterface Interface;
+          Interface.init(*this);
           Interface.setFunctionAndDoMapping(mpFunction->getObjectName());
           Interface.writeBackToReaction(this, false);
 
-          Dependencies.clear();
-          imax = mMap.getFunctionParameters().size();
-
-          for (i = 0; i < imax; ++i)
-            {
-              paramName = getFunctionParameters()[i]->getObjectName();
-
-              if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::VINT32)
-                {
-                  mMap.clearCallParameter(paramName);
-                  jmax = mMetabKeyMap[i].size();
-
-                  for (j = 0; j < jmax; ++j)
-                    if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][j])) != NULL)
-                      {
-                        Issue &= mMap.addCallParameter(paramName, pObject);
-                        mValidity.add(Issue);
-                        Dependencies.insert(pObject->getValueObject());
-                      }
-                    else
-                      {
-                        Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
-                        mValidity.add(Issue);
-                        mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
-                      }
-                }
-              else if ((pObject = CRootContainer::getKeyFactory()->get(mMetabKeyMap[i][0])) != NULL)
-                {
-                  Issue &= mMap.setCallParameter(paramName, pObject);
-                  mValidity.add(Issue);
-                  Dependencies.insert(pObject->getValueObject());
-                }
-              else
-                {
-                  Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
-                  mValidity.add(Issue);
-                  mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
-                }
-            }
+          Issue &= compileFunctionParameters(Dependencies);
         }
     }
 
@@ -813,6 +908,74 @@ CIssue CReaction::compile()
   return Issue;
 }
 
+CIssue CReaction::compileFunctionParameters(std::set< const CDataObject * > & dependencies)
+{
+  CIssue Issue;
+  mValidity.remove(CValidity::Severity::All,
+                   CValidity::Kind(CIssue::eKind::VariablesMismatch) | CIssue::eKind::ObjectNotFound);
+
+  dependencies.clear();
+
+  const CDataObject * pObject;
+  size_t i, j, jmax;
+  size_t imax = mMap.getFunctionParameters().size();
+  std::string paramName;
+
+  bool success = true;
+
+  for (i = 0; i < imax && success; ++i)
+    {
+      paramName = getFunctionParameters()[i]->getObjectName();
+
+      if (mMap.getFunctionParameters()[i]->getType() >= CFunctionParameter::DataType::VINT32)
+        {
+          mMap.clearCallParameter(paramName);
+          jmax = mParameterIndexToCNs[i].size();
+          mParameterIndexToObjects[i].clear();
+
+          for (j = 0; j < jmax; ++j)
+            {
+              pObject = DataObject(getObjectFromCN(mParameterIndexToCNs[i][j]));
+
+              if (pObject != NULL)
+                {
+                  Issue &= mMap.addCallParameter(paramName, pObject);
+                  mValidity.add(Issue);
+                  mParameterIndexToObjects[i].push_back(pObject);
+                  dependencies.insert(pObject->getValueObject());
+                }
+              else
+                {
+                  Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+                  mValidity.add(Issue);
+                  mParameterIndexToObjects[i].push_back(CFunctionParameterMap::pUnmappedObject);
+                  mMap.addCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
+                }
+            }
+        }
+      else
+        {
+          pObject = DataObject(getObjectFromCN(mParameterIndexToCNs[i][0]));
+
+          if (pObject != NULL)
+            {
+              Issue = mMap.setCallParameter(paramName, pObject);
+              mValidity.add(Issue);
+              mParameterIndexToObjects[i][0] = pObject;
+              dependencies.insert(pObject->getValueObject());
+            }
+          else
+            {
+              Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::ObjectNotFound);
+              mValidity.add(Issue);
+              mParameterIndexToObjects[i][0] = CFunctionParameterMap::pUnmappedObject;
+              mMap.setCallParameter(paramName, CFunctionParameterMap::pUnmappedObject);
+            }
+        }
+    }
+
+  return Issue;
+}
 bool CReaction::loadOneRole(CReadConfig & configbuffer,
                             CFunctionParameter::Role role, C_INT32 n,
                             const std::string & prefix)
@@ -848,7 +1011,9 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
         }
 
       parName = pParameter->getObjectName();
-      clearParameterMapping(parName);
+
+      std::vector< CRegisteredCommonName > CNs;
+      std::vector< const CDataObject * > Objects;
 
       for (i = 0; i < n; i++)
         {
@@ -856,8 +1021,14 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           configbuffer.getVariable(name, "C_INT32", &index);
 
           metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
-          addParameterMapping(parName, pModel->findMetabByName(metabName)->getKey());
+          const CMetab * pMetab = pModel->findMetabByName(metabName);
+
+          CNs.push_back(pMetab->getCN());
+          Objects.push_back(pMetab);
         }
+
+      mParameterIndexToCNs[mParameterNameToIndex[parName]] = CNs;
+      mParameterIndexToObjects[mParameterNameToIndex[parName]] = Objects;
     }
   else //no vector
     {
@@ -875,6 +1046,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           configbuffer.getVariable(name, "C_INT32", &index);
 
           metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
+          const CMetab * pMetab = pModel->findMetabByName(metabName);
 
           pParameter = mMap.getFunctionParameters().getParameterByUsage(role, pos);
 
@@ -884,18 +1056,20 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
               fatalError();
             }
 
-          if (pParameter->getType() >= CFunctionParameter::VINT32)
+          if (pParameter->getType() >= CFunctionParameter::DataType::VINT32)
             {
               // unexpected vector variable.
               fatalError();
             }
 
           parName = pParameter->getObjectName();
-          setParameterMapping(parName, pModel->findMetabByName(metabName)->getKey());
+
+          mParameterIndexToCNs[mParameterNameToIndex[parName]][0] = pMetab->getCN();
+          mParameterIndexToObjects[mParameterNameToIndex[parName]][0] = pMetab;
 
           // in the old files the chemical equation does not contain
           // information about modifiers. This has to be extracted from here.
-          if (role == CFunctionParameter::MODIFIER)
+          if (role == CFunctionParameter::Role::MODIFIER)
             mChemEq.addMetabolite(pModel->findMetabByName(metabName)->getKey(),
                                   1, CChemEq::MODIFIER);
         }
@@ -922,19 +1096,19 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
   configbuffer.getVariable("Constants", "C_INT32", &ParameterSize);
 
   // Construct metabolite mappings
-  loadOneRole(configbuffer, CFunctionParameter::SUBSTRATE,
+  loadOneRole(configbuffer, CFunctionParameter::Role::SUBSTRATE,
               SubstrateSize, "Subs");
 
-  loadOneRole(configbuffer, CFunctionParameter::PRODUCT,
+  loadOneRole(configbuffer, CFunctionParameter::Role::PRODUCT,
               ProductSize, "Prod");
 
-  loadOneRole(configbuffer, CFunctionParameter::MODIFIER,
+  loadOneRole(configbuffer, CFunctionParameter::Role::MODIFIER,
               ModifierSize, "Modf");
 
   C_INT32 Fail = 0;
 
   // Construct parameters
-  if (mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::PARAMETER)
+  if (mMap.getFunctionParameters().getNumberOfParametersByUsage(CFunctionParameter::Role::PARAMETER)
       != (size_t) ParameterSize)
     {
       // no. of parameters not matching function definition.
@@ -951,7 +1125,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
       name = StringPrint("Param%d", i);
       configbuffer.getVariable(name, "C_FLOAT64", &value);
 
-      pParameter = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::PARAMETER, pos);
+      pParameter = mMap.getFunctionParameters().getParameterByUsage(CFunctionParameter::Role::PARAMETER, pos);
 
       if (!pParameter)
         {
@@ -959,7 +1133,7 @@ C_INT32 CReaction::loadOld(CReadConfig & configbuffer)
           fatalError();
         }
 
-      if (pParameter->getType() != CFunctionParameter::FLOAT64)
+      if (pParameter->getType() != CFunctionParameter::DataType::FLOAT64)
         {
           // unexpected parameter type.
           fatalError();
@@ -984,10 +1158,10 @@ void CReaction::setScalingFactor()
 
   mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
 
-  if (getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
+  if (getEffectiveKineticLawUnitType() == CReaction::KineticLawUnit::ConcentrationPerTime)
     {
       if (mpScalingCompartment == NULL ||
-          mKineticLawUnit == Default)
+          mKineticLawUnit == KineticLawUnit::Default)
         {
           const CMetab *pMetab = NULL;
 
@@ -1030,6 +1204,12 @@ std::string CReaction::getDefaultNoiseExpression() const
 
 bool CReaction::setNoiseExpression(const std::string & expression)
 {
+  if (mpNoiseExpression == NULL &&
+      expression.empty()) return true;
+
+  if (mpNoiseExpression != NULL &&
+      mpNoiseExpression->getInfix() == expression) return true;
+
   CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
 
   if (pModel != NULL)
@@ -1135,12 +1315,12 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
   os << "   key map:" << std::endl;
   size_t i, j;
 
-  for (i = 0; i < d.mMetabKeyMap.size(); ++i)
+  for (i = 0; i < d.mParameterIndexToCNs.size(); ++i)
     {
       os << i << ": ";
 
-      for (j = 0; j < d.mMetabKeyMap[i].size(); ++j)
-        os << d.mMetabKeyMap[i][j] << ", ";
+      for (j = 0; j < d.mParameterIndexToCNs[i].size(); ++j)
+        os << d.mParameterIndexToCNs[i][j] << ", ";
 
       os << std::endl;
     }
@@ -1207,7 +1387,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                           if (((*v)[i].getMetabolite()) == static_cast<CMetab *>(object))
                             {
                               found = true;
-                              usage = CFunctionParameter::SUBSTRATE;
+                              usage = CFunctionParameter::Role::SUBSTRATE;
                               break;
                             }
                         }
@@ -1221,7 +1401,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                               if (((*v)[i].getMetabolite()) == static_cast<CMetab *>(object))
                                 {
                                   found = true;
-                                  usage = CFunctionParameter::PRODUCT;
+                                  usage = CFunctionParameter::Role::PRODUCT;
                                   break;
                                 }
                             }
@@ -1235,7 +1415,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                                   if (((*v)[i].getMetabolite()) == static_cast<CMetab *>(object))
                                     {
                                       found = true;
-                                      usage = CFunctionParameter::MODIFIER;
+                                      usage = CFunctionParameter::Role::MODIFIER;
                                       break;
                                     }
                                 }
@@ -1248,7 +1428,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
                                   if (pSpecies->getLevel() == 1)
                                     {
                                       found = true;
-                                      usage = CFunctionParameter::MODIFIER;
+                                      usage = CFunctionParameter::Role::MODIFIER;
                                     }
                                   else
                                     {
@@ -1262,7 +1442,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                       if (found)
                         {
-                          CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64, usage);
+                          CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::DataType::FLOAT64, usage);
                           replacementMap[id] = std::make_pair(object, pFunParam);
                         }
                     }
@@ -1275,8 +1455,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                          CFunctionParameter::PARAMETER);
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::DataType::FLOAT64,
+                          CFunctionParameter::Role::PARAMETER);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -1288,8 +1468,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                          CFunctionParameter::VOLUME);
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::DataType::FLOAT64,
+                          CFunctionParameter::Role::VOLUME);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -1301,8 +1481,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
                   if (replacementMap.find(id) == replacementMap.end())
                     {
-                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                          CFunctionParameter::TIME);
+                      CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::DataType::FLOAT64,
+                          CFunctionParameter::Role::TIME);
                       replacementMap[id] = std::make_pair(object, pFunParam);
                     }
                 }
@@ -1326,8 +1506,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 
           if (replacementMap.find(id) == replacementMap.end())
             {
-              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                  CFunctionParameter::PARAMETER);
+              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::DataType::FLOAT64,
+                  CFunctionParameter::Role::PARAMETER);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
@@ -1340,8 +1520,8 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
           pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::S_DEFAULT, id);
           if (replacementMap.find(id) == replacementMap.end())
             {
-              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::FLOAT64,
-                                              CFunctionParameter::TIME);
+              CFunctionParameter* pFunParam = new CFunctionParameter(id, CFunctionParameter::DataType::FLOAT64,
+                                              CFunctionParameter::Role::TIME);
               replacementMap[id] = std::make_pair(object, pFunParam);
             }
         }
@@ -1473,7 +1653,9 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         {
           CFunctionParameter* pFunPar = it->second.second;
           std::string id = it->first;
-          setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+
+          mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getCN();
+          mParameterIndexToObjects[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first;
           ++it;
         }
 
@@ -1509,7 +1691,10 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
                 {
                   CFunctionParameter* pFunPar = it->second.second;
                   std::string id = it->first;
-                  setParameterMapping(pFunPar->getObjectName(), it->second.first->getKey());
+
+                  mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getCN();
+                  mParameterIndexToObjects[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first;
+
                   delete pFunPar;
                   ++it;
                 }
@@ -1726,19 +1911,17 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 8, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
 
-  if (pFunctionParameter->getType() == CFunctionParameter::VFLOAT64 ||
-      pFunctionParameter->getType() == CFunctionParameter::VINT32)
+  if (pFunctionParameter->getType() == CFunctionParameter::DataType::VFLOAT64 ||
+      pFunctionParameter->getType() == CFunctionParameter::DataType::VINT32)
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 10, (static_cast<std::string>(pVariableNode->getData())).c_str());
     }
 
-  const std::string& key = this->getParameterMappings()[index][0];
-
-  CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+  const CDataObject * pObject = DataObject(getObjectFromCN(mParameterIndexToCNs[index][0]));
 
   if (!pObject)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, key.c_str());
+      CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9 , mParameterIndexToCNs[index][0].c_str());
     }
 
   pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
@@ -1845,15 +2028,15 @@ CReaction::KineticLawUnit CReaction::getEffectiveKineticLawUnitType() const
 {
   KineticLawUnit EffectiveUnit = mKineticLawUnit;
 
-  if (EffectiveUnit == Default)
+  if (EffectiveUnit == KineticLawUnit::Default)
     {
       if (mChemEq.getCompartmentNumber() > 1)
         {
-          EffectiveUnit = AmountPerTime;
+          EffectiveUnit = KineticLawUnit::AmountPerTime;
         }
       else
         {
-          EffectiveUnit = ConcentrationPerTime;
+          EffectiveUnit = KineticLawUnit::ConcentrationPerTime;
         }
     }
 
@@ -1867,7 +2050,7 @@ std::string CReaction::getKineticLawUnit() const
 
   if (pModel == NULL) return "";
 
-  if (getEffectiveKineticLawUnitType() == AmountPerTime)
+  if (getEffectiveKineticLawUnitType() == KineticLawUnit::AmountPerTime)
     {
       return pModel->getQuantityUnit() + "/(" + pModel->getTimeUnit() + ")";
     }
@@ -1884,6 +2067,11 @@ void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
   mpScalingCompartment = dynamic_cast< const CCompartment * >(GetObjectFromCN(Containers, mScalingCompartmentCN));
 }
 
+const CCommonName & CReaction::getScalingCompartmentCN() const
+{
+  return mScalingCompartmentCN;
+}
+
 void CReaction::setScalingCompartment(const CCompartment * pCompartment)
 {
   mpScalingCompartment = pCompartment;
@@ -1895,42 +2083,128 @@ const CCompartment * CReaction::getScalingCompartment() const
   return mpScalingCompartment;
 }
 
-/**
- * @return the reaction scheme of this reaction
- */
-std::string
-CReaction::getReactionScheme() const
+const std::vector< CRegisteredCommonName > & CReaction::getParameterCNs(const size_t & index) const
 {
-  CDataModel* pModel = getObjectDataModel();
-  CReactionInterface reactionInterface(pModel == NULL ? NULL : pModel->getModel());
-  reactionInterface.initFromReaction(this);
-  return reactionInterface.getChemEqString();
+  assert(index < mParameterIndexToCNs.size());
+
+  return mParameterIndexToCNs[index];
 }
 
-/**
- * Initializes this reaction from the specified reaction scheme
- */
-bool
-CReaction::setReactionScheme(const std::string& scheme,
-                             const std::string& newFunction /*= ""*/,
-                             bool createMetabolites /*= true*/,
-                             bool createOther /*= true*/)
+const std::vector< CRegisteredCommonName > & CReaction::getParameterCNs(const std::string & name) const
 {
-  CDataModel* pModel = getObjectDataModel();
-  CReactionInterface reactionInterface(pModel == NULL ? NULL : pModel->getModel());
-  reactionInterface.initFromReaction(this);
-  reactionInterface.setChemEqString(scheme, newFunction);
+  std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
 
-  if (createMetabolites)
-    reactionInterface.createMetabolites();
+  assert(found != mParameterNameToIndex.end());
 
-  if (createOther)
-    reactionInterface.createOtherObjects();
+  return getParameterCNs(found->second);
+}
 
-  bool result =  reactionInterface.writeBackToReaction(this);
+const std::vector< std::vector< CRegisteredCommonName > > & CReaction::getParameterCNs() const
+{
+  return mParameterIndexToCNs;
+}
 
-  if (pModel != NULL && pModel->getModel() != NULL)
-    result &= pModel->getModel()->compileIfNecessary(NULL);
+bool CReaction::setParameterCNs(const size_t & index, const std::vector< CRegisteredCommonName > CNs)
+{
+  if (index < mParameterIndexToCNs.size())
+    {
+      mParameterIndexToCNs[index] = CNs;
+      mParameterIndexToObjects[index].resize(CNs.size());
 
-  return result;
+      std::vector< CRegisteredCommonName >::const_iterator itCN = CNs.begin();
+      std::vector< CRegisteredCommonName >::const_iterator endCN = CNs.end();
+      std::vector< const CDataObject * >::iterator itObject = mParameterIndexToObjects[index].begin();
+
+      for (; itCN != endCN; ++itCN, ++itObject)
+        {
+          const CDataObject * pObject = DataObject(getObjectFromCN(*itCN));
+
+          if (pObject != NULL)
+            {
+              *itObject = pObject;
+            }
+          else
+            {
+              *itObject = CFunctionParameterMap::pUnmappedObject;
+            }
+        }
+
+      return true;
+    }
+
+  return false;
+}
+
+bool CReaction::setParameterCNs(const std::string & name, const std::vector< CRegisteredCommonName > CNs)
+{
+  std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
+
+  if (found != mParameterNameToIndex.end())
+    {
+      return setParameterCNs(found->second, CNs);
+    }
+
+  return false;
+}
+
+const std::vector< const CDataObject * > & CReaction::getParameterObjects(const size_t & index) const
+{
+  assert(index < mParameterIndexToObjects.size());
+
+  return mParameterIndexToObjects[index];
+}
+
+const std::vector< const CDataObject * > & CReaction::getParameterObjects(const std::string & name) const
+{
+  std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
+
+  assert(found != mParameterNameToIndex.end());
+
+  return getParameterObjects(found->second);
+}
+
+const std::vector< std::vector< const CDataObject * > > & CReaction::getParameterObjects() const
+{
+  return mParameterIndexToObjects;
+}
+
+bool CReaction::setParameterObjects(const size_t & index, const std::vector< const CDataObject * > objects)
+{
+  if (index < mParameterIndexToObjects.size())
+    {
+      mParameterIndexToObjects[index] = objects;
+      mParameterIndexToCNs[index].resize(objects.size());
+
+      std::vector< const CDataObject * >::const_iterator itObject = objects.begin();
+      std::vector< const CDataObject * >::const_iterator endObject = objects.end();
+      std::vector< CRegisteredCommonName >::iterator itCN = mParameterIndexToCNs[index].begin();
+
+      for (; itObject != endObject; ++itObject, ++itCN)
+        {
+          if (*itObject != NULL)
+            {
+              *itCN = (*itObject)->getCN();
+            }
+          else
+            {
+              *itCN = CCommonName("");
+            }
+        }
+
+      return true;
+    }
+
+  return false;
+}
+
+bool CReaction::setParameterObjects(const std::string & name, const std::vector< const CDataObject * > objects)
+{
+  std::map< std::string, size_t >::const_iterator found = mParameterNameToIndex.find(name);
+
+  if (found != mParameterNameToIndex.end())
+    {
+      return setParameterObjects(found->second, objects);
+    }
+
+  return false;
 }

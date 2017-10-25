@@ -60,13 +60,13 @@ CScanProblem::~CScanProblem()
 
 void CScanProblem::initializeParameter()
 {
-  addParameter("Subtask", CCopasiParameter::UINT, (unsigned C_INT32) CTaskEnum::Task::timeCourse);
+  addParameter("Subtask", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::timeCourse);
 
   addGroup("ScanItems");
   mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));
 
-  addParameter("Output in subtask", CCopasiParameter::BOOL, true);
-  addParameter("Adjust initial conditions", CCopasiParameter::BOOL, false);
+  addParameter("Output in subtask", CCopasiParameter::Type::BOOL, true);
+  addParameter("Adjust initial conditions", CCopasiParameter::Type::BOOL, false);
 }
 
 //***********************************
@@ -114,7 +114,7 @@ const CCopasiParameterGroup* CScanProblem::getScanItem(size_t index) const
 {
   CCopasiParameter* tmp = mpScanItems->getParameter(index);
 
-  if (tmp->getType() != CCopasiParameter::GROUP)
+  if (tmp->getType() != CCopasiParameter::Type::GROUP)
     {
       // ERROR: not a parameter group!!!
       return NULL;
@@ -127,7 +127,7 @@ CCopasiParameterGroup* CScanProblem::getScanItem(size_t index)
 {
   CCopasiParameter* tmp = mpScanItems->getParameter(index);
 
-  if (tmp->getType() != CCopasiParameter::GROUP)
+  if (tmp->getType() != CCopasiParameter::Type::GROUP)
     {
       // ERROR: not a parameter group!!!
       return NULL;
@@ -156,31 +156,31 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
   CCopasiParameterGroup * tmp = new CCopasiParameterGroup("ScanItem");
 
   //create common parameters
-  tmp->addParameter("Number of steps", CCopasiParameter::UINT, (unsigned C_INT32) steps);
-  tmp->addParameter("Type", CCopasiParameter::UINT, (unsigned C_INT32) type);
+  tmp->addParameter("Number of steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) steps);
+  tmp->addParameter("Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) type);
 
   if (obj)
-    tmp->addParameter("Object", CCopasiParameter::CN, obj->getCN());
+    tmp->addParameter("Object", CCopasiParameter::Type::CN, obj->getCN());
   else
-    tmp->addParameter("Object", CCopasiParameter::CN, CCommonName(""));
+    tmp->addParameter("Object", CCopasiParameter::Type::CN, CCommonName(""));
 
   //create specific parameters
   if ((type == SCAN_LINEAR) || (type == SCAN_RANDOM))
     {
-      tmp->addParameter("Minimum", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.0);
-      tmp->addParameter("Maximum", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.0);
-      tmp->addParameter("log", CCopasiParameter::BOOL, false);
+      tmp->addParameter("Minimum", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.0);
+      tmp->addParameter("Maximum", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.0);
+      tmp->addParameter("log", CCopasiParameter::Type::BOOL, false);
     }
 
   if (type == SCAN_RANDOM)
     {
-      tmp->addParameter("Distribution type", CCopasiParameter::UINT, (unsigned C_INT32)0);
+      tmp->addParameter("Distribution type", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
     }
 
   if (type == SCAN_BREAK)
     {
-      tmp->addParameter("Report break", CCopasiParameter::UINT, (unsigned C_INT32)0);
-      tmp->addParameter("Plot break", CCopasiParameter::UINT, (unsigned C_INT32)0);
+      tmp->addParameter("Report break", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
+      tmp->addParameter("Plot break", CCopasiParameter::Type::UINT, (unsigned C_INT32)0);
     }
 
   return tmp;
@@ -198,7 +198,7 @@ void CScanProblem::fixBuild81()
 
   for (; it != end; ++it)
     {
-      if ((*it)->getType() != CCopasiParameter::GROUP)
+      if ((*it)->getType() != CCopasiParameter::Type::GROUP)
         {
           continue;
         }

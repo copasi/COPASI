@@ -119,10 +119,10 @@ void CTauLeapMethod::initializeParameter()
 {
   CCopasiParameter *pParm;
 
-  assertParameter("Epsilon", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.001);
-  assertParameter("Max Internal Steps", CCopasiParameter::UINT, (unsigned C_INT32) 10000);
-  assertParameter("Use Random Seed", CCopasiParameter::BOOL, false);
-  assertParameter("Random Seed", CCopasiParameter::UINT, (unsigned C_INT32) 1);
+  assertParameter("Epsilon", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.001);
+  assertParameter("Max Internal Steps", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10000);
+  assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, false);
+  assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1);
 
   // Check whether we have a method with the old parameter names
   if ((pParm = getParameter("TAULEAP.Tau")) != NULL)

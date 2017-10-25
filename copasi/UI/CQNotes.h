@@ -105,7 +105,6 @@ public:
   CQNotes(QWidget *parent = 0, const char *name = 0);
   ~CQNotes();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &key);
   virtual bool leave();
 
   void changeNotes(const std::string &key, const std::string &notes);
@@ -118,6 +117,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 private:
   void load();
@@ -128,7 +128,7 @@ private:
   CQValidatorXML *mpValidatorXML;
   QValidator::State mValidity;
 
-  std::string mKeyToCopy;
+  CCommonName mObjectCNToCopy;
 
   QUndoStack *mpUndoStack;
 
@@ -139,7 +139,6 @@ private:
    * to recognize whether changes have been made to the element or not.
    */
   QString mLoadedText;
-
 };
 
 #endif // COPASI_CQNotes

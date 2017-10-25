@@ -80,10 +80,10 @@ void CQUnitDetail::slotBtnNew()
 
   unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
 
-  std::string key = pUnitDef->getKey();
-  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
+  CCommonName CN = pUnitDef->getCN();
+  protectedNotify(ListViews::UNIT, ListViews::ADD, CN);
 // enter(key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 void CQUnitDetail::slotBtnCopy()
@@ -107,9 +107,9 @@ void CQUnitDetail::slotBtnCopy()
 
   unitList->add(pUnitDef, true);
 
-  std::string key = pUnitDef->getKey();
-  protectedNotify(ListViews::UNIT, ListViews::ADD, key);
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  CCommonName CN = pUnitDef->getCN();
+  protectedNotify(ListViews::UNIT, ListViews::ADD, CN);
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
 }
 
 //! Slot for being activated whenever Delete button is clicked
@@ -126,7 +126,7 @@ void CQUnitDetail::slotBtnDelete()
   if (pUnitDefs == NULL)
     return;
 
-  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(CRootContainer::getKeyFactory()->get(mKey));
+  CUnitDefinition * pUnitDef = dynamic_cast<CUnitDefinition *>(mpObject);
 
   if (pUnitDef == NULL)
     return;
@@ -158,7 +158,7 @@ void CQUnitDetail::slotBtnDelete()
       if (ret == QMessageBox::Yes)
         {
           delete pUnitDef;
-          protectedNotify(ListViews::UNIT, ListViews::DELETE, mKey);
+          protectedNotify(ListViews::UNIT, ListViews::DELETE, mObjectCN);
         }
     }
 
@@ -256,9 +256,7 @@ void CQUnitDetail::destroy()
   delete mpExpressionValidator;
 }
 
-bool CQUnitDetail::update(ListViews::ObjectType  objectType,
-                          ListViews::Action action,
-                          const std::string & key)
+bool CQUnitDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
 //  switch (objectType)
 //    {
@@ -327,7 +325,7 @@ bool CQUnitDetail::enterProtected()
 
   if (!mpUnitDefinition)
     {
-      mpListView->switchToOtherWidget(6, "");
+      mpListView->switchToOtherWidget(6, std::string());
       return false;
     }
 
@@ -429,7 +427,7 @@ void CQUnitDetail::save()
     {
       assert(mpDataModel != NULL);
       mpDataModel->changed();
-      protectedNotify(ListViews::UNIT, ListViews::CHANGE, mKey);
+      protectedNotify(ListViews::UNIT, ListViews::CHANGE, mObjectCN);
     }
 
   mChanged = false;

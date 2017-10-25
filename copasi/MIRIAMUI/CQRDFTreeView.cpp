@@ -21,17 +21,12 @@
 
 #include "MIRIAM/CRDFGraph.h"
 #include "MIRIAM/CRDFParser.h"
-// #include "MIRIAM/CRDFWriter.h"
 #include "MIRIAM/CRDFSubject.h"
 
-// #include "CopasiDataModel/CDataModel.h"
-// #include "report/CKeyFactory.h"
-// #include "model/CModel.h"
 #include "model/CModelValue.h"
 #include "model/CEvent.h"
 #include "model/CReaction.h"
 #include "function/CFunction.h"
-// #include "utilities/CCopasiMessage.h"
 #include "copasi/core/CRootContainer.h"
 
 #define COL_SUBJECT    0
@@ -41,7 +36,8 @@
 CQRDFTreeView::CQRDFTreeView(QWidget* parent, const char* name) :
   CopasiWidget(parent, name),
   mNode2Item(),
-  mpGraph(NULL)
+  mpGraph(NULL),
+  mpAnnotation(NULL)
 {
   setupUi(this);
 }
@@ -51,10 +47,23 @@ CQRDFTreeView::~CQRDFTreeView()
   clear();
 }
 
-bool CQRDFTreeView::update(ListViews::ObjectType /* objectType */,
-                           ListViews::Action /* action */,
-                           const std::string & /* key */)
+bool CQRDFTreeView::updateProtected(ListViews::ObjectType /* objectType */,
+                                    ListViews::Action /* action */,
+                                    const CCommonName & cn)
 {
+  if (mIgnoreUpdates || !isVisible())
+    {
+      // Assure that the pointer is still valid;
+      mpAnnotation = CAnnotation::castObject(mpObject);
+
+      return true;
+    }
+
+  if (cn == mObjectCN)
+    {
+      return enterProtected();
+    }
+
   return true;
 }
 
@@ -62,27 +71,13 @@ bool CQRDFTreeView::enterProtected()
 {
   clear();
 
-  CDataObject *pObject = dynamic_cast< CDataObject * >(CRootContainer::getKeyFactory()->get(mKey));
+  mpAnnotation = CAnnotation::castObject(mpObject);
 
-  if (pObject != NULL)
+  if (mpAnnotation == NULL) return false;
+
+  if (!mpAnnotation->getMiriamAnnotation().empty())
     {
-      CModelEntity * pEntity = NULL;
-      CEvent * pEvent = NULL;
-      CReaction * pReaction = NULL;
-      CFunction * pFunction = NULL;
-      const std::string * pMiriamAnnotation = NULL;
-
-      if ((pEntity = dynamic_cast< CModelEntity * >(pObject)) != NULL)
-        pMiriamAnnotation = &pEntity->getMiriamAnnotation();
-      else if ((pEvent = dynamic_cast< CEvent * >(pObject)) != NULL)
-        pMiriamAnnotation = &pEvent->getMiriamAnnotation();
-      else if ((pReaction = dynamic_cast< CReaction * >(pObject)) != NULL)
-        pMiriamAnnotation = &pReaction->getMiriamAnnotation();
-      else if ((pFunction = dynamic_cast< CFunction * >(pObject)) != NULL)
-        pMiriamAnnotation = &pFunction->getMiriamAnnotation();
-
-      if (pMiriamAnnotation && *pMiriamAnnotation != "")
-        mpGraph = CRDFParser::graphFromXml(*pMiriamAnnotation);
+      mpGraph = CRDFParser::graphFromXml(mpAnnotation->getMiriamAnnotation());
     }
 
   CCopasiMessage::clearDeque();
@@ -98,7 +93,7 @@ bool CQRDFTreeView::enterProtected()
     mpGraph = new CRDFGraph;
 
   // We make sure that we always have an about node.
-  mpGraph->createAboutNode(mKey);
+  mpGraph->createAboutNode(mpObject->getKey());
 
   // We iterate of all triplets
   std::set< CRDFTriplet >::const_iterator it = mpGraph->getTriplets().begin();

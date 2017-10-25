@@ -146,16 +146,16 @@ bool CQCreatorDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       //emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, "");
+      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, std::string());
       return true;
     }
 
   return false;
 }
 
-bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
+bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex & parent)
 {
-  beginInsertRows(QModelIndex(), position, position + rows - 1);
+  beginInsertRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -164,16 +164,16 @@ bool CQCreatorDM::insertRows(int position, int rows, const QModelIndex&)
 
   endInsertRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, "");
+  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, std::string());
   return true;
 }
 
-bool CQCreatorDM::removeRows(int position, int rows)
+bool CQCreatorDM::removeRows(int position, int rows, const QModelIndex & parent)
 {
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(QModelIndex(), position, position + rows - 1);
+  beginRemoveRows(parent, position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -182,7 +182,7 @@ bool CQCreatorDM::removeRows(int position, int rows)
 
   endRemoveRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, "");
+  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, std::string());
   return true;
 }
 

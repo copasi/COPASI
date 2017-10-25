@@ -71,13 +71,13 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 }
 
 // virtual
-bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key)
+bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
     if (objectType == ListViews::MODEL && action == ListViews::DELETE)
     {
-      mKey = "";
+      mObjectCN.clear();
       mpObject = NULL;
       mpParameterSet = NULL;
     }
@@ -95,7 +95,7 @@ bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListVie
         if (action == ListViews::ADD ||
             action == ListViews::DELETE)
           {
-            mKey = "";
+            mObjectCN.clear();
             mpObject = NULL;
 
             enterProtected();
@@ -106,12 +106,12 @@ bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListVie
       case ListViews::PARAMETEROVERVIEW:
       case ListViews::MODELPARAMETERSET:
 
-        if (mKey == key)
+        if (mObjectCN == cn)
           {
             switch (action)
               {
                 case ListViews::DELETE:
-                  mKey = "";
+                  mObjectCN.clear();
                   mpObject = NULL;
 
                   enterProtected();
@@ -160,11 +160,11 @@ bool CQParameterOverviewWidget::leave()
       if (mpParameterSet->isActive())
         {
           mpParameterSet->updateModel();
-          protectedNotify(ListViews::STATE, ListViews::CHANGE, "");
+          protectedNotify(ListViews::STATE, ListViews::CHANGE, std::string());
         }
       else
         {
-          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, mKey);
+          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, mObjectCN);
         }
     }
 
@@ -298,7 +298,7 @@ void CQParameterOverviewWidget::slotBtnDelete()
   pModel->getModelParameterSets().remove(mpParameterSet->getObjectName());
 
   // Notify the GUI of the delete.
-  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::DELETE, mKey);
+  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::DELETE, mObjectCN);
 }
 
 // virtual
@@ -341,7 +341,7 @@ void CQParameterOverviewWidget::slotBtnNew()
   mpParameterSet->updateModel();
 
   // Notify the GUI that the model state has changed.
-  protectedNotify(ListViews::STATE, ListViews::CHANGE, pModel->getKey());
+  protectedNotify(ListViews::STATE, ListViews::CHANGE, pModel->getCN());
 
   enterProtected();
 }
@@ -380,9 +380,9 @@ void CQParameterOverviewWidget::slotBtnCopy()
   Sets.add(pNew, true);
 
   // Notify the GUI of the insert
-  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->CDataObject::getCN());
 
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, pNew->getKey());
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pNew->CDataObject::getCN());
 }
 
 // virtual
@@ -504,20 +504,19 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
       Sets.add(pNew, true);
 
       // Notify the GUI of the insert
-      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->CDataObject::getCN());
     }
   else
     {
       if (CQMessageBox::question(this, "Overwrite Parameter Set",
                                  QString("Are you sure you want to overwrite the parameter set %1").arg(Name),
-                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
-          == QMessageBox::Yes)
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
           CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
           pExisting->assignSetContent(*pParameterSet, false);
 
           // Notify the GUI of the insert
-          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
+          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->CDataObject::getCN());
         }
     }
 }

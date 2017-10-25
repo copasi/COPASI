@@ -25,9 +25,7 @@
 #include "copasi/core/CRootContainer.h"
 
 #include "UndoGlobalQuantityData.h"
-#include "UndoReactionData.h"
 #include "UndoEventData.h"
-#include "UndoSpeciesData.h"
 #include "UndoGlobalQuantityData.h"
 #include "CCopasiUndoCommand.h"
 #include "UndoDependentData.h"

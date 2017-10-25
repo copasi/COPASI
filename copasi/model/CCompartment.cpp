@@ -69,97 +69,49 @@ bool CCompartment::applyData(const CData & data)
 }
 
 // virtual
-void CCompartment::appendDependentData(CUndoData & undoData, const CCore::Framework & framework)
+void CCompartment::createUndoData(CUndoData & undoData,
+                                  const CUndoData::Type & type,
+                                  const CData & oldData,
+                                  const CCore::Framework & framework) const
 {
-  switch (undoData.getType())
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
     {
-      case CUndoData::Type::INSERT:
-        // Nothing to append
-        break;
+      return;
+    }
 
-      case CUndoData::Type::REMOVE:
-        // We need to add all contained species and reactions;
-      {
-        DataObjectSet dependentReactions;
-        DataObjectSet dependentMetabolites;
-        DataObjectSet dependentCompartments;
-        DataObjectSet dependentModelValues;
-        DataObjectSet dependentEvents;
-        DataObjectSet dependentEventAssignments;
+  undoData.addProperty(CData::SPATIAL_DIMENSION, oldData.getProperty(CData::SPATIAL_DIMENSION), mDimensionality);
 
-        mpModel->appendAllDependents(*this, dependentReactions, dependentMetabolites, dependentCompartments,  dependentModelValues,  dependentEvents,  dependentEventAssignments);
+  if (undoData.isChangedProperty(CData::INITIAL_VALUE))
+    {
+      double Factor = undoData.getNewData().getProperty(CData::INITIAL_VALUE).toDouble() / undoData.getOldData().getProperty(CData::INITIAL_VALUE).toDouble();
 
-        // Reactions, Metabolites, and Event Assignments may directly depend on the compartment and have to be removed.
-        DataObjectSet::const_iterator it = dependentEventAssignments.begin();
-        DataObjectSet::const_iterator end = dependentEventAssignments.end();
-        std::vector< CUndoData > DependentData;
+      CDataVector< CMetab >::const_iterator it = mMetabolites.begin();
+      CDataVector< CMetab >::const_iterator end = mMetabolites.end();
 
-        for (; it != end; ++it)
-          {
-            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
-          }
+      for (; it != end; ++it)
+        {
+          CUndoData Data(CUndoData::Type::CHANGE, &*it, undoData.getAuthorID());
 
-        undoData.addDependentData(DependentData, true);
-        DependentData.clear();
+          switch (framework)
+            {
+              case CCore::Framework::Concentration:
+                // We need to record the old and new initial particle numbers for each species where new := old * factor
+                Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), it->getInitialValue() * Factor);
+                break;
 
-        it = dependentReactions.begin();
-        end = dependentReactions.end();
+              case CCore::Framework::ParticleNumbers:
+                // We need to record the old and new concentrations for each species where new := old / factor
+                Data.addProperty(CData::INITIAL_INTENSIVE_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
+                break;
 
-        for (; it != end; ++it)
-          {
-            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
-          }
+              case CCore::Framework::__SIZE:
+                break;
+            }
 
-        undoData.addDependentData(DependentData, true);
-        DependentData.clear();
-
-        it = dependentMetabolites.begin();
-        end = dependentMetabolites.end();
-
-        for (; it != end; ++it)
-          {
-            DependentData.push_back(CUndoData(CUndoData::Type::REMOVE, *it, undoData.getAuthorID()));
-          }
-
-        undoData.addDependentData(DependentData, true);
-      }
-
-      break;
-
-      case CUndoData::Type::CHANGE:
-
-        if (undoData.isSetProperty(CData::INITIAL_VALUE))
-          {
-            double Factor = undoData.getNewData().getProperty(CData::INITIAL_VALUE).toDouble() / undoData.getOldData().getProperty(CData::INITIAL_VALUE).toDouble();
-
-            CDataVector< CMetab >::const_iterator it = mMetabolites.begin();
-            CDataVector< CMetab >::const_iterator end = mMetabolites.end();
-
-            for (; it != end; ++it)
-              {
-                CUndoData Data(CUndoData::Type::CHANGE, &*it, undoData.getAuthorID());
-
-                switch (framework)
-                  {
-                    case CCore::Framework::Concentration:
-                      // We need to record the old and new initial particle numbers for each species where new := old * factor
-                      Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), it->getInitialValue() * Factor);
-                      break;
-
-                    case CCore::Framework::ParticleNumbers:
-                      // We need to record the old and new concentrations for each species where new := old / factor
-                      Data.addProperty(CData::INITIAL_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
-                      break;
-
-                    case CCore::Framework::__SIZE:
-                      break;
-                  }
-
-                undoData.addDependentData(Data);
-              }
-          }
-
-        break;
+          undoData.addPostProcessData(Data);
+        }
     }
 
   return;

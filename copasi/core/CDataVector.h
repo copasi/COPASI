@@ -524,11 +524,8 @@ public:
       {
         CDataObject * pObject = *(std::vector< CType * >::begin() + Index);
 
-        if (name.getObjectType() == pObject->getObjectType())
-          return pObject; //exact match of type and name
-
-        if (name.getObjectName() == "")
-          return pObject; //cn contains no "="; type cannot be checked
+        if (dynamic_cast< const CType *>(pObject) != NULL)
+          return pObject->getObject(name.getRemainder());
       }
 
     return CDataContainer::getObject(name);
@@ -625,19 +622,32 @@ public:
   virtual size_t getIndex(const CDataObject * pObject) const
   {
     size_t i, imax = size();
-    typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
+    typename std::vector< CType * >::const_iterator itTarget = std::vector< CType * >::begin();
 
-    for (i = 0; i < imax; i++, Target++)
+    for (i = 0; i < imax; i++, itTarget++)
       {
-        const CDataObject * pTarget = static_cast< const CDataObject * >(*Target);
-
-        if (pTarget == pObject)
+        if (pObject == static_cast< const CDataObject * >(*itTarget))
           {
             return i;
           }
       }
 
-    return C_INVALID_INDEX;
+    return CDataContainer::getIndex(pObject);
+  }
+
+  virtual void updateIndex(const size_t & index, const CDataObject * pObject)
+  {
+    size_t Index = getIndex(pObject);
+
+    // We only update the index of container objects.
+    if (Index == C_INVALID_INDEX ||
+        Index == index)
+      {
+        return;
+      }
+
+    std::vector< CType * >::erase(std::vector< CType * >::begin() + Index);
+    std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(index, std::vector< CType * >::size()), static_cast< CType * >(const_cast< CDataObject * >(pObject)));
   }
 
   virtual CDataObject * insert(const CData & data)
@@ -645,17 +655,31 @@ public:
     CType * pNew = NULL;
     size_t Index = 0;
 
-    bool IsReference = data.isSetProperty(CData::OBJECT_POINTER);
-
-    if (IsReference)
+    if (data.isSetProperty(CData::OBJECT_POINTER))
       {
+        // We have a reference and the object already exists;
         pNew = dynamic_cast< CType * >(reinterpret_cast< CObjectInterface * >(const_cast< void * >(data.getProperty(CData::OBJECT_POINTER).toVoidPointer())));
-        Index = data.getProperty(CData::OBJECT_REFERENCE_INDEX).toUint();
+        Index = data.getProperty(CData::OBJECT_REFERENCE_INDEX).toSizeT();
+
+        if (pNew != NULL)
+          {
+            // Prevent multiple inserts of the same object
+            if (getIndex(pNew) ==  C_INVALID_INDEX)
+              {
+                std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(Index, std::vector< CType * >::size()), pNew);
+              }
+            else
+              {
+                updateIndex(Index, pNew);
+              }
+
+            CDataContainer::add(pNew, false);
+          }
       }
     else
       {
         pNew = CType::fromData(data);
-        Index = data.getProperty(CData::OBJECT_INDEX).toUint();
+        Index = data.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (pNew != NULL &&
             pNew->getObjectType() != data.getProperty(CData::OBJECT_TYPE).toString())
@@ -663,12 +687,12 @@ public:
             delete pNew;
             pNew = NULL;
           }
-      }
 
-    if (pNew != NULL)
-      {
-        std::vector< CType * >::insert(std::vector< CType * >::begin() + Index, pNew);
-        CDataContainer::add(pNew, !IsReference);
+        if (pNew != NULL)
+          {
+            std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(Index, std::vector< CType * >::size()), pNew);
+            CDataContainer::add(pNew, true);
+          }
       }
 
     return pNew;
@@ -765,9 +789,8 @@ public:
 template < class CType > class CDataVectorN: public CDataVector < CType >
 {
 public:
-  // typedef typename std::vector< CType * >::value_type value_type;
-  // typedef typename std::vector< CType * >::iterator iterator;
-  // typedef typename std::vector< CType * >::const_iterator const_iterator;
+  typedef CDataObjectMap::type_iterator< CType > name_iterator;
+  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
 
   // Operations
 public:
@@ -805,6 +828,26 @@ public:
   {
     CDataVector< CType >::operator=(rhs);
     return *this;
+  }
+
+  name_iterator begin_name()
+  {
+    return name_iterator(CDataContainer::getObjects().begin());
+  }
+
+  name_iterator end_name()
+  {
+    return name_iterator(CDataContainer::getObjects().end());
+  }
+
+  const_name_iterator begin_name() const
+  {
+    return const_name_iterator(CDataContainer::getObjects().begin());
+  }
+
+  const_name_iterator end_name() const
+  {
+    return const_name_iterator(CDataContainer::getObjects().end());
   }
 
   /**
@@ -969,7 +1012,7 @@ public:
         for (; Range.first != Range.second; ++Range.first)
           {
             if (dynamic_cast< CType * >(*Range.first) != NULL)
-              return *Range.first;
+              return (*Range.first)->getObject(name.getRemainder());
           }
       }
 

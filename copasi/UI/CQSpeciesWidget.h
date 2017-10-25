@@ -32,7 +32,6 @@ public:
   CQSpeciesWidget(QWidget* parent = 0, const char* name = 0);
   ~CQSpeciesWidget();
 
-  virtual bool update(ListViews::ObjectType objectType, ListViews::Action action, const std::string & key);
   virtual bool leave();
   virtual void setFramework(int framework);
   virtual CQBaseDataModel* getCqDataModel();
@@ -42,12 +41,13 @@ private:
   CQSortFilterProxyModel *mpProxyModel;
   QStringList mCompartments;
   CQComboDelegate* mpCompartmentDelegate;
-  CQIndexComboDelegate* mpTypeDelegate;
+  CQComboDelegate* mpTypeDelegate;
   void deleteSelectedSpecies();
   void updateDeleteBtns();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual void keyPressEvent(QKeyEvent* ev);
   void refreshCompartments();
 
@@ -61,7 +61,6 @@ protected slots:
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
   virtual void slotFilterChanged();
-
 };
 
 #endif // CQSpeciesWidget_h

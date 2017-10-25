@@ -55,8 +55,8 @@ CQEventsWidget::CQEventsWidget(QWidget *parent, const char *name)
   mpTblEvents->verticalHeader()->hide();
   mpTblEvents->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpEventDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpEventDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
   connect(mpEventDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -122,7 +122,7 @@ void CQEventsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQEventsWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQEventsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {

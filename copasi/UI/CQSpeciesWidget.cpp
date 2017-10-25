@@ -51,7 +51,7 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   mpCompartmentDelegate = new CQComboDelegate(this, mCompartments);
   mpTblSpecies->setItemDelegateForColumn(COL_COMPARTMENT, mpCompartmentDelegate);
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpSpecieDM->getTypes(), false);
+  mpTypeDelegate = new CQComboDelegate(this, mpSpecieDM->getTypes(), false);
   mpTblSpecies->setItemDelegateForColumn(COL_TYPE_SPECIES, mpTypeDelegate);
 #if QT_VERSION >= 0x050000
   mpTblSpecies->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -61,8 +61,8 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   mpTblSpecies->verticalHeader()->hide();
   mpTblSpecies->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   // Connect the table widget
-  connect(mpSpecieDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const std::string)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const std::string)));
+  connect(mpSpecieDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
   connect(mpSpecieDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -130,7 +130,7 @@ void CQSpeciesWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQSpeciesWidget::update(ListViews::ObjectType objectType, ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
+bool CQSpeciesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -282,6 +282,7 @@ void CQSpeciesWidget::slotFilterChanged()
 void CQSpeciesWidget::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
+  mpSpecieDM->setFramework(framework);
 
   switch (mFramework)
     {
@@ -292,7 +293,6 @@ void CQSpeciesWidget::setFramework(int framework)
         mpTblSpecies->hideColumn(COL_INUMBER);
         mpTblSpecies->hideColumn(COL_NUMBER);
         mpTblSpecies->hideColumn(COL_NRATE);
-        mpSpecieDM->setFlagConc(true);
         break;
 
       case 1:
@@ -302,7 +302,6 @@ void CQSpeciesWidget::setFramework(int framework)
         mpTblSpecies->showColumn(COL_INUMBER);
         mpTblSpecies->showColumn(COL_NUMBER);
         mpTblSpecies->showColumn(COL_NRATE);
-        mpSpecieDM->setFlagConc(false);
         break;
     }
 }

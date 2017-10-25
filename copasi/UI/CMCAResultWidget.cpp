@@ -74,9 +74,9 @@ bool CMCAResultWidget::saveToBackend()
   return true;
 }
 
-bool CMCAResultWidget::update(ListViews::ObjectType objectType,
-                              ListViews::Action action,
-                              const std::string & C_UNUSED(key))
+bool CMCAResultWidget::updateProtected(ListViews::ObjectType objectType,
+                                       ListViews::Action action,
+                                       const CCommonName & cn)
 {
   if (objectType == ListViews::MODEL && action == ListViews::ADD)
     mCentralWidget->loadAll(NULL);
