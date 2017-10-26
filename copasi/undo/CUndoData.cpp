@@ -482,7 +482,7 @@ std::string CUndoData::getObjectCN(const bool & apply) const
 {
   const CData & Data = getData(!apply);
 
-  // This does not work if the object parent is a vector or array, i.e., we expect an index operator
+  // If the object parent is a vector or array, we expect an index operator
   CCommonName CN = Data.getProperty(CData::OBJECT_PARENT_CN).toString();
 
   // Determine the object type of the parent;
@@ -652,7 +652,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeS
           return false;
         }
 
-      success &= pObject->applyData(Data);
+      success &= pObject->applyData(Data, changes);
     }
 
   changes[getObjectCN(apply)] = {CUndoData::Type::INSERT, Data.getProperty(CData::OBJECT_TYPE).toString(), Data.getProperty(CData::OBJECT_NAME).toString()};
@@ -717,7 +717,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeS
             pContainer->add(pObject, true);
         }
 
-      success &= pObject->applyData(NewData);
+      success &= pObject->applyData(NewData, changes);
     }
 
   changes[getObjectCN(apply)] = {CUndoData::Type::CHANGE, NewData.getProperty(CData::OBJECT_TYPE).toString(), NewData.getProperty(CData::OBJECT_NAME).toString()};

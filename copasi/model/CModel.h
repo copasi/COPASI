@@ -53,12 +53,17 @@ public:
   /**
    * Enum of valid model types.
    */
-  enum ModelType {deterministic = 0, stochastic};
+  enum struct ModelType
+  {
+    deterministic,
+    stochastic,
+    __SIZE
+  };
 
   /**
    * String representation of the valid model types.
    */
-  static const char * ModelTypeNames[];
+  static const CEnumAnnotation< std::string, ModelType > ModelTypeNames;
 
   enum DependencyType {initial = 0, transient, physical};
 
@@ -97,8 +102,21 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
   /**
    *  constructor
    */

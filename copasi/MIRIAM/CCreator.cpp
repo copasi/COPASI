@@ -46,9 +46,9 @@ CData CCreator::toData() const
 }
 
 // virtual
-bool CCreator::applyData(const CData & data)
+bool CCreator::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::GIVEN_NAME))
     {

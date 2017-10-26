@@ -113,7 +113,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
                    const CDataContainer * pParent = NO_PARENT);
@@ -241,7 +241,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
                         const CDataContainer * pParent = NO_PARENT);
@@ -328,7 +328,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
                  const CDataContainer * pParent = NO_PARENT);
@@ -422,7 +422,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
                   const CDataContainer * pParent = NO_PARENT);

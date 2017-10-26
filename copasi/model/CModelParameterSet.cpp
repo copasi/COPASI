@@ -39,7 +39,7 @@ CData CModelParameterSet::toData() const
 }
 
 // virtual
-bool CModelParameterSet::applyData(const CData & data)
+bool CModelParameterSet::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

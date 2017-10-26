@@ -151,6 +151,7 @@ void CQUndoTester::testModelDetail()
 {
   CModel* pModel = (*CRootContainer::getDatamodelList())[0].getModel();
 
+#ifdef XXXX
   mpUndoStack->push(
     new EntityRenameCommand(
       pModel,
@@ -202,10 +203,11 @@ void CQUndoTester::testModelDetail()
   // change stochastic interpretation
   mpUndoStack->push(
     new ModelChangeCommand(CCopasiUndoCommand::MODEL_STOCHASTIC_CORRECTION_CHANGE,
-                           pModel->getModelType() == CModel::deterministic,
-                           pModel->getModelType() != CModel::deterministic,
+                           pModel->getModelType() == CModel::ModelType::deterministic,
+                           pModel->getModelType() != CModel::ModelType::deterministic,
                            mpDetailModel)
   );
+#endif // XXXX
 }
 
 void CQUndoTester::testCompartmentDetail()
@@ -346,6 +348,7 @@ void CQUndoTester::testModelValueDetail()
 {
   createModelValue();
 
+#ifdef XXXX
   // rename
   mpUndoStack->push(
     new EntityRenameCommand(
@@ -354,6 +357,7 @@ void CQUndoTester::testModelValueDetail()
       "param1",
       mpTabModelValues)
   );
+#endif // XXXX
 
   // change initial value
   mpUndoStack->push(
@@ -405,6 +409,7 @@ void CQUndoTester::testEventDetail()
 {
   createEvent();
 
+#ifdef XXXX
   // rename event
   mpUndoStack->push(
     new EntityRenameCommand(
@@ -413,6 +418,7 @@ void CQUndoTester::testEventDetail()
       "eventA",
       mpTabEvents)
   );
+#endif // XXXX
 
   // change trigger expression
   CModel * model = const_cast<CModel*>(mpEvent->getObjectDataModel()->getModel());
@@ -687,7 +693,6 @@ void CQUndoTester::testEventDM(int repetitions)
     }
 }
 
-
 void CQUndoTester::testOverviewWidget()
 {
   // create 8 reactions
@@ -736,9 +741,7 @@ void CQUndoTester::testOverviewWidget()
         );
       }
   }
-
 }
-
 
 void CQUndoTester::testReactionDM(int repetitions)
 {

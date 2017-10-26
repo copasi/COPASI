@@ -464,7 +464,7 @@ CData CDataObject::toData() const
 }
 
 // virtual
-bool CDataObject::applyData(const CData & data)
+bool CDataObject::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

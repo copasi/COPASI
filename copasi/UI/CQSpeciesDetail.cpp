@@ -296,8 +296,23 @@ void CQSpeciesDetail::save()
   // Compartment
   if (mpCurrentCompartment != mpMetab->getCompartment())
     {
-      mpMetab->setObjectParent(&mpCurrentCompartment->getMetabolites());
-      mChanged = true;
+      if (mpCurrentCompartment->getMetabolites().getIndex(mpMetab->getObjectName()) == C_INVALID_INDEX)
+        {
+          mpMetab->setObjectParent(&mpCurrentCompartment->getMetabolites());
+          mChanged = true;
+        }
+      else
+        {
+          QString msg;
+          msg = "Unable to move species '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
+                + "from '" + FROM_UTF8(mpMetab->getCompartment()->getObjectName())
+                + "to '" + FROM_UTF8(mpCurrentCompartment->getObjectName()) + "' since a species with that name already exists.\n";
+
+          CQMessageBox::information(this,
+                                    "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]),
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::Ok);
+        }
     }
 
   // Type
@@ -640,11 +655,12 @@ void CQSpeciesDetail::createNewSpecies()
   leave();
 
   CModel *pModel = mpDataModel->getModel();
+  CCompartment * pComp  = NULL;
 
   if (pModel->getCompartments().size() == 0)
     {
       // We need to create a compartment
-      CCompartment* pComp = pModel->createCompartment("compartment");
+      pComp = pModel->createCompartment("compartment");
       slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pComp)));
     }
 
@@ -669,7 +685,14 @@ void CQSpeciesDetail::createNewSpecies()
         break;
     }
 
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpMetab)));
+  CUndoData Data(CUndoData::Type::INSERT, mpMetab);
+
+  if (pComp != NULL)
+    {
+      Data.addPreProcessData(CUndoData(CUndoData::Type::INSERT, pComp));
+    }
+
+  slotNotifyChanges(mpDataModel->recordData(Data));
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, mpMetab->getKey());
 }

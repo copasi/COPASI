@@ -58,7 +58,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLMetabGlyph(const std::string & name = "MetabGlyph",
                const CDataContainer * pParent = NO_PARENT);
@@ -125,7 +125,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
                      const CDataContainer * pParent = NO_PARENT);
@@ -206,7 +206,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLTextGlyph(const std::string & name = "TextGlyph",
               const CDataContainer * pParent = NO_PARENT);

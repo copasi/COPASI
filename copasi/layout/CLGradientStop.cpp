@@ -38,7 +38,7 @@ CData CLGradientStop::toData() const
 }
 
 // virtual
-bool CLGradientStop::applyData(const CData & data)
+bool CLGradientStop::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

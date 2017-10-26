@@ -64,9 +64,9 @@ CData CMetab::toData() const
 }
 
 // virtual
-bool CMetab::applyData(const CData & data)
+bool CMetab::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
 
   if (data.isSetProperty(CData::INITIAL_INTENSIVE_VALUE))
     {
@@ -580,7 +580,7 @@ CData CMetabOld::toData() const
 }
 
 // virtual
-bool CMetabOld::applyData(const CData & data)
+bool CMetabOld::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

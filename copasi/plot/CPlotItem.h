@@ -165,7 +165,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CPlotItem(const std::string & name = "NoName",
             const CDataContainer * pParent = NO_PARENT,

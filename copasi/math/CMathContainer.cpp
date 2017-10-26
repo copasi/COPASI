@@ -703,11 +703,6 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
   return UpdateSequence.empty();
 }
 
-void CMathContainer::quantityConversionChanged(const CCore::Framework & framework)
-{
-  updateInitialValues(framework);
-}
-
 const C_FLOAT64 & CMathContainer::getQuantity2NumberFactor() const
 {
   return *(const C_FLOAT64 *)mpQuantity2NumberFactor->getValuePointer();

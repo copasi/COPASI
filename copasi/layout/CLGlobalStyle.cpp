@@ -35,7 +35,7 @@ CData CLGlobalStyle::toData() const
 }
 
 // virtual
-bool CLGlobalStyle::applyData(const CData & data)
+bool CLGlobalStyle::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

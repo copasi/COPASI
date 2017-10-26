@@ -43,9 +43,9 @@ CData CReference::toData() const
 }
 
 // virtual
-bool CReference::applyData(const CData & data)
+bool CReference::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::MIRIAM_RESOURCE))
     {

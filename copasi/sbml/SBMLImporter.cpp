@@ -968,11 +968,11 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   if (this->isStochasticModel(sbmlModel))
     {
-      this->mpCopasiModel->setModelType(CModel::stochastic);
+      this->mpCopasiModel->setModelType(CModel::ModelType::stochastic);
     }
   else
     {
-      this->mpCopasiModel->setModelType(CModel::deterministic);
+      this->mpCopasiModel->setModelType(CModel::ModelType::deterministic);
     }
 
   std::string title = sbmlModel->getName();

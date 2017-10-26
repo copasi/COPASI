@@ -84,9 +84,9 @@ CData CModelEntity::toData() const
 }
 
 // virtual
-bool CModelEntity::applyData(const CData & data)
+bool CModelEntity::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::SIMULATION_TYPE))
     {
@@ -847,9 +847,9 @@ CData CModelValue::toData() const
 }
 
 // virtual
-bool CModelValue::applyData(const CData & data)
+bool CModelValue::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
 
   if (data.isSetProperty(CData::UNIT))
     {

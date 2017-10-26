@@ -46,9 +46,9 @@ CData CBiologicalDescription::toData() const
 }
 
 // virtual
-bool CBiologicalDescription::applyData(const CData & data)
+bool CBiologicalDescription::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::MIRIAM_PREDICATE))
     {

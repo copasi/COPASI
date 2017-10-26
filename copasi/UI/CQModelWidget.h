@@ -41,8 +41,6 @@ public:
 
   virtual bool leave();
 
-  bool changeValue(CCopasiUndoCommand::Type type, const QVariant& newValue);
-
 protected slots:
   virtual void slotBtnRevertClicked();
   virtual void slotBtnOKClicked();

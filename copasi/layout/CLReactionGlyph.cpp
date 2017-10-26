@@ -71,7 +71,6 @@ CLGlyphWithCurve::CLGlyphWithCurve(const GraphicalObject & sbml,
       CLCurve copy(*rG->getCurve());
       mCurve = copy;
     }
-
 }
 
 CLGlyphWithCurve & CLGlyphWithCurve::operator= (const CLGlyphWithCurve & rhs)
@@ -142,7 +141,7 @@ CData CLReferenceGlyph::toData() const
 }
 
 // virtual
-bool CLReferenceGlyph::applyData(const CData & data)
+bool CLReferenceGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -195,7 +194,6 @@ CLReferenceGlyph::CLReferenceGlyph(const ReferenceGlyph & sbml,
   if (sbml.isSetRole())
     mRole = sbml.getRole();
 }
-
 
 CLReferenceGlyph & CLReferenceGlyph::operator= (const CLReferenceGlyph & rhs)
 {
@@ -348,7 +346,7 @@ CData CLMetabReferenceGlyph::toData() const
 }
 
 // virtual
-bool CLMetabReferenceGlyph::applyData(const CData & data)
+bool CLMetabReferenceGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -559,7 +557,7 @@ CData CLGeneralGlyph::toData() const
 }
 
 // virtual
-bool CLGeneralGlyph::applyData(const CData & data)
+bool CLGeneralGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -646,7 +644,6 @@ CLGeneralGlyph::CLGeneralGlyph(const GraphicalObject & sbml,
       else
         addSubglyph(new CLGeneralGlyph(*graphical, modelmap, layoutmap));
     }
-
 }
 
 CLGeneralGlyph & CLGeneralGlyph::operator= (const CLGeneralGlyph & rhs)
@@ -847,7 +844,6 @@ void CLGeneralGlyph::exportToSBML(GraphicalObject * g, //TODO
       else
         tmp->exportToSBML(pG, copasimodelmap, sbmlIDs);
     }
-
 }
 
 std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g)
@@ -902,7 +898,7 @@ CData CLReactionGlyph::toData() const
 }
 
 // virtual
-bool CLReactionGlyph::applyData(const CData & data)
+bool CLReactionGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

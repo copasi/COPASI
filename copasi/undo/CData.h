@@ -71,6 +71,8 @@ public:
     FAMILY_NAME,
     EMAIL,
     ORGANIZATION,
+    FRAMEWORK,
+    VALUE,
     __SIZE
   };
 

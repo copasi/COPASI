@@ -104,6 +104,11 @@ public:
     ParticleNumbers,
     __SIZE
   };
+
+  /**
+   * String representation of the valid model types.
+   */
+  static const CEnumAnnotation< std::string, Framework > FrameworkNames;
 };
 
 #endif // COPASI_CCore

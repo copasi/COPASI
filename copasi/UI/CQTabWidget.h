@@ -41,8 +41,6 @@ public:
 
   void selectTab(int index) const;
 
-  bool renameEntity(const std::string& key, const std::string& newName);
-
   /**
    * @return the number of tabs
    */

@@ -41,9 +41,9 @@ CData CArrayElementReference::toData() const
 }
 
 // virtual
-bool CArrayElementReference::applyData(const CData & data)
+bool CArrayElementReference::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataObject::applyData(data);
+  bool success = CDataObject::applyData(data, changes);
 
   if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {

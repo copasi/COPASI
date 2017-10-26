@@ -39,7 +39,7 @@ CData CLLineEnding::toData() const
 }
 
 // virtual
-bool CLLineEnding::applyData(const CData & data)
+bool CLLineEnding::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

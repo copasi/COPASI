@@ -156,7 +156,7 @@ CData CEvaluationTree::toData() const
 }
 
 // virtual
-bool CEvaluationTree::applyData(const CData & data)
+bool CEvaluationTree::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

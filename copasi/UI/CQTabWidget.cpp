@@ -28,7 +28,6 @@
 #include "UI/CQUnitDetail.h"
 
 #include <QUndoStack>
-#include <copasi/undoFramework/EntityRenameCommand.h>
 #include <copasi/UI/copasiui3window.h>
 
 #ifdef COPASI_Provenance
@@ -231,6 +230,8 @@ bool CQTabWidget::save()
 {
   if (mpObject == NULL) return false;
 
+  bool success = true;
+
   // We need to tell the sub-widgets to ignore all notifications
   std::vector< CopasiWidget * >::iterator it = mPages.begin();
   std::vector< CopasiWidget * >::iterator end = mPages.end();
@@ -240,16 +241,32 @@ bool CQTabWidget::save()
 
   if (mpObject->getObjectName() != TO_UTF8(mpEditName->text()))
     {
-      CUndoData Data(CUndoData::Type::CHANGE, mpObject);
-      Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), TO_UTF8(mpEditName->text()));
+      std::string NewName = TO_UTF8(mpEditName->text());
+      CDataObject::sanitizeObjectName(NewName);
+      CDataContainer * pParent = mpObject->getObjectParent();
 
-      mpDataModel->applyData(Data);
-      mpDataModel->changed();
+      if (pParent != NULL &&
+          pParent->hasFlag(CDataObject::NameVector) &&
+          pParent->getObject("[" + CCommonName::escape(NewName) + "]"))
+        {
+          CUndoData Data(CUndoData::Type::CHANGE, mpObject);
+          Data.addProperty(CData::OBJECT_NAME, mpObject->getObjectName(), NewName);
+          slotNotifyChanges(mpDataModel->applyData(Data));
+        }
+      else
+        {
+          QString msg;
+          msg = "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
+                + "to '" + FROM_UTF8(NewName) + "' since a " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " with that name already exists.\n";
 
-      mpUndoStack->push(new EntityRenameCommand(mpObject,
-                        mpObject->getObjectName(),
-                        TO_UTF8(mpEditName->text()),
-                        this));
+          CQMessageBox::information(this,
+                                    "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]),
+                                    msg,
+                                    QMessageBox::Ok, QMessageBox::Ok);
+
+          mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
+          success = false;
+        }
     }
 
   // We need to tell the sub-widgets to accept notifications again
@@ -259,7 +276,7 @@ bool CQTabWidget::save()
   for (; it != end; ++it)
     (*it)->setIgnoreUpdates(false);
 
-  return true;
+  return success;
 }
 
 void CQTabWidget::slotBtnCommit()
@@ -328,43 +345,6 @@ void CQTabWidget::slotBtnCopy()
     }
 
   mIgnoreLeave = false;
-}
-
-bool CQTabWidget::renameEntity(const std::string& key, const std::string& newName)
-{
-  /*
-  mKey = key;
-  load();
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mKey);
-
-  if (mpObject == NULL)
-    return false;
-
-  if (!mpObject->setObjectName(newName))
-    {
-      QString msg;
-      msg = "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " '" + FROM_UTF8(mpObject->getObjectName()) + "'\n"
-            + "to '" + FROM_UTF8(newName) + "' since a " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]).toLower() + " with that name already exists.\n";
-
-      CQMessageBox::information(this,
-                                "Unable to rename " + FROM_UTF8(ListViews::ObjectTypeName[mObjectType]),
-                                msg,
-                                QMessageBox::Ok, QMessageBox::Ok);
-
-      mpEditName->setText(FROM_UTF8(mpObject->getObjectName()));
-      return false;
-    }
-
-  mpEditName->setText(FROM_UTF8(newName));
-
-  protectedNotify(mObjectType, ListViews::RENAME, mKey);
-
-  if (mpDataModel != NULL)
-    {
-      mpDataModel->changed();
-    }
-  */
-  return true;
 }
 
 const int CQTabWidget::getNumTabs() const

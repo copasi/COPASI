@@ -67,7 +67,7 @@ CData CCopasiTask::toData() const
 }
 
 // virtual
-bool CCopasiTask::applyData(const CData & data)
+bool CCopasiTask::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

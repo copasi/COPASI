@@ -42,7 +42,7 @@ CData CLColorDefinition::toData() const
 }
 
 // virtual
-bool CLColorDefinition::applyData(const CData & data)
+bool CLColorDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

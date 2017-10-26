@@ -39,7 +39,7 @@ CData CLGlobalRenderInformation::toData() const
 }
 
 // virtual
-bool CLGlobalRenderInformation::applyData(const CData & data)
+bool CLGlobalRenderInformation::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

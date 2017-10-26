@@ -57,7 +57,7 @@ CData CMoiety::toData() const
 }
 
 // virtual
-bool CMoiety::applyData(const CData & data)
+bool CMoiety::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

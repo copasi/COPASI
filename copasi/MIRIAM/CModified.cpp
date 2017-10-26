@@ -43,9 +43,9 @@ CData CModification::toData() const
 }
 
 // virtual
-bool CModification::applyData(const CData & data)
+bool CModification::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::DATE))
     {

@@ -99,7 +99,7 @@ CData CDataModel::toData() const
 }
 
 // virtual
-bool CDataModel::applyData(const CData & data)
+bool CDataModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

@@ -79,7 +79,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data);
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
 
   CLGraphicalObject(const std::string & name = "GraphicalObject",
                     const CDataContainer * pParent = NO_PARENT);

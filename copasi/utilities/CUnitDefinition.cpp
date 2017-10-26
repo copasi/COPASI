@@ -140,7 +140,7 @@ CData CUnitDefinition::toData() const
 }
 
 // virtual
-bool CUnitDefinition::applyData(const CData & data)
+bool CUnitDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

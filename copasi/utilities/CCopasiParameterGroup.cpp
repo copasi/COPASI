@@ -79,9 +79,9 @@ CData CCopasiParameterGroup::toData() const
 }
 
 // virtual
-bool CCopasiParameterGroup::applyData(const CData & data)
+bool CCopasiParameterGroup::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CCopasiParameter::applyData(data);
+  bool success = CCopasiParameter::applyData(data, changes);
 
   // This only inserts new parameters modification of existing parameters or their deletion
   // is handled by accessing them directly.
@@ -112,7 +112,7 @@ bool CCopasiParameterGroup::applyData(const CData & data)
               pObject = insert(*it);
             }
 
-          success &= pObject->applyData(*it);
+          success &= pObject->applyData(*it, changes);
         }
     }
 

@@ -1724,7 +1724,7 @@ CData CFittingPoint::toData() const
 }
 
 // virtual
-bool CFittingPoint::applyData(const CData & data)
+bool CFittingPoint::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

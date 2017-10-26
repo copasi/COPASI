@@ -133,9 +133,9 @@ CData CCopasiParameter::toData() const
 }
 
 // virtual
-bool CCopasiParameter::applyData(const CData & data)
+bool CCopasiParameter::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataContainer::applyData(data);
+  bool success = CDataContainer::applyData(data, changes);
 
   Type DataType = mType;
 

@@ -50,15 +50,28 @@ CData CCompartment::toData() const
 {
   CData Data = CModelEntity::toData();
 
+  CData InitialValueData;
+  InitialValueData.addProperty(CData::VALUE, mIValue);
+  InitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
+  Data.addProperty(CData::INITIAL_VALUE, InitialValueData);
+
   Data.addProperty(CData::SPATIAL_DIMENSION, mDimensionality);
 
   return Data;
 }
 
 // virtual
-bool CCompartment::applyData(const CData & data)
+bool CCompartment::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
+
+  if (data.isSetProperty(CData::INITIAL_VALUE))
+    {
+      const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
+      mIValue = Data.getProperty(CData::VALUE).toDouble();
+      mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+      changes[mpModel->getCN()] = {CUndoData::Type::CHANGE, "State", mpModel->getObjectName()};
+    }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))
     {
@@ -81,38 +94,15 @@ void CCompartment::createUndoData(CUndoData & undoData,
       return;
     }
 
+  CData OldInitialValueData;
+  OldInitialValueData.addProperty(CData::VALUE, oldData.getProperty(CData::INITIAL_VALUE).toData().getProperty(CData::VALUE));
+  OldInitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  CData NewInitialValueData;
+  NewInitialValueData.addProperty(CData::VALUE, mIValue);
+  NewInitialValueData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::INITIAL_VALUE, OldInitialValueData, NewInitialValueData);
   undoData.addProperty(CData::SPATIAL_DIMENSION, oldData.getProperty(CData::SPATIAL_DIMENSION), mDimensionality);
-
-  if (undoData.isChangedProperty(CData::INITIAL_VALUE))
-    {
-      double Factor = undoData.getNewData().getProperty(CData::INITIAL_VALUE).toDouble() / undoData.getOldData().getProperty(CData::INITIAL_VALUE).toDouble();
-
-      CDataVector< CMetab >::const_iterator it = mMetabolites.begin();
-      CDataVector< CMetab >::const_iterator end = mMetabolites.end();
-
-      for (; it != end; ++it)
-        {
-          CUndoData Data(CUndoData::Type::CHANGE, &*it, undoData.getAuthorID());
-
-          switch (framework)
-            {
-              case CCore::Framework::Concentration:
-                // We need to record the old and new initial particle numbers for each species where new := old * factor
-                Data.addProperty(CData::INITIAL_VALUE, it->getInitialValue(), it->getInitialValue() * Factor);
-                break;
-
-              case CCore::Framework::ParticleNumbers:
-                // We need to record the old and new concentrations for each species where new := old / factor
-                Data.addProperty(CData::INITIAL_INTENSIVE_VALUE, it->getInitialConcentration(), it->getInitialConcentration() / Factor);
-                break;
-
-              case CCore::Framework::__SIZE:
-                break;
-            }
-
-          undoData.addPostProcessData(Data);
-        }
-    }
 
   return;
 }

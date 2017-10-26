@@ -52,7 +52,7 @@ CData CLMetabGlyph::toData() const
 }
 
 // virtual
-bool CLMetabGlyph::applyData(const CData & data)
+bool CLMetabGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -153,7 +153,7 @@ CData CLCompartmentGlyph::toData() const
 }
 
 // virtual
-bool CLCompartmentGlyph::applyData(const CData & data)
+bool CLCompartmentGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -254,7 +254,7 @@ CData CLTextGlyph::toData() const
 }
 
 // virtual
-bool CLTextGlyph::applyData(const CData & data)
+bool CLTextGlyph::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

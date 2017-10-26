@@ -1294,7 +1294,7 @@ bool CMathObject::compilePropensity(CMathContainer & container)
       Infix << "max(0," << pointerToString(mpCorrespondingPropertyValue);
 
       // Apply correction for deterministic models
-      if (container.getModel().getModelType() == CModel::deterministic)
+      if (container.getModel().getModelType() == CModel::ModelType::deterministic)
         {
           std::ostringstream Divisor;
           Divisor.imbue(std::locale::classic());

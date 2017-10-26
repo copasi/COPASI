@@ -13,14 +13,12 @@
 #include <copasi/undoFramework/CreateNewGlobalQuantityCommand.h>
 #include <copasi/undoFramework/DeleteEventCommand.h>
 #include <copasi/undoFramework/DeleteGlobalQuantityCommand.h>
-#include <copasi/undoFramework/EntityRenameCommand.h>
 #include <copasi/undoFramework/EventChangeCommand.h>
 #include <copasi/undoFramework/EventDataChangeCommand.h>
 #include <copasi/undoFramework/GlobalQuantityChangeCommand.h>
 #include <copasi/undoFramework/GlobalQuantityDataChangeCommand.h>
 #include <copasi/undoFramework/InsertEventRowsCommand.h>
 #include <copasi/undoFramework/InsertGlobalQuantityRowsCommand.h>
-#include <copasi/undoFramework/ModelChangeCommand.h>
 #include <copasi/undoFramework/ParameterOverviewDataChangeCommand.h>
 #include <copasi/undoFramework/RemoveAllEventRowsCommand.h>
 #include <copasi/undoFramework/RemoveAllGlobalQuantityRowsCommand.h>

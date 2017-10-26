@@ -35,7 +35,7 @@ CData CLLocalStyle::toData() const
 }
 
 // virtual
-bool CLLocalStyle::applyData(const CData & data)
+bool CLLocalStyle::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

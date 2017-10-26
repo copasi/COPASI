@@ -66,7 +66,9 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Given Name", // GIVEN_NAME
   "Family Name", // FAMILY_NAME
   "Email", // EMAIL
-  "Organization" // ORGANIZATION
+  "Organization", // ORGANIZATION
+  "Framework", // FRAMEWORK
+  "Value" // VALUE
 });
 
 CData::CData():

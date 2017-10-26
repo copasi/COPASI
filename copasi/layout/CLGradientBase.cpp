@@ -39,7 +39,7 @@ CData CLGradientBase::toData() const
 }
 
 // virtual
-bool CLGradientBase::applyData(const CData & data)
+bool CLGradientBase::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

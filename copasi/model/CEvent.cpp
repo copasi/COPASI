@@ -53,7 +53,7 @@ CData CEventAssignment::toData() const
 }
 
 // virtual
-bool CEventAssignment::applyData(const CData & data)
+bool CEventAssignment::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 
@@ -290,7 +290,7 @@ CData CEvent::toData() const
 }
 
 // virtual
-bool CEvent::applyData(const CData & data)
+bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

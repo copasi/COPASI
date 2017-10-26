@@ -62,9 +62,9 @@ CData CReportDefinition::toData() const
 }
 
 // virtual
-bool CReportDefinition::applyData(const CData & data)
+bool CReportDefinition::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CDataObject::applyData(data);
+  bool success = CDataObject::applyData(data, changes);
 
   // TODO CRITICAL Implement me!
   fatalError();

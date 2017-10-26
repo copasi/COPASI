@@ -38,7 +38,7 @@ CData CLLocalRenderInformation::toData() const
 }
 
 // virtual
-bool CLLocalRenderInformation::applyData(const CData & data)
+bool CLLocalRenderInformation::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

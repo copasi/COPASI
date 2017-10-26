@@ -93,7 +93,7 @@ CData CPlotItem::toData() const
 }
 
 // virtual
-bool CPlotItem::applyData(const CData & data)
+bool CPlotItem::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

@@ -51,7 +51,7 @@ CData CLGraphicalObject::toData() const
 }
 
 // virtual
-bool CLGraphicalObject::applyData(const CData & data)
+bool CLGraphicalObject::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

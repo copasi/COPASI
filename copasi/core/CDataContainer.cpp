@@ -50,9 +50,9 @@ CData CDataContainer::toData() const
 }
 
 // virtual
-bool CDataContainer::applyData(const CData & data)
+bool CDataContainer::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  return CDataObject::applyData(data);
+  return CDataObject::applyData(data, changes);
 }
 
 // virtual

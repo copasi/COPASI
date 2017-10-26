@@ -141,9 +141,9 @@ CData CReaction::toData() const
 }
 
 // virtual
-bool CReaction::applyData(const CData & data)
+bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool Success = CDataContainer::applyData(data);
+  bool Success = CDataContainer::applyData(data, changes);
 
   if (data.isSetProperty(CData::CHEMICAL_EQUATION))
     {
@@ -172,7 +172,7 @@ bool CReaction::applyData(const CData & data)
 
           if (pParameter != NULL)
             {
-              pParameter->applyData(*it);
+              pParameter->applyData(*it, changes);
             }
         }
     }

@@ -44,7 +44,7 @@ CData CPlotSpecification::toData() const
 }
 
 // virtual
-bool CPlotSpecification::applyData(const CData & data)
+bool CPlotSpecification::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
   bool success = true;
 

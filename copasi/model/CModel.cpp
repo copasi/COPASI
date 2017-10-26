@@ -59,16 +59,18 @@
 
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
-const char * CModel::ModelTypeNames[] =
-{"deterministic", "stochastic", NULL};
+//static
+const CEnumAnnotation< std::string, CModel::ModelType > CModel::ModelTypeNames(
+{
+  "deterministic",
+  "stochastic"
+});
 
 // static
 CModel * CModel::fromData(const CData & data)
 {
-  CModel * pModel = NULL;
-
-  // TODO CRITICAL Implement me!
-  fatalError();
+  CModel * pModel = new CModel(NO_PARENT);
+  pModel->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
 
   return pModel;
 }
@@ -76,18 +78,32 @@ CModel * CModel::fromData(const CData & data)
 // virtual
 CData CModel::toData() const
 {
-  CData Data;
+  CData Data = CModelEntity::toData();
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::VOLUME_UNIT, mVolumeUnit);
+  Data.addProperty(CData::AREA_UNIT, mAreaUnit);
+  Data.addProperty(CData::LENGTH_UNIT, mLengthUnit);
+  Data.addProperty(CData::TIME_UNIT, mTimeUnit);
+
+  CData QuantityUnitData;
+  QuantityUnitData.addProperty(CData::VALUE, mQuantityUnit);
+  QuantityUnitData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
+  Data.addProperty(CData::QUANTITY_UNIT, QuantityUnitData);
+
+  Data.addProperty(CData::MODEL_TYPE, ModelTypeNames[this->mType]);
+
+  CData AvogadroData;
+  AvogadroData.addProperty(CData::VALUE, mAvogadro);
+  AvogadroData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[CCore::Framework::ParticleNumbers]);
+  Data.addProperty(CData::AVOGADRO_NUMBER, AvogadroData);
 
   return Data;
 }
 
 // virtual
-bool CModel::applyData(const CData & data)
+bool CModel::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = CModelEntity::applyData(data);
+  bool success = CModelEntity::applyData(data, changes);
 
   if (data.isSetProperty(CData::VOLUME_UNIT))
     {
@@ -111,20 +127,62 @@ bool CModel::applyData(const CData & data)
 
   if (data.isSetProperty(CData::QUANTITY_UNIT))
     {
-      success &= setQuantityUnit(data.getProperty(CData::QUANTITY_UNIT).toString(), CCore::Framework::ParticleNumbers);
+      const CData & Data = data.getProperty(CData::QUANTITY_UNIT).toData();
+      success &= setQuantityUnit(Data.getProperty(CData::VALUE).toString(),
+                                 CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
     }
 
   if (data.isSetProperty(CData::MODEL_TYPE))
     {
-      setModelType((ModelType) data.getProperty(CData::MODEL_TYPE).toUint());
+      setModelType(ModelTypeNames.toEnum(data.getProperty(CData::MODEL_TYPE).toString(), ModelType::deterministic));
     }
 
   if (data.isSetProperty(CData::AVOGADRO_NUMBER))
     {
-      setAvogadro(data.getProperty(CData::AVOGADRO_NUMBER).toDouble(), CCore::Framework::ParticleNumbers);
+      const CData & Data = data.getProperty(CData::AVOGADRO_NUMBER).toData();
+      setAvogadro(data.getProperty(CData::VALUE).toDouble(),
+                  CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
     }
 
   return success;
+}
+
+// virtual
+void CModel::createUndoData(CUndoData & undoData,
+                            const CUndoData::Type & type,
+                            const CData & oldData,
+                            const CCore::Framework & framework) const
+{
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::VOLUME_UNIT, oldData.getProperty(CData::VOLUME_UNIT), mVolumeUnit);
+  undoData.addProperty(CData::AREA_UNIT, oldData.getProperty(CData::AREA_UNIT), mAreaUnit);
+  undoData.addProperty(CData::LENGTH_UNIT, oldData.getProperty(CData::LENGTH_UNIT), mLengthUnit);
+  undoData.addProperty(CData::TIME_UNIT, oldData.getProperty(CData::TIME_UNIT), mTimeUnit);
+
+  CData OldQuantityUnitData;
+  OldQuantityUnitData.addProperty(CData::VALUE, oldData.getProperty(CData::QUANTITY_UNIT).toData().getProperty(CData::VALUE));
+  OldQuantityUnitData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  CData NewQuantityUnitData;
+  NewQuantityUnitData.addProperty(CData::VALUE, mQuantityUnit);
+  NewQuantityUnitData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::QUANTITY_UNIT, OldQuantityUnitData, NewQuantityUnitData);
+  undoData.addProperty(CData::MODEL_TYPE, oldData.getProperty(CData::MODEL_TYPE), ModelTypeNames[this->mType]);
+
+  CData OldAvogadroData;
+  OldAvogadroData.addProperty(CData::VALUE, oldData.getProperty(CData::AVOGADRO_NUMBER).toData().getProperty(CData::VALUE));
+  OldAvogadroData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+  CData NewAvogadroData;
+  NewAvogadroData.addProperty(CData::VALUE, mAvogadro);
+  NewAvogadroData.addProperty(CData::FRAMEWORK, CCore::FrameworkNames[framework]);
+
+  undoData.addProperty(CData::AVOGADRO_NUMBER, OldAvogadroData, NewAvogadroData);
 }
 
 CModel::CModel(CDataContainer* pParent):
@@ -136,7 +194,7 @@ CModel::CModel(CDataContainer* pParent):
   mLengthUnit("m"),
   mTimeUnit("s"),
   mQuantityUnit("mmol"),
-  mType(deterministic),
+  mType(CModel::ModelType::deterministic),
   mCompartments("Compartments", this),
   mMetabolites("Metabolites", this),
   mMetabolitesX("Reduced Model Metabolites", this),
@@ -1566,7 +1624,7 @@ CUnit::TimeUnit CModel::getTimeUnitEnum() const
 //****
 
 bool CModel::setQuantityUnit(const std::string & name,
-                             const CCore::Framework & frameWork)
+                             const CCore::Framework & framework)
 {
   mQuantityUnit = name;
 
@@ -1590,7 +1648,7 @@ bool CModel::setQuantityUnit(const std::string & name,
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
-  mpMathContainer->quantityConversionChanged(frameWork);
+  updateInitialValues(framework);
 
   return true;
 }
