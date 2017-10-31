@@ -45,7 +45,7 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   mpProxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
   mpProxyModel->setFilterKeyColumn(-1);
   //Setting values for Types comboBox
-  mpTypeDelegate = new CQIndexComboDelegate(this, mpGlobalQuantityDM->getTypes());
+  mpTypeDelegate = new CQComboDelegate(this, mpGlobalQuantityDM->getTypes());
   mpTblGlobalQuantities->setItemDelegateForColumn(COL_TYPE_GQ, mpTypeDelegate);
 #if QT_VERSION >= 0x050000
   mpTblGlobalQuantities->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);

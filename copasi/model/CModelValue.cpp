@@ -853,10 +853,28 @@ bool CModelValue::applyData(const CData & data, CUndoData::ChangeSet & changes)
 
   if (data.isSetProperty(CData::UNIT))
     {
-      success &= this->setUnitExpression(data.getProperty(CData::UNIT).toString());
+      success &= setUnitExpression(data.getProperty(CData::UNIT).toString());
     }
 
   return success;
+}
+
+// virtual
+void CModelValue::createUndoData(CUndoData & undoData,
+                                 const CUndoData::Type & type,
+                                 const CData & oldData,
+                                 const CCore::Framework & framework) const
+{
+  CModelEntity::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::UNIT, oldData.getProperty(CData::UNIT), mUnitExpression);
+
+  return;
 }
 
 CModelValue::CModelValue(const std::string & name,

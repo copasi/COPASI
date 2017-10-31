@@ -74,10 +74,6 @@ private slots:
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotMetaboliteTableCurrentChanged(int row, int col);
   void slotDimesionalityChanged(int);
-
-  //additional functions for UNDO framework
-  void deleteCompartment();
-  void createNewCompartment();
 };
 
 #endif // CQCOMPARTMENT_H

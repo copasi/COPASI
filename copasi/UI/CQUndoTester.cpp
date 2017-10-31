@@ -357,7 +357,6 @@ void CQUndoTester::testModelValueDetail()
       "param1",
       mpTabModelValues)
   );
-#endif // XXXX
 
   // change initial value
   mpUndoStack->push(
@@ -403,6 +402,7 @@ void CQUndoTester::testModelValueDetail()
   );
 
   deleteModelValue();
+#endif // XXXX
 }
 
 void CQUndoTester::testEventDetail()
@@ -637,6 +637,7 @@ void CQUndoTester::testSpeciesDM(int repetitions)
 
 void CQUndoTester::testModelValueDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmModelValues->rowCount();
   mpUndoStack->push(new InsertGlobalQuantityRowsCommand(
@@ -661,6 +662,8 @@ void CQUndoTester::testModelValueDM(int repetitions)
       lst.append(mpDmModelValues->index(currentRow, COL_NAME_GQ));
       mpUndoStack->push(new RemoveGlobalQuantityRowsCommand(lst, mpDmModelValues));
     }
+
+#endif
 }
 
 void CQUndoTester::testEventDM(int repetitions)
@@ -832,9 +835,11 @@ void CQUndoTester::createEvent()
 
 void CQUndoTester::createModelValue()
 {
+#ifdef XXXX
   // add model value
   mpUndoStack->push(new CreateNewGlobalQuantityCommand(mpDetailMV));
   mpModelValue = dynamic_cast<CModelValue*>(const_cast<CDataObject*>(mpDetailMV->getObject()));
+#endif
 }
 
 void CQUndoTester::createReaction()
@@ -889,6 +894,8 @@ void CQUndoTester::deleteEvent()
 
 void CQUndoTester::deleteModelValue()
 {
+#ifdef XXXX
+
   if (mpModelValue == NULL)
     return;
 
@@ -898,6 +905,7 @@ void CQUndoTester::deleteModelValue()
     new DeleteGlobalQuantityCommand(mpDetailMV)
   );
   mpModelValue = NULL;
+#endif
 }
 
 void CQUndoTester::deleteReaction()

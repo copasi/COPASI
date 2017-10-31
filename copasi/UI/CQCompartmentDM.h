@@ -44,9 +44,6 @@ class CQCompartmentDM : public CQBaseDataModel
 {
   Q_OBJECT
 
-  friend class CompartmentDataChangeCommand;
-  friend class InsertCompartmentRowsCommand;
-
 public:
   CQCompartmentDM(QObject *parent = 0);
   const QStringList& getTypes();

@@ -56,7 +56,6 @@ protected:
 protected slots:
 
 private:
-  std::vector< int > mItemToType;
   CModelValue * mpModelValue;
   CQScrolledDependenciesWidget * mpDependencies;
   bool mChanged;
@@ -67,26 +66,16 @@ private:
   void save();
   CCommonName mObjectCNToCopy;
 
-  //additional functions for UNDO framework
-  void deleteGlobalQuantity();
-  void addGlobalQuantity(UndoGlobalQuantityData *pSData);
-  void createNewGlobalQuantity();
-  void deleteGlobalQuantity(UndoGlobalQuantityData *pSData);
-
 private slots:
   void slotBtnNew();
   void slotBtnCopy();
   void slotBtnDelete();
-  void slotTypeChanged(int type);
+  void slotTypeChanged(const QString & type);
   void slotAddNoiseChanged(bool hasNoise);
   void slotInitialTypeChanged(bool useInitialAssignment);
   void slotUnitChanged();
 
 public:
-  bool changeValue(const std::string& key,
-                   CCopasiUndoCommand::Type type,
-                   const QVariant& newValue,
-                   double iValue = std::numeric_limits<double>::quiet_NaN());
 };
 
 #endif // CQMODELVALUE_H

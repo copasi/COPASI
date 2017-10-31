@@ -10,9 +10,9 @@
 
 #include "copasi/copasi.h"
 
+#include "qtUtilities.h"
 #include "UndoDependentData.h"
 #include "CCopasiUndoCommand.h"
-#include "UndoGlobalQuantityData.h"
 #include "UndoEventData.h"
 
 #include "copasi/core/CDataObject.h"
@@ -91,18 +91,6 @@ void UndoDependentData::createDependentObjects(CModel *pModel,
   //reinsert the dependency global quantity
   if (pModel == NULL || pGlobalQuantityData == NULL || pGlobalQuantityData->empty())
     return;
-
-  QList <UndoGlobalQuantityData *>::const_iterator g;
-
-  for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
-    {
-      UndoGlobalQuantityData* data = *g;
-      CDataObject *pGlobalQuantity = data->createObjectIn(pModel);
-
-      if (pGlobalQuantity == NULL) continue;
-
-      updateGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-    }
 }
 
 void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoReactionData *> *reactionData)
@@ -148,20 +136,6 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel,
   //reinsert the dependency global quantity
   if (pModel == NULL || pGlobalQuantityData == NULL || pGlobalQuantityData->empty())
     return;
-
-  QList <UndoGlobalQuantityData *>::const_iterator g;
-
-  for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
-    {
-      UndoGlobalQuantityData* data = *g;
-      CDataObject *pGlobalQuantity = data->restoreObjectIn(pModel);
-
-      if (pGlobalQuantity == NULL) continue;
-
-      data->restoreDependentObjects(pModel);
-
-      updateGUI(ListViews::MODELVALUE, ListViews::ADD, pGlobalQuantity->getKey());
-    }
 }
 
 void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoReactionData *> *reactionData)
@@ -209,14 +183,6 @@ void UndoDependentData::fillDependentObjects(CModel *pModel,
   //reinsert the dependency global quantity
   if (pModel == NULL || pGlobalQuantityData == NULL || pGlobalQuantityData->empty())
     return;
-
-  QList <UndoGlobalQuantityData *>::const_iterator g;
-
-  for (g = pGlobalQuantityData->begin(); g != pGlobalQuantityData->end(); ++g)
-    {
-      UndoGlobalQuantityData* data = *g;
-      data->fillObject(pModel);
-    }
 }
 
 void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoReactionData *> *reactionData)
@@ -255,11 +221,6 @@ UndoDependentData::freeUndoData()
   mCompartmentData.clear();
 
   mSpeciesData.clear();
-
-  foreach (UndoGlobalQuantityData * data, mParameterData)
-    {
-      delete data;
-    }
 
   mParameterData.clear();
 
@@ -359,24 +320,6 @@ UndoDependentData::initializeFrom(const std::set< const CDataObject * > &deleted
       CDataObject::DataObjectSet EventAssignments;
 
       pModel->appendAllDependents(DeletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
-
-      if (Values.size() > 0)
-        {
-          std::set< const CDataObject * >::const_iterator it = Values.begin();
-          std::set< const CDataObject * >::const_iterator end = Values.end();
-
-          for (; it != end; ++it)
-            {
-              const CModelValue * pModelValue = dynamic_cast<const CModelValue*>(*it);
-
-              if (pModelValue == NULL)
-                continue;
-
-              //store the Global Quantity data
-              UndoGlobalQuantityData *data = new UndoGlobalQuantityData(pModelValue, false);
-              mParameterData.append(data);
-            }
-        }
 
       if (Events.size() > 0)
         {

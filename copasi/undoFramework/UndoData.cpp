@@ -20,7 +20,6 @@
 #include "copasi/copasi.h"
 
 #include "UndoEventData.h"
-#include "UndoGlobalQuantityData.h"
 #include "UndoDependentData.h"
 
 #include "copasi/model/CModel.h"

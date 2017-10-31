@@ -262,7 +262,6 @@ bool CQCompartmentDM::setData(const QModelIndex &index,
   else if (role == Qt::EditRole)
     {
       CCompartment & Compartment = mpCompartments->operator[](index.row());
-      const CExpression * pExpression = NULL;
 
       CData OldData = Compartment.toData();
 

@@ -42,7 +42,7 @@ protected:
 private:
   CQGlobalQuantityDM* mpGlobalQuantityDM;
   CQSortFilterProxyModel *mpProxyModel;
-  CQIndexComboDelegate* mpTypeDelegate;
+  CQComboDelegate* mpTypeDelegate;
   void deleteSelectedGlobalQuantities();
   void updateDeleteBtns();
 

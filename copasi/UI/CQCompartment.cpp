@@ -91,7 +91,23 @@ CQCompartment::~CQCompartment()
 
 void CQCompartment::slotBtnNew()
 {
-  createNewCompartment();
+  leave();
+
+  std::string name = "compartment";
+  int i = 1;
+
+  assert(mpDataModel != NULL);
+
+  while (!(mpCompartment = mpDataModel->getModel()->createCompartment(name)))
+    {
+      i++;
+      name = "compartment_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpCompartment)));
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpCompartment->getCN());
 }
 
 void CQCompartment::slotBtnCopy() {}
@@ -197,7 +213,20 @@ void CQCompartment::copy()
 
 void CQCompartment::slotBtnDelete()
 {
-  deleteCompartment();
+  if (mpCompartment == NULL) return;
+
+  QMessageBox::StandardButton choice =
+    CQMessageBox::confirmDelete(this, "compartment",
+                                FROM_UTF8(mpCompartment->getObjectName()),
+                                mpCompartment);
+
+  if (choice == QMessageBox::Ok)
+    {
+      CUndoData UndoData;
+      mpCompartment->createUndoData(UndoData, CUndoData::Type::REMOVE);
+
+      slotNotifyChanges(mpDataModel->applyData(UndoData));
+    }
 }
 
 /*!
@@ -612,44 +641,4 @@ void CQCompartment::loadMetaboliteTable()
   mpMetaboliteTable->resizeRowsToContents();
 
   return;
-}
-
-//Undo methods
-void CQCompartment::createNewCompartment()
-{
-  leave();
-
-  std::string name = "compartment";
-  int i = 1;
-
-  assert(mpDataModel != NULL);
-
-  while (!(mpCompartment = mpDataModel->getModel()->createCompartment(name)))
-    {
-      i++;
-      name = "compartment_";
-      name += TO_UTF8(QString::number(i));
-    }
-
-  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, mpCompartment)));
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, mpCompartment->getCN());
-}
-
-void CQCompartment::deleteCompartment()
-{
-  if (mpCompartment == NULL) return;
-
-  QMessageBox::StandardButton choice =
-    CQMessageBox::confirmDelete(this, "compartment",
-                                FROM_UTF8(mpCompartment->getObjectName()),
-                                mpCompartment);
-
-  if (choice == QMessageBox::Ok)
-    {
-      CUndoData UndoData;
-      mpCompartment->createUndoData(UndoData, CUndoData::Type::REMOVE);
-
-      slotNotifyChanges(mpDataModel->applyData(UndoData));
-    }
 }
