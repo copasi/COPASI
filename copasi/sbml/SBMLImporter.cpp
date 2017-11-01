@@ -3500,7 +3500,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -5522,7 +5522,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
                           result = !v2->empty();
 
-                          if (result)
+                          if (result &&
+                              (*v)[0]->getData() != (*v2)[0]->getData())
                             {
                               v->push_back((*v2)[0]);
                             }

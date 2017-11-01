@@ -487,10 +487,10 @@ bool CSensMethod::initialize(CSensProblem* problem)
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
 
-        /*    case CSensProblem::LyapunovExp:
-              mpSubTask = dynamic_cast<CCopasiTask*>
-                          (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
-              break;*/
+      /*    case CSensProblem::LyapunovExp:
+            mpSubTask = dynamic_cast<CCopasiTask*>
+                        (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
+            break;*/
 
       case CSensProblem::ParameterEstimation:
         mpSubTask = dynamic_cast<CCopasiTask*>
@@ -547,8 +547,16 @@ bool CSensMethod::initialize(CSensProblem* problem)
       for (; ppValue != ppValueEnd; ++ppValue, ++itDataObject)
         {
           const CMathObject * pValueObject = mpContainer->getMathObject(*itDataObject);
-          *ppValue = (C_FLOAT64 *) pValueObject->getValuePointer();
-          Changed.insert(pValueObject);
+
+          if (pValueObject != NULL)
+            {
+              *ppValue = (C_FLOAT64 *) pValueObject->getValuePointer();
+              Changed.insert(pValueObject);
+            }
+          else
+            {
+              *ppValue = NULL;
+            }
         }
 
       mpContainer->getInitialDependencies().getUpdateSequence(mLocalData[i].mInitialSequences,

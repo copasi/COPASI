@@ -248,16 +248,13 @@ CIssue CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
 const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 {
-  static std::string data;
-
   switch (mSubType)
     {
       case SubType::CN:
-        return data = "<" + mRegisteredObjectCN + ">";
+        const_cast< CEvaluationNodeObject * >(this)->mData = "<" + mRegisteredObjectCN + ">";
         break;
 
       case SubType::POINTER:
-        return mData;
         break;
     }
 
