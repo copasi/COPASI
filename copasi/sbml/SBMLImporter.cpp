@@ -5530,7 +5530,8 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
                           result = !v2->empty();
 
-                          if (result)
+                          if (result &&
+                              (*v)[0]->getData() != (*v2)[0]->getData())
                             {
                               v->push_back((*v2)[0]);
                             }

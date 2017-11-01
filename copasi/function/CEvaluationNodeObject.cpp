@@ -224,16 +224,13 @@ bool CEvaluationNodeObject::compile(const CEvaluationTree * pTree)
 
 const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
 {
-  static std::string data;
-
   switch (mSubType)
     {
       case S_CN:
-        return data = "<" + mRegisteredObjectCN + ">";
+        const_cast< CEvaluationNodeObject * >(this)->mData = "<" + mRegisteredObjectCN + ">";
         break;
 
       case S_POINTER:
-        return mData;
         break;
     }
 
