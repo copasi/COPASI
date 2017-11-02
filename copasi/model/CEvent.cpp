@@ -286,6 +286,8 @@ CData CEvent::toData() const
   // TODO CRITICAL Implement me!
   fatalError();
 
+  Data.appendData(CAnnotation::toData());
+
   return Data;
 }
 
@@ -297,7 +299,30 @@ bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
   // TODO CRITICAL Implement me!
   fatalError();
 
+  success &= CAnnotation::applyData(data, changes);
+
   return success;
+}
+
+// virtual
+void CEvent::createUndoData(CUndoData & undoData,
+                            const CUndoData::Type & type,
+                            const CData & oldData,
+                            const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 CEvent::CEvent(const std::string & name,

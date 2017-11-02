@@ -51,7 +51,7 @@ CData CReportDefinition::toData() const
 {
   CData Data = CDataObject::toData();
 
-  Data.addProperty(CData::COMMENT, mComment);
+  Data.addProperty(CData::NOTES, mComment);
   Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mTaskType]);
   Data.addProperty(CData::REPORT_SEPARATOR, mSeparator.getStaticString());
   Data.addProperty(CData::REPORT_IS_TABLE, mTable);
@@ -70,6 +70,25 @@ bool CReportDefinition::applyData(const CData & data, CUndoData::ChangeSet & cha
   fatalError();
 
   return success;
+}
+
+// virtual
+void CReportDefinition::createUndoData(CUndoData & undoData,
+                                       const CUndoData::Type & type,
+                                       const CData & oldData,
+                                       const CCore::Framework & framework) const
+{
+  CDataObject::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  return;
 }
 
 CReportDefinition::CReportDefinition(const std::string & name,

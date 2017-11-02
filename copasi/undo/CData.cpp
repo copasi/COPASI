@@ -54,11 +54,11 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Avogadro's Number", // AVOGADRO_NUMBER
   "Dimensionality", // DIMENSIONALITY
   "Array Element Index", // ARRAY_ELEMENT_INDEX
-  "Comment", // COMMENT
   "Report Separator", // REPORT_SEPARATOR
   "Report is Table", // REPORT_IS_TABLE
   "Report show Title", // REPORT_SHOW_TITLE
   "Report Precision", // REPORT_PRECISION
+  "Notes", // NOTES
   "MIRIAM Predicate", // MIRIAM_PREDICATE
   "MIRIAM Resource", // MIRIAM_RESOURCE
   "MIRIAM Id", // MIRIAM_ID

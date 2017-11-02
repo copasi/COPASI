@@ -137,6 +137,8 @@ CData CReaction::toData() const
   Data.addProperty(CData::ADD_NOISE, mHasNoise);
   Data.addProperty(CData::NOISE_EXPRESSION, mpNoiseExpression != NULL ? mpNoiseExpression->getInfix() : "");
 
+  Data.appendData(CAnnotation::toData());
+
   return Data;
 }
 
@@ -221,6 +223,8 @@ bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
     {
       setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
     }
+
+  Success &= CAnnotation::applyData(data, changes);
 
   return Success;
 }
@@ -353,6 +357,8 @@ void CReaction::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::SCALING_COMPARTMENT, oldData.getProperty(CData::SCALING_COMPARTMENT), mScalingCompartmentCN);
   undoData.addProperty(CData::ADD_NOISE, oldData.getProperty(CData::ADD_NOISE), mHasNoise);
   undoData.addProperty(CData::NOISE_EXPRESSION, oldData.getProperty(CData::NOISE_EXPRESSION), mpNoiseExpression != NULL ? mpNoiseExpression->getInfix() : "");
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
 
   return;
 }

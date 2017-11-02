@@ -32,6 +32,7 @@
 #include "function/CFunction.h"
 #include "utilities/CUnitDefinition.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/undo/CUndoData.h"
 
 #include "xml/parser/CXMLParser.h"
 
@@ -95,6 +96,38 @@ const CAnnotation * CAnnotation::castObject(const CDataObject * pObject)
     return static_cast< const CAnnotation * >(pUnitDefinition);
 
   return NULL;
+}
+
+CData CAnnotation::toData() const
+{
+  CData Data;
+
+  Data.addProperty(CData::Property::NOTES, mNotes);
+
+  return Data;
+}
+
+bool CAnnotation::applyData(const CData & data, CUndoData::ChangeSet & changes)
+{
+  if (data.isSetProperty(CData::Property::NOTES))
+    {
+      mNotes = data.getProperty(CData::Property::NOTES).toString();
+    }
+
+  return true;
+}
+
+void CAnnotation::createUndoData(CUndoData & undoData,
+                                 const CUndoData::Type & type,
+                                 const CData & oldData,
+                                 const CCore::Framework & framework) const
+{
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::Property::NOTES, oldData.getProperty(CData::Property::NOTES), mNotes);
 }
 
 CAnnotation::CAnnotation():

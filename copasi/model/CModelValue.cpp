@@ -80,6 +80,8 @@ CData CModelEntity::toData() const
   Data.addProperty(CData::ADD_NOISE, mHasNoise);
   Data.addProperty(CData::NOISE_EXPRESSION, getNoiseExpression());
 
+  Data.appendData(CAnnotation::toData());
+
   return Data;
 }
 
@@ -118,6 +120,8 @@ bool CModelEntity::applyData(const CData & data, CUndoData::ChangeSet & changes)
       success &= setNoiseExpression(data.getProperty(CData::NOISE_EXPRESSION).toString());
     }
 
+  success &= CAnnotation::applyData(data, changes);
+
   return success;
 }
 
@@ -140,6 +144,8 @@ void CModelEntity::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::EXPRESSION, oldData.getProperty(CData::EXPRESSION), getExpression());
   undoData.addProperty(CData::ADD_NOISE, oldData.getProperty(CData::ADD_NOISE), mHasNoise);
   undoData.addProperty(CData::NOISE_EXPRESSION, oldData.getProperty(CData::NOISE_EXPRESSION), getNoiseExpression());
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
 
   return;
 }

@@ -22,7 +22,6 @@
 
 #include <stack>
 
-#include "copasi/model/CAnnotation.h"
 #include "copasi/function/CEvaluationNode.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CVector.h"

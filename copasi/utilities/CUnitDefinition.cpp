@@ -136,6 +136,8 @@ CData CUnitDefinition::toData() const
   // TODO CRITICAL Implement me!
   fatalError();
 
+  Data.appendData(CAnnotation::toData());
+
   return Data;
 }
 
@@ -147,7 +149,29 @@ bool CUnitDefinition::applyData(const CData & data, CUndoData::ChangeSet & chang
   // TODO CRITICAL Implement me!
   fatalError();
 
+  success &= CAnnotation::applyData(data, changes);
+
   return success;
+}
+
+void CUnitDefinition::createUndoData(CUndoData & undoData,
+                                     const CUndoData::Type & type,
+                                     const CData & oldData,
+                                     const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+
+  CAnnotation::createUndoData(undoData, type, oldData, framework);
+
+  return;
 }
 
 // constructors

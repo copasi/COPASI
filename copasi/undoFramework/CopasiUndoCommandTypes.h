@@ -7,7 +7,6 @@
 #define COPASI_UNDO_COMMAND_TYPES_H
 
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
-#include <copasi/undoFramework/ChangeNotesCommand.h>
 #include <copasi/undoFramework/CopasiUndoCommandTypes.h>
 #include <copasi/undoFramework/CreateNewEventCommand.h>
 #include <copasi/undoFramework/DeleteEventCommand.h>

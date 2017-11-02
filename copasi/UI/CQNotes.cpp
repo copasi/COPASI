@@ -66,7 +66,6 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
 
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/CQCopasiApplication.h>
-#include <copasi/undoFramework/ChangeNotesCommand.h>
 
 CQValidatorXML::CQValidatorXML(QPlainTextEdit * parent, const char * name):
   CQValidator< QPlainTextEdit >(parent, &QPlainTextEdit::toPlainText, name),
@@ -425,15 +424,9 @@ void CQNotes::save()
       plainText = "<body xmlns=\"http://www.w3.org/1999/xhtml\">" + plainText + "</body>";
     }
 
-  if (mpUndoStack == NULL)
-    {
-      CopasiUI3Window *  pWindow = static_cast<CQCopasiApplication*>(qApp)->getMainWindow();
-
-      if (pWindow)
-        mpUndoStack = pWindow->getUndoStack();
-    }
-
-  mpUndoStack->push(new ChangeNotesCommand(mpObject, notes, plainText, this));
+  CUndoData Data(CUndoData::Type::CHANGE, mpObject);
+  Data.addProperty(CData::Property::NOTES, notes, plainText);
+  slotNotifyChanges(mpDataModel->applyData(Data));
 }
 
 void CQNotes::slotOpenUrl(const QUrl & url)
