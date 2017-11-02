@@ -144,6 +144,9 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 const C_FLOAT64 & CMoiety::getDependentNumber() const
 {return mNumber;}
 
+CCopasiObject * CMoiety::getInitialTotalNumberReference() const
+{return mpINumberReference;}
+
 CCopasiObject * CMoiety::getTotalNumberReference() const
 {return mpNumberReference;}
 

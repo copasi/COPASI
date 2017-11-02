@@ -1043,8 +1043,8 @@ void CMathContainer::fetchInitialState()
 
 void CMathContainer::pushInitialState()
 {
-  C_FLOAT64 * pValue = mInitialState.begin();
-  C_FLOAT64 * pValueEnd = mInitialState.end();
+  C_FLOAT64 * pValue = mCompleteInitialState.begin();
+  C_FLOAT64 * pValueEnd = mCompleteInitialState.end();
   CMathObject * pObject = getMathObject(pValue);
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
@@ -3433,7 +3433,7 @@ void CMathContainer::initializeMathObjects(const CCopasiVector< CMoiety > & moie
       // Initial Total Mass
       CMathObject::initialize(p.pInitialTotalMassesObject, p.pInitialTotalMasses,
                               CMath::TotalMass, CMath::Moiety, CMath::SimulationTypeUndefined, false, true,
-                              it->getTotalNumberReference());
+                              it->getInitialTotalNumberReference());
 
       // Total Mass
       map(it->getTotalNumberReference(), p.pTotalMassesObject);
