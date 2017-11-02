@@ -274,7 +274,13 @@ public:
   const C_FLOAT64 & getDependentNumber() const;
 
   /**
-   * Retrieve the object for the dependent particle number
+   * Retrieve the object for the initial total particle number
+   * @return CDataObject * initialTotalNumberReference
+   */
+  CDataObject * getInitialTotalNumberReference() const;
+
+  /**
+   * Retrieve the object for the total particle number
    * @return CDataObject * totalNumberReference
    */
   CDataObject * getTotalNumberReference() const;

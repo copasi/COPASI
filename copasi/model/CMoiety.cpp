@@ -163,6 +163,9 @@ const C_FLOAT64 & CMoiety::dependentNumber()
 const C_FLOAT64 & CMoiety::getDependentNumber() const
 {return mNumber;}
 
+CDataObject * CMoiety::getInitialTotalNumberReference() const
+{return mpINumberReference;}
+
 CDataObject * CMoiety::getTotalNumberReference() const
 {return mpNumberReference;}
 
