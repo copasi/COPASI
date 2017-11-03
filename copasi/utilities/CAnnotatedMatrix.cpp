@@ -434,7 +434,7 @@ CArrayAnnotation::name_index_type CArrayAnnotation::displayNamesToCN(const std::
 
       for (; itCN != endCN; ++itCN)
         {
-          if (*it == this->createDisplayName(*itCN))
+          if (CCopasiObjectName::unescape(*it) == createDisplayName(*itCN))
             {
               *to = *itCN;
               break;
