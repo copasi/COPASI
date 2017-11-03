@@ -423,7 +423,7 @@ CDataArray::name_index_type CDataArray::displayNamesToCN(const std::vector< std:
 
       for (; itCN != endCN; ++itCN)
         {
-          if (*it == this->createDisplayName(*itCN))
+          if (CCommonName::unescape(*it) == createDisplayName(*itCN))
             {
               *to = *itCN;
               break;
