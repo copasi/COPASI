@@ -39,6 +39,8 @@ ParameterGroupHandler::ParameterGroupHandler(CXMLParser & parser, CXMLParserData
 
   mNonUniqueParameters["Affected Experiments"].insert("Experiment Key");
   mNonUniqueParameters["Affected Cross Validation Experiments"].insert("Experiment Key");
+
+  mNonUniqueParameters["ListOfVariables"].insert("Variables");
 }
 
 // virtual
