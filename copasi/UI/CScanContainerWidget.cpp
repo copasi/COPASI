@@ -47,6 +47,8 @@ CScanContainerWidget::CScanContainerWidget(QWidget * parent, const char * name) 
 
   setSelectionMode(QAbstractItemView::NoSelection);
 
+  setTabKeyNavigation(false);
+
   mCopyEnabled = false;
   //TODO maybe reimplement paintFocus() to make the focus completely invisible
   // (it is already invisible most of the time)

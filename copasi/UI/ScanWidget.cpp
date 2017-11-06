@@ -390,3 +390,5 @@ bool ScanWidget::saveTask()
 
   return true;
 }
+
+CCopasiMethod*ScanWidget::createMethod(const CTaskEnum::Method&) {return NULL;}
