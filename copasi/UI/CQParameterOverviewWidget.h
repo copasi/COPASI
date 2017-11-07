@@ -39,6 +39,7 @@ public:
 private:
   virtual bool enterProtected();
   void buildSelectionList();
+
 protected:
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 

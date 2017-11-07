@@ -17,6 +17,8 @@
 #include <string>
 #include <set>
 
+class CData;
+
 /** @dia:pos 21.4754,29.8662 */
 class CCommonName: public std::string
 {
@@ -57,13 +59,19 @@ public:
   std::string getElementName(const size_t & pos /*= 0*/,
                              const bool & unescape = true) const;
 
+  void split(CCommonName & parentCN, std::string & objectType, std::string & objectName) const;
+
   static std::string escape(const std::string & name);
 
   static std::string unescape(const std::string & name);
 
-  // private:
-  std::string::size_type findEx(const std::string & toFind,
-                                const std::string::size_type & pos = 0) const;
+  static std::string fromData(const CData & data);
+
+  std::string::size_type findNext(const std::string & toFind,
+                                  const std::string::size_type & pos = 0) const;
+
+  std::string::size_type findPrevious(const std::string & toFind,
+                                      const std::string::size_type & pos = std::string::npos) const;
 };
 
 #endif // COPASI_CCommonName

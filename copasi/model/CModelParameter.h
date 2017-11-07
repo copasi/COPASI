@@ -15,6 +15,7 @@
 
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/model/CModelValue.h"
+#include "copasi/undo/CUndoObjectInterface.h"
 
 class CModelParameterSet;
 class CModelParameterGroup;
@@ -24,12 +25,12 @@ class CModel;
 class CReaction;
 class CValidatedUnit;
 
-class CModelParameter
+class CModelParameter : public virtual CUndoObjectInterface
 {
   friend std::ostream &operator<<(std::ostream &os, const CModelParameter & o);
 
 public:
-  enum Type
+  enum struct Type
   {
     Model,
     Compartment,
@@ -39,19 +40,57 @@ public:
     Reaction,
     Group,
     Set,
-    unknown
+    unknown,
+    __SIZE
   };
 
-  static const char * TypeNames[];
+  static const CEnumAnnotation< std::string, Type > TypeNames;
 
-  enum CompareResult
+  enum struct CompareResult
   {
     Obsolete,
     Missing,
     Modified,
     Conflict,
-    Identical
+    Identical,
+    __SIZE
   };
+
+  static const CEnumAnnotation< std::string, CompareResult > CompareResultNames;
+
+  /**
+   * Static method to create a CDataObject based on the provided data
+   * @param const CData & data
+   * @return CModelParameter * pDataObject
+   */
+  static CModelParameter * fromData(const CData & data);
+
+  /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
 private:
   /**
@@ -75,6 +114,12 @@ public:
    * Destructor
    */
   virtual ~CModelParameter();
+
+  virtual CModelParameterSet * toSet();
+
+  virtual const CModelParameterSet * toSet() const;
+
+  bool operator < (const CModelParameter & rhs) const;
 
   /**
    * Set the parent, i.e., containing group, of the parameter.
@@ -313,7 +358,7 @@ public:
   /**
    * Constructor
    */
-  CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Compartment);
+  CModelParameterCompartment(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Type::Compartment);
 
   /**
    * Copy constructor
@@ -356,9 +401,36 @@ class CModelParameterSpecies : public CModelParameter
 
 public:
   /**
+   * Retrieve the data describing the object
+   * @return CData data
+   */
+  virtual CData toData() const;
+
+  /**
+   * Apply the provided data to the object
+   * @param const CData & data
+   * @return bool success
+   */
+  virtual bool applyData(const CData & data, CUndoData::ChangeSet & changes);
+
+  /**
+   * Create the undo data which represents the changes recording the
+   * differences between the provided oldData and the current data.
+   * @param CUndoData & undoData
+   * @param const CUndoData::Type & type
+   * @param const CData & oldData (default: empty data)
+   * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
+   * @return CUndoData undoData
+   */
+  virtual void createUndoData(CUndoData & undoData,
+                              const CUndoData::Type & type,
+                              const CData & oldData = CData(),
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+
+  /**
    * Constructor
    */
-  CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Species);
+  CModelParameterSpecies(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Type::Species);
 
   /**
    * Copy constructor
@@ -431,7 +503,7 @@ public:
   /**
    * Constructor
    */
-  CModelParameterReactionParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::ReactionParameter);
+  CModelParameterReactionParameter(CModelParameterGroup * pParent, const CModelParameter::Type & type = CModelParameter::Type::ReactionParameter);
 
   /**
    * Copy constructor
@@ -453,6 +525,12 @@ public:
    * @return const CReaction * reaction
    */
   const CReaction * getReaction() const;
+
+  /**
+   * Retrieve the CN of the reaction the parameter belongs to
+   * @return CCommonName reationCN
+   */
+  CCommonName getReactionCN() const;
 
   /**
    * Set the CN of the assigned global quantity. If the CN is empty

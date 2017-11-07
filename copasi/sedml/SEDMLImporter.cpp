@@ -770,42 +770,14 @@ SEDMLImporter::importTasks(std::map<CDataObject*, SedBase*>& copasi2sedmlmap)
     }
 }
 
-bool applyValueToModelParameter(CModelParameter* modelParameter, CDataObject *obj, double newValue)
-{
-  if (modelParameter == NULL || obj == NULL) return false;
-
-  size_t numChilren = modelParameter->getNumChildren();
-
-  const CCommonName& cn = modelParameter->getCN();
-  const CCommonName& targetCN = obj->getCN();
-
-  if (cn == targetCN)
-    {
-      modelParameter->setValue(newValue, CCore::Framework::Concentration);
-      return true;
-    }
-
-  for (unsigned int i = 0; i < numChilren; ++i)
-    {
-      CModelParameter* current = const_cast<CModelParameter* >(modelParameter->getChild(i));
-
-      if (applyValueToModelParameter(current, obj, newValue))
-        return true;
-    }
-
-  return false;
-}
-
 bool applyValueToParameterSet(CModelParameterSet& set, CDataObject *obj, double newValue)
 {
-  CModelParameterGroup::iterator it = set.begin();
+  const CModelParameter * pParameter = set.getModelParameter(obj->getCN());
 
-  while (it != set.end())
+  if (pParameter != NULL)
     {
-      if (applyValueToModelParameter(*it, obj, newValue))
-        return true;
-
-      ++it;
+      const_cast< CModelParameter * >(pParameter)->setValue(newValue, CCore::Framework::Concentration);
+      return true;
     }
 
   return false;

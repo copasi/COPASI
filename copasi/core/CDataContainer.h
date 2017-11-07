@@ -133,9 +133,13 @@ public:
 
   virtual size_t getIndex(const CDataObject * pObject) const;
 
-  virtual void updateIndex(const size_t & index, const CDataObject * pObject);
-
-  virtual CDataObject * insert(const CData & data);
+  /**
+   * Create and insert an undo object based on the given data.
+   * This method needs to be re-implemented in container which support INSERT and REMOVE
+   * @param const CData & data
+   * @return CUndoObjectInterface * pUndoObject
+   */
+  virtual CUndoObjectInterface * insert(const CData & data);
 
   /**
    * Retrieve all descendant objects (optionally recursive)

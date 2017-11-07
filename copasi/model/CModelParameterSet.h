@@ -19,7 +19,7 @@
 
 class CModel;
 
-class CModelParameterSet: public CDataContainer, public CModelParameterGroup, public CAnnotation
+class CModelParameterSet: public CDataContainer, public CAnnotation, protected CModelParameterGroup
 {
 public:
   /**
@@ -57,6 +57,22 @@ public:
                               const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
 
   /**
+   * Create and insert an undo object based on the given data.
+   * This method needs to be re-implemented in container which support INSERT and REMOVE
+   * @param const CData & data
+   * @return CUndoObjectInterface * pUndoObject
+   */
+  virtual CUndoObjectInterface * insert(const CData & data);
+
+  /**
+   * Update the index of a contained object
+   * This method needs to be re-implemented in container which care about the order of contained objects
+   * @param const size_t & index
+   * @param const CUndoObjectInterface * pUndoObject
+   */
+  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
+
+  /**
    * Constructor
    * @param const std::string & name
    * @param const CDataContainer * pParent (default: NULL)
@@ -78,6 +94,14 @@ public:
    * Destructor
    */
   virtual ~CModelParameterSet();
+
+  CModelParameterGroup * toGroup();
+
+  const CModelParameterGroup * toGroup() const;
+
+  virtual CModelParameterSet * toSet();
+
+  virtual const CModelParameterSet * toSet() const;
 
   /**
    * Retrieve the unique key of the set.
@@ -126,6 +150,46 @@ public:
   virtual bool updateModel();
 
   /**
+   * Compile the parameter
+   */
+  virtual void compile();
+
+  /**
+   * Compare the parameter to an other
+   * @param const CModelParameterSet & other
+   * @param const CCore::Framework & framework
+   * @param const bool & createMissing = false
+   */
+  const CompareResult & diff(const CModelParameterSet & other,
+                             const CCore::Framework & framework,
+                             const bool & createMissing = false);
+
+  /**
+   * Retrieve a pointer to the parameter with the given CN
+   * @param const std::string & cn
+   * @return const CModelParameter * pModelParameter
+   */
+  const CModelParameter * getModelParameter(const std::string & cn) const;
+
+  /**
+   * Retrieve the const_iterator pointing to the first contained parameter.
+   * @return const_iterator begin
+   */
+  const_iterator begin() const;
+
+  /**
+   * Retrieve the const_iterator pointing past the last contained parameter.
+   * @return const_iterator end
+   */
+  const_iterator end() const;
+
+  /**
+   * Refresh the parameter from the corresponding model object
+   * @param const bool & modifyExistence
+   */
+  virtual bool refreshFromModel(const bool & modifyExistence);
+
+  /**
    * Determine whether this is parameter set is currently active, i.e., it is synchronized
    * with the model.
    * @return bool isActive
@@ -154,6 +218,8 @@ public:
                     const std::string & separator);
 
 private:
+  void init();
+
   /**
    * The unique key of the set
    */
@@ -163,6 +229,12 @@ private:
    * A pointer to the model the parameter set is storing values for
    */
   CModel * mpModel;
+
+  CModelParameterGroup * mpTimes;
+  CModelParameterGroup * mpCompartments;
+  CModelParameterGroup * mpSpecies;
+  CModelParameterGroup * mpModelValues;
+  CModelParameterGroup * mpReactions;
 };
 
 #endif // COPASI_CModelParameterSet

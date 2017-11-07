@@ -8,6 +8,7 @@
 
 #include <map>
 
+#include "copasi/core/CCore.h"
 #include "copasi/core/CEnumAnnotation.h"
 #include "copasi/undo/CDataValue.h"
 

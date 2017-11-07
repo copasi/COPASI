@@ -22,7 +22,7 @@
 
 #include "copasi/core/CObjectInterface.h"
 #include "copasi/core/CFlags.h"
-#include "copasi/undo/CUndoData.h"
+#include "copasi/undo/CUndoObjectInterface.h"
 #include "copasi/utilities/CValidity.h"
 
 class CDataObject;
@@ -35,7 +35,7 @@ template <class CType> class CDataObjectReference;
 
 //********************************************************************************
 
-class CDataObject: public CObjectInterface
+class CDataObject: public CObjectInterface, public virtual CUndoObjectInterface
 {
 public:
   typedef std::set< const CDataObject * > DataObjectSet;

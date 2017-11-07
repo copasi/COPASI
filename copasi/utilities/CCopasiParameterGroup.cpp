@@ -109,10 +109,17 @@ bool CCopasiParameterGroup::applyData(const CData & data, CUndoData::ChangeSet &
 
           if (pObject == NULL)
             {
-              pObject = insert(*it);
+              pObject = dynamic_cast< CCopasiParameter * >(insert(*it));
             }
 
-          success &= pObject->applyData(*it, changes);
+          if (pObject != NULL)
+            {
+              success &= pObject->applyData(*it, changes);
+            }
+          else
+            {
+              success = false;
+            }
         }
     }
 
@@ -269,7 +276,7 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
 }
 
 // virtual
-CDataObject * CCopasiParameterGroup::insert(const CData & data)
+CUndoObjectInterface * CCopasiParameterGroup::insert(const CData & data)
 {
   CCopasiParameter * pNew = CCopasiParameter::fromData(data);
 
@@ -822,8 +829,9 @@ size_t CCopasiParameterGroup::getIndex(const CDataObject * pObject) const
 }
 
 // virtual
-void CCopasiParameterGroup::updateIndex(const size_t & index, const CDataObject * pObject)
+void CCopasiParameterGroup::updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
 {
+  const CDataObject * pObject = dynamic_cast< const CDataObject * >(pUndoObject);
   size_t Index = getIndex(pObject);
 
   // We only update the index of container objects.

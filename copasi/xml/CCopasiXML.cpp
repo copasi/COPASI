@@ -1150,7 +1150,7 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 {
   // We do not save model parameters which are marked missing to preserve
   // their missing state.
-  if (pModelParameter->getCompareResult() == CModelParameter::Missing)
+  if (pModelParameter->getCompareResult() == CModelParameter::CompareResult::Missing)
     {
       return true;
     }
@@ -1159,8 +1159,8 @@ bool CCopasiXML::saveModelParameter(const CModelParameter * pModelParameter)
 
   CXMLAttributeList Attributes;
 
-  if (pModelParameter->getType() != CModelParameter::Reaction &&
-      pModelParameter->getType() != CModelParameter::Group)
+  if (pModelParameter->getType() != CModelParameter::Type::Reaction &&
+      pModelParameter->getType() != CModelParameter::Type::Group)
     {
       Attributes.add("cn", pModelParameter->getCN());
       Attributes.add("value", pModelParameter->getValue(CCore::Framework::ParticleNumbers));

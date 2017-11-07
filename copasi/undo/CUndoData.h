@@ -15,7 +15,7 @@
 class CDataObject;
 class CDataContainer;
 class CDataModel;
-class CMetab;
+class CUndoObjectInterface;
 
 template < class CType > class CDataVector;
 
@@ -41,7 +41,7 @@ public:
 
   static const CEnumAnnotation< std::string, Type > TypeName;
 
-  static CDataObject * getObject(const CDataModel & dataModel, const CData & data);
+  static CUndoObjectInterface * getObject(const CDataModel & dataModel, const CData & data);
 
   friend std::ostream & operator << (std::ostream & os, const CUndoData & o);
 

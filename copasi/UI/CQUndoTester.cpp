@@ -698,6 +698,7 @@ void CQUndoTester::testEventDM(int repetitions)
 
 void CQUndoTester::testOverviewWidget()
 {
+#ifdef XXXX
   // create 8 reactions
   testReactionDM(7);
 
@@ -744,6 +745,7 @@ void CQUndoTester::testOverviewWidget()
         );
       }
   }
+#endif // XXXX
 }
 
 void CQUndoTester::testReactionDM(int repetitions)

@@ -37,6 +37,7 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mGlobalQuantities()
 {
   setupUi(this);
+  mpBtnWidget->hide();
 
   // create a new QListview to be displayed on the screen..and set its property
   mpParameterSetDM = new CQParameterOverviewDM(this);
@@ -143,29 +144,25 @@ CQBaseDataModel * CQParameterOverviewWidget::getCqDataModel()
 // virtual
 bool CQParameterOverviewWidget::leave()
 {
-  if (mpParameterSet == NULL)
+  if (mpParameterSet == NULL ||
+      mpParameterSetCopy == NULL)
     {
       return true;
     }
 
-  if (mpParameterSet->diff(*mpParameterSetCopy,
+  // The changes of the active parameter set are directly propagated to the model through mpParameterSetDM.
+  if (!mpParameterSet->isActive() &&
+      mpParameterSet->diff(*mpParameterSetCopy,
                            static_cast< CCore::Framework >(mFramework),
-                           false) != CModelParameter::Identical)
+                           false) != CModelParameter::CompareResult::Identical)
     {
+      CData OldData = mpParameterSet->toData();
       mpParameterSet->assignSetContent(*mpParameterSetCopy, false);
 
-      assert(mpDataModel != NULL);
-      mpDataModel->changed();
+      CUndoData Data;
+      mpParameterSet->createUndoData(Data, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
 
-      if (mpParameterSet->isActive())
-        {
-          mpParameterSet->updateModel();
-          protectedNotify(ListViews::STATE, ListViews::CHANGE, std::string());
-        }
-      else
-        {
-          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, mObjectCN);
-        }
+      slotNotifyChanges(mpDataModel->recordData(Data));
     }
 
   return true;
@@ -194,12 +191,14 @@ void CQParameterOverviewWidget::setFramework(int framework)
 // virtual
 bool CQParameterOverviewWidget::enterProtected()
 {
+  CModelParameterSet * pOldParameterSet = (mpParameterSet != mpParameterSetCopy) ? mpParameterSetCopy : NULL;
+
   mpParameterSet = dynamic_cast< CModelParameterSet * >(mpObject);
 
-  if (!mpParameterSet)
+  if (mpParameterSet == NULL)
     {
       mpParameterSetDM->setModelParameterSet(NULL);
-      pdelete(mpParameterSetCopy);
+      pdelete(pOldParameterSet);
 
       return false;
     }
@@ -207,22 +206,18 @@ bool CQParameterOverviewWidget::enterProtected()
   // We need to make sure the original is fully compiled.
   mpParameterSet->compile();
 
-  CModelParameterSet * pOldParameterSet = mpParameterSetCopy;
-  mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel, false);
-
   mGlobalQuantities.clear();
 
   if (mpParameterSet->isActive())
     {
+      mpParameterSetCopy = mpParameterSet;
       mpTreeView->header()->hideSection(1);
-      mpParameterSetDM->setParameterSetKey("");
     }
   else
     {
-      mpParameterSetDM->setParameterSetKey(mpParameterSet->getKey());
+      mpParameterSetCopy = new CModelParameterSet(*mpParameterSet, mpDataModel, false);
       mpParameterSetCopy->compareWithModel(static_cast< CCore::Framework >(mFramework));
       mpHeaderWidget->hide();
-      mpBtnWidget->hide();
     }
 
   buildSelectionList();
@@ -244,7 +239,7 @@ void CQParameterOverviewWidget::buildSelectionList()
 {
   // We build the selection for the global parameters for kinetic constants.
   const CModelParameterGroup *pGlobalQuantities =
-    static_cast< CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getCN()));
+    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getCN()));
 
   CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
   CModelParameterGroup::const_iterator end = pGlobalQuantities->end();
@@ -254,7 +249,7 @@ void CQParameterOverviewWidget::buildSelectionList()
 
   for (; it != end; ++it)
     {
-      if ((*it)->getCompareResult() != CModelParameter::Missing)
+      if ((*it)->getCompareResult() != CModelParameter::CompareResult::Missing)
         {
           mGlobalQuantities.append(FROM_UTF8((*it)->getName()));
         }
@@ -295,10 +290,7 @@ void CQParameterOverviewWidget::slotBtnDelete()
 
   mpParameterSetDM->setModelParameterSet(NULL);
 
-  pModel->getModelParameterSets().remove(mpParameterSet->getObjectName());
-
-  // Notify the GUI of the delete.
-  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::DELETE, mObjectCN);
+  slotNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, mpParameterSet)));
 }
 
 // virtual
@@ -338,6 +330,7 @@ void CQParameterOverviewWidget::slotBtnNew()
       saveParameterSet(&pModel->getActiveModelParameterSet());
     }
 
+  // TODO CRITICAL We need to record all changes to the model
   mpParameterSet->updateModel();
 
   // Notify the GUI that the model state has changed.
@@ -379,8 +372,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
   pNew->setObjectName(Name);
   Sets.add(pNew, true);
 
-  // Notify the GUI of the insert
-  protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->CDataObject::getCN());
+  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew)));
 
   mpListView->switchToOtherWidget(C_INVALID_INDEX, pNew->CDataObject::getCN());
 }
@@ -501,10 +493,11 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
     {
       CModelParameterSet * pNew = new CModelParameterSet(*pParameterSet, pModel, false);
       pNew->setObjectName(TO_UTF8(Name));
+
+      // We are sure that a set with that name does not exist.
       Sets.add(pNew, true);
 
-      // Notify the GUI of the insert
-      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->CDataObject::getCN());
+      slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew)));
     }
   else
     {
@@ -513,10 +506,13 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
           CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
+          CData OldData(pExisting->toData());
           pExisting->assignSetContent(*pParameterSet, false);
 
-          // Notify the GUI of the insert
-          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->CDataObject::getCN());
+          CUndoData Data;
+          pExisting->createUndoData(Data, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));
+
+          slotNotifyChanges(mpDataModel->recordData(Data));
         }
     }
 }

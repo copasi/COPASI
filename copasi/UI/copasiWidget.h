@@ -97,6 +97,8 @@ protected:
 
 protected slots:
   virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
+
+public slots:
   virtual void slotNotifyChanges(const CUndoData::ChangeSet & changes);
 };
 

@@ -13,7 +13,6 @@
 #include <copasi/undoFramework/EventChangeCommand.h>
 #include <copasi/undoFramework/EventDataChangeCommand.h>
 #include <copasi/undoFramework/InsertEventRowsCommand.h>
-#include <copasi/undoFramework/ParameterOverviewDataChangeCommand.h>
 #include <copasi/undoFramework/RemoveAllEventRowsCommand.h>
 #include <copasi/undoFramework/RemoveEventRowsCommand.h>
 #include <copasi/undoFramework/UndoData.h>

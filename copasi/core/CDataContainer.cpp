@@ -352,10 +352,6 @@ size_t CDataContainer::getIndex(const CDataObject * pObject) const
   return C_INVALID_INDEX;
 }
 
-// virtual
-void CDataContainer::updateIndex(const size_t & index, const CDataObject * pObject)
-{}
-
 void CDataContainer::getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive) const
 {
   const CDataContainer * pContainer;
@@ -389,7 +385,7 @@ std::string CDataContainer::getChildObjectUnits(const CDataObject * /* pObject *
 {return "?";}
 
 // virtual
-CDataObject * CDataContainer::insert(const CData & data)
+CUndoObjectInterface * CDataContainer::insert(const CData & data)
 {
   return NULL;
 }

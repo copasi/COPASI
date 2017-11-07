@@ -12,6 +12,7 @@
 #include "copasi/core/CDataVector.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/model/CMetab.h"
+#include "copasi/model/CModelParameterSet.h"
 #include "copasi/utilities/CCopasiParameterGroup.h"
 
 // static
@@ -480,32 +481,7 @@ std::string CUndoData::getObjectDisplayName() const
 
 std::string CUndoData::getObjectCN(const bool & apply) const
 {
-  const CData & Data = getData(!apply);
-
-  // If the object parent is a vector or array, we expect an index operator
-  CCommonName CN = Data.getProperty(CData::OBJECT_PARENT_CN).toString();
-
-  // Determine the object type of the parent;
-  CCommonName Primary;
-  CCommonName Remainder = CN;
-
-  while (!Remainder.empty())
-    {
-      Primary = Remainder.getPrimary();
-      Remainder = Remainder.getRemainder();
-    }
-
-  if (Primary.getObjectType() == "Vector")
-    {
-      CN += "[" + CCommonName::escape(Data.getProperty(CData::OBJECT_NAME).toString()) + "]";
-    }
-  else
-    {
-      CN += "," + CCommonName::escape(Data.getProperty(CData::OBJECT_TYPE).toString())
-            + "=" + CCommonName::escape(Data.getProperty(CData::OBJECT_NAME).toString());
-    }
-
-  return CN;
+  return CCommonName::fromData(getData(!apply));
 }
 
 std::string CUndoData::getObjectType() const
@@ -642,7 +618,7 @@ bool CUndoData::insert(const CDataModel & dataModel, const bool & apply, ChangeS
 
   if (execute)
     {
-      CDataObject * pObject = pParent->insert(Data);
+      CUndoObjectInterface * pObject = pParent->insert(Data);
 
       if (pObject == NULL)
         {
@@ -667,7 +643,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeS
 {
   const CData & Data = getData(apply);
 
-  CDataObject * pObject = getObject(dataModel, Data);
+  CUndoObjectInterface * pObject = getObject(dataModel, Data);
 
   if (pObject == NULL)
     return false;
@@ -692,7 +668,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeS
   const CData & OldData = getData(!apply);
   const CData & NewData = getData(apply);
 
-  CDataObject * pObject = getObject(dataModel, OldData);
+  CUndoObjectInterface * pObject = getObject(dataModel, OldData);
 
   // We must always have the old object;
   if (pObject == NULL)
@@ -703,18 +679,21 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeS
   if (execute)
     {
       // A special case is that the ParentCN has changed, i.e., the object has moved
-      if (OldData.getProperty(CData::OBJECT_PARENT_CN).toString() != NewData.getProperty(CData::OBJECT_PARENT_CN).toString())
+      CDataObject * pDataObject = NULL;
+
+      if (OldData.getProperty(CData::OBJECT_PARENT_CN).toString() != NewData.getProperty(CData::OBJECT_PARENT_CN).toString() &&
+          (pDataObject = dynamic_cast< CDataObject * >(pObject)))
         {
           // We need to move
-          CDataContainer * pContainer = pObject->getObjectParent();
+          CDataContainer * pContainer = pDataObject->getObjectParent();
 
           if (pContainer != NULL)
-            pContainer->remove(pObject);
+            pContainer->remove(pDataObject);
 
           pContainer = getParent(dataModel, NewData);
 
           if (pContainer != NULL)
-            pContainer->add(pObject, true);
+            pContainer->add(pDataObject, true);
         }
 
       success &= pObject->applyData(NewData, changes);
@@ -821,28 +800,34 @@ CDataContainer * CUndoData::getParent(const CDataModel & dataModel, const CData 
 }
 
 // static
-CDataObject * CUndoData::getObject(const CDataModel & dataModel, const CData & data)
+CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const CData & data)
 {
-  const CDataObject * pObject = NULL;
+  const CUndoObjectInterface * pObject = NULL;
   CDataContainer * pParent = getParent(dataModel, data);
 
   if (pParent != NULL)
     {
       size_t Index = 0;
       CCopasiParameterGroup * pGroup = NULL;
+      CModelParameterSet * pSet = NULL;
 
       if ((pGroup = dynamic_cast< CCopasiParameterGroup * >(pParent)) != NULL &&
           (Index = data.getProperty(CData::OBJECT_INDEX).toSizeT()) < pGroup->size())
         {
           pObject = pGroup->getParameter(data.getProperty(CData::OBJECT_INDEX).toSizeT());
         }
-      else
+      else if ((pSet = dynamic_cast< CModelParameterSet * >(pParent)) != NULL)
+        {
+          pObject = pSet->getModelParameter(data.getProperty(CData::OBJECT_NAME).toString());
+        }
+
+      if (pObject == NULL)
         {
           pObject = dynamic_cast< const CDataObject * >(pParent->getObject(data.getProperty(CData::OBJECT_TYPE).toString() + "=" + data.getProperty(CData::OBJECT_NAME).toString()));
         }
     }
 
-  return const_cast< CDataObject * >(pObject);
+  return const_cast< CUndoObjectInterface * >(pObject);
 }
 
 std::ostream & operator << (std::ostream & os, const CUndoData & o)

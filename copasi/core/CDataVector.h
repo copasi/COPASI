@@ -650,7 +650,13 @@ public:
     std::vector< CType * >::insert(std::vector< CType * >::begin() + std::min(index, std::vector< CType * >::size()), static_cast< CType * >(const_cast< CDataObject * >(pObject)));
   }
 
-  virtual CDataObject * insert(const CData & data)
+  /**
+   * Create and insert an undo object based on the given data.
+   * This method needs to be re-implemented in container which support INSERT and REMOVE
+   * @param const CData & data
+   * @return CUndoObjectInterface * pUndoObject
+   */
+  virtual CUndoObjectInterface * insert(const CData & data)
   {
     CType * pNew = NULL;
     size_t Index = 0;

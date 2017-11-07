@@ -16,13 +16,10 @@
 #include "copasi/UI/listviews.h"
 #include "copasi/UI/CQBaseDataModel.h"
 
-#include "copasi/undoFramework/ParameterOverviewDataChangeCommand.h"
-
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
 class CValidatedUnit;
-class QUndoStack;
 
 #include <set>
 
@@ -58,33 +55,9 @@ public:
 
   void setModelParameterSet(CModelParameterSet * pModelParameterSet);
 
-  /**
-   * Sets the key to the parameter set that is currently modified,
-   * this will be used by the UNDO framework to activate the correct control
-   *
-   * @param key the key to the selected parameter set or empty to denote the
-   *            current parameter overview
-   */
-  void setParameterSetKey(const std::string & key);
-  const std::string getParameterSetKey() const;
-
   void setFramework(const int & framework);
 
   static CModelParameter * nodeFromIndex(const QModelIndex & index);
-
-  void setUndoStack(QUndoStack* undoStack);
-  QUndoStack* getUndoStack();
-  /**
-   * Helper functions going through all rows looking for the given CN
-   *
-   * @param cn the CN to look for
-   * @param column the column to return in the index (if found)
-   * @return the index for the CN with the given column if found, an
-   *         invalid index otherwise.
-   */
-  bool parameterOverviewDataChange(const std::string& cn,
-                                   const QVariant &value,
-                                   const std::string& parameterSetKey, int column);
 
   virtual bool insertRows(int position, int rows, const QModelIndex & source);
   virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
@@ -111,12 +84,9 @@ private:
   static QVariant assignmentData(const CModelParameter * pNode, int role);
 
 private:
-  CModelParameterGroup * mpModelParameterSet;
+  CModelParameterSet * mpModelParameterSet;
 
   int mFramework;
-
-  QUndoStack *mpUndoStack;
-  ParameterOverviewDataChangeCommand *mpLastCommand;
 
   // cache the unit strings, to make viewing the parameter overview table faster
   mutable std::set< CValidatedUnit > mUnitCache;

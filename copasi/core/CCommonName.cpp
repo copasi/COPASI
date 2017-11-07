@@ -11,13 +11,12 @@
  * Copyright Stefan Hoops 2002
  */
 
-//TODO what does getName() vs. getObjectName do?
-
 #include <sstream>
 
 #include "copasi.h"
 #include "CCommonName.h"
 #include "copasi/utilities/utility.h"
+#include "copasi/undo/CData.h"
 
 using std::string;
 
@@ -37,7 +36,7 @@ CCommonName::~CCommonName()
 {}
 
 CCommonName CCommonName::getPrimary() const
-{return substr(0, findEx(","));}
+{return substr(0, findNext(","));}
 
 CCommonName CCommonName::getRemainder() const
 {
@@ -50,7 +49,7 @@ CCommonName CCommonName::getRemainder() const
       Separator += "[";
     }
 
-  std::string::size_type pos = findEx(Separator);
+  std::string::size_type pos = findNext(Separator);
 
   if (pos == std::string::npos) return CCommonName();
 
@@ -63,13 +62,13 @@ std::string CCommonName::getObjectType() const
 {
   CCommonName Primary(getPrimary());
 
-  return CCommonName::unescape(Primary.substr(0, Primary.findEx("=")));
+  return CCommonName::unescape(Primary.substr(0, Primary.findNext("=")));
 }
 
 std::string CCommonName::getObjectName() const
 {
   CCommonName Primary = getPrimary();
-  std::string::size_type pos = Primary.findEx("=");
+  std::string::size_type pos = Primary.findNext("=");
 
   if (pos == std::string::npos) return "";
 
@@ -77,7 +76,7 @@ std::string CCommonName::getObjectName() const
 
   if (getObjectType() != "String")
     {
-      tmp = tmp.substr(0, tmp.findEx("["));
+      tmp = tmp.substr(0, tmp.findNext("["));
     }
 
   return CCommonName::unescape(tmp);
@@ -100,13 +99,13 @@ std::string CCommonName::getElementName(const size_t & pos,
 {
   CCommonName Primary = getPrimary();
 
-  std::string::size_type open = Primary.findEx("[");
+  std::string::size_type open = Primary.findNext("[");
   size_t i;
 
   for (i = 0; i < pos && open != std::string::npos; i++)
-    open = Primary.findEx("[", open + 1);
+    open = Primary.findNext("[", open + 1);
 
-  std::string::size_type close = Primary.findEx("]", open + 1);
+  std::string::size_type close = Primary.findNext("]", open + 1);
 
   if (open == std::string::npos || close == std::string::npos) return "";
 
@@ -115,6 +114,38 @@ std::string CCommonName::getElementName(const size_t & pos,
                                  close - open - 1));
 
   return Primary.substr(open + 1, close - open - 1);
+}
+
+void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::string & objectName) const
+{
+  std::string::size_type LastComma = findPrevious(",");
+  CCommonName Primary;
+
+  if (LastComma != std::string::npos)
+    {
+      parentCN = substr(0, LastComma);
+      Primary = substr(LastComma + 1);
+    }
+  else
+    {
+      parentCN.clear();
+      Primary = *this;
+    }
+
+  objectName = Primary.getElementName(0);
+
+  if (objectName.empty())
+    {
+      objectType = Primary.getObjectType();
+      objectName = Primary.getObjectName();
+    }
+  else
+    {
+      objectType.clear();
+      parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+    }
+
+  return;
 }
 
 std::string CCommonName::escape(const std::string & name)
@@ -149,9 +180,34 @@ std::string CCommonName::unescape(const std::string & name)
   return Unescaped;
 }
 
+// static
+std::string CCommonName::fromData(const CData & data)
+{
+  CCommonName CN = data.getProperty(CData::OBJECT_PARENT_CN).toString();
+  std::string ObjectType = data.getProperty(CData::OBJECT_TYPE).toString();
+
+  CCommonName ParentParentCN;
+  std::string ParentObjectName;
+  std::string ParentObjectType;
+
+  CN.split(ParentParentCN, ParentObjectType, ParentObjectName);
+
+  if (ParentObjectType == "Vector" ||
+      ObjectType.empty())
+    {
+      CN += "[" + CCommonName::escape(data.getProperty(CData::OBJECT_NAME).toString()) + "]";
+    }
+  else
+    {
+      CN += "," + CCommonName::escape(ObjectType) + "=" + CCommonName::escape(data.getProperty(CData::OBJECT_NAME).toString());
+    }
+
+  return CN;
+}
+
 std::string::size_type
-CCommonName::findEx(const std::string & toFind,
-                    const std::string::size_type & pos) const
+CCommonName::findNext(const std::string & toFind,
+                      const std::string::size_type & pos) const
 {
   std::string::size_type where = find_first_of(toFind, pos);
 
@@ -165,6 +221,26 @@ CCommonName::findEx(const std::string & toFind,
         return where;
 
       where = find_first_of(toFind, where + 1);
+    }
+
+  return where;
+}
+
+std::string::size_type CCommonName::findPrevious(const std::string & toFind,
+    const std::string::size_type & pos) const
+{
+  std::string::size_type where = find_last_of(toFind, pos);
+
+  std::string::size_type tmp;
+
+  while (where && where != std::string::npos)
+    {
+      tmp = find_last_not_of("\\", where - 1);
+
+      if ((where - tmp) % 2)
+        return where;
+
+      where = find_last_of(toFind, where - 1);
     }
 
   return where;

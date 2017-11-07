@@ -500,9 +500,21 @@ public:
 
   virtual size_t getIndex(const CDataObject * pObject) const;
 
-  virtual void updateIndex(const size_t & index, const CDataObject * pObject);
+  /**
+   * Create and insert an undo object based on the given data.
+   * This method needs to be re-implemented in container which support INSERT and REMOVE
+   * @param const CData & data
+   * @return CUndoObjectInterface * pUndoObject
+   */
+  virtual CUndoObjectInterface * insert(const CData & data);
 
-  virtual CDataObject * insert(const CData & data);
+  /**
+   * Update the index of a contained object
+   * This method needs to be re-implemented in container which care about the order of contained objects
+   * @param const size_t & index
+   * @param const CUndoObjectInterface * pUndoObject
+   */
+  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
 
   /**
    * Retrieve the index of a parameter or subgroup with a given name
