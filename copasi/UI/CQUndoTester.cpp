@@ -508,7 +508,7 @@ void CQUndoTester::testEventDetail()
                       mpEvent,
                       mpDetailEvent,
                       mpEvent->getAssignments()[0].getExpression(),  // expression
-                      mpEvent->getAssignments()[0].getTargetKey()   // key
+                      mpEvent->getAssignments()[0].getTargetCN()   // key
                     ));
 
   deleteCompartment();

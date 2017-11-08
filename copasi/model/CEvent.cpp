@@ -44,10 +44,9 @@ CEventAssignment * CEventAssignment::fromData(const CData & data)
 // virtual
 CData CEventAssignment::toData() const
 {
-  CData Data;
+  CData Data(CDataContainer::toData());
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::EXPRESSION, getExpression());
 
   return Data;
 }
@@ -57,22 +56,48 @@ bool CEventAssignment::applyData(const CData & data, CUndoData::ChangeSet & chan
 {
   bool success = true;
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::EXPRESSION))
+    {
+      setExpression(data.getProperty(CData::EXPRESSION).toString());
+    }
 
   return success;
 }
 
+// virtual
+void CEventAssignment::createUndoData(CUndoData & undoData,
+                                      const CUndoData::Type & type,
+                                      const CData & oldData,
+                                      const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  // TODO CRITICAL Implement me!
+  fatalError();
+}
+
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
-CEventAssignment::CEventAssignment(const std::string & targetKey,
+CEventAssignment::CEventAssignment(const std::string & targetCN,
                                    const CDataContainer * pParent) :
-  CDataContainer(targetKey, pParent, "EventAssignment"),
+  CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
   mpTarget(NULL),
   mpExpression(NULL)
 {
+  CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetCN);
+
+  if (pObject != NULL)
+    {
+      setObjectName(pObject->getCN());
+    }
+
   if (mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
@@ -133,8 +158,13 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
 
   mpTarget = NULL;
 
-  CModelEntity * pEntity =
-    dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(getObjectName()));
+  const CModelEntity * pEntity = NULL;
+  CDataModel * pDataModel = getObjectDataModel();
+
+  if (pDataModel != NULL)
+    {
+      pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(pDataModel->getObject(getObjectName())));
+    }
 
   // The entity type must not be an ASSIGNMENT
   if (pEntity != NULL &&
@@ -183,18 +213,18 @@ const CDataObject * CEventAssignment::getTargetObject() const
   return mpTarget;
 }
 
-bool CEventAssignment::setTargetKey(const std::string & targetKey)
+bool CEventAssignment::setTargetCN(const std::string & targetCN)
 {
-  if (targetKey != getTargetKey() &&
+  if (targetCN != getObjectName() &&
       mpModel != NULL)
     {
       mpModel->setCompileFlag(true);
     }
 
-  return setObjectName(targetKey);
+  return setObjectName(targetCN);
 }
 
-const std::string & CEventAssignment::getTargetKey() const
+const std::string & CEventAssignment::getTargetCN() const
 {
   return getObjectName();
 }

@@ -2545,7 +2545,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
             }
 
           CEventAssignment * pNewAssignment =
-            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getKey());
+            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getCN());
           std::stringstream assignmentStr; assignmentStr << value;
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();

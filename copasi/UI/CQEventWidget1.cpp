@@ -228,8 +228,7 @@ CQEventWidget1::loadFromEvent()
 
   for (; it != end; ++it, ijk++)
     {
-      const CModelEntity * pEntity =
-        dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
+      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(mpDataModel->getObject(it->getTargetCN())));
 
       if (pEntity != NULL)
         {
@@ -385,7 +384,7 @@ void CQEventWidget1::saveToEvent()
   // We first update all assignments.
   for (; it != end; ++it)
     {
-      Found = OldAssignments.getIndex(it->getTargetKey());
+      Found = OldAssignments.getIndex(it->getTargetCN());
 
       if (Found == C_INVALID_INDEX)
         {
@@ -393,10 +392,10 @@ void CQEventWidget1::saveToEvent()
             new EventChangeCommand(
               CCopasiUndoCommand::EVENT_ASSIGNMENT_ADDED,
               "",
-              FROM_UTF8(it->getTargetKey()),
+              FROM_UTF8(it->getTargetCN()),
               mpEvent,
               this,
-              it->getTargetKey(),
+              it->getTargetCN(),
               it->getExpression()
             )
           );
@@ -436,16 +435,16 @@ void CQEventWidget1::saveToEvent()
 
   for (; itOld != endOld && DeleteCount > 0; ++itOld)
     {
-      const std::string & key = itOld->getTargetKey();
+      const std::string & CN = itOld->getTargetCN();
 
       for (it = mAssignments.begin(); it != end; ++it)
         {
-          if (key == it->getTargetKey()) break;
+          if (CN == it->getTargetCN()) break;
         }
 
       if (it == end)
         {
-          ToBeDeleted.push_back(std::make_pair(key, itOld->getExpression()));
+          ToBeDeleted.push_back(std::make_pair(CN, itOld->getExpression()));
           DeleteCount--;
           mChanged = true;
         }
@@ -591,7 +590,7 @@ void CQEventWidget1::slotSelectObject()
 
   if (pME == NULL) return;
 
-  if (mAssignments[mCurrentTarget].setTargetKey(pME->getKey()))
+  if (mAssignments[mCurrentTarget].setTargetCN(pME->getCN()))
     {
       // If the target key change was successful we need to update the label.
       mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));

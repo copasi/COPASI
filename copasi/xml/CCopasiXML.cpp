@@ -975,9 +975,12 @@ bool CCopasiXML::saveModel()
 
           if (Assignments.size() > 0)
             {
+              CDataModel * pDataModel = Assignments.getObjectDataModel();
+
               startSaveElement("ListOfAssignments");
 
               CXMLAttributeList Attr;
+              Attr.add("target", "");
               Attr.add("targetKey", "");
 
               CDataVectorN< CEventAssignment >::const_iterator it = Assignments.begin();
@@ -985,7 +988,8 @@ bool CCopasiXML::saveModel()
 
               for (; it != end; ++it)
                 {
-                  Attr.setValue(0, it->getTargetKey());
+                  Attr.setValue(0, it->getTargetCN());
+                  Attr.setValue(1, CObjectInterface::DataObject(pDataModel->getObject(it->getTargetCN()))->getKey());
 
                   startSaveElement("Assignment", Attr);
 

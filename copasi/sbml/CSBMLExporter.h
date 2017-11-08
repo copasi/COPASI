@@ -627,7 +627,7 @@ protected:
    * This method checks if the given event assignment object is SBML
    * compatible.
    */
-  static void isEventAssignmentSBMLCompatible(std::string& key,
+  static void isEventAssignmentSBMLCompatible(const CDataObject * pTarget,
       const CExpression* pExpression,
       const CDataModel& dataModel,
       unsigned int sbmlLevel,

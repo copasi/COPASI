@@ -5022,13 +5022,9 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      //    ii) for each assignment, check if there already is an old assignment
-      //        for this variable
-      std::string key = itAssignment->getTargetKey();
-
       //        now we have to get the object for the key, check if the object is a
       //        compartment, species or global parameter,
-      const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+      const CDataObject* pObject = CObjectInterface::DataObject(event.getObjectDataModel()->getObject(itAssignment->getTargetCN()));
       std::string objectType = pObject->getObjectType();
 
       if (objectType == "Reference")
@@ -7182,9 +7178,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqbiol_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqbiol_isDescribedBy:
+          //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7221,7 +7217,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-            // This qualifier is supported in libsbml 4.1
+          // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -7283,9 +7279,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-            // IS DESCRIBED BY is handled in the references below
-            //case bqmodel_isDescribedBy:
-            //    break;
+          // IS DESCRIBED BY is handled in the references below
+          //case bqmodel_isDescribedBy:
+          //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
@@ -7990,41 +7986,41 @@ void CSBMLExporter::isEventSBMLCompatible(
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
     }
 
-  std::set<std::string> objectKeys;
-  std::set<std::string> nonUniqueObjectKeys;
+  std::set<std::string> objectCNs;
+  std::set<std::string> nonUniqueObjectCNs;
 
   CDataVectorN< CEventAssignment >::const_iterator itAssignment = pEvent->getAssignments().begin();
   CDataVectorN< CEventAssignment >::const_iterator endAssignment = pEvent->getAssignments().end();
 
   for (; itAssignment != endAssignment; ++itAssignment)
     {
-      std::string key = itAssignment->getTargetKey();
+      std::string CN = itAssignment->getTargetCN();
+      const CDataObject * pObject = CObjectInterface::DataObject(dataModel.getObject(CN));
 
-      if (objectKeys.find(key) == objectKeys.end())
+      if (objectCNs.find(CN) == objectCNs.end())
         {
-          objectKeys.insert(key);
+          objectCNs.insert(CN);
         }
       else
         {
           // This should never happen since I assume that COPASI will have
           // the same restriction as SBML with respect to unique assignments
           // within an event
-          if (nonUniqueObjectKeys.find(key) == nonUniqueObjectKeys.end())
+          if (nonUniqueObjectCNs.find(CN) == nonUniqueObjectCNs.end())
             {
-              nonUniqueObjectKeys.insert(key);
-              const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
+              nonUniqueObjectCNs.insert(CN);
               assert(pObject != NULL);
               CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event called \"" + pEvent->getObjectName() + "\" has several assignments to the same object called \"" + pObject->getObjectName() + "\".").c_str());
             }
         }
 
-      CSBMLExporter::isEventAssignmentSBMLCompatible(key, itAssignment->getExpressionPtr(),
+      CSBMLExporter::isEventAssignmentSBMLCompatible(pObject, itAssignment->getExpressionPtr(),
           dataModel, sbmlLevel, sbmlVersion, pEvent->getObjectName(), result, idMap);
     }
 }
 
 void CSBMLExporter::isEventAssignmentSBMLCompatible(
-  std::string& key,
+  const CDataObject * pTarget,
   const CExpression* pExpression,
   const CDataModel& dataModel,
   unsigned int sbmlLevel,
@@ -8033,10 +8029,8 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
   std::vector<SBMLIncompatibility>& result,
   std::map<std::string, const SBase*>& idMap)
 {
-  // check if the key points to a compartment, species or global value
-  const CDataObject* pObject = CRootContainer::getKeyFactory()->get(key);
-  assert(pObject != NULL);
-  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pObject);
+  assert(pTarget != NULL);
+  const CModelEntity* pME = dynamic_cast<const CModelEntity*>(pTarget);
 
   if (pME == NULL)
     {
@@ -8051,7 +8045,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
         {
           // create an error message since the object is not a
           // compartment, species or model value
-          result.push_back(SBMLIncompatibility(9, pObject->getObjectName().c_str(), std::string("event called \"" + eventName + "\"").c_str()));
+          result.push_back(SBMLIncompatibility(9, pTarget->getObjectName().c_str(), std::string("event called \"" + eventName + "\"").c_str()));
         }
       else
         {
@@ -8062,7 +8056,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
               // constant
               // This is a raw message since I do expect COPASI to have the same
               // restriction as SBML, so this should never happen
-              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to constant object named \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
           // make sure there is no assignment rule for the variable
           else if (pME->getStatus() == CModelEntity::Status::ASSIGNMENT)
@@ -8071,7 +8065,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
               // determined by an assignment
               // This is a raw message since I do expect COPASI to have the same
               // restriction as SBML, so this should never happen
-              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. Event assignment to object called \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\", which is determined by an assignment rule.").c_str());
             }
 
           // check if the expression only references allowed model entities
@@ -8079,14 +8073,14 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
             {
 
               std::set<std::string> usedFunctionNames;
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\""));
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\"").c_str());
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
           else
             {
               // This is a raw message since I do expect COPASI to always have
               // an assignment expression
-              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
+              CCopasiMessage(CCopasiMessage::RAW, std::string("Error. No expression set for event assignment to object called \"" + pTarget->getObjectName() + "\" in event named \"" + eventName + "\".").c_str());
             }
         }
     }
@@ -8373,7 +8367,7 @@ bool CSBMLExporter::hasVolumeAssignment(const CDataModel& dataModel)
 
   CDataVectorN<CEvent>::const_iterator eit = dataModel.getModel()->getEvents().begin(), eendit = dataModel.getModel()->getEvents().end();
 
-  std::string key;
+  std::string CN;
   const CDataObject* pObject = NULL;
   std::string objectType;
 
@@ -8384,11 +8378,11 @@ bool CSBMLExporter::hasVolumeAssignment(const CDataModel& dataModel)
 
       while (itAssignment != endAssignment && result == false)
         {
-          key = itAssignment->getTargetKey();
+          CN = itAssignment->getTargetCN();
 
           //        now we have to get the object for the key, check if the object is a
           //        compartment, species or global parameter,
-          pObject = CRootContainer::getKeyFactory()->get(key);
+          pObject = CObjectInterface::DataObject(dataModel.getObject(CN));
           assert(pObject != NULL);
           objectType = pObject->getObjectType();
 

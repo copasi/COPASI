@@ -89,20 +89,20 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
         }
       else
         {
-          CEvent *pEvent = &mpDataModel->getModel()->getEvents()[index.row()];
+          const CEvent & Event = mpDataModel->getModel()->getEvents()[index.row()];
           QString assignmentTarget = "";
           QString assignmentExpression = "";
 
           if (index.column() == COL_ASSIGNTARGET_EVENTS || index.column() == COL_ASSIGNEXPRESSION_EVENTS)
             {
-              CDataVectorN< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
-              CDataVectorN< CEventAssignment >::const_iterator begin = pEvent->getAssignments().begin();
-              CDataVectorN< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
+              CDataVectorN< CEventAssignment >::const_iterator it = Event.getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator begin = Event.getAssignments().begin();
+              CDataVectorN< CEventAssignment >::const_iterator end = Event.getAssignments().end();
 
               for (; it != end; ++it)
                 {
                   const CModelEntity * pEntity =
-                    dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
+                    dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(mpDataModel->getObject(it->getTargetCN())));
 
                   if (pEntity != NULL)
                     {
@@ -129,33 +129,33 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
                 return QVariant(index.row() + 1);
 
               case COL_NAME_EVENTS:
-                return QVariant(FROM_UTF8(pEvent->getObjectName()));
+                return QVariant(FROM_UTF8(Event.getObjectName()));
 
               case COL_TRIGGER_EVENTS:
-                pExpression = pEvent->getTriggerExpressionPtr();
+                pExpression = Event.getTriggerExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(FROM_UTF8(pExpression->getDisplayString()));
                 else
-                  return QVariant(FROM_UTF8(pEvent->getTriggerExpression()));
+                  return QVariant(FROM_UTF8(Event.getTriggerExpression()));
 
               case COL_DELAYED_EVENTS:
               {
-                if (pEvent->getDelayExpression() == "")
+                if (Event.getDelayExpression() == "")
                   return QVariant(QString("No"));
-                else if (pEvent->getDelayAssignment())
+                else if (Event.getDelayAssignment())
                   return QVariant(QString("Assignment"));
                 else
                   return QVariant(QString("Calculation"));
               }
 
               case COL_DELAY_EXPRESSION_EVENTS:
-                pExpression = pEvent->getDelayExpressionPtr();
+                pExpression = Event.getDelayExpressionPtr();
 
                 if (pExpression != NULL)
                   return QVariant(FROM_UTF8(pExpression->getDisplayString()));
                 else
-                  return QVariant(FROM_UTF8(pEvent->getDelayExpression()));
+                  return QVariant(FROM_UTF8(Event.getDelayExpression()));
 
               case COL_ASSIGNTARGET_EVENTS:
                 return QVariant(assignmentTarget);

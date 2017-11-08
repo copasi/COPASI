@@ -22,7 +22,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CEvent.h"
 #include "copasi/core/CRootContainer.h"
-
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "UndoEventData.h"
 
 #include "UndoEventAssignmentData.h"
@@ -38,7 +38,7 @@ UndoEventData::UndoEventData(const std::string &key  /*= ""*/,
   , mDelayAssignment(false)
   , mFireAtInitialTime(false)
   , mPersistentTrigger(false)
-  , mEventAssignmentData(new QList <UndoEventAssignmentData*>())
+  , mEventAssignmentData(new QList <UndoEventAssignmentData * >())
 {
 }
 
@@ -51,14 +51,16 @@ UndoEventData::UndoEventData(const CEvent *pEvent)
   , mDelayAssignment(pEvent->getDelayAssignment())
   , mFireAtInitialTime(pEvent->getFireAtInitialTime())
   , mPersistentTrigger(pEvent->getPersistentTrigger())
-  , mEventAssignmentData(new QList <UndoEventAssignmentData*>())
+  , mEventAssignmentData(new QList <UndoEventAssignmentData * >())
 {
   CDataVector< CEventAssignment >::const_iterator it = pEvent->getAssignments().begin();
   CDataVector< CEventAssignment >::const_iterator end = pEvent->getAssignments().end();
 
+  CDataModel * pDataModel = pEvent->getObjectDataModel();
+
   for (; it != end; ++it)
     {
-      const CModelEntity * pEntity = dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(it->getTargetKey()));
+      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(pDataModel->getObject(it->getTargetCN())));
       mEventAssignmentData->append(
         new UndoEventAssignmentData(pEntity, it->getExpression()));
     }

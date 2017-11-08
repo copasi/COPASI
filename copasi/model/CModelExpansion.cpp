@@ -975,11 +975,11 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
       const CEventAssignment* pSourceAssignment = &source->getAssignments()[i];
 
       //const CModelEntity * pSourceTarget = dynamic_cast<const CModelEntity * >(CRootContainer::getKeyFactory()->get(pSourceAssignment->getTargetKey()));
-      if (sourceSet.contains(pSourceAssignment->getTargetKey()))
+      if (sourceSet.contains(pSourceAssignment->getTargetCN()))
         {
           //we assume that the duplicate of the target object already exists.
           //this should be true since events are duplicated last.
-          if (!emap.exists(pSourceAssignment->getTargetKey()))
+          if (!emap.exists(pSourceAssignment->getTargetCN()))
             continue;
 
           //create duplicate of assignment (this can be either in the original event or in the
@@ -1369,7 +1369,7 @@ void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
       const CDataObject * pObject = emap.getDuplicateFromObject(pAssignment->getTargetObject());
 
       if (pObject != NULL)
-        pAssignment->setTargetKey(pObject->getKey());
+        pAssignment->setTargetCN(pObject->getCN());
     }
 }
 
