@@ -261,6 +261,9 @@ CLayout::CLayout(const Layout & sbml,
 {
   //add the copasi key to the map
   layoutmap[sbml.getId()] = mKey;
+
+  if (sbml.isSetName())
+    setObjectName(sbml.getName());
 }
 
 CLayout::~CLayout()
