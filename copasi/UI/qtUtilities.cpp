@@ -351,7 +351,7 @@ QString toTsvString(QAbstractItemModel* pModel,
       if (writeRowHeaders)
         stream << '\t';
 
-      for (int j = 0; j <= pModel->columnCount(); ++j)
+      for (int j = 0; j < pModel->columnCount(); ++j)
         {
           stream << pModel->headerData(j, Qt::Horizontal).toString().replace('\n', ' ');
 
@@ -367,7 +367,7 @@ QString toTsvString(QAbstractItemModel* pModel,
       if (writeRowHeaders)
         stream << pModel->headerData(i, Qt::Vertical).toString().replace('\n', ' ') << '\t';
 
-      for (int j = 0; j <= pModel->columnCount(); ++j)
+      for (int j = 0; j < pModel->columnCount(); ++j)
         {
           stream << pModel->index(i, j).data().toString();
 
