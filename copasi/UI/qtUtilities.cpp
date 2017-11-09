@@ -19,6 +19,8 @@
 
 #include <QtCore/QString>
 #include <QtCore/QFileInfo>
+#include <QTextStream>
+#include <QAbstractItemView>
 
 #include "copasi.h"
 #include "qtUtilities.h"
@@ -335,4 +337,57 @@ const CopasiWidget * GetCopasiWidget(const QObject * pObject)
     }
 
   return pCopasiWidget;
+}
+
+QString toTsvString(QAbstractItemModel* pModel,
+                    bool writeColumnHeaders /*= true*/,
+                    bool writeRowHeaders /*= true*/)
+{
+  QString text;
+  QTextStream stream(&text);
+
+  if (writeColumnHeaders)
+    {
+      if (writeRowHeaders)
+        stream << '\t';
+
+      for (int j = 0; j <= pModel->columnCount(); ++j)
+        {
+          stream << pModel->headerData(j, Qt::Horizontal).toString().replace('\n', ' ');
+
+          if (j + 1 < pModel->columnCount())
+            stream << '\t';
+        }
+
+      stream << '\n';
+    }
+
+  for (int i = 0; i < pModel->rowCount(); ++i)
+    {
+      if (writeRowHeaders)
+        stream << pModel->headerData(i, Qt::Vertical).toString().replace('\n', ' ') << '\t';
+
+      for (int j = 0; j <= pModel->columnCount(); ++j)
+        {
+          stream << pModel->index(i, j).data().toString();
+
+          if (j + 1 < pModel->columnCount())
+            stream << '\t';
+        }
+
+      stream << '\n';
+    }
+
+  return text;
+}
+
+QString toTsvString(QAbstractItemView* pWidget,
+                    bool writeColumnHeaders /*= true*/,
+                    bool writeRowHeaders /*= true*/)
+{
+  if (pWidget == NULL)
+    return QString();
+
+  QAbstractItemModel* pModel = pWidget->model();
+  return toTsvString(pModel, writeColumnHeaders, writeRowHeaders);
 }

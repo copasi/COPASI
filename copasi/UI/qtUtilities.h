@@ -31,6 +31,8 @@ class QStringList;
 class CCopasiParameterGroup;
 class CopasiWidget;
 class QObject;
+class QAbstractItemView;
+class QAbstractItemModel;
 
 /**
  * notifies the UI of a modification of the model.
@@ -182,5 +184,27 @@ C_INT32 checkSelection(const QString & file);
  * This converts a std::vector<std::string> into a QStringList
  */
 void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl);
+
+/**
+ * Returns the contents of a table view as string
+ *
+ * @param pWidget the table view containing the data to return
+ * @param writeColumnHeaders if true (default), the string will contain column headers
+ * @param writeRowHeaders if true (default), the string will contain row headers
+ *
+ * @return a tab separated string containing the contents of the widget
+ */
+QString toTsvString(QAbstractItemView* pWidget, bool writeColumnHeaders = true, bool writeRowHeaders = true);
+
+/**
+* Returns the contents of a table view as string
+*
+* @param pModel the item model to convert to string
+* @param writeColumnHeaders if true (default), the string will contain column headers
+* @param writeRowHeaders if true (default), the string will contain row headers
+*
+* @return a tab separated string containing the contents of the widget
+*/
+QString toTsvString(QAbstractItemModel* pModel, bool writeColumnHeaders = true, bool writeRowHeaders = true);
 
 #endif // COPASI_qtUtilities

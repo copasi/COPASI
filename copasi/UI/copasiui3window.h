@@ -131,9 +131,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-#ifdef COPASI_Provenance
+  #ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-#endif
+  #endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -170,6 +170,7 @@ public slots:
   void slotShowDependencies(bool flag);
   void slotUpdateHideMainToolbarAction();
   void slotHideMainToolbar(bool flag);
+  void slotCopy();
 
   /**
    * This should only be called by the destructor of the object browser dialog
@@ -329,6 +330,7 @@ private:
   QAction* mpaFontSelectionDialog;
   QAction* mpaParameterEstimationResult;
 
+  QAction* mpaCopy;
   QAction* mpaCloseAllWindows;
   QAction* mpaShowDebugInfo;
 

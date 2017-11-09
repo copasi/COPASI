@@ -26,6 +26,7 @@
 #include <QUndoStack>
 #include <QMimeData>
 #include <QSettings>
+#include <QClipboard>
 
 #ifdef COPASI_UNDO
 #include "CQUndoHistoryDialog.h"
@@ -116,6 +117,7 @@
 #endif
 
 #include <copasi/UI/CQDependencyDialog.h>
+#include "qtUtilities.h"
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
@@ -209,6 +211,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpaExpandModel(NULL),
   mpaFontSelectionDialog(NULL),
   mpaParameterEstimationResult(NULL),
+  mpaCopy(NULL),
   mpaCloseAllWindows(NULL),
   mpaShowDebugInfo(NULL),
 
@@ -411,6 +414,11 @@ void CopasiUI3Window::createActions()
   mpaQuit = new QAction("&Quit", this);
   connect(mpaQuit, SIGNAL(triggered()), this, SLOT(slotQuit()));
   mpaQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
+
+  mpaCopy = new QAction("&Copy", this);
+  mpaCopy->setShortcut(QKeySequence::Copy);
+  connect(mpaCopy, SIGNAL(triggered()), this, SLOT(slotCopy()));
+
   mpaSliders = new QAction(CQIconResource::icon(CQIconResource::slider), "Show sliders", this);
   mpaSliders->setCheckable(true);
   connect(mpaSliders, SIGNAL(toggled(bool)), this, SLOT(slotShowSliders(bool)));
@@ -640,8 +648,10 @@ void CopasiUI3Window::createMenuBar()
   pFileMenu->addSeparator();
   pFileMenu->addAction(mpaQuit);
   //********** edit menu ************
-#ifdef COPASI_UNDO
   QMenu *pEditMenu = menuBar()->addMenu("&Edit");
+  pEditMenu->addAction(mpaCopy);
+#ifdef COPASI_UNDO
+  pEditMenu->addSeparator();
   pEditMenu->addAction(mpaUndo);
   pEditMenu->addAction(mpaRedo);
   pEditMenu->addAction(mpaUndoHistory);
@@ -1927,6 +1937,41 @@ void CopasiUI3Window::slotHideMainToolbar(bool flag)
     mpMainToolbar->hide();
   else
     mpMainToolbar->show();
+}
+
+void CopasiUI3Window::slotCopy()
+{
+  QWidget* pWidget = focusWidget();
+
+  if (pWidget == NULL)
+    return;
+
+  QAbstractItemView* pView = qobject_cast<QAbstractItemView*>(pWidget);
+
+  if (pView != NULL)
+    {
+      QApplication::clipboard()->setText(toTsvString(pView));
+      return;
+    }
+
+  QTextEdit* pEdit = qobject_cast<QTextEdit*>(pWidget);
+
+  if (pEdit != NULL)
+    {
+      pEdit->selectAll();
+      pEdit->copy();
+      return;
+    }
+
+  QLineEdit* pLineEdit = qobject_cast<QLineEdit*>(pWidget);
+
+  if (pLineEdit != NULL)
+    {
+      pLineEdit->selectAll();
+      pLineEdit->copy();
+      return;
+    }
+
 }
 
 void CopasiUI3Window::slotShowDependencies(bool flag)
