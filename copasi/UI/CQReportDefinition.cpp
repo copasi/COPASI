@@ -522,29 +522,29 @@ void CQReportDefinition::slotEditCurrentItem()
   QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
   QList<QListWidgetItem*> selectedItems = pList->selectedItems();
 
-  foreach (QListWidgetItem * item, selectedItems)
-    {
-      CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-      const CCommonName & name = current->getCN();
+  foreach(QListWidgetItem * item, selectedItems)
+  {
+    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+    const CCommonName & name = current->getCN();
 
-      if (name.getObjectType() == "Separator")
+    if (name.getObjectType() == "Separator")
+      continue;
+
+    const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
+
+    if (pObject == NULL)
+      {
         continue;
+      }
 
-      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
+    const CDataObject* pNewObject =
+      CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
 
-      if (pObject == NULL)
-        {
-          continue;
-        }
+    if (pNewObject == NULL || pNewObject == pObject) continue;
 
-      const CDataObject* pNewObject =
-        CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
-
-      if (pNewObject == NULL || pNewObject == pObject) continue;
-
-      current->setObject(pNewObject);
-      mChanged = true;
-    }
+    current->setObject(pNewObject);
+    mChanged = true;
+  }
 }
 
 void CQReportDefinition::slotEditCurrentItemText()
@@ -559,30 +559,44 @@ void CQReportDefinition::slotEditCurrentItemText()
 
   CQTextDialog * pDialog = new CQTextDialog(this);
 
-  foreach (QListWidgetItem * item, selectedItems)
-    {
-      CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-      const CCommonName & name = current->getCN();
+  foreach(QListWidgetItem * item, selectedItems)
+  {
+    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+    const CCommonName & name = current->getCN();
 
-      std::string objectType = name.getObjectType();
+    std::string objectType = name.getObjectType();
 
-      if (objectType == "Separator")
-        continue;
+    if (objectType == "Separator")
+      continue;
 
-      if (objectType == "String")
-        pDialog->setText(FROM_UTF8(name.getObjectName()));
-      else
-        pDialog->setText(FROM_UTF8(name));
+    if (objectType == "String")
+      pDialog->setText(FROM_UTF8(name.getObjectName()));
+    else
+      pDialog->setText(FROM_UTF8(name));
 
-      if (pDialog->exec() == QDialog::Accepted &&
-          pDialog->getText() != "")
-        {
-          CDataString Text(TO_UTF8(pDialog->getText()));
+    if (pDialog->exec() == QDialog::Accepted &&
+        pDialog->getText() != "")
+      {
+        std::string newText = TO_UTF8(pDialog->getText());
 
-          current->setObject(&Text);
-          mChanged = true;
-        }
-    }
+        if (name != newText)
+          {
+            const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(newText));
+
+            if (pObject != NULL)
+              {
+                current->setObject(pObject);
+              }
+            else
+              {
+                CDataString Text(newText);
+                current->setObject(&Text);
+              }
+
+            mChanged = true;
+          }
+      }
+  }
 
   delete pDialog;
 }
