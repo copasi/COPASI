@@ -465,7 +465,12 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
   CDataVectorN< CModelParameterSet >::const_iterator end = Sets.end();
   QStringList SelectionList;
 
-  SelectionList << QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
+  QString defaultName = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
+
+  while (Sets.getIndex(TO_UTF8(defaultName)) != C_INVALID_INDEX)
+    defaultName = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
+
+  SelectionList << defaultName;
 
   for (; it != end; ++it)
     {

@@ -69,6 +69,7 @@ void CQParameterSetsWidget::slotBtnNewClicked()
 {
   mpParameterSetsDM->insertRow(mpParameterSetsDM->rowCount(), QModelIndex());
   updateDeleteBtns();
+  mpTblParameterSets->resizeColumnsToContents();
 }
 
 void CQParameterSetsWidget::slotBtnDeleteClicked()

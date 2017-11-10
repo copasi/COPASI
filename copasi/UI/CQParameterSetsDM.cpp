@@ -165,6 +165,10 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
   for (int row = 0; row < rows; ++row)
     {
       QString Name = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
+
+      while (pModel->getModelParameterSets().getIndex(TO_UTF8(Name)) != C_INVALID_INDEX)
+        Name = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
+
       CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(),  pModel, false);
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
