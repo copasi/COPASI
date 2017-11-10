@@ -1958,7 +1958,9 @@ void CopasiUI3Window::slotCopy()
 
   if (pEdit != NULL)
     {
-      pEdit->selectAll();
+      if (pEdit->textCursor().selectedText().isEmpty())
+        pEdit->selectAll();
+
       pEdit->copy();
       return;
     }
@@ -1967,7 +1969,9 @@ void CopasiUI3Window::slotCopy()
 
   if (pLineEdit != NULL)
     {
-      pLineEdit->selectAll();
+      if (pLineEdit->selectedText().isEmpty())
+        pLineEdit->selectAll();
+
       pLineEdit->copy();
       return;
     }
