@@ -64,15 +64,14 @@ private:
                      const QVariant & value = "quantity");
 
 protected:
+  virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+
   QStringList mTypes;
   CDataVectorN< CModelValue > * mpGlobalQuantities;
 
   // cache the pretty-printed unit strings
   mutable QMap< std::string, QVariant > mUnitCache;
-
-protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
 };
 
 #endif //CQGlobalQuantityDM_H

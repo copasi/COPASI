@@ -43,10 +43,10 @@ private:
   CQComboDelegate* mpTypeDelegate;
   void deleteSelectedCompartments();
   void updateDeleteBtns();
-  virtual bool enterProtected();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
 
 protected:
+  virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:

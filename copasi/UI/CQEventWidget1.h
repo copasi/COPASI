@@ -57,7 +57,6 @@ public:
    * @param event the event to look at
    * @return the delay type index
    */
-  static int getDelayTypeIndex(CEvent* event);
 
 protected:
   virtual bool enterProtected();
@@ -66,6 +65,8 @@ protected:
 protected slots:
 
 private:
+  int getDelayTypeIndex();
+
   bool mExpressionTriggerValid;
   bool mExpressionDelayValid;
   bool mExpressionEAValid;
@@ -74,7 +75,7 @@ private:
   CEvent *mpEvent;
   std::string mAssignmentKey;
   size_t mCurrentTarget;
-  CDataVector< CEventAssignment > mAssignments;
+  CDataVectorN< CEventAssignment > mAssignments;
 
   void init();
   bool loadFromEvent();
@@ -91,12 +92,6 @@ private slots:
   void slotSelectObject();
   void slotActualizeAssignmentExpression(int index);
   void slotChooseDelay(int choice);
-
-  //additional functions for UNDO framework
-  void deleteEvent();
-  void addEvent(UndoEventData *pSData);
-  void createNewEvent();
-  void deleteEvent(UndoEventData *pSData);
 
 public:
   bool changeValue(const std::string& key,

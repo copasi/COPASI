@@ -27,9 +27,7 @@
 
 #include "model/CReaction.h"
 #include "model/CReactionInterface.h"
-#include "undoFramework/UndoEventData.h"
-#include "undoFramework/UndoEventAssignmentData.h"
-#include <copasi/UI/CQCopasiApplication.h>
+#include "copasi/UI/CQCopasiApplication.h"
 
 CQGlobalQuantityDM::CQGlobalQuantityDM(QObject *parent)
   : CQBaseDataModel(parent, NULL),
@@ -268,7 +266,6 @@ bool CQGlobalQuantityDM::setData(const QModelIndex &index, const QVariant &value
   else if (role == Qt::EditRole)
     {
       CModelValue & ModelValue = mpGlobalQuantities->operator[](index.row());
-
       CData OldData = ModelValue.toData();
 
       switch (index.column())

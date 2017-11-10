@@ -215,10 +215,13 @@ void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  std::string key = CRootContainer::getFunctionList()->loadedFunctions()[index.row()].getKey();
+  CDataVector < CFunction > * pVector = dynamic_cast< CDataVector < CFunction > * >(mpObject);
 
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQFunctionsWidget::keyPressEvent(QKeyEvent *ev)

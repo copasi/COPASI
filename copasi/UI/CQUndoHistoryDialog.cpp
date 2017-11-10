@@ -30,9 +30,7 @@
 #include "qtUtilities.h"
 
 #include "undoFramework/CCopasiUndoCommand.h"
-#include "undoFramework/CreateNewEventCommand.h"
 #include "undoFramework/UndoData.h"
-#include "undoFramework/UndoEventData.h"
 
 /*
  *  Constructs a CQUndoHistoryDialog as a child of 'parent', with the

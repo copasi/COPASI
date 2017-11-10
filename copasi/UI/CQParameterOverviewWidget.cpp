@@ -59,11 +59,12 @@ CQParameterOverviewWidget::CQParameterOverviewWidget(QWidget* parent, const char
   mpComboDelegate = new CQComboDelegate(this);
   mpTreeView->setItemDelegateForColumn(5, mpComboDelegate);
 
-  connect(mpParameterSetDM, SIGNAL(signalOpenEditor(const QModelIndex &)), this, SLOT(slotOpenEditor(const QModelIndex &)));
-  connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)), this, SLOT(slotCloseEditor(const QModelIndex &)));
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpParameterSetDM->setUndoStack(pWindow->getUndoStack());
+  connect(mpParameterSetDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
+  connect(mpParameterSetDM, SIGNAL(signalOpenEditor(const QModelIndex &)),
+          this, SLOT(slotOpenEditor(const QModelIndex &)));
+  connect(mpParameterSetDM, SIGNAL(signalCloseEditor(const QModelIndex &)),
+          this, SLOT(slotCloseEditor(const QModelIndex &)));
 }
 
 CQParameterOverviewWidget::~CQParameterOverviewWidget()
@@ -434,7 +435,6 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
   CModelParameterSet * pParameterSet = mpParameterSet;
   saveParameterSet(pParameterSet);
   return;
-  return;
 }
 
 void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameterSet)
@@ -489,9 +489,9 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
       return;
     }
 
-  if (SelectionList.indexOf(Name) < 1)
+  if (SelectionList.indexOf(Name) <= 0)
     {
-      CModelParameterSet * pNew = new CModelParameterSet(*pParameterSet, pModel, false);
+      CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), pModel, false);
       pNew->setObjectName(TO_UTF8(Name));
 
       // We are sure that a set with that name does not exist.
@@ -506,8 +506,8 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
         {
           CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
-          CData OldData(pExisting->toData());
-          pExisting->assignSetContent(*pParameterSet, false);
+          CData OldData = pExisting->toData();
+          pExisting->assignSetContent(pModel->getActiveModelParameterSet(), false);
 
           CUndoData Data;
           pExisting->createUndoData(Data, CUndoData::Type::CHANGE, OldData, static_cast< CCore::Framework >(mFramework));

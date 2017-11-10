@@ -48,8 +48,6 @@ public:
   QString createNewName(const QString name, const int nameCol);
 
   void setDataModel(CDataModel * pDataModel);
-  void setUndoStack(QUndoStack* undoStack);
-  QUndoStack* getUndoStack();
   CDataModel * getDataModel() const;
 
 public slots:
@@ -59,7 +57,6 @@ protected:
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) = 0;
 
-  QUndoStack *mpUndoStack;
   CDataModel * mpDataModel;
   int mFramework;
 

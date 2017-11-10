@@ -77,8 +77,7 @@ void CEventAssignment::createUndoData(CUndoData & undoData,
       return;
     }
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  undoData.addProperty(CData::EXPRESSION, oldData.getProperty(CData::EXPRESSION), getExpression());
 }
 
 // The default constructor is intentionally not implemented.
@@ -128,6 +127,21 @@ CEventAssignment::~CEventAssignment()
     {
       mpModel->setCompileFlag(true);
     }
+}
+
+bool CEventAssignment::operator != (const CEventAssignment & rhs) const
+{
+  if (getTargetCN() != rhs.getTargetCN())
+    {
+      return true;
+    }
+
+  if (getExpression() != rhs.getExpression())
+    {
+      return true;
+    }
+
+  return false;
 }
 
 bool CEventAssignment::setObjectParent(const CDataContainer * pParent)
@@ -311,10 +325,15 @@ CEvent * CEvent::fromData(const CData & data)
 // virtual
 CData CEvent::toData() const
 {
-  CData Data;
+  CData Data(CDataContainer::toData());
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  Data.addProperty(CData::DELAY_ASSIGNMENT, mDelayAssignment);
+  Data.addProperty(CData::FIRE_AT_INITIALTIME, mFireAtInitialTime);
+  Data.addProperty(CData::PERSISTENT_TRIGGER, mPersistentTrigger);
+  Data.addProperty(CData::TRIGGER_EXPRESSION, getTriggerExpression());
+  Data.addProperty(CData::DELAY_EXPRESSION, getDelayExpression());
+  Data.addProperty(CData::PRIORITY_EXPRESSION, getPriorityExpression());
+  Data.addProperty(CData::ASSIGNMENTS, mAssignments.toData().getProperty(CData::VECTOR_CONTENT));
 
   Data.appendData(CAnnotation::toData());
 
@@ -324,10 +343,44 @@ CData CEvent::toData() const
 // virtual
 bool CEvent::applyData(const CData & data, CUndoData::ChangeSet & changes)
 {
-  bool success = true;
+  bool success = CDataContainer::applyData(data, changes);
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  if (data.isSetProperty(CData::DELAY_ASSIGNMENT))
+    {
+      mDelayAssignment = data.getProperty(CData::DELAY_ASSIGNMENT).toBool();
+    }
+
+  if (data.isSetProperty(CData::FIRE_AT_INITIALTIME))
+    {
+      mFireAtInitialTime = data.getProperty(CData::EXPRESSION).toBool();
+    }
+
+  if (data.isSetProperty(CData::PERSISTENT_TRIGGER))
+    {
+      mPersistentTrigger = data.getProperty(CData::PERSISTENT_TRIGGER).toBool();
+    }
+
+  if (data.isSetProperty(CData::TRIGGER_EXPRESSION))
+    {
+      success &= setTriggerExpression(data.getProperty(CData::TRIGGER_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::DELAY_EXPRESSION))
+    {
+      success &= setDelayExpression(data.getProperty(CData::DELAY_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::PRIORITY_EXPRESSION))
+    {
+      success &= setPriorityExpression(data.getProperty(CData::PRIORITY_EXPRESSION).toString());
+    }
+
+  if (data.isSetProperty(CData::ASSIGNMENTS))
+    {
+      CData Data;
+      Data.addProperty(CData::VECTOR_CONTENT, data.getProperty(CData::ASSIGNMENTS));
+      success &= mAssignments.applyData(Data, changes);
+    }
 
   success &= CAnnotation::applyData(data, changes);
 
@@ -347,8 +400,26 @@ void CEvent::createUndoData(CUndoData & undoData,
       return;
     }
 
-  // TODO CRITICAL Implement me!
-  fatalError();
+  undoData.addProperty(CData::DELAY_ASSIGNMENT, oldData.getProperty(CData::DELAY_ASSIGNMENT), mDelayAssignment);
+  undoData.addProperty(CData::FIRE_AT_INITIALTIME, oldData.getProperty(CData::FIRE_AT_INITIALTIME), mFireAtInitialTime);
+  undoData.addProperty(CData::PERSISTENT_TRIGGER, oldData.getProperty(CData::PERSISTENT_TRIGGER), mPersistentTrigger);
+  undoData.addProperty(CData::TRIGGER_EXPRESSION, oldData.getProperty(CData::TRIGGER_EXPRESSION), getTriggerExpression());
+  undoData.addProperty(CData::DELAY_EXPRESSION, oldData.getProperty(CData::DELAY_EXPRESSION), getDelayExpression());
+  undoData.addProperty(CData::PRIORITY_EXPRESSION, oldData.getProperty(CData::PRIORITY_EXPRESSION), getPriorityExpression());
+
+  CData VectorContent;
+  VectorContent.addProperty(CData::VECTOR_CONTENT, oldData.getProperty(CData::ASSIGNMENTS));
+
+  CUndoData Assignments;
+  mAssignments.createUndoData(Assignments, CUndoData::Type::CHANGE, VectorContent, framework);
+
+  undoData.addPreProcessData(Assignments.getPreProcessData());
+  undoData.addPostProcessData(Assignments.getPostProcessData());
+
+  if (Assignments.isChangedProperty(CData::VECTOR_CONTENT))
+    {
+      undoData.addProperty(CData::ASSIGNMENTS, Assignments.getOldData().getProperty(CData::VECTOR_CONTENT), Assignments.getNewData().getProperty(CData::VECTOR_CONTENT));
+    }
 
   CAnnotation::createUndoData(undoData, type, oldData, framework);
 

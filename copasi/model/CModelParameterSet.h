@@ -95,6 +95,12 @@ public:
    */
   virtual ~CModelParameterSet();
 
+  /**
+   * Retrieve the CN of the object
+   * @return CCommonName
+   */
+  virtual CCommonName getCN() const;
+
   CModelParameterGroup * toGroup();
 
   const CModelParameterGroup * toGroup() const;

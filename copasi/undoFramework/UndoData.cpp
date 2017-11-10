@@ -19,7 +19,6 @@
 
 #include "copasi/copasi.h"
 
-#include "UndoEventData.h"
 #include "UndoDependentData.h"
 
 #include "copasi/model/CModel.h"

@@ -418,7 +418,6 @@ void CQUndoTester::testEventDetail()
       "eventA",
       mpTabEvents)
   );
-#endif // XXXX
 
   // change trigger expression
   CModel * model = const_cast<CModel*>(mpEvent->getObjectDataModel()->getModel());
@@ -511,6 +510,7 @@ void CQUndoTester::testEventDetail()
                       mpEvent->getAssignments()[0].getTargetCN()   // key
                     ));
 
+#endif // XXXX
   deleteCompartment();
 
   deleteEvent();
@@ -668,6 +668,7 @@ void CQUndoTester::testModelValueDM(int repetitions)
 
 void CQUndoTester::testEventDM(int repetitions)
 {
+#ifdef XXXX
   // add by name
   int currentRow = mpDmEvents->rowCount();
   mpUndoStack->push(new InsertEventRowsCommand(
@@ -694,6 +695,8 @@ void CQUndoTester::testEventDM(int repetitions)
       lst.append(mpDmEvents->index(currentRow, COL_NAME_EVENTS));
       mpUndoStack->push(new RemoveEventRowsCommand(lst, mpDmEvents));
     }
+
+#endif // XXXX
 }
 
 void CQUndoTester::testOverviewWidget()
@@ -828,11 +831,13 @@ void CQUndoTester::createCompartment()
 
 void CQUndoTester::createEvent()
 {
+#ifdef XXXX
   // add event
   mpUndoStack->push(
     new CreateNewEventCommand(mpDetailEvent)
   );
   mpEvent = dynamic_cast<CEvent*>(const_cast<CDataObject*>(mpDetailEvent->getObject()));
+#endif
 }
 
 void CQUndoTester::createModelValue()
@@ -882,6 +887,8 @@ void CQUndoTester::deleteCompartment()
 
 void CQUndoTester::deleteEvent()
 {
+#ifdef XXXX
+
   if (mpEvent == NULL)
     return;
 
@@ -892,6 +899,7 @@ void CQUndoTester::deleteEvent()
   );
 
   mpEvent = NULL;
+#endif
 }
 
 void CQUndoTester::deleteModelValue()

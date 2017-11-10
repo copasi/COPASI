@@ -214,17 +214,13 @@ void CQUnitsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
+  CDataVector < CUnitDefinition > * pVector = dynamic_cast< CDataVector < CUnitDefinition > * >(mpObject);
 
-  if (!mpDataModel->getModel())
-    return;
-
-  // How do I deal with this?
-  //  std::string key = pDataModel->getReportDefinitionList()->operator[](index.row())->getKey();
-  std::string key = CRootContainer::getUnitList()->operator[](index.row()).getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQUnitsWidget::keyPressEvent(QKeyEvent *ev)

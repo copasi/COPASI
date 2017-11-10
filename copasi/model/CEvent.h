@@ -94,6 +94,13 @@ public:
   ~CEventAssignment();
 
   /**
+   * Comparison operator
+   * @param const CEventAssignment & rhs
+   * @return bool notEqual
+   */
+  bool operator != (const CEventAssignment & rhs) const;
+
+  /**
    * Set the object parent
    * @param const CDataContainer * pParent
    * @return bool success

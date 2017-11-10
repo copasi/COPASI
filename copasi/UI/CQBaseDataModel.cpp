@@ -22,7 +22,6 @@
 
 CQBaseDataModel::CQBaseDataModel(QObject *parent, CDataModel * pDataModel)
   : QAbstractTableModel(parent)
-  , mpUndoStack(NULL)
   , mpDataModel(pDataModel)
   , mFramework(0)
 {
@@ -119,16 +118,6 @@ void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 {
   mpDataModel = pDataModel;
   resetCache();
-}
-
-void CQBaseDataModel::setUndoStack(QUndoStack* undoStack)
-{
-  mpUndoStack = undoStack;
-}
-
-QUndoStack* CQBaseDataModel::getUndoStack()
-{
-  return mpUndoStack;
 }
 
 CDataModel * CQBaseDataModel::getDataModel() const

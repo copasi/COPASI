@@ -121,22 +121,22 @@ CFunctionParameters::const_iterator CFunctionParameters::end() const
 
 CFunctionParameters::name_iterator CFunctionParameters::begin_name()
 {
-  return mParameters.begin_name();
+  return mParameters.beginName();
 }
 
 CFunctionParameters::name_iterator CFunctionParameters::end_name()
 {
-  return mParameters.end_name();
+  return mParameters.endName();
 }
 
 CFunctionParameters::const_name_iterator CFunctionParameters::begin_name() const
 {
-  return mParameters.begin_name();
+  return mParameters.beginName();
 }
 
 CFunctionParameters::const_name_iterator CFunctionParameters::end_name() const
 {
-  return mParameters.end_name();
+  return mParameters.endName();
 }
 
 size_t CFunctionParameters::size() const {return mParameters.size();}

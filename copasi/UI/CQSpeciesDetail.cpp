@@ -27,10 +27,6 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 //UNDO framework classes
-#include "copasi/model/CReactionInterface.h"
-#include "copasi/undoFramework/UndoEventData.h"
-#include "copasi/undoFramework/UndoEventAssignmentData.h"
-
 #include "undo/CUndoStack.h"
 #include "undo/CUndoData.h"
 

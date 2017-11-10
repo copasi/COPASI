@@ -206,15 +206,13 @@ void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
+  CDataVector < CReportDefinition > * pVector = dynamic_cast< CDataVector < CReportDefinition > * >(mpObject);
 
-  if (!mpDataModel->getModel())
-    return;
-
-  std::string key = mpDataModel->getReportDefinitionList()->operator[](index.row()).getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQReportsWidget::keyPressEvent(QKeyEvent *ev)

@@ -543,7 +543,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
                 pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
                 CUndoData UndoData;
                 pObject->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
-                static_cast< CopasiWidget * >(QObject::parent())->slotNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
+                emit signalNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
 
                 success = true;
               }
@@ -568,7 +568,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
                 pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
                 CUndoData UndoData;
                 pObject->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
-                static_cast< CopasiWidget * >(QObject::parent())->slotNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
+                emit signalNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
 
                 success = true;
               }

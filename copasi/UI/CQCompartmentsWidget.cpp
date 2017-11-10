@@ -61,8 +61,6 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpCompartmentDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -227,15 +225,13 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL); // Is this necessary?
-  CModel *pModel = mpDataModel->getModel();
+  CDataVector < CCompartment > * pVector = dynamic_cast< CDataVector < CCompartment > * >(mpObject);
 
-  if (pModel == NULL)
-    return;
-
-  CCommonName CN = pModel->getCompartments()[index.row()].getCN();
-
-  mpListView->switchToOtherWidget(C_INVALID_INDEX, CN);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)

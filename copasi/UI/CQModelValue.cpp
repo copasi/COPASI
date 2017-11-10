@@ -38,12 +38,6 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-//UNDO framework classes
-#include "copasi/model/CReactionInterface.h"
-//#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
-#include "copasi/undoFramework/UndoEventData.h"
-#include "copasi/undoFramework/UndoEventAssignmentData.h"
-
 /*
  *  Constructs a CQModelValue which is a child of 'parent', with the
  *  name 'name'.'

@@ -62,7 +62,6 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  mpReactionDM->setUndoStack(pWindow->getUndoStack());
 }
 
 /*
@@ -196,16 +195,13 @@ void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
-  CModel *pModel = mpDataModel->getModel();
+  CDataVector < CReaction > * pVector = dynamic_cast< CDataVector < CReaction > * >(mpObject);
 
-  if (pModel == NULL)
-    return;
-
-  std::string key = pModel->getReactions()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQReactionsWidget::keyPressEvent(QKeyEvent *ev)

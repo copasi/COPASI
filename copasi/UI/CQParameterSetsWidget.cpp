@@ -227,15 +227,13 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  if (mpObject == NULL)
+  CDataVector < CModelParameterSet > * pVector = dynamic_cast< CDataVector < CModelParameterSet > * >(mpObject);
+
+  if (pVector != NULL &&
+      index.row() < pVector->size())
     {
-      return;
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
     }
-
-  std::string key = static_cast< CModel * >(mpObject)->getModelParameterSets()[index.row()].getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
 }
 
 void CQParameterSetsWidget::keyPressEvent(QKeyEvent *ev)

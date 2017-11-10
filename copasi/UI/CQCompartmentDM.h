@@ -55,7 +55,6 @@ public:
                               int role = Qt::DisplayRole) const;
   virtual bool setData(const QModelIndex &index, const QVariant &value,
                        int role = Qt::EditRole);
-
   bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
   bool clear();
 

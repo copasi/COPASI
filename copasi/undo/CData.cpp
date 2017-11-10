@@ -68,7 +68,15 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Email", // EMAIL
   "Organization", // ORGANIZATION
   "Framework", // FRAMEWORK
-  "Value" // VALUE
+  "Value", // VALUE
+  "Delay Assignment", // DELAY_ASSIGNMENT
+  "Fire at Initial Time", // FIRE_AT_INITIALTIME
+  "Persistent Trigger", // PERSISTENT_TRIGGER
+  "Trigger Expression", // TRIGGER_EXPRESSION
+  "Delay Expression", // DELAY_EXPRESSION
+  "Priority Expression", // PRIORITY_EXPRESSION
+  "Assignments", // ASSIGNMENTS
+  "Vector Content" // VECTOR_CONTENT
 });
 
 CData::CData():

@@ -185,7 +185,14 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
 // virtual
 CModelParameterSet::~CModelParameterSet()
 {
+  mType = Type::Group;
   CRootContainer::getKeyFactory()->remove(mKey);
+}
+
+// virtual
+CCommonName CModelParameterSet::getCN() const
+{
+  return CDataContainer::getCN();
 }
 
 CModelParameterGroup * CModelParameterSet::toGroup()

@@ -241,16 +241,13 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
       slotBtnNewClicked();
     }
 
-  assert(mpDataModel != NULL);
+  CDataVector < CPlotSpecification > * pVector = dynamic_cast< CDataVector < CPlotSpecification > * >(mpObject);
 
-  if (mpDataModel->getModel() == NULL)
-    return;
-
-  CPlotSpecification *pPS = static_cast<CPlotSpecification *>(&mpDataModel->getPlotDefinitionList()->operator[](index.row()));
-  const std::string key = static_cast<CCopasiParameter *>(pPS)->getKey();
-
-  if (CRootContainer::getKeyFactory()->get(key))
-    mpListView->switchToOtherWidget(C_INVALID_INDEX, key);
+  if (pVector != NULL &&
+      index.row() < pVector->size())
+    {
+      mpListView->switchToOtherWidget(C_INVALID_INDEX, pVector->operator [](index.row()).getCN());
+    }
 }
 
 void CQPlotsWidget::keyPressEvent(QKeyEvent *ev)

@@ -13,7 +13,6 @@
 #include "qtUtilities.h"
 #include "UndoDependentData.h"
 #include "CCopasiUndoCommand.h"
-#include "UndoEventData.h"
 
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CRootContainer.h"
@@ -103,19 +102,6 @@ void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoEventDa
 {
   if (pModel == NULL || pEventData == NULL || pEventData->empty())
     return;
-
-  //reinsert the dependency events
-  QList <UndoEventData *>::const_iterator ev;
-
-  for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-    {
-      UndoEventData* data = *ev;
-      CDataObject* pEvent = data->createObjectIn(pModel);
-
-      if (pEvent == NULL) continue;
-
-      updateGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-    }
 }
 
 void UndoDependentData::createDependentObjects(CModel *pModel, QList<UndoSpeciesData *> *pSpeciesData)
@@ -148,21 +134,6 @@ void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoEventD
 {
   if (pModel == NULL || pEventData == NULL || pEventData->empty())
     return;
-
-  //reinsert the dependency events
-  QList <UndoEventData *>::const_iterator ev;
-
-  for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-    {
-      UndoEventData* data = *ev;
-      CDataObject* pEvent = data->restoreObjectIn(pModel);
-
-      if (pEvent == NULL) continue;
-
-      data->restoreDependentObjects(pModel);
-
-      updateGUI(ListViews::EVENT, ListViews::ADD, pEvent->getKey());
-    }
 }
 
 void UndoDependentData::restoreDependentObjects(CModel *pModel, QList<UndoSpeciesData *> *pSpeciesData)
@@ -195,15 +166,6 @@ void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoEventData
 {
   if (pModel == NULL || pEventData == NULL || pEventData->empty())
     return;
-
-  //reinsert the dependency events
-  QList <UndoEventData *>::const_iterator ev;
-
-  for (ev = pEventData->begin(); ev != pEventData->end(); ++ev)
-    {
-      UndoEventData* data = *ev;
-      data->fillObject(pModel);
-    }
 }
 
 void UndoDependentData::fillDependentObjects(CModel *pModel, QList<UndoSpeciesData *> *pSpeciesData)
@@ -225,11 +187,6 @@ UndoDependentData::freeUndoData()
   mParameterData.clear();
 
   mReactionData.clear();
-
-  foreach (UndoEventData * data, mEventData)
-    {
-      delete data;
-    }
 
   mEventData.clear();
 }
@@ -320,40 +277,5 @@ UndoDependentData::initializeFrom(const std::set< const CDataObject * > &deleted
       CDataObject::DataObjectSet EventAssignments;
 
       pModel->appendAllDependents(DeletedObjects, Reactions, Metabolites, Compartments, Values, Events, EventAssignments);
-
-      if (Events.size() > 0)
-        {
-          std::set< const CDataObject * >::const_iterator it = Events.begin();
-          std::set< const CDataObject * >::const_iterator end = Events.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Event data
-              const CEvent * pEvent = dynamic_cast<const CEvent*>(*it);
-
-              UndoEventData *data = new UndoEventData(pEvent);
-              mEventData.append(data);
-            }
-        }
-
-      if (EventAssignments.size() > 0)
-        {
-          std::set< const CDataObject * >::const_iterator it = EventAssignments.begin();
-          std::set< const CDataObject * >::const_iterator end = EventAssignments.end();
-
-          for (; it != end; ++it)
-            {
-              //store the Event data
-              const CEvent * pEvent = dynamic_cast<const CEvent*>((*it)->getObjectAncestor("Event"));
-
-              if (Events.find(pEvent) == Events.end())
-                {
-                  UndoEventData *data = new UndoEventData(pEvent);
-                  mEventData.append(data);
-
-                  Events.insert(pEvent);
-                }
-            }
-        }
     }
 }
