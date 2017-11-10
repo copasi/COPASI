@@ -50,6 +50,9 @@ protected slots:
   virtual void slotBtnDelete();
   virtual void slotBtnSaveToFile();
   virtual void slotBtnSaveAs();
+
+  void saveParameterSet(CModelParameterSet * pParameterSet);
+
   void slotOpenEditor(const QModelIndex & index);
   void slotCloseEditor(const QModelIndex & index);
   void slotResolve(const QModelIndex & index);

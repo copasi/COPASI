@@ -154,13 +154,22 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex &)
 {
   if (mpListOfParameterSets == NULL) return false;
 
-  if (position + rows > (int) mpListOfParameterSets->size())  return false;
+  if (mpDataModel == NULL) return false;
+
+  CModel *pModel = mpDataModel->getModel();
+
+  if (pModel == NULL) return false;
 
   beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
-      emit notifyGUI(ListViews::LAYOUT, ListViews::ADD, mpListOfParameterSets->operator[](position + row).getKey());
+      QString Name = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
+      CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(),  pModel, false);
+      pNew->setObjectName(TO_UTF8(Name));
+      mpListOfParameterSets->add(pNew, true);
+
+      emit notifyGUI(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
     }
 
   endInsertRows();

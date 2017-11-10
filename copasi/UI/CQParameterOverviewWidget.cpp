@@ -317,50 +317,19 @@ void CQParameterOverviewWidget::slotBtnNew()
     }
 
   // We first asked whether the user wants to save the current model values
-  if (CQMessageBox::question(this, "Save current Model Parameters?",
-                             "You are about to overwrite the current model values.\n"
-                             "Do you want to save them?",
-                             QMessageBox::Save | QMessageBox::Discard,
-                             QMessageBox::Save) == QMessageBox::Save)
+  QMessageBox::StandardButton answer = CQMessageBox::question(this, "Save current Model Parameters?",
+                                       "You are about to overwrite the current model values.\n"
+                                       "Do you want to save them?",
+                                       QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+                                       QMessageBox::Save);
+
+  if (answer == QMessageBox::Cancel)
+    return;
+
+  if (answer == QMessageBox::Save)
     {
       // Save the parameter set to a new or existing set
-      CQNameSelectionDialog Dialog(this);
-
-      CDataVectorN< CModelParameterSet > & Sets = pModel->getModelParameterSets();
-
-      CDataVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
-      CDataVectorN< CModelParameterSet >::const_iterator end = Sets.end();
-      QStringList SelectionList;
-
-      for (; it != end; ++it)
-        {
-          SelectionList.append(FROM_UTF8(it->getName()));
-        }
-
-      Dialog.setSelectionList(SelectionList);
-      QString Name;
-
-      if (Dialog.exec() != QDialog::Rejected &&
-          (Name = Dialog.getSelection()) != "")
-        {
-          if (SelectionList.indexOf(Name) == -1)
-            {
-              CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), pModel, false);
-              pNew->setObjectName(TO_UTF8(Name));
-              Sets.add(pNew, true);
-
-              // Notify the GUI of the insert
-              protectedNotify(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
-            }
-          else
-            {
-              CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
-              pExisting->assignSetContent(pModel->getActiveModelParameterSet(), false);
-
-              // Notify the GUI of the insert
-              protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
-            }
-        }
+      saveParameterSet(&pModel->getActiveModelParameterSet());
     }
 
   mpParameterSet->updateModel();
@@ -464,15 +433,23 @@ void CQParameterOverviewWidget::slotBtnSaveToFile()
 // virtual
 void CQParameterOverviewWidget::slotBtnSaveAs()
 {
+  CModelParameterSet * pParameterSet = mpParameterSet;
+  saveParameterSet(pParameterSet);
+  return;
+  return;
+}
+
+void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameterSet)
+{
   // commit all changes
   slotBtnCommit();
 
-  if (mpParameterSet == NULL)
+  if (pParameterSet == NULL)
     {
       return;
     }
 
-  CModel * pModel = mpParameterSet->getModel();
+  CModel * pModel = pParameterSet->getModel();
 
   if (pModel == NULL)
     {
@@ -487,6 +464,8 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
   CDataVectorN< CModelParameterSet >::const_iterator it = Sets.begin();
   CDataVectorN< CModelParameterSet >::const_iterator end = Sets.end();
   QStringList SelectionList;
+
+  SelectionList << QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
 
   for (; it != end; ++it)
     {
@@ -507,9 +486,9 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
       return;
     }
 
-  if (SelectionList.indexOf(Name) == -1)
+  if (SelectionList.indexOf(Name) < 1)
     {
-      CModelParameterSet * pNew = new CModelParameterSet(*mpParameterSet, pModel, false);
+      CModelParameterSet * pNew = new CModelParameterSet(*pParameterSet, pModel, false);
       pNew->setObjectName(TO_UTF8(Name));
       Sets.add(pNew, true);
 
@@ -518,14 +497,18 @@ void CQParameterOverviewWidget::slotBtnSaveAs()
     }
   else
     {
-      CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
-      pExisting->assignSetContent(*mpParameterSet, false);
+      if (CQMessageBox::question(this, "Overwrite Parameter Set",
+                                 QString("Are you sure you want to overwrite the parameter set %1").arg(Name),
+                                 QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
+          == QMessageBox::Yes)
+        {
+          CModelParameterSet * pExisting = &Sets[TO_UTF8(Name)];
+          pExisting->assignSetContent(*pParameterSet, false);
 
-      // Notify the GUI of the insert
-      protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
+          // Notify the GUI of the insert
+          protectedNotify(ListViews::MODELPARAMETERSET, ListViews::CHANGE, pExisting->getKey());
+        }
     }
-
-  return;
 }
 
 void CQParameterOverviewWidget::slotOpenEditor(const QModelIndex & index)
