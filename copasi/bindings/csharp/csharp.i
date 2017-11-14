@@ -137,6 +137,12 @@ enum CLASS_TYPE
   , COptMethodSteepestDescent_Type
   , CRandomSearch_Type
   , COptMethodTruncatedNewton_Type
+  , CModelParameterSet_Type
+  , CModelParameter_Type
+  , CModelParameterGroup_Type
+  , CModelParameterSpecies_Type
+  , CModelParameterCompartment_Type
+  , CModelParameterReactionParameter_Type
 };
 
 class CCompartment;
@@ -161,6 +167,13 @@ class COptMethod;
 class COptProblem;
 class COptTask;
 class CTrajectoryTask;
+
+class CModelParameterSet;
+class CModelParameter;
+class CModelParameterGroup;
+class CModelParameterSpecies;
+class CModelParameterCompartment;
+class CModelParameterReactionParameter;
 
 // Determine type CArrayInterface
 int GetType_CArrayInterface(CArrayInterface* pPointer);
@@ -207,6 +220,8 @@ int GetType_COptProblem(COptProblem* pPointer);
 // Determine type for COptTask
 int GetType_COptTask(COptTask* pPointer);
 
+// Determine type for CModelParameter
+int GetType_CModelParameter(CModelParameter* pPointer);
 
 %}
 
@@ -507,6 +522,47 @@ int GetType_COptTask(COptTask* pPointer);
     }
 
 
+    // CModelParameter
+    public static CModelParameter InstantiateConcrete_CModelParameter(IntPtr cPtr, bool owner)
+    {
+        CModelParameter ret = null;
+
+        if (cPtr != IntPtr.Zero)
+        {
+            int type = $modulePINVOKE.GetType_CModelParameter(new HandleRef(null, cPtr));
+            switch(type)
+            {
+                case COPASI.CModelParameter_Type:
+                    // return a CModelParameter
+                    ret = new CModelParameter(cPtr,owner);
+                    break;
+                case COPASI.CModelParameterGroup_Type:
+                    // return a CModelParameterGroup
+                    ret = new CModelParameterGroup(cPtr,owner);
+                    break;
+                case COPASI.CModelParameterSpecies_Type:
+                    // return a CModelParameterSpecies
+                    ret = new CModelParameterSpecies(cPtr,owner);
+                    break;
+                case COPASI.CModelParameterCompartment_Type:
+                    // return a CModelParameterCompartment
+                    ret = new CModelParameterCompartment(cPtr,owner);
+                    break;
+                case COPASI.CModelParameterReactionParameter_Type:
+                    // return a CModelParameterReactionParameter
+                    ret = new CModelParameterReactionParameter(cPtr,owner);
+                    break;
+                default:
+                    System.Diagnostics.Debug.Assert(false,
+                            String.Format("Encountered type '{0}' that is not known to be a valid COPASI native class type",
+                                type.ToString()));
+                    break;
+            }
+        }
+        return ret;
+    }
+
+
     // Determine type for CDataContainer
     public static CDataContainer InstantiateConcrete_CDataContainer(IntPtr cPtr, bool owner)
     {
@@ -538,6 +594,10 @@ int GetType_COptTask(COptTask* pPointer);
                 case COPASI.CReference_Type:
                     // return a CReference
                     ret = new CReference(cPtr,owner);
+                    break;
+                case COPASI.CModelParameterSet_Type:
+                    // return a CModelParameterSet
+                    ret = new CModelParameterSet(cPtr,owner);
                     break;
                 case COPASI.CModification_Type:
                     // return a CModification
@@ -1077,6 +1137,18 @@ int GetType_COptTask(COptTask* pPointer);
 {
     IntPtr cPtr = $imcall;
     $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CArrayInterface(cPtr, $owner);$excode
+    return ret;
+}
+
+// CModelParameter
+%typemap(csout, excode=SWIGEXCODE)
+  CModelParameter *,
+  const CModelParameter *,
+  CModelParameter &,
+  const CModelParameter &
+{
+    IntPtr cPtr = $imcall;
+    $csclassname ret = ($csclassname) $modulePINVOKE.InstantiateConcrete_CModelParameter(cPtr, $owner);$excode
     return ret;
 }
 

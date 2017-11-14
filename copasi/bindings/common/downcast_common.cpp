@@ -33,6 +33,9 @@
 #include <copasi/optimization/CRandomSearch.h>
 #include <copasi/optimization/COptMethodTruncatedNewton.h>
 
+#include <copasi/model/CModelParameter.h>
+#include <copasi/model/CModelParameterSet.h>
+
 // CArrayInterface
 struct swig_type_info*
 GetDowncastSwigTypeForCArrayInterface(CArrayInterface* array);
@@ -97,6 +100,39 @@ GetDowncastSwigTypeForCOptProblem(COptProblem* optProblem);
 struct swig_type_info*
 GetDowncastSwigTypeForCOptTask(COptTask* optTask);
 
+// CModelParameter
+struct swig_type_info*
+GetDowncastSwigTypeForCModelParameter(CModelParameter* param);
+
+/**
+ * @return the most specific Swig type for the given CModelParameter object.
+ */
+struct swig_type_info*
+GetDowncastSwigTypeForCModelParameter(CModelParameter* param)
+{
+  if (param == NULL) return SWIGTYPE_p_CModelParameter;
+
+  if (dynamic_cast<CModelParameterSet*>(param))
+    return SWIGTYPE_p_CModelParameterSet;
+
+  if (dynamic_cast<CModelParameterGroup*>(param))
+    return SWIGTYPE_p_CModelParameterGroup;
+
+  if (dynamic_cast<CModelParameterSpecies*>(param))
+    return SWIGTYPE_p_CModelParameterSpecies;
+
+  if (dynamic_cast<CModelParameterCompartment*>(param))
+    return SWIGTYPE_p_CModelParameterCompartment;
+
+  if (dynamic_cast<CModelParameterSpecies*>(param))
+    return SWIGTYPE_p_CModelParameterSpecies;
+
+  if (dynamic_cast<CModelParameterReactionParameter*>(param))
+    return SWIGTYPE_p_CModelParameterReactionParameter;
+
+  return SWIGTYPE_p_CModelParameter;
+}
+
 /**
  * @return the most specific Swig type for the given CArrayInterface object.
  */
@@ -154,6 +190,10 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
   else if (dynamic_cast<CEventAssignment*>(container))
     {
       pInfo = SWIGTYPE_p_CEventAssignment;
+    }
+  else if (dynamic_cast<CModelParameterSet*>(container))
+    {
+      pInfo = SWIGTYPE_p_CModelParameterSet;
     }
   else if (dynamic_cast<CReference*>(container))
     {

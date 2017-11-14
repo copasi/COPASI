@@ -29,8 +29,36 @@
 #include <copasi/optimization/CRandomSearch.h>
 #include <copasi/optimization/COptMethodTruncatedNewton.h>
 
+#include <copasi/model/CModelParameter.h>
+#include <copasi/model/CModelParameterSet.h>
+
 // Now we specify the definitions
 // for the type determination methods
+
+
+int GetType_CModelParameter(CModelParameter* pPointer)
+{
+  CLASS_TYPE result = CModelParameter_Type;
+
+  if (pPointer == NULL) return result;
+
+  if (dynamic_cast<CModelParameterSet*>(pPointer))
+    return CModelParameterSet_Type;
+
+  if (dynamic_cast<CModelParameterGroup*>(pPointer))
+    return CModelParameterGroup_Type;
+
+  if (dynamic_cast<CModelParameterSpecies*>(pPointer))
+    return CModelParameterSpecies_Type;
+
+  if (dynamic_cast<CModelParameterCompartment*>(pPointer))
+    return CModelParameterCompartment_Type;
+
+  if (dynamic_cast<CModelParameterReactionParameter*>(pPointer))
+    return CModelParameterReactionParameter_Type;
+
+  return CModelParameter_Type;
+}
 
 // Determine type CArrayInterface
 int GetType_CArrayInterface(CArrayInterface* pPointer)
@@ -120,6 +148,11 @@ int GetType_CDataContainer(CDataContainer* pPointer)
         {
           // return a CMIRIAMInfo
           result = CMIRIAMInfo_Type;
+        }
+      else if (dynamic_cast<CModelParameterSet*>(pPointer))
+        {
+          // return a CModelParameterSet
+          result = CModelParameterSet_Type;
         }
       else if (dynamic_cast<CCopasiTask*>(pPointer))
         {

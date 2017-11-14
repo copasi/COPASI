@@ -390,6 +390,10 @@
 		{
 			return new CModelValue(cPtr, owner);
 		}
+		else if (type.equals("ModelParameterSet"))
+		{
+			return new CModelParameterSet(cPtr, owner);
+		}
 		else if (type.equals("Moiety"))
 		{
 			return new CMoiety(cPtr, owner);
@@ -459,6 +463,24 @@
 		return new CDataObject(cPtr, owner);
 	}
 
+  
+  public static CModelParameter DowncastCModelParameter(long cPtr, boolean owner)
+    {
+      if (cPtr == 0) return null;
+      
+      CModelParameter temp = new CModelParameter (cPtr, false);
+      if (temp.asGroup() != null)
+        return new CModelParameterGroup(cPtr, owner);
+      if (temp.asSpecies() != null)
+        return new CModelParameterSpecies(cPtr, owner);
+      if (temp.asCompartment() != null)
+        return new CModelParameterCompartment(cPtr, owner);
+      if (temp.asReactionParameter() != null)
+        return new CModelParameterReactionParameter(cPtr, owner);
+        
+      return new CModelParameter(cPtr, owner);
+    }
+	
     public static CCopasiParameter DowncastCCopasiParameter(long cPtr, boolean owner)
     {
       if (cPtr == 0) return null;
@@ -513,6 +535,14 @@
 	
 	
 %}
+
+/**
+ * Convert CModelParameter objects into the most specific object possible.
+ */
+%typemap("javaout") CModelParameter*
+{
+  return COPASI.DowncastCModelParameter($jnicall, $owner);
+}
 
 /**
  * Convert CEvaluationTree objects into the most specific object possible.

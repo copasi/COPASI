@@ -21,7 +21,33 @@
 %extend CModelParameter
 {
 
-  /**
+   CModelParameterGroup *asGroup() 
+   {
+     return dynamic_cast<CModelParameterGroup *>($self);
+   }
+
+   CModelParameterSpecies *asSpecies() 
+   {
+     return dynamic_cast<CModelParameterSpecies *>($self);
+   }
+
+   CModelParameterCompartment *asCompartment() 
+   {
+     return dynamic_cast<CModelParameterCompartment *>($self);
+   }
+
+   CModelParameterSet *asSet() 
+   {
+     return dynamic_cast<CModelParameterSet *>($self);
+   }
+
+   CModelParameterReactionParameter *asReactionParameter() 
+   {
+     return dynamic_cast<CModelParameterReactionParameter *>($self);
+   }
+
+
+   /**
    * Set the value of the parameter based on the current framework
    * @param const double & value
    * @param const Framework & framework

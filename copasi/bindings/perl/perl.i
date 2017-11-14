@@ -8,6 +8,17 @@
 // of Manchester. 
 // All rights reserved. 
 
+
+
+/**
+ * Convert CModelParameter objects into the most specific type possible.
+ */
+%typemap(out) CModelParameter*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCModelParameter($1), 0);
+}
+
+
 /**
  * Convert CFitItem objects into the most specific type possible.
  */
