@@ -11,27 +11,31 @@
 #ifndef CENTITYPROVENANCEDialog_H
 #define CENTITYPROVENANCEDialog_H
 
-#include <QUndoStack>
 #include <QStandardItemModel>
 #include "copasiWidget.h"
 #include "ui_CEntityProvenanceDialog.h"
+
+class CUndoStack;
 
 class CEntityProvenanceDialog :  public CopasiWidget,   public Ui::CEntityProvenanceDialog
 {
   Q_OBJECT
 
 public:
-  //CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString EntityName = QString(""), QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (),  QString ProvenanceParentOfCurrentModel = "", QString VersioningParentOfCurrentModel = "", const char* name = 0);
-  CEntityProvenanceDialog(QWidget *parent = 0,  QUndoStack * UndoStack = NULL, QString PathFile = "",  QList<QString> VersionsPathToCurrentModel = QList<QString> (), const char* name = 0);
+  CEntityProvenanceDialog(QWidget *parent = 0,
+                          CUndoStack * UndoStack = NULL,
+                          QString PathFile = "",
+                          QList<QString> VersionsPathToCurrentModel = QList<QString> (),
+                          const char* name = 0);
   ~CEntityProvenanceDialog();
 
-  void load(QUndoStack * UndoStack, QString EntityNameQString, QString PathFile,  QList<QString> VersionsPathToCurrentModel);
+  void load(CUndoStack * UndoStack, QString EntityNameQString, QString PathFile,  QList<QString> VersionsPathToCurrentModel);
 
 private:
   /**
   *  Pointer to Undo Stack
   */
-  QUndoStack * mpUndoStack;
+  CUndoStack * mpUndoStack;
 
   /**
   *  Pointer to Provenance data table

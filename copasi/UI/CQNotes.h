@@ -44,8 +44,6 @@ protected:
 #include "copasi/UI/ui_CQNotes.h"
 #include "copasi/UI/CQValidator.h"
 
-class QUndoStack;
-
 class CQValidatorXML : public CQValidator< QPlainTextEdit >
 {
   // Operations
@@ -129,8 +127,6 @@ private:
   QValidator::State mValidity;
 
   CCommonName mObjectCNToCopy;
-
-  QUndoStack *mpUndoStack;
 
   QWidget* mpWebView;
 

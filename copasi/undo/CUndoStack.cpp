@@ -31,6 +31,11 @@ CUndoStack::CUndoStack(const CDataModel & dataModel):
 
 CUndoStack::~CUndoStack()
 {
+  clear();
+}
+
+void CUndoStack::clear()
+{
   iterator it = std::vector< CUndoData * >::begin();
   iterator end = std::vector< CUndoData * >::end();
 
@@ -39,7 +44,7 @@ CUndoStack::~CUndoStack()
       delete *it;
     }
 
-  clear();
+  std::vector< CUndoData * >::clear();
 }
 
 const CUndoData & CUndoStack::operator [](const size_t & index) const
@@ -112,26 +117,47 @@ CUndoStack::const_iterator CUndoStack::end() const
 
 CUndoData::ChangeSet CUndoStack::record(const CUndoData & data, const bool & execute)
 {
-  size_t Unapplied = mCurrent + 1;
-
-  // Check whether we need to remove not applied data, i.e., all data
-  // after mCurrent
-  if (Unapplied != size())
+  // Remove all not applied data, i.e., all data which we can redo
+  while (canRedo())
     {
-      iterator Current = std::vector< CUndoData * >::begin() + Unapplied;
-
-      iterator it = Current;
-      iterator end = std::vector< CUndoData * >::end();
-
-      for (; it != end; ++it)
-        delete *it;
-
-      erase(Current, std::vector< CUndoData * >::end());
+      delete * std::vector< CUndoData * >::rbegin();
+      std::vector< CUndoData * >::pop_back();
     }
 
   push_back(new CUndoData(data));
 
-  assert(Unapplied == size() - 1);
+  assert(canRedo());
 
-  return setCurrentIndex(Unapplied, execute);
+  // We can not use redo() since it implies execute = true!
+  return setCurrentIndex(mCurrent + 1, execute);
+}
+
+bool CUndoStack::canUndo() const
+{
+  return mCurrent != C_INVALID_INDEX;
+}
+
+bool CUndoStack::canRedo() const
+{
+  return mCurrent < size() - 1;
+}
+
+CUndoData::ChangeSet CUndoStack::undo()
+{
+  if (canUndo())
+    {
+      return setCurrentIndex(mCurrent - 1, true);
+    }
+
+  return CUndoData::ChangeSet();
+}
+
+CUndoData::ChangeSet CUndoStack::redo()
+{
+  if (canRedo())
+    {
+      return setCurrentIndex(mCurrent + 1, true);
+    }
+
+  return CUndoData::ChangeSet();
 }

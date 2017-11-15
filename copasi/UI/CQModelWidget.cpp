@@ -14,7 +14,6 @@
  *  Created on: Aug 13, 2010
  *      Author: shoops
  */
-#include <QUndoStack>
 #include <QCompleter>
 #include <QTimer>
 
@@ -60,8 +59,6 @@ CQModelWidget::CQModelWidget(QWidget* parent, const char* name) :
   pValidator = new CQValidatorUnit(mpEditLengthUnit);
   pValidator->setConstraint("m");
   mpEditLengthUnit->setValidator(pValidator);
-
-  mpUndoStack = NULL;
 
 #ifndef COPASI_EXTUNIT
   mpLblAreaUnit->hide();

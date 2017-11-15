@@ -39,7 +39,6 @@ class ListViews;
 class CDataModel;
 class CQBaseDataModel;
 class CDataObject;
-class QUndoStack;
 
 #include "copasi/core/CCore.h"
 #include "copasi/core/CRegisteredCommonName.h"
@@ -65,9 +64,6 @@ public:
   void setIgnoreUpdates(bool v);
   CDataModel *getDataModel() const;
 
-  void setUndoStack(QUndoStack *undoStack);
-  QUndoStack *getUndoStack();
-
   /**
    * @return the pointer to the current object
    */
@@ -83,8 +79,6 @@ protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
   void initContext();
-
-  QUndoStack *mpUndoStack;
 
   ListViews *mpListView;
   CDataObject *mpObject;

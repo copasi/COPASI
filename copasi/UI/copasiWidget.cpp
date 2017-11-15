@@ -22,8 +22,6 @@
 //////////////////////////////////////////////////////////////////////
 #include <QApplication>
 
-#include <QUndoStack>
-
 #include "copasi/UI/copasiWidget.h"
 #include "copasi/UI/listviews.h"
 #include "copasi/UI/DataModelGUI.h"
@@ -39,8 +37,7 @@ CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
     mObjectType(ListViews::RESULT),
     mObjectCN(),
     mIgnoreUpdates(false),
-    mFramework(0),
-    mpUndoStack(NULL)
+    mFramework(0)
 {
   setObjectName(name);
   initContext();
@@ -150,16 +147,6 @@ void CopasiWidget::setIgnoreUpdates(bool v)
 CDataModel *CopasiWidget::getDataModel() const
 {
   return mpDataModel;
-}
-
-void CopasiWidget::setUndoStack(QUndoStack *undoStack)
-{
-  mpUndoStack = undoStack;
-}
-
-QUndoStack *CopasiWidget::getUndoStack()
-{
-  return mpUndoStack;
 }
 
 void CopasiWidget::initContext()

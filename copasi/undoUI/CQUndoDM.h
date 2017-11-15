@@ -28,6 +28,8 @@ public:
     Property,
     NewValue,
     OldValue,
+    Author,
+    Time,
     __SIZE
   };
 

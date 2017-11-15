@@ -21,20 +21,6 @@
 #include "copasi/utilities/CUnitDefinitionDB.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-////UNDO framework classes
-//#ifdef COPASI_UNDO
-//#include "model/CReactionInterface.h"
-//#include "undoFramework/DeleteGlobalQuantityCommand.h"
-//#include "undoFramework/CreateNewGlobalQuantityCommand.h"
-////#include "undoFramework/GlobalQuantityTypeChangeCommand.h"
-//#include "undoFramework/UndoGlobalQuantityData.h"
-//#include "undoFramework/UndoReactionData.h"
-//#include "undoFramework/UndoEventData.h"
-//#include "undoFramework/UndoSpecieData.h"
-//#include "undoFramework/UndoEventAssignmentData.h"
-//#include "copasiui3window.h"
-//#endif
-
 /*
  *  Constructs a CQUnitDetail which is a child of 'parent', with the
  *  name 'name'.'

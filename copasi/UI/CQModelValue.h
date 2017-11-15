@@ -20,9 +20,7 @@
 #ifndef CQMODELVALUE_H
 #define CQMODELVALUE_H
 
-class UndoGlobalQuantityData;
 #include <limits>
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
 
 class CQExpressionWidget;
 class CQScrolledDependenciesWidget;

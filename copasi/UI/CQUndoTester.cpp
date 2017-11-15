@@ -9,16 +9,15 @@
 
 #include <copasi/CopasiTypes.h>
 #include <copasi/commandline/COptions.h>
-#include <copasi/undoFramework/CopasiUndoCommandTypes.h>
 #include <copasi/UI/CopasiGuiTypes.h>
+#include "copasi/UI/CQCopasiApplication.h"
 
-CQUndoTester::CQUndoTester(QApplication* app,
-                           ListViews* pListViews,
-                           QUndoStack* pUndoStack)
+CQUndoTester::CQUndoTester(CQCopasiApplication * app,
+                           ListViews* pListViews)
   : QObject(app)
   , mpApp(app)
   , mpListViews(pListViews)
-  , mpUndoStack(pUndoStack)
+  , mpUndoStack(NULL)
   , mpTabModel(NULL)
   , mpTabSpecies(NULL)
   , mpTabCompartments(NULL)
@@ -50,15 +49,21 @@ CQUndoTester::CQUndoTester(QApplication* app,
   , mpReaction(NULL)
 {
   if (mpListViews == NULL)
-    mpListViews = qobject_cast<CQCopasiApplication*>(mpApp)->getMainWindow()->getMainWidget();
+    mpListViews = mpApp->getMainWindow()->getMainWidget();
 
+  if (mpListViews != NULL)
+    mpUndoStack = mpListViews->getDataModel()->getUndoStack();
+
+  assert(mpUndoStack != NULL);
+
+  /*
   mpTabModel = qobject_cast<CQTabWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::MODEL));
   mpTabSpecies = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::SPECIES));
   mpTabCompartments = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::COMPARTMENTS));
   mpTabModelValues = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::GLOBALQUANTITIES));
   mpTabEvents = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::EVENTS));
   mpTabReactions = qobject_cast<CQTabWidget*>(mpListViews->findTabWidgetFromId(CCopasiUndoCommand::REACTIONS));
-
+  */
   mpDetailModel = qobject_cast<CQModelWidget*>(mpTabModel->getTab(0));
   mpDetailComp = qobject_cast<CQCompartment*>(mpTabCompartments->getTab(0));
   mpDetailSpecies = qobject_cast<CQSpeciesDetail*>(mpTabSpecies->getTab(0));
@@ -66,12 +71,14 @@ CQUndoTester::CQUndoTester(QApplication* app,
   mpDetailEvent = qobject_cast<CQEventWidget1*>(mpTabEvents->getTab(0));
   mpDetailReaction = qobject_cast<ReactionsWidget1*>(mpTabReactions->getTab(0));
 
+  /*
   mpDmWidgetComp = qobject_cast<CQCompartmentsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::COMPARTMENTS));
   mpDmWidgetSpecies = qobject_cast<CQSpeciesWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::SPECIES));
   mpDmWidgetModelValues = qobject_cast<CQGlobalQuantitiesWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::GLOBALQUANTITIES));
   mpDmWidgetEvents = qobject_cast<CQEventsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::EVENTS));
   mpDmWidgetReactions = qobject_cast<CQReactionsWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::REACTIONS));
   mpDmWidgetOverview = qobject_cast<CQParameterOverviewWidget*>(mpListViews->findWidgetFromId(CCopasiUndoCommand::PARAMETER_OVERVIEW));
+  */
 
   mpDmCompartments = dynamic_cast<CQCompartmentDM*>(mpDmWidgetComp->getCqDataModel());
   mpDmSpecies = dynamic_cast<CQSpecieDM*>(mpDmWidgetSpecies->getCqDataModel());

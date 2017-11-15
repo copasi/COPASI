@@ -23,7 +23,6 @@
 #include "copasi/core/CCore.h"
 #include "copasi/undo/CUndoStack.h"
 
-class QUndoStack;
 class CDataModel;
 
 #define COL_ROW_NUMBER   0

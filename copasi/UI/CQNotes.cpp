@@ -174,7 +174,6 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
   mpValidatorXML(NULL),
   mValidity(QValidator::Acceptable),
   mObjectCNToCopy()
-  , mpUndoStack(NULL)
   , mpWebView(NULL)
 
 {

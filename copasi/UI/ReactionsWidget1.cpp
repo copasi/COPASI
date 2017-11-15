@@ -79,9 +79,6 @@ ReactionsWidget1::ReactionsWidget1(QWidget *parent, const char * name, Qt::Windo
 #ifndef WITH_SDE_SUPPORT
   mpBoxAddNoise->hide();
 #endif
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
 }
 
 ReactionsWidget1::~ReactionsWidget1()

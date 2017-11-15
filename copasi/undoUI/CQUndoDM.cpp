@@ -179,6 +179,23 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
           }
 
         break;
+
+      case ColumnType::Author:
+        // We need to resolve this for provenance
+      {
+        QVariant Value;
+        Value.setValue(UndoData.getAuthorID());
+        return Value;
+      }
+      break;
+
+      case ColumnType::Time:
+      {
+        QVariant Value;
+        Value.setValue(UndoData.getTime());
+        return Value;
+      }
+      break;
     }
 
   return QVariant();

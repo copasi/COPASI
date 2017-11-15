@@ -13,8 +13,6 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <QUndoStack>
-
 #include "copasi.h"
 #include "CQBaseDataModel.h"
 #include <copasi/utilities/utility.h>

@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -20,7 +25,7 @@
 #include "copasi/Provenance/CProvenanceXMLWriter.h"
 #endif
 
-CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersion  * ModelVersion, DataModelGUI * ModelGUI,   QUndoStack  *     UndoStack
+CBrowseModelVersionDialog::CBrowseModelVersionDialog(QWidget *parent, CModelVersionHierarchy  * ModelVersion, DataModelGUI * ModelGUI,   QUndoStack  *     UndoStack
 #ifdef COPASI_Provenance
 //                                                     , QString PathProvenance,   QString ProvenanceParentOfCurrentModel
     , QString PathProvenance
@@ -145,9 +150,9 @@ void CBrowseModelVersionDialog::on_DeleteButton_clicked()
 {
   QModelIndex selectedIndex = ui->tableView->currentIndex();
   QString Version = mpModelVersion->getModelVersionHierarchy()->item(selectedIndex.row(), 0)->text();
-  
+
   QMessageBox msgBox;
-  //msgBox.setIcon(QMessageBox::NoIcon); //should it really be no	warning icon?
+  //msgBox.setIcon(QMessageBox::NoIcon); //should it really be no warning icon?
   msgBox.setWindowTitle("Version Deletion Warning");
   msgBox.setText("Are you sure you want delete this version?");
   msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);

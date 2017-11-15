@@ -267,7 +267,6 @@ if(BUILD_GUI)
   include(tex/CMakeLists.txt)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
-  include(undoFramework/CMakeLists.txt)
   include(undoUI/CMakeLists.txt)
 
   set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
@@ -404,7 +403,7 @@ endif(ENABLE_SDE_SUPPORT)
     
   ENDMACRO (COPASI_QT4_WRAP_UI)
 
-  foreach (dir barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoFramework undoUI)
+  foreach (dir barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoUI)
     string(TOUPPER ${dir} suffix)
     #message(STATUS "Mocing files for subdir: ${dir}")
     set(TEMP_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -p${dir})

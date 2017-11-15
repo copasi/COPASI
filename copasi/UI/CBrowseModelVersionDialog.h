@@ -1,3 +1,8 @@
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -14,9 +19,9 @@
 #define CBrowseModelVersionDialog_H
 
 #include <QDialog>
-#include "versioning/CModelVersion.h"
 #include "DataModelGUI.h"
 #include <QUndoStack>
+#include "../versioning/CModelVersionHierarchy.h"
 
 namespace Ui
 {
@@ -34,7 +39,7 @@ public:
    * Default constructor
    * Fetch Version Hierarchy Model data and show it in a table
    */
-  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersion * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QUndoStack  *     UndoStack = NULL
+  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersionHierarchy * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QUndoStack  *     UndoStack = NULL
 #ifdef COPASI_Provenance
 //                                     , QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
                                      ,  QString ProvenanceParentOfCurrentModel = QString("")
@@ -67,7 +72,7 @@ private:
   /**
    * A pointer to Version Hierarchy Model data
    */
-  CModelVersion * mpModelVersion;
+  CModelVersionHierarchy * mpModelVersion;
 
   /**
    * A pointer to Data Model GUI

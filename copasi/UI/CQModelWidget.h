@@ -24,9 +24,6 @@
 
 #include "copasi/UI/ui_CQModelWidget.h"
 
-class QUndoStack;
-#include "copasi/undoFramework/CCopasiUndoCommand.h"
-
 #include <map>
 
 class CModel;
@@ -59,8 +56,6 @@ private:
 
   // Attributes
   CModel * mpModel;
-
-  QUndoStack *mpUndoStack;
 
   QLineEdit * mpFocusUnit;
 };

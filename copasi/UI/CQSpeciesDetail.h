@@ -20,10 +20,6 @@
 
 #include "ui_CQSpeciesDetail.h"
 
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-
-class UndoSpeciesData;
-
 class CMetab;
 class CCompartment;
 class CQScrolledDependenciesWidget;

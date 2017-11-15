@@ -27,12 +27,11 @@
 #include "UI/ReactionsWidget1.h"
 #include "UI/CQUnitDetail.h"
 
-#include <QUndoStack>
 #include <copasi/UI/copasiui3window.h>
 
 #ifdef COPASI_Provenance
 #include "CEntityProvenanceDialog.h"
-#include "versioning/CModelVersion.h"
+#include "../versioning/CModelVersionHierarchy.h"
 #include "commandline/CConfigurationFile.h"
 #endif
 
@@ -86,9 +85,6 @@ CQTabWidget::CQTabWidget(const ListViews::ObjectType & objectType, CopasiWidget 
   CQRDFTreeView* pRDFTreeView = new CQRDFTreeView(mpTabWidget);
   mPages.push_back(pRDFTreeView);
   mpTabWidget->addTab(pRDFTreeView, "RDF Browser");
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
 
 #ifdef COPASI_Provenance
 

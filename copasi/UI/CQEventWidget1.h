@@ -20,9 +20,6 @@
 #ifndef CQEVENTWIDGET1_H
 #define CQEVENTWIDGET1_H
 
-class UndoEventData;
-#include <copasi/undoFramework/CCopasiUndoCommand.h>
-
 #include <QtCore/QVariant>
 
 #include "ui_CQEventWidget1.h"
@@ -92,12 +89,6 @@ private slots:
   void slotSelectObject();
   void slotActualizeAssignmentExpression(int index);
   void slotChooseDelay(int choice);
-
-public:
-  bool changeValue(const std::string& key,
-                   CCopasiUndoCommand::Type type,
-                   const QVariant& newValue,
-                   const std::string& expression = "");
 };
 
 #endif // CQEVENTWIDGET1_H

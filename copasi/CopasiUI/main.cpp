@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
       if (!COptions::getEnvironmentVariable("COPASI_TEST_UNDO").empty())
         {
           // test undo if environment variable is present
-          CQUndoTester*  tester = new CQUndoTester(&a, NULL, pWindow->getUndoStack());
+          CQUndoTester*  tester = new CQUndoTester(&a, NULL);
           tester->startTestIn(1000);
         }
 

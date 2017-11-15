@@ -26,6 +26,7 @@ public:
 
   ~CUndoStack();
 
+  void clear();
   size_t size() const;
   const CUndoData & operator [](const size_t & index) const;
 
@@ -38,6 +39,12 @@ public:
   const_iterator current() const;
 
   CUndoData::ChangeSet getChangeSet(const size_t & index) const;
+
+  bool canUndo() const;
+  bool canRedo() const;
+
+  CUndoData::ChangeSet undo();
+  CUndoData::ChangeSet redo();
 
 private:
   CDataModel * mpDataModel;

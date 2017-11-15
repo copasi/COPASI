@@ -61,8 +61,7 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget *parent, const char *name) :
   mpReactionTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
   mpReactionTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
-  CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
+
   // temporarily hide the reaction label / table
   mpLblReactions->setVisible(false);
   mpReactionTable->setVisible(false);

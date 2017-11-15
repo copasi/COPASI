@@ -62,7 +62,6 @@
 #include "resourcesUI/CQIconResource.h"
 
 #ifdef COPASI_UNDO
-# include <QUndoStack>
 # include "copasi/undoUI/CQUndoDialog.h"
 # include "copasi/core/CCore.h"
 # include "copasi/undo/CUndoStack.h"
@@ -266,6 +265,22 @@ CopasiUI3Window::CopasiUI3Window():
   , mpRecentSEDMLFilesActionGroup(NULL)
 #endif //COPASI_SEDML support
 
+#ifdef COPASI_UNDO
+  , mpUndoStack(NULL)
+  , mpaUndo(NULL)
+  , mpaRedo(NULL)
+  , mpaUndoHistory(NULL)
+  , mpaClearUndoHistory(NULL)
+#endif
+
+#ifdef COPASI_Versioning
+  , mpaCreateVersion(NULL)
+  , mpaBrowseVersion(NULL)
+  , mpVersionHierarchy(NULL)
+//  COMBINE Archive will take care of file management
+//  QString mLastSavedParentOfCurrentModel;
+#endif
+
 #ifdef COPASI_Provenance
   //, mProvenanceParentOfCurrentModel(QString(""))
   , mProvenanceOrigionFileType(QString("Created"))
@@ -284,11 +299,9 @@ CopasiUI3Window::CopasiUI3Window():
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
-  //initialise Undo stack
-  mpUndoStack = new QUndoStack(this);
 #ifdef COPASI_Versioning
   //initialise Model Version Hierarchy
-  mpVersionHierarchy = new CModelVersion(this);
+  mpVersionHierarchy = new CModelVersionHierarchy(this);
   //mLastSavedParentOfCurrentModel = QString("");
 #endif
   createActions();
@@ -304,6 +317,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpaExportSEDML->setEnabled(false);
 #endif
   mpDataModel = CRootContainer::addDatamodel();
+  mpUndoStack = mpDataModel->getUndoStack();
   mpDataModelGUI = new DataModelGUI(this, mpDataModel);
   mpListView = new ListViews(this, mpDataModelGUI, mpDataModel);
   // Set the window caption/title
@@ -372,8 +386,7 @@ CopasiUI3Window::~CopasiUI3Window()
   mpDataModelGUI->deregisterListView(mpListView);
   pdelete(mpDataModelGUI);
   pdelete(mpListView);
-  //clear the undo stack
-  pdelete(mpUndoStack);
+
 #ifdef COPASI_Versioning
   //Delete the Model Versions
   pdelete(mpVersionHierarchy);
@@ -763,7 +776,6 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
       //mLastSavedParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
 #endif
 #ifdef COPASI_Provenance
-      //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
       CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
       ProvenanceXMLWriter->updateCurrentSessionProvenance();
       //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
@@ -3575,12 +3587,12 @@ void CopasiUI3Window::slotExportCombineFinished(bool success)
 
 #endif
 
-QUndoStack *CopasiUI3Window::getUndoStack() {return mpUndoStack; };
-
 #ifdef COPASI_UNDO
 void CopasiUI3Window::slotClearUndoHistory()
 {
-  if (mpUndoStack == NULL || !mpUndoStack->canUndo())
+  CUndoStack * pUndoStack = mpDataModel->getUndoStack();
+
+  if (pUndoStack == NULL || !pUndoStack->canUndo())
     return;
 
   if (QMessageBox::question(this, "Clear Undo history?",
@@ -3589,7 +3601,7 @@ void CopasiUI3Window::slotClearUndoHistory()
                             QMessageBox::Yes,
                             QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
     {
-      mpUndoStack->clear();
+      pUndoStack->clear();
     }
 }
 void CopasiUI3Window::slotUndo()
@@ -3616,7 +3628,7 @@ void CopasiUI3Window::slotUndoHistory()
 #endif
 
 #ifdef COPASI_Versioning
-CModelVersion *CopasiUI3Window::getVersionHierarchy()
+CModelVersionHierarchy *CopasiUI3Window::getVersionHierarchy()
 {
   return (mpVersionHierarchy);
 }

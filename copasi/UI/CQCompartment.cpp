@@ -76,9 +76,6 @@ CQCompartment::CQCompartment(QWidget* parent, const char* name):
   mpLblDim->hide();
   mpComboBoxDim->hide();
 #endif
-
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
 }
 
 /*

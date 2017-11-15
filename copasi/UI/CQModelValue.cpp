@@ -52,10 +52,6 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   init();
 
-  CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
-  setUndoStack(pWindow->getUndoStack());
-  mpLblType->setMinimumWidth(90);
-
   mpDependencies = new CQScrolledDependenciesWidget(this);
   mpDependencies->setVisibleDependencies(REACTION | EVENT | SPECIES | PARAMETERS | COMPARTMENT);
   mpDependencies->setLabelWidth(mpLblValue->width() - 6);
