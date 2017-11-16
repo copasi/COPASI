@@ -603,7 +603,7 @@ bool CExperiment::calculateStatistics()
   mMeanSD = 0.0;
   mObjectiveValue = 0.0;
   mRMS = 0.0;
-  size_t ValidValueCount = 0;
+  mValidValueCount = 0;
 
   // per row statistic;
   mRowObjectiveValue.resize(numRows);
@@ -650,7 +650,7 @@ bool CExperiment::calculateStatistics()
           Residual = Residual * Residual;
 
           mObjectiveValue += Residual;
-          ValidValueCount++;
+          mValidValueCount++;
 
           mRowObjectiveValue[i] += Residual;
           RowCount[i]++;
@@ -660,10 +660,10 @@ bool CExperiment::calculateStatistics()
         }
     }
 
-  if (ValidValueCount)
+  if (mValidValueCount)
     {
-      mMean /= ValidValueCount;
-      mRMS = sqrt(mObjectiveValue / ValidValueCount);
+      mMean /= mValidValueCount;
+      mRMS = sqrt(mObjectiveValue / mValidValueCount);
     }
   else
     {
@@ -708,8 +708,8 @@ bool CExperiment::calculateStatistics()
         }
     }
 
-  if (ValidValueCount)
-    mMeanSD = sqrt(mMeanSD / ValidValueCount);
+  if (mValidValueCount)
+    mMeanSD = sqrt(mMeanSD / mValidValueCount);
   else
     mMeanSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
@@ -1651,6 +1651,11 @@ size_t CExperiment::getColumnValidValueCount(const CObjectInterface * pObject) c
     return mColumnValidValueCount[it->second];
   else
     return 0;
+}
+
+size_t CExperiment::getValidValueCount() const
+{
+  return mValidValueCount;
 }
 
 const CObjectInterface::ObjectSet & CExperiment::getIndependentObjects() const

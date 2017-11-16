@@ -292,6 +292,7 @@ public:
 
   void setNormalizeWeightsPerExperiment(bool flag);
   bool getNormalizeWeightsPerExperiment() const;
+  
   /**
    * Retrieve the time data of the experiment.
    * @return const CVector< C_FLOAT64 > & timeData
@@ -557,7 +558,21 @@ public:
    * @return size_t count
    */
   size_t getColumnValidValueCount(const CObjectInterface * pObject) const;
-
+  
+  /**
+  * get number of independent data points for the whole experiment
+  * only valid data points (that contain actual data) are counted. 
+  */
+    size_t getValidValueCount() const;
+    
+  /**
+  * get number of independent data points expected given the number of rows and columns
+  *
+  */
+   size_t getTotalValueCount() const;
+    
+    
+  
   /**
    * Retrieve the list of independent objects
    * @return const CObjectInterface::ObjectSet & independentObjects
@@ -697,7 +712,9 @@ private:
   C_FLOAT64 mMeanSD;
   C_FLOAT64 mObjectiveValue;
   C_FLOAT64 mRMS;
-
+  
+  size_t mValidValueCount;
+  
   CVector< C_FLOAT64 > mRowObjectiveValue;
   CVector< C_FLOAT64 > mRowRMS;
 

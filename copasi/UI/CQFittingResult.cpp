@@ -236,7 +236,7 @@ bool CQFittingResult::enterProtected()
   mpParameters->resizeRowsToContents();
   mpParameters->setSortingEnabled(true);
 
-  // Loop over the experiments
+  // Results per Experiment tab: Loop over the experiments
   const CExperimentSet & Experiments = mpProblem->getExperimentSet();
 
   imax = Experiments.getExperimentCount();
@@ -253,22 +253,26 @@ bool CQFittingResult::enterProtected()
 
       pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
       mpExperiments->setItem((int) i, 0, pItem);
-
+      
+      pItem = new QTableWidgetItem(QVariant::UInt);
+      pItem->setData(Qt::DisplayRole, (unsigned int)Experiment.getValidValueCount()  );
+      mpExperiments->setItem((int) i, 1, pItem);
+      
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
-      mpExperiments->setItem((int) i, 1, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS());
       mpExperiments->setItem((int) i, 2, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
+      pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS());
       mpExperiments->setItem((int) i, 3, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
+      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
       mpExperiments->setItem((int) i, 4, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
+      mpExperiments->setItem((int) i, 5, pItem);
     }
 
   mpExperiments->resizeColumnsToContents();
@@ -294,22 +298,26 @@ bool CQFittingResult::enterProtected()
         pItem = new QTableWidgetItem("Not Found");
 
       mpValues->setItem((int) i, 0, pItem);
-
+      
+pItem = new QTableWidgetItem(QVariant::UInt);
+      pItem->setData(Qt::DisplayRole, 0);
+      mpValues->setItem((int) i, 1, pItem);
+      
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, Experiments.getDependentObjectiveValues()[i]);
-      mpValues->setItem((int) i, 1, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiments.getDependentRMS()[i]);
       mpValues->setItem((int) i, 2, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiments.getDependentErrorMean()[i]);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentRMS()[i]);
       mpValues->setItem((int) i, 3, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiments.getDependentErrorMeanSD()[i]);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentErrorMean()[i]);
       mpValues->setItem((int) i, 4, pItem);
+
+      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem->setData(Qt::DisplayRole, Experiments.getDependentErrorMeanSD()[i]);
+      mpValues->setItem((int) i, 5, pItem);
     }
 
   mpValues->resizeColumnsToContents();

@@ -53,6 +53,8 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
   mpEditObjectiveValue->setText(QString::number(pProblem->getSolutionValue()));
   mpEditRMS->setText(QString::number(pProblem->getRMS()));
   mpEditStdDeviation->setText(QString::number(pProblem->getStdDeviation()));
+  
+  mpEditNumValidDataPoints->setText(QString::number(pProblem->getExperimentSet().getValidValueCount()   ));
 
   bool Enable = (pProblem->getCrossValidationSet().getExperimentCount() > 0);
 
@@ -62,18 +64,22 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
   mpEditCVRMS->setEnabled(Enable);
   mpLblCVStdDeviation->setEnabled(Enable);
   mpEditCVStdDeviation->setEnabled(Enable);
+  mpLabelCVNumValidDataPoints->setEnabled(Enable);
+  mpEditCVNumValidDataPoints->setEnabled(Enable);
 
   if (Enable)
     {
       mpEditCVObjectiveValue->setText(QString::number(pProblem->getCrossValidationSolutionValue()));
       mpEditCVRMS->setText(QString::number(pProblem->getCrossValidationRMS()));
       mpEditCVStdDeviation->setText(QString::number(pProblem->getCrossValidationSD()));
+      mpEditCVNumValidDataPoints->setText(QString::number(pProblem->getCrossValidationSet().getValidValueCount()   )); 
     }
   else
     {
       mpEditCVObjectiveValue->setText("");
       mpEditCVRMS->setText("");
       mpEditCVStdDeviation->setText("");
+      mpEditCVNumValidDataPoints->setText("");
     }
 
   const unsigned C_INT32 & FunctionEvaluations = pProblem->getFunctionEvaluations();
