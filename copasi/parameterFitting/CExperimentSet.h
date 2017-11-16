@@ -221,6 +221,11 @@ public:
   const CVector< C_FLOAT64 > & getDependentErrorMeanSD() const;
 
   /**
+   * Retrieve the number of valid data points per dependent variable
+   */
+  const CVector< size_t > & getDependentDataCount() const;
+  
+  /**
    * Fix files written with Version 4.10.55, which wrote the square root of user defined weights for the
    * parameter fitting task
    */

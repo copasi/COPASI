@@ -332,6 +332,10 @@ const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMean() const
 const CVector< C_FLOAT64 > & CExperimentSet::getDependentErrorMeanSD() const
 {return mDependentErrorMeanSD;}
 
+const CVector< size_t > & CExperimentSet::getDependentDataCount() const
+{return mDependentDataCount;}
+
+
 size_t CExperimentSet::getExperimentCount() const
 {return size() - mNonExperiments;}
 
