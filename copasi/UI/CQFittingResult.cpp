@@ -244,40 +244,103 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpExperiments->setRowCount((int) imax);
+  
+  size_t rowcount = 0;
+  mpExperiments->setRowCount(0);
+  
+  //mpExperiments->setRowCount((int) imax);
   mpExperiments->setSortingEnabled(false);
 
   for (i = 0; i != imax; i++)
     {
+      //an empty line between experiments
+      if (i)
+      {
+        mpExperiments->setRowCount(rowcount+1);
+        pItem = new QTableWidgetItem();
+        mpExperiments->setItem(rowcount,0,pItem);
+        ++rowcount;
+      }
+        
+      //first the experiment summary
       const CExperiment & Experiment = * Experiments.getExperiment(i);
 
+      mpExperiments->setRowCount(rowcount+1);
+
       pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
-      mpExperiments->setItem((int) i, 0, pItem);
+      mpExperiments->setItem((int) rowcount, 0, pItem);
       
       pItem = new QTableWidgetItem(QVariant::UInt);
       pItem->setData(Qt::DisplayRole, (unsigned int)Experiment.getValidValueCount()  );
-      mpExperiments->setItem((int) i, 1, pItem);
+      mpExperiments->setItem((int) rowcount, 1, pItem);
       
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
-      mpExperiments->setItem((int) i, 2, pItem);
+      mpExperiments->setItem((int) rowcount, 2, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS());
-      mpExperiments->setItem((int) i, 3, pItem);
+      mpExperiments->setItem((int) rowcount, 3, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
-      mpExperiments->setItem((int) i, 4, pItem);
+      mpExperiments->setItem((int) rowcount, 4, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
-      mpExperiments->setItem((int) i, 5, pItem);
+      mpExperiments->setItem((int) rowcount, 5, pItem);
+      
+      ++rowcount;
+      
+      //now the data sets in the experiment
+      
+      const CObjectInterface * const * ppObject = Experiments.getDependentObjects().array();
+      const CObjectInterface * const * ppEnd = ppObject + Experiments.getDependentObjects().size();
+      
+      for (; ppObject != ppEnd; ++ppObject)
+      {
+        size_t Count = Experiment.getColumnValidValueCount(*ppObject);
+        
+        if (Count)
+        {
+          mpExperiments->setRowCount(rowcount+1);
+          
+          pItem = new QTableWidgetItem(FROM_UTF8((*ppObject)->getObjectDisplayName()));
+          mpExperiments->setItem((int) rowcount, 0, pItem);
+          
+          pItem = new QTableWidgetItem(QVariant::UInt);
+          pItem->setData(Qt::DisplayRole, (unsigned int)Count);
+          mpExperiments->setItem((int) rowcount, 1, pItem);
+          
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue(*ppObject));
+          mpExperiments->setItem((int) rowcount, 2, pItem);
+          
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS(*ppObject));
+          mpExperiments->setItem((int) rowcount, 3, pItem);
+          
+          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem->setData(Qt::DisplayRole, Experiment.getErrorSum(*ppObject)/Count);
+          mpExperiments->setItem((int) rowcount, 4, pItem);
+          
+          //pItem = new QTableWidgetItem(QVariant::Double);
+          //pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD(*ppObject));
+          //mpExperiments->setItem((int) rowcount, 5, pItem);
+          
+          ++rowcount;
+          
+          
+        }
+      }
+  
+        
+
     }
 
   mpExperiments->resizeColumnsToContents();
   mpExperiments->resizeRowsToContents();
-  mpExperiments->setSortingEnabled(true);
+  //mpExperiments->setSortingEnabled(true);
 
   // Loop over the dependent objects
   imax = Experiments.getDependentObjects().size();
@@ -299,8 +362,8 @@ bool CQFittingResult::enterProtected()
 
       mpValues->setItem((int) i, 0, pItem);
       
-pItem = new QTableWidgetItem(QVariant::UInt);
-      pItem->setData(Qt::DisplayRole, 0);
+      pItem = new QTableWidgetItem(QVariant::UInt);
+      pItem->setData(Qt::DisplayRole, (unsigned int)Experiments.getDependentDataCount()[i]);
       mpValues->setItem((int) i, 1, pItem);
       
       pItem = new QTableWidgetItem(QVariant::Double);
