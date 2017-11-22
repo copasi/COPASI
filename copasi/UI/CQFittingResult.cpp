@@ -270,8 +270,16 @@ bool CQFittingResult::enterProtected()
       pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
       mpExperiments->setItem((int) rowcount, 0, pItem);
       
-      pItem = new QTableWidgetItem(QVariant::UInt);
-      pItem->setData(Qt::DisplayRole, (unsigned int)Experiment.getValidValueCount()  );
+      QString tmpStr = QString::number(Experiment.getValidValueCount());
+      if (Experiment.getValidValueCount() != Experiment.getTotalValueCount())
+      {
+        tmpStr += " (of ";
+        tmpStr += QString::number(Experiment.getTotalValueCount());
+        tmpStr += ")";
+      }
+      
+      pItem = new QTableWidgetItem(tmpStr);
+      //pItem->setData(Qt::DisplayRole, (unsigned int)Experiment.getValidValueCount()  );
       mpExperiments->setItem((int) rowcount, 1, pItem);
       
       pItem = new QTableWidgetItem(QVariant::Double);
