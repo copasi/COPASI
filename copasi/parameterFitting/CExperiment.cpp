@@ -1658,6 +1658,12 @@ size_t CExperiment::getValidValueCount() const
   return mValidValueCount;
 }
 
+size_t CExperiment::getTotalValueCount() const
+{
+  return getNumDataRows()*mDataDependent.numCols();
+}
+
+
 const CObjectInterface::ObjectSet & CExperiment::getIndependentObjects() const
 {
   return mIndependentObjects;
