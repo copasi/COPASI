@@ -418,7 +418,7 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
 
 CIssue CModel::compile()
 {
-  bool success = true;
+  //bool success = true;
   CIssue firstWorstIssue;
   bool RenameHandlerEnabled = CRegisteredCommonName::isEnabled();
 
@@ -2411,7 +2411,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return false;
     }
 
-  size_t numCols = experiment->getNumColumns();
+  //size_t numCols = experiment->getNumColumns();
   const std::map< const CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjects();
 
   // then go through each time point

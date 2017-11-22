@@ -819,7 +819,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 {
   const CModel * pModel
     = dynamic_cast< const CModel * >(getObjectAncestor("Model"));
-  const CDataVector< CMetab > & Metabolites = pModel->getMetabolites();
+  //const CDataVector< CMetab > & Metabolites = pModel->getMetabolites();
 
   size_t pos;
 

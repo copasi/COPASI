@@ -194,7 +194,7 @@ private:
   //std::vector<C_FLOAT64> mvTimesRing;
 
   //the number of states already pushed to the ring buffer
-  size_t mStatesRingCounter;
+  int mStatesRingCounter;
 
   C_FLOAT64 mPreviousCrossingTime;
   C_FLOAT64 mPeriod;

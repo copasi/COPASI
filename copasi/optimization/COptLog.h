@@ -52,7 +52,7 @@ public:
    * Get the log element count
    * @return unsigned C_INT32 elementCount
    */
-  unsigned C_INT32 getElementCount() const;
+  size_t getElementCount() const;
 
   /**
    * Retrieve the method log as plain text.

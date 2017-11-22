@@ -604,7 +604,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
   //have them we can use them
 
   std::complex<C_FLOAT64> tmpcpl = 1.0;
-  unsigned C_INT32 index_min = 0; // the index of the EV with smallest abs real part
+  size_t index_min = 0; // the index of the EV with smallest abs real part
   C_FLOAT64 tmpmin = 1e300;
 
   for (i = 0; (C_INT) i < mN; i++)

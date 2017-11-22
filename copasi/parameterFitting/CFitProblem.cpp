@@ -1843,9 +1843,9 @@ bool CFitProblem::calculateCrossValidation()
   mCounter += 1;
   bool Continue = true;
 
-  unsigned i, imax = mpCrossValidationSet->getExperimentCount();
-  unsigned j;
-  unsigned kmax;
+  size_t i, imax = mpCrossValidationSet->getExperimentCount();
+  size_t j;
+  size_t kmax;
   C_FLOAT64 CalculateValue = 0.0;
 
   CExperiment * pExp = NULL;

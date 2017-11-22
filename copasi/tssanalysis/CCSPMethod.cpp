@@ -1790,7 +1790,7 @@ CCSPMethod::initializeOutput()
 
   mReducedModel = getValue< bool >("Integrate Reduced Model");
 
-  C_INT numberOfMetabs;
+  size_t numberOfMetabs;
 
   if (mReducedModel)
     {
@@ -2009,9 +2009,9 @@ bool CCSPMethod::setAnnotationM(size_t step)
   sstr.clear();
   unsigned C_INT32 i;
   double timeScale;
-  unsigned C_INT32 M;
+  size_t M;
 
-  C_INT N;
+  size_t N;
 
   if (mReducedModel)
     {

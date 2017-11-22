@@ -200,7 +200,7 @@ COptLogItem::COptLogItem(MsgID id, const std::string& statusDump):
 COptLogItem::~COptLogItem()
 {}
 
-COptLogItem & COptLogItem::iter(unsigned C_INT32 val)
+COptLogItem & COptLogItem::iter(size_t val)
 {
   mIteration = val;
 

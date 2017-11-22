@@ -99,7 +99,7 @@ protected:
   /**
    * Iteration that this log item was created at (optional).
    */
-  unsigned C_INT32 mIteration;
+  size_t mIteration;
 
   /**
    * All further variables fed into this log item (optional).
@@ -143,7 +143,7 @@ public:
    * @param unsigned C_INT32 iteration
    * @return COptLogItem & logItem
    */
-  COptLogItem & iter(unsigned C_INT32 val);
+  COptLogItem & iter(size_t val);
 
   /**
    * Enter further values for this log item.

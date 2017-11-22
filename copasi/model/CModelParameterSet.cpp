@@ -295,7 +295,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
 
               os << itNode->getName();
 
-              for (unsigned int i = itNode.level(); i < 6; i++)
+              for (size_t i = itNode.level(); i < 6; i++)
                 {
                   os << separator;
                 }

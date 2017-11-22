@@ -135,7 +135,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   CVectorCore< CMathReaction > & Reactions = mpContainer->getReactions();
   const CVectorCore< C_FLOAT64 > & ParticleFluxex = mpContainer->getParticleFluxes();
 
-  size_t numReacs = Reactions.size();
+  //size_t numReacs = Reactions.size();
 
   // We need the number of independent metabolites determined by
   // reactions.
@@ -171,7 +171,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
       const CMathReaction::SpeciesBalance * pBalanceRow;
       const CMathReaction::SpeciesBalance * pBalanceColumn;
       const CMathReaction::SpeciesBalance * pBalanceEnd = Balances.array() + Balances.size();
-      C_FLOAT64 * pBMatrixReduced = mBMatrixReduced.array();
+      //C_FLOAT64 * pBMatrixReduced = mBMatrixReduced.array();
 
       for (pBalanceRow = Balances.array(); pBalanceRow != pBalanceEnd; ++pBalanceRow)
         {
@@ -296,7 +296,7 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   CMatrix< C_FLOAT64 > At;
   At.resize(mJacobianReduced.numCols(), mJacobianReduced.numRows());
   const C_FLOAT64 * pJacobian = mJacobianReduced.array();
-  const C_FLOAT64 * pJacobianEnd = pJacobian + mJacobianReduced.size();
+  //const C_FLOAT64 * pJacobianEnd = pJacobian + mJacobianReduced.size();
 
   for (size_t i = 0; i < mJacobianReduced.numRows(); ++i)
     {

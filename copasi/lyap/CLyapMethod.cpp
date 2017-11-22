@@ -136,7 +136,7 @@ bool CLyapMethod::isValidProblem(const CCopasiProblem * pProblem)
       return false;
     }
 
-  unsigned C_INT32 tmp = (unsigned C_INT32) mpContainer->getCountODEs() + mpContainer->getCountIndependentSpecies();
+  size_t tmp =  mpContainer->getCountODEs() + mpContainer->getCountIndependentSpecies();
 
   if (pLP->getExponentNumber() > tmp)
     {

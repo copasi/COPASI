@@ -385,7 +385,8 @@ void CHybridMethodODE45::partitionSystem()
   mHasStoiReaction   = (nSlow > 0);
   mHasDetermReaction = (nFast > 0);
 
-  mContainerFluxes.initialize(mpContainer->getFluxes()), mSlowReactions.resize(nSlow);
+  mContainerFluxes.initialize(mpContainer->getFluxes());
+  mSlowReactions.resize(nSlow);
   mAmuPointers.resize(nSlow);
   mFluxPointers.resize(nSlow);
 
