@@ -169,6 +169,11 @@ public:
   const CVector< C_FLOAT64 > & getVariableStdDeviations() const;
 
   /**
+   * Retrieve the Jacobian of the parameter estimation.
+   */
+  CDataArray & getParameterEstimationJacobian() const;
+  
+  /**
    * Retrieve the Fisher Information Matrix of the solution variables.
    * @return CArrayAnnotation & fisherInformationMatrix
    */
@@ -471,6 +476,14 @@ private:
    */
   CVector< C_FLOAT64 > mParameterSD;
 
+  /**
+   * the Jacobian of tha parameter estimation, 
+   *i.e. the derivatives of the residuals with respect to the parameters
+   */
+  CMatrix< C_FLOAT64 > mDeltaResidualDeltaParameter;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpDeltaResidualDeltaParameterInterface;
+  CDataArray * mpDeltaResidualDeltaParameterMatrix;
+  
   /**
    * The Fisher information or parameter correlation matrix
    */

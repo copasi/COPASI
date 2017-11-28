@@ -527,6 +527,15 @@ bool CQFittingResult::enterProtected()
 
   mpLogTree->clear();
 
+  //preliminary testing code
+  /*tcs = new CColorScaleBiLog();
+  CQArrayAnnotationsWidget * pJacobianMatrix = new CQArrayAnnotationsWidget(NULL, false);
+  pJacobianMatrix->setColorCoding(tcs);
+  pJacobianMatrix->setColorScalingAutomatic(true);
+  pJacobianMatrix->setArrayAnnotation(&mpProblem->getParameterEstimationJacobian());
+  pJacobianMatrix->show();*/
+
+  
   return true;
 }
 
