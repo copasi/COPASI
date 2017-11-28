@@ -3392,7 +3392,17 @@ CModel* SBMLImporter::readSBML(std::string filename,
     }
 
   std::ostringstream stringStream;
-  char c;
+
+  // check for BOM
+  char a, b, c;
+  a = file.get();
+  b = file.get();
+  c = file.get();
+
+  if (a != (char)0xEF || b != (char)0xBB || c != (char)0xBF)
+    {
+      file.seekg(0); // if BOM not found reset stream
+    }
 
   while (file.get(c))
     {
@@ -3500,7 +3510,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-              // treat unknown as fatal
+                // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
