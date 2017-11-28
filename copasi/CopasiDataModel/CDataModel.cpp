@@ -2626,7 +2626,16 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
 
   if (mData.pModel)
     {
-      mData.pModel->compileIfNecessary(pProcessReport);
+      bool status = mData.pModel->compileIfNecessary(pProcessReport);
+
+      if (!status)
+        {
+          // the model failed to compile tell the user
+          CValidity validity = mData.pModel->getValidity();;
+
+          CCopasiMessage::CCopasiMessage(CCopasiMessage::WARNING, validity.getIssueMessages().c_str());
+        }
+
       mData.pModel->updateInitialValues(CCore::Framework::ParticleNumbers);
     }
 
