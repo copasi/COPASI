@@ -533,7 +533,14 @@ bool CQFittingResult::enterProtected()
   pJacobianMatrix->setColorCoding(tcs);
   pJacobianMatrix->setColorScalingAutomatic(true);
   pJacobianMatrix->setArrayAnnotation(&mpProblem->getParameterEstimationJacobian());
-  pJacobianMatrix->show();*/
+  pJacobianMatrix->show();
+
+  tcs = new CColorScaleBiLog();
+  CQArrayAnnotationsWidget * pScaledJacobianMatrix = new CQArrayAnnotationsWidget(NULL, false);
+  pScaledJacobianMatrix->setColorCoding(tcs);
+  pScaledJacobianMatrix->setColorScalingAutomatic(true);
+  pScaledJacobianMatrix->setArrayAnnotation(&mpProblem->getScaledParameterEstimationJacobian());
+  pScaledJacobianMatrix->show();*/
 
   
   return true;

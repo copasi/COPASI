@@ -172,6 +172,12 @@ public:
    * Retrieve the Jacobian of the parameter estimation.
    */
   CDataArray & getParameterEstimationJacobian() const;
+
+  /**
+   * Retrieve the scaled Jacobian of the parameter estimation.
+   * It is scaled by parameter values
+   */
+  CDataArray & getScaledParameterEstimationJacobian() const;
   
   /**
    * Retrieve the Fisher Information Matrix of the solution variables.
@@ -483,6 +489,15 @@ private:
   CMatrix< C_FLOAT64 > mDeltaResidualDeltaParameter;
   CMatrixInterface< CMatrix< C_FLOAT64 > > * mpDeltaResidualDeltaParameterInterface;
   CDataArray * mpDeltaResidualDeltaParameterMatrix;
+
+  /**
+   * the scaled Jacobian of tha parameter estimation,
+   * i.e. the derivatives of the residuals with respect to the parameters,
+   * scaled by parameter value
+   */
+  CMatrix< C_FLOAT64 > mDeltaResidualDeltaParameterScaled;
+  CMatrixInterface< CMatrix< C_FLOAT64 > > * mpDeltaResidualDeltaParameterScaledInterface;
+  CDataArray * mpDeltaResidualDeltaParameterScaledMatrix;
   
   /**
    * The Fisher information or parameter correlation matrix

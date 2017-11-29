@@ -74,6 +74,9 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   mDeltaResidualDeltaParameter(0,0),
   mpDeltaResidualDeltaParameterInterface(NULL),
   mpDeltaResidualDeltaParameterMatrix(NULL),
+  mDeltaResidualDeltaParameterScaled(0,0),
+  mpDeltaResidualDeltaParameterScaledInterface(NULL),
+  mpDeltaResidualDeltaParameterScaledMatrix(NULL),
   mFisher(0, 0),
   mpFisherMatrixInterface(NULL),
   mpFisherMatrix(NULL),
@@ -132,6 +135,9 @@ CFitProblem::CFitProblem(const CFitProblem& src,
   mDeltaResidualDeltaParameter(src.mDeltaResidualDeltaParameter),
   mpDeltaResidualDeltaParameterInterface(NULL),
   mpDeltaResidualDeltaParameterMatrix(NULL),
+  mDeltaResidualDeltaParameterScaled(src.mDeltaResidualDeltaParameter),
+  mpDeltaResidualDeltaParameterScaledInterface(NULL),
+  mpDeltaResidualDeltaParameterScaledMatrix(NULL),
   mFisher(src.mFisher),
   mpFisherMatrixInterface(NULL),
   mpFisherMatrix(NULL),
@@ -166,6 +172,8 @@ CFitProblem::~CFitProblem()
   pdelete(mpTrajectoryProblem);
   pdelete(mpDeltaResidualDeltaParameterInterface);
   pdelete(mpDeltaResidualDeltaParameterMatrix);
+  pdelete(mpDeltaResidualDeltaParameterScaledInterface);
+  pdelete(mpDeltaResidualDeltaParameterScaledMatrix);
   pdelete(mpFisherMatrixInterface);
   pdelete(mpFisherMatrix);
   pdelete(mpFisherEigenvaluesMatrixInterface);
@@ -193,6 +201,14 @@ void CFitProblem::initObjects()
   mpDeltaResidualDeltaParameterMatrix->setDimensionDescription(0, "Parameters");
   mpDeltaResidualDeltaParameterMatrix->setDimensionDescription(1, "Data Points");
   mpDeltaResidualDeltaParameterMatrix->setMode(CDataArray::Mode::Strings);
+
+  mpDeltaResidualDeltaParameterScaledInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mDeltaResidualDeltaParameterScaled);
+  mpDeltaResidualDeltaParameterScaledMatrix = new CDataArray("Scaled Parameter Estimation Jacobian", this, mpDeltaResidualDeltaParameterScaledInterface, false);
+  mpDeltaResidualDeltaParameterScaledMatrix->setDescription("Scaled Parameter Estimation Jacobian");
+  mpDeltaResidualDeltaParameterScaledMatrix->setDimensionDescription(0, "Parameters");
+  mpDeltaResidualDeltaParameterScaledMatrix->setDimensionDescription(1, "Data Points");
+  mpDeltaResidualDeltaParameterScaledMatrix->setMode(CDataArray::Mode::Strings);
+
   
   mpFisherMatrixInterface = new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mFisher);
   mpFisherMatrix = new CDataArray("Fisher Information Matrix", this, mpFisherMatrixInterface, false);
@@ -530,6 +546,8 @@ bool CFitProblem::initialize()
 
   mDeltaResidualDeltaParameter.resize(imax, 0);
   mpDeltaResidualDeltaParameterMatrix->resize();
+  mDeltaResidualDeltaParameterScaled.resize(imax, 0);
+  mpDeltaResidualDeltaParameterScaledMatrix->resize();
   mFisher.resize(imax, imax);
   mpFisherMatrix->resize();
   mFisherEigenvalues.resize(imax, 1);
@@ -590,6 +608,7 @@ bool CFitProblem::initialize()
         }
 
       mpDeltaResidualDeltaParameterMatrix->setAnnotationString(0, j, Annotation);
+      mpDeltaResidualDeltaParameterScaledMatrix->setAnnotationString(0, j, Annotation);
       mpFisherMatrix->setAnnotationString(0, j, Annotation);
       mpFisherMatrix->setAnnotationString(1, j, Annotation);
       mpFisherEigenvectorsMatrix->setAnnotationString(1, j, Annotation);
@@ -1336,6 +1355,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   mParameterSD.resize(imax);
   mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
+  mDeltaResidualDeltaParameter = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  mDeltaResidualDeltaParameterScaled = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  
   mFisher = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mFisherEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mFisherEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1404,6 +1426,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       try
         {
           mDeltaResidualDeltaParameter.resize(imax, jmax);
+          mDeltaResidualDeltaParameterScaled.resize(imax, jmax);
         }
 
       catch (CCopasiException & /*Exception*/)
@@ -1412,10 +1435,28 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         }
 
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
+      C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
       C_FLOAT64 Current;
       C_FLOAT64 Delta;
 
+      
+      //prepare the reordering of the jacobian: We want the data sets to be continuous
+      //the reordering of the columns of the jacobian does not affect the calculation of the FIM later on
+      //At the same time, we generate the annotations for the columns of the jacobian
+      
+      std::vector<size_t> ExperimentStartInResiduals;
+      
+
+      //const CObjectInterface * const * ppObject = Experiments.getDependentObjects().array();
+      //const CObjectInterface * const * ppEnd = ppObject + Experiments.getDependentObjects().size();
+      
+      //for (; ppObject != ppEnd; ++ppObject)
+      //{
+      //  size_t Count = Experiment.getColumnValidValueCount(*ppObject);
+
+      
+      
       // Calculate the gradient
       for (i = 0; i < imax; i++)
         {
@@ -1440,8 +1481,11 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           C_FLOAT64 * pResidual = mResiduals.array();
 
           if (CalculateFIM)
-            for (j = 0; j < jmax; j++, ++pDeltaResidualDeltaParameter, ++pSolutionResidual, ++pResidual)
+            for (j = 0; j < jmax; j++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, ++pSolutionResidual, ++pResidual)
+            {
               *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
+              *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+            }
 
           // Restore the value
           *mContainerVariables[i] = Current;
@@ -1799,6 +1843,9 @@ const CVector< C_FLOAT64 > & CFitProblem::getVariableStdDeviations() const
 
 CDataArray & CFitProblem::getParameterEstimationJacobian() const
 {return *mpDeltaResidualDeltaParameterMatrix;}
+
+CDataArray & CFitProblem::getScaledParameterEstimationJacobian() const
+{return *mpDeltaResidualDeltaParameterScaledMatrix;}
 
 CDataArray & CFitProblem::getFisherInformation() const
 {return *mpFisherMatrix;}

@@ -201,10 +201,11 @@ public:
   bool calculateWeights();
 
   /**
-   * Retrieve the list of dependent data objects
+   * Retrieve the mapping of dependent data objects
+   * to the index of the column, only counting columns with dependent data
    * @return const std::map< const CDataObject *, size_t > & dependentObjects
    */
-  const std::map< const CObjectInterface *, size_t > & getDependentObjects() const;
+  const std::map< const CObjectInterface *, size_t > & getDependentObjectsMap() const;
 
   /**
    * Calculate the sum of squares for the indexed row of the experiment.
@@ -691,7 +692,14 @@ private:
 
   CVector< C_FLOAT64 > mDefaultColumnScale;
 
+  /**
+   * Pointer to the actual independent values in the model
+   * in the order in which they occur as colums in the file,
+   * which is also the order in which the numbers are stored in the 
+   * various internal data structures
+   */
   CVector< C_FLOAT64 * > mDependentValues;
+  
   CVector< C_FLOAT64 * > mIndependentValues;
 
   CMathContainer * mpContainer;
@@ -723,9 +731,9 @@ private:
   CVector< size_t > mColumnValidValueCount;
 
   /**
-   * A map of all dependent data objects to dependent data columns;
+   * A map of all dependent data objects to dependent data columns
    */
-  std::map< const CObjectInterface *, size_t > mDependentObjects;
+  std::map< const CObjectInterface *, size_t > mDependentObjectsMap;
 
   CDataVector< CFittingPoint > mFittingPoints;
 

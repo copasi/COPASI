@@ -2412,7 +2412,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
     }
 
   //size_t numCols = experiment->getNumColumns();
-  const std::map< const CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjects();
+  const std::map< const CObjectInterface *, size_t > &  dependentMap = experiment->getDependentObjectsMap();
 
   // then go through each time point
   for (size_t i = 0; i < numRows; ++i)

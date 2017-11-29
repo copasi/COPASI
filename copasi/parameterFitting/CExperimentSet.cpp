@@ -148,7 +148,7 @@ bool CExperimentSet::compile(const CMathContainer * pMathContainer)
           return false;
         }
 
-      const std::map< const CObjectInterface *, size_t > & ExpDependentObjects = (*it)->getDependentObjects();
+      const std::map< const CObjectInterface *, size_t > & ExpDependentObjects = (*it)->getDependentObjectsMap();
       std::map< const CObjectInterface *, size_t >::const_iterator itObject  = ExpDependentObjects.begin();
       std::map< const CObjectInterface *, size_t >::const_iterator endObject = ExpDependentObjects.end();
 
