@@ -1427,6 +1427,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         {
           mDeltaResidualDeltaParameter.resize(imax, jmax);
           mDeltaResidualDeltaParameterScaled.resize(imax, jmax);
+          mpDeltaResidualDeltaParameterMatrix->resize();
+          mpDeltaResidualDeltaParameterScaledMatrix->resize();
         }
 
       catch (CCopasiException & /*Exception*/)
@@ -1434,29 +1436,61 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           CalculateFIM = false;
         }
 
+
+    
+      //prepare the reordering of the jacobian: We want the data sets to be continuous
+      //the reordering of the columns of the jacobian does not affect the calculation of the FIM later on
+      //At the same time, we generate the annotations for the columns of the jacobian
+    
+      size_t count = 0;
+    
+      std::vector<size_t> ExperimentStartInResiduals;
+      for (i=0; i < mpExperimentSet->getExperimentCount(); ++i)
+      {
+        //for each experiment
+        CExperiment * pExperiment = mpExperimentSet->getExperiment(i);
+      
+        //store the start index for this experiment
+        ExperimentStartInResiduals.push_back(count);
+      
+        //experiment name for matrix annotation
+        std::string expName = pExperiment->getObjectName();
+      
+        //loop over dependent data columns
+        for (j=0; j<pExperiment->getDependentObjectsMap().size(); ++j)
+        {
+          //find the object for the jth column in the map
+          const CObjectInterface * pIndepObj = NULL;
+          std::map< const CObjectInterface *, size_t >::const_iterator it, itEnd=pExperiment->getDependentObjectsMap().end();
+          for (it=pExperiment->getDependentObjectsMap().begin(); it != itEnd; ++it)
+            if (it->second == j)
+              pIndepObj = it->first;
+        
+          std::string depName = "???";
+          if (pIndepObj)
+            depName = pIndepObj->getObjectDisplayName();
+            
+          //loop over the data rows (for filling the annotation)
+          size_t k;
+          for (k=0; k<pExperiment->getNumDataRows(); ++k)
+          {
+            mpDeltaResidualDeltaParameterMatrix->setAnnotationString(1, k+j*pExperiment->getNumDataRows()+ExperimentStartInResiduals[i], expName+":"+depName);
+            mpDeltaResidualDeltaParameterScaledMatrix->setAnnotationString(1, k+j*pExperiment->getNumDataRows()+ExperimentStartInResiduals[i], expName+":"+depName);
+          }
+
+          count += pExperiment->getNumDataRows();
+        }
+      }
+
+    
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
       C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
       C_FLOAT64 Current;
       C_FLOAT64 Delta;
 
-      
-      //prepare the reordering of the jacobian: We want the data sets to be continuous
-      //the reordering of the columns of the jacobian does not affect the calculation of the FIM later on
-      //At the same time, we generate the annotations for the columns of the jacobian
-      
-      std::vector<size_t> ExperimentStartInResiduals;
-      
 
-      //const CObjectInterface * const * ppObject = Experiments.getDependentObjects().array();
-      //const CObjectInterface * const * ppEnd = ppObject + Experiments.getDependentObjects().size();
-      
-      //for (; ppObject != ppEnd; ++ppObject)
-      //{
-      //  size_t Count = Experiment.getColumnValidValueCount(*ppObject);
-
-      
-      
+    
       // Calculate the gradient
       for (i = 0; i < imax; i++)
         {
@@ -1477,16 +1511,28 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           mGradient[i] = (mCalculateValue - mSolutionValue) * Delta;
 
-          C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
-          C_FLOAT64 * pResidual = mResiduals.array();
+          //C_FLOAT64 * pSolutionResidual = SolutionResiduals.array();
+          //C_FLOAT64 * pResidual = mResiduals.array();
 
           if (CalculateFIM)
-            for (j = 0; j < jmax; j++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, ++pSolutionResidual, ++pResidual)
+          {
+            //create the parameter estimation jacobian
+            size_t exp_index, dep_index, row_index;
+            for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
             {
-              *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
-              *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
-            }
+              for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+              {
+                C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+                C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
 
+                for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+                {
+                  *pDeltaResidualDeltaParameter = (*pResidual - *pSolutionResidual) * Delta;
+                  *pDeltaResidualDeltaParameterScaled = *pDeltaResidualDeltaParameter * Current;
+                }
+              }
+            }
+          }
           // Restore the value
           *mContainerVariables[i] = Current;
         }
