@@ -96,10 +96,16 @@ protected:
   virtual void showEvent(QShowEvent * pEvent);
 
   /**
-   * Deletes all sliders for the current folder id that
-   * are no longer valid.
+   * Deletes all sliders that are no longer valid.
    */
   void deleteInvalidSliders();
+
+  /**
+   * Deletes all solders from the specified folder that are no longer valid
+   * @param folderId the folder to delete sliders from
+   * @return boolean indicating whether sliders have been deleted (true), or not
+   */
+  bool deleteInvalidSlidersFromFolder(size_t folderId);
 
   size_t mapFolderId2EntryId(size_t folderId) const;
 
@@ -150,9 +156,12 @@ protected:
 
 protected slots:
   void removeSlider(CopasiSlider* slider);
+  void removeSlider(CopasiSlider* slider, size_t folderId);
   void editSlider(CopasiSlider* slider);
   void removeSlider();
+  void removeSlider(size_t folderId);
   void deleteSlider(CopasiSlider* pSlider);
+  void deleteSlider(CopasiSlider* pSlider, size_t folderId);
   void editSlider();
   void createNewSlider();
   void runTask();

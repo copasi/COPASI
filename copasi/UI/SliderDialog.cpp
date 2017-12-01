@@ -293,7 +293,15 @@ void SliderDialog::createNewSlider()
   delete pVector;
 }
 
+
+
 void SliderDialog::removeSlider()
+{
+  removeSlider(mCurrentFolderId);
+}
+
+void
+SliderDialog::removeSlider(size_t folderId)
 {
   if (mpCurrSlider)
     {
@@ -313,16 +321,18 @@ void SliderDialog::removeSlider()
             }
         }
 
-      deleteSlider(mpCurrSlider);
+      deleteSlider(mpCurrSlider, folderId);
       mpCurrSlider = NULL;
     }
 }
 
-void SliderDialog::deleteSlider(CopasiSlider* pSlider)
+
+void
+SliderDialog::deleteSlider(CopasiSlider* pSlider, size_t folderId)
 {
   if (pSlider)
     {
-      std::vector<QWidget*>* v = &mSliderMap[mCurrentFolderId];
+      std::vector<QWidget*>* v = &mSliderMap[folderId];
       std::vector<QWidget*>::iterator it = v->begin();
       std::vector<QWidget*>::iterator end = v->end();
 
@@ -336,12 +346,21 @@ void SliderDialog::deleteSlider(CopasiSlider* pSlider)
           ++it;
         }
 
-      assert(it != end);
+      if (it == end)
+        {
+          return;
+        }
+
       v->erase(it);
       mpSliderBox->layout()->removeWidget(pSlider);
       pdelete(pSlider);
       mChanged = true;
     }
+}
+
+void SliderDialog::deleteSlider(CopasiSlider* pSlider)
+{
+  deleteSlider(pSlider, mCurrentFolderId);
 }
 
 void SliderDialog::editSlider()
@@ -648,7 +667,7 @@ void SliderDialog::createSlidersForFolder(std::vector<QWidget*>& v)
       mSliderMap[mCurrentFolderId].push_back(mpCurrSlider);
     }
 
-  // delete CopasiSliders which have no correponding CSlider
+  // delete CopasiSliders which have no corresponding CSlider
   for (wIt = v.begin(); wIt != v.end(); ++wIt)
     {
       bool found = getCSliderForCopasiSlider(*pVector, *wIt) != NULL;
@@ -677,7 +696,7 @@ void SliderDialog::fillSliderBox()
   if (mpParentWindow == NULL)
     return;
 
-  this->deleteInvalidSliders();
+  deleteInvalidSliders();
   std::vector<QWidget*> v = mSliderMap[mCurrentFolderId];
 
   createSlidersForFolder(v);
@@ -1004,8 +1023,13 @@ void SliderDialog::updateAllSliders()
 
 void SliderDialog::removeSlider(CopasiSlider* slider)
 {
+  removeSlider(mCurrentFolderId);
+}
+
+void SliderDialog::removeSlider(CopasiSlider* slider, size_t folderId)
+{
   setCurrentSlider(slider);
-  removeSlider();
+  removeSlider(folderId);
 }
 
 void SliderDialog::editSlider(CopasiSlider* slider)
@@ -1292,9 +1316,33 @@ void SliderDialog::showEvent(QShowEvent* pEvent)
   this->CWindowInterface::showEvent(pEvent);
 }
 
-void SliderDialog::deleteInvalidSliders()
+void
+SliderDialog::deleteInvalidSliders()
 {
-  std::vector<QWidget*> &v = mSliderMap[mCurrentFolderId];
+  bool sliderDeleted = false;
+  std::map< size_t, std::vector< QWidget* > >::iterator it = mSliderMap.begin();
+
+  for (; it != mSliderMap.end(); ++it)
+    {
+      if (it->first == C_INVALID_INDEX)
+        continue;
+
+      sliderDeleted |= deleteInvalidSlidersFromFolder(it->first);
+    }
+
+  if (sliderDeleted)
+    {
+      CQMessageBox::information(NULL, "Invalid Slider",
+                                "One or more sliders were invalid and have been deleted!",
+                                QMessageBox::Ok, QMessageBox::NoButton);
+    }
+
+}
+
+bool
+SliderDialog::deleteInvalidSlidersFromFolder(size_t folderId)
+{
+  std::vector<QWidget*> &v = mSliderMap[folderId];
   std::vector<QWidget*>::iterator wit = v.begin(), wendit = v.end();
   bool sliderDeleted = false;
   CopasiSlider* pCopasiSlider = NULL;
@@ -1316,16 +1364,12 @@ void SliderDialog::deleteInvalidSliders()
 
   for (; it != invalidSliders.end(); ++it)
     {
-      this->removeSlider(*it);
+      (*it)->setParent(NULL);
+      removeSlider(*it, folderId);
       sliderDeleted = true;
     }
 
-  if (sliderDeleted)
-    {
-      CQMessageBox::information(NULL, "Invalid Slider",
-                                "One or more sliders were invalid and have been deleted!",
-                                QMessageBox::Ok, QMessageBox::NoButton);
-    }
+  return sliderDeleted;
 }
 
 /**

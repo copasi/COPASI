@@ -425,5 +425,10 @@ void CopasiSlider::setOriginalValue(C_FLOAT64 value)
  */
 bool CopasiSlider::isValid() const
 {
+  if (this->parent() == NULL)
+    {
+      return false;
+    }
+
   return (mpCSlider != NULL && mpCSlider->isValid());
 }
