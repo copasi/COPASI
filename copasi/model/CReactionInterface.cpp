@@ -1015,16 +1015,27 @@ std::vector< std::string > CReactionInterface::getUnitVector(size_t index) const
 
         for (; it != end; ++it)
           {
-            std::pair< std::string, std::string > Names = CMetabNameInterface::splitDisplayName(*it);
-            size_t Index = mpModel->getCompartments().getIndex(Names.second);
 
-            if (Index != C_INVALID_INDEX)
+            const CMetab* mpMetab = dynamic_cast<const CMetab*>(mpModel->getObjectDataModel()->findObjectByDisplayName(*it));
+
+            if (mpMetab != NULL)
               {
-                Units.push_back(mpModel->getQuantityUnit() + "/(" + mpModel->getCompartments()[Index].getUnits() + ")");
+                Units.push_back(CUnit::prettyPrint(mpMetab->getConcentrationReference()->getUnits()));
               }
             else
               {
-                Units.push_back(mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + ")");
+
+                std::pair< std::string, std::string > Names = CMetabNameInterface::splitDisplayName(*it);
+                size_t Index = mpModel->getCompartments().getIndex(Names.second);
+
+                if (Index != C_INVALID_INDEX)
+                  {
+                    Units.push_back(mpModel->getQuantityUnit() + "/(" + mpModel->getCompartments()[Index].getUnits() + ")");
+                  }
+                else
+                  {
+                    Units.push_back(mpModel->getQuantityUnit() + "/(" + mpModel->getVolumeUnit() + ")");
+                  }
               }
           }
       }
@@ -1051,8 +1062,15 @@ std::string CReactionInterface::getUnit(size_t index) const
       case CFunctionParameter::PRODUCT:
       case CFunctionParameter::MODIFIER:
       {
+        // first try to find the species and return its concentration units
+        const CMetab* mpMetab = dynamic_cast<const CMetab*>(mpModel->getObjectDataModel()->findObjectByDisplayName(mNameMap[index][0]));
+
+        if (mpMetab != NULL)
+          return CUnit::prettyPrint(mpMetab->getConcentrationReference()->getUnits());
+
+        // if not found use the old code
         std::pair< std::string, std::string > Names = CMetabNameInterface::splitDisplayName(mNameMap[index][0]);
-        size_t Index = mpModel->getCompartments().getIndex(Names.second);
+        size_t Index = mpModel->getCompartments().getIndex(Names.second); // will fail for empty string
 
         if (Index != C_INVALID_INDEX)
           {
