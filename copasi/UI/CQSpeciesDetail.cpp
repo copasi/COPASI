@@ -163,7 +163,7 @@ void CQSpeciesDetail::setFramework(int framework)
   const CModel *pModel = mpMetab->getModel();
   QString ParticleNumberUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getValueReference()->getUnits())) + "]";
   QString ParticleNumberRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint(mpMetab->getRateReference()->getUnits())) + "]";
-  // These depend on the current selected compartment's unit (which depends on it's dimentionality)
+  // These depend on the current selected compartment's unit (which depends on it's dimensionality)
   std::string concUnitStdStr = "(" + pModel->getQuantityUnit() + ")/(" + mpCurrentCompartment->getUnits() + ")";
   QString ConcentrationUnits = "[" + FROM_UTF8(CUnit::prettyPrint(concUnitStdStr)) + "]";
   QString ConcentrationRateUnits = "[" + FROM_UTF8(CUnit::prettyPrint("(" + concUnitStdStr + ")/(" + pModel->getTimeUnit() + ")")) + "]";
