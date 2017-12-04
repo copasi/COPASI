@@ -97,7 +97,7 @@ void CQFittingResult::loadExperimentTab()
   if (!mpProblem)
     return;
 
-  QTableWidgetItem* pItem = NULL;
+  QTreeWidgetItem* pItem = NULL;
   size_t i = 0;
   const CExperimentSet & Experiments = mpProblem->getExperimentSet();
 
@@ -106,62 +106,34 @@ void CQFittingResult::loadExperimentTab()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
+  mpExperiments->clear();
 
-  size_t rowcount = 0;
-  mpExperiments->setRowCount(0);
 
-  //mpExperiments->setRowCount((int) imax);
-  mpExperiments->setSortingEnabled(false);
+  QTreeWidgetItem* pRoot = mpExperiments->invisibleRootItem();
 
   for (i = 0; i != imax; i++)
     {
-      //an empty line between experiments
-      if (i)
-        {
-          mpExperiments->setRowCount(rowcount + 1);
-          pItem = new QTableWidgetItem();
-          mpExperiments->setItem(rowcount, 0, pItem);
-          ++rowcount;
-        }
 
       //first the experiment summary
       const CExperiment & Experiment = * Experiments.getExperiment(i);
 
-      mpExperiments->setRowCount(rowcount + 1);
-
-      pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
-      mpExperiments->setItem((int) rowcount, 0, pItem);
-
-      QString tmpStr = QString::number(Experiment.getValidValueCount());
+      QString validValueCount = QString::number(Experiment.getValidValueCount());
 
       if (Experiment.getValidValueCount() != Experiment.getTotalValueCount())
         {
-          tmpStr += " (of ";
-          tmpStr += QString::number(Experiment.getTotalValueCount());
-          tmpStr += ")";
+          validValueCount += " (of ";
+          validValueCount += QString::number(Experiment.getTotalValueCount());
+          validValueCount += ")";
         }
 
-      pItem = new QTableWidgetItem(tmpStr);
-      //pItem->setData(Qt::DisplayRole, (unsigned int)Experiment.getValidValueCount()  );
-      mpExperiments->setItem((int) rowcount, 1, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
-      mpExperiments->setItem((int) rowcount, 2, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS());
-      mpExperiments->setItem((int) rowcount, 3, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
-      mpExperiments->setItem((int) rowcount, 4, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
-      mpExperiments->setItem((int) rowcount, 5, pItem);
-
-      ++rowcount;
+      QTreeWidgetItem* pExperimentItem = new QTreeWidgetItem(pRoot, QStringList()
+          << FROM_UTF8(Experiment.getObjectName())
+          << validValueCount
+          << QString::number(Experiment.getObjectiveValue())
+          << QString::number(Experiment.getRMS())
+          << QString::number(Experiment.getErrorMean())
+          << QString::number(Experiment.getErrorMeanSD())
+                                                            );
 
       //now the data sets in the experiment
 
@@ -174,45 +146,20 @@ void CQFittingResult::loadExperimentTab()
 
           if (Count)
             {
-              mpExperiments->setRowCount(rowcount + 1);
-
-              pItem = new QTableWidgetItem(FROM_UTF8((*ppObject)->getObjectDisplayName()));
-              mpExperiments->setItem((int) rowcount, 0, pItem);
-
-              pItem = new QTableWidgetItem(QVariant::UInt);
-              pItem->setData(Qt::DisplayRole, (unsigned int)Count);
-              mpExperiments->setItem((int) rowcount, 1, pItem);
-
-              pItem = new QTableWidgetItem(QVariant::Double);
-              pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue(*ppObject));
-              mpExperiments->setItem((int) rowcount, 2, pItem);
-
-              pItem = new QTableWidgetItem(QVariant::Double);
-              pItem->setData(Qt::DisplayPropertyRole, Experiment.getRMS(*ppObject));
-              mpExperiments->setItem((int) rowcount, 3, pItem);
-
-              pItem = new QTableWidgetItem(QVariant::Double);
-              pItem->setData(Qt::DisplayRole, Experiment.getErrorSum(*ppObject) / Count);
-              mpExperiments->setItem((int) rowcount, 4, pItem);
-
-              //pItem = new QTableWidgetItem(QVariant::Double);
-              //pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD(*ppObject));
-              //mpExperiments->setItem((int) rowcount, 5, pItem);
-
-              ++rowcount;
-
-
+              pItem = new QTreeWidgetItem(pExperimentItem, QStringList()
+                                          << FROM_UTF8((*ppObject)->getObjectDisplayName())
+                                          << QString::number((unsigned int)Count)
+                                          << QString::number(Experiment.getObjectiveValue(*ppObject))
+                                          << QString::number(Experiment.getRMS(*ppObject))
+                                          << QString::number(Experiment.getErrorSum(*ppObject) / Count)
+                                          << ""//QString::number(Experiment.getErrorMeanSD(*ppObject))
+                                         );
             }
         }
 
 
 
     }
-
-  mpExperiments->resizeColumnsToContents();
-  mpExperiments->resizeRowsToContents();
-  //mpExperiments->setSortingEnabled(true);
-
 }
 
 bool CQFittingResult::enterProtected()

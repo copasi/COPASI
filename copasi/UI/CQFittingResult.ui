@@ -144,7 +144,7 @@
        </property>
       </column>
      </widget>
-     <widget class="QTableWidget" name="mpExperiments">
+     <widget class="QTreeWidget" name="mpExperiments">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
@@ -514,8 +514,8 @@
    <slot>slotSave()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>571</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -530,8 +530,8 @@
    <slot>slotUpdateModel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
+     <x>490</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>20</x>
@@ -546,8 +546,8 @@
    <slot>loadTab(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>270</x>
-     <y>137</y>
+     <x>279</x>
+     <y>336</y>
     </hint>
     <hint type="destinationlabel">
      <x>270</x>
