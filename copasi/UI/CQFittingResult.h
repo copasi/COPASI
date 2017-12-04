@@ -48,6 +48,8 @@ protected:
   virtual bool enterProtected();
   void loadLog(const COptMethod * pMethod);
 
+  void loadExperimentTab();
+
 protected slots:
 
 private:
