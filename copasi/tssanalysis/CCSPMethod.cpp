@@ -1803,7 +1803,7 @@ CCSPMethod::initializeOutput()
 
   CDataVector< CMetab >  metabs;
 
-  C_INT j;
+  size_t j;
 
   for (j = 0; j < numberOfMetabs; ++j)
     {
@@ -2044,7 +2044,7 @@ bool CCSPMethod::setAnnotationM(size_t step)
   //FIXED :  metabs.resize(mDim);
   //metabs.resize(N);
 
-  C_INT j;
+  size_t j;
 
   // FIXED:  for (j = 0; j < mDim; j++)
   for (j = 0; j < N; j++)
