@@ -379,7 +379,7 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QTableWidget" name="mpCrossValidations">
+     <widget class="QTreeWidget" name="mpCrossValidations">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>

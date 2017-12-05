@@ -92,24 +92,40 @@ bool CQFittingResult::leave()
   return true;
 }
 
+void CQFittingResult::loadCrossValidationTab()
+{
+  if (!mpProblem)
+    return;
+
+  loadExperimentSetIntoTree(
+    mpProblem->getCrossValidationSet(),
+    mpCrossValidations);
+}
+
 void CQFittingResult::loadExperimentTab()
 {
   if (!mpProblem)
     return;
 
+  loadExperimentSetIntoTree(
+    mpProblem->getExperimentSet(),
+    mpExperiments);
+}
+
+void CQFittingResult::loadExperimentSetIntoTree(const CExperimentSet& Experiments, QTreeWidget* pTreeWidget)
+{
   QTreeWidgetItem* pItem = NULL;
   size_t i = 0;
-  const CExperimentSet & Experiments = mpProblem->getExperimentSet();
 
   size_t imax = Experiments.getExperimentCount();
 
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpExperiments->clear();
+  pTreeWidget->clear();
 
 
-  QTreeWidgetItem* pRoot = mpExperiments->invisibleRootItem();
+  QTreeWidgetItem* pRoot = pTreeWidget->invisibleRootItem();
 
   for (i = 0; i != imax; i++)
     {
@@ -156,11 +172,9 @@ void CQFittingResult::loadExperimentTab()
                                          );
             }
         }
-
-
-
     }
 }
+
 
 bool CQFittingResult::enterProtected()
 {
@@ -406,43 +420,45 @@ bool CQFittingResult::enterProtected()
   mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), Enable);
 
   // Loop over the cross validation
+
+  loadCrossValidationTab();
   const CCrossValidationSet & CrossValidations = mpProblem->getCrossValidationSet();
 
-  imax = CrossValidations.getExperimentCount();
+//  imax = CrossValidations.getExperimentCount();
 
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
+//  if (mpProblem->getFunctionEvaluations() == 0)
+//    imax = 0;
 
-  mpCrossValidations->setRowCount(imax);
-  mpCrossValidations->setSortingEnabled(false);
+//  mpCrossValidations->setRowCount(imax);
+//  mpCrossValidations->setSortingEnabled(false);
 
-  for (i = 0; i != imax; i++)
-    {
-      const CExperiment & Experiment = * CrossValidations.getExperiment(i);
+//  for (i = 0; i != imax; i++)
+//    {
+//      const CExperiment & Experiment = * CrossValidations.getExperiment(i);
 
-      pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
-      mpCrossValidations->setItem(i, 0, pItem);
+//      pItem = new QTableWidgetItem(FROM_UTF8(Experiment.getObjectName()));
+//      mpCrossValidations->setItem(i, 0, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
-      mpCrossValidations->setItem(i, 1, pItem);
+//      pItem = new QTableWidgetItem(QVariant::Double);
+//      pItem->setData(Qt::DisplayRole, Experiment.getObjectiveValue());
+//      mpCrossValidations->setItem(i, 1, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getRMS());
-      mpCrossValidations->setItem(i, 2, pItem);
+//      pItem = new QTableWidgetItem(QVariant::Double);
+//      pItem->setData(Qt::DisplayRole, Experiment.getRMS());
+//      mpCrossValidations->setItem(i, 2, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
-      mpCrossValidations->setItem(i, 3, pItem);
+//      pItem = new QTableWidgetItem(QVariant::Double);
+//      pItem->setData(Qt::DisplayRole, Experiment.getErrorMean());
+//      mpCrossValidations->setItem(i, 3, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
-      mpCrossValidations->setItem(i, 4, pItem);
-    }
+//      pItem = new QTableWidgetItem(QVariant::Double);
+//      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
+//      mpCrossValidations->setItem(i, 4, pItem);
+//    }
 
-  mpCrossValidations->resizeColumnsToContents();
-  mpCrossValidations->resizeRowsToContents();
-  mpCrossValidations->setSortingEnabled(false);
+//  mpCrossValidations->resizeColumnsToContents();
+//  mpCrossValidations->resizeRowsToContents();
+//  mpCrossValidations->setSortingEnabled(false);
 
   // Loop over the dependent objects
   imax = CrossValidations.getDependentObjects().size();

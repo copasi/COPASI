@@ -28,10 +28,12 @@
 #include <QtCore/QVariant>
 
 #include "copasi/UI/ui_CQFittingResult.h"
+#include <copasi/parameterFitting/CExperimentSet.h>
 
 class CFitTask;
 class CFitProblem;
 class COptMethod;
+class QTreeWidget;
 
 class CQFittingResult : public CopasiWidget, public Ui::CQFittingResult
 {
@@ -49,6 +51,9 @@ protected:
   void loadLog(const COptMethod * pMethod);
 
   void loadExperimentTab();
+  void loadCrossValidationTab();
+
+  void loadExperimentSetIntoTree(const CExperimentSet& Experiments, QTreeWidget* pTreeWidget);
 
 protected slots:
 
