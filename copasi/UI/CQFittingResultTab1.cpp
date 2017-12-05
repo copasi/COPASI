@@ -53,8 +53,16 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
   mpEditObjectiveValue->setText(QString::number(pProblem->getSolutionValue()));
   mpEditRMS->setText(QString::number(pProblem->getRMS()));
   mpEditStdDeviation->setText(QString::number(pProblem->getStdDeviation()));
-  
-  mpEditNumValidDataPoints->setText(QString::number(pProblem->getExperimentSet().getValidValueCount()   ));
+
+  size_t validValueCount = pProblem->getExperimentSet().getValidValueCount();
+  size_t totalValueCount = pProblem->getExperimentSet().getDataPointCount();
+
+  if (validValueCount != totalValueCount)
+    mpEditNumValidDataPoints->setText(QString("%1 (of %2)").arg(
+                                        QString::number(validValueCount),
+                                        QString::number(totalValueCount)));
+  else
+    mpEditNumValidDataPoints->setText(QString::number(validValueCount));
 
   bool Enable = (pProblem->getCrossValidationSet().getExperimentCount() > 0);
 
@@ -72,7 +80,15 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
       mpEditCVObjectiveValue->setText(QString::number(pProblem->getCrossValidationSolutionValue()));
       mpEditCVRMS->setText(QString::number(pProblem->getCrossValidationRMS()));
       mpEditCVStdDeviation->setText(QString::number(pProblem->getCrossValidationSD()));
-      mpEditCVNumValidDataPoints->setText(QString::number(pProblem->getCrossValidationSet().getValidValueCount()   )); 
+      validValueCount = pProblem->getCrossValidationSet().getValidValueCount();
+      totalValueCount = pProblem->getCrossValidationSet().getDataPointCount();
+
+      if (validValueCount != totalValueCount)
+        mpEditCVNumValidDataPoints->setText(QString("%1 (of %2)").arg(
+                                              QString::number(validValueCount),
+                                              QString::number(totalValueCount)));
+      else
+        mpEditCVNumValidDataPoints->setText(QString::number(validValueCount));
     }
   else
     {
