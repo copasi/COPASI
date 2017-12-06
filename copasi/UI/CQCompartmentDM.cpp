@@ -76,7 +76,7 @@ Qt::ItemFlags CQCompartmentDM::flags(const QModelIndex &index) const
       if (this->index(index.row(), COL_TYPE_COMPARTMENTS).data() == QString(FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::ASSIGNMENT])))
         return QAbstractItemModel::flags(index) & ~Qt::ItemIsEnabled;
       else
-        return QAbstractItemModel::flags(index)  | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+        return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEnabled;
     }
   else
     return QAbstractItemModel::flags(index);

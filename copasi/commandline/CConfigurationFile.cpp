@@ -521,7 +521,7 @@ bool CConfigurationFile::CXML::save(std::ostream & os,
              << CVersion::VERSION.getVersion()
              << " (http://www.copasi.org) at "
              << UTCTimeStamp()
-             << " UTC -->"
+             << " -->"
              << std::endl;
 
   saveParameter(mConfiguration);

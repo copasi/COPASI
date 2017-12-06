@@ -1,17 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CDirEntry.h,v $
-   $Revision: 1.12 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2009/07/17 17:24:57 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -121,6 +123,16 @@ public:
    */
   static std::string createTmpName(const std::string & dir,
                                    const std::string & suffix);
+
+  /**
+   * Move a file from. If to is the directory the filename of from is
+   * appended.
+   * @param const std::string & from
+   * @param const std::string & to
+   * @return bool success
+   */
+  static bool copy(const std::string & from,
+                   const std::string & to);
 
   /**
    * Move a file from. If to is the directory the filename of from is

@@ -1,22 +1,19 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiTree.h,v $
-   $Revision: 1.23 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2012/05/17 16:38:34 $
-   End CVS Header */
+// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2011 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -79,7 +76,7 @@ public:
   class iterator: public std::forward_iterator< _Node, ptrdiff_t >
 #else
   class iterator:
-      public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+    public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
 #endif
 
   {
@@ -97,7 +94,7 @@ public:
      * @param Node * begin (default NULL)
      */
     iterator(_Node * begin = NULL):
-        mCurrent(begin)
+      mCurrent(begin)
     {}
 
     /**
@@ -105,7 +102,7 @@ public:
      * @param const iterator & src
      */
     iterator(const iterator & src):
-        mCurrent(src.mCurrent)
+      mCurrent(src.mCurrent)
     {}
 
     /**
@@ -164,7 +161,7 @@ public:
   class const_iterator: public std::forward_iterator< _Node, ptrdiff_t >
 #else
   class const_iterator:
-      public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+    public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
 #endif
 
   {
@@ -182,7 +179,7 @@ public:
      * @param Node * begin (default NULL)
      */
     const_iterator(const _Node * begin = NULL):
-        mCurrent(begin)
+      mCurrent(begin)
     {}
 
     /**
@@ -190,7 +187,7 @@ public:
      * @param const iterator & src
      */
     const_iterator(const const_iterator & src):
-        mCurrent(src.mCurrent)
+      mCurrent(src.mCurrent)
     {}
 
     /**
@@ -248,8 +245,8 @@ public:
    * Default constructor
    */
   CCopasiTree():
-      mpRoot(new _Node),
-      mList()
+    mpRoot(new _Node),
+    mList()
   {mList.insert(mpRoot);}
 
   /**
@@ -274,6 +271,12 @@ public:
    * @return Node * root
    */
   _Node * getRoot() {return mpRoot;}
+
+  /**
+   * Retrieve the root node of the tree
+   * @return Node * root
+   */
+  const _Node * getRoot() const {return mpRoot;}
 
   /**
    * Retrieve the data of the Tree.
@@ -400,8 +403,8 @@ std::ostream & operator<< (std::ostream & os,
 
   for (; it != end && &*it != NULL; ++it)
     os << &*it << ": parent: " << it->getParent()
-    << ", child: " << it->getChild()
-    << ", sibling: " << it->getSibling() << std::endl;
+       << ", child: " << it->getChild()
+       << ", sibling: " << it->getSibling() << std::endl;
 
   os << std::endl;
   return os;

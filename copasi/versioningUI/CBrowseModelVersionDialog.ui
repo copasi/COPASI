@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CBrowseModelVersionDialog</class>
+ <widget class="QDialog" name="CBrowseModelVersionDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>686</width>
+    <height>596</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Versioning</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QTableView" name="tableView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::AllEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>100</number>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>26</number>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="RestoreButton">
+       <property name="text">
+        <string>&amp;Restore</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="DeleteButton">
+       <property name="text">
+        <string>&amp;Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>138</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CloseButton">
+       <property name="text">
+        <string>&amp;Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>CloseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CBrowseModelVersionDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>711</x>
+     <y>569</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>15</x>
+     <y>15</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableView</sender>
+   <signal>clicked(QModelIndex)</signal>
+   <receiver>CBrowseModelVersionDialog</receiver>
+   <slot>slotRowSelected(QModelIndex)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>DeleteButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CBrowseModelVersionDialog</receiver>
+   <slot>slotDeleteButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>573</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>RestoreButton</sender>
+   <signal>clicked()</signal>
+   <receiver>CBrowseModelVersionDialog</receiver>
+   <slot>slotRestoreButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>48</x>
+     <y>573</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>342</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

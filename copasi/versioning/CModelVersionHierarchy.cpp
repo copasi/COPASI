@@ -12,297 +12,160 @@
 
 #include "CModelVersionHierarchy.h"
 
-#include <QItemDelegate>
-#include <QDir>
 #include <sbml/xml/XMLInputStream.h>
+#include <sbml/xml/XMLOutputStream.h>
 #include <sbml/xml/XMLErrorLog.h>
 
-CModelVersionHierarchy::CModelVersionHierarchy(QWidget *parent)
+#include "copasi/utilities/CDirEntry.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/commandline/CLocaleString.h"
+#include "copasi/utilities/CVersion.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/commandline/COptions.h"
+
+CModelVersionHierarchy::CModelVersionHierarchy()
+  : mpDataModel(NULL)
+  , mpRoot(new NodeType())
+  , mpCurrentVersion(NULL)
+  , mVersionNames()
 {
-  mNCol = 8;
-  mNRow = 0;
+  mpCurrentVersion = mpRoot;
+  mVersionNames[mpCurrentVersion->getData().getName()] = mpCurrentVersion;
+}
 
-  mpModelVersionHierarchy = new QStandardItemModel(100, mNCol, parent);
-
-  for (int col = 0; col < mNCol; ++col)
-    {
-      switch (col)
-        {
-          case 0:
-            mpModelVersionHierarchy->setHeaderData(0, Qt::Horizontal, QString("Version"));
-            break;
-
-          case 1:
-            mpModelVersionHierarchy->setHeaderData(1, Qt::Horizontal, QString("Derived from"));
-            break;
-
-          case 2:
-            mpModelVersionHierarchy->setHeaderData(2, Qt::Horizontal, QString("Given Name"));
-            break;
-
-          case 3:
-            mpModelVersionHierarchy->setHeaderData(3, Qt::Horizontal, QString("Family Name"));
-            break;
-
-          case 4:
-            mpModelVersionHierarchy->setHeaderData(4, Qt::Horizontal, QString("Organization"));
-            break;
-
-          case 5:
-            mpModelVersionHierarchy->setHeaderData(5, Qt::Horizontal, QString("Email"));
-            break;
-
-          case 6:
-            mpModelVersionHierarchy->setHeaderData(6, Qt::Horizontal, QString("Time"));
-            break;
-
-          case 7:
-            mpModelVersionHierarchy->setHeaderData(7, Qt::Horizontal, QString("Comments"));
-            break;
-        }
-    }
-
-  mParentOfCurrentModel = QString("");
-  mPathFile = QString("");
+CModelVersionHierarchy::CModelVersionHierarchy(CDataModel & dataModel)
+  : mpDataModel(& dataModel)
+  , mpRoot(new NodeType())
+  , mpCurrentVersion(NULL)
+  , mVersionNames()
+{
+  mpCurrentVersion = mpRoot;
+  mVersionNames[mpCurrentVersion->getData().getName()] = mpCurrentVersion;
 }
 
 CModelVersionHierarchy::~CModelVersionHierarchy()
-{
-  delete mpModelVersionHierarchy;
-}
+{}
 
 void CModelVersionHierarchy::clear()
-{
-  mParentOfCurrentModel = QString("");
-  mPathFile = QString("");
-  mNRow = 0;
-}
+{}
 
-int CModelVersionHierarchy::getNumberOfVersions() const
+size_t CModelVersionHierarchy::size() const
 {
-  return (mNRow);
-}
+  size_t count = C_INVALID_INDEX;
+  iterator itNode(mpRoot);
 
-QString CModelVersionHierarchy::getParentOfCurrentModel() const
-{
-  return mParentOfCurrentModel;
-}
-
-QStandardItemModel *  CModelVersionHierarchy::getModelVersionHierarchy() const
-{
-  return mpModelVersionHierarchy;
-}
-
-QString CModelVersionHierarchy::getPathFile()
-{
-  return (mPathFile);
-}
-
-bool CModelVersionHierarchy::setPathFile(QString PathFile)
-{
-  QDir dir(PathFile);
-
-  if (dir.exists())
+  while (itNode.next() != itNode.end())
     {
-      mPathFile = PathFile;
-      return (true);
-    }
-  else
-    {
-      return (false);
-    }
-}
-
-bool CModelVersionHierarchy::isVersionRepeated(QString Version)
-{
-  int i;
-
-  for (i = 0; i < mNRow; i++)
-    {
-      if ((QString::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
+      if (*itNode == NULL)
         {
-          return (true);
+          continue;
         }
+
+      ++count;
     }
 
-  return (false);
+  return count;
 }
 
-int CModelVersionHierarchy::addNewVersion(QString Version, QString AuthorGivenName, QString AuthorFamilyName, QString AuthorOrganization, QString AuthorEmail, QString Comments)
+CModelVersionHierarchy::iterator CModelVersionHierarchy::getNodeIterator()
 {
-  if (Version.isEmpty())
+  iterator itNode(mpRoot);
+  itNode.setProcessingModes(CNodeIteratorMode::Before);
+  itNode.next();
+
+  return itNode;
+}
+
+const CModelVersion &  CModelVersionHierarchy::getCurrentVersion() const
+{
+  return mpCurrentVersion->getData();
+}
+
+std::string CModelVersionHierarchy::getDiretory() const
+{
+  return mpDataModel->getReferenceDirectory();
+}
+
+bool CModelVersionHierarchy::doesVersionExist(std::string Version)
+{
+  return mVersionNames.find(Version) != mVersionNames.end();
+}
+
+int CModelVersionHierarchy::addVersion(const CModelVersion & version)
+{
+  if (version.getName().empty())
     {
       return (2);
     }
 
-  if (isVersionRepeated(Version))
+  if (doesVersionExist(version.getName()))
     {
       return (1);
     }
 
-  QString DerivedFrom;
+  std::map< std::string, NodeType * >::iterator found = mVersionNames.find(version.getParentName());
 
-  if (mNRow == 0)
-    {
-      DerivedFrom = QString("");
-    }
-  else
-    {
-      DerivedFrom = mParentOfCurrentModel;
-    }
-
-  QString Time = QDateTime::currentDateTime().toString();
-
-  versionToTable(Version, DerivedFrom, AuthorGivenName, AuthorFamilyName, AuthorOrganization, AuthorEmail, Comments, Time);
-
-  if (updateVersionXML())
-    {
-      return (0);
-    }
-  else
-    {
-      return (3); //If Versioning Hierarchy xml file was not updated properly
-    }
-}
-
-void CModelVersionHierarchy::versionToTable(QString Version, QString DerivedFrom, QString AuthorGivenName, QString AuthorFamilyName, QString AuthorOrganization, QString AuthorEmail, QString Comments, QString Time)
-{
-
-  if (((mNRow + 1) % 100) == 0)
-    {
-      reallocateModelVersionHierarchyTable((mNRow + 101));
-    }
-
-  for (int col = 0; col < mNCol; ++col)
-    {
-      QModelIndex index = mpModelVersionHierarchy->index(mNRow, col, QModelIndex());
-
-      switch (col)
-        {
-          case 0:
-            mpModelVersionHierarchy->setData(index, QVariant(Version));
-            break;
-
-          case 1:
-            mpModelVersionHierarchy->setData(index, QVariant(DerivedFrom));
-            break;
-
-          case 2:
-            mpModelVersionHierarchy->setData(index, QVariant(AuthorGivenName));
-            break;
-
-          case 3:
-            mpModelVersionHierarchy->setData(index, QVariant(AuthorFamilyName));
-            break;
-
-          case 4:
-            mpModelVersionHierarchy->setData(index, QVariant(AuthorOrganization));
-            break;
-
-          case 5:
-            mpModelVersionHierarchy->setData(index, QVariant(AuthorEmail));
-            break;
-
-          case 6:
-            mpModelVersionHierarchy->setData(index, QVariant(Time));
-            break;
-
-          case 7:
-            mpModelVersionHierarchy->setData(index, QVariant(Comments));
-            break;
-        }
-    }
-
-  mParentOfCurrentModel = Version;
-  mNRow++;
-}
-
-int CModelVersionHierarchy::deleteVersion(QString Version)
-{
-
-  if (Version.isEmpty())
-    {
-      return (1);
-    }
-
-  if (isVersionRepeated(Version) == false)
+  if (found == mVersionNames.end())
     {
       return (2);
     }
 
-  QString parentVersion;
-  int deletedRow = 0;
+  NodeType * pNewVersion = new NodeType();
+  pNewVersion->setData(version);
 
-  for (deletedRow = 0; deletedRow < mNRow; deletedRow++)
+  NodeType * pParent = found->second;
+  addChild(found->second, pNewVersion);
+  mVersionNames[pNewVersion->getData().getName()] = pNewVersion;
+
+  return (0);
+}
+
+// static
+void CModelVersionHierarchy::addChild(NodeType * pParent, NodeType * pChild)
+{
+  // We order the children according to UTC Time
+  NodeType * pSibling = pParent->getChild();
+
+  while (pSibling != NULL)
     {
-      if ((QString::compare(mpModelVersionHierarchy->item(deletedRow, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
+      NodeType * pNext = pSibling->getSibling();
+
+      if (pNext != NULL &&
+          pNext->getData().getUTCTimeStamp() > pChild->getData().getUTCTimeStamp())
         {
-          parentVersion = mpModelVersionHierarchy->item(deletedRow, 1)->text();
           break;
         }
+
+      pSibling = pNext;
     }
 
-  if ((deletedRow == 0) && (mNRow > 1))
-    {
-      return (3);
-    }
-
-  if ((QString::compare(mParentOfCurrentModel, Version, Qt::CaseInsensitive)) == 0)
-    {
-      mParentOfCurrentModel = parentVersion;
-    }
-
-  // To delete a row - shift up every row under the deleted one / Retune the parent of deleted version in the second column
-  // First shift up the rows
-  int i;
-  int j;
-
-  for (i = deletedRow; (i + 1) < mNRow; i++)
-    {
-      for (j = 0; j < mNCol; ++j)
-        {
-          //mpModelVersionHierarchy->item(i,j)->text() = mpModelVersionHierarchy->item(i+1,j)->text();
-          QModelIndex index = mpModelVersionHierarchy->index(i, j, QModelIndex());
-
-          mpModelVersionHierarchy->setData(index, QVariant(mpModelVersionHierarchy->item(i + 1, j)->text()));
-        }
-    }
-
-  mNRow--;
-
-  // Now reset the second columns
-  for (i = 0; i < mNRow; i++)
-    {
-      if ((QString::compare(mpModelVersionHierarchy->item(i, 1)->text(), Version, Qt::CaseInsensitive)) == 0)
-        {
-          QModelIndex index = mpModelVersionHierarchy->index(i, 1, QModelIndex());
-          mpModelVersionHierarchy->setData(index, QVariant(parentVersion));
-        }
-    }
-
-  if (updateVersionXML())
-    {
-      return (0);
-    }
-  else
-    {
-      return (4); //If Versioning Hierarchy xml file was not updated properly
-    }
+  pParent->addChild(pChild, pSibling);
 }
 
-int CModelVersionHierarchy::restoreVersion(QString Version)
+int CModelVersionHierarchy::addVersion(std::string version,
+                                       std::string authorGivenName,
+                                       std::string authorFamilyName,
+                                       std::string authorOrganization,
+                                       std::string authorEmail,
+                                       std::string comment)
 {
-  if (Version.isEmpty())
-    {
-      return (1);
-    }
+  CModelVersion NewVersion(version, mpCurrentVersion->getData().getName(), authorGivenName, authorFamilyName, authorOrganization,
+                           authorEmail, comment, UTCTimeStamp());
 
-  if (isVersionRepeated(Version) == false)
-    {
-      return (2);
-    }
+  int i = addVersion(NewVersion);
 
-  mParentOfCurrentModel = Version;
+  if (i != 0)
+    return i;
+
+  // TODO CRITICAL we need to create the version directory and copy the files to the combine archive
+  std::string Directory = getVersionDirectory(NewVersion.getName());
+  CDirEntry::createDir(CDirEntry::fileName(Directory), CDirEntry::dirName(Directory));
+  CDirEntry::copy(mpDataModel->getFileName(), Directory + "/model.cps");
+
+  setCurrentVersion(NewVersion.getName());
+
+  // TODO CRITICAL If provenance is enabled we need to move the provenance information and create a new one.
 
   if (updateVersionXML())
     {
@@ -314,19 +177,46 @@ int CModelVersionHierarchy::restoreVersion(QString Version)
     }
 }
 
-int CModelVersionHierarchy::updateSelectedCell(const QModelIndex &index, QString text)
+int CModelVersionHierarchy::deleteVersion(std::string Version)
 {
-  if ((index.row() < 0) || (index.row() > mNRow - 1) || (index.column() < 0) || (index.column() > mNCol - 1))
+  if (Version.empty())
     {
       return (1);
     }
 
-  if (text.isEmpty())
+  std::map< std::string, NodeType * >::iterator found = mVersionNames.find(Version);
+
+  if (found == mVersionNames.end())
     {
       return (2);
     }
 
-  mpModelVersionHierarchy->setData(index, QVariant(text));
+  if (found->second == mpCurrentVersion)
+    {
+      mpCurrentVersion = mpCurrentVersion->getParent();
+    }
+
+  // TODO CRITICAL If provenance is enabled we need to merge the provenance information into the children.
+
+  // TODO CRITICAL We need to remove the directory and the contained files from the combine archive.
+  std::string Directory = getVersionDirectory(Version);
+  CDirEntry::removeFiles("*", Directory);
+  CDirEntry::remove(Directory);
+
+  // All children need to be moved to the parent
+  NodeType * pParent = found->second->getParent();
+  NodeType * pChild = NULL;
+
+  while ((pChild = found->second->getChild()) != NULL)
+    {
+      found->second->removeChild(pChild);
+
+      pChild->getData().mParentName = pParent->getData().getParentName();
+      addChild(pParent, pChild);
+    }
+
+  delete found->second;
+  mVersionNames.erase(found);
 
   if (updateVersionXML())
     {
@@ -338,289 +228,216 @@ int CModelVersionHierarchy::updateSelectedCell(const QModelIndex &index, QString
     }
 }
 
-void CModelVersionHierarchy::reallocateModelVersionHierarchyTable(int Nrow)
+int CModelVersionHierarchy::restoreVersion(std::string Version)
 {
-  QStandardItemModel ModelVersionHierarchy(Nrow, mNCol);
-
-  // Now copy mpModelVersionHierarcy in ModelVersionHierarchy
-  int row, col;
-
-  for (row = 0; row < mNRow; row++)
+  if (Version.empty())
     {
-      for (col = 0; col < mNCol; ++col)
-        {
-          QStandardItem *item = new QStandardItem(QString(mpModelVersionHierarchy->item(row, col)->text()));
-          ModelVersionHierarchy.setItem(row, col, item);
-        }
+      return (1);
     }
 
-  // Now realocate mpModelVersionHierarchy and refill it
-  //mpModelVersionHierarchy = ModelVersionHierarchy;
-  //~ModelVersionHierarchy();
-  mpModelVersionHierarchy = new QStandardItemModel(Nrow, mNCol);
+  std::map< std::string, NodeType * >::iterator found = mVersionNames.find(Version);
 
-  for (col = 0; col < mNCol; ++col)
+  if (found == mVersionNames.end())
     {
-      switch (col)
-        {
-          case 0:
-            mpModelVersionHierarchy->setHeaderData(0, Qt::Horizontal, QString("Version"));
-            break;
-
-          case 1:
-            mpModelVersionHierarchy->setHeaderData(1, Qt::Horizontal, QString("Derived from"));
-            break;
-
-          case 2:
-            mpModelVersionHierarchy->setHeaderData(2, Qt::Horizontal, QString("Given Name"));
-            break;
-
-          case 3:
-            mpModelVersionHierarchy->setHeaderData(3, Qt::Horizontal, QString("Family Name"));
-            break;
-
-          case 4:
-            mpModelVersionHierarchy->setHeaderData(4, Qt::Horizontal, QString("Organization"));
-            break;
-
-          case 5:
-            mpModelVersionHierarchy->setHeaderData(5, Qt::Horizontal, QString("Email"));
-            break;
-
-          case 6:
-            mpModelVersionHierarchy->setHeaderData(6, Qt::Horizontal, QString("Time"));
-            break;
-
-          case 7:
-            mpModelVersionHierarchy->setHeaderData(7, Qt::Horizontal, QString("Comments"));
-            break;
-        }
+      return (2);
     }
 
-  for (row = 0; row < mNRow; row++)
-    {
-      for (col = 0; col < mNCol; col++)
-        {
-          QStandardItem *item = new QStandardItem(QString(ModelVersionHierarchy.item(row, col)->text()));
-          mpModelVersionHierarchy->setItem(row, col, item);
-        }
-    }
+  mpCurrentVersion = found->second;
 
-  //remove ModelVersionHierarchy
+  // TODO CRITICAL we need to copy the files to the combine archive
+  std::string Directory = getVersionDirectory(mpCurrentVersion->getData().getName());
+  CDirEntry::copy(Directory + "/model.cps", mpDataModel->getFileName());
+
+  // TODO CRITICAL Handle provenance.
+
+  if (updateVersionXML())
+    {
+      return (0);
+    }
+  else
+    {
+      return (3); //If Versioning Hierarchy xml file was not updated properly
+    }
 }
-
 bool CModelVersionHierarchy::updateVersionXML()
 {
-  bool success = false;
-  //XMLErrorLog log;
-  QString dataFile;
+  bool success = true;
+  // We are first writing to a temporary file to prevent accidental
+  // destruction of an existing file in case the save command fails.
+  std::string TmpFileName;
+  COptions::getValue("Tmp", TmpFileName);
+  TmpFileName = CDirEntry::createTmpName(TmpFileName, ".xml");
 
-  if (mPathFile == "")
+  try
+    {
+      std::ofstream os(CLocaleString::fromUtf8(TmpFileName).c_str(), std::ios::out);
+
+      if (os.fail())
+        {
+          CDirEntry::remove(TmpFileName);
+          return false;
+        }
+
+      XMLOutputStream XML(os, "UTF-8", true, "COPASI", CVersion::VERSION.getVersion());
+
+      os << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiVersionHierarchy.rng\" type=\"xml\"?>" << std::endl;
+
+      XML.startElement("VersionHierarchy");
+      XML.writeAttribute("xmlns", "http://www.copasi.org/static/schema");
+      XML.writeAttribute("versionMajor", CVersion::VERSION.getVersionMajor());
+      XML.writeAttribute("versionMinor", CVersion::VERSION.getVersionMinor());
+      XML.writeAttribute("versionDevel", CVersion::VERSION.getVersionDevel());
+      XML.writeAttribute("copasiSourcesModified", CVersion::VERSION.isSourceModified());
+
+      XML.startElement("listOfVersions");
+
+      iterator itNode = getNodeIterator();
+
+      while (itNode.next() != itNode.end())
+        {
+          if (*itNode == NULL ||
+              *itNode == mpRoot)
+            {
+              continue;
+            }
+
+          XML << itNode->getData();
+        }
+
+      XML.endElement("listOfVersions");
+
+      XML.startElement("currentVersion");
+      XML.writeAttribute("name", mpCurrentVersion->getData().getName());
+      XML.endElement("currentVersion");
+      XML.endElement("VersionHierarchy");
+    }
+
+  catch (...)
+    {
+      CDirEntry::remove(TmpFileName);
+      return false;
+    }
+
+  //XMLErrorLog log;
+  std::string dataFile = getDiretory();
+
+  if (dataFile.empty())
     {
       dataFile = "VersionHierarchy.xml";
     }
   else
     {
-      dataFile = mPathFile + "/VersionHierarchy.xml";
+      dataFile += "/VersionHierarchy.xml";
     }
 
-  XMLOutputStream_t * stream = XMLOutputStream_createFile(dataFile.toUtf8(), "UTF-8", 1);
+  if (success && !CDirEntry::move(TmpFileName, dataFile))
+    success = false;
 
-  if (stream != NULL)
-    {
-      int i;
-      XMLOutputStream_startElement(stream, "VersioningHierarchy");
-
-      for (i = 0 ; i < mNRow; i ++)
-        {
-          XMLOutputStream_startElement(stream, "Version");
-          XMLOutputStream_writeAttributeChars(stream, "Version", mpModelVersionHierarchy->item(i, 0)->text().toUtf8());
-          XMLOutputStream_startElement(stream, "Derived_from");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 1)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Derived_from");
-          XMLOutputStream_startElement(stream, "Author_Name");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 2)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Author_Name");
-          XMLOutputStream_startElement(stream, "Author_Family");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 3)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Author_Family");
-          XMLOutputStream_startElement(stream, "Author_Organization");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 4)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Author_Organization");
-          XMLOutputStream_startElement(stream, "Author_Email");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 5)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Author_Email");
-          XMLOutputStream_startElement(stream, "Time");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 6)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Time");
-          XMLOutputStream_startElement(stream, "Comments");
-          XMLOutputStream_writeChars(stream, mpModelVersionHierarchy->item(i, 7)->text().toUtf8());
-          XMLOutputStream_endElement(stream, "Comments");
-          XMLOutputStream_endElement(stream, "Version");
-        }
-
-      XMLOutputStream_startElement(stream, "ParentOfCurrentModel");
-      XMLOutputStream_writeChars(stream, mParentOfCurrentModel.toUtf8());
-      XMLOutputStream_endElement(stream, "ParentOfCurrentModel");
-      XMLOutputStream_endElement(stream, "VersioningHierarchy");
-      XMLOutputStream_free(stream);
-      success = true;
-    }
-
-  return (success);
+  return success;
 }
 
 int CModelVersionHierarchy::readVersionXML()
 {
-
   // error log for logging errors while reading
   XMLErrorLog log;
-  // initializing xml input stream
-  QString dataFile;
 
-  if (mPathFile == "")
+  std::string dataFile = getDiretory();
+
+  if (dataFile.empty())
     {
       dataFile = "VersionHierarchy.xml";
     }
   else
     {
-      dataFile = mPathFile + "/VersionHierarchy.xml";
+      dataFile += "/VersionHierarchy.xml";
     }
 
-  QFile Fout(dataFile);
-
-  if (!Fout.exists())
+  if (!CDirEntry::exist(dataFile))
     {
       return (1);
     }
 
-  XMLInputStream stream(dataFile.toUtf8(), true, "", &log);
+  XMLInputStream stream(dataFile.c_str(), true, "", &log);
+  stream.skipText();
 
-  if ((stream.peek().isStart()) && (stream.peek().getName() == "VersioningHierarchy"))
+  // Check whether we have the correct file format
+  if (!(stream.peek().isStart()) ||
+      stream.peek().getName() != "VersionHierarchy")
     {
-      //qDebug() << "stream is start and peek name is version heirarchy " <<endl;
-    }
-  else
-    {
-      //qDebug() << "stream is niether start nor peek name is version heirarchy " <<endl;
       return (3);
     }
 
-  XMLToken VersioningHierarchy = stream.next();
+  // Save the current hierarchy
+  NodeType * pOldRoot = mpRoot;
+  NodeType * pOldCurrentVersion = mpCurrentVersion;
+  std::map< std::string, NodeType * > OldVersionNames = mVersionNames;
+
+  mVersionNames.clear();
+  mpRoot = new NodeType();
+  mpCurrentVersion = mpRoot;
+  mVersionNames[mpCurrentVersion->getData().getName()] = mpCurrentVersion;
+
+  XMLToken VersionHierarchy = stream.next();
 
   // now read as long as we have something
   while (stream.isGood())
     {
 
       stream.skipText();
+
       // grab the next element
-      XMLToken next = stream.peek();
+      XMLToken current = stream.next();
 
       // if we reached the end table element, we stop
-      if (next.isEndFor(VersioningHierarchy))
+      if (current.isEndFor(VersionHierarchy))
         break;
 
-      // otherwise we read a new version from the stream
-      if (!((next.getName() == "Version") || (next.getName() == "ParentOfCurrentModel")))
+      if (!current.isStart()) continue;
+
+      if (current.getName() == "listOfVersions")
         {
-          // if we are not at the version element, we are wrong here and bail
-          log.add(XMLError(MissingXMLElements, "expected 'Version' element"));
+          // Do nothing
         }
-      else if (next.getName() == "Version")
+      else if (current.getName() == "version")
         {
-          XMLToken xmlVersion = stream.next();
-          QString VersionName = QString::fromStdString(xmlVersion.getAttrValue("Version"));
-          QString DerivedFrom, AuthorName, AuthorFamily, AuthorOrganization, AuthorEmail, Time, Comments = ("");
-
-          // since unfortunately the other elements are text-elements
-          // we need to sort them here
-          while (stream.isGood())
-            {
-              XMLToken child  = stream.next();
-
-              // if we reached the end element of the 'Version' element : add this data as a new version
-              if (child.isEndFor(xmlVersion))
-                {
-                  //add here
-                  versionToTable(VersionName, DerivedFrom, AuthorName, AuthorFamily, AuthorOrganization, AuthorEmail, Comments, Time);
-                  break;
-                }
-
-              if (child.isStart())
-                {
-
-                  if (child.getName() == "Derived_from")
-                    {
-                      DerivedFrom = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else if (child.getName() == "Author_Name")
-                    {
-                      AuthorName = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else if (child.getName() == "Author_Family")
-                    {
-                      AuthorFamily = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else if (child.getName() == "Author_Organization")
-                    {
-                      AuthorOrganization = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else if (child.getName() == "Author_Email")
-                    {
-                      AuthorEmail = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else if (child.getName() == "Time")
-                    {
-                      Time = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else if (child.getName() == "Comments")
-                    {
-                      Comments = QString::fromStdString(stream.next().getCharacters());
-                    }
-                  else
-                    {
-                      log.add(XMLError(MissingXMLElements, "unexpected  attribute in 'Version' element"));
-                    }
-                }
-            }
+          addVersion(CModelVersion(stream, current));
         }
-      else
+      else if (current.getName() == "currentVersion")
         {
-          while (stream.isGood())
-            {
-              XMLToken xmlParent = stream.next();
-
-              if (xmlParent.isStart())
-                {
-                  if (xmlParent.getName() == "ParentOfCurrentModel")
-                    {
-                      mParentOfCurrentModel = QString::fromStdString(stream.next().getCharacters());
-                      break;
-                    }
-                }
-            }
+          setCurrentVersion(current.getAttrValue("name"));
         }
     }
 
   if (log.getNumErrors() > 0)
     {
       log.printErrors();
+
+      // Restore the old state;
+      delete mpRoot;
+
+      mpRoot = pOldRoot;
+      mpCurrentVersion = pOldCurrentVersion;
+      mVersionNames = OldVersionNames;
+
       return (2);
     }
+
+  // Clear the old version
+  delete pOldRoot;
 
   return (0);
 }
 
 #ifdef COPASI_Provenance
-QList<QString>  CModelVersionHierarchy::getChildrenOfVersionForProvenanceXML(QString Version)
+QList<std::string>  CModelVersionHierarchy::getChildrenOfVersionForProvenanceXML(std::string Version)
 {
   int i;
-  QList<QString>  ChildrenVersions;
+  QList<std::string>  ChildrenVersions;
 
   //Check if the Version has any child - add them to list
   for (i = 0; i < mNRow; i++)
     {
-      if ((QString::compare(mpModelVersionHierarchy->item(i, 1)->text(), Version, Qt::CaseInsensitive)) == 0)
+      if ((std::string::compare(mpModelVersionHierarchy->item(i, 1)->text(), Version, Qt::CaseInsensitive)) == 0)
         {
           ChildrenVersions.append(mpModelVersionHierarchy->item(i, 0)->text());
         }
@@ -628,15 +445,16 @@ QList<QString>  CModelVersionHierarchy::getChildrenOfVersionForProvenanceXML(QSt
 
   return (ChildrenVersions);
 }
-QList<QString>  CModelVersionHierarchy::getVersionsPathToCurrentModel()
+
+std::string getVersionDirectory(const std::string & version) const
 {
-  QList<QString> ReversePath, DirectPath;
+  QList<std::string> ReversePath, DirectPath;
 
 // Fill the Version path to a QList from the current version to the root verison
   ReversePath.append(mParentOfCurrentModel);
   bool HasParent = true;
-  QString Version = mParentOfCurrentModel;
-  QString parentVersion;
+  std::string Version = mParentOfCurrentModel;
+  std::string parentVersion;
 
   while (HasParent)
     {
@@ -645,7 +463,7 @@ QList<QString>  CModelVersionHierarchy::getVersionsPathToCurrentModel()
 
       for (i = 0; i < mNRow; i++)
         {
-          if ((QString::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
+          if ((std::string::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
             {
               parentVersion = mpModelVersionHierarchy->item(i, 1)->text();
               HasParent = true;
@@ -673,28 +491,90 @@ QList<QString>  CModelVersionHierarchy::getVersionsPathToCurrentModel()
 
   return (DirectPath);
 }
-
 #endif
 
-void CModelVersionHierarchy::restoreLastSavedVersioningHierarchy(QString Version)
+void CModelVersionHierarchy::setCurrentVersion(std::string Version)
 {
-  mParentOfCurrentModel = Version;
-  updateVersionXML();
-}
-
-QString CModelVersionHierarchy::getParentVersion(QString Version)
-{
-  int i;
-  QString ParentVersion = QString("");
-
-  for (i = 0; i < mNRow; i++)
+  if (Version.empty())
     {
-      if ((QString::compare(mpModelVersionHierarchy->item(i, 0)->text(), Version, Qt::CaseInsensitive)) == 0)
-        {
-          ParentVersion = mpModelVersionHierarchy->item(i, 1)->text();
-          break;
-        }
+      return;
     }
 
-  return (ParentVersion);
+  std::map< std::string, NodeType * >::iterator found = mVersionNames.find(Version);
+
+  if (found == mVersionNames.end())
+    {
+      return;
+    }
+
+  mpCurrentVersion = found->second;
+}
+
+CModelVersion & CModelVersionHierarchy::getVersion(const std::string & version)
+{
+  std::map< std::string, NodeType * >::const_iterator found = mVersionNames.find(version);
+
+  if (found != mVersionNames.end())
+    {
+      return found->second->getData();
+    }
+
+  static CModelVersion Invalid;
+  return Invalid;
+}
+
+const CModelVersion & CModelVersionHierarchy::getVersion(const std::string & version) const
+{
+  std::map< std::string, NodeType * >::const_iterator found = mVersionNames.find(version);
+
+  if (found != mVersionNames.end())
+    {
+      return found->second->getData();
+    }
+
+  static CModelVersion Invalid;
+  return Invalid;
+}
+
+const CModelVersion & CModelVersionHierarchy::getParentVersion(const std::string & version) const
+{
+  std::map< std::string, NodeType * >::const_iterator found = mVersionNames.find(version);
+
+  if (found != mVersionNames.end() &&
+      found->second->getParent() != NULL)
+    {
+      return found->second->getParent()->getData();
+    }
+
+  static CModelVersion Invalid;
+  return Invalid;
+}
+
+const CModelVersion & CModelVersionHierarchy::getParentVersion(const CModelVersion & version) const
+{
+  return getParentVersion(version.getName());
+}
+
+std::string CModelVersionHierarchy::getVersionDirectory(const std::string & version) const
+{
+  std::string Directory = getDiretory();
+
+  if (version == mpRoot->getData().getName())
+    {
+      return Directory;
+    }
+
+  std::map< std::string, NodeType * >::const_iterator found = mVersionNames.find(version);
+
+  if (found != mVersionNames.end())
+    {
+      return Directory + "/" + version;
+    }
+
+  return "";
+}
+
+std::string CModelVersionHierarchy::getVersionDirectory(const CModelVersion & version) const
+{
+  return getVersionDirectory(version.getName());
 }

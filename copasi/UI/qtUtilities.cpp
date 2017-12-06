@@ -41,7 +41,7 @@
 
 bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= ""*/)
 {
-  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+  CQCopasiApplication * app = CQCopasiApplication::instance();
 
   if (app == NULL) return false;
 
@@ -58,7 +58,7 @@ bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= "
 
 void switchToWidget(size_t id, const std::string & key /*= ""*/)
 {
-  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+  CQCopasiApplication * app = CQCopasiApplication::instance();
 
   if (app == NULL) return;
 
@@ -76,7 +76,7 @@ void switchToWidget(size_t id, const std::string & key /*= ""*/)
 
 void updateCurrentWidget()
 {
-  CQCopasiApplication* app = dynamic_cast<CQCopasiApplication*>(qApp->instance());
+  CQCopasiApplication * app = CQCopasiApplication::instance();
 
   if (app == NULL) return;
 

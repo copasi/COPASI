@@ -40,7 +40,7 @@ std::string ISODateTime(tm * pTime)
   // YYYY-MM-DDTHH:mm:ss[Z|[+|-]HH:mm]
   if (pTime)
     {
-      sprintf(str, "%d-%.02d-%.02d %.02d:%.02d:%.02d",
+      sprintf(str, "%d-%.02d-%.02dT%.02d:%.02d:%.02d",
               pTime->tm_year + 1900,
               pTime->tm_mon + 1,
               pTime->tm_mday,
@@ -50,7 +50,7 @@ std::string ISODateTime(tm * pTime)
     }
   else
     {
-      sprintf(str, "0000-00-00 00:00:00");
+      sprintf(str, "0000-00-00T00:00:00");
     }
 
   return (std::string) str;
@@ -75,7 +75,7 @@ std::string UTCTimeStamp()
   tm *sTime = NULL;
   sTime = gmtime(&Time);
 
-  return ISODateTime(sTime);
+  return ISODateTime(sTime) + "Z";
 }
 
 bool isNumber(const std::string & str)
@@ -351,10 +351,10 @@ double strToDouble(const char * str,
   in >> Value;
 
   if (in.fail())
-  {
-    Value =std::numeric_limits<C_FLOAT64>::quiet_NaN();
-  }
-  
+    {
+      Value = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    }
+
   if (pTail != NULL && !isnan(Value))
     {
       *pTail = str + std::min< size_t >((size_t)in.tellg(), strlen(str));

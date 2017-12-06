@@ -3,11 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
 /*
  * CBrowseModelVersionDialog.h
  *
@@ -19,9 +14,11 @@
 #define CBrowseModelVersionDialog_H
 
 #include <QDialog>
-#include "DataModelGUI.h"
-#include <QUndoStack>
-#include "../versioning/CModelVersionHierarchy.h"
+#include "copasi/versioning/CModelVersionHierarchy.h"
+#include "copasi/versioningUI/CQModelVersionHierarchyDM.h"
+
+class CDataModel;
+class DataModelGUI;
 
 namespace Ui
 {
@@ -39,7 +36,9 @@ public:
    * Default constructor
    * Fetch Version Hierarchy Model data and show it in a table
    */
-  explicit CBrowseModelVersionDialog(QWidget *parent = 0, CModelVersionHierarchy * ModelVersion = NULL, DataModelGUI * ModelGUI = NULL,   QUndoStack  *     UndoStack = NULL
+  explicit CBrowseModelVersionDialog(QWidget *parent,
+                                     DataModelGUI * pDataModelGUI,
+                                     CDataModel * pDataModel
 #ifdef COPASI_Provenance
 //                                     , QString PathProvenance = QString(""),  QString ProvenanceParentOfCurrentModel = QString("")
                                      ,  QString ProvenanceParentOfCurrentModel = QString("")
@@ -75,20 +74,22 @@ private:
   CModelVersionHierarchy * mpModelVersion;
 
   /**
+   * A pointer to Version Hierarchy Model data
+   */
+  CQModelVersionHierarchyDM * mpModelVersionDM;
+
+  /**
    * A pointer to Data Model GUI
    * It is used to load a .cps file
    */
   DataModelGUI * mpDataModelGUI;
 
+  CDataModel * mpDataModel;
+
   /**
    * The last created/resotored version at the last saving occasion
    */
   //QString mLastSavedParentOfCurrentModel;
-
-  /**
-  *  Pointer to Undo Stack
-  */
-  QUndoStack  *     mpUndoStack;
 
 #ifdef COPASI_Provenance
   QString           mPathProvenance;
@@ -100,22 +101,17 @@ private slots:
   /**
   * When Restore button clicked, restore the selected version
   */
-  void on_RestoreButton_clicked();
+  void slotRestoreButtonClicked();
 
   /**
   * When Delete button clicked, delete the selected version
   */
-  void on_DeleteButton_clicked();
+  void slotDeleteButtonClicked();
 
   /**
   * When a row selected, make Restore and Delete buttons available
   */
-  void on_tableView_clicked();
-
-  /**
-  * If a comment double clicked, make that comment editable
-  */
-  void on_tableView_doubleClicked(const QModelIndex &index);
+  void slotRowSelected(QModelIndex index);
 };
 
 #endif // CBrowseModelVersionDialog_H

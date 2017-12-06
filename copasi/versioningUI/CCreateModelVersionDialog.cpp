@@ -3,11 +3,6 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-// Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
 /*
  * CCreateModelVersionDialog.cpp
  *
@@ -15,8 +10,7 @@
  *      Author: Peyman Zarrineh
  */
 
-#include "CCreateModelVersionDialog.h"
-#include "ui_CCreateModelVersionDialog.h"
+#include "copasi/versioningUI/CCreateModelVersionDialog.h"
 
 #include "copasi.h"
 #include "qtUtilities.h"

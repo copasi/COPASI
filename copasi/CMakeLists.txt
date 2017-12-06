@@ -97,10 +97,13 @@ include(xml/CMakeLists.txt)
 
 
 if(ENABLE_COPASI_SEDML)
-include(sedml/CMakeLists.txt)
-include_directories(${LIBSEDML_INCLUDE_DIR})
+  include(sedml/CMakeLists.txt)
+  include_directories(${LIBSEDML_INCLUDE_DIR})
 endif()
 
+if(ENABLE_VERSIONING)
+  include(versioning/CMakeLists.txt)
+endif()
 
 include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -259,6 +262,8 @@ if(BUILD_GUI)
   set(COPASI_UI_HEADERS)
   set(COPASI_UI_FORMS)
 
+  set(COPASI_UI_DIRECTORIES MIRIAMUI barChart layoutUI qlayout plotUI tex wizard UI undoUI)
+  
   include(MIRIAMUI/CMakeLists.txt)
   include(barChart/CMakeLists.txt)
   include(layoutUI/CMakeLists.txt)
@@ -268,15 +273,18 @@ if(BUILD_GUI)
   include(wizard/CMakeLists.txt)
   include(UI/CMakeLists.txt)
   include(undoUI/CMakeLists.txt)
-
+  
   set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS})
 
   if(ENABLE_VERSIONING)
-    include(versioning/CMakeLists.txt)
+    set(COPASI_UI_DIRECTORIES ${COPASI_UI_DIRECTORIES} versioningUI)
+    include(versioningUI/CMakeLists.txt)
+    message(STATUS "${COPASI_UI_DIRECTORIES}")
     set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Versioning=1)
   endif()
 
   if(ENABLE_PROVENANCE)
+    set(COPASI_UI_DIRECTORIES ${COPASI_UI_DIRECTORIES} PrevenanceUI)
     include(Provenance/CMakeLists.txt)
     set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DCOPASI_Provenance=1)
   endif()
@@ -403,7 +411,7 @@ endif(ENABLE_SDE_SUPPORT)
     
   ENDMACRO (COPASI_QT4_WRAP_UI)
 
-  foreach (dir barChart layoutUI MIRIAMUI plotUI tex UI wizard qlayout undoUI)
+  foreach (dir ${COPASI_UI_DIRECTORIES})
     string(TOUPPER ${dir} suffix)
     #message(STATUS "Mocing files for subdir: ${dir}")
     set(TEMP_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -p${dir})

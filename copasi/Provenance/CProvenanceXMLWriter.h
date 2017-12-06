@@ -22,7 +22,12 @@ class CProvenanceXMLWriter
   //Q_OBJECT
 
 public:
-  explicit CProvenanceXMLWriter(QWidget *parent = 0 , CUndoStack * undoStack = NULL, QString PathFile = "", QString ProvenanceOrigionFiletype = "", QString ProvenanceOrigionTime = "", QList<QString> VersionsPathToCurrentModel = QList<QString> ());
+  explicit CProvenanceXMLWriter(QWidget *parent = 0 ,
+                                CUndoStack * undoStack = NULL,
+                                QString PathFile = "",
+                                QString ProvenanceOrigionFiletype = "",
+                                QString ProvenanceOrigionTime = "",
+                                QList<QString> VersionsPathToCurrentModel = QList<QString> ());
 
   ~CProvenanceXMLWriter();
 

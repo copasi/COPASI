@@ -172,7 +172,20 @@ const std::string & CAnnotation::getMiriamAnnotation() const
 void CAnnotation::setNotes(const std::string & notes)
 {
   mNotes = notes;
+
+  std::string::size_type start = mNotes.find_first_not_of("\x0a\x0d\t ");
+
+  if (start != std::string::npos && mNotes[start] == '<')
+    {
+      std::string::size_type pos = mNotes.find('>');
+      std::string FirstElement = mNotes.substr(0, pos);
+
+      if (FirstElement.find("xmlns=\"http://www.w3.org/1999/xhtml\"") == std::string::npos
+          && FirstElement.find("xmlns='http://www.w3.org/1999/xhtml'") == std::string::npos)
+        mNotes.insert(pos, " xmlns=\"http://www.w3.org/1999/xhtml\"");
+    }
 }
+
 const std::string & CAnnotation::getNotes() const
 {
   return mNotes;

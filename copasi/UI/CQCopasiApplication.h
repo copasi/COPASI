@@ -21,6 +21,8 @@ class CQCopasiApplication: public QApplication
   Q_OBJECT
 
 public:
+  static CQCopasiApplication * instance();
+
   CQCopasiApplication(int & argc, char ** argv);
 
   virtual ~CQCopasiApplication();

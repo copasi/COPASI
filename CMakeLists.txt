@@ -597,6 +597,9 @@ mark_as_advanced(ENABLE_PROVENANCE)
 option (ENABLE_VERSIONING "Enables Versioning support." OFF)
 mark_as_advanced(ENABLE_VERSIONING)
 
+option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" OFF)
+mark_as_advanced(ENABLE_COMBINE_ARCHIVE)
+
 #Option for the COPASI support for UNDO Framework currently being developed by Joseph
 option (ENABLE_COPASI_UNDO "Enables UNDO support." ON)
 mark_as_advanced(ENABLE_COPASI_UNDO)
@@ -607,8 +610,20 @@ if(ENABLE_PROVENANCE)
 endif(ENABLE_PROVENANCE)
 
 if(ENABLE_VERSIONING)
+  set(ENABLE_COMBINE_ARCHIVE ON)
   add_definitions(-DCOPASI_Versioning)
 endif(ENABLE_VERSIONING)
+
+if (ENABLE_COMBINE_ARCHIVE)
+  add_definitions(-DWITH_COMBINE_ARCHIVE)
+
+  if (WIN32)
+    add_definitions(-DLIBCOMBINE_STATIC=1)
+  endif()
+
+  find_package(LIBCOMBINE REQUIRED)
+  include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
+endif(ENABLE_COMBINE_ARCHIVE)
 
 if(ENABLE_COPASI_UNDO)
   add_definitions(-DCOPASI_UNDO)
@@ -893,8 +908,11 @@ message(STATUS "-----------------------------------------------------------
    SBW lib           = ${SBW_LIBRARIES}
    SBW include       = ${SBW_INCLUDE_DIR}
 
-   libSEDML lib       = ${LIBSEDML_LIBRARY}
-   libSEDML include   = ${LIBSEDML_INCLUDE_DIR}
+   libSEDML lib      = ${LIBSEDML_LIBRARY}
+   libSEDML include  = ${LIBSEDML_INCLUDE_DIR}
+
+   Combine lib       = ${COMBINE_LIBRARY_NAME}
+   Combine include   = ${COMBINE_INCLUDE_DIR}
 
 
  Options:

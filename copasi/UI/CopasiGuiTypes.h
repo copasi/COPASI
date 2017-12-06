@@ -7,12 +7,10 @@
 #define COPASI_GUI_TYPES_H
 
 #include <copasi/UI/AboutDialog.h>
-#include <copasi/UI/CBrowseModelVersionDialog.h>
 #include <copasi/UI/CColorScale.h>
 #include <copasi/UI/CCopasiPlotSelectionDialog.h>
 #include <copasi/UI/CCopasiSelectionDialog.h>
 #include <copasi/UI/CCopasiSelectionWidget.h>
-#include <copasi/UI/CCreateModelVersionDialog.h>
 #include <copasi/UI/CEntityProvenanceDialog.h>
 #include <copasi/UI/ChemEqValidator.h>
 #include <copasi/UI/CLNAResultSubwidget.h>

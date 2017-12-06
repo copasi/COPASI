@@ -33,6 +33,7 @@ class SBMLIncompatibility;
 class CListOfLayouts;
 class CUndoData;
 class CCopasiTask;
+class CModelVersionHierarchy;
 
 //TODO SEDML
 #ifdef COPASI_SEDML
@@ -131,8 +132,11 @@ private:
      * The name of the referenced SEDML file
      */
     std::string mSEDMLFileName;
+#endif // COPASI_SEDML
 
-#endif
+#ifdef COPASI_Versioning
+    CModelVersionHierarchy * mpModelVersionHierarchy;
+#endif // COPASI_Versioning
   };
 
   // Operations
@@ -339,6 +343,10 @@ public:
 
   CUndoData::ChangeSet applyData(const CUndoData & data);
   CUndoData::ChangeSet recordData(const CUndoData & data);
+
+#ifdef COPASI_Versioning
+  CModelVersionHierarchy * getModelVersionHierarchy();
+#endif // COPASI_Versioning
 
 protected:
   void pushData();

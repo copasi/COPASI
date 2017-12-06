@@ -76,13 +76,6 @@ if (NOT ${ENABLE_PROVENANCE})
   ${CMAKE_CURRENT_SOURCE_DIR}/UI/CProvenanceDialog.h) 
 endif()
 
-if (NOT ${ENABLE_VERSIONING})
-  list(REMOVE_ITEM SOURCES_UI 
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CBrowseModelVersionDialog.cpp) 
-  list(REMOVE_ITEM HEADERS_UI 
-  ${CMAKE_CURRENT_SOURCE_DIR}/UI/CBrowseModelVersionDialog.h) 
-endif()
-
 # create source group for IDEs
 source_group(UI FILES ${FORMS_UI} ${HEADERS_UI} ${SOURCES_UI})
 

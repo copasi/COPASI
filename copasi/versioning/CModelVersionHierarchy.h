@@ -14,21 +14,29 @@
 #define COPASI_CModelVersionHierarchy
 
 #include "copasi/utilities/CCopasiNode.h"
-#include "copasi/utilities/CCopasiTree.h"
+#include "copasi/utilities/CNodeIterator.h"
 #include "copasi/versioning/CModelVersion.h"
+class CDataModel;
 
-class CModelVersionHierarchy : protected CCopasiTree< CCopasiNode < CModelVersion > >
+class CModelVersionHierarchy
 {
 
 public:
+  typedef CCopasiNode < CModelVersion > NodeType;
+  typedef CNodeIterator< NodeType > iterator;
 
+private:
   /**
    * Default constructor
-   * initiate 100 rows for Model Version Hierarchy data table
-   * set parent of current version and pthe to the versioning data files to empty string
-   * set the number of saved version 0
    */
   CModelVersionHierarchy();
+
+public:
+  /**
+   * Specific constructor
+   * @param CDataModel & dataModel
+   */
+  CModelVersionHierarchy(CDataModel & dataModel);
 
   /**
    * Destructor
@@ -43,24 +51,12 @@ public:
   /**
    * Retrieve the number of saved versions
    */
-  int getNumberOfVersions() const;
-
-  /**
-   * Retrieve the last created or restored version
-   */
-  std::string getParentOfCurrentModel() const;
+  size_t size() const;
 
   /**
    * Retrieve the Path to the versioning data files
    */
-  std::string getPathFile();
-
-  /**
-   * Set the Path to the versioning data files
-   * This path is set by the COMBINE Archive when a session starts
-   * Return true if the path exist otherwise false
-   */
-  bool setPathFile(std::string PathFile);
+  std::string getDiretory() const;
 
   /**
    * Add a new version to Model Version Hierarchy data table
@@ -71,7 +67,12 @@ public:
    *          3: if the version name has added to table but XML file was not updated successfully
    *          0: for succes
    */
-  int addNewVersion(std::string Version, std::string AuthorGivenName, std::string AuthorFamilyName, std::string AuthorOrganization, std::string AuthorEmail, std::string Comments);
+  int addVersion(std::string version,
+                 std::string authorGivenName,
+                 std::string authorFamilyName,
+                 std::string authorOrganization,
+                 std::string authorEmail,
+                 std::string comment);
 
   /**
    * Delete a given version from Model Version Hierarchy data table
@@ -110,12 +111,34 @@ public:
    * Restore the last saved Version as the parrent of current session before quiting the current session
    * Also XML file must be updated
    */
-  void restoreLastSavedVersioningHierarchy(std::string Version);
+  void setCurrentVersion(std::string Version);
+
+  CModelVersion & getVersion(const std::string & version);
+  const CModelVersion & getVersion(const std::string & version) const;
 
   /**
    * Return Parent Version of a given Version
    */
-  std::string getParentVersion(std::string Version);
+  const CModelVersion & getParentVersion(const std::string & version) const;
+  const CModelVersion & getParentVersion(const CModelVersion & version) const;
+
+  /**
+  *  Returns a list of Versions from the root to the Parent of Current Model
+  *  In provenance all the edits from begining to the current model is needed
+  */
+  std::string getVersionDirectory(const std::string & version) const;
+  std::string getVersionDirectory(const CModelVersion & version) const;
+
+  /**
+   * Retrieve the last created or restored version
+   */
+  const CModelVersion &  getCurrentVersion() const;
+
+  /**
+   * Retrieve a node iterator
+   * @return iterator itNode
+   */
+  iterator getNodeIterator();
 
 #ifdef COPASI_Provenance
   /**
@@ -132,37 +155,39 @@ public:
 #endif
 
 private:
-  CCopasiNode< CModelVersion > * mpCurrentVersion;
-
   /**
-   * Path to the XML file containing version information
+   * Add a new version to Model Version Hierarchy data table
+   * Set this new version as the parent of current version
+   * Update Versioning Hierarchy XML file
+   * Returns: 1 if the version is repeated
+   *          2: if the version name is empty
+   *          3: if the version name has added to table but XML file was not updated successfully
+   *          0: for succes
    */
-  std::string  mVersionXMLFile;
+  int addVersion(const CModelVersion & version);
+
+  static void addChild(NodeType * pParent, NodeType * pChild);
+
+  CDataModel * mpDataModel;
+
+  NodeType * mpRoot;
+
+  NodeType * mpCurrentVersion;
 
   /**
    * A set to enforce unique version names
    */
-  std::set< std::string > mVersionNames;
+  std::map< std::string, NodeType * > mVersionNames;
 
   /**
    * Returns true if Version exists in Model Versioning Hierarchy table
    */
-  bool isVersionRepeated(std::string Version);
-
-  /**
-   * When the last row of Model Versioning Hierarchy table is reached reallocate 100 rows more
-   */
-  void reallocateModelVersionHierarchyTable(int Nrow);
+  bool doesVersionExist(std::string Version);
 
   /**
    * Returns true if Version XML file updated successfully
    */
   bool updateVersionXML();
-
-  /**
-   * Add one row to Model Versioning Hierarchy table with the given data
-   */
-  void versionToTable(std::string Version, std::string DerivedFrom, std::string AuthorGivenName, std::string AuthorFamilyName, std::string AuthorOrganization, std::string AuthorEmail, std::string Comments, std::string Time);
 };
 
 #endif // COPASI_CModelVersionHierarchy

@@ -126,7 +126,7 @@ bool CCopasiXML::save(std::ostream & os,
              << CVersion::VERSION.getVersion()
              << " (http://www.copasi.org) at "
              << UTCTimeStamp()
-             << " UTC -->"
+             << " -->"
              << std::endl;
 
   *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;

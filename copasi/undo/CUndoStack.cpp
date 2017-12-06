@@ -139,7 +139,7 @@ bool CUndoStack::canUndo() const
 
 bool CUndoStack::canRedo() const
 {
-  return mCurrent < size() - 1;
+  return mCurrent + 1 < size();
 }
 
 CUndoData::ChangeSet CUndoStack::undo()

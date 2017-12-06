@@ -122,10 +122,6 @@ public:
   void exportSEDMLToString(std::string & SEDML);
 #endif
 
-#ifdef COPASI_Versioning
-  CModelVersionHierarchy * getVersionHierarchy();
-#endif
-
 // COMBINE Archive will take care of file management
   /*
 #ifdef COPASI_Provenance
@@ -394,7 +390,6 @@ private:
 
   //TODO UNDO Framework
 #ifdef COPASI_UNDO
-  CUndoStack * mpUndoStack;
   QAction* mpaUndo;
   QAction* mpaRedo;
   QAction* mpaUndoHistory;
@@ -404,7 +399,6 @@ private:
 #ifdef COPASI_Versioning
   QAction* mpaCreateVersion;
   QAction* mpaBrowseVersion;
-  CModelVersionHierarchy*  mpVersionHierarchy;
 //  COMBINE Archive will take care of file management
 //  QString mLastSavedParentOfCurrentModel;
 #endif

@@ -60,6 +60,10 @@
 # include <copasi/utilities/CCopasiMessage.h>
 #endif // WITH_COMBINE_ARCHIVE
 
+#ifdef COPASI_Versioning
+# include "copasi/versioning/CModelVersionHierarchy.h"
+#endif // COPASI_Versioning
+
 #include <copasi/parameterFitting/CFitProblem.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
 #include <copasi/parameterFitting/CExperiment.h>
@@ -603,6 +607,7 @@ CDataModel::saveModel(const std::string & fileName, CProcessReport* pProcessRepo
     {
       changed(false);
       mData.mSaveFileName = CDirEntry::normalize(FileName);
+      mData.mReferenceDir = CDirEntry::dirName(mData.mSaveFileName);
     }
 
   return true;
@@ -1909,6 +1914,10 @@ void CDataModel::deleteOldData()
 #ifdef COPASI_SEDML
   pdelete(mOldData.pCurrentSEDMLDocument);
 #endif
+
+#ifdef COPASI_Versioning
+  pdelete(mOldData.mpModelVersionHierarchy);
+#endif // COPASI_Versioning
 }
 
 const CModel * CDataModel::getModel() const
@@ -2314,6 +2323,13 @@ std::map<const CDataObject*, SBase*>& CDataModel::getCopasi2SBMLMap()
   return mData.mCopasi2SBMLMap;
 }
 
+#ifdef COPASI_Versioning
+CModelVersionHierarchy * CDataModel::getModelVersionHierarchy()
+{
+  return mData.mpModelVersionHierarchy;
+}
+#endif // COPASI_Versioning
+
 void CDataModel::removeSBMLIdFromFunctions()
 {
   CFunctionDB* pFunDB = CRootContainer::getFunctionList();
@@ -2372,6 +2388,9 @@ CDataModel::CContent::CContent(const bool & withGUI):
   , mCopasi2SEDMLMap()
   , mSEDMLFileName("")
 #endif
+#ifdef COPASI_Versioning
+  , mpModelVersionHierarchy(NULL)
+#endif // COPASI_Versioning
 {}
 
 CDataModel::CContent::CContent(const CContent & src):
@@ -2396,6 +2415,9 @@ CDataModel::CContent::CContent(const CContent & src):
   , mCopasi2SEDMLMap(src.mCopasi2SEDMLMap)
   , mSEDMLFileName(src.mSEDMLFileName)
 #endif
+#ifdef COPASI_Versioning
+  , mpModelVersionHierarchy(src.mpModelVersionHierarchy)
+#endif // COPASI_Versioning
 {}
 
 CDataModel::CContent::~CContent()
@@ -2427,6 +2449,10 @@ CDataModel::CContent & CDataModel::CContent::operator = (const CContent & rhs)
       mCopasi2SEDMLMap = rhs.mCopasi2SEDMLMap;
       mSEDMLFileName = rhs.mSEDMLFileName;
 #endif
+
+#ifdef COPASI_Versioning
+      mpModelVersionHierarchy = rhs.mpModelVersionHierarchy;
+#endif // COPASI_Versioning
     }
 
   return *this;
@@ -2445,18 +2471,19 @@ bool CDataModel::CContent::isValid() const
 
 void CDataModel::pushData()
 {
-  bool condition = true;
-#ifdef COPASI_SEDML
-  condition = mOldData.pCurrentSEDMLDocument == NULL;
-#endif
   // make sure the old data has been deleted.
   assert(mOldData.pModel == NULL &&
          mOldData.pTaskList == NULL &&
          mOldData.pReportDefinitionList == NULL &&
          mOldData.pPlotDefinitionList == NULL &&
          mOldData.pListOfLayouts == NULL &&
-         mOldData.pGUI == NULL &&
-         condition
+         mOldData.pGUI == NULL
+#ifdef COPASI_SEDML
+         && mOldData.pCurrentSEDMLDocument == NULL
+#endif
+#ifdef COPASI_Versioning
+         && mOldData.mpModelVersionHierarchy == NULL
+#endif // COPASI_Versioning
         );
 
   mOldData = mData;
@@ -2471,7 +2498,11 @@ void CDataModel::popData()
          mOldData.pReportDefinitionList != NULL &&
          mOldData.pPlotDefinitionList != NULL &&
          mOldData.pListOfLayouts != NULL &&
-         (mOldData.pGUI != NULL || mOldData.mWithGUI == false));
+         (mOldData.pGUI != NULL || mOldData.mWithGUI == false)
+#ifdef COPASI_Versioning
+         && mOldData.mpModelVersionHierarchy != NULL
+#endif // COPASI_Versioning
+        );
 
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 
@@ -2518,6 +2549,15 @@ void CDataModel::commonAfterLoad(CProcessReport* pProcessReport,
     }
 
   mpInfo->update();
+
+#ifdef COPASI_Versioning
+
+  if (mData.mpModelVersionHierarchy == NULL)
+    {
+      mData.mpModelVersionHierarchy = new CModelVersionHierarchy(*this);
+    }
+
+#endif // COPASI_Versioning
 
   // We have at least one task of every type
   addDefaultTasks();
