@@ -33,11 +33,7 @@
 #include "utilities/CUnitDefinition.h"
 #include "copasi/core/CRootContainer.h"
 
-#ifdef WITH_NEW_PARSER
-# include "xml/parser/CXMLParser.h"
-#else
-# include "xml/CCopasiXMLParser.h"
-#endif
+#include "xml/parser/CXMLParser.h"
 
 // static
 CAnnotation * CAnnotation::castObject(CDataObject * pObject)
@@ -305,12 +301,7 @@ bool CAnnotation::isValidXML(const std::string & xml)
   bool done = false;
 
   CVersion Version;
-
-#ifdef WITH_NEW_PARSER
   CXMLParser Parser(Version);
-#else
-  CCopasiXMLParser Parser(Version);
-#endif
 
   size_t Size = CCopasiMessage::size();
 
