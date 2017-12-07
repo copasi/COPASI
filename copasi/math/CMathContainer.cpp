@@ -1145,9 +1145,39 @@ void CMathContainer::fetchInitialState()
 
 void CMathContainer::pushInitialState()
 {
-  C_FLOAT64 * pValue = mCompleteInitialState.begin();
-  C_FLOAT64 * pValueEnd = mCompleteInitialState.end();
+  // mInitialExtensiveValues, mInitialIntensiveValues, mInitialTotalMasses
+
+  C_FLOAT64 * pValue = mInitialExtensiveValues.begin();
+  C_FLOAT64 * pValueEnd = mInitialExtensiveValues.end();
   CMathObject * pObject = getMathObject(pValue);
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CDataObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *(C_FLOAT64 *)pDataObject->getValuePointer() = *pValue;
+        }
+    }
+
+  pValue = mInitialIntensiveValues.begin();
+  pValueEnd = mInitialIntensiveValues.end();
+  pObject = getMathObject(pValue);
+
+  for (; pValue != pValueEnd; ++pValue, ++pObject)
+    {
+      const CDataObject * pDataObject = pObject->getDataObject();
+
+      if (pDataObject != NULL)
+        {
+          *(C_FLOAT64 *)pDataObject->getValuePointer() = *pValue;
+        }
+    }
+
+  pValue = mInitialTotalMasses.begin();
+  pValueEnd = mInitialTotalMasses.end();
+  pObject = getMathObject(pValue);
 
   for (; pValue != pValueEnd; ++pValue, ++pObject)
     {

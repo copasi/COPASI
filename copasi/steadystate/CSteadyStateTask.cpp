@@ -351,6 +351,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
   std::cout << mEigenvaluesXMatrix << std::endl;
 #endif
 
+  mpContainer->setState(mSteadyState);
   mpContainer->updateSimulatedValues(true);
   mpContainer->updateTransientDataValues();
   mpContainer->pushAllTransientValues();
@@ -422,7 +423,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << std::endl;
 
   A.mpContainer->setState(A.mSteadyState);
-  A.mpContainer->updateSimulatedValues(false);
+  A.mpContainer->updateSimulatedValues(true);
   A.mpContainer->updateTransientDataValues();
   A.mpContainer->pushAllTransientValues();
 
