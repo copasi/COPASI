@@ -579,6 +579,7 @@ std::pair< C_INT32, C_INT32 > CUnit::removeSymbolFromUnit(const CUnit & symbol, 
 
   return Result;
 }
+
 std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
 {
   std::vector< SymbolComponent > SymbolComponents;
@@ -715,23 +716,23 @@ std::vector< CUnit::SymbolComponent > CUnit::getSymbolComponents() const
       if (FirstNumeratorIndex != C_INVALID_INDEX &&
           SymbolComponents[FirstNumeratorIndex].symbol != "#")
         {
-          SymbolComponents[FirstNumeratorIndex].multiplier = multiplier;
+          SymbolComponents[FirstNumeratorIndex].multiplier = pow(multiplier, 1.0 / exponent);
           SymbolComponents[FirstNumeratorIndex].scale = scale;
         }
       else if (FirstDenominatorIndex != C_INVALID_INDEX &&
                SymbolComponents[FirstDenominatorIndex].symbol != "#")
         {
-          SymbolComponents[FirstDenominatorIndex].multiplier = 1.0 / multiplier;
+          SymbolComponents[FirstDenominatorIndex].multiplier = 1.0 / pow(multiplier, 1.0 / exponent);
           SymbolComponents[FirstDenominatorIndex].scale = -scale;
         }
       else if (FirstNumeratorIndex != C_INVALID_INDEX)
         {
-          SymbolComponents[FirstNumeratorIndex].multiplier = multiplier;
+          SymbolComponents[FirstNumeratorIndex].multiplier = pow(multiplier, 1.0 / exponent);
           SymbolComponents[FirstNumeratorIndex].scale = scale;
         }
       else if (FirstDenominatorIndex != C_INVALID_INDEX)
         {
-          SymbolComponents[FirstDenominatorIndex].multiplier = 1.0 / multiplier;
+          SymbolComponents[FirstDenominatorIndex].multiplier = 1.0 / pow(multiplier, 1.0 / exponent);
           SymbolComponents[FirstDenominatorIndex].scale = -scale;
         }
       else
@@ -781,8 +782,8 @@ void CUnit::buildExpression()
             }
           else
             {
-              if (fabs(1.0 - it->multiplier * pow(10.0, it->scale)) > 100 * std::numeric_limits< double >::epsilon())
-                numerator << it->multiplier * pow(10.0, it->scale) << "*";
+              if (fabs(1.0 - pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+                numerator << pow(it->multiplier, it->exponent) * pow(10.0, it->scale * it->exponent) << "*";
 
               numerator << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
@@ -800,11 +801,6 @@ void CUnit::buildExpression()
             {
               denominator << "*";
             }
-          else if (fabs(1.0 - it->multiplier) > 100 * std::numeric_limits< double >::epsilon())
-            {
-              denominator << it->multiplier << "*";
-              DenominatorCount++;
-            }
 
           if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
             {
@@ -812,8 +808,8 @@ void CUnit::buildExpression()
             }
           else
             {
-              if (fabs(1.0 - it->multiplier * pow(10.0, it->scale)) > 100 * std::numeric_limits< double >::epsilon())
-                denominator << it->multiplier * pow(10.0, it->scale) << "*";
+              if (fabs(1.0 - pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent)) > 100 * std::numeric_limits< double >::epsilon())
+                denominator << pow(it->multiplier, -it->exponent) * pow(10.0, it->scale * -it->exponent) << "*";
 
               denominator << CRootContainer::quoteUnitDefSymbol(it->symbol);
             }
@@ -827,9 +823,9 @@ void CUnit::buildExpression()
         }
       else
         {
-          if (fabs(1.0 - it->multiplier) > 100 * std::numeric_limits< double >::epsilon())
+          if (NumeratorCount > 0)
             {
-              numerator << it->multiplier << "*";
+              numerator << "*";
             }
 
           if (CRootContainer::getUnitList()->containsSymbol(it->symbol))

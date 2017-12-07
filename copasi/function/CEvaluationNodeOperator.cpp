@@ -1744,9 +1744,10 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
           {
             // Test if each component's exponent
             // is an integer. (don't want fractional exponents) by . . .
-            if (!(remainder((*it).getExponent(), 1.0) <= 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+
+            if (fabs(remainder((*it).getExponent(), 1.0)) > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
               {
-                Unit.setConflict(true);
+                Unit = CValidatedUnit(CUnit(), true);
 
                 break;
               }
