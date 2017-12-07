@@ -28,11 +28,7 @@
 #include "utilities/CDirEntry.h"
 #include "MIRIAM/CConstants.h"
 
-#ifdef WITH_NEW_PARSER
-# include "xml/parser/CXMLParser.h"
-#else
-# include "xml/CCopasiXMLParser.h"
-#endif
+#include "xml/parser/CXMLParser.h"
 
 CRecentFiles::CRecentFiles(const std::string & name,
                            const CDataContainer * pParent):
@@ -530,12 +526,7 @@ bool CConfigurationFile::CXML::load(std::istream & is,
   bool done = false;
 
   CVersion Version;
-
-#ifdef WITH_NEW_PARSER
   CXMLParser Parser(Version);
-#else
-  CCopasiXMLParser Parser(Version);
-#endif
 
 #define BUFFER_SIZE 0xfffe
   char * pBuffer = new char[BUFFER_SIZE + 1];
