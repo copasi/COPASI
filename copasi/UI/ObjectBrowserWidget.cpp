@@ -484,6 +484,16 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
   CDataContainer::objectMap::const_iterator it = pObjectList->begin();
   CDataContainer::objectMap::const_iterator end = pObjectList->end();
 
+  if (copaParent->hasFlag(CDataObject::Array))
+  {
+    ObjectBrowserItem *currentItem = new ObjectBrowserItem(parent, last, copaParent, objectItemList);
+    last = currentItem;
+    currentItem->setText(0, "Matrix");  
+    currentItem->setObjectType(OBJECTATTR);
+    currentItem->attachKey();
+    childStack->insert(currentItem);
+  }
+
   if ((copaParent->hasFlag(CDataObject::Vector)) && (nField))
     {
       if ((static_cast< const CDataVector < CDataObject > * >(copaParent)->size() >= 1) &&
