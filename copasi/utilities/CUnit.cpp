@@ -774,10 +774,6 @@ void CUnit::buildExpression()
             {
               numerator << "*";
             }
-          else if (fabs(1.0 - it->multiplier) > 100 * std::numeric_limits< double >::epsilon())
-            {
-              numerator << it->multiplier << "*";
-            }
 
           if (CRootContainer::getUnitList()->containsSymbol(it->symbol))
             {
