@@ -451,6 +451,8 @@ QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role
 {
   if (role == Qt::DisplayRole)
     {
+      if (pNode->getType() == CModelParameter::Type::Group) return QVariant();
+
       std::string rawUnit = pNode->getUnit(static_cast< CCore::Framework >(mFramework));
       QMap< std::string, QVariant >::const_iterator it = mUnitCache.find(rawUnit);
 
@@ -636,4 +638,3 @@ bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/)
 {
   return false;
 }
-
