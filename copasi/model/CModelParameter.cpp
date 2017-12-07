@@ -162,11 +162,35 @@ const std::string CModelParameter::getUnit(const CCore::Framework & framework) c
       break;
 
       case ModelValue:
-        break;
+      {
+        const CModelValue * pModelValue = static_cast< const CModelValue * >(mpObject);
+
+        if (pModelValue == NULL)
+          {
+            return "";
+          }
+
+        return pModelValue->getUnitExpression();
+      }
+      break;
 
       case ReactionParameter:
         return mpParent->getObjectUnit(this).getExpression();
         break;
+
+      case Reaction:
+      {
+        const CReaction * pReaction = static_cast< const CReaction * >(mpObject);
+
+        if (pReaction == NULL)
+          {
+            return "";
+          }
+
+        return pReaction->getKineticLawUnit();
+      }
+
+      break;
 
       default:
         break;

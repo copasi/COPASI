@@ -229,6 +229,7 @@ void CUnitValidator::getUnits()
           // std::cout << "getUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
 
           mNodeUnits[*it] = tmpUnit;
+          // std::cout << tmpUnit << std::endl;
         }
     }
 }
@@ -253,6 +254,8 @@ bool CUnitValidator::setUnits()
       if (*it != NULL)
         {
           tmpUnit = it->setUnit(mMathContainer, CurrentNodeUnits, TargetNodeUnits);
+          // std::cout << tmpUnit << std::endl;
+
           mNodeUnits[*it] = tmpUnit;
 
           // tmpUnit.buildExpression(pretty);
@@ -305,8 +308,6 @@ bool CUnitValidator::setUnits()
             }
         }
     }
-
-  std::cout << std::endl;
 
   return UnitDetermined;
 }
