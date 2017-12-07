@@ -1339,6 +1339,145 @@ const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
   return mResiduals;
 }
 
+void CFitProblem::calcFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim)
+{
+  // Construct the fisher information matrix
+  size_t i,j,l;
+  size_t imax = jacobian.numRows();
+  size_t jmax = jacobian.numCols();
+  fim.resize(imax, imax);
+  for (i = 0; i < imax; i++)
+    for (l = 0; l <= i; l++)
+    {
+      C_FLOAT64 & tmp = fim(i, l);
+      
+      tmp = 0.0;
+      
+      const C_FLOAT64 * pI = jacobian[i];
+      const C_FLOAT64 * pL = jacobian[l];
+      
+      for (j = 0; j < jmax; j++, ++pI, ++pL)
+        tmp += *pI **pL;
+      
+      tmp *= 2.0;
+      
+      // The Fisher matrix is symmetric.
+      if (l != i)
+        fim(l, i) = tmp;
+    }
+
+}
+
+void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors)
+{
+  /* int dsyev_(char *jobz, char *uplo, integer *n, doublereal *a,
+   integer *lda, doublereal *w, doublereal *work, integer *lwork,
+   integer *info) */
+  
+  /*  Purpose */
+  /*  ======= */
+  
+  /*  DSYEV computes all eigenvalues and, optionally, eigenvectors of a */
+  /*  real symmetric matrix A. */
+  
+  /*  Arguments */
+  /*  ========= */
+  
+  /*  JOBZ    (input) CHARACTER*1 */
+  /*          = 'N':  Compute eigenvalues only; */
+  /*          = 'V':  Compute eigenvalues and eigenvectors. */
+  
+  /*  UPLO    (input) CHARACTER*1 */
+  /*          = 'U':  Upper triangle of A is stored; */
+  /*          = 'L':  Lower triangle of A is stored. */
+  
+  /*  N       (input) INTEGER */
+  /*          The order of the matrix A.  N >= 0. */
+  
+  /*  A       (input/output) DOUBLE PRECISION array, dimension (LDA, N) */
+  /*          On entry, the symmetric matrix A.  If UPLO = 'U', the */
+  /*          leading N-by-N upper triangular part of A contains the */
+  /*          upper triangular part of the matrix A.  If UPLO = 'L', */
+  /*          the leading N-by-N lower triangular part of A contains */
+  /*          the lower triangular part of the matrix A. */
+  /*          On exit, if JOBZ = 'V', then if INFO = 0, A contains the */
+  /*          orthonormal eigenvectors of the matrix A. */
+  /*          If JOBZ = 'N', then on exit the lower triangle (if UPLO='L') */
+  /*          or the upper triangle (if UPLO='U') of A, including the */
+  /*          diagonal, is destroyed. */
+  
+  /*  LDA     (input) INTEGER */
+  /*          The leading dimension of the array A.  LDA >= max(1,N). */
+  
+  /*  W       (output) DOUBLE PRECISION array, dimension (N) */
+  /*          If INFO = 0, the eigenvalues in ascending order. */
+  
+  /*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK)) */
+  /*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK. */
+  
+  /*  LWORK   (input) INTEGER */
+  /*          The length of the array WORK.  LWORK >= max(1,3*N-1). */
+  /*          For optimal efficiency, LWORK >= (NB+2)*N, */
+  /*          where NB is the blocksize for DSYTRD returned by ILAENV. */
+  
+  /*          If LWORK = -1, then a workspace query is assumed; the routine */
+  /*          only calculates the optimal size of the WORK array, returns */
+  /*          this value as the first entry of the WORK array, and no error */
+  /*          message related to LWORK is issued by XERBLA. */
+  
+  /*  INFO    (output) INTEGER */
+  /*          = 0:  successful exit */
+  /*          < 0:  if INFO = -i, the i-th argument had an illegal value */
+  /*          > 0:  if INFO = i, the algorithm failed to converge; i */
+  /*                off-diagonal elements of an intermediate tridiagonal */
+  /*                form did not converge to zero. */
+  
+  eigenvectors = fim;
+  eigenvalues.resize(fim.numRows(), 1);
+  
+  char JOBZ = 'V'; //also compute eigenvectors
+  char UPLO = 'U'; //upper triangle
+  C_INT N = (C_INT) fim.numRows();
+  C_INT LDA = std::max< C_INT >(1, N);
+  CVector<C_FLOAT64> WORK; //WORK space
+  WORK.resize(1);
+  C_INT LWORK = -1; //first query the memory need
+  C_INT INFO = 0;
+  
+  dsyev_(&JOBZ,
+         &UPLO,
+         &N,
+         eigenvectors.array(),
+         &LDA,
+         eigenvalues.array(),
+         WORK.array(),
+         &LWORK,
+         &INFO);
+  
+  LWORK = (C_INT) WORK[0];
+  WORK.resize(LWORK);
+  
+  //now do the real calculation
+  dsyev_(&JOBZ,
+         &UPLO,
+         &N,
+         eigenvectors.array(),
+         &LDA,
+         eigenvalues.array(),
+         WORK.array(),
+         &LWORK,
+         &INFO);
+  
+  if (INFO != 0)
+  {
+    CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 14);
+    
+    eigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+    eigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+  }
+
+}
+
 bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
@@ -1546,163 +1685,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           return false;
         }
 
-      // Construct the fisher information matrix
-      for (i = 0; i < imax; i++)
-        for (l = 0; l <= i; l++)
-          {
-            C_FLOAT64 & tmp = mFisher(i, l);
-
-            tmp = 0.0;
-
-            C_FLOAT64 * pI = mDeltaResidualDeltaParameter[i];
-            C_FLOAT64 * pL = mDeltaResidualDeltaParameter[l];
-
-            for (j = 0; j < jmax; j++, ++pI, ++pL)
-              tmp += *pI **pL;
-
-            tmp *= 2.0;
-
-            // The Fisher matrix is symmetric.
-            if (l != i)
-              mFisher(l, i) = tmp;
-          }
-
-      // Construct the FIM Eigenvalue/-vector matrix
-
-      /* int dsyev_(char *jobz, char *uplo, integer *n, doublereal *a,
-         integer *lda, doublereal *w, doublereal *work, integer *lwork,
-         integer *info) */
-
-      /*  Purpose */
-      /*  ======= */
-
-      /*  DSYEV computes all eigenvalues and, optionally, eigenvectors of a */
-      /*  real symmetric matrix A. */
-
-      /*  Arguments */
-      /*  ========= */
-
-      /*  JOBZ    (input) CHARACTER*1 */
-      /*          = 'N':  Compute eigenvalues only; */
-      /*          = 'V':  Compute eigenvalues and eigenvectors. */
-
-      /*  UPLO    (input) CHARACTER*1 */
-      /*          = 'U':  Upper triangle of A is stored; */
-      /*          = 'L':  Lower triangle of A is stored. */
-
-      /*  N       (input) INTEGER */
-      /*          The order of the matrix A.  N >= 0. */
-
-      /*  A       (input/output) DOUBLE PRECISION array, dimension (LDA, N) */
-      /*          On entry, the symmetric matrix A.  If UPLO = 'U', the */
-      /*          leading N-by-N upper triangular part of A contains the */
-      /*          upper triangular part of the matrix A.  If UPLO = 'L', */
-      /*          the leading N-by-N lower triangular part of A contains */
-      /*          the lower triangular part of the matrix A. */
-      /*          On exit, if JOBZ = 'V', then if INFO = 0, A contains the */
-      /*          orthonormal eigenvectors of the matrix A. */
-      /*          If JOBZ = 'N', then on exit the lower triangle (if UPLO='L') */
-      /*          or the upper triangle (if UPLO='U') of A, including the */
-      /*          diagonal, is destroyed. */
-
-      /*  LDA     (input) INTEGER */
-      /*          The leading dimension of the array A.  LDA >= max(1,N). */
-
-      /*  W       (output) DOUBLE PRECISION array, dimension (N) */
-      /*          If INFO = 0, the eigenvalues in ascending order. */
-
-      /*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK)) */
-      /*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK. */
-
-      /*  LWORK   (input) INTEGER */
-      /*          The length of the array WORK.  LWORK >= max(1,3*N-1). */
-      /*          For optimal efficiency, LWORK >= (NB+2)*N, */
-      /*          where NB is the blocksize for DSYTRD returned by ILAENV. */
-
-      /*          If LWORK = -1, then a workspace query is assumed; the routine */
-      /*          only calculates the optimal size of the WORK array, returns */
-      /*          this value as the first entry of the WORK array, and no error */
-      /*          message related to LWORK is issued by XERBLA. */
-
-      /*  INFO    (output) INTEGER */
-      /*          = 0:  successful exit */
-      /*          < 0:  if INFO = -i, the i-th argument had an illegal value */
-      /*          > 0:  if INFO = i, the algorithm failed to converge; i */
-      /*                off-diagonal elements of an intermediate tridiagonal */
-      /*                form did not converge to zero. */
-
-      mFisherEigenvectors = mFisher;
-
-      char JOBZ = 'V'; //also compute eigenvectors
-      char UPLO = 'U'; //upper triangle
-      C_INT N = (C_INT) imax;
-      C_INT LDA = std::max< C_INT >(1, N);
-      CVector<C_FLOAT64> WORK; //WORK space
-      WORK.resize(1);
-      C_INT LWORK = -1; //first query the memory need
-      C_INT INFO = 0;
-
-      dsyev_(&JOBZ,
-             &UPLO,
-             &N,
-             mFisherEigenvectors.array(),
-             &LDA,
-             mFisherEigenvalues.array(),
-             WORK.array(),
-             &LWORK,
-             &INFO);
-
-      LWORK = (C_INT) WORK[0];
-      WORK.resize(LWORK);
-
-      //now do the real calculation
-      dsyev_(&JOBZ,
-             &UPLO,
-             &N,
-             mFisherEigenvectors.array(),
-             &LDA,
-             mFisherEigenvalues.array(),
-             WORK.array(),
-             &LWORK,
-             &INFO);
-
-      if (INFO != 0)
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 14);
-
-          mFisherEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          mFisherEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-        }
-
-      for (i = 0; i < imax; i++)
-        {
-          for (j = 0; j < imax; j++)
-            {
-              mFisherScaled[i][j] = mFisher[i][j] * mSolutionVariables[i] * mSolutionVariables[j];
-            }
-        }
-
-      mFisherScaledEigenvectors = mFisherScaled;
-
-      //now do the real calculation
-      dsyev_(&JOBZ,
-             &UPLO,
-             &N,
-             mFisherScaledEigenvectors.array(),
-             &LDA,
-             mFisherScaledEigenvalues.array(),
-             WORK.array(),
-             &LWORK,
-             &INFO);
-
-      if (INFO != 0)
-        {
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 15);
-
-          mFisherScaledEigenvectors = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          mFisherScaledEigenvalues = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-        }
-
+      calcFIM(mDeltaResidualDeltaParameter, mFisher);
+      calcFIM(mDeltaResidualDeltaParameterScaled, mFisherScaled);
+      
+      calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
+      calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
+      
+      
       mCorrelation = mFisher;
 
       // The Fisher Information matrix is a symmetric positive semidefinit matrix.
@@ -1760,6 +1749,10 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       char U = 'U';
 
+      C_INT N = (C_INT) imax;
+      C_INT INFO = 0;
+      
+      
       dpotrf_(&U, &N, mCorrelation.array(), &N, &INFO);
 
       if (INFO)

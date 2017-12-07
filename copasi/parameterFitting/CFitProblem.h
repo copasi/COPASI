@@ -142,6 +142,11 @@ public:
    */
   const CVector< C_FLOAT64 > & getResiduals() const;
 
+  
+  void calcFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim);
+  void calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors);
+
+  
   /**
    * Calculate the statistics for the problem
    * @param const C_FLOAT64 & factor (Default: 1.0e-003)
