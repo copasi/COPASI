@@ -142,9 +142,29 @@ public:
    */
   const CVector< C_FLOAT64 > & getResiduals() const;
 
-  
+  /**
+   * calculate the FIM from the parameter estimation jacobian
+   */
   void calcFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim);
+
+  /**
+   * calculate the FIM from only a part of the parameter estimation jacobian
+   * only columns from a to b-1 are used or excluded, depending on the exclude flag
+   */
+  void calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim, size_t a, size_t b, bool exclude=false);
+  
+  /**
+   * calculate the Eigenvalues and -vectors for a matrix. 
+   * This is intended for the FIM, and we assume only real (and positive) eigenvalues
+   */
   void calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors);
+  
+  /**
+   * calculate the inverse of a matrix and normalize it.
+   * This is used for calculating the correlation Matric from the FIM, 
+   * and therefore we can assume a symmetric positive definite matrix
+   * The SD of the parameters is also calculated from the diagonal of the covariance
+   */
   bool calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd);
 
   

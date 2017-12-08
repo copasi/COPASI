@@ -1341,7 +1341,6 @@ const CVector< C_FLOAT64 > & CFitProblem::getResiduals() const
 
 void CFitProblem::calcFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim)
 {
-  // Construct the fisher information matrix
   size_t i,j,l;
   size_t imax = jacobian.numRows();
   size_t jmax = jacobian.numCols();
@@ -1365,8 +1364,56 @@ void CFitProblem::calcFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT
       if (l != i)
         fim(l, i) = tmp;
     }
-
 }
+
+void CFitProblem::calcPartialFIM(const CMatrix< C_FLOAT64 >& jacobian, CMatrix< C_FLOAT64 >& fim, size_t a, size_t b, bool exclude)
+{
+  size_t i,j,l;
+  size_t imax = jacobian.numRows();
+  //size_t jmax = b-a; //jacobian.numCols();
+
+  if (b<a || b>jacobian.numCols() || a>jacobian.numCols())
+    return;
+
+  fim.resize(imax, imax);
+  for (i = 0; i < imax; i++)
+    for (l = 0; l <= i; l++)
+    {
+      C_FLOAT64 & tmp = fim(i, l);
+      
+      tmp = 0.0;
+      
+      if (exclude) //sum up everything except between a and b-1
+      {
+        const C_FLOAT64 * pI = jacobian[i];
+        const C_FLOAT64 * pL = jacobian[l];
+        
+        for (j = 0; j < a; j++, ++pI, ++pL)
+          tmp += *pI **pL;
+        
+        pI = jacobian[i]+b;
+        pL = jacobian[l]+b;
+        
+        for (j = 0; j < jacobian.numCols()-b; j++, ++pI, ++pL)
+          tmp += *pI **pL;
+      }
+      else //sum up everything between a and b-1
+      {
+      const C_FLOAT64 * pI = jacobian[i]+a;
+      const C_FLOAT64 * pL = jacobian[l]+a;
+      
+      for (j = 0; j < b-a; j++, ++pI, ++pL)
+        tmp += *pI **pL;
+      }
+      
+      tmp *= 2.0;
+      
+      // The Fisher matrix is symmetric.
+      if (l != i)
+        fim(l, i) = tmp;
+    }
+}
+
 
 void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& eigenvalues, CMatrix< C_FLOAT64 >& eigenvectors)
 {
@@ -1771,6 +1818,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           count += pExperiment->getNumDataRows();
         }
       }
+      ExperimentStartInResiduals.push_back(count); //
     
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
       C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
@@ -1846,6 +1894,30 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           return false;
         }
     
+      //experimental code...
+      /*
+      CMatrix< C_FLOAT64 > tmpFIM, tmpEigenValues, tmpEigenVectors;
+      
+      size_t exp_index, dep_index, row_index;
+      for (exp_index=0; exp_index < mpExperimentSet->getExperimentCount(); ++exp_index)
+      {
+        calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, ExperimentStartInResiduals[exp_index], ExperimentStartInResiduals[exp_index+1]);
+        std::cout << tmpFIM << std::endl;
+        
+        //for (dep_index=0; dep_index < mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(); ++dep_index)
+        //{
+        //  calcPartialFIM(mDeltaResidualDeltaParameter, tmpFIM, <#size_t a#>, <#size_t b#>)
+          
+        //  C_FLOAT64 * pSolutionResidual = SolutionResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+        //  C_FLOAT64 * pResidual = mResiduals.array()+ExperimentStartInResiduals[exp_index]+dep_index;
+          
+        //  for (row_index = 0; row_index < mpExperimentSet->getExperiment(exp_index)->getNumDataRows(); row_index++, ++pDeltaResidualDeltaParameter, ++pDeltaResidualDeltaParameterScaled, pSolutionResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size(), pResidual+=mpExperimentSet->getExperiment(exp_index)->getDependentObjectsMap().size())
+        //}
+        
+      }
+      */
+      
+      
       setResidualsRequired(false);
       mStoreResults = true;
       // This is necessary so that CExperiment::printResult shows the correct data.
