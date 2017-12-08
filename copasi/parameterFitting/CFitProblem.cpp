@@ -1478,12 +1478,166 @@ void CFitProblem::calcEigen(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 
 
 }
 
+bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >& corr, CVector< C_FLOAT64 >& sd)
+{
+     corr = fim;
+
+      // The Fisher Information matrix is a symmetric positive semidefinit matrix.
+      /* int dpotrf_(char *uplo, integer *n, doublereal *a,
+       *             integer *lda, integer *info);
+       *
+       *
+       *  Purpose
+       *  =======
+       *
+       *  DPOTRF computes the Cholesky factorization of a real symmetric
+       *  positive definite matrix A.
+       *
+       *  The factorization has the form
+       *     A = U**T * U, if UPLO = 'U', or
+       *     A = L  * L**T, if UPLO = 'L',
+       *  where U is an upper triangular matrix and L is lower triangular.
+       *
+       *  This is the block version of the algorithm, calling Level 3 BLAS.
+       *
+       *  Arguments
+       *  =========
+       *
+       *  UPLO    (input) CHARACTER*1
+       *          = 'U':  Upper triangle of A is stored;
+       *          = 'L':  Lower triangle of A is stored.
+       *
+       *  N       (input) INTEGER
+       *          The order of the matrix A.  N >= 0.
+       *
+       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+       *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+       *          N-by-N upper triangular part of A contains the upper
+       *          triangular part of the matrix A, and the strictly lower
+       *          triangular part of A is not referenced.  If UPLO = 'L', the
+       *          leading N-by-N lower triangular part of A contains the lower
+       *          triangular part of the matrix A, and the strictly upper
+       *          triangular part of A is not referenced.
+       *
+       *          On exit, if INFO = 0, the factor U or L from the Cholesky
+       *          factorization A = U**T*U or A = L*L**T.
+       *
+       *  LDA     (input) INTEGER
+       *          The leading dimension of the array A.  LDA >= max(1,N).
+       *
+       *  INFO    (output) INTEGER
+       *          = 0:  successful exit
+       *          < 0:  if INFO = -i, the i-th argument had an illegal value
+       *          > 0:  if INFO = i, the leading minor of order i is not
+       *                positive definite, and the factorization could not be
+       *                completed.
+       *
+       */
+      char U = 'U';
+      C_INT N = (C_INT) fim.numRows();
+      C_INT INFO = 0;
+      dpotrf_(&U, &N, corr.array(), &N, &INFO);
+
+      if (INFO)
+        {
+          corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
+          return false;
+        }
+
+      /* int dpotri_(char *uplo, integer *n, doublereal *a,
+       *             integer *lda, integer *info);
+       *
+       *
+       *  Purpose
+       *  =======
+       *
+       *  DPOTRI computes the inverse of a real symmetric positive definite
+       *  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
+       *  computed by DPOTRF.
+       *
+       *  Arguments
+       *  =========
+       *
+       *  UPLO    (input) CHARACTER*1
+       *          = 'U':  Upper triangle of A is stored;
+       *          = 'L':  Lower triangle of A is stored.
+       *
+       *  N       (input) INTEGER
+       *          The order of the matrix A.  N >= 0.
+       *
+       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+       *          On entry, the triangular factor U or L from the Cholesky
+       *          factorization A = U**T*U or A = L*L**T, as computed by
+       *          DPOTRF.
+       *          On exit, the upper or lower triangle of the (symmetric)
+       *          inverse of A, overwriting the input factor U or L.
+       *
+       *  LDA     (input) INTEGER
+       *          The leading dimension of the array A.  LDA >= max(1,N).
+       *
+       *  INFO    (output) INTEGER
+       *          = 0:  successful exit
+       *          < 0:  if INFO = -i, the i-th argument had an illegal value
+       *          > 0:  if INFO = i, the (i,i) element of the factor U or L is
+       *                zero, and the inverse could not be computed.
+       *
+       */
+      dpotri_(&U, &N, corr.array(), &N, &INFO);
+
+      if (INFO)
+        {
+          corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
+          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, INFO);
+          return false;
+        }
+
+      // Assure that the inverse is completed.
+      size_t i,l;
+      size_t imax = fim.numRows();
+      for (i = 0; i < imax; i++)
+        for (l = 0; l < i; l++)
+          corr(l, i) = corr(i, l);
+
+      CVector< C_FLOAT64 > S(imax);
+
+      // rescale the lower bound of the covariant matrix to have unit diagonal
+      for (i = 0; i < imax; i++)
+        {
+          C_FLOAT64 & tmp = S[i];
+
+          if (corr(i, i) > 0.0)
+            {
+              tmp = 1.0 / sqrt(corr(i, i));
+              sd[i] = mSD / tmp;
+            }
+          else if (corr(i, i) < 0.0)
+            {
+              tmp = 1.0 / sqrt(- corr(i, i));
+              sd[i] = mSD / tmp;
+            }
+          else
+            {
+              sd[i] = mWorstValue;
+              tmp = 1.0;
+              corr(i, i) = 1.0;
+            }
+        }
+
+      for (i = 0; i < imax; i++)
+        for (l = 0; l < imax; l++)
+          corr(i, l) *= S[i] * S[l];
+
+  return true; //success
+}
+
 bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
                                       const C_FLOAT64 & resolution)
 {
   // Set the current values to the solution values.
   size_t i, imax = mSolutionVariables.size();
-  size_t l;
 
   mRMS = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
@@ -1575,12 +1729,9 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           CalculateFIM = false;
         }
 
-
-    
       //prepare the reordering of the jacobian: We want the data sets to be continuous
       //the reordering of the columns of the jacobian does not affect the calculation of the FIM later on
       //At the same time, we generate the annotations for the columns of the jacobian
-    
       size_t count = 0;
     
       std::vector<size_t> ExperimentStartInResiduals;
@@ -1620,15 +1771,12 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
           count += pExperiment->getNumDataRows();
         }
       }
-
     
       C_FLOAT64 * pDeltaResidualDeltaParameter = mDeltaResidualDeltaParameter.array();
       C_FLOAT64 * pDeltaResidualDeltaParameterScaled = mDeltaResidualDeltaParameterScaled.array();
 
       C_FLOAT64 Current;
       C_FLOAT64 Delta;
-
-
     
       // Calculate the gradient
       for (i = 0; i < imax; i++)
@@ -1691,172 +1839,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
       calcEigen(mFisher, mFisherEigenvalues, mFisherEigenvectors);
       calcEigen(mFisherScaled, mFisherScaledEigenvalues, mFisherScaledEigenvectors);
       
-      
-      mCorrelation = mFisher;
-
-      // The Fisher Information matrix is a symmetric positive semidefinit matrix.
-
-      /* int dpotrf_(char *uplo, integer *n, doublereal *a,
-       *             integer *lda, integer *info);
-       *
-       *
-       *  Purpose
-       *  =======
-       *
-       *  DPOTRF computes the Cholesky factorization of a real symmetric
-       *  positive definite matrix A.
-       *
-       *  The factorization has the form
-       *     A = U**T * U, if UPLO = 'U', or
-       *     A = L  * L**T, if UPLO = 'L',
-       *  where U is an upper triangular matrix and L is lower triangular.
-       *
-       *  This is the block version of the algorithm, calling Level 3 BLAS.
-       *
-       *  Arguments
-       *  =========
-       *
-       *  UPLO    (input) CHARACTER*1
-       *          = 'U':  Upper triangle of A is stored;
-       *          = 'L':  Lower triangle of A is stored.
-       *
-       *  N       (input) INTEGER
-       *          The order of the matrix A.  N >= 0.
-       *
-       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-       *          On entry, the symmetric matrix A.  If UPLO = 'U', the leading
-       *          N-by-N upper triangular part of A contains the upper
-       *          triangular part of the matrix A, and the strictly lower
-       *          triangular part of A is not referenced.  If UPLO = 'L', the
-       *          leading N-by-N lower triangular part of A contains the lower
-       *          triangular part of the matrix A, and the strictly upper
-       *          triangular part of A is not referenced.
-       *
-       *          On exit, if INFO = 0, the factor U or L from the Cholesky
-       *          factorization A = U**T*U or A = L*L**T.
-       *
-       *  LDA     (input) INTEGER
-       *          The leading dimension of the array A.  LDA >= max(1,N).
-       *
-       *  INFO    (output) INTEGER
-       *          = 0:  successful exit
-       *          < 0:  if INFO = -i, the i-th argument had an illegal value
-       *          > 0:  if INFO = i, the leading minor of order i is not
-       *                positive definite, and the factorization could not be
-       *                completed.
-       *
-       */
-
-      char U = 'U';
-
-      C_INT N = (C_INT) imax;
-      C_INT INFO = 0;
-      
-      
-      dpotrf_(&U, &N, mCorrelation.array(), &N, &INFO);
-
-      if (INFO)
+      if (!calcCov(mFisher, mCorrelation, mParameterSD))
         {
-          mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
-
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
-
           return false;
         }
-
-      /* int dpotri_(char *uplo, integer *n, doublereal *a,
-       *             integer *lda, integer *info);
-       *
-       *
-       *  Purpose
-       *  =======
-       *
-       *  DPOTRI computes the inverse of a real symmetric positive definite
-       *  matrix A using the Cholesky factorization A = U**T*U or A = L*L**T
-       *  computed by DPOTRF.
-       *
-       *  Arguments
-       *  =========
-       *
-       *  UPLO    (input) CHARACTER*1
-       *          = 'U':  Upper triangle of A is stored;
-       *          = 'L':  Lower triangle of A is stored.
-       *
-       *  N       (input) INTEGER
-       *          The order of the matrix A.  N >= 0.
-       *
-       *  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
-       *          On entry, the triangular factor U or L from the Cholesky
-       *          factorization A = U**T*U or A = L*L**T, as computed by
-       *          DPOTRF.
-       *          On exit, the upper or lower triangle of the (symmetric)
-       *          inverse of A, overwriting the input factor U or L.
-       *
-       *  LDA     (input) INTEGER
-       *          The leading dimension of the array A.  LDA >= max(1,N).
-       *
-       *  INFO    (output) INTEGER
-       *          = 0:  successful exit
-       *          < 0:  if INFO = -i, the i-th argument had an illegal value
-       *          > 0:  if INFO = i, the (i,i) element of the factor U or L is
-       *                zero, and the inverse could not be computed.
-       *
-       */
-
-      dpotri_(&U, &N, mCorrelation.array(), &N, &INFO);
-
-      if (INFO)
-        {
-          mCorrelation = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-          mParameterSD = std::numeric_limits<C_FLOAT64>::quiet_NaN();
-
-          CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 1, INFO);
-
-          // Make sure the timer is accurate.
-          mCPUTime.calculateValue();
-
-          return false;
-        }
-
-      // Assure that the inverse is completed.
-
-      for (i = 0; i < imax; i++)
-        for (l = 0; l < i; l++)
-          mCorrelation(l, i) = mCorrelation(i, l);
-
-      CVector< C_FLOAT64 > S(imax);
-
-      // rescale the lower bound of the covariant matrix to have unit diagonal
-      for (i = 0; i < imax; i++)
-        {
-          C_FLOAT64 & tmp = S[i];
-
-          if (mCorrelation(i, i) > 0.0)
-            {
-              tmp = 1.0 / sqrt(mCorrelation(i, i));
-              mParameterSD[i] = mSD / tmp;
-            }
-          else if (mCorrelation(i, i) < 0.0)
-            {
-              tmp = 1.0 / sqrt(- mCorrelation(i, i));
-              mParameterSD[i] = mSD / tmp;
-            }
-          else
-            {
-              mParameterSD[i] = mWorstValue;
-              tmp = 1.0;
-              mCorrelation(i, i) = 1.0;
-            }
-        }
-
-      for (i = 0; i < imax; i++)
-        for (l = 0; l < imax; l++)
-          mCorrelation(i, l) *= S[i] * S[l];
-
+    
       setResidualsRequired(false);
       mStoreResults = true;
       // This is necessary so that CExperiment::printResult shows the correct data.
@@ -1867,7 +1856,6 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
     }
 
   mStoreResults = false;
-
   return true;
 }
 
