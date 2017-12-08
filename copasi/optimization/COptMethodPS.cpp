@@ -55,9 +55,8 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-#ifdef COPASI_DEBUG
+  if (mEnableAdditionalParameters)
   addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-#endif
 
   addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -379,10 +378,8 @@ bool COptMethodPS::initialize()
 
   mContinue = true;
 
-#if COPASI_DEBUG
+  if (getParameter("Stop after # Stalled Iterations"))
   mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
-#endif
-
 
   return mContinue;
 }
@@ -580,13 +577,8 @@ bool COptMethodPS::optimise()
   for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++, Stalled++)
     {
 
-#ifdef COPASI_DEBUG
-
-      if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
+    if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
-
-#endif
-
 
       Improved = false;
       size_t oldIndex = mBestIndex;

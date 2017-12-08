@@ -51,10 +51,11 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
 
-#ifdef COPASI_DEBUG
-  addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-#endif
+  if (mEnableAdditionalParameters)
+  {
+    addParameter("Mutation Variance", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.1);
+    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  }
 
   addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -447,18 +448,20 @@ bool COptMethodGASR::initialize()
 
   // initialize the variance for mutations
   mMutationVarians = 0.1;
-#if COPASI_DEBUG
-  mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
 
-  if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+  if (getParameter("Mutation Variance"))
+  {
+    mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+
+    if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
     {
       mMutationVarians = 0.1;
       setValue("Mutation Variance", mMutationVarians);
     }
+  }
 
+  if (getParameter("Stop after # Stalled Generations"))
   mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
-
-#endif
 
   return true;
 }
@@ -542,12 +545,8 @@ bool COptMethodGASR::optimise()
        mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
 
-#ifdef COPASI_DEBUG
-
       if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
         break;
-
-#endif
 
       // perturb the population if we have stalled for a while
       if (Stalled > 50 && Stalled50 > 50)

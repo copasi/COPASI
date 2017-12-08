@@ -49,11 +49,13 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
   addParameter("Number of Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 200);
 // we no longer give the user choice of rng, we use the mersenne twister!
 // but in DEBUG versions we should still have access to it
-#ifdef COPASI_DEBUG
-  addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
-  addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-  addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-#endif
+
+  if (mEnableAdditionalParameters)
+  {
+    addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
+    addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+    addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  }
 
   initObjects();
 }
@@ -81,10 +83,11 @@ COptMethodSS::~COptMethodSS()
 // virtual
 bool COptMethodSS::elevateChildren()
 {
-#ifndef COPASI_DEBUG
-  removeParameter("Random Number Generator");
-  removeParameter("Seed");
-#endif
+  if (!mEnableAdditionalParameters)
+  {
+    removeParameter("Random Number Generator");
+    removeParameter("Seed");
+  }
   return true;
 }
 
@@ -120,15 +123,18 @@ bool COptMethodSS::initialize()
 
   mCurrentGeneration++;
 
-#ifdef COPASI_DEBUG
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
-#else
-  // Use the default random number generator which is the Mersenne Twister
-  pdelete(mpRandom);
-  mpRandom = CRandom::createGenerator();
-#endif
+  if (mEnableAdditionalParameters)
+  {
+    mpRandom =
+      CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+        getValue< unsigned C_INT32 >("Seed"));
+  }
+  else
+  {
+    // Use the default random number generator which is the Mersenne Twister
+    pdelete(mpRandom);
+    mpRandom = CRandom::createGenerator();
+  }
 
   mCloseValue = 0.001;
 
@@ -257,10 +263,8 @@ bool COptMethodSS::initialize()
   mProb.resize(4);
   mProb = 0.0;
 
-#if COPASI_DEBUG
-  mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
-#endif
-
+  if (getParameter("Stop after # Stalled Generations"))
+    mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
 
   return true;
 }
@@ -1119,12 +1123,8 @@ bool COptMethodSS::optimise()
        mCurrentGeneration++, Stalled++)
     {
 
-#ifdef COPASI_DEBUG
-
       if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
         break;
-
-#endif
 
       // check for stagnation or similarity
       needsort = false;

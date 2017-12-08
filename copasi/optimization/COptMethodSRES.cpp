@@ -52,9 +52,8 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
   addParameter("Pf", CCopasiParameter::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
 
-#ifdef COPASI_DEBUG
+  if (mEnableAdditionalParameters)
   addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-#endif
 
   addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -586,10 +585,8 @@ bool COptMethodSRES::initialize()
       mTau = mTauPrime = 1;
     }
 
-#if COPASI_DEBUG
+  if (getParameter("Stop after # Stalled Generations"))
   mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
-#endif
-
 
   return true;
 }
@@ -741,13 +738,8 @@ bool COptMethodSRES::optimise()
     {
 #endif // RANDOMIZE
 
-#ifdef COPASI_DEBUG
-
           if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
             break;
-
-#endif
-
 
       Continue = replicate();
 

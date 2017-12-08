@@ -121,6 +121,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
+  mpEnableAdditionalOptimizationParameters(NULL),
   mpDisplayPopulations(NULL),
   mpWorkingDirectory(NULL),
   mpProxyServer(NULL),
@@ -148,6 +149,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpUseAdvancedSliders(NULL),
   mpUseAdvancedEditing(NULL),
   mpNormalizePerExperiment(NULL),
+  mpEnableAdditionalOptimizationParameters(NULL),
   mpDisplayPopulations(NULL),
   mpWorkingDirectory(NULL),
   mpProxyServer(NULL),
@@ -200,6 +202,7 @@ void CConfigurationFile::initializeParameter()
   mpUseAdvancedSliders = assertParameter("Use Advanced Sliders", CCopasiParameter::BOOL, true);
   mpUseAdvancedEditing = assertParameter("Use Advanced Editing", CCopasiParameter::BOOL, false);
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
+  mpEnableAdditionalOptimizationParameters = assertParameter("Enable additional optimization parameters", CCopasiParameter::BOOL, false);
   mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
@@ -398,6 +401,16 @@ bool CConfigurationFile::normalizePerExperiment() const
 void CConfigurationFile::setNormalizePerExperiment(bool flag)
 {
   *mpNormalizePerExperiment = flag;
+}
+
+bool CConfigurationFile::enableAdditionalOptimizationParameters() const
+{
+  return *mpEnableAdditionalOptimizationParameters;
+}
+
+void CConfigurationFile::setEnableAdditionalOptimizationParameters(bool enableAdditionalOptimizationParameters)
+{
+  *mpEnableAdditionalOptimizationParameters = enableAdditionalOptimizationParameters;
 }
 
 bool CConfigurationFile::displayPopulations() const
