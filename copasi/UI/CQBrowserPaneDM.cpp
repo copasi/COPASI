@@ -541,6 +541,10 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
       return true;
     }
 
+  // mark datamodel as changed
+  if (mpCopasiDM != NULL)
+  const_cast<CDataModel*>(mpCopasiDM)->changed();
+
   const CDataObject * pObject = CRootContainer::getKeyFactory()->get(key);
 
   if (pObject == NULL &&
