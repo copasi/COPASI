@@ -1008,19 +1008,23 @@ bool ReactionsWidget1::changeReaction(
         // create new objects
         std::vector<std::string> createdObjects;
         bool createdMetabs = mpRi->createMetabolites(createdObjects);
-
-        if (mpRi->createOtherObjects(createdObjects) || createdMetabs
-            || deletedObjects)
-          {
-            bool oldNotify = mIgnoreUpdates;
-            mIgnoreUpdates = false;
-            protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-            mIgnoreUpdates = oldNotify;
-          }
-
+        
+        bool notifyNeeded = mpRi->createOtherObjects(createdObjects) 
+          || createdMetabs
+          || deletedObjects;
+        
         command->setCreatedObjects(createdObjects);
 
         mpRi->writeBackToReaction(pReaction);
+
+        if (notifyNeeded)
+        {
+          bool oldNotify = mIgnoreUpdates;
+          mIgnoreUpdates = false;
+          protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+          mIgnoreUpdates = oldNotify;
+        }
+
 
         break;
       }
