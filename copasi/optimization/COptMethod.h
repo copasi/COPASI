@@ -90,6 +90,11 @@ protected:
   */
   COptLog mMethodLog;
 
+  /**
+   * boolean indicating whether additional parameters ought to be available
+   */
+  bool mEnableAdditionalParameters;
+
   // Operations
 private:
   /**

@@ -37,8 +37,8 @@
 #define LAMBDA_MAX 1e80
 
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer * pParent,
-    const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
+  const CTaskEnum::Method & methodType,
+  const CTaskEnum::Task & taskType) :
   COptMethod(pParent, methodType, taskType),
   mIterationLimit(2000),
   mTolerance(1.e-006),
@@ -64,10 +64,11 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   addParameter("Iteration Limit", CCopasiParameter::UINT, (unsigned C_INT32) 2000);
   addParameter("Tolerance", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
 
-#ifdef COPASI_DEBUG
-  addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
-  addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-#endif // COPASI_DEBUG
+  if (mEnableAdditionalParameters)
+  {
+    addParameter("Modulation", CCopasiParameter::DOUBLE, (C_FLOAT64) 1.e-006);
+    addParameter("Stop after # Stalled Iterations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
+  }
 
   addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -106,9 +107,8 @@ void COptMethodLevenbergMarquardt::initObjects()
 {
   addObjectReference("Current Iteration", mIteration, CDataObject::ValueInt);
 
-#ifndef COPASI_DEBUG
+  if(!mEnableAdditionalParameters)
   removeParameter("Modulation");
-#endif
 }
 
 bool COptMethodLevenbergMarquardt::optimise()
@@ -202,13 +202,8 @@ bool COptMethodLevenbergMarquardt::optimise()
        mIteration++, Stalled++)
     {
 
-#ifdef COPASI_DEBUG
-
       if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
-
-#endif
-
 
       // calculate gradient and Hessian
       if (calc_hess) hessian();
@@ -468,9 +463,8 @@ bool COptMethodLevenbergMarquardt::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mLogVerbosity = getValue< unsigned C_INT32 >("#LogVerbosity");
 
-#ifdef COPASI_DEBUG
+  if (getParameter("Modulation"))
   mModulation = getValue< C_FLOAT64 >("Modulation");
-#endif // COPASI_DEBUG
 
   mIteration = 0;
 
@@ -504,10 +498,8 @@ bool COptMethodLevenbergMarquardt::initialize()
   else
     mHaveResiduals = false;
 
-#if COPASI_DEBUG
+  if (getParameter("Stop after # Stalled Iterations"))
   mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
-#endif
-
 
   return true;
 }

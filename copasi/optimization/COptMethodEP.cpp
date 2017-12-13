@@ -46,9 +46,9 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
   addParameter("Random Number Generator", CCopasiParameter::UINT, (unsigned C_INT32) CRandom::mt19937);
   addParameter("Seed", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
-#ifdef COPASI_DEBUG
+  if (mEnableAdditionalParameters)
   addParameter("Stop after # Stalled Generations", CCopasiParameter::UINT, (unsigned C_INT32) 0);
-#endif
+
 
   addParameter("#LogVerbosity", CCopasiParameter::UINT, (unsigned C_INT32) 0);
 
@@ -120,13 +120,8 @@ bool COptMethodEP::optimise()
        mCurrentGeneration++, Stalled++)
     {
 
-#ifdef COPASI_DEBUG
-
       if (mStopAfterStalledGenerations != 0 && Stalled > mStopAfterStalledGenerations)
         break;
-
-#endif
-
 
       // replicate the individuals
       Continue = replicate();
@@ -230,9 +225,8 @@ bool COptMethodEP::initialize()
   tau1 = 1.0 / sqrt(2 * double(mVariableSize));
   tau2 = 1.0 / sqrt(2 * sqrt(double(mVariableSize)));
 
-#if COPASI_DEBUG
+  if (getParameter("Stop after # Stalled Generations"))
   mStopAfterStalledGenerations = getValue <unsigned C_INT32>("Stop after # Stalled Generations");
-#endif
 
   return true;
 }

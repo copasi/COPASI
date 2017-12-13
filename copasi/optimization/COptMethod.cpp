@@ -33,6 +33,8 @@
 #include "COptTask.h"
 #include "COptMethod.h"
 #include "COptProblem.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 
 COptMethod::COptMethod(const CDataContainer * pParent,
                        const CTaskEnum::Method & methodType,
@@ -42,8 +44,10 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   mpParentTask(NULL),
   mContainerVariables(),
   mpOptItem(NULL),
-  mpOptContraints(NULL)
-{}
+  mpOptContraints(NULL), 
+  mEnableAdditionalParameters(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters())
+{
+}
 
 COptMethod::COptMethod(const COptMethod & src,
                        const CDataContainer * pParent):
@@ -52,7 +56,8 @@ COptMethod::COptMethod(const COptMethod & src,
   mpParentTask(src.mpParentTask),
   mContainerVariables(),
   mpOptItem(src.mpOptItem),
-  mpOptContraints(src.mpOptContraints)
+  mpOptContraints(src.mpOptContraints),
+  mEnableAdditionalParameters(CRootContainer::getConfiguration()->enableAdditionalOptimizationParameters())
 {
   mContainerVariables.initialize(src.mContainerVariables);
 }

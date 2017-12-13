@@ -238,6 +238,17 @@ public:
    */
   void setNormalizePerExperiment(bool flag);
 
+
+  /**
+   * @return a flag on whether to enable additional parameters in optimization methods
+   */
+  bool enableAdditionalOptimizationParameters() const;
+
+  /**
+   *  Set whether to enable additional parameters in optimization methods
+   */
+  void setEnableAdditionalOptimizationParameters(bool enableAdditionalOptimizationParameters);
+
   /**
   * @return a flag on whether populations should be displayed during optimization / parameter estimation
   */
@@ -473,9 +484,14 @@ private:
   bool *mpUseAdvancedEditing;
 
   /**
-  * A pointer indicating whether to experiments should be normalized by default
-  */
+   * A pointer indicating whether to experiments should be normalized by default
+   */
   bool *mpNormalizePerExperiment;
+
+  /**
+   * A pointer to a flag indicating whether to enable additional parameters in optimization methods
+   */
+  bool *mpEnableAdditionalOptimizationParameters;
 
   /**
   * A pointer indicating whether to display the population visualization window
