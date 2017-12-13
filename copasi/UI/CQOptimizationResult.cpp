@@ -209,8 +209,6 @@ void CQOptimizationResult::slotSave(void)
 
   if (file.fail()) return;
 
-  size_t i, imax;
-
   // The global result and statistics
   file << "Objective Value" << std::endl;
   file << mpProblem->getSolutionValue() << std::endl;
