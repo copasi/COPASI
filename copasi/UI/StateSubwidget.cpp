@@ -75,7 +75,7 @@ void StateSubwidget::loadMetabolites()
 
   mpTblMetabolites->setRowCount((int) mpModel->getMetabolites().size());
 
-  QTableWidgetItem * pItem;  // for use with setData method, to set numberical sorting of appropriate columns
+  QTableWidgetItem * pItem;  // for use with setData method, to set numerical sorting of appropriate columns
 
   mpTblMetabolites->setSortingEnabled(false);
 
