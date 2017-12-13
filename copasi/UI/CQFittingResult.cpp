@@ -47,16 +47,21 @@
 
 #include "UI/qtUtilities.h"
 
+#include <QSortFilterProxyModel>
+#include <copasi/UI/CQParameterResultItemModel.h>
+
+
 /*
  *  Constructs a CQFittingResult which is a child of 'parent', with the
  *  name 'name'.'
  */
-CQFittingResult::CQFittingResult(QWidget* parent, const char* name):
-  CopasiWidget(parent, name)
+CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
+ : CopasiWidget(parent, name)
 {
   setupUi(this);
 
   init();
+
 }
 
 /*
@@ -78,10 +83,23 @@ void CQFittingResult::init()
   mpFisherInformationScaledEigenvectors->setLegendEnabled(false);
 }
 
-bool CQFittingResult::update(ListViews::ObjectType /* objectType */,
-                             ListViews::Action /* action */,
+bool CQFittingResult::update(ListViews::ObjectType objectType,
+                             ListViews::Action action,
                              const std::string & /* key */)
 {
+  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+  {
+    // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
+    mpCorrelations->setArrayAnnotation(NULL);
+    mpFisherInformationMatrix->setArrayAnnotation(NULL);
+    mpFisherInformationEigenvalues->setArrayAnnotation(NULL);
+    mpFisherInformationEigenvectors->setArrayAnnotation(NULL);
+    mpFisherInformationScaledMatrix->setArrayAnnotation(NULL);
+    mpFisherInformationScaledEigenvalues->setArrayAnnotation(NULL);
+    mpFisherInformationScaledEigenvectors->setArrayAnnotation(NULL);
+    mpParameters->setModel(NULL);
+  }
+
   // :TODO:
   return true;
 }
@@ -175,7 +193,6 @@ void CQFittingResult::loadExperimentSetIntoTree(const CExperimentSet& Experiment
     }
 }
 
-
 bool CQFittingResult::enterProtected()
 {
   assert(mpDataModel != NULL);
@@ -211,121 +228,45 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), false);
     }
 
-  size_t i, imax;
-  QTableWidgetItem * pItem;
 
-  // Loop over the optimization items
-  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
-  const CVector< C_FLOAT64 > & Solutions = mpProblem->getSolutionVariables();
-  const CVector< C_FLOAT64 > & StdDeviations = mpProblem->getVariableStdDeviations();
-  const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
-
-  imax = Items.size();
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  //the parameters table
-  mpParameters->setRowCount((int) imax);
-
+  // determine background color for values too close to the bounds
   QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 
   int h, s, v;
   BackgroundColor.getHsv(&h, &s, &v);
 
   if (s < 20)
-    {
-      s = 20;
-    }
+  {
+    s = 20;
+  }
 
   BackgroundColor.setHsv(0, s, v);
+  
+  //the parameters table
 
-  mpParameters->setSortingEnabled(false);
+  mpParameters->setModel(NULL);
 
-  for (i = 0; i != imax; i++)
-    {
-      //1st column: parameter name
-      const CDataObject *pObject =
-        CObjectInterface::DataObject(mpDataModel->getObjectFromCN(Items[i]->getObjectCN()));
-
-      if (pObject)
-        {
-          std::string Experiments =
-            static_cast<CFitItem *>(Items[i])->getExperiments();
-
-          if (Experiments != "")
-            Experiments = "; {" + Experiments + "}";
-
-          pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName() + Experiments));
-        }
-      else
-        pItem = new QTableWidgetItem("Not Found");
-
-      mpParameters->setItem((int) i, 0, pItem);
-
-      const C_FLOAT64 & Solution = i < Solutions.size() ? Solutions[i] : std::numeric_limits<double>::quiet_NaN();
-
-      //2nd column: lower bound
-      const COptItem *current = Items[i];
-      pItem = new QTableWidgetItem(FROM_UTF8(current->getLowerBound()));
-      mpParameters->setItem((int) i, 1, pItem);
-
-      if (current->getLowerBoundValue() != NULL && 1.01 * *current->getLowerBoundValue() > Solution)
-        {
-          pItem->setBackgroundColor(BackgroundColor);
-        }
-
-      //3rd column: start value
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, current->getLastStartValue());
-      pItem->setForeground(QColor(120, 120, 140));
-      mpParameters->setItem((int) i, 2, pItem);
-
-      //4th column: solution value
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Solution);
-      mpParameters->setItem((int) i, 3, pItem);
-
-      //5th column: upper bound
-      pItem = new QTableWidgetItem(FROM_UTF8(current->getUpperBound()));
-      mpParameters->setItem((int) i, 4, pItem);
-
-      if (current->getUpperBoundValue() != NULL && 0.99 * *current->getUpperBoundValue() < Solution)
-        {
-          pItem->setBackgroundColor(BackgroundColor);
-        }
-
-      const C_FLOAT64 & StdDeviation = i < StdDeviations.size() ?  StdDeviations[i] : std::numeric_limits<double>::quiet_NaN();
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-
-      pItem->setData(Qt::DisplayRole, StdDeviation);
-
-      mpParameters->setItem((int) i, 5, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-
-      pItem->setData(Qt::DisplayRole, fabs(100.0 * StdDeviation / Solution));
-
-      mpParameters->setItem((int) i, 6, pItem);
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-
-      pItem->setData(Qt::DisplayRole, i < Gradients.size() ? Gradients[i] : std::numeric_limits<double>::quiet_NaN());
-
-      mpParameters->setItem((int) i, 7, pItem);
-    }
-
+  CQParameterResultItemModel *model = new CQParameterResultItemModel(mpProblem, BackgroundColor, this);
+  QSortFilterProxyModel*  sortModel = new QSortFilterProxyModel(this);
+  sortModel->setSourceModel(model); 
+  mpParameters->setModel(sortModel);
   mpParameters->resizeColumnsToContents();
   mpParameters->resizeRowsToContents();
-  mpParameters->setSortingEnabled(true);
 
   // Results per Experiment tab: Loop over the experiments
-  const CExperimentSet & Experiments = mpProblem->getExperimentSet();
   loadExperimentTab();
 
+  size_t i;
+  QTableWidgetItem * pItem;
+
   // Loop over the dependent objects
-  imax = Experiments.getDependentObjects().size();
+  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
+  const CVector< C_FLOAT64 > & Solutions = mpProblem->getSolutionVariables();
+  const CVector< C_FLOAT64 > & StdDeviations = mpProblem->getVariableStdDeviations();
+  const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
+
+  const CExperimentSet & Experiments = mpProblem->getExperimentSet();
+  size_t imax = Experiments.getDependentObjects().size();
 
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;

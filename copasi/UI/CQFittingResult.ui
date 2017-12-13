@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and University of </comment>
-<comment> of Connecticut School of Medicine. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., University of Heidelberg, and The University </comment>
-<comment> of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
-<comment> and The University of Manchester. </comment>
-<comment> All rights reserved. </comment>
-
-<comment> Copyright (C) 2006 - 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
-<comment> Properties, Inc. and EML Research, gGmbH. </comment>
-<comment> All rights reserved. </comment>
-
  <comment> All rights reserved. </comment>
  <class>CQFittingResult</class>
  <widget class="CopasiWidget" name="CQFittingResult">
@@ -93,9 +74,12 @@
        <string>Main</string>
       </attribute>
      </widget>
-     <widget class="QTableWidget" name="mpParameters">
+     <widget class="QTableView" name="mpParameters">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
       </property>
       <property name="sortingEnabled">
        <bool>true</bool>
@@ -103,46 +87,6 @@
       <attribute name="title">
        <string>Parameters</string>
       </attribute>
-      <column>
-       <property name="text">
-        <string>Parameter</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Lower Bound</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Start Value</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Value</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Upper Bound</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Std. Deviation</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Coeff. of Variation [%]</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Gradient</string>
-       </property>
-      </column>
      </widget>
      <widget class="QTreeWidget" name="mpExperiments">
       <property name="editTriggers">
