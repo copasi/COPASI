@@ -1040,9 +1040,10 @@ size_t ListViews::getCurrentItemId()
 
 bool ListViews::slotNotify(ObjectType objectType, Action action, std::string key)
 {
-  if (objectType != MODEL &&
-      objectType != STATE &&
-      action != ADD)
+  if (objectType != MODEL 
+      && objectType != STATE 
+      //&&  action != ADD 
+    )
     {
       assert(mpDataModel != NULL);
       mpDataModel->changed();
