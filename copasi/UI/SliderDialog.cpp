@@ -97,8 +97,6 @@ SliderDialog::SliderDialog(QWidget* parent, const char* name, bool modal, Qt::Wi
 
   setupUi(this);
 
-  addToMainWindow(mpParentWindow);
-
   setObjectName(QString::fromUtf8(name));
   setWindowTitle("Slider Window");
 

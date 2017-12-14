@@ -134,6 +134,8 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
 
       if (pObject)
       {
+        if (dynamic_cast<const CFitProblem*>(mpProblem) != NULL)
+        {
         std::string Experiments =
           static_cast<CFitItem *>(mItems[row])->getExperiments();
 
@@ -141,6 +143,8 @@ CQParameterResultItemModel::data(const QModelIndex & index, int role) const
           Experiments = "; {" + Experiments + "}";
 
         return FROM_UTF8(pObject->getObjectDisplayName() + Experiments);
+        }
+        return FROM_UTF8(pObject->getObjectDisplayName());
       }
       return "Not Found";
     }

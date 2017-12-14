@@ -194,7 +194,7 @@ p, li { white-space: pre-wrap; }
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QTableWidget" name="mpParameters">
+     <widget class="QTableView" name="mpParameters">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
@@ -204,36 +204,6 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Main</string>
       </attribute>
-      <column>
-       <property name="text">
-        <string>Parameter</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Lower Bound</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Start Value</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Value</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Upper Bound</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Gradient</string>
-       </property>
-      </column>
      </widget>
      <widget class="QWidget" name="mpLogPage">
       <attribute name="title">

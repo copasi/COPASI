@@ -77,9 +77,13 @@ void CQFittingResult::init()
   mpCorrelations->setLegendEnabled(false);
   mpFisherInformationMatrix->setLegendEnabled(false);
   mpFisherInformationEigenvalues->setLegendEnabled(false);
+  mpFisherInformationEigenvalues->setControlsEnabled(false);
+  mpFisherInformationEigenvalues->setMaximumHeight(80);
   mpFisherInformationEigenvectors->setLegendEnabled(false);
   mpFisherInformationScaledMatrix->setLegendEnabled(false);
   mpFisherInformationScaledEigenvalues->setLegendEnabled(false);
+  mpFisherInformationScaledEigenvalues->setControlsEnabled(false);
+  mpFisherInformationScaledEigenvalues->setMaximumHeight(80);
   mpFisherInformationScaledEigenvectors->setLegendEnabled(false);
 }
 
@@ -330,7 +334,7 @@ bool CQFittingResult::enterProtected()
   mpFisherInformationEigenvalues->setColorCoding(tcs);
   mpFisherInformationEigenvalues->setColorScalingAutomatic(true);
   mpFisherInformationEigenvalues->setArrayAnnotation(&mpProblem->getFisherInformationEigenvalues());
-  mpFisherInformationEigenvalues->mpComboRows->setCurrentIndex(1);
+  mpFisherInformationEigenvalues->slotRowSelectionChanged(1);
 
   tcs = new CColorScaleBiLog();
   mpFisherInformationEigenvectors->setColorCoding(tcs);
@@ -347,8 +351,8 @@ bool CQFittingResult::enterProtected()
   mpFisherInformationScaledEigenvalues->setColorCoding(tcs);
   mpFisherInformationScaledEigenvalues->setColorScalingAutomatic(true);
   mpFisherInformationScaledEigenvalues->setArrayAnnotation(&mpProblem->getScaledFisherInformationEigenvalues());
-  mpFisherInformationScaledEigenvalues->mpComboRows->setCurrentIndex(1);
-
+  mpFisherInformationScaledEigenvalues->slotRowSelectionChanged(1);
+  
   tcs = new CColorScaleBiLog();
   mpFisherInformationScaledEigenvectors->setColorCoding(tcs);
   mpFisherInformationScaledEigenvectors->setColorScalingAutomatic(true);

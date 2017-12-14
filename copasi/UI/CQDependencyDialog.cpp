@@ -21,8 +21,6 @@ CQDependencyDialog::CQDependencyDialog(QWidget *parent, const char *name, bool m
   ui->widget->setVisibleDependencies(ALL_DEPENDENCIES);
   ui->widget->setLabelWidth(100);
   ui->widget->setStyleSheet("");
-
-  addToMainWindow(mpParentWindow);
 }
 
 CQDependencyDialog::~CQDependencyDialog()

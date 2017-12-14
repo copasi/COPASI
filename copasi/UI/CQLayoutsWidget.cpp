@@ -419,6 +419,7 @@ void CQLayoutsWidget::slotShowLayout(const QModelIndex &index)
           pLayoutWindow->show();
           pLayoutWindow->showNormal();
           pLayoutWindow->activateWindow();
+          pLayoutWindow->addToMainWindow();
         }
     }
   else

@@ -437,6 +437,8 @@ void CQAnimationWindow::closeEvent(QCloseEvent * /*closeEvent*/)
 {
   // stop the autolayout
   mpLayoutThread->stopLayout();
+  
+  removeFromMainWindow();
 }
 
 void CQAnimationWindow::slotEditSettings()

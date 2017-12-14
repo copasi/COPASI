@@ -627,6 +627,11 @@ void CQArrayAnnotationsWidget::disableSlider()
 /*!
     Function to set the appearance focus on table
  */
+void CQArrayAnnotationsWidget::setControlsEnabled(bool b)
+{
+  mpControls->setVisible(b);
+}
+
 void CQArrayAnnotationsWidget::setFocusOnTable()
 {
 #ifdef DEBUG_UI

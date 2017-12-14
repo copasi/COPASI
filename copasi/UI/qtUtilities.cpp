@@ -344,6 +344,10 @@ QString toTsvString(QAbstractItemModel* pModel,
                     bool writeRowHeaders /*= true*/)
 {
   QString text;
+
+  if (pModel == NULL)
+    return text;
+
   QTextStream stream(&text);
 
   if (writeColumnHeaders)

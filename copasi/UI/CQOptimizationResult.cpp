@@ -40,6 +40,9 @@
 #include "model/CModel.h"
 #include "math/CMathContainer.h"
 
+#include <copasi/UI/CQParameterResultItemModel.h>
+#include <QSortFilterProxyModel>
+
 /*
  *  Constructs a CQOptimizationResult which is a child of 'parent', with the
  *  name 'name'.'
@@ -63,11 +66,14 @@ CQOptimizationResult::~CQOptimizationResult()
 void CQOptimizationResult::init()
 {}
 
-bool CQOptimizationResult::update(ListViews::ObjectType /* objectType */,
-                                  ListViews::Action /* action */,
+bool CQOptimizationResult::update(ListViews::ObjectType objectType,
+                                  ListViews::Action action,
                                   const std::string & /* key */)
 {
-  // :TODO:
+
+  if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+    mpParameters->setModel(NULL);
+
   return true;
 }
 
@@ -103,22 +109,6 @@ bool CQOptimizationResult::enterProtected()
   const unsigned C_INT32 & FailedEvaluationsNaN = mpProblem->getFailedEvaluationsNaN();
   mpEditFailedEvaluationsNaN->setText(QString::number(FailedEvaluationsNaN));
 
-  size_t i, imax;
-
-  // Loop over the optimization items
-  const std::vector< COptItem * > & Items = mpProblem->getOptItemList();
-  const CVector< C_FLOAT64 > & Solutions = mpProblem->getSolutionVariables();
-  const CVector< C_FLOAT64 > & Gradients = mpProblem->getVariableGradients();
-
-  imax = Items.size();
-  QTableWidgetItem * pItem;
-
-  if (mpProblem->getFunctionEvaluations() == 0)
-    imax = 0;
-
-  mpParameters->setRowCount((int) imax);
-  mpParameters->setSortingEnabled(false);
-
   QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 
   int h, s, v;
@@ -131,58 +121,14 @@ bool CQOptimizationResult::enterProtected()
 
   BackgroundColor.setHsv(0, s, v);
 
-  for (i = 0; i != imax; i++)
-    {
-      //1st column: parameter name
-      const CDataObject *pObject =
-        CObjectInterface::DataObject(mpDataModel->getObjectFromCN(Items[i]->getObjectCN()));
-
-      if (pObject)
-        pItem = new QTableWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
-      else
-        pItem = new QTableWidgetItem("Not Found");
-
-      mpParameters->setItem((int) i, 0, pItem);
-
-      const C_FLOAT64 & Solution = Solutions[i];
-
-      //2nd column: lower bound
-      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getLowerBound()));
-      mpParameters->setItem((int) i, 1, pItem);
-
-      if (1.01 * *Items[i]->getLowerBoundValue() > Solution)
-        {
-          pItem->setBackgroundColor(BackgroundColor);
-        }
-
-      //3rd column: start value
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Items[i]->getLastStartValue());
-      pItem->setForeground(QColor(120, 120, 140));
-      mpParameters->setItem((int) i, 2, pItem);
-
-      //4th column: solution value
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Solution);
-      mpParameters->setItem((int) i, 3, pItem);
-
-      //5th column: upper bound
-      pItem = new QTableWidgetItem(FROM_UTF8(Items[i]->getUpperBound()));
-      mpParameters->setItem((int) i, 4, pItem);
-
-      if (0.99 * *Items[i]->getUpperBoundValue() < Solution)
-        {
-          pItem->setBackgroundColor(BackgroundColor);
-        }
-
-      pItem = new QTableWidgetItem(QVariant::Double);
-      pItem->setData(Qt::DisplayRole, Gradients[i]);
-      mpParameters->setItem((int) i, 5,  pItem);
-    }
+  mpParameters->setModel(NULL);
+  CQParameterResultItemModel* model = new CQParameterResultItemModel(mpProblem, BackgroundColor, this);
+  QSortFilterProxyModel* sortModel = new QSortFilterProxyModel(this);
+  sortModel->setSourceModel(model);
+  mpParameters->setModel(sortModel);
 
   mpParameters->resizeColumnsToContents();
   mpParameters->resizeRowsToContents();
-  mpParameters->setSortingEnabled(true);
 
   // clear log
   mpLogTree->clear();
@@ -263,8 +209,6 @@ void CQOptimizationResult::slotSave(void)
 
   if (file.fail()) return;
 
-  size_t i, imax;
-
   // The global result and statistics
   file << "Objective Value" << std::endl;
   file << mpProblem->getSolutionValue() << std::endl;
@@ -277,22 +221,11 @@ void CQOptimizationResult::slotSave(void)
   file << FunctionEvaluations / ExecutionTime << std::endl << std::endl;
 
   // Set up the parameters table
-  file << "Parameters:" << std::endl;
-  file << "Parameter\tLower Bound\tStart Value\tValue\tUpper Bound\tGradient" << std::endl;
-
-  // Loop over the fitted values objects
-  imax = mpParameters->rowCount();
-
-  for (i = 0; i != imax; i++)
-    {
-      file << TO_UTF8(mpParameters->item((int) i, 0)->text()) << "\t";
-      file << TO_UTF8(mpParameters->item((int) i, 1)->text()) << "\t";
-      file << TO_UTF8(mpParameters->item((int) i, 2)->text()) << "\t";
-      file << TO_UTF8(mpParameters->item((int) i, 3)->text()) << "\t";
-      file << TO_UTF8(mpParameters->item((int) i, 4)->text()) << "\t";
-      file << TO_UTF8(mpParameters->item((int) i, 5)->text()) << std::endl;
-    }
-
+  file << "Parameters:" << std::endl;  
+  file << TO_UTF8(toTsvString(mpParameters->model(), true, false)) 
+       << std::endl;
+  
+  
   // log
   const COptMethod * pMethod = dynamic_cast<const COptMethod *>(mpTask->getMethod());
 
