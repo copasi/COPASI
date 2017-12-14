@@ -35,6 +35,7 @@ CReactionInterface::CReactionInterface(CModel * pModel):
   mReactionReferenceKey(""),
   mChemEqI(pModel),
   mpFunction(NULL),
+  mMassAction(),
   mpParameters(NULL),
   mNameMap(),
   mValues(),
@@ -327,8 +328,10 @@ bool CReactionInterface::writeBackToReaction(CReaction * rea, bool compile)
               rea->setParameterValue(getParameterName(i), mValues[i]);
             else
               {
+                CModelValue & ModelValue = mpModel->getModelValues()[mNameMap[i][0]];
+
                 rea->setParameterValue(getParameterName(i), mValues[i], false);
-                rea->setParameterMapping(i, mpModel->getModelValues()[mNameMap[i][0]].getKey());
+                rea->setParameterMapping(i, ModelValue.getKey());
               }
 
             break;
@@ -702,6 +705,7 @@ CReactionInterface::initMapping()
   mNameMap.resize(size());
   mValues.resize(size());
   mIsLocal.resize(size());
+
   size_t i, imax = size();
 
   for (i = 0; i < imax; ++i)
@@ -902,15 +906,42 @@ CReactionInterface::getFunctionDescription() const
   return emptyString;
 }
 
-const CFunction *
+const CFunction &
 CReactionInterface::getFunction() const
 {
   if (mpFunction == NULL)
     {
-      return CRootContainer::getUndefinedFunction();
+      return *CRootContainer::getUndefinedFunction();
     }
 
-  return mpFunction;
+  if (mpFunction->getType() != CEvaluationTree::Type::MassAction)
+    {
+      return *mpFunction;
+    }
+
+  mMassAction.setObjectName(mpFunction->getObjectName());
+
+  std::stringstream Infix;
+  Infix << "k1";
+
+  for (size_t i = 0; i < mChemEqI.getMolecularity(CFunctionParameter::SUBSTRATE); ++i)
+    {
+      Infix << "*S" << i;
+    }
+
+  if (mpFunction->isReversible() == TriTrue)
+    {
+      Infix << "-k2";
+
+      for (size_t i = 0; i < mChemEqI.getMolecularity(CFunctionParameter::PRODUCT); ++i)
+        {
+          Infix << "*P" << i;
+        }
+    }
+
+  mMassAction.setInfix(Infix.str());
+
+  return mMassAction;
 }
 
 void

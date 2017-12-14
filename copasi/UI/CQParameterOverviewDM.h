@@ -21,14 +21,12 @@
 class CModelParameterSet;
 class CModelParameterGroup;
 class CModelParameter;
-
+class CValidatedUnit;
 class QUndoStack;
-#include <QList>
-#include <QPair>
-#include <QMap>
+
+#include <set>
 
 #define COL_VALUE      3
-
 
 class CQParameterOverviewDM : public CQBaseDataModel
 {
@@ -121,7 +119,7 @@ private:
   ParameterOverviewDataChangeCommand *mpLastCommand;
 
   // cache the unit strings, to make viewing the parameter overview table faster
-  mutable QMap< std::string, QVariant > mUnitCache;
+  mutable std::set< CValidatedUnit > mUnitCache;
 
   // the key to the currently active parameter set
   std::string mParameterSetKey;

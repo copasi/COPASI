@@ -65,7 +65,7 @@ public:
   void initTable();
 
 public slots:
-  void updateTable(const CReactionInterface & ri, const CReaction * mpReaction);
+  void updateTable(CReactionInterface & ri, CReaction * mpReaction);
 
 private slots:
   void handleCurrentCell(int row, int col, int, int);

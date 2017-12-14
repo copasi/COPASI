@@ -20,6 +20,7 @@
 #include <QTableWidgetItem>
 #include <QtCore/QStringList>
 #include <QLineEdit>
+#include <QCommonStyle>
 
 #include "parametertable.h"
 #include "CQComboDelegate.h"
@@ -168,7 +169,7 @@ QStringList ParameterTable::getListOfAllCompartmentNames(const CModel & model)
   return ret;
 }
 
-void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction * pReaction)
+void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 {
   bool wasSortingEnabled = isSortingEnabled();
   setSortingEnabled(false);
@@ -226,9 +227,9 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
         }
     }
 
-  // TODO CRITICAL This depends on the effective kinetic law units.
+  // This depends on the effective kinetic law units.
   CMathContainer & Container = pModel->getMathContainer();
-  CUnitValidator Validator(Container, *ri.getFunction());
+  CUnitValidator Validator(Container, ri.getFunction());
 
   Validator.validateUnits(ri.getEffectiveKineticLawUnit(), Variables);
 
@@ -362,9 +363,22 @@ void ParameterTable::updateTable(const CReactionInterface & ri, const CReaction 
 
       // add units column
       if (rowCounter < Validator.getVariableUnits().size())
-        pItem = new QTableWidgetItem(FROM_UTF8(" " + Validator.getVariableUnits()[rowCounter].getExpression()));
+        {
+          const CValidatedUnit & Unit = Validator.getVariableUnits()[rowCounter];
+          pItem = new QTableWidgetItem(FROM_UTF8(" " + Unit.getExpression()));
+
+          if (Unit.conflict() && usage == CFunctionParameter::PARAMETER)
+            {
+              CValidity Validity;
+              Validity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitConflict));
+              pItem->setToolTip(FROM_UTF8(Validity.getIssueMessages()));
+              pItem->setIcon(QCommonStyle().standardIcon(QStyle::SP_MessageBoxWarning));
+            }
+        }
       else
-        pItem = new QTableWidgetItem(" ? ");
+        {
+          pItem = new QTableWidgetItem(" ? ");
+        }
 
       pItem->setBackgroundColor(color);
       pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));

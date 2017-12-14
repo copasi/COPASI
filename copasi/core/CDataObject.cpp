@@ -602,6 +602,16 @@ void CDataObject::validityRemoved(const CValidity & changedValidity)
     }
 }
 
+void CDataObject::addIssue(const CIssue & issue)
+{
+  mValidity.add(issue);
+}
+
+void CDataObject::removeIssue(const CIssue & issue)
+{
+  mValidity.remove(issue);
+}
+
 void CDataObject::refreshAggregateValidity()
 {
   mAggregateValidity.clear();

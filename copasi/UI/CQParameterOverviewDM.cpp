@@ -23,8 +23,10 @@
 #include "resourcesUI/CQIconResource.h"
 
 #include <QUndoStack>
+#include <QCommonStyle>
 #include "model/CModel.h"
 #include "undoFramework/ParameterOverviewDataChangeCommand.h"
+#include "copasi/utilities/CValidatedUnit.h"
 
 #define COL_NAME       0
 #define COL_DIFF       1
@@ -449,21 +451,40 @@ QVariant CQParameterOverviewDM::valueData(const CModelParameter * pNode, int rol
 
 QVariant CQParameterOverviewDM::unitData(const CModelParameter * pNode, int role) const
 {
-  if (role == Qt::DisplayRole)
+  if (pNode->getType() == CModelParameter::Type::Group)
+    return QVariant();
+
+  CValidatedUnit Unit = pNode->getUnit(static_cast< CCore::Framework >(mFramework));
+
+  std::set< CValidatedUnit >::const_iterator it = mUnitCache.find(Unit);
+
+  if (it == mUnitCache.end())
     {
-      if (pNode->getType() == CModelParameter::Type::Group) return QVariant();
+      Unit.buildExpression();
+      it = mUnitCache.insert(Unit).first;
+    }
 
-      std::string rawUnit = pNode->getUnit(static_cast< CCore::Framework >(mFramework));
-      QMap< std::string, QVariant >::const_iterator it = mUnitCache.find(rawUnit);
+  switch (role)
+    {
+      case Qt::DecorationRole:
+        if (it->conflict())
+          return QCommonStyle().standardIcon(QStyle::SP_MessageBoxWarning);
 
-      if (it == mUnitCache.end())
-        {
-          QVariant prettyUnit(QString(FROM_UTF8(CUnit::prettyPrint(rawUnit))));
-          mUnitCache.insert(rawUnit, prettyUnit);
-          return prettyUnit;
-        }
+        break;
 
-      return it.value();
+      case Qt::ToolTipRole:
+        if (it->conflict())
+          {
+            CValidity Validity;
+            Validity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::UnitConflict));
+            return FROM_UTF8(Validity.getIssueMessages());
+          }
+
+        break;
+
+      case Qt::DisplayRole:
+        return FROM_UTF8(it->getExpression());
+        break;
     }
 
   return QVariant();

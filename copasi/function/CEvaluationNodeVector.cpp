@@ -135,8 +135,7 @@ CValidatedUnit CEvaluationNodeVector::setUnit(const CMathContainer & container,
     const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
     std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
 {
-  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeVector * >(this))->second,
-                          targetUnits[const_cast< CEvaluationNodeVector * >(this)]);
+  CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
   std::vector< CEvaluationNode * >::const_iterator it = mNodes.begin();
   std::vector< CEvaluationNode * >::const_iterator end = mNodes.end();

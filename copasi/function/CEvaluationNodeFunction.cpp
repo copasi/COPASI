@@ -1918,8 +1918,7 @@ CValidatedUnit CEvaluationNodeFunction::setUnit(const CMathContainer & container
     const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
     std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
 {
-  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeFunction * >(this))->second,
-                          targetUnits[const_cast< CEvaluationNodeFunction * >(this)]);
+  CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
   switch ((SubType)this->subType())
     {

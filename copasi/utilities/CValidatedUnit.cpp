@@ -78,6 +78,14 @@ const bool & CValidatedUnit::conflict() const
   return mConflict;
 }
 
+bool CValidatedUnit::operator<(const CValidatedUnit & rightSide) const
+{
+  if (mConflict != rightSide.mConflict)
+    return mConflict < rightSide.mConflict;
+
+  return CUnit::operator <(rightSide);
+}
+
 std::ostream &operator<<(std::ostream &os, const CValidatedUnit & o)
 {
   os << * static_cast< const CUnit * >(&o) << std::endl;

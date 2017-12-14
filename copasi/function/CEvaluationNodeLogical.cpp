@@ -447,8 +447,7 @@ CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
     const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
     std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
 {
-  CValidatedUnit Result = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeLogical * >(this))->second,
-                          targetUnits[const_cast< CEvaluationNodeLogical * >(this)]);
+  CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
   switch (mSubType)
     {
