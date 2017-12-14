@@ -61,6 +61,8 @@ public:
    */
   CColorScale * getColorCoding() const;
 
+public slots:
+
   /**
    * if true the parameters for the color coding are determined automatically
    */
@@ -76,9 +78,21 @@ public:
    */
   void setSortingEnabled(bool b);
 
+  /**
+   * Disables the bar chart 
+   */
   void disableBarChart();
 
+  /**
+   * disable the slider
+   */
   void disableSlider();
+
+  /**
+   * Show / Hide controls 
+   * @param b boolean indicating whether the controls should be visible or not
+   */
+  void setControlsEnabled(bool b);
 
   void setFocusOnTable();
 
@@ -88,12 +102,10 @@ public:
 
   void clearWidget();
 
-protected slots:
-
   void slotRowSelectionChanged(int row);
 
   void slotColumnSelectionChanged(int col);
-
+  
   void slotCurrentSelectionIndexChanged(int row, int index);
 
   void slotContentCellClicked(const QModelIndex & index);
