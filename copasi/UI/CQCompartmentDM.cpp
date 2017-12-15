@@ -396,6 +396,7 @@ bool CQCompartmentDM::compartmentDataChange(const QModelIndex& index,
 
   if (pUndoData != NULL)
     {
+      if (mpCompartments->getIndex(pUndoData->getName()) != C_INVALID_INDEX)
       pCompartment = &mpCompartments->operator[](pUndoData->getName());
     }
 
