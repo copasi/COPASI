@@ -50,11 +50,11 @@ option(SBML_TESTSUITE_RUN "Run the SBML testsuite as test" OFF)
 
 if (SBML_TESTSUITE_RUN)
 
-set(SBML_TESTSUITE_CASES_DIR "" CACHE STRING "full path to the cases/semantic directory of the SBML Testsuite")
+set(SBML_TESTSUITE_CASES_DIR "" CACHE PATH "full path to the cases/semantic directory of the SBML Testsuite")
 set(SBML_TESTSUITE_LEVEL "3" CACHE STRING "The SBML Level to test (or 0 to test the highest available one)")
 set(SBML_TESTSUITE_VERSION "1" CACHE STRING "The SBML Version to test (or 0 to test the highest available one)")
 set(SBML_TESTSUITE_THREADS "8" CACHE STRING "Number of threads to run in parallel when running the test suite")
-set(SBML_TESTSUITE_UNSUPPORTED "" CACHE STRING "Unsupported test tags (or empty for default selection)")
+set(SBML_TESTSUITE_UNSUPPORTED "" CACHE STRING "Comma separated list of unsupported test tags (or empty for default selection)")
 option(SBML_TESTSUITE_REMOVE_WRAPPER "remove the wrapper after finishing tests" OFF)
 
 
@@ -76,6 +76,7 @@ add_test(
          -DSBML_VERSION=${SBML_TESTSUITE_VERSION}
          -DJAVA_EXECUTABLE=${Java_JAVA_EXECUTABLE}
          -DWRAPPER_EXECUTABLE=$<TARGET_FILE:sbml-testsuite>
+         -DUNSUPPORTED="${SBML_TESTSUITE_UNSUPPORTED}"
          -DOUT_DIR=${CMAKE_CURRENT_BINARY_DIR}/out
          -DSRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
          -DVERSION=${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}
