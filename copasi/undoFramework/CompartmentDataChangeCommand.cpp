@@ -53,7 +53,7 @@ CompartmentDataChangeCommand::CompartmentDataChangeCommand(
 
   // need to store additional undo data to be able to restore
   // species initial concentrations / particle numbers
-  mpCompartmentUndoData = new UndoCompartmentData(pCompartment);
+  mpCompartmentUndoData = new UndoCompartmentData(pCompartment, false);
 
   setKey(pCompartment->getKey());
   setName(pCompartment->getObjectName());
