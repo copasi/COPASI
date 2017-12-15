@@ -67,6 +67,7 @@ private:
    * A pointer to the kinetic function of the reaction
    */
   const CFunction* mpFunction;
+  mutable CFunction mMassAction;
 
   /**
    * A copy of the function parameters
@@ -170,9 +171,9 @@ public:
   const std::string & getFunctionDescription() const;
 
   /**
-   * @return the function pointer
+   * @return the function
    */
-  const CFunction * getFunction() const;
+  const CFunction & getFunction() const;
 
   /**
    * @return a vector of possible functions for the specified number substrates / products and reversibility

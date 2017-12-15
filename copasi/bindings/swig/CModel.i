@@ -23,6 +23,7 @@
 
 #include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
+#include <copasi/utilities/CValidatedUnit.h>
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathEvent.h"
 #include "copasi/math/CMathDependencyGraph.h"
@@ -144,6 +145,7 @@ typedef std::vector<CDataObject*> ObjectStdVector;
 
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
+%include <copasi/utilities/CValidatedUnit.h>
 %include "copasi/math/CMathObject.h"
 %include "copasi/math/CMathEvent.h"
 %include "copasi/math/CMathDependencyGraph.h"

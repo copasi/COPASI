@@ -242,6 +242,10 @@ public:
 
   const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
 
+  void addIssue(const CIssue & issue);
+
+  void removeIssue(const CIssue & issue);
+
 private:
   void refreshAggregateValidity();
 

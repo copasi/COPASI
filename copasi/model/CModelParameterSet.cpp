@@ -12,12 +12,13 @@
 
 #include "CModelParameterSet.h"
 
-#include "model/CModel.h"
-#include "model/CCompartment.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CCompartment.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
-#include "core/CDataString.h"
-#include "utilities/CNodeIterator.h"
+#include "copasi/report/CKeyFactory.h"
+#include "copasi/core/CDataString.h"
+#include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/CValidatedUnit.h"
 
 // static
 CModelParameterSet * CModelParameterSet::fromData(const CData & data)
@@ -303,7 +304,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
               if (itNode->getType() != Group &&
                   itNode->getType() != Set)
                 {
-                  os << itNode->getValue(framework) << " " << itNode->getUnit(framework);
+                  os << itNode->getValue(framework) << " " << itNode->getUnit(framework).getExpression();
                 }
 
               os << std::endl;
@@ -321,7 +322,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
               if (itNode->getType() != Group &&
                   itNode->getType() != Set)
                 {
-                  os << itNode->getName() << " " << itNode->getUnit(framework) << separator;
+                  os << itNode->getName() << " " << itNode->getUnit(framework).getExpression() << separator;
                 }
             }
         }

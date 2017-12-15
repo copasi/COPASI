@@ -198,8 +198,7 @@ CValidatedUnit CEvaluationNodeDelay::setUnit(const CMathContainer & container,
     const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
     std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
 {
-  CValidatedUnit Delay = CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeDelay * >(this))->second,
-                         targetUnits[const_cast< CEvaluationNodeDelay * >(this)]);
+  CValidatedUnit Delay(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
 
   targetUnits[mpDelayValueNode] = Delay;
   targetUnits[mpDelayLagNode] = CValidatedUnit(container.getModel().getTimeUnit(), false);

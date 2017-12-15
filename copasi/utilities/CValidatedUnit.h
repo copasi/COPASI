@@ -76,6 +76,13 @@ public:
    */
   const bool & conflict() const;
 
+  /**
+   * Comparison operator
+   * @param const CUnit & rightSide
+   * @return lessThan
+   */
+  bool operator<(const CValidatedUnit & rightSide) const;
+
 private:
   // Set to true when combining units where the individual ones
   // ought to be compatible (e.g. addition and subtraction in

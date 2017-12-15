@@ -756,8 +756,7 @@ CValidatedUnit CEvaluationNodeCall::setUnit(const CMathContainer & container,
 
   CUnitValidator Validator(container, *pTree);
 
-  Validator.validateUnits(CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNodeCall * >(this))->second,
-                          targetUnits[const_cast< CEvaluationNodeCall * >(this)]),
+  Validator.validateUnits(CEvaluationNode::setUnit(container, currentUnits, targetUnits),
                           CurrentVariableUnits);
 
   std::vector< CValidatedUnit >::const_iterator itValidatedVariableUnit = Validator.getVariableUnits().begin();

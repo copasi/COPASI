@@ -22,6 +22,7 @@ class CDataObject;
 class CExpression;
 class CModel;
 class CReaction;
+class CValidatedUnit;
 
 class CModelParameter
 {
@@ -98,9 +99,9 @@ public:
   /**
    * Retrieve the unit of the parameter based on the current framework
    * @param const Framework & framework (default: ParticleNumbers)
-   * @return const std::string unit
+   * @return CValidatedUnit unit
    */
-  const std::string getUnit(const CCore::Framework & framework) const;
+  CValidatedUnit getUnit(const CCore::Framework & framework) const;
 
   /**
    * Set the CN of the object represented by the parameter

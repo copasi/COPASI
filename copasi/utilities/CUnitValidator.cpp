@@ -76,34 +76,9 @@ bool CUnitValidator::validate()
 
   if (mTree.getType() == CEvaluationTree::MassAction)
     {
-      std::vector< CValidatedUnit >::iterator it = mVariableUnits.begin();
-      std::vector< CValidatedUnit >::iterator end = mVariableUnits.end();
-
-      CValidatedUnit & k1 = *it++;
-      k1 = mTargetUnit;
-
-      for (; it != end && !(*it == CBaseUnit::undefined); ++it)
-        {
-          it->buildExpression();
-          k1 = k1 * it->exponentiate(-1.0);
-        }
-
-      k1.buildExpression();
-
-      if (it == end) return k1.conflict();
-
-      CValidatedUnit & k2 = *it++;
-      k2 = mTargetUnit;
-
-      for (; it != end; ++it)
-        {
-          it->buildExpression();
-          k2 = k2 * it->exponentiate(-1.0);
-        }
-
-      k2.buildExpression();
-
-      if (it == end) return k1.conflict() || k2.conflict();
+      // Unit validation is not supported in for the Mass Action family of function.
+      // We need an explicit function.
+      return false;
     }
 
   CVector< C_FLOAT64 > CurrentValues;
@@ -225,11 +200,10 @@ void CUnitValidator::getUnits()
               it.parentContextPtr()->push_back(tmpUnit);
             }
 
-          // tmpUnit.buildExpression(pretty);
-          // std::cout << "getUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
+          // tmpUnit.buildExpression();
+          // std::cout << "getUnit: " << it->getData() << ", " << tmpUnit.conflict() << ", " << tmpUnit.getExpression() << std::endl;
 
           mNodeUnits[*it] = tmpUnit;
-          // std::cout << tmpUnit << std::endl;
         }
     }
 }
@@ -254,12 +228,11 @@ bool CUnitValidator::setUnits()
       if (*it != NULL)
         {
           tmpUnit = it->setUnit(mMathContainer, CurrentNodeUnits, TargetNodeUnits);
-          // std::cout << tmpUnit << std::endl;
 
           mNodeUnits[*it] = tmpUnit;
 
-          // tmpUnit.buildExpression(pretty);
-          // std::cout << "setUnit: " << it->getData() << ", " << tmpUnit.getExpression() << std::endl;
+          // tmpUnit.buildExpression();
+          // std::cout << "setUnit: " << it->getData() << ", " << tmpUnit.conflict() << ", " << tmpUnit.getExpression() << std::endl;
 
           switch (it->mainType())
             {
@@ -275,7 +248,7 @@ bool CUnitValidator::setUnits()
 
                 bool Undefined = mVariableUnits[Index] == CBaseUnit::undefined;
 
-                mVariableUnits[Index] = CValidatedUnit::merge(mVariableUnits[Index], tmpUnit);
+                mVariableUnits[Index] = CValidatedUnit::merge(tmpUnit, mVariableUnits[Index]);
 
                 UnitDetermined |= Undefined && !(mVariableUnits[Index] == CBaseUnit::undefined);
               }
@@ -296,7 +269,7 @@ bool CUnitValidator::setUnits()
 
                     bool Undefined = found->second == CBaseUnit::undefined;
 
-                    found->second = CValidatedUnit::merge(found->second, tmpUnit);
+                    found->second = CValidatedUnit::merge(tmpUnit, found->second);
 
                     UnitDetermined |= Undefined && !(found->second == CBaseUnit::undefined);
                   }

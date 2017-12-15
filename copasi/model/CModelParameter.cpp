@@ -120,14 +120,14 @@ const CModelParameter::Type & CModelParameter::getType() const
   return mType;
 }
 
-const std::string CModelParameter::getUnit(const CCore::Framework & framework) const
+CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) const
 {
   std::string Unit;
 
   switch (mType)
     {
       case Model:
-        return CUnit::prettyPrint(getModel()->getTimeUnit());
+        return CValidatedUnit(getModel()->getTimeUnit(), false);
         break;
 
       case Compartment:
@@ -136,10 +136,10 @@ const std::string CModelParameter::getUnit(const CCore::Framework & framework) c
 
         if (pCompartment == NULL)
           {
-            return "";
+            return CValidatedUnit(CUnit(""), false);
           }
 
-        return pCompartment->getChildObjectUnits(pCompartment->getInitialValueReference());
+        return CValidatedUnit(pCompartment->getChildObjectUnits(pCompartment->getInitialValueReference()), false);
       }
       break;
 
@@ -149,15 +149,15 @@ const std::string CModelParameter::getUnit(const CCore::Framework & framework) c
 
         if (pSpecies == NULL)
           {
-            return "";
+            return CValidatedUnit(CUnit(""), false);
           }
 
         if (framework == CCore::Framework::Concentration)
           {
-            return pSpecies->getChildObjectUnits(pSpecies->getInitialConcentrationReference());
+            return CValidatedUnit(pSpecies->getChildObjectUnits(pSpecies->getInitialConcentrationReference()), false);
           }
 
-        return pSpecies->getChildObjectUnits(pSpecies->getInitialValueReference());
+        return CValidatedUnit(pSpecies->getChildObjectUnits(pSpecies->getInitialValueReference()), false);
       }
       break;
 
@@ -167,15 +167,15 @@ const std::string CModelParameter::getUnit(const CCore::Framework & framework) c
 
         if (pModelValue == NULL)
           {
-            return "";
+            return CValidatedUnit(CUnit(""), false);
           }
 
-        return pModelValue->getUnitExpression();
+        return CValidatedUnit(pModelValue->getUnitExpression(), false);
       }
       break;
 
       case ReactionParameter:
-        return mpParent->getObjectUnit(this).getExpression();
+        return mpParent->getObjectUnit(this);
         break;
 
       case Reaction:
@@ -184,10 +184,10 @@ const std::string CModelParameter::getUnit(const CCore::Framework & framework) c
 
         if (pReaction == NULL)
           {
-            return "";
+            return CValidatedUnit(CUnit(""), false);
           }
 
-        return pReaction->getKineticLawUnit();
+        return CValidatedUnit(pReaction->getKineticLawUnit(), false);
       }
 
       break;
@@ -196,7 +196,7 @@ const std::string CModelParameter::getUnit(const CCore::Framework & framework) c
         break;
     }
 
-  return "";
+  return CValidatedUnit(CUnit(""), false);
 }
 
 // virtual

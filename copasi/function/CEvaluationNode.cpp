@@ -217,7 +217,7 @@ CEvaluationNode * CEvaluationNode::create(const CEvaluationNode::MainType & main
 
       case MainType::MV_FUNCTION:
         break;
-        
+
       case MainType::__SIZE:
         break;
     }
@@ -859,7 +859,7 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
       case MainType::DELAY:
       case MainType::INVALID:
         break;
-        
+
       case MainType::__SIZE:
         break;
     }
@@ -895,6 +895,17 @@ CValidatedUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
                                         const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
                                         std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
 {
-  return CValidatedUnit::merge(currentUnits.find(const_cast< CEvaluationNode * >(this))->second,
-                               targetUnits[const_cast< CEvaluationNode * >(this)]);
+  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itTargetUnit = targetUnits.find(const_cast< CEvaluationNode * >(this));
+  std::map < CEvaluationNode * , CValidatedUnit >::const_iterator itCurrentUnit = currentUnits.find(const_cast< CEvaluationNode * >(this));
+
+  CValidatedUnit Result(CValidatedUnit::merge(itTargetUnit->second, itCurrentUnit->second));
+
+  if (Result.conflict() &&
+      (itCurrentUnit->second.isUndefined() ||
+       (getChild() != NULL && itTargetUnit->second == itCurrentUnit->second)))
+    {
+      Result.setConflict(false);
+    }
+
+  return Result;
 }
