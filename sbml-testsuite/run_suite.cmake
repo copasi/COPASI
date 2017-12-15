@@ -29,8 +29,16 @@ if (NOT EXISTS ${OUT_DIR})
   file(MAKE_DIRECTORY ${OUT_DIR})
 endif()
 
+string(REPLACE " " "" UNSUPPORTED ${UNSUPPORTED})
+string(REPLACE ";" "," UNSUPPORTED ${UNSUPPORTED})
+string(REPLACE "\"" "" UNSUPPORTED ${UNSUPPORTED})
+
 if ("${UNSUPPORTED}" STREQUAL "")
   set (UNSUPPORTED "AlgebraicRule,CSymbolDelay,CSymbolRateOf,AssignedVariableStoichiometry,FastReaction, VolumeConcentrationRates,L3v2MathML,BoolNumericSwap,fbc")
+endif()
+
+if (UNSUPPORTED)
+message(STATUS "Not supporting: '${UNSUPPORTED}'")
 endif()
 
 if ("${SBML_LEVEL}" STREQUAL "")
