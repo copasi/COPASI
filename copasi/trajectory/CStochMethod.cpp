@@ -293,6 +293,7 @@ void CStochMethod::setupDependencyGraph()
 {
   mDG.clear();
 
+  mDG.resize(mNumReactions);
   // We build the dependency graph based on the information in mUpdateSequences which
   // includes time dependencies.
   const CCore::CUpdateSequence * pUpdateSequence = mUpdateSequences.array();
