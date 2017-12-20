@@ -302,21 +302,38 @@ void CStochMethod::setupDependencyGraph()
   const CMathObject * pPropensity = mPropensityObjects.array();
   const CMathObject * pPropensityEnd = pPropensity + mPropensityObjects.size();
 
+  int idx = 0, idxMid = 0;
+  int idxEnd = mPropensityObjects.size();
+
   for (size_t i = 0; pUpdateSequence < pUpdateSequenceEnd; ++pUpdateSequence, ++i)
     {
-      pPropensity = mPropensityObjects.array();
+      CCore::CUpdateSequence::const_iterator it = pUpdateSequence->begin();
+      CCore::CUpdateSequence::const_iterator end = pUpdateSequence->end();
 
-      for (size_t j = 0; pPropensity != pPropensityEnd; ++pPropensity, ++j)
+      for (; it != end; ++it)
         {
-          CCore::CUpdateSequence::const_iterator it = pUpdateSequence->begin();
-          CCore::CUpdateSequence::const_iterator end = pUpdateSequence->end();
-
-          for (; it != end; ++it)
+          if (*it >= pPropensity && *it <= pPropensityEnd)
             {
-              if (*it == pPropensity)
+              idx = 0;
+              idxEnd = mPropensityObjects.size();
+
+              while (idx <= idxEnd)
                 {
-                  mDG.addDependent(i, j);
-                  break;
+                  idxMid = (idx + idxEnd) / 2;
+
+                  if (*it == (pPropensity + idxMid))
+                    {
+                      mDG.addDependent(i, idxMid);
+                      break;
+                    }
+                  else if (*it > (pPropensity + idxMid))
+                    {
+                      idx = (idxMid + 1);
+                    }
+                  else
+                    {
+                      idxEnd = (idxMid - 1);
+                    }
                 }
             }
         }
