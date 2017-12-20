@@ -6807,7 +6807,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
                   pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getObjectParent()->getObject(CCommonName("Reference=Concentration"))->getCN() + ">"));
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pMetab->getConcentrationReference()->getCN() + ">"));
                   pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
                 }
               else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
@@ -6883,7 +6883,19 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                   fatalError();
                 }
             }
-        }
+
+            else
+            {
+            const CModelEntity *pEntity = dynamic_cast<const CModelEntity*>(pParent);
+            if (pEntity != NULL && pObject->getObjectName() == "Rate")
+            {
+              std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
+              pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
+              pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pEntity->getValueReference()->getCN() + ">"));
+              pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
+            }
+            }
+      }
     }
   // check if there is a division by avogadros number and if so, just
   // drop the division instead of introducing a new multiplication
