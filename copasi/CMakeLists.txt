@@ -138,12 +138,6 @@ endif()
 
 target_link_libraries(libCOPASISE-static ${RAPTOR_LIBRARY} ${LIBSBML_LIBRARY} ${EXPAT_LIBRARIES} ${EXPAT_LIBRARY} ${CLAPACK_LIBRARIES})
 
-if (OPENGL_glu_LIBRARY AND OPENGL_gl_LIBRARY)
-# need to specify the dependencies on the gl libraries on some linux systems
-# to ensure the order of these libraries during link is correct
-target_link_libraries(libCOPASISE-static ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
-endif()
-
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
   if (ICONV_LIBRARIES)
@@ -470,6 +464,13 @@ endif(ENABLE_SDE_SUPPORT)
   add_library(libCOPASIUI STATIC ${COPASI_UI_SOURCES} ${COPASI_UI_HEADERS} ${HEADERS_UI_FORMS} ${COPASI_RCC_SOURCES} ${HEADERS_UI_MOC})
   QT_BIND_TO_TARGET(libCOPASIUI)
   target_link_libraries(libCOPASIUI libCOPASISE-static ${SBW_LIBRARY} ${QWT_LIBRARY} ${QWTPLOT3D_LIBRARY} ${MML_LIBRARY})
+  
+  if (OPENGL_glu_LIBRARY AND OPENGL_gl_LIBRARY)
+  # need to specify the dependencies on the gl libraries on some linux systems
+  # to ensure the order of these libraries during link is correct
+  target_link_libraries(libCOPASIUI ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+  endif()
+
   set_target_properties (libCOPASIUI PROPERTIES OUTPUT_NAME "COPASIUI")
 
   set(UI_LIBS libCOPASIUI)
