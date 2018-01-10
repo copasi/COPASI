@@ -889,7 +889,7 @@ void SBMLImporter::importUnitsFromSBMLDocument(Model* sbmlModel)
 bool
 SBMLImporter::reportCurrentProgressOrStop()
 {
-  if (!mpProgressHandler) return false;
+  if (mpProgressHandler == NULL) return false;
 
   return !mpProgressHandler->progressItem(mCurrentStepHandle);
 }
@@ -897,7 +897,7 @@ SBMLImporter::reportCurrentProgressOrStop()
 void
 SBMLImporter::finishCurrentStep()
 {
-  if (!mpProgressHandler || mCurrentStepHandle == C_INVALID_INDEX)  return;
+  if (mpProgressHandler == NULL || mCurrentStepHandle == C_INVALID_INDEX)  return;
 
   mpProgressHandler->finishItem(mCurrentStepHandle);
   mCurrentStepHandle = C_INVALID_INDEX;
@@ -906,7 +906,7 @@ SBMLImporter::finishCurrentStep()
 void
 SBMLImporter::finishImport()
 {
-  if (!mpProgressHandler)  return;
+  if (mpProgressHandler == NULL)  return;
 
   finishCurrentStep();
 
@@ -918,7 +918,7 @@ SBMLImporter::createProgressStepOrStop(unsigned C_INT32 globalStep,
                                        unsigned C_INT32 currentTotal,
                                        const std::string& title)
 {
-  if (!mpProgressHandler) return false;
+  if (mpProgressHandler == NULL) return false;
 
   if (mCurrentStepHandle != C_INVALID_INDEX)
     mpProgressHandler->finishItem(mCurrentStepHandle);
@@ -977,7 +977,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   std::string title = sbmlModel->getName();
 
-  if (title == "")
+  if (title.empty())
     {
       title = "NoName";
     }
@@ -990,7 +990,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
       title = str.str();
     }
 
-  this->mpCopasiModel->setObjectName(title.c_str());
+  this->mpCopasiModel->setObjectName(title);
 
   // fill the set of SBML species reference ids because
   // we need this to check for references to species references in all expressions
@@ -1820,7 +1820,7 @@ void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbm
   delete variables;
 
   // let us hope this is empty
-  if (unused.size() == 0)
+  if (unused.empty())
     return;
 
   // it is not, so modify the function definition to include all of them
@@ -1883,14 +1883,14 @@ CFunction* SBMLImporter::createCFunctionFromFunctionDefinition(const FunctionDef
 
   std::string functionName = sbmlFunction->getName();
 
-  if (functionName == "")
+  if (functionName.empty())
     {
       functionName = sbmlFunction->getId();
     }
 
   unsigned int counter = 1;
   std::ostringstream numberStream;
-  std::string appendix = "";
+  std::string appendix;
   CFunction * pExistingFunction = NULL;
 
   while ((pExistingFunction = functionDB->findFunction(functionName + appendix)))
@@ -2093,12 +2093,12 @@ SBMLImporter::createCCompartmentFromCompartment(const Compartment* sbmlCompartme
 
   std::string name = sbmlCompartment->getName();
 
-  if (name == "")
+  if (name.empty())
     {
       name = sbmlCompartment->getId();
     }
 
-  std::string appendix = "";
+  std::string appendix;
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
@@ -2149,7 +2149,7 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
       fatalError();
     }
 
-  Compartment* pSBMLCompartment = (Compartment*)it->second;
+  Compartment* pSBMLCompartment = static_cast<Compartment*>(it->second);
 
   if (sbmlSpecies->getHasOnlySubstanceUnits() == true)
     {
@@ -2158,12 +2158,12 @@ SBMLImporter::createCMetabFromSpecies(const Species* sbmlSpecies, CModel* copasi
 
   std::string name = sbmlSpecies->getName();
 
-  if (name == "")
+  if (name.empty())
     {
       name = sbmlSpecies->getId();
     }
 
-  std::string appendix = "";
+  std::string appendix;
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
@@ -2318,7 +2318,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
     }
 
   /* Check if the name of the reaction is unique. */
-  std::string appendix = "";
+  std::string appendix;
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
@@ -2424,7 +2424,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
-      hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent || (pSBMLSpecies->getHasOnlySubstanceUnits() == true);
 
       if (compartment == NULL)
         {
@@ -2551,7 +2551,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
-      hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent || (pSBMLSpecies->getHasOnlySubstanceUnits() == true);
 
       if (compartment == NULL)
         {
@@ -2647,7 +2647,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
       assert(spos != copasi2sbmlmap.end());
       Species* pSBMLSpecies = dynamic_cast<Species*>(spos->second);
       assert(pSBMLSpecies != NULL);
-      hasOnlySubstanceUnitPresent = (hasOnlySubstanceUnitPresent | (pSBMLSpecies->getHasOnlySubstanceUnits() == true));
+      hasOnlySubstanceUnitPresent = hasOnlySubstanceUnitPresent || (pSBMLSpecies->getHasOnlySubstanceUnits() == true);
       copasiReaction->addModifier(pos->second->getKey());
 
       if (compartment == NULL)
@@ -2817,7 +2817,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                       // new new root node
                       ConverterASTNode* tmpNode1 = this->isMultipliedByVolume(node, compartment->getSBMLId());
 
-                      if (tmpNode1)
+                      if (tmpNode1 != NULL)
                         {
                           delete node;
                           node = tmpNode1;
@@ -2875,7 +2875,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           delete node;
           node = NULL;
 
-          if (pExpressionTreeRoot)
+          if (pExpressionTreeRoot != NULL)
             {
               CExpression KineticLawExpression;
               KineticLawExpression.setRoot(pExpressionTreeRoot);
@@ -3173,7 +3173,7 @@ SBMLImporter::createBVarMap(const ASTNode* uDefFunction, const ASTNode* function
  * name, or NULL if none can be found.
  */
 const FunctionDefinition*
-SBMLImporter::getFunctionDefinitionForName(const std::string name, const Model* sbmlModel)
+SBMLImporter::getFunctionDefinitionForName(const std::string& name, const Model* sbmlModel)
 {
   const FunctionDefinition* fDef = NULL;
   unsigned int counter;
@@ -3666,22 +3666,19 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
 
   mGlobalStepCounter = 0;
 
-  if (mpProgressHandler)
+  if (mpProgressHandler != NULL)
     {
       mpProgressHandler->setName("Importing SBML file...");
       mGlobalStepTotal = 16;
       mGlobalStepHandle = mpProgressHandler->addItem("Step",
                           mGlobalStepCounter,
                           &mGlobalStepTotal);
-    }
 
-  if (this->mpProgressHandler != 0)
-    {
       mCurrentStepCounter = 0;
       mCurrentStepTotal = 1;
       mCurrentStepHandle = mpProgressHandler->addItem("Reading SBML file...",
-                           mCurrentStepCounter,
-                           &mCurrentStepTotal);
+        mCurrentStepCounter,
+        &mCurrentStepTotal);
     }
 
   SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
@@ -4655,7 +4652,7 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
       name = sbmlParameter->getId();
     }
 
-  std::string appendix = "";
+  std::string appendix;
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
@@ -5067,7 +5064,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                           id1 = id2;
                           break;
                         }
-                      else if (id2 == (*avoIt)->getId())
+                      if (id2 == (*avoIt)->getId())
                         {
                           pAvogadro = pChild2;
                           pSpecies = pChild1;
@@ -6201,7 +6198,7 @@ ConverterASTNode* SBMLImporter::isMultipliedByVolume(const ASTNode* node, const 
           else
             {
               // bail in case of hOSU
-              if (child->getType() == AST_NAME &&  mSubstanceOnlySpecies.size() > 0)
+              if (child->getType() == AST_NAME &&  !mSubstanceOnlySpecies.empty())
                 {
                   std::map<Species*, Compartment*>::iterator it = this->mSubstanceOnlySpecies.begin();
                   std::map<Species*, Compartment*>::iterator endIt = this->mSubstanceOnlySpecies.end();
@@ -7092,7 +7089,7 @@ void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<const CD
  */
 std::string SBMLImporter::findIdInASTTree(const ASTNode* pASTNode, const std::map<std::string, double>& reactionIds)
 {
-  std::string id = "";
+  std::string id;
   CNodeIterator< const ASTNode > itNode(pASTNode);
 
   while (itNode.next() != itNode.end())
@@ -7116,7 +7113,7 @@ std::string SBMLImporter::findIdInASTTree(const ASTNode* pASTNode, const std::ma
 }
 std::string SBMLImporter::findIdInASTTree(const ASTNode* pASTNode, const std::set<std::string>& reactionIds)
 {
-  std::string id = "";
+  std::string id;
   CNodeIterator< const ASTNode > itNode(pASTNode);
 
   while (itNode.next() != itNode.end())
@@ -7401,7 +7398,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
       // We cannot change the initial value if we have an assignment rule
       // or an initial expression.
       if (compartmentIt->getStatus() == CModelEntity::Status::ASSIGNMENT ||
-          compartmentIt->getInitialExpression() != "")
+          !compartmentIt->getInitialExpression().empty())
         {
           ++compartmentIt;
           continue;
@@ -7452,7 +7449,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
       // We cannot change the initial value if we have an assignment rule
       // or an initial expression.
       if (metabIt->getStatus() == CModelEntity::Status::ASSIGNMENT ||
-          metabIt->getInitialExpression() != "")
+          !metabIt->getInitialExpression().empty())
         {
           ++metabIt;
           continue;
@@ -7511,7 +7508,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
       // We cannot change the initial value if we have an assignment rule
       // or an initial expression.
       if (mvIt->getStatus() == CModelEntity::Status::ASSIGNMENT ||
-          mvIt->getInitialExpression() != "")
+          !mvIt->getInitialExpression().empty())
         {
           ++mvIt;
           continue;
@@ -7612,10 +7609,10 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
   UnitDefinition* pVolumeUnits = getSBMLUnitDefinitionForId("volume", pSBMLModel);
   UnitDefinition* pTimeUnits = getSBMLUnitDefinitionForId("time", pSBMLModel);
   UnitDefinition* pSubstanceUnits = getSBMLUnitDefinitionForId("substance", pSBMLModel);
-  std::string lastVolumeUnit = "";
-  std::string lastAreaUnit = "";
-  std::string lastLengthUnit = "";
-  std::string lastDimensionlessUnit = "";
+  std::string lastVolumeUnit;
+  std::string lastAreaUnit;
+  std::string lastLengthUnit;
+  std::string lastDimensionlessUnit;
   bool inconsistentVolumeUnits = false;
   bool inconsistentAreaUnits = false;
   bool inconsistentLengthUnits = false;
@@ -7662,7 +7659,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   defaultVolumeUsed = true;
                 }
 
-              if (lastVolumeUnit == "")
+              if (lastVolumeUnit.empty())
                 {
                   lastVolumeUnit = unitId;
                 }
@@ -7682,7 +7679,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastVolumeUnit == "")
+          else if (lastVolumeUnit.empty())
             {
               lastVolumeUnit = "volume";
               defaultVolumeUsed = true;
@@ -7736,7 +7733,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   defaultAreaUsed = true;
                 }
 
-              if (lastAreaUnit == "")
+              if (lastAreaUnit.empty())
                 {
                   lastAreaUnit = unitId;
                 }
@@ -7756,7 +7753,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastAreaUnit == "")
+          else if (lastAreaUnit.empty())
             {
               lastAreaUnit = "area";
               defaultAreaUsed = true;
@@ -7810,7 +7807,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   defaultLengthUsed = true;
                 }
 
-              if (lastLengthUnit == "")
+              if (lastLengthUnit.empty())
                 {
                   lastLengthUnit = unitId;
                 }
@@ -7830,7 +7827,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastLengthUnit == "")
+          else if (lastLengthUnit.empty())
             {
               lastLengthUnit = "length";
               defaultLengthUsed = true;
@@ -7870,7 +7867,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   continue;
                 }
 
-              if (lastDimensionlessUnit == "")
+              if (lastDimensionlessUnit.empty())
                 {
                   lastDimensionlessUnit = unitId;
                 }
@@ -7890,14 +7887,14 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastDimensionlessUnit == "")
+          else if (lastDimensionlessUnit.empty())
             {
               lastDimensionlessUnit = "dimensionless";
             }
         }
     }
 
-  if (!inconsistentVolumeUnits && lastVolumeUnit != "" && lastVolumeUnit != "volume")
+  if (!inconsistentVolumeUnits && !lastVolumeUnit.empty() && lastVolumeUnit != "volume")
     {
       // try to set the default volume unit to the unit defined by lastUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
@@ -7919,7 +7916,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       delete pUdef;
     }
 
-  if (!inconsistentAreaUnits && lastAreaUnit != "" && lastAreaUnit != "area")
+  if (!inconsistentAreaUnits && !lastAreaUnit.empty() && lastAreaUnit != "area")
     {
       // try to set the default area unit to the unit defined by lastAreaUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
@@ -7941,7 +7938,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
       delete pUdef;
     }
 
-  if (!inconsistentLengthUnits && lastLengthUnit != "" && lastLengthUnit != "length")
+  if (!inconsistentLengthUnits && !lastLengthUnit.empty() && lastLengthUnit != "length")
     {
       // try to set the default length unit to the unit defined by lastLengthUnit
       const UnitDefinition* pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
@@ -7993,7 +7990,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
       else
         {
-          if (lastLengthUnit != "")
+          if (lastLengthUnit.empty())
             {
               pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastLengthUnit, pSBMLModel);
               assert(pUdef != NULL);
@@ -8025,7 +8022,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
       else
         {
-          if (lastAreaUnit != "")
+          if (lastAreaUnit.empty())
             {
               pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastAreaUnit, pSBMLModel);
               assert(pUdef != NULL);
@@ -8057,7 +8054,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
       else
         {
-          if (lastVolumeUnit != "")
+          if (lastVolumeUnit.empty())
             {
               pUdef = SBMLImporter::getSBMLUnitDefinitionForId(lastVolumeUnit, pSBMLModel);
               assert(pUdef != NULL);
@@ -8081,7 +8078,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
     }
 
   bool inconsistentUnits = false;
-  std::string lastUnit = "";
+  std::string lastUnit;
 
   iMax = pSBMLModel->getNumSpecies();
 
@@ -8183,7 +8180,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
               nonDefaultSpecies.push_back(pSpecies->getId());
             }
 
-          if (lastUnit == "")
+          if (lastUnit.empty())
             {
               lastUnit = unitId;
             }
@@ -8203,14 +8200,14 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
           delete pUdef1;
         }
-      else if (lastUnit == "")
+      else if (lastUnit.empty())
         {
           lastUnit = "substance";
         }
     }
 
   bool inconsistentTimeUnits = false;
-  std::string lastTimeUnits = "";
+  std::string lastTimeUnits;
   iMax = pSBMLModel->getNumReactions();
 
   for (i = 0; i < iMax; ++i)
@@ -8251,7 +8248,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   nonDefaultKineticSubstance.push_back(pReaction->getId());
                 }
 
-              if (lastUnit == "")
+              if (lastUnit.empty())
                 {
                   lastUnit = unitId;
                 }
@@ -8271,7 +8268,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastUnit == "")
+          else if (lastUnit.empty())
             {
               lastUnit = "substance";
             }
@@ -8304,7 +8301,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                   nonDefaultKineticTime.push_back(pReaction->getId());
                 }
 
-              if (lastTimeUnits == "")
+              if (lastTimeUnits.empty())
                 {
                   lastTimeUnits = unitId;
                 }
@@ -8324,14 +8321,14 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
               delete pUdef1;
             }
-          else if (lastTimeUnits == "") // set the last time unit to time
+          else if (lastTimeUnits.empty()) // set the last time unit to time
             {
               lastTimeUnits = "time";
             }
         }
     }
 
-  if (!inconsistentUnits && lastUnit != "" && lastUnit != "substance")
+  if (!inconsistentUnits && !lastUnit.empty() && lastUnit != "substance")
     {
       // we have to check if lastUnit is different from the global substance
       // unit
@@ -8390,7 +8387,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
         }
     }
 
-  if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
+  if (!inconsistentTimeUnits && !lastTimeUnits.empty() && lastTimeUnits != "time")
     {
       // we have to check if lastUnit is different from the global substance
       // unit
@@ -8472,7 +8469,7 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
                 }
             }
 
-          if (lastTimeUnits == "")
+          if (lastTimeUnits.empty())
             {
               lastTimeUnits = unitId;
             }
@@ -8492,13 +8489,13 @@ void SBMLImporter::checkElementUnits(const Model* pSBMLModel, CModel* pCopasiMod
 
           delete pUdef1;
         }
-      else if (lastTimeUnits == "") // set the last time unit to time
+      else if (lastTimeUnits.empty()) // set the last time unit to time
         {
           lastTimeUnits = "time";
         }
     }
 
-  if (!inconsistentTimeUnits && lastTimeUnits != "" && lastTimeUnits != "time")
+  if (!inconsistentTimeUnits && !lastTimeUnits.empty() && lastTimeUnits != "time")
     {
       // try to set the default time units
       UnitDefinition* pUdef = getSBMLUnitDefinitionForId(lastTimeUnits, pSBMLModel);
@@ -9649,7 +9646,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
               break;
             }
           // maybe import the COPASI MIRIAM annotation
-          else if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml" && this->mImportCOPASIMIRIAM == true)
+          if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml" && this->mImportCOPASIMIRIAM == true)
             {
               const XMLNode* pCOPASINode = &pAnnotation->getChild(i);
               unsigned int j, jMax = pCOPASINode->getNumChildren();
@@ -9670,7 +9667,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
       // things from the COPASI MIRIAM annotation.
       if (pCOPASIMIRIAMNode != NULL)
         {
-          std::string metaid = "";
+          std::string metaid;
 
           if (pSBMLObject->isSetMetaId())
             {
@@ -9727,7 +9724,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
 
       if (pMIRIAMNode != NULL)
         {
-          std::string metaid = "";
+          std::string metaid;
 
           if (pSBMLObject->isSetMetaId())
             metaid = pSBMLObject->getMetaId();
@@ -10051,7 +10048,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       eventName = pEvent->getId();
     }
 
-  std::string appendix = "";
+  std::string appendix;
   unsigned int counter = 2;
   std::ostringstream numberStream;
 
