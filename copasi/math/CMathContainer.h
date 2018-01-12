@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -961,6 +961,11 @@ private:
    * @param CMatrix< C_FLOAT64 > & jacobian
    */
   void calculateRootJacobian(CMatrix< C_FLOAT64 > & jacobian);
+
+  /**
+   * Remove data objects which have a representation in the math container
+   */
+  void sanitizeDataValue2DataObject();
 
   /**
    * Create the update sequences needed to synchronize the initial values
