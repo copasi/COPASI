@@ -75,6 +75,12 @@ bool CQParameterOverviewWidget::update(ListViews::ObjectType objectType, ListVie
 {
   if (mIgnoreUpdates || !isVisible())
     {
+    if (objectType == ListViews::MODEL && action == ListViews::DELETE)
+    {
+      mKey = "";
+      mpObject = NULL;
+      mpParameterSet = NULL;
+    }
       return true;
     }
 

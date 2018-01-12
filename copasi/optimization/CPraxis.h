@@ -103,4 +103,4 @@ public:
   int minfit_(C_INT *, C_INT *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *, C_FLOAT64 *);
 };
 
-#endif // COAPSI_CPraxis
+#endif // COPASI_CPraxis

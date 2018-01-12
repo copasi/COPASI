@@ -82,7 +82,11 @@ void CStateTemplate::remove(const CModelEntity * entity)
 
 void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
 {
+  if (entitiesX.array() == NULL)
+    return;
+
   assert(entitiesX.size() + 1 == mIndexMap.size());
+
 
   // Update mpEntities to reflect the new order;
 

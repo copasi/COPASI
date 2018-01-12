@@ -101,7 +101,7 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
 void CQPushButtonDelegate::setEditorData(QWidget * pEditor, const QModelIndex & index) const
 {
   QString value = index.model()->data(index, Qt::EditRole).toString();
-  QPushButton * pButton = static_cast< QPushButton * >(pEditor);
+  QAbstractButton * pButton = static_cast< QAbstractButton * >(pEditor);
 
   if (pButton->icon().isNull())
     {

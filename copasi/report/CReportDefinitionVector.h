@@ -24,11 +24,8 @@
 #if !defined REPORT_DEFINITION_VECTOR
 #define REPORT_DEFINITION_VECTOR
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include "copasi/core/CDataVector.h"
 #include "report/CReportDefinition.h"
+#include "copasi/core/CDataVector.h"
 
 class CReportDefinitionVector: public CDataVectorN< CReportDefinition >
 {
@@ -39,11 +36,10 @@ public:
   CReportDefinitionVector(const std::string & name = "ReportDefinitions",
                           const CDataContainer* pParent = NULL);
 
-  ~CReportDefinitionVector();
-
-  //    const std::vector< CReportDefinition*>* getReportDefinitionsAddr();
+  virtual ~CReportDefinitionVector();
 
   CReportDefinition* createReportDefinition(const std::string & name, const std::string & comment);
+
   bool removeReportDefinition(const std::string & key);
 
   void cleanup();

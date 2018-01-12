@@ -462,7 +462,7 @@ public:
   SystemsBiologyWorkbench::DataBlockWriter sbwAnalysis(SystemsBiologyWorkbench::Module from,
       SystemsBiologyWorkbench::DataBlockReader reader);
 
-  // and another to return the SBML file COAPSI is currently working with
+  // and another to return the SBML file COPASI is currently working with
   SystemsBiologyWorkbench::DataBlockWriter sbwGetSBML(SystemsBiologyWorkbench::Module from,
       SystemsBiologyWorkbench::DataBlockReader reader);
 

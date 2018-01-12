@@ -67,7 +67,7 @@ const std::string CSEDMLExporter::exportModelAndTasksToString(CDataModel& dataMo
   SedWriter* writer = new SedWriter();
 
   writer->setProgramName("COPASI");
-  writer->setProgramVersion(CVersion::VERSION.getVersion().c_str());
+  writer->setProgramVersion(CVersion::VERSION.getVersion());
 
   char* d = writer->writeToString(this->mpSEDMLDocument);
   std::string returnValue = d;
@@ -580,7 +580,7 @@ void CSEDMLExporter::createDataGenerators(CDataModel & dataModel,
 
           const CDataObject *objectX, *objectY;
 
-          if (pPlotItem->getChannels().size() >= 1)
+          if (!pPlotItem->getChannels().empty())
             {
               objectX = CObjectInterface::DataObject(dataModel.getObjectFromCN(pPlotItem->getChannels()[0]));
             }

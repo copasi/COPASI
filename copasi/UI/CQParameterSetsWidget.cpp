@@ -115,19 +115,21 @@ void CQParameterSetsWidget::slotBtnClearClicked()
 
 bool CQParameterSetsWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const std::string &C_UNUSED(key))
 {
+
+  if (objectType == ListViews::MODEL &&
+    (action == ListViews::DELETE ||
+      action == ListViews::ADD))
+  {
+    mpDataModel = NULL;
+    mpObject = NULL;
+    mKey = "";
+  }
+
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
     }
 
-  if (objectType == ListViews::MODEL &&
-      (action == ListViews::DELETE ||
-       action == ListViews::ADD))
-    {
-      mpDataModel = NULL;
-      mpObject = NULL;
-      mKey = "";
-    }
 
   return true;
 }

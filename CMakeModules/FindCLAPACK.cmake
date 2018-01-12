@@ -1,4 +1,4 @@
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -36,11 +36,16 @@
 #  Generic
 
 set(LAPACK_FIND_QUIETLY TRUE)
+set(BLA_STATIC TRUE)
+set(LAPACK_STATIC TRUE)
 
+find_library( GFORTRAN_LIBRARY
+              NAMES gfortran
+              PATHS ENV LD_LIBRARY_PATH )
 
 set(BLA_VENDOR "Apple")
 find_package(LAPACK)
-  
+
 if (LAPACK_FOUND)
   add_definitions(-DHAVE_APPLE)
 endif ()
@@ -52,9 +57,9 @@ if (NOT LAPACK_FOUND)
 
     if (UNIX)
       if (COPASI_BUILD_TYPE EQUAL "32bit")
-        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group -lpthread -lm")
+        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group")
       elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm")
+        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group")
       endif ()
     else ()
       if (COPASI_BUILD_TYPE EQUAL "32bit")
@@ -80,6 +85,10 @@ if (NOT LAPACK_FOUND)
   set(BLA_VENDOR "Generic")
   find_package(LAPACK REQUIRED)
 endif() 
+
+if (LAPACK_FOUND AND GFORTRAN_LIBRARY)
+  set(LAPACK_LIBRARIES ${LAPACK_LIBRARIES} ${GFORTRAN_LIBRARY} m)
+endif()
 
 if (NOT LAPACK_FOUND AND DEFINED ENV{LAPACK_DIR} AND EXISTS $ENV{LAPACK_DIR})
   message (status " Using COPASI Dependencies for LAPACK")

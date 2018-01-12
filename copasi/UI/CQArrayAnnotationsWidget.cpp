@@ -714,6 +714,13 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
       int TopRow = std::numeric_limits< int >::max();
       int BottomRow = -1;
 
+      if (it == end)
+      {
+        // when we don't have entries, we reset the left / top to -1
+        LeftColumn = -1;
+        TopRow = -1;
+      }
+
       for (; it != end; ++it)
         {
           if (it->column() < LeftColumn) LeftColumn = it->column();
@@ -738,7 +745,8 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
           return;
         }
-      else if (LeftColumn == RightColumn)
+      
+      if (LeftColumn == RightColumn)
         {
           mpPlot3d->mpSliderColumn->setValue(SliderColumn);
           mpPlot3d->mpSliderRow->setValue(-1);
@@ -747,7 +755,8 @@ void CQArrayAnnotationsWidget::setFocusOnBars()
 
           return;
         }
-      else if (TopRow == BottomRow)
+      
+      if (TopRow == BottomRow)
         {
           mpPlot3d->mpSliderColumn->setValue(-1);
           mpPlot3d->mpSliderRow->setValue(SliderRow);

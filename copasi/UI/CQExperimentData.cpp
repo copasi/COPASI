@@ -727,8 +727,10 @@ void CQExperimentData::slotOK()
 
   emit experimentChanged();
 
-  for (i = 0; i < mpExperimentSetCopy->getExperimentCount(); i++)
+  for (i = 0; i < mpExperimentSetCopy->getExperimentCount(); ++i)
+  {
     mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
+  }
 
   if (mCrossValidation)
     {
@@ -1305,11 +1307,16 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           pObject = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(ObjectMap.getObjectCN(i)));
 
           if (pObject)
-            mpTable->item((int) i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
+          {
+            mpTable->item((int)i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
+            mpTable->item((int)i, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(ObjectMap.getObjectCN(i)));
+          }
           else
-            mpTable->item((int) i, COL_OBJECT)->setText("not found");
+          {
+            mpTable->item((int)i, COL_OBJECT)->setText("");
+            mpTable->item((int)i, COL_OBJECT_HIDDEN)->setText("");
+          }
 
-          mpTable->item((int) i, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(ObjectMap.getObjectCN(i)));
         }
       else
         {

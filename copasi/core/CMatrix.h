@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -211,10 +211,13 @@ public:
    */
   virtual CMatrix <CType> & operator = (const CMatrix <CType> & rhs)
   {
+    // Independent from whether the mpBuffer or rhs.mpBuffer is NULL we need to resize;
     if (mRows != rhs.mRows || mCols != rhs.mCols)
       resize(rhs.mRows, rhs.mCols);
 
-    memcpy(mpBuffer, rhs.mpBuffer, mRows * mCols * sizeof(CType));
+    // don't use memcpy on NULL buffers
+    if (rhs.mpBuffer != NULL && mpBuffer != NULL)
+      memcpy(mpBuffer, rhs.mpBuffer, mRows * mCols * sizeof(CType));
 
     return *this;
   }
