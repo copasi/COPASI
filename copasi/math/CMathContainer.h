@@ -890,7 +890,7 @@ private:
    * @param sPointers & pointers
    */
   void printPointers(CMath::sPointers & pointers);
-#endif // COAPSI_DEBUG
+#endif // COPASI_DEBUG
 
   /**
    * Initialize the pointers used for the conversion of
