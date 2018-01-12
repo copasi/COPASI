@@ -362,19 +362,29 @@ CExperiment * CExperimentSet::addExperiment(const CExperiment & experiment)
 }
 
 void CExperimentSet::removeExperiment(const size_t & index)
-{removeParameter(index + mNonExperiments);}
+{
+  removeParameter(index + mNonExperiments);
+}
 
 CExperiment * CExperimentSet::getExperiment(const size_t & index)
-{return (*mpExperiments)[index + mNonExperiments];}
+{
+  return (*mpExperiments)[index + mNonExperiments];
+}
 
 const CExperiment * CExperimentSet::getExperiment(const size_t & index) const
-{return (*mpExperiments)[index + mNonExperiments];}
+{
+  return (*mpExperiments)[index + mNonExperiments];
+}
 
 CExperiment * CExperimentSet::getExperiment(const std::string & name)
-{return static_cast<CExperiment *>(getGroup(name));}
+{
+  return static_cast<CExperiment *>(getGroup(name));
+}
 
 const CExperiment * CExperimentSet::getExperiment(const std::string & name) const
-{return static_cast<const CExperiment *>(getGroup(name));}
+{
+  return static_cast<const CExperiment *>(getGroup(name));
+}
 
 bool CExperimentSet::hasDataForTaskType(const CTaskEnum::Task & type) const
 {
