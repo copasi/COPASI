@@ -616,7 +616,10 @@ bool CCopasiParameterGroup::remove(CDataObject * pObject)
 
   if (success)
     {
-      CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(pObject);
+      CCopasiParameter * pParameter = dynamic_cast< CCopasiParameter * >(pObject);
+      
+      if (pParameter == NULL)
+        return success;
 
       index_iterator it = static_cast< elements * >(mpValue)->begin();
       index_iterator end = static_cast< elements * >(mpValue)->end();

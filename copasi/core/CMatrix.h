@@ -211,6 +211,10 @@ public:
    */
   virtual CMatrix <CType> & operator = (const CMatrix <CType> & rhs)
   {
+    // don't use memcpy on NULL buffers
+    if (rhs.mpBuffer == NULL || mpBuffer == NULL)
+      return *this;
+
     if (mRows != rhs.mRows || mCols != rhs.mCols)
       resize(rhs.mRows, rhs.mCols);
 

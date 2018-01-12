@@ -231,7 +231,7 @@ bool COptProblem::elevateChildren()
         }
     }
 
-  setObjectiveFunction(*mpParmObjectiveExpression);
+  setObjectiveFunction(mpParmObjectiveExpression != NULL ? *mpParmObjectiveExpression : "");
 
   mpGrpItems =
     elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);

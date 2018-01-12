@@ -354,7 +354,7 @@ void CQNotes::load()
       QString Notes;
 
       CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
-      CReportDefinition * pReportDefinition = static_cast< CReportDefinition * >(mpObject);
+      CReportDefinition * pReportDefinition = dynamic_cast< CReportDefinition * >(mpObject);
 
       if (pAnnotation != NULL)
         {
@@ -400,7 +400,7 @@ void CQNotes::save()
     return;
 
   CAnnotation * pAnnotation = CAnnotation::castObject(mpObject);
-  CReportDefinition * pReportDefinition = static_cast<CReportDefinition *>(mpObject);
+  CReportDefinition * pReportDefinition = dynamic_cast<CReportDefinition *>(mpObject);
 
   std::string notes;
 
