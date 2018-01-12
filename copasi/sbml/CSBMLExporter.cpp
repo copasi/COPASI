@@ -207,7 +207,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
-  else if (id == std::string("RUNIFORM"))
+  if (id == std::string("RUNIFORM"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/distribution",
@@ -227,7 +227,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
-  else if (id == std::string("RGAMMA"))
+  if (id == std::string("RGAMMA"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/distribution",
@@ -247,7 +247,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
-  else if (id == std::string("RPOISSON"))
+  if (id == std::string("RPOISSON"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/distribution",
@@ -267,7 +267,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
-  else if (id == std::string("MAX"))
+  if (id == std::string("MAX"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/function",
@@ -287,7 +287,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
-  else if (id == std::string("MIN"))
+  if (id == std::string("MIN"))
     {
       newId = hasFunctionDefinitionForURI(pSBMLDocument,
                                           "http://sbml.org/annotations/function",
@@ -307,7 +307,7 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
               );
       return newId;
     }
-  else if (id == std::string("rateOf"))
+  if (id == std::string("rateOf"))
     {
       return addRateOfIfItDoesNotExist(pSBMLDocument, idMap, id);
     }
@@ -1029,7 +1029,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
   // change the id
   if (this->mpSBMLDocument->getLevel() > 1)
     {
-      pSBMLCompartment->setName(compartment.getObjectName().c_str());
+      pSBMLCompartment->setName(compartment.getObjectName());
     }
 
   pSBMLCompartment->setSpatialDimensions((unsigned int)compartment.getDimensionality());
@@ -1070,7 +1070,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
           this->mODEVector.push_back(&compartment);
           pSBMLCompartment->setConstant(false);
 
-          if (compartment.getInitialExpression() != "")
+          if (!compartment.getInitialExpression().empty())
             {
               this->mInitialAssignmentVector.push_back(&compartment);
             }
@@ -1094,7 +1094,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
         }
       else
         {
-          // Level 1 does not know the constant flag and libsbmnl does not drop
+          // Level 1 does not know the constant flag and libsbml does not drop
           // it automatically
           pSBMLCompartment->setConstant(false);
         }
@@ -1102,7 +1102,7 @@ void CSBMLExporter::createCompartment(const CCompartment& compartment)
       removeRule(pSBMLCompartment->getId());
 
       // fill initial assignment set
-      if (compartment.getInitialExpression() != "")
+      if (!compartment.getInitialExpression().empty())
         {
           if (compartment.getDimensionality() != 0)
             {
@@ -1234,7 +1234,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
   // change the id
   if (this->mpSBMLDocument->getLevel() > 1)
     {
-      pSBMLSpecies->setName(metab.getObjectName().c_str());
+      pSBMLSpecies->setName(metab.getObjectName());
     }
 
   //const Compartment* pSBMLCompartment = dynamic_cast<const Compartment*>(this->mCOPASI2SBMLMap[const_cast<CCompartment*>(metab.getCompartment())]);
@@ -1294,7 +1294,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
       pSBMLSpecies->setConstant(false);
       pSBMLSpecies->setBoundaryCondition(true);
 
-      if (metab.getInitialExpression() != "")
+      if (!metab.getInitialExpression().empty())
         {
           this->mInitialAssignmentVector.push_back(&metab);
         }
@@ -1322,7 +1322,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
       removeRule(pSBMLSpecies->getId());
 
       // fill initial assignment set
-      if (metab.getInitialExpression() != "")
+      if (!metab.getInitialExpression().empty())
         {
           this->mInitialAssignmentVector.push_back(&metab);
         }
@@ -1336,7 +1336,7 @@ void CSBMLExporter::createMetabolite(const CMetab& metab)
       pSBMLSpecies->setConstant(false);
       pSBMLSpecies->setBoundaryCondition(false);
 
-      if (metab.getInitialExpression() != "")
+      if (!metab.getInitialExpression().empty())
         {
           this->mInitialAssignmentVector.push_back(&metab);
         }
@@ -1449,7 +1449,7 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
       this->mODEVector.push_back(&modelValue);
       pParameter->setConstant(false);
 
-      if (modelValue.getInitialExpression() != "")
+      if (!modelValue.getInitialExpression().empty())
         {
           this->mInitialAssignmentVector.push_back(&modelValue);
         }
@@ -1476,7 +1476,7 @@ void CSBMLExporter::createParameter(const CModelValue& modelValue)
       // fill initial assignment set
       removeRule(pParameter->getId());
 
-      if (modelValue.getInitialExpression() != "")
+      if (!modelValue.getInitialExpression().empty())
         {
           this->mInitialAssignmentVector.push_back(&modelValue);
         }
@@ -1535,8 +1535,8 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
   // if the reaction has nothing set but the name, we don't do anything
   // This is mandated since SBML Level 2 Version 2. A reactions has to have either
   // a substrate or a product.
-  if (reaction.getChemEq().getSubstrates().size() == 0 &&
-      reaction.getChemEq().getProducts().size() == 0) return;
+  if (reaction.getChemEq().getSubstrates().empty() &&
+      reaction.getChemEq().getProducts().empty()) return;
 
   std::string sbmlId = reaction.getSBMLId();
 
@@ -1580,7 +1580,7 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
   // change the id
   if (this->mpSBMLDocument->getLevel() > 1)
     {
-      pSBMLReaction->setName(reaction.getObjectName().c_str());
+      pSBMLReaction->setName(reaction.getObjectName());
     }
 
   pSBMLReaction->setReversible(reaction.isReversible());
@@ -1599,7 +1599,7 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
       if (!(sRef = pSBMLReaction->getReactant(pMetabolite->getSBMLId())))
         {
           sRef = pSBMLReaction->createReactant();
-          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+          sRef->setSpecies(pMetabolite->getSBMLId());
         }
 
       INIT_DEFAULTS((*sRef));
@@ -1635,7 +1635,7 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
       if (!(sRef = pSBMLReaction->getProduct(pMetabolite->getSBMLId())))
         {
           sRef = pSBMLReaction->createProduct();
-          sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+          sRef->setSpecies(pMetabolite->getSBMLId());
         }
 
       INIT_DEFAULTS((*sRef));
@@ -1673,7 +1673,7 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
             {
               sRef = pSBMLReaction->createModifier();
               assert(sRef != NULL);
-              sRef->setSpecies(pMetabolite->getSBMLId().c_str());
+              sRef->setSpecies(pMetabolite->getSBMLId());
             }
         }
 
@@ -1776,7 +1776,7 @@ void CSBMLExporter::createInitialAssignment(const CModelEntity& modelEntity, CDa
                              , this->mSBMLVersion
                              , result
                              , mIdMap
-                             , std::string("initial expression for object named \"" + modelEntity.getObjectName() + "\"").c_str()
+                             , std::string("initial expression for object named \"" + modelEntity.getObjectName() + "\"")
                              , true
                              , &mInitialValueMap);
 
@@ -2051,7 +2051,7 @@ void CSBMLExporter::createRule(const CModelEntity& modelEntity, CDataModel& data
       , this->mSBMLVersion
       , result
       , mIdMap
-      , std::string("rule for object named \"" + modelEntity.getObjectName() + "\"").c_str()
+      , std::string("rule for object named \"" + modelEntity.getObjectName() + "\"")
       , false
       , &mInitialValueMap);
 
@@ -2801,15 +2801,9 @@ void CSBMLExporter::check_for_spatial_size_units(const CDataModel& dataModel, st
                             }
 
                           // delete the unit definitions
-                          if (pUDef1 != NULL)
-                            {
-                              delete pUDef1;
-                            }
+                          pdelete(pUDef1);
+                          pdelete(pUDef2);
 
-                          if (pUDef2 != NULL)
-                            {
-                              delete pUDef2;
-                            }
                         }
                     }
                 }
@@ -3003,7 +2997,7 @@ void CSBMLExporter::checkForInitialAssignments(const CDataModel& dataModel, std:
 
       while (compIt != compEndit)
         {
-          if (compIt->getInitialExpression() != "")
+          if (!compIt->getInitialExpression().empty())
             {
               result.push_back(SBMLIncompatibility(5, "Compartment", compIt->getObjectName().c_str()));
             }
@@ -3017,7 +3011,7 @@ void CSBMLExporter::checkForInitialAssignments(const CDataModel& dataModel, std:
 
       while (metabIt != metabEndit)
         {
-          if (metabIt->getInitialExpression() != "")
+          if (!metabIt->getInitialExpression().empty())
             {
               result.push_back(SBMLIncompatibility(5, "Metabolite", metabIt->getObjectName().c_str()));
             }
@@ -3031,7 +3025,7 @@ void CSBMLExporter::checkForInitialAssignments(const CDataModel& dataModel, std:
 
       while (mvIt != mvEndit)
         {
-          if (mvIt->getInitialExpression() != "")
+          if (!mvIt->getInitialExpression().empty())
             {
               result.push_back(SBMLIncompatibility(5, "Parameter", mvIt->getObjectName().c_str()));
             }
@@ -3308,7 +3302,14 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CDataModel& da
   else
     {
       std::vector<SBMLIncompatibility> result;
-      CSBMLExporter::isExpressionSBMLCompatible(function, dataModel, this->mSBMLLevel, this->mSBMLVersion, result, mIdMap, std::string("function with name \"" + function.getObjectName() + "\"").c_str());
+      CSBMLExporter::isExpressionSBMLCompatible(function, 
+        dataModel, 
+        this->mSBMLLevel, 
+        this->mSBMLVersion, 
+        result, 
+        mIdMap, 
+        std::string("function with name \"" + function.getObjectName() + "\"")
+      );
 
       if (result.empty())
         {
@@ -3888,7 +3889,7 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
   SBMLWriter* writer = new SBMLWriter();
 
   writer->setProgramName("COPASI");
-  writer->setProgramVersion(CVersion::VERSION.getVersion().c_str());
+  writer->setProgramVersion(CVersion::VERSION.getVersion());
 
   std::string returnValue = writer->writeSBMLToStdString(this->mpSBMLDocument);
 
@@ -3914,7 +3915,7 @@ void addInitialAssignmentsToModel(SBMLDocument* doc
                                   , std::map<const std::string, Parameter*>& initialValueMap
                                   , const CDataModel &dataModel)
 {
-  if (doc == NULL || doc->getModel() == NULL || initialValueMap.size() == 0)
+  if (doc == NULL || doc->getModel() == NULL || initialValueMap.empty())
     return;
 
   std::map<const std::string, Parameter*>::const_iterator it;
@@ -4452,7 +4453,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
               // check for unsupported object references and unsupported function
               // calls
               usedFunctionNames.clear();
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("compartment with name \"" + compIt->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("compartment with name \"" + compIt->getObjectName() + "\""));
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
         }
@@ -4463,7 +4464,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for compartment named \"" + compIt->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for compartment named \"" + compIt->getObjectName() + "\""));
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4487,7 +4488,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for species named \"" + metabIt->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for species named \"" + metabIt->getObjectName() + "\""));
               usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
@@ -4499,7 +4500,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial species for metabolite named \"" + metabIt->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial species for metabolite named \"" + metabIt->getObjectName() + "\""));
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4523,7 +4524,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
             {
               // check for unsupported object references and unsupported function
               // calls
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for global parameter named \"" + mvIt->getObjectName() + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("rule for global parameter named \"" + mvIt->getObjectName() + "\""));
               usedFunctionNames.clear();
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
@@ -4535,7 +4536,7 @@ const std::vector<SBMLIncompatibility> CSBMLExporter::isModelSBMLCompatible(
         {
           // check for unsupported object references and unsupported function
           // calls
-          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for global parameter named \"" + mvIt->getObjectName() + "\"").c_str());
+          CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("initial expression for global parameter named \"" + mvIt->getObjectName() + "\""));
           usedFunctionNames.clear();
           CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
         }
@@ -4835,7 +4836,7 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
           , this->mSBMLVersion
           , result
           , mIdMap
-          , std::string("event delay for event with id\"+" + event.getSBMLId() + "\"").c_str()
+          , std::string("event delay for event with id\"+" + event.getSBMLId() + "\"")
           , false
           , &mInitialValueMap);
 
@@ -5217,7 +5218,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 bool CSBMLExporter::checkForEvents(const CDataModel & dataModel,
                                    std::vector< SBMLIncompatibility > & result)
 {
-  if (dataModel.getModel() != NULL && dataModel.getModel()->getEvents().size() > 0)
+  if (dataModel.getModel() != NULL && !dataModel.getModel()->getEvents().empty())
     {
       result.push_back(SBMLIncompatibility(7));
       return false;
@@ -5304,13 +5305,13 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
                       pSBMLPara = pKLaw->createParameter();
                     }
 
-                  pSBMLPara->setId(pPara->getObjectName().c_str());
+                  pSBMLPara->setId(pPara->getObjectName());
 
                   // don't call setName on level 1 objects because this will also
                   // change the id
                   if (this->mpSBMLDocument->getLevel() > 1)
                     {
-                      pSBMLPara->setName(pPara->getObjectName().c_str());
+                      pSBMLPara->setName(pPara->getObjectName());
                     }
 
                   double value = reaction.getParameterValue(pPara->getObjectName());
@@ -5357,7 +5358,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
       if (reaction.getEffectiveKineticLawUnitType() == CReaction::ConcentrationPerTime)
         {
           const CCompartment* compartment = reaction.getScalingCompartment() != NULL ? reaction.getScalingCompartment() :
-                                            (reaction.getChemEq().getSubstrates().size() != 0) ? (reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
+                                            (!reaction.getChemEq().getSubstrates().empty()) ? (reaction.getChemEq().getSubstrates()[0].getMetabolite()->getCompartment()) : (reaction.getChemEq().getProducts()[0].getMetabolite()->getCompartment());
 
           if (compartment->getDimensionality() != 0)
             {
@@ -6759,142 +6760,142 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
         }
 
       if (pObject->hasFlag(CDataObject::Reference))
+      {
+        const CDataObject* pParent = pObject->getObjectParent();
+        // check if the parent is a metabolite
+        const CMetab* pMetab = dynamic_cast<const CMetab*>(pParent);
+
+        if (pMetab != NULL)
         {
-          const CDataObject* pParent = pObject->getObjectParent();
-          // check if the parent is a metabolite
-          const CMetab* pMetab = dynamic_cast<const CMetab*>(pParent);
-
-          if (pMetab != NULL)
+          // check if the reference is to the concentration or to the
+          // amount
+          if (pObject->getObjectName() == "InitialConcentration" || pObject->getObjectName() == "Concentration")
+          {
+            // the concentration nodes only need to be replaced if we
+            // are dealing with a model that has variable volumes
+            if (this->mVariableVolumes == true)
             {
-              // check if the reference is to the concentration or to the
-              // amount
-              if (pObject->getObjectName() == "InitialConcentration" || pObject->getObjectName() == "Concentration")
-                {
-                  // the concentration nodes only need to be replaced if we
-                  // are dealing with a model that has variable volumes
-                  if (this->mVariableVolumes == true)
-                    {
-                      // replace the node by the concentration node divided the the volume of
-                      // the (initial) volume of the node
-                      // although this is semantically incorrect, the result when
-                      // converted to SBML will be OK since the concentration ode
-                      // is converted to a reference to the species id which will
-                      // be interpreted as the amount due to the
-                      // hasOnlySubstanceUnits flag being set
-                      const CCompartment* pCompartment = pMetab->getCompartment();
-                      assert(pCompartment != NULL);
-                      pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE, "/");
-                      // copy branch should be fine since the object node does
-                      // not have children
-                      pResult->addChild(pOrigNode->copyBranch());
+              // replace the node by the concentration node divided the the volume of
+              // the (initial) volume of the node
+              // although this is semantically incorrect, the result when
+              // converted to SBML will be OK since the concentration ode
+              // is converted to a reference to the species id which will
+              // be interpreted as the amount due to the
+              // hasOnlySubstanceUnits flag being set
+              const CCompartment* pCompartment = pMetab->getCompartment();
+              assert(pCompartment != NULL);
+              pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE, "/");
+              // copy branch should be fine since the object node does
+              // not have children
+              pResult->addChild(pOrigNode->copyBranch());
 
-                      if (pObject->getObjectName() == "InitialConcentration")
-                        {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
-                        }
-                      else
-                        {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
-                        }
-                    }
-                  else
-                    {
-                      // do nothing
-                      pResult = pOrigNode->copyBranch();
-                    }
-                }
-              else if (pObject->getObjectName() == "Rate")
-                {
-                  std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
-                  pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pMetab->getConcentrationReference()->getCN() + ">"));
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
-                }
-              else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
-                {
-                  // if the units are not set to particle numbers anyway,
-                  // replace the node by the node times avogadros number
-                  if (dataModel.getModel()->getQuantityUnitEnum() != CUnit::number)
-                    {
-                      if (this->mpAvogadro == NULL)
-                        {
-                          this->mpAvogadro = const_cast<CModel*>(dataModel.getModel())->createModelValue("quantity to number factor", dataModel.getModel()->getQuantity2NumberFactor());
-                          Parameter* pSBMLAvogadro = this->mpSBMLDocument->getModel()->createParameter();
-                          pSBMLAvogadro->setName("quantity to number factor");
-                          std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, mpAvogadro->getObjectName(), false);
-                          pSBMLAvogadro->setId(sbmlId);
-                          const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
-                          this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
-
-                          if (this->mSBMLLevel != 1)
-                            {
-                              pSBMLAvogadro->setConstant(true);
-                            }
-                          else
-                            {
-                              // Level 1 doesn't know the constant flag and
-                              // libSBML does not drop it automatically
-                              pSBMLAvogadro->setConstant(true);
-                            }
-
-                          pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
-                          this->mHandledSBMLObjects.insert(pSBMLAvogadro);
-                          this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
-                          this->mAvogadroCreated = true;
-                        }
-
-                      pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
-                      // copyBranch should be save here since object nodes can't
-                      // have children
-                      pResult->addChild(pOrigNode->copyBranch());
-                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
-                    }
-                  else
-                    {
-                      // the result is the same as the original node
-                      pResult = pOrigNode->copyBranch();
-                    }
-
-                  if (this->mVariableVolumes == false)
-                    {
-                      // multiply by the volume as well
-                      const CCompartment* pCompartment = pMetab->getCompartment();
-
-                      if (pCompartment->getDimensionality() != 0)
-                        {
-                          CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
-                          pTmpNode->addChild(pResult);
-
-                          if (pObject->getObjectName() == "InitialParticleNumber")
-                            {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
-                            }
-                          else
-                            {
-                              pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
-                            }
-
-                          pResult = pTmpNode;
-                        }
-                    }
-                }
+              if (pObject->getObjectName() == "InitialConcentration")
+              {
+                pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+              }
               else
-                {
-                  fatalError();
-                }
+              {
+                pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+              }
             }
-
             else
             {
-            const CModelEntity *pEntity = dynamic_cast<const CModelEntity*>(pParent);
-            if (pEntity != NULL && pObject->getObjectName() == "Rate")
+              // do nothing
+              pResult = pOrigNode->copyBranch();
+            }
+          }
+          else if (pObject->getObjectName() == "Rate")
+          {
+            std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
+            pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
+            pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pMetab->getConcentrationReference()->getCN() + ">"));
+            pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
+          }
+          else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
+          {
+            // if the units are not set to particle numbers anyway,
+            // replace the node by the node times avogadros number
+            if (dataModel.getModel()->getQuantityUnitEnum() != CUnit::number)
             {
-              std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
-              pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
-              pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pEntity->getValueReference()->getCN() + ">"));
-              pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
+              if (this->mpAvogadro == NULL)
+              {
+                this->mpAvogadro = const_cast<CModel*>(dataModel.getModel())->createModelValue("quantity to number factor", dataModel.getModel()->getQuantity2NumberFactor());
+                Parameter* pSBMLAvogadro = this->mpSBMLDocument->getModel()->createParameter();
+                pSBMLAvogadro->setName("quantity to number factor");
+                std::string sbmlId = CSBMLExporter::createUniqueId(this->mIdMap, mpAvogadro->getObjectName(), false);
+                pSBMLAvogadro->setId(sbmlId);
+                const_cast<CModelValue*>(this->mpAvogadro)->setSBMLId(sbmlId);
+                this->mIdMap.insert(std::pair<const std::string, const SBase*>(sbmlId, pSBMLAvogadro));
+
+                if (this->mSBMLLevel != 1)
+                {
+                  pSBMLAvogadro->setConstant(true);
+                }
+                else
+                {
+                  // Level 1 doesn't know the constant flag and
+                  // libSBML does not drop it automatically
+                  pSBMLAvogadro->setConstant(true);
+                }
+
+                pSBMLAvogadro->setValue(dataModel.getModel()->getQuantity2NumberFactor());
+                this->mHandledSBMLObjects.insert(pSBMLAvogadro);
+                this->mCOPASI2SBMLMap[this->mpAvogadro] = pSBMLAvogadro;
+                this->mAvogadroCreated = true;
+              }
+
+              pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+              // copyBranch should be save here since object nodes can't
+              // have children
+              pResult->addChild(pOrigNode->copyBranch());
+              pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
             }
+            else
+            {
+              // the result is the same as the original node
+              pResult = pOrigNode->copyBranch();
             }
+
+            if (this->mVariableVolumes == false)
+            {
+              // multiply by the volume as well
+              const CCompartment* pCompartment = pMetab->getCompartment();
+
+              if (pCompartment->getDimensionality() != 0)
+              {
+                CEvaluationNode* pTmpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+                pTmpNode->addChild(pResult);
+
+                if (pObject->getObjectName() == "InitialParticleNumber")
+                {
+                  pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                }
+                else
+                {
+                  pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                }
+
+                pResult = pTmpNode;
+              }
+            }
+          }
+          else
+          {
+            fatalError();
+          }
+        }
+
+        else
+        {
+          const CModelEntity *pEntity = dynamic_cast<const CModelEntity*>(pParent);
+          if (pEntity != NULL && pObject->getObjectName() == "Rate")
+          {
+            std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
+            pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
+            pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pEntity->getValueReference()->getCN() + ">"));
+            pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
+          }
+        }
       }
     }
   // check if there is a division by avogadros number and if so, just
@@ -7946,7 +7947,7 @@ void CSBMLExporter::isEventSBMLCompatible(
     {
       // check for unsupported object references and unsupported function
       // calls
-      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("trigger expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("trigger expression for event named \"" + pEvent->getObjectName() + "\""));
       usedFunctionNames.clear();
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
     }
@@ -7957,7 +7958,7 @@ void CSBMLExporter::isEventSBMLCompatible(
     {
       // check for unsupported object references and unsupported function
       // calls
-      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("delay expression for event named \"" + pEvent->getObjectName() + "\"").c_str());
+      CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("delay expression for event named \"" + pEvent->getObjectName() + "\""));
       usedFunctionNames.clear();
       CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
     }
@@ -8051,7 +8052,7 @@ void CSBMLExporter::isEventAssignmentSBMLCompatible(
             {
 
               std::set<std::string> usedFunctionNames;
-              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\"").c_str());
+              CSBMLExporter::isExpressionSBMLCompatible(*pExpression, dataModel, sbmlLevel, sbmlVersion, result, idMap, std::string("assignment expression for variable named \"" + pObject->getObjectName() + "\" in event named \"" + eventName + "\""));
               CSBMLExporter::findDirectlyUsedFunctions(pExpression->getRoot(), usedFunctionNames);
             }
           else
@@ -8332,7 +8333,7 @@ bool CSBMLExporter::hasVolumeAssignment(const CDataModel& dataModel)
           result = true;
         }
 
-      if (it->getInitialExpression() != "" && result == false)
+      if (!it->getInitialExpression().empty() && result == false)
         {
           if (this->mSBMLLevel > 2 || (this->mSBMLLevel == 2 && this->mSBMLVersion >= 2))
             {
@@ -8567,7 +8568,7 @@ bool CSBMLExporter::setSBMLNotes(SBase* pSBase, const CAnnotation* pAnno)
 
   const std::map<std::string, std::string>& map = pAnno->getUnsupportedAnnotations();
 
-  if (map.size() > 0)
+  if (!map.empty())
     {
       std::map<std::string, std::string>::const_iterator iter;
 
@@ -8614,7 +8615,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                           std::string prefix = pResult->getPrefix();
                           std::string ns = "http://www.w3.org/1999/xhtml";
 
-                          if (prefix != "")
+                          if (!prefix.empty())
                             {
                               ns = prefix + ":" + ns;
                             }

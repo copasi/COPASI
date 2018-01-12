@@ -37,7 +37,7 @@ std::string SEDMLUtils::findIdByNameAndType(
 
   std::string::size_type compartmentStart = name.find("{");
 
-  std::string compId = "";
+  std::string compId;
 
   if (compartmentStart != std::string::npos)
     {
@@ -66,7 +66,7 @@ std::string SEDMLUtils::findIdByNameAndType(
         {
           if (displayName == name)
             {
-              Species* species = (Species*)current;
+              Species* species = static_cast<Species*>(current);
 
               if (species->getCompartment() == compId)
                 return species->getId();
@@ -91,7 +91,7 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
     const_cast<CDataModel&>(dataModel).getCopasi2SBMLMap();
   std::string displayName = sbmlId;
 
-  if (copasi2sbmlmap.size() == 0)
+  if (copasi2sbmlmap.empty())
     {
       // this should not be happening, as this is used to verify the element.
       return "";
@@ -116,11 +116,10 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
-      else
-        return "";
+      return "";
     }
 
-  else if (type == "Flux")
+  if (type == "Flux")
     {
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id=\'";
 
@@ -133,10 +132,9 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
-      else
-        return "";
+      return "";
     }
-  else if (type == "Value" || type == "InitialValue")
+  if (type == "Value" || type == "InitialValue")
     {
       if (type == "InitialValue")
         {
@@ -198,10 +196,9 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
-      else
-        return "";
+      return "";
     }
-  else if (type == "Volume" || type == "InitialVolume")
+  if (type == "Volume" || type == "InitialVolume")
     {
       targetXPathString = "/sbml:sbml/sbml:model/sbml:listOfCompartments/sbml:compartment[@id=\'";
       splitStrings(displayName, '[', stringsContainer);
@@ -225,10 +222,9 @@ SEDMLUtils::getXPathAndName(std::string& sbmlId,
         {
           return targetXPathString + sbmlId + "\']";
         }
-      else
-        return "";
+      return "";
     }
-  else if (type == "Time" || type == "Initial Time")
+  if (type == "Time" || type == "Initial Time")
     return SEDML_TIME_URN;
 
   sbmlId = "";
@@ -387,7 +383,7 @@ SEDMLUtils::splitStrings(const std::string &xpath, char delim,
   // For each character in the string
   for (std::string::const_iterator it = xpath.begin(); it != xpath.end(); it++)
     {
-      // check delimeter character
+      // check delimiter character
       if (*it == delim)
         {
           if (!next.empty())
