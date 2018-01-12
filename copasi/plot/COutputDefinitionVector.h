@@ -36,11 +36,12 @@ public:
 
   CPlotSpecification* createPlotSpec(const std::string & name,
                                      CPlotItem::Type type = CPlotItem::plot2d);
+
   bool removePlotSpec(const std::string & key);
 
   void cleanup();
 
-  const std::string& getKey() const;
+  virtual const std::string& getKey() const;
 };
 
 #endif

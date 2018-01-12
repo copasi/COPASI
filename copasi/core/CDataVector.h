@@ -413,7 +413,7 @@ public:
   }
 
   /**
-   * Add an object to the end of the vector, if adobt is true the vector.
+   * Add an object to the end of the vector, if adopt is true the vector.
    * becomes the parent of the object.
    * @param CType * src
    * @param const bool & adopt (Default: false)
