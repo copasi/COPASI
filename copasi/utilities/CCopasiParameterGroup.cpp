@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -616,12 +616,17 @@ bool CCopasiParameterGroup::remove(CDataObject * pObject)
 
   if (success)
     {
-     
+      // elements contains CCopasiParameter *, we therefore must compare it to the same type.
+      CCopasiParameter * pParameter = dynamic_cast< CCopasiParameter * >(pObject);
+
+      if (pParameter == NULL)
+        return success;
+
       index_iterator it = static_cast< elements * >(mpValue)->begin();
       index_iterator end = static_cast< elements * >(mpValue)->end();
 
       for (; it != end; ++it)
-        if (*it == pObject)
+        if (*it == pParameter)
           {
             static_cast< elements * >(mpValue)->erase(it, it + 1);
             break;
