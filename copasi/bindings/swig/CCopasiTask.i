@@ -309,6 +309,12 @@
 
         pDataModel->finish();
         
+        if (self->getMathContainer() != NULL)
+        {
+           self->getMathContainer()->updateTransientDataValues();
+           self->getMathContainer()->pushAllTransientValues();
+        }
+        
         return success;
       }  
      
@@ -407,6 +413,13 @@
         CCopasiMessage::clearDeque();
 
         pDataModel->finish();
+        
+        if (self->getMathContainer() != NULL)
+        {
+           self->getMathContainer()->updateTransientDataValues();
+           self->getMathContainer()->pushAllTransientValues();
+        }
+        
         
         return success;
       }
