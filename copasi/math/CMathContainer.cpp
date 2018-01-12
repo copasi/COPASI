@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2229,6 +2229,8 @@ CEvaluationNode * CMathContainer::createNodeFromObject(const CObjectInterface * 
       // Check whether we have a data object
       if (pObject == pObject->getDataObject())
         {
+          // This may insert data objects which are later mapped to math objects.
+          // We therefore need to sanitize it later.
           mDataValue2DataObject[(C_FLOAT64 *) pObject->getValuePointer()]
             = static_cast< CDataObject * >(const_cast< CObjectInterface * >(pObject));
         }
@@ -2299,6 +2301,7 @@ void CMathContainer::createDependencyGraphs()
 
 void CMathContainer::createUpdateSequences()
 {
+  sanitizeDataValue2DataObject();
   createSynchronizeInitialValuesSequence();
   createApplyInitialValuesSequence();
   createUpdateSimulationValuesSequence();
@@ -2311,6 +2314,22 @@ void CMathContainer::createUpdateSequences()
     {
       pEvent->createUpdateSequences();
     }
+}
+
+void CMathContainer::sanitizeDataValue2DataObject()
+{
+  std::map< C_FLOAT64 *, CDataObject * > DataValue2DataObject = mDataValue2DataObject;
+
+  std::map< C_FLOAT64 *, CDataObject * >::const_iterator itDataObject = DataValue2DataObject.begin();
+  std::map< C_FLOAT64 *, CDataObject * >::const_iterator endDataObject = DataValue2DataObject.end();
+
+  mDataValue2DataObject.clear();
+
+  for (; itDataObject != endDataObject; ++itDataObject)
+    if (getMathObject(itDataObject->second) == NULL)
+      {
+        mDataValue2DataObject.insert(*itDataObject);
+      }
 }
 
 void CMathContainer::createSynchronizeInitialValuesSequence()
