@@ -131,7 +131,9 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpCurrentAuthorGivenName(NULL),
   mpCurrentAuthorFamilyName(NULL),
   mpCurrentAuthorOrganization(NULL),
-  mpCurrentAuthorEmail(NULL)
+  mpCurrentAuthorEmail(NULL), 
+  mpPrecision(NULL)
+
 {initializeParameter();}
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
@@ -159,7 +161,8 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   mpCurrentAuthorGivenName(NULL),
   mpCurrentAuthorFamilyName(NULL),
   mpCurrentAuthorOrganization(NULL),
-  mpCurrentAuthorEmail(NULL)
+  mpCurrentAuthorEmail(NULL),
+  mpPrecision(NULL)
 {initializeParameter();}
 
 CConfigurationFile::~CConfigurationFile()
@@ -204,6 +207,7 @@ void CConfigurationFile::initializeParameter()
   mpNormalizePerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::BOOL, true);
   mpEnableAdditionalOptimizationParameters = assertParameter("Enable additional optimization parameters", CCopasiParameter::BOOL, false);
   mpDisplayPopulations = assertParameter("Display Populations during Optimization", CCopasiParameter::BOOL, false);
+  mpPrecision = assertParameter("Double Precision for String Conversion", CCopasiParameter::INT, 10);
 
   mpApplicationFont = assertParameter("Application Font", CCopasiParameter::STRING, std::string(""));
   getParameter("Application Font")->setUserInterfaceFlag(~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::editable));
@@ -263,7 +267,7 @@ void CConfigurationFile::initializeParameter()
 
   mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::STRING, std::string(""));
   mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::STRING, std::string("An.other@mailinator.com"));
-
+  
   elevateChildren();
 }
 
@@ -625,4 +629,14 @@ const std::string CConfigurationFile::getCurrentAuthorEmail() const
 void CConfigurationFile::setCurrentAuthorEmail(const std::string & CurrentAuthorEmail)
 {
   *mpCurrentAuthorEmail = CurrentAuthorEmail;
+}
+
+C_INT32 CConfigurationFile::getDoublePrecision() const
+{
+  return *mpPrecision;
+}
+
+void CConfigurationFile::setDoublePrecision(C_INT32 precision)
+{
+  *mpPrecision = precision;
 }

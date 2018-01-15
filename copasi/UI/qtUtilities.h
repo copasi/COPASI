@@ -197,14 +197,20 @@ void vectorOfStrings2QStringList(std::vector<std::string> vs, QStringList & qsl)
 QString toTsvString(QAbstractItemView* pWidget, bool writeColumnHeaders = true, bool writeRowHeaders = true);
 
 /**
-* Returns the contents of a table view as string
-*
-* @param pModel the item model to convert to string
-* @param writeColumnHeaders if true (default), the string will contain column headers
-* @param writeRowHeaders if true (default), the string will contain row headers
-*
-* @return a tab separated string containing the contents of the widget
-*/
+ * Returns the contents of a table view as string
+ *
+ * @param pModel the item model to convert to string
+ * @param writeColumnHeaders if true (default), the string will contain column headers
+ * @param writeRowHeaders if true (default), the string will contain row headers
+ *
+ * @return a tab separated string containing the contents of the widget
+ */
 QString toTsvString(QAbstractItemModel* pModel, bool writeColumnHeaders = true, bool writeRowHeaders = true);
+
+/** 
+ * converts the given number to a qstring with the precision setup in the
+ * preferences
+ */
+QString convertToQString(double number);
 
 #endif // COPASI_qtUtilities
