@@ -173,7 +173,7 @@ void CMathExpression::relocate(const CMathContainer * pContainer,
         }
     }
 
-  mInfix = mpRootNode->buildInfix();
+  mInfix = mpRootNode != NULL ? mpRootNode->buildInfix() : "";
   pContainer->relocateObjectSet(mPrerequisites, relocations);
 }
 
