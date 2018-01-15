@@ -89,7 +89,7 @@ void SliderSettingsDialog::setSlider(CSlider * slider)
         }
       else
         {
-          mpObjectNameLineEdit->setText("Object not avalable!");
+          mpObjectNameLineEdit->setText("Object not available!");
         }
 
       updateInputFields();
@@ -114,16 +114,16 @@ void SliderSettingsDialog::updateInputFieldsValues()
   if (mpSlider)
     {
       mValue = mpSlider->getSliderValue();
-      mpObjectValueEdit->setText(QString::number(mValue));
+      mpObjectValueEdit->setText(convertToQString(mValue));
 
       mOriginalValue = mpSlider->getOriginalValue();
-      mpOriginalValueEdit->setText(QString::number(mOriginalValue));
+      mpOriginalValueEdit->setText(convertToQString(mOriginalValue));
 
       mMinValue = mpSlider->getMinValue();
-      mpMinValueEdit->setText(QString::number(mMinValue));
+      mpMinValueEdit->setText(convertToQString(mMinValue));
 
       mMaxValue = mpSlider->getMaxValue();
-      mpMaxValueEdit->setText(QString::number(mMaxValue));
+      mpMaxValueEdit->setText(convertToQString(mMaxValue));
 
       mNumMinorTicks = mpSlider->getTickNumber();
       mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
@@ -178,7 +178,7 @@ void SliderSettingsDialog::okButtonPressed()
   // disconnect all signal receivers from
   // the min and max value edit fields
   // otherwise, they would generate an
-  // uneccesary focusLost signal
+  // unnecessary focusLost signal
   disconnect(mpMinValueEdit, 0, 0, 0);
   disconnect(mpMaxValueEdit, 0, 0, 0);
   // only now change underlying slider
@@ -211,7 +211,7 @@ void SliderSettingsDialog::minorTickSizeChanged()
     {
       mNumMinorTicks = 1;
       mMinorTickSize = mMaxValue - mMinValue;
-      mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+      mpMinorTickSizeEdit->setText(convertToQString(mMinorTickSize));
     }
 
   mpNumMinorTicksEdit->setText(QString::number(mNumMinorTicks));
@@ -230,7 +230,7 @@ void SliderSettingsDialog::numMinorTicksChanged()
     }
 
   mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
-  mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+  mpMinorTickSizeEdit->setText(convertToQString(mMinorTickSize));
   mChanged = NONE;
 }
 
@@ -246,28 +246,28 @@ void SliderSettingsDialog::minValueChanged()
                               QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
      )
     {
-      mpMinValueEdit->setText(QString::number(mMinValue));
+      mpMinValueEdit->setText(convertToQString(mMinValue));
     }
   else
     {
       mOriginalValue = value;
-      mpOriginalValueEdit->setText(QString::number(mOriginalValue));
+      mpOriginalValueEdit->setText(convertToQString(mOriginalValue));
       mMinValue = value;
 
       if (mMinValue > mMaxValue)
         {
           mMaxValue = mMinValue;
-          mpMaxValueEdit->setText(QString::number(mMaxValue));
+          mpMaxValueEdit->setText(convertToQString(mMaxValue));
         }
 
       if (mMinValue > mValue)
         {
           mValue = mMinValue;
-          mpObjectValueEdit->setText(QString::number(mValue));
+          mpObjectValueEdit->setText(convertToQString(mValue));
         }
 
       mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
-      mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+      mpMinorTickSizeEdit->setText(convertToQString(mMinorTickSize));
 
       if (mMinValue <= 0.0 && mpLogCheckBox->isChecked())
         {
@@ -294,13 +294,13 @@ void SliderSettingsDialog::maxValueChanged()
                                  "The maximum value you set is smaller than the default value of the slider. The new default will be set to the maximum. Do you want to procceed?",
                                  QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) != QMessageBox::Ok)
         {
-          mpMaxValueEdit->setText(QString::number(mMaxValue));
+          mpMaxValueEdit->setText(convertToQString(mMaxValue));
           mChanged = NONE;
           return;
         }
 
       mOriginalValue = value;
-      mpOriginalValueEdit->setText(QString::number(mOriginalValue));
+      mpOriginalValueEdit->setText(convertToQString(mOriginalValue));
     }
 
   mMaxValue = value;
@@ -308,17 +308,17 @@ void SliderSettingsDialog::maxValueChanged()
   if (mMinValue > mMaxValue)
     {
       mMinValue = mMaxValue;
-      mpMinValueEdit->setText(QString::number(mMinValue));
+      mpMinValueEdit->setText(convertToQString(mMinValue));
     }
 
   if (mMaxValue < mValue)
     {
       mValue = mMaxValue;
-      mpObjectValueEdit->setText(QString::number(mValue));
+      mpObjectValueEdit->setText(convertToQString(mValue));
     }
 
   mMinorTickSize = (mMaxValue - mMinValue) / mNumMinorTicks;
-  mpMinorTickSizeEdit->setText(QString::number(mMinorTickSize));
+  mpMinorTickSizeEdit->setText(convertToQString(mMinorTickSize));
   mChanged = NONE;
 }
 
@@ -331,13 +331,13 @@ void SliderSettingsDialog::objectValueChanged()
   if (mValue > mMaxValue)
     {
       mMaxValue = mValue;
-      mpMaxValueEdit->setText(QString::number(mMaxValue));
+      mpMaxValueEdit->setText(convertToQString(mMaxValue));
     }
 
   if (mValue < mMinValue)
     {
       mMinValue = mValue;
-      mpMinValueEdit->setText(QString::number(mMinValue));
+      mpMinValueEdit->setText(convertToQString(mMinValue));
     }
 
   mChanged = NONE;
@@ -586,13 +586,13 @@ void SliderSettingsDialog::originalValueChanged()
   if (mOriginalValue > mMaxValue)
     {
       mMaxValue = mOriginalValue;
-      mpMaxValueEdit->setText(QString::number(mMaxValue));
+      mpMaxValueEdit->setText(convertToQString(mMaxValue));
     }
 
   if (mOriginalValue < mMinValue)
     {
       mMinValue = mOriginalValue;
-      mpMinValueEdit->setText(QString::number(mMinValue));
+      mpMinValueEdit->setText(convertToQString(mMinValue));
     }
 
   mChanged = NONE;

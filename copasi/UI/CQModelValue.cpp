@@ -315,13 +315,13 @@ void CQModelValue::load()
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpModelValue->getStatus()])));
 
   // Initial Value
-  mpEditInitialValue->setText(QString::number(mpModelValue->getInitialValue(), 'g', 10));
+  mpEditInitialValue->setText(convertToQString(mpModelValue->getInitialValue()));
 
   // Current Value
-  mpEditCurrentValue->setText(QString::number(mpModelValue->getValue(), 'g', 10));
+  mpEditCurrentValue->setText(convertToQString(mpModelValue->getValue()));
 
   // Rate
-  mpEditRate->setText(QString::number(mpModelValue->getRate(), 'g', 10));
+  mpEditRate->setText(convertToQString(mpModelValue->getRate()));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpModelValue->getExpression());
@@ -389,7 +389,7 @@ void CQModelValue::save()
     }
 
   // set initial value
-  if (QString::number(mpModelValue->getInitialValue(), 'g', 10) != mpEditInitialValue->text() &&
+  if (convertToQString(mpModelValue->getInitialValue()) != mpEditInitialValue->text() &&
       mpModelValue->getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       mpUndoStack->push(new GlobalQuantityChangeCommand(

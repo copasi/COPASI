@@ -121,7 +121,7 @@ void ObjectDebug::addObjectRecursive(QTreeWidgetItem * parent, const void * ptr)
   QString value;
 
   if (obj->hasFlag(CDataObject::ValueDbl) && obj->getValuePointer())
-    value = QString::number(*(C_FLOAT64*)obj->getValuePointer());
+    value = convertToQString(*(C_FLOAT64*)obj->getValuePointer());
   else if (obj->hasFlag(CDataObject::ValueInt) && obj->getValuePointer())
     value = QString::number(*(C_INT32*)obj->getValuePointer());
   else if (obj->hasFlag(CDataObject::ValueString) && obj->getValuePointer())

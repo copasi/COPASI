@@ -50,9 +50,9 @@ CQFittingResultTab1::~CQFittingResultTab1()
 
 void CQFittingResultTab1::load(const CFitProblem * pProblem)
 {
-  mpEditObjectiveValue->setText(QString::number(pProblem->getSolutionValue()));
-  mpEditRMS->setText(QString::number(pProblem->getRMS()));
-  mpEditStdDeviation->setText(QString::number(pProblem->getStdDeviation()));
+  mpEditObjectiveValue->setText(convertToQString(pProblem->getSolutionValue()));
+  mpEditRMS->setText(convertToQString(pProblem->getRMS()));
+  mpEditStdDeviation->setText(convertToQString(pProblem->getStdDeviation()));
 
   size_t validValueCount = pProblem->getExperimentSet().getValidValueCount();
   size_t totalValueCount = pProblem->getExperimentSet().getDataPointCount();
@@ -77,9 +77,9 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
 
   if (Enable)
     {
-      mpEditCVObjectiveValue->setText(QString::number(pProblem->getCrossValidationSolutionValue()));
-      mpEditCVRMS->setText(QString::number(pProblem->getCrossValidationRMS()));
-      mpEditCVStdDeviation->setText(QString::number(pProblem->getCrossValidationSD()));
+      mpEditCVObjectiveValue->setText(convertToQString(pProblem->getCrossValidationSolutionValue()));
+      mpEditCVRMS->setText(convertToQString(pProblem->getCrossValidationRMS()));
+      mpEditCVStdDeviation->setText(convertToQString(pProblem->getCrossValidationSD()));
       validValueCount = pProblem->getCrossValidationSet().getValidValueCount();
       totalValueCount = pProblem->getCrossValidationSet().getDataPointCount();
 
@@ -104,9 +104,9 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
 
   const C_FLOAT64 & ExecutionTime = pProblem->getExecutionTime();
 
-  mpEditCPUTime->setText(QString::number(ExecutionTime));
+  mpEditCPUTime->setText(convertToQString(ExecutionTime));
 
-  mpEditSpeed->setText(QString::number(FunctionEvaluations / ExecutionTime));
+  mpEditSpeed->setText(convertToQString(FunctionEvaluations / ExecutionTime));
   const unsigned C_INT32 & FailedEvaluationsExc = pProblem->getFailedEvaluationsExc();
   mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
   const unsigned C_INT32 & FailedEvaluationsNaN = pProblem->getFailedEvaluationsNaN();

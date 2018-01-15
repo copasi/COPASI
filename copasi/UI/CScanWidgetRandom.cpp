@@ -104,19 +104,19 @@ void CScanWidgetRandom::initFromObject(const CDataObject *obj)
 
           if (type == 0) //uniform
             {
-              lineEditMin->setText(QString::number(value * 0.5));
-              lineEditMax->setText(QString::number(value * 2));
+              lineEditMin->setText(convertToQString(value * 0.5));
+              lineEditMax->setText(convertToQString(value * 2));
             }
 
           if (type == 1) //normal
             {
-              lineEditMin->setText(QString::number(value));
-              lineEditMax->setText(QString::number(value * 0.1));
+              lineEditMin->setText(convertToQString(value));
+              lineEditMax->setText(convertToQString(value * 0.1));
             }
 
           if (type == 2) //poisson
             {
-              lineEditMin->setText(QString::number(value));
+              lineEditMin->setText(convertToQString(value));
               lineEditMax->setText("");
             }
         }
@@ -213,8 +213,8 @@ void CScanWidgetRandom::changeType()
 
         if (mpObject != NULL)
           {
-            lineEditMin->setText(QString::number(value * 0.5));
-            lineEditMax->setText(QString::number(value * 2));
+            lineEditMin->setText(convertToQString(value * 0.5));
+            lineEditMax->setText(convertToQString(value * 2));
           }
         else
           {
@@ -233,8 +233,8 @@ void CScanWidgetRandom::changeType()
 
         if (mpObject != NULL)
           {
-            lineEditMin->setText(QString::number(value));
-            lineEditMax->setText(QString::number(value * 0.1));
+            lineEditMin->setText(convertToQString(value));
+            lineEditMax->setText(convertToQString(value * 0.1));
           }
         else
           {
@@ -252,7 +252,7 @@ void CScanWidgetRandom::changeType()
         labelMax->setText("");
 
         if (mpObject != NULL)
-          lineEditMin->setText(QString::number(value));
+          lineEditMin->setText(convertToQString(value));
         else
           lineEditMin->setText("");
 
@@ -269,8 +269,8 @@ void CScanWidgetRandom::changeType()
 
         if (mpObject != NULL)
           {
-            lineEditMin->setText(QString::number(1.0 * value));
-            lineEditMax->setText(QString::number(0.1));
+            lineEditMin->setText(convertToQString(1.0 * value));
+            lineEditMax->setText(convertToQString(0.1));
           }
         else
           {

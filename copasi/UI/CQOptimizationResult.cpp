@@ -96,14 +96,14 @@ bool CQOptimizationResult::enterProtected()
   if (!mpProblem) return false;
 
   // Objective Value
-  mpEditObjectiveValue->setText(QString::number(mpProblem->getSolutionValue()));
+  mpEditObjectiveValue->setText(convertToQString(mpProblem->getSolutionValue()));
 
   // Performance Statistics
   const unsigned C_INT32 & FunctionEvaluations = mpProblem->getFunctionEvaluations();
   mpEditEvaluations->setText(QString::number(FunctionEvaluations));
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
-  mpEditCPUTime->setText(QString::number(ExecutionTime));
-  mpEditSpeed->setText(QString::number(FunctionEvaluations / ExecutionTime));
+  mpEditCPUTime->setText(convertToQString(ExecutionTime));
+  mpEditSpeed->setText(convertToQString(FunctionEvaluations / ExecutionTime));
   const unsigned C_INT32 & FailedEvaluationsExc = mpProblem->getFailedEvaluationsExc();
   mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
   const unsigned C_INT32 & FailedEvaluationsNaN = mpProblem->getFailedEvaluationsNaN();

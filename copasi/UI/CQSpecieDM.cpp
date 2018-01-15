@@ -226,7 +226,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ICONCENTRATION:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(Species.getInitialConcentration(), 'g', 10));
+                  return QVariant(convertToQString(Species.getInitialConcentration()));
                 else
                   return QVariant(Species.getInitialConcentration());
               }
@@ -234,7 +234,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_INUMBER:
               {
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(Species.getInitialValue(), 'g', 10));
+                  return QVariant(convertToQString(Species.getInitialValue()));
                 else
                   return QVariant(Species.getInitialValue());
               }

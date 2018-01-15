@@ -746,7 +746,7 @@ bool CQReportDefinition::load()
       mpSeparator->setText(FROM_UTF8(mpReportDefinition->getSeparator().getStaticString()));
     }
 
-  mpPrecision->setText(QString::number(mpReportDefinition->getPrecision()));
+  mpPrecision->setText(convertToQString(mpReportDefinition->getPrecision()));
 
   std::vector< CRegisteredCommonName > * pList = NULL;
   std::vector< CRegisteredCommonName >::const_iterator it;

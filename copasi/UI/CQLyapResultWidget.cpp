@@ -117,12 +117,12 @@ bool CQLyapResultWidget::loadFromBackend()
 
   mTableExponents->setSortingEnabled(true);
 
-  mLineEditSum->setText(QString::number(mpTask->sumOfExponents()));
+  mLineEditSum->setText(convertToQString(mpTask->sumOfExponents()));
 
   if (mpTask->resultHasDivergence())
     {
       mLineEditDivergence->setEnabled(true);
-      mLineEditDivergence->setText(QString::number(mpTask->averageDivergence()));
+      mLineEditDivergence->setText(convertToQString(mpTask->averageDivergence()));
     }
   else
     {

@@ -220,8 +220,8 @@ void CQModelWidget::load()
 #endif
 
   mpEditInitialTime->setReadOnly(mpModel->isAutonomous());
-  mpEditInitialTime->setText(QString::number(mpModel->getInitialTime(), 'g', 10));
-  mpEditCurrentTime->setText(QString::number(mpModel->getTime(), 'g', 10));
+  mpEditInitialTime->setText(convertToQString(mpModel->getInitialTime()));
+  mpEditCurrentTime->setText(convertToQString(mpModel->getTime()));
 
   mpCheckStochasticCorrection->setChecked(mpModel->getModelType() == CModel::deterministic);
 
@@ -301,7 +301,7 @@ void CQModelWidget::save()
       changed = true;
     }
 
-  if (mpEditAvogadro->text() != QString::number(mpModel->getAvogadro(), 'g', 10))
+  if (mpEditAvogadro->text() != QString::number(mpModel->getAvogadro(), 'g', 14))
     {
       QList< QVariant > OldValues, NewValues;
 
@@ -327,7 +327,7 @@ void CQModelWidget::save()
       changed = true;
     }
 
-  if (mpEditInitialTime->text() != QString::number(mpModel->getInitialTime()))
+  if (mpEditInitialTime->text() != convertToQString(mpModel->getInitialTime()))
     {
       mpUndoStack->push(
         new ModelChangeCommand(CCopasiUndoCommand::MODEL_INITIAL_TIME_CHANGE,

@@ -485,7 +485,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
 
           if (ri.isLocalValue(i))
             {
-              pItem->setText(QString::number(ri.getLocalValue(i)));
+              pItem->setText(convertToQString(ri.getLocalValue(i)));
               pItem->setFlags(pItem->flags() | (Qt::ItemIsEditable));
             }
           else
@@ -502,7 +502,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
                   if (pParamObject != NULL &&
                       pParamObject->getStatus() == CModelEntity::Status::FIXED)
                     {
-                      pItem->setText(QString::number(pParamObject->getInitialValue()));
+                      pItem->setText(convertToQString(pParamObject->getInitialValue()));
                       pItem->setTextColor(QColor(Qt::darkGray));
                     }
                 }
@@ -524,7 +524,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
       // if line is for an unknown role . . .
       else
         {
-          pItem->setText(QString::number(ri.getLocalValue(i)));
+          pItem->setText(convertToQString(ri.getLocalValue(i)));
         }
 
       resizeRowToContents((int) rowCounter);

@@ -103,8 +103,8 @@ void CScanWidgetScan::initFromObject(const CDataObject *obj)
         {
           C_FLOAT64 value = *(C_FLOAT64*)obj->getValuePointer();
           lineEditNumber->setText("10");
-          lineEditMin->setText(QString::number(value * 0.5));
-          lineEditMax->setText(QString::number(value * 2));
+          lineEditMin->setText(convertToQString(value * 0.5));
+          lineEditMax->setText(convertToQString(value * 2));
         }
     }
   else
@@ -145,8 +145,8 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
   else
     lineEditObject->setText("");
 
-  lineEditMin->setText(QString::number(mpData->getValue< C_FLOAT64 >("Minimum")));
-  lineEditMax->setText(QString::number(mpData->getValue< C_FLOAT64 >("Maximum")));
+  lineEditMin->setText(convertToQString(mpData->getValue< C_FLOAT64 >("Minimum")));
+  lineEditMax->setText(convertToQString(mpData->getValue< C_FLOAT64 >("Maximum")));
 
   checkBoxLog->setChecked(mpData->getValue< bool >("log"));
 

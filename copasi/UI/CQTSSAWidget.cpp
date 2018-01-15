@@ -108,7 +108,7 @@ void CQTSSAWidget::slotDuration()
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
 }
@@ -127,7 +127,7 @@ void CQTSSAWidget::slotIntervalSize()
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTSSAProblem->getStepNumber()));
 }
@@ -145,7 +145,7 @@ void CQTSSAWidget::slotIntervals()
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpEditIntervalSize->setText(QString::number(mpTSSAProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(mpTSSAProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
 }
 
@@ -208,9 +208,9 @@ bool CQTSSAWidget::loadTask()
   mpTSSAProblem = new CTSSAProblem(*pTssaProblem, NO_PARENT);
 
   //numbers
-  mpEditIntervalSize->setText(QString::number(pTssaProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(pTssaProblem->getStepSize()));
   mpEditIntervals->setText(QString::number(pTssaProblem->getStepNumber()));
-  mpEditDuration->setText(QString::number(pTssaProblem->getDuration()));
+  mpEditDuration->setText(convertToQString(pTssaProblem->getDuration()));
 
   mpValidatorDuration->saved();
   mpValidatorIntervalSize->saved();
