@@ -25,6 +25,7 @@
 #include "CQTaskHeaderWidget.h"
 #include "CQTaskMethodWidget.h"
 #include "CProgressBar.h"
+#include "qtUtilities.h"
 
 #include "copasi/lyap/CLyapTask.h"
 #include "copasi/lyap/CLyapProblem.h"
@@ -94,7 +95,7 @@ bool CQLyapWidget::loadTask()
 
   mpCheckDelay->setChecked(enabled);
   mpEditDelay->setEnabled(enabled);
-  mpEditDelay->setText(QString::number(pProblem->getTransientTime()));
+  mpEditDelay->setText(convertToQString(pProblem->getTransientTime()));
 
   mpCheckDivergence->setChecked(pProblem->divergenceRequested());
 
@@ -129,7 +130,7 @@ bool CQLyapWidget::saveTask()
 
   if (mpCheckDelay->isChecked() != enabled ||
       (mpCheckDelay->isChecked() &&
-       mpEditDelay->text() != QString::number(pProblem->getTransientTime())))
+       mpEditDelay->text() != convertToQString(pProblem->getTransientTime())))
     {
       if (mpCheckDelay->isChecked())
         pProblem->setTransientTime(mpEditDelay->text().toDouble());

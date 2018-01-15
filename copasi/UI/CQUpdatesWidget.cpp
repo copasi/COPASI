@@ -357,11 +357,11 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   for (i = 0; i < atolv.size(); ++i)
     {
-      mpTableState->setItem((int) i + tmpint, 3, new QTableWidgetItem(QString::number(atolv[i])));
+      mpTableState->setItem((int) i + tmpint, 3, new QTableWidgetItem(convertToQString(atolv[i])));
 
       const CModelEntity * pME = *(st.getEntities().array() + i + 1);
       C_FLOAT64 tmp = std::min(atolv[i], std::max(100.0 * std::numeric_limits< C_FLOAT64 >::min(), fabs(pME->getInitialValue())));
-      mpTableState->setItem((int) i + tmpint, 4, new QTableWidgetItem(QString::number(tmp)));
+      mpTableState->setItem((int) i + tmpint, 4, new QTableWidgetItem(convertToQString(tmp)));
     }
 
   mpTableState->resizeColumnToContents(0);
@@ -428,7 +428,7 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
     }
             
             
-    tmpItem = new QTableWidgetItem(QString::number(MC.getValues()[i]));
+    tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
     mpTableMathState->setItem(i, 4, tmpItem);
   }
 

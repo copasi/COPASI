@@ -91,7 +91,7 @@ bool CQProgressItemText::reset()
 
 void CQProgressItemText::setValueFromDOUBLE()
 {
-  mValue->setText(QString::number(* static_cast< C_FLOAT64 * >(mpParameterValue)));
+  mValue->setText(convertToQString(* static_cast< C_FLOAT64 * >(mpParameterValue)));
 }
 
 void CQProgressItemText::setValueFromINT()

@@ -76,7 +76,7 @@ void CQCurrentValueTable::setRowInTable(int row, std::string key, std::string s,
   pCheckItem->setFlags((pCheckItem->flags() & ~Qt::ItemIsEditable) | Qt::ItemIsUserCheckable);
   this->mpTable->setItem(row, 0, pCheckItem);
   pCheckItem->setCheckState(Qt::Checked); // initially checked
-  pCheckItem = new QTableWidgetItem(QString::number(val));
+  pCheckItem = new QTableWidgetItem(convertToQString(val));
   this->mpTable->setItem(row, 1, pCheckItem);
   this->setKeyIndex(key, row); // remember which node key is in which row
 }
@@ -86,11 +86,11 @@ void CQCurrentValueTable::updateRowInTable(int row, C_FLOAT64 val)
 {
   if (this->mpTable->item(row, 1) == NULL)
     {
-      this->mpTable->setItem(row, 1, new QTableWidgetItem(QString::number(val)));
+      this->mpTable->setItem(row, 1, new QTableWidgetItem(convertToQString(val)));
     }
   else
     {
-      this->mpTable->item(row, 1)->setText(QString::number(val));
+      this->mpTable->item(row, 1)->setText(convertToQString(val));
     }
 }
 

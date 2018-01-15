@@ -405,13 +405,13 @@ void CQCompartment::load()
   mpComboBoxType->setCurrentIndex(mpComboBoxType->findText(FROM_UTF8(CModelEntity::StatusName[mpCompartment->getStatus()])));
 
   // Initial Volume
-  mpEditInitialVolume->setText(QString::number(mpCompartment->getInitialValue(), 'g', 10));
+  mpEditInitialVolume->setText(convertToQString(mpCompartment->getInitialValue()));
 
   // Transient Volume
-  mpEditCurrentVolume->setText(QString::number(mpCompartment->getValue(), 'g', 10));
+  mpEditCurrentVolume->setText(convertToQString(mpCompartment->getValue()));
 
   // Concentration Rate
-  mpEditRate->setText(QString::number(mpCompartment->getRate(), 'g', 10));
+  mpEditRate->setText(convertToQString(mpCompartment->getRate()));
 
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpCompartment->getExpression());
@@ -497,7 +497,7 @@ void CQCompartment::save()
     }
 
   // Initial Volume
-  if (QString::number(mpCompartment->getInitialValue(), 'g', 10) != mpEditInitialVolume->text())
+  if (convertToQString(mpCompartment->getInitialValue()) != mpEditInitialVolume->text())
     {
       Data.addProperty(CData::INITIAL_VALUE,
                        mpCompartment->getInitialValue(),

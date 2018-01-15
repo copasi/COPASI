@@ -258,11 +258,11 @@ void CopasiSlider::updateLabel()
     {
       labelString += FROM_UTF8(object->getObjectDisplayName());
       labelString += " : [";
-      labelString += QString::number(minValue);
+      labelString += convertToQString(minValue);
       labelString += "-";
-      labelString += QString::number(maxValue);
+      labelString += convertToQString(maxValue);
       labelString += "] {";
-      labelString += QString::number(currValue);
+      labelString += convertToQString(currValue);
       labelString += "}";
 
       if (mValueOutOfRange)

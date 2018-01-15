@@ -23,6 +23,8 @@
 #include <QAbstractItemView>
 
 #include "copasi.h"
+#include <copasi/core/CRootContainer.h>
+#include <copasi/commandline/CConfigurationFile.h>
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
 #include "utilities/CCopasiParameterGroup.h"
@@ -383,6 +385,12 @@ QString toTsvString(QAbstractItemModel* pModel,
     }
 
   return text;
+}
+
+QString convertToQString(double number)
+{
+  C_INT32 precision = CRootContainer::getConfiguration()->getDoublePrecision();
+  return QString::number(number, 'g', precision);
 }
 
 QString toTsvString(QAbstractItemView* pWidget,

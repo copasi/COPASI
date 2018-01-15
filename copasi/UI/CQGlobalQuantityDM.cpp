@@ -164,7 +164,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
               case COL_INITIAL_GQ:
 
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(GQ.getInitialValue(), 'g', 10));
+                  return QVariant(convertToQString(GQ.getInitialValue()));
                 else
                   return QVariant(GQ.getInitialValue());
 

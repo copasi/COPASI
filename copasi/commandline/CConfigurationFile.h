@@ -359,6 +359,17 @@ public:
    */
   void setCurrentAuthorEmail(const std::string & CurrentAuthorEmail);
 
+  /** 
+   * @return the double precision to be used when converting to string
+   */
+  C_INT32 getDoublePrecision() const;
+
+  /** 
+   * sets the double precision to be used when converting numbers to 
+   * string
+   */
+  void setDoublePrecision(C_INT32 precision);
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -540,6 +551,12 @@ private:
    * A pointer to the Email of the current author.
    */
   std::string * mpCurrentAuthorEmail;
+
+  /**
+   * a pointer to the double precision requested when converting numbers
+   * to string
+   */
+  C_INT32* mpPrecision;
 };
 
 #endif // COPASI_CConfigurationFile

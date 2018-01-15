@@ -242,7 +242,7 @@ bool CQAnalyticsWidget::loadTask()
     {
       mpCheckOutputDelay->setChecked(true);
       mpTxtOutTime->setEnabled(true);
-      mpTxtOutTime->setText(QString::number(pProblem->getOutputStartTime()));
+      mpTxtOutTime->setText(convertToQString(pProblem->getOutputStartTime()));
     }
   else
     {
@@ -251,7 +251,7 @@ bool CQAnalyticsWidget::loadTask()
       mpTxtOutTime->setText("");
     }
 
-  mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
+  mpTxtTime->setText(convertToQString(pProblem->getTimeLimit()));
 
   mpValidatorTime->saved();
   mpValidatorOutTime->saved();
@@ -358,10 +358,10 @@ void CQAnalyticsWidget::slotOutputDelayTime()
 
 void CQAnalyticsWidget::updateValues()
 {
-  mpTxtTime->setText(QString::number(mpAnalyticsProblem->getTimeLimit()));
+  mpTxtTime->setText(convertToQString(mpAnalyticsProblem->getTimeLimit()));
   mpValidatorTime->revalidate();
 
-  mpTxtOutTime->setText(QString::number(mpAnalyticsProblem->getOutputStartTime()));
+  mpTxtOutTime->setText(convertToQString(mpAnalyticsProblem->getOutputStartTime()));
   mpValidatorOutTime->revalidate();
 }
 

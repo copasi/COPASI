@@ -853,7 +853,7 @@ void ReactionsWidget1::setFramework(int framework)
         TextLabel8->setText("Flux" + Units);
 
         if (pReaction != NULL)
-          mpEditFlux->setText(QString::number(pReaction->getFlux(), 'g', 10));
+          mpEditFlux->setText(convertToQString(pReaction->getFlux()));
 
         break;
 
@@ -862,7 +862,7 @@ void ReactionsWidget1::setFramework(int framework)
         TextLabel8->setText("Number Flux" + Units);
 
         if (pReaction != NULL)
-          mpEditFlux->setText(QString::number(pReaction->getParticleFlux(), 'g', 10));
+          mpEditFlux->setText(convertToQString(pReaction->getParticleFlux()));
 
         break;
     }

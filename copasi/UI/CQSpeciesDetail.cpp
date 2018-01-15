@@ -182,10 +182,10 @@ void CQSpeciesDetail::setFramework(int framework)
 
         mpLblValue->setText("Concentration " + ConcentrationUnits);
         mpLblRate->setText("Rate " + ConcentrationRateUnits);
-        mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+        mpEditInitialValue->setText(convertToQString(mInitialConcentration));
         mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
-        mpEditCurrentValue->setText(QString::number(mpMetab->getConcentration(), 'g', 10));
-        mpEditRate->setText(QString::number(mpMetab->getConcentrationRate(), 'g', 10));
+        mpEditCurrentValue->setText(convertToQString(mpMetab->getConcentration()));
+        mpEditRate->setText(convertToQString(mpMetab->getConcentrationRate()));
         break;
 
       case 1:
@@ -199,10 +199,10 @@ void CQSpeciesDetail::setFramework(int framework)
 
         mpLblValue->setText("Number " + ParticleNumberUnits);
         mpLblRate->setText("Number Rate " + ParticleNumberRateUnits);
-        mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+        mpEditInitialValue->setText(convertToQString(mInitialNumber));
         mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
-        mpEditCurrentValue->setText(QString::number(mpMetab->getValue(), 'g', 10));
-        mpEditRate->setText(QString::number(mpMetab->getRate(), 'g', 10));
+        mpEditCurrentValue->setText(convertToQString(mpMetab->getValue()));
+        mpEditRate->setText(convertToQString(mpMetab->getRate()));
         break;
     }
 }
@@ -256,7 +256,7 @@ void CQSpeciesDetail::load()
   // Initial Number handled in slotTypeChanged
   mInitialNumber = mpMetab->getInitialValue();
   // Transition Time
-  mpEditTransitionTime->setText(QString::number(mpMetab->getTransitionTime(), 'g', 10));
+  mpEditTransitionTime->setText(convertToQString(mpMetab->getTransitionTime()));
   // Expression
   mpExpressionEMW->mpExpressionWidget->setExpression(mpMetab->getExpression());
   mpExpressionEMW->updateWidget();
@@ -616,7 +616,7 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
   mInitialNumber *= pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
 
   if (mFramework == 1)
-    mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+    mpEditInitialValue->setText(convertToQString(mInitialNumber));
 
   mpCurrentCompartment = pNewCompartment;
   // Update the units and values accordingly
@@ -920,7 +920,7 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
   switch (mFramework)
     {
       case 0:
-        if (QString::number(mInitialConcentration, 'g', 10) == mpEditInitialValue->text())
+        if (convertToQString(mInitialConcentration) == mpEditInitialValue->text())
           return;
 
         mInitialConcentration = mpEditInitialValue->text().toDouble();
@@ -960,13 +960,13 @@ void CQSpeciesDetail::speciesInitialValueLostFocus(UndoSpeciesData *pSData)
       case 0:
         mInitialConcentration = pSData->getIConc();
         pSData->setIConc(mpEditInitialValue->text().toDouble());
-        mpEditInitialValue->setText(QString::number(mInitialConcentration, 'g', 10));
+        mpEditInitialValue->setText(convertToQString(mInitialConcentration));
         break;
 
       case 1:
         mInitialNumber = pSData->getINumber();
         pSData->setINumber(mpEditInitialValue->text().toDouble());
-        mpEditInitialValue->setText(QString::number(mInitialNumber, 'g', 10));
+        mpEditInitialValue->setText(convertToQString(mInitialNumber));
         break;
     }
 }

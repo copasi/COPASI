@@ -112,7 +112,7 @@ void CQTrajectoryWidget::slotDuration()
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(mpTrajectoryProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTrajectoryProblem->getStepNumber()));
   mpValidatorIntervals->revalidate();
@@ -138,7 +138,7 @@ void CQTrajectoryWidget::slotIntervalSize()
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(mpTrajectoryProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
   mpEditIntervals->setText(QString::number(mpTrajectoryProblem->getStepNumber()));
   mpValidatorIntervals->revalidate();
@@ -163,7 +163,7 @@ void CQTrajectoryWidget::slotIntervals()
                                 QMessageBox::Ok, QMessageBox::Ok);
     }
 
-  mpEditIntervalSize->setText(QString::number(mpTrajectoryProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(mpTrajectoryProblem->getStepSize()));
   mpValidatorIntervalSize->revalidate();
 
   checkTimeSeries();
@@ -304,9 +304,9 @@ bool CQTrajectoryWidget::loadTask()
   mpTrajectoryProblem = new CTrajectoryProblem(*TrajectoryProblem, NO_PARENT);
 
   //numbers
-  mpEditIntervalSize->setText(QString::number(TrajectoryProblem->getStepSize()));
+  mpEditIntervalSize->setText(convertToQString(TrajectoryProblem->getStepSize()));
   mpEditIntervals->setText(QString::number(TrajectoryProblem->getStepNumber()));
-  mpEditDuration->setText(QString::number(TrajectoryProblem->getDuration()));
+  mpEditDuration->setText(convertToQString(TrajectoryProblem->getDuration()));
   mpCheckAutomaticInterval->setChecked(TrajectoryProblem->getAutomaticStepSize());
 
   assert(mpDataModel != NULL);
@@ -322,7 +322,7 @@ bool CQTrajectoryWidget::loadTask()
   mpCheckDelay->setChecked(Delayed);
   mpEditDelay->setEnabled(Delayed);
 
-  mpEditDelay->setText(QString::number(TrajectoryProblem->getOutputStartTime()));
+  mpEditDelay->setText(convertToQString(TrajectoryProblem->getOutputStartTime()));
 
   mpCheckOutputEvent->setChecked(TrajectoryProblem->getOutputEvent());
   mpCheckStartInSteadyState->setChecked(TrajectoryProblem->getStartInSteadyState());
@@ -400,9 +400,9 @@ void CQTrajectoryWidget::updateIntervals()
       OutputStartTime = mpEditDelay->text().toDouble();
     }
 
-  mpEditIntegrationInterval->setText(QString::number(InitialTime) +
+  mpEditIntegrationInterval->setText(convertToQString(InitialTime) +
                                      " to " +
-                                     QString::number(InitialTime + Duration));
+    convertToQString(InitialTime + Duration));
 
   if (Duration > 0.0)
     {
@@ -412,15 +412,15 @@ void CQTrajectoryWidget::updateIntervals()
         {
           C_FLOAT64 StepSize = mpEditIntervalSize->text().toDouble();
           OutputStartTime = InitialTime + (ceil((OutputStartTime - InitialTime) / StepSize)) * StepSize;
-          mpEditOutputInterval->setText(QString::number(OutputStartTime) +
+          mpEditOutputInterval->setText(convertToQString(OutputStartTime) +
                                         " to " +
-                                        QString::number(InitialTime + Duration));
+            convertToQString(InitialTime + Duration));
         }
       else
         {
-          mpEditOutputInterval->setText(QString::number(InitialTime) +
+          mpEditOutputInterval->setText(convertToQString(InitialTime) +
                                         " to " +
-                                        QString::number(InitialTime + Duration));
+            convertToQString(InitialTime + Duration));
         }
     }
   else
@@ -431,14 +431,14 @@ void CQTrajectoryWidget::updateIntervals()
         {
           C_FLOAT64 StepSize = mpEditIntervalSize->text().toDouble();
           OutputStartTime = InitialTime + (ceil((OutputStartTime - InitialTime) / StepSize)) * StepSize;
-          mpEditOutputInterval->setText(QString::number(OutputStartTime) +
+          mpEditOutputInterval->setText(convertToQString(OutputStartTime) +
                                         " to " +
-                                        QString::number(InitialTime + Duration));
+            convertToQString(InitialTime + Duration));
         }
       else
-        mpEditOutputInterval->setText(QString::number(InitialTime) +
+        mpEditOutputInterval->setText(convertToQString(InitialTime) +
                                       " to " +
-                                      QString::number(InitialTime + Duration));
+          convertToQString(InitialTime + Duration));
     }
 }
 

@@ -156,7 +156,7 @@ QVariant CQCompartmentDM::data(const QModelIndex &index, int role) const
               case COL_IVOLUME:
 
                 if (role == Qt::EditRole)
-                  return QVariant(QString::number(Compartment.getInitialValue(), 'g', 10));
+                  return QVariant(convertToQString(Compartment.getInitialValue()));
                 else
                   return QVariant(Compartment.getInitialValue());
 

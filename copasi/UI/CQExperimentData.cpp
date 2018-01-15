@@ -736,12 +736,12 @@ void CQExperimentData::slotOK()
     {
       CCrossValidationSet * pSet = static_cast< CCrossValidationSet * >(mpExperimentSet);
 
-      if (QString::number(pSet->getWeight()) != mpEditWeight->text())
+      if (convertToQString(pSet->getWeight()) != mpEditWeight->text())
         {
           pSet->setWeight(mpEditWeight->text().toDouble());
         }
 
-      if (QString::number(pSet->getThreshold()) != mpEditThreshold->text())
+      if (convertToQString(pSet->getThreshold()) != mpEditThreshold->text())
         {
           pSet->setThreshold(mpEditThreshold->text().toUInt());
         }
@@ -766,8 +766,8 @@ bool CQExperimentData::load(CExperimentSet * pExperimentSet, CDataModel * pDataM
       mpEditThreshold->show();
       mpLineCrossValidation->show();
 
-      mpEditWeight->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
-      mpEditThreshold->setText(QString::number(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
+      mpEditWeight->setText(convertToQString(static_cast< CCrossValidationSet * >(pExperimentSet)->getWeight()));
+      mpEditThreshold->setText(convertToQString(static_cast< CCrossValidationSet * >(pExperimentSet)->getThreshold()));
     }
   else
     {
@@ -1344,7 +1344,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
               DefaultScale == Scale)
             ScaleText = "(" + QString::number(DefaultScale) + ")";
           else
-            ScaleText = QString::number(Scale);
+            ScaleText = convertToQString(Scale);
 
           pItem->setText(ScaleText);
           pItem->setFlags(pItem->flags() & ~FlagMask);
@@ -1488,7 +1488,7 @@ void CQExperimentData::updateScales()
 
               C_FLOAT64 DefaultWeight = ObjectMap.getDefaultScale(i);
 
-              ScaleText = "(" + QString::number(DefaultWeight) + ")";
+              ScaleText = "(" + convertToQString(DefaultWeight) + ")";
               pItem->setText(ScaleText);
             }
 
@@ -1551,7 +1551,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
       if (Type == CExperiment::dependent &&
           ScaleText[0] != '(' &&
-          QString::number(ObjectMap.getScale(i)) != ScaleText)
+        convertToQString(ObjectMap.getScale(i)) != ScaleText)
         {
           ObjectMap.setScale(i, ScaleText.toDouble());
           Changed = true;

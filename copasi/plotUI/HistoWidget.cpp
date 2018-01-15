@@ -129,7 +129,7 @@ bool HistoWidget::LoadFromCurveSpec(const CPlotItem * curve)
     mpEditVariable->setText("");
 
   //other parameters:
-  mpEditIncrement->setText(QString::number(curve->getValue< C_FLOAT64 >("increment")));
+  mpEditIncrement->setText(convertToQString(curve->getValue< C_FLOAT64 >("increment")));
 
   mpCheckBefore->setChecked(curve->getActivity() & COutputInterface::BEFORE);
   mpCheckDuring->setChecked(curve->getActivity() & COutputInterface::DURING);

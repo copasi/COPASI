@@ -32,6 +32,7 @@
 #include <copasi/UI/copasiui3window.h>
 #include <copasi/UI/listviews.h>
 #include <copasi/UI/DataModelGUI.h>
+#include "qtUtilities.h"
 #include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/model/CModel.h>
 
@@ -404,9 +405,9 @@ CQParameterEstimationResult::dataSetChanged()
       int row = ui->tblFitItems->rowCount();
       ui->tblFitItems->insertRow(row);
       ui->tblFitItems->setItem(row, 0, new QTableWidgetItem(item->mName.c_str()));
-      ui->tblFitItems->setItem(row, 1, new QTableWidgetItem(QString::number(item->mLowerBound)));
-      ui->tblFitItems->setItem(row, 2, new QTableWidgetItem(QString::number(item->mUpperBound)));
-      ui->tblFitItems->setItem(row, 3, new QTableWidgetItem(QString::number(item->mStartValue)));
+      ui->tblFitItems->setItem(row, 1, new QTableWidgetItem(convertToQString(item->mLowerBound)));
+      ui->tblFitItems->setItem(row, 2, new QTableWidgetItem(convertToQString(item->mUpperBound)));
+      ui->tblFitItems->setItem(row, 3, new QTableWidgetItem(convertToQString(item->mStartValue)));
       ui->tblFitItems->setItem(row, 4, new QTableWidgetItem(item->getAffectedExperiments().c_str()));
     }
 

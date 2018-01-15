@@ -269,7 +269,7 @@ bool CQCrossSectionTaskWidget::loadTask()
   else
     setSingleObject(static_cast<const CDataObject*>(pTask->getObjectDataModel()->getObject(name)));
 
-  mpLineEditValue->setText(QString::number(pProblem->getThreshold()));
+  mpLineEditValue->setText(convertToQString(pProblem->getThreshold()));
   mpDirectionPositive->setChecked(mpCrossSectionProblem->isPositiveDirection());
   mpDirectionNegative->setChecked(!mpCrossSectionProblem->isPositiveDirection());
 
@@ -277,7 +277,7 @@ bool CQCrossSectionTaskWidget::loadTask()
   mpTxtConvergence->setEnabled(pProblem->getFlagLimitConvergence());
 
   if (pProblem->getFlagLimitConvergence())
-    mpTxtConvergence->setText(QString::number(pProblem->getConvergenceTolerance()));
+    mpTxtConvergence->setText(convertToQString(pProblem->getConvergenceTolerance()));
   else
     mpTxtConvergence->setText("");
 
@@ -285,7 +285,7 @@ bool CQCrossSectionTaskWidget::loadTask()
   mpTxtOutConvergence->setEnabled(pProblem->getFlagLimitOutConvergence());
 
   if (pProblem->getFlagLimitOutConvergence())
-    mpTxtOutConvergence->setText(QString::number(pProblem->getConvergenceOutTolerance()));
+    mpTxtOutConvergence->setText(convertToQString(pProblem->getConvergenceOutTolerance()));
   else
     mpTxtOutConvergence->setText("");
 
@@ -293,7 +293,7 @@ bool CQCrossSectionTaskWidget::loadTask()
   mpTxtCrossings->setEnabled(pProblem->getFlagLimitCrossings());
 
   if (pProblem->getFlagLimitCrossings())
-    mpTxtCrossings->setText(QString::number(pProblem->getCrossingsLimit()));
+    mpTxtCrossings->setText(convertToQString(pProblem->getCrossingsLimit()));
   else
     mpTxtCrossings->setText("");
 
@@ -301,7 +301,7 @@ bool CQCrossSectionTaskWidget::loadTask()
   mpTxtOutCrossings->setEnabled(pProblem->getFlagLimitOutCrossings());
 
   if (pProblem->getFlagLimitOutCrossings())
-    mpTxtOutCrossings->setText(QString::number(pProblem->getOutCrossingsLimit()));
+    mpTxtOutCrossings->setText(convertToQString(pProblem->getOutCrossingsLimit()));
   else
     mpTxtOutCrossings->setText("");
 
@@ -310,7 +310,7 @@ bool CQCrossSectionTaskWidget::loadTask()
     {
       mpCheckOutputDelay->setChecked(true);
       mpTxtOutTime->setEnabled(true);
-      mpTxtOutTime->setText(QString::number(pProblem->getOutputStartTime()));
+      mpTxtOutTime->setText(convertToQString(pProblem->getOutputStartTime()));
     }
   else
     {
@@ -319,7 +319,7 @@ bool CQCrossSectionTaskWidget::loadTask()
       mpTxtOutTime->setText("");
     }
 
-  mpTxtTime->setText(QString::number(pProblem->getTimeLimit()));
+  mpTxtTime->setText(convertToQString(pProblem->getTimeLimit()));
 
   mpValidatorCrossing->saved();
   mpValidatorTolerance->saved();
@@ -513,25 +513,25 @@ void CQCrossSectionTaskWidget::slotOutputDelayTime()
 
 void CQCrossSectionTaskWidget::updateValues()
 {
-  mpTxtCrossings->setText(QString::number(mpCrossSectionProblem->getCrossingsLimit()));
+  mpTxtCrossings->setText(convertToQString(mpCrossSectionProblem->getCrossingsLimit()));
   mpValidatorLC->revalidate();
 
-  mpTxtOutCrossings->setText(QString::number(mpCrossSectionProblem->getOutCrossingsLimit()));
+  mpTxtOutCrossings->setText(convertToQString(mpCrossSectionProblem->getOutCrossingsLimit()));
   mpValidatorOutLC->revalidate();
 
-  mpTxtTime->setText(QString::number(mpCrossSectionProblem->getTimeLimit()));
+  mpTxtTime->setText(convertToQString(mpCrossSectionProblem->getTimeLimit()));
   mpValidatorTime->revalidate();
 
-  mpTxtOutTime->setText(QString::number(mpCrossSectionProblem->getOutputStartTime()));
+  mpTxtOutTime->setText(convertToQString(mpCrossSectionProblem->getOutputStartTime()));
   mpValidatorOutTime->revalidate();
 
-  mpTxtConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceTolerance()));
+  mpTxtConvergence->setText(convertToQString(mpCrossSectionProblem->getConvergenceTolerance()));
   mpValidatorTolerance->revalidate();
 
-  mpTxtOutConvergence->setText(QString::number(mpCrossSectionProblem->getConvergenceOutTolerance()));
+  mpTxtOutConvergence->setText(convertToQString(mpCrossSectionProblem->getConvergenceOutTolerance()));
   mpValidatorOutTolerance->revalidate();
 
-  mpLineEditValue->setText(QString::number(mpCrossSectionProblem->getThreshold()));
+  mpLineEditValue->setText(convertToQString(mpCrossSectionProblem->getThreshold()));
   mpValidatorCrossing->revalidate();
 }
 

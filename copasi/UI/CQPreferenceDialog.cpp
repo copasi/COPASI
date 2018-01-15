@@ -77,6 +77,10 @@ void CQPreferenceDialog::slotBtnOk()
   if (mpConfiguration != NULL)
     {
       *CRootContainer::getConfiguration() = *mpConfiguration;
+
+      // remove items from tree, otherwise node pointers will become invalid
+      mpTreeView->clearGroups();
+
       delete mpConfiguration;
       mpConfiguration = NULL;
     }
@@ -89,6 +93,9 @@ void CQPreferenceDialog::slotBtnCancel()
 {
   if (mpConfiguration != NULL)
     {
+      // remove items from tree, otherwise node pointers will become invalid
+      mpTreeView->clearGroups();
+
       delete mpConfiguration;
       mpConfiguration = NULL;
     }

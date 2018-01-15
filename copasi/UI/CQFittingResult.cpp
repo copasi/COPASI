@@ -167,10 +167,10 @@ void CQFittingResult::loadExperimentSetIntoTree(const CExperimentSet& Experiment
       QTreeWidgetItem* pExperimentItem = new QTreeWidgetItem(pRoot, QStringList()
           << FROM_UTF8(Experiment.getObjectName())
           << validValueCount
-          << QString::number(Experiment.getObjectiveValue())
-          << QString::number(Experiment.getRMS())
-          << QString::number(Experiment.getErrorMean())
-          << QString::number(Experiment.getErrorMeanSD())
+          << convertToQString(Experiment.getObjectiveValue())
+          << convertToQString(Experiment.getRMS())
+          << convertToQString(Experiment.getErrorMean())
+          << convertToQString(Experiment.getErrorMeanSD())
                                                             );
 
       //now the data sets in the experiment
@@ -187,9 +187,9 @@ void CQFittingResult::loadExperimentSetIntoTree(const CExperimentSet& Experiment
               pItem = new QTreeWidgetItem(pExperimentItem, QStringList()
                                           << FROM_UTF8((*ppObject)->getObjectDisplayName())
                                           << QString::number((unsigned int)Count)
-                                          << QString::number(Experiment.getObjectiveValue(*ppObject))
-                                          << QString::number(Experiment.getRMS(*ppObject))
-                                          << QString::number(Experiment.getErrorSum(*ppObject) / Count)
+                                          << convertToQString(Experiment.getObjectiveValue(*ppObject))
+                                          << convertToQString(Experiment.getRMS(*ppObject))
+                                          << convertToQString(Experiment.getErrorSum(*ppObject) / Count)
                                           << ""//QString::number(Experiment.getErrorMeanSD(*ppObject))
                                          );
             }
