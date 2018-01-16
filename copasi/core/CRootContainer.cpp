@@ -23,6 +23,8 @@
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnitDefinitionDB.h"
 
+#include <copasi/MIRIAM/CRDFGraphConverter.h>
+
 extern CDataVector< CLGlobalRenderInformation > * DEFAULT_STYLES;
 
 extern CRootContainer * pRootContainer;
@@ -105,6 +107,7 @@ void CRootContainer::destroy()
   pdelete(CFunctionParameterMap::pUnmappedObject);
 
   COptions::cleanup();
+  CRDFGraphConverter::deleteConverterData();
 }
 
 void CRootContainer::initializeChildren()

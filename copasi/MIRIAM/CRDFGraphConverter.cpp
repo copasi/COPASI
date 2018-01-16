@@ -23,6 +23,23 @@
 #include "CMIRIAMResource.h"
 #include "utilities/CCopasiMessage.h"
 
+void CRDFGraphConverter::deleteConverterData()
+{
+  size_t i = 0; 
+  while (true)
+  {
+    CRDFGraphConverter::sChange& current = CRDFGraphConverter::SBML2CopasiChanges[i++];
+    
+    if (current.pCheckTriplet != NULL)
+    {
+      pdelete(current.pCheckTriplet);
+    }
+
+    if (current.Source == CRDFPredicate::end)
+      break;
+  }
+}
+
 // static
 CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
 {

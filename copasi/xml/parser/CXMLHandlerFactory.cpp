@@ -112,7 +112,7 @@ CXMLHandler * CXMLHandlerFactory::getHandler(const CXMLHandler::Type & type)
   if (pHandler == NULL)
     {
       pHandler = createHandler(type);
-
+      CVector< CXMLHandler * >::operator[](type) = pHandler;
       assert(pHandler != NULL);
     }
 
