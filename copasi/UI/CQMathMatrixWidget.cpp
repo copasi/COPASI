@@ -101,7 +101,10 @@ CQMathMatrixWidget::CQMathMatrixWidget(QWidget* parent)
  *  Destroys the object and frees any allocated resources
  */
 CQMathMatrixWidget::~CQMathMatrixWidget()
-{}
+{
+  pdelete(mpJacobianAnn);
+  pdelete(mpJacobianAnnRed);
+}
 
 void CQMathMatrixWidget::loadMatrices()
 {
