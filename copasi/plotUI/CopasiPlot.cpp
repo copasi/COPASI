@@ -425,6 +425,10 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
               || linetype == 3)  //line+symbols
             {
               pCurve->setStyle(QwtPlotCurve::Lines);
+#if QWT_VERSION > 0x060000
+              pCurve->setLegendAttribute(QwtPlotCurve::LegendShowLine);
+#endif
+
               unsigned C_INT32 linesubtype = itPlotItem->getValue< unsigned C_INT32 >("Line subtype");
               C_FLOAT64 width = itPlotItem->getValue< C_FLOAT64 >("Line width");
 
@@ -475,6 +479,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
                   case 1:
 #if QWT_VERSION > 0x060000
                     pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
+                    pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
 #else
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(), QPen(QBrush(color), 2), QSize(7, 7)));
 #endif
@@ -483,6 +488,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
                   case 2:
 #if QWT_VERSION > 0x060000
                     pCurve->setSymbol(new QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
+                    pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
 #else
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Ellipse, QBrush(), QPen(QBrush(color), 1), QSize(8, 8)));
 #endif
@@ -492,6 +498,7 @@ bool CopasiPlot::initFromSpec(const CPlotSpecification* plotspec)
                   default:
 #if QWT_VERSION > 0x060000
                     pCurve->setSymbol(new QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
+                    pCurve->setLegendAttribute(QwtPlotCurve::LegendShowSymbol);
 #else
                     pCurve->setSymbol(QwtSymbol(QwtSymbol::Cross, QBrush(color), QPen(QBrush(color), 1), QSize(5, 5)));
 #endif
