@@ -46,8 +46,35 @@ find_library( GFORTRAN_LIBRARY
 set(BLA_VENDOR "Apple")
 find_package(LAPACK)
 
+
+if (BLAS_FOUND AND APPLE)
+  add_definitions(-DHAVE_APPLE)
+  if (NOT CLAPACK_INCLUDE_DIR)
+    set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+  endif (NOT CLAPACK_INCLUDE_DIR)
+
+
+  if (NOT CLAPACK_LIBRARIES)
+    set(CLAPACK_LIBRARIES ${BLAS_LIBRARIES})
+  endif(NOT CLAPACK_LIBRARIES)
+
+endif()
+
 if (LAPACK_FOUND)
   add_definitions(-DHAVE_APPLE)
+  if (NOT CLAPACK_INCLUDE_DIR)
+    set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+  endif (NOT CLAPACK_INCLUDE_DIR)
+
+
+  if (NOT CLAPACK_LIBRARIES)
+    set(CLAPACK_LIBRARIES ${LAPACK_LIBRARIES})
+  endif(NOT CLAPACK_LIBRARIES)
+
+  if (NOT CLAPACK_LINKER_FLAGS)
+    set(CLAPACK_LINKER_FLAGS ${LAPACK_LINKER_FLAGS})
+  endif(NOT CLAPACK_LINKER_FLAGS)
+
 endif ()
 
 if (NOT LAPACK_FOUND)
@@ -123,6 +150,7 @@ if (NOT LAPACK_FOUND AND DEFINED ENV{LAPACK_DIR} AND EXISTS $ENV{LAPACK_DIR})
   set (BLA_VENDOR "COPASI Dependencies")
 endif()
 
+if (NOT BLASWRAP_INCLUDE_DIR)
 find_path(BLASWRAP_INCLUDE_DIR blaswrap.h
     PATHS $ENV{LAPACK_DIR}/include
           $ENV{LAPACK_DIR}
@@ -136,11 +164,13 @@ find_path(BLASWRAP_INCLUDE_DIR blaswrap.h
           /opt/include
           /usr/freeware/include
 )
+endif(NOT BLASWRAP_INCLUDE_DIR)
 
 if (BLASWRAP_INCLUDE_DIR)
   add_definitions(-DHAVE_BLASWRAP_H)
 endif (BLASWRAP_INCLUDE_DIR)
 
+if (NOT F2C_INCLUDE_DIR)
 find_path(F2C_INCLUDE_DIR f2c.h
     PATHS $ENV{LAPACK_DIR}/include
           $ENV{LAPACK_DIR}
@@ -154,11 +184,13 @@ find_path(F2C_INCLUDE_DIR f2c.h
           /opt/include
           /usr/freeware/include
 )
+endif(NOT F2C_INCLUDE_DIR)
 
 if (F2C_INCLUDE_DIR)
   add_definitions(-DHAVE_F2C_H)
 endif (F2C_INCLUDE_DIR)
 
+if (NOT BLAS_INCLUDE_DIR)
 find_path(BLAS_INCLUDE_DIR blas.h
     PATHS $ENV{LAPACK_DIR}/include
           $ENV{LAPACK_DIR}
@@ -172,11 +204,13 @@ find_path(BLAS_INCLUDE_DIR blas.h
           /opt/include
           /usr/freeware/include
 )
+endif(NOT BLAS_INCLUDE_DIR)
 
 if (BLAS_INCLUDE_DIR)
   add_definitions(-DHAVE_BLAS_H)
 endif (BLAS_INCLUDE_DIR)
 
+if (NOT LAPACKWRAP_INCLUDE_DIR)
 find_path(LAPACKWRAP_INCLUDE_DIR lapackwrap.h
     PATHS $ENV{LAPACK_DIR}/include
           $ENV{LAPACK_DIR}
@@ -190,11 +224,13 @@ find_path(LAPACKWRAP_INCLUDE_DIR lapackwrap.h
           /opt/include
           /usr/freeware/include
 )
+endif( NOT LAPACKWRAP_INCLUDE_DIR)
 
 if (LAPACKWRAP_INCLUDE_DIR)
   add_definitions(-DHAVE_LAPACKWRAP_H)
 endif (LAPACKWRAP_INCLUDE_DIR)
 
+if(NOT CLAPACK_INCLUDE_DIR)
 find_path(CLAPACK_INCLUDE_DIR clapack.h
     PATHS $ENV{LAPACK_DIR}/include
           $ENV{LAPACK_DIR}
@@ -208,6 +244,8 @@ find_path(CLAPACK_INCLUDE_DIR clapack.h
           /opt/include
           /usr/freeware/include
 )
+endif(NOT CLAPACK_INCLUDE_DIR)
+
 
 if (CLAPACK_INCLUDE_DIR)
   add_definitions(-DHAVE_CLAPACK_H)

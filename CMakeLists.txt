@@ -447,14 +447,14 @@ if(BUILD_GUI)
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
 
   # first try to find whether Qt5 is present
-  option(QT_USE_TEXTBROSWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" OFF)
+  option(QT_USE_TEXTBROWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" OFF)
   
   if (${SELECT_QT} MATCHES "Qt5" OR
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     
-    if (QT_USE_TEXTBROSWSER)
+    if (QT_USE_TEXTBROWSER OR QT_USE_TEXTBROSWSER)
       QT_FIND_MODULES( Concurrent
                        Core
                        Gui
