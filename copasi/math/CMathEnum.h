@@ -11,6 +11,8 @@
 #ifndef COPASI_CMathEnum
 #define COPASI_CMathEnum
 
+#include <stddef.h>
+
 #include <map>
 #include <vector>
 #include <string>
