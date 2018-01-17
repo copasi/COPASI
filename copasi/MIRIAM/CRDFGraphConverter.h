@@ -29,6 +29,8 @@ class CRDFGraphConverter
 public:
   static bool SBML2Copasi(std::string & XML);
 
+  static void deleteConverterData();
+
 private:
   struct sChange
   {

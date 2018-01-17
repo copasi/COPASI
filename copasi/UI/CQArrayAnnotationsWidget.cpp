@@ -111,9 +111,9 @@ CQArrayAnnotationsWidget::~CQArrayAnnotationsWidget()
 #ifdef DEBUG_UI
   qDebug() << "-- in destructor -- \n";
 #endif
-
-  if (mpColorScale)
-    delete mpColorScale;
+  
+  pdelete(mpColorScale);
+  pdelete(mpProxyModel);
 }
 
 void CQArrayAnnotationsWidget::setColorCoding(CColorScale * cs)
