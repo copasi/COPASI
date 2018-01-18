@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -169,7 +169,7 @@ CModel::CModel(CDataContainer* pParent):
   mReorderNeeded(false),
   mIsAutonomous(true),
   mBuildInitialSequence(true),
-  mpMathContainer(new CMathContainer(*this))
+  mpMathContainer(NULL)
 {
   initObjects();
 
@@ -2320,7 +2320,7 @@ bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
 
-  #pragma region   //find_experiment
+#pragma region   //find_experiment
 
   if (experiment == NULL)
     {
@@ -2370,7 +2370,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
 
-  #pragma endregion //find_experiment
+#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -2913,7 +2913,7 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setMode(1, CDataArray::Mode::Objects);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
-  // mpMathModel = new CMathModel(this);
+  mpMathContainer = new CMathContainer(*this);
 }
 
 bool CModel::hasReversibleReaction() const
@@ -3073,7 +3073,7 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-            // Intentionally no break statement!
+          // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
