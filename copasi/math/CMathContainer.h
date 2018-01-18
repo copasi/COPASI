@@ -1039,6 +1039,11 @@ private:
 
   /**
    * Map the data object to the math object
+   */
+  void map();
+
+  /**
+   * Map the data object to the math object
    * @param CDataObject * pDataObject
    * @param CMathObject * pMathObject
    */

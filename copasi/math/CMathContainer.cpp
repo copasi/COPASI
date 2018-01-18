@@ -3702,6 +3702,16 @@ bool CMathContainer::hasDependencies(const CDataObject * pObject)
   return Dependencies.size() > 0;
 }
  */
+void CMathContainer::map()
+{
+  CMathObject * itObject = mObjects.begin();
+  CMathObject * endObject = mObjects.end();
+
+  for (; itObject != endObject; ++itObject)
+    {
+      map(itObject->getDataObject(), itObject);
+    }
+}
 
 void CMathContainer::map(const CDataObject * pDataObject, CMathObject * pMathObject)
 {
@@ -3874,6 +3884,9 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
       mInitialDependencies.addObject(pObject);
     }
 
+  // We resize cleared mDataObject2MathObject and mDataValue2MathObject we must create a new map
+  map();
+
   createUpdateSequences();
 
   return Entity;
@@ -3937,6 +3950,9 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
   // Resize
   resize(Size);
   finishResize();
+
+  // We resize cleared mDataObject2MathObject and mDataValue2MathObject we must create a new map
+  map();
 
   // Create Update sequences
   createUpdateSequences();
@@ -4162,6 +4178,9 @@ CMathEvent * CMathContainer::addAnalysisEvent(const CEvent & dataEvent)
           pFixedEnd--;
         }
     }
+
+  // We resize cleared mDataObject2MathObject and mDataValue2MathObject we must create a new map
+  map();
 
   analyzeRoots();
   createUpdateSequences();
@@ -4401,6 +4420,9 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 
       relocate(Size, Relocations);
     }
+
+  // We resize cleared mDataObject2MathObject and mDataValue2MathObject we must create a new map
+  map();
 
   analyzeRoots();
   createUpdateSequences();
@@ -4930,6 +4952,10 @@ std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & s
     {
       return Relocations;
     }
+
+  // We must not relocate mDataObject2MathObject and mDataValue2MathObject as the key might have been deleted and newly allocated.
+  mDataObject2MathObject.clear();
+  mDataValue2MathObject.clear();
 
   // Determine the offsets
   // We have to cast all pointers to size_t to avoid pointer overflow.
