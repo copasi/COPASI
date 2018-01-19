@@ -82,15 +82,15 @@ void CStateTemplate::remove(const CModelEntity * entity)
 
 void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
 {
-  if (entitiesX.array() == NULL)
-    return;
 
   assert(entitiesX.size() + 1 == mIndexMap.size());
 
 
   // Update mpEntities to reflect the new order;
 
-  memcpy(mEntities.array() + 1, entitiesX.array(), sizeof(CModelEntity *) * entitiesX.size());
+  if (entitiesX.array() != NULL)
+    memcpy(mEntities.array() + 1, entitiesX.array(), sizeof(CModelEntity *) * entitiesX.size());
+
   mInsert = entitiesX.size() + 1;
 
   const CModelEntity *const* ppEntity = entitiesX.array();
