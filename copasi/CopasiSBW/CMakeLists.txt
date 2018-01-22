@@ -1,5 +1,4 @@
 cmake_minimum_required (VERSION 2.8)
-project (CopasiSBW)
 
 if (SBW_FOUND)
 
