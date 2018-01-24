@@ -25,9 +25,11 @@
 #define COPASI_PLOT_SPECIFICATION
 
 #include <string>
+#include <set>
 
 #include "plot/CPlotItem.h"
 #include "copasi/core/CDataVector.h"
+#include "utilities/CCopasiTask.h"
 
 class CModel;
 
@@ -37,6 +39,7 @@ private:
 
   CDataVector<CPlotItem> items;
   bool mActive;
+  std::set<CTaskEnum::Task> mTaskTypes;
 
   /**
    * Initialize the contained CDataObjects
@@ -81,9 +84,9 @@ public:
 
   virtual void cleanup();
 
-  const CDataVector<CPlotItem> & getItems() const {return items;};
+  const CDataVector<CPlotItem> & getItems() const;
 
-  CDataVector<CPlotItem> & getItems() {return items;};
+  CDataVector<CPlotItem> & getItems();
 
   CPlotItem* createItem(const std::string & name, CPlotItem::Type type);
 
@@ -92,6 +95,14 @@ public:
   void setActive(const bool & active);
 
   const bool & isActive() const;
+
+  bool appliesTo(const CObjectInterface::ContainerList& list) const;
+
+  std::string getTaskTypes() const;
+
+  void setTaskTypes(const std::string& taskTypes);
+  void setTaskTypes(const std::set<CTaskEnum::Task>& taskTypes);
+  void addTaskType(const CTaskEnum::Task& type);
 
   bool isLogX() const;
   bool isLogY() const;

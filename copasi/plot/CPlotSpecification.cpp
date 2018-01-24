@@ -63,11 +63,14 @@ CPlotSpecification::CPlotSpecification(const std::string & name,
 {initObjects();}
 
 CPlotSpecification::CPlotSpecification(const CPlotSpecification & src,
-                                       const CDataContainer * pParent):
-  CPlotItem(src, pParent),
-  items(src.getItems(), this),
-  mActive(src.mActive)
-{initObjects();}
+  const CDataContainer * pParent)
+  : CPlotItem(src, pParent)
+  , items(src.getItems(), this)
+  , mActive(src.mActive)
+  , mTaskTypes(src.mTaskTypes)
+{
+  initObjects();
+}
 
 CPlotSpecification::~CPlotSpecification() {}
 
@@ -75,6 +78,18 @@ void CPlotSpecification::cleanup()
 {
   items.cleanup();
   this->CPlotItem::cleanup();
+}
+
+const CDataVector<CPlotItem>& 
+CPlotSpecification::getItems() const 
+{ 
+  return items; 
+}
+
+CDataVector<CPlotItem>& 
+CPlotSpecification::getItems() 
+{ 
+  return items; 
 }
 
 void CPlotSpecification::initObjects()
@@ -89,6 +104,61 @@ void CPlotSpecification::setActive(const bool & active)
 
 const bool & CPlotSpecification::isActive() const
 {return mActive;}
+
+bool CPlotSpecification::appliesTo(const CObjectInterface::ContainerList & list) const
+{
+  if (mTaskTypes.empty() || list.empty())
+    return true;  // no task types defined, assume plot applies (consistent with old behavior)
+
+  const CCopasiTask* pTask = dynamic_cast<const CCopasiTask*>(list.front());
+  if (pTask == NULL)
+    return true; // no task found to compare again, plot applies
+
+  return mTaskTypes.find(pTask->getType()) != mTaskTypes.end();
+}
+
+std::string CPlotSpecification::getTaskTypes() const
+{
+  std::stringstream str; 
+
+  if (mTaskTypes.empty())
+    return str.str();
+
+  auto it = mTaskTypes.begin();
+  str << CTaskEnum::TaskName[*it++];
+
+  for (; it != mTaskTypes.end(); ++it)
+  {
+    str << ", " << CTaskEnum::TaskName[*it];
+  }
+  return str.str();
+}
+
+void CPlotSpecification::setTaskTypes(const std::string & taskTypes)
+{
+  mTaskTypes.clear();
+  std::istringstream ss(taskTypes);
+  std::string token;
+  while (std::getline(ss, token, ',')) {
+    
+    while (token[0] == ' ') // remove leading spaces
+      token.erase(0, 1);
+
+    CTaskEnum::Task taskType = CTaskEnum::TaskName.toEnum(token, CTaskEnum::Task::UnsetTask);
+    if (taskType != CTaskEnum::Task::UnsetTask)
+      mTaskTypes.insert(taskType);
+  }
+}
+
+void CPlotSpecification::setTaskTypes(const std::set<CTaskEnum::Task>& taskTypes)
+{
+  mTaskTypes = taskTypes;
+}
+
+void CPlotSpecification::addTaskType(const CTaskEnum::Task & type)
+{
+  mTaskTypes.insert(type);
+}
 
 bool CPlotSpecification::isLogX() const
 {
