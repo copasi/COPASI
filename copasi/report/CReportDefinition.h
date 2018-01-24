@@ -119,18 +119,12 @@ public:
   /**
    *Returns the comments in the report tag
    */
-  const std::string & getComment() const
-  {
-    return mComment;
-  }
+  const std::string & getComment() const;
 
   /**
    *sets the comments in the report tag
    */
-  void setComment(const std::string & comment)
-  {
-    mComment = comment;
-  }
+  void setComment(const std::string & comment);
 
   /**
    *gets the body in the report tag

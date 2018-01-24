@@ -140,6 +140,25 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
   return success;
 }
 
+/**
+*Returns the comments in the report tag
+*/
+
+const std::string & CReportDefinition::getComment() const
+{
+  return mComment;
+}
+
+/**
+*sets the comments in the report tag
+*/
+
+void 
+CReportDefinition::setComment(const std::string & comment)
+{
+  mComment = comment;
+}
+
 std::vector<CRegisteredCommonName>* CReportDefinition::getBodyAddr()
 {return &mBodyVector;}
 
