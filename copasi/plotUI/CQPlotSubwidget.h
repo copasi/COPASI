@@ -41,6 +41,13 @@ private:
 #endif
   CQSpectogramWidget *mpSpectogramWidget;
 
+  QMap<QString, CPlotItem *> mList;
+  CPlotItem *mLastItem;
+  QList<QListWidgetItem *> mLastSelection;
+  CPlotItem::Type mType;
+  std::string mTaskTypes;
+  QStringList mTaskNames;
+
   CQPlotEditWidget *selectControl(CPlotItem::Type type);
 
   void addPlotItem(CPlotItem *item);
@@ -52,10 +59,6 @@ private:
   void deleteCurve(QListWidgetItem *item);
   int getRow(QListWidgetItem *item);
   void deleteCurves();
-
-  QMap<QString, CPlotItem *> mList;
-  CPlotItem *mLastItem;
-  QList<QListWidgetItem *> mLastSelection;
 
   bool areOfSameType(QList<QListWidgetItem *> &items);
 
@@ -118,7 +121,6 @@ protected:
                      const CPlotDataChannelSpec &x,
                      const C_FLOAT64 &incr);
 
-  CPlotItem::Type mType;
 
 protected slots:
 
@@ -163,6 +165,13 @@ protected slots:
    * cancels changes to the plot definition
    */
   void resetPlot();
+
+  /**
+   * specifies for which tasks the plot should be displayed
+   */
+  void selectTaskTypes();
+
+  void allTaskTypesClicked();
 
 protected:
   /**

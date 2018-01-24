@@ -1312,6 +1312,7 @@ bool CCopasiXML::savePlotList()
       Attributes.add("name", pPlot->getObjectName());
       Attributes.add("type", CPlotSpecification::XMLType[pPlot->getType()]);
       Attributes.add("active", pPlot->isActive());
+      Attributes.add("taskTypes", pPlot->getTaskTypes());
       startSaveElement("PlotSpecification", Attributes);
       saveParameterGroup(pPlot->CCopasiParameter::getValue< CCopasiParameterGroup::elements >());
       startSaveElement("ListOfPlotItems");

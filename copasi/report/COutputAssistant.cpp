@@ -986,6 +986,7 @@ CDataObject* COutputAssistant::createDefaultOutput(C_INT32 id, CCopasiTask * tas
                         sname << pObject->getObjectDisplayName() << "_" << i;
                       }
 
+                    pPlotSpecification->addTaskType(CTaskEnum::Task::parameterFitting);
                     PlotSpecMap[pObject] = pPlotSpecification;
                   }
 
@@ -1400,8 +1401,19 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
       sname << name << "_" << i;
     }
 
-  // Set the task type
-  // :TODO: This is currently not implemented for plots.
+  // Set the task type for specific ones
+  switch (taskType)
+  {
+  case CTaskEnum::Task::parameterFitting:
+  case CTaskEnum::Task::optimization:
+  case CTaskEnum::Task::scan:
+    pPl->addTaskType(taskType);
+    break;
+  default:
+    // not narrowing others by default, as for example time course plots would 
+    // could also be interesting for scan, TSS, cross section and the like
+    break;
+  }
 
   //create curves
 

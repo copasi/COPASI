@@ -61,7 +61,7 @@ bool COutputHandlerPlot::compile(CObjectInterface::ContainerList listOfContainer
         {
           CPlotSpecification * pSpecification = &mpDefinitionVector->operator[](i);
 
-          if (pSpecification->isActive())
+          if (pSpecification->isActive() && pSpecification->appliesTo(listOfContainer))
             {
               key = pSpecification->CCopasiParameter::getKey();
 

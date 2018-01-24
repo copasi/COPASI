@@ -34,6 +34,7 @@ CXMLHandler * PlotSpecificationHandler::processStart(const XML_Char * pszName,
   const char * name;
   const char * sType;
   const char * active;
+  const char * taskTypes;
   CCopasiParameterGroup * pGroup = NULL;
 
   switch (mCurrentElement.first)
@@ -47,6 +48,11 @@ CXMLHandler * PlotSpecificationHandler::processStart(const XML_Char * pszName,
         mpData->pCurrentPlot->setType(toEnum(sType, CPlotItem::XMLType, CPlotItem::curve2d));
         active = mpParser->getAttributeValue("active", papszAttrs, "true");
         mpData->pCurrentPlot->setActive(mpParser->toBool(active));
+        
+        taskTypes = mpParser->getAttributeValue("taskTypes", papszAttrs, false);
+        if (taskTypes != NULL)
+          mpData->pCurrentPlot->setTaskTypes(taskTypes);
+
         break;
 
       case ParameterGroup:

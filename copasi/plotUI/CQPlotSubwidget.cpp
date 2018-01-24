@@ -32,6 +32,7 @@
 #include "copasi/core/CRootContainer.h"
 
 #include "UI/CCopasiSelectionDialog.h"
+#include "UI/CQMultipleSelectionDialog.h"
 #include <QListWidgetItem>
 #include <QtCore/QList>
 #include <QtCore/QMap>
@@ -69,6 +70,12 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
 #endif // COPASI_BANDED_GRAPH
   mpSpectogramWidget = new CQSpectogramWidget(this);
   mpStack->addWidget(mpSpectogramWidget);
+
+  auto it = CTaskEnum::TaskName.begin();
+  for (; it != CTaskEnum::TaskName.end(); ++it)
+  {
+    mTaskNames << FROM_UTF8(*it);
+  }
 }
 
 CPlotItem *CQPlotSubwidget::updateItem(CPlotItem *item)
@@ -958,6 +965,68 @@ void CQPlotSubwidget::resetPlot()
   loadFromPlotSpec(dynamic_cast<CPlotSpecification *>(CRootContainer::getKeyFactory()->get(mKey)));
 }
 
+#include <QInputDialog>
+
+void CQPlotSubwidget::selectTaskTypes()
+{
+  CQMultipleSelectionDialog* dlg = new CQMultipleSelectionDialog(this);
+  dlg->setWindowTitle("Select Tasks");
+  dlg->setMinimumHeight(400);
+  dlg->setSelectionList(mTaskNames);
+  
+  QStringList currentSelection;
+  if (!mTaskTypes.empty())
+  {
+    std::istringstream ss(mTaskTypes);
+    std::string token;
+    while (std::getline(ss, token, ',')) {
+
+      while (token[0] == ' ') // remove leading spaces
+        token.erase(0, 1);
+
+      currentSelection << FROM_UTF8(token);
+    }
+
+  }
+
+  dlg->setCurrentSelection(currentSelection);
+  if (dlg->exec() != QDialog::Accepted)
+    return;
+
+  const QStringList& selection = dlg->getSelection();
+  
+  std::stringstream str; 
+  if (!selection.empty())
+  {
+    auto it = selection.begin();
+    str << TO_UTF8(*it++);
+    for (; it != selection.end(); ++it)
+    {
+      str << ", ";
+      str << TO_UTF8(*it);
+    }
+  }
+
+  mTaskTypes = str.str();
+
+  chkTaskTypes->setChecked(mTaskTypes.empty());
+  txtTaskTypes->setText(FROM_UTF8(mTaskTypes));
+
+}
+
+void CQPlotSubwidget::allTaskTypesClicked()
+{
+  if (!mTaskTypes.empty())
+  {
+    mTaskTypes.clear();
+    txtTaskTypes->clear();
+  }
+  else
+  {
+    selectTaskTypes();
+  }
+}
+
 //-----------------------------------------------------------------------------
 
 bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
@@ -971,6 +1040,11 @@ bool CQPlotSubwidget::loadFromPlotSpec(const CPlotSpecification *pspec)
   activeCheckBox->setChecked(pspec->isActive());
   //type
   mType = pspec->getType();
+
+  mTaskTypes = pspec->getTaskTypes();
+
+  txtTaskTypes->setText(FROM_UTF8(mTaskTypes));
+  chkTaskTypes->setChecked(mTaskTypes.empty());
 
   switch (mType)
     {
@@ -1042,6 +1116,9 @@ bool CQPlotSubwidget::saveToPlotSpec()
   //scales
   pspec->setLogX(checkLogX->isChecked());
   pspec->setLogY(checkLogY->isChecked());
+  // task types
+  pspec->setTaskTypes(mTaskTypes);
+  
   //curves
   CPlotItem *item;
   storeChanges();
