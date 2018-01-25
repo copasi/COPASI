@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,7 @@
 #include "CQNotes.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
-#if defined(QT_USE_TEXTBROSWSER)
+#if defined(QT_USE_TEXTBROWSER)
 # include <QTextBrowser>
 #elif !defined(QT5_USE_WEBENGINE)
 # include <QWebView>
@@ -49,7 +49,7 @@ CQWebEnginePage::acceptNavigationRequest(const QUrl & url,
   return true;
 }
 
-#endif // QT_USE_TEXTBROSWSER
+#endif // QT_USE_TEXTBROWSER
 
 #include "resourcesUI/CQIconResource.h"
 #include "CQMessageBox.h"
@@ -183,7 +183,7 @@ CQNotes::CQNotes(QWidget* parent, const char* name) :
 
   mpValidatorXML = new CQValidatorXML(mpEdit);
 
-#if defined(QT_USE_TEXTBROSWSER)
+#if defined(QT_USE_TEXTBROWSER)
   mpWebView = new QTextBrowser(this);
   static_cast<QTextBrowser*>(mpWebView)->setOpenExternalLinks(true);
 #elif !defined(QT5_USE_WEBENGINE)
@@ -367,7 +367,7 @@ void CQNotes::load()
 
       // The notes are UTF8 encoded however the html does not specify an encoding
       // thus Qt uses locale settings.
-#if defined(QT_USE_TEXTBROSWSER)
+#if defined(QT_USE_TEXTBROWSER)
       static_cast<QTextBrowser*>(mpWebView)->setHtml(Notes);
 #elif !defined(QT5_USE_WEBENGINE)
       static_cast<QWebView*>(mpWebView)->setHtml(Notes);
