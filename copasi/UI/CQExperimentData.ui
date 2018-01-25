@@ -529,7 +529,7 @@
    <item row="8" column="3" colspan="4">
     <widget class="QCheckBox" name="mpCheckNormalizeWeightsPerExperiment">
      <property name="toolTip">
-      <string>When checked the weights in this experiment will be scaled by the highest value.</string>
+      <string>When checked the weights in this experiment will be scaled by the highest value within in this experiment, without taking into account the other experiments. If you want the weights to be automatically calculated over all experiments, leave this unchecked.</string>
      </property>
      <property name="text">
       <string>Normalize Weights per Experiment</string>

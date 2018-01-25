@@ -233,7 +233,7 @@ if (ENABLE_COPASI_EXTUNIT)
   add_definitions(-DCOPASI_EXTUNIT)
 endif(ENABLE_COPASI_EXTUNIT)
 
-option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" OFF)
+option(ENABLE_WITH_MERGEMODEL "Enable Model Merging" ON)
 if (ENABLE_WITH_MERGEMODEL)
   add_definitions(-DWITH_MERGEMODEL)
 endif(ENABLE_WITH_MERGEMODEL)
@@ -260,7 +260,7 @@ if (ENABLE_COMBINE_ARCHIVE)
   include_directories(BEFORE ${COMBINE_INCLUDE_DIR})
 endif(ENABLE_COMBINE_ARCHIVE)
 
-option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" OFF)
+option(ENABLE_SDE_SUPPORT "Enable the support of Stochastic Differential Equations" ON)
 if (ENABLE_SDE_SUPPORT)
   add_definitions(-DWITH_SDE_SUPPORT)
 endif(ENABLE_SDE_SUPPORT)
@@ -447,14 +447,17 @@ if(BUILD_GUI)
   include(${CMAKE_CURRENT_SOURCE_DIR}/ChooseQtVersion.cmake)
 
   # first try to find whether Qt5 is present
-  option(QT_USE_TEXTBROWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" OFF)
+  option(QT_USE_TEXTBROWSER "Use QTextBrowser instead of Webkit / WebEngine for display of notes" ON)
+  if (QT_USE_TEXTBROSWSER)
+    set(QT_USE_TEXTBROWSER ON)
+  endif()
   
   if (${SELECT_QT} MATCHES "Qt5" OR
       ${SELECT_QT} MATCHES "Any")
     # then narrow down the precise modules we need
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     
-    if (QT_USE_TEXTBROWSER OR QT_USE_TEXTBROSWSER)
+    if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES( Concurrent
                        Core
                        Gui
@@ -495,11 +498,11 @@ if(BUILD_GUI)
     set(QTVERSION 5)
   else()
     # using qt 4.8
-    if (QT_USE_TEXTBROSWSER)
+    if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES(Core Gui Network OpenGL Svg Xml)
-    else(QT_USE_TEXTBROSWSER)
+    else(QT_USE_TEXTBROWSER)
       QT_FIND_MODULES(Core Gui Network OpenGL Svg WebKit Xml)
-    endif(QT_USE_TEXTBROSWSER)
+    endif(QT_USE_TEXTBROWSER)
   endif()
 
   # find Qt4
@@ -591,7 +594,7 @@ option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
 mark_as_advanced(ENABLE_PROVENANCE)
 
 #Option for the COPASI support for Versioning Framework currently being developed by Peyman
-option (ENABLE_VERSIONING "Enables Versioning support." OFF)
+option (ENABLE_VERSIONING "Enables Versioning support." ON)
 mark_as_advanced(ENABLE_VERSIONING)
 
 #Option for the COPASI support for UNDO Framework currently being developed by Joseph
