@@ -55,32 +55,70 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 ; 32 bit Executables and DLLs 
 Source: {#MyStageDir}\bin\32\CopasiSE.exe; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\CopasiUI.exe; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtCore4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtGui4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtNetwork4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtOpenGL4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtSvg4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtWebKit4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\QtXml4.dll; DestDir: {app}\bin; Check: IsWin32();
-Source: {#MyStageDir}\bin\32\libmmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
-Source: {#MyStageDir}\bin\32\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
-Source: {#MyStageDir}\bin\32\msvcr100.dll; DestDir: {app}\bin; Check: InstallUserRuntime32(); 
-Source: {#MyStageDir}\bin\32\msvcp100.dll; DestDir: {app}\bin; Check: InstallUserRuntime32(); 
+; Source: {#MyStageDir}\bin\32\libmmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
+; Source: {#MyStageDir}\bin\32\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
+Source: {#MyStageDir}\bin\32\Qt5Core.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5Gui.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5Network.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5OpenGL.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5PrintSupport.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5Svg.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5Widgets.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\Qt5Xml.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\d3dcompiler_47.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\libEGL.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\libGLESV2.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\opengl32sw.dll; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\bearer\qgenericbearer.dll; DestDir: {app}\bin\bearer; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\bearer\qnativewifibearer.dll; DestDir: {app}\bin\bearer; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\iconengines\qsvgicon.dll; DestDir: {app}\bin\iconengines; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qgif.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qicns.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qico.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qjpeg.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qsvg.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qtga.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qtiff.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qwbmp.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\imageformats\qwebp.dll; DestDir: {app}\bin\imageformats; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\platforms\qwindows.dll; DestDir: {app}\bin\platforms; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\printsupport\windowsprintersupport.dll; DestDir: {app}\bin\printsupport; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\vcruntime140.dll; DestDir: {app}\bin; Check: InstallUserRuntime32(); 
+Source: {#MyStageDir}\bin\32\msvcp140.dll; DestDir: {app}\bin; Check: InstallUserRuntime32(); 
 
 ; 64 bit Executables and DLLs 
 Source: {#MyStageDir}\bin\64\CopasiSE.exe; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\CopasiUI.exe; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtCore4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtGui4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtNetwork4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtOpenGL4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtSvg4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtWebKit4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\QtXml4.dll; DestDir: {app}\bin; Check: IsWin64();
-Source: {#MyStageDir}\bin\64\libmmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
-Source: {#MyStageDir}\bin\64\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
-Source: {#MyStageDir}\bin\64\msvcr100.dll; DestDir: {app}\bin; Check: InstallUserRuntime64(); 
-Source: {#MyStageDir}\bin\64\msvcp100.dll; DestDir: {app}\bin; Check: InstallUserRuntime64(); 
+; Source: {#MyStageDir}\bin\64\libmmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
+; Source: {#MyStageDir}\bin\64\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
+Source: {#MyStageDir}\bin\64\Qt5Core.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5Gui.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5Network.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5OpenGL.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5PrintSupport.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5Svg.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5Widgets.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\Qt5Xml.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\d3dcompiler_47.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\libEGL.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\libGLESV2.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\opengl32sw.dll; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\bearer\qgenericbearer.dll; DestDir: {app}\bin\bearer; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\bearer\qnativewifibearer.dll; DestDir: {app}\bin\bearer; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\iconengines\qsvgicon.dll; DestDir: {app}\bin\iconengines; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qgif.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qicns.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qico.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qjpeg.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qsvg.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qtga.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qtiff.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qwbmp.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\imageformats\qwebp.dll; DestDir: {app}\bin\imageformats; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\platforms\qwindows.dll; DestDir: {app}\bin\platforms; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\printsupport\windowsprintersupport.dll; DestDir: {app}\bin\printsupport; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\vcruntime140.dll; DestDir: {app}\bin; Check: InstallUserRuntime64(); 
+Source: {#MyStageDir}\bin\64\msvcp140.dll; DestDir: {app}\bin; Check: InstallUserRuntime64(); 
 
 ; Common Resources
 Source: {#MyStageDir}\README.txt; DestDir: {app}
@@ -143,11 +181,16 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: desk
 Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filename: {app}\{#MyAppExeName}; Tasks: quicklaunchicon; WorkingDir: {userdocs}
 
 [Run]
-Filename: {app}\vcredist_x86.exe; Parameters: /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 32 bit Runtime Libraries; Check: InstallSystemRuntime32()
-Filename: {app}\vcredist_x64.exe; Parameters: /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2010 64 bit Runtime Libraries; Check: InstallSystemRuntime64()
+Filename: {app}\vcredist_x86.exe; Parameters: /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2017 32 bit Runtime Libraries; Check: InstallSystemRuntime32()
+Filename: {app}\vcredist_x64.exe; Parameters: /q /norestart; StatusMsg: Installing Microsoft Visual C++ 2017 64 bit Runtime Libraries; Check: InstallSystemRuntime64()
 
 [Dirs]
 Name: {app}\bin
+Name: {app}\bin\bearer
+Name: {app}\bin\iconengines
+Name: {app}\bin\imageformats
+Name: {app}\bin\platforms
+Name: {app}\bin\printsupport
 Name: {app}\share
 Name: {app}\share\copasi
 Name: {app}\share\copasi\config
@@ -351,14 +394,16 @@ begin
     end;
 end;
 
-function HaveRuntime32(): Boolean;
-begin
-  Result := RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}');
-end;
-
 function HaveRuntime64(): Boolean;
 begin
-  Result := RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{1D8E6291-B0D5-35EC-8441-6616F567A0F7}');
+  Result := RegKeyExists(HKEY_CLASSES_ROOT, 'Installer\\Products\\083F30FCC2E18753C8E02308E78B0C8D') or
+            RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{2CD849A7-86A1-34A6-B8F9-D72F5B21A9AE}');
+end;
+
+function HaveRuntime32(): Boolean;
+begin
+  Result := RegKeyExists(HKEY_CLASSES_ROOT, 'Installer\\Products\\1A57DEF7C006B493386717E2A288162F') or
+            RegKeyExists(HKEY_LOCAL_MACHINE, 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{56e11d69-7cc9-40a5-a4f9-8f6190c4d84d}')
 end;
 
 function InstallSystemRuntime32(): Boolean;

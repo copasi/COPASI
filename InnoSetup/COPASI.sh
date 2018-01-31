@@ -1,8 +1,14 @@
 #!/bin/bash
-# Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
 
 INNO_SETUP=${COPASI_INNO_SETUP:-"/cygdrive/c/Program Files (x86)/Inno Setup 5/ISCC.exe"}
 INNO_FILE=${COPASI_INNO_FILE:-"${SOURCE}/InnoSetup/copasi-universal.iss"}
@@ -33,38 +39,43 @@ chmod 644 README.txt
 cp ${SOURCE}/copasi/ArtisticLicense.txt LICENSE.txt
 chmod 644 LICENSE.txt
 
-# Copy configuration resources    
+# Copy configuration resources
+mkdir -p share/copasi/config
 cp ${SOURCE}/copasi/MIRIAM/MIRIAMResources.xml share/copasi/config
 chmod 444 share/copasi/config/*
 
 # Copy examples
+mkdir -p share/copasi/examples
 cp ${SOURCE}/TestSuite/distribution/* share/copasi/examples
 chmod 444 share/copasi/examples/*
 chmod 777 share/copasi/examples
 
 # Copy icons
+mkdir -p share/copasi/icons
 cp ${SOURCE}/copasi/CopasiUI/icons/Copasi.ico share/copasi/icons
 cp ${SOURCE}/copasi/CopasiUI/icons/CopasiDoc.ico share/copasi/icons
 chmod 644 share/copasi/icons/*
 
 # Copy wizard resource
+mkdir -p share/copasi/doc/html
 cp ${SOURCE}/copasi/wizard/help_html/*.html share/copasi/doc/html
 chmod 644 share/copasi/doc/html/*.html
 
+mkdir -p share/copasi/doc/html/figures
 cp ${SOURCE}/copasi/wizard/help_html/figures/*.png \
     share/copasi/doc/html/figures
 chmod 644 share/copasi/doc/html/figures/*.png
 
 # 32 bit files
-cp "${BUILD_32}-MD/copasi/CopasiUI/CopasiUI.exe"  bin/32
+cp "${BUILD_32_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
 chmod 755 bin/32/CopasiUI.exe
-cp "${BUILD_32}-MT/copasi/CopasiSE/CopasiSE.exe"  bin/32
+cp "${BUILD_32_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
 chmod 755 bin/32/CopasiSE.exe
 
 # 64 bit files
-cp "${BUILD_64}-MD/copasi/CopasiUI/CopasiUI.exe"  bin/64
+cp "${BUILD_64_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
 chmod 755 bin/64/CopasiUI.exe
-cp "${BUILD_64}-MT/copasi/CopasiSE/CopasiSE.exe"  bin/64
+cp "${BUILD_64_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
 chmod 755 bin/64/CopasiSE.exe
 
 
