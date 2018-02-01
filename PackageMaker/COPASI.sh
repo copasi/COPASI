@@ -1,5 +1,10 @@
 #!/bin/bash
-# Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -14,8 +19,8 @@ pushd "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p Applications/COPASI/
 
 # Copy CopasiUI
-echo cp -r "${BUILD}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
-cp -r "${BUILD}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
+echo cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
+cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
 
 # copy the Qt Framework into the image
 pushd Applications/COPASI
@@ -73,8 +78,8 @@ chmod 664 Applications/COPASI/config/*
 chmod 777 Applications/COPASI/config
 
 # copy the commandline version if it exists
-echo cp ${BUILD}/copasi/CopasiSE/CopasiSE Applications/COPASI/
-cp ${BUILD}/copasi/CopasiSE/CopasiSE Applications/COPASI/
+echo cp ${BUILD_ROOT}/copasi/CopasiSE/CopasiSE Applications/COPASI/
+cp ${BUILD_ROOT}/copasi/CopasiSE/CopasiSE Applications/COPASI/
 strip Applications/COPASI/CopasiSE
 chmod 755 Applications/COPASI/CopasiSE
 

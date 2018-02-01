@@ -1,5 +1,10 @@
 <pkmkdoc spec="1.12">
-<!-- Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and University of -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
 <!-- All rights reserved. -->
@@ -31,9 +36,9 @@
     </locale>
   </resources>
   <requirements>
-    <requirement id="sosv" operator="ge" value="'10.6.0'">
+    <requirement id="sosv" operator="ge" value="'10.9.0'">
       <message-title>Unsupported MacOS X Version</message-title>
-      <message>COPASI requires MacOS X 10.6 or higher.</message>
+      <message>COPASI requires MacOS X 10.9 or higher.</message>
     </requirement>
   </requirements>
   <flags/>
