@@ -26,7 +26,7 @@ typedef std::vector<COptItem*> OptItemStdVector;
 %ignore operator<<(std::ostream& os, const COptProblem& o);
 
 %ignore COptProblem::getVariableSize() const;
-%ignore COptProblem::setCallBack;
+//%ignore COptProblem::setCallBack;
 %ignore COptProblem::getCalculateVariableUpdateMethods;
 
 %template(FloatCVector) CVector<C_FLOAT64>;

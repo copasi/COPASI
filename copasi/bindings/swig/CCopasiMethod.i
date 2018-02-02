@@ -36,7 +36,7 @@
 %ignore CTaskEnum::MethodXML;
 %ignore CTaskEnum::TaskXML;
 %ignore CCopasiMethod::SubTypeName;
-%ignore CCopasiMethod::setCallBack;
+//%ignore CCopasiMethod::setCallBack;
 %ignore CCopasiMethod::load;
 %ignore CCopasiMethod::print;
 %ignore CCopasiMethod::printResult;

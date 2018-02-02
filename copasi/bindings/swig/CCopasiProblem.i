@@ -24,7 +24,7 @@
 %}
 
 %ignore CCopasiProblem::CCopasiProblem(const CCopasiTask::Type& type, const CDataContainer* pParent);
-%ignore CCopasiProblem::setCallBack;
+//%ignore CCopasiProblem::setCallBack;
 %ignore CCopasiProblem::initialize();
 %ignore CCopasiProblem::calculate();
 %ignore CCopasiProblem::restore(const bool& updateModel);

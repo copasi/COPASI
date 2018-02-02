@@ -20,7 +20,7 @@
 %}
 
 %rename (output) CFitProblem::print;
-%ignore CFitProblem::setCallBack;
+//%ignore CFitProblem::setCallBack;
 %ignore CFitProblem::getExperimentSet() const;
 %ignore CFitProblem::getCrossValidationSet() const;
 
