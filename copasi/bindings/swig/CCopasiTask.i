@@ -47,8 +47,8 @@
 %ignore CCopasiTask::TypeName;
 %ignore CCopasiTask::ValidMethods;
 %ignore CCopasiTask::process(bool const &);
-%ignore CCopasiTask::getCallBack;
-%ignore CCopasiTask::setCallBack;
+//%ignore CCopasiTask::getCallBack;
+//%ignore CCopasiTask::setCallBack;
 %ignore CCopasiTask::isValidMethod;
 %ignore CCopasiTask::initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,

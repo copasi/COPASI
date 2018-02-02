@@ -36,6 +36,7 @@
 %ignore CCopasiParameterGroup::endIndex;
 %ignore CCopasiParameterGroup::swap;
 %ignore CCopasiParameterGroup::print;
+%ignore CCopasiParameterGroup::getParameter(std::string name) const;
 
 %ignore operator<<;
 

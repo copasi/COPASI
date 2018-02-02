@@ -27,12 +27,14 @@
 
 
 
-%module COPASI
+%module(directors="1") COPASI
+
 
 %warnfilter(402) CCommonName;
 // cannot do anything about warnings due to multiple inheritance
 // so hide those errors
-#pragma SWIG nowarn=314,402,813,833,302,325;
+
+#pragma SWIG nowarn=314,402,813,833,302,325,362,503;
 
 // more elements to ignore
 %ignore create_expression(const ASTNode* pSource, const ListOfFunctionDefinitions* pFunctions);
@@ -153,6 +155,10 @@ size_t INVALID_INDEX();
 %include "CReaction.i"
 %include "CModel.i"
 %include "CCopasiParameter.i"
+// enable process report 
+%feature("director") CProcessReport;
+%include <copasi/utilities/CProcessReport.h>
+
 %include "CCopasiParameterGroup.i"
 %include "CModelParameter.i"
 %include "CModelParameterGroup.i"
@@ -288,7 +294,7 @@ size_t INVALID_INDEX();
 %include <copasi/plot/CPlotItem.h>
 %ignore COptMethodCoranaWalk(const COptMethodCoranaWalk&);
 %include <copasi/optimization/COptMethod.h>
- // %include <copasi/optimization/COptPopulationMethod.h>
+// %include <copasi/optimization/COptPopulationMethod.h>
 %include <copasi/optimization/COptMethodCoranaWalk.h>
 %include <copasi/optimization/COptMethodDE.h>
 %include <copasi/optimization/COptMethodEP.h>

@@ -68,7 +68,7 @@
   }
 }
 
-%extend CCopasiMatrixInterface {
+%extend CMatrixInterface {
    /* convert the operator[] to get methods */
    virtual CArrayInterface::data_type& get(const CArrayInterface::index_type & index)
    {

@@ -35,6 +35,7 @@ private:
   CProcessReportItem();
 
 public:
+
   /**
    * Specific constructor
    * @param const string & name
@@ -43,7 +44,7 @@ public:
    * @param const void * pEndValue (default: NULL)
    */
   CProcessReportItem(const std::string & name,
-                     const Type & type,
+                     const CCopasiParameter::Type & type,
                      const void * pValue,
                      const void * pEndValue = NULL);
 
@@ -173,7 +174,7 @@ public:
    * @param const std::string * pEndValue = NULL
    * @return size_t handle
    */
-  size_t addItem(const std::string & name,
+  virtual size_t addItem(const std::string & name,
                  const std::string & value,
                  const std::string * pEndValue = NULL);
 
@@ -220,6 +221,9 @@ public:
                  const C_FLOAT64 * pEndValue = NULL);
 
 protected:
+
+
+#ifndef SWIG
   /**
    * Add a process report item to to the list of reporting items.
    * The return value is the handle of the item and can be used to
@@ -235,6 +239,8 @@ protected:
                          const CCopasiParameter::Type & type,
                          const void * pValue,
                          const void * pEndValue = NULL);
+
+#endif
 
 public:
   /**
