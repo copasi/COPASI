@@ -13,7 +13,7 @@ if [ _${IS_FREEBSD} = _true ]; then
   LDD_OPTION=""
 fi
 
-QT_MISSING=$(ldd "${LDD_OPTION}" "${CopasiUI}" 2>&1 | grep -q '\(undefined symbol:\|libQt.*\.so\.4 => not found\)' && echo true)
+QT_MISSING=$(ldd "${LDD_OPTION}" "${CopasiUI}" 2>&1 | grep -q '\(undefined symbol:\|libQt.*\.so\.. => not found\)' && echo true)
 
 if [ _${QT_MISSING} = _true ]; then
   LD_LIBRARY_PATH="${LIBDIR}:${LD_LIBRARY_PATH}"
