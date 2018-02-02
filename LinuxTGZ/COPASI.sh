@@ -92,11 +92,16 @@ echo cp "${SOURCE}"/copasi/wizard/help_html/figures/*.png share/copasi/doc/html/
 cp "${SOURCE}"/copasi/wizard/help_html/figures/*.png share/copasi/doc/html/figures
 chmod 644 share/copasi/doc/html/figures/*.png
 
+echo cp -r "${SETUP_DIR}"/src/share/copasi/lib share/copasi
+cp -r "${SETUP_DIR}"/src/share/copasi/lib share/copasi
+
 # Copy Qt libraries
 echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 chmod 644 share/copasi/lib/libQt*
 
+
+echo
 popd
 
 echo tar -cvzf ${PACKAGE_NAME}.tar.gz ${PACKAGE_NAME}
