@@ -1,5 +1,10 @@
 #!/bin/bash
-# Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
@@ -11,8 +16,7 @@ SORT=${COPASI_SORT:-sort}
 PACKAGE=${COPASI_PACKAGE:-Linux}
 
 COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"/home/shoops/environment"}
-SOURCE=${COPASI_SOURCE:-"${COMMON_ENVIRONMENT}/COPASI"}
-BUILD=${COPASI_BUILD_32:-"${COMMON_ENVIRONMENT}/package"}
+SOURCE="$(dirname "$(dirname "$(readlink -f "$0")")")"
 SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}
 
 major=`${AWK} -- '$2 ~ "COPASI_VERSION_MAJOR" {print $3}' "${SOURCE}/copasi/CopasiVersion.h"`
@@ -50,6 +54,10 @@ case $1 in
 
   'C#-Bindings')
     . ${SOURCE}/LinuxTGZ/C#-Bindings.sh
+    ;;
+
+  'Python-Bindings')
+    . ${SOURCE}/LinuxTGZ/Python-Bindings.sh
     ;;
 esac
 

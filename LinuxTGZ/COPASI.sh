@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -57,12 +57,12 @@ cp "${SOURCE}/LinuxTGZ/CopasiUI" bin
 chmod 755 bin/CopasiUI
 
 # Copy executables 
-echo cp "${BUILD}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
-cp "${BUILD}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
+echo cp "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
+cp "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
 chmod 755 share/copasi/lib/CopasiUI
 
-echo cp "${BUILD}/copasi/CopasiSE/CopasiSE"  bin
-cp "${BUILD}/copasi/CopasiSE/CopasiSE"  bin
+echo cp "${BUILD_ROOT}/copasi/CopasiSE/CopasiSE"  bin
+cp "${BUILD_ROOT}/copasi/CopasiSE/CopasiSE"  bin
 chmod 755 bin/CopasiSE
 
 # Copy configuration resources    
@@ -92,15 +92,10 @@ echo cp "${SOURCE}"/copasi/wizard/help_html/figures/*.png share/copasi/doc/html/
 cp "${SOURCE}"/copasi/wizard/help_html/figures/*.png share/copasi/doc/html/figures
 chmod 644 share/copasi/doc/html/figures/*.png
 
-# Copy Qt 4.8 libraries
+# Copy Qt libraries
 echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 chmod 644 share/copasi/lib/libQt*
-
-# Copy libpng12 library
-echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libpng12/ {print $3}'` share/copasi/lib
-cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libpng12/ {print $3}'` share/copasi/lib
-chmod 644 share/copasi/lib/libpng12*
 
 popd
 

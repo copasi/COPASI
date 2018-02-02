@@ -1,19 +1,14 @@
-#!/bin/bash
-# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+#!/usr/bin/env bash
+# Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
-# All rights reserved. 
-
-# Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-# Properties, Inc., University of Heidelberg, and The University 
-# of Manchester. 
 # All rights reserved. 
 
 PYTHON_VERSION="$(python --version 2>&1)"
 PYTHON_VERSION=${PYTHON_VERSION#Python }
 PYTHON_VERSION=${PYTHON_VERSION:0:3}
 
-PACKAGE_NAME="COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-Darwin"
+PACKAGE_NAME="COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-${PACKAGE}"
 
 echo mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"
 mkdir -p "${SETUP_DIR}/${PACKAGE_NAME}"

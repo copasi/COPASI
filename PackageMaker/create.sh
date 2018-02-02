@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -19,7 +19,7 @@ PACKAGE=${COPASI_PACKAGE:-Windows}
 
 COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"${ENVIRONMENT}"}
 BUILD=${COPASI_BUILD:-"${COMMON_ENVIRONMENT}/package"}
-SOURCE=${COPASI_SOURCE:-"${COMMON_ENVIRONMENT}/COPASI"}
+SOURCE="$(dirname "$(dirname "$0")")"
 SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}
 
 major=`${AWK} -- '$2 ~ "COPASI_VERSION_MAJOR" {print $3}' "${SOURCE}/copasi/CopasiVersion.h"`

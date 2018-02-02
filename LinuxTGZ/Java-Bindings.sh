@@ -1,4 +1,9 @@
 #!/bin/bash
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -24,18 +29,18 @@ cp "${SOURCE}"/copasi/ArtisticLicense.txt LICENSE
 chmod 644 LICENSE
 
 # Copy copasi.jar
-echo cp "${BUILD}"/copasi/bindings/java/copasi.jar  .
-cp "${BUILD}"/copasi/bindings/java/copasi.jar .
+echo cp "${BUILD_ROOT}"/copasi/bindings/java/copasi.jar  .
+cp "${BUILD_ROOT}"/copasi/bindings/java/copasi.jar .
 chmod 644 copasi.jar
 
 # Copy copasi_gui.jar
-echo cp "${BUILD}"/copasi/bindings/java/copasi-gui.jar  .
-cp "${BUILD}"/copasi/bindings/java/copasi-gui.jar .
+echo cp "${BUILD_ROOT}"/copasi/bindings/java/copasi-gui.jar  .
+cp "${BUILD_ROOT}"/copasi/bindings/java/copasi-gui.jar .
 chmod 644 copasi-gui.jar
 
 # Copy libCopasiJava.so
-echo cp "${BUILD}"/copasi/bindings/java/libCopasiJava.so  .
-cp "${BUILD}"/copasi/bindings/java/libCopasiJava.so .
+echo cp "${BUILD_ROOT}"/copasi/bindings/java/libCopasiJava.so  .
+cp "${BUILD_ROOT}"/copasi/bindings/java/libCopasiJava.so .
 chmod 644 libCopasiJava.so
 
 # Copy examples

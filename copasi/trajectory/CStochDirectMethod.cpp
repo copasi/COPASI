@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,6 +59,7 @@ CStochDirectMethod::CStochDirectMethod(const CDataContainer * pParent,
   mA0(0.0),
   mReactions(),
   mPropensityObjects(),
+  mPropensityIdx(),
   mAmu(),
   mUpdateSequences(),
   mUpdateTimeDependentRoots(),
@@ -88,6 +89,7 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
   mA0(0.0),
   mReactions(),
   mPropensityObjects(),
+  mPropensityIdx(),
   mAmu(),
   mUpdateSequences(),
   mUpdateTimeDependentRoots(),
@@ -237,12 +239,13 @@ void CStochDirectMethod::start()
       Requested.insert(pPropensityObject);
     }
 
-  pPropensityObject = mPropensityObjects.array();
+  mPropensityIdx.resize(mNumReactions);
+  size_t i = 0;
 
-  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject)
+  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++i)
     {
       Changed = pReaction->getChangedObjects();
-
+      mPropensityIdx[i] = i;
       // The time is always updated
       Changed.insert(pTimeObject);
 
@@ -321,20 +324,27 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
       mNextReactionTime = startTime - log(mpRandomGenerator->getRandomOO()) / mA0;
 
       // We are sure that we have at least 1 reaction
-      mNextReactionIndex = 0;
-
-      C_FLOAT64 sum = 0.0;
       C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
-
       const C_FLOAT64 * pAmu = mAmu.array();
-      const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
+      size_t * idxProp = mPropensityIdx.array();
+      C_FLOAT64 sum = 0.0;
+      size_t temp_prop;
 
-      for (; (sum < rand) && (pAmu != pAmuEnd); ++pAmu, ++mNextReactionIndex)
+      for (size_t i = 0; i != mNumReactions; ++idxProp, ++i)
         {
-          sum += *pAmu;
+          sum += *(pAmu + * (idxProp));
+
+          if (sum > rand) break;
+
+          if (i != 0 && (*(pAmu + * (idxProp)) > *(pAmu + * (idxProp - 1))))
+            {
+              temp_prop = *(idxProp);
+              *(idxProp)  = *(idxProp - 1);
+              *(idxProp - 1) = temp_prop;
+            }
         }
 
-      mNextReactionIndex--;
+      mNextReactionIndex = *(idxProp);
     }
 
   *mpContainerStateTime = mNextReactionTime;

@@ -81,11 +81,22 @@ CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
   mpTabWidget->addTab(mpPage1, QString("Messages"));
 
   // The code below is derived from qt-4.4.3/src/gui/dialogs/qmessagebox.cpp
-  static_cast<QGridLayout *>(layout())->addWidget(mpTabWidget, 0, 1, 1, 1);
   QLabel * pLabel = findChild<QLabel *>("qt_msgbox_label");
+  QGridLayout* pLayout = static_cast<QGridLayout *>(layout());
 
   if (pLabel != NULL)
+  {
+    int index = pLayout->indexOf(pLabel);
+    int row, col, rs, cs;
+    pLayout->getItemPosition(index, &row, &col, &rs, &cs);
+    pLayout->addWidget(mpTabWidget, row, col, rs, cs);
     pLabel->hide();
+  }
+  else
+  {
+    pLayout->addWidget(mpTabWidget, 0, 1, 1, 1);
+  }
+
 }
 
 CQMessageBox::~CQMessageBox()

@@ -1,8 +1,14 @@
 #!/bin/bash
-# Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
 
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
 
@@ -12,18 +18,16 @@ SORT=${COPASI_SORT:-sort}
 PACKAGE=${COPASI_PACKAGE:-Windows}
 
 COMMON_ENVIRONMENT=${COPASI_COMMON_ENVIRONMENT:-"/home/shoops/environment"}
-SOURCE=${COPASI_SOURCE:-"${COMMON_ENVIRONMENT}/COPASI"}
-BUILD_32=${COPASI_BUILD_32:-"${COMMON_ENVIRONMENT}/win32-icc-32/package-32"}
-BUILD_64=${COPASI_BUILD_64:-"${COMMON_ENVIRONMENT}/win32-icc-64/package-64"}
+SOURCE="$(dirname "$(dirname "$(readlink -f "$0")")")"
 SETUP_DIR=${COPASI_SETUP_DIR:-"${COMMON_ENVIRONMENT}/setup"}
 
-case ${TARGET_VS_ARCH} in
+case ${VSCMD_ARG_TGT_ARCH} in
   'x86')
     Arch="32-bit"
     PythonArch="win32"
     ;;
 
-  'amd64')
+  'x64')
     Arch="64-bit"
     PythonArch="win-amd64"
     ;;
@@ -32,8 +36,7 @@ case ${TARGET_VS_ARCH} in
     ;;
 esac
 
-echo mkdir -p "${SETUP_DIR}"
-mkdir -p "${SETUP_DIR}"
+[ -e "${SETUP_DIR}" ] || mkdir -p "${SETUP_DIR}"
 
 major=`${AWK} -- '$2 ~ "COPASI_VERSION_MAJOR" {print $3}' "${SOURCE}/copasi/CopasiVersion.h"`
 minor=`${AWK} -- '$2 ~ "COPASI_VERSION_MINOR" {print $3}' "${SOURCE}/copasi/CopasiVersion.h"`

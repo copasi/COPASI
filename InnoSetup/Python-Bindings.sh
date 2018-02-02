@@ -1,15 +1,20 @@
 #!/bin/bash
-# Copyright (C) 2015 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2015 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
 
 PYTHON_VERSION="$("$(cygpath "$PYTHON_EXECUTABLE")" --version 2>&1)"
 PYTHON_VERSION=${PYTHON_VERSION#Python }
 PYTHON_VERSION=${PYTHON_VERSION:0:3}
 
 PACKAGE_NAME="COPASI-${MyAppVersion}-Python-${PYTHON_VERSION}-Bindings-Windows-${Arch}"
-BUILD_ROOT="$(pwd)"
 
 echo mkdir -p "${SETUP_DIR}"
 mkdir -p "${SETUP_DIR}"

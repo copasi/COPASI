@@ -8,6 +8,8 @@
 # of Manchester. 
 # All rights reserved. 
 
+
+
 # Try to find the CLAPACK library
 # Once done this will define
 #
@@ -90,11 +92,9 @@ if (NOT LAPACK_FOUND)
       endif ()
     else ()
       if (COPASI_BUILD_TYPE EQUAL "32bit")
-        set(LAPACK_LIBRARIES "mkl_intel_c.lib mkl_core.lib mkl_sequential.lib")
-        set(LAPACK_LINKER_FLAGS "-LIBPATH:\"$ENV{MKLROOT}/lib/ia32\"")
+        set(LAPACK_LIBRARIES "$ENV{MKLROOT}/lib/ia32/mkl_intel_c.lib" "$ENV{MKLROOT}/lib/ia32/mkl_core.lib" "$ENV{MKLROOT}/lib/ia32/mkl_sequential.lib")
       elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-        set(LAPACK_LIBRARIES "mkl_intel_lp64.lib mkl_core.lib mkl_sequential.lib")
-        set(LAPACK_LINKER_FLAGS "-LIBPATH:\"$ENV{MKLROOT}/lib/intel64\"")
+        set(LAPACK_LIBRARIES "$ENV{MKLROOT}/lib/intel64/mkl_intel_lp64.lib" "$ENV{MKLROOT}/lib/intel64/mkl_core.lib" "$ENV{MKLROOT}/lib/intel64/mkl_sequential.lib")
       endif ()
     endif ()
 
