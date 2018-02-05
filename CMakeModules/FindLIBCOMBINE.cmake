@@ -1,3 +1,8 @@
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+# Properties, Inc., University of Heidelberg, and University of 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
@@ -32,6 +37,7 @@ find_package(${COMBINE_LIBRARY_NAME} CONFIG REQUIRED
           libCombine-config.cmake
           libCombine-static-config.cmake
   PATHS ${COPASI_DEPENDENCY_DIR}/lib/cmake
+  PATHS $ENV{COMBINE_DIR}/lib/cmake
         /usr/lib/cmake
         /usr/lib64/cmake
   )

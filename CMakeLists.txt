@@ -177,7 +177,7 @@ find_path(CPPUNIT_INCLUDE_DIR cppunit/Test.h )
 find_library(CPPUNIT_LIBRARY NAMES cppunit)
 endif(BUILD_TESTS)
 
-set (DEFAULT_EXTUNIT OFF)
+set (DEFAULT_EXTUNIT ON)
 # set (DEFAULT_NONLIN OFF)
 set (DEFAULT_DEBUG_TRACING OFF)
 set (DEFAULT_HYBRIDODE45 OFF)
@@ -248,7 +248,7 @@ if (ENABLE_PE_EVENT_CREATION)
   add_definitions(-DWITH_PE_EVENT_CREATION)
 endif(ENABLE_PE_EVENT_CREATION)
 
-option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" OFF)
+option(ENABLE_COMBINE_ARCHIVE "Enable COMBINE Archive support" ON)
 if (ENABLE_COMBINE_ARCHIVE)
   add_definitions(-DWITH_COMBINE_ARCHIVE)
 
@@ -594,7 +594,7 @@ option (ENABLE_PROVENANCE "Enables Provenance support." OFF)
 mark_as_advanced(ENABLE_PROVENANCE)
 
 #Option for the COPASI support for Versioning Framework currently being developed by Peyman
-option (ENABLE_VERSIONING "Enables Versioning support." ON)
+option (ENABLE_VERSIONING "Enables Versioning support." OFF)
 mark_as_advanced(ENABLE_VERSIONING)
 
 #Option for the COPASI support for UNDO Framework currently being developed by Joseph
