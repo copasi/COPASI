@@ -24,8 +24,8 @@ cp -r "${BUILD_ROOT}/copasi/CopasiUI/CopasiUI.app" Applications/COPASI/
 
 # copy the Qt Framework into the image
 pushd Applications/COPASI
-echo macdeployqt CopasiUI.app/ -no-plugins
-macdeployqt CopasiUI.app/ -no-plugins
+echo macdeployqt CopasiUI.app
+macdeployqt CopasiUI.app
 popd
 
 # Create the Info.plist file for CopasiUI
