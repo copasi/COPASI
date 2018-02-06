@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -728,9 +728,9 @@ void CQExperimentData::slotOK()
   emit experimentChanged();
 
   for (i = 0; i < mpExperimentSetCopy->getExperimentCount(); ++i)
-  {
-    mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
-  }
+    {
+      mpExperimentSet->addExperiment(*mpExperimentSetCopy->getExperiment(i));
+    }
 
   if (mCrossValidation)
     {
@@ -1307,16 +1307,15 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
           pObject = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(ObjectMap.getObjectCN(i)));
 
           if (pObject)
-          {
-            mpTable->item((int)i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
-            mpTable->item((int)i, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(ObjectMap.getObjectCN(i)));
-          }
+            {
+              mpTable->item((int)i, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
+              mpTable->item((int)i, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(ObjectMap.getObjectCN(i)));
+            }
           else
-          {
-            mpTable->item((int)i, COL_OBJECT)->setText("");
-            mpTable->item((int)i, COL_OBJECT_HIDDEN)->setText("");
-          }
-
+            {
+              mpTable->item((int)i, COL_OBJECT)->setText("");
+              mpTable->item((int)i, COL_OBJECT_HIDDEN)->setText("");
+            }
         }
       else
         {
@@ -1342,7 +1341,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
           if ((isnan(DefaultScale) && isnan(Scale)) ||
               DefaultScale == Scale)
-            ScaleText = "(" + QString::number(DefaultScale) + ")";
+            ScaleText = "(" + convertToQString(DefaultScale) + ")";
           else
             ScaleText = convertToQString(Scale);
 
@@ -1547,11 +1546,11 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
       // Empty fields are treated as default.
       if (ScaleText == "")
-        ScaleText = QString::number(std::numeric_limits<C_FLOAT64>::quiet_NaN());
+        ScaleText = convertToQString(std::numeric_limits<C_FLOAT64>::quiet_NaN());
 
       if (Type == CExperiment::dependent &&
           ScaleText[0] != '(' &&
-        convertToQString(ObjectMap.getScale(i)) != ScaleText)
+          convertToQString(ObjectMap.getScale(i)) != ScaleText)
         {
           ObjectMap.setScale(i, ScaleText.toDouble());
           Changed = true;

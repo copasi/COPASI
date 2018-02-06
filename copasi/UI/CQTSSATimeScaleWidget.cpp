@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,6 +21,8 @@
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QPaintEvent>
+
+#include "copasi/UI/qtUtilities.h"
 
 /*
  *  Constructs a CScanWidgetRepeat as a child of 'parent', with the
@@ -217,9 +219,9 @@ void PaintWidget::paintEvent(QPaintEvent *)
           paint.setPen(QPen(QColor(0, 0, 0), 1));
 
           if (mVector[j] < 0)
-            paint.drawText(xText + 1, yText - 15, " log10 (|" + QString::number(mVector[j]) + "|) = " + QString::number(log10(fabs(mVector[j]))));
+            paint.drawText(xText + 1, yText - 15, " log10 (|" + convertToQString(mVector[j]) + "|) = " + convertToQString(log10(fabs(mVector[j]))));
           else
-            paint.drawText(xText + 1, yText - 15, " log10 (" + QString::number(fabs(mVector[j])) + ") = " + QString::number(log10(fabs(mVector[j]))));
+            paint.drawText(xText + 1, yText - 15, " log10 (" + convertToQString(fabs(mVector[j])) + ") = " + convertToQString(log10(fabs(mVector[j]))));
 
           paint.drawText(scaleBegin + scaleEnd / 2 - 50, yCentre + 50, " log timescale");
         }

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,7 +84,7 @@ QVariant CQEFMSpeciesDM::data(const QModelIndex &index, int role) const
             if (Changes.first > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon() ||
                 Changes.second > 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
               {
-                return QVariant(QString("-" + QString::number(Changes.first) + " | +" + QString::number(Changes.second)));
+                return QVariant(QString("-" + convertToQString(Changes.first) + " | +" + convertToQString(Changes.second)));
               }
 
             return QVariant();

@@ -935,7 +935,7 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
         break;
 
       case 1:
-        if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
+        if (convertToQString(mInitialNumber) == mpEditInitialValue->text())
           return;
 
         mInitialNumber = mpEditInitialValue->text().toDouble();

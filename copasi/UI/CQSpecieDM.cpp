@@ -185,7 +185,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
               case COL_ICONCENTRATION:
               {
                 if (mFlagConc)
-                  return QVariant(QString::number(1.0, 'g', 10));
+                  return QVariant(convertToQString(1.0));
                 else
                   return QVariant(QString(""));
               }
@@ -195,7 +195,7 @@ QVariant CQSpecieDM::data(const QModelIndex &index, int role) const
                 if (mFlagConc)
                   return QVariant(QString(""));
                 else
-                  return QVariant(QString::number(100.0, 'g', 10));
+                  return QVariant(convertToQString(100.0));
               }
 
               default:

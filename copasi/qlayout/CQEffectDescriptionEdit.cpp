@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,8 @@
 
 #include <qlayout/CQEffectDescription.h>
 #include <qlayout/CQEffectDescriptionEdit.h>
+
+#include "copasi/UI/qtUtilities.h"
 
 #if QT_VERSION < 0x040800
 #include <QPainter>
@@ -59,8 +61,8 @@ void CQEffectDescriptionEdit::initFrom(const CQEffectDescription* other, bool mu
   else
     txtObjectName->setText(other->getCN().c_str());
 
-  txtScaleStart->setText(QString::number(other->getScaleStart()));
-  txtScaleEnd->setText(QString::number(other->getScaleEnd()));
+  txtScaleStart->setText(convertToQString(other->getScaleStart()));
+  txtScaleEnd->setText(convertToQString(other->getScaleEnd()));
 
   switch (other->getMode())
     {
