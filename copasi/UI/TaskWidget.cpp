@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -335,13 +335,7 @@ bool TaskWidget::commonAfterRunTask()
   assert(mpDataModel != NULL);
   mpDataModel->finish();
 
-  // Update all values shown in the GUI
   CMathContainer * pContainer = mpTask->getMathContainer();
-
-  pContainer->updateSimulatedValues(false);
-  pContainer->updateTransientDataValues();
-  pContainer->pushAllTransientValues();
-
   protectedNotify(ListViews::STATE, ListViews::CHANGE, pContainer->getModel().getKey());
 
   unsetCursor();
