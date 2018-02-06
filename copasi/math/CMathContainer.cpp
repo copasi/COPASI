@@ -204,11 +204,14 @@ void CMathContainer::relocateObject(const CMathObject *& pObject, const std::vec
   relocateObject(const_cast< CMathObject *& >(pObject), relocations);
 }
 
+static C_FLOAT64 InvalidValue;
+
 CMathContainer::CMathContainer():
   CDataContainer("Math Container", NULL, "CMathContainer"),
   mpModel(NULL),
   mpAvogadro(NULL),
   mpQuantity2NumberFactor(NULL),
+  mRandom("Random", this, InvalidValue),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
@@ -303,6 +306,7 @@ CMathContainer::CMathContainer(CModel & model):
   mpModel(&model),
   mpAvogadro(NULL),
   mpQuantity2NumberFactor(NULL),
+  mRandom("Random", this, InvalidValue),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
   mValues(),
@@ -408,6 +412,7 @@ CMathContainer::CMathContainer(const CMathContainer & src):
   CDataContainer(src, NULL),
   mpModel(src.mpModel),
   mpAvogadro(src.mpAvogadro),
+  mRandom(src.mRandom, this),
   mpQuantity2NumberFactor(src.mpQuantity2NumberFactor),
   mpProcessQueue(new CMathEventQueue(*this)),
   mpRandomGenerator(CRandom::createGenerator()),
@@ -4433,6 +4438,11 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
 CRandom & CMathContainer::getRandomGenerator() const
 {
   return * mpRandomGenerator;
+}
+
+const CDataObject * CMathContainer::getRandomObject() const
+{
+  return &mRandom;
 }
 
 void CMathContainer::createDiscontinuityEvents()

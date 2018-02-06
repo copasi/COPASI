@@ -822,6 +822,11 @@ public:
   CRandom & getRandomGenerator() const;
 
   /**
+   * Retrieve the object which triggers recalculation of random functions
+   */
+  const CDataObject * getRandomObject() const;
+
+  /**
    * Compile the mathematical model
    */
   void compile();
@@ -1096,6 +1101,7 @@ private:
   CModel * mpModel;
   const CDataObject * mpAvogadro;
   const CDataObject * mpQuantity2NumberFactor;
+  CDataObjectReference< C_FLOAT64 > mRandom;
 
   CMathEventQueue * mpProcessQueue;
   CRandom * mpRandomGenerator;

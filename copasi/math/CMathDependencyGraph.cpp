@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -128,12 +128,21 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 
   std::vector<CObjectInterface*> UpdateSequence;
 
-  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
-  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
-
 #ifdef DEBUG_OUTPUT
   std::cout << "Changed:" << std::endl;
 #endif // DEBUG_OUTPUT
+
+  // The object triggering recalculation of random function is always changed if it exists
+  found = mObjects2Nodes.find(mpContainer->getRandomObject());
+
+  if (found != notFound)
+    {
+      success &= found->second->updateDependentState(context, changedObjects);
+      std::cout << *static_cast< const CDataObject * >(mpContainer->getRandomObject()) << std::endl;
+    }
+
+  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
