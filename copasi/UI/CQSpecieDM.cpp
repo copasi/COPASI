@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -509,15 +509,16 @@ bool CQSpecieDM::specieDataChange(
       // setInitialNumber to work correctly.
       std::string Compartment(TO_UTF8(value.toString()));
 
-      if (Compartment != pCompartment->getObjectName())
+      if (pCompartment != NULL &&
+          Compartment != pCompartment->getObjectName())
         {
-          std::string CompartmentToRemove = pSpecies->getCompartment()->getObjectName();
+          CCompartment & NewCompartment = pModel->getCompartments()[Compartment];
 
-          if (!(pModel->getCompartments()[Compartment].addMetabolite(pSpecies)))
+          if (!(NewCompartment.addMetabolite(pSpecies)))
             {
               QString msg;
               msg = "Unable to move species '" + FROM_UTF8(pSpecies->getObjectName()) + "'\n"
-                    + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + FROM_UTF8(Compartment) + "'\n"
+                    + "from compartment '" + FROM_UTF8(pCompartment->getObjectName()) + "' to compartment '" + FROM_UTF8(Compartment) + "'\n"
                     + "since a species with that name already exist in the target compartment.";
 
               CQMessageBox::information(NULL,
@@ -528,15 +529,14 @@ bool CQSpecieDM::specieDataChange(
             }
           else
             {
-              pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(pSpecies->getObjectName());
+              const_cast< CCompartment * >(pCompartment)->getMetabolites().remove(pSpecies->getObjectName());
               pModel->setCompileFlag();
               pModel->initializeMetabolites();
 
-              if (pSpecies && pCompartment)
+              // We need to update the initial value if the framework is concentration
+              if (mFlagConc)
                 {
-                  C_FLOAT64 Factor = 1.0 / pCompartment->getInitialValue();
-                  Factor *= pCompartment->getInitialValue();
-
+                  C_FLOAT64 Factor = NewCompartment.getInitialValue() / pCompartment->getInitialValue();
                   pSpecies->setInitialValue(Factor * pUndoSpeciesData->getINumber());
                   pSpecies->setValue(Factor * pSpecies->getValue());
                 }
