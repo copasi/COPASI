@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -984,15 +984,20 @@ public:
    */
   virtual size_t getIndex(const std::string &name) const
   {
+    std::string Sanitized = name;
+    CDataObject::sanitizeObjectName(Sanitized);
+    std::string Unquoted = unQuote(Sanitized);
+
     size_t i, imax = CDataVector< CType >::size();
     typename std::vector< CType * >::const_iterator Target = std::vector< CType * >::begin();
 
-    std::string Name = unQuote(name);
-
-    for (i = 0; i < imax; i++, Target++)
-      if (*Target &&
-          ((*Target)->getObjectName() == name ||
-           (*Target)->getObjectName() == Name)) return i;
+    for (i = 0; i < imax; i++, ++Target)
+      {
+        if (*Target &&
+            ((*Target)->getObjectName() == Sanitized ||
+             (*Target)->getObjectName() == Unquoted))
+          return i;
+      }
 
     return C_INVALID_INDEX;
   }
