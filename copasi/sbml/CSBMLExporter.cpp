@@ -1555,11 +1555,10 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
       // maybe this id was assigned by assignSBMLIdstoReactions and there is no object associated with it
       // If this is the case, we associate the object here.
       std::map<std::string, const SBase*>::const_iterator pos = this->mIdMap.find(sbmlId);
-      assert(pos != this->mIdMap.end());
 
-      if (pos->second == NULL)
+      if (pos == mIdMap.end() || pos->second == NULL)
         {
-          this->mIdMap[sbmlId] = pSBMLReaction;
+          mIdMap[sbmlId] = pSBMLReaction;
         }
     }
   else
@@ -4113,7 +4112,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
     }
 
   // since the flux of a reaction can be referenced in an assignment,
-  // we have to make sure that asll reactions do have SBML Ids prior to creating the rules
+  // we have to make sure that all reactions do have SBML Ids prior to creating the rules
   // and events
   assignSBMLIdsToReactions(dataModel.getModel());
 
@@ -4270,7 +4269,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
           prop.addOption("changePow", true,
                          "change pow expressions to the (^) hat notation");
           prop.addOption("inlineCompartmentSizes", true,
-                         "if true, occurrances of compartment ids in expressions will be replaced with their initial size");
+                         "if true, occurrences of compartment ids in expressions will be replaced with their initial size");
 
           mpSBMLDocument->convert(prop);
         }
@@ -4602,7 +4601,10 @@ bool CSBMLExporter::createEvents(CDataModel& dataModel)
   if (this->mSBMLLevel == 1)
     {
       // only fail if we have an event!
-      return CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
+      bool result = CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
+      if (!result)
+        CCopasiMessage(CCopasiMessage::ERROR, "This model uses events that cannot be exported to SBML Level 1.");
+      return result;
     }
 
   // bail early
@@ -4694,6 +4696,14 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
           pSBMLEvent = this->mpSBMLDocument->getModel()->createEvent();
         }
     }
+
+  if (pSBMLEvent == NULL)
+  {
+    std::stringstream str; str << "The event: '" << event.getObjectName() << "' could not be exported";
+    CCopasiMessage(CCopasiMessage::ERROR, str.str().c_str());
+    return;
+  }
+
 
   // add the object to the COPASI2SBMLMap
   this->mCOPASI2SBMLMap[&event] = pSBMLEvent;
