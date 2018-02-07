@@ -1,3 +1,8 @@
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -5,12 +10,12 @@
 
 #include "copasi.h"
 
-#include "UnitDefinitionHandler.h"
-#include "CXMLParser.h"
-#include "utilities/CCopasiMessage.h"
+#include "copasi/xml/parser/UnitDefinitionHandler.h"
+#include "copasi/xml/parser/CXMLParser.h"
+#include "copasi/utilities/CCopasiMessage.h"
 
-#include "utilities/CUnitDefinition.h"
-
+#include "copasi/utilities/CUnitDefinition.h"
+#include "copasi/utilities/CUnitDefinitionDB.h"
 /**
  * Replace UnitDefinition with the name type of the handler and implement the
  * three methods below.
@@ -48,7 +53,7 @@ CXMLHandler * UnitDefinitionHandler::processStart(const XML_Char * pszName,
         // we don't want that object for this.
         mpData->pCurrentUnitDefinition = new CUnitDefinition(Name, NULL);
         mpData->pCurrentUnitDefinition->setSymbol(Symbol);
-
+        mpData->pUnitDefinitionImportList->add(mpData->pCurrentUnitDefinition, true);
         break;;
 
       case MiriamAnnotation:
