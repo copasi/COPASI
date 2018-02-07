@@ -1555,11 +1555,10 @@ void CSBMLExporter::createReaction(const CReaction& reaction, CDataModel& dataMo
       // maybe this id was assigned by assignSBMLIdstoReactions and there is no object associated with it
       // If this is the case, we associate the object here.
       std::map<std::string, const SBase*>::const_iterator pos = this->mIdMap.find(sbmlId);
-      assert(pos != this->mIdMap.end());
 
-      if (pos->second == NULL)
+      if (pos == mIdMap.end() || pos->second == NULL)
         {
-          this->mIdMap[sbmlId] = pSBMLReaction;
+          mIdMap[sbmlId] = pSBMLReaction;
         }
     }
   else
@@ -3247,7 +3246,7 @@ void CSBMLExporter::createFunctionDefinition(CFunction& function, CDataModel& da
 
   // the entry could be NULL when exporting to L2 first and then to L3 because the
   // SBMLExporter::collectIds will add a NULL entry into the id table which will be
-  // tranferred to the COPASI2SBMLMap.
+  // transferred to the COPASI2SBMLMap.
   if (pos != this->mCOPASI2SBMLMap.end() && pos->second != NULL)
     {
       pFunDef = dynamic_cast<FunctionDefinition*>(pos->second);
@@ -3950,7 +3949,9 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
   const CModel* pModel = dataModel.getModel();
-  assert(pModel != NULL);
+  
+  SBMLNamespaces targetNs(mSBMLLevel, mSBMLVersion); // use reference, as the ns gets cloned
+
 
   if (pOldSBMLDocument == NULL)
     {
@@ -3970,6 +3971,18 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
   else
     {
       this->mpSBMLDocument = dynamic_cast<SBMLDocument*>(pOldSBMLDocument->clone());
+
+      if (mpSBMLDocument->getLevel() < mSBMLLevel)
+      {
+        ConversionProperties prop(&targetNs);
+        prop.addOption("strict", false);
+        prop.addOption("setLevelAndVersion", true);
+        prop.addOption("ignorePackages", true);
+
+        mpSBMLDocument->convert(prop);
+      }
+
+
     }
 
   if (this->mpSBMLDocument == NULL) fatalError();
@@ -4113,7 +4126,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
     }
 
   // since the flux of a reaction can be referenced in an assignment,
-  // we have to make sure that asll reactions do have SBML Ids prior to creating the rules
+  // we have to make sure that all reactions do have SBML Ids prior to creating the rules
   // and events
   assignSBMLIdsToReactions(dataModel.getModel());
 
@@ -4188,12 +4201,14 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
       assert(pSBMLModel != NULL);
       int i = pSBMLModel->getListOfFunctionDefinitions()->size();
 
+      std::map<const CDataObject*, SBase*>::iterator it = this->mCOPASI2SBMLMap.begin(), 
+        endit = this->mCOPASI2SBMLMap.end();
+
       while (i > 0)
         {
           --i;
           // fix for bug 1086
           // remove the object from the COPASI2SBML Map
-          std::map<const CDataObject*, SBase*>::iterator it = this->mCOPASI2SBMLMap.begin(), endit = this->mCOPASI2SBMLMap.end();
 
           while (it != endit)
             {
@@ -4208,7 +4223,26 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 
           delete pSBMLModel->getListOfFunctionDefinitions()->remove(i);
         }
-    }
+  
+      // remove other functions: 
+
+      bool needAnotherLoop = true;
+      while (needAnotherLoop)
+      {
+        it = mCOPASI2SBMLMap.begin();
+        endit = mCOPASI2SBMLMap.end();
+        needAnotherLoop = false;
+        for (; it != endit; ++it)
+        {
+          const CFunction* fun = dynamic_cast<const CKinFunction*>(it->first);
+          if (fun == NULL) continue;
+          mCOPASI2SBMLMap.erase(it);
+          needAnotherLoop = true;
+          break;
+        }
+      }
+
+  }
   else
     {
       // add all function definitions to the model
@@ -4257,8 +4291,6 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
           return false;
         }
 
-      SBMLNamespaces targetNs(mSBMLLevel, mSBMLVersion); // use reference, as the ns gets cloned
-
       if (mSBMLLevel == 1 && mSBMLVersion == 1)
         {
           // l1v1 export tailor made to suit GEPASI, with pow -> ^ notation and
@@ -4270,9 +4302,11 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
           prop.addOption("changePow", true,
                          "change pow expressions to the (^) hat notation");
           prop.addOption("inlineCompartmentSizes", true,
-                         "if true, occurrances of compartment ids in expressions will be replaced with their initial size");
+                         "if true, occurrences of compartment ids in expressions will be replaced with their initial size");
 
           mpSBMLDocument->convert(prop);
+
+
         }
       else
         {
@@ -4315,7 +4349,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
   // if the model is incompatible with SBML export, throw an exception
   if (!this->mIncompatibilities.empty() && !this->mIncompleteExport)
     {
-      CCopasiMessage(CCopasiMessage::EXCEPTION, "Model incompatible with chosen version and/or level of SBML.");
+      CCopasiMessage(CCopasiMessage::ERROR, "Model incompatible with chosen version and/or level of SBML.");
     }
 
   // if initial assignments were used we will have to add them to the document
@@ -4602,7 +4636,10 @@ bool CSBMLExporter::createEvents(CDataModel& dataModel)
   if (this->mSBMLLevel == 1)
     {
       // only fail if we have an event!
-      return CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
+      bool result = CSBMLExporter::checkForEvents(dataModel, this->mIncompatibilities);
+      if (!result)
+        CCopasiMessage(CCopasiMessage::ERROR, "This model uses events that cannot be exported to SBML Level 1.");
+      return true;
     }
 
   // bail early
@@ -4694,6 +4731,14 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
           pSBMLEvent = this->mpSBMLDocument->getModel()->createEvent();
         }
     }
+
+  if (pSBMLEvent == NULL)
+  {
+    std::stringstream str; str << "The event: '" << event.getObjectName() << "' could not be exported";
+    CCopasiMessage(CCopasiMessage::ERROR, str.str().c_str());
+    return;
+  }
+
 
   // add the object to the COPASI2SBMLMap
   this->mCOPASI2SBMLMap[&event] = pSBMLEvent;
@@ -4932,7 +4977,7 @@ void CSBMLExporter::createEvent(const CEvent& event, Event* pSBMLEvent, CDataMod
     {
       unsigned int i, iMax = this->mpSBMLDocument->getModel()->getNumEvents();
 
-      // the following code does not check if the corrct pointer is found
+      // the following code does not check if the correct pointer is found
       // but this should not be a problem
       for (i = 0; i < iMax; ++i)
         {
@@ -5075,7 +5120,7 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           pAssignment = dynamic_cast<EventAssignment*>(pos2->second);
           assert(pAssignment != NULL);
           pSBMLEvent->getListOfEventAssignments()->appendAndOwn(pAssignment);
-          // remove the entry from the event assigment map
+          // remove the entry from the event assignment map
           assignmentMap.erase(pos2);
         }
 
@@ -5240,7 +5285,12 @@ void CSBMLExporter::updateCOPASI2SBMLMap(const CDataModel& dataModel)
 
   while (it != endit)
     {
-      std::map<std::string, const SBase*>::iterator pos = it->second == NULL ? mIdMap.end() :  this->mIdMap.find(it->second->getId());
+      const SBase* element = it->second;
+      std::string elementId = element == NULL ? "" : 
+        element->getLevel() == 1 ? element->getName()
+        : element->getId();
+
+      std::map<std::string, const SBase*>::iterator pos = elementId.empty() ? mIdMap.end() :  this->mIdMap.find(elementId);
 
       if (pos != this->mIdMap.end())
         {

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -613,10 +613,15 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
   if (pNewCompartment == mpCurrentCompartment ||
       pNewCompartment == NULL) return;
 
-  mInitialNumber *= pNewCompartment->getInitialValue() / mpCurrentCompartment->getInitialValue();
+  switch (mFramework)
+    {
+      case 0:
+        mInitialNumber = mInitialConcentration * pNewCompartment->getInitialValue();
+        break;
 
-  if (mFramework == 1)
-    mpEditInitialValue->setText(convertToQString(mInitialNumber));
+      case 1:
+        mInitialConcentration = mInitialNumber / pNewCompartment->getInitialValue();
+    }
 
   mpCurrentCompartment = pNewCompartment;
   // Update the units and values accordingly
@@ -930,7 +935,7 @@ void CQSpeciesDetail::speciesInitialValueLostFocus()
         break;
 
       case 1:
-        if (QString::number(mInitialNumber, 'g', 10) == mpEditInitialValue->text())
+        if (convertToQString(mInitialNumber) == mpEditInitialValue->text())
           return;
 
         mInitialNumber = mpEditInitialValue->text().toDouble();
@@ -995,28 +1000,37 @@ bool CQSpeciesDetail::changeValue(
     {
       case CCopasiUndoCommand::SPECIES_COMPARTMENT_CHANGE:
       {
-        QString Compartment = newValue.toString();
-        std::string CompartmentToRemove = mpMetab->getCompartment()->getObjectName();
+        const CCompartment * pCompartment = mpMetab->getCompartment();
+        CCompartment & NewCompartment = pModel->getCompartments()[TO_UTF8(newValue.toString())];
 
-        if (!pModel->getCompartments()[TO_UTF8(Compartment)].addMetabolite(mpMetab))
+        if (!NewCompartment.addMetabolite(mpMetab))
           {
             QString msg;
             msg = "Unable to move species '" + FROM_UTF8(mpMetab->getObjectName()) + "'\n"
-                  + "from compartment '" + FROM_UTF8(CompartmentToRemove) + "' to compartment '" + Compartment + "'\n"
+                  + "from compartment '" + FROM_UTF8(pCompartment->getObjectName()) + "' to compartment '" + newValue.toString() + "'\n"
                   + "since a species with that name already exist in the target compartment.";
             CQMessageBox::information(this,
                                       "Unable to move Species",
                                       msg,
                                       QMessageBox::Ok, QMessageBox::Ok);
             // Revert the changes
-            mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(CompartmentToRemove)));
+            mpComboBoxCompartment->setCurrentIndex(mpComboBoxCompartment->findText(FROM_UTF8(pCompartment->getObjectName())));
             slotCompartmentChanged(mpComboBoxCompartment->currentIndex());
           }
         else
           {
-            pModel->getCompartments()[CompartmentToRemove].getMetabolites().remove(mpMetab->getObjectName());
+            const_cast< CCompartment * >(pCompartment)->getMetabolites().remove(mpMetab->getObjectName());
             pModel->setCompileFlag();
             pModel->initializeMetabolites();
+
+            // We need to update the initial value if the framework is concentration
+            if (mFramework == 0)
+              {
+                C_FLOAT64 Factor = NewCompartment.getInitialValue() / pCompartment->getInitialValue();
+                mpMetab->setInitialValue(Factor * mpMetab->getInitialValue());
+                mpMetab->setValue(Factor * mpMetab->getValue());
+              }
+
             protectedNotify(ListViews::COMPARTMENT, ListViews::CHANGE, "");
           }
 

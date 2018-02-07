@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -126,7 +126,7 @@ QVariant CQGlobalQuantityDM::data(const QModelIndex &index, int role) const
                 return QVariant(QString(FROM_UTF8(CModelEntity::StatusName[mItemToType[0]])));
 
               case COL_INITIAL_GQ:
-                return QVariant(QString::number(0.0, 'g', 10));
+                return QVariant(convertToQString(0.0));
 
               default:
                 return QVariant(QString(""));

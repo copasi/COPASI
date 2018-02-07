@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -439,7 +439,7 @@ QVariant CQParameterOverviewDM::valueData(const CModelParameter * pNode, int rol
       default:
 
         if (role == Qt::EditRole)
-          return QVariant(QString::number(pNode->getValue(static_cast< CCore::Framework >(mFramework)), 'g', 10));
+          return QVariant(convertToQString(pNode->getValue(static_cast< CCore::Framework >(mFramework))));
         else if (role == Qt::DisplayRole)
           return QVariant(pNode->getValue(static_cast< CCore::Framework >(mFramework)));
 

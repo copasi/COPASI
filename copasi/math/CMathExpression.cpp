@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -215,10 +215,18 @@ CIssue CMathExpression::compile()
       mValidity.add(issue);
       firstWorstIssue &= issue;
 
-      if ((*it)->mainType() == CEvaluationNode::MainType::OBJECT &&
-          (*it)->subType() == CEvaluationNode::SubType::POINTER)
+      switch ((*it)->subType())
         {
-          mPrerequisites.insert(static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr());
+          case CEvaluationNode::SubType::POINTER:
+            mPrerequisites.insert(static_cast< CEvaluationNodeObject *>(*it)->getObjectInterfacePtr());
+            break;
+
+          case CEvaluationNode::SubType::RGAMMA:
+          case CEvaluationNode::SubType::RNORMAL:
+          case CEvaluationNode::SubType::RPOISSON:
+          case CEvaluationNode::SubType::RUNIFORM:
+            mPrerequisites.insert(static_cast< CMathContainer * >(getObjectParent())->getRandomObject());
+            break;
         }
     }
 

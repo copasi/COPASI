@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1197,10 +1197,10 @@ void CQFittingItemWidget::loadSelection()
   if (it == end)
     {
       mpEditObject->setText("");
-      mpEditLower->setText(QString::number(1e-06));
+      mpEditLower->setText(convertToQString(1e-06));
       mpCheckLowerInf->setChecked(false);
       mpLowerObject = NULL;
-      mpEditUpper->setText(QString::number(1e+06));
+      mpEditUpper->setText(convertToQString(1e+06));
       mpCheckUpperInf->setChecked(false);
       mpUpperObject = NULL;
       mpEditStart->setText("");

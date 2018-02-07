@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,18 +50,16 @@
 #include <QSortFilterProxyModel>
 #include <copasi/UI/CQParameterResultItemModel.h>
 
-
 /*
  *  Constructs a CQFittingResult which is a child of 'parent', with the
  *  name 'name'.'
  */
 CQFittingResult::CQFittingResult(QWidget* parent, const char* name)
- : CopasiWidget(parent, name)
+  : CopasiWidget(parent, name)
 {
   setupUi(this);
 
   init();
-
 }
 
 /*
@@ -92,17 +90,17 @@ bool CQFittingResult::update(ListViews::ObjectType objectType,
                              const std::string & /* key */)
 {
   if (objectType == ListViews::MODEL && action == ListViews::DELETE)
-  {
-    // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
-    mpCorrelations->setArrayAnnotation(NULL);
-    mpFisherInformationMatrix->setArrayAnnotation(NULL);
-    mpFisherInformationEigenvalues->setArrayAnnotation(NULL);
-    mpFisherInformationEigenvectors->setArrayAnnotation(NULL);
-    mpFisherInformationScaledMatrix->setArrayAnnotation(NULL);
-    mpFisherInformationScaledEigenvalues->setArrayAnnotation(NULL);
-    mpFisherInformationScaledEigenvectors->setArrayAnnotation(NULL);
-    mpParameters->setModel(NULL);
-  }
+    {
+      // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
+      mpCorrelations->setArrayAnnotation(NULL);
+      mpFisherInformationMatrix->setArrayAnnotation(NULL);
+      mpFisherInformationEigenvalues->setArrayAnnotation(NULL);
+      mpFisherInformationEigenvectors->setArrayAnnotation(NULL);
+      mpFisherInformationScaledMatrix->setArrayAnnotation(NULL);
+      mpFisherInformationScaledEigenvalues->setArrayAnnotation(NULL);
+      mpFisherInformationScaledEigenvectors->setArrayAnnotation(NULL);
+      mpParameters->setModel(NULL);
+    }
 
   // :TODO:
   return true;
@@ -145,7 +143,6 @@ void CQFittingResult::loadExperimentSetIntoTree(const CExperimentSet& Experiment
     imax = 0;
 
   pTreeWidget->clear();
-
 
   QTreeWidgetItem* pRoot = pTreeWidget->invisibleRootItem();
 
@@ -190,7 +187,7 @@ void CQFittingResult::loadExperimentSetIntoTree(const CExperimentSet& Experiment
                                           << convertToQString(Experiment.getObjectiveValue(*ppObject))
                                           << convertToQString(Experiment.getRMS(*ppObject))
                                           << convertToQString(Experiment.getErrorSum(*ppObject) / Count)
-                                          << ""//QString::number(Experiment.getErrorMeanSD(*ppObject))
+                                          << ""//convertToQString(Experiment.getErrorMeanSD(*ppObject))
                                          );
             }
         }
@@ -232,7 +229,6 @@ bool CQFittingResult::enterProtected()
       mpTabWidget->setTabEnabled(mpTabWidget->indexOf(mpCrossValidationValues), false);
     }
 
-
   // determine background color for values too close to the bounds
   QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 
@@ -240,19 +236,19 @@ bool CQFittingResult::enterProtected()
   BackgroundColor.getHsv(&h, &s, &v);
 
   if (s < 20)
-  {
-    s = 20;
-  }
+    {
+      s = 20;
+    }
 
   BackgroundColor.setHsv(0, s, v);
-  
+
   //the parameters table
 
   mpParameters->setModel(NULL);
 
   CQParameterResultItemModel *model = new CQParameterResultItemModel(mpProblem, BackgroundColor, this);
   QSortFilterProxyModel*  sortModel = new QSortFilterProxyModel(this);
-  sortModel->setSourceModel(model); 
+  sortModel->setSourceModel(model);
   mpParameters->setModel(sortModel);
   mpParameters->resizeColumnsToContents();
   mpParameters->resizeRowsToContents();
@@ -352,7 +348,7 @@ bool CQFittingResult::enterProtected()
   mpFisherInformationScaledEigenvalues->setColorScalingAutomatic(true);
   mpFisherInformationScaledEigenvalues->setArrayAnnotation(&mpProblem->getScaledFisherInformationEigenvalues());
   mpFisherInformationScaledEigenvalues->slotRowSelectionChanged(1);
-  
+
   tcs = new CColorScaleBiLog();
   mpFisherInformationScaledEigenvectors->setColorCoding(tcs);
   mpFisherInformationScaledEigenvectors->setColorScalingAutomatic(true);
@@ -399,7 +395,7 @@ bool CQFittingResult::enterProtected()
 //      pItem = new QTableWidgetItem(QVariant::Double);
 //      pItem->setData(Qt::DisplayRole, Experiment.getErrorMeanSD());
 //      mpCrossValidations->setItem(i, 4, pItem);
-//    }
+//}
 
 //  mpCrossValidations->resizeColumnsToContents();
 //  mpCrossValidations->resizeRowsToContents();
@@ -463,7 +459,6 @@ bool CQFittingResult::enterProtected()
   pScaledJacobianMatrix->setArrayAnnotation(&mpProblem->getScaledParameterEstimationJacobian());
   pScaledJacobianMatrix->show();*/
 
-
   return true;
 }
 
@@ -513,7 +508,6 @@ void CQFittingResult::loadLog(const COptMethod * pMethod)
           QTreeWidgetItem* statusDetailItem = new QTreeWidgetItem(item, QStringList() << FROM_UTF8(it->getStatusDetails()));
         }
     }
-
 }
 
 void CQFittingResult::slotSave(void)

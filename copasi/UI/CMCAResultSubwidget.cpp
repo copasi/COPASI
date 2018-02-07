@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -135,7 +135,7 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
   //     {
   //       for (j = 0; j < numCols;++j)
   //         {
-  //           mTableElasticities->setText(i, j, QString::number(elasticities[i][j]));
+  //           mTableElasticities->setText(i, j, convertToQString(elasticities[i][j]));
   //}
   //}
 
@@ -187,7 +187,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
       {
         for (j = 0; j < numCols;++j)
           {
-            mTableCCC->setText(i, j, QString::number(CCCs[i][j]));
+            mTableCCC->setText(i, j, convertToQString(CCCs[i][j]));
           }
       }*/
   const CDataArray * CCCAnn;
@@ -238,7 +238,7 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
       {
         for (j = 0; j < numCols;++j)
           {
-            mTableFCC->setText(i, j, QString::number(FCCs[i][j]));
+            mTableFCC->setText(i, j, convertToQString(FCCs[i][j]));
           }
       }*/
 

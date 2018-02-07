@@ -1,4 +1,9 @@
-// Copyright (C) 2011 - 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2011 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -134,7 +139,7 @@ bool CQOscillationTaskWidget::loadTask()
     mpLineEditLT->setEnabled(pProblem->getFlagLimitTime());
 
     if (pProblem->getFlagLimitTime())
-      mpLineEditLT->setText(QString::number(pProblem->getTimeLimit()));
+      mpLineEditLT->setText(convertToQString(pProblem->getTimeLimit()));
     else
       mpLineEditLT->setText("");
 
@@ -142,7 +147,7 @@ bool CQOscillationTaskWidget::loadTask()
       {
         mpCheck->setChecked(true);
         mpLineEdit->setEnabled(true);
-        mpLineEdit->setText(QString::number(pProblem->getOutputStartTime()));
+        mpLineEdit->setText(convertToQString(pProblem->getOutputStartTime()));
       }
     else
       {
