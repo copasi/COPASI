@@ -4831,17 +4831,7 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
 
   Relocate.offset = 0;
 
-  size_t Keep =
-    2 * mSize.nFixed +
-    2 * mSize.nFixedEventTargets +
-    2 * mSize.nTime +
-    2 * mSize.nODE +
-    2 * mSize.nReactionSpecies +
-    2 * mSize.nAssignment +
-    2 * mSize.nIntensiveValues +
-    2 * mSize.nReactions +
-    mSize.nMoieties +
-    EventIndex;
+  size_t Keep = mInitialEventTriggers.array() - mValues.array() + EventIndex;
 
   // Keep all initial values in place before the ignored event in place.
   createRelocation(Keep, Keep, Relocate, Relocations);
@@ -4856,6 +4846,7 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
   UnusedObjects.insert(Relocate.pObjectStart - 1);
 
   // Keep all values in place before the ignored event in place.
+  Keep = mEventTriggers.array() - mExtensiveValues.array() + EventIndex;
   createRelocation(Keep, Keep, Relocate, Relocations);
   // Skip the ignored event trigger
   createRelocation(0, 1, Relocate, Relocations);
@@ -4868,12 +4859,7 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
   UnusedObjects.insert(Relocate.pObjectStart - 1);
 
   // Keep noise related values and event delays before the ignored event.
-  Keep =
-    mSize.nODE +
-    2 * mSize.nODESpecies +
-    2 * mSize.nReactionSpecies +
-    2 * mSize.nReactions +
-    EventIndex;
+  Keep = mEventDelays.array() - mExtensiveNoise.array() + EventIndex;
 
   // Event Delays
   createRelocation(Keep, Keep, Relocate, Relocations);
