@@ -39,7 +39,7 @@ report <- reports$createReportDefinition("Report", "Output for timecourse")
 invisible(report$setTaskType("timeCourse"))
 # we don't want a table
 invisible(report$setIsTable(FALSE))
-# the entries in the output should be seperated by a ", "
+# the entries in the output should be separated by a ", "
 invisible(report$setSeparator(CCopasiReportSeparator(", ")))
 
 # we need a handle to the header and the body
@@ -76,10 +76,10 @@ while (i < iMax) {
         invisible(header$push_back(CRegisteredCommonName(sbml_string)))
         
         if (i != iMax-1) {
-          # after each entry, we need a seperator
+          # after each entry, we need a separator
           invisible(body$push_back(CRegisteredCommonName(sep_string)))
 
-          # and a seperator
+          # and a separator
           invisible(header$push_back(CRegisteredCommonName(sep_string)))
         }
     }
