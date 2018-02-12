@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,7 @@ void CMathDelay::modifyMathObject(CMath::DelayValueData::iterator & itValueData,
 
   std::string Infix = pExpression->getInfix();
   const std::string Search = itValueData->second.first;
-  std::string Replace = "delay(" + pointerToString(mValueObjects[index]) + ", " + pointerToString(mpLagObject) + ")";
+  std::string Replace = "delay(" + pointerToString(mValueObjects[index]->getValuePointer()) + ", " + pointerToString(mpLagObject->getValuePointer()) + ")";
 
   size_t pos = 0;
 

@@ -4617,14 +4617,49 @@ void CMathContainer::createDelays()
   std::vector< CMath::sRelocate > Relocations = resize(Size);
 
   // Update the mappings of the delays
-  for (itDelayLag = DelayData.begin(); itDelayLag != endDelayLag; ++itDelayLag)
+  // We need to update all keys and values
+  CMath::DelayData MappedDelayData;
+  CMath::DelayData::iterator currentDelayData = MappedDelayData.end();
+
+  for (itDelayLag = DelayData.begin(), LagKey = ""; itDelayLag != endDelayLag; ++itDelayLag)
     {
+      if (itDelayLag->first != LagKey)
+        {
+          LagKey = itDelayLag->first;
+
+          CMathExpression LagExpression("LagExpression", *this);
+          LagExpression.setInfix(itDelayLag->first);
+          LagExpression.relocate(this, Relocations);
+          currentDelayData = MappedDelayData.insert(std::make_pair(LagExpression.getInfix(), CMath::DelayValueData()));
+        }
+
+      assert(currentDelayData != MappedDelayData.end());
+
       CMath::DelayValueData::iterator itDelayValue = itDelayLag->second.begin();
       CMath::DelayValueData::iterator endDelayValue = itDelayLag->second.end();
+      std::string ValueKey;
+      std::string MappedValueKey;
 
       for (; itDelayValue != endDelayValue; ++itDelayValue)
         {
-          relocateObject(itDelayValue->second.second, Relocations);
+          if (itDelayValue->first != ValueKey)
+            {
+              ValueKey = itDelayValue->first;
+
+              CMathExpression ValueExpression("ValueExpression", *this);
+              ValueExpression.setInfix(itDelayValue->first);
+              ValueExpression.relocate(this, Relocations);
+              MappedValueKey = ValueExpression.getInfix();
+            }
+
+          CMathExpression DelayExpression("DelayExpression", *this);
+          DelayExpression.setInfix(itDelayValue->second.first);
+          DelayExpression.relocate(this, Relocations);
+
+          CMathObject * pDelayObject = itDelayValue->second.second;
+          relocateObject(pDelayObject, Relocations);
+
+          currentDelayData->second.insert(std::make_pair(MappedValueKey, std::make_pair(DelayExpression.getInfix(), pDelayObject)));
         }
     }
 
@@ -4651,7 +4686,8 @@ void CMathContainer::createDelays()
   CMathObject * pDelayLagObject = getMathObject(mDelayLags.array());
   std::vector< size_t >::const_iterator itLagValueCount = LagValueCounts.begin();
 
-  itDelayLag = DelayData.begin();
+  itDelayLag = MappedDelayData.begin();
+  endDelayLag = MappedDelayData.end();
   LagKey = "";
 
   for (; itDelayLag != endDelayLag; ++itDelayLag)
@@ -4698,6 +4734,7 @@ void CMathContainer::createDelays()
     }
 
   finishResize();
+  map();
 }
 
 void CMathContainer::createRelocations(const CMathContainer::sSize & size, std::vector< CMath::sRelocate > & relocations)
