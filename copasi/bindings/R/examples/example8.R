@@ -66,7 +66,7 @@ if (!is.null(model)) {
     invisible(model$applyInitialValues())
     # we need an array that stores the result
     # the size of the matrix does not really matter because
-    # the calculateJacobian autoamtically resizes it to the correct
+    # the calculateJacobian automatically resizes it to the correct
     # size
     jacobian <- FloatMatrix()
     # the first parameter to the calculation function is a reference to

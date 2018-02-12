@@ -1,3 +1,8 @@
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
@@ -125,7 +130,7 @@ CXMLHandler::sProcessLogic * RenderCurveHandler::getProcessLogic() const
   static sProcessLogic Elements[] =
   {
     {"BEFORE", BEFORE, BEFORE, {RenderCurve, HANDLER_COUNT}},
-    {"RenderCurve", RenderCurve, RenderCurve, {ListOfElements, HANDLER_COUNT}},
+    {"Curve", RenderCurve, RenderCurve, {ListOfElements, HANDLER_COUNT}},
     {"ListOfElements", ListOfElements, ListOfElements, {AFTER, HANDLER_COUNT}},
     {"AFTER", AFTER, AFTER, {HANDLER_COUNT}}
   };

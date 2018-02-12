@@ -174,7 +174,9 @@ import types
 %{
 #include "copasi/core/CRootContainer.h"
 #include "commandline/COptions.h"
+#include "RProcessCallback.h"
 %}
+
 
 %init %{
 
@@ -284,4 +286,6 @@ CCopasiMessage.size=_COPASI.CCopasiMessage_size
 }
 */
 
+
+%include "RProcessCallback.h"
 
