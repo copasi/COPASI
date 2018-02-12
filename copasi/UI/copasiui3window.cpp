@@ -863,8 +863,8 @@ void CopasiUI3Window::newDoc()
 
 #ifdef COPASI_Provenance
   // Update Main Body Provenance
-  CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
-  ProvenanceXMLWriter->updateMainBodyProvenace();
+  CProvenanceXMLWriter provenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+  provenanceXMLWriter.updateMainBodyProvenace();
 #endif
   //#ifdef COPASI_Versioning
   //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
@@ -1373,8 +1373,8 @@ void CopasiUI3Window::slotQuit()
 
 #ifdef COPASI_Provenance
   //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel());
-  CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
-  ProvenanceXMLWriter->updateMainBodyProvenace();
+  CProvenanceXMLWriter ProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime);
+  ProvenanceXMLWriter.updateMainBodyProvenace();
 #endif
   //#ifdef COPASI_Versioning
   //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
