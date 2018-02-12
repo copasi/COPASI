@@ -18,25 +18,47 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include "copasi/copasi.h"
-#include "copasi/CopasiDataModel/CDataModel.h"
-#include "copasi/core/CRootContainer.h"
-#include "copasi/model/CMetab.h"
-#include "copasi/core/CRegisteredCommonName.h"
-#include "copasi/core/CDataVector.h"
-#include "copasi/model/CModel.h"
-#include "copasi/utilities/CCopasiException.h"
+#include <copasi/CopasiTypes.h>
+#include <copasi/CopasiTaskTypes.h>
+
 #include "copasi/commandline/COptionParser.h"
 #include "copasi/commandline/COptions.h"
+#include "copasi/utilities/CCopasiException.h"
 
-#include "copasi/trajectory/CTrajectoryTask.h"
-#include "copasi/trajectory/CTrajectoryMethod.h"
-#include "copasi/trajectory/CTrajectoryProblem.h"
-#include "copasi/report/CReportDefinitionVector.h"
-#include "copasi/report/CReportDefinition.h"
+
+#ifdef WIN32
+#include <windows.h>
+#include <rtcapi.h>
+
+void terminateHandler() {
+  std::cerr << "COPASI crashed." << std::endl;
+  exit(-1);
+}
+
+int exception_handler(LPEXCEPTION_POINTERS p)
+{
+  terminateHandler();
+}
+int runtime_check_handler(int errorType, const char *filename, int linenumber, const char *moduleName, const char *format, ...)
+{
+  printf("Error type %d at %s line %d in %s", errorType, filename, linenumber, moduleName);
+  terminateHandler();
+}
+
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef WIN32
+  // in case of fatal exceptions under windows we don't
+  // want the OS's error handlers to get in the way
+  DWORD dwMode = SetErrorMode(SEM_NOGPFAULTERRORBOX);
+  SetErrorMode(dwMode | SEM_NOGPFAULTERRORBOX);
+  SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)&exception_handler);
+  _RTC_SetErrorFunc(&runtime_check_handler);
+  set_terminate(&terminateHandler);
+#endif
+
   // Parse the commandline options
   // first argument is the SBML filename
   // second argument is the endtime
@@ -50,10 +72,10 @@ int main(int argc, char *argv[])
       CRootContainer::init(0, NULL, false);
     }
 
-  catch (copasi::autoexcept &e)
+  catch (const copasi::autoexcept &)
     {}
 
-  catch (copasi::option_error &e)
+  catch (const copasi::option_error &)
     {}
 
   if (argc < 5)
@@ -180,7 +202,7 @@ int main(int argc, char *argv[])
       // create a trajectory task
       pTrajectoryTask = new CTrajectoryTask(pDataModel->getTaskList());
       // use LSODAR from now on since we will have events pretty soon
-      pTrajectoryTask->setMethodType(CTaskEnum::LSODA2);
+      pTrajectoryTask->setMethodType(CTaskEnum::Method::deterministic);
       pTrajectoryTask->getProblem()->setMathContainer(&pDataModel->getModel()->getMathContainer());
 
       pTrajectoryTask->setScheduled(true);
@@ -225,10 +247,14 @@ int main(int argc, char *argv[])
       pTrajectoryTask->process(true);
       pTrajectoryTask->restore();
     }
-  catch (CCopasiException Exception)
+  catch (const CCopasiException& Exception)
     {
       std::cerr << Exception.getMessage().getText() << std::endl;
     }
+  catch (...)
+  {
+    std::cerr << "unexpected exception occurred" << std::endl;
+  }
 
   std::string Text = "";
 

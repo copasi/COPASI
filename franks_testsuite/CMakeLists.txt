@@ -24,7 +24,13 @@
 ###############################################################################
 
 cmake_minimum_required (VERSION 2.6)
-project (franks-testsuite)
+
+if(POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif(POLICY CMP0048)
+
+
+project (franks-testsuite  VERSION "${COPASI_VERSION_MAJOR}.${COPASI_VERSION_MINOR}.${COPASI_VERSION_BUILD}")
 
 include_directories("${PROJECT_SOURCE_DIR}/.." "${PROJECT_SOURCE_DIR}/../copasi" "${PROJECT_SOURCE_DIR}")
 
@@ -32,7 +38,6 @@ set(SOURCES ${SOURCES} copasi_wrapper.cpp)
 
 include(../copasi/common.cmake)
 include(../copasi/CMakeConsoleApp.cmake)
-
 
 add_executable(franks-testsuite ${SOURCES} ${HEADERS})
 install(TARGETS franks-testsuite DESTINATION bin)
