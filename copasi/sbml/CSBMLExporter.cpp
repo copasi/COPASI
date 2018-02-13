@@ -325,6 +325,16 @@ CSBMLExporter::setHandler(CProcessReport *pHandler)
   mpProgressHandler = pHandler;
 }
 
+CProcessReport * CSBMLExporter::getCallBack() const
+{
+  return mpProgressHandler;
+}
+
+void CSBMLExporter::clearCallBack()
+{
+  setHandler(NULL);
+}
+
 bool
 CSBMLExporter::reportCurrentProgressOrStop()
 {

@@ -100,6 +100,17 @@ public:
   virtual bool setCallBack(CProcessReport * pCallBack);
 
   /**
+   * @return the currently set callback
+   */
+  CProcessReport * getCallBack() const;
+
+  /**
+   * resets the currently set callback by calling setCallBack(NULL)
+   */
+  virtual void clearCallBack();
+
+
+  /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success

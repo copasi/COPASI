@@ -6309,9 +6309,14 @@ void SBMLImporter::setImportHandler(CProcessReport* pHandler)
   mpProgressHandler = pHandler;
 }
 
-CProcessReport* SBMLImporter::getImportHandlerAddr()
+CProcessReport* SBMLImporter::getImportHandlerAddr() const
 {
   return mpProgressHandler;
+}
+
+void SBMLImporter::clearCallBack()
+{
+  setImportHandler(NULL);
 }
 
 bool SBMLImporter::removeUnusedFunctions(CFunctionDB* pTmpFunctionDB, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)

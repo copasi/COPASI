@@ -69,7 +69,7 @@ public class ProcessCallback : CProcessReport
      task.process(true);
      
      // unset
-     task.setCallBack(null);
+     task.clearCallBack();
    }
    
  }

@@ -135,6 +135,17 @@ public:
   void setHandler(CProcessReport* pHandler);
 
   /**
+   * @return the currently set callback handler
+   */
+  CProcessReport * getCallBack() const;
+
+  /**
+   * resets the currently set callback by calling setHandler(NULL)
+   */
+  virtual void clearCallBack();
+
+
+  /**
    * This utility functions adds a new step to the progress dialog (if present)
    * @param globalStep the global steps that have been completed
    * @param currentTotal the total for current task

@@ -275,7 +275,15 @@ public:
    */
   virtual bool setCallBack(CProcessReport * pCallBack);
 
+  /** 
+   * @return the currently set callback
+   */
   CProcessReport * getCallBack() const;
+
+  /** 
+   * resets the currently set callback by calling setCallBack(NULL)
+   */
+  virtual void clearCallBack();
 
   /**
    * Resizes result matrices and updates array annotations for a specific task.

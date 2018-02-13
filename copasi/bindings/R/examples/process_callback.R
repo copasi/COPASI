@@ -60,7 +60,7 @@ while ( i < taskList$size())
   # run task
   task$process(TRUE)
   # reset callback 
-  task$setCallBack(NULL)
+  task$clearCallBack()
   i <- i + 1
   
 }

@@ -103,7 +103,17 @@ bool CCopasiProblem::setCallBack(CProcessReport * pCallBack)
   return true;
 }
 
-// propably for optimization only
+CProcessReport * CCopasiProblem::getCallBack() const
+{
+  return mpCallBack;
+}
+
+void CCopasiProblem::clearCallBack()
+{
+  setCallBack(NULL);
+}
+
+// probably for optimization only
 
 bool CCopasiProblem::initialize() {return true;}
 
