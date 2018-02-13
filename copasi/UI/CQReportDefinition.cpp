@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,6 +64,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   this->mpTableList->addAction(this->mpActAddItem);
   this->mpTableList->addAction(this->mpActAddSeparator);
+  this->mpTableList->addAction(this->mpActAddLineBreak);
   this->mpTableList->addAction(this->mpActEditItem);
   this->mpTableList->addAction(this->mpActEditText);
   this->mpTableList->addAction(separator);
@@ -71,6 +72,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   this->mpHeaderList->addAction(this->mpActAddItem);
   this->mpHeaderList->addAction(this->mpActAddSeparator);
+  this->mpHeaderList->addAction(this->mpActAddLineBreak);
   this->mpHeaderList->addAction(this->mpActEditItem);
   this->mpHeaderList->addAction(this->mpActEditText);
   this->mpHeaderList->addAction(separator);
@@ -78,6 +80,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   this->mpBodyList->addAction(this->mpActAddItem);
   this->mpBodyList->addAction(this->mpActAddSeparator);
+  this->mpBodyList->addAction(this->mpActAddLineBreak);
   this->mpBodyList->addAction(this->mpActEditItem);
   this->mpBodyList->addAction(this->mpActEditText);
   this->mpBodyList->addAction(separator);
@@ -85,6 +88,7 @@ CQReportDefinition::CQReportDefinition(QWidget* parent, const char* name)
 
   this->mpFooterList->addAction(this->mpActAddItem);
   this->mpFooterList->addAction(this->mpActAddSeparator);
+  this->mpFooterList->addAction(this->mpActAddLineBreak);
   this->mpFooterList->addAction(this->mpActEditItem);
   this->mpFooterList->addAction(this->mpActEditText);
   this->mpFooterList->addAction(separator);
@@ -245,6 +249,11 @@ void CQReportDefinition::btnSeparatorClicked()
   mChanged = true;
 
   return;
+}
+
+void CQReportDefinition::btnLineBreakClicked()
+{
+  static_cast<QListWidget *>(mpReportSectionTab->currentWidget())->addItem(new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
 }
 
 void CQReportDefinition::btnTextClicked()
@@ -522,29 +531,29 @@ void CQReportDefinition::slotEditCurrentItem()
   QListWidget * pList = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
   QList<QListWidgetItem*> selectedItems = pList->selectedItems();
 
-  foreach(QListWidgetItem * item, selectedItems)
-  {
-    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-    const CCommonName & name = current->getCN();
+  foreach (QListWidgetItem * item, selectedItems)
+    {
+      CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+      const CCommonName & name = current->getCN();
 
-    if (name.getObjectType() == "Separator")
-      continue;
-
-    const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
-
-    if (pObject == NULL)
-      {
+      if (name.getObjectType() == "Separator")
         continue;
-      }
 
-    const CDataObject* pNewObject =
-      CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
+      const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(name));
 
-    if (pNewObject == NULL || pNewObject == pObject) continue;
+      if (pObject == NULL)
+        {
+          continue;
+        }
 
-    current->setObject(pNewObject);
-    mChanged = true;
-  }
+      const CDataObject* pNewObject =
+        CCopasiSelectionDialog::getObjectSingle(this, CQSimpleSelectionTree::AnyObject, pObject);
+
+      if (pNewObject == NULL || pNewObject == pObject) continue;
+
+      current->setObject(pNewObject);
+      mChanged = true;
+    }
 }
 
 void CQReportDefinition::slotEditCurrentItemText()
@@ -559,44 +568,44 @@ void CQReportDefinition::slotEditCurrentItemText()
 
   CQTextDialog * pDialog = new CQTextDialog(this);
 
-  foreach(QListWidgetItem * item, selectedItems)
-  {
-    CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
-    const CCommonName & name = current->getCN();
+  foreach (QListWidgetItem * item, selectedItems)
+    {
+      CQReportListItem* current = dynamic_cast<CQReportListItem*>(item);
+      const CCommonName & name = current->getCN();
 
-    std::string objectType = name.getObjectType();
+      std::string objectType = name.getObjectType();
 
-    if (objectType == "Separator")
-      continue;
+      if (objectType == "Separator")
+        continue;
 
-    if (objectType == "String")
-      pDialog->setText(FROM_UTF8(name.getObjectName()));
-    else
-      pDialog->setText(FROM_UTF8(name));
+      if (objectType == "String")
+        pDialog->setText(FROM_UTF8(name.getObjectName()));
+      else
+        pDialog->setText(FROM_UTF8(name));
 
-    if (pDialog->exec() == QDialog::Accepted &&
-        pDialog->getText() != "")
-      {
-        std::string newText = TO_UTF8(pDialog->getText());
+      if (pDialog->exec() == QDialog::Accepted &&
+          pDialog->getText() != "")
+        {
+          std::string newText = TO_UTF8(pDialog->getText());
 
-        if (name != newText)
-          {
-            const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(newText));
+          if (name != newText)
+            {
+              const CDataObject* pObject = dynamic_cast<const CDataObject*>(mpDataModel->getObject(newText));
 
-            if (pObject != NULL)
-              {
-                current->setObject(pObject);
-              }
-            else
-              {
-                CDataString Text(newText);
-                current->setObject(&Text);
-              }
+              if (pObject != NULL)
+                {
+                  current->setObject(pObject);
+                }
+              else
+                {
+                  CDataString Text(newText);
+                  current->setObject(&Text);
+                }
 
-            mChanged = true;
-          }
-      }
-  }
+              mChanged = true;
+            }
+        }
+    }
 
   delete pDialog;
 }
@@ -621,6 +630,26 @@ void CQReportDefinition::slotAddSeparator()
   else
     {
       current->insertItem(current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
+    }
+
+  mChanged = true;
+
+  return;
+}
+
+void CQReportDefinition::slotAddLineBreak()
+{
+  QListWidget * current = static_cast<QListWidget *>(mpReportSectionTab->currentWidget());
+
+  QList<QListWidgetItem*> selected = current->selectedItems();
+
+  if (selected.empty())
+    {
+      current->addItem(new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+    }
+  else
+    {
+      current->insertItem(current->row(selected.first()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
     }
 
   mChanged = true;

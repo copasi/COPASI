@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,7 +78,7 @@ CCopasiTimeVariable & CCopasiTimeVariable::operator = (const C_INT64 & value)
 bool CCopasiTimeVariable::operator < (const CCopasiTimeVariable & value)
 {return (mTime < value.mTime);}
 
-std::string CCopasiTimeVariable::isoFormat() const
+std::string CCopasiTimeVariable::isoFormat(const bool & printMicroSecond) const
 {
   std::stringstream Iso;
   bool first = true;
@@ -87,7 +87,7 @@ std::string CCopasiTimeVariable::isoFormat() const
     {
       CCopasiTimeVariable Tmp(-mTime);
       Iso << "-";
-      Iso << Tmp.isoFormat();
+      Iso << Tmp.isoFormat(printMicroSecond);
 
       return Iso.str();
     }
@@ -109,7 +109,8 @@ std::string CCopasiTimeVariable::isoFormat() const
   else
     Iso << "0.";
 
-  Iso << LL2String(getMilliSeconds(true), 3) << LL2String(getMicroSeconds(true), 3);
+  if (printMicroSecond)
+    Iso << LL2String(getMilliSeconds(true), 3) << LL2String(getMicroSeconds(true), 3);
 
   return Iso.str();
 }

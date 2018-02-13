@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,7 @@
 #include "core/CRegisteredCommonName.h"
 #include "qtUtilities.h"
 
-#include "CopasiDataModel/CDataModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "core/CDataArray.h"
 #include "utilities/CCopasiTask.h"
@@ -41,6 +41,7 @@ CQSimpleSelectionTree::CQSimpleSelectionTree(QWidget *parent):
   setHeaderLabels(QStringList("Sort"));
   setRootIsDecorated(true);
   setSizePolicy(QSizePolicy((QSizePolicy::Policy)7, (QSizePolicy::Policy)7));
+  mpInformationSubtree = new QTreeWidgetItem(this, QStringList("Information"));
   mpExpertSubtree = new QTreeWidgetItem(this, QStringList("Expert"));
   mpResultMatrixSubtree = new QTreeWidgetItem(this, QStringList("Results"));
   mpResultSteadyStateSubtree = new QTreeWidgetItem(mpResultMatrixSubtree, QStringList("Steady State"));
@@ -97,9 +98,11 @@ CQSimpleSelectionTree::~CQSimpleSelectionTree()
  * build the population tree
  */
 void CQSimpleSelectionTree::populateTree(const CModel *pModel,
-    const ObjectClasses &classes)
+    const ObjectClasses & classes)
 {
   if (!pModel) return;
+
+  populateInformation(pModel->getObjectDataModel(), classes);
 
   const CDataObject *pObject;
   QTreeWidgetItem *pItem;
@@ -832,6 +835,75 @@ void CQSimpleSelectionTree::populateTree(const std::vector< const CDataObject * 
   removeAllEmptySubTrees();
 }
 
+void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const ObjectClasses & classes)
+{
+  /*
+    <Object cn="CN=Root,CN=Information,String=User Email"/>
+    <Object cn="CN=Root,CN=Information,String=User Family Name"/>
+    <Object cn="CN=Root,CN=Information,String=User Given Name"/>
+    <Object cn="CN=Root,CN=Information,String=User Organization"/>
+    <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
+    <Object cn="CN=Root,CN=Information,Timer=Current Date/Dime"/>
+    <Object cn="CN=Root,CN=Information,String=File Name"/>
+  */
+
+  const CDataObject * pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Email")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Family Name")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Given Name")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Organization")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=COPASI Version")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Dime")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=File Name")));
+
+  if (filter(classes, pObject))
+    {
+      QTreeWidgetItem * pItem = new QTreeWidgetItem(mpInformationSubtree, QStringList(FROM_UTF8(pObject->getObjectName())));
+      treeItems[pItem] = pObject;
+    }
+}
+
 std::vector<const CDataObject * > *CQSimpleSelectionTree::getTreeSelection()
 {
   std::vector<const CDataObject * > *selection = new std::vector<const CDataObject * >();
@@ -1202,4 +1274,5 @@ void CQSimpleSelectionTree::removeAllEmptySubTrees()
 #endif // WITH_ANALYTICS
   removeEmptySubTree(&mpResultMatrixSubtree);
   removeEmptySubTree(&mpTimeSubtree);
+  removeEmptySubTree(&mpInformationSubtree);
 }

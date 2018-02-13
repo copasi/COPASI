@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,6 +23,7 @@ class QTreeWidgetItem;
 class QWidget;
 class CModel;
 class CMetab;
+class CDataModel;
 
 class CQSimpleSelectionTree: public QTreeWidget
 {
@@ -51,6 +52,9 @@ public:
   void populateTree(const CModel * pModel, const ObjectClasses & classes);
   void populateTree(const std::vector< const CDataObject * > & objectList);
   void setOutputVector(std::vector< const CDataObject * > * outputVector);
+
+private:
+  void populateInformation(CDataModel * pDataModel, const ObjectClasses & classes);
 
 public slots:
   virtual void commitClicked();
@@ -89,6 +93,7 @@ protected:
   QTreeWidgetItem* mpResultMCASubtree;
   QTreeWidgetItem* mpResultTSSASubtree;
   QTreeWidgetItem* mpResultLNASubtree;
+  QTreeWidgetItem* mpInformationSubtree;
 
   std::map< QTreeWidgetItem *, const CDataObject * > treeItems;
   std::vector< const CDataObject * > * mpOutputVector;
