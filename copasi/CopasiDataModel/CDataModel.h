@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,6 +14,7 @@
 #include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CTaskEnum.h"
 
+class CInfo;
 class CModel;
 class CReportDefinition;
 class CReportDefinitionVector;
@@ -349,6 +350,7 @@ protected:
 protected:
   CContent mData;
   CContent mOldData;
+  CInfo * mpInfo;
   std::vector<std::string> mTempFolders;
   bool mNeedToSaveExperimentalData;
 

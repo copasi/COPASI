@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -131,7 +131,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   mpCurrentAuthorGivenName(NULL),
   mpCurrentAuthorFamilyName(NULL),
   mpCurrentAuthorOrganization(NULL),
-  mpCurrentAuthorEmail(NULL), 
+  mpCurrentAuthorEmail(NULL),
   mpPrecision(NULL)
 
 {initializeParameter();}
@@ -267,7 +267,7 @@ void CConfigurationFile::initializeParameter()
 
   mpCurrentAuthorOrganization = assertParameter("Organization", CCopasiParameter::STRING, std::string(""));
   mpCurrentAuthorEmail = assertParameter("Email", CCopasiParameter::STRING, std::string("An.other@mailinator.com"));
-  
+
   elevateChildren();
 }
 
@@ -598,7 +598,7 @@ const CCopasiParameterGroup & CConfigurationFile::CXML::getConfiguration() const
 {return mConfiguration;}
 
 // set and get for the current author added by Peyman
-const std::string CConfigurationFile::getCurrentAuthorGivenName() const
+const std::string & CConfigurationFile::getCurrentAuthorGivenName() const
 {
   return *mpCurrentAuthorGivenName;
 }
@@ -606,7 +606,7 @@ void CConfigurationFile::setCurrentAuthorGivenName(const std::string & CurrentAu
 {
   *mpCurrentAuthorGivenName = CurrentAuthorGivenName;
 }
-const std::string CConfigurationFile::getCurrentAuthorFamilyName() const
+const std::string & CConfigurationFile::getCurrentAuthorFamilyName() const
 {
   return *mpCurrentAuthorFamilyName;
 }
@@ -614,7 +614,7 @@ void CConfigurationFile::setCurrentAuthorFamilyName(const std::string & CurrentA
 {
   *mpCurrentAuthorFamilyName = CurrentAuthorFamilyName;
 }
-const std::string CConfigurationFile::getCurrentAuthorOrganization() const
+const std::string & CConfigurationFile::getCurrentAuthorOrganization() const
 {
   return *mpCurrentAuthorOrganization;
 }
@@ -622,7 +622,7 @@ void CConfigurationFile::setCurrentAuthorOrganization(const std::string & Curren
 {
   *mpCurrentAuthorOrganization = CurrentAuthorOrganization;
 }
-const std::string CConfigurationFile::getCurrentAuthorEmail() const
+const std::string & CConfigurationFile::getCurrentAuthorEmail() const
 {
   return *mpCurrentAuthorEmail;
 }

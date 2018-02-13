@@ -1,4 +1,9 @@
-// Copyright (C) 2010 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -84,9 +89,10 @@ public:
 
   /**
    * Create a iso formated string (D:HH:MM:SS.ssssss)
+   * @param const bool & printMicroSecond (default: true)
    * @return std::string
    */
-  std::string isoFormat() const;
+  std::string isoFormat(const bool & printMicroSecond = true) const;
 
   /**
    * Retrieve the time in micro seconds. If bounded is true

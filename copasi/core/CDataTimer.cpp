@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,6 +8,7 @@
 #include "CDataTimer.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CDataObjectReference.h"
+#include "copasi/utilities/utility.h"
 
 CCopasiTimer::CCopasiTimer(const Type & type,
                            const CDataContainer * pParent):
@@ -31,7 +32,12 @@ CCopasiTimer::CCopasiTimer(const Type & type,
       case Type::THREAD:
         mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
-        
+
+      case Type::CURRENT:
+        mStartTime = 0;
+        setObjectName("Current Date/Dime");
+        break;
+
       default:
         break;
     }
@@ -64,7 +70,11 @@ bool CCopasiTimer::start()
       case Type::THREAD:
         mStartTime = CCopasiTimeVariable::getThreadTime();
         break;
-        
+
+      case Type::CURRENT:
+        mStartTime = 0;
+        break;
+
       default:
         break;
     }
@@ -90,7 +100,11 @@ void CCopasiTimer::calculateValue()
       case Type::THREAD:
         mElapsedTime = CCopasiTimeVariable::getThreadTime() - mStartTime;
         break;
-      
+
+      case Type::CURRENT:
+        mElapsedTime = CCopasiTimeVariable::getCurrentWallTime() /* - mStartTime */;
+        break;
+
       default:
         break;
     }
@@ -112,7 +126,24 @@ const C_FLOAT64 & CCopasiTimer::getElapsedTimeSeconds() const
 }
 
 void CCopasiTimer::print(std::ostream * ostream) const
-{(*ostream) << mElapsedTimeSeconds;}
+{
+  switch (mType)
+
+    {
+      case Type::WALL:
+      case Type::PROCESS:
+      case Type::THREAD:
+        (*ostream) << mElapsedTimeSeconds;
+        break;
+
+      case Type::CURRENT:
+        (*ostream) << UTCTimeStamp() << " UTC";
+        break;
+
+      default:
+        break;
+    }
+}
 
 void * CCopasiTimer::getValuePointer() const
 {return & const_cast<CCopasiTimer *>(this)->mElapsedTimeSeconds;}
