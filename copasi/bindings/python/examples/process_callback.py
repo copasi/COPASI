@@ -59,7 +59,7 @@ def simulate_file_with_progress(file_name):
             # execute the task
             task.process(True)
             # unset
-            task.setCallBack(None)
+            task.clearCallBack()
 
 
 if __name__ == "__main__":

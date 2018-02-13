@@ -98,9 +98,19 @@ public:
   /**
    * Set the call back of the problem
    * @param CProcessReport * pCallBack
-   * @result bool succes
+   * @result bool success
    */
   virtual bool setCallBack(CProcessReport * pCallBack);
+
+  /**
+   * @return the currently set callback
+   */
+  CProcessReport * getCallBack() const;
+
+  /**
+   * resets the currently set callback by calling setCallBack(NULL)
+   */
+  virtual void clearCallBack();
 
   /**
    * Retrieve the type of the method

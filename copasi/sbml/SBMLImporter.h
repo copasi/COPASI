@@ -740,7 +740,21 @@ public:
    */
   void deleteCopasiModel();
 
+  /**
+   * sets a progress handler to inform about updates
+   */
   void setImportHandler(CProcessReport* pHandler);
+
+  /**
+   * @return the progress handler set
+   */
+  CProcessReport* getImportHandlerAddr() const;
+
+  /**
+   * clears the currently set progress handler
+   */
+  virtual void clearCallBack();
+
 
   /**
    * Enhanced method to identify identical SBML unit definitions.
@@ -757,8 +771,6 @@ public:
    */
   static UnitDefinition* getSBMLUnitDefinitionForId(const std::string& unitId,
       const Model* pSBMLModel);
-
-  CProcessReport* getImportHandlerAddr();
 
   /**
    * Returns the flag that determines whether COPASI MIRIAM annotation is

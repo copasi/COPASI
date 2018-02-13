@@ -224,6 +224,11 @@ CProcessReport * CCopasiTask::getCallBack() const
   return mpCallBack;
 }
 
+void CCopasiTask::clearCallBack()
+{
+  setCallBack(NULL);
+}
+
 COutputHandler* CCopasiTask::getOutputHandler() const
 {
   return mpOutputHandler;

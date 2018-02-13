@@ -84,10 +84,19 @@ C_FLOAT64 SEDMLImporter::round(const C_FLOAT64 & x)
 }
 
 void SEDMLImporter::setImportHandler(CProcessReport* pHandler)
-{mpImportHandler = pHandler;}
+{
+  mpImportHandler = pHandler;
+}
 
-CProcessReport* SEDMLImporter::getImportHandlerAddr()
-{return mpImportHandler;}
+CProcessReport* SEDMLImporter::getImportHandlerAddr() const
+{
+  return mpImportHandler;
+}
+
+void SEDMLImporter::clearCallBack()
+{
+  setImportHandler(NULL);
+}
 
 const std::string SEDMLImporter::getArchiveFileName()
 {return mArchiveFileName;}

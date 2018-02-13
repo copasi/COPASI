@@ -89,7 +89,7 @@ public class processCallback extends org.COPASI.CProcessReport
      task.process(true);
      
      // unset
-     task.setCallBack(null);
+     task.clearCallBack();
    }
    System.out.println("done ... ");
  }

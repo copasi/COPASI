@@ -316,6 +316,16 @@ bool CCopasiMethod::setCallBack(CProcessReport * pCallBack)
   return true;
 }
 
+CProcessReport * CCopasiMethod::getCallBack() const
+{
+  return mpCallBack;
+}
+
+void CCopasiMethod::clearCallBack()
+{
+  setCallBack(NULL);
+}
+
 const CTaskEnum::Task & CCopasiMethod::getType() const {return mTaskType;}
 
 // void CCopasiMethod::setType(const CTaskEnum::Task & type) {mTaskType = type;}

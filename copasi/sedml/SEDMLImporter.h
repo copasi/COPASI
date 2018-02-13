@@ -129,9 +129,20 @@ public:
    */
   void deleteCopasiModel();
 
+  /**
+   * sets a progress handler to inform about updates
+   */
   void setImportHandler(CProcessReport* pHandler);
 
-  CProcessReport* getImportHandlerAddr();
+  /**
+   * @return the progress handler set
+   */
+  CProcessReport* getImportHandlerAddr() const;
+
+  /**
+   * clears the currently set progress handler
+   */
+  virtual void clearCallBack();
 
   void restoreFunctionDB();
 };
