@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
 <comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and The University </comment>
 <comment> of Manchester. </comment>
@@ -21,8 +26,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>455</width>
-    <height>469</height>
+    <width>464</width>
+    <height>526</height>
    </rect>
   </property>
   <property name="caption" stdset="0">
@@ -264,6 +269,13 @@
          </property>
          <property name="text">
           <string>Separator</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mpBtnLineBreak">
+         <property name="text">
+          <string>Line Break</string>
          </property>
         </widget>
        </item>
@@ -612,6 +624,14 @@
     <string>Adds a new Separator at the current position</string>
    </property>
   </action>
+  <action name="mpActAddLineBreak">
+   <property name="text">
+    <string>Add Line Break</string>
+   </property>
+   <property name="toolTip">
+    <string>Adds a new line break at the current position</string>
+   </property>
+  </action>
   <action name="mpActAddItem">
    <property name="text">
     <string>Add Item</string>
@@ -792,6 +812,22 @@
    </hints>
   </connection>
   <connection>
+   <sender>mpBtnLineBreak</sender>
+   <signal>clicked()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>btnLineBreakClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>28</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>mpBtnText</sender>
    <signal>clicked()</signal>
    <receiver>CQReportDefinition</receiver>
@@ -956,6 +992,22 @@
    <signal>triggered()</signal>
    <receiver>CQReportDefinition</receiver>
    <slot>slotAddSeparator()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpActAddLineBreak</sender>
+   <signal>triggered()</signal>
+   <receiver>CQReportDefinition</receiver>
+   <slot>slotAddLineBreak()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
