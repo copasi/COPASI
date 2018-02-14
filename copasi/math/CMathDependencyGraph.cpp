@@ -138,7 +138,9 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
   if (found != notFound)
     {
       success &= found->second->updateDependentState(context, changedObjects);
+#ifdef DEBUG_OUTPUT
       std::cout << *static_cast< const CDataObject * >(mpContainer->getRandomObject()) << std::endl;
+#endif // DEBUG_OUTPUT
     }
 
   CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
