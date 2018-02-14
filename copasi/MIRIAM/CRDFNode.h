@@ -160,16 +160,17 @@ public:
    * Remove a property edge from the node.
    * @param const CRDFPredicate & edge
    * @param CRDFNode * pObject
-   * @return bool success
+   * @return true, if an element was deleted, false otherwise
    */
-  void removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject);
+  bool removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject);
 
   /**
    * This method is for internal use only.
    * The method is declared public since friend declarations may not refer to public methods.
    * @param const CRDFTriplet & triplet
+   * @return true, if an element was deleted, false otherwise
    */
-  void removeTripletFromGraph(const CRDFTriplet & triplet) const;
+  bool removeTripletFromGraph(const CRDFTriplet & triplet) const;
 
   /**
    *

@@ -358,8 +358,10 @@ CRDFTriplet CRDFNode::addEdge(const CRDFPredicate & predicate, CRDFNode * pObjec
   return Triplet;
 }
 
-void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
+bool 
+CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
 {
+  bool deletedSomething = false;
   // Determine whether the predicate points to a bag node
   std::set< CRDFTriplet > Triplets = mGraph.getTriplets(this, predicate);
 
@@ -370,7 +372,7 @@ void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
 
   if (pTarget->isBagNode() && pTarget != pObject)
     {
-      pTarget->removeEdge(CRDFPredicate::rdf_li, pObject);
+    deletedSomething |= pTarget->removeEdge(CRDFPredicate::rdf_li, pObject);
 
       Triplets = mGraph.getTriplets(pTarget, CRDFPredicate::rdf_li);
 
@@ -379,7 +381,7 @@ void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
           case 0:
             // If pTarget is an empty bag node we remove it.
             // Note, this will destroy pTarget, i.e., no need to unbag
-            removeEdge(predicate, pTarget);
+            deletedSomething |= removeEdge(predicate, pTarget);
             break;
 
           default:
@@ -387,12 +389,12 @@ void CRDFNode::removeEdge(const CRDFPredicate & predicate, CRDFNode * pObject)
             break;
         }
 
-      return;
+      return deletedSomething;
     }
 
-  removeTripletFromGraph(CRDFTriplet(this, predicate, pObject));
+  deletedSomething |= removeTripletFromGraph(CRDFTriplet(this, predicate, pObject));
 
-  return;
+  return deletedSomething;
 }
 
 std::set< CRDFTriplet > CRDFNode::getDescendantsWithPredicate(const CRDFPredicate & predicate) const
