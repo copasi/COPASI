@@ -236,21 +236,24 @@ bool CAnnotation::addUnsupportedAnnotation(const std::string & name, const std::
       return false;
     }
 
-  // The name must be unique
-  if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 6, name.c_str());
-      return false;
-    }
-
   // We need to check whether we have valid XML.
   if (!isValidXML(xml))
-    {
-      CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
-      return false;
-    }
+  {
+    CCopasiMessage(CCopasiMessage::ERROR, MCAnnotation + 5, name.c_str());
+    return false;
+  }
 
-  mUnsupportedAnnotations[name] = xml;
+  // if we already have an entry, we add it ... 
+  if (mUnsupportedAnnotations.find(name) != mUnsupportedAnnotations.end())
+    {
+      mUnsupportedAnnotations[name] += xml;
+    }
+  else
+  {
+    mUnsupportedAnnotations[name] = xml;
+  }
+
+
 
   return true;
 }
