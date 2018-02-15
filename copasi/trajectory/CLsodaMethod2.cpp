@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -588,7 +588,7 @@ void CLsodaMethod2::saveState()
   mSavedState.RootsFound = mRootsFound;
   mSavedState.Status = FAILURE;
 
-  mLSODA.saveState();
+  mLSODA.saveState(mSavedState.LsodaState);
 }
 
 void CLsodaMethod2::resetState()
@@ -605,5 +605,5 @@ void CLsodaMethod2::resetState()
   mRootsFound = mSavedState.RootsFound;
   mSavedState.Status = FAILURE;
 
-  mLSODA.resetState();
+  mLSODA.resetState(mSavedState.LsodaState);
 }

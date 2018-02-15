@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -225,7 +225,8 @@ void CStochasticRungeKuttaRI5::stateChange(const CMath::StateChange & change)
   destroyRootMask();
 }
 
-CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT)
+CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT,
+    const bool & /* final */)
 {
   Status Result = NORMAL;
 
@@ -246,7 +247,8 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::step(const double & deltaT)
 
       mInternalSteps++;
 
-      if (*mpInternalStepSize * mInternalSteps > *mpMaxInternalSteps * mTargetDelta)
+      if (mInternalSteps > *mpMaxInternalSteps &&
+          *mpInternalStepSize * mInternalSteps > *mpMaxInternalSteps * mTargetDelta)
         {
           Result = FAILURE;
         }
@@ -421,7 +423,7 @@ void CStochasticRungeKuttaRI5::evalRoot(const double & time, CVectorCore< C_FLOA
   calculateStateVariables(time);
   *mpContainerStateTime = time;
 
-  mpContainer->updateSimulatedValues(false);
+  mpContainer->updateRootValues(false);
 
   rootValues[0] = calculateSmallestPhysicalValue();
 

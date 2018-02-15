@@ -56,8 +56,8 @@ private:
     CVector< C_FLOAT64 > DWork;
     CVector< C_INT > IWork;
     CVector< C_INT > RootsFound;
-
     CTrajectoryMethod::Status Status;
+    CInternalSolver::State LsodaState;
   };
 
   /**
@@ -315,8 +315,8 @@ private:
   CTrajectoryMethod::Status peekAhead();
 
   bool hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const;
-  void saveState();
-  void resetState(const C_FLOAT64 & targetTime);
+  void saveState(State & state) const;
+  void resetState(State & state);
 
 protected:
   /**
