@@ -903,7 +903,7 @@ bool CLsodaMethod::hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) 
   const C_FLOAT64 * pAtol = mAtol.array();
 
   // Check whether we are at the start of the integrations, i.e., the start state time is NaN.
-  if (std::isnan(startState[mpContainer->getCountFixedEventTargets()]))
+  if (isnan(startState[mpContainer->getCountFixedEventTargets()]))
     {
       return true;
     }
