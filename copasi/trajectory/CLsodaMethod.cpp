@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,6 +49,7 @@ CLsodaMethod::CLsodaMethod(const CDataContainer * pParent,
   mTime(),
   mLsodaStatus(1),
   mLastSuccessState(),
+  mLastRootState(),
   mAtol(),
   mpAtol(NULL),
   mErrorMsg(),
@@ -85,6 +86,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   mTime(src.mTime),
   mLsodaStatus(src.mLsodaStatus),
   mLastSuccessState(src.mLastSuccessState),
+  mLastRootState(src.mLastRootState),
   mAtol(src.mAtol),
   mpAtol(NULL),
   mErrorMsg(src.mErrorMsg.str()),
@@ -216,6 +218,7 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
       // The only thing which changed are fixed event targets which do not effect the simulation
       // thus we can continue from the saved state after updating the fixed event targets;
       memcpy(mSavedState.ContainerState.array(), mContainerState.array(), mpContainer->getCountFixedEventTargets() * sizeof(C_FLOAT64));
+      memcpy(mLastRootState.array(), mContainerState.array(), mpContainer->getCountFixedEventTargets() * sizeof(C_FLOAT64));
     }
   else if (change & (CMath::StateChange(CMath::eStateChange::State) | CMath::eStateChange::ContinuousSimulation | CMath::eStateChange::EventSimulation))
     {
@@ -225,6 +228,11 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
       mTime = *mpContainerStateTime;
       mPeekAheadMode = false;
       mSavedState.Status = FAILURE;
+
+      if (mTime == mLastRootState[mpContainer->getCountFixedEventTargets()])
+        {
+          mLastRootState = mContainerState;
+        }
 
       destroyRootMask();
     }
@@ -281,7 +289,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
     {
       if (mSavedState.Status != FAILURE)
         {
-          resetState(mTargetTime);
+          if (mTargetTime >= mSavedState.ContainerState[mpContainer->getCountFixedEventTargets()])
+            {
+              resetState(mSavedState);
+            }
+          else
+            {
+              mSavedState.Status = FAILURE;
+            }
         }
 
       if (mLsodaStatus != 3)
@@ -318,8 +333,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 #endif // DEBUG_FLOW
 
           if (mLsodaStatus == 3 &&
-              (mRootCounter > 0.99 * *mpMaxInternalSteps ||
-               mTime == StartTime))
+              !hasStateChanged(mLastRootState))
             {
               mLsodaStatus = -33;
               mRootCounter = 0;
@@ -432,6 +446,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                 std::cout << "Finishing peek ahead." << std::endl;
 #endif // DEBUG_FLOW
               }
+
+            mLastRootState = mContainerState;
 
           // The break statement is intentionally missing since we
           // have to continue to check the root masking state.
@@ -610,8 +626,10 @@ void CLsodaMethod::start()
     {
       mLSODAR.setOstream(mErrorMsg);
       mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
+      mLastRootState.resize(mContainerState.size());
+      mLastRootState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-      saveState();
+      saveState(mSavedState);
     }
   else
     {
@@ -709,13 +727,15 @@ void CLsodaMethod::createRootMask()
 
   bool *pMask = mRootMask.array();
   bool *pMaskEnd = pMask + mRootMask.size();
+  C_INT * pRootFound = mRootsFound.array();
   C_FLOAT64 * pRootValue = RootValues.array();
   C_FLOAT64 * pRootDerivative = RootDerivatives.array();
 
-  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative)
+  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative, ++pRootFound)
     {
       *pMask = (fabs(*pRootDerivative) < *mpAbsoluteTolerance ||
-                fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min()) ? true : false;
+                fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min() ||
+                (*pRootFound > 0 && *pRootDerivative * *pRootValue < 0)) ? true : false;
     }
 
   mRootMasking = ALL;
@@ -730,7 +750,8 @@ void CLsodaMethod::destroyRootMask()
 CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 {
   // Save the current state
-  CVector< C_FLOAT64 > StartState = mContainerState;
+  State StartState;
+  saveState(StartState);
 
   mPeekAheadMode = true;
   Status PeekAheadStatus = ROOT;
@@ -772,12 +793,11 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                   }
 
                 // Save the state for future use.
-                saveState();
+                saveState(mSavedState);
                 mSavedState.Status = NORMAL;
 
                 // Set the result to the state when peakAhead was entered.
-                mContainerState = StartState;
-                mTime = *mpContainerStateTime;
+                resetState(StartState);
 
 #ifdef DEBUG_NUMERICS
                 std::cout << "Current Roots:        " << mpContainer->getRoots() << std::endl;
@@ -818,33 +838,17 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
           case ROOT:
           {
             // Check whether the new state is within the tolerances
-            C_FLOAT64 * pOld = StartState.array();
-            C_FLOAT64 * pOldEnd = pOld + StartState.size();
-            C_FLOAT64 * pNew = mContainerState.array();
-            C_FLOAT64 * pAtol = mAtol.array();
-
-            for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
-              {
-                if ((2.0 * fabs(*pNew - *pOld) > fabs(*pNew + *pOld) **mpRelativeTolerance) &&
-                    fabs(*pNew) > *pAtol &&
-                    fabs(*pOld) > *pAtol)
-                  {
-                    break;
-                  }
-              }
-
-            if (pOld != pOldEnd)
+            if (hasStateChanged(StartState.ContainerState))
               {
                 // If we are here we are certain that the state has sufficiently changed.
                 mPeekAheadMode = false;
 
                 // Save the state for future use.
-                saveState();
+                saveState(mSavedState);
                 mSavedState.Status = ROOT;
 
                 // Set the result to the state when peakAhead was entered.
-                mContainerState = StartState;
-                mTime = *mpContainerStateTime;
+                resetState(StartState);
               }
             else
               {
@@ -890,36 +894,57 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   return PeekAheadStatus;
 }
 
-void CLsodaMethod::saveState()
+bool CLsodaMethod::hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const
 {
-  *mpContainerStateTime = mTime;
-  mSavedState.ContainerState = mContainerState;
-  mSavedState.DWork = mDWork;
-  mSavedState.IWork = mIWork;
-  mSavedState.RootsFound = mRootsFound;
-  mSavedState.Status = FAILURE;
+  // Check whether the new state is within the tolerances
+  const C_FLOAT64 * pOld = startState.array();
+  const C_FLOAT64 * pOldEnd = pOld + startState.size();
+  const C_FLOAT64 * pNew = mContainerState.array();
+  const C_FLOAT64 * pAtol = mAtol.array();
 
-  mLSODAR.saveState();
-}
-
-void CLsodaMethod::resetState(const C_FLOAT64 & targetTime)
-{
-  if (targetTime < mSavedState.ContainerState[mpContainer->getCountFixedEventTargets()])
+  // Check whether we are at the start of the integrations, i.e., the start state time is NaN.
+  if (isnan(startState[mpContainer->getCountFixedEventTargets()]))
     {
-      return;
+      return true;
     }
 
-  if (mSavedState.Status == ROOT)
+  for (; pOld != pOldEnd; ++pOld, ++pNew, ++pAtol)
+    {
+      if ((2.0 * fabs(*pNew - *pOld) > fabs(*pNew + *pOld) **mpRelativeTolerance) &&
+          fabs(*pNew) > *pAtol &&
+          fabs(*pOld) > *pAtol)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+void CLsodaMethod::saveState(CLsodaMethod::State & state) const
+{
+  *mpContainerStateTime = mTime;
+  state.ContainerState = mContainerState;
+  state.DWork = mDWork;
+  state.IWork = mIWork;
+  state.RootsFound = mRootsFound;
+  state.Status = FAILURE;
+
+  mLSODAR.saveState(state.LsodaState);
+}
+
+void CLsodaMethod::resetState(CLsodaMethod::State & state)
+{
+  if (state.Status == ROOT)
     {
       mLsodaStatus = 3;
     }
 
-  mContainerState = mSavedState.ContainerState;
+  mContainerState = state.ContainerState;
   mTime = *mpContainerStateTime;
-  mDWork = mSavedState.DWork;
-  mIWork = mSavedState.IWork;
-  mRootsFound = mSavedState.RootsFound;
-  mSavedState.Status = FAILURE;
+  mDWork = state.DWork;
+  mIWork = state.IWork;
+  mRootsFound = state.RootsFound;
+  state.Status = FAILURE;
 
-  mLSODAR.resetState();
+  mLSODAR.resetState(state.LsodaState);
 }

@@ -1,4 +1,9 @@
-// Copyright (C) 2014 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2014 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -29,16 +34,16 @@ void CInternalSolver::enablePrint(const bool & print)
   mxerrwd.enablePrint(print);
 }
 
-void CInternalSolver::saveState()
+void CInternalSolver::saveState(CInternalSolver::State & state) const
 {
-  mState.mdls001 = mdls001_;
-  mState.mdlsa01 = mdlsa01_;
-  mState.mdlsr01 = mdlsr01_;
+  state.mdls001 = mdls001_;
+  state.mdlsa01 = mdlsa01_;
+  state.mdlsr01 = mdlsr01_;
 }
 
-void CInternalSolver::resetState()
+void CInternalSolver::resetState(const CInternalSolver::State & state)
 {
-  mdls001_ = mState.mdls001;
-  mdlsa01_ = mState.mdlsa01;
-  mdlsr01_ = mState.mdlsr01;
+  mdls001_ = state.mdls001;
+  mdlsa01_ = state.mdlsa01;
+  mdlsr01_ = state.mdlsr01;
 }

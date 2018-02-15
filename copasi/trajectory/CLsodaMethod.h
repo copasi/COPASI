@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,8 +56,8 @@ private:
     CVector< C_FLOAT64 > DWork;
     CVector< C_INT > IWork;
     CVector< C_INT > RootsFound;
-
     CTrajectoryMethod::Status Status;
+    CInternalSolver::State LsodaState;
   };
 
   /**
@@ -118,6 +118,11 @@ protected:
    * The state after the last successful integration step
    */
   CVector< C_FLOAT64 > mLastSuccessState;
+
+  /**
+   * The last state having a root
+   */
+  CVector< C_FLOAT64 > mLastRootState;
 
 private:
   /**
@@ -309,8 +314,9 @@ private:
    */
   CTrajectoryMethod::Status peekAhead();
 
-  void saveState();
-  void resetState(const C_FLOAT64 & targetTime);
+  bool hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const;
+  void saveState(State & state) const;
+  void resetState(State & state);
 
 protected:
   /**

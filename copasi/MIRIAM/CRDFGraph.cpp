@@ -279,20 +279,21 @@ bool CRDFGraph::addTriplet(const CRDFTriplet & triplet)
   return true;
 }
 
-void CRDFGraph::removeTriplet(CRDFNode * pSubject,
+bool CRDFGraph::removeTriplet(CRDFNode * pSubject,
                               const CRDFPredicate & predicate,
                               CRDFNode * pObject)
-{pSubject->removeEdge(predicate, pObject);}
+{ return pSubject->removeEdge(predicate, pObject);}
 
-void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
+bool 
+CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
 {
   if (!triplet)
-    return;
+    return false;
 
   // DebugFile << "Removed: " << triplet;
-
+  bool deletedSomething = false;
   // Remove the triplet
-  mTriplets.erase(triplet);
+  deletedSomething |= mTriplets.erase(triplet) > 0;
 
   // Remove its references
   // Subject2Triplets
@@ -301,6 +302,7 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
       {
+        deletedSomething = true;
         mSubject2Triplet.erase(Range.first);
 
         // We must stop or make sure that the iterator Range is still valid. Since
@@ -313,6 +315,7 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   for (; Range.first != Range.second; ++Range.first)
     if (Range.first->second == triplet)
       {
+        deletedSomething = true;
         mObject2Triplet.erase(Range.first);
 
         // We must stop or make sure that the iterator Range is still valid. Since
@@ -325,6 +328,7 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
   for (; RangeP.first != RangeP.second; ++RangeP.first)
     if (RangeP.first->second == triplet)
       {
+        deletedSomething = true;
         mPredicate2Triplet.erase(RangeP.first);
 
         // We must stop or make sure that the iterator RangeP is still valid. Since
@@ -332,8 +336,8 @@ void CRDFGraph::removeTriplet(const CRDFTriplet & triplet)
         break;
       }
 
-  destroyUnreferencedNode(triplet.pObject);
-  return;
+  deletedSomething |= destroyUnreferencedNode(triplet.pObject);
+  return deletedSomething;
 }
 
 CRDFTriplet CRDFGraph::moveTriplet(CRDFNode * pNewSubject, const CRDFTriplet & triplet)
@@ -541,6 +545,8 @@ bool CRDFGraph::removeEmptyNodes()
   std::set< CRDFNode * >::iterator itRemove = ToBeRemoved.begin();
   std::set< CRDFNode * >::iterator endRemove = ToBeRemoved.end();
 
+  bool deletedSomething = false;
+
   for (; itRemove != endRemove; ++itRemove)
     {
       std::set< CRDFTriplet > Triplets = getIncomingTriplets(*itRemove);
@@ -548,16 +554,21 @@ bool CRDFGraph::removeEmptyNodes()
       std::set< CRDFTriplet >::const_iterator endTriplet = Triplets.end();
 
       if (itTriplet == endTriplet)
-        destroyUnreferencedNode(*itRemove);
+        deletedSomething |= destroyUnreferencedNode(*itRemove);
 
       for (; itTriplet != endTriplet; ++itTriplet)
         {
-          itTriplet->pSubject->removeEdge(itTriplet->Predicate,
+        deletedSomething |= itTriplet->pSubject->removeEdge(itTriplet->Predicate,
                                           itTriplet->pObject);
         }
     }
 
-  return ToBeRemoved.size() > 0;
+  if (ToBeRemoved.size() > 0 && !deletedSomething)
+  {
+    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, "Failure in removing empty elements from converting RDF node.");
+  }
+
+  return ToBeRemoved.size() > 0 && deletedSomething;
 }
 
 void CRDFGraph::updateNamespaces()
@@ -614,11 +625,11 @@ void CRDFGraph::updateNamespaces()
     mPrefix2Namespace.erase(*itRemove);
 }
 
-void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
+bool CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
 {
   // We only can remove nodes which are no longer objects.
   if (mObject2Triplet.count(pNode) > 0)
-    return;
+    return false;
 
   // Remove all triplets where the node is subject
   std::pair< Node2Triplet::iterator, Node2Triplet::iterator> Range = mSubject2Triplet.equal_range(pNode);
@@ -630,8 +641,10 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
   std::set< CRDFTriplet >::const_iterator itTriplet = RemoveTriplets.begin();
   std::set< CRDFTriplet >::const_iterator endTriplet = RemoveTriplets.end();
 
+  bool deletedSomething = false;
+
   for (; itTriplet != endTriplet; ++itTriplet)
-    itTriplet->pSubject->removeEdge(itTriplet->Predicate, itTriplet->pObject);
+    deletedSomething |= itTriplet->pSubject->removeEdge(itTriplet->Predicate, itTriplet->pObject);
 
   // Remove the object from the appropriate container.
   switch (pNode->getObject().getType())
@@ -639,7 +652,7 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
       case CRDFObject::RESOURCE:
 
         if (pNode->getObject().isLocal())
-          mLocalResource2Node.erase(pNode->getObject().getResource());
+          deletedSomething |= mLocalResource2Node.erase(pNode->getObject().getResource()) > 0;
         else
           {
             // Check whether the pointer still exists mRemoteResourceNodes
@@ -649,6 +662,7 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
             for (; it != end; ++it)
               if (pNode == *it)
                 {
+                  deletedSomething = true;
                   mRemoteResourceNodes.erase(it);
                   break;
                 }
@@ -657,7 +671,7 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
         break;
 
       case CRDFObject::BLANK_NODE:
-        mBlankNodeId2Node.erase(pNode->getObject().getBlankNodeID());
+        deletedSomething |= mBlankNodeId2Node.erase(pNode->getObject().getBlankNodeID()) > 0;
         break;
 
       case CRDFObject::LITERAL:
@@ -669,6 +683,7 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
         for (; it != end; ++it)
           if (pNode == *it)
             {
+              deletedSomething = true;
               mLiteralNodes.erase(it);
               break;
             }
@@ -678,6 +693,7 @@ void CRDFGraph::destroyUnreferencedNode(CRDFNode * pNode)
 
   // Finally delete the object
   delete pNode;
+  return deletedSomething;
 }
 
 // The next two methods are coded here to allows for easier debugging of the calls
@@ -687,7 +703,7 @@ bool CRDFNode::addTripletToGraph(const CRDFTriplet & triplet) const
   return mGraph.addTriplet(triplet);
 }
 
-void CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const
+bool CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const
 {
-  mGraph.removeTriplet(triplet);
+  return mGraph.removeTriplet(triplet);
 }

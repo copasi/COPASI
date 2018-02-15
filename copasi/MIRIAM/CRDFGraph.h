@@ -132,16 +132,18 @@ public:
    * @param CRDFNode * pSubject
    * @param const CRDFPredicate & predicate
    * @param CRDFNode * pObject
+   * @return true, if an element was deleted, false otherwise
    */
-  void removeTriplet(CRDFNode * pSubject,
+  bool removeTriplet(CRDFNode * pSubject,
                      const CRDFPredicate & predicate,
                      CRDFNode * pObject);
 
   /**
    * Destroy a CRDFNode
    * @param CRDFNode * pNode
+   * @return true, if an element was deleted, false otherwise
    */
-  void destroyUnreferencedNode(CRDFNode * pNode);
+  bool destroyUnreferencedNode(CRDFNode * pNode);
 
 private:
   /**
@@ -149,10 +151,10 @@ private:
    * Please note, this will also remove all unreferenced
    * local resources created by removing the edge.
    * @param const CRDFTriplet & triplet
-   * @return bool success
+   * @return true, if an element was deleted, false otherwise
    */
-  void removeTriplet(const CRDFTriplet & triplet);
-  friend void CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const;
+  bool removeTriplet(const CRDFTriplet & triplet);
+  friend bool CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const;
 
 public:
   /**

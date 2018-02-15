@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,7 +29,7 @@
 
 class CInternalSolver
 {
-private:
+public:
   struct State
   {
     dls001 mdls001;
@@ -47,8 +47,8 @@ public:
 
   void enablePrint(const bool & print = true);
 
-  void saveState();
-  void resetState();
+  void saveState(State & state) const;
+  void resetState(const State & state);
 
   C_INT dintdy_(double *t, const C_INT *k, double *yh,
                 C_INT *nyh, double *dky, C_INT *iflag);
@@ -79,7 +79,6 @@ protected:
   dls001 mdls001_;
   dlsa01 mdlsa01_;
   dlsr01 mdlsr01_;
-  State mState;
 };
 
 #endif // ODEPACK_CInternalSolver

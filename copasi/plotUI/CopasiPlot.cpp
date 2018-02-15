@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -275,10 +275,10 @@ CopasiPlot::createSpectogram(const CPlotItem *plotItem)
       QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
       QwtValueList contourLevels;
 
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -1436,7 +1436,12 @@ void CopasiPlot::setAxisUnits(const C_INT32 & index,
 
   if (pObject == NULL) return;
 
-  std::string Units = pObject->getUnits();
+  std::string Units = CUnit::prettyPrint(pObject->getUnits());
+
+  if (Units == "?")
+    {
+      Units.clear();
+    }
 
   if (Units != "")
     setAxisTitle(index, FROM_UTF8(Units));

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -76,11 +76,12 @@ public:
    *  starting with the current state, i.e., the result of the previous
    *  step.
    *  The new state (after deltaT) is expected in the current state.
-   *  The return value is the actual time step taken.
-   *  @param "const double &" deltaT
+   *  The return value is the actual timestep taken.
+   *  @param const double & deltaT
+   *  @param const bool & final (default: false)
    *  @return Status status
    */
-  virtual CTrajectoryMethod::Status step(const double & deltaT);
+  virtual Status step(const double & deltaT, const bool & final = false);
 
   /**
    *  This instructs the method to prepare for integration
