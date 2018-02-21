@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,6 +35,7 @@ public:
     OBJECT_PARENT_CN,
     OBJECT_TYPE,
     OBJECT_FLAG,
+    OBJECT_HASH,
     OBJECT_INDEX,
     OBJECT_REFERENCES,
     OBJECT_REFERENCE,
@@ -66,6 +67,7 @@ public:
     NOTES,
     MIRIAM_PREDICATE,
     MIRIAM_RESOURCE,
+    MIRIAM_DESCRIPTION,
     MIRIAM_ID,
     DATE,
     GIVEN_NAME,
@@ -129,6 +131,8 @@ public:
   bool empty() const;
 
   void clear();
+
+  std::string hash() const;
 
   const_iterator begin() const;
 

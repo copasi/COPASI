@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,7 +64,7 @@ std::string CModelParameter::nameFromCN(const CCommonName & cn)
 }
 
 // static
-CModelParameter * CModelParameter::fromData(const CData & data)
+CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CModelParameter * pModelParameter = NULL;
 
@@ -100,6 +100,12 @@ CModelParameter * CModelParameter::fromData(const CData & data)
     }
 
   return pModelParameter;
+}
+
+// virtual
+void CModelParameter::destruct()
+{
+  delete this;
 }
 
 // virtual

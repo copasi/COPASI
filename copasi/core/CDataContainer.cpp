@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,7 +35,7 @@
 const CObjectInterface::ContainerList CDataContainer::EmptyList;
 
 // static
-CDataContainer * CDataContainer::fromData(const CData & data)
+CDataContainer * CDataContainer::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CDataContainer(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT,
@@ -206,12 +206,18 @@ CDataContainer::~CDataContainer()
   objectMap::iterator end = mObjects.end();
 
   for (; it != end; ++it)
-    if (*it != NULL &&
-        (*it)->getObjectParent() == this)
+    if (*it != NULL)
       {
-        (*it)->setObjectParent(NULL);
+        if ((*it)->getObjectParent() == this)
+          {
+            (*it)->setObjectParent(NULL);
 
-        if (*it != NULL) delete(*it);
+            if (*it != NULL) delete(*it);
+          }
+        else
+          {
+            (*it)->removeReference(this);
+          }
       }
 }
 

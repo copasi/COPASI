@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,7 +60,7 @@ const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::XMLStat
 });
 
 // static
-CModelEntity * CModelEntity::fromData(const CData & data)
+CModelEntity * CModelEntity::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   // It is not possible to create a CModelEntity from data.
   // Only derived classes are allowed!
@@ -836,7 +836,7 @@ const bool & CModelEntity::isUsed() const
 //********************************************************************+
 
 // static
-CModelValue * CModelValue::fromData(const CData & data)
+CModelValue * CModelValue::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CModelValue(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);

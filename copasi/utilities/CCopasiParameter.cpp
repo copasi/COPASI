@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,7 +72,7 @@ const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::X
 });
 
 // static
-CCopasiParameter * CCopasiParameter::fromData(const CData & data)
+CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CCopasiParameter * pNew = NULL;
 

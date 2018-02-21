@@ -9854,7 +9854,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
           std::string sboTerm = pSBMLObject->getSBOTermID();
           // load miriam info
           CMIRIAMInfo info;
-          info.load(pCOPASIObject);
+          info.load(dynamic_cast< CDataContainer * >(pCOPASIObject));
 
           // check whether term is already there
           CDataVector <CBiologicalDescription>& descriptons = info.getBiologicalDescriptions();

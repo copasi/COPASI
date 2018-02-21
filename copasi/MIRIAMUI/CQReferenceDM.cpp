@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,12 +14,13 @@
 // All rights reserved.
 
 #include "CQReferenceDM.h"
-#include "UI/CQMessageBox.h"
 
 #include "copasi.h"
 
-#include "UI/qtUtilities.h"
-#include "MIRIAM/CModelMIRIAMInfo.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/MIRIAM/CModelMIRIAMInfo.h"
 
 CQReferenceDM::CQReferenceDM(CMIRIAMInfo* MIRIAMInfo, QObject *parent)
   : CQBaseDataModel(parent, NULL)
@@ -112,31 +113,45 @@ bool CQReferenceDM::setData(const QModelIndex &index, const QVariant &value,
 {
   if (index.isValid() && role == Qt::EditRole)
     {
+      CUndoData::Type UndoType = CUndoData::Type::CHANGE;
+
       if (isDefaultRow(index))
         {
           if (index.data() != value)
-            insertRow(rowCount(), index);
+            {
+              insertRow(rowCount(), QModelIndex());
+              UndoType = CUndoData::Type::INSERT;
+            }
           else
             return false;
         }
 
+      CReference & Reference = mpMIRIAMInfo->getReferences()[index.row()];
+      CData OldData = Reference.toData();
+
       switch (index.column())
         {
           case COL_RESOURCE_REFERENCE:
-            mpMIRIAMInfo->getReferences()[index.row()].setResource(TO_UTF8(value.toString()));
+            Reference.setResource(TO_UTF8(value.toString()));
             break;
 
           case COL_ID_REFERENCE:
-            mpMIRIAMInfo->getReferences()[index.row()].setId(TO_UTF8(value.toString()));
+            Reference.setId(TO_UTF8(value.toString()));
             break;
 
           case COL_DESCRIPTION:
-            mpMIRIAMInfo->getReferences()[index.row()].setDescription(TO_UTF8(value.toString()));
+            Reference.setDescription(TO_UTF8(value.toString()));
             break;
         }
 
-      emit dataChanged(index, index);
-      emit notifyGUI(ListViews::MIRIAM, ListViews::CHANGE, std::string());
+      CUndoData UndoData;
+      Reference.createUndoData(UndoData, UndoType, OldData);
+
+      if (!UndoData.empty())
+        {
+          emit signalNotifyChanges(mpDataModel->recordData(UndoData));
+        }
+
       return true;
     }
 
@@ -149,12 +164,14 @@ bool CQReferenceDM::insertRows(int position, int rows, const QModelIndex & paren
 
   for (int row = 0; row < rows; ++row)
     {
-      mpMIRIAMInfo->createReference("");
+      CReference * pReference = mpMIRIAMInfo->createReference("");
+
+      if (pReference == NULL)
+        continue;
     }
 
   endInsertRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::ADD, std::string());
   return true;
 }
 
@@ -165,14 +182,28 @@ bool CQReferenceDM::removeRows(int position, int rows, const QModelIndex & paren
 
   beginRemoveRows(parent, position, position + rows - 1);
 
-  for (int row = 0; row < rows; ++row)
+  std::vector< const CReference * > ToBeDeleted;
+  ToBeDeleted.resize(rows);
+
+  std::vector< const CReference * >::iterator it = ToBeDeleted.begin();
+  std::vector< const CReference * >::iterator end = ToBeDeleted.end();
+
+  CDataVector< CReference >::const_iterator itRow = mpMIRIAMInfo->getReferences().begin() + position;
+
+  for (; it != end; ++it, ++itRow)
     {
-      mpMIRIAMInfo->removeReference(position);
+      *it = &*itRow;
+    }
+
+  for (it = ToBeDeleted.begin(); it != end; ++it)
+    {
+      CUndoData UndoData;
+      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
 
   endRemoveRows();
 
-  emit notifyGUI(ListViews::MIRIAM, ListViews::DELETE, std::string());
   return true;
 }
 

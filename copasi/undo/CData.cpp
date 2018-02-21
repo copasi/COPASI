@@ -1,13 +1,16 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
+#include <sstream>
 
 #include "copasi.h"
 
 #include "CData.h"
 
-#include "utilities/utility.h"
+#include "copasi/utilities/utility.h"
+#include "copasi/utilities/Cmd5.h"
 
 // static
 const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
@@ -30,6 +33,7 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Object Parent CN", // OBJECT_PARENT_CN
   "Object Type", // OBJECT_TYPE
   "Object Flag", // OBJECT_FLAG
+  "Object Hash", // OBJECT_HASH,
   "Object Index", // OBJECT_INDEX
   "Object References", // OBJECT_REFERENCES
   "Object Reference", // OBJECT_REFERENCE
@@ -61,6 +65,7 @@ const CEnumAnnotation< std::string, CData::Property > CData::PropertyName(
   "Notes", // NOTES
   "MIRIAM Predicate", // MIRIAM_PREDICATE
   "MIRIAM Resource", // MIRIAM_RESOURCE
+  "MIRIAM Description", // MIRIAM_DESCRIPTION
   "MIRIAM Id", // MIRIAM_ID
   "Date", // DATE
   "Given Name", // GIVEN_NAME
@@ -218,6 +223,16 @@ bool CData::empty() const
 void CData::clear()
 {
   std::map< std::string, CDataValue >::clear();
+}
+
+std::string CData::hash() const
+{
+  std::stringstream Data;
+  Data << *this;
+  std::string hash = Cmd5::digest(Data);
+  std::cout << *this << hash << std::endl;
+
+  return hash;
 }
 
 CData::const_iterator CData::begin() const

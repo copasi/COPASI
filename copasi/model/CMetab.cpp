@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@ C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number, const CCompar
 {return number / compartment.getInitialValue() * compartment.getModel()->getNumber2QuantityFactor();}
 
 // static
-CMetab * CMetab::fromData(const CData & data)
+CMetab * CMetab::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CMetab(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);
@@ -562,7 +562,7 @@ const CMoiety * CMetab::getMoiety() const
 //******************* CMetabOld ***************************************************
 
 // static
-CMetabOld * CMetabOld::fromData(const CData & data)
+CMetabOld * CMetabOld::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CMetabOld(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);

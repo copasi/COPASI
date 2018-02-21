@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,8 +29,9 @@
 #include "MIRIAM/CModelMIRIAMInfo.h"
 #include "function/CFunction.h"
 #include "copasi/core/CRootContainer.h"
-#include <copasi/CopasiDataModel/CDataModel.h>
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "commandline/CConfigurationFile.h"
+#include "copasi/UI/DataModelGUI.h"
 
 /*
  *  Constructs a CQMiriamWidget which is a child of 'parent', with the
@@ -52,10 +53,10 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
   mpBiologicalDescriptionDM = new CQBiologicalDescriptionDM(mpMIRIAMInfo, this);
   mpModifiedDM = new CQModifiedDM(mpMIRIAMInfo, this);
   //Create Proxy Data Models for the 4 tables
-  mpCreatorPDM = new CQSortFilterProxyModel();
-  mpReferencePDM = new CQSortFilterProxyModel();
-  mpBiologicalDescriptionPDM = new CQSortFilterProxyModel();
-  mpModifiedPDM = new CQSortFilterProxyModel();
+  mpCreatorPDM = new CQSortFilterProxyModel(this);
+  mpReferencePDM = new CQSortFilterProxyModel(this);
+  mpBiologicalDescriptionPDM = new CQSortFilterProxyModel(this);
+  mpModifiedPDM = new CQSortFilterProxyModel(this);
   //Create Required Delegates
   mpResourceDelegate1 = new CQComboDelegate(this, mReferences, false);
   mpTblReferences->setItemDelegateForColumn(COL_RESOURCE_REFERENCE, mpResourceDelegate1);
@@ -101,6 +102,9 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
       //Set Proxy Data Model properties
       (*itPDM)->setDynamicSortFilter(true);
       (*itPDM)->setSortCaseSensitivity(Qt::CaseInsensitive);
+      (*itPDM)->setSourceModel(*itDM);
+      (*it)->setModel(*itPDM);
+
 #if QT_VERSION >= 0x050000
       (*it)->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 #else
@@ -108,6 +112,9 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
 #endif
       (*it)->verticalHeader()->hide();
       (*it)->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
+
+      connect((*itDM), SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+              this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
       connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
               this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
@@ -127,10 +134,18 @@ CQMiriamWidget::~CQMiriamWidget()
 {
   // no need to delete child widgets or objects, Qt does it all for us
   pdelete(mpMIRIAMInfo);
-  pdelete(mpCreatorPDM);
-  pdelete(mpReferencePDM);
-  pdelete(mpBiologicalDescriptionPDM);
-  pdelete(mpModifiedPDM);
+}
+
+// virtual
+void CQMiriamWidget::slotNotifyChanges(const CUndoData::ChangeSet & changes)
+{
+  if (changes.empty())
+    {
+      return;
+    }
+
+  mpMIRIAMInfo->save();
+  mpListView->getDataModelGUI()->notifyChanges(changes);
 }
 
 void CQMiriamWidget::slotBtnDeleteClicked()
@@ -322,7 +337,11 @@ void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 
       if (DT != mpMIRIAMInfo->getCreatedDT())
         {
+          CData OldData = mpMIRIAMInfo->toData();
           mpMIRIAMInfo->setCreatedDT(DT);
+          CUndoData UndoData;
+          mpMIRIAMInfo->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData);
+          slotNotifyChanges(mpDataModel->recordData(UndoData));
         }
     }
 }
@@ -355,22 +374,23 @@ bool CQMiriamWidget::enterProtected()
       mObjectCNToCopy.clear();
     }
 
-  mpMIRIAMInfo->load(mpObject);
+  std::vector<CQBaseDataModel *>::const_iterator itDM = mDMs.begin();
+  std::vector<CQBaseDataModel *>::const_iterator endDM = mDMs.end();
+
+  for (; itDM != endDM; itDM++)
+    (*itDM)->beginResetModel();
+
+  mpMIRIAMInfo->load(dynamic_cast< CDataContainer * >(mpObject));
+
+  for (itDM = mDMs.begin(); itDM != endDM; itDM++)
+    (*itDM)->endResetModel();
+
   //Set Models for the 4 TableViews
   std::vector<CQTableView *>::const_iterator it = mWidgets.begin();
   std::vector<CQTableView *>::const_iterator end = mWidgets.end();
-  std::vector<CQBaseDataModel *>::const_iterator itDM = mDMs.begin();
-  std::vector<CQBaseDataModel *>::const_iterator endDM = mDMs.end();
-  std::vector<CQSortFilterProxyModel *>::const_iterator itPDM = mProxyDMs.begin();
-  std::vector<CQSortFilterProxyModel *>::const_iterator endPDM = mProxyDMs.end();
 
-  for (; it != end && itDM != endDM && itPDM != endPDM; it++, itDM++, itPDM++)
-    {
-      (*itPDM)->setSourceModel(*itDM);
-      (*it)->setModel(NULL);
-      (*it)->setModel(*itPDM);
-      (*it)->resizeColumnsToContents();
-    }
+  for (; it != end; it++)
+    (*it)->resizeColumnsToContents();
 
   QDateTime DTCreated;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -712,8 +712,21 @@ void DataModelGUI::notifyChanges(const CUndoData::ChangeSet & changes)
             }
 
           ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->second.objectType, ListViews::ObjectType::STATE);
+          std::string CN = it->first;
 
-          notify(ObjectType, Action, it->first);
+          if (ObjectType == ListViews::ObjectType::STATE)
+            {
+              if (it->second.objectType == "Creator" ||
+                  it->second.objectType == "Reference" ||
+                  it->second.objectType == "BiologicalDescription" ||
+                  it->second.objectType == "Modification")
+                {
+                  ObjectType = ListViews::ObjectType::MIRIAM;
+                  CN = it->first.substr(0, it->first.find(",CMIRIAMInfo="));
+                }
+            }
+
+          notify(ObjectType, Action, CN);
         }
     }
 }

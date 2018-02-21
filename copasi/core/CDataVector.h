@@ -344,7 +344,7 @@ public:
       }
     else
       {
-        pNew = CType::fromData(data);
+        pNew = CType::fromData(data, this);
         Index = data.getProperty(CData::OBJECT_INDEX).toSizeT();
 
         if (pNew != NULL &&

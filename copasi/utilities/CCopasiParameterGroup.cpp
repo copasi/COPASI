@@ -278,7 +278,7 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
 // virtual
 CUndoObjectInterface * CCopasiParameterGroup::insert(const CData & data)
 {
-  CCopasiParameter * pNew = CCopasiParameter::fromData(data);
+  CCopasiParameter * pNew = CCopasiParameter::fromData(data, this);
 
   elements * pElements = static_cast< elements * >(mpValue);
   size_t Index = data.getProperty(CData::OBJECT_INDEX).toSizeT();

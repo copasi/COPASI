@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,6 +61,8 @@ public:
 
   bool addProperty(const CData::Property & property, const CDataValue & oldValue, const CDataValue & newValue);
 
+  bool removeProperty(const CData::Property & property);
+
   bool isSetProperty(const CData::Property & property) const;
 
   bool appendData(const CData & data);
@@ -119,6 +121,8 @@ private:
   bool addProperty(const std::string & name, const CDataValue & value);
 
   bool addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue);
+
+  bool removeProperty(const std::string & name);
 
   bool isSetProperty(const std::string & name) const;
 

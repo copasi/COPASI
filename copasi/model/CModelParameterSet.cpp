@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,10 +21,16 @@
 #include "copasi/utilities/CValidatedUnit.h"
 
 // static
-CModelParameterSet * CModelParameterSet::fromData(const CData & data)
+CModelParameterSet * CModelParameterSet::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CModelParameterSet(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);
+}
+
+// virtual
+void CModelParameterSet::destruct()
+{
+  delete this;
 }
 
 // virtual
@@ -68,7 +74,7 @@ void CModelParameterSet::createUndoData(CUndoData & undoData,
 // virtual
 CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
 {
-  CModelParameter * pParameter = CModelParameter::fromData(data);
+  CModelParameter * pParameter = CModelParameter::fromData(data, this);
 
   switch (CModelParameter::TypeNames.toEnum(data.getProperty(CData::OBJECT_TYPE).toString(), CModelParameter::Type::unknown))
     {

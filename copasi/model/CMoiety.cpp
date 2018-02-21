@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,7 @@
 const C_FLOAT64 CMoiety::DefaultFactor(1.0);
 
 // static
-CMoiety * CMoiety::fromData(const CData & data)
+CMoiety * CMoiety::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CMoiety(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);

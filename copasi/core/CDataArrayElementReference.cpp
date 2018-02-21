@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,7 +8,7 @@
 #include "CArrayElementReference.h"
 
 // static
-CArrayElementReference * CArrayElementReference::fromData(const CData & data)
+CArrayElementReference * CArrayElementReference::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   std::vector< std::string > Index;
 

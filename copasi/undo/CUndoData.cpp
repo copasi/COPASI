@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -191,6 +191,11 @@ bool CUndoData::addProperty(const CData::Property & property, const CDataValue &
   return addProperty(CData::PropertyName[property], oldValue, newValue);
 }
 
+bool CUndoData::removeProperty(const CData::Property & property)
+{
+  return removeProperty(CData::PropertyName[property]);
+}
+
 bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValue, const CDataValue & newValue)
 {
   bool success = false;
@@ -215,6 +220,7 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
             if (name != "Object Name" &&
                 name != "Object Parent CN" &&
                 name != "Object Type" &&
+                name != "Object Hash" &&
                 name != "Object Index")
               {
                 mOldData.removeProperty(name);
@@ -226,6 +232,15 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
 
         break;
     }
+
+  return success;
+}
+
+bool CUndoData::removeProperty(const std::string & name)
+{
+  bool success = mOldData.removeProperty(name);
+  success |= mNewData.removeProperty(name);
+  success &= mChangedProperties.erase(name);
 
   return success;
 }
@@ -654,7 +669,7 @@ bool CUndoData::remove(const CDataModel & dataModel, const bool & apply, ChangeS
 
   if (execute)
     {
-      delete pObject;
+      pObject->destruct();
     }
 
   success &= executePostProcessData(dataModel, apply, changes, execute);
@@ -668,7 +683,7 @@ bool CUndoData::change(const CDataModel & dataModel, const bool & apply, ChangeS
   const CData & OldData = getData(!apply);
   const CData & NewData = getData(apply);
 
-  CUndoObjectInterface * pObject = getObject(dataModel, OldData);
+  CUndoObjectInterface * pObject = getObject(dataModel, execute ? OldData : NewData);
 
   // We must always have the old object;
   if (pObject == NULL)
@@ -819,6 +834,27 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
       else if ((pSet = dynamic_cast< CModelParameterSet * >(pParent)) != NULL)
         {
           pObject = pSet->getModelParameter(data.getProperty(CData::OBJECT_NAME).toString());
+        }
+      else if (data.isSetProperty(CData::OBJECT_HASH))
+        {
+          // We need to search all objects with the same OBJECT_TYPE and OBJECT_NAME for the given hash.
+          CDataContainer::objectMap::range Range = pParent->getObjects().equal_range(data.getProperty(CData::OBJECT_NAME).toString());
+          std::string ObjectType = data.getProperty(CData::OBJECT_TYPE).toString();
+          std::string ObjectHash = data.getProperty(CData::OBJECT_HASH).toString();
+          std::cout << "ObjectHash: " <<  ObjectHash << std::endl;
+
+          for (; Range.first != Range.second; ++Range.first)
+            if ((*Range.first)->getObjectType() == ObjectType)
+              {
+                CData Data((*Range.first)->toData());
+                std::cout << "  " <<  Data << std::endl;
+
+                if (Data.getProperty(CData::OBJECT_HASH).toString() == ObjectHash)
+                  {
+                    pObject = (*Range.first);
+                    break;
+                  }
+              }
         }
 
       if (pObject == NULL)

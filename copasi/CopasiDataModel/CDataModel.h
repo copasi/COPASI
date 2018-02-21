@@ -146,7 +146,7 @@ public:
    * @param const CData & data
    * @return CDataModel * pDataObject
    */
-  static CDataModel * fromData(const CData & data);
+  static CDataModel * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object

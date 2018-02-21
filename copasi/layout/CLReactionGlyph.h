@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,7 +100,7 @@ public:
    * @param const CData & data
    * @return CLReferenceGlyph * pDataObject
    */
-  static CLReferenceGlyph * fromData(const CData & data);
+  static CLReferenceGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -228,7 +228,7 @@ public:
    * @param const CData & data
    * @return CLMetabReferenceGlyph * pDataObject
    */
-  static CLMetabReferenceGlyph * fromData(const CData & data);
+  static CLMetabReferenceGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -315,7 +315,7 @@ public:
    * @param const CData & data
    * @return CLGeneralGlyph * pDataObject
    */
-  static CLGeneralGlyph * fromData(const CData & data);
+  static CLGeneralGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -409,7 +409,7 @@ public:
    * @param const CData & data
    * @return CLReactionGlyph * pDataObject
    */
-  static CLReactionGlyph * fromData(const CData & data);
+  static CLReactionGlyph * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object

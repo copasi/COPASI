@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -176,7 +176,7 @@ public:
    * @param const CData & data
    * @return CCopasiTask * pDataObject
    */
-  static CCopasiTask * fromData(const CData & data);
+  static CCopasiTask * fromData(const CData & data, CUndoObjectInterface * pParent);
 
   /**
    * Retrieve the data describing the object
@@ -275,12 +275,12 @@ public:
    */
   virtual bool setCallBack(CProcessReport * pCallBack);
 
-  /** 
+  /**
    * @return the currently set callback
    */
   CProcessReport * getCallBack() const;
 
-  /** 
+  /**
    * resets the currently set callback by calling setCallBack(NULL)
    */
   virtual void clearCallBack();

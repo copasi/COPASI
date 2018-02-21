@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -81,7 +81,12 @@ public:
    * @param const CData & data
    * @return CDataObject * pDataObject
    */
-  static CDataObject * fromData(const CData & data);
+  static CDataObject * fromData(const CData & data, CUndoObjectInterface * pParent);
+
+  /**
+   * Destruct the object
+   */
+  virtual void destruct();
 
   /**
    * Retrieve the data describing the object
@@ -265,12 +270,11 @@ private:
 
   CFlags< Flag > mObjectFlag;
 
-  std::set< CDataContainer * > mReferences;
-
   std::set< const CValidity * > mReferencedValidities;
   CValidity mAggregateValidity;
 
 protected:
+  std::set< CDataContainer * > mReferences;
   ObjectSet mPrerequisits;
 };
 

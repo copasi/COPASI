@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,12 +39,54 @@
 #include "report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 
+// virtual
+CData CMIRIAMInfo::toData() const
+{
+  CData Data = CDataContainer::toData();
+
+  Data.addProperty(CData::DATE, getCreatedDT());
+
+  return Data;
+}
+
+// virtual
+bool CMIRIAMInfo::applyData(const CData & data, CUndoData::ChangeSet & changes)
+{
+  bool success = CDataContainer::applyData(data, changes);
+
+  if (data.isSetProperty(CData::DATE))
+    {
+      setCreatedDT(data.getProperty(CData::DATE).toString());
+    }
+
+  success &= save();
+
+  return success;
+}
+
+// virtual
+void CMIRIAMInfo::createUndoData(CUndoData & undoData,
+                                 const CUndoData::Type & type,
+                                 const CData & oldData,
+                                 const CCore::Framework & framework) const
+{
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
+
+  if (type != CUndoData::Type::CHANGE)
+    {
+      return;
+    }
+
+  undoData.addProperty(CData::DATE, oldData.getProperty(CData::DATE), getCreatedDT());
+}
+
 CMIRIAMInfo::CMIRIAMInfo() :
   CDataContainer("CMIRIAMInfoObject", NULL, "CMIRIAMInfo"),
+  mpObject(NULL),
   mpAnnotation(NULL),
   mCreators("Creators", this),
   mReferences("References", this),
-  mModifications("Modifieds", this),
+  mModifications("Modifications", this),
   mBiologicalDescriptions("BiologicalDescriptions", this),
   mCreatedObj(),
   mpRDFGraph(NULL),
@@ -91,10 +133,8 @@ CCreator* CMIRIAMInfo::createCreator(const std::string & /* objectName */)
   return pCreator;
 }
 
-bool CMIRIAMInfo::removeCreator(int position)
+bool CMIRIAMInfo::removeCreator(CCreator * pCreator)
 {
-  CCreator * pCreator = &mCreators[position];
-
   if (!pCreator)
     return false;
 
@@ -172,10 +212,8 @@ CReference* CMIRIAMInfo::createReference(const std::string & /* objectName */)
   return pReference;
 }
 
-bool CMIRIAMInfo::removeReference(int position)
+bool CMIRIAMInfo::removeReference(CReference * pReference)
 {
-  CReference * pReference = &mReferences[position];
-
   if (!pReference)
     return false;
 
@@ -289,10 +327,8 @@ CModification * CMIRIAMInfo::createModification(const std::string& dateTime)
   return pModification;
 }
 
-bool CMIRIAMInfo::removeModification(int position)
+bool CMIRIAMInfo::removeModification(CModification * pModified)
 {
-  CModification * pModified = &mModifications[position];
-
   if (!pModified)
     return false;
 
@@ -350,11 +386,8 @@ CBiologicalDescription* CMIRIAMInfo::createBiologicalDescription()
   return pBiologicalDescription;
 }
 
-bool CMIRIAMInfo::removeBiologicalDescription(int position)
+bool CMIRIAMInfo::removeBiologicalDescription(CBiologicalDescription * pBiologicalDescription)
 {
-  CBiologicalDescription * pBiologicalDescription =
-    &mBiologicalDescriptions[position];
-
   if (!pBiologicalDescription)
     return false;
 
@@ -426,11 +459,27 @@ void CMIRIAMInfo::loadBiologicalDescriptions()
     }
 }
 
-void CMIRIAMInfo::load(CDataObject * pObject)
+void CMIRIAMInfo::load(CDataContainer * pObject)
 {
   pdelete(mpRDFGraph);
 
-  mpAnnotation = CAnnotation::castObject(pObject);
+  if (mpObject != pObject)
+    {
+      if (mpObject != NULL &&
+          CDataObject::mReferences.find(mpObject) != CDataObject::mReferences.end())
+        {
+          mpObject->remove(this);
+        }
+
+      mpObject = pObject;
+
+      if (mpObject != NULL)
+        {
+          mpObject->add(this, false);
+        }
+    }
+
+  mpAnnotation = CAnnotation::castObject(mpObject);
 
   if (mpAnnotation != NULL &&
       !mpAnnotation->getMiriamAnnotation().empty())
@@ -443,8 +492,8 @@ void CMIRIAMInfo::load(CDataObject * pObject)
 
   // We make sure that we always have an about node.
 
-  if (pObject != NULL)
-    mTriplet.pObject = mpRDFGraph->createAboutNode(pObject->getKey());
+  if (mpObject != NULL)
+    mTriplet.pObject = mpRDFGraph->createAboutNode(mpObject->getKey());
   else
     mTriplet.pObject = mpRDFGraph->createAboutNode("");
 
@@ -490,4 +539,11 @@ const std::string & CMIRIAMInfo::getKey() const
     }
 
   return CDataContainer::getKey();
+}
+
+// virtual
+CCommonName CMIRIAMInfo::getCN() const
+{
+  CCommonName CN(mpObject != NULL ? mpObject->getCN() + "," : CCommonName(""));
+  return CN + CDataContainer::getCN();
 }

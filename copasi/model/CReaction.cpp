@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,7 +61,7 @@ CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawU
 });
 
 // static
-CReaction * CReaction::fromData(const CData & data)
+CReaction * CReaction::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CReaction(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);

@@ -285,7 +285,7 @@ bool CQCompartmentDM::setData(const QModelIndex &index,
         }
 
       CUndoData UndoData;
-      Compartment.createUndoData(UndoData, CUndoData::Type::CHANGE, OldData);
+      Compartment.createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, (CCore::Framework) mFramework);
 
       if (!UndoData.empty())
         {

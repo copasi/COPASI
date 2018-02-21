@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1660,9 +1660,8 @@ size_t CExperiment::getValidValueCount() const
 
 size_t CExperiment::getTotalValueCount() const
 {
-  return getNumDataRows()*mDataDependent.numCols();
+  return getNumDataRows() * mDataDependent.numCols();
 }
-
 
 const CObjectInterface::ObjectSet & CExperiment::getIndependentObjects() const
 {
@@ -1706,7 +1705,7 @@ void CExperiment::fixBuild55()
 
 /* CFittingPoint Implementation */
 // static
-CFittingPoint * CFittingPoint::fromData(const CData & data)
+CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CFittingPoint(data.getProperty(CData::OBJECT_NAME).toString(),
                            NO_PARENT);

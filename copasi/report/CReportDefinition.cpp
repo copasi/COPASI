@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,7 +40,7 @@
 //
 //////////////////////////////////////////////////
 // static
-CReportDefinition * CReportDefinition::fromData(const CData & data)
+CReportDefinition * CReportDefinition::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CReportDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                                NO_PARENT);
@@ -160,8 +160,8 @@ bool CReportDefinition::preCompileTable(const CObjectInterface::ContainerList & 
 }
 
 /**
-*Returns the comments in the report tag
-*/
+ *Returns the comments in the report tag
+ */
 
 const std::string & CReportDefinition::getComment() const
 {
@@ -169,10 +169,10 @@ const std::string & CReportDefinition::getComment() const
 }
 
 /**
-*sets the comments in the report tag
-*/
+ *sets the comments in the report tag
+ */
 
-void 
+void
 CReportDefinition::setComment(const std::string & comment)
 {
   mComment = comment;

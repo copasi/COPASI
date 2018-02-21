@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -121,4 +121,14 @@ void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 CDataModel * CQBaseDataModel::getDataModel() const
 {
   return mpDataModel;
+}
+
+void CQBaseDataModel::beginResetModel()
+{
+  QAbstractTableModel::beginResetModel();
+}
+
+void CQBaseDataModel::endResetModel()
+{
+  QAbstractTableModel::endResetModel();
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -123,7 +123,7 @@ void CLGlyphWithCurve::print(std::ostream * ostream) const
 //***************************
 
 // static
-CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data)
+CLReferenceGlyph * CLReferenceGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
@@ -328,7 +328,7 @@ const std::string CLMetabReferenceGlyph::XMLRole[] =
 };
 
 // static
-CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data)
+CLMetabReferenceGlyph * CLMetabReferenceGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLMetabReferenceGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                    NO_PARENT);
@@ -539,7 +539,7 @@ void CLMetabReferenceGlyph::print(std::ostream * ostream) const
 //*********** CLGeneralGlyph ****************************************
 
 // static
-CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data)
+CLGeneralGlyph * CLGeneralGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLGeneralGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);
@@ -880,7 +880,7 @@ void CLGeneralGlyph::print(std::ostream * ostream) const
 //*********** CLReactionGlyph ****************************************
 
 // static
-CLReactionGlyph * CLReactionGlyph::fromData(const CData & data)
+CLReactionGlyph * CLReactionGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CLReactionGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                              NO_PARENT);

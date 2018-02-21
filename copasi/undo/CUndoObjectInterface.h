@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,12 +25,18 @@ public:
    * Static template method to create an undo object based on the provided data
    * An undo object which support INSERT and REMOVE must specialize this method
    * @param const CData & data
+   * @param CUndoObjectInterface * pParent
    * @return CUndoObjectInterface * pUndoObject
    */
-  template < class CType > static CType * fromData(const CData & data)
+  template < class CType > static CType * fromData(const CData & data, CUndoObjectInterface * pParent)
   {
     return NULL;
   }
+
+  /**
+   * Destruct the object
+   */
+  virtual void destruct() = 0;
 
   /**
    * Retrieve the data describing the object

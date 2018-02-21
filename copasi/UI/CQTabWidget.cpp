@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -144,26 +144,52 @@ bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::A
       return true;
     }
 
-  if (objectType == mObjectType &&
-      cn == mObjectCN)
+  if (cn == mObjectCN)
     {
-      switch (action)
+      std::vector< CopasiWidget * >::iterator it = mPages.begin();
+      std::vector< CopasiWidget * >::iterator end = mPages.end();
+
+      if (objectType == mObjectType)
         {
-          case ListViews::RENAME:
-            load();
-            break;
+          switch (action)
+            {
+              case ListViews::RENAME:
+                enterProtected();
+                break;
 
-          case ListViews::DELETE:
-            mpObject = NULL;
-            mObjectCN.clear();
-            break;
+              case ListViews::CHANGE:
+                for (; it != end; ++it)
+                  (*it)->update(objectType, action, cn);
 
-          default:
-            break;
+                break;
+
+              case ListViews::DELETE:
+                mpObject = NULL;
+                mObjectCN.clear();
+                break;
+
+              default:
+                break;
+            }
+        }
+      else if (objectType == ListViews::ObjectType::MIRIAM)
+        {
+          switch (action)
+            {
+              case ListViews::ADD:
+              case ListViews::CHANGE:
+              case ListViews::DELETE:
+                for (; it != end; ++it)
+                  (*it)->update(objectType, action, cn);
+
+                break;
+
+              default:
+                break;
+            }
         }
     }
 
-  // We do not need to update the child pages as they are directly called from listviews.
   return true;
 }
 

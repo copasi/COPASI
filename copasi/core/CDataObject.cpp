@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,10 +31,10 @@ CDataObject::CDataObject():
   mObjectDisplayName(),
   mpObjectDisplayName(NULL),
   mObjectFlag(),
-  mReferences(),
-  mPrerequisits(),
   mReferencedValidities(),
-  mAggregateValidity()
+  mAggregateValidity(),
+  mReferences(),
+  mPrerequisits()
 {}
 
 CDataObject::CDataObject(const std::string & name,
@@ -48,10 +48,10 @@ CDataObject::CDataObject(const std::string & name,
   mObjectDisplayName(),
   mpObjectDisplayName(NULL),
   mObjectFlag(flag),
-  mReferences(),
-  mPrerequisits(),
   mReferencedValidities(),
-  mAggregateValidity()
+  mAggregateValidity(),
+  mReferences(),
+  mPrerequisits()
 {
   if (CRegisteredCommonName::isEnabled())
     {
@@ -82,10 +82,10 @@ CDataObject::CDataObject(const CDataObject & src,
   mObjectDisplayName(),
   mpObjectDisplayName(NULL),
   mObjectFlag(src.mObjectFlag),
-  mReferences(),
-  mPrerequisits(),
   mReferencedValidities(),
-  mAggregateValidity()
+  mAggregateValidity(),
+  mReferences(),
+  mPrerequisits()
 {
   if (pParent != INHERIT_PARENT)
     {
@@ -421,12 +421,18 @@ const CDataObject * CDataObject::getValueObject() const
 }
 
 // static
-CDataObject * CDataObject::fromData(const CData & data)
+CDataObject * CDataObject::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CDataObject(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT,
                          data.getProperty(CData::OBJECT_TYPE).toString(),
                          CFlags< Flag >(data.getProperty(CData::OBJECT_FLAG).toString()));
+}
+
+// virtual
+void CDataObject::destruct()
+{
+  delete this;
 }
 
 // virtual

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,6 +48,8 @@ public:
 
   void setDataModel(CDataModel * pDataModel);
   CDataModel * getDataModel() const;
+  void beginResetModel();
+  void endResetModel();
 
 public slots:
   virtual void resetCache();

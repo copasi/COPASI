@@ -67,7 +67,7 @@ const CEnumAnnotation< std::string, CModel::ModelType > CModel::ModelTypeNames(
 });
 
 // static
-CModel * CModel::fromData(const CData & data)
+CModel * CModel::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   CModel * pModel = new CModel(NO_PARENT);
   pModel->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());

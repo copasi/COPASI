@@ -85,7 +85,7 @@ CDataModel::CDataModel(const bool withGUI):
 }
 
 // static
-CDataModel * CDataModel::fromData(const CData & data)
+CDataModel * CDataModel::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
   return new CDataModel(data.getProperty(CData::OBJECT_NAME).toString(),
                         NO_PARENT);

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,9 +29,9 @@
 #include "utilities/copasimathml.h"
 
 // static
-CFunction * CFunction::fromData(const CData & data)
+CFunction * CFunction::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  CEvaluationTree * pTree = CEvaluationTree::fromData(data);
+  CEvaluationTree * pTree = CEvaluationTree::fromData(data, pParent);
 
   CFunction * pNew = dynamic_cast< CFunction * >(pTree);
 
