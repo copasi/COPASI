@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -268,6 +268,11 @@ bool CCopasiXML::load(std::istream & is,
   if (FileVersion.getVersionDevel() < 113)
     {
       fixBuild113();
+    }
+
+  if (FileVersion.getVersionDevel() < 171)
+    {
+      fixBuild171();
     }
 
   if (!CVersion::VERSION.isCompatible(FileVersion))
@@ -2156,6 +2161,12 @@ void CCopasiXML::fixBuild113()
             }
         }
     }
+}
+
+void CCopasiXML::fixBuild171()
+{
+  // We need to go through all registered object names and sanitize them.
+  CRegisteredCommonName::sanitizeObjectNames();
 }
 
 /**

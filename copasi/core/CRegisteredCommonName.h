@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,6 +53,12 @@ public:
    */
   static void handle(const std::string & oldCN,
                      const std::string & newCN);
+
+  /**
+   * Old files (before build 171) may have common name where invalid characters have been used.
+   * This function sanitizes the name part
+   */
+  static void sanitizeObjectNames();
 
 private:
   /**

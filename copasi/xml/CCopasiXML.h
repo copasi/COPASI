@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -405,6 +405,11 @@ private:
    * The default kinetic law unit type needs to be corrected in rare cases.
    */
   void fixBuild113();
+
+  /**
+   * The object names no longer may have special character and are sanitized. This invalidates common names (CNs).
+   */
+  void fixBuild171();
 
   /**
    * Saves the list of global render information objects.
