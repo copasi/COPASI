@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,7 +7,8 @@
 
 #include "copasi.h"
 
-#include "CRegisteredCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CDataObject.h"
 
 using std::string;
 
@@ -70,6 +71,70 @@ void CRegisteredCommonName::handle(const std::string & oldCN, const std::string 
     }
 
   return;
+}
+
+// static
+void CRegisteredCommonName::sanitizeObjectNames()
+{
+  std::set< CRegisteredCommonName * >::const_iterator it = mSet.begin();
+  std::set< CRegisteredCommonName * >::const_iterator itEnd = mSet.end();
+
+  for (; it != itEnd; ++it)
+    {
+      CCommonName OldCN = **it;
+      CCommonName NewCN;
+
+      std::string Separator = "";
+
+      while (!OldCN.empty())
+        {
+          std::string ObjectType = OldCN.getObjectType();
+
+          // If the object type is String or Separator we must not sanitize.
+          if (ObjectType == "Separator" ||
+              ObjectType == "String")
+            {
+              NewCN += Separator + OldCN.getPrimary();
+            }
+          else
+            {
+              NewCN += Separator + ObjectType;
+
+              std::string ObjectName = OldCN.getObjectName();
+              CDataObject::sanitizeObjectName(ObjectName);
+
+              if (!ObjectName.empty())
+                {
+                  NewCN += "=" + escape(ObjectName);
+                }
+
+              size_t pos = 0;
+              std::string ElementName = OldCN.getElementName(pos);
+              std::string IndexSeparator = "[";
+
+              while (!ElementName.empty())
+                {
+                  CDataObject::sanitizeObjectName(ElementName);
+                  NewCN += IndexSeparator + ElementName;
+
+                  IndexSeparator = ",";
+                  ElementName = OldCN.getElementName(++pos);
+                }
+
+              if (pos != 0)
+                NewCN += "]";
+            }
+
+          OldCN = OldCN.getRemainder();
+          Separator = ",";
+        }
+
+      // If old an new CNs differ we need to update the registered common name
+      if (**it != NewCN)
+        {
+          **it = NewCN;
+        }
+    }
 }
 
 /**

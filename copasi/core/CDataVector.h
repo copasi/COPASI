@@ -1005,7 +1005,7 @@ public:
   void createUniqueName(std::string & name) const
   {
     std::string Name = name;
-
+    CDataObject::sanitizeObjectName(Name);
     size_t Index = 0;
 
     while (getIndex(name) != C_INVALID_INDEX)
