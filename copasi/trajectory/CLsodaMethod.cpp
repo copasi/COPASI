@@ -229,7 +229,8 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
       mPeekAheadMode = false;
       mSavedState.Status = FAILURE;
 
-      if (mTime == mLastRootState[mpContainer->getCountFixedEventTargets()])
+      if (mNumRoots > 0 &&
+          mTime == mLastRootState[mpContainer->getCountFixedEventTargets()])
         {
           mLastRootState = mContainerState;
         }
