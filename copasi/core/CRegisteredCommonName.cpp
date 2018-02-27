@@ -82,7 +82,8 @@ void CRegisteredCommonName::sanitizeObjectNames()
   for (; it != itEnd; ++it)
     {
       CCommonName OldCN = **it;
-      CCommonName NewCN;
+      CRegisteredCommonName & NewCN = **it;
+      NewCN.clear();
 
       std::string Separator = "";
 
@@ -127,12 +128,6 @@ void CRegisteredCommonName::sanitizeObjectNames()
 
           OldCN = OldCN.getRemainder();
           Separator = ",";
-        }
-
-      // If old an new CNs differ we need to update the registered common name
-      if (**it != NewCN)
-        {
-          **it = NewCN;
         }
     }
 }

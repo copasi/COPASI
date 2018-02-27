@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@ class UndoGlobalQuantityData;
 #include <copasi/undoFramework/CCopasiUndoCommand.h>
 
 class CQExpressionWidget;
-class CQDependenciesWidget;
+class CQScrolledDependenciesWidget;
 class CModelValue;
 class CExpression;
 
@@ -51,13 +51,14 @@ public:
 
 protected:
   virtual bool enterProtected();
+  virtual bool event(QEvent * pEvent);
 
 protected slots:
 
 private:
   std::vector< int > mItemToType;
   CModelValue * mpModelValue;
-  CQDependenciesWidget* mpDependencies;
+  CQScrolledDependenciesWidget * mpDependencies;
   bool mChanged;
 
   void init();

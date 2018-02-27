@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
 <comment> Properties, Inc., University of Heidelberg, and University of </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQDependencyDialog</class>
  <widget class="QMainWindow" name="CQDependencyDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>647</width>
+    <height>245</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dependencies</string>
@@ -23,19 +30,6 @@
     <enum>Qt::ActionsContextMenu</enum>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
-     <widget class="CQDependenciesWidget" name="widget" native="true"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QDialogButtonBox" name="buttonBox">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="standardButtons">
-       <set>QDialogButtonBox::Close</set>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="mpLabel">
       <property name="sizePolicy">
@@ -52,6 +46,9 @@
       </property>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="CQScrolledDependenciesWidget" name="widget" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -59,8 +56,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
-     <height>21</height>
+     <width>647</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="mpWindowMenu">
@@ -73,31 +70,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CQDependenciesWidget</class>
+   <class>CQScrolledDependenciesWidget</class>
    <extends>QWidget</extends>
-   <header>copasi/UI/CQDependenciesWidget.h</header>
+   <header>copasi/UI/CQScrolledDependenciesWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
-   <receiver>CQDependencyDialog</receiver>
-   <slot>closeDialog()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>199</x>
-     <y>279</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>closeDialog()</slot>
  </slots>

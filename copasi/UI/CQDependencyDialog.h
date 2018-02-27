@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,13 +11,9 @@
 #include <QMainWindow>
 
 #include <copasi/UI/CWindowInterface.h>
+#include "copasi/UI/ui_CQDependencyDialog.h"
 
-namespace Ui
-{
-class CQDependencyDialog;
-}
-
-class CQDependencyDialog : public CWindowInterface
+class CQDependencyDialog : public CWindowInterface , public Ui::CQDependencyDialog
 {
   Q_OBJECT
 
@@ -41,10 +37,8 @@ protected:
   void closeEvent(QCloseEvent* e);
 
 private:
-  Ui::CQDependencyDialog *ui;
   CopasiUI3Window* mpParentWindow;
   std::string mCurrentKey;
-
 };
 
 #endif // CQDEPENDENCYDIALOG_H

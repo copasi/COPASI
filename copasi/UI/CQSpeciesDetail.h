@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,8 +26,7 @@ class UndoSpeciesData;
 
 class CMetab;
 class CCompartment;
-
-class CQDependenciesWidget;
+class CQScrolledDependenciesWidget;
 
 class CQSpeciesDetail : public CopasiWidget, public Ui::CQSpeciesDetail
 {
@@ -57,6 +56,7 @@ public:
 
 protected:
   virtual bool enterProtected();
+  virtual bool event(QEvent * pEvent);
 
 protected slots:
 
@@ -67,7 +67,7 @@ private:
   std::vector< int > mItemToType;
   double mInitialNumber;
   double mInitialConcentration;
-  CQDependenciesWidget* mpDependencies;
+  CQScrolledDependenciesWidget * mpDependencies;
 
   void load();
   void save();

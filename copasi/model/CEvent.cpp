@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -390,7 +390,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
       if (assignment.getExpressionPtr() != NULL &&
           assignment.getExpressionPtr()->containsCN(deletedObjects))
         {
-          Origin += Separator + "Expression";
+          Origin += Separator + "Assignment (" + (assignment.getTargetObject() != NULL ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";
           Separator = "\n";
         }
 
@@ -405,7 +405,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
               if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
                 {
 
-                  Origin += Separator + "Target";
+                  Origin += Separator + "Target (" + (assignment.getTargetObject() != NULL ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";
                   Separator = "\n";
                 }
             }

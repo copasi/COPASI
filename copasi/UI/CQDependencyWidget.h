@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,6 +9,7 @@
 #include <QWidget>
 
 #include <copasi/UI/copasiWidget.h>
+#include "copasi/UI/ui_CQDependencyWidget.h"
 
 namespace Ui
 {
@@ -29,7 +30,7 @@ enum CDependencyType
 class CDataObject;
 class CModel;
 
-class CQDependencyWidget : public CopasiWidget
+class CQDependencyWidget : public CopasiWidget , public Ui::CQDependencyWidget
 {
   Q_OBJECT
 
@@ -37,6 +38,8 @@ public:
 
   explicit CQDependencyWidget(QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
   virtual ~CQDependencyWidget();
+
+  virtual QSize minimumSizeHint() const;
 
   /**
    * updates this widget from the given dependency objects
@@ -92,7 +95,6 @@ public slots:
   void rowDoubleClicked(int, int);
 
 private:
-  Ui::CQDependencyWidget *ui;
   CDependencyType mType;
   const CModel* mpModel;
   bool mResizeTableToRows;
