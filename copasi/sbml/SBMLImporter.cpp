@@ -3454,13 +3454,13 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
               for (int k = 1; k < sbmlDoc->getNumUnknownPackages(); ++k)
                 str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
 
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 96, str.str().c_str());
             }
 
           // we check for unsupported SBML version
           if (pSBMLError->getErrorId() == 99101)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 102, sbmlDoc->getLevel(), sbmlDoc->getVersion());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 102, sbmlDoc->getLevel(), sbmlDoc->getVersion());
             }
 
           CCopasiMessage::Type messageType = CCopasiMessage::RAW;
