@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,7 +29,7 @@
 #include "CQValidatorUnit.h"
 #include "copasiui3window.h"
 #include "CQDependencyWidget.h"
-#include "CQDependenciesWidget.h"
+#include "CQScrolledDependenciesWidget.h"
 
 #include "copasi/model/CModel.h"
 #include "copasi/model/CModelValue.h"
@@ -59,7 +59,7 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
   : CopasiWidget(parent, name),
     mKeyToCopy(""),
     mpModelValue(NULL),
-    mpDependencies(new CQDependenciesWidget(parent))
+    mpDependencies(NULL)
 {
   setupUi(this);
 
@@ -67,12 +67,11 @@ CQModelValue::CQModelValue(QWidget* parent, const char* name)
 
   CopasiUI3Window *  pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
   setUndoStack(pWindow->getUndoStack());
-
-  mpDependencies->setVisibleDependencies(REACTION | EVENT | SPECIES | PARAMETERS | COMPARTMENT);
   mpLblType->setMinimumWidth(90);
-  //mpDependencies->setLabelWidth(mpLblType->width() + 14);
-  mpDependencies->setLabelWidth(90 - 3);
-  gridLayout->removeItem(mpSpacer);
+
+  mpDependencies = new CQScrolledDependenciesWidget(this);
+  mpDependencies->setVisibleDependencies(REACTION | EVENT | SPECIES | PARAMETERS | COMPARTMENT);
+  mpDependencies->setLabelWidth(mpLblValue->width() - 6);
   gridLayout->addWidget(mpDependencies, gridLayout->rowCount(), 0, 1, -1);
 }
 
@@ -296,6 +295,18 @@ bool CQModelValue::enterProtected()
   mpModelValue = dynamic_cast<CModelValue *>(mpObject);
 
   return true;
+}
+
+// virtual
+bool CQModelValue::event(QEvent * pEvent)
+{
+  if (pEvent->type() == QEvent::LayoutRequest &&
+      mpLblValue->width() - 6 != mpDependencies->getLabelWidth())
+    {
+      mpDependencies->setLabelWidth(mpLblValue->width() - 6);
+    }
+
+  return CopasiWidget::event(pEvent);
 }
 
 /*!

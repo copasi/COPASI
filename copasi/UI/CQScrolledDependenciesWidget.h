@@ -1,27 +1,27 @@
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#ifndef CQDEPENDENCIESWIDGET_H
-#define CQDEPENDENCIESWIDGET_H
+#ifndef COPASI_CQScrolledDependenciesWidget
+#define COPASI_CQScrolledDependenciesWidget
 
 #include <QWidget>
 #include <QGridLayout>
 
 #include <copasi/UI/copasiWidget.h>
-#include <copasi/UI/CQDependencyWidget.h>
-#include "copasi/UI/ui_CQDependenciesWidget.h"
-
+#include "copasi/UI/ui_CQScrolledDependenciesWidget.h"
 class QScrollArea;
 
-class CQDependenciesWidget : public CopasiWidget, public Ui::CQDependenciesWidget
+class CQScrolledDependenciesWidget : public CopasiWidget, public Ui::CQScrolledDependenciesWidget
 {
   Q_OBJECT
 
 public:
-  explicit CQDependenciesWidget(QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
-  virtual ~CQDependenciesWidget();
+  explicit CQScrolledDependenciesWidget(QWidget * parent = 0, const char * name = 0, Qt::WindowFlags f = 0);
+  virtual ~CQScrolledDependenciesWidget();
+
+  virtual QSize minimumSizeHint() const;
 
   /**
    * Initializes all the dependency widgets for the specified types
@@ -61,10 +61,8 @@ public:
 
   int getNumDependencies() const;
 
+protected:
   virtual bool enterProtected();
-
-private:
-  int mVisibleModes;
 };
 
-#endif // CQDEPENDENCIESWIDGET_H
+#endif // COPASI_CQScrolledDependenciesWidget

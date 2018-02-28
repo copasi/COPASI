@@ -1,7 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
+
+#include <QScrollArea>
 
 #include "CQDependenciesWidget.h"
 #include "ui_CQDependenciesWidget.h"
@@ -10,69 +12,23 @@
 
 CQDependenciesWidget::CQDependenciesWidget(QWidget *parent, const char* name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
-  , ui(new Ui::CQDependenciesWidget)
   , mVisibleModes(UNKNOWN)
-  , mpCompartmentWidget(NULL)
-  , mpSpeciesWidget(NULL)
-  , mpParameterWidget(NULL)
-  , mpReactionWidget(NULL)
-  , mpEventWidget(NULL)
-  , mpLayout(NULL)
 {
-  ui->setupUi(this);
-  //ui->scrollArea->setAutoFillBackground(true);
-  //ui->scrollAreaWidgetContents->setAutoFillBackground(true);
-  //setAutoFillBackground(true);
-  // sort the background of the control
+  setupUi(this);
+
+  mpCompartmentWidget->setDependencyType(COMPARTMENT);
+  mpSpeciesWidget->setDependencyType(SPECIES);
+  mpParameterWidget->setDependencyType(PARAMETERS);
+  mpReactionWidget->setDependencyType(REACTION);
+  mpEventWidget->setDependencyType(EVENT);
+
 #ifndef DARWIN
-  setStyleSheet("background-color:transparent;");
-#endif
-  
-#if QT_VERSION >= 0x050000
-  ui->scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+//  setStyleSheet("background-color:transparent;");
 #endif
 }
 
 CQDependenciesWidget::~CQDependenciesWidget()
-{
-  delete ui;
-}
-
-CQDependencyWidget*
-CQDependenciesWidget::clearWidget(CQDependencyWidget* pWidget)
-{
-  if (pWidget == NULL) return NULL;
-
-  if (mpLayout != NULL)
-    mpLayout->removeWidget(pWidget);
-
-  pWidget->setVisible(false);
-  pWidget->deleteLater();
-  pWidget = NULL;
-  return NULL;
-}
-
-CQDependencyWidget *
-CQDependenciesWidget::addWidget(CDependencyType type)
-{
-  if (mpLayout == NULL)
-    {
-      //mpLayout = new QGridLayout(ui->scrollAreaWidgetContents);
-      mpLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
-      mpLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    }
-
-  CQDependencyWidget *pResult = new CQDependencyWidget(this);
-  pResult->setDependencyType(type);
-  pResult->setVisible(false);
-  //mpLayout->addWidget(pResult);
-#if QT_VERSION >= 0x050000
-  mpLayout->addWidget(pResult);
-#else
-  mpLayout->addWidget(pResult, type == REACTION || type == EVENT ? 4 : 1);
-#endif
-  return pResult;
-}
+{}
 
 std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
 {
@@ -110,6 +66,9 @@ std::set< const CDataObject * > getDependentObjects(CDataObject *pObject)
 
 void CQDependenciesWidget::loadFrom(CDataObject * pObject)
 {
+  if (mpDataModel == NULL)
+    initContext();
+
   std::set< const CDataObject * > deletedObjects = getDependentObjects(pObject);
   CModel* pModel = mpDataModel->getModel();
 
@@ -129,19 +88,19 @@ void CQDependenciesWidget::loadFrom(CDataObject * pObject)
                                  dependentEvents,
                                  dependentEventAssignments);
 
-  if (mpCompartmentWidget && (mVisibleModes & COMPARTMENT) == COMPARTMENT)
+  if (mVisibleModes & COMPARTMENT)
     mpCompartmentWidget->updateFromDependencies(deletedObjects, dependentCompartments, pModel);
 
-  if (mpSpeciesWidget && (mVisibleModes & SPECIES) == SPECIES)
+  if (mVisibleModes & SPECIES)
     mpSpeciesWidget->updateFromDependencies(deletedObjects, dependentMetabolites, pModel);
 
-  if (mpParameterWidget && (mVisibleModes & PARAMETERS) == PARAMETERS)
+  if (mVisibleModes & PARAMETERS)
     mpParameterWidget->updateFromDependencies(deletedObjects, dependentModelValues, pModel);
 
-  if (mpReactionWidget && (mVisibleModes & REACTION) == REACTION)
+  if (mVisibleModes & REACTION)
     mpReactionWidget->updateFromDependencies(deletedObjects, dependentReactions, pModel);
 
-  if (mpEventWidget && (mVisibleModes & EVENT) == EVENT)
+  if (mVisibleModes & EVENT)
     {
       std::set< const CDataObject * >::iterator it = dependentEventAssignments.begin();
       std::set< const CDataObject * >::iterator end = dependentEventAssignments.end();
@@ -154,48 +113,22 @@ void CQDependenciesWidget::loadFrom(CDataObject * pObject)
 
       mpEventWidget->updateFromDependencies(deletedObjects, dependentEvents, pModel);
     }
-
-  ui->mpLabel->setVisible(!haveDependencies());
 }
 
 void
 CQDependenciesWidget::setResizeTableToRows(bool resizeTable)
 {
-  if ((mVisibleModes & COMPARTMENT) == COMPARTMENT)
-    mpCompartmentWidget->setResizeTableToRows(resizeTable);
-
-  if ((mVisibleModes & SPECIES) == SPECIES)
-    mpSpeciesWidget->setResizeTableToRows(resizeTable);
-
-  if ((mVisibleModes & PARAMETERS) == PARAMETERS)
-    mpParameterWidget->setResizeTableToRows(resizeTable);
-
-  if ((mVisibleModes & REACTION) == REACTION)
-    mpReactionWidget->setResizeTableToRows(resizeTable);
-
-  if ((mVisibleModes & EVENT) == EVENT)
-    mpEventWidget->setResizeTableToRows(resizeTable);
+  mpCompartmentWidget->setResizeTableToRows(resizeTable);
+  mpSpeciesWidget->setResizeTableToRows(resizeTable);
+  mpParameterWidget->setResizeTableToRows(resizeTable);
+  mpReactionWidget->setResizeTableToRows(resizeTable);
+  mpEventWidget->setResizeTableToRows(resizeTable);
 }
 
 bool
 CQDependenciesWidget::getResizeTableToRows() const
 {
-  if ((mVisibleModes & COMPARTMENT) == COMPARTMENT)
-    return mpCompartmentWidget->getResizeTableToRows();
-
-  if ((mVisibleModes & SPECIES) == SPECIES)
-    return mpSpeciesWidget->getResizeTableToRows();
-
-  if ((mVisibleModes & PARAMETERS) == PARAMETERS)
-    return mpParameterWidget->getResizeTableToRows();
-
-  if ((mVisibleModes & REACTION) == REACTION)
-    return mpReactionWidget->getResizeTableToRows();
-
-  if ((mVisibleModes & EVENT) == EVENT)
-    return mpEventWidget->getResizeTableToRows();
-
-  return false;
+  return mpCompartmentWidget->getResizeTableToRows();
 }
 
 bool CQDependenciesWidget::haveDependencies() const
@@ -225,8 +158,7 @@ int CQDependenciesWidget::getNumDependencies() const
   return count;
 }
 
-bool
-CQDependenciesWidget::enterProtected()
+bool CQDependenciesWidget::enterProtected()
 {
   loadFrom(mpObject);
 
@@ -238,50 +170,11 @@ CQDependenciesWidget::setVisibleDependencies(int types)
 {
   mVisibleModes = types;
 
-  clearWidget(mpCompartmentWidget);
-  clearWidget(mpSpeciesWidget);
-  clearWidget(mpParameterWidget);
-  clearWidget(mpReactionWidget);
-  clearWidget(mpEventWidget);
-
-  if ((mVisibleModes & REACTION) == REACTION)
-    {
-      mpReactionWidget = addWidget(REACTION);
-      //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 3);
-    }
-
-  if ((mVisibleModes & EVENT) == EVENT)
-    {
-      mpEventWidget = addWidget(EVENT);
-      //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 3);
-    }
-
-  if ((mVisibleModes & PARAMETERS) == PARAMETERS)
-    {
-      mpParameterWidget = addWidget(PARAMETERS);
-      //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 1);
-    }
-
-  if ((mVisibleModes & SPECIES) == SPECIES)
-    {
-      mpSpeciesWidget = addWidget(SPECIES);
-      //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 1);
-    }
-
-  if ((mVisibleModes & COMPARTMENT) == COMPARTMENT)
-    {
-      mpCompartmentWidget = addWidget(COMPARTMENT);
-      //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 1);
-    }
-
-  if (mpLayout != NULL)
-    {
-      mpLayout->addStretch(2);
-      //mpLayout->addItem(
-      //  new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding),
-      //  mpLayout->rowCount(), 0);
-      //mpLayout->setRowStretch(mpLayout->rowCount() - 1, 0);
-    }
+  mpCompartmentWidget->setVisible(mVisibleModes & COMPARTMENT);
+  mpSpeciesWidget->setVisible(mVisibleModes & SPECIES);
+  mpParameterWidget->setVisible(mVisibleModes & PARAMETERS);
+  mpReactionWidget->setVisible(mVisibleModes & REACTION);
+  mpEventWidget->setVisible(mVisibleModes & EVENT);
 }
 
 int CQDependenciesWidget::getVisibleDependencies() const

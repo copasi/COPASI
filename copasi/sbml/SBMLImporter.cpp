@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -3454,13 +3454,13 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
               for (int k = 1; k < sbmlDoc->getNumUnknownPackages(); ++k)
                 str << ", " << sbmlDoc->getUnknownPackagePrefix(k);
 
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 96, str.str().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 96, str.str().c_str());
             }
 
           // we check for unsupported SBML version
           if (pSBMLError->getErrorId() == 99101)
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 102, sbmlDoc->getLevel(), sbmlDoc->getVersion());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 102, sbmlDoc->getLevel(), sbmlDoc->getVersion());
             }
 
           CCopasiMessage::Type messageType = CCopasiMessage::RAW;
@@ -3510,7 +3510,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -3677,8 +3677,8 @@ SBMLImporter::parseSBML(const std::string& sbmlDocumentText,
       mCurrentStepCounter = 0;
       mCurrentStepTotal = 1;
       mCurrentStepHandle = mpProgressHandler->addItem("Reading SBML file...",
-        mCurrentStepCounter,
-        &mCurrentStepTotal);
+                           mCurrentStepCounter,
+                           &mCurrentStepTotal);
     }
 
   SBMLDocument* sbmlDoc = reader->readSBMLFromString(sbmlDocumentText);
@@ -5064,6 +5064,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                           id1 = id2;
                           break;
                         }
+
                       if (id2 == (*avoIt)->getId())
                         {
                           pAvogadro = pChild2;
@@ -9650,6 +9651,7 @@ bool SBMLImporter::importMIRIAM(const SBase* pSBMLObject, CDataObject* pCOPASIOb
               pMIRIAMNode = &pAnnotation->getChild(i);
               break;
             }
+
           // maybe import the COPASI MIRIAM annotation
           if (pAnnotation->getChild(i).getURI() == "http://www.copasi.org/static/sbml" && this->mImportCOPASIMIRIAM == true)
             {

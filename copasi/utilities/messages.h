@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -303,13 +303,13 @@ const MESSAGES Messages[] =
   {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},
   {MCSBML + 94, "SBML (94): %s for species reference found in model. Only initial assignments and assignment rules to species references are currently supported in COPASI. The %s has been ignored. The results produced by this model might therefore not be what you expect."},
   {MCSBML + 95, "SBML (95): The model uses species reference ids in mathematical expressions. COPASI does not support this, and will only evaluate them during import."},
-  {MCSBML + 96, "SBML (96): Model can't be imported because it requires one or more packages that are unknown to COPASI. Those package(s) are: %s "},
-  {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\". This may change results for time course simualtions."},
+  {MCSBML + 96, "SBML (96): The Model requires one or more packages that are unknown to COPASI, the model is imported but likely incomplete. Those package(s) are: %s "},
+  {MCSBML + 97, "SBML (97): COPASI can't handle the initial value on event triggers yet, COPASI will set the initial values of event triggers to \"true\". This may change results for time course simulations."},
   {MCSBML + 98, "SBML (98): COPASI can't handle event priorities yet, COPASI removed all priorities. This may change results for time course simulations."},
   {MCSBML + 99, "SBML (99): COPASI can't handle non-persistent event triggers, the persistent flag on all triggers has been set to true. This may change results of time course simulations."},
   {MCSBML + 100, "SBML (100): Model with conversion factors encountered. In order to calculate correct results with this model COPASI has changed the stoichiometries of all species with conversion factors. Exporting this model again will lead to a model with changed stoichiometries."},
   {MCSBML + 101, "SBML (101): Assignment rule for species reference \"%s\" imported. Please be aware that COPASI does not support stoichiometries that change over time. The imported expression has therefore been converted to a constant value."},
-  {MCSBML + 102, "SBML (102): The SBML document you are trying to load uses SBML Level %d Version %d.This version is not yet supported by this version of COPASI." },
+  {MCSBML + 102, "SBML (102): The SBML document you are trying to load uses SBML Level %d Version %d. This version is not yet supported by this version of COPASI, COPASI will attempt to read as much of the model as it can." },
 
   // SEDML To be completed
   {MCSEDML + 1, "SEDML (1): SEDML contains no simulation."},
@@ -429,7 +429,7 @@ const MESSAGES Messages[] =
   {MCTSSAMethod + 15, "CTSSAMethod (15): At time t='%f': there are negative time scales. "},
   {MCTSSAMethod + 16, "CTSSAMethod (16): This method is not applicable for a system with more than one compartment. "},
   {MCTSSAMethod + 17, "CTSSAMethod (17): In this version of Copasi the CSP Method only supports  compartments with equal size  "},
-  { MCTSSAMethod + 18, "CTSSAMethod (18): TSSA requires metabolites to be present." },
+  {MCTSSAMethod + 18, "CTSSAMethod (18): TSSA requires metabolites to be present." },
 
   // CTSSAProblem
   {MCTSSAProblem + 1, "CTSSAProblem (1): Invalid step size = '%f'."},

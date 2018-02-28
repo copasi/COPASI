@@ -1689,10 +1689,24 @@ bool CModel::appendDirectDependents(const CDataObject::ObjectSet & objects,
   DataObjectSet Descendants;
 
   for (; itObject != endObject; ++itObject)
-    if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
-      {
-        static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
-      }
+    {
+      if (dynamic_cast< const CDataContainer * >(*itObject) != NULL)
+        {
+          static_cast< const CDataContainer * >(*itObject)->getDescendants(Descendants);
+        }
+
+      // We need to directly add the event targets since they do not appear in any dependency graph
+      if (dynamic_cast< const CEvent * >(*itObject) != NULL)
+        {
+          CDataVectorN< CEventAssignment >::const_iterator itAssignment = static_cast< const CEvent * >(*itObject)->getAssignments().begin();
+          CDataVectorN< CEventAssignment >::const_iterator endAssignment = static_cast< const CEvent * >(*itObject)->getAssignments().end();
+
+          for (; itAssignment != endAssignment; ++itAssignment)
+            {
+              Dependents.insert(itAssignment->getTargetObject());
+            }
+        }
+    }
 
   std::set< const CDataObject * >::const_iterator it = Descendants.begin();
   std::set< const CDataObject * >::const_iterator end = Descendants.end();

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,16 +41,7 @@ CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
     mFramework(0)
 {
   setObjectName(name);
-  QObject *pParent = parent;
-
-  while (pParent != NULL &&
-         (mpListView = dynamic_cast< ListViews * >(pParent)) == NULL)
-    {
-      pParent = pParent->parent();
-    }
-
-  assert(mpListView != NULL);
-  mpDataModel = mpListView->getDataModel();
+  initContext();
 }
 
 bool CopasiWidget::update(ListViews::ObjectType C_UNUSED(objectType), ListViews::Action C_UNUSED(action), const std::string &C_UNUSED(key))
@@ -68,6 +59,11 @@ void CopasiWidget::refresh()
 
 bool CopasiWidget::enter(const std::string &key)
 {
+  if (mpListView == NULL)
+    {
+      initContext();
+    }
+
   mKey = key;
   mpObject = CRootContainer::getKeyFactory()->get(key);
 
@@ -145,4 +141,22 @@ QUndoStack *CopasiWidget::getUndoStack()
 const std::string& CopasiWidget::getKey() const
 {
   return mKey;
+}
+
+void CopasiWidget::initContext()
+{
+  QObject *pParent = parent();
+
+  if (pParent == NULL) return;
+
+  if (mpListView == NULL)
+    while (pParent != NULL &&
+           (mpListView = dynamic_cast< ListViews * >(pParent)) == NULL)
+      {
+        pParent = pParent->parent();
+      }
+
+  if (mpDataModel == NULL &&
+      mpListView != NULL)
+    mpDataModel = mpListView->getDataModel();
 }

@@ -19,8 +19,7 @@
 #include "qtUtilities.h"
 #include "copasiui3window.h"
 #include "CQDependencyWidget.h"
-#include "CQDependenciesWidget.h"
-
+#include "copasi/UI/CQScrolledDependenciesWidget.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CChemEqInterface.h"
 #include "copasi/core/CRootContainer.h"
@@ -52,7 +51,7 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget *parent, const char *name) :
   mItemToType(),
   mInitialNumber(0.0),
   mInitialConcentration(0.0),
-  mpDependencies(new CQDependenciesWidget(parent))
+  mpDependencies(NULL)
 {
   setupUi(this);
   mpComboBoxType->insertItem(mpComboBoxType->count(), FROM_UTF8(CModelEntity::StatusName[CModelEntity::Status::REACTIONS]));
@@ -81,8 +80,10 @@ CQSpeciesDetail::CQSpeciesDetail(QWidget *parent, const char *name) :
   mpLblReactions->setVisible(false);
   mpReactionTable->setVisible(false);
   // display dependency widget instead
+
+  mpDependencies = new CQScrolledDependenciesWidget(this);
   mpDependencies->setVisibleDependencies(REACTION | EVENT | SPECIES | PARAMETERS | COMPARTMENT);
-  mpDependencies->setLabelWidth(mpLblValue->width() + 14);
+  mpDependencies->setLabelWidth(mpLblValue->width() - 6);
   gridLayout->addWidget(mpDependencies, gridLayout->rowCount(), 0, 1, -1);
 }
 
@@ -1093,4 +1094,17 @@ bool CQSpeciesDetail::changeValue(
   load();
 
   return true;
+}
+
+// virtual
+bool CQSpeciesDetail::event(QEvent * pEvent)
+{
+  if (pEvent->type() == QEvent::LayoutRequest &&
+      mpLblValue->width() - 6 != mpDependencies->getLabelWidth())
+    {
+      std::cout << pEvent->type() << std::endl;
+      mpDependencies->setLabelWidth(mpLblValue->width() - 6);
+    }
+
+  return CopasiWidget::event(pEvent);
 }
