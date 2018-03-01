@@ -336,7 +336,7 @@ bool CQFittingResult::enterProtected()
   mpFisherInformationEigenvectors->setColorCoding(tcs);
   mpFisherInformationEigenvectors->setColorScalingAutomatic(true);
   mpFisherInformationEigenvectors->setArrayAnnotation(&mpProblem->getFisherInformationEigenvectors());
-  mpFisherInformationEigenvectors->mpComboRows->setCurrentIndex(1);
+  mpFisherInformationEigenvectors->slotRowSelectionChanged(1);
 
   tcs = new CColorScaleBiLog();
   mpFisherInformationScaledMatrix->setColorCoding(tcs);
@@ -353,7 +353,7 @@ bool CQFittingResult::enterProtected()
   mpFisherInformationScaledEigenvectors->setColorCoding(tcs);
   mpFisherInformationScaledEigenvectors->setColorScalingAutomatic(true);
   mpFisherInformationScaledEigenvectors->setArrayAnnotation(&mpProblem->getScaledFisherInformationEigenvectors());
-  mpFisherInformationScaledEigenvectors->mpComboRows->setCurrentIndex(1);
+  mpFisherInformationScaledEigenvectors->slotRowSelectionChanged(1);
 
   bool Enable = (mpProblem->getCrossValidationSet().getExperimentCount() > 0);
 
