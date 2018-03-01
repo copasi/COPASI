@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -89,7 +89,7 @@ void CQEventWidget1::slotBtnDelete()
 /// Slot to create a new event; activated whenever the New button is clicked
 void CQEventWidget1::slotBtnNew()
 {
-  leave();
+  leaveProtected();
 
   std::string name = "event";
   int i = 1;
@@ -429,7 +429,7 @@ bool CQEventWidget1::enterProtected()
 }
 
 /*! The slot to be done before leaving the active event widget */
-bool CQEventWidget1::leave()
+bool CQEventWidget1::leaveProtected()
 {
   // no saving if the dialog is not visible right now
   // (the changes would already have been saved the last time

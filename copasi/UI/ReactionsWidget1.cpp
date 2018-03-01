@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -648,7 +648,7 @@ bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListVie
   return true;
 }
 
-bool ReactionsWidget1::leave()
+bool ReactionsWidget1::leaveProtected()
 {
   saveToReaction();
   return true; //always return true. That means that the widget can be
@@ -842,23 +842,22 @@ bool ReactionsWidget1::changeReaction(
         // create new objects
         std::vector<std::string> createdObjects;
         bool createdMetabs = mpRi->createMetabolites(createdObjects);
-        
-        bool notifyNeeded = mpRi->createOtherObjects(createdObjects) 
-          || createdMetabs
-          || deletedObjects;
-        
+
+        bool notifyNeeded = mpRi->createOtherObjects(createdObjects)
+                            || createdMetabs
+                            || deletedObjects;
+
         command->setCreatedObjects(createdObjects);
 
         mpRi->writeBackToReaction(pReaction);
 
         if (notifyNeeded)
-        {
-          bool oldNotify = mIgnoreUpdates;
-          mIgnoreUpdates = false;
-          protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
-          mIgnoreUpdates = oldNotify;
-        }
-
+          {
+            bool oldNotify = mIgnoreUpdates;
+            mIgnoreUpdates = false;
+            protectedNotify(ListViews::MODEL, ListViews::CHANGE, "");
+            mIgnoreUpdates = oldNotify;
+          }
 
         break;
       }

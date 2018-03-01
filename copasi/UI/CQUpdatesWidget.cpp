@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -424,7 +424,7 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
           mpTableMathState->setCellWidget(i, 5, tmpmml);
         }
 
-    tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
+      tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
       mpTableMathState->setItem(i, 4, tmpItem);
     }
 }
@@ -436,7 +436,7 @@ bool CQUpdatesWidget::updateProtected(ListViews::ObjectType objectType, ListView
   return true;
 }
 
-bool CQUpdatesWidget::leave()
+bool CQUpdatesWidget::leaveProtected()
 {
   return true;
 }

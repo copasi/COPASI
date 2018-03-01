@@ -55,19 +55,35 @@ bool CopasiWidget::update(ListViews::ObjectType objectType, ListViews::Action ac
   return updateProtected(objectType, action, cn);
 }
 
+bool CopasiWidget::leave()
+{
+  CObjectInterface::ContainerList List;
+  List.push_back(mpDataModel);
+
+  // This will check the current data model and the root container for the object;
+  mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCN)));
+
+  if (mpObject != NULL)
+    {
+      return leaveProtected();
+    }
+
+  return true;
+}
+
 bool CopasiWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
   return false;
 }
 
-bool CopasiWidget::leave()
+bool CopasiWidget::leaveProtected()
 {return true;}
 
 void CopasiWidget::refresh()
 {
   leave();
   qApp->processEvents();
-  enterProtected();
+  enter(mObjectCN);
 }
 
 bool CopasiWidget::enter(const CCommonName & cn)

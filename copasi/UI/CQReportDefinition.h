@@ -34,11 +34,10 @@ public:
   CQReportDefinition(QWidget* parent = 0, const char* name = 0);
   virtual ~CQReportDefinition();
 
-  virtual bool leave();
-
 protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
 protected slots:
 

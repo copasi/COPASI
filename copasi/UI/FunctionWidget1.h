@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,8 +39,6 @@ public:
   FunctionWidget1(QWidget *parent, const char * name = 0, Qt::WindowFlags f = 0);
   virtual ~FunctionWidget1();
 
-  virtual bool leave();
-
 protected slots:
   void slotBtnNew();
   void slotBtnCopy();
@@ -54,6 +52,8 @@ protected slots:
 protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   bool loadFromFunction(const CFunction* = NULL);
   bool loadParameterTable();
   bool loadUsageTable(/*const CDataVectorN<CUsageRange>& usages*/);

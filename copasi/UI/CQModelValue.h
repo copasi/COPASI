@@ -44,11 +44,11 @@ public:
   CQModelValue(QWidget* parent = 0, const char* name = 0);
   ~CQModelValue();
 
-  virtual bool leave();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
-
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   virtual bool event(QEvent * pEvent);
 
 protected slots:

@@ -39,13 +39,13 @@ public:
   CQMiriamWidget(QWidget* parent = 0, const char* name = 0);
   ~CQMiriamWidget();
 
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
-  virtual bool leave();
   const CMIRIAMInfo & getMIRIAMInfo() const;
   void updateResourcesList();
 
 protected:
   virtual bool enterProtected();
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
   virtual void showEvent(QShowEvent * event);
 
 private:

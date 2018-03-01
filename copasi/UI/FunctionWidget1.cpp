@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -828,7 +828,7 @@ bool FunctionWidget1::updateProtected(ListViews::ObjectType objectType, ListView
   return true;
 }
 
-bool FunctionWidget1::leave()
+bool FunctionWidget1::leaveProtected()
 {
   assert(mpDataModel != NULL);
   CModel * pModel = mpDataModel->getModel();

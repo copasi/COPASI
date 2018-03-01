@@ -494,7 +494,7 @@ bool TaskWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Ac
   return true;
 }
 
-bool TaskWidget::leave()
+bool TaskWidget::leaveProtected()
 {
   return saveTask();
 }

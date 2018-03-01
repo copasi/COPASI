@@ -718,7 +718,7 @@ bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListV
   return load();
 }
 
-bool CQReportDefinition::leave()
+bool CQReportDefinition::leaveProtected()
 {
   //mpBtnCommit->setFocus();
 

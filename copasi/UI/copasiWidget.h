@@ -50,7 +50,6 @@ class CopasiWidget : public QWidget
 
 public:
   CopasiWidget(QWidget *parent = 0, const char *name = 0, Qt::WindowFlags = 0);
-  virtual bool leave();
 
   /**
    * leaves the widget and enters it again
@@ -59,6 +58,8 @@ public:
 
   bool enter(const CCommonName & cn);
   bool update(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  bool leave();
+
   virtual void setFramework(int framework);
   bool getIgnoreUpdates();
   void setIgnoreUpdates(bool v);
@@ -78,6 +79,8 @@ public:
 protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   void initContext();
 
   ListViews *mpListView;

@@ -253,7 +253,7 @@ bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Actio
 }
 
 // virtual
-bool CQNotes::leave()
+bool CQNotes::leaveProtected()
 {
   if (mpObject != NULL)
     {

@@ -44,6 +44,7 @@ CData CMIRIAMInfo::toData() const
 {
   CData Data = CDataContainer::toData();
 
+  // We need to add the object parent
   Data.addProperty(CData::DATE, getCreatedDT());
 
   return Data;

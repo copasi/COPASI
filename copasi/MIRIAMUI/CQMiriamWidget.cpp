@@ -326,14 +326,10 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
 
 void CQMiriamWidget::slotCreatedDTChanged(QDateTime newDT)
 {
-  //Now update.
-  // Created at
-  std::string DT = "";
-
-  if (newDT.isValid())
+  if (isVisible() &&
+      newDT.isValid())
     {
-      DT = TO_UTF8(newDT.toString(Qt::ISODate));
-      DT += "Z";
+      std::string DT(TO_UTF8(newDT.toString(Qt::ISODate) + "Z"));
 
       if (DT != mpMIRIAMInfo->getCreatedDT())
         {
@@ -420,7 +416,7 @@ bool CQMiriamWidget::enterProtected()
   return true;
 }
 
-bool CQMiriamWidget::leave()
+bool CQMiriamWidget::leaveProtected()
 {
   mpMIRIAMInfo->save();
   return true;
@@ -430,6 +426,8 @@ bool CQMiriamWidget::leave()
 void CQMiriamWidget::showEvent(QShowEvent *event)
 {
   if (!isVisible()) return;
+
+  slotCreatedDTChanged(mpDTCreated->dateTime());
 
   switch ((CCopasiMessage::Type) mMessageType)
     {

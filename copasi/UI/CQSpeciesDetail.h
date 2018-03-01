@@ -37,7 +37,6 @@ public:
   CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
   virtual ~CQSpeciesDetail();
 
-  virtual bool leave();
   virtual void setFramework(int framework);
 
   void copy();
@@ -47,6 +46,8 @@ public:
 protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
+
   virtual bool event(QEvent * pEvent);
 
 protected slots:

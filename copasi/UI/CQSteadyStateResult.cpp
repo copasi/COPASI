@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -58,7 +58,7 @@ bool CQSteadyStateResult::updateProtected(ListViews::ObjectType objectType, List
   return true;
 }
 
-bool CQSteadyStateResult::leave()
+bool CQSteadyStateResult::leaveProtected()
 {
   return true;
 }

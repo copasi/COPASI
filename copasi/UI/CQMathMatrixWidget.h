@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,8 +37,6 @@ public:
   CQMathMatrixWidget(QWidget* parent = 0);
   ~CQMathMatrixWidget();
 
-  virtual bool leave();
-
 protected slots:
 
   /// This contains code for displaying test results for symbolic differentiation
@@ -47,10 +45,10 @@ protected slots:
   /// activated when tab changes
   void slotActiveTabChanged(int);
 
-
 protected:
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool leaveProtected();
 
   /**
    * loads the matrices (except Jacobian) into the widget

@@ -70,7 +70,7 @@ CQModelValue::~CQModelValue()
 /// Slot to create a new quantity; activated whenever the New button is clicked
 void CQModelValue::slotBtnNew()
 {
-  leave();
+  leaveProtected();
 
   std::string name = "quantity";
   int i = 1;
@@ -259,7 +259,7 @@ bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::
   return true;
 }
 
-bool CQModelValue::leave()
+bool CQModelValue::leaveProtected()
 {
   if (TO_UTF8(mpComboBoxType->currentText()) != CModelEntity::StatusName[CModelEntity::Status::FIXED])
     {

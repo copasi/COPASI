@@ -77,7 +77,7 @@ CQSpeciesDetail::~CQSpeciesDetail()
 {
 }
 
-bool CQSpeciesDetail::leave()
+bool CQSpeciesDetail::leaveProtected()
 {
   if (CModelEntity::StatusName.toEnum(TO_UTF8(mpComboBoxType->currentText())) != CModelEntity::Status::FIXED &&
       CModelEntity::StatusName.toEnum(TO_UTF8(mpComboBoxType->currentText())) != CModelEntity::Status::REACTIONS)
@@ -646,7 +646,7 @@ void CQSpeciesDetail::slotTypeChanged(const QString & type)
 //Undo methods
 void CQSpeciesDetail::createNewSpecies()
 {
-  leave();
+  leaveProtected();
 
   CModel *pModel = mpDataModel->getModel();
   CCompartment * pComp  = NULL;

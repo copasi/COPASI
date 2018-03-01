@@ -442,9 +442,10 @@ CData CDataObject::toData() const
 
   Data.addProperty(CData::OBJECT_NAME, mObjectName);
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
-  Data.addProperty(CData::OBJECT_PARENT_CN, (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string(""));
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
-  Data.addProperty(CData::OBJECT_INDEX, (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX);
+
+  std::string CN = (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string("");
+  size_t Index = (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX;
 
   std::vector< CData > References;
   std::set< CDataContainer * >::iterator it = mReferences.begin();
@@ -453,18 +454,29 @@ CData CDataObject::toData() const
   for (; it != end; ++it)
     if (*it != mpObjectParent)
       {
-        CData ReferenceData;
+        if (CN.empty())
+          {
+            CN = (*it)->getCN();
+            Index = (*it)->getIndex(this);
+          }
+        else
+          {
+            CData ReferenceData;
 
-        ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
-        ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, (*it)->getIndex(this));
+            ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
+            ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, (*it)->getIndex(this));
 
-        References.push_back(ReferenceData);
+            References.push_back(ReferenceData);
+          }
       }
 
   if (!References.empty())
     {
       Data.addProperty(CData::OBJECT_REFERENCES, References);
     }
+
+  Data.addProperty(CData::OBJECT_PARENT_CN, CN);
+  Data.addProperty(CData::OBJECT_INDEX, Index);
 
   return Data;
 }

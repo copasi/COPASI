@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +75,7 @@ bool CQOptimizationResult::updateProtected(ListViews::ObjectType objectType, Lis
   return true;
 }
 
-bool CQOptimizationResult::leave()
+bool CQOptimizationResult::leaveProtected()
 {
   // :TODO:
   return true;
@@ -217,11 +217,10 @@ void CQOptimizationResult::slotSave(void)
   file << FunctionEvaluations / ExecutionTime << std::endl << std::endl;
 
   // Set up the parameters table
-  file << "Parameters:" << std::endl;  
-  file << TO_UTF8(toTsvString(mpParameters->model(), true, false)) 
+  file << "Parameters:" << std::endl;
+  file << TO_UTF8(toTsvString(mpParameters->model(), true, false))
        << std::endl;
-  
-  
+
   // log
   const COptMethod * pMethod = dynamic_cast<const COptMethod *>(mpTask->getMethod());
 

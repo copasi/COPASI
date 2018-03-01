@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,7 +88,7 @@ CQCompartment::~CQCompartment()
 
 void CQCompartment::slotBtnNew()
 {
-  leave();
+  leaveProtected();
 
   std::string name = "compartment";
   int i = 1;
@@ -344,7 +344,7 @@ bool CQCompartment::enterProtected()
   return true;
 }
 
-bool CQCompartment::leave()
+bool CQCompartment::leaveProtected()
 {
   if (CModelEntity::StatusName.toEnum(TO_UTF8(mpComboBoxType-> currentText())) != CModelEntity::Status::FIXED)
     {

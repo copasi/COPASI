@@ -73,18 +73,11 @@ CUndoData::CUndoData(const Type & type, const CDataObject * pObject, const size_
         break;
 
       case Type::CHANGE:
-        assert(pObject->getObjectParent() != NULL);
+        mOldData = pObject->toData();
+        mOldData.removeProperty(CData::OBJECT_FLAG);
+        mOldData.removeProperty(CData::OBJECT_REFERENCES);
 
-        mOldData.addProperty(CData::OBJECT_PARENT_CN, pObject->getObjectParent()->getCN());
-        mOldData.addProperty(CData::OBJECT_TYPE, pObject->getObjectType());
-        mOldData.addProperty(CData::OBJECT_NAME, pObject->getObjectName());
-        mOldData.addProperty(CData::OBJECT_INDEX, pObject->getObjectParent()->getIndex(pObject));
-
-        mNewData.addProperty(CData::OBJECT_PARENT_CN, pObject->getObjectParent()->getCN());
-        mNewData.addProperty(CData::OBJECT_TYPE, pObject->getObjectType());
-        mNewData.addProperty(CData::OBJECT_NAME, pObject->getObjectName());
-        mNewData.addProperty(CData::OBJECT_INDEX, pObject->getObjectParent()->getIndex(pObject));
-
+        mNewData = mOldData;
         break;
     }
 }

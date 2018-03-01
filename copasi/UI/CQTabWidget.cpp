@@ -109,7 +109,7 @@ CQTabWidget::~CQTabWidget()
   // TODO Auto-generated destructor stub
 }
 
-bool CQTabWidget::leave()
+bool CQTabWidget::leaveProtected()
 {
   if (mIgnoreLeave) return true;
 
@@ -305,7 +305,7 @@ void CQTabWidget::slotBtnCommit()
 {
   mpBtnCommit->setFocus();
 
-  leave();
+  leaveProtected();
   enterProtected();
 }
 
@@ -325,7 +325,7 @@ void CQTabWidget::slotBtnNew()
 {
   mpBtnNew->setFocus();
 
-  leave();
+  leaveProtected();
 
   mIgnoreLeave = true;
   emit newClicked();
@@ -336,7 +336,7 @@ void CQTabWidget::slotBtnCopy()
 {
   mpBtnCopy->setFocus();
 
-  leave();
+  leaveProtected();
 
   mIgnoreLeave = true;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,7 +132,7 @@ void CQMoietiesTaskResult::clear()
   mpReducedStoichiometry->setArrayAnnotation(NULL);
 }
 
-bool CQMoietiesTaskResult::leave()
+bool CQMoietiesTaskResult::leaveProtected()
 {return true;}
 
 bool CQMoietiesTaskResult::enterProtected()

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,10 +72,11 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpStack->addWidget(mpSpectogramWidget);
 
   auto it = CTaskEnum::TaskName.begin();
+
   for (; it != CTaskEnum::TaskName.end(); ++it)
-  {
-    mTaskNames << FROM_UTF8(*it);
-  }
+    {
+      mTaskNames << FROM_UTF8(*it);
+    }
 }
 
 CPlotItem *CQPlotSubwidget::updateItem(CPlotItem *item)
@@ -908,7 +909,7 @@ void CQPlotSubwidget::deletePlot()
 
 void CQPlotSubwidget::copyPlot()
 {
-  leave();
+  leaveProtected();
   CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
@@ -936,7 +937,7 @@ void CQPlotSubwidget::copyPlot()
 
 void CQPlotSubwidget::addPlot()
 {
-  leave();
+  leaveProtected();
   CDataModel *pDataModel = mpObject->getObjectDataModel();
 
   if (pDataModel == NULL) return;
@@ -974,58 +975,62 @@ void CQPlotSubwidget::selectTaskTypes()
   dlg->setWindowTitle("Select Tasks");
   dlg->setMinimumHeight(400);
   dlg->setSelectionList(mTaskNames);
-  
+
   QStringList currentSelection;
+
   if (!mTaskTypes.empty())
-  {
-    std::istringstream ss(mTaskTypes);
-    std::string token;
-    while (std::getline(ss, token, ',')) {
+    {
+      std::istringstream ss(mTaskTypes);
+      std::string token;
 
-      while (token[0] == ' ') // remove leading spaces
-        token.erase(0, 1);
+      while (std::getline(ss, token, ','))
+        {
 
-      currentSelection << FROM_UTF8(token);
+          while (token[0] == ' ') // remove leading spaces
+            token.erase(0, 1);
+
+          currentSelection << FROM_UTF8(token);
+        }
     }
 
-  }
-
   dlg->setCurrentSelection(currentSelection);
+
   if (dlg->exec() != QDialog::Accepted)
     return;
 
   const QStringList& selection = dlg->getSelection();
-  
-  std::stringstream str; 
+
+  std::stringstream str;
+
   if (!selection.empty())
-  {
-    auto it = selection.begin();
-    str << TO_UTF8(*it++);
-    for (; it != selection.end(); ++it)
     {
-      str << ", ";
-      str << TO_UTF8(*it);
+      auto it = selection.begin();
+      str << TO_UTF8(*it++);
+
+      for (; it != selection.end(); ++it)
+        {
+          str << ", ";
+          str << TO_UTF8(*it);
+        }
     }
-  }
 
   mTaskTypes = str.str();
 
   chkTaskTypes->setChecked(mTaskTypes.empty());
   txtTaskTypes->setText(FROM_UTF8(mTaskTypes));
-
 }
 
 void CQPlotSubwidget::allTaskTypesClicked()
 {
   if (!mTaskTypes.empty())
-  {
-    mTaskTypes.clear();
-    txtTaskTypes->clear();
-  }
+    {
+      mTaskTypes.clear();
+      txtTaskTypes->clear();
+    }
   else
-  {
-    selectTaskTypes();
-  }
+    {
+      selectTaskTypes();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1119,7 +1124,7 @@ bool CQPlotSubwidget::saveToPlotSpec()
   pspec->setLogY(checkLogY->isChecked());
   // task types
   pspec->setTaskTypes(mTaskTypes);
-  
+
   //curves
   CPlotItem *item;
   storeChanges();
@@ -1276,7 +1281,7 @@ bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListView
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::leave()
+bool CQPlotSubwidget::leaveProtected()
 {
   return saveToPlotSpec();
 }

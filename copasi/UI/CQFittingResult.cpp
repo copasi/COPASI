@@ -104,7 +104,7 @@ bool CQFittingResult::updateProtected(ListViews::ObjectType objectType, ListView
   return true;
 }
 
-bool CQFittingResult::leave()
+bool CQFittingResult::leaveProtected()
 {
   // :TODO:
   return true;
