@@ -1102,7 +1102,6 @@ bool CQSpeciesDetail::event(QEvent * pEvent)
   if (pEvent->type() == QEvent::LayoutRequest &&
       mpLblValue->width() - 6 != mpDependencies->getLabelWidth())
     {
-      std::cout << pEvent->type() << std::endl;
       mpDependencies->setLabelWidth(mpLblValue->width() - 6);
     }
 
