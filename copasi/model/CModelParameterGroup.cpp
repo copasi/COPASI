@@ -373,6 +373,11 @@ void CModelParameterGroup::compile()
 
 void CModelParameterGroup::clear()
 {
+  if (mModelParameters.empty())
+    {
+      return;
+    }
+
   assert(mType != Type::Set);
 
   // Clear existing model parameters.
@@ -615,7 +620,7 @@ const CValidatedUnit & CModelParameterGroup::getObjectUnit(const CModelParameter
               pValueReference = static_cast< const CModelValue * >(Container.getObject(static_cast< const CModelParameterReactionParameter * >(pModelParameter)->getGlobalQuantityCN()))->getValueReference();
             }
 
-          std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mValidatedUnits.find(pValueReference);
+          std::map< CObjectInterface *, CValidatedUnit >::const_iterator found = mValidatedUnits.find(Container.getMathObject(pValueReference));
 
           if (found == mValidatedUnits.end() &&
               mpObject != NULL)

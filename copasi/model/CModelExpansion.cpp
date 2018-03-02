@@ -811,6 +811,11 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
                 //just copy the value
                 newObj->setParameterValue(newObj->getFunctionParameters()[i]->getObjectName(),
                                           source->getParameterValue(newObj->getFunctionParameters()[i]->getObjectName()));
+
+                CCopasiParameter * pParameter = newObj->getParameters().getParameter(newObj->getFunctionParameters()[i]->getObjectName());
+                assert(pParameter != NULL);
+
+                Objects.push_back(pParameter);
               }
             else
               {
@@ -1078,7 +1083,7 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
               if (pRef)
                 node->setData("<" + pRef->getCN() + ">");
 
-              //std::cout << node->getData() << std::endl;
+              // std::cout << node->getData() << std::endl;
             }
         }
     }

@@ -40,8 +40,8 @@ CData CModelParameterSet::toData() const
 
   // This works since the appended data overwrites the existing, i.e., we have the required object information
   Data.appendData(CModelParameterGroup::toData());
-  Data.appendData(CDataContainer::toData());
   Data.appendData(CAnnotation::toData());
+  Data.appendData(CDataContainer::toData());
 
   return Data;
 }
@@ -51,9 +51,9 @@ bool CModelParameterSet::applyData(const CData & data, CUndoData::ChangeSet & ch
 {
   bool success = true;
 
-  success &= CModelParameterGroup::applyData(data, changes);
   success &= CDataContainer::applyData(data, changes);
   success &= CAnnotation::applyData(data, changes);
+  success &= CModelParameterGroup::applyData(data, changes);
 
   return success;
 }
@@ -65,8 +65,8 @@ void CModelParameterSet::createUndoData(CUndoData & undoData,
 {
   // This works since the appended data overwrites the existing, i.e., we have the required object information
   CModelParameterGroup::createUndoData(undoData, type, oldData, framework);
-  CDataContainer::createUndoData(undoData, type, oldData, framework);
   CAnnotation::createUndoData(undoData, type, oldData, framework);
+  CDataContainer::createUndoData(undoData, type, oldData, framework);
 
   return;
 }
@@ -241,6 +241,17 @@ bool CModelParameterSet::setObjectParent(const CDataContainer * pParent)
   mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
 
   return success;
+}
+
+// virtual
+size_t CModelParameterSet::getIndex() const
+{
+  if (getObjectParent() != NULL)
+    {
+      return getObjectParent()->getIndex(this);
+    }
+
+  return C_INVALID_INDEX;
 }
 
 // virtual

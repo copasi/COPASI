@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -295,9 +295,10 @@ public:
   /**
    * Create the undo data which represents the changes recording the
    * differences between the provided oldData and the current data.
+   * @param const CCore::Framework & framework
    * @return CUndoData undoData
    */
-  CUndoData createUndoData() const;
+  CUndoData createUndoData(const CCore::Framework & framework) const;
 
   /**
    * create all metabolites that are needed by the reaction but do

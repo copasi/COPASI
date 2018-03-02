@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -160,7 +160,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
 
   if (pModel == NULL) return false;
 
-  beginInsertRows(parent, position, position + rows - 1);
+  beginInsertRows(QModelIndex(), position, position + rows - 1);
 
   for (int row = 0; row < rows; ++row)
     {
@@ -173,7 +173,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
 
-      emit notifyGUI(ListViews::MODELPARAMETERSET, ListViews::ADD, pNew->getKey());
+      emit signalNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pNew)));
     }
 
   endInsertRows();
@@ -186,23 +186,23 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
 
   if (mpListOfParameterSets == NULL) return false;
 
-  beginRemoveRows(parent, position, position + rows - 1);
-  std::vector< CModelParameterSet * > DeletedModelParameterSets;
-  DeletedModelParameterSets.resize(rows);
-  std::vector< CModelParameterSet * >::iterator itDeletedModelParameterSet;
-  std::vector< CModelParameterSet * >::iterator endDeletedModelParameterSet = DeletedModelParameterSets.end();
-  CDataVectorN< CModelParameterSet >::iterator itRow = mpListOfParameterSets->begin() + position;
+  std::vector< const CModelParameterSet * > ToBeDeleted;
+  CDataVectorN< CModelParameterSet >::const_iterator it = mpListOfParameterSets->begin() + position;
+  CDataVectorN< CModelParameterSet >::const_iterator end = mpListOfParameterSets->begin() + position + rows;
 
-  for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet, ++itRow)
+  for (; it != end; ++it)
     {
-      *itDeletedModelParameterSet = itRow;
+      ToBeDeleted.push_back(&*it);
     }
 
-  for (itDeletedModelParameterSet = DeletedModelParameterSets.begin(); itDeletedModelParameterSet != endDeletedModelParameterSet; ++itDeletedModelParameterSet)
+  beginRemoveRows(parent, position, position + rows - 1);
+
+  std::vector< const CModelParameterSet * >::iterator itDeleted = ToBeDeleted.begin();
+  std::vector< const CModelParameterSet * >::iterator endDeleted = ToBeDeleted.end();
+
+  for (itDeleted = ToBeDeleted.begin(); itDeleted != endDeleted; ++itDeleted)
     {
-      std::string Key = (*itDeletedModelParameterSet)->getKey();
-      pdelete(*itDeletedModelParameterSet);
-      emit notifyGUI(ListViews::MODELPARAMETERSET, ListViews::DELETE, Key);
+      emit signalNotifyChanges(mpDataModel->applyData(CUndoData(CUndoData::Type::REMOVE, *itDeleted)));
     }
 
   endRemoveRows();

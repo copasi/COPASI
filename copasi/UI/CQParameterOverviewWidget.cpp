@@ -75,12 +75,60 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 // virtual
 bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
 {
+  if (!mIgnoreUpdates)
+    {
+      if (mpParameterSetCopy != NULL &&
+          mpParameterSetCopy->isActive() &&
+          (objectType == ListViews::REACTION ||
+           ((action == ListViews::ADD ||
+             action == ListViews::DELETE) &&
+            (objectType == ListViews::COMPARTMENT ||
+             objectType == ListViews::METABOLITE ||
+             objectType == ListViews::MODELVALUE))))
+        {
+          mpParameterSetDM->beginResetModel();
+
+          if (objectType == ListViews::MODELVALUE)
+            {
+              buildSelectionList();
+            }
+
+          mpParameterSetDM->endResetModel();
+
+          mpTreeView->expandAll();
+
+          for (int i = 0; i < 6; i++)
+            {
+              mpTreeView->resizeColumnToContents(i);
+            }
+        }
+      else if (objectType == ListViews::MODELVALUE &&
+               action == ListViews::CHANGE)
+        {
+          mpParameterSetDM->resetCache();
+
+          if (mpParameterSet != NULL &&
+              mpParameterSet->isActive())
+            {
+              mpParameterSet->compile();
+            }
+        }
+    }
+
   if (mIgnoreUpdates || !isVisible())
     {
       if (objectType == ListViews::MODEL && action == ListViews::DELETE)
         {
           mObjectCN.clear();
           mpObject = NULL;
+
+          mpParameterSetDM->setModelParameterSet(NULL);
+
+          if (mpParameterSet != mpParameterSetCopy)
+            {
+              pdelete(mpParameterSetCopy);
+            }
+
           mpParameterSet = NULL;
         }
 

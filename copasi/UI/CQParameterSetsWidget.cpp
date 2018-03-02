@@ -47,8 +47,8 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   mpTblParameterSets->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpParameterSetsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+  connect(mpParameterSetsDM, SIGNAL(signalNotifyChanges(const CUndoData::ChangeSet &)),
+          this, SLOT(slotNotifyChanges(const CUndoData::ChangeSet &)));
   connect(mpParameterSetsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
@@ -120,7 +120,6 @@ bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, Li
       (action == ListViews::DELETE ||
        action == ListViews::ADD))
     {
-      mpDataModel = NULL;
       mpObject = NULL;
       mObjectCN.clear();
     }
@@ -143,7 +142,7 @@ bool CQParameterSetsWidget::enterProtected()
   if (mpObject == NULL)
     {
       if (mpDataModel != NULL)
-        mpObject = mpDataModel->getModel();
+        mpObject = &mpDataModel->getModel()->getModelParameterSets();
 
       if (mpObject == NULL)
         return false;

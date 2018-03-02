@@ -75,27 +75,18 @@ CData CReaction::toData() const
   CChemEqInterface EqInterface;
   EqInterface.init(mChemEq);
 
-  Data.addProperty(CData::CHEMICAL_EQUATION, EqInterface.getChemEqString(false));
+  Data.addProperty(CData::CHEMICAL_EQUATION, EqInterface.toDataValue());
   Data.addProperty(CData::KINETIC_LAW, mpFunction != NULL ? mpFunction->getObjectName() : "undefined");
 
-  CCopasiParameterGroup::index_iterator itLocalParameter = mParameters.beginIndex();
-  CCopasiParameterGroup::index_iterator endLocalParameter = mParameters.endIndex();
-  std::map< std::string, CData > LocalParameterSet;
-
-  for (size_t i = 0; itLocalParameter != endLocalParameter; ++itLocalParameter, ++i)
-    if (isLocalParameter(i))
-      {
-        LocalParameterSet.insert(std::make_pair((*itLocalParameter)->getObjectName(), (*itLocalParameter)->toData()));
-      }
-
-  std::map< std::string, CData >::const_iterator itSet = LocalParameterSet.begin();
-  std::map< std::string, CData >::const_iterator endSet = LocalParameterSet.end();
+  CCopasiParameterGroup::const_name_iterator itLocalParameter = mParameters.beginName();
+  CCopasiParameterGroup::const_name_iterator endLocalParameter = mParameters.endName();
   std::vector< CData > LocalParameters;
 
-  for (; itSet != endSet; ++itSet)
-    {
-      LocalParameters.push_back(itSet->second);
-    }
+  for (; itLocalParameter != endLocalParameter; ++itLocalParameter)
+    if (isLocalParameter((*itLocalParameter)->getObjectName()))
+      {
+        LocalParameters.push_back((*itLocalParameter)->toData());
+      }
 
   Data.addProperty(CData::LOCAL_REACTION_PARAMETERS, LocalParameters);
 
@@ -151,7 +142,7 @@ bool CReaction::applyData(const CData & data, CUndoData::ChangeSet & changes)
     {
       CChemEqInterface EqInterface;
       EqInterface.init(mChemEq);
-      Success &= EqInterface.setChemEqString(data.getProperty(CData::CHEMICAL_EQUATION).toString());
+      Success &= EqInterface.fromDataValue(data.getProperty(CData::CHEMICAL_EQUATION).toString());
       EqInterface.writeToChemEq();
     }
 
@@ -247,7 +238,7 @@ void CReaction::createUndoData(CUndoData & undoData,
   CChemEqInterface EqInterface;
   EqInterface.init(mChemEq);
 
-  undoData.addProperty(CData::CHEMICAL_EQUATION, oldData.getProperty(CData::CHEMICAL_EQUATION), EqInterface.getChemEqString(false));
+  undoData.addProperty(CData::CHEMICAL_EQUATION, oldData.getProperty(CData::CHEMICAL_EQUATION), EqInterface.toDataValue());
   undoData.addProperty(CData::KINETIC_LAW, oldData.getProperty(CData::KINETIC_LAW), mpFunction->getObjectName());
 
   CCopasiParameterGroup::const_name_iterator itNewParameter = mParameters.beginName();
@@ -475,11 +466,11 @@ std::string CReaction::getChildObjectUnits(const CDataObject * pObject) const
 void CReaction::cleanup()
 {
   mChemEq.cleanup();
-  mParameterNameToIndex.clear(),
-                              mParameterIndexToCNs.clear(),
-                              mParameterIndexToObjects.clear(),
+  mParameterNameToIndex.clear();
+  mParameterIndexToCNs.clear();
+  mParameterIndexToObjects.clear();
 
-                              setFunction(CRootContainer::getUndefinedFunction());
+  setFunction(CRootContainer::getUndefinedFunction());
   mpScalingCompartment = NULL;
   mScalingCompartmentCN = CRegisteredCommonName("");
   // TODO: mMap.cleanup();
@@ -2178,23 +2169,31 @@ bool CReaction::setParameterObjects(const size_t & index, const std::vector< con
 {
   if (index < mParameterIndexToObjects.size())
     {
-      mParameterIndexToObjects[index] = objects;
-      mParameterIndexToCNs[index].resize(objects.size());
-
-      std::vector< const CDataObject * >::const_iterator itObject = objects.begin();
-      std::vector< const CDataObject * >::const_iterator endObject = objects.end();
-      std::vector< CRegisteredCommonName >::iterator itCN = mParameterIndexToCNs[index].begin();
-
-      for (; itObject != endObject; ++itObject, ++itCN)
+      if (mParameterIndexToObjects[index] != objects)
         {
-          if (*itObject != NULL)
+          mParameterIndexToObjects[index] = objects;
+          mParameterIndexToCNs[index].resize(objects.size());
+
+          std::vector< const CDataObject * >::const_iterator itObject = objects.begin();
+          std::vector< const CDataObject * >::const_iterator endObject = objects.end();
+          std::vector< CRegisteredCommonName >::iterator itCN = mParameterIndexToCNs[index].begin();
+
+          for (; itObject != endObject; ++itObject, ++itCN)
             {
-              *itCN = (*itObject)->getCN();
+              if (*itObject != NULL)
+                {
+                  *itCN = (*itObject)->getCN();
+                }
+              else
+                {
+                  *itCN = CCommonName("");
+                }
             }
-          else
-            {
-              *itCN = CCommonName("");
-            }
+
+          CModel * pModel = static_cast< CModel * >(getObjectAncestor("Model"));
+
+          if (pModel != NULL)
+            pModel->setCompileFlag(true);
         }
 
       return true;

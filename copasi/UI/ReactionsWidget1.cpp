@@ -130,7 +130,7 @@ bool ReactionsWidget1::saveToReaction()
       mpRi->setNoiseExpression(mpNoiseExpressionWidget->mpExpressionWidget->getExpression());
     }
 
-  CUndoData Data(mpRi->createUndoData());
+  CUndoData Data(mpRi->createUndoData((CCore::Framework) mFramework));
 
   if (!Data.empty())
     {
@@ -184,7 +184,25 @@ void ReactionsWidget1::slotLineEditChanged()
 // added 5/19/04
 void ReactionsWidget1::slotBtnNew()
 {
-  // mpUndoStack->push(new CreateNewReactionCommand(this));
+  leaveProtected();
+
+  std::string name = "reaction";
+  int i = 1;
+
+  assert(mpDataModel != NULL);
+
+  CReaction * pReaction = NULL;
+
+  while (!(pReaction = mpDataModel->getModel()->createReaction(name)))
+    {
+      i++;
+      name = "reaction_";
+      name += TO_UTF8(QString::number(i));
+    }
+
+  slotNotifyChanges(mpDataModel->recordData(CUndoData(CUndoData::Type::INSERT, pReaction)));
+
+  mpListView->switchToOtherWidget(C_INVALID_INDEX, pReaction->getCN());
 }
 
 void ReactionsWidget1::slotBtnCopy()

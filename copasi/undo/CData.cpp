@@ -229,10 +229,8 @@ std::string CData::hash() const
 {
   std::stringstream Data;
   Data << *this;
-  std::string hash = Cmd5::digest(Data);
-  std::cout << *this << hash << std::endl;
 
-  return hash;
+  return Cmd5::digest(Data);
 }
 
 CData::const_iterator CData::begin() const

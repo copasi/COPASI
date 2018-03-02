@@ -229,7 +229,7 @@ public:
    * Retrieve the index of the parameter in the vector of children in the parent
    * @return size_t index
    */
-  size_t getIndex() const;
+  virtual size_t getIndex() const;
 
   /**
    * Check whether the value is read only.

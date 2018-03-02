@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -473,6 +473,70 @@ bool CChemEqInterface::writeToChemEq(CChemEq * pChemEq) const
   pCE->setReversibility(mReversibility);
 
   return ret; //TODO: really check
+}
+
+std::string CChemEqInterface::toDataValue() const
+{
+  std::ostringstream DataValue;
+  DataValue.imbue(std::locale::classic());
+  DataValue.precision(6);
+
+  std::string Separator;
+  std::vector< std::string >::const_iterator itSpecies;
+  std::vector< std::string >::const_iterator endSpecies;
+  std::vector< std::string >::const_iterator itCompartment;
+  std::vector< C_FLOAT64 >::const_iterator itMultiplier;
+
+  if (!mSubstrateNames.empty() ||
+      !mProductNames.empty())
+    {
+      Separator.clear();
+      itSpecies = mSubstrateNames.begin();
+      endSpecies = mSubstrateNames.end();
+      itCompartment = mSubstrateCompartments.begin();
+      itMultiplier = mSubstrateMult.begin();
+
+      for (; itSpecies != endSpecies; ++itSpecies, ++itCompartment, ++itMultiplier)
+        {
+          DataValue << Separator << *itMultiplier << " * " << CMetabNameInterface::createUniqueDisplayName(*itSpecies, *itCompartment, true);
+          Separator = " + ";
+        }
+
+      DataValue << (mReversibility ?  " = " : " -> ");
+
+      Separator.clear();
+      itSpecies = mProductNames.begin();
+      endSpecies = mProductNames.end();
+      itCompartment = mProductCompartments.begin();
+      itMultiplier = mProductMult.begin();
+
+      for (; itSpecies != endSpecies; ++itSpecies, ++itCompartment, ++itMultiplier)
+        {
+          DataValue << Separator << *itMultiplier << " * " << CMetabNameInterface::createUniqueDisplayName(*itSpecies, *itCompartment, true);
+          Separator = " + ";
+        }
+    }
+
+  if (!mModifierNames.empty())
+    {
+      Separator = "; ";
+      itSpecies = mModifierNames.begin();
+      endSpecies = mModifierNames.end();
+      itCompartment = mModifierCompartments.begin();
+
+      for (; itSpecies != endSpecies; ++itSpecies, ++itCompartment, ++itMultiplier)
+        {
+          DataValue << Separator << CMetabNameInterface::createUniqueDisplayName(*itSpecies, *itCompartment, true);
+          Separator = " ";
+        }
+    }
+
+  return DataValue.str();
+}
+
+bool CChemEqInterface::fromDataValue(const std::string & dataValue)
+{
+  return setChemEqString(dataValue);
 }
 
 const std::vector<C_FLOAT64> & CChemEqInterface::getListOfMultiplicities(CFunctionParameter::Role role) const

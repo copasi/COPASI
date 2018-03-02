@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,6 +74,9 @@ public:
   bool setChemEqString(const std::string & ces);
 
   bool writeToChemEq(CChemEq * pChemEq = NULL) const;
+
+  std::string toDataValue() const;
+  bool fromDataValue(const std::string & dataValue);
 
   const std::vector<C_FLOAT64> & getListOfMultiplicities(CFunctionParameter::Role role) const;
 

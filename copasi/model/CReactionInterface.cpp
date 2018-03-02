@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -270,7 +270,9 @@ bool CReactionInterface::loadMappingAndValues()
             }
         }
 
-      mNameMap[getParameterName(i)] = SubList;
+      std::vector< std::string > & Sources = mNameMap[getParameterName(i)];
+      mIndexMap[i] = &Sources;
+      Sources = SubList;
     }
 
   return success;
@@ -327,7 +329,6 @@ bool CReactionInterface::writeBackToReaction(CReaction * pReaction, bool compile
             else
               {
                 Objects.push_back(&mpModel->getModelValues()[mIndexMap[i]->at(0)]);
-
               }
 
             break;
@@ -379,7 +380,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * pReaction, bool compile
   return true;
 }
 
-CUndoData CReactionInterface::createUndoData() const
+CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework) const
 {
   if (mpReaction == NULL ||
       mpFunction == NULL)
@@ -420,6 +421,20 @@ CUndoData CReactionInterface::createUndoData() const
         }
 
       CMetab Species(itSpecies->first);
+
+      switch (framework)
+        {
+          case CCore::Framework::Concentration:
+            Species.setInitialConcentration(1.0);
+            Species.setInitialValue(mpModel->getQuantity2NumberFactor());
+            break;
+
+          case CCore::Framework::ParticleNumbers:
+            Species.setInitialValue(100.0);
+            Species.setInitialConcentration(100.0 * mpModel->getNumber2QuantityFactor());
+            break;
+        }
+
       CUndoData SpeciesData(CUndoData::Type::INSERT, &Species);
       SpeciesData.addProperty(CData::OBJECT_PARENT_CN, itSpeciesParentCN->second);
 
@@ -440,7 +455,7 @@ CUndoData CReactionInterface::createUndoData() const
       UndoData.addPreProcessData(SpeciesData);
     }
 
-  UndoData.addProperty(CData::CHEMICAL_EQUATION, OldData.getProperty(CData::CHEMICAL_EQUATION), mChemEqI.getChemEqString(false));
+  UndoData.addProperty(CData::CHEMICAL_EQUATION, OldData.getProperty(CData::CHEMICAL_EQUATION), mChemEqI.toDataValue());
   UndoData.addProperty(CData::KINETIC_LAW, OldData.getProperty(CData::KINETIC_LAW), mpFunction->getObjectName());
 
   size_t j, jmax;

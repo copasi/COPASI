@@ -247,6 +247,7 @@ void CQReactionsWidget::slotFilterChanged()
 void CQReactionsWidget::setFramework(int framework)
 {
   CopasiWidget::setFramework(framework);
+  mpReactionDM->setFramework(framework);
 
   switch (mFramework)
     {

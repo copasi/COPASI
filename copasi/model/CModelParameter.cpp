@@ -17,15 +17,16 @@
 #include "CModelParameterSet.h"
 #include "CMetabNameInterface.h"
 #include "CReaction.h"
-#include "CopasiDataModel/CDataModel.h"
-#include "function/CExpression.h"
-#include "model/CModel.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/function/CExpression.h"
+#include "copasi/model/CModel.h"
 #include "copasi/core/CRootContainer.h"
-#include "report/CKeyFactory.h"
+#include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObject.h"
-#include "utilities/CUnitValidator.h"
-#include "utilities/CUnit.h"
-#include "math/CMathExpression.h"
+#include "copasi/utilities/CUnitValidator.h"
+#include "copasi/utilities/CUnit.h"
+#include "copasi/math/CMathExpression.h"
+#include "copasi/core/CDataString.h"
 
 // static
 const CEnumAnnotation< std::string, CModelParameter::Type > CModelParameter::TypeNames(
@@ -790,8 +791,8 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
 
                     assert(ModelValue.size() == 1);
 
-                    const CModelValue * pModelValue = static_cast< const CModelValue * >(ModelValue[0]);
-                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue->getInitialValueReference()->getCN());
+                    const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getCN() : CDataString("not found").getCN());
                   }
               }
 
@@ -1151,6 +1152,7 @@ void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & g
       setInitialExpression("<" + globalQuantityCN + ">");
     }
 
+  mpParent->compile();
   compile();
 }
 

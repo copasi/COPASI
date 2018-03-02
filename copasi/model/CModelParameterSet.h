@@ -128,6 +128,12 @@ public:
   virtual bool setObjectParent(const CDataContainer * pParent);
 
   /**
+   * Retrieve the index of the parameter in the vector of children in the parent
+   * @return size_t index
+   */
+  virtual size_t getIndex() const;
+
+  /**
    * Set the model the parameter set is storing values for
    * @param const CModel * pModel
    */

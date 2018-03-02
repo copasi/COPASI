@@ -133,6 +133,8 @@ bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListView
         break;
     }
 
+  mpMetab = dynamic_cast< CMetab * >(mpObject);
+
   if (isVisible() && !mIgnoreUpdates)
     load();
 

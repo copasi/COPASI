@@ -517,14 +517,14 @@ QVariant CQParameterOverviewDM::assignmentData(const CModelParameter * pNode, in
 }
 
 // virtual
-bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &value, int role)
+bool CQParameterOverviewDM::setData(const QModelIndex & index, const QVariant &value, int role)
 {
-  CModelParameter * pNode = nodeFromIndex(_index);
+  CModelParameter * pNode = nodeFromIndex(index);
 
   if (pNode == NULL || role != Qt::EditRole)
     return false;
 
-  if (_index.data(Qt::EditRole).toString() == value.toString())
+  if (index.data() == value)
     return false;
 
   bool success = false;
@@ -533,7 +533,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
   if (pNode != NULL &&
       role == Qt::EditRole)
     {
-      switch (_index.column())
+      switch (index.column())
         {
           case COL_VALUE:
             if (mpModelParameterSet->isActive() &&
@@ -563,11 +563,19 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
                 (pObject = pNode->getObject()) != NULL)
               {
                 // We update the referenced object directly as the active parameter set updates the model values
-                CData OldData(pObject->toData());
+                // We need to work on the reaction itself since this involves parameter mapping.
+                CReaction * pReaction = dynamic_cast< CReaction * >(pObject->getObjectAncestor("Reaction"));
+
+                if (pReaction == NULL)
+                  {
+                    return false;
+                  }
+
+                CData OldData(pReaction->toData());
                 static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity != NULL ? pGlobalQuantity->getCN() : CCommonName());
                 pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
                 CUndoData UndoData;
-                pObject->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
+                pReaction->createUndoData(UndoData, CUndoData::Type::CHANGE, OldData, static_cast<CCore::Framework>(mFramework));
                 emit signalNotifyChanges(pObject->getObjectDataModel()->recordData(UndoData));
 
                 success = true;
@@ -575,6 +583,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex &_index, const QVariant &v
             else
               {
                 // The changes are recorded when we commit
+                static_cast<CModelParameterReactionParameter *>(pNode)->setGlobalQuantityCN(pGlobalQuantity != NULL ? pGlobalQuantity->getCN() : CCommonName());
                 pNode->setValue(value.toDouble(), static_cast<CCore::Framework>(mFramework));
               }
           }
@@ -594,4 +603,10 @@ bool CQParameterOverviewDM::insertRows(int /*position*/, int /*rows*/, const QMo
 bool CQParameterOverviewDM::removeRows(int /*position*/, int /*rows*/, const QModelIndex & /* parent */)
 {
   return false;
+}
+
+// virtual
+void CQParameterOverviewDM::resetCache()
+{
+  mUnitCache.clear();
 }
