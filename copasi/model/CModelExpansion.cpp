@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -850,7 +850,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
   updateExpression(newObj->getNoiseExpressionPtr(), index, sourceSet, emap);
 
   newObj->setFast(source->isFast());
-  
+
   newObj->setKineticLawUnitType(source->getKineticLawUnitType());
 
   //Scaling Compartment
@@ -861,6 +861,7 @@ void CModelExpansion::duplicateReaction(const CReaction* source, const std::stri
         {
           duplicateCompartment(source->getScalingCompartment(), index, sourceSet, emap);
         }
+
       //use copy
       newObj->setScalingCompartment(dynamic_cast<const CCompartment*>(emap.getDuplicatePtr(source->getScalingCompartment())));
     }
@@ -958,7 +959,7 @@ void CModelExpansion::duplicateEvent(CEvent* source, const std::string & index, 
       newObj->setDelayAssignment(source->getDelayAssignment());
       newObj->setFireAtInitialTime(source->getFireAtInitialTime());
       newObj->setPersistentTrigger(source->getPersistentTrigger());
-    
+
       //priority
       newObj->setPriorityExpression(source->getPriorityExpression());
       updateExpression(newObj->getPriorityExpressionPtr(), index, sourceSet, emap);
@@ -1055,7 +1056,7 @@ void CModelExpansion::updateExpression(CExpression* exp, const std::string & ind
           if (!emap.exists(pObj))
             {
               //we have to create the duplicate
-              std::cout << "!!!" << std::endl;
+              // std::cout << "!!!" << std::endl;
 
               if (dynamic_cast<const CCompartment*>(pObj))
                 duplicateCompartment(dynamic_cast<const CCompartment*>(pObj), index, sourceSet, emap);
@@ -1267,16 +1268,17 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
           sourceElement->setMetabolite(pMetab->getKey());
         }
     }
- for (i = 0; i < pX->getChemEq().getBalances().size(); ++i)
-  {
-    CChemEqElement * sourceElement = const_cast< CChemEqElement * >(&pX->getChemEq().getBalances()[i]);
-    const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
-    
-    if (pMetab)
+
+  for (i = 0; i < pX->getChemEq().getBalances().size(); ++i)
     {
-      sourceElement->setMetabolite(pMetab->getKey());
+      CChemEqElement * sourceElement = const_cast< CChemEqElement * >(&pX->getChemEq().getBalances()[i]);
+      const CMetab* pMetab = dynamic_cast<const CMetab*>(emap.getDuplicatePtr(sourceElement->getMetabolite()));
+
+      if (pMetab)
+        {
+          sourceElement->setMetabolite(pMetab->getKey());
+        }
     }
-  }
 
   for (i = 0; i < pX->getChemEq().getProducts().size(); ++i)
     {
@@ -1328,6 +1330,7 @@ void CModelExpansion::replaceInReaction(CReaction* pX, const ElementsMap & emap)
             break;
         }
     }
+
   pX->compile();
 }
 
@@ -1338,7 +1341,7 @@ void CModelExpansion::replaceInModelEntity(CModelEntity* pX, const ElementsMap &
 
   //initial expression
   replaceInExpression(pX->getInitialExpressionPtr(), emap);
-  
+
   //noise expression
   replaceInExpression(pX->getNoiseExpressionPtr(), emap);
 }

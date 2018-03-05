@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,7 +49,6 @@ WizardDialog::WizardDialog(QWidget* parent, const char* /* name */, bool /* moda
 #ifndef Darwin
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
-
 
   std::string WizardDir;
   COptions::getValue("WizardDir", WizardDir);
@@ -138,7 +137,7 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
 {
   QString name = url.fragment();
 
-  std::cout << name.toUtf8().data() << std::endl;
+  // std::cout << name.toUtf8().data() << std::endl;
 
   CopasiUI3Window * pMainWindow = dynamic_cast<CopasiUI3Window *>(copasiMainWindow);
 
