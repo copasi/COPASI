@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -110,7 +110,7 @@ CIssue::CIssue(const CIssue & src):
 CIssue::~CIssue()
 {}
 
-CIssue::operator bool()
+CIssue::operator bool() const
 {
   // If this type is implicity cast to a bool, in a conditional
   // evaluation, it will evaluate to "true" that there IS NOT a

@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1658,16 +1658,20 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
   assert(pExpression != NULL);
 
   bool success = true;
-
-  bool ReplaceDiscontinousNodes =
-    !mIsInitialValue &&
-    mValueType != CMath::ValueType::Discontinuous &&
-    mValueType != CMath::ValueType::EventAssignment &&
-    mValueType != CMath::ValueType::EventPriority &&
-    mValueType != CMath::ValueType::EventDelay;
-
   pdelete(mpExpression);
-  mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
+
+  if (pExpression->getValidity().getHighestSeverity() != CIssue::eSeverity::Error)
+    {
+      bool ReplaceDiscontinousNodes =
+        !mIsInitialValue &&
+        mValueType != CMath::ValueType::Discontinuous &&
+        mValueType != CMath::ValueType::EventAssignment &&
+        mValueType != CMath::ValueType::EventPriority &&
+        mValueType != CMath::ValueType::EventDelay;
+
+      mpExpression = new CMathExpression(*pExpression, container, ReplaceDiscontinousNodes);
+    }
+
   compileExpression();
 
   return success;
