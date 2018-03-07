@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -259,7 +259,7 @@ bool CStructureParser::characters(const QString &str)
   QRegExp rx("\\w");
   QString strAux = str.trimmed();
   int pos = rx.indexIn(strAux);
-  std::cout << TO_UTF8(strAux) << std::endl;
+  // std::cout << TO_UTF8(strAux) << std::endl;
 
   if (pos != -1)
     {

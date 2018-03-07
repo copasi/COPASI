@@ -116,7 +116,7 @@ void CRegisteredCommonName::sanitizeObjectNames()
               while (!ElementName.empty())
                 {
                   CDataObject::sanitizeObjectName(ElementName);
-                  NewCN += IndexSeparator + ElementName;
+                  NewCN += IndexSeparator + escape(ElementName);
 
                   IndexSeparator = ",";
                   ElementName = OldCN.getElementName(++pos);
