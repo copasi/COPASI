@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -131,6 +131,28 @@ public:
   virtual std::string getMMLString(const std::vector< std::string > & children,
                                    bool expand,
                                    const std::vector< std::vector< std::string > > & variables) const;
+
+  /**
+   * Figure out the appropriate CUnit to use, based on the child nodes.
+   * This sets the default, appropriate for many cases, as Dimensionless
+   * @param const CMathContainer & container
+   * @param const std::vector< CValidatedUnit > & units
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit getUnit(const CMathContainer & container,
+                                 const std::vector< CValidatedUnit > & units) const;
+
+  /**
+   * Set the unit for the node and return the resulting unit. The child node units are
+   * added to the map
+   * @param const CMathContainer & container
+   * @param const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits
+   * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
+   * @return CUnit unit
+   */
+  virtual CValidatedUnit setUnit(const CMathContainer & container,
+                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
 
 private:
 
