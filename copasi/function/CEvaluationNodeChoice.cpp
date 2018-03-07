@@ -1,4 +1,4 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,6 +21,8 @@
 
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
+
+#include "utilities/CValidatedUnit.h"
 
 #include "sbml/math/ASTNode.h"
 
@@ -312,4 +314,25 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
     }
 
   return out.str();
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeChoice::getUnit(const CMathContainer & container,
+    const std::vector< CValidatedUnit > & units) const
+{
+  return CValidatedUnit::merge(units[1], units[2]);
+}
+
+// virtual
+CValidatedUnit CEvaluationNodeChoice::setUnit(const CMathContainer & container,
+    const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
+    std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const
+{
+  CValidatedUnit Result(CEvaluationNode::setUnit(container, currentUnits, targetUnits));
+
+  targetUnits[mpIfNode] = CValidatedUnit(CUnit("1"), false);
+  targetUnits[mpTrueNode] = Result;
+  targetUnits[mpFalseNode] = Result;
+
+  return Result;
 }
