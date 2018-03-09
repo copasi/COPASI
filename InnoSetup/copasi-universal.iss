@@ -55,6 +55,7 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 ; 32 bit Executables and DLLs 
 Source: {#MyStageDir}\bin\32\CopasiSE.exe; DestDir: {app}\bin; Check: IsWin32();
 Source: {#MyStageDir}\bin\32\CopasiUI.exe; DestDir: {app}\bin; Check: IsWin32();
+Source: {#MyStageDir}\bin\32\qt.conf; DestDir: {app}\bin; Check: IsWin32();
 ; Source: {#MyStageDir}\bin\32\libmmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
 ; Source: {#MyStageDir}\bin\32\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin32(); 
 Source: {#MyStageDir}\bin\32\Qt5Core.dll; DestDir: {app}\bin; Check: IsWin32();
@@ -89,6 +90,7 @@ Source: {#MyStageDir}\bin\32\msvcp140.dll; DestDir: {app}\bin; Check: InstallUse
 ; 64 bit Executables and DLLs 
 Source: {#MyStageDir}\bin\64\CopasiSE.exe; DestDir: {app}\bin; Check: IsWin64();
 Source: {#MyStageDir}\bin\64\CopasiUI.exe; DestDir: {app}\bin; Check: IsWin64();
+Source: {#MyStageDir}\bin\64\qt.conf; DestDir: {app}\bin; Check: IsWin64();
 ; Source: {#MyStageDir}\bin\64\libmmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
 ; Source: {#MyStageDir}\bin\64\svml_dispmd.dll; DestDir: {app}\bin; Check: IsWin64(); 
 Source: {#MyStageDir}\bin\64\Qt5Core.dll; DestDir: {app}\bin; Check: IsWin64();

@@ -71,12 +71,16 @@ cp "${BUILD_32_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/
 chmod 755 bin/32/CopasiUI.exe
 cp "${BUILD_32_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
 chmod 755 bin/32/CopasiSE.exe
+cp ${SOURCE}/InnoSetup/qt.conf bin/32
+chmod 644 bin/32/qt.conf
 
 # 64 bit files
 cp "${BUILD_64_MD}/build/COPASI${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
 chmod 755 bin/64/CopasiUI.exe
 cp "${BUILD_64_MT}/build/COPASI${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
 chmod 755 bin/64/CopasiSE.exe
+cp ${SOURCE}/InnoSetup/qt.conf bin/64
+chmod 644 bin/64/qt.conf
 
 
 # Execute InnoSetup to create Installation package
